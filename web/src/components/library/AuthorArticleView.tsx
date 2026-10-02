@@ -1,6 +1,6 @@
 /**
  * An author's written article on the author page (data: wiki/author-articles.ts). Sections, in order:
- * Life and work (with a key to the labels), the road of the text (a timeline), how the text survived
+ * the road of the text (a timeline, first, so the whole story is seen at a glance), life and work (with a key to the labels), how the text survived
  * and where editors disagree, editions to read, and the numbered sources. Every claim is checked
  * against one of those sources before an article is added; a draft (development only) says plainly
  * that it has not been.
@@ -44,12 +44,21 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
   a.timeline.forEach((t) => t.certainty && used.add(t.certainty));
   return (
     <>
+      {draft && (
+        <p className={styles.draft} role="note">
+          <b>Design preview.</b> This text comes from the old site and has <b>not</b> been checked against any source. It appears only while the site is being built on this computer, and the published site does not contain it.
+        </p>
+      )}
+
+      {a.timeline.length > 0 && (
+        <section className={styles.sec} aria-labelledby="road-title">
+          <h2 id="road-title">The road of the text</h2>
+          <p className="muted">Follow the text from {name}&apos;s own day to the book in your hands. The gaps are the long silences between one mark and the next.</p>
+          <AuthorRoad items={a.timeline} />
+        </section>
+      )}
+
       <section className={styles.sec} aria-labelledby="life-title" data-article={a.id}>
-        {draft && (
-          <p className={styles.draft} role="note">
-            <b>Design preview.</b> This text comes from the old site and has <b>not</b> been checked against any source. It appears only while the site is being built on this computer, and the published site does not contain it.
-          </p>
-        )}
         <div className={styles.head}>
           <h2 id="life-title">Life and work</h2>
           {!draft && a.checked && <span className={styles.stamp} title="Every claim on this page was compared with the sources listed at the bottom">Checked against sources · {longDate(a.checked)}</span>}
@@ -70,14 +79,6 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
           </aside>
         </div>
       </section>
-
-      {a.timeline.length > 0 && (
-        <section className={styles.sec} aria-labelledby="road-title">
-          <h2 id="road-title">The road of the text</h2>
-          <p className="muted">Follow the text from {name}&apos;s own day to the book in your hands. The gaps are the long silences between one mark and the next.</p>
-          <AuthorRoad items={a.timeline} />
-        </section>
-      )}
 
       <section className={styles.sec} aria-labelledby="survive-title">
         <h2 id="survive-title">How the words reached us</h2>
