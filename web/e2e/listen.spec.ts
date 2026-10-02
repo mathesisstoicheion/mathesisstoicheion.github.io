@@ -75,8 +75,10 @@ test("on a phone, Listen is in the reading aids and its player sits above the ba
   const bar = page.getByRole("region", { name: "Listen to the translation" });
   await expect(bar).toBeVisible();
   await expect(page.getByRole("dialog", { name: "Reading aids" })).toBeHidden();
-  const b = (await bar.boundingBox())!, rb = (await page.getByRole("toolbar", { name: "Reading" }).boundingBox())!;
-  expect(b.y + b.height).toBeLessThanOrEqual(rb.y + 1);
+  // (it rises into place over 0.4 s: measure once it has settled)
+  const rb = (await page.getByRole("toolbar", { name: "Reading" }).boundingBox())!;
+  await expect.poll(async () => { const x = (await bar.boundingBox())!; return x.y + x.height; }).toBeLessThanOrEqual(rb.y + 1);
+  const b = (await bar.boundingBox())!;
   expect(b.x).toBeGreaterThanOrEqual(0);
   expect(b.x + b.width).toBeLessThanOrEqual(375);
 });
