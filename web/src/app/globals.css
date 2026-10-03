@@ -124,6 +124,11 @@ html[data-hdr="hidden"] { --tabbar-vis: 0px; --readbar-vis: 0px; }
   }
 }
 
+/* the home page vase: a warm glow behind it, so the black gloss never sinks into a dark page */
+:root { --vase-glow: rgba(255, 243, 224, 0.75); }
+:root[data-theme="dark"] { --vase-glow: rgba(214, 122, 62, 0.30); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --vase-glow: rgba(214, 122, 62, 0.30); } }
+
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }

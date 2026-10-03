@@ -480,6 +480,13 @@ The owner asked whether the old site's features had all come over. A comparison 
 - Tests (2026-09-30): unit 310 passed; browser 343 passed on the built site (`npm run e2e`), including `e2e/reading-tools.spec.ts` (3) and the accessibility suite, which now opens both panels (Places on Iliad book 2: a whole book of Herodotus is too long for the checker's time limit) and covers the guide pages through the page list. `phone-pages.spec.ts`'s swipe test found its elements by a style name that differs between build tools; it now accepts both.
 - Not done from the old site's list: the everyday-life articles, English titles for Latin-titled works, and the small items above.
 
+## The home page vase: lighter, and a studio to paint it (2026-10-03)
+- **Why it looked black:** nothing was broken; most of its belly was solid black gloss, which sank into the dark page. The main band now goes all the way round in the clay (the words front and back, a palmette under each handle), a warm glow sits behind the pot (`--vase-glow`, both themes), and the shadow sits under the foot.
+- **"Paint it yourself"** opens a full-screen studio (`components/Amphora.tsx`; drawing in `components/amphora/paint.ts`; the design as data in `lib/amphora.ts`). Paint, Scratch (thin clay lines, as black-figure painters incised), Rub out (back to the patterns) and Turn; five colours (black gloss, clay, added red, added white, thinned gloss) and three brush sizes; undo and redo (Ctrl+Z, Ctrl+Y). Black-figure or red-figure; a pattern for the neck, shoulder, main band, lower band and foot; two painted words, typed in English letters and turned into Greek capitals. Bare clay, the site's design, and "Save a picture" (a PNG).
+- The brush finds the pot with a coarser invisible copy of its shape, so painting stays quick; strokes are kept as data, so undo and storage are cheap (`mathesis:amphora` in this browser only; credits privacy note updated). On phones one finger paints and two turn and zoom.
+- Tests: `src/lib/amphora.test.ts` (Greek capitals, damaged designs) and `e2e/amphora.spec.ts` (paint, change, undo, reload, start again; two fingers do not paint; axe on the studio in both themes).
+- Port 3100 was taken by another program on this computer (2026-10-03), so the tests ran against `serve-out.mjs 3117`.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|
