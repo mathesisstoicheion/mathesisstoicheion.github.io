@@ -25,7 +25,7 @@ const COLOURS: [Colour, string][] = [["red", "Red"], ["ochre", "Ochre"], ["blue"
  */
 export default function PassageToolbar({ sel, onAction, onClose, xref = null, word = null, onLookUp }: {
   sel: Selection;
-  onAction: (a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | { highlight: Colour }) => void;
+  onAction: (a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | "notebook" | { highlight: Colour }) => void;
   onClose: () => void;
   xref?: "start" | "here" | null;   // side-by-side only: begin a cross-reference, or finish one here
   /** the one word selected, for its quick meaning (phones) */
@@ -83,6 +83,9 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
           <button key={c} type="button" className={styles[`sw-${c}`]} onClick={() => onAction({ highlight: c })} title={`Highlight in ${name.toLowerCase()}`} aria-label={`Highlight in ${name.toLowerCase()}`} />
         ))}
       </span>
+      <button type="button" onClick={() => onAction("notebook")} title="Add this passage to a research notebook, with its citation">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6zM6 3v18M10 8h6M10 12h6" /></svg><span>Notebook</span>
+      </button>
       <button type="button" onClick={() => onAction("share")} title="Share this passage">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12h8M14 8l4 4-4 4M4 4v16" /></svg><span>Share</span>
       </button>

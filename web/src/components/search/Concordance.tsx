@@ -17,6 +17,8 @@ import { readTag } from "@/lib/lookup/postag";
 import type { Outcome, WorkHits } from "@/lib/search/run";
 import type { TeiDoc } from "@/lib/tei/types";
 import rs from "./Research.module.css";
+import NotebookPicker from "@/components/notebook/NotebookPicker";
+import type { NewItem } from "@/lib/notebooks";
 
 type Order = "place" | "form" | "before" | "after";
 const ORDERS: { id: Order; label: string }[] = [
@@ -46,6 +48,7 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
   const [busy, setBusy] = useState<string | null>(null);
   const [order, setOrder] = useState<Order>("place");
   const [tags, setTags] = useState<string[] | null>(null);
+  const [nbPick, setNbPick] = useState<{ items: NewItem[]; what: string } | null>(null);
   useEffect(() => { if (lemmaMode) loadTags().then(setTags, () => undefined); }, [lemmaMode]);
 
   // the lines, read text by text from the texts themselves
@@ -102,15 +105,25 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
   };
 
   const many = works.length > 1;
+  const lineItem = (r: Row): NewItem => ({
+    kind: "line", work: r.work, urn: texts[r.text].urn, from: r.ref, lang,
+    left: r.line?.leftText ?? "", match: r.line?.key ?? "", right: r.line?.rightText ?? "", query: title,
+    ...(lemmaMode && grammar(r.h) ? { grammar: grammar(r.h) } : {}),
+  });
   return (
     <section className={rs.conc} aria-label="Concordance">
       <div className={rs.bar}>
         <div className={`segmented ${rs.order}`} role="radiogroup" aria-label="Order of the lines">
           {ORDERS.map((o) => <button key={o.id} type="button" role="radio" aria-checked={order === o.id} onClick={() => setOrder(o.id)}>{o.label}</button>)}
         </div>
-        <button type="button" className="btn small ghost" onClick={download} disabled={!rows.length}>
-          Download {num(rows.length)} {rows.length === 1 ? "line" : "lines"} (spreadsheet)
-        </button>
+        <span className={rs.barBtns}>
+          <button type="button" className="btn small ghost" onClick={() => setNbPick({ items: sorted.filter((r) => r.line).map(lineItem), what: `${num(rows.length)} lines` })} disabled={!rows.length}>
+            Add to a notebook
+          </button>
+          <button type="button" className="btn small ghost" onClick={download} disabled={!rows.length}>
+            Download {num(rows.length)} {rows.length === 1 ? "line" : "lines"} (spreadsheet)
+          </button>
+        </span>
       </div>
       {order !== "place" && rows.length < all.length && <p className={rs.small}>Sorted among the {num(rows.length)} lines read so far.</p>}
 
@@ -129,6 +142,10 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
                 {lemmaMode && <span className={rs.gram} lang="en">{grammar(r.h)}</span>}
               </>
             ) : <span className={rs.missing} lang="en">{r.error ?? "This passage could not be read."}</span>}
+            {r.line && (
+              <button type="button" className={rs.addLine} onClick={() => setNbPick({ items: [lineItem(r)], what: "this line" })}
+                aria-label={`Add ${r.ref} to a notebook`} title="Add this line to a notebook">+</button>
+            )}
           </li>
         ))}
       </ol>
@@ -145,6 +162,7 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
           {all.length > MAX && <span className={rs.small}>For more than {num(MAX)} lines, narrow the search (an author, a work, a period).</span>}
         </div>
       )}
+      {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
     </section>
   );
 }

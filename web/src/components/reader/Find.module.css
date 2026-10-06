@@ -54,3 +54,14 @@
   .panel[data-compact] .title { font-size: 1.05rem; }
   .panel[data-compact] .help, .panel[data-compact] .scope, .panel[data-compact] [data-hide] { display: none; }
 }
+
+/* a list whose lines can each be added to a notebook: the + sits at the line's end */
+.withAdd { position: relative; }
+.list .withAdd > button:last-child { padding-right: 44px; }
+/* (written with the list's own class, so the list's full-width line buttons do not stretch it) */
+.list .add {
+  position: absolute; right: 6px; top: 50%; translate: 0 -50%; z-index: 1; width: 30px; height: 30px; padding: 0; display: grid; place-items: center;
+  grid-template-columns: none; border: 1px solid var(--rule); border-radius: 50%; background: var(--surface); color: var(--ink);
+  font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: none;
+}
+.list .add:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }

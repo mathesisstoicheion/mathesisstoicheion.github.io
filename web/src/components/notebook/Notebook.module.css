@@ -1,0 +1,70 @@
+/* Research notebooks: the "Add to a notebook" window (NotebookPicker.tsx) and the Treasury's section (NotebooksSection.tsx). */
+
+/* ---- the window */
+.scrim {
+  position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 16px;
+  background: color-mix(in srgb, var(--ink) 35%, transparent); animation: fade 0.2s var(--ease) both;
+}
+@keyframes fade { from { opacity: 0; } }
+.picker {
+  width: min(460px, 100%); max-height: min(80vh, 640px); overflow-y: auto; display: grid; gap: 14px; padding: 20px 22px;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; box-shadow: 0 30px 60px -30px var(--shadow);
+  animation: rise 0.3s var(--ease) both;
+}
+@keyframes rise { from { opacity: 0; translate: 0 12px; } }
+.pickHead { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.pickTitle { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; }
+.x { width: 36px; height: 36px; flex: none; font-size: 24px; line-height: 1; background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink); }
+.books { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.books button, .bookList button {
+  width: 100%; display: grid; gap: 2px; text-align: left; padding: 10px 12px; border: 1px solid var(--rule); border-radius: 8px;
+  background: var(--bg); color: var(--ink); cursor: pointer; transition: border-color 0.2s, translate 0.2s var(--ease);
+}
+.books button:hover, .bookList button:hover { border-color: var(--accent); translate: 2px 0; }
+.books span, .bookList span { font-size: 0.85rem; color: var(--ink-2); }
+.newBook { display: grid; gap: 6px; }
+.newBook label { font: 600 0.88rem var(--f-label); color: var(--ink-2); }
+.newBook > div { display: flex; gap: 8px; }
+.newBook input, .titleInput {
+  flex: 1; min-width: 0; min-height: 40px; padding: 0 12px; font: inherit; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 8px;
+}
+.fine, .small { margin: 0; font-size: 0.82rem; color: var(--ink-2); }
+
+/* ---- the Treasury's section */
+.section { display: grid; gap: 16px; }
+.h2 { margin: 0; font-family: var(--f-display); font-weight: 400; }
+.lede { margin: 0; color: var(--ink-2); max-width: 70ch; }
+.bookList { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 10px; }
+.bookList b { font-family: var(--f-display); font-weight: 400; font-size: 1.15rem; }
+.back { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.titleInput { font-family: var(--f-display); font-size: clamp(1.4rem, 3vw, 2rem); min-height: 54px; border-color: transparent; background: transparent; padding: 0 6px; }
+.titleInput:hover, .titleInput:focus { border-color: var(--rule); background: var(--bg); }
+.tools { display: flex; flex-wrap: wrap; gap: 8px; align-items: end; padding-bottom: 12px; border-bottom: 1px solid var(--rule); }
+.styleSel { display: grid; gap: 3px; font: 600 0.82rem var(--f-label); color: var(--ink-2); }
+.styleSel select { min-height: 36px; }
+.items { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.item {
+  display: grid; gap: 8px; padding: 12px 14px; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: 8px;
+  background: var(--surface); animation: rise 0.3s var(--ease) both;
+}
+.item[data-kind="line"] { border-left-color: var(--blue); }
+.item[data-kind="variant"] { border-left-color: var(--ochre); }
+.item[data-kind="text"] { border-left-color: var(--ink-2); background: transparent; }
+.itemHead { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.itemBtns { display: inline-flex; gap: 4px; }
+.itemBtns button { width: 32px; height: 32px; border: 1px solid var(--rule); border-radius: 6px; background: transparent; color: var(--ink); cursor: pointer; }
+.itemBtns button:disabled { opacity: 0.35; cursor: default; }
+@media (pointer: coarse) { .itemBtns button { width: var(--tap); height: var(--tap); } }
+.body { display: grid; gap: 4px; }
+.cite { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.open { font-weight: 400; font-size: 0.85rem; margin-left: 4px; }
+.greek { margin: 0; font-family: var(--f-greek); font-size: 1.1rem; line-height: 1.6; }
+.greek b { color: var(--accent); }
+.tr { margin: 0; color: var(--ink-2); font-style: italic; }
+.note, .text {
+  width: 100%; min-height: 2.6em; padding: 8px 10px; font: inherit; font-size: 0.95rem; color: var(--ink); background: var(--bg);
+  border: 1px solid var(--rule); border-radius: 6px; resize: vertical;
+}
+.addRow, .danger { margin: 0; }
+.danger { color: var(--ink-2); font-size: 0.9rem; }

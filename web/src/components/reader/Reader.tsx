@@ -15,6 +15,8 @@ import type { EnglishHit, FindHit } from "@/lib/find";
 import FindPanel, { type FindMarks } from "./FindPanel";
 import ComparePanel from "./ComparePanel";
 import SentencePanel, { type SentenceMarks } from "./SentencePanel";
+import NotebookPicker from "@/components/notebook/NotebookPicker";
+import type { NewItem } from "@/lib/notebooks";
 import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
@@ -179,6 +181,8 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   // how a sentence is built: the word asked about (its passage and place there), and its words to mark on the page
   const [sentenceAt, setSentenceAt] = useState<Point | null>(null);
   const [synMarks, setSynMarks] = useState<SentenceMarks | null>(null);
+  // "Add to a notebook": what is being added, while the window is open
+  const [nbPick, setNbPick] = useState<{ items: NewItem[]; what: string } | null>(null);
   const [topRow, setTopRow] = useState<string | null>(null);
   const [placeMarks, setPlaceMarks] = useState<Map<string, Set<string>> | null>(null);
 
@@ -883,8 +887,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     return { w: span.dataset.w!, ctx: { work: workId, unitKey: sel.start.u, occurrence: same.indexOf(span), keys: unitKeys, depth: doc.levels.length }, span };
   }, [sel, doc, workId, unitKeys]);
 
-  async function act(a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | { highlight: Colour }) {
+  async function act(a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | "notebook" | { highlight: Colour }) {
     if (!sel || !edV) return;
+    if (a === "notebook") {
+      if (!grcText) return;
+      const tr = cmpText ? "" : rows.filter((r) => sel.rowKeys.includes(r.key)).map((r) => blockText(r.trans)).filter(Boolean).join(" ");
+      setNbPick({ what: "this passage", items: [{ kind: "passage", work: workId, urn: grcText.urn, from: sel.start.u, to: sel.end.u, grc: sel.quote, ...(tr ? { tr: tr.slice(0, 2000) } : {}) }] });
+      window.getSelection()?.removeAllRanges(); setSel(null); return;
+    }
     if (a === "echoes") {
       openEchoes(sel.start, sel.end);
       window.getSelection()?.removeAllRanges(); setSel(null); return;
@@ -1509,12 +1519,15 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       )}
       {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && (
         <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
-          <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)} />
+          <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)}
+            onNotebook={(ds, what) => setNbPick({ what, items: ds.map((x) => ({ kind: "variant" as const, work: workId, urn: grcText.urn, other: cmpText.urn, from: x.key, a: x.a, b: x.b })) })} />
         </PanelGuard>
       )}
+      {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
       {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
           <SentencePanel work={workId} doc={doc} at={sentenceAt} onMarks={setSynMarks}
+            onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
             onClose={() => { setSentenceAt(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
         </PanelGuard>
       )}

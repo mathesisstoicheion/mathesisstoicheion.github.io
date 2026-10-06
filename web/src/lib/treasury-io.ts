@@ -11,6 +11,8 @@ import type { DeckCard } from "./academy";
 import type { Position } from "./position";
 import type { CatalogIndex } from "./catalog";
 
+import type { Notebook } from "./notebooks";
+
 export const EXPORT_APP = "Mathesis Stoicheion";
 export const EXPORT_FORMAT = 1;
 
@@ -26,6 +28,8 @@ export interface TreasuryData {
   places?: Record<string, number>;
   /** marks and notes deleted, and when (so a sync does not bring them back) */
   deleted?: Record<string, number>;
+  /** research notebooks (lib/notebooks.ts) */
+  notebooks?: Notebook[];
 }
 
 // ------------------------------------------------------------ merging
@@ -106,8 +110,11 @@ export function parseExport(text: string): TreasuryData {
     positions: d.positions && typeof d.positions === "object" ? d.positions : {},
     places: d.places && typeof d.places === "object" ? Object.fromEntries(Object.entries(d.places).filter(([k, v]) => /^\d+$/.test(k) && typeof v === "number")) : {},
     deleted: d.deleted && typeof d.deleted === "object" ? Object.fromEntries(Object.entries(d.deleted).filter(([, v]) => typeof v === "number")) : {},
+    notebooks: Array.isArray(d.notebooks) ? d.notebooks.filter(isNotebook) : [],
   };
 }
+const isNotebook = (n: Notebook) => !!n && typeof n.id === "string" && typeof n.title === "string" && Array.isArray(n.items) && typeof n.updated === "number"
+  && n.items.every((it) => !!it && typeof it.id === "string" && ["passage", "line", "variant", "text"].includes(it.kind));
 const isMark = (m: Mark) => !!m && typeof m.id === "string" && typeof m.work === "string" && typeof m.kind === "string" && !!m.start && typeof m.updated === "number";
 const isPageNote = (n: PageNote) => !!n && typeof n.id === "string" && (n.kind === "author" || n.kind === "word" || n.kind === "stoa") && typeof n.updated === "number";
 
@@ -169,6 +176,10 @@ export function exportHtml(d: TreasuryData, idx: CatalogIndex | null, origin: st
 
   const places = Object.entries(d.places ?? {}).sort((a, b) => b[1] - a[1])
     .map(([id, t]) => `<li><a href="${esc(`${origin}/stoa/periplus?p=${id}`)}">${esc(placeName(id))}</a> <span class="muted">(saved ${when(t)})</span></li>`).join("");
+  // notebooks: their titles, with what each holds (the full notebook, cited, is downloaded from the Treasury)
+  const notebooks = (d.notebooks ?? []).map((nb) => `<h3>${esc(nb.title)}</h3><ul>${nb.items.map((it) => it.kind === "text"
+    ? `<li>${esc(it.text)}</li>`
+    : `<li>${esc(title(it.work))} ${esc(it.from)}${it.kind === "passage" && it.to !== it.from ? `–${esc(it.to)}` : ""}: <span class="grc" lang="grc">${esc(it.kind === "passage" ? it.grc : it.kind === "line" ? it.match : `${it.a} ] ${it.b}`)}</span>${it.note ? `<div class="note">${noteHtml(it.note)}</div>` : ""}</li>`).join("")}</ul>`).join("");
   const data = JSON.stringify(d).replace(/</g, "\\u003c");
   return `<!DOCTYPE html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
@@ -192,6 +203,7 @@ ${section("Saved words", words ? `<ul>${words}</ul>` : "")}
 ${section("Notes on words", pageNotes("word"))}
 ${section("Notes on authors", pageNotes("author"))}
 ${section("Notes on the Painted Stoa", pageNotes("stoa"))}
+${section("Notebooks", notebooks)}
 ${section("Saved places", places ? `<ul>${places}</ul>` : "")}
 ${section("Where you stopped reading", positions ? `<ul>${positions}</ul>` : "")}
 <script type="application/json" id="mathesis-data">${data}</script>

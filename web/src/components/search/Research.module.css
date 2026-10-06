@@ -9,8 +9,16 @@
 
 /* ---- concordance: reference | words before | the match | words after | grammar */
 .lines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.addLine {
+  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 50%;
+  background: transparent; color: var(--ink-2); font: 1rem/1 var(--f-body); cursor: pointer; opacity: 0.55; transition: opacity 0.2s, color 0.2s;
+}
+.lines li:hover .addLine, .addLine:focus-visible { opacity: 1; }
+.addLine:hover { color: var(--accent); border-color: var(--accent); }
+@media (pointer: coarse) { .addLine { opacity: 1; width: 32px; height: 32px; } }
 .lines li {
-  display: grid; grid-template-columns: minmax(5em, 11em) minmax(0, 1fr) auto minmax(0, 1fr) auto; align-items: baseline;
+  display: grid; grid-template-columns: minmax(5em, 11em) minmax(0, 1fr) auto minmax(0, 1fr) auto auto; align-items: baseline;
   padding: 7px 6px; border-bottom: 1px solid color-mix(in srgb, var(--rule) 55%, transparent); transition: background 0.15s;
 }
 .lines li:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }

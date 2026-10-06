@@ -538,6 +538,15 @@ The column choice (Both / Greek / English) was a global setting: after "English 
 - **Reader**: the word look-up has **How the sentence is built** (`SentencePanel.tsx`, `lib/syntax.ts`): the sentence, each word underlined in its role's colour; whether a person checked it (treebank) or GLAUx's computer analysis made it; the tree from the main verb down as a nested outline, each word with its role in plain words (after Celano's AGDT 2.0 guidelines, linked) and its grammar; choosing a word marks its whole phrase in the text (CSS highlights `syn-s/p/w-N`); previous/next sentence; with the panel open, a word clicked in the text is shown in its sentence. `lookup/placed.ts` now records each on-screen word's place among the word pack's words (`Placed.word`).
 - Tests: `syntax.test.ts` (the Iliad's first sentence), `e2e/sentence.spec.ts` (with axe, both themes). Credits mention the sentence structure.
 
+## Published 2026-10-06 (third time): sentence diagrams
+The packs site was republished first (`python pipeline/publish_packs.py --push`, now with `syntax/`), then the site (4d2b003). Live: sentence diagrams, the columns fix; sentence, columns and research tests (10) passed on the live site; live-check clean.
+
+## Research tools, part 4: notebooks with citations (2026-10-06)
+- `lib/notebooks.ts` (zustand, localStorage "mathesis:notebooks"): named notebooks of passages, concordance lines, differences between editions and paragraphs of one's own, with notes; the same thing is not added twice; deletion leaves a tombstone. They travel in the Treasury's file (`TreasuryData.notebooks`, a "Notebooks" section in its readable HTML) and the account sync (`treasury-apply.ts`: newer copy wins).
+- `lib/cite.ts`: classical (LSJ's abbreviation for the work from data/abbrev.json, the commonest without a passage in it: "A. Ag. 87", "Il. 1.1–7"; otherwise author, *title*, reference), Chicago-style and MLA-style notes naming the edition as its TEI file describes it, the collection, the passage's CTS URN and a link. `lib/notebook-export.ts`: document (HTML; prints to PDF), Markdown, CSV, citations alone; an "Editions cited" list.
+- "Add to a notebook" (`components/notebook/NotebookPicker.tsx`): the reader's passage actions (**Notebook**), each concordance line (+) and all of them, each difference in the list (+) and all of them, and the sentence panel. The Treasury has a ninth metope, **Notebooks** (`NotebooksSection.tsx`): title, citation style (remembered), copy citations, downloads, print; each item cited with "Open in the reader", a note, ↑ ↓ ×; paragraphs of one's own. The frieze is 9 across on wide screens, 3 × 3 below 1100px.
+- Tests: `cite.test.ts`, `notebook-export.test.ts`, `e2e/notebooks.spec.ts` (the whole path, the Treasury file, axe). The list buttons' + no longer stretch over the line (Find.module.css).
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

@@ -9,6 +9,7 @@ import { useAcademy } from "./academy";
 import { allPositions, setAllPositions, type Position } from "./position";
 import { loadSavedPlaces, useSavedPlaces } from "./map";
 import { deletions, mergeDeletions, setDeletions } from "./tombstones";
+import { useNotebooks } from "./notebooks";
 import { EXPORT_APP, EXPORT_FORMAT, mergeAcademy, mergeById, mergePositions, type MergeReport, type TreasuryData } from "./treasury-io";
 
 export async function gather(): Promise<TreasuryData> {
@@ -20,10 +21,11 @@ export async function gather(): Promise<TreasuryData> {
     marks: await allMarks(), notes: await allPageNotes(),
     academy: { completed, days, deck }, positions: allPositions(), places: useSavedPlaces.getState().saved,
     deleted: deletions(),
+    notebooks: Object.values(useNotebooks.getState().books),
   };
 }
 
-export interface ApplyReport { marks: MergeReport; notes: MergeReport; deck: MergeReport; positions: number; places: number; removed: number }
+export interface ApplyReport { marks: MergeReport; notes: MergeReport; deck: MergeReport; positions: number; places: number; removed: number; notebooks: { added: number; updated: number } }
 
 export async function applyIncoming(incoming: TreasuryData, onPositions?: (p: Record<string, Position>) => void): Promise<ApplyReport> {
   const mine = await gather();
@@ -44,5 +46,6 @@ export async function applyIncoming(incoming: TreasuryData, onPositions?: (p: Re
   await useMarks.getState().loadAll();
   await usePageNotes.getState().load();
   const places = useSavedPlaces.getState().merge(incoming.places ?? {});
-  return { marks: marks.report, notes: notes.report, deck, positions: pos.changed, places, removed: gone.length };
+  const notebooks = useNotebooks.getState().merge(incoming.notebooks ?? [], dead);
+  return { marks: marks.report, notes: notes.report, deck, positions: pos.changed, places, removed: gone.length, notebooks };
 }

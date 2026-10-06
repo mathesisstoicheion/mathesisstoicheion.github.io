@@ -34,12 +34,14 @@ const inverse = (placed: Placed, n: number) => {
 
 type Ready = { pack: WordPack; syn: Syntax; placed: Placed; forms: string[]; tags: number[]; doc: TeiDoc };
 
-export default function SentencePanel({ work, doc, at, onMarks, onClose }: {
+export default function SentencePanel({ work, doc, at, onMarks, onClose, onNotebook }: {
   work: string; doc: TeiDoc;
   /** the word asked about: its passage and its place among the passage's words */
   at: { u: string; i: number };
   onMarks: (m: SentenceMarks | null) => void;
   onClose: () => void;
+  /** add the sentence to a notebook: its first and last passages, and its words */
+  onNotebook?: (from: string, to: string, grc: string) => void;
 }) {
   const [data, setData] = useState<Ready | { error: string } | null>(null);
   const ref = useRef<HTMLElement>(null);
@@ -69,6 +71,7 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose }: {
   const n = step?.from === askedKey ? step.n : asked?.n ?? -1;
   const s: Sentence | null = useMemo(() => (data && !("error" in data) && n >= 0 ? readSentence(data.syn, n, data.forms) : null), [data, n]);
   const [chosen, setChosen] = useState<{ n: number; i: number } | null>(null);
+  const span = useRef<{ from: string; to: string } | null>(null);   // the passages the sentence runs over, on screen
   const sel = s ? (chosen?.n === s.n ? chosen.i : s.nodes.find((x) => x.p === asked?.p)?.i ?? s.roots[0] ?? 0) : 0;
   const phrase = useMemo(() => (s ? new Set(phraseOf(s, sel)) : new Set<number>()), [s, sel]);
 
@@ -87,6 +90,8 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose }: {
     const all = s.nodes.map((x) => where(x.i));
     const pick = (keep: (i: number) => boolean) => all.filter((w, i) => w && keep(i)) as { u: string; i: number }[];
     onMarks({ sentence: pick(() => true), phrase: pick((i) => phrase.has(i)), word: pick((i) => i === sel) });
+    const placed = all.filter(Boolean) as { u: string; i: number }[];
+    span.current = placed.length ? { from: placed[0].u, to: placed[placed.length - 1].u } : null;
   }, [s, sel, phrase, data, doc, onMarks]);
   useEffect(() => () => onMarks(null), [onMarks]);
 
@@ -150,6 +155,12 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose }: {
           <div className={ss.steps}>
             <button type="button" className="chip" disabled={s.n <= 0} onClick={() => setStep({ from: askedKey, n: s.n - 1 })}>← Previous sentence</button>
             <button type="button" className="chip" disabled={s.n >= total - 1} onClick={() => setStep({ from: askedKey, n: s.n + 1 })}>Next sentence →</button>
+            {onNotebook && (
+              <button type="button" className="chip" onClick={() => {
+                const words = s.nodes.filter((x) => x.p !== null).map((x) => x.form).join(" ");
+                onNotebook(span.current?.from ?? at.u, span.current?.to ?? at.u, words);
+              }}>Add to a notebook</button>
+            )}
           </div>
           <details className={ss.key}>
             <summary>What the roles mean</summary>

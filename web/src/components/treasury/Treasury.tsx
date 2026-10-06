@@ -16,8 +16,10 @@ import KeepSafe from "./KeepSafe";
 import styles from "./Treasury.module.css";
 import PlacesSection from "./PlacesSection";
 import { loadSavedPlaces, useSavedPlaces } from "@/lib/map";
+import NotebooksSection from "./NotebooksSection";
+import { useNotebooks } from "@/lib/notebooks";
 
-export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places";
+export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
 
 export default function Treasury() {
   const params = useSearchParams();
@@ -25,6 +27,7 @@ export default function Treasury() {
   const t = useTreasury();
   const { marks, deck, pageNotes } = t;
   const savedPlaces = Object.keys(useSavedPlaces((s) => s.saved)).length;
+  const notebooks = Object.keys(useNotebooks((s) => s.books)).length;
   useEffect(() => { loadSavedPlaces(); }, []);
   const section = (params.get("s") ?? "recent") as SectionId;
 
@@ -46,14 +49,15 @@ export default function Treasury() {
     { id: "words", label: "Words", n: counts.words, hint: "saved, with Word Study" },
     { id: "authors", label: "Authors", n: counts.authors, hint: "your notes on them" },
     { id: "places", label: "Places", n: savedPlaces, hint: "on your own map" },
+    { id: "notebooks", label: "Notebooks", n: notebooks, hint: "for research, cited" },
   ];
   const go = (id: SectionId) => {
     const q = new URLSearchParams(params.toString());
     if (id === "recent" || id === section) q.delete("s"); else q.set("s", id);
-    for (const k of ["tag", "c", "a"]) q.delete(k);
+    for (const k of ["tag", "c", "a", "nb"]) q.delete(k);
     router.replace(`/treasury${q.size ? `?${q}` : ""}`, { scroll: false });
   };
-  const empty = t.ready && !marks.length && !Object.keys(deck).length && !Object.keys(pageNotes).length && !savedPlaces;
+  const empty = t.ready && !marks.length && !Object.keys(deck).length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
 
   return (
     <div className={`wrap ${styles.treasury}`}>
@@ -96,9 +100,10 @@ export default function Treasury() {
         {section === "words" && <WordsSection t={t} />}
         {section === "authors" && <AuthorsSection t={t} />}
         {section === "places" && <PlacesSection />}
+        {section === "notebooks" && <NotebooksSection />}
       </section>
 
-      <KeepSafe t={t} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}`} />
+      <KeepSafe t={t} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
     </div>
   );
 }

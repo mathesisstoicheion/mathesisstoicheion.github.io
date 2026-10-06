@@ -15,8 +15,10 @@ const num = (n: number) => n.toLocaleString("en-GB");
 /** a long stretch (a whole added introduction, say) is shortened in the list, never in the spreadsheet */
 const short = (s: string, n = 9) => { const w = s.split(" "); return w.length > n ? `${w.slice(0, n).join(" ")} … (${num(w.length)} words)` : s; };
 
-export default function ComparePanel({ diffs, a, b, title, onJump, onClose }: {
+export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNotebook }: {
   diffs: RowDiff[]; a: string; b: string; title: string; onJump: (d: RowDiff) => void; onClose: () => void;
+  /** add differences (passage, first edition's words, second's) to a notebook */
+  onNotebook?: (ds: { key: string; a: string; b: string }[], what: string) => void;
 }) {
   const entries = useMemo(() => diffs.flatMap((d) => d.hunks.map((h, j) => ({ d, j, ...lemmaOf(d, h) }))), [diffs]);
   const [shown, setShown] = useState(SHOW);
@@ -39,10 +41,21 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose }: {
         Each line gives the passage, then the words of <b>{a}</b>, a bracket ], and the words of <b>{b}</b>. A dash means one edition has no word there.
       </p>
       <p className={fs.status}>{num(entries.length)} {entries.length === 1 ? "difference" : "differences"} in {num(diffs.length)} {diffs.length === 1 ? "passage" : "passages"}</p>
-      {entries.length > 0 && <button type="button" className="btn small ghost" onClick={download}>Download the list (spreadsheet)</button>}
+      {entries.length > 0 && (
+        <p className={fs.row}>
+          <button type="button" className="btn small ghost" onClick={download}>Download the list (spreadsheet)</button>
+          {onNotebook && entries.length <= 500 && (
+            <button type="button" className="btn small ghost" onClick={() => onNotebook(entries.map((e) => ({ key: e.d.key, a: e.a, b: e.b })), `${num(entries.length)} differences`)}>Add all to a notebook</button>
+          )}
+        </p>
+      )}
       <ol className={fs.list}>
         {entries.slice(0, shown).map((e) => (
-          <li key={`${e.d.key}-${e.j}`}>
+          <li key={`${e.d.key}-${e.j}`} className={onNotebook ? fs.withAdd : undefined}>
+            {onNotebook && (
+              <button type="button" className={fs.add} onClick={() => onNotebook([{ key: e.d.key, a: e.a, b: e.b }], "this difference")}
+                aria-label={`Add ${e.d.key} to a notebook`} title="Add to a notebook">+</button>
+            )}
             <button type="button" onClick={() => onJump(e.d)}>
               <span className={fs.ref}>{e.d.key}</span>
               <span className={fs.snip} lang="grc">{short(e.a)} ] {short(e.b)}</span>

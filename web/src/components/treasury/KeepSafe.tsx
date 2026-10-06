@@ -24,6 +24,7 @@ const reportLines = (r: ApplyReport) => {
     line("Words in your review deck", r.deck),
     `Places you stopped reading: ${r.positions} updated.`,
     `Saved places on the map: ${r.places} added.`,
+    `Notebooks: ${r.notebooks.added} added, ${r.notebooks.updated} updated to a newer copy.`,
     ...(r.removed ? [`Deleted here because you deleted them on another device: ${r.removed}.`] : []),
   ];
 };
