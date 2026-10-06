@@ -8,14 +8,15 @@ import { addRecentSearch } from "@/lib/recent-searches";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { fold, loadCatalog, versionOf, describe, type CatalogIndex } from "@/lib/catalog";
+import { fold, loadCatalog, describe, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, familyOf, periodOf, FAMILIES, PERIODS, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { detectScript, queryWords, toPattern, type Script } from "@/lib/search/input";
 import { readReference, loadAbbrevs, type RefHit } from "@/lib/search/refs";
-import { runSearch, QueryProblem, type Mode, type Outcome, type WorkHits } from "@/lib/search/run";
+import { runSearch, QueryProblem, readWithin, WITHIN, type Mode, type Outcome, type WorkHits } from "@/lib/search/run";
+import Concordance, { hitHref } from "./Concordance";
+import Stats from "./Stats";
 import { TAG_FIELDS, loadTags, type TagFilter } from "@/lib/search/engine";
 import { loadDoc, snippet, type Part } from "@/lib/search/context";
-import { englishWords } from "@/lib/search/codec";
 import { readTag } from "@/lib/lookup/postag";
 import { allMarks, allPageNotes, type Mark, type PageNote } from "@/lib/annotations";
 import { useAcademy } from "@/lib/academy";
@@ -54,6 +55,8 @@ export default function Search() {
   const scope = { a: params.get("a"), w: params.get("w"), g: params.get("g"), p: params.get("p"), d: params.get("d") };
   const allEditions = params.get("all") === "1";
   const sort = params.get("o") === "date" ? "date" : "most";
+  const near = params.get("n"), nearWithin = params.get("nw");
+  const view = params.get("v") === "conc" ? "conc" : params.get("v") === "stats" ? "stats" : "works";
 
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [meta, setMeta] = useState<Record<string, WorkMeta> | null>(null);
@@ -126,15 +129,15 @@ export default function Search() {
       ) : (
         <div className={styles.layout}>
           <aside className={styles.filters} aria-label="Narrow the search">
-            <Filters idx={idx} tab={tab} scope={scope} allEditions={allEditions} tagStr={tagStr} go={go} />
+            <Filters idx={idx} tab={tab} scope={scope} allEditions={allEditions} tagStr={tagStr} go={go} near={near} nearWithin={nearWithin} />
           </aside>
           <div className={styles.results}>
             {!q && !(tab === "lemma" && Object.values(tags).some(Boolean)) ? (
               <Welcome tab={tab} onExample={(e) => go({ q: e, lem: null }, true)} />
             ) : idx && works !== undefined ? (
-              <Results key={`${tab}|${q}|${script}|${lemma}|${tagStr}|${[...(works ?? [])].length}|${scope.a}|${scope.w}|${scope.g}|${scope.p}|${scope.d}|${allEditions}`}
+              <Results key={`${tab}|${q}|${script}|${lemma}|${tagStr}|${[...(works ?? [])].length}|${scope.a}|${scope.w}|${scope.g}|${scope.p}|${scope.d}|${allEditions}|${near}|${nearWithin}`}
                 idx={idx} meta={meta} tab={tab as Mode} q={q} script={script} lemma={lemma} tags={tags} works={works} allEditions={allEditions}
-                sort={sort} refsFound={refs.length > 0} go={go} />
+                sort={sort} refsFound={refs.length > 0} go={go} near={near} nearWithin={nearWithin} view={view} />
             ) : (
               <p className={styles.status}>Opening the catalogue…</p>
             )}
@@ -234,22 +237,24 @@ function Welcome({ tab, onExample }: { tab: Tab; onExample: (q: string) => void 
         <li><code>*</code> stands for any letters and <code>?</code> for one: <span lang="grc">λογ*</span>, <span lang="grc">λ?γος</span>.</li>
         <li>Type a reference such as <i>Il. 1.1</i>, <i>S. Ant. 332</i> or <i>Plato Republic 327a</i> to go straight there.</li>
         <li>Press <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> on any page to search from there.</li>
+        <li>For study: <b>Concordance</b> lines up every result with the words around it (sort by the word before or after, and download it as a spreadsheet); <b>Statistics</b> shows where a word is used most, per 10,000 words and century by century; <b>Near another word</b> finds two words together.</li>
       </ul>
     </div>
   );
 }
 
 // ------------------------------------------------------------ filters
-function Filters({ idx, tab, scope, allEditions, tagStr, go }: {
+function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }: {
   idx: CatalogIndex | null; tab: Tab; scope: Record<"a" | "w" | "g" | "p" | "d", string | null>; allEditions: boolean; tagStr: string;
-  go: (p: Record<string, string | null>) => void;
+  go: (p: Record<string, string | null>) => void; near: string | null; nearWithin: string | null;
 }) {
   const authors = useMemo(() => (idx ? [...idx.catalog.authors].sort((a, b) => a.name.localeCompare(b.name)) : []), [idx]);
   const author = scope.a ? idx?.author.get(scope.a) : undefined;
   const setTag = (i: number, v: string) => go({ t: (tagStr.slice(0, i) + (v || "-") + tagStr.slice(i + 1)).replace(/-+$/, "") || null, lem: null });
-  const any = Object.values(scope).some(Boolean) || tagStr.replace(/-/g, "") || allEditions;
+  const any = Object.values(scope).some(Boolean) || tagStr.replace(/-/g, "") || allEditions || near;
   return (
     <div className={styles.filterBody}>
+      <NearField key={`${tab}|${near}`} tab={tab} near={near} within={nearWithin} go={go} />
       {tab === "lemma" && (
         <fieldset className={styles.fs}>
           <legend>Grammar</legend>
@@ -310,22 +315,50 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go }: {
           <span>Every {tab === "english" ? "translation" : "edition"}, not only the one the reader opens first</span>
         </label>
       </fieldset>
-      {any && <button type="button" className="chip" onClick={() => go({ a: null, w: null, g: null, p: null, d: null, t: null, all: null, lem: null })}>Clear all</button>}
+      {any && <button type="button" className="chip" onClick={() => go({ a: null, w: null, g: null, p: null, d: null, t: null, all: null, lem: null, n: null, nw: null })}>Clear all</button>}
     </div>
   );
 }
 
+/** Only results with another word near them: δίκη within five words of θεός. */
+function NearField({ tab, near, within, go }: { tab: Tab; near: string | null; within: string | null; go: (p: Record<string, string | null>) => void }) {
+  const [text, setText] = useState(near ?? "");
+  const w = String(readWithin(within));
+  return (
+    <form onSubmit={(e) => { e.preventDefault(); go({ n: text.trim() || null }); }}>
+      <fieldset className={styles.fs}>
+        <legend>Near another word</legend>
+        <label className={styles.field}>
+          <span>{tab === "lemma" ? "Another dictionary word" : tab === "english" ? "Another English word" : "Another Greek word"}</span>
+          <input value={text} onChange={(e) => setText(e.target.value)} lang={tab === "english" ? undefined : "grc"} placeholder={tab === "english" ? "god" : tab === "lemma" ? "θεός" : "θε*"}
+            autoComplete="off" autoCapitalize="off" spellCheck={false} />
+        </label>
+        <label className={styles.field}>
+          <span>How near</span>
+          <select value={w} onChange={(e) => go({ nw: e.target.value === "5" ? null : e.target.value })}>
+            {WITHIN.map((o) => <option key={o.id} value={o.id}>{o.label}</option>)}
+          </select>
+        </label>
+        <div className={styles.nearBtns}>
+          <button type="submit" className="chip">Find them together</button>
+          {near && <button type="button" className="chip" onClick={() => { setText(""); go({ n: null, nw: null }); }}>Remove</button>}
+        </div>
+      </fieldset>
+    </form>
+  );
+}
+
 // ------------------------------------------------------------ results
-function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, sort, refsFound, go }: {
+function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, sort, refsFound, go, near, nearWithin, view }: {
   idx: CatalogIndex; meta: Record<string, WorkMeta> | null; tab: Mode; q: string; script: Script | "auto"; lemma: string | null;
   tags: TagFilter; works: Set<string> | null; allEditions: boolean; sort: "most" | "date"; refsFound: boolean;
-  go: (p: Record<string, string | null>) => void;
+  go: (p: Record<string, string | null>) => void; near: string | null; nearWithin: string | null; view: "works" | "conc" | "stats";
 }) {
   const [res, setRes] = useState<{ outcome?: Outcome; error?: string; problem?: boolean } | null>(null);
   const [shownWorks, setShownWorks] = useState(40);
   useEffect(() => {
     let live = true;
-    runSearch(idx, { mode: tab, q, script, lemma, tags, works, allEditions }).then(
+    runSearch(idx, { mode: tab, q, script, lemma, tags, works, allEditions, near: near ? { q: near, within: readWithin(nearWithin) } : null }).then(
       (outcome) => { if (live) setRes({ outcome }); },
       (e: Error) => { if (live) setRes({ error: e.message, problem: e instanceof QueryProblem }); },
     );
@@ -351,7 +384,14 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
         <p className={styles.count}>
           {o.hits ? <><b>{o.hits.toLocaleString("en-GB")}</b> {o.hits === 1 ? "result" : "results"} in <b>{o.works.length.toLocaleString("en-GB")}</b> {o.works.length === 1 ? "work" : "works"} by {authors} {authors === 1 ? "author" : "authors"}</> : "Nothing found."}
         </p>
-        {o.works.length > 1 && (
+        {o.hits > 0 && (
+          <div className={styles.seg} role="radiogroup" aria-label="Show the results">
+            <button type="button" role="radio" aria-checked={view === "works"} onClick={() => go({ v: null })}>By work</button>
+            <button type="button" role="radio" aria-checked={view === "conc"} onClick={() => go({ v: "conc" })}>Concordance</button>
+            <button type="button" role="radio" aria-checked={view === "stats"} onClick={() => go({ v: "stats" })}>Statistics</button>
+          </div>
+        )}
+        {o.works.length > 1 && view !== "stats" && (
           <div className={styles.seg} role="radiogroup" aria-label="Order">
             <button type="button" role="radio" aria-checked={sort === "most"} onClick={() => go({ o: null })}>Most results</button>
             <button type="button" role="radio" aria-checked={sort === "date"} onClick={() => go({ o: "date" })}>Earliest first</button>
@@ -382,12 +422,21 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
       )}
       {o.notes.map((n) => <p key={n} className={styles.note}>{n}</p>)}
 
-      <ol className={styles.groups}>
-        {sorted.slice(0, shownWorks).map((g, i) => (
-          <WorkGroup key={g.work} g={g} idx={idx} meta={meta?.[g.work]} texts={o.texts} startOpen={i < 3} tab={tab} allEditions={allEditions} />
-        ))}
-      </ol>
-      {sorted.length > shownWorks && (
+      {near && o.read.length > 1 && (
+        <p className={styles.small}>Only results with <b lang={tab === "english" ? undefined : "grc"}>{o.read[o.read.length - 1].greek}</b> {WITHIN.find((w) => w.id === String(readWithin(nearWithin)))?.label}; it is marked beside each.</p>
+      )}
+      {view === "conc" && o.hits > 0 ? (
+        <Concordance idx={idx} works={sorted} texts={o.texts} lang={tab === "english" ? "eng" : "grc"} lemmaMode={tab === "lemma"} title={q} />
+      ) : view === "stats" && o.hits > 0 ? (
+        <Stats idx={idx} meta={meta} outcome={o} works={works} lang={tab === "english" ? "eng" : "grc"} lemmaMode={tab === "lemma"} title={q} />
+      ) : (
+        <ol className={styles.groups}>
+          {sorted.slice(0, shownWorks).map((g, i) => (
+            <WorkGroup key={g.work} g={g} idx={idx} meta={meta?.[g.work]} texts={o.texts} startOpen={i < 3} tab={tab} allEditions={allEditions} />
+          ))}
+        </ol>
+      )}
+      {view === "works" && sorted.length > shownWorks && (
         <button type="button" className="btn ghost" onClick={() => setShownWorks((n) => n + 60)}>Show more works ({(sorted.length - shownWorks).toLocaleString("en-GB")} left)</button>
       )}
       <p className={styles.small}>
@@ -443,10 +492,8 @@ function WorkGroup({ g, idx, meta, texts, startOpen, tab, allEditions }: {
               const u = d.units[h.unit];
               if (!u) return null;
               const ref = u.ref.join(".");
-              const parts = snippet(u, h.words, lang);
-              const href = lang === "grc"
-                ? `/read?w=${g.work}&ed=${versionOf(info.urn)}&at=${encodeURIComponent(ref)}&hl=${h.words.join(",")}`
-                : `/read?w=${g.work}&tr=${versionOf(info.urn)}&tu=${h.unit}&find=${encodeURIComponent(h.words.map((i) => englishWords(u)[i]).filter(Boolean).join(" "))}`;
+              const parts = snippet(u, [...h.words, ...(h.near ?? [])], lang);
+              const href = hitHref(g.work, info.urn, lang, h, d);
               const tagText = h.tag !== undefined ? <TagLabel id={h.tag} /> : null;
               return (
                 <li key={key} className={styles.hit}>

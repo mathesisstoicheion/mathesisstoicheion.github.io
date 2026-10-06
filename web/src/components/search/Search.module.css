@@ -144,3 +144,5 @@
   .group, .refs, .kbd { animation: none; }
   .pulse { animation: none; }
 }
+.nearBtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.field input { width: 100%; min-width: 0; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; }

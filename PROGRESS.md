@@ -499,6 +499,14 @@ The owner asked whether the old site's features had all come over. A comparison 
 - **Colours:** the five Athenian ones, 24 more, and any colour from the picker (kept as the stroke's `h`).
 - Tests: `cracks.test.ts`, `amphora.test.ts`, `e2e/amphora.spec.ts` (strike, mend, colour).
 
+## Research tools in the Oracle, part 1: concordance, statistics, near (2026-10-06)
+The owner chose study and research tools first (from: grammar search with concordances; comparing editions; sentence diagrams; research notebooks with citations; out-of-copyright dictionaries and commentaries). Part 1, in the Oracle (/search), switched by **By work · Concordance · Statistics** (address `v=conc|stats`):
+- **Concordance** (`components/search/Concordance.tsx`, `lib/search/kwic.ts`): every result on a line, the words before and after lined up (running on into the neighbouring passages), sortable by place, form, word before, word after; grammar beside each for a dictionary word; read 300 lines at a time from the texts (all, up to 5,000); download as CSV (UTF-8 mark for Excel; formula-looking cells defused).
+- **Statistics** (`Stats.tsx`): by work and by author, per 10,000 words (GLAUx word counts; denominators take in every work searched, with or without results; works under 1,000 words left out of the rate ranking) or by number of results; century by century; for a dictionary word the spread of its grammar (case, number, tense, mood…). CSV of the work table. Single-hue bars with values at their ends and details on hover/focus, per the dataviz guidance.
+- **Near another word** (`n`, `nw`; `run.ts` nearFilter): within 3/5/10 words, in the same passage, or in the passage either side; the near word is marked in snippets, the reader link and the concordance.
+- Tests: `kwic.test.ts`, `e2e/research.spec.ts` (with axe in both themes).
+- Next: comparing two editions side by side; sentence diagrams (treebanks); research notebooks with citations.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

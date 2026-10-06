@@ -96,7 +96,7 @@ export async function postings(dir: Dir, keys: { key: string; shard: string }[],
 const byPlace = (a: Posting, b: Posting) => a.text - b.text || a.unit - b.unit || a.word - b.word;
 
 // ------------------------------------------------------------ results
-export interface Hit { text: number; unit: number; words: number[]; tag?: number }
+export interface Hit { text: number; unit: number; words: number[]; tag?: number; /** words of a "near" search found beside it, in the same passage */ near?: number[] }
 
 const place = (text: number, unit: number, word: number) => (text * 2 ** 20 + unit) * 2 ** 20 + word;
 

@@ -18,7 +18,17 @@ export interface Query {
   tags: TagFilter;
   works: Set<string> | null;      // null = every work
   allEditions: boolean;
+  /** only matches with this other word near them (the same kind of search: a form, a dictionary word, or English) */
+  near?: { q: string; within: Within } | null;
 }
+
+/** How near: within so many words in the same passage, anywhere in the same passage, or in the passages either side too. */
+export type Within = number | "p" | "pp";
+export const WITHIN: { id: string; label: string }[] = [
+  { id: "3", label: "within 3 words" }, { id: "5", label: "within 5 words" }, { id: "10", label: "within 10 words" },
+  { id: "p", label: "in the same passage" }, { id: "pp", label: "in the same passage or the next to it" },
+];
+export const readWithin = (s: string | null): Within => (s === "p" || s === "pp" ? s : Math.max(1, Math.min(50, Number(s) || 5)));
 
 export interface Matched { key: string; label: string }
 export interface WorkHits { work: string; texts: Map<number, Hit[]>; count: number }
@@ -105,6 +115,8 @@ export async function runSearch(idx: CatalogIndex, query: Query): Promise<Outcom
     }
   }
 
+  if (query.near?.q.trim()) hits = nearFilter(hits, await nearPostings(query, keep, read, notes), query.near.within);
+
   const truncated = hits.length > MAX_HITS;
   if (truncated) { notes.push(`Showing the first ${MAX_HITS.toLocaleString("en-GB")} results. Narrow the search to see the rest.`); hits = hits.slice(0, MAX_HITS); }
 
@@ -134,6 +146,51 @@ function pattern(w: string, script: Query["script"], notes: string[]): KeyPatter
   if ("error" in pat) throw new QueryProblem(pat.error);
   if (pat.loose && !notes.some((n) => n.startsWith("Typed"))) notes.push("Typed e and o also find η and ω. Type ē and ō to mean only η and ω.");
   return pat;
+}
+
+/** The postings of the "near" word, read the same way as the search's own words. */
+async function nearPostings(query: Query, keep: (t: number) => boolean, read: Outcome["read"], notes: string[]) {
+  const words = queryWords(query.near!.q);
+  if (words.length > 1) throw new QueryProblem("Type one word to look for near the first.");
+  const w = words[0];
+  if (query.mode === "english") {
+    const pat = englishPattern(w);
+    if ("error" in pat) throw new QueryProblem(pat.error);
+    const { keys, more } = await matchKeys("eng", pat);
+    read.push({ typed: w, greek: englishKey(w), matched: keys.map((k) => ({ key: k.key, label: k.key })), more });
+    return postings("eng", keys, keep);
+  }
+  const pat = pattern(w, query.script, notes);
+  if (query.mode === "forms") {
+    const { keys, more } = await matchKeys("grc", pat);
+    read.push({ typed: w, greek: pat.greek, matched: keys.map((k) => ({ key: k.key, label: k.key })), more });
+    return postings("grc", keys, keep);
+  }
+  const { keys, more } = await matchKeys("lem", pat, greekKey);
+  const typed = canonLemma(w);
+  const exact = keys.filter((k) => canonLemma(k.key) === typed);
+  const use = exact.length ? exact : keys;
+  read.push({ typed: w, greek: pat.greek, matched: [...new Set(use.map((k) => canonLemma(k.key)))].map((k) => ({ key: k, label: k })), more });
+  return postings("lem", use, keep);
+}
+
+/** The hits that have one of the other words near them, with the nearest of those marked (when in the same passage). */
+export function nearFilter(hits: Hit[], others: { text: number; unit: number; word: number }[], within: Within): Hit[] {
+  const at = new Map<string, number[]>();
+  for (const p of others) {
+    const k = `${p.text}:${p.unit}`;
+    const l = at.get(k);
+    if (l) l.push(p.word); else at.set(k, [p.word]);
+  }
+  const out: Hit[] = [];
+  for (const h of hits) {
+    const here = (at.get(`${h.text}:${h.unit}`) ?? []).filter((w) => !h.words.includes(w));
+    const dist = (w: number) => Math.min(...h.words.map((x) => Math.abs(x - w)));
+    const close = typeof within === "number" ? here.filter((w) => dist(w) <= within) : here;
+    if (close.length) { out.push({ ...h, near: [close.reduce((a, b) => (dist(b) < dist(a) ? b : a))] }); continue; }
+    if (within === "pp" && (at.has(`${h.text}:${h.unit - 1}`) || at.has(`${h.text}:${h.unit + 1}`))) out.push({ ...h, near: [] });
+  }
+  return out;
 }
 
 /** Works matching a free-text filter on author or title. */
