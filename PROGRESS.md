@@ -519,6 +519,9 @@ Pushed 1baf3a5 (timeline first, paintable vase, vase in HD with cracks, Find in 
 - Tests: `compare.test.ts`, `e2e/compare.spec.ts` (with axe in both themes). The compare bar and the cover note now give way to an open side panel at 1280px and wider.
 - Next research tool: sentence diagrams (treebanks), then research notebooks with citations.
 
+## Published 2026-10-06 (second time)
+Pushed 7e1e3ee (trackpads; lighter vase studio). Deploy succeeded; live-check passed with no console errors; trackpad and vase tests (8) passed on the live site.
+
 ## Trackpads, and a lighter vase studio (2026-10-06)
 - `lib/wheel.ts`: tells a trackpad pinch (a wheel event with Ctrl held), a trackpad two-finger scroll (small uneven steps, often sideways; a whole stream once it looks like one) and a mouse wheel notch apart; and Safari's own gesture events. Used by:
   - **the vase studio**: pinch zooms, two fingers turn the vase (sideways) and move along it (up and down, like a page), the wheel zooms; Safari's twist turns it too. On the home page a sideways two-finger swipe turns the vase, and up-and-down is left to the page.
