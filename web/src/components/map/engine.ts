@@ -148,6 +148,9 @@ export class MapEngine {
     this.request();
   }
 
+  /** move the map by so many pixels (a trackpad's two-finger scroll, which carries its own glide) */
+  panBy(dx: number, dy: number) { const v = this.v; this.set({ k: v.k, tx: v.tx - dx, ty: v.ty - dy }); }
+
   /** let go while moving: the map drifts on and slows to a stop */
   fling(vel: { vx: number; vy: number } | null) {
     if (!vel || this.opts.reduce || Math.hypot(vel.vx, vel.vy) < 0.25) return;

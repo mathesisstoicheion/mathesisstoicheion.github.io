@@ -17,6 +17,7 @@ import { KINDS, kindOf, loadMap, loadSavedPlaces, mapSize, project, shortName, t
 import { useSettings } from "@/lib/settings";
 import { buildLods, type Pt } from "./draw";
 import { MapEngine, trailVelocity } from "./engine";
+import { onGesture, pinchFactor, wheelFactor, wheelReader } from "@/lib/wheel";
 import styles from "./Periplus.module.css";
 
 export interface EntryLink { slug: string; title: string }
@@ -197,11 +198,15 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
         last = null; one = null; trail = [];
       }
     };
-    // the wheel (and a trackpad's pinch) zooms, gliding
+    // a mouse wheel and a trackpad's pinch zoom, gliding, about the pointer; two fingers on a trackpad move the map
+    const readWheel = wheelReader();
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
-      engine.wheel(Math.exp(-e.deltaY * (e.deltaMode === 1 ? 0.05 : e.ctrlKey ? 0.01 : 0.0022)), ...local(e));
+      const kind = readWheel(e);
+      if (kind === "pan") engine.panBy(e.deltaX, e.deltaY);
+      else engine.wheel(kind === "pinch" ? pinchFactor(e) : wheelFactor(e), ...local(e));
     };
+    const stopGesture = onGesture(el, (scaleBy, _r, x, y) => engine.wheel(scaleBy, ...local({ clientX: x, clientY: y })));
     el.addEventListener("touchstart", start, { passive: true });
     el.addEventListener("touchmove", move, { passive: false });
     el.addEventListener("touchend", end);
@@ -211,6 +216,7 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
       el.removeEventListener("touchstart", start); el.removeEventListener("touchmove", move);
       el.removeEventListener("touchend", end); el.removeEventListener("touchcancel", end);
       el.removeEventListener("wheel", wheel);
+      stopGesture();
     };
   }, [engine]);
 

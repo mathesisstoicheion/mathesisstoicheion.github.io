@@ -519,6 +519,14 @@ Pushed 1baf3a5 (timeline first, paintable vase, vase in HD with cracks, Find in 
 - Tests: `compare.test.ts`, `e2e/compare.spec.ts` (with axe in both themes). The compare bar and the cover note now give way to an open side panel at 1280px and wider.
 - Next research tool: sentence diagrams (treebanks), then research notebooks with citations.
 
+## Trackpads, and a lighter vase studio (2026-10-06)
+- `lib/wheel.ts`: tells a trackpad pinch (a wheel event with Ctrl held), a trackpad two-finger scroll (small uneven steps, often sideways; a whole stream once it looks like one) and a mouse wheel notch apart; and Safari's own gesture events. Used by:
+  - **the vase studio**: pinch zooms, two fingers turn the vase (sideways) and move along it (up and down, like a page), the wheel zooms; Safari's twist turns it too. On the home page a sideways two-finger swipe turns the vase, and up-and-down is left to the page.
+  - **the Periplus map**: two fingers move the map (engine.panBy), pinch and wheel zoom about the pointer.
+  - **the manuscript viewer**: pinch zooms smoothly about the fingers; two fingers move about the page once zoomed in, and scroll the panel when the whole page shows; the mouse wheel keeps the viewer's own steps.
+- **The studio is lighter**: the brush paints the gloss picture straight from its colour (no reading back from the graphics card on every step; rubbing out works it out once a frame); a budget of about four million pixels a frame (pixel ratio at most 2); nothing is drawn while nothing moves; the camera follows gestures faster. The same scripted strokes took 6.3 s against 8.8 s before.
+- The vase stage reports `data-view` (zoom, pan, turn) and the manuscript box `data-zoom`, for `e2e/trackpad.spec.ts`.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

@@ -227,6 +227,10 @@ export function makePainter(pts: { x: number; y: number }[], font: string, k = 1
     h.globalCompositeOperation = s.c === -1 ? "destination-out" : "source-over";
     h.strokeStyle = s.c === -2 ? s.h ?? "#000" : s.c < 0 ? "#000" : PALETTE[s.c].hex;
     h.lineWidth = s.w * 2; h.lineCap = "round"; h.lineJoin = "round";
+    // the gloss of what is painted is known from its colour, so it is painted straight into the gloss picture
+    // (reading it back from the colours on every step of the brush would slow the brush down)
+    const rubbing = s.c === -1;
+    if (!rubbing) { r.strokeStyle = glossGrey(h.strokeStyle as string); r.lineWidth = s.w * 2; r.lineCap = "round"; r.lineJoin = "round"; }
     const out: Rect[] = [];
     const px = s.w * a + 2, py = s.w + 2;
     for (const dx of [-TW, 0, TW]) {
@@ -234,9 +238,15 @@ export function makePainter(pts: { x: number; y: number }[], font: string, k = 1
       if (hi < 0 || lo > TW) continue;
       h.setTransform(a * k, 0, 0, k, 0, 0);
       h.beginPath(); h.moveTo((x0 + dx) / a, y0); h.lineTo((x1 + dx) / a, y1); h.stroke();
+      if (!rubbing) {
+        r.setTransform(a * ks, 0, 0, ks, 0, 0);
+        r.beginPath(); r.moveTo((x0 + dx) / a, y0); r.lineTo((x1 + dx) / a, y1); r.stroke();
+      }
       out.push({ x: Math.max(0, lo), y: Math.max(0, Math.min(y0, y1) - py), w: Math.min(TW, hi) - Math.max(0, lo), h: Math.abs(y1 - y0) + 2 * py });
     }
     h.setTransform(1, 0, 0, 1, 0, 0);
+    r.setTransform(1, 0, 0, 1, 0, 0);
+    if (rubbing) glossLater.push(...out);
     return out;
   }
   function replay(strokes: Stroke[]) {
@@ -339,6 +349,25 @@ export function makePainter(pts: { x: number; y: number }[], font: string, k = 1
     const px = o.getImageData(Math.max(0, Math.min(out.width - 1, Math.round(x * k))), Math.max(0, Math.min(out.height - 1, Math.round(y * k))), 1, 1).data;
     return `rgb(${px[0]},${px[1]},${px[2]})`;
   }
+  /** How glossy a colour is (as a grey for the gloss picture): the black gloss shines; clay and added colours less. */
+  const glossOf = (lum: number) => (lum < 34 ? 0.2 : lum < 70 ? 0.2 + ((lum - 34) / 36) * 0.38 : 0.6);
+  function glossGrey(hex: string) {
+    const n = parseInt(hex.replace("#", "").slice(0, 6), 16) || 0;
+    const v = Math.round(glossOf(0.2126 * ((n >> 16) & 255) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) * 255);
+    return `rgb(${v},${v},${v})`;
+  }
+  /** Places rubbed out since the last frame, whose gloss is worked out again from the colours (flushGloss). */
+  let glossLater: Rect[] = [];
+  /** Work out the gloss of the places rubbed out, once a frame (as one area); returns it. */
+  function flushGloss(): Rect[] {
+    if (!glossLater.length) return [];
+    let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    for (const g of glossLater) { x0 = Math.min(x0, g.x); y0 = Math.min(y0, g.y); x1 = Math.max(x1, g.x + g.w); y1 = Math.max(y1, g.y + g.h); }
+    glossLater = [];
+    const rc = { x: x0, y: y0, w: x1 - x0, h: y1 - y0 };
+    glossFrom(rc);
+    return [rc];
+  }
   /** How glossy each part is, read from its colour: the black gloss shines; clay and added colours less. */
   function glossFrom(rc: Rect) {
     const x = Math.max(0, Math.floor(rc.x * ks)), y = Math.max(0, Math.floor(rc.y * ks));
@@ -349,14 +378,14 @@ export function makePainter(pts: { x: number; y: number }[], font: string, k = 1
     const img = r.getImageData(x, y, w, hh), d = img.data;
     for (let i = 0; i < d.length; i += 4) {
       const lum = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
-      const v = lum < 34 ? 0.2 : lum < 70 ? 0.2 + ((lum - 34) / 36) * 0.38 : 0.6;
+      const v = glossOf(lum);
       d[i] = d[i + 1] = d[i + 2] = v * 255;
     }
     r.putImageData(img, x, y);
   }
 
   /** Base, brushwork and cracks together, in the given areas (design pixels), or everywhere. */
-  function compose(rects?: Rect[]) {
+  function compose(rects?: Rect[], gloss = true) {
     for (const rc of rects ?? [{ x: 0, y: 0, w: TW, h: TH }]) {
       const x = Math.max(0, Math.floor(rc.x * k)), y = Math.max(0, Math.floor(rc.y * k));
       const w = Math.min(out.width - x, Math.ceil(rc.w * k) + 2), hh = Math.min(out.height - y, Math.ceil(rc.h * k) + 2);
@@ -370,9 +399,9 @@ export function makePainter(pts: { x: number; y: number }[], font: string, k = 1
         for (const fr of here) drawFracture(o, fr, k, false);
         o.restore();
       }
-      glossFrom(rc);
+      if (gloss) glossFrom(rc);
     }
   }
 
-  return { canvas: out, bump, rough, k, paintBase, replay, compose, segment, aspectR, rebuildCracks, addCrack, drawCrack, colourAt };
+  return { canvas: out, bump, rough, k, paintBase, replay, compose, segment, aspectR, rebuildCracks, addCrack, drawCrack, colourAt, flushGloss };
 }

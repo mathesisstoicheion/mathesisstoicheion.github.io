@@ -9,6 +9,7 @@ import {
 } from "@/lib/amphora";
 import { makePainter, TW, TH, type Rect } from "./amphora/paint";
 import { clink, makeChips } from "./amphora/effects";
+import { onGesture, pinchFactor, wheelFactor, wheelReader } from "@/lib/wheel";
 import type { Fracture } from "./amphora/cracks";
 import styles from "./Amphora.module.css";
 
@@ -29,11 +30,11 @@ const SIZES = [{ name: "Fine", w: 3 }, { name: "Medium", w: 9 }, { name: "Broad"
 const forceOf = (ms: number) => Math.max(0.12, Math.min(1, 0.12 + ms / 1500));
 const SCRATCH_W = 1.6;
 const TOOLS: { id: Tool; name: string; hint: string }[] = [
-  { id: "brush", name: "Paint", hint: "Paint straight onto the vase. To turn it, use Turn, the arrows on the vase or two fingers; pinch or scroll to come closer." },
+  { id: "brush", name: "Paint", hint: "Paint straight onto the vase. To turn it, use Turn, the arrows on the vase, or two fingers (on a trackpad or a phone); pinch to come closer." },
   { id: "scratch", name: "Scratch", hint: "Scratch fine lines through to the clay, as black-figure painters did for muscles, folds of cloth and feathers." },
   { id: "rub", name: "Rub out", hint: "Rub out your own brushwork. The patterns underneath come back." },
   { id: "strike", name: "Strike", hint: "Tap the vase to strike it; press and hold for a harder blow. Cracks run out from the blow, split as they go, and stop where they meet another crack. In antiquity a cracked pot was often mended with lead clamps set in drilled holes." },
-  { id: "turn", name: "Turn", hint: "Drag to turn the vase, and up or down to move along it. Pinch or scroll to come closer." },
+  { id: "turn", name: "Turn", hint: "Drag to turn the vase, and up or down to move along it; on a trackpad, two fingers do the same. Pinch, or the mouse wheel, to come closer." },
 ];
 const ZONES: { key: "neck" | "shoulder" | "lower" | "foot"; name: string }[] = [
   { key: "neck", name: "Neck" }, { key: "shoulder", name: "Shoulder" }, { key: "lower", name: "Lower band" }, { key: "foot", name: "Foot" },
@@ -230,7 +231,13 @@ export default function Amphora() {
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
       try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); } catch { setNoGL(true); return; }
       // sharp on every screen, but never more pixels than the device can draw smoothly (see the frame loop)
-      let ratio = Math.min(devicePixelRatio || 1, 2.5);
+      // sharp, within a budget of about four million pixels a frame (a full-screen studio on a fine screen would
+      // otherwise ask the graphics card for three times that, sixty times a second)
+      const maxRatio = () => {
+        const w = stage.clientWidth || 1, h = stage.clientHeight || 1;
+        return Math.max(1, Math.min(devicePixelRatio || 1, 2, Math.sqrt(4_000_000 / (w * h))));
+      };
+      let ratio = maxRatio();
       renderer.setPixelRatio(ratio);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
       renderer.toneMapping = THREE.NeutralToneMapping;
@@ -306,10 +313,13 @@ export default function Amphora() {
       }, () => undefined);
       const chips = makeChips(THREE, scene);
 
+      let wake = true;   // something changed that the next frame must draw
       const resize = () => {
         const w = stage.clientWidth, h = stage.clientHeight;
         if (!w || !h) return;
+        if (ratio > maxRatio()) { ratio = maxRatio(); renderer.setPixelRatio(ratio); }
         renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix();
+        wake = true;
       };
       resize();
       const ro = new ResizeObserver(resize); ro.observe(stage);
@@ -353,6 +363,7 @@ export default function Amphora() {
         renderer.copyTextureToTexture(from, to, box, at);
       };
       const flush = () => {
+        send(painter.flushGloss());
         if (all || !shown) { texture.needsUpdate = true; roughTex.needsUpdate = true; bumpTex.needsUpdate = true; all = false; dirty = []; bumpDirty = []; return; }
         const cw = painter.canvas.width, ch = painter.canvas.height, rw = painter.rough.width, rh = painter.rough.height;
         for (const rc of dirty) { copy(src.c, texture, rc, k, cw, ch); copy(src.r, roughTex, rc, k / 2, rw, rh); }
@@ -368,7 +379,7 @@ export default function Amphora() {
         if (!live.last && live.s.p.length) { handlers.current.stroke(live.s); live.s = { c: live.s.c, w: live.s.w, p: [], ...(live.s.h ? { h: live.s.h } : {}) }; }
         const q = live.last ?? p;
         const rects = painter.segment(live.s, q[0], q[1], p[0], p[1], p[2] / 100);
-        painter.compose(rects);
+        painter.compose(rects, false);
         send(rects);
         live.s.p.push(p[0], p[1], p[2]);
         live.last = p;
@@ -461,11 +472,34 @@ export default function Amphora() {
         if (pointers.size < 2) pinch = null;
         if (!pointers.size) drag = null;
       };
+      // a trackpad: pinch to come closer, two fingers to turn the vase and move along it; a mouse wheel zooms.
+      // On the home page only a sideways swipe turns it, so the page still scrolls under the fingers.
+      const readWheel = wheelReader();
       const wheel = (e: WheelEvent) => {
-        if (!studioRef.current) return;
+        const kind = readWheel(e), inStudio = studioRef.current;
+        if (!inStudio) {
+          if (kind !== "pan" || Math.abs(e.deltaX) <= Math.abs(e.deltaY)) return;
+          e.preventDefault();
+          rot -= e.deltaX * 0.006; vel = 0; wake = true;
+          return;
+        }
         e.preventDefault();
-        zoomT = clamp(zoomT * Math.exp(-e.deltaY * 0.0015), 1, 3.2);
+        if (kind === "pinch") zoomT = clamp(zoomT * pinchFactor(e), 1, 3.2);
+        else if (kind === "wheel") zoomT = clamp(zoomT * wheelFactor(e) ** 0.7, 1, 3.2);
+        else {
+          rot -= e.deltaX * 0.006;
+          // scrolling down moves down the vase, as it moves down a page
+          panT = clamp(panT - (e.deltaY * 0.0035) / zoom, 0.25, 1.9);
+        }
+        vel = 0; wake = true;
       };
+      // Safari's own trackpad gestures: pinch to zoom, and twist two fingers to turn the vase
+      const stopGesture = onGesture(canvas, (scaleBy, rotateBy) => {
+        if (!studioRef.current) return;
+        zoomT = clamp(zoomT * scaleBy, 1, 3.2);
+        rot += (rotateBy * Math.PI) / 180;
+        vel = 0; wake = true;
+      });
       const keys = (e: KeyboardEvent) => {
         if (!studioRef.current) return;
         const k = e.key;
@@ -473,7 +507,7 @@ export default function Amphora() {
         else if (k === "ArrowUp") panT = clamp(panT + 0.08, 0.25, 1.9); else if (k === "ArrowDown") panT = clamp(panT - 0.08, 0.25, 1.9);
         else if (k === "+" || k === "=") zoomT = clamp(zoomT * 1.2, 1, 3.2); else if (k === "-") zoomT = clamp(zoomT / 1.2, 1, 3.2);
         else return;
-        vel = 0; e.preventDefault();
+        vel = 0; wake = true; e.preventDefault();
       };
       const menu = (e: Event) => { if (studioRef.current) e.preventDefault(); };
       const restored = () => { all = true; };
@@ -497,8 +531,8 @@ export default function Amphora() {
           canvas.setAttribute("aria-label", describe(d));
         },
         picture() { renderer.render(scene, camera); return canvas.toDataURL("image/png"); },
-        nudge(turn, zoomBy) { rot += turn; vel = 0; zoomT = clamp(zoomT * zoomBy, 1, 3.2); },
-        resetView() { zoomT = 1; panT = PAN; },
+        nudge(turn, zoomBy) { rot += turn; vel = 0; zoomT = clamp(zoomT * zoomBy, 1, 3.2); wake = true; },
+        resetView() { zoomT = 1; panT = PAN; wake = true; },
       };
 
       let last = performance.now(), slow = 0, fast = 0;
@@ -509,8 +543,8 @@ export default function Amphora() {
         if (!visible) return;
         // never lag: if frames take too long for a while, draw fewer pixels; if there is room again, more
         if (dt > 0.024) { slow++; fast = 0; } else { fast++; slow = Math.max(0, slow - 1); }
-        if (slow > 45 && ratio > 1) { ratio = Math.max(1, ratio - 0.25); renderer.setPixelRatio(ratio); resize(); slow = 0; }
-        else if (fast > 600 && ratio < Math.min(devicePixelRatio || 1, 2.5)) { ratio = Math.min(Math.min(devicePixelRatio || 1, 2.5), ratio + 0.25); renderer.setPixelRatio(ratio); resize(); fast = 0; }
+        if (slow > 30 && ratio > 1) { ratio = Math.max(1, ratio - 0.25); renderer.setPixelRatio(ratio); resize(); slow = 0; }
+        else if (fast > 600 && ratio < maxRatio()) { ratio = Math.min(maxRatio(), ratio + 0.25); renderer.setPixelRatio(ratio); resize(); fast = 0; }
         const reduce = reduceRef.current, inStudio = studioRef.current;
         // a crack spreads from the blow in a third of a second
         for (let i = spreading.length - 1; i >= 0; i--) {
@@ -527,23 +561,31 @@ export default function Amphora() {
         rock.x += rock.vx * dt; rock.z += rock.vz * dt;
         rot += rock.spin; rock.spin *= Math.pow(0.02, dt);
         rocker.rotation.set(reduce ? 0 : rock.x, 0, reduce ? 0 : rock.z);
-        chips.update(dt);
+        const flying = chips.update(dt);
         if (!drag && !pinch) { vel += ((inStudio || reduce ? 0 : SPEED) - vel) * (inStudio ? 0.1 : 0.02); rot += vel; }
         rise = reduce ? 1 : Math.min(1, rise + 0.012);
         const e = 1 - Math.pow(1 - rise, 3);
         tilted += ((inStudio ? 0 : tiltRef.current * 0.9) - tilted) * 0.06;   // eased, so a shaky hand does not jolt it
-        zoom += (zoomT - zoom) * 0.18; pan += (panT - pan) * 0.18;
+        // the camera glides to where it is sent: quickly, so the vase answers the fingers at once
+        zoom += (zoomT - zoom) * 0.3; pan += (panT - pan) * 0.3;
         camera.zoom = zoom; camera.position.set(0, pan + 0.13, 6.4); camera.lookAt(0, pan, 0); camera.updateProjectionMatrix();
         vase.rotation.y = rot + tilted; vase.position.y = -0.35 * (1 - e); vase.scale.setScalar(0.9 + 0.1 * e);
+        // nothing moving and nothing new: the last picture stands (the studio stays light on the computer)
+        const still = Math.abs(vel) < 1e-5 && Math.abs(zoomT - zoom) < 1e-4 && Math.abs(panT - pan) < 1e-4 && rise >= 1
+          && Math.abs(rock.x) + Math.abs(rock.z) + Math.abs(rock.vx) + Math.abs(rock.vz) < 1e-4 && Math.abs(rock.spin) < 1e-6
+          && Math.abs((inStudio ? 0 : tiltRef.current * 0.9) - tilted) < 1e-4 && !flying && !spreading.length && !drag && !pinch;
+        if (still && !wake && !all && !dirty.length && !bumpDirty.length && shown) return;
+        wake = false;
         flush();
         renderer.render(scene, camera);
         shown = true;
+        stage.dataset.view = `${zoom.toFixed(3)} ${pan.toFixed(3)} ${rot.toFixed(3)}`;   // where the camera is (read by the tests)
       };
       const start = () => { if (disposed) return; api.current?.repaint("all"); frame(); };
       document.fonts.load(`700 80px ${DIDOT}`, "ΜΑΘΗΣΙΣ").then(start, start);
 
       cleanup = () => {
-        cancelAnimationFrame(raf); ro.disconnect(); io.disconnect();
+        cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); stopGesture();
         geo.dispose(); proxyGeo.dispose(); proxyMat.dispose(); handles.forEach((h) => h.dispose()); mat.dispose(); hMat.dispose();
         texture.dispose(); roughTex.dispose(); bumpTex.dispose(); chips.dispose(); pmrem.dispose(); scene.environment?.dispose();
         renderer.dispose(); canvas.remove(); api.current = null;

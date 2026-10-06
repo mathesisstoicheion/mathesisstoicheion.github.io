@@ -6,6 +6,7 @@ import type OpenSeadragon from "openseadragon";
 import { lineIn, pagesOf, witnessesOf, type Witness } from "@/data/manuscripts";
 import { stageWord, unitLines, type Stage } from "@/lib/scripts";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
@@ -160,6 +161,7 @@ type Viewer = OpenSeadragon.Viewer;
 /** A page of a real manuscript, in a deep-zoom viewer, at the passage (Iliad) or where the work or book begins. */
 function Photos({ w, work, line, book }: { w: Witness; work: string; line: string | null; book: string | null }) {
   const box = useRef<HTMLDivElement>(null);
+  const stopTrackpad = useRef<() => void>(() => {});
   const viewer = useRef<Viewer | null>(null);
   const osd = useRef<typeof OpenSeadragon | null>(null);
   const [pages, setPages] = useState<{ folio: string; service: string }[] | null>(null);
@@ -207,9 +209,29 @@ function Photos({ w, work, line, book }: { w: Witness; work: string; line: strin
       // so a tap on the photograph made the panel jump: focus it where it is instead
       const canvas = viewer.current.canvas as HTMLElement, focus = canvas.focus.bind(canvas);
       canvas.focus = (o?: FocusOptions) => focus({ ...o, preventScroll: true });
+      // a trackpad: pinch zooms smoothly about the fingers; two fingers move about the page once zoomed in, and
+      // scroll the panel when the whole page is showing (so the photograph never traps the panel). A mouse wheel
+      // still zooms, in the viewer's own steps.
+      const el = box.current, v = viewer.current, readWheel = wheelReader();
+      const pointAt = (x: number, y: number) => { const r = el.getBoundingClientRect(); return v.viewport.pointFromPixel(new OSD.Point(x - r.left, y - r.top)); };
+      const onWheel = (e: WheelEvent) => {
+        const kind = readWheel(e);
+        if (kind === "wheel") return;
+        e.stopPropagation();   // not the viewer's own handling, which would zoom
+        if (kind === "pinch") { e.preventDefault(); v.viewport.zoomBy(pinchFactor(e), pointAt(e.clientX, e.clientY)); v.viewport.applyConstraints(); return; }
+        if (v.viewport.getZoom() <= v.viewport.getHomeZoom() * 1.02) return;   // the panel scrolls
+        e.preventDefault();
+        v.viewport.panBy(v.viewport.deltaPointsFromPixels(new OSD.Point(e.deltaX, e.deltaY)));
+        v.viewport.applyConstraints();
+      };
+      el.addEventListener("wheel", onWheel, { capture: true, passive: false });
+      v.addHandler("animation", () => { el.dataset.zoom = (v.viewport.getZoom() / v.viewport.getHomeZoom()).toFixed(3); });   // read by the tests
+      stopTrackpad.current = onGesture(el, (scaleBy, _r, x, y) => { v.viewport.zoomBy(scaleBy, pointAt(x, y)); v.viewport.applyConstraints(); });
+      const stopGesture = stopTrackpad.current;
+      stopTrackpad.current = () => { stopGesture(); el.removeEventListener("wheel", onWheel, { capture: true }); };
       setReady(true);
     }, (e: Error) => { if (live) setError(`The viewer could not start (${e.message}).`); });
-    return () => { live = false; viewer.current?.destroy(); viewer.current = null; };
+    return () => { live = false; stopTrackpad.current(); viewer.current?.destroy(); viewer.current = null; };
     // the viewer is made once; motion is read when it is made
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
