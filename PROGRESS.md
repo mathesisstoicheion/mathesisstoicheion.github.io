@@ -487,6 +487,12 @@ The owner asked whether the old site's features had all come over. A comparison 
 - Tests: `src/lib/amphora.test.ts` (Greek capitals, damaged designs) and `e2e/amphora.spec.ts` (paint, change, undo, reload, start again; two fingers do not paint; axe on the studio in both themes).
 - Port 3100 was taken by another program on this computer (2026-10-03), so the tests ran against `serve-out.mjs 3117`.
 
+## Find in this text, in the reader (2026-10-06)
+- **Find** (the button beside Listen; on phones "Find in this text" in the reading aids; keys `/` or Ctrl+F, and Ctrl+F again in the box gives the browser's own) searches the **whole book**, not just the page showing: Greek letters, Latin letters (the site's transliteration) or Beta Code, accents ignored, `*` and `?` wildcards, phrases in order (also across a line end). Latin letters also search the English translation (whole words); a choice switches between the Greek and translation matches.
+- The panel lists the matches with the words around them; Enter / Shift+Enter (or the arrows) step through them from where you are reading, turning the page when needed. Every match on the page is marked softly and the chosen one strongly (CSS highlights `find-N` / `find-now-N`). On phones the panel shrinks to its search row after a choice. Link at the bottom: the same words in the site's full search.
+- Code: `lib/find.ts` (+ `find.test.ts`), `components/reader/FindPanel.tsx` + `Find.module.css`, wiring in `Reader.tsx`; tests `e2e/find.spec.ts`.
+- The Find button sits on the bar's second row: on the first, the reading aids have only ~12px to spare at 1280px, and anything wider pushes Float down (continuity.spec checks it).
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

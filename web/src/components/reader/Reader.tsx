@@ -11,6 +11,8 @@ import { getXml, type From } from "@/lib/texts/source";
 import { parseInWorker, type Parsed } from "@/lib/tei/client";
 import { alignChunk, coverage, type Row } from "@/lib/tei/align";
 import { findRef, chunkOf } from "@/lib/tei/refs";
+import type { EnglishHit, FindHit } from "@/lib/find";
+import FindPanel, { type FindMarks } from "./FindPanel";
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
@@ -163,6 +165,9 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const [placesOpen, setPlacesOpen] = useState(false);
   const [msOpen, setMsOpen] = useState(false);
   const [listenOpen, setListenOpen] = useState(false);
+  const [findOpen, setFindOpen] = useState(false);
+  const [findQ, setFindQ] = useState("");
+  const [findMarks, setFindMarks] = useState<FindMarks | null>(null);
   const [topRow, setTopRow] = useState<string | null>(null);
   const [placeMarks, setPlaceMarks] = useState<Map<string, Set<string>> | null>(null);
 
@@ -186,6 +191,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const [help, setHelp] = useState(false);
   const [retry, setRetry] = useState(0);
   const gotoRef = useRef<HTMLInputElement>(null);
+  /** Open Find in this text (or, if open, go back to its box). */
+  const openFind = () => {
+    setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false);
+    // already open: back to its box
+    requestAnimationFrame(() => (rootRef.current ?? document).querySelector<HTMLInputElement>("[aria-label='Find in this text'] input")?.focus());
+  };
 
   useEffect(() => { loadCatalog().then(setIdx, (e: Error) => setCatalogError(e.message)); }, []);
 
@@ -552,13 +563,22 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   };
 
   useEffect(() => {
+    const openFindNow = () => {
+      setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false);
+      requestAnimationFrame(() => (rootRef.current ?? document).querySelector<HTMLInputElement>("[aria-label='Find in this text'] input")?.focus());
+    };
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
-      if (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable || e.ctrlKey || e.metaKey || e.altKey) return;
       if (split && useUI.getState().activePane !== pane) return;
       // two readers can be open (the page and the floating window): keys go to the one in use
       const inFloat = !!document.activeElement?.closest("[data-float-window]");
       if (floating !== inFloat && (floating || useFloat.getState().open)) return;
+      // Ctrl+F finds in the whole book (the page shows one part at a time); pressed again in the box, the browser's own
+      if ((e.ctrlKey || e.metaKey) && !e.altKey && !e.shiftKey && e.key.toLowerCase() === "f" && !t.closest("[aria-label='Find in this text']")) {
+        e.preventDefault(); openFindNow(); return;
+      }
+      if (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable || e.ctrlKey || e.metaKey || e.altKey) return;
+      if (e.key === "/") { e.preventDefault(); openFindNow(); return; }
       if (e.key === "ArrowRight") { e.preventDefault(); goChunkRef.current(chunk + 1); }
       else if (e.key === "ArrowLeft") { e.preventDefault(); goChunkRef.current(chunk - 1); }
       else if (e.key === "g") { e.preventDefault(); gotoRef.current?.focus(); }
@@ -583,6 +603,86 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     return out;
   }, [rows, marks]);
   const noMarks = useMemo<Mark[]>(() => [], []);
+
+  // ------------------------------------------------------------ find in this text
+  const findHere = () => {
+    if (!doc) return 0;
+    const k = topKey(), r = rows.find((x) => x.key === k);
+    return (r && order.get(r.greek[0]?.ref.join("."))) ?? doc.chunks[chunk]?.first ?? 0;
+  };
+  /** Go to a match: on another page, open that page at its passage; on this one, the marking below brings it into view. */
+  const findJump = (h: FindHit) => {
+    if (!doc) return;
+    if (chunkOf(doc, h.unit) !== chunk) nav.go(query({ at: doc.units[h.unit].ref.join(".") }));
+  };
+  const findSeen = useRef(-1);
+  useEffect(() => {
+    const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
+    const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
+    const names = [`find-${pane}`, `find-now-${pane}`];
+    if (!reg || !H || !findMarks || !rows.length || !doc || !doc.chunks[chunk]) return;
+    const { first, last } = doc.chunks[chunk], cur = findMarks.cur;
+    const all: Range[] = [], now: Range[] = [];
+    const spans = new Map<number, NodeListOf<Element> | undefined>();
+    const spansOf = (u: number) => {
+      if (!spans.has(u)) spans.set(u, root().querySelector(`[data-u="${CSS.escape(doc.units[u].ref.join("."))}"]`)?.querySelectorAll("[data-w]"));
+      return spans.get(u);
+    };
+    const rowOf = new Map<string, string>();
+    for (const r of rows) for (const u of r.greek) rowOf.set(u.ref.join("."), r.key);
+    const engByRow = new Map<string, EnglishHit[]>();
+    for (const h of findMarks.hits) {
+      if (h.unit < first || h.unit > last) continue;
+      if (h.lang === "grc") {
+        for (const w of h.words) {
+          const sp = spansOf(w.unit)?.[w.i];
+          if (!sp) continue;
+          const r = new Range(); r.selectNodeContents(sp); (h === cur ? now : all).push(r);
+        }
+      } else {
+        const rk = rowOf.get(doc.units[h.unit].ref.join("."));
+        if (rk) engByRow.set(rk, [...(engByRow.get(rk) ?? []), h]);
+      }
+    }
+    // the translation: the row's own text, read again (notes, line numbers and speakers' names left out)
+    if (findMarks.engSource) for (const [rk, hs] of engByRow) {
+      const trEl = root().querySelector(`[data-key="${CSS.escape(rk)}"] [data-tr]`);
+      if (!trEl) continue;
+      const nodes: Text[] = [], starts: number[] = [];
+      let text = "";
+      const walk = document.createTreeWalker(trEl, NodeFilter.SHOW_TEXT, {
+        acceptNode: (n) => (n.parentElement?.closest("[data-silent], [data-speaker], button") ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT),
+      });
+      // a mark between pieces of text, so words in two paragraphs never run together
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) { nodes.push(n as Text); starts.push(text.length); text += n.textContent + "\u0001"; }
+      if (!nodes.length) continue;
+      const point = (off: number): [Text, number] => { let k = nodes.length - 1; while (k > 0 && starts[k] > off) k--; return [nodes[k], Math.min(off - starts[k], nodes[k].length)]; };
+      let n = 0;
+      for (const m of text.matchAll(new RegExp(findMarks.engSource, "gi"))) {
+        const h = hs[n++];
+        const [sn, so] = point(m.index!), [en, eo] = point(m.index! + m[0].length - 1);
+        const r = new Range(); r.setStart(sn, so); r.setEnd(en, Math.min(eo + 1, en.length));
+        (h && h === cur ? now : all).push(r);
+      }
+    }
+    reg.set(names[0], new H(...all));
+    reg.set(names[1], new H(...now));
+    // a newly chosen match is brought into view, if it is not in view already
+    if (cur && now.length && findMarks.seq !== findSeen.current) {
+      findSeen.current = findMarks.seq;
+      const rect = now[0].getBoundingClientRect();
+      const bar = root().querySelector<HTMLElement>(`.${styles.bar}`);
+      const edge = bar?.offsetHeight ? bar.getBoundingClientRect().bottom : contained ? rootRef.current!.getBoundingClientRect().top : headerVisible();
+      const bottom = contained ? rootRef.current!.getBoundingClientRect().bottom : innerHeight * (matchMedia("(max-width: 900px)").matches ? 0.72 : 1);
+      if (rect.top < edge + 8 || rect.bottom > bottom - 8) {
+        const to = rect.top - (edge + (bottom - edge) * 0.3);
+        if (contained) rootRef.current!.scrollBy({ top: to, behavior: scrollBehavior() }); else scrollBy({ top: to, behavior: scrollBehavior() });
+      }
+    }
+    return () => { for (const nm of names) reg.delete(nm); };
+    // root and the bar are read as they are now
+  }, [findMarks, rows, chunk, doc, pane, translit, metre, columns, contained]);
+
 
   // ------------------------------------------------------------ markers beside the scroll bar
   const markerItems = useMemo<MarkerItem[]>(() => {
@@ -1036,9 +1136,10 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       <button type="button" className="chip" aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters">Transliteration</button>
       <button type="button" className="chip" aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case">Colour by case</button>
       {mInfo && <button type="button" className="chip" aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura">Metre</button>}
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setVocabOpen(!vocabOpen); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setPlacesOpen(!placesOpen); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
+      <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
+      <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
+      <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
+      <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
       {trText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
       {trText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
       {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
@@ -1055,7 +1156,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + columns]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + columns]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1150,6 +1251,9 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               )}
             </div>
             <MarkersLegend counts={markerCounts} />
+            <button type="button" className={`${styles.floatBtn} ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg> Find
+            </button>
             {/* wide screens: Listen sits here, so the reading aids keep to one line (on phones it is in the aids sheet) */}
             {trText && (
               <button type="button" className={`${styles.floatBtn} ${styles.listenBtn}`} aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">
@@ -1176,7 +1280,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
           {translit && <p className={`wrap ${styles.legend}`}><span className="muted">Transliteration uses a simple scheme: η ē, ω ō, rough breathing h, υ y (u in diphthongs), χ ch, φ ph, θ th, iota subscript i; accents are left out.</span></p>}
           {help && (
             <div className={`wrap ${styles.help}`} role="note">
-              <p><kbd>←</kbd> <kbd>→</kbd> previous / next page · <kbd>g</kbd> go to a reference · click a word to look it up (or <kbd>Tab</kbd> into the text, move with the arrow keys, <kbd>Enter</kbd> to look up) · select words or click a passage number for bookmarks, notes, highlights, sharing and Echoes · <kbd>Esc</kbd> close</p>
+              <p><kbd>←</kbd> <kbd>→</kbd> previous / next page · <kbd>g</kbd> go to a reference · <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>F</kbd> find in this text · click a word to look it up (or <kbd>Tab</kbd> into the text, move with the arrow keys, <kbd>Enter</kbd> to look up) · select words or click a passage number for bookmarks, notes, highlights, sharing and Echoes · <kbd>Esc</kbd> close</p>
             </div>
           )}
 
@@ -1266,6 +1370,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
         <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
           <VocabPanel work={workId} doc={doc} pageKeys={pageKeys}
             onClose={() => setVocabOpen(false)} onPick={(lemma) => setWord({ w: lemma, ctx: null, at: null })} />
+        </PanelGuard>
+      )}
+      {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && (
+        <PanelGuard name="find panel" className={styles.panel} onClose={() => setFindOpen(false)}>
+          <FindPanel doc={doc} placed={placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks}
+            onClose={() => { setFindOpen(false); requestAnimationFrame(() => root().querySelector<HTMLElement>(`.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
       {listenOpen && trText && work && rows.length > 0 && (

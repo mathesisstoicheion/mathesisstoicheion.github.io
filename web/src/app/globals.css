@@ -399,6 +399,18 @@ select { max-width: 100%; }
   text-underline-offset: 4px;
 }
 
+/* Find in this text: every match on the page softly, the one chosen strongly */
+::highlight(find-1), ::highlight(find-2) {
+  background-color: color-mix(in srgb, var(--ochre) 22%, transparent);
+  text-decoration: underline 2px color-mix(in srgb, var(--ochre) 70%, transparent);
+  text-underline-offset: 4px;
+}
+::highlight(find-now-1), ::highlight(find-now-2) {
+  background-color: color-mix(in srgb, var(--accent) 42%, transparent);
+  text-decoration: underline 3px var(--accent);
+  text-underline-offset: 4px;
+}
+
 /* words found by Echoes, marked in the reader */
 ::highlight(echo-1), ::highlight(echo-2) {
   background-color: color-mix(in srgb, var(--ochre) 26%, transparent);

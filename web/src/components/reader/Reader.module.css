@@ -42,6 +42,9 @@
 .goto { display: flex; gap: 6px; }
 .goto input { width: 150px; font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; }
 .helpBtn { margin-left: auto; font-size: 0.85rem; }
+.findBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+.findBtn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+@media (max-width: 760px) { .findBtn { display: none !important; } }
 /* the tools sit in the bar's row on wider screens; on phones they fold behind the Tools button */
 .more { display: contents; }
 .toolsBtn { display: none; }
