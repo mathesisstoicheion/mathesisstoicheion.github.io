@@ -507,6 +507,15 @@ The owner chose study and research tools first (from: grammar search with concor
 - Tests: `kwic.test.ts`, `e2e/research.spec.ts` (with axe in both themes).
 - Next: comparing two editions side by side; sentence diagrams (treebanks); research notebooks with citations.
 
+## Research tools, part 2: comparing two editions (2026-10-06)
+- In the reader, **Compare with** (beside "Greek text", for the 105 works with more than one Greek edition; address `cmp=<version>`, `cmpx=1` for spelling too) puts the second edition where the translation stands, lined up passage by passage the way a translation is (align.ts), and marks the words that differ: the first edition's in red (wavy), the second's in blue (CSS highlights `diff-a-N` / `diff-b-N`).
+- `lib/tei/compare.ts`: word-by-word differences by the longest shared run (shared start and end set aside; very long middles one hunk). By default **readings only**: search keys (no accents, breathings, capitals, punctuation), an iota written beside -ω/-η taken as subscript, and words only divided differently (οὐκέτι / οὐκ ἔτι) not counted; **Spelling too** counts accents, breathings and elision.
+- A bar above the text: how many passages differ on the page and in the whole text, previous/next difference (also in the sticky bar on wide screens, and in the reading aids on phones), **List them all** (`ComparePanel.tsx`: an apparatus, "87 πειθοῖ ] πευθοῖ", downloadable as CSV), Spelling too, Stop comparing. Listen and Try it first are set aside while comparing (the second column is Greek: never read aloud).
+- About 90 of the edition pairs line up passage by passage; where fewer than half the passages line up (different numbering, or different volumes of a work), the editions stand side by side with a plain note, and nothing is marked.
+- Seen in the data: Agamemnon 87 πειθοῖ (Smyth) ] πευθοῖ (Sidgwick); Poetics 1.7 ἀνώνυμοι τυγχάνουσι (Kassel) ] τυγχάνουσα (Bekker).
+- Tests: `compare.test.ts`, `e2e/compare.spec.ts` (with axe in both themes). The compare bar and the cover note now give way to an open side panel at 1280px and wider.
+- Next research tool: sentence diagrams (treebanks), then research notebooks with citations.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

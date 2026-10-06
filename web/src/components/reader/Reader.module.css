@@ -93,6 +93,18 @@
 
 .grc { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); }
 .tr { font-size: 1.02rem; line-height: 1.7; color: var(--ink-2); border-left: 1px solid var(--rule); padding-left: clamp(16px, 2vw, 28px); }
+/* comparing editions: the second column is Greek too, set like the first */
+.tr[data-greek] { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
+.compare { display: grid; gap: 10px; padding-block: 12px; border-bottom: 1px solid var(--rule); }
+.compareKey { margin: 0; font-size: 0.95rem; line-height: 1.55; }
+.keyA { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; text-decoration: underline wavy 1.5px var(--accent); text-underline-offset: 3px; padding: 0 3px; }
+.keyB { background: color-mix(in srgb, var(--blue) 24%, transparent); color: inherit; text-decoration: underline 2px var(--blue); text-underline-offset: 3px; padding: 0 3px; }
+.compareTools { display: flex; flex-wrap: wrap; gap: 8px 10px; align-items: center; }
+.compareCount { font: 600 0.9rem var(--f-label); margin-right: 6px; font-variant-numeric: tabular-nums; }
+.diffNav { display: inline-flex; align-items: center; gap: 6px; font-size: 0.88rem; font-variant-numeric: tabular-nums; }
+.diffNav .floatBtn { padding: 0 10px; }
+@media (max-width: 760px) { .diffNav { display: none !important; } }
+.compareCheck { display: inline-flex; align-items: center; gap: 6px; font-size: 0.9rem; }
 .none { color: var(--rule); }
 
 .cols-greek .cols, .cols-greek .row { grid-template-columns: 64px minmax(0, 46rem); }
@@ -136,7 +148,7 @@
   animation: slide-in 0.35s var(--ease);
 }
 @keyframes slide-in { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
-@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom { margin-right: 400px; margin-left: 0; } }
+@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover { margin-right: 400px; margin-left: 0; } }
 .panelHead { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
 /* wide screens: the look-up's parts sit straight in the panel's grid; phones: they scroll below a fixed head */
 .panelBody { display: contents; }

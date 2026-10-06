@@ -13,6 +13,8 @@ import { alignChunk, coverage, type Row } from "@/lib/tei/align";
 import { findRef, chunkOf } from "@/lib/tei/refs";
 import type { EnglishHit, FindHit } from "@/lib/find";
 import FindPanel, { type FindMarks } from "./FindPanel";
+import ComparePanel from "./ComparePanel";
+import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
@@ -82,12 +84,14 @@ const MARK_ICON: Record<string, React.ReactNode> = {
 };
 
 /** One passage row: reference and your marks in the margin, Greek, translation, and any notes. */
-const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, tryFirst }: {
+const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, tryFirst, trGreek }: {
   row: Row; marks: Mark[]; openNote: string | null; onCloseNote: () => void; translit: boolean; metre: Map<string, (LineRender | null)[]> | null;
   /** a text cited by verse: the margin shows only the verse number, as in a printed Bible (the chapter is in the bar) */
   verses: boolean;
   /** "Try it first": the translation stays hidden until it is tapped */
   tryFirst: boolean;
+  /** the second column is another Greek edition, being compared with this one */
+  trGreek: boolean;
 }) {
   const notes = marks.filter((m) => m.kind === "note");
   const [shown, setShown] = useState(false);
@@ -110,9 +114,11 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
       <div className={styles.grc} lang="grc">
         {row.greek.map((u) => <div key={u.ref.join(".")} data-u={u.ref.join(".")}><Blocks blocks={u.blocks} greek keyPrefix={u.ref.join(".")} translit={translit} metre={metre?.get(u.ref.join("."))} /></div>)}
       </div>
-      <div className={styles.tr} data-tr="" data-veiled={veiled || undefined}>
+      <div className={styles.tr} data-tr="" data-veiled={veiled || undefined} data-greek={trGreek || undefined} lang={trGreek ? "grc" : undefined}>
         {veiled && <button type="button" className={styles.reveal} onClick={() => setShown(true)}>Tap to see the translation</button>}
-        {row.trans.length ? <Blocks blocks={row.trans} greek={false} keyPrefix={`t${row.key}`} /> : <span className={styles.none} aria-label="No translation for this passage">—</span>}
+        {row.trans.length
+          ? <Blocks blocks={row.trans} greek={trGreek} keyPrefix={`t${row.key}`} translit={trGreek ? translit : undefined} />
+          : <span className={styles.none} aria-label={trGreek ? "Not in the other edition" : "No translation for this passage"}>—</span>}
       </div>
       {notes.length > 0 && (
         <div className={styles.notes}>
@@ -221,8 +227,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   }, [tabTitle]);
   const grcText = work ? pickEdition(work, P("ed"), remembered?.ed ?? null) : undefined;
   const trText = work ? pickTranslation(work, P("tr"), remembered ? remembered.tr : undefined) : null;
+  // comparing two Greek editions (?cmp=the other's version): the second stands where the translation would
+  const editions = work ? (greekEditions(work).length ? greekEditions(work) : work.texts.filter((t) => t.kind === "edition")) : [];
+  const cmpText = editions.find((t) => versionOf(t.urn) === P("cmp") && t.urn !== grcText?.urn) ?? null;
+  const strict: Strictness = P("cmpx") === "1" ? "spelling" : "readings";
+  const second = cmpText ?? trText;
+  const pk = (x: string) => (pane === 1 ? x : `${x}2`);
   const cite = `${author?.name ?? ""}, ${work?.title ?? ""}`;
-  const loadKey = grcText && snap?.work === workId ? `${grcText.urn}|${trText?.urn ?? ""}|${retry}` : null;
+  const loadKey = grcText && snap?.work === workId ? `${grcText.urn}|${second?.urn ?? ""}|${retry}` : null;
 
   // ------------------------------------------------------------ load and parse the texts
   useEffect(() => {
@@ -230,19 +242,19 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     let stale = false;
     (async () => {
       try {
-        const [g, t] = await Promise.all([getXml(idx, grcText), trText ? getXml(idx, trText).catch(() => null) : null]);
+        const [g, t] = await Promise.all([getXml(idx, grcText), second ? getXml(idx, second).catch(() => null) : null]);
         if (stale) return;
         setStep({ key: loadKey, text: "Preparing the text…" });
         const p = await parseInWorker(g.xml, t?.xml ?? null);
         if (stale) return;
         setResult({ key: loadKey, parsed: p, from: { grc: g.from, tr: t?.from ?? null } });
-        if (trText && !t) toast("The translation could not be loaded; showing the Greek only.");
+        if (second && !t) toast(cmpText ? "The other edition could not be loaded." : "The translation could not be loaded; showing the Greek only.");
       } catch (e) {
         if (!stale) setResult({ key: loadKey, error: (e as Error).message });
       }
     })();
     return () => { stale = true; };
-    // grcText and trText are identified by loadKey
+    // grcText and the second text are identified by loadKey
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, loadKey, toast]);
 
@@ -277,7 +289,13 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const unitKeys = useMemo(() => new Set(doc?.units.map((u) => u.ref.join(".")) ?? []), [doc]);
   const pageKeys = useMemo(() => new Set(doc && doc.chunks[chunk] ? doc.units.slice(doc.chunks[chunk].first, doc.chunks[chunk].last + 1).map((u) => u.ref.join(".")) : []), [doc, chunk]);
   const rows = useMemo(() => (doc && doc.chunks[chunk] ? alignChunk(doc, doc.chunks[chunk], placed) : []), [doc, chunk, placed]);
-  const cov = trText && placed ? coverage(rows) : 1;
+  const cov = second && placed ? coverage(rows) : 1;
+  const comparing = !!cmpText && !!placed && !!doc;
+  // the second edition lines up word by word only if it numbers its passages as this one does
+  const cmpFit = useMemo(() => (comparing ? new Set(placed!.map((p) => p.at)).size / Math.max(1, doc!.units.length) : 0), [comparing, placed, doc]);
+  const canDiff = comparing && cmpFit >= 0.5;
+  const allDiffs = useMemo<RowDiff[]>(() => (canDiff ? compareAll(doc!, placed!, strict) : []), [canDiff, doc, placed, strict]);
+  const [cmpListOpen, setCmpListOpen] = useState(false);
 
   // ------------------------------------------------------------ metre
   const [mIndex, setMIndex] = useState<MetreIndex | null>(null);
@@ -615,6 +633,35 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     if (!doc) return;
     if (chunkOf(doc, h.unit) !== chunk) nav.go(query({ at: doc.units[h.unit].ref.join(".") }));
   };
+  /** Go to a passage where the editions differ: on another page, open it there; on this one, glide to it. */
+  const goToDiff = (d: RowDiff) => { if (d.chunk !== chunk) nav.go(query({ at: d.key })); else jumpToRow(d.key); };
+  /** The next (1) or previous (-1) difference from the passage at the top. */
+  const goDiff = (dir: 1 | -1) => {
+    if (!allDiffs.length) return;
+    const h = findHere();
+    goToDiff(dir === 1 ? allDiffs.find((x) => x.first > h) ?? allDiffs[0] : allDiffs.findLast((x) => x.first < h) ?? allDiffs[allDiffs.length - 1]);
+  };
+  const setParam = (k: string, v: string | null) => { const q = new URLSearchParams(params.toString()); if (v) q.set(pk(k), v); else q.delete(pk(k)); return q; };
+  const stopCompare = () => { const q = setParam("cmp", null); q.delete(pk("cmpx")); setCmpListOpen(false); nav.go(q); };
+  useEffect(() => {
+    const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
+    const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
+    const names = [`diff-a-${pane}`, `diff-b-${pane}`];
+    if (!reg || !H || !canDiff || !rows.length) return;
+    const a: Range[] = [], b: Range[] = [];
+    root().querySelectorAll<HTMLElement>("article [data-key]").forEach((row) => {
+      const as = [...row.querySelectorAll<HTMLElement>("[data-u] [data-w]")], bs = [...row.querySelectorAll<HTMLElement>("[data-tr] [data-w]")];
+      if (!bs.length) return;
+      for (const h of readingHunks(as.map((x) => wordKey(x.dataset.w!, strict)), bs.map((x) => wordKey(x.dataset.w!, strict)), strict)) {
+        for (let i = h.a0; i < h.a1; i++) { const r = new Range(); r.selectNodeContents(as[i]); a.push(r); }
+        for (let i = h.b0; i < h.b1; i++) { const r = new Range(); r.selectNodeContents(bs[i]); b.push(r); }
+      }
+    });
+    reg.set(names[0], new H(...a));
+    reg.set(names[1], new H(...b));
+    return () => { for (const n of names) reg.delete(n); };
+    // (the page is read as it is drawn)
+  }, [canDiff, rows, strict, pane, translit, metre]);
   const findSeen = useRef(-1);
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
@@ -1139,9 +1186,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
       <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
       <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
+      {canDiff && <>
+        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
+        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
+        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setFindOpen(false); setWord(null); }}>List of differences</button>
+      </>}
       <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
-      {trText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
-      {trText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
+      {trText && !cmpText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
+      {trText && !cmpText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
       {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
     </div>
   );
@@ -1149,14 +1201,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const columnsSeg = (
     <div className={styles.seg} role="radiogroup" aria-label="Columns">
       {([["both", "Both"], ["greek", "Greek"], ["trans", "English"]] as [Columns, string][]).map(([c, l]) => (
-        <button key={c} type="button" role="radio" aria-checked={columns === c} onClick={() => setCols(c)} disabled={c !== "greek" && !trText}>{l}</button>
+        <button key={c} type="button" role="radio" aria-checked={columns === c} onClick={() => setCols(c)} disabled={!!cmpText || (c !== "greek" && !trText)}>{l}</button>
       ))}
     </div>
   );
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + columns]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen || (cmpListOpen && canDiff) ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1191,11 +1243,24 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               </select>
             </label>
             <label className={styles.pick}><span className="label">Translation</span>
-              <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value }))}>
+              <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value }))} disabled={!!cmpText}
+                title={cmpText ? "The translation comes back when you stop comparing editions" : undefined}>
                 <option value="none">None</option>
                 {translations(work).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
               </select>
             </label>
+            {editions.length > 1 && (
+              <label className={styles.pick}><span className="label">Compare with</span>
+                <select value={cmpText ? versionOf(cmpText.urn) : ""} onChange={(e) => {
+                  const q = query({ at: topKey() ?? undefined });
+                  if (e.target.value) q.set(pk("cmp"), e.target.value); else { q.delete(pk("cmp")); q.delete(pk("cmpx")); }
+                  nav.go(q);
+                }}>
+                  <option value="">No other edition</option>
+                  {editions.filter((t) => t.urn !== grcText.urn).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
+                </select>
+              </label>
+            )}
             {!split && <button type="button" className="chip" onClick={onOpenSecond}>Open a second book beside this one</button>}
             {columnsSeg}
           </div>
@@ -1254,8 +1319,15 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
             <button type="button" className={`${styles.floatBtn} ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg> Find
             </button>
+            {canDiff && (
+              <span className={styles.diffNav} role="group" aria-label="Differences between the editions">
+                <button type="button" className={styles.floatBtn} onClick={() => goDiff(-1)} disabled={!allDiffs.length} aria-label="Previous difference" title="Previous difference">←</button>
+                <span>{allDiffs.length.toLocaleString("en-GB")} {allDiffs.length === 1 ? "difference" : "differences"}</span>
+                <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length} aria-label="Next difference" title="Next difference">→</button>
+              </span>
+            )}
             {/* wide screens: Listen sits here, so the reading aids keep to one line (on phones it is in the aids sheet) */}
-            {trText && (
+            {trText && !cmpText && (
               <button type="button" className={`${styles.floatBtn} ${styles.listenBtn}`} aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /></svg> Listen
               </button>
@@ -1284,7 +1356,38 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
             </div>
           )}
 
-          {trText && cov < 1 && (
+          {cmpText && grcText && (
+            <section className={`wrap ${styles.compare}`} aria-label="Comparing two editions">
+              {canDiff ? (
+                <>
+                  <p className={styles.compareKey}>
+                    Where they differ, the words are marked: <mark className={styles.keyA}>{describe(grcText)}</mark> on the left, <mark className={styles.keyB}>{describe(cmpText)}</mark> on the right.{" "}
+                    <span className="muted">{strict === "readings"
+                      ? "Differences of reading only: accents, breathings, capitals, punctuation and word division are not counted."
+                      : "Spelling too: accents, breathings and elision count as differences."}</span>
+                  </p>
+                  <div className={styles.compareTools}>
+                    <span className={styles.compareCount} aria-live="polite">
+                      {(() => { const n = allDiffs.filter((d) => d.chunk === chunk).length; return `${n} ${n === 1 ? "passage differs" : "passages differ"} on this page`; })()} · {allDiffs.length.toLocaleString("en-GB")} in the whole text
+                    </span>
+                    <button type="button" className={styles.floatBtn} onClick={() => goDiff(-1)} disabled={!allDiffs.length}>← Previous difference</button>
+                    <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length}>Next difference →</button>
+                    <button type="button" className={styles.floatBtn} aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setFindOpen(false); }}>List them all</button>
+                    <label className={styles.compareCheck}>
+                      <input type="checkbox" checked={strict === "spelling"} onChange={(e) => nav.go(setParam("cmpx", e.target.checked ? "1" : null))} /> Spelling too
+                    </label>
+                    <button type="button" className={styles.floatBtn} onClick={stopCompare}>Stop comparing</button>
+                  </div>
+                </>
+              ) : comparing ? (
+                <p className={styles.compareKey}>
+                  These two editions number their passages differently, so they stand side by side here but cannot be compared word by word.{" "}
+                  <button type="button" className={styles.floatBtn} onClick={stopCompare}>Stop comparing</button>
+                </p>
+              ) : null}
+            </section>
+          )}
+          {trText && !cmpText && cov < 1 && (
             <p className={`wrap ${styles.cover}`}>
               The translation has text beside {Math.round(cov * 100)}% of the passages on this page. It follows its own divisions, so some Greek passages share one stretch of English.
             </p>
@@ -1293,12 +1396,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
           <div className={`wrap ${styles.cols}`} aria-hidden="true">
             <span />
             <span className="label">Greek · {describe(grcText!)}</span>
-            <span className="label">{trText ? `English · ${describe(trText)}` : ""}</span>
+            <span className="label">{cmpText ? `Greek · ${describe(cmpText)}` : trText ? `English · ${describe(trText)}` : ""}</span>
           </div>
 
           <article ref={textRef} className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
-              tryFirst={tryFirst && !!trText && columns === "both"} />)}
+              tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText} />)}
           </article>
           {sel && <PassageToolbar sel={sel} onAction={act} onClose={() => { setSel(null); getSelection()?.removeAllRanges(); }}
             xref={split ? (pendingXref && pendingXref.pane !== pane ? "here" : "start") : null}
@@ -1374,11 +1477,16 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       )}
       {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && (
         <PanelGuard name="find panel" className={styles.panel} onClose={() => setFindOpen(false)}>
-          <FindPanel doc={doc} placed={placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks}
+          <FindPanel doc={doc} placed={cmpText ? null : placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks}
             onClose={() => { setFindOpen(false); requestAnimationFrame(() => root().querySelector<HTMLElement>(`.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
-      {listenOpen && trText && work && rows.length > 0 && (
+      {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && (
+        <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
+          <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)} />
+        </PanelGuard>
+      )}
+      {listenOpen && trText && !cmpText && work && rows.length > 0 && (
         <Listen rows={rows} root={root} startKey={topRow} title={work.title}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
       )}

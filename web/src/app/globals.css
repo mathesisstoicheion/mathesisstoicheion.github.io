@@ -411,6 +411,18 @@ select { max-width: 100%; }
   text-underline-offset: 4px;
 }
 
+/* comparing two editions in the reader: words only the first prints (left) and only the second (right) */
+::highlight(diff-a-1), ::highlight(diff-a-2) {
+  background-color: color-mix(in srgb, var(--accent) 22%, transparent);
+  text-decoration: underline wavy 1.5px var(--accent);
+  text-underline-offset: 4px;
+}
+::highlight(diff-b-1), ::highlight(diff-b-2) {
+  background-color: color-mix(in srgb, var(--blue) 24%, transparent);
+  text-decoration: underline 2px var(--blue);
+  text-underline-offset: 4px;
+}
+
 /* words found by Echoes, marked in the reader */
 ::highlight(echo-1), ::highlight(echo-2) {
   background-color: color-mix(in srgb, var(--ochre) 26%, transparent);
