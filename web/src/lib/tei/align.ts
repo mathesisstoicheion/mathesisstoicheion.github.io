@@ -14,6 +14,10 @@ export interface Row {
   key: string;            // anchor reference, e.g. "1.33"
   greek: Unit[];
   trans: Block[];         // empty when the translation has nothing for this stretch
+  /** no English here because the English beside it began on the page before (and runs on into these lines) */
+  cont?: boolean;
+  /** holds English that this Greek edition has no place for (an appendix, a chapter the edition lacks) */
+  extra?: boolean;
 }
 
 interface Piece { key: string | null; blocks: Block[]; src: number }   // src: the translation unit it comes from
@@ -77,50 +81,113 @@ export function translationPieces(grc: TeiDoc, tr: TeiDoc): Piece[] {
   return pieces;
 }
 
-export interface Placed { at: number; blocks: Block[]; src: number }   // src: translation unit index
+/** src: translation unit index; extra: the Greek edition has no passage or division for it (an appendix, a chapter it lacks) */
+export interface Placed { at: number; blocks: Block[]; src: number; extra?: boolean }
+
+/** e.g. Euclid's English "10.def_1.1" for the Greek "10.def1.1" */
+const loose = (k: string) => k.toLowerCase().replace(/[_\s-]/g, "");
 
 /**
  * Decide which Greek unit each translation piece starts at, for the whole text at once.
- * A piece whose reference the Greek doesn't have (a line numbered differently, say) follows the
- * piece before it, so no translation is ever dropped.
+ * A piece whose reference the Greek doesn't have (a paragraph numbered differently, say) goes to the start of
+ * its own division in the Greek, or follows the piece before it, so no translation is ever dropped. Where a
+ * division's numbering does not correspond at all (Hippocrates' Epidemics: English 1.3.1–10 against Greek
+ * 1.3.13–26), its pieces are spread through the Greek division in order.
  */
 export function placePieces(grc: TeiDoc, pieces: Piece[]): Placed[] {
-  const index = new Map<string, number>();
-  grc.units.forEach((u, i) => { const k = keyOf(u.ref); if (!index.has(k)) index.set(k, i); });
+  const index = new Map<string, number>(), loosely = new Map<string, number>();
+  const firstIn = new Map<string, number>(), unitsIn = new Map<string, number[]>();
+  grc.units.forEach((u, i) => {
+    const k = keyOf(u.ref);
+    if (!index.has(k)) index.set(k, i);
+    if (!loosely.has(loose(k))) loosely.set(loose(k), i);
+    for (let d = 1; d < u.ref.length; d++) {
+      const p = keyOf(u.ref.slice(0, d));
+      if (!firstIn.has(p)) firstIn.set(p, i);
+      if (d === u.ref.length - 1) { if (!unitsIn.has(p)) unitsIn.set(p, []); unitsIn.get(p)!.push(i); }
+    }
+  });
+  const exact = (k: string | null) => (k == null ? undefined : index.get(k) ?? loosely.get(loose(k)));
+  const parentOf = (k: string) => k.slice(0, Math.max(0, k.lastIndexOf(".")));
+
+  // divisions whose pieces mostly match nothing in the Greek: spread them through the division in order
+  const spread = new Map<Piece, number>();
+  const groups = new Map<string, Piece[]>();
+  for (const p of pieces) {
+    if (!p.key || p.key.endsWith("?") || !p.key.includes(".")) continue;
+    const par = parentOf(p.key);
+    if (!unitsIn.has(par)) continue;
+    if (!groups.has(par)) groups.set(par, []);
+    groups.get(par)!.push(p);
+  }
+  for (const [par, ps] of groups) {
+    const g = unitsIn.get(par)!;
+    if (g.length < 2 || ps.filter((p) => exact(p.key) !== undefined).length * 2 >= ps.length) continue;
+    ps.forEach((p, i) => { if (exact(p.key) === undefined) spread.set(p, g[Math.floor((i * g.length) / ps.length)]); });
+  }
+
   const placed: Placed[] = [];
   let prev = 0;
   for (const p of pieces) {
-    let at = p.key != null ? index.get(p.key) : undefined;
+    let at = spread.get(p) ?? exact(p.key);
+    let extra = false;
     if (at === undefined && p.key?.endsWith(".?")) {
       const pre = p.key.slice(0, -1);
       const j = grc.units.findIndex((u) => keyOf(u.ref).startsWith(pre));
       if (j >= 0) at = j;
     }
+    if (at === undefined && p.key) {
+      // the start of the nearest division the Greek has
+      let k = parentOf(p.key.replace(/\.\?$/, ""));
+      while (k && !firstIn.has(k)) k = parentOf(k);
+      if (k) at = firstIn.get(k);
+      else extra = grc.units.length > 1 && (!p.key.endsWith("?") || !grc.units.some((u) => keyOf(u.ref).startsWith(p.key!.slice(0, -1))));
+    }
     if (at === undefined) at = prev;
     // never let a piece jump backwards past the one before it
     if (at < prev && placed.length) at = prev;
-    placed.push({ at, blocks: p.blocks, src: p.src });
+    placed.push({ at, blocks: p.blocks, src: p.src, ...(extra ? { extra: true } : {}) });
     prev = at;
   }
   return placed;
 }
 
-/** Rows for one chunk (page) of the Greek. */
+/**
+ * Rows for one chunk (page) of the Greek. A stretch of English runs on beside the Greek until the next anchor,
+ * but never out of the division (book, chapter) it started in: Greek beyond it that no English is anchored in
+ * is a row of its own with no translation, which the reader marks as not translated.
+ */
 export function alignChunk(grc: TeiDoc, chunk: { first: number; last: number }, placed: Placed[] | null): Row[] {
-  const starts = new Map<number, Block[]>();
+  const starts = new Map<number, Block[]>(), extra = new Set<number>();
+  let before = -1;                                     // where the last English before this page was anchored
   for (const p of placed ?? []) {
-    if (p.at < chunk.first || p.at > chunk.last) continue;
+    if (p.at < chunk.first) { before = Math.max(before, p.at); continue; }
+    if (p.at > chunk.last) continue;
     if (!starts.has(p.at)) starts.set(p.at, []);
     starts.get(p.at)!.push(...p.blocks);
+    if (p.extra) extra.add(p.at);
   }
+  const division = (i: number) => keyOf(grc.units[i].ref.slice(0, -1));
   const rows: Row[] = [];
+  let scope: string | null = null;                     // the division the current row's English belongs to
   for (let i = chunk.first; i <= chunk.last; i++) {
     const u = grc.units[i];
-    if (i === chunk.first || starts.has(i)) rows.push({ key: keyOf(u.ref), greek: [u], trans: starts.get(i) ?? [] });
-    else rows[rows.length - 1].greek.push(u);
+    if (starts.has(i)) {
+      rows.push({ key: keyOf(u.ref), greek: [u], trans: starts.get(i)!, ...(extra.has(i) ? { extra: true } : {}) });
+      scope = division(i);
+    } else if (i === chunk.first) {
+      const cont = !!placed && before >= 0 && division(before) === division(i);
+      rows.push({ key: keyOf(u.ref), greek: [u], trans: [], ...(cont ? { cont: true } : {}) });
+      scope = cont ? division(i) : null;
+    } else if (placed && scope !== null && division(i) !== scope) {
+      rows.push({ key: keyOf(u.ref), greek: [u], trans: [] });
+      scope = null;
+    } else rows[rows.length - 1].greek.push(u);
   }
   return rows;
 }
 
 /** Share of Greek rows in this chunk that have translation beside them (0–1). */
 export const coverage = (rows: Row[]) => rows.length ? rows.filter((r) => r.trans.length).length / rows.length : 0;
+/** Rows the translation leaves out: no English, and not English running on from the page before. */
+export const untranslated = (rows: Row[]) => rows.filter((r) => !r.trans.length && !r.cont);

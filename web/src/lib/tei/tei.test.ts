@@ -134,3 +134,63 @@ describe("metadata inside the text", () => {
     expect(text).not.toContain("Bodrum");
   });
 });
+
+// ------------------------------------------------------------ translations that number or divide differently
+import { untranslated } from "./align";
+import { renumber, schemeFor } from "./versification";
+
+/** a two-level text (chapter.verse) from a list like { "1": ["1","2"], "2": ["1"] } */
+const tei = (chapters: Record<string, string[]>, word = "w") => parseTei(`<TEI><text><body><div type="edition">${
+  Object.entries(chapters).map(([c, vs]) => `<div type="textpart" subtype="chapter" n="${c}">${vs.map((v) => `<div type="textpart" subtype="verse" n="${v}"><p>${word} ${c}.${v}</p></div>`).join("")}</div>`).join("")
+}</div></body></text></TEI>`);
+const rowsOf = (g: TeiDoc, t: TeiDoc) => g.chunks.flatMap((c) => alignChunk(g, c, placePieces(g, translationPieces(g, t))));
+
+describe("translations that divide or number differently", () => {
+  it("takes the innermost numbered divs when the pattern is //div[@n] (Andocides' English)", () => {
+    const xml = `<TEI><teiHeader><encodingDesc><refsDecl n="CTS">
+      <cRefPattern n="section" matchPattern="(\w+)" replacementPattern="#xpath(/tei:TEI/tei:text/tei:body//tei:div//tei:div[@n='$1'])"/>
+      </refsDecl></encodingDesc></teiHeader><text><body><div type="translation">
+      <div n="Intro"><div n="1"><p>one</p></div><div n="2"><p>two</p></div></div>
+      <div n="Narrative"><div n="3"><p>three</p></div></div>
+      </div></body></text></TEI>`;
+    expect(parseTei(xml).units.map((u) => u.ref.join("."))).toEqual(["1", "2", "3"]);
+  });
+
+  it("marks Greek the translation leaves out, and English running on from the page before", () => {
+    // English has chapter 1 only: chapter 2's Greek is not translated (one page per chapter)
+    const rows = rowsOf(tei({ 1: ["1", "2"], 2: ["1", "2"] }), tei({ 1: ["1", "2"] }, "e"));
+    expect(untranslated(rows).map((r) => r.key)).toEqual(["2.1"]);
+    // inside a page: verse 3 of chapter 1 has no English of its own and stays with verse 2's English
+    const one = rowsOf(tei({ 1: ["1", "2", "3"] }), tei({ 1: ["1", "2"] }, "e"));
+    expect(one.map((r) => [r.key, r.greek.length])).toEqual([["1.1", 1], ["1.2", 2]]);
+    expect(untranslated(one)).toEqual([]);
+  });
+
+  it("puts English whose paragraphs are numbered differently into its own division, in order (Hippocrates' Epidemics)", () => {
+    const g = tei({ 1: ["1", "2"], 2: ["3", "4", "5", "6"] }), e = tei({ 1: ["1", "2"], 2: ["1", "2"] }, "e");
+    const placed = placePieces(g, translationPieces(g, e));
+    expect(placed.map((p) => g.units[p.at].ref.join("."))).toEqual(["1.1", "1.2", "2.3", "2.5"]);
+  });
+
+  it("matches references written slightly differently (Euclid's def_1 and def1)", () => {
+    const g = tei({ def1: ["1"] }), e = tei({ def_1: ["1"] }, "e");
+    expect(placePieces(g, translationPieces(g, e))[0].extra).toBeUndefined();
+  });
+
+  it("notes English the Greek edition has no place for (an edition of Mark 1 beside all of Mark)", () => {
+    const g = tei({ 1: ["1", "2"] }), e = tei({ 1: ["1", "2"], 2: ["1"] }, "e");
+    const placed = placePieces(g, translationPieces(g, e));
+    expect(placed.map((p) => !!p.extra)).toEqual([false, false, true]);
+    expect(rowsOf(g, e).some((r) => r.extra)).toBe(true);
+  });
+
+  it("lines up the Septuagint Psalms with an English Bible numbered like the Hebrew", () => {
+    // Greek 9 = Hebrew 9 + 10; Greek 10 = Hebrew 11, with its heading as verse 1
+    const g = tei({ 9: ["1", "2", "3", "4"], 10: ["1", "2", "3"] });
+    const e = tei({ 9: ["1", "2"], 10: ["1"], 11: ["1", "2"] }, "e");
+    expect(schemeFor("tlg0527.tlg027", { urn: "x", desc: "World English Bible. Revision of the American Standard Version" })).toBe("lxx-psalms-hebrew");
+    const placed = placePieces(g, translationPieces(g, renumber("lxx-psalms-hebrew", g, e)));
+    // Greek 9 has 4 verses and the English 3 (9.1, 9.2, 10.1): the heading is verse 1, the English first verse stands beside it
+    expect(placed.map((p) => `${plain(p.blocks)}→${g.units[p.at].ref.join(".")}`)).toEqual(["e 9.1→9.1", "e 9.2→9.3", "e 10.1→9.4", "e 11.1→10.1", "e 11.2→10.3"]);
+  });
+});

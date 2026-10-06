@@ -9,7 +9,8 @@ import {
 } from "@/lib/catalog";
 import { getXml, type From } from "@/lib/texts/source";
 import { parseInWorker, type Parsed } from "@/lib/tei/client";
-import { alignChunk, coverage, type Row } from "@/lib/tei/align";
+import { schemeFor } from "@/lib/tei/versification";
+import { alignChunk, untranslated, type Row } from "@/lib/tei/align";
 import { findRef, chunkOf } from "@/lib/tei/refs";
 import type { EnglishHit, FindHit } from "@/lib/find";
 import FindPanel, { type FindMarks } from "./FindPanel";
@@ -121,7 +122,9 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
         {veiled && <button type="button" className={styles.reveal} onClick={() => setShown(true)}>Tap to see the translation</button>}
         {row.trans.length
           ? <Blocks blocks={row.trans} greek={trGreek} keyPrefix={`t${row.key}`} translit={trGreek ? translit : undefined} />
-          : <span className={styles.none} aria-label={trGreek ? "Not in the other edition" : "No translation for this passage"}>—</span>}
+          : trGreek ? <span className={styles.none} aria-label="Not in the other edition">—</span>
+          : row.cont ? <span className={styles.untr}>The English for these lines begins on the page before.</span>
+          : <span className={styles.untr} data-untranslated=""><b>Not translated.</b> This translation leaves this passage out.</span>}
       </div>
       {notes.length > 0 && (
         <div className={styles.notes}>
@@ -256,7 +259,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
         const [g, t] = await Promise.all([getXml(idx, grcText), second ? getXml(idx, second).catch(() => null) : null]);
         if (stale) return;
         setStep({ key: loadKey, text: "Preparing the text…" });
-        const p = await parseInWorker(g.xml, t?.xml ?? null);
+        const p = await parseInWorker(g.xml, t?.xml ?? null, cmpText || !work || !second ? undefined : schemeFor(work.id, second));
         if (stale) return;
         setResult({ key: loadKey, parsed: p, from: { grc: g.from, tr: t?.from ?? null } });
         if (second && !t) toast(cmpText ? "The other edition could not be loaded." : "The translation could not be loaded; showing the Greek only.");
@@ -300,7 +303,8 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const unitKeys = useMemo(() => new Set(doc?.units.map((u) => u.ref.join(".")) ?? []), [doc]);
   const pageKeys = useMemo(() => new Set(doc && doc.chunks[chunk] ? doc.units.slice(doc.chunks[chunk].first, doc.chunks[chunk].last + 1).map((u) => u.ref.join(".")) : []), [doc, chunk]);
   const rows = useMemo(() => (doc && doc.chunks[chunk] ? alignChunk(doc, doc.chunks[chunk], placed) : []), [doc, chunk, placed]);
-  const cov = second && placed ? coverage(rows) : 1;
+  const missing = trText && !cmpText && placed ? untranslated(rows) : [];
+  const extraHere = !cmpText && rows.some((r) => r.extra);
   const comparing = !!cmpText && !!placed && !!doc;
   // the second edition lines up word by word only if it numbers its passages as this one does
   const cmpFit = useMemo(() => (comparing ? new Set(placed!.map((p) => p.at)).size / Math.max(1, doc!.units.length) : 0), [comparing, placed, doc]);
@@ -1423,10 +1427,23 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               ) : null}
             </section>
           )}
-          {trText && !cmpText && cov < 1 && (
-            <p className={`wrap ${styles.cover}`}>
-              The translation has text beside {Math.round(cov * 100)}% of the passages on this page. It follows its own divisions, so some Greek passages share one stretch of English.
-            </p>
+          {(missing.length > 0 || extraHere) && (
+            <div className={`wrap ${styles.cover}`} role="note" aria-label="About the translation on this page">
+              {missing.length > 0 && (
+                <p>
+                  <b>{missing.length === rows.length ? "This page has no English translation." : "Some passages on this page have no English."}</b>{" "}
+                  {missing.length === rows.length ? "This part of the work has not been translated" : "They have not been translated (they are marked “Not translated”)"} in
+                  this translation, so there is no English to show. It is not a bug: translators sometimes leave passages out, or translate only some books.
+                  {translations(work!).length > 1 && " Another translation in the menu above may include them."}
+                </p>
+              )}
+              {extraHere && (
+                <p>
+                  Some of the English here has no matching passage in this Greek edition (an appendix, say, or a part the edition does not print),
+                  so it stands beside the nearest passage before it.
+                </p>
+              )}
+            </div>
           )}
 
           <div className={`wrap ${styles.cols}`} aria-hidden="true">

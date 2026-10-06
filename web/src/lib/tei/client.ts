@@ -2,6 +2,7 @@
 import type { Placed } from "./align";
 import type { TeiDoc } from "./types";
 import type { ParseRequest } from "./worker";
+import type { Scheme } from "./versification";
 
 export interface Parsed { doc: TeiDoc; placed: Placed[] | null; trLevels: string[] | null }
 
@@ -23,10 +24,10 @@ function getWorker() {
   return worker;
 }
 
-export function parseInWorker(grc: string, tr?: string | null): Promise<Parsed> {
+export function parseInWorker(grc: string, tr?: string | null, scheme?: Scheme): Promise<Parsed> {
   return new Promise((resolve, reject) => {
     const id = ++seq;
     waiting.set(id, { resolve, reject });
-    getWorker().postMessage({ id, grc, tr } satisfies ParseRequest);
+    getWorker().postMessage({ id, grc, tr, scheme } satisfies ParseRequest);
   });
 }

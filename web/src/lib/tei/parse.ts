@@ -95,6 +95,8 @@ function matches(el: El, s: Step): boolean {
   if (s.group && !("n" in el.attrs)) return false;
   return s.preds.every(([a, v]) => el.attrs[a] === v);
 }
+/** whether an element has a descendant matching the step */
+const holds = (el: El, s: Step): boolean => el.kids.some((k) => isEl(k) && (matches(k, s) || holds(k, s)));
 
 // ------------------------------------------------------------------ 3. content → blocks
 class Emitter {
@@ -242,7 +244,10 @@ export function parseTei(xml: string): TeiDoc {
     for (const c of node.kids) {
       if (!isEl(c)) { out.inline(c); continue; }
       const s = steps![k];
-      if (s && (s.desc || matchedHere) && matches(c, s)) {
+      // "//div[@n]" as the last step matches nested numbered divs too (Andocides' English: "Narrative" holding
+      // sections 6–69); the passages are the innermost ones, so a match that holds further matches is passed through
+      const nests = s && s.desc && s.group && k === steps!.length - 1 && holds(c, s);
+      if (s && (s.desc || matchedHere) && matches(c, s) && !nests) {
         const r = s.group ? [...ref, c.attrs.n] : ref;
         if (s.group && !levels[r.length - 1]) levels[r.length - 1] = (c.attrs.subtype || c.name === "l" && "line" || "part").toLowerCase();
         if (k === steps!.length - 1) {

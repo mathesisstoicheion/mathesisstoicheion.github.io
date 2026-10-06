@@ -2,16 +2,18 @@
 /** Parses TEI off the main thread so the page stays smooth, even for large texts. */
 import { parseTei } from "./parse";
 import { placePieces, translationPieces } from "./align";
+import { renumber, type Scheme } from "./versification";
 
-export interface ParseRequest { id: number; grc: string; tr?: string | null }
+export interface ParseRequest { id: number; grc: string; tr?: string | null; scheme?: Scheme }
 
 self.onmessage = (e: MessageEvent<ParseRequest>) => {
-  const { id, grc, tr } = e.data;
+  const { id, grc, tr, scheme } = e.data;
   try {
     const doc = parseTei(grc);
     let placed = null, trLevels = null;
     if (tr) {
-      const t = parseTei(tr);
+      const t0 = parseTei(tr);
+      const t = scheme ? renumber(scheme, doc, t0) : t0;
       placed = placePieces(doc, translationPieces(doc, t));
       trLevels = t.levels;
     }

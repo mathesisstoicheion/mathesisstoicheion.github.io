@@ -13,6 +13,7 @@ import { indexCatalog, greekEditions, translations, versionOf, type Catalog, typ
 import { parseTei } from "../src/lib/tei/parse";
 import { findRef } from "../src/lib/tei/refs";
 import { translationPieces, placePieces, alignChunk } from "../src/lib/tei/align";
+import { renumber, schemeFor } from "../src/lib/tei/versification";
 import type { Block } from "../src/lib/tei/types";
 
 const CORPUS = "../pipeline/.cache/corpus";
@@ -45,7 +46,8 @@ if (a === "refs") {
   const toKey = g.units[j].ref.join(".");
   while (end + 1 < g.units.length && g.units[end + 1].ref.join(".").startsWith(toKey + ".")) end++;
   console.log(`# ${w.title} · ${versionOf(ed.urn)} (${g.levels.join(".")})${tr ? ` · translation ${versionOf(tr.urn)}: ${tr.desc ?? ""}` : ""}`);
-  const t = tr ? load(tr) : null;
+  const t0 = tr ? load(tr) : null, scheme = tr ? schemeFor(w.id, tr) : undefined;
+  const t = t0 && scheme ? renumber(scheme, g, t0) : t0;
   const rows = alignChunk(g, { first: i, last: end }, t ? placePieces(g, translationPieces(g, t)) : null);
   for (const r of rows) {
     console.log(`\n[${r.key}]`);
