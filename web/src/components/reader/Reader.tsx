@@ -160,7 +160,8 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const pendingXref = useUI((s) => s.pendingXref);
   const router = useRouter();
   const toast = useUI((s) => s.showToast);
-  const columns = useSettings((s) => s.columns);
+  // which columns show is chosen for the book being read: every book opens with its Greek and the translation side by side
+  const [colsFor, setColsFor] = useState<{ work: string; c: Columns } | null>(null);
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
   const cases = useSettings((s) => s.cases);
@@ -232,6 +233,8 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const cmpText = editions.find((t) => versionOf(t.urn) === P("cmp") && t.urn !== grcText?.urn) ?? null;
   const strict: Strictness = P("cmpx") === "1" ? "spelling" : "readings";
   const second = cmpText ?? trText;
+  // with no translation, only the Greek can show (an "English only" choice would leave the page empty)
+  const columns: Columns = !trText ? "greek" : colsFor?.work === workId ? colsFor.c : "both";
   const pk = (x: string) => (pane === 1 ? x : `${x}2`);
   const cite = `${author?.name ?? ""}, ${work?.title ?? ""}`;
   const loadKey = grcText && snap?.work === workId ? `${grcText.urn}|${second?.urn ?? ""}|${retry}` : null;
@@ -1197,7 +1200,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
     </div>
   );
-  const setCols = (c: Columns) => setSettings({ columns: c });
+  const setCols = (c: Columns) => setColsFor({ work: workId, c });
   const columnsSeg = (
     <div className={styles.seg} role="radiogroup" aria-label="Columns">
       {([["both", "Both"], ["greek", "Greek"], ["trans", "English"]] as [Columns, string][]).map(([c, l]) => (
