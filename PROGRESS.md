@@ -493,6 +493,12 @@ The owner asked whether the old site's features had all come over. A comparison 
 - Code: `lib/find.ts` (+ `find.test.ts`), `components/reader/FindPanel.tsx` + `Find.module.css`, wiring in `Reader.tsx`; tests `e2e/find.spec.ts`.
 - The Find button sits on the bar's second row: on the first, the reading aids have only ~12px to spare at 1280px, and anything wider pushes Float down (continuity.spec checks it).
 
+## The vase: high definition, cracks and every colour (2026-10-06)
+- **High definition:** a 4096 × 2048 painted surface where the graphics card and memory allow (2048 × 1024 otherwise), a finer lathe and handles, a soft reflected room in the gloss (three's RoomEnvironment), the faint ridges of the potter's wheel in relief (a bump map), and gloss that shines only where the paint is black (a roughness map read from the colours). Painting sends only the changed patch to the graphics card (copyTextureToTexture; the surface pictures are uploaded unflipped, so the lathe's v is turned to match). If frames grow slow the pixel ratio steps down, and back up when there is room. Measured 120 fps on this computer.
+- **Strike:** tap the vase, or press and hold for a harder blow (a tightening ring shows the strength). `components/amphora/cracks.ts` grows the cracks: a chip where it lands, radial cracks following the stress outward and wandering, thinning to their tips, splitting when fast, stopping where they meet an earlier crack; rings round a hard blow. Worked in the pot's own measure, seeded, so the list of blows (`cracks` in the design) replays exactly. The crack spreads over a third of a second, chips fly off with real gravity (about 49 units/s² at this scale), bounce, settle and fade (`effects.ts`), the pot rocks on its foot and turns if struck off-centre, and it rings (sound made in the browser; can be switched off). Undo, and Mend all cracks.
+- **Colours:** the five Athenian ones, 24 more, and any colour from the picker (kept as the stroke's `h`).
+- Tests: `cracks.test.ts`, `amphora.test.ts`, `e2e/amphora.spec.ts` (strike, mend, colour).
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

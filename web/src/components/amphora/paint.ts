@@ -1,19 +1,24 @@
 /**
  * Paints the vase's skin: a flat picture wrapped round the lathe, x running round the pot and y down its
- * profile. Three layers: the decoration chosen in the studio (base), the visitor's brushwork (hand, which
- * the rubber clears back to the decoration), and the two together, which is the texture the vase wears.
+ * profile. Layers: the decoration chosen in the studio (base), the visitor's brushwork (hand, which the rubber
+ * clears back to the decoration), and the two together with the cracks on top (out), which is the picture the
+ * vase wears. Two smaller pictures shape its surface: its relief (bump: the potter's wheel marks, the grooves of
+ * cracks, chips) and how glossy each part is (rough: black gloss shines, bare clay is matt).
+ * Everything is drawn in a 2048 × 1024 "design" picture and scaled by k to the size actually used (k = 2 on a
+ * capable computer, for a 4096 × 2048 surface), so a design looks the same at any size.
  */
-import { PALETTE, type Band, type Design, type Stroke } from "@/lib/amphora";
+import { PALETTE, type Band, type Crack, type Design, type Stroke } from "@/lib/amphora";
+import { CrackField, strike, type Fracture, type Surface } from "./cracks";
 
 export const TW = 2048, TH = 1024;
 const GLOSS = PALETTE[0].hex, CLAY = PALETTE[1].hex, RED = PALETTE[2].hex, WHITE = PALETTE[3].hex;
 
 export type Rect = { x: number; y: number; w: number; h: number };
 
-const sheet = () => { const c = document.createElement("canvas"); c.width = TW; c.height = TH; return c; };
+const sheet = (w: number, h: number) => { const c = document.createElement("canvas"); c.width = Math.round(w); c.height = Math.round(h); return c; };
 
-/** `pts`: the profile, evenly spaced along its length (foot first); `font`: the CSS family for the painted words. */
-export function makePainter(pts: { x: number; y: number }[], font: string) {
+/** `pts`: the profile, evenly spaced along its length (foot first); `font`: the CSS family for the painted words; `k`: the scale. */
+export function makePainter(pts: { x: number; y: number }[], font: string, k = 1) {
   const N = pts.length - 1;
   const vOf = (y: number) => { for (let i = 0; i < N; i++) if (pts[i + 1].y >= y) return i / N; return 1; };
   const rowOf = (y: number) => (1 - vOf(y)) * TH;
@@ -24,8 +29,13 @@ export function makePainter(pts: { x: number; y: number }[], font: string) {
   const aspectR = (r: number) => (TW / (2 * Math.PI * Math.max(r, 0.06))) / (TH / L);
   const aspect = (y: number) => aspectR(rAt(y));
 
-  const base = sheet(), hand = sheet(), out = sheet();
-  const g = base.getContext("2d")!, h = hand.getContext("2d")!, o = out.getContext("2d")!;
+  const ks = k / 2;   // the relief and gloss pictures are half the size: they vary slowly
+  const base = sheet(TW * k, TH * k), hand = sheet(TW * k, TH * k), out = sheet(TW * k, TH * k);
+  const bump = sheet(TW * ks, TH * ks), rough = sheet(TW * ks, TH * ks);
+  const g = base.getContext("2d")!, h = hand.getContext("2d")!, o = out.getContext("2d", { willReadFrequently: false })!;
+  const b = bump.getContext("2d")!, r = rough.getContext("2d", { willReadFrequently: true })!;
+  const rAtRow = (y: number) => pts[Math.max(0, Math.min(N, Math.round((1 - y / TH) * N)))].x;
+  const surface: Surface = { W: TW, H: TH, sx: (y) => TW / (2 * Math.PI * Math.max(rAtRow(y), 0.06)), sy: TH / L };
 
   const fill = (y0: number, y1: number, c: string) => { g.fillStyle = c; g.fillRect(0, rowOf(y1), TW, rowOf(y0) - rowOf(y1)); };
   /** draw `fn` three times, a turn apart, so whatever crosses the seam at the back of the pot joins up */
@@ -190,6 +200,7 @@ export function makePainter(pts: { x: number; y: number }[], font: string) {
   }
 
   function paintBase(d: Design) {
+    g.setTransform(k, 0, 0, k, 0, 0);
     g.globalCompositeOperation = "source-over";
     g.fillStyle = CLAY; g.fillRect(0, 0, TW, TH);
     // foot: black up to the rays, which rise from it
@@ -210,18 +221,18 @@ export function makePainter(pts: { x: number; y: number }[], font: string) {
 
   // ---- the brush ------------------------------------------------------------------------------
   /** One step of a stroke, from one point to the next, in texture pixels; returns the area it changed. */
-  function segment(s: Pick<Stroke, "c" | "w">, x0: number, y0: number, x1: number, y1: number, a: number): Rect[] {
+  function segment(s: Pick<Stroke, "c" | "w" | "h">, x0: number, y0: number, x1: number, y1: number, a: number): Rect[] {
     if (x1 - x0 > TW / 2) x1 -= TW; else if (x0 - x1 > TW / 2) x1 += TW; // the short way round, across the seam
     if (x0 === x1 && y0 === y1) x1 += 0.01;
-    h.globalCompositeOperation = s.c < 0 ? "destination-out" : "source-over";
-    h.strokeStyle = s.c < 0 ? "#000" : PALETTE[s.c].hex;
+    h.globalCompositeOperation = s.c === -1 ? "destination-out" : "source-over";
+    h.strokeStyle = s.c === -2 ? s.h ?? "#000" : s.c < 0 ? "#000" : PALETTE[s.c].hex;
     h.lineWidth = s.w * 2; h.lineCap = "round"; h.lineJoin = "round";
     const out: Rect[] = [];
     const px = s.w * a + 2, py = s.w + 2;
     for (const dx of [-TW, 0, TW]) {
       const lo = Math.min(x0, x1) + dx - px, hi = Math.max(x0, x1) + dx + px;
       if (hi < 0 || lo > TW) continue;
-      h.setTransform(a, 0, 0, 1, 0, 0);
+      h.setTransform(a * k, 0, 0, k, 0, 0);
       h.beginPath(); h.moveTo((x0 + dx) / a, y0); h.lineTo((x1 + dx) / a, y1); h.stroke();
       out.push({ x: Math.max(0, lo), y: Math.max(0, Math.min(y0, y1) - py), w: Math.min(TW, hi) - Math.max(0, lo), h: Math.abs(y1 - y0) + 2 * py });
     }
@@ -230,7 +241,8 @@ export function makePainter(pts: { x: number; y: number }[], font: string) {
   }
   function replay(strokes: Stroke[]) {
     h.globalCompositeOperation = "source-over";
-    h.clearRect(0, 0, TW, TH);
+    h.setTransform(1, 0, 0, 1, 0, 0);
+    h.clearRect(0, 0, hand.width, hand.height);
     for (const s of strokes) {
       const p = s.p;
       for (let i = 0; i + 2 < p.length; i += 3) {
@@ -239,14 +251,128 @@ export function makePainter(pts: { x: number; y: number }[], font: string) {
       }
     }
   }
+  // ---- cracks ----------------------------------------------------------------------------------
+  let field = new CrackField(TW), fractures: Fracture[] = [];
+  const boxHits = (bx: [number, number, number, number], rc: Rect) =>
+    [-TW, 0, TW].some((dx) => bx[0] + dx < rc.x + rc.w && bx[2] + dx > rc.x && bx[1] < rc.y + rc.h && bx[3] > rc.y);
+  /** Draw a fracture (the part of it from `from` to `to`, 0–1, while it spreads) in colour or in relief. */
+  function drawFracture(cx: CanvasRenderingContext2D, fr: Fracture, scale: number, relief: boolean, from = 0, to = 1) {
+    cx.lineCap = "round"; cx.lineJoin = "round";
+    for (const dx of [-TW, 0, TW]) {
+      cx.setTransform(scale, 0, 0, scale, dx * scale, 0);
+      if (from === 0 && fr.chip.length) {
+        cx.beginPath();
+        for (let i = 0; i < fr.chip.length; i += 2) cx.lineTo(fr.chip[i], fr.chip[i + 1]);
+        cx.closePath();
+        if (relief) { cx.fillStyle = "rgb(70,70,70)"; cx.fill(); cx.strokeStyle = "rgb(175,175,175)"; cx.lineWidth = 1.2; cx.stroke(); }
+        else {
+          // the gloss flakes off and shows the paler clay of the body beneath, with a dark broken edge
+          cx.fillStyle = "#d9935f"; cx.fill();
+          cx.strokeStyle = "rgba(24,14,8,0.75)"; cx.lineWidth = 0.8; cx.stroke();
+        }
+      }
+      for (const p of fr.paths) {
+        const n = p.pts.length / 3, i0 = Math.floor(from * (n - 1)), i1 = Math.ceil(to * (n - 1));
+        for (let pass = 0; pass < 2; pass++) {
+          for (let i = Math.max(1, i0); i <= i1; i++) {
+            const j = i * 3, w = p.pts[j + 2];
+            cx.beginPath();
+            if (relief) {
+              cx.strokeStyle = pass ? "rgb(25,25,25)" : "rgba(0,0,0,0.22)"; cx.lineWidth = pass ? w * 1.4 + 0.6 : w * 3.4 + 1.5;
+              cx.moveTo(p.pts[j - 3], p.pts[j - 2]); cx.lineTo(p.pts[j], p.pts[j + 1]);
+            } else if (pass === 0) {
+              // a pale edge where the gloss has broken away along the crack, so it shows on black as well as on clay
+              cx.strokeStyle = "rgba(240,205,165,0.32)"; cx.lineWidth = w + 1.3;
+              cx.moveTo(p.pts[j - 3] + 0.6, p.pts[j - 2] + 0.6); cx.lineTo(p.pts[j] + 0.6, p.pts[j + 1] + 0.6);
+            } else {
+              cx.strokeStyle = "rgba(14,9,6,0.94)"; cx.lineWidth = w;
+              cx.moveTo(p.pts[j - 3], p.pts[j - 2]); cx.lineTo(p.pts[j], p.pts[j + 1]);
+            }
+            cx.stroke();
+          }
+        }
+      }
+    }
+    cx.setTransform(1, 0, 0, 1, 0, 0);
+  }
+  /** The relief with no cracks: the faint ridges a potter's fingers leave on a wheel-thrown pot, and grain. */
+  function plainRelief() {
+    b.setTransform(1, 0, 0, 1, 0, 0);
+    const img = b.createImageData(bump.width, bump.height), d = img.data;
+    let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let y = 0; y < bump.height; y++) {
+      const yy = y / ks;
+      const ridge = 128 + 5 * Math.sin(yy * 0.47) + 2.2 * Math.sin(yy * 1.31 + 1.7);
+      for (let x = 0; x < bump.width; x++) {
+        const v = ridge + (rnd() - 0.5) * 7, i = (y * bump.width + x) * 4;
+        d[i] = d[i + 1] = d[i + 2] = v; d[i + 3] = 255;
+      }
+    }
+    b.putImageData(img, 0, 0);
+  }
+  /** All the cracks again, from the list of blows (after an undo, or when the vase opens). */
+  function rebuildCracks(cracks: Crack[]) {
+    field = new CrackField(TW);
+    fractures = cracks.map((c) => strike(c, surface, field));
+    plainRelief();
+    for (const fr of fractures) drawFracture(b, fr, ks, true);
+  }
+  /** A new blow: its cracks are worked out and returned, to be drawn as they spread (drawCrack). */
+  function addCrack(c: Crack): Fracture {
+    const fr = strike(c, surface, field);
+    fractures.push(fr);
+    return fr;
+  }
+  /** The part of a spreading crack from `from` to `to`, drawn straight onto the vase and its relief; returns where. */
+  function drawCrack(fr: Fracture, from: number, to: number): Rect[] {
+    drawFracture(o, fr, k, false, from, to);
+    drawFracture(b, fr, ks, true, from, to);
+    const rects: Rect[] = [];
+    for (const dx of [-TW, 0, TW]) {
+      const x0 = Math.max(0, fr.box[0] + dx), x1 = Math.min(TW, fr.box[2] + dx);
+      if (x1 > x0) rects.push({ x: x0, y: Math.max(0, fr.box[1]), w: x1 - x0, h: Math.min(TH, fr.box[3]) - Math.max(0, fr.box[1]) });
+    }
+    return rects;
+  }
+  /** The colour of the vase at a point (for the chips that fly off). */
+  function colourAt(x: number, y: number): string {
+    const px = o.getImageData(Math.max(0, Math.min(out.width - 1, Math.round(x * k))), Math.max(0, Math.min(out.height - 1, Math.round(y * k))), 1, 1).data;
+    return `rgb(${px[0]},${px[1]},${px[2]})`;
+  }
+  /** How glossy each part is, read from its colour: the black gloss shines; clay and added colours less. */
+  function glossFrom(rc: Rect) {
+    const x = Math.max(0, Math.floor(rc.x * ks)), y = Math.max(0, Math.floor(rc.y * ks));
+    const w = Math.min(rough.width - x, Math.ceil(rc.w * ks) + 2), hh = Math.min(rough.height - y, Math.ceil(rc.h * ks) + 2);
+    if (w <= 0 || hh <= 0) return;
+    r.setTransform(1, 0, 0, 1, 0, 0);
+    r.drawImage(out, (x / ks) * k, (y / ks) * k, (w / ks) * k, (hh / ks) * k, x, y, w, hh);
+    const img = r.getImageData(x, y, w, hh), d = img.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const lum = 0.2126 * d[i] + 0.7152 * d[i + 1] + 0.0722 * d[i + 2];
+      const v = lum < 34 ? 0.2 : lum < 70 ? 0.2 + ((lum - 34) / 36) * 0.38 : 0.6;
+      d[i] = d[i + 1] = d[i + 2] = v * 255;
+    }
+    r.putImageData(img, x, y);
+  }
+
+  /** Base, brushwork and cracks together, in the given areas (design pixels), or everywhere. */
   function compose(rects?: Rect[]) {
-    for (const r of rects ?? [{ x: 0, y: 0, w: TW, h: TH }]) {
-      const x = Math.max(0, Math.floor(r.x)), y = Math.max(0, Math.floor(r.y)), w = Math.min(TW - x, Math.ceil(r.w) + 2), hh = Math.min(TH - y, Math.ceil(r.h) + 2);
+    for (const rc of rects ?? [{ x: 0, y: 0, w: TW, h: TH }]) {
+      const x = Math.max(0, Math.floor(rc.x * k)), y = Math.max(0, Math.floor(rc.y * k));
+      const w = Math.min(out.width - x, Math.ceil(rc.w * k) + 2), hh = Math.min(out.height - y, Math.ceil(rc.h * k) + 2);
       if (w <= 0 || hh <= 0) continue;
+      o.setTransform(1, 0, 0, 1, 0, 0);
       o.drawImage(base, x, y, w, hh, x, y, w, hh);
       o.drawImage(hand, x, y, w, hh, x, y, w, hh);
+      const here = fractures.filter((fr) => boxHits(fr.box, rc));
+      if (here.length) {
+        o.save(); o.beginPath(); o.rect(x, y, w, hh); o.clip();
+        for (const fr of here) drawFracture(o, fr, k, false);
+        o.restore();
+      }
+      glossFrom(rc);
     }
   }
 
-  return { canvas: out, paintBase, replay, compose, segment, aspectR };
+  return { canvas: out, bump, rough, k, paintBase, replay, compose, segment, aspectR, rebuildCracks, addCrack, drawCrack, colourAt };
 }

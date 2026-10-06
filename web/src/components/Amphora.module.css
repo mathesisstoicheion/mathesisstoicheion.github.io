@@ -86,6 +86,30 @@
 }
 .swatch:hover { transform: translateY(-2px); }
 .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent); transform: scale(1.08); }
+/* more colours: a grid of small swatches, the ones picked with the colour picker, and the picker itself */
+.colours { display: grid; gap: 10px; }
+.more { display: grid; grid-template-columns: repeat(auto-fill, minmax(26px, 1fr)); gap: 6px; }
+.chipSwatch, .anyColour {
+  aspect-ratio: 1; width: 100%; min-width: 26px; border-radius: 6px; border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
+  background: var(--sw); cursor: pointer; padding: 0; transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.chipSwatch:hover { transform: translateY(-2px); }
+.chipSwatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); transform: scale(1.06); }
+.anyColour {
+  position: relative; display: grid; place-items: center; overflow: hidden; color: var(--ink); font: 600 1.1rem/1 var(--f-label);
+  background: conic-gradient(from 0deg, #e53935, #fdd835, #43a047, #1e88e5, #8e24aa, #e53935);
+}
+.anyColour span { display: grid; place-items: center; width: 62%; aspect-ratio: 1; border-radius: 50%; background: var(--surface); }
+.anyColour input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0; }
+.anyColour:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+/* striking: a ring that tightens while the blow gathers strength (about a second and a half to full) */
+.charge {
+  position: absolute; z-index: 3; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; pointer-events: none;
+  border: 3px solid var(--accent); box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
+  animation: gather 1.5s cubic-bezier(0.3, 0, 0.2, 1) forwards;
+}
+@keyframes gather { from { scale: 1.6; opacity: 0.2; border-width: 1px; } to { scale: 0.32; opacity: 1; border-width: 6px; } }
+.stage[data-tool="strike"] .canvas { cursor: crosshair; }
 .swatchName { font-size: 0.85rem; color: var(--ink-2); font-style: italic; }
 @media (pointer: coarse) { .swatch { width: var(--tap); height: var(--tap); } }
 

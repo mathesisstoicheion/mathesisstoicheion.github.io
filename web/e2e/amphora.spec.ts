@@ -57,6 +57,34 @@ test("paint on the vase, change it, undo, and find it again after a reload", asy
   await expect(page.getByText("A neck-amphora in the black-figure style")).toBeVisible();
 });
 
+test("strike the vase to crack it, mend it, and paint in any colour", async ({ page }) => {
+  const studio = await openStudio(page);
+  const c = (await page.locator("canvas[aria-label*='amphora']").boundingBox())!;
+  const x = c.x + c.width / 2, y = c.y + c.height / 2;
+  await studio.getByRole("button", { name: "Strike" }).click();
+  await studio.getByRole("button", { name: "Sound on" }).click();   // quiet, for the test
+  // a tap, then a long press: the longer press is the harder blow
+  await page.mouse.move(x - 20, y - 30); await page.mouse.down(); await page.mouse.up();
+  await page.mouse.move(x + 20, y + 30); await page.mouse.down(); await page.waitForTimeout(900); await page.mouse.up();
+  await expect.poll(async () => (await stored(page))?.cracks.length).toBe(2);
+  const [light, hard] = (await stored(page)).cracks;
+  expect(hard.f).toBeGreaterThan(light.f);
+  await page.waitForTimeout(500);
+  // undo takes the last blow back; Mend all cracks takes them all
+  await studio.getByRole("button", { name: "Undo" }).click();
+  await expect.poll(async () => (await stored(page))?.cracks.length).toBe(1);
+  await studio.getByRole("button", { name: "Mend all cracks" }).click();
+  // (whole again, it is the site's own design once more, so nothing needs keeping)
+  await expect.poll(async () => (await stored(page))?.cracks.length ?? 0).toBe(0);
+  // a colour no Athenian had
+  await studio.getByRole("button", { name: "Paint", exact: true }).click();
+  await studio.getByRole("button", { name: "Aegean" }).click();
+  await page.mouse.move(x - 30, y); await page.mouse.down(); await page.mouse.move(x + 30, y, { steps: 8 }); await page.mouse.up();
+  await expect.poll(async () => (await stored(page))?.strokes.at(-1)?.h).toBe("#1f6fb2");
+  await page.reload();
+  await expect(page.getByText("Your own vase, painted here")).toBeVisible();
+});
+
 test("on a phone, one finger paints and two fingers turn without painting", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   const studio = await openStudio(page);

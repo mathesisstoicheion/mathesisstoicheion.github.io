@@ -31,6 +31,10 @@ describe("cleanDesign", () => {
     expect(d?.neck).toBe(DEFAULT_DESIGN.neck);
     expect(d?.words).toEqual(["ΣΟΦΙΑ", ""]);
     expect(d?.strokes).toEqual([{ c: 0, w: 5, p: [1, 2, 100] }]);
+    expect(d?.cracks).toEqual([]);
+    const e = cleanDesign({ ...DEFAULT_DESIGN, strokes: [{ c: -2, w: 4, p: [], h: "#1F6FB2" }, { c: -2, w: 4, p: [] }], cracks: [{ x: 1, y: 2, f: 0.5, s: 9 }, { x: 1, y: 2, f: 7, s: 9 }] });
+    expect(e?.strokes).toEqual([{ c: -2, w: 4, p: [], h: "#1f6fb2" }]);
+    expect(e?.cracks).toEqual([{ x: 1, y: 2, f: 0.5, s: 9 }]);
     expect(cleanDesign({ v: 2 })).toBeNull();
     expect(cleanDesign("nonsense")).toBeNull();
   });

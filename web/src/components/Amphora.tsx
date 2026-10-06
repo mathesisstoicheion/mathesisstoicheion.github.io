@@ -4,10 +4,12 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useSettings, prefersReducedMotion } from "@/lib/settings";
 import {
-  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, MAX_POINTS, PALETTE, WORD_MAX,
-  loadDesign, pointCount, saveDesign, toGreekCaps, type Band, type Design, type Frieze, type Stroke,
+  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, MAX_CRACKS, MAX_POINTS, MORE_COLOURS, PALETTE, WORD_MAX,
+  loadDesign, pointCount, saveDesign, toGreekCaps, type Band, type Crack, type Design, type Frieze, type Stroke,
 } from "@/lib/amphora";
-import { makePainter, TW, TH } from "./amphora/paint";
+import { makePainter, TW, TH, type Rect } from "./amphora/paint";
+import { clink, makeChips } from "./amphora/effects";
+import type { Fracture } from "./amphora/cracks";
 import styles from "./Amphora.module.css";
 
 /**
@@ -18,16 +20,19 @@ import styles from "./Amphora.module.css";
  * in this browser (lib/amphora.ts). three.js is loaded only when this component mounts.
  */
 
-type Tool = "brush" | "scratch" | "rub" | "turn";
+type Tool = "brush" | "scratch" | "rub" | "strike" | "turn";
 type Repaint = "base" | "hand" | "all";
 type Api = { repaint(what: Repaint): void; picture(): string; nudge(turn: number, zoomBy: number): void; resetView(): void };
 
-const SIZES = [{ name: "Fine", w: 4 }, { name: "Medium", w: 10 }, { name: "Broad", w: 22 }] as const;
+const SIZES = [{ name: "Fine", w: 3 }, { name: "Medium", w: 9 }, { name: "Broad", w: 20 }, { name: "Huge", w: 40 }] as const;
+/** a blow's strength from how long it was held: a tap is light, about a second and a half is the hardest */
+const forceOf = (ms: number) => Math.max(0.12, Math.min(1, 0.12 + ms / 1500));
 const SCRATCH_W = 1.6;
 const TOOLS: { id: Tool; name: string; hint: string }[] = [
   { id: "brush", name: "Paint", hint: "Paint straight onto the vase. To turn it, use Turn, the arrows on the vase or two fingers; pinch or scroll to come closer." },
   { id: "scratch", name: "Scratch", hint: "Scratch fine lines through to the clay, as black-figure painters did for muscles, folds of cloth and feathers." },
   { id: "rub", name: "Rub out", hint: "Rub out your own brushwork. The patterns underneath come back." },
+  { id: "strike", name: "Strike", hint: "Tap the vase to strike it; press and hold for a harder blow. Cracks run out from the blow, split as they go, and stop where they meet another crack. In antiquity a cracked pot was often mended with lead clamps set in drilled holes." },
   { id: "turn", name: "Turn", hint: "Drag to turn the vase, and up or down to move along it. Pinch or scroll to come closer." },
 ];
 const ZONES: { key: "neck" | "shoulder" | "lower" | "foot"; name: string }[] = [
@@ -95,10 +100,20 @@ export default function Amphora() {
   const studioRef = useRef(false);
   const [slotH, setSlotH] = useState(0);
   const [tool, setTool] = useState<Tool>("brush");
-  const [colour, setColour] = useState(0);
+  /** the brush's colour: one of the Athenian colours (an index), or any other (c = -2, with its hex) */
+  const [colour, setColour] = useState<{ c: number; h?: string; name: string }>({ c: 0, name: PALETTE[0].name });
+  const [picked, setPicked] = useState<string[]>([]);   // colours chosen with the colour picker, latest first
   const [size, setSize] = useState(1);
-  const brushRef = useRef({ tool: "brush" as Tool, colour: 0, w: SIZES[1].w as number });
-  useEffect(() => { brushRef.current = { tool, colour, w: tool === "scratch" ? SCRATCH_W : SIZES[size].w }; }, [tool, colour, size]);
+  const [sound, setSound] = useState(true);
+  const [charge, setCharge] = useState<{ x: number; y: number; id: number } | null>(null);
+  const brushRef = useRef({ tool: "brush" as Tool, c: 0, h: undefined as string | undefined, w: SIZES[1].w as number, sound: true });
+  useEffect(() => {
+    brushRef.current = { tool, c: colour.c, h: colour.h, w: tool === "scratch" ? SCRATCH_W : SIZES[size].w, sound };
+  }, [tool, colour, size, sound]);
+  const pickAny = (hex: string) => {
+    setColour({ c: -2, h: hex, name: "Your colour" });
+    setPicked((p) => [hex, ...p.filter((x) => x !== hex)].slice(0, 8));
+  };
   const undoRef = useRef<Design[]>([]);
   const redoRef = useRef<Design[]>([]);
   const [hist, setHist] = useState({ undo: 0, redo: 0 });
@@ -149,7 +164,11 @@ export default function Amphora() {
     requestAnimationFrame(() => openBtnRef.current?.focus({ preventScroll: true }));
   };
   // the three.js effect calls these, so they always see the latest design
-  const handlers = useRef({ stroke: (s: Stroke) => { void s; }, undo, redo, close: () => {} });
+  const handlers = useRef({
+    stroke: (s: Stroke) => { void s; }, undo, redo, close: () => {},
+    crack: (c: Crack): boolean => { void c; return false; },
+    charge: (at: { x: number; y: number } | null) => { void at; },
+  });
   useEffect(() => {
     handlers.current.stroke = (s: Stroke) => {
       const d = designRef.current;
@@ -160,6 +179,13 @@ export default function Amphora() {
       }
       commit({ ...d, strokes: [...d.strokes, s] }, null);
     };
+    handlers.current.crack = (c: Crack) => {
+      const d = designRef.current;
+      if (d.cracks.length >= MAX_CRACKS) { setNote("The vase cannot take another blow. Mend some cracks (Undo, or Mend all cracks) first."); return false; }
+      commit({ ...d, cracks: [...d.cracks, c] }, null);
+      return true;
+    };
+    handlers.current.charge = (at) => setCharge(at ? { ...at, id: Date.now() } : null);
     handlers.current.undo = undo;
     handlers.current.redo = redo;
     handlers.current.close = close;
@@ -202,9 +228,13 @@ export default function Amphora() {
       const saved = loadDesign();
       if (saved) { designRef.current = saved; setDesign(saved); setCustom(!isDefault(saved)); }
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
-      try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true }); } catch { setNoGL(true); return; }
-      renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
+      try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); } catch { setNoGL(true); return; }
+      // sharp on every screen, but never more pixels than the device can draw smoothly (see the frame loop)
+      let ratio = Math.min(devicePixelRatio || 1, 2.5);
+      renderer.setPixelRatio(ratio);
       renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.toneMapping = THREE.NeutralToneMapping;
+      renderer.toneMappingExposure = 0.9;
       const canvas = renderer.domElement;
       canvas.setAttribute("role", "img");
       canvas.setAttribute("aria-label", describe(designRef.current));
@@ -220,8 +250,11 @@ export default function Amphora() {
         [0.56, 0.78], [0.63, 1.02], [0.62, 1.2], [0.53, 1.4], [0.38, 1.56], [0.25, 1.64], [0.21, 1.72], [0.21, 1.86], [0.24, 1.97],
         [0.31, 2.02], [0.32, 2.08], [0.27, 2.1], [0.22, 2.06], [0.2, 1.98]];
       const spline = new THREE.SplineCurve(prof.map(([x, y]) => new THREE.Vector2(x, y)));
-      const pts = spline.getSpacedPoints(220);
-      const geo = new THREE.LatheGeometry(pts, 160);
+      const pts = spline.getSpacedPoints(360);
+      const geo = new THREE.LatheGeometry(pts, 300);
+      // the surface pictures are uploaded the right way up (so a part of one can be updated): turn the mapping to match
+      const uvs = geo.attributes.uv;
+      for (let i = 0; i < uvs.count; i++) uvs.setY(i, 1 - uvs.getY(i));
       // a coarser copy of the same shape, never drawn: it finds where the brush touches the pot
       const proxyGeo = new THREE.LatheGeometry(spline.getSpacedPoints(90), 72);
       const proxyMat = new THREE.MeshBasicMaterial({ side: THREE.DoubleSide });
@@ -229,25 +262,49 @@ export default function Amphora() {
 
       // next/font renames the family, so read the real name from its CSS variable
       const DIDOT = `${getComputedStyle(document.documentElement).getPropertyValue("--font-didot").trim() || '"GFS Didot"'}, serif`;
-      const painter = makePainter(pts, DIDOT);
-      const texture = new THREE.CanvasTexture(painter.canvas);
-      texture.colorSpace = THREE.SRGBColorSpace;
-      texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-      const mat = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.42, metalness: 0.04, side: THREE.DoubleSide });
+      // a 4096 × 2048 surface where the graphics card and memory allow; 2048 × 1024 otherwise
+      const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory;
+      const k = renderer.capabilities.maxTextureSize >= 8192 && (mem === undefined || mem >= 4) ? 2 : 1;
+      const painter = makePainter(pts, DIDOT, k);
+      const surfaceTex = (img: HTMLCanvasElement, colour: boolean) => {
+        const t = new THREE.CanvasTexture(img);
+        t.flipY = false;
+        if (colour) t.colorSpace = THREE.SRGBColorSpace;
+        t.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        return t;
+      };
+      const texture = surfaceTex(painter.canvas, true), roughTex = surfaceTex(painter.rough, false), bumpTex = surfaceTex(painter.bump, false);
+      // the same pictures as sources for updating a part of each (never drawn themselves)
+      const src = { c: new THREE.Texture(painter.canvas), r: new THREE.Texture(painter.rough), b: new THREE.Texture(painter.bump) };
+      const mat = new THREE.MeshStandardMaterial({
+        map: texture, roughnessMap: roughTex, roughness: 1, bumpMap: bumpTex, bumpScale: 1.4, metalness: 0.02, envMapIntensity: 0.45, side: THREE.DoubleSide,
+      });
       const vase = new THREE.Group();
       vase.add(new THREE.Mesh(geo, mat));
-      const hMat = new THREE.MeshStandardMaterial({ color: 0x15100c, roughness: 0.4 });
+      // the pot stands on its foot and rocks about it when struck
+      const rocker = new THREE.Group();
+      rocker.add(vase);
+      const hMat = new THREE.MeshStandardMaterial({ color: 0x15100c, roughness: 0.25, envMapIntensity: 0.65 });
       const handles: InstanceType<typeof THREE.TubeGeometry>[] = [];
       for (const s of [1, -1]) {
         const c = new THREE.CatmullRomCurve3(([[0.2, 1.82], [0.42, 1.86], [0.58, 1.74], [0.57, 1.56], [0.47, 1.47]] as const).map(([x, y]) => new THREE.Vector3(s * x, y, 0)));
-        const tg = new THREE.TubeGeometry(c, 48, 0.034, 12);
+        const tg = new THREE.TubeGeometry(c, 120, 0.034, 24);
         handles.push(tg);
         vase.add(new THREE.Mesh(tg, hMat));
       }
-      scene.add(vase);
-      scene.add(new THREE.HemisphereLight(0xfff1e0, 0x3a2414, 2.6));
-      const key = new THREE.DirectionalLight(0xfff0dc, 3.6); key.position.set(-3, 4, 5); scene.add(key);
-      const rim = new THREE.DirectionalLight(0xffc89a, 2.4); rim.position.set(4, 2, -4); scene.add(rim);
+      scene.add(rocker);
+      scene.add(new THREE.HemisphereLight(0xfff1e0, 0x3a2414, 1.1));
+      const key = new THREE.DirectionalLight(0xfff0dc, 2.8); key.position.set(-3, 4, 5); scene.add(key);
+      const rim = new THREE.DirectionalLight(0xffc89a, 1.9); rim.position.set(4, 2, -4); scene.add(rim);
+      // a soft room reflected in the gloss, as a real pot reflects the room it stands in
+      const pmrem = new THREE.PMREMGenerator(renderer);
+      import("three/examples/jsm/environments/RoomEnvironment.js").then(({ RoomEnvironment }) => {
+        if (disposed) return;
+        const room = new RoomEnvironment();
+        scene.environment = pmrem.fromScene(room, 0.04).texture;
+        room.dispose?.();
+      }, () => undefined);
+      const chips = makeChips(THREE, scene);
 
       const resize = () => {
         const w = stage.clientWidth, h = stage.clientHeight;
@@ -266,21 +323,41 @@ export default function Amphora() {
       // ---- finding the brush on the pot, and painting there
       const ray = new THREE.Raycaster(), ndc = new THREE.Vector2(), local = new THREE.Vector3();
       const hits: { distance: number; point: InstanceType<typeof THREE.Vector3>; uv?: InstanceType<typeof THREE.Vector2> }[] = [];
+      const lastHit = { point: new THREE.Vector3(), dir: new THREE.Vector3() };
       const hitAt = (cx: number, cy: number): [number, number, number] | null => {
         const r = canvas.getBoundingClientRect();
         ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1);
         ray.setFromCamera(ndc, camera);
-        vase.updateMatrixWorld();
+        rocker.updateMatrixWorld();
         proxy.matrixWorld.copy(vase.matrixWorld);
         hits.length = 0;
         proxy.raycast(ray, hits as Parameters<typeof proxy.raycast>[1]);
         let best = hits[0];
         for (const h of hits) if (h.distance < best.distance) best = h;
         if (!best?.uv) return null;
+        lastHit.point.copy(best.point); lastHit.dir.copy(ray.ray.direction);
         local.copy(best.point); vase.worldToLocal(local);
         let u = Math.atan2(local.x, local.z) / (2 * Math.PI);
         if (u < 0) u += 1;
         return [Math.round(u * TW), Math.round((1 - best.uv.y) * TH), Math.round(painter.aspectR(Math.hypot(local.x, local.z)) * 100)];
+      };
+      // the parts of the surface changed since the last frame, sent to the graphics card in the next one
+      let dirty: Rect[] = [], all = false, bumpDirty: Rect[] = [], shown = false;
+      const send = (rects: Rect[], relief = false) => { dirty.push(...rects); if (relief) bumpDirty.push(...rects); };
+      const box = new THREE.Box2(), at = new THREE.Vector2();
+      const copy = (from: InstanceType<typeof THREE.Texture>, to: InstanceType<typeof THREE.Texture>, rc: Rect, scale: number, w: number, h: number) => {
+        const x0 = Math.max(0, Math.floor(rc.x * scale)), y0 = Math.max(0, Math.floor(rc.y * scale));
+        const x1 = Math.min(w, Math.ceil((rc.x + rc.w) * scale) + 2), y1 = Math.min(h, Math.ceil((rc.y + rc.h) * scale) + 2);
+        if (x1 <= x0 || y1 <= y0) return;
+        box.min.set(x0, y0); box.max.set(x1, y1); at.set(x0, y0);
+        renderer.copyTextureToTexture(from, to, box, at);
+      };
+      const flush = () => {
+        if (all || !shown) { texture.needsUpdate = true; roughTex.needsUpdate = true; bumpTex.needsUpdate = true; all = false; dirty = []; bumpDirty = []; return; }
+        const cw = painter.canvas.width, ch = painter.canvas.height, rw = painter.rough.width, rh = painter.rough.height;
+        for (const rc of dirty) { copy(src.c, texture, rc, k, cw, ch); copy(src.r, roughTex, rc, k / 2, rw, rh); }
+        for (const rc of bumpDirty) copy(src.b, bumpTex, rc, k / 2, rw, rh);
+        dirty = []; bumpDirty = [];
       };
       let live: { s: Stroke; last: [number, number, number] | null; sx: number; sy: number } | null = null;
       const paintAt = (cx: number, cy: number) => {
@@ -288,13 +365,35 @@ export default function Amphora() {
         const p = hitAt(cx, cy);
         if (!p) { live.last = null; return; }
         // off the pot and back on again: that was one stroke, and this is the next
-        if (!live.last && live.s.p.length) { handlers.current.stroke(live.s); live.s = { c: live.s.c, w: live.s.w, p: [] }; }
+        if (!live.last && live.s.p.length) { handlers.current.stroke(live.s); live.s = { c: live.s.c, w: live.s.w, p: [], ...(live.s.h ? { h: live.s.h } : {}) }; }
         const q = live.last ?? p;
-        painter.compose(painter.segment(live.s, q[0], q[1], p[0], p[1], p[2] / 100));
+        const rects = painter.segment(live.s, q[0], q[1], p[0], p[1], p[2] / 100);
+        painter.compose(rects);
+        send(rects);
         live.s.p.push(p[0], p[1], p[2]);
         live.last = p;
-        texture.needsUpdate = true;
       };
+
+      // ---- a blow: the cracks spread over a moment, chips fly, the pot rocks on its foot and rings
+      const spreading: { fr: Fracture; t: number; done: number }[] = [];
+      const rock = { x: 0, z: 0, vx: 0, vz: 0, spin: 0 };
+      const strikeAt = (cx: number, cy: number, f: number) => {
+        const p = hitAt(cx, cy);
+        if (!p) return;
+        const crack: Crack = { x: p[0], y: p[1], f: Math.round(f * 100) / 100, s: Math.floor(Math.random() * 2 ** 31) };
+        if (!handlers.current.crack(crack)) return;
+        const fr = painter.addCrack(crack);
+        spreading.push({ fr, t: 0, done: 0 });
+        // chips: the painted surface, and the clay inside
+        const outward = new THREE.Vector3(lastHit.point.x, 0, lastHit.point.z).normalize();
+        chips.burst(lastHit.point.clone(), outward, [painter.colourAt(p[0], p[1]), "#c97a46"], crack.f);
+        // the blow pushes along its own direction: rocking the pot about its foot, and turning it if it lands off-centre
+        const F = lastHit.dir.clone().multiplyScalar(crack.f), h = Math.max(0.2, lastHit.point.y);
+        rock.vx += F.z * h * 0.55; rock.vz -= F.x * h * 0.55;
+        rock.spin += (lastHit.point.z * F.x - lastHit.point.x * F.z) * 0.06;
+        if (brushRef.current.sound) clink(crack.f);
+      };
+      let charging: { x: number; y: number; t: number } | null = null;
 
       // ---- pointers: in the studio one finger paints and two turn and zoom; outside it, dragging turns
       const pointers = new Map<number, { x: number; y: number }>();
@@ -308,6 +407,7 @@ export default function Amphora() {
         e.preventDefault();
         if (pointers.size >= 2) {
           if (live) { live = null; api.current?.repaint("hand"); } // the first finger was starting a turn, not a stroke
+          if (charging) { charging = null; handlers.current.charge(null); }
           drag = null;
           const t = two();
           pinch = { d: t.d, x: t.x, zoom: zoomT, rot };
@@ -316,7 +416,14 @@ export default function Amphora() {
         const b = brushRef.current;
         if (b.tool === "turn" || e.button === 2) { drag = { x: e.clientX, y: e.clientY, rot, pan: panT }; return; }
         vel = 0;
-        live = { s: { c: b.tool === "rub" ? -1 : b.tool === "scratch" ? 1 : b.colour, w: b.w, p: [] }, last: null, sx: e.clientX, sy: e.clientY };
+        if (b.tool === "strike") {
+          const r = canvas.getBoundingClientRect();
+          charging = { x: e.clientX, y: e.clientY, t: performance.now() };
+          handlers.current.charge({ x: e.clientX - r.left, y: e.clientY - r.top });
+          return;
+        }
+        const c = b.tool === "rub" ? -1 : b.tool === "scratch" ? 1 : b.c;
+        live = { s: { c, w: b.w, p: [], ...(c === -2 && b.h ? { h: b.h } : {}) }, last: null, sx: e.clientX, sy: e.clientY };
         paintAt(e.clientX, e.clientY);
       };
       const move = (e: PointerEvent) => {
@@ -345,6 +452,12 @@ export default function Amphora() {
       const up = (e: PointerEvent) => {
         pointers.delete(e.pointerId);
         if (live) { if (live.s.p.length) handlers.current.stroke(live.s); live = null; }
+        if (charging) {
+          const c = charging;
+          charging = null;
+          handlers.current.charge(null);
+          if (e.type === "pointerup") strikeAt(c.x, c.y, forceOf(performance.now() - c.t));
+        }
         if (pointers.size < 2) pinch = null;
         if (!pointers.size) drag = null;
       };
@@ -363,7 +476,7 @@ export default function Amphora() {
         vel = 0; e.preventDefault();
       };
       const menu = (e: Event) => { if (studioRef.current) e.preventDefault(); };
-      const restored = () => { texture.needsUpdate = true; };
+      const restored = () => { all = true; };
       canvas.addEventListener("pointerdown", down);
       canvas.addEventListener("pointermove", move);
       canvas.addEventListener("pointerup", up);
@@ -378,8 +491,9 @@ export default function Amphora() {
           const d = designRef.current;
           if (what !== "hand") painter.paintBase(d);
           if (what !== "base") painter.replay(d.strokes);
+          if (what === "all") { spreading.length = 0; painter.rebuildCracks(d.cracks); }
           painter.compose();
-          texture.needsUpdate = true;
+          all = true;
           canvas.setAttribute("aria-label", describe(d));
         },
         picture() { renderer.render(scene, camera); return canvas.toDataURL("image/png"); },
@@ -387,10 +501,33 @@ export default function Amphora() {
         resetView() { zoomT = 1; panT = PAN; },
       };
 
+      let last = performance.now(), slow = 0, fast = 0;
       const frame = () => {
         raf = requestAnimationFrame(frame);
+        const now = performance.now(), dt = Math.min(0.05, (now - last) / 1000);
+        last = now;
         if (!visible) return;
+        // never lag: if frames take too long for a while, draw fewer pixels; if there is room again, more
+        if (dt > 0.024) { slow++; fast = 0; } else { fast++; slow = Math.max(0, slow - 1); }
+        if (slow > 45 && ratio > 1) { ratio = Math.max(1, ratio - 0.25); renderer.setPixelRatio(ratio); resize(); slow = 0; }
+        else if (fast > 600 && ratio < Math.min(devicePixelRatio || 1, 2.5)) { ratio = Math.min(Math.min(devicePixelRatio || 1, 2.5), ratio + 0.25); renderer.setPixelRatio(ratio); resize(); fast = 0; }
         const reduce = reduceRef.current, inStudio = studioRef.current;
+        // a crack spreads from the blow in a third of a second
+        for (let i = spreading.length - 1; i >= 0; i--) {
+          const s = spreading[i];
+          s.t = Math.min(1, s.t + dt / 0.32);
+          const to = reduce ? 1 : 1 - Math.pow(1 - s.t, 2);
+          send(painter.drawCrack(s.fr, s.done, to), true);
+          s.done = to;
+          // once it has run its course, the area is put together again (and its gloss worked out) with the crack in place
+          if (s.t >= 1) { const rr = painter.drawCrack(s.fr, 1, 1); painter.compose(rr); send(rr, true); spreading.splice(i, 1); }
+        }
+        // the pot rocks on its foot (a stiff spring, quickly damped) and the blow's turn dies away
+        rock.vx += (-90 * rock.x - 9 * rock.vx) * dt; rock.vz += (-90 * rock.z - 9 * rock.vz) * dt;
+        rock.x += rock.vx * dt; rock.z += rock.vz * dt;
+        rot += rock.spin; rock.spin *= Math.pow(0.02, dt);
+        rocker.rotation.set(reduce ? 0 : rock.x, 0, reduce ? 0 : rock.z);
+        chips.update(dt);
         if (!drag && !pinch) { vel += ((inStudio || reduce ? 0 : SPEED) - vel) * (inStudio ? 0.1 : 0.02); rot += vel; }
         rise = reduce ? 1 : Math.min(1, rise + 0.012);
         const e = 1 - Math.pow(1 - rise, 3);
@@ -398,14 +535,17 @@ export default function Amphora() {
         zoom += (zoomT - zoom) * 0.18; pan += (panT - pan) * 0.18;
         camera.zoom = zoom; camera.position.set(0, pan + 0.13, 6.4); camera.lookAt(0, pan, 0); camera.updateProjectionMatrix();
         vase.rotation.y = rot + tilted; vase.position.y = -0.35 * (1 - e); vase.scale.setScalar(0.9 + 0.1 * e);
+        flush();
         renderer.render(scene, camera);
+        shown = true;
       };
       const start = () => { if (disposed) return; api.current?.repaint("all"); frame(); };
       document.fonts.load(`700 80px ${DIDOT}`, "ΜΑΘΗΣΙΣ").then(start, start);
 
       cleanup = () => {
         cancelAnimationFrame(raf); ro.disconnect(); io.disconnect();
-        geo.dispose(); proxyGeo.dispose(); proxyMat.dispose(); handles.forEach((h) => h.dispose()); mat.dispose(); hMat.dispose(); texture.dispose();
+        geo.dispose(); proxyGeo.dispose(); proxyMat.dispose(); handles.forEach((h) => h.dispose()); mat.dispose(); hMat.dispose();
+        texture.dispose(); roughTex.dispose(); bumpTex.dispose(); chips.dispose(); pmrem.dispose(); scene.environment?.dispose();
         renderer.dispose(); canvas.remove(); api.current = null;
       };
     });
@@ -422,6 +562,7 @@ export default function Amphora() {
       >
         <div ref={stageRef} className={styles.stage} data-tool={studio ? tool : undefined}>
           <div className={styles.halo} aria-hidden="true" />
+          {charge && <span key={charge.id} className={styles.charge} style={{ left: charge.x, top: charge.y }} aria-hidden="true" />}
           <div className={styles.shadow} aria-hidden="true" />
           {studio && (
             <div className={styles.view} role="group" aria-label="Turn and come closer">
@@ -456,12 +597,34 @@ export default function Amphora() {
               </div>
               <p className={styles.hint}>{toolInfo.hint}</p>
               {tool === "brush" && (
-                <div className={styles.swatches} role="group" aria-label="Colour">
-                  {PALETTE.map((p, i) => (
-                    <button key={p.hex} type="button" className={styles.swatch} style={{ "--sw": p.hex } as CSSProperties}
-                      aria-pressed={colour === i} aria-label={p.name} title={p.name} onClick={() => setColour(i)} />
-                  ))}
-                  <span className={styles.swatchName}>{PALETTE[colour].name}</span>
+                <div className={styles.colours}>
+                  <div className={styles.swatches} role="group" aria-label="The Athenian painter's colours">
+                    {PALETTE.map((p, i) => (
+                      <button key={p.hex} type="button" className={styles.swatch} style={{ "--sw": p.hex } as CSSProperties}
+                        aria-pressed={colour.c === i} aria-label={p.name} title={p.name} onClick={() => setColour({ c: i, name: p.name })} />
+                    ))}
+                    <span className={styles.swatchName}>{colour.name}</span>
+                  </div>
+                  <div className={styles.more} role="group" aria-label="More colours">
+                    {MORE_COLOURS.map((p) => (
+                      <button key={p.hex} type="button" className={styles.chipSwatch} style={{ "--sw": p.hex } as CSSProperties}
+                        aria-pressed={colour.c === -2 && colour.h === p.hex} aria-label={p.name} title={p.name} onClick={() => setColour({ c: -2, h: p.hex, name: p.name })} />
+                    ))}
+                    {picked.map((hex) => (
+                      <button key={`p${hex}`} type="button" className={styles.chipSwatch} style={{ "--sw": hex } as CSSProperties}
+                        aria-pressed={colour.c === -2 && colour.h === hex} aria-label={`Your colour ${hex}`} title={hex} onClick={() => setColour({ c: -2, h: hex, name: "Your colour" })} />
+                    ))}
+                    <label className={styles.anyColour} title="Any colour">
+                      <input type="color" value={colour.h ?? PALETTE[Math.max(0, colour.c)].hex} onChange={(e) => pickAny(e.target.value)} aria-label="Any colour" />
+                      <span aria-hidden="true">+</span>
+                    </label>
+                  </div>
+                </div>
+              )}
+              {tool === "strike" && (
+                <div className={styles.row}>
+                  <button type="button" className={styles.plain} onClick={() => commit({ ...designRef.current, cracks: [] }, "all")} disabled={!design.cracks.length}>Mend all cracks</button>
+                  <button type="button" className={styles.plain} aria-pressed={sound} onClick={() => setSound(!sound)}>{sound ? "Sound on" : "Sound off"}</button>
                 </div>
               )}
               {(tool === "brush" || tool === "rub") && (
