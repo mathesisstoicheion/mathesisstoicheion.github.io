@@ -17,8 +17,13 @@ import { aristophanes } from "./authors/tlg0019";
 import { plutarch } from "./authors/tlg0007";
 import { pindar } from "./authors/tlg0033";
 import { xenophon } from "./authors/tlg0032";
+import { hesiod } from "./authors/tlg0020";
+import { lysias } from "./authors/tlg0540";
+import { isocrates } from "./authors/tlg0010";
+import { polybius } from "./authors/tlg0543";
+import { plotinus } from "./authors/tlg2000";
 
-export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon };
+export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon, [hesiod.id]: hesiod, [lysias.id]: lysias, [isocrates.id]: isocrates, [polybius.id]: polybius, [plotinus.id]: plotinus };
 
 /** The article for an author: the checked one, or (development only) a draft marked as unchecked. */
 export function articleFor(id: string): { article: AuthorArticle; draft: boolean } | null {
