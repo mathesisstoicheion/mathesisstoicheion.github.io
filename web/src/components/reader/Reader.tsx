@@ -14,6 +14,7 @@ import { findRef, chunkOf } from "@/lib/tei/refs";
 import type { EnglishHit, FindHit } from "@/lib/find";
 import FindPanel, { type FindMarks } from "./FindPanel";
 import ComparePanel from "./ComparePanel";
+import SentencePanel, { type SentenceMarks } from "./SentencePanel";
 import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
@@ -175,6 +176,9 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const [findOpen, setFindOpen] = useState(false);
   const [findQ, setFindQ] = useState("");
   const [findMarks, setFindMarks] = useState<FindMarks | null>(null);
+  // how a sentence is built: the word asked about (its passage and place there), and its words to mark on the page
+  const [sentenceAt, setSentenceAt] = useState<Point | null>(null);
+  const [synMarks, setSynMarks] = useState<SentenceMarks | null>(null);
   const [topRow, setTopRow] = useState<string | null>(null);
   const [placeMarks, setPlaceMarks] = useState<Map<string, Set<string>> | null>(null);
 
@@ -665,6 +669,22 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     return () => { for (const n of names) reg.delete(n); };
     // (the page is read as it is drawn)
   }, [canDiff, rows, strict, pane, translit, metre]);
+  useEffect(() => {
+    const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
+    const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
+    const names = [`syn-s-${pane}`, `syn-p-${pane}`, `syn-w-${pane}`];
+    if (!reg || !H || !synMarks || !rows.length) return;
+    const spans = new Map<string, NodeListOf<Element> | undefined>();
+    const range = (w: { u: string; i: number }) => {
+      if (!spans.has(w.u)) spans.set(w.u, root().querySelector(`[data-u="${CSS.escape(w.u)}"]`)?.querySelectorAll("[data-w]"));
+      const sp = spans.get(w.u)?.[w.i];
+      if (!sp) return null;
+      const r = new Range(); r.selectNodeContents(sp); return r;
+    };
+    [synMarks.sentence, synMarks.phrase, synMarks.word].forEach((ws, k) => reg.set(names[k], new H(...(ws.map(range).filter(Boolean) as Range[]))));
+    return () => { for (const nm of names) reg.delete(nm); };
+    // (the page is read as it is drawn)
+  }, [synMarks, rows, pane, translit, metre]);
   const findSeen = useRef(-1);
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
@@ -942,6 +962,9 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
 
   // a word opens the look-up (by a click, or Enter on the focused word)
   const openWord = (w: HTMLElement) => {
+    // while a sentence's structure is open, a word chosen in the text is shown there, in its own sentence
+    const inUnit = w.closest<HTMLElement>("[data-u]");
+    if (sentenceAt && inUnit) { setSentenceAt({ u: inUnit.dataset.u!, i: [...inUnit.querySelectorAll("[data-w]")].indexOf(w) }); return; }
     root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
     w.classList.add(styles.sel);
     rove(w);
@@ -1211,7 +1234,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen || (cmpListOpen && canDiff) ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1489,6 +1512,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
           <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)} />
         </PanelGuard>
       )}
+      {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
+        <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
+          <SentencePanel work={workId} doc={doc} at={sentenceAt} onMarks={setSynMarks}
+            onClose={() => { setSentenceAt(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
+        </PanelGuard>
+      )}
       {listenOpen && trText && !cmpText && work && rows.length > 0 && (
         <Listen rows={rows} root={root} startKey={topRow} title={work.title}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
@@ -1515,6 +1544,11 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       )}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
         <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
+          onSentence={word?.at ? () => {
+            const a = word.at!;
+            setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
+            setSentenceAt(a);
+          } : undefined}
           onStep={word?.at ? stepWord : undefined} sheet={!floating} />
       </PanelGuard>
     </div>

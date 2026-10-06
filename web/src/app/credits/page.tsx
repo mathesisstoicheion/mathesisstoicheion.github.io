@@ -54,7 +54,10 @@ export default function CreditsPage() {
         <h2>Words and dictionaries</h2>
         <ul>
           <li>
-            <b>Word analyses</b> (dictionary form and grammar of each word, in context), and the genre, dialect and date of each work:{" "}
+            <b>Word analyses</b> (dictionary form and grammar of each word, in context), <b>the structure of each sentence</b> (which word
+            depends on which, and how, in the scheme of the{" "}
+            <a href="https://github.com/PerseusDL/treebank_data/blob/master/AGDT2/guidelines/Greek_guidelines.md" rel="noopener">Ancient Greek Dependency Treebank</a>),
+            and the genre, dialect and date of each work:{" "}
             <a href="https://github.com/alekkeersmaekers/glaux" rel="noopener">GLAUx</a>, by Alek Keersmaekers, CC BY-SA 4.0
             (some source texts and hand annotations carry other licences, listed in GLAUx&apos;s metadata). Hand-checked analyses come from the
             Ancient Greek Dependency Treebanks, PROIEL, the Pedalion, Gorman and Harrington treebanks and others, credited in GLAUx.

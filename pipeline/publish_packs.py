@@ -26,18 +26,18 @@ ROOT = Path(__file__).resolve().parent.parent
 DATA = ROOT / "web" / "public" / "data"
 STAGE = ROOT / "pipeline" / ".cache" / "packs-publish"
 REMOTE = "https://github.com/mathesisstoicheion/packs.git"
-KINDS = ["words", "lsj", "lexicon", "search"]
+KINDS = ["words", "lsj", "lexicon", "search", "syntax"]
 PAGES_LIMIT = 1_000_000_000
 FILE_LIMIT = 100_000_000
 
 README = """# Data packs for Mathesis Stoicheion
 
 Generated files used by https://mathesisstoicheion.com/ (the Greek reader): word analyses (`words/`),
-the Liddell–Scott–Jones dictionary (`lsj/`), the Word Study index (`lexicon/`) and the search index
-(`search/`). They are rebuilt by the site's pipeline and replaced here as a whole; do not edit them by hand.
+the structure of each sentence (`syntax/`), the Liddell–Scott–Jones dictionary (`lsj/`), the Word Study index
+(`lexicon/`) and the search index (`search/`). They are rebuilt by the site's pipeline and replaced here as a whole; do not edit them by hand.
 
 Sources and licences:
-- Word analyses: GLAUx, by Alek Keersmaekers, CC BY-SA 4.0 (some source texts and hand annotations carry
+- Word analyses and sentence structure: GLAUx, by Alek Keersmaekers, CC BY-SA 4.0 (some source texts and hand annotations carry
   other licences, listed in GLAUx's metadata). https://github.com/alekkeersmaekers/glaux
 - LSJ: Text provided under a CC BY-SA license by Perseus Digital Library, http://www.perseus.tufts.edu, with
   funding from The National Endowment for the Humanities. Data accessed from https://github.com/PerseusDL/lexica/.

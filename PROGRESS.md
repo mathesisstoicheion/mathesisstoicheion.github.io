@@ -530,6 +530,14 @@ Pushed 7e1e3ee (trackpads; lighter vase studio). Deploy succeeded; live-check pa
 - **The studio is lighter**: the brush paints the gloss picture straight from its colour (no reading back from the graphics card on every step; rubbing out works it out once a frame); a budget of about four million pixels a frame (pixel ratio at most 2); nothing is drawn while nothing moves; the camera follows gestures faster. The same scripted strokes took 6.3 s against 8.8 s before.
 - The vase stage reports `data-view` (zoom, pan, turn) and the manuscript box `data-zoom`, for `e2e/trackpad.spec.ts`.
 
+## Fix: columns per book (2026-10-06)
+The column choice (Both / Greek / English) was a global setting: after "English only", a book with no translation showed an empty page. Now every book opens with Greek and translation side by side, the choice holds for the book being read, and a book with no translation always shows its Greek (`Reader.tsx`; `e2e/columns.spec.ts`). The global `columns` setting in lib/settings.ts is no longer read by the reader.
+
+## Research tools, part 3: how the sentence is built (2026-10-06)
+- **Data**: `pipeline/build_syntax.py` writes `web/public/data/syntax/<work>.json` (1,186 works, 16.4 million words in 916,775 sentences, 44 MB) from the same cached GLAUx files as the word packs, in the same word order (checked per work): each word's head and relation (Ancient Greek Dependency Treebank scheme), two characters a word; punctuation that something hangs on and words the annotators supplied ("elliptic", not named by GLAUx) kept as extras. Gitignored like the other packs; `publish_packs.py` now publishes `syntax/` too (**the packs site must be republished before the live site can show diagrams**: `python pipeline/publish_packs.py --push`).
+- **Reader**: the word look-up has **How the sentence is built** (`SentencePanel.tsx`, `lib/syntax.ts`): the sentence, each word underlined in its role's colour; whether a person checked it (treebank) or GLAUx's computer analysis made it; the tree from the main verb down as a nested outline, each word with its role in plain words (after Celano's AGDT 2.0 guidelines, linked) and its grammar; choosing a word marks its whole phrase in the text (CSS highlights `syn-s/p/w-N`); previous/next sentence; with the panel open, a word clicked in the text is shown in its sentence. `lookup/placed.ts` now records each on-screen word's place among the word pack's words (`Placed.word`).
+- Tests: `syntax.test.ts` (the Iliad's first sentence), `e2e/sentence.spec.ts` (with axe, both themes). Credits mention the sentence structure.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

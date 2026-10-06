@@ -178,8 +178,10 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, onClose, onEchoes, onStep, sheet = false }: {
+export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, onStep, sheet = false }: {
   word: string | null; ctx: WordContext | null; onClose: () => void; onEchoes?: () => void;
+  /** show how the sentence this word is in is built */
+  onSentence?: () => void;
   /** the next (1) or previous (-1) word of the passage */
   onStep?: (dir: 1 | -1) => void;
   /** a sheet with heights on phones (not in the floating window) */
@@ -315,6 +317,11 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onStep, sheet 
       </section>}
 
       <p className={styles.panelLinks}>
+        {onSentence && (
+          <button type="button" className="chip" onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
+            How the sentence is built
+          </button>
+        )}
         {onEchoes && (
           <button type="button" className="chip" onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
             Echoes · where else it occurs

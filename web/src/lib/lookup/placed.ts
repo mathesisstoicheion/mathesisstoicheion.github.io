@@ -22,6 +22,8 @@ export interface Placed {
   lemma: Int32Array;
   tag: Int32Array;
   manual: Uint8Array;
+  /** for each word: its place among the word pack's words (as the sentence analyses count them, lib/syntax.ts), or -1 */
+  word: Int32Array;
   /** share of the words that have an analysis */
   cover: number;
 }
@@ -44,19 +46,21 @@ export function placeAnalyses(pack: WordPack, doc: TeiDoc): Placed {
   });
   unitStart[doc.units.length] = key.length;
 
-  const gKeys: string[] = [], gLemma: number[] = [], gTag: number[] = [], gManual: number[] = [];
+  const gKeys: string[] = [], gLemma: number[] = [], gTag: number[] = [], gManual: number[] = [], gWord: number[] = [];
+  let w = 0;
   for (const [, manual, forms, lem, tag] of pack.units) forms.split(" ").forEach((f, j) => {
-    const k = greekKey(f);
+    const k = greekKey(f), here = w++;
     if (!k || pack.tags[tag[j]].startsWith("u")) return;   // punctuation
-    gKeys.push(k); gLemma.push(lem[j]); gTag.push(tag[j]); gManual.push(manual);
+    gKeys.push(k); gLemma.push(lem[j]); gTag.push(tag[j]); gManual.push(manual); gWord.push(here);
   });
 
   const at = alignStream(gKeys, key);
   const lemma = new Int32Array(key.length).fill(-1), tag = new Int32Array(key.length).fill(-1), manual = new Uint8Array(key.length);
+  const word = new Int32Array(key.length).fill(-1);
   let n = 0;
-  at.forEach((pos, i) => { if (pos >= 0) { lemma[pos] = gLemma[i]; tag[pos] = gTag[i]; manual[pos] = gManual[i]; n++; } });
+  at.forEach((pos, i) => { if (pos >= 0) { lemma[pos] = gLemma[i]; tag[pos] = gTag[i]; manual[pos] = gManual[i]; word[pos] = gWord[i]; n++; } });
 
-  const placed: Placed = { unitOf, unitStart, key, lemma, tag, manual, cover: key.length ? n / key.length : 0 };
+  const placed: Placed = { unitOf, unitStart, key, lemma, tag, manual, word, cover: key.length ? n / key.length : 0 };
   byDoc.set(doc, placed);
   return placed;
 }

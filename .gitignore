@@ -8,6 +8,7 @@ web/public/data/words/
 web/public/data/lsj/
 web/public/data/search/
 web/public/data/lexicon/
+web/public/data/syntax/
 
 # Python caches
 __pycache__/

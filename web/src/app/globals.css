@@ -423,6 +423,11 @@ select { max-width: 100%; }
   text-underline-offset: 4px;
 }
 
+/* how a sentence is built, in the reader: the sentence faintly, the phrase chosen, and its head word */
+::highlight(syn-s-1), ::highlight(syn-s-2) { text-decoration: underline dotted 1.5px color-mix(in srgb, var(--ink-2) 70%, transparent); text-underline-offset: 5px; }
+::highlight(syn-p-1), ::highlight(syn-p-2) { background-color: color-mix(in srgb, var(--blue) 18%, transparent); }
+::highlight(syn-w-1), ::highlight(syn-w-2) { background-color: color-mix(in srgb, var(--blue) 34%, transparent); text-decoration: underline 2px var(--blue); text-underline-offset: 5px; }
+
 /* words found by Echoes, marked in the reader */
 ::highlight(echo-1), ::highlight(echo-2) {
   background-color: color-mix(in srgb, var(--ochre) 26%, transparent);
