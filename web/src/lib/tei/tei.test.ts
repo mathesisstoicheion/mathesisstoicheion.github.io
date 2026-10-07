@@ -169,7 +169,7 @@ describe("translations that divide or number differently", () => {
   it("puts English whose paragraphs are numbered differently into its own division, in order (Hippocrates' Epidemics)", () => {
     const g = tei({ 1: ["1", "2"], 2: ["3", "4", "5", "6"] }), e = tei({ 1: ["1", "2"], 2: ["1", "2"] }, "e");
     const placed = placePieces(g, translationPieces(g, e));
-    expect(placed.map((p) => g.units[p.at].ref.join("."))).toEqual(["1.1", "1.2", "2.3", "2.5"]);
+    expect(placed.map((p) => g.units[p.at].ref.join("."))).toEqual(["1.1", "1.2", "2.3", "2.6"]);
   });
 
   it("matches references written slightly differently (Euclid's def_1 and def1)", () => {
@@ -192,5 +192,14 @@ describe("translations that divide or number differently", () => {
     const placed = placePieces(g, translationPieces(g, renumber("lxx-psalms-hebrew", g, e)));
     // Greek 9 has 4 verses and the English 3 (9.1, 9.2, 10.1): the heading is verse 1, the English first verse stands beside it
     expect(placed.map((p) => `${plain(p.blocks)}→${g.units[p.at].ref.join(".")}`)).toEqual(["e 9.1→9.1", "e 9.2→9.3", "e 10.1→9.4", "e 11.1→10.1", "e 11.2→10.3"]);
+  });
+});
+
+describe("numbers that match only by coincidence", () => {
+  it("spreads a division numbered from a different start even where some numbers coincide (Epidemics 1.2: English 1–6, Greek 4–12)", () => {
+    const g = tei({ 1: ["1"], 2: ["4", "5", "6", "7", "8", "9", "10", "11", "12"] }), e = tei({ 1: ["1"], 2: ["1", "2", "3", "4", "5", "6"] }, "e");
+    const at = placePieces(g, translationPieces(g, e)).map((p) => g.units[p.at].ref.join("."));
+    expect(at[1]).toBe("2.4");          // the first English paragraph at the first Greek one
+    expect(at[6]).toBe("2.12");         // the last with the last, not "2.6" by its number
   });
 });

@@ -92,7 +92,7 @@ const loose = (k: string) => k.toLowerCase().replace(/[_\s-]/g, "");
  * A piece whose reference the Greek doesn't have (a paragraph numbered differently, say) goes to the start of
  * its own division in the Greek, or follows the piece before it, so no translation is ever dropped. Where a
  * division's numbering does not correspond at all (Hippocrates' Epidemics: English 1.3.1–10 against Greek
- * 1.3.13–26), its pieces are spread through the Greek division in order.
+ * 1.3.13–26), its pieces are spread through the Greek division in order, first with first and last with last.
  */
 export function placePieces(grc: TeiDoc, pieces: Piece[]): Placed[] {
   const index = new Map<string, number>(), loosely = new Map<string, number>();
@@ -122,8 +122,14 @@ export function placePieces(grc: TeiDoc, pieces: Piece[]): Placed[] {
   }
   for (const [par, ps] of groups) {
     const g = unitsIn.get(par)!;
-    if (g.length < 2 || ps.filter((p) => exact(p.key) !== undefined).length * 2 >= ps.length) continue;
-    ps.forEach((p, i) => { if (exact(p.key) === undefined) spread.set(p, g[Math.floor((i * g.length) / ps.length)]); });
+    if (g.length < 2) continue;
+    const share = ps.filter((p) => exact(p.key) !== undefined).length / ps.length;
+    // numbered from a different start (English 1.2.1–6 against Greek 1.2.4–12): matching numbers are coincidence
+    const leaf = (k: string) => k.slice(k.lastIndexOf(".") + 1);
+    const eFirst = leaf(ps[0].key!), gFirst = leaf(keyOf(grc.units[g[0]].ref));
+    const coincidence = share < 0.8 && /^\d+$/.test(eFirst) && /^\d+$/.test(gFirst) && eFirst !== gFirst;
+    if (!coincidence && share >= 0.5) continue;
+    ps.forEach((p, i) => { if (coincidence || exact(p.key) === undefined) spread.set(p, g[ps.length < 2 ? 0 : Math.round((i * (g.length - 1)) / (ps.length - 1))]); });
   }
 
   const placed: Placed[] = [];

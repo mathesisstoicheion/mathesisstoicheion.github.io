@@ -1280,3 +1280,501 @@ Graecorum's first Galen volume, not its start; the Antonine Plague (165–180) r
 "mainly" from the two Latin versions, with Greek and Arabic fragments; On Medical Experience "survives in Arabic" (no source says
 whole); "over 2.6 million words, or more than 4 million"; Commodus and Severus also footnoted to Wikipedia (the SEP says
 "apparently"); the dream line quoted from «εἶθ' ὕστερον», "then later".
+
+## Hippocrates and the Hippocratic Corpus (tlg0627), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0627.ts` (27 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0627 npx vitest run src/wiki/author-articles.test.ts` (11 passed); `CORPUS=1 ARTICLE=tlg0627 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed; the check is live: a first draft quoting Jones's English of *Epidemics* I 11 failed,
+because the reader offers only Adams's translation for that work, and the quotation was replaced with Adams's); `npx tsc --noEmit -p .` clean.
+
+What the library has: 53 works under Hippocrates (tlg0627), 19 with English. Greek from Littré (Paris: Baillière, 1839–61; some files
+from the Hakkert reprint of 1961) and from Jones's Loeb vol. 1 (1923: *Ancient Medicine*, *Airs, Waters, Places*, *Epidemics* I and III,
+the Oath, *Precepts*, *Nutriment*); English from Adams (New York, 1886) and Jones (1923). Also in the library: Soranus' *Life of
+Hippocrates* (Ilberg, CMG IV, 1927; Greek only, lunate sigma, so not quoted), the Hippocratic *Letters* (Littré vol. 9, Greek only),
+Galen's commentaries on Hippocrates (Kühn, Greek only), two Pseudo-Hippocratic works (tlg0751).
+
+**Confirmed and kept**
+- Wikipedia, Hippocrates: born c. 460 on Cos, "other biographical information ... likely to be untrue"; Father of Medicine; little known
+  for certain of what he thought, wrote, did; Soranus a 2nd-century physician, first biographer; Plato's *Protagoras*, *Phaedrus* and
+  Aristotle's *Politics*; Polybus son-in-law and student; Aristotle's "The Great Hippocrates" (the claim the article corrects);
+  Girodet's *Hippocrates Refusing the Gifts of Artaxerxes*, 1792; death at Larissa, c. 370.
+- Plato, *Protagoras* 311 (Lamb): "your namesake Hippocrates of Cos, the Asclepiad", the fee, "A doctor". *Phaedrus* 270 (Fowler):
+  "If Hippocrates the Asclepiad is to be trusted ...". Aristotle, *Politics* 7, 1326a (Rackham): "greater, not as a human being but
+  as a physician, than somebody who surpassed him in bodily size". All copied from `passage.ts`.
+- Soranus, *Life* (Scroll, read in Greek): son of Heraclides, his first teacher; twentieth from Heracles / nineteenth from Asclepius
+  (the order of "one ... the other" kept vague as in the Greek); born Ol. 80.1 per Ischomachus; Soranus of Cos in the Coan archives,
+  the day on which the Coans still make offerings; Andreas "maliciously" on the burning of the Cnidian record office; the dream sending
+  him to Thessaly; Perdiccas' love for his father's concubine; the Abderites and Democritus "as in madness"; the plague in Illyria,
+  foreseen to reach Attica; Artaxerxes via Hystanes, governor of the Hellespont, refused; death at Larissa, aged 90, 85, 104 or 109;
+  tomb between Gyrton and Larissa, bees and honey for children with aphthae; sons Thessalus and Draco, his most famous pupils; much
+  disagreement about his writings.
+- *Letters* 3 and 5 (Scroll): Artaxerxes to Hystanes; Hippocrates to Hystanes, «Περσέων δὲ ὄλβου οὔ μοι θέμις ἐπαύρασθαι» (our
+  translation).
+- Jones, *Hippocrates* I (Loeb, 1923; Internet Archive scan of the 1957 printing): "some seventy" works in the manuscripts; the
+  collection a medley in Ionic, the remains of a library (perhaps the Cos school's), against Littré's Alexandrian publication; the
+  "outstanding genius" of certain treatises; Herophilus (c. 300 BC) first, Bacchius' glossary, Heraclides of Tarentum the most
+  celebrated commentator; Erotian under Nero, accepting the Oath; §11 the pseudo-Ionic forms of the later manuscripts and the scribes
+  who "restored" them; §12 none very old, no canon or order, θ Vindob. med. IV (10th c., oldest), A Paris. 2253 (11th c., "has
+  transformed our Hippocratic text"), M Marc. Ven. 269 (11th c.), V Vat. gr. 276 (12th c.); §13 editions: Calvus 1525, Aldine 1526,
+  Cornarius 1538, Foes 1595, Littré 1839–61, Adams 1849 (London, 2 vols), Ermerins 1859–64, Kühlewein 1894 and 1902; Littré "diffuse,
+  and not always accurate", knowledge of manuscripts confined to Paris, twenty-two years; Kühlewein purged pseudo-ionisms; Hippocrates
+  a textbook almost to c. 1840; the Oath introduction: "Whatever its origin, it is a landmark in the ethics of medicine"; the stone
+  clause, Littré's αἰτέοντας, Reinhold's οὐδὲ μὴ ἐν ἡλικίῃ ἐόντας, Gomperz on castration, the clause possibly a late addition; chief
+  manuscripts of the Oath V and M; "the art" as medicine; Aristotle quoting *Nature of Man* as Polybus'.
+- Hanson, "Hippocrates: The 'Greek Miracle' in Medicine" (Medicina Antiqua, UCL, archived): some 60 treatises; famous physician to
+  Plato and Aristotle; collected certainly in Alexandria by the mid-3rd c. BC; Galen on *Epidemics* I, III (genuine) and II, IV, VI
+  (Thessalus); Scribonius Largus and Soranus on the pessary clause; Galen's enthusiasm, copying into Byzantine times, Latin translation
+  in the early 16th c. and the prestige that followed; "nothing to connect"; anonymous writers unlike Herodotus and Thucydides;
+  "By what process does this sickness occur?".
+- Wikipedia, Hippocratic Corpus: most works late 5th / first half 4th c.; *Law*, *Heart*, *Physician*, *Sevens* Hellenistic, *Precepts*,
+  *Decorum* 1st–2nd c. AD; Ermerins at least nineteen authors; contradictions; Ionic, though Cos spoke Doric; *Epidemics* I and III
+  c. 410; 42 case histories, 25 deaths; rejection of divine causes; Arabic, Hebrew, Syriac, Latin; remains of a Cos library or an
+  Alexandrian compilation; Calvus 1525 Rome, Vat. gr. 277 (14th c.) owned and transcribed by him; Aldine 1526; Littré 1839–61; Adams
+  1849 (a dozen and a half "genuine" works); Budé from 1967; *Nature of Man* by Polybus, 410–400.
+- Wikipedia, Hippocratic Oath: one of the most widely known Greek medical texts; most modern scholars do not attribute it to Hippocrates;
+  P.Oxy. 2547, 3rd c.; Scribonius Largus AD 43; Soranus; disagreement over the poison clause; *primum non nocere* not in the Oath,
+  *Epidemics* I the nearest; eclipsed by longer codes; Declaration of Geneva 1948; 2018: all US graduates take an oath, none the original.
+- Scroll passages: *Airs, Waters, Places* 1; *Sacred Disease* 1; *Epidemics* I case 1 (Philiscus) and I 11 (Jones's Greek, Adams's
+  English; Littré's Greek read in the First1K file); *Aphorisms* 1.1 (Littré's Greek, Adams); the Oath (Jones's Greek and English; Littré's
+  ξυγγραφῆς read in the First1K file); Galen, *In Hipp. Aph.* 1.1 (one aphorism or two; the lemma's ποιέοντα); Aristotle, *History of
+  Animals* 3.3 (Polybus, «τὰ δὲ τῶν φλεβῶν τέτταρα ζεύγη ἐστίν»); *Nature of Man* 11.
+- Smyth §31 (Perseus): in Attic alone η after ρ (and ε, ι) changed back to ᾱ.
+- CMG Editionen online (CMG I): CMG I 1, Heiberg, Leipzig and Berlin 1927 (Iusiurandum, Lex, De arte, ..., De prisca medicina, De aere
+  locis aquis ...); later volumes single treatises with German, French or English translation.
+- Wikipedia, List of editiones principes in Greek: Ps.-Hippocrates' letters in the Aldine *Epistolae*, Venice 1499, ed. Musurus;
+  Hippocrates, Aldine Press, Venice, 1526.
+- Geller, BMCR 2019.08.17 (UCL Discovery copy): Potter, *Hippocrates* XI, Loeb 538, Harvard 2018, "the last of the Loeb Classical
+  Library volumes of Hippocrates".
+- Wikipedia, Loeb Classical Library: Hippocrates I–XI, L147–150, 472, 473, 477, 482, 509, 520, 538; vol. I contents.
+- Classical Review 48.2 (1998), King's review: Jouanna, *Hippocrate* II 2, *Airs, eaux, lieux*, CUF, Paris 1996.
+- Penguin page: *Hippocratic Writings*, ed. G. Lloyd, trans. Chadwick, Mann, Lonie, Withington, Penguin Classics.
+
+**Left out because it could not be confirmed**
+- Plato's *Protagoras* "set around" 433 BC (timeline): no dramatic date in a source read; the timeline says only that Plato and Aristotle
+  name him in the fourth century.
+- The Cos–Cnidus distinction as "itself disputed": not found in a source read (Wikipedia's Hippocrates page states the two schools as
+  fact). Dropped altogether, with the Wikipedia Corpus page's mention of Cnidian works (cut for length).
+- His mother's name: the *Life* in the Scroll says Phaenarete (Φαιναρέτης), Wikipedia says Praxitela daughter of Tizane: left out.
+- Modern redatings of the manuscripts (some catalogues may date M or A differently): only Jones's 1923 dates, attributed to him.
+- Bacchius' "edition" of *Epidemics* III (the scan is garbled at that point): only his glossary is kept.
+- The Penguin selection's first year (a search summary said 1978; the publisher's page shows 2005): no year printed.
+- The Letters as "clearly late": no source read says so in those words; they are called pseudo-Hippocratic (the editiones principes list).
+- The 2017 Sinai manuscript, the Hippocratic bench, clubbing, "Hippocratic face", the Melusine legend (Wikipedia): not needed.
+- Wikipedia's "the first four Loeb volumes 1923–1931, seven further between 1988 and 2012": contradicted by Geller (vol. XI in 2018);
+  only the series' end in 2018 and the first volume of 1923 are used.
+- Schubert and Scholl on P.Oxy. 2547 (Heidelberg PDF blocked), the Wellcome and Duke papyrus records (404 / bot check): the papyrus rests
+  on Wikipedia only.
+
+**Corrected from the draft**
+- "Aristotle calls him 'the great Hippocrates'": the *Politics* (Scroll, 7.1326a) says he would be called greater as a physician, not as
+  a man, than someone bigger in body. Wikipedia repeats the draft's reading; the article explains the difference.
+- "Plato mentions him as a well-known physician who taught medicine for a fee (Protagoras 311b)": kept, with the exact words; the
+  dramatic date 433 dropped.
+- "Some sixty treatises gathered ... probably at Alexandria": "some sixty to seventy" (Hanson 60, Jones seventy); Alexandria by the
+  mid-third century (Hanson), with Jones's library-at-Cos view marked debated.
+- "Mostly between about 430 and 350": rewritten as Wikipedia's "last decades of the 5th century and first half of the 4th".
+- "His saving Athens from the plague": the *Life* says he foresaw that a plague in Illyria would reach Attica and looked after the cities
+  and his pupils.
+- "Letters to kings": the letters are to and from Hystanes, governor of the Hellespont, about Artaxerxes' offer.
+- "Ὁ βίος βραχύς ... μακρή" with "Ionic ending -ή where Attic would have μακρά": kept, with Smyth §31; the Greek quoted as the Scroll
+  prints it (Littré: «ὁ βίος βραχὺς, ἡ δὲ τέχνη μακρὴ»); "the best-known sentence in Greek medicine" dropped as a judgement.
+- Manuscripts "of the tenth to twelfth centuries" and "Vindobonensis med. gr. 4": kept, with each date as Jones gives it (θ 10th, A and
+  M 11th, V 12th).
+- "Early translations into Latin, Syriac and Arabic, which sometimes preserve better readings": only "survive in Arabic, Hebrew, Syriac
+  and Latin; some works known only in translation" (Wikipedia) is kept; "better readings" not found.
+- "Scribes often normalised the Ionic forms": the opposite, per Jones: later scribes *added* false Ionic forms; shown with Jones's and
+  Littré's texts side by side.
+- Timeline "1525 Calvo ... 1526 Aldine": kept (Jones, Wikipedia), with Calvus's own manuscript (Vat. gr. 277).
+- Editions: "CMG I (Berlin, 1927–)" → Leipzig and Berlin, 1927 (CMG page); "Loeb 1923–, later volumes by P. Potter and W. D. Smith" →
+  only Potter's last volume (2018) is named; Smith's volume was not checked.
+- Added from the sources: the *Life*'s legends (bees, Perdiccas, Andreas), the Letters, the Philiscus case, the forty-two case histories,
+  the Oath's stone clause and its emendations, Galen on "one aphorism or two", Aristotle's Polybus.
+
+**Weak points to revisit**
+- The manuscript dates are Jones's of 1923; a modern study (e.g. Jouanna's) would be better.
+- P.Oxy. 2547 and the Scribonius date rest on the Wikipedia Oath page (Hanson gives only "first century").
+- Soranus' date ("second century") is from Wikipedia; Wikipedia's Oath page says *Gynaecology* is of the 1st or 2nd century.
+- Kühlewein's title is given as *Hippocratis opera quae feruntur omnia*; Jones's scan reads "geruntur", an OCR slip for "feruntur".
+- The Loeb volume list comes from Wikipedia's Loeb page; HUP's own pages were not opened. The Jouanna Budé volume is confirmed by the
+  Classical Review record only (the review text was not visible).
+- Hanson's essay is an undated web article (archived 2011).
+- The summary is about 1,450 words including the Greek, at the top of the requested range.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/hippocrates.md):** 9 findings, each checked against the
+cited passage or page (the Life of Hippocrates in the Scroll; Jones's Loeb vol. 1 in the Internet Archive text and record; the Oath in
+the Scroll). 8 corrected in the article: the Life's birth date is Ischomachus', the archives and the dream from an earlier Soranus of
+Cos, and its third reason for leaving Cos added; Jones left "the Hippocrates of tradition" in obscurity; the Oath's own "abstain from
+all intentional wrong-doing and harm" beside primum non nocere; Jones's 1923 vol. 1 published by Heinemann and Putnam (Harvard on later
+printings); the Budé edition began in 1967 without naming Jouanna; Jones read the Politics passage as "the Great Hippocrates", stated
+with his reading; famous in his own lifetime; "came to be" for "soon". The ninth was a reader fault, fixed the same day in
+lib/tei/align.ts: in Adams's Epidemics I, section 2 (English 1–6, Greek 1.2.4–12), numbers that matched only by coincidence had put
+"to do good or to do no harm" beside the wrong Greek; it now shares a row with «ὠφελέειν ἢ μὴ βλάπτειν».
+
+## Euclid (tlg1799), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg1799.ts` (30 sources). Written afresh; notes left in the scratchpad by an earlier, interrupted attempt were used only as leads, and every page cited was opened again for this check.
+
+**Confirmed and kept**
+- Life and the ancient testimonia: Heath, *The Thirteen Books of Euclid's Elements*, vol. 1 (1908; Internet Archive OCR), ch. 1: Proclus' summary (Friedlein p. 68) in Heath's translation ("put together the Elements, collecting many of Eudoxus' theorems, perfecting many of Theaetetus'"; "in the time of the first Ptolemy"; "younger than the pupils of Plato but older than Eratosthenes and Archimedes"; the royal road); Proclus had no direct knowledge of birthplace or dates; Euclid flourished c. 300 BC; Stobaeus' royal-road story of Alexander and Menaechmus and the "threepence" story; Pappus on Apollonius and "the pupils of Euclid at Alexandria"; Heath's "One thing is however certain … taught, and founded a school, at Alexandria"; the confusion with Euclid of Megara (Valerius Maximus, Metochites, Campanus to Candalla; Commandinus); Heiberg's view that the Archimedes reference is genuine, "though in themselves they would be somewhat suspicious"; Proclus 410–485.
+- Jones, "Euclid, the Elusive Geometer" (2005, NYU archive PDF): eight Teubner volumes; no prefaces, no reference treating him as a living person; Archimedes' cross-reference "manifestly an interpolation"; Apollonius' preface the earliest authentic reference ("an accidental fragment … not felicitously done"), Conics about 185 BC give or take a decade; Pappus c. AD 320, does not strictly say Euclid lived at Alexandria, inclined to present guesses as facts; Proclus "was grasping at straws"; Euclid probably several decades later than usually said; about five papyrus manuscripts, the Elements the only demonstrative treatise in papyri; Galen and Alexander of Aphrodisias the first securely datable citers, sometimes naming the book; Optics, Catoptrics and Sectio Canonis possibly falsely attributed; "the most faceless of the great Hellenistic mathematicians".
+- Archimedes, *On the Sphere and Cylinder* 1.2 in the Scroll: «διὰ τὸ β΄ τοῦ α΄ τῶν Εὐκλείδου» (our translation).
+- Wikipedia, Euclid: fl. 300 BC; Proclus and Pappus many centuries later; fanciful, unverifiable Arabic biography; Euclid of Megara; Books 1–6 / 7–10 / 11–13, Book 5 and Book 10 (irrational lines); predecessors Eudoxus, Hippocrates of Chios, Theaetetus; Data, Optics (earliest surviving Greek treatise on perspective), Phaenomena (spherical astronomy); On Divisions in Arabic; lost Conics, Porisms, Pseudaria, Surface Loci; Catoptrics questioned; Book 9 infinitely many primes; postulates against common notions (more general).
+- Wikipedia, Euclid's Elements: "most successful textbook ever written"; Books 14 (probably Hypsicles) and 15 (perhaps a pupil of Isidore of Miletus); six parts of a proposition; the unstated assumption that the circles of 1.1 meet; Elephantine ostraca (3rd c. BC, XIII.10 and XIII.16); Demetrius Lacon; Theon's edition the only Greek source until Peyrard's 1808 discovery; Heiberg's position on Vat. gr. 190; Klamroth–Heiberg debate, Knorr siding with Klamroth; Arabic under Harun al-Rashid (c. 800), al-Hajjaj, Ishaq ibn Hunayn and Thabit; Adelard c. 1120; Campanus before 1260, dominant until Greek manuscripts; quadrivium; Ratdolt 1482; over a thousand editions, estimated second only to the Bible; Zamberti 1505; Greek text 1533; Billingsley 1570 with Dee; Ricci and Xu 1607 (Books 1–6); fell out of favour in the 19th century; Dodgson 1879; Lobachevsky 1829; Pythagorean theorem in 1.47.
+- Wikipedia, Papyrus Oxyrhynchus 29: found 1897 by Grenfell and Hunt, published 1898; first dated end 3rd/beginning 4th c., now AD 75–125; Book 2, Proposition 5 with diagram.
+- Wikipedia, Theon of Alexandria (c. 335–405; Hypatia's father; his edition). Wikipedia, Hypsicles (c. 190–120 BC; possibly Book 14). Wikipedia, Q.E.D. (ὅπερ ἔδει δεῖξαι; Q.E.F. and Elements 1.1).
+- LSJ (site's copy): στοιχεῖον II.1 simple sound of speech; II.3 "the propositions whose proof is involved in the proof of other propositions", title of works by Hippocrates of Chios, Leon, Theudios and Euclid; στοιχειωτής "of Euclid, the author of the Elements" (Elias in Cat.).
+- Heath ch. 5 (the text, after Heiberg): manuscripts titled "from the edition of Theon" / "from the lectures of Theon"; Theon's own claim to the second part of VI.33 in his Ptolemy commentary; P lacks it; marginal note at XIII.6; Theon's kinds of change (additions, standardised diction, "is" added 600 times); P = Vat. 190, 10th c.; F Laurentian 28.3, 10th c.; B Bodleian D'Orville 301, AD 888, Stephen clericus, Arethas; V Vienna phil. gr. 103, probably 12th c.; papyri: Herculanensis 1061 (Def. 15 without the glosses), P.Oxy. 29 "3rd or 4th c." (no porism to II.4), Fayum IX "2nd or 3rd c." (I.39, I.41 without I.40).
+- Heath notes: Def. 15 glosses bracketed by Heiberg (omitted by Proclus, Taurus, Sextus, Boethius); I.40 an interpolation (Heath's translation brackets it, as the Scroll shows); the common notions (four extra, three bracketed by Heiberg, one omitted; Proclus' five); "two straight lines cannot enclose a space" an interpolation; Proclus on Postulate 5 ("ought even to be struck out of the Postulates altogether …").
+- Heath ch. 7–8: Hajji Khalfa and the Fihrist on al-Hajjaj (Harun ar-Rashid 786–809; al-Ma'mun), Ishaq b. Hunain improved by Thabit b. Qurra; al-Hajjaj's Book I with 47 propositions, I.45 omitted; Athelhard c. 1120; Ratdolt 1482 "the first printed mathematical book of any importance", his dedication on printing figures; Grynaeus, Basel 1533, from two manuscripts "among the worst", long the basis of later editions; Peyrard 1814–18, Vatican MSS sent to Paris in 1808, adopted many readings of Vat. 190; Billingsley 1570 ("Evclide of Megara" on the title page, not used in the article); Heiberg 1883–88.
+- Heath ch. 2: Catoptrica not genuine, Heiberg suspects Theon; Sectio canonis accepted by Heath, disputed by Tannery.
+- Bodleian (IIIF manifest of Digital Bodleian): D'Orville 301, Elementa I–XV, scribe Stephanos, 888, Theon's version, bought by Arethas for 14 nomismata, many notes, "the oldest manuscript of a classical Greek author to carry a precise date".
+- Digital Vatican Library: Vat. gr. 190 pt. 1, "sec. IX".
+- Internet Archive records: Ratdolt 1482 (Campanus); Heiberg vol. 1 1883 (contents of the series: Elementa I–IV 1883–85, V 1888, Data 1896, Optica 1895, Phaenomena 1916); Peyrard 1814–18 (Greek, Latin, French); Heath vol. 1, 1926.
+- GlossGA (BBAW) record: Stamatis post Heiberg, Leipzig 1969–1977, vols I–V (an Innsbruck card record also gives Teubner, 1969, 2nd edition).
+- Fitzpatrick (UT Austin): Heiberg's Greek with an English translation. Princeton University Press: Morrow's Proclus, 1970, paperback 1992.
+- Scroll passages (all quotations copied from passage.ts): Elements 1.def.1, 1.def.2, 1.def.15, 1.post.1, 1.post.5, 1.comm_not.1–9 (nine in Greek, five in Heath with [7], [8]), 1.prop.1 (enunciation, setting-out, specification, ὅπερ ἔδει ποιῆσαι), 1.prop.39–41 (Heath's [Proposition 40 …]), 1.prop.47, 6.prop.33 (no sectors), 9.prop.20, 13.prop.18; Optics pr; Division of the Canon (catalogue title "spurious"); file headers (Heiberg 1883–88, Heath 1908, Menge/Heiberg 1895–1916). Twenty-three definitions counted in the Scroll.
+
+**Left out because it could not be confirmed**
+- Vitrac's French translation (PUF, 1990–2001, 4 vols): only a search-engine summary of vol. 1 (1990) was seen; the HAL page was blocked.
+- "Used in schools into the twentieth century": the sources say only that it fell out of favour in the nineteenth century and is still occasionally used.
+- "Translated into Arabic at Baghdad": no source opened names the city.
+- "Euclid's Greek … easier than he looks": an opinion, no source.
+- Birth and death years, an Athenian training at the Academy, a post at the Museum: modern inferences (Heath's "most probable", Jones's "standard life"), not ancient statements; only the uncertainty is reported.
+- The Scroll's epigram ascribed to Euclid (tlg1799.tlg017): no source on its authorship.
+- Knorr's sentence "We have never had a 'genuine' text of Euclid…" (seen only as quoted on Wikipedia); Proclus' Greek for the royal road (seen only on Wikipedia, with a misprint); Heath's Simplicius note on "three axioms only" in the ancient manuscripts (passed through an-Nairizi's Latin; left out as too indirect).
+- Theon's words "at the end of the sixth book": the OCR reads "at the aid of the sixth book", so only "by me in my edition of the Elements" is quoted.
+
+**Corrected from the draft**
+- "Pappus says he taught at Alexandria": Pappus says only that Apollonius studied with Euclid's pupils at Alexandria; Heath drew the conclusion, Jones questions it. Marked debated.
+- "The famous reply … is a later anecdote" kept, but with its twin story (Alexander and Menaechmus) and marked legend.
+- "Vaticanus gr. 190, P, 9th century": the Vatican Library says ninth century, Heiberg/Heath and Wikipedia say tenth; both given.
+- "Books 14 (by Hypsicles, 2nd century BCE)": Wikipedia says "likely"/"possibly"; "probably" used. Book 15 "later still" replaced by Wikipedia's "may have been written by a pupil of Isidore of Miletus".
+- "Sectio canonis of doubtful authorship": made specific (Heath accepted it, Tannery disputed it, the Scroll lists it as spurious, Jones doubts it) and marked debated.
+- "Every proposition follows the same pattern: statement, setting-out, construction, proof and conclusion": Wikipedia gives six parts (with the specification); the article follows that.
+- "The Bodleian manuscript is copied at Constantinople": the Bodleian gives "Constantinople (?)", so the place is left out.
+- "In 1808 Peyrard recognises …": kept, with Heath's detail that the manuscripts were sent to Paris in 1808 and his edition appeared 1814–18.
+- "Heiberg and Menge, 8 vols (1883–1916)": given as Heiberg's vols 1–5 (1883–88) with the later volumes named separately (Menge 1896 and 1916, Heiberg 1895).
+- "Translated into Arabic at Baghdad (c. 800 and later)": the place dropped; al-Hajjaj under Harun al-Rashid and al-Ma'mun, Ishaq and Thabit, from Heath.
+
+**Weak points to revisit**
+- Much rests on Heath 1908 (read in a Google OCR scan with some garbled words; only clearly legible words were quoted) and on two Wikipedia pages.
+- The date of P.Oxy. 29: Heath (1908) and the Elements page caption say 3rd–4th century; the P.Oxy. 29 page (after Fowler) says AD 75–125. Both given, marked debated in the timeline.
+- Jones's later dating of Euclid is one scholar's argument in a talk; marked debated.
+- The Stamatis edition is confirmed by catalogue records only; Morrow's translation by the publisher's page (dates only).
+- The Greek in the Scroll (Perseus's copy of Heiberg) does not show Heiberg's square brackets for the doubtful common notions and the words in Definition 15; the article says only what the Scroll shows and what Heath reports of Heiberg.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/euclid.md):** 9 findings, each checked against the
+cited page (Heath 1908 vol. 1 in the Internet Archive text; Wikipedia, Euclid and Euclid's Elements; Jones 2005). 8 corrected: the
+common notions (Heath: three of the four extra ones bracketed by Heiberg, a fourth, "if equals be subtracted from unequals", left
+out; the ninth an interpolation, in Heath's view); Heath, not Heiberg, accepted the Division of the Canon; Heiberg thought the
+Catoptrics "in its present form" may be Theon's; On Divisions survives only in part, its authorship questioned; Demetrius Lacon's
+critique does not name Euclid (Jones); Galen and Alexander cite the Elements by name, sometimes giving the book; the Conics date is
+Toomer's argument as Jones reports it; the eight Teubner volumes hold the writings "under his name". Not changed: "second only to
+the Bible" in editions, which Wikipedia's Euclid's Elements page does say ("has been estimated to be second only to the Bible in the
+number of editions").
+
+## Archimedes (tlg0552), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0552.ts` (40 sources). Every Greek quotation was copied from `scripts/passage.ts`;
+every English quotation is either in a cited Scroll translation or listed in `outsideQuotes` (our translations, Heath,
+Gwilt). Web pages were opened directly (Wikipedia as wikitext, Internet Archive full texts, project pages).
+
+**Confirmed and kept**
+- Wikipedia, Archimedes: c. 287–212 BC; historians "almost universally agree" he was the finest ancient mathematician;
+  the lost biography mentioned by Eutocius; Tzetzes' 75 years; father Phidias, nothing else known; Plutarch's kinship
+  with Hiero against Cicero and Silius Italicus' humble origin; letters to Dositheus (pupil of Conon) and Eratosthenes
+  (head librarian); unknown whether he visited Alexandria; Pappus' "place to stand"; Marcellus' attack in 214; burning
+  mirrors absent from Polybius, Livy and Plutarch, Lucian (2nd c.) first on burned ships without mirrors, Galen first on
+  mirrors, mixed modern results; Livy's death account; "Do not disturb my circles" in no ancient source; Vitruvius two
+  centuries later; Plutarch's disdain for mechanics seen as his own Platonism; lost works (Sphere-Making, 13
+  semiregular solids, Principles to Zeuxippus); 96-sided polygons; 8 × 10^63 grains; Doric; writings little known in
+  antiquity; Isidore c. 530; Eutocius same century; Arabic (9th c., Thābit) and Latin (12th c., Gerard of Cremona);
+  Renaissance and 17th-century influence; the Method found in 1906.
+- Wikipedia, Siege of Syracuse (213–212 BC): siege 213–212; war 214; Syracuse on the east coast.
+- Wikipedia, Archimedes' heat ray: Anthemius about AD 500 (the disagreement with Galen is stated in the article).
+- Wikipedia, Cicero: quaestor in Sicily, 75 BC.
+- Wikipedia, Archimedes Palimpsest: Isidore "the architect" of Hagia Sophia; copy c. 950 at Constantinople; to the
+  Jerusalem area, scraped 1229 (colophon 13 April 1229); Tischendorf's leaf (Cambridge UL); Papadopoulos-Kerameus 1899;
+  Heiberg 1906, photographs, transcriptions 1910–15; disappearance in the 1920s; Sirieix (Paris), water and mould,
+  forged pictures on four pages; Christie's, New York, 1998; Walters imaging 1999–2008; SLAC X-rays; online release
+  29 October 2008.
+- Wikipedia, William of Moerbeke: 1269 at Viterbo; two Greek MSS, both lost; his own copy in the Vatican.
+- Wikipedia, List of editiones principes in Greek: Basel 1544, Herwagen, ed. Venatorius; Cattle Problem 1773 (Lessing);
+  Method 1907 (Heiberg, Hermes); Stomachion 1915.
+- Wikipedia, Book of Lemmas / Archimedes's cattle problem / Ostomachion: Arabic only (Thābit); third-person mention of
+  Archimedes; 44-line poem found by Lessing at Wolfenbüttel, 1773; Stomachion fragmentary in Arabic and the palimpsest.
+- Heath, Works of Archimedes (1897, archive.org full text): Heracleides' Life via Eutocius; Tzetzes; Pheidias, with
+  Blass's correction for τοῦ Ἀκούπατρος and the scholion on Gregory of Nazianzus; Hieron and his son Gelon; Diodorus
+  and the long stay in Alexandria; Livy's dust; Pappus' saying; burning mirrors not before Lucian; the Valla MS
+  (9th or 10th c.), lost after 1544; editio princeps Basel 1544 (Venatorius); Torelli, Oxford 1792; Heiberg 1880–81
+  "definitive"; Doric: S&C and Measurement practically without Doric, Sand-Reckoner least affected, recast after
+  Eutocius; Eutocius' "favourite Doric dialect"; Liber Assumptorum through the Arabic, quotes Archimedes by name;
+  "edited in modern notation" (title page); Sand-Reckoner translation (opening, Aristarchus, Pheidias, conclusion).
+- Heath, The Method (1912, archive.org): "certain things first became clear to me by a mechanical method…"; "the proof of
+  which Eudoxus was the first to discover".
+- Heiberg, Opera omnia, 2nd ed., vol. III (1915, archive.org): "iterum edidit"; codex A written about the middle of the
+  9th century at Constantinople (Leo); Valla, Alberto Pio, Rodolfo Pio at Rome in 1544; vanished between 1544 and 1564;
+  Moerbeke used codex A itself and a second Greek codex for Floating Bodies.
+- Nigel Wilson (archimedespalimpsest.org): A probably 9th c., Valla, four copies (D, E, G, H); Moerbeke 1269 at
+  Viterbo, autograph Vat. Ottob. lat. 1850, extremely literal; *temnesthai* → *brekhesthai*, Latin *humectetur*.
+- Reviel Netz (archimedespalimpsest.org): Renaissance MSS all from codex A, lost in the 16th c.; codex B (Codex
+  Mechanicorum) lost probably in the 14th c., known through a Latin translation; overlaps of the palimpsest with A and B;
+  Method and Stomachion; hundreds of corrections to Heiberg; Eudoxus "publish" not "discover".
+- CNRS press release (9 March 2026): leaf 123 (S&C I, 39–41) identified at Blois; ZPE article of 6 March 2026.
+- Internet Archive record of the 1544 edition (Herwagen, Venatorius, Greek and Latin, Eutocius).
+- Perseus Catalog: Mugler, tome I, Belles Lettres 1970, "Texte établi et traduit par Charles Mugler".
+- Stanford Classics: Netz vol. 1 (CUP 2004), first English Eutocius, first scientific edition of the diagrams, uses the
+  palimpsest.
+- IMU, Fields Medal: head of Archimedes, ΑΡΧΙΜΗΔΟΥΣ, sphere inscribed in a cylinder.
+- The Latin Library, Cicero Tusc. 5.64–66: humilem homunculum a pulvere et radio; denied by the Syracusans; brambles;
+  Agrigentine gate; small column with sphere and cylinder (our translations).
+- LacusCurtius, Vitruvius 9 pref. 9–12 (Gwilt): the crown, the bath, "leapt out of the vessel in joy…".
+- LSJ (site copy): γᾶ Dor. for γῆ; ἅλιος (C) Dor. for ἥλιος; ἁμός for ἐμός esp. in Doric.
+- Scroll passages: Sand-Reckoner 1 and 4; Quadrature pr.; S&C 1.pr (ἡμιόλιος; ὑφʼ ἡμῶν); Measurement 3; Method pr1;
+  Eutocius on Measurement 1.1 (Heracleides) and on S&C 37 (Doric); Plutarch, Marcellus 14.3–9, 15.1–17.7, 19.4–6;
+  Plutarch, Non posse 11 (εὕρηκα, the crown); Polybius 8.3.3, 8.7.6–7 (one soul; eight months; Shuckburgh's English);
+  Lucian, Hippias 2 (Harmon: "the former burned the ships"); Strabo 1.3.11 (On Floating Bodies by title).
+
+**Left out because it could not be confirmed**
+- The 1998 price ($2 million on one Wikipedia page, $2.2 million on another) and where the palimpsest is now (CNRS:
+  Walters; Wikipedia: returned to its owner).
+- Heraclides Lembus as the biographer (Wikipedia doubts it); Valla's death year (1499 Heath, 1500 Heiberg, 1501 Wilson).
+- "Codex B last heard of in 1311": seen only in a search summary, page not opened.
+- The draft's "double reductio ad absurdum" and "a rigorous method of exhaustion" as a description of his proofs.
+- Diodorus on the water-screw: Diodorus book 5 is not in the Scroll's default copy, so reported only through Heath.
+- Cut for length although confirmed: the planetarium taken to Rome; the Syracusia (Athenaeus 5.40); Hipparchus on his
+  solstices; later praise (Galileo, Leibniz, Gauss).
+
+**Corrected from the draft**
+- "Greatest mathematician of antiquity" as a bare fact → attributed: historians almost all agree (Wikipedia).
+- "Siege of Syracuse (214–212)" → 214 or 213 (Wikipedia pages differ), marked debated.
+- "The story of Eureka comes from Vitruvius" → Plutarch tells it too (Non posse 11, in the Scroll).
+- "Codex B … lost soon after [1269]" → lost probably in the fourteenth century (Netz).
+- "Codex C … our only source for the Method and the Stomachion" → only source for the Method and the Greek of
+  On Floating Bodies; the Stomachion also survives in fragments in Arabic.
+- "Eutocius writes commentaries, 530" → sixth century, same century as Isidore's compilation (no exact year).
+- "Phidias … his father" → kept, but the name is Blass's correction of the manuscripts' Ἀκούπατρος (Heath).
+- "Codex A … lost in the sixteenth century after many copies" → last seen 1544, gone by 1564 (Heiberg); Wilson counts
+  four copies.
+- "Heiberg … 3 vols (2nd ed. 1910–15)": volume count not confirmed; only the dates and vol. III are given.
+
+**Weak points to revisit**
+- The 214/213 date of the first assault; the birth year depends only on Tzetzes.
+- Galen (Wikipedia, Archimedes) versus Anthemius (Wikipedia, heat ray) as the first to mention mirrors: both reported.
+- "The Greek that the Scroll prints for the Book of Lemmas is a modern rendering": an inference from the work surviving
+  only in Arabic; whoever made Mugler's Greek was not identified.
+- Netz's "publish" correction is tied to the Method preface by inference (it is the only place where Heiberg's text
+  makes Eudoxus "discover" a proof); the Greek reading of the palimpsest was not seen.
+- Wilson's *temnesthai*/*brekhesthai* passage (Heiberg II p. 408.13) was not located in the Scroll's text, so the article
+  does not say what Mugler prints there.
+- Several transmission facts rest on Wikipedia (Arabic and Latin translations, the palimpsest's modern history).
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/archimedes.md):** 11 findings, each checked against the
+cited passage or page (Plutarch, Marcellus 17 and Non posse suaviter 11 in the Scroll; Cicero, Tusculans 5.64 on The Latin Library;
+Wikipedia, Archimedes Palimpsest; Federspiel's review of Mugler on Persée), all corrected: the Book of Lemmas Greek is E. Stamatis's
+modern Doric reconstruction (the review added as source 41; its phrase "as a philological curiosity" not quoted, since it was not seen);
+ἁμός flagged as Blass's correction where it is used; Galen first mentions the mirrors, Anthemius later tried to explain them (no
+disagreement between the pages); Netz's "publish, not discover" not tied to a passage he does not name; Cicero's a pulvere et radio
+goes with excitabo; Plutarch's εὕρηκα quoted with the words the English renders; Eutocius mentions the Life twice; the grave request
+"is said"; Heiberg recognised Archimedes from the 1899 catalogue and came in 1906; Rivault's 1615 edition added; Isidore's
+compilation "is believed".
+
+## Claudius Ptolemy (tlg0363), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0363.ts` (24 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0363 npx vitest run src/wiki/author-articles.test.ts` (11 passed); `CORPUS=1 ARTICLE=tlg0363 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed; a deliberately altered Greek quotation and a removed outside quotation were both
+caught, so the check is live); `npx tsc --noEmit -p .` clean.
+
+What the library has: three works under tlg0363, all Greek only. *Almagest* (tlg001), Heiberg, Teubner 1898–1903 (book.section,
+with a "toc" section per book); *Tetrabiblos* (tlg007) in Robbins's Loeb Greek (perseus-grc2, printing of 1964, the default text)
+and Boll–Boer's Teubner (1st1K, the file says 1954); *On Music* (tlg011), 27 short notes headed ΠΤΟΛΕΜΑΙΟΥ ΜΟΥΣΙΚΑ from von Jan,
+*Musici Scriptores Graeci* (1895), p. 411 ff. This is NOT the *Harmonics* (three books): the editor's own notes (§ 18, § 23)
+point to passages also in Cleonides and Nicomachus. No English translation of Ptolemy is in the Scroll, so every English rendering
+of his Greek is "our translation" except Robbins's *Tetrabiblos* (quoted from LacusCurtius) and the Paton/Tolsa poem.
+Note: the Greek Anthology's default edition in the Scroll is Paton vol. 5 (grc10), so Anth. Pal. 9.577 cannot be cited as a
+Scroll passage; the poem is quoted in English from Tolsa (GRBS 2014) only.
+
+**Confirmed and kept**
+- Toomer, DSB article "Ptolemy" (MacTutor PDF of the Complete DSB text): b. c. 100, d. c. 170; observations 26 March 127 to
+  2 February 141; Alexandria the only place named; Roman citizenship probably from Claudius or Nero; the Canobic Inscription
+  (tenth year of Antoninus; alternative MS reading "fifteenth year"; Toomer doubts its authenticity); Olympiodorus' forty years
+  at Canopus "probably a fictional elaboration"; Meliteniotes (c. 1360) "could be correct" but late and unsupported; Arabic
+  sources "add nothing credible"; the Suda the only formal notice (tenth century), "wretchedly incomplete"; Almagest the
+  earliest major work, mentioned in the Tetrabiblos, Handy Tables, Planetary Hypotheses and Geography; Syrus otherwise unknown;
+  thirteen books; the title and al-majisti / almagesti / almagestum; first principles to tables; eccentrics, epicycles, the
+  equant ("most original element"); 1,022 stars, 48 constellations; Handy Tables (Theon's version, "changed nothing
+  essential"); Planetary Hypotheses (two books, physical models, absolute distances); Tetrabiblos as complement of the
+  Almagest; Geography in eight books, lists of places, maps "undoubtedly" in Ptolemy's own publication; Harmonics in three
+  books between Pythagoreans and Aristoxenians; Optics (Latin by Eugenius of Sicily, 12th c., from a lost Arabic version);
+  Planisphaerium (Arabic and Latin); Mechanics in three books lost; Almagest "a masterpiece of clarity and method"; the
+  equinox observations each about a day out; Delambre's charge "implausible", selection of observations likely; standard
+  textbook almost at once; Pappus (fl. 320) and Theon (fl. 360); Arabic about 800 and better versions under al-Ma'mun;
+  Sicilian Latin c. 1160 little known; Gerard 1175; Copernicus 1543 "cast in a firm Ptolemaic mold"; Kepler; Geography in
+  Latin by Jacobus Angelus c. 1406 and the basis of most 15th–16th-century cartography; Heiberg the standard text; Basel 1538
+  editio princeps with Theon's commentary; "The Ptolemaic system is indeed named after the right man."
+- Suda Π 3033 in the Scroll (4.Π.3033): «Πτολεμαῖοϲ, ὁ Κλαύδιοϲ χρηματίϲαϲ, Ἀλεξανδρεύϲ, φιλόϲοφοϲ», under Marcus; lists
+  Mechanics in 3 books, Phaseis, Planisphaerium, Handy Table, the Great Astronomer or Syntaxis.
+- Robbins, Loeb Tetrabiblos (1940), Introduction and Book I §§ 1–3 on LacusCurtius: personal history pieced together from his
+  works, scholia and late notices; Ptolemais and age 78 "probably" reliable (Abulwafa, 11th c.); the physiognomic portrait;
+  latest observation 151 (Boll) but "a very slight change in the text of Almagest X.1" would give 141; "almost the authority
+  of a Bible"; "a difficult author even for the ancients", "long, involved sentences"; at least 35 manuscripts, none before
+  the 13th century; the 10th-century manuscript of the Paraphrase (Vat. gr. 1453); Ishaq ibn Hunayn's Arabic (9th c.);
+  Plato of Tivoli 1138; Camerarius' first edition, Nuremberg 1535, from N with his printer's marks; the two endings (the
+  borrowed one "certainly" spurious; P's ending in the Arabic too; both printed); the titles (Μαθηματικὴ τετράβιβλος σύνταξις,
+  ἀποτελεσματικά, συμπερασματικά); note 2 identifies "its own treatise" as the Almagest.
+- Wikipedia, Ptolemy: Meliteniotes 14th-century; astronomy most of his time; mathematics above theology; Plato of Tivoli 1138;
+  Geography maps c. 1300 after Planudes; Delambre early 1800s.
+- Wikipedia, Almagest: μεγίστη / al-majisṭī; equant as a third device; Hamilton: not completed before about 150; the
+  commentaries of Theon (extant), Pappus (fragments), Ammonius (lost); Gerard at Toledo 1175; Α/Δ and Arabic 3/8 confusions;
+  Gerard's 300° latitudes; Newton (1977) "the most successful fraud in the history of science"; Gingerich "some remarkably
+  fishy numbers"; Toomer 1984, 2nd ed. 1998.
+- Wikipedia, Theon of Alexandria: c. 335–c. 405; the Handy Tables often credited to him, but no manuscript names him and the
+  tables are thought very close to Ptolemy's.
+- Tolsa, GRBS 54 (2014): Anth. Pal. 9.577; Paton's translation "slightly modified"; Synesius' astrolabe shortly before 400,
+  "old", no author named; the poem in two of three branches (BC by the main scribe; D and G by a later hand); manuscripts A
+  (Par. gr. 2389, 9th c., very few scholia), B (Vat. gr. 1594, third quarter 9th c., two columns, older scholia in capitals),
+  C (Marc. gr. 313, late 9th–early 10th), D (Vat. gr. 180, 10th), G (Vat. gr. 184, 1269–70, used by Heiberg for books 7–13);
+  ancestor of BC from the 6th-century Neoplatonic school of Heliodorus and Ammonius, which added the preliminary material
+  incl. the Canobic Inscription; two variants in the Almagest MSS fitted to the preface; the manuscripts led the anthologies to
+  name Ptolemy; Paton "Ptolemy: uncertain, which".
+- Jones, AJP 129 (2008), review of Stückelberger–Grasshoff: some 8,000 place names with coordinates; no manuscript older than the
+  late 13th century; two recensions parted before minuscule if not in antiquity; Vat. gr. 191 (X) stops giving coordinates a
+  little over halfway; the other group with the oldest Ptolemaic maps; numbers corrected by map-makers; origin of the maps
+  "controversial"; Nobbe (1843–45) with no real apparatus; the Berne team's complete critical edition (Schwabe, 2006) with
+  German translation and reconstructed maps.
+- Scroll passages (all Greek copied from passage.ts): Almagest 1.toc (μαθηματικῆς συντάξεως; the chapter headings on the earth
+  in the middle and not moving), 1.1 (ὦ Σύρε; mathematics alone gives sure knowledge; lovers of divine beauty), 3.1 (simplest
+  hypotheses), 13.2 (no one should think such hypotheses troublesome), 10.1 (τῷ ιδʹ ἔτει Ἀντωνίνου, the only Antoninus date in
+  that chapter); Tetrabiblos 1.1 (title; ὦ Σύρε; κατʼ ἰδίαν σύνταξιν … περιώδευται); On Music 1–27.
+- LSJ (site's copy): κατασκελής, "the meagreness or inadequacy of human contrivances. Ptol. Alm. 13.2"; ἐπιτέχνημα "devices,
+  Ptol. Alm. 13.2"; ἐργώδης "difficult, troublesome"; εἴδησις "knowledge".
+- Wikipedia, List of editiones principes in Greek: Geography, Basel 1533 (Froben); Almagest, Basel 1538 (Walder), with a
+  commentary mostly Theon's, Pappus for book 5.
+- Editions: Scroll file headers (Heiberg 1898; Boll–Boer 1954; Robbins 1964 printing; von Jan 1895); Internet Archive record of
+  the Michigan copy of the Opera omnia (Heiberg 1898–1903 and 1907; Boll–Boer Apotelesmatica 1940; Lammert and Boer 1961);
+  Princeton UP page for Toomer's Almagest (1998; based on Heiberg; "numerous corrections derived from medieval Arabic
+  translations"); Hübner's publication list at Münster (Apotelesmatika, Teubner, Stuttgart–Leipzig 1998, after Boll and
+  Boer); Princeton UP page for Berggren–Jones (copyright 2000); Leonardo review (the subtitle; Books 1, 2, 7 and 8 translated).
+
+**Left out because it could not be confirmed**
+- "Translated into Arabic at Baghdad" in 827 (draft timeline): Toomer gives about 800, with better ninth-century translations
+  under al-Ma'mun; Wikipedia names Sahl ibn Bishr as perhaps the first translator. Only "about 800" is kept.
+- Simon Grynaeus as editor of the 1538 Greek Almagest (draft): Wikipedia's list names Joachim Camerarius; Toomer names no
+  editor. The editor is not named in the article.
+- Par. gr. 2389 "largely in capitals", Vat. gr. 1594 "the finest witness, rich in notes": Tolsa says A has very few scholia
+  and describes B's layered notes, but neither "largely in capitals" nor "finest witness" was found.
+- "Editors must check the numerals against Ptolemy's own calculations": not found as stated; kept only the documented copying
+  confusions and Toomer's corrections from the Arabic.
+- Sexagesimal fractions "which is why we still divide degrees and hours into sixty minutes": Toomer says Greek astronomy took
+  over the Babylonian sexagesimal system, but the modern-legacy claim was not checked against a source; dropped.
+- "His Greek is the clear, technical prose of Hellenistic science" and "the introductory chapters are approachable": opinions
+  without a source; the article instead sets Toomer's "masterpiece of clarity" beside Robbins's "difficult author".
+- Theon's daughter Hypatia and Almagest book 3 (Wikipedia, Theon): cut; the nature of her work is disputed and was not checked
+  further.
+- The 2022 palimpsest fragments of Hipparchus' star catalogue (Wikipedia, Ptolemy): cut for length, not checked further.
+- Olympiodorus' date: Toomer says sixth century, Robbins (note 5) says fourth; Toomer's is kept (the more recent specialist
+  account); worth checking.
+- The Analemma (Moerbeke's Latin) and the attempt on the parallel postulate: confirmed in Toomer but cut for length.
+- Wikipedia's "about 6,300 places with coordinates" for the Geography: not used; Jones's "some eight thousand place names" kept.
+
+**Corrected from the draft**
+- "Observations ... dated between 127 and 141" kept, but the 141/151 problem is now shown: Heiberg's text of Alm. 10.1 has
+  τῷ ιδʹ ἔτει Ἀντωνίνου (fourteenth year), which Boll took as 151; Robbins notes a slight change gives 141; Toomer: 2 February 141.
+- "Arab astronomers called it al-majisti ('the greatest')": al-majisṭī is the Arabic form of Greek megistē, "greatest"
+  (Wikipedia; Toomer), not an Arabic word meaning "greatest".
+- "Tetrabiblos, the standard ancient textbook of astrology": Robbins's "almost the authority of a Bible" is quoted, but Toomer
+  says it never had an authority in its field like the Almagest's (the article avoids "standard").
+- "Geography giving coordinates for some 8,000 places" → "a list of some eight thousand places with their longitudes and
+  latitudes" (Jones), with the two recensions and the disputed origin of the maps.
+- "K. von Jan, Musici Scriptores Graeci — the musical text used here": the Scroll's *On Music* is a set of 27 short notes under
+  Ptolemy's name, not the *Harmonics*; the Harmonics' edition is Düring (1930, per Toomer), not used in the Scroll.
+- "F. Boll and E. Boer's Teubner edition (1954 printing)": the edition first appeared in 1940 (Internet Archive record; Robbins's
+  1980 note); the Scroll's file names 1954. Hübner's revision is 1998 (Stuttgart and Leipzig).
+- "Toomer, Ptolemy's Almagest (London, 1984)": the place could not be confirmed (a Wikipedia link says Duckworth); printed as
+  1984 and Princeton 1998.
+- "Writes the Almagest (c. 150), followed by the Tetrabiblos, Geography and Harmonics": the Almagest is not finished before
+  about 150 (Hamilton, via Wikipedia); the Tetrabiblos, Geography and others come after it (Toomer); the Harmonics' place in
+  the order is not fixed, so it is not named in the timeline.
+- "Theon of Alexandria writes a commentary on the Almagest (370)": Toomer gives fl. 360; Wikipedia's Theon observed eclipses in 364.
+  Timeline mark at about 360.
+
+**Weak points to revisit**
+- Much rests on Toomer's DSB article (the MacTutor PDF is the encyclopedia.com text, whose
+  Greek words dropped out in conversion and whose OCR garbles the Canobic year as "147-147"). The Canobic mark is placed at
+  about 147 (Wikipedia: 147 or 148; Wikipedia's Ptolemy page: 146–147).
+- The Theon/Handy Tables question: Toomer speaks of "the revised version of Theon", Wikipedia's Theon page says no manuscript
+  names him. The article says "usually credited to Theon".
+- Jones's review was read in an OCR text in which the Greek sigla of the Geography's two recensions are garbled; the article
+  avoids the sigla.
+- Toomer's Almagest translation and the Berggren–Jones volume were confirmed only by publisher pages and a review, not opened.
+- The Tetrabiblos opening line in Robbins's English was read on LacusCurtius; the Scroll has only his Greek.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/ptolemy.md):** 9 findings, each checked against the
+cited passage or page (Almagest 3.1 in the Scroll; Toomer's DSB article; Robbins's Loeb introduction on LacusCurtius; Wikipedia,
+Ptolemy, Almagest and the list of editiones principes), all corrected: Boll himself saw the 141 reading and kept 151, and Robbins
+followed him (Toomer's own reading of the passage, reported only on a commentary site, not added); Toomer allows Meliteniotes'
+Ptolemais "could be correct"; astronomy the subject of most time, about half the works; the Almagest the earliest of the major
+works; the Suda the only formal biographical notice (not "ancient"); Gerard "apparently" learned from the Moors; the 1538
+commentary has Cabasilas for book 3; the poem's changed readings in B, C and D; the proviso to the rule of simple hypotheses.
+
+## Epicurus (tlg0537), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0537.ts` (44 sources). Started fresh: the earlier, interrupted attempt's notes in the scratchpad were used only as leads, and every page and passage below was opened again for this check.
+
+**Confirmed and kept**
+- Life: Diogenes Laertius 10.1–2 in the Scroll (Hicks): son of Neocles and Chaerestrate, deme Gargettus; brought up on Samos where Athenians had settled; Athens at eighteen; joined his father at Colophon after the expulsion by Perdiccas; philosophy at fourteen (his own words); the schoolmasters and Hesiod's Chaos (Apollodorus the Epicurean). Stanford Encyclopedia (Konstan, rev. 2022): 341 and 323 as the dates; Colophon in 321, "on the coast of what is now Turkey"; Nausiphanes, a Democritean; "Ten years later" Mytilene and Lampsacus; back in Athens 307/06; death in 270 "at the age of seventy or seventy-one"; the Garden as the name of the school. Wikipedia (Epicurus): required military training at Athens; teaching at Mytilene around 311; the Garden (κῆπος); women students including Themista and Leontion.
+- Diogenes 10.3 (brothers and the slave Mys), 10.9 (the School continuing while nearly all others had died out), 10.10 (garden for eighty minae, friends from all parts, servants as members), 10.11 (the pot of cheese), 10.13 (Nausiphanes denied, "self-taught"; ordinary words; "so lucid a writer…"), 10.14–15 (Hermarchus: renal calculus, a fortnight; seventy-two), 10.16–23 (will: garden for Hermarchus and the School; Mys, Nicias, Lycon and Phaedrium freed; the children of Metrodorus, who died seven years before him; the letter to Idomeneus, quoted from Hicks), 10.12 (Diocles: treatises learnt by heart), 10.26–29 (about three hundred rolls; On Nature in thirty-seven books; three letters as epitome), 10.35 (the Letter to Herodotus calls itself an epitome).
+- Heading of Hicks's translation of book 10 in the Scroll: "EPICURUS (341-271 B.C.)". Hicks's Greek and English are both from the Harvard/Heinemann edition of 1925 (both file headers).
+- Wikipedia (Epicurus): the letter to Idomeneus "uncertain", but "the vast majority of scholars accept it as genuine"; forty Principal Doctrines; the tetrapharmakos (first four doctrines; name from a compound of four drugs; Roman-era Epicureans; Hutchinson's translation of Philodemus, PHerc. 1005, quoted exactly); Letter to Menoeceus in an eloquent style similar to Isocrates'; letter to his mother at Oenoanda, attributed to Epicurus by the majority of scholars; 1888 and eighty-one sayings; Christian critics; "virtually extinct" by the early fifth century; Dante's burning tombs; Poggio 1417.
+- SEP: Diogenes Laertius third century, tenth and final book; the three letters and their subjects; Principal Doctrines and Vatican Sayings meant to make doctrine easy to remember; On Nature from the Herculaneum villa buried in 79; the library almost certainly Philodemus' working collection; Lucretius' six books of hexameter verse; Cicero's hostile criticism, especially of the ethics; atoms and void inherited from Democritus; the swerve known "chiefly from later sources, including Lucretius and Cicero", "not entirely clear how the swerve operates"; VS 52 in Konstan's English (quoted exactly); VS 23 "or is a virtue, if we follow the manuscript reading"; Letter to Menoeceus "a précis of Epicurean ethics"; Letter to Pythocles "sufficient reason to attribute it to the founder"; Arrighetti 1973 the standard edition (Einaudi, Turin); Usener 1887 still the fullest collection; Bailey 1926; Long and Sedley 1987; Dorandi 2013; Mensch 2018; Inwood and Gerson 1997.
+- Quotations from the Scroll, copied from `scripts/passage.ts`: Diogenes 10.39 (τὸ πᾶν ἐστι σώματα καὶ κενόν; the bracketed note on the Larger Epitome), 10.122, 10.123, 10.124–125, 10.127–128 (ἀταραξίαν), 10.130–132, 10.133 (διαγελῶντος; "Destiny … he laughs to scorn"), 10.135 (ζήσεις δὲ ὡς θεὸς ἐν ἀνθρώποις), 10.139 (Principal Doctrines 1–2 and the note "Elsewhere he says"), 10.140 (Doctrine 5 with angle brackets), 10.148 (Doctrine 27); von der Mühll's Greek: Menoeceus 132 (angle brackets) and 133 (†ἀγγέλλοντος * *), Vatican Sayings 5, 10, 14, 23, 52; Iliad 1.70; Plutarch, That One Cannot Live Pleasantly 1 and Against Colotes 1; Plutarch, "Live Unnoticed" 2–4 (λάθε βιώσας; Epicurus addressed by name; letters to friends in Asia; books sent to men and women); Lucian, Alexander 47.
+- LSJ (site's copy): κῆπος "garden"; ἀταραξία "impassiveness, calmness"; διαγελάω "laugh at, mock"; ἀγγέλλω "announce"; αἱρετός "to be chosen"; καιρός "exact or critical time, season, opportunity"; χαίρω "rejoice".
+- Von der Mühll, Teubner 1922 (Internet Archive scan; preface read in the OCR text, pages 49, 50, 61 and 62 read from the page images): "Epicuri parcam et obscuram brevitatem" (our translation "sparing and obscure brevity"); two classes of manuscripts; B (Burbonicus III B 29, twelfth century, Naples); P (Parisinus gr. 1759, written at the beginning of the fourteenth century); F (Laurentianus 69.13, thirteenth century); a single, very faulty copy of Diogenes found at Constantinople "saeculo circiter nono" ("suspicamur"); Diogenes' marginal notes woven into the text, sometimes hard to separate, especially in Herodotus and thoroughly in Pythocles; Pythocles doubted by scholars and already in antiquity (Philodemus), but genuine in his view; Principal Doctrines all by Epicurus, though the Oenoanda inscription shows a varied order; the Vatican Gnomologium in Vat. gr. 1950, fourteenth century, found by K. Wotke in 1888 and first edited by Usener in Wiener Studien 10; Usener's proof that it was made from Principal Doctrines and the letters of the four leaders (Epicurus, Metrodorus, Polyaenus, Hermarchus). Notes: Men. 132 "hiatum explevit Steph., cf. Rat. Sent. V"; Men. 133 ἀγγέλλοντος BFZf, "corruptum", the following lines "scholion"; διαγελῶντος ⟨…⟩ "suppl. Us."; VS 5 = Sent. V; VS 10 = Metrodori fr. 37 Koerte, Hom. Il. A 70; VS 14 κύριος "Stob.: om. Vat.", τὸν καιρόν "Stob.: τὸ χαῖρον Vat."; VS 23 "ἀρετή Vat., corr. Us.".
+- Bailey, Epicurus: The Extant Remains (1926, Internet Archive scan): "the extreme difficulty of the writings of Epicurus"; the remains embodied in Diogenes book 10, so the text of Epicurus is that of the manuscripts of Diogenes; two classes; B parchment, twelfth century, Naples; P much corrected, beginning of the fourteenth century; F dated twelfth century by Usener, thirteenth by von der Mühll; scholia interwoven, especially in Herodotus and Pythocles; Bailey inclines to Usener's view that Pythocles is an Epicurean compilation; sixteenth-century editors had inferior manuscripts but some of their conjectures survive; Stephanus 1570; Gassendi "revived the serious study of Epicureanism and may be said to have introduced the theory of atomism to the modern world", his book 10 of 1649 "practically re-wrote the text"; Usener's Epicurea (1887) a fresh start from the manuscripts and a collection from the whole range of classical literature; von der Mühll re-read the manuscripts and added five; Vat. gr. 1950, fourteenth century, first published by C. Wotke with notes by Usener and Gomperz, Wiener Studien 10 (1888).
+- Wikipedia (Diogenes Laertius): B twelfth century, Naples; P eleventh/twelfth century (after Dorandi 2013); F thirteenth century; Traversari's Latin printed at Rome in 1472; first whole Greek text by Froben, 1533; Estienne 1570; Meibom's numbering of 1692 "still in use today"; Long (OCT 1964), Marcovich (Teubner 1999–2002), Dorandi (Cambridge 2013). Wikipedia (List of editiones principes in Greek): Froben, Basel, 1533.
+- Wikipedia (Diogenes of Oenoanda): second century; now Hadrianic (117–138), once late second century; about 25,000 words; a portico wall; discovered 1884, first 64 fragments published 1892; "to help also those who come after us"; wealthy; letters of Epicurus including one to his mother. Wikipedia (Lucretius): Cicero's letter of February 54 BC; poem almost lost in the Middle Ages, rediscovered in 1417 by Poggio. Wikipedia (Villa of the Papyri): found 1750, first rolls 1752. Wikipedia (Herculaneum papyri): first rolls autumn 1752; Piaggio's machine from 1756, silk threads, beginning of every roll destroyed (Barker, 1908, quoted there); large parts of On Nature books 14, 15, 25, 28. Wikipedia (Crux): the dagger marks a passage the editor cannot mend. Wikipedia (Leiden Conventions): ⟨abc⟩ for letters omitted and restored by the editor.
+- Catalogue and TEI headers: the Scroll's Greek of the letters, Principal Doctrines and Vatican Sayings is von der Mühll (Leipzig: Teubner, 1922), digitised by Open Greek and Latin.
+
+**Left out because it could not be confirmed**
+- "His school's motto was λάθε βιώσας": no source read calls it the school's motto. Kept only as a precept Plutarch attacked in a whole essay addressed to Epicurus.
+- A house and garden "outside the city walls": not in any source read.
+- The Greek word *ephebeia* for his military service (only "required military training" in Wikipedia).
+- His birthday: Diogenes gives the 7th of Gamelion (10.14) and the 10th in the will (10.18); Wikipedia says the 20th. Left out.
+- "Almost all of his vast output is lost" in those words; replaced by Diogenes' three hundred rolls and the short works that survive whole.
+- Lucretius' poem dated "-55": no date for the poem found; Cicero's letter of February 54 BC is used instead.
+- That readings of the Herculaneum papyri of Epicurus "continue to change as new imaging methods are applied": the recent imaging news on Wikipedia concerns Philodemus and a Stoic treatise, not Epicurus' own books.
+- Wikipedia's "assets of all the members held in common": contradicted by Diogenes 10.11 (Epicurus rejected common property). Not used.
+- Arrighetti's first edition (1960), the Hackett *Epicurus Reader* as a separate book, the "Epicurean epitaph", the "Epicurean paradox", the giraffe gift of P.Herc. 1521.
+- That the Garden lay "between the Stoa and the Academy" (Wikipedia, citing Konstan; not found in the SEP text read).
+
+**Corrected from the draft**
+- "341–270 BCE": kept, but marked {debated}: SEP says he died in 270 aged seventy or seventy-one; Diogenes says seventy-two; Hicks's heading gives 341–271.
+- "Came to Athens for his military training (ephebeia) in 323": Diogenes only says he came at eighteen; the military training is Wikipedia's ("it seems").
+- "Begins teaching at Mytilene, then at Lampsacus" dated 311: marked approximate ("ten years later" than 321 in SEP; "around 311" in Wikipedia).
+- "Returned to Athens in 306": 307/6 (SEP).
+- "Diogenes Laertius says he wrote some three hundred books": "about three hundred rolls" (Hicks).
+- "A collection of sayings discovered in a Vatican manuscript in 1888 … eighty-one maxims by Epicurus and his followers": kept, with the manuscript (Vat. gr. 1950, fourteenth century), the finder (Wotke) and the disagreement over who first edited it (Bailey: Wotke with notes by Usener and Gomperz; von der Mühll: Usener).
+- "Karl Wotke": the sources give only "C. Wotke" / "K. Wotke"; the article writes "C. Wotke" as Bailey does, without a first name.
+- "Usener's Epicurea collects the fragments": kept, with SEP's "still the fullest collection".
+- "Herculaneum rolls found 1752": kept as the first rolls (the villa itself was found in 1750).
+- "The Letter to Pythocles may have been written by a pupil": now set out as a debate (von der Mühll and SEP for genuine; Bailey and Usener for a compilation; doubts already in Philodemus).
+- "The Letter to Menoeceus … is the clearest introduction": kept as advice ("a good place to begin"), resting on SEP's "précis of Epicurean ethics" and Wikipedia's "eloquent style".
+- Editions: "von der Mühll (Teubner, 1922), the Greek text used here" confirmed by the TEI headers; Usener, Arrighetti (2nd ed., Turin, 1973), Bailey (Oxford, 1926), Long–Sedley (Cambridge, 1987) confirmed by SEP; Hicks (1925), Dorandi (2013) with Mensch (2018) and Inwood–Gerson (1997) added.
+
+**Weak points to revisit**
+- The OCR of Bailey's introduction twice reads "1523" for Froben's first edition, while his own list of sigla reads "MDXXXIII" (1533) and both Wikipedia pages give 1533; von der Mühll's OCR also reads "1523". 1533 is used; the page images of Bailey p. 11 were not opened to settle whether the book itself has a misprint.
+- The date of manuscript P differs: early fourteenth century (von der Mühll, Bailey) against eleventh/twelfth (Dorandi 2013, as reported by Wikipedia; Dorandi himself was not opened). Both are given.
+- The von der Mühll critical notes were read from page images; the Latin is clear, but "quattuorvirorum principum sectae Epicuri Metrodori Polyaeni Hermarchi" is read as "the four leaders, Epicurus, Metrodorus, Polyaenus and Hermarchus".
+- The tetrapharmakos wording is Hutchinson's translation as quoted by Wikipedia (Hackett, 1994); the book was not opened.
+- Cicero's letter, the Oenoanda details, the Herculaneum dates and the editions of Diogenes rest on Wikipedia pages.
+- Konstan's English for VS 52 and his note on VS 23 are from SEP, not from a printed translation.
+- The Hicks Diogenes is not called "Loeb" in the article (the file headers do not say so).
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/epicurus.md):** 8 findings, each checked against the
+cited passage or page (Diogenes Laertius 10.1.1, 10.1.11, 10.1.15–17 in the Scroll; Wikipedia, Herculaneum papyri), all corrected: B
+"the chief manuscript", the oldest of the better class "in Bailey's account"; the will left the property to two friends in trust, to
+keep the garden for Hermarchus and the school; the tetrapharmakos lines named as D. S. Hutchinson's free English; the Villa's 1750
+footnoted to source 33 only; Hicks brackets such notes "for example"; the deme Gargettus is Epicurus' own; the cheese letter's
+addressee not named; "a stone blocked his urine" for Hicks's "renal calculus".
