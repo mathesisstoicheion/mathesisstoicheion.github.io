@@ -22,8 +22,13 @@ import { lysias } from "./authors/tlg0540";
 import { isocrates } from "./authors/tlg0010";
 import { polybius } from "./authors/tlg0543";
 import { plotinus } from "./authors/tlg2000";
+import { newTestament } from "./authors/tlg0031";
+import { septuagint } from "./authors/tlg0527";
+import { lucian } from "./authors/tlg0062";
+import { josephus } from "./authors/tlg0526";
+import { galen } from "./authors/tlg0057";
 
-export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon, [hesiod.id]: hesiod, [lysias.id]: lysias, [isocrates.id]: isocrates, [polybius.id]: polybius, [plotinus.id]: plotinus };
+export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon, [hesiod.id]: hesiod, [lysias.id]: lysias, [isocrates.id]: isocrates, [polybius.id]: polybius, [plotinus.id]: plotinus, [newTestament.id]: newTestament, [septuagint.id]: septuagint, [lucian.id]: lucian, [josephus.id]: josephus, [galen.id]: galen };
 
 /** The article for an author: the checked one, or (development only) a draft marked as unchecked. */
 export function articleFor(id: string): { article: AuthorArticle; draft: boolean } | null {

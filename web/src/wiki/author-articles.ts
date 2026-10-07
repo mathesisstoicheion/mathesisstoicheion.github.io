@@ -70,6 +70,11 @@ export const ARTICLE_LOADERS: Record<string, () => Promise<AuthorArticle>> = {
   tlg0010: () => import("./authors/tlg0010").then((m) => m.isocrates),
   tlg0543: () => import("./authors/tlg0543").then((m) => m.polybius),
   tlg2000: () => import("./authors/tlg2000").then((m) => m.plotinus),
+  tlg0031: () => import("./authors/tlg0031").then((m) => m.newTestament),
+  tlg0527: () => import("./authors/tlg0527").then((m) => m.septuagint),
+  tlg0062: () => import("./authors/tlg0062").then((m) => m.lucian),
+  tlg0526: () => import("./authors/tlg0526").then((m) => m.josephus),
+  tlg0057: () => import("./authors/tlg0057").then((m) => m.galen),
 };
 
 /**

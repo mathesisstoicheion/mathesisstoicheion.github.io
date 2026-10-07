@@ -638,3 +638,645 @@ LCL 468, 1988, added as a source); the last words told "as Eustochius later told
 and his "live dialogue with an unnamed interlocutor" restored; Gerson's "in their formative periods" restored; 204 or 205 given
 as our reckoning of Porphyry's "thirteenth year of Severus"; the last words "have been called" one of the most controversial
 passages (Most, quoted by Zamora Calvo).
+
+## The New Testament (tlg0031), checked 2026-10-06
+
+Article: `web/src/wiki/authors/tlg0031.ts` (68 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0031 npx vitest run src/wiki/author-articles.test.ts` (11 passed); `CORPUS=1 ARTICLE=tlg0031 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed; an altered Greek quotation and an altered English one were both caught, so the
+check is live); `npx tsc --noEmit -p .` reports nothing in this file (its only errors are in `scripts/zz-align-old.ts`, which this work did not touch).
+
+What the library has: all 27 books (tlg0031.tlg001–027) in Westcott and Hort's Greek (Perseus file headers: *The New Testament in the
+Original Greek*, New York, Harper and Brothers, 1882–1892) with the World English Bible (headers: Michael Paul Johnson, Rainbow
+Missions, revision of the ASV of 1901). For Mark there are also two First1KGreek files: the INTF's transcription of **Mark chapter 1 in
+Codex Sinaiticus** (British Library Add. 43725) and Mark chapter 1 in Sahidic Coptic (Coptic SCRIPTORIUM). Eusebius' *Ecclesiastical
+History* (Greek, with Lake and Oulton's Loeb English) and Aratus' *Phaenomena* (Greek only) are in the Scroll too.
+
+A finding worth knowing for the reader: the WEB "has been edited to conform to the Greek Majority Text New Testament where there are
+significant differences in manuscripts" (WEB FAQ), while Westcott and Hort follow above all Vaticanus and Sinaiticus. So the Scroll's
+two columns disagree at real variants: Mark 1:1 ("the Son of God" in the English only), Mark 1:2 ("in Isaiah the prophet" against "in
+the prophets"), Romans 16:25–27 (in the English after 14:23, and 16:24 has a verse only in the English), Revelation 1:4 ("from God, who
+is…", the scribes' smoothing of ἀπὸ ὁ ὤν), Mark 16 (the English has only the longer ending). The article uses this.
+
+**Confirmed and kept**
+- Wikipedia, New Testament: 27 books in Koine; gospels, Acts, letters, Revelation; mid-to-late first century, no consensus on the latest;
+  Ehrman's "between the years 50 and 120 C.E." (quoted from Ehrman 1997, p. 8); seven undisputed letters and six disputed; Hebrews
+  anonymous, Pauline authorship generally rejected; gospels anonymous, names fixed by the mid-second century; Marcan priority;
+  Acts the sequel to Luke; "gospel" = εὐαγγέλιον, good news; Jesus spoke Aramaic; Irenaeus' *Against Heresies* about 180 and the four
+  gospels; Marcion about 140 (Luke and ten letters); Pauline letters circulating, perhaps collected, by the end of the first century;
+  Eusebius about 300; Athanasius' letter of 367 the first list of the present canon; Hippo 393 "may have been" the first council,
+  Carthage 397 and 419; Vaticanus and Sinaiticus among the earliest extant Christian Bibles; more than 5,800 Greek, 10,000 Latin and
+  9,300 other manuscripts; translations into Latin, Syriac and Coptic; the two explanations of NT style (Jewish Greek; everyday Koine
+  like the papyri letters, receipts and petitions); earliest manuscripts late second to early third century, possibly P52.
+- Wikipedia, First Epistle to the Thessalonians: 49–51 by a majority; the earliest extant Christian text.
+- Wikipedia, book pages (infoboxes and text): Mark around 70; Matthew c. 80–90 (and Papias c. 60–130); Luke c. 80–90; Acts c. 80–90,
+  same author as Luke, some date it later (NT page); John 90–100; Revelation about 95, Domitian 81–96, the title ἀποκάλυψις, the only
+  apocalypse in the NT.
+- Wikipedia, Epistle to the Hebrews: its Greek "more polished and eloquent than any other book of the New Testament".
+- Wikipedia, Authorship of the Pauline epistles: Paul names secretaries in several letters, a common Greco-Roman practice.
+- Wikipedia, Koine Greek: ἡ κοινὴ διάλεκτος, "the common dialect"; spread with Alexander; lingua franca; the Septuagint (third century
+  BC); NT authors follow the Septuagint for over half their Old Testament quotations; the historical present 151 times in Mark.
+- Wikipedia, Koine Greek grammar (after Morwood): dual eliminated, optative rarer, wider uses of ἵνα, higher ratio of καί to δέ at
+  sentence starts under Semitic influence.
+- Wikipedia, Language of the New Testament: Mark translates Aramaic phrases (talitha kum and others).
+- Wikipedia, Luke 1: Karris, "finely crafted, periodic Greek" (from the New Jerome Biblical Commentary, 1990, p. 678); ἐπειδήπερ not
+  elsewhere in the NT or the Septuagint. Our own count in the Scroll's Greek agrees: ἐπειδήπερ once, in Luke 1:1.
+- Our count (script over the 27 Perseus Greek files, accents ignored): εὐθύς 41 times in Mark, 12 times in all the other books.
+- Mounce, Zondervan Academic blog: ἀπό "should" take the genitive; three nominatives at Rev 1:4; Wallace's "the first and worst
+  grammatical solecism in Revelation"; the Exodus 3:14 echo, nominative as a title; scribes adding θεοῦ.
+- LSJ (site's copy): διαθήκη (will, testament; compact, covenant, frequent in the LXX; καινὴ δ. Luke 22:20); εὐαγγέλιον (good tidings,
+  good news); εὐθύς (of time, "straightway, forthwith"); ἄλλως ("otherwise"); ἀπό ("Prep. usually with Gen."); εἰμί (1 pl. ἐσμέν, epic
+  and Ionic εἰμέν).
+- Wikipedia, Aratus: Paul quotes the fifth line of the *Phaenomena* in Acts 17:28.
+- Scroll passages, all copied from `passage.ts`: Luke 22:20; Romans 16:22; Galatians 6:11; Mark 5:41; John 1:1; Mark 1:12; Luke 1:1–4;
+  Revelation 1:4; Acts 17:28; Aratus, *Phaenomena* 1–5; Mark 16:8–20 and the shorter ending (ΑΛΛΩΣ), both in ⟦ ⟧; John 7:52–8:12 in
+  ⟦ ⟧; 1 John 5:6–8 (no Comma in Greek or English); Revelation 13:18; Mark 1:1–2; Romans 14:23 (English with the doxology) and
+  16:24–27 (Greek with the doxology, 16:24 empty).
+- Eusebius, *Ecclesiastical History* in the Scroll: 3.25.1–7 (the holy tetrad of the Gospels; recognized and disputed books; Revelation
+  in both); 3.39.15–17 (Papias: Mark Peter's interpreter, "wrote accurately all that he remembered, not, indeed, in order"; the woman
+  accused of many sins in the Gospel according to the Hebrews); 5.8.2–6 (Irenaeus: Mark "the disciple and interpreter of Peter", Luke
+  "a follower of Paul"; the number "found in all the good and ancient copies"; Revelation seen "towards the end of the reign of Domitian").
+- Athanasius, Festal Letter 39 (CCEL, NPNF 2.4, "For 367"): the 27 books, the seven Catholic Epistles named, "fountains of salvation".
+- Wikipedia, Biblical manuscript: Gregory's four groups (1908); Metzger's 1992 figures for the *Iliad* (457 papyri, 2 uncials, 188 minuscules).
+- Wikipedia, Westcott and Hort: 1881; heavy reliance on Vaticanus and Sinaiticus; later critical editions share their preference.
+- eBible.org WEB FAQ: update of the ASV of 1901, edited to conform to the Greek Majority Text; public domain.
+- Wikipedia, Rylands Library Papyrus P52: credit-card size, John 18; Roberts 1935; 100–150 (Roberts), 125–175 (Orsini and Clarysse),
+  some allow later dates; "generally accepted as the earliest extant record".
+- Wikipedia, Papyrus 46: Chester Beatty; 175–225 or early third century. Papyrus 75: Luke and John; traditionally third century, possibly
+  early fourth. Jesus and the woman taken in adultery: P66 and P75 "c. 200 or 4th century" / "early 3rd century or 4th century".
+- Wikipedia, Nomina sacra: holy names shortened with an overline. The INTF transcription shows ιυ χυ and the corrector's υυ θυ marked
+  as nomina sacra.
+- Wikipedia, Codex Vaticanus: fourth century; in the Vatican Library since at least the fifteenth century; catalogue of 1481; breaks off
+  at Hebrews 9:14, lacks 1–2 Timothy, Titus, Philemon, Revelation.
+- Wikipedia, Codex Sinaiticus: Add MS 43725; oldest complete NT; "one of the earliest and most complete manuscripts of the Bible";
+  codex the forerunner of the modern book; Tischendorf 1844 and 1859; sold by the Soviet Union to the British Museum in 1933; four libraries.
+  Codex Sinaiticus Project site: four institutions; conservation, digitisation, transcription.
+- INTF transcription (First1KGreek on GitHub, and the local copy): Mark 1:1 first hand without υἱοῦ θεοῦ, corrector 1 adds it.
+- Wikipedia, Codex Bezae: fifth century; Greek and Latin; Cambridge; principal Greek witness of the Western text; Acts nearly 8% longer.
+- Wikipedia, Complutensian Polyglot: NT printed 1514; publication 1520, distribution 1521; Alcalá. Novum Instrumentum omne: Froben,
+  Basel, 1516; first published; rushed, many errors; last six verses of Revelation back-translated from the Vulgate. Textus Receptus:
+  the back-translation; Elzevir preface 1633, *textum ergo habes, nunc ab omnibus receptum*. Chapters and verses of the Bible: Estienne's
+  verse numbers, 1551, the system in almost all modern Bibles.
+- Wikipedia, Novum Testamentum Graece: Nestle 1898; NA28 2012, text edited by the INTF; UBS5 2014, same text; NA has more variants.
+  Editio Critica Maior: INTF Münster; every manuscript; completion by 2030; NA28 and UBS5 follow it for the Catholic epistles; volumes
+  for Mark, Acts and the Catholic Letters listed.
+- Wikipedia, Mark 16: Sinaiticus and Vaticanus end at 16:8, Vaticanus with a blank column; longer ending in the Byzantine majority;
+  shorter ending rare, both together in six Greek manuscripts; 16:9–20 almost universally rejected; debate whether 16:8 intended.
+- Wikipedia, Jesus and the woman taken in adultery: not in P66, P75, ℵ, B; Bezae the first Greek manuscript with it; relocations after
+  John 21:25, Luke 21:38, John 7:36; broad consensus that it is an interpolation; Papias via Eusebius, possibly another story; NA28/UBS
+  double brackets.
+- Wikipedia, Johannine Comma: the KJV wording; mainly Latin; earliest Greek manuscript fourteenth century; Erasmus omitted it in his
+  first two editions and added it in 1522.
+- Wikipedia, Number of the beast and Papyrus 115: 616 in P115 (P. Oxy. 4499, c. 225–275) and Codex Ephraemi; Irenaeus knew and rejected it.
+- Wikipedia, Mark 1: Wasserman, omission of "Son of God" accidental; Mark 1:2 "in Isaiah the prophet" in B D L Δ ℵ, "in the prophets"
+  in the Textus Receptus and many other manuscripts.
+- Wikipedia, Romans 14 (majority Byzantine placement after 14:23; some manuscripts both places or none) and Epistle to the Romans
+  (doxology in different places; P46 after chapter 15).
+- Internet Archive record: Metzger, *A Textual Commentary*, Stuttgart, Deutsche Bibelgesellschaft, 1994, companion to UBS4.
+  bartehrman.com: Metzger and Ehrman, *The Text of the New Testament*, 4th ed., OUP, April 2005.
+
+**Left out because it could not be confirmed**
+- The draft's breakdown "some 140 papyri, around 320 majuscules, about 2,900 minuscules, some 2,400 lectionaries" and "nearly 6,000":
+  the INTF pages (Liste, blog) returned 403; only Wikipedia's "more than 5,800" is kept.
+- "Estimates run to several hundred thousand variant readings": no source opened gives it (Wikipedia quotes only "more than 30,000
+  different readings" in 150 manuscripts of Luke, from a dictionary; not used).
+- "1 Thessalonians, probably Galatians" as the earliest letters: only 1 Thessalonians is dated in a source opened.
+- "Luke opens with a single polished period… as does the Letter to the Hebrews": only Hebrews' polished Greek in general is kept.
+- The Alexandrian / Western / Byzantine text types as a classification, with P75 and Bezae as members: only Bezae as the chief Greek
+  witness of the "Western" text is kept, and "Byzantine" only where the Romans 14 page uses it.
+- The Editio Critica Maior "begun in 1997" and CBGM details (computer comparison of manuscripts): the ECM page gives no start date;
+  the CBGM page did not exist; left out of the article.
+- K. and B. Aland, *The Text of the New Testament* (2nd ed. 1989): no record opened. The UBS fifth edition's own page and the German
+  Bible Society's NA history page returned 403 (dates kept from Wikipedia's Novum Testamentum Graece page).
+- The Muratorian fragment (dates range from about 170 to the late fourth century): left out for space.
+- 1 Corinthians 15:33 as a quotation of Menander: in the Scroll the Greek and the English of that verse are misaligned (the Greek line
+  shows only μὴ πλανᾶσθε), so it could not be quoted cleanly.
+- "Survives in more manuscripts than any other ancient text": in Wikipedia only as a quotation of Geisler and Nix; replaced by the
+  number of manuscripts and Metzger's *Iliad* figures.
+
+**Corrected from the draft**
+- "ἀπὸ ὁ ὤν… where classical Greek requires a genitive after ἀπό" → LSJ: ἀπό "usually" with the genitive (dative in Arcadian and
+  Cypriot, accusative in later Greek); the article says "usually", adds Wallace's verdict and Mounce's explanation, and notes the
+  scribes' θεοῦ, which the Scroll's English follows.
+- "Mark … moves it along with εὐθύς, some forty times" → confirmed by our count in the Scroll's Greek: 41 in Mark (12 elsewhere).
+- "Mark tells his story in the present tense" → the historical present, 151 times (Wikipedia, Koine Greek).
+- "The 'Western' text of Acts … almost a tenth longer" → "nearly 8 per cent longer" (Wikipedia, Codex Bezae).
+- "this collection includes a Coptic version of Mark" → only chapter 1, in Sahidic Coptic; the Scroll also has Mark 1 in Codex Sinaiticus.
+- "Westcott and Hort (1881) — the Greek text used here" → kept, but the Scroll's files name the New York printing (Harper and
+  Brothers, 1882–1892).
+- "World English Bible (a public-domain revision of the ASV)" → kept, adding that its NT follows the Greek Majority Text, which is why
+  the Scroll's columns sometimes disagree.
+- "P46 and P66, P75, around 200" → P46 175–225 or early third century; P66 about 200 and P75 third century traditionally, both with
+  recent arguments for later dates (marked as such).
+- "P52 … long dated to the first half of the second century… some scholars now allow a later date" → kept with the figures: Roberts
+  100–150, Orsini and Clarysse 125–175, some later still.
+- "Mark (approximate date) 70; Matthew and Luke–Acts 85; John and Revelation 95" → Mark about 70; Matthew, Luke, Acts 80–90 (Acts
+  later by some); John 90–100; Revelation about 95; all marked as debated.
+- "The Johannine Comma … none of which is in the earliest witnesses" → kept with detail: earliest Greek manuscript fourteenth century;
+  Erasmus added it in 1522.
+- "the ending of Romans, whose closing doxology stands in different places" → confirmed, with P46 (end of 15) and the Byzantine
+  majority (after 14:23), and shown in the Scroll's own two columns.
+- "Codex Sinaiticus and Codex Vaticanus, fourth century" → kept; "Nestle–Aland 28th edition, 2012" and "UBS 5th edition, 2014" kept.
+- Added from the sources: Papias and Irenaeus on the gospels (from Eusebius in the Scroll), Eusebius' recognized and disputed books,
+  Athanasius' "fountains of salvation", the Tertius greeting, Paul's "large letters", the Aratus quotation in Acts with Aratus' own
+  epic εἰμέν, Mark 5:41's Aramaic, the 666/616 variant, Mark 1:1 in Sinaiticus with its corrector, Erasmus' back-translated end of
+  Revelation, Stephanus' verse numbers.
+
+**Weak points to revisit**
+- Most modern facts rest on Wikipedia pages (read as wikitext); several of those pages carry "citation needed" or "verify source" tags
+  in places not used here. Better sources (Metzger–Ehrman, the INTF Liste, publisher pages for NA28/UBS5) should replace them if they
+  can be opened; the German Bible Society and INTF sites returned 403 to every request.
+- Ehrman's 50–120 is quoted through Wikipedia's footnote to Ehrman 1997, not from the book.
+- The Wallace quotation is taken from Mounce's blog, not from Wallace's grammar itself (p. 63 according to Mounce).
+- The εὐθύς count includes every form spelled εὐθύς (accents ignored); an adjectival εὐθύς ("straight") would be counted too, but
+  none was noticed in the hits.
+- The INTF Mark 1:1 reading was read in the XML (first hand empty, corrector 1 with υυ θυ), not in the manuscript photographs.
+- NA28's year (2012) and UBS5's (2014) rest on Wikipedia's Novum Testamentum Graece page alone.
+- The `checked` date is 2026-10-06 as instructed; the work ran past midnight into 2026-10-07.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/new-testament.md):** 13 findings, each checked against
+the cited passage or page (Eusebius 3.39.15, Luke 22.20, Acts 17.28 and Aratus 1–5 in the Scroll; Wikipedia, Papyrus 115, Editio
+Critica Maior, Authorship of the Pauline epistles; Mounce's post), all corrected: the ECM sentence footnoted to sources 51 and 45;
+Paul used secretaries, one names himself (Tertius); Papias passes on what "the Presbyter" said; Wallace's "solecism" with his
+reading of the words as a title; P115 "apparently" reads 616, "one of the oldest manuscripts of Revelation"; the cup "after supper",
+with Westcott and Hort's double brackets noted; the ECM volumes include Revelation; dating "most in the first century, some
+scholars a few well into the second"; the papyri footnoted to P52 and P75; διαθήκη as covenant in the Septuagint; Acts quotes the
+opening of Aratus' line 5; the Septuagint "begun" in the third century BC; ἐπειδήπερ footnoted to Luke 1.1–4.
+Two glitches in the Scroll's Greek noted by the checker are errors in the Perseus source file itself, not in the article: 1 John 5.7
+holds «ἀλήθεια» from the end of 5.6, and John 8.11 repeats «οὐκ ἐγείρεται» from 7.52.
+
+## The Septuagint (tlg0527), checked 2026-10-06
+
+Article: `web/src/wiki/authors/tlg0527.ts` (44 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+
+**Confirmed and kept**
+- What it is, the name, LXX, a collection by many translators from different Hebrew copies; Pentateuch translated by Jews of Ptolemaic Egypt, "probably in or around Alexandria", mid or late 3rd century BC; the rest "presumably" in the 2nd century BC, "over the next two to three centuries", some perhaps translated twice; Koine with Semitisms, style from literal to paraphrase; Greek and Aramaic the common languages of Jews: Wikipedia, Septuagint (wikitext read).
+- The extra books (Tobit, Judith, Wisdom, Sirach, Baruch, Letter of Jeremiah, 1–4 Maccabees, 1 Esdras, Psalms of Solomon, Odes, Psalm 151, additions to Esther and Daniel); manuscripts not uniform in contents: Wikipedia, Septuagint. Psalm 151 "supernumerary", in most copies: Wikipedia, Psalm 151; its heading «ἔξωθεν τοῦ ἀριθμοῦ» copied from the Scroll (Psalms 151.1).
+- The legend: Letter of Aristeas (courtier of Ptolemy II; Demetrius of Phalerum; six from each tribe, 72; 72 days); Josephus paraphrase c. AD 93; Hody's Oxford dissertation of 1685; Bagnall on Demetrius as a client of Ptolemy I; Metzger's "most scholars" conclusion; dates "3rd or early 2nd century BC" and Hody's 170–130 BC: Wikipedia, Letter of Aristeas.
+- Josephus in the Scroll: Ant. 1.12 «μόνα τὰ τοῦ νόμου» / Whiston "only the books of the law"; 12.56 «ἓξ ἀπὸ φυλῆς ἑκάστης»; 12.57 «τῶν ἑβδομήκοντα πρεσβυτέρων» (Whiston's English adds "[two]"; our translation used); 12.100 the book of Aristaeus; 12.107 "seventy-two days"; 12.108–109 the request that it not be altered.
+- Philo, Life of Moses 2.37 (Yonge: "like men inspired", "as if some unseen prompter had suggested all their language to them"), 2.41 (yearly festival on Pharos, Jews and many others): Scroll.
+- Irenaeus (in Eusebius, HE 5.8.10–15, Scroll): Theodotion and Aquila's «ἰδοὺ ἡ νεᾶνις ἐν γαστρὶ ἕξει»; «Πτολεμαῖος ὁ Λάγου»; seventy elders separated, identical translations of all the books "from beginning to end". The phrase «τῆς κατὰ τοὺς ἑβδομήκοντα ἑρμηνείας» is Eusebius' own introduction (attributed to him, not to Irenaeus). Against Heresies around 180: Wikipedia, Irenaeus.
+- Ben Sira's grandson: arrival in the 38th year of Euergetes = 132 BC if Euergetes II (Swete, Introduction, 2nd ed. 1902, Internet Archive full text); his words imply the Law, Prophets and other books were already in Greek (Swete); NETS translation of the Prologue (B. G. Wright, PDF) for the quotations.
+- Psalm numbering (Heb. 9+10 = LXX 9, etc.): Swete. Shown in the Scroll: Greek Ps 22.1 «Κύριος ποιμαίνει με» beside WEB Ps 22 ("My God, my God…"); WEB 23.1 "Yahweh is my shepherd: I shall lack nothing".
+- Hebraisms δύο δύο (Gen. 6.19) and σφόδρα σφόδρα (Exod. 1.12), "emphatic adverbs doubled after the Hebrew manner": Swete's list; both checked in the Scroll's Greek.
+- Genesis 1.3 and Exodus 3.14 (Greek and WEB) copied from the Scroll; "I am the one who is" is our translation.
+- Christian use, NT writers "freely used" the LXX with exceptions (Jerome's examples), Jews' turning away around the 2nd century (association with a rival religion "may have" made it suspect), Aquila preferred; Jerome's Vulgate from Hebrew, Augustine's criticism; Eastern Orthodox use where Greek is liturgical: Wikipedia, Septuagint. Matthew 1.23 Greek and WEB from the Scroll; Isaiah 7.14 (Swete's Greek; Ottley's English) from the Scroll.
+- Vaticanus (4th c.) and Alexandrinus (5th c.) the oldest nearly complete OT copies; complete Hebrew texts c. 600 years later; pre-LXX Hebrew manuscripts at Qumran including 4QJer-b, 4QJer-d; translators consult the LXX where the MT is unclear: Wikipedia, Septuagint. Jeremiah: Greek about one eighth shorter, arranged differently, both forms at Qumran, most scholars think the Hebrew behind the Greek older: Wikipedia, Book of Jeremiah; NETS Jeremiah intro ("opinio communis" that the Greek rests on a Hebrew text substantially at variance with MT).
+- WEB based on the ASV (1901) and the Biblia Hebraica Stuttgartensia, public domain: worldenglish.bible.
+- Transmission: Aquila fl. 130 (Wikipedia, Aquila of Sinope); Symmachus, Theodotion (Wikipedia, Septuagint and Hexapla); Hexapla before 240, its six columns, asterisks/obeli, Field 1875 (Wikipedia, Hexapla); Eusebius HE 6.16.4 (Lake–Oulton English in the Scroll, quotation copied); Hexaplaric recension, Lucian and Hesychius per Jerome; papyri of the 2nd and 1st centuries BC; daughter versions (Old Latin, Old Church Slavonic, Syro-Hexaplar, Armenian, Georgian, Coptic) (Wikipedia, Septuagint). P. Rylands 458 (Rahlfs 957, Deut., mid-2nd c. BC, eight fragments, 1917): Wikipedia page and Manchester Digital Collections ("eight fragments … from a papyrus roll of Deuteronomy"). Sinaiticus mid-4th c., Tischendorf 1844, Saint Catherine's, British Library: Wikipedia, Codex Sinaiticus.
+- Print: Complutensian, Alcalá, Ximenes, last OT volume dated 10 July 1517, papal sanction 22 May 1520, Pope's copy 1521; Aldine February 1518 (Andreas Asolanus); Sixtine 1587 (printed 1586, published May 1587) based on B with gaps supplied; Holmes and Parsons (Oxford, 1798–1827) with collations: Swete; Wikipedia, Complutensian Polyglot (printed 1514–17, published 1520–21) and Septuagint ("textus receptus"). Swete's portable text "taken from the Vatican MS., where this MS. is not defective, with the variations of two or three other early uncial MSS.", committed to him 1883, vols 1887, 1890, 1894, 2nd ed. 1895–99: Swete, Introduction. Old Greek Daniel first printed at Rome 1772 "e singulari Chisiano codice": Swete.
+- Rahlfs 1935, Vaticanus/Sinaiticus/Alexandrinus, Hanhart revision 2006, most widespread edition (Wikipedia, Rahlfs' edition); Göttingen series founded 1908, 26 of 36 volumes by February 2025, Psalmi cum Odis 1931 (Wikipedia, Septuaginta: Vetus Testamentum Graecum); NETS, Pietersma and Wright, OUP 2007, second printing 2009 (NETS website).
+- Daniel: Old Greek c. 100 BC and Theodotion, both with the additions, Dan. 3:24–90 in Greek (Wikipedia, Additions to Daniel); OG supplanted by TH by the 1st or 2nd century CE, Papyrus 967 the most important OG manuscript (NETS Daniel intro, R. T. McLay); Jerome's statement that the churches read Theodotion's Daniel and "only one Greek copy has survived" (Swete, 1902). Old Greek Dan. 3.25 «στὰς δὲ Ἀζαρίας προσηύξατο οὕτως» from the Scroll.
+- Genesis 1.8 «καὶ ἴδεν ὁ θεὸς ὅτι καλόν» absent from the WEB beside it (Scroll); Origen, Letter to Africanus (Scroll 1.5) says "God saw that it was good" at the firmament is not in the Hebrew, and notes «πολλὴν μετάθεσιν καὶ ἐναλλαγὴν» in Jeremiah.
+- Jeremiah in the Scroll: Greek 25.14–15 begins the oracle on Elam («Συνετρίβη τὸ τόξον Αἰλάμ») while the WEB at 25.15 has "take this cup of the wine of wrath at my hand". Order of the oracles: Swete.
+- Sirach: Hart's text of MS 248 opens with a preface beginning «Ἰησοῦς οὗτος Σιρὰχ μὲν ἦν υἱός» (Scroll, folded into 1.1); NETS Sirach intro: the alternative prologue only in MS 248, from the Synopsis Scripturae Sacrae falsely attributed to Athanasius; MS 248 an important witness to GKII with added proverbs; critical editions (Ziegler, NETS) open with the grandson's prologue.
+- Editions: the Scroll's TEI headers (Swete vols dated 1901, 1896, 1905; Hart 1909; Ottley 1904; WEB); Internet Archive records for Hart (Cambridge, 1909) and Ottley (two volumes: translation of Alexandrinus, Greek text).
+
+**Left out because it could not be confirmed**
+- «καὶ ἐγένετο» as a characteristic Hebraism (not found in the sources read; Swete's own examples used instead).
+- "The Septuagint in turn shaped the language of the New Testament."
+- "Hundreds of later manuscripts" (no count found).
+- Ethiopic as a daughter version (not in the list read).
+- "Most of the remaining books available in Greek by the 1st century BC" as a timeline mark.
+- Reign dates of Ptolemy II (Wikipedia pages give 285–247 and 281–246).
+- Philo's date for the Life of Moses (only Wikipedia's "c. AD 15").
+- Brenton's translation (1844 and 1851 both given), the Talmud's version of the legend (only Wikipedia's quotation seen), Augustine as the first to call it *Septuaginta*.
+
+**Corrected from the draft**
+- "Translating his grandfather's book around 132 BCE": he *arrived* in Egypt in the 38th year of Euergetes, i.e. 132 BC only if Euergetes II is meant (Swete: "as is probable"); the translation came after.
+- "Aldine edition (1518–19)": February 1518 (Swete, colophon).
+- "The Complutensian Polyglot prints the first complete Septuagint (1514–17; issued in the 1520s)": the OT volumes were finished in July 1517 and the work published 1520–21.
+- "The Pentateuch was in fact translated in Alexandria": "probably in or around Alexandria" (Wikipedia).
+- "The New Testament writers usually quote it": softened to "freely quoted it, though not every quotation matches it" (Wikipedia, with Jerome's examples).
+- Draft's Greek name «Οἱ Ἑβδομήκοντα» replaced by the attested ancient phrase in the Scroll, Eusebius' «τῆς κατὰ τοὺς ἑβδομήκοντα ἑρμηνείας».
+- "Swete's edition largely prints Codex Vaticanus with variants": kept, in Swete's own words.
+- "Daughter translations into Latin, Coptic, Ethiopic, Armenian": replaced by Wikipedia's list.
+
+**Weak points to revisit**
+- Much rests on Wikipedia (Septuagint, Letter of Aristeas, Jeremiah, Isaiah 7:14, Hexapla, codices) and on Swete's Introduction of 1902, which is old (e.g. on Old Greek Daniel he knew one manuscript; Papyrus 967 is now the chief witness, per NETS).
+- The 132 BC date depends on identifying Euergetes as Euergetes II; marked debated in the timeline.
+- NETS Daniel's "supplanted by the first or second century CE" sits awkwardly with Wikipedia's mid-2nd-century date for Theodotion (scholars discuss an earlier "proto-Theodotion"; not explored here).
+- The Scroll's Sirach "praef" is folded into the reference 1.1, so the citation points to 1.1.
+- "One behind" for the Psalm numbering is inferred from Swete's list of joins and splits; true for the bulk of the Psalter (Heb. 11–113 and 117–146), not every psalm.
+- `npx tsc --noEmit -p .` reports 7 errors, all in `web/scripts/zz-align-old.ts` (an untracked script not part of this work); none in the article.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/septuagint.md):** 12 findings, each checked against
+the cited passage or page, all corrected: the Psalm 22 paragraph rewritten, since the reader now lines the Psalms up by psalm
+(fixed the same day, lib/tei/versification.ts), and the "not even on the same passage" footnote moved to Jeremiah 25 and Daniel 3;
+the Scroll has two Greek Sirachs, Swete's with the grandson's prologue; Tischendorf took 43 leaves of Sinaiticus to Leipzig in 1844
+and saw the rest in 1859; the Complutensian is the first printed whole Septuagint (Psalters from 1481, Swete); Matthew's ἕξει is
+Codex Alexandrinus's reading (Ottley's Greek in the Scroll), Swete's text has λήμψεται; Josephus lets the translation be corrected
+before it is fixed; Irenaeus' king keeps the elders apart (χωρίσας); the Letter of Aristeas third to mid-second century BC; the other
+books over "two to three centuries"; Origen's Letter to Africanus §4; Susanna and Bel are separate texts in the Scroll, and source 40
+now points at Theodotion's Daniel 3.23–26.
+
+## Lucian of Samosata (tlg0062), checked 2026-10-06
+
+Article: `web/src/wiki/authors/tlg0062.ts` (43 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0062 npx vitest run src/wiki/author-articles.test.ts` (11 passed) and
+`CORPUS=1 ARTICLE=tlg0062 npx vitest run src/wiki/author-articles.corpus.test.ts` (3 passed; a deliberately broken quotation
+was caught, so the check really runs). `npx tsc --noEmit -p .` shows no errors in this file (the only errors are in
+`web/scripts/zz-align-old.ts`, which is not part of this work).
+
+**Confirmed and kept**
+- Dates and career: Harmon, Loeb vol. 1 introduction (Internet Archive scan `lucianha01luciuoft`): born "not long before 125
+  A.D.", died "not long after 180"; travelling rhetorician through Ionia, Greece, Italy and Gaul, wealth and fame; eighty-two
+  pieces, "not a few" disputed; "Certainly spurious are Halcyon, Nero, Philopatris, and Astrology", the "Ungrammatical Man"
+  (Soloecista) among those "generally considered spurious"; Vaticanus 90 "the best manuscript", its order adopted by Rabe and
+  Nilén; "a hundred and fifty manuscripts … none too good"; γ group (Vat. 90, Harl. 5694, 9/10th century) and β group
+  (Vindob. 123, 11th century?); first edition Florence 1496, J. Lascaris, L. de Alopa; Jacobitz 1836–41 with the scholia;
+  Rabe's scholia 1906; Nilén 1906–; a new text made beyond the True Story; "conjectures have been admitted with
+  considerable freedom".
+- Wikipedia, Lucian: c. 125 – after 180; native language probably Syriac; Attic of the Second Sophistic; no contemporary
+  mention; Russell ("no more to be trusted than the voyage to the moon"; Socrates as sculptor); Swain ("a fine but rather
+  apocryphal version"); Richter on the "Syrian" as a device; Statuary and Culture in the Dream; Casson's Athens c. 165 for
+  about a decade; Egypt "in his fifties", perhaps under Commodus, then disappears; over eighty works, more than most
+  classical writers; comic dialogue as his proudest invention (Double Indictment); Helm 1906 on Menippus; Philosophies for
+  Sale as a slave-market; Glycon cult confirmed by coins, statues, inscriptions; Peregrinus at the Olympics of 165;
+  Syrian Goddess doubted and restored (Richter); Photius and the ninth-century humanists; school curriculum from the
+  eleventh century; Suda; rediscovery c. 1400; Utopia, Gulliver, Timon of Athens, Botticelli's Calumny.
+- Scroll passages (all quotations copied from `passage.ts`): How to Write History 24; Fisherman 19; Dream 1–6; Double
+  Indictment 27 and 33; Peregrinus 35–36; Alexander 55; Apology 12; Dialogues of the Dead 18.1 (Greek only: the English
+  shown beside it belongs to a different dialogue, Macleod's numbering differs); Menippus 21; True Story 1.4, 1.9–1.10,
+  2.47; Court of Vowels 9; Lexiphanes 22–23; Lover of Lies 35–36; [Lucian], The Ass 55; Scholia 14.47 (the scholiast on
+  the ending; Alexander of Nicaea's subscription, siglum Γ2) and 55.13 (the note headed Ἀρέθα, «ματαιότατε Λουκιανέ»).
+- Rabe, Scholia in Lucianum 1906, preface (IA `scholiainlucianu00rabe`): Γ = Vaticanus gr. 90, parchment, 9th–10th century,
+  353 leaves; scholia partly by the scribe, partly c. mid-10th century by Alexander bishop of Nicaea, called to
+  Constantinople by Constantine Porphyrogenitus; E = Harleianus 5694, parchment, 10th century, 134 leaves, 59 works lost,
+  text by Baanes, scholia by Arethas; B = Vindobonensis gr. 123, 11th century.
+- Pinakes record of Harley 5694 (Gamillscheg: copied by the notary Baanes for Arethas of Caesarea).
+- Wittek, Scriptorium 6 (1952), first page on Persée: numbering after the order of Vat. gr. 90 (Rothstein, Nilén, Rabe,
+  Mras); nos. 81–86 certainly not Lucian's; no papyrus known to him; nearly 170 post-1600 manuscripts excluded; Nilén's
+  edition unfinished (works 1–19, fascicles of 1906 and 1923).
+- Delhez's review of Marquis, Budé vol. XII (2017), Les Études classiques: Peregrinus burnt himself at the end of the
+  Olympic Games of 165; the work "dans l'ensemble bien transmise", variants between the main branches few and of little
+  significance.
+- Brignone, Lexis 43 (2025): Vat. gr. 90 parchment, tenth century, head of one branch; some works with a single-branch
+  tradition; Par. gr. 2957 (N), first half of the 15th century, in Italy by 1424 (Traversari's letter), Ass purged, Peregrinus
+  omitted (the scribe says why on f. 126r), one Courtesans dialogue omitted; nine manuscripts in the "Rezension N"; the Ass
+  "ritenuta spuria dalla maggior parte degli studiosi".
+- Macleod, Loeb vol. 8 introduction to The Ass (IA `lucianhar08luciuoft`): Photius cod. 129 in Macleod's translation ("one
+  might almost call him another Lucian"; Lucian probably abridged Lucius of Patras); both the Ass and Apuleius from the lost
+  Metamorphoses, the Ass an abridgement; most editors reject it; Macleod: Lucian's own hand probably had some share.
+- Wikipedia, The Golden Ass (Lucius of Patrae; the Ass an epitome). Wikipedia, Amores (Bloch 1907, Jope 2011, growing
+  acceptance in the 2010s). Wikipedia, Philopatris (Julian; Niebuhr's Nicephorus Phocas 963–969; Heraclius; Baldwin 1982).
+- Suda On Line, lambda 683: "The story goes that he was killed by dogs"; eternal fire with Satan.
+- BnF BP16_100767: Luciani … compluria opuscula, Erasmus and More, Paris, Josse Bade, 13 November 1506; More's Philopseudes.
+  Monzó Gallo, Ágora 26.1 (2024): the 1506 volume; eleven reprints 1506–1535 against four of Utopia in More's lifetime.
+- Wikipedia, The Sorcerer's Apprentice: Goethe 1797; Eucrates' tale in the Lover of Lies the oldest known version; Dukas
+  1897; Fantasia 1940 with Mickey Mouse. Wikipedia, A True Story: best-known work; "the first known text that could be
+  called science fiction". Wikipedia, List of editiones principes in Greek: Lucian 1496, Alopa, Florence, Lascaris.
+- LSJ θάλασσα, "Att. θάλαττα" (site copy and Perseus).
+- Editions: Perseus file headers (Harmon Loeb 1–5, 1913–36; Kilburn 6, 1959; Macleod 7, 1961; Jacobitz, Teubner 1909 and
+  1913; Fowler 1905; Smith 1892); Loeb 8 vols to 1967 (Wikipedia); Macleod OCT 1972 and 1987 (Kyushu University record;
+  AbeBooks publisher's description: vol. IV completes the set and indexes all four); Bompaire Budé vol. I 1993 (Classical
+  Review 45.1, 1995, Anderson); Hopkinson 2008 and Nesselrath's "lengthy, scathing review" of Macleod (BMCR 2009.08.11).
+
+**Left out because it could not be confirmed**
+- "Papyri are few, but they confirm that the collection is ancient": Wittek (1952) knew of none. Search results named
+  P.Oxy. 69.4738 (Dialogues of the Gods 10.1–2, third century) and P.Oxy. 52.3683 (Halcyon, attributed to Plato, Lucian or
+  Leon), but papyri.info asked for a bot check, Trismegistos failed on its certificate and the Oxford portal refused access.
+- "Scribes sometimes 'corrected' Lucian's deliberate Atticisms": no source found.
+- "Takes an administrative post in Roman Egypt" in 175: no source gives that year (Wikipedia: perhaps under Commodus,
+  180–192; Harmon: died not long after 180). The article says "late in life".
+- "Kept him on school reading lists into the twentieth century": not found; only Byzantine schooling (from the eleventh
+  century) is kept.
+- Antioch in 162/3, his marriage and son, the post in Gaul (Wikipedia after Casson): not needed and not checked further.
+- Marlowe's "face that launched a thousand ships" as a paraphrase of the Helen dialogue: the Wikipedia sentence has no
+  citation.
+- Alexander of Nicaea as owner of Vat. gr. 90 "in the first decades of the tenth century" (a search summary only); Rabe's
+  "about the middle of the tenth century" is used instead.
+- The exact year of Arethas' notes in E: the OCR of Rabe's preface is garbled at that point.
+- The date of Macleod's second OCT volume (the Kyushu record says 1993, probably a reprint).
+- Marquis's RHT article (2013) on the texts with a single-branch tradition and on E's lost contents: Brepols refused access;
+  only the search-engine summary was seen, so it is not cited.
+
+**Corrected from the draft**
+- "a barbarian in speech, dressed in the Assyrian manner": the Greek (Double Indictment 27) has βάρβαρον ἔτι τὴν φωνήν …
+  εἰς τὸν Ἀσσύριον τρόπον; Harmon's English, quoted, says "a foreign accent … in the Syrian style". The passage is marked
+  debated (Richter reads the Syrian as a device).
+- "Settles in Athens; the great dialogues" (165) and the Dream story: kept only as Casson's reconstruction and Lucian's own
+  account, marked debated.
+- "Harleianus 5694 … written for Arethas and annotated by him": confirmed and made precise (copied by the notary Baanes;
+  scholia by Arethas; 59 works lost).
+- "Vindobonensis phil. gr. 123 (B, eleventh century)": Harmon puts a question mark after the century; Rabe gives saec. XI.
+- "The Philopatris, a Byzantine work of the tenth century": the date is disputed (Julian, Nicephorus Phocas, Heraclius;
+  Baldwin against the Byzantine dates); marked debated.
+- "Amores … not by Lucian": now marked debated (Bloch 1907 against; Jope 2011 for; acceptance growing).
+- "The differences between the two families are mostly small": kept, on Marquis's authority (via Delhez).
+- "Erasmus and Thomas More publish Latin translations of several dialogues" (1506): confirmed (Paris, Josse Bade,
+  13 November 1506), with More's Lover of Lies.
+- Draft editions: Jacobitz's Teubner dates given as the Scroll's printings (1909, 1913); Macleod OCT 1972–87 confirmed;
+  Bompaire Budé 1993– confirmed.
+
+**Weak points to revisit**
+- Much of the life rests on Wikipedia's Lucian page (mostly after Casson 1962) and on Harmon's introduction of 1913; both
+  are older or secondary. Lucian's own statements are labelled as his own account.
+- The Sigma/Tau joke is explained with LSJ's θάλασσα / θάλαττα; no modern commentary on the Court of Vowels was opened.
+- The identification of Rabe's Γ2 (the hand of the True Story subscription) with Alexander rests on Rabe's sigla list
+  ("Γ Vat. 90 (Γ2: scholia ab Alexandro scripta)"), read in an OCR scan.
+- The note «ματαιότατε Λουκιανέ» is printed by Rabe under the heading Ἀρέθα; it closes with the siglum R (Palatinus 73), so
+  the article says only that Rabe prints it under Arethas' name.
+- "Harmon's Ungrammatical Man" = Soloecista = the Scroll's "The Purist Purized" (Ψευδοσοφιστής ἢ Σολοικιστής) is an
+  identification made from the titles, not stated by a source.
+- The Loeb vol. 8 date (1967) comes from Wikipedia; the IA scan's metadata gives a wrong year.
+- `checked` is set to 2026-10-06 as instructed, though the work ran past midnight into 2026-10-07.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/lucian.md):** 8 findings, each checked against the
+cited passage or page (Rabe's scholia 14.47 and 55.13 in the Scroll; Harmon's Loeb vol. 1 in the Internet Archive text; Wikipedia,
+Lucian and The Sorcerer's Apprentice; the TEI headers), all corrected: the "most foolish Lucian" note survives in Palatinus gr. 73
+(R), not in E; Harmon thought the Trial in the Court of Vowels "probably not by Lucian", and his added "Consonants at Law" restored;
+Parisinus gr. 2957 "probably" in Italy by 1424; Alexander of Nicaea corrected Γ with his brother Jacob, metropolitan of Larissa;
+Casson's Athens decade "one modern reconstruction"; the Dream cited 1–14; Dukas wrote an orchestral piece on Goethe's poem; the
+Scroll's Greek is Harmon's for vols 1–5, Jacobitz's for the later works with the Loeb Greek of vols 6–7 beside it.
+
+## Flavius Josephus (tlg0526), checked 2026-10-06
+
+Article: `web/src/wiki/authors/tlg0526.ts` (46 sources). Not yet added to `ARTICLE_LOADERS` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0526 npx vitest run src/wiki/author-articles.test.ts` (11 passed); `CORPUS=1 ARTICLE=tlg0526 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed); `npx tsc --noEmit -p .` shows no error in this file (its only errors are in an
+untracked scratch file, `web/scripts/zz-align-old.ts`, not part of this work).
+
+**Confirmed and kept**
+- Self-description, the first version in his own language for the "upper barbarians", the Greek "translation": War 1.1–1.3 (Greek and
+  Whiston). The echo of Thucydides in War 1.4 («μεγίστου τοῦδε τοῦ κινήματος» against Thuc. 1.1.2 «κίνησις γὰρ αὕτη μεγίστη»):
+  Thackeray, Loeb 203 introduction (1927), both passages read in the Scroll.
+- Birth in the first year of Gaius: Life 5; "A.D. 37-38": Thackeray, Loeb 186 introduction (1926). (Wikipedia's infobox has c. 36,
+  after Mason.) Priestly family, first of the 24 courses, Hasmonean descent through his mother: Life 1–2; Wikipedia, Josephus.
+- Education (14, 16, the three schools, Bannus, three years, Pharisees at 19): Life 7–12. Voyage to Rome after his 26th year, the
+  shipwreck (about 600 swam all night, about 80 saved), Aliturus, Poppaea: Life 13–16; "the age of 26 or 27 in the year 64": Thackeray.
+- Galilee: War 2.568 (general of both Galilees) against Life 29 (sent with two other priests to make the troublemakers lay down
+  arms); Thackeray: "We have two accounts of this period, both biased and in some details inconsistent" (quoted).
+- Jotapata: forty-seven days (War 3.406; Wikipedia, Siege of Yodfat; Thackeray "the forty-seven days' siege"), fell July 67
+  (Thackeray); the pit and the cave with forty men of rank (War 3.341–342); the lots and "whether we must say it happened so by chance,
+  or whether by the providence of God" (War 3.387–391); the Josephus problem and Smallwood's verdict (Wikipedia, Josephus, quoting her
+  introduction to Williamson's translation).
+- The prophecy (War 3.399–408: the private audience, «ἐγὼ δὲ ἄγγελος ἥκω σοι μειζόνων», «σὺ Καῖσαρ, Οὐεσπασιανέ, καὶ αὐτοκράτωρ, σὺ
+  καὶ παῖς ὁ σὸς οὗτος»); Suetonius, Vespasian 5.6, Loeb translation (1914) on LacusCurtius ("Josephus by name, as he was being put in
+  chains...").
+- Freed in 69, the chain cut with an axe at Titus' suggestion: War 4.622–629 (πελέκει διέκοψε τὴν ἅλυσιν); Thackeray (July 69, "one of
+  the first acts of the new Emperor"). The name Flavius: Wikipedia.
+- Siege of Jerusalem: interpreter and mediator (Thackeray); hated by both sides, the sacred books, his brother and fifty friends,
+  about 190 freed from the Temple (Life 416–419). Rome: lodging in Vespasian's former house, citizenship, pension, Domitian's tax
+  exemption (Life 422–429).
+- Seven books of the War and twenty of the Antiquities: Eusebius HE 3.9.3 («ἐν ἑπτά»); Eusebius HE 3.9.2 on the statue in Rome and
+  the library (paraphrased in the timeline). Wikipedia, The Jewish War (seven books).
+- The War's Aramaic first version lost; the Greek no literal translation, "practically rewritten"; published probably 75–79; Titus'
+  imprimatur: Thackeray (Loeb 203); Life 363 ("he subscribed his own hand to them, and ordered that they should be published").
+- Antiquities: creation to the twelfth year of Nero (Ant. 20.259); finished in the thirteenth year of Domitian and his 56th year
+  (20.267); "A.D. 93-94" and the counterpart to Dionysius' twenty-book Roman Antiquities: Thackeray, Loeb 242 introduction (1930).
+  Life as an appendix answering Justus of Tiberias: Thackeray (Loeb 186); Life 430 (dedication of "all this treatise of our
+  Antiquities"). Against Apion: two books, purpose (Ap. 1.1–3), "numerous quotations from lost writings" (Thackeray).
+- His Greek: Ant. 20.263 (pronunciation; Greek and Whiston); Ap. 1.50 «χρησάμενός τισι πρὸς τὴν Ἑλληνίδα φωνὴν συνεργοῖς» (our
+  translation) against Whiston's "assist me in learning the Greek tongue"; Thackeray's theory of the assistants (Atticistic style,
+  avoidance of hiatus, the Life his own words, Ant. 17–19 a "slavish imitator of Thucydides"), given as his theory.
+- Testimonium (Ant. 18.63–64, Greek and Whiston); Origen, Against Celsus 1.47 («ἀπιστῶν τῷ Ἰησοῦ ὡς Χριστῷ»; no English in the
+  Scroll, so the Greek only, paraphrased); Eusebius HE 1.11.7–8; Feldman's Loeb note (Loeb 433, 1965: arguments for and against, "our
+  text represents substantially what Josephus wrote, but that some alterations have been made by a Christian interpolator");
+  Wikipedia, Josephus on Jesus (consensus of partial authenticity since the late 20th century; minority view of forgery; Agapius and
+  Michael the Syrian brought to light by Pines in 1971; the Arabic does not blame the Jewish leaders; the Syriac "he was believed to be
+  Christ"; Whealey 2008; Jerome "thought to be"; John the Baptist passage accepted by almost all scholars; James passage largely
+  accepted). James: Ant. 20.200; Feldman ("few have doubted").
+- Masada: War 7.389–406 (Eleazar, the lots, 960, two women and five children, the Romans' discovery); Wikipedia, The Jewish War
+  (73/74); Wikipedia, Siege of Masada (single source; breach of the wall; Shaye Cohen "incomplete and inaccurate"; Magness: archaeology
+  cannot prove or disprove).
+- Why he matters: Wikipedia, Josephus (chief source next to the Bible for the Second Temple period; Jewish distrust; Ritter's
+  "Josephus is, however, to be used with great care."); Wikipedia, The Jewish War ("the only extensive eyewitness narrative of the
+  revolt to survive antiquity"); Wikipedia, Josephus on Jesus (copied by Christian monks).
+- Transmission: Wikipedia, Josephus on Jesus (about 120 Greek manuscripts, 33 before the 14th century; Jews not known to have preserved
+  him); Brent Nongbri's blog (the Vienna papyrus leaf G 29810, "usually said to have been produced in the third century"); Thackeray,
+  Loeb 186 (Life: P = Palatinus gr. 14, 9th or 10th century; Against Apion: one imperfect 11th-century manuscript, L = Laur. 69.22, all
+  others copies; the lacuna 2.52–113 supplied by the Latin made by order of Cassiodorus; ed. pr. Basel 1544 "derived in part from some
+  MS. unknown to Niese"; Niese's editio maior 1887–89 and minor 1888–95; Naber, Teubner, 1888–96; Niese's sections against the older
+  chapters); Thackeray, Loeb 203 (War: two families PA(ML) and VR(C); readings of the inferior type already in Porphyry; Hegesippus
+  about 370; a Latin version known to Cassiodorus); Thackeray, Loeb 242 (bisection of the Antiquities; Latin by order of Cassiodorus,
+  "cent. v or vi"); Wikipedia, The Jewish War (one abbreviated and one full Latin War); Wikipedia, Cassiodorus (Vivarium; Institutiones
+  530s–550s). The Latin gap is visible in the Scroll: Niese's Against Apion runs in Latin from the middle of 2.51 to the middle of 2.113.
+- Print: Wikipedia, List of editiones principes in Greek (1544, Froben and Episcopius, Basel, ed. Arlenius, with 4 Maccabees);
+  Wikipedia, Arnoldus Arlenius (manuscripts in Mendoza's library); Whiston's title page (1737, "according to Havercamp's accurate
+  Edition") on penelope.uchicago.edu; Wikipedia, Josephus (Whiston "enormous popularity", "often the book (after the Bible) that
+  Christians most frequently owned"; the Münster edition); Wikipedia, Benedikt Niese (1885–1895, numbering still most used).
+- Variants: Feldman's notes on 18.118 (manuscripts ἤρθησαν "aroused"; Eusebius and the Slavonic ἥσθησαν "overjoyed"; Niese and
+  Schürer adopted Eusebius' reading; Eisler's view; Feldman's text follows the manuscripts) checked against the Scroll's Niese text
+  (ἥσθησαν) and Whiston ("moved [or pleased]"); Feldman's note on 20.200 (Origen and Eusebius cite a passage blaming the fall of
+  Jerusalem on James's death that is not in Josephus) with Origen 1.47 («Ἰακώβου τοῦ δικαίου»); Wikipedia, Slavonic Josephus (Popov
+  1866, Eisler 1926, rejected) and Thackeray (the additions on John, Christ and the early Christians; his reserved report of Eisler);
+  Thackeray (most manuscripts title the War Περὶ ἁλώσεως; at Ant. 20.263 cod. A and the epitome add καὶ ποιητικῶν μαθημάτων, absent
+  from the Scroll's text); Ant. 20.268 «ἐν τέσσαρσι βίβλοις» against Whiston's "three books" (observed in the Scroll; Thackeray's
+  "four books").
+- Editions: Scroll TEI headers (Niese, Berlin: Weidmann, vols 1–6, 1885–1895; Whiston, Auburn and Rochester, NY: Alden and Beardsley,
+  1856); Internet Archive records and full texts of the Loeb volumes 186 (1926), 203 (1927), 210 (1928), 242 (1930), 410 (Marcus and
+  Wikgren, 1963), 433 (Feldman, 1965); G. J. Goldberg's review of the Brill Josephus Project (ed. Steve Mason; vol. 3, Feldman, 2000).
+
+**Left out because it could not be confirmed**
+- The Latin Antiquities "made for Cassiodorus" in 550 as an exact date: no source gives a year; kept as approximate ("cent. v or vi" in
+  Thackeray; the Institutiones were written from the 530s into the 550s).
+- Whiston's translation as "the most widely read version for two centuries": only Wikipedia's "enormous popularity" is kept.
+- "Jewish War completed (c. 75–79)": Thackeray gives 75–79 for publication, "commonly regarded"; Wikipedia says 78 in one place and
+  about 75 in another. Kept as "probably between 75 and 79".
+- Dates for the Life and Against Apion: Thackeray puts both after AD 100 (after the death of Agrippa II, dated 100 by Photius);
+  Wikipedia gives about 94–99 and about 97. Left out of the article; only "after 94" and "probably around 100" for his death.
+- Cassius Dio's account of the prophecy (66.1): Book 66 is not in the Scroll and no translation was opened.
+- The Penguin Jewish War (Williamson, revised by Smallwood): only Wikipedia's mention was seen.
+- The precise passage of the Vienna papyrus (War 2.576–579, 582–584) and Feldman's view that it differs from all of Niese's
+  manuscripts: seen only on Roger Pearse's blog, not in a scholarly source; Trismegistos and papyri.info were behind bot checks.
+- Leoni, "The Text of Josephus's Works: An Overview", JSJ 40 (2009): only the abstract could be read.
+- The Antiquities drawing on the Greek Bible and on "sources now lost": Thackeray says it used the Septuagint, but this was cut for
+  length.
+
+**Corrected from the draft**
+- "37–c. 100 CE": birth in the first year of Gaius, AD 37 or 38 (Life 5; Thackeray); death unknown, after 94 (Ant. 20.267),
+  probably about 100 (Wikipedia; Thackeray: he outlived Agrippa II).
+- "Given command in Galilee": the War says he was general; the Life says he was one of three priests sent to disarm the troublemakers.
+  Both accounts are given, marked debated.
+- "Takes the name Flavius when freed in 69": kept only as "he took the family name of his patrons" (Wikipedia notes he calls himself
+  only Josephus in his own works).
+- "Wrote it first in Aramaic": Josephus says "the ancestral language"; Aramaic is Thackeray's and Wikipedia's inference ("probably").
+- "The Greek manuscripts, the oldest of them from about the tenth century": Thackeray dates the oldest (the Palatine manuscript of
+  the Life and Ant. 11–17) to the ninth or tenth century and the oldest War manuscripts to the tenth or eleventh; Wikipedia (Josephus
+  on Jesus) says none is older than the eleventh. The article names the Palatine manuscript and Thackeray's date; the Vienna papyrus
+  (third century, usually) is added as the oldest copy of all.
+- "He admits that he used assistants for the Greek (Against Apion 1.50)": confirmed; added that the Scroll's English (Whiston) turns it
+  into lessons in Greek, which the Greek does not say.
+- "Jewish War ... Antiquities ... Christians read him eagerly ... which is largely why his works survived": kept, with the sources.
+- "Readers should also note that Whiston's chapter numbers differ from the section numbers of Niese's edition": confirmed (Thackeray;
+  Wikipedia, Benedikt Niese).
+
+**Weak points to revisit**
+- Much of the life and the transmission rests on Thackeray's Loeb introductions of 1926–30 (OCR text on the Internet Archive). They
+  are old: his date for the Life (after 100) differs from Wikipedia's (about 94–99), and Eisler's Slavonic theory, which he
+  reported, is now rejected (Wikipedia). The article gives his assistant theory as his own reading, not as fact.
+- The Testimonium paragraphs rest on Wikipedia's Josephus on Jesus and on Feldman's 1965 note; Pines (1971) and Whealey (2008) were
+  not read directly.
+- The Vienna papyrus rests on a scholar's blog (Nongbri); the papyrological databases were blocked by bot checks.
+- The Brill series is confirmed only by a review on josephus.org (Goldberg) and Wikipedia's bibliography; Brill's own pages
+  returned 403.
+- Whiston's "three books" at Ant. 20.268 is an observed difference between the Scroll's Greek and its English; no source explains it.
+- The Lake translation of Eusebius in the Scroll is an OCR text with errors; nothing from it is quoted (the statue is only
+  paraphrased in the timeline).
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/josephus.md):** 13 findings, each checked against
+the cited passage or page (Life 13–16, 361–364, 414–421 and Against Apion 1.1–3 in the Scroll; Thackeray's Loeb 186 and 210 and
+Feldman's Loeb 433 in the Internet Archive texts; Wikipedia, Siege of Masada), all corrected: the 1544 edition's unknown manuscript
+limited to Against Apion and Antiquities 1–10, "seems"; at the fall of Jerusalem he asked for his countrymen's freedom and was given
+the sacred books; Titus signed the War so that it would be the sole account; Masada 73 (74 a proposed dating), footnoted to the
+Masada page; the Pharisees "debated" (Mason); Puteoli, and the actor Aliturus named; Pal. gr. 14 the oldest medieval manuscript,
+dated by Thackeray; Loeb 210 is War IV–VII; Cohen a historian, Magness an archaeologist; Origen about 248 (Wikipedia, Contra
+Celsum, added as a source); the other Against Apion copies "seem" to derive from L; Against Apion's opponents not called Greek
+writers; Niese printed and Schürer preferred Eusebius' word.
+
+## Galen (tlg0057), checked 2026-10-06
+
+Article: `web/src/wiki/authors/tlg0057.ts` (29 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0057 npx vitest run src/wiki/author-articles.test.ts` (11 passed); `CORPUS=1 ARTICLE=tlg0057 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed; a deliberately altered Greek quotation and an altered English one were both caught,
+so the check is live); `npx tsc --noEmit -p .` clean.
+
+What the library has: 97 works of Galen (tlg0057) and six of Pseudo-Galen (tlg0530), nearly all Greek only, mostly from Kühn's
+Opera Omnia (file headers), some from Marquardt (1879), I. von Müller (1879), Helmreich (Scripta Minora III 1893; De temperamentis
+1904; CMG V 4.2 1923), Kaibel (1894), Kalbfleisch (1896, 1898), Schöne (1901), Raeder (1928). Only *On the Natural Faculties*
+(tlg0057.tlg010) has an English translation: Brock, Heinemann and Harvard, 1916. So every English rendering of Galen in the article,
+except Brock's, is "our translation" and listed in `outsideQuotes`.
+
+**Confirmed and kept**
+- Life: SEP, Galen (P. N. Singer, 2016, rev. 2021): born 129 at Pergamon, "culturally Greek", son of an architect; philosophy from 14,
+  medicine from 16; father's death 149; Smyrna, Corinth, Alexandria; 157 gladiators; Rome in the early 160s; lectures and anatomical
+  demonstrations, fame among the elite; court physician to Marcus; left in Rome during the campaign 169–76 and wrote up many major
+  works; served Commodus and Severus; the fire of 192 and the loss of his library (described in *Avoiding Distress*); traditional death
+  c. 200, later sources suggest more than ten years later (Nutton 1984); "one of the most prolific intellectuals", "extremely adversarial",
+  "extremely prone to digression", polemic and commentary on Plato and Hippocrates; 21 volumes of c. 1000 pages, more than 4 million
+  words, a few works only in Arabic, Syriac, Hebrew or Latin; more than 25 ethical works, two surviving in full; logic nearly all lost;
+  UP on the purposive, divine construction of the parts; the live pig and the spinal cord; ignored since the Scientific Revolution,
+  recently revived; editions: CMG 1914–, Kühn 20 vols 1821–33 (repr. Olms 1964–65), Brock's Loeb 1916, De Lacy's PHP (CMG V 4.1.2,
+  1978–84, 2nd edn 2005), Singer 1997 (Lib. Prop., Opt. Med. in English), Singer 2013 with Nutton's *Avoiding Distress*,
+  Johnston–Horsley Loeb 2011, Boudon-Millot–Jouanna with Pietrobelli, Budé IV 2010.
+- Pearcy, "Galen: a Biographical Sketch" (Medicina Antiqua, UCL): dream 144 or 145; father died 148 or 149, Galen 19, rich and
+  independent; gladiators autumn 157 to autumn 161; back in Pergamum 166–169; 168 invitation to Aquileia; fire given as 191; "most
+  prolific, cantankerous".
+- Wikipedia, Galen: name from γαληνός "calm"; went to Rome 162; feared exile or poisoning and left; Suda (died at 70, c. 199) against
+  Arabic sources (87, c. 216), Nutton and Boudon-Millot for 216; On Theriac to Piso mentions events of 204, "may, however, be spurious",
+  Nutton thinks it genuine; may have produced more than any ancient author; some 3 million words; four humours and temperaments; three
+  systems (brain/nerves, heart/arteries, liver/veins); human dissection forbidden, mainly Barbary apes, also pigs; vivisection; Vesalius
+  1543 and the impermeable septum (Nat. Fac. III.15); Harvey and others; bloodletting into the 19th century; more than 1,300 years;
+  Marcus' praise (Praen. 14.660 K.); not translated into Latin in antiquity; all Greek manuscripts copied by Byzantines; Syrian Christians
+  after 750; Hunayn 129 works (c. 830–870); works only in Arabic or only in Latin from Arabic; forgeries prompted On My Own Books;
+  al-Razi's Doubts on Galen; Latin translations from Arabic from the 11th century; "Medical Pope of the Middle Ages"; Burgundio; Niccolò
+  da Reggio at Robert of Naples' court; Latin Opera Venice 1490 (Bonardo, Pinzi); Aldine 1525.
+- Wikipedia, Antonine Plague: 165–180, "Plague of Galen"; Galen went home in 166 during the epidemic; brief descriptions.
+- Wikipedia, Galenic corpus: over 2.6 million words; Kühn 122 treatises, Greek with facing Latin, mainly from Chartier, 22 volumes,
+  over 20,000 pages; the titles On Consolation from Grief (De indolentia) and Walzer–Frede's An Outline of Empiricism.
+- Wikipedia, Hunayn ibn Ishaq: 808–873; 129 works of Galen; Greek into Syriac, nephew Hubaysh Syriac into Arabic.
+- LSJ (site's copy and Perseus): γαληνός "calm, esp. of the sea"; of persons, "gentle".
+- BIU Santé, "First printed editions of Galen" (presentation by Véronique Boudon): Kühn 21 volumes plus an index, c. 20,000 pages, no
+  critical edition as a whole, no critical apparatus (except one), the edition one refers to; works lost in Greek, some only in medieval
+  Latin (Subfiguratio empirica), some in Arabic; an eighth of Greek literature from Homer to the end of the second century; the Greek
+  tradition rarely before the 12th century; Bonardus (Venice 1490); Aldine 1525, five folio volumes; Basel 1538 correcting the
+  Aldine; Chartier (Paris, 1679), the ruin of its editor.
+- Corpus Medicorum Graecorum, Gesamtübersicht "Galenus und [Galenus]" (archived 2020): De anatomicis administrationibus "X–XV nur
+  arab."; De experientia medica "frg. gr., arab.", Walzer 1944; [Introductio sive medicus] and [Definitiones medicae] in brackets
+  (TLG 0530, Pseudo-Galen); [De theriaca ad Pisonem] in brackets, with Boudon-Millot's CUF edition (Gal. VI); citation by Kühn volume
+  and page ("K.").
+- BMCR 2025.09.52 (Tieleman on Polemis–Xenophontos 2023): the 2005 find by Pietrobelli, sent by Boudon-Millot; On My Own Opinions in
+  the table of contents, Avoiding Distress found a little later; mid-15th-century Vlatadon 14; full On My Own Books, otherwise one Greek
+  witness (Ambrosianus gr. 659) apart from the Arabic; microfilm, the French team denied direct access, the new editors given it;
+  scribal errors, moisture; about forty textual problems, most in Indol.; Prop. Plac. known from Latin via Arabic and Niccolò's
+  Graeco-Latin version; its last three chapters in Ambrosianus gr. 659 as "On the Substance of the Natural Faculties", printed by Kühn
+  (IV 757–766); Nutton's CMG V 3.2 (1999); Prop. Plac. late in life, authenticating his positions; Avoiding Distress known before only
+  by its title, a letter to an old friend from Pergamum about the loss of library, drugs and equipment in the fire of 192, Commodus
+  recently dead; other people's books circulating under Galen's name.
+- BMCR 2015.07.22 (Kaufman on Rothschild–Thompson 2014): Vlatadon 14 written 1448–1453 by followers of John Argyropoulos, from the
+  collections of a library in Constantinople (Boudon-Millot); Περὶ Ἀλυπίας or Περὶ Ἀλυπησίας, Kotzia for the former; ἐν Ἀντίῳ for
+  ἐναντίω etc. at 16, 17, 18 BMJ, proposed by C. P. Jones (2009), popular but controversial, Nicholls against; Rosen on the lost
+  lexical works, including a lexicon of medical terms in Old Comedy; written shortly after Commodus' death, and the sentence on
+  Commodus (reviewer's translation of BMJ 54–55); the four editions (2007, 2010, Kotzia–Sotiroudis 2010, Garofalo–Lami 2012);
+  Nutton's translation in Singer 2013.
+- Roger Pearse's post quoting Singer's translation of On My Own Books: the Sandalarium, the book "Galen the doctor", two lines read,
+  "This is not Galen's language—the title is false"; books given without inscription to friends and pupils, passed off by others.
+- Classical Review 59.2 (1945) record: Walzer, Galen on Medical Experience, first edition of the Arabic version (OUP, 1944).
+- Scroll passages (all quotations copied from `passage.ts`): MM 9.4 (philosophy first, then medicine after his father's vivid dreams);
+  Comp. Med. Gen. 3.2 (returned from Alexandria at 28; the high priest entrusted the gladiators to him alone, "beginning my twenty-ninth
+  year"; many died before, none of his; second high priest after seven and a half months, then the third, fourth and fifth);
+  Praen. 9 (sudden departure "as if to Campania", Brundisium; summons to Aquileia; Lucius' death mid-winter; Marcus persuaded to
+  leave him in Rome for Commodus; "many treatises, philosophical and medical"); Praen. 11 (the emperor's praise, "first of doctors,
+  alone of philosophers"); Comp. Med. Gen. 1.1 (the precinct of Peace and the Palatine libraries burned; the storehouse on the Sacred
+  Way; the first two books rewritten); On the Powers of Foods 2.9.12 (names as people now use them; clarity before old Atticism);
+  In Hipp. De officina medici 3.33 (not here to teach the young to Atticize); That the Best Physician 1 (the athletes; "they praise
+  Hippocrates and think him first of all"); Nat. Fac. 1.13 (Brock: the Asclepiadeans, "sectarian partizanship … harder to heal than
+  any itch"; the ureters tied in a living animal, "the bladder empty and the ureters quite full and distended"); Nat. Fac. 3.15 (Brock:
+  "nothing is done by Nature in vain"; the perforations in the septum; "not possible … to observe their extreme terminations");
+  Anat. Admin. 9.5 (the last Greek chapter in the Scroll: Herophilus and the carved reed pen); the Greek fragment of On Medical
+  Experience (Schöne 1901); "On the Substance of the Natural Faculties" (Kühn IV); On Theriac to Piso under Galen; Introduction, or
+  the Physician under Pseudo-Galen; On Antidotes 1.13 (the cinnamon tree, read but cut for length).
+
+**Left out because it could not be confirmed**
+- "Hundreds of medieval Greek manuscripts" and "no single one contains more than a fraction of them": no count found in a source
+  opened.
+- "Many treatises survive in only one or two copies": only the specific case of On My Own Books (two Greek witnesses) is kept.
+- A "large dictionary of Attic words, now lost": Rosen (via BMCR) speaks of lexical works and a lexicon of medical terms in Old Comedy;
+  that is what the article says.
+- διάγνωσις and πρόγνωσις "passed into modern medicine": not checked against a source; dropped.
+- Wikipedia's ape disembowelled to win the post, and "five deaths among the gladiators against sixty": the source of the figures could
+  not be opened (the Arabic-only *On Examinations by which the Best Physicians are Recognized* is named only in a search summary);
+  Galen's own account in the Scroll says that none of his patients died, and the article keeps that.
+- Death in Sicily, the tomb at Palermo (Wikipedia, from Arabic sources): not needed and not checked further.
+- Job of Edessa's 36 Syriac translations: confirmed in Wikipedia but cut for length.
+- The 2018 Basel papyrus (Wikipedia: "an unknown medical document of Galen or an unknown commentary on his work"): left out.
+- A date for William Harvey: the Wikipedia Galen page gives none; Harvey is named without a date.
+- The bookshop story's date and the identity of Bassus: not needed.
+
+**Corrected from the draft**
+- "129–c. 216 CE" stated as fact → the death date is marked debated: c. 199 (Suda), c. 216 (Arabic sources, Nutton, Boudon-Millot),
+  c. 200 traditional (SEP), after 210 (Pearcy), c. 210 (Boudon, BIU).
+- "More of his writing survives than of any other ancient Greek author, roughly three million words" → "may have written more than any
+  other ancient author" (Wikipedia's own hedge); the word count varies by source: over 2.6 million, some 3 million, more than 4 million.
+- Timeline "146: begins medical studies at about sixteen" → the dream is dated 144 or 145 (Pearcy); medicine from sixteen (SEP), i.e.
+  about 145.
+- "Kühn's edition in 22 volumes" → counted as 20 (SEP), 21 plus an index (Boudon) or 22 (Wikipedia), because some volumes are in two
+  parts (the Scroll's headers show 17.1, 17.2–18.1, 18.2).
+- "Kühn largely reprints René Chartier's of 1679" → Kühn's text and Latin are "mainly taken from" Chartier (Wikipedia); Boudon dates
+  Chartier's edition 1679, Wikipedia gives 1638–39; only Boudon's date is printed, attributed to her.
+- "Teubner texts by Helmreich, Kalbfleisch, Marquardt and others (1879–1923)" → not all Teubner: Marquardt's 1879 text was a Güstrow
+  school publication, von Müller's an Erlangen one, Kaibel's Weidmann, Schöne's in the Berlin Academy's Sitzungsberichte; the Scroll's
+  range is 1879–1928 (Raeder's CMG volume).
+- "Corpus Medicorum Graecorum V (Berlin, 1914–)" → Leipzig (Teubner) and Berlin (Akademie Verlag), 1914– (SEP).
+- "Leaves Rome, as the Antonine plague breaks out" → he left in 166, in the year of the epidemic (Antonine Plague page); his own
+  account (Praen. 9) gives no plague, only a sudden departure "as if to Campania"; Wikipedia gives fear of rivals.
+- "Recalled by Marcus Aurelius" (169) → summoned with Lucius Verus to Aquileia in 168 (Pearcy, Praen. 9); stayed in Rome from 169
+  for Commodus (SEP, Praen. 9).
+- "Vlatadon 14 … found to contain On the Avoidance of Grief, lost in Greek until then" → it was lost altogether, known only by its title
+  (Tieleman); the first find was On My Own Opinions in the table of contents, Avoiding Distress a little later; the manuscript is
+  mid-15th-century (1448–1453, Boudon-Millot).
+- "Hunayn and his school … over a hundred Galenic works" → "credited with translating 129" (both Wikipedia pages); the Syriac and
+  Arabic division of labour with Hubaysh added.
+- "He tells of seeing a book falsely sold under his name in a Roman bookshop" → he witnessed a dispute in the Sandalarium, where a man of
+  letters read two lines and tore up the title (Singer's translation, via Pearse).
+- "Forgeries were already circulating … On My Own Books … remains the starting point for deciding what is authentic" → only the first
+  part is kept; the second was not found in a source opened.
+- Added from the sources: the gladiators in Galen's own words; the fire in his own words; the misnamed fragment "On the Substance of the
+  Natural Faculties" (in the Scroll) as the end of On My Own Opinions; On Theriac to Piso and the death date; the title and Antium
+  cruxes of Avoiding Distress; Galen's own remarks on Atticizing.
+
+**Weak points to revisit**
+- Much of the life rests on Galen's own self-portrait (Praen., Comp. Med. Gen.) and on Wikipedia, Pearcy (a short sketch first printed
+  in 1985) and the SEP; the sources disagree on several years (father's death 148/149; Rome 161/162; fire 191/192).
+- The identification of the emperor in Praen. 11 as Marcus rests on Wikipedia; the Scroll's chapter says only "the emperor" (αὐτοκράτωρ).
+- The bookshop story and the words "This is not Galen's language" come from a blog post quoting Singer's printed translation; the book
+  itself was not opened.
+- The CMG list is an archived 2020 page; "square brackets = wrongly attributed" is inferred from its title "Galenus und [Galenus]" and
+  from the bracketed titles being the TLG's Pseudo-Galen (0530) works; On Theriac to Piso is bracketed although the TLG files it under
+  Galen (0057.079).
+- The Greek fragment of On Medical Experience in the Scroll is identified as such by the catalogue (tlg0057.tlg107, the TLG number the
+  CMG list gives for De experientia medica) and by Schöne's title; Walzer's 1944 edition is confirmed only by a journal record of a
+  review (the Internet Archive copy is restricted).
+- Singer (ed.), Psychological Writings: 2013 in the SEP and in Kaufman's review, 2014 in Tieleman's bibliography; 2013 is printed.
+- Wikipedia's "Hunayn translated 129 works" may conflate his own translations with those of his circle; the article says "is credited
+  with".
+- Brock's Greek text in the Scroll is called his own edition in the file header; the SEP gives Helmreich's Scripta Minora III (1893) as
+  the critical text of Nat. Fac. The article does not say whose text Brock printed.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/galen.md):** 7 findings, each checked against the
+cited passage or page (Method of Healing 9.4 in the Scroll; Wikipedia, Antonine Plague), all corrected: 1914 is the Corpus Medicorum
+Graecorum's first Galen volume, not its start; the Antonine Plague (165–180) reached Rome in 166; On My Own Opinions was known
+"mainly" from the two Latin versions, with Greek and Arabic fragments; On Medical Experience "survives in Arabic" (no source says
+whole); "over 2.6 million words, or more than 4 million"; Commodus and Severus also footnoted to Wikipedia (the SEP says
+"apparently"); the dream line quoted from «εἶθ' ὕστερον», "then later".
