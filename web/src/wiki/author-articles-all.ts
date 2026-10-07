@@ -32,8 +32,13 @@ import { euclid } from "./authors/tlg1799";
 import { archimedes } from "./authors/tlg0552";
 import { ptolemy } from "./authors/tlg0363";
 import { epicurus } from "./authors/tlg0537";
+import { epictetus } from "./authors/tlg0557";
+import { marcusAurelius } from "./authors/tlg0562";
+import { menander } from "./authors/tlg0541";
+import { callimachus } from "./authors/tlg0533";
+import { theocritus } from "./authors/tlg0005";
 
-export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon, [hesiod.id]: hesiod, [lysias.id]: lysias, [isocrates.id]: isocrates, [polybius.id]: polybius, [plotinus.id]: plotinus, [newTestament.id]: newTestament, [septuagint.id]: septuagint, [lucian.id]: lucian, [josephus.id]: josephus, [galen.id]: galen, [hippocrates.id]: hippocrates, [euclid.id]: euclid, [archimedes.id]: archimedes, [ptolemy.id]: ptolemy, [epicurus.id]: epicurus };
+export const ARTICLES: Record<string, AuthorArticle> = { [herodotus.id]: herodotus, [homer.id]: homer, [thucydides.id]: thucydides, [plato.id]: plato, [sophocles.id]: sophocles, [aristotle.id]: aristotle, [euripides.id]: euripides, [aeschylus.id]: aeschylus, [demosthenes.id]: demosthenes, [aristophanes.id]: aristophanes, [plutarch.id]: plutarch, [pindar.id]: pindar, [xenophon.id]: xenophon, [hesiod.id]: hesiod, [lysias.id]: lysias, [isocrates.id]: isocrates, [polybius.id]: polybius, [plotinus.id]: plotinus, [newTestament.id]: newTestament, [septuagint.id]: septuagint, [lucian.id]: lucian, [josephus.id]: josephus, [galen.id]: galen, [hippocrates.id]: hippocrates, [euclid.id]: euclid, [archimedes.id]: archimedes, [ptolemy.id]: ptolemy, [epicurus.id]: epicurus, [epictetus.id]: epictetus, [marcusAurelius.id]: marcusAurelius, [menander.id]: menander, [callimachus.id]: callimachus, [theocritus.id]: theocritus };
 
 /** The article for an author: the checked one, or (development only) a draft marked as unchecked. */
 export function articleFor(id: string): { article: AuthorArticle; draft: boolean } | null {

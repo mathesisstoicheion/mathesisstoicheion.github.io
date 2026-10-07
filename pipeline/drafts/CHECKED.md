@@ -1778,3 +1778,523 @@ cited passage or page (Diogenes Laertius 10.1.1, 10.1.11, 10.1.15–17 in the Sc
 keep the garden for Hermarchus and the school; the tetrapharmakos lines named as D. S. Hutchinson's free English; the Villa's 1750
 footnoted to source 33 only; Hicks brackets such notes "for example"; the deme Gargettus is Epicurus' own; the cheese letter's
 addressee not named; "a stone blocked his urine" for Hicks's "renal calculus".
+
+## Epictetus (tlg0557), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0557.ts` (41 sources). Written fresh from the old-site draft's list of claims; every page and
+passage below was opened for this check.
+
+**Confirmed and kept**
+- Life: SEP (Graver, rev. 2025): born in the 50s at Hierapolis; slave of Epaphroditus, an administrator at Nero's court; studied
+  with Musonius Rufus, "a Roman senator and Stoic philosopher who taught intermittently at Rome"; freed, lectured on his own
+  account; left Rome under Domitian's edict "(in 89)"; school at Nicopolis, "an important communications hub and administrative
+  center", on the Adriatic coast of north-western Greece; taught there until his death around 135; the Discourses dated around
+  108 (Millar); limp attributed to arthritis or abuse; never married, adopted a child; four books of an original "eight or
+  more"; Koine, unlike Arrian's literary Greek; Dobbin's view that Epictetus composed them; the Encheiridion can mislead;
+  volition (prohairesis); Origen, Contra Celsum 6.2; Simplicius' commentary; Poliziano 1497; Pascal; Descartes; Tom Wolfe's
+  A Man in Full (1998); editions of Schenkl 1916, Oldfather, Souilhé, Waterfield 2022, Dobbin 1998, Boter 1999.
+- Boter, "Epictetus", Catalogus Translationum et Commentariorum 9 (2011), the "Fortuna" (scanned PDF, pages 2–10 read from the
+  page images): Suda E 2424; born probably about 50; Pisidian inscription (mother a slave), "whether or not this is true"; "certain"
+  that he came to Rome as a slave of Epaphroditus, freedman and secretary of Nero; the name means "acquired", no proof of later
+  enslavement; banished by Domitian in 94; death "generally placed about 125–30", the Suda "until the time of Marcus Aurelius
+  (161–80)"; published nothing; the names of the work and the debate over one work or several; quantity lost "a matter of
+  speculation"; Simplicius on Arrian compiling the Encheiridion; "some twenty manuscripts"; Bodl. Auct. T. 4. 13 copied ca. 1100,
+  source of all others, proved by the lacuna at the stain on fol. 25 (Mowat 1876); Encheiridion and Christian adaptations in more
+  than a hundred manuscripts, chief witnesses s. XIV–XV; Gellius 1.2, 2.18.10, 15.11.5, 17.19.6 ("bear and forbear"), 19.1.14–21;
+  Hadrian (HA 16.10); Lucian's lamp; Celsus first tells the leg story; Marcus Aurelius and Rusticus; Stobaeus 21 Encheiridion
+  passages against 4 from the Discourses; the three Christian adaptations (Nil., Par., Vat.), names changed (Paul, Solomon), Par.
+  on Job 1:21 and Gospel passages for Plato; oldest MSS s. X; Arethas and the scholia in the Bodleian MS (Schenkl's view); Photius
+  codex 58; Perotti 1450, Poliziano 1479 printed 1497; Simplicius' commentary with most of the Encheiridion, Venice 1528;
+  Haloander's complete Greek Encheiridion, Nuremberg 1529; Discourses Venice 1535; Carter, London, 1758; Upton 1739–41;
+  Schweighäuser 1798 and 1799–1800, "the standard for the next century"; Schenkl 1894, first based on the Bodleian MS, still
+  standard; Boter 1999; Albert Ellis and Encheiridion 5; Tom Wolfe.
+- Oldfather, Loeb vol. 1 (Internet Archive, reprint of 1956, "First printed 1925"; the Heinemann/Putnam issue dated 1926 is also
+  there): slave woman's son; Epaphroditus "the freedman and administrative secretary of Nero"; lessons from Musonius while in his
+  service; lame, the stories (Celsus, Origen, Suidas' rheumatism, Simplicius "lame from an early period of his life"); took a wife
+  in old age to bring up a child; the iron lamp; banishment "presumably in A.D. 89 or 92"; Nicopolis; life "ca. A.D. 50–120"; wrote
+  nothing for publication; Koine against Arrian's Attic; the editio princeps by Trincavelli, Venice 1535, "from a singularly faulty
+  MS."; Schegk 1554, Wolf 1560, Upton 1739–41, Schweighäuser 1799–1800 (Encheiridion 1798), Schenkl 1894 / 1898 / 1916; the
+  Bodleian MS Misc. Graec. 251, s. xi/xii, shown by Schenkl and Mowat to be the archetype; "must have survived the Middle Ages in
+  only a single exemplar"; the anonymous epigram (Macnaghten's translation; Macrobius' ascription "a patent absurdity"); notes on
+  1.18.10: εἰσενέγκῃς (Mowat), φιλοψογούντων (Schenkl), μωρούς supplied by Capps "for a lacuna of about five letters in S"; the
+  English "do not introduce those words which the multitude of the censorious use".
+- Oldfather, Loeb vol. 2 (Internet Archive, reprint of 1959, "First printed 1928"; Heinemann/Putnam 1928 issue also there):
+  Encheiridion "a compilation made by Arrian himself", somewhat more than half from the four books; Simplicius' commentary "more
+  than ten times the bulk of the original"; Ench. 29 = Disc. 3.15, omitted in Par., not commented on by Simplicius, "may have been
+  added in some second edition, whether by Arrian or not"; Upton's readings from the Discourses (παρορύσσεσθαι for παρέρχεσθαι /
+  παρέχεσθαι; ἐκβαλεῖν for βαλεῖν, λαβεῖν, βλαβεῖν); "dig in"; the Fragments: genuine ones "not very numerous", doubtful
+  aphorisms from Stobaeus and the gnomology "purporting to contain excerpts from Democritus, Isocrates, and Epictetus", doubted by
+  Schenkl, Asmus and Elter.
+- Wikipedia (Epictetus): Hierapolis = Pamukkale; name unknown, "gained"/"acquired"; banishment around 93; lived alone, adopted a
+  friend's child, Simplicius ambiguous on marriage. Wikipedia (Discourses of Epictetus): titles; about 108, Trajan's coins (4.5.17);
+  Bodleian MS twelfth century and the stain; Trincavelli 1535; English translations (Carter 1758, Higginson 1865, Long 1877, Hard
+  2014). Wikipedia (Enchiridion of Epictetus): 53 chapters; ch. 29; Perotti 1450, Poliziano 1479, first printed 1497; 1528 with
+  Simplicius. Wikipedia (Arrian): Nicomedia in Bithynia; consul about 130; Anabasis of Alexander; "young Xenophon". Wikipedia (List of
+  editiones principes in Greek): Encheiridion with Simplicius, Venice 1528, complete text 1529 (Haloander); Discourses, Venice 1535.
+- Lindsay, An Introduction to Latin Textual Emendation (1896), p. 43 (Internet Archive): the Bodleian MS of Arrian's Dissertations,
+  fol. 25, a large portion illegible "apparently by the pressure of some heavy weight, the leg of a chair perhaps"; all other MSS
+  copied from it.
+- Photius, Bibliotheca codex 58 (Freese 1920, tertullian.org): eight books of Lectures and twelve of Conversations.
+- Gellius on LacusCurtius: 15.11.3–5 (Latin: Domitian's senatus consultum; Epictetus left Rome for Nicopolis); 19.1.14 (the fifth
+  book); 17.19 (Favorinus; anechou et apechou); 1.2 in Rolfe's Loeb English (Herodes, "the first volume", Rolfe's note "Actually
+  the second book, II.19", and the Homer line). Historia Augusta, Hadrian 16.10 (Magie, LacusCurtius): checked, then cut for length.
+- Scroll passages (copied from scripts/passage.ts): Suda E 2424 and A 3868; Arrian's preface 0.0.1–8; Disc. 1.1.1, 1.1.22–24,
+  1.9.29–30, 1.16.20–21, 1.18.8–16 (gaps at 1.18.10; the iron lamp), 2.6.20, 2.19.12–13, 3.15.1–5, 3.23.30, 4.5.17; Handbook 1, 5,
+  9, 17, 29, 53; Fragments 1 (heading) and 10; Gnomologium Epicteteum; Origen, Against Celsus 6.2 and 7.53; Lucian, Ignorant
+  Book-Collector 13 and Alexander 2; Marcus Aurelius 1.7.3 and 4.41.
+- LSJ (site's copy): ἐπίκτητος "gained besides or in addition"; ἐγχειρίδιος "in the hand … manual, handbook"; προαίρεσις "choosing
+  one thing before another; purpose, resolution"; ἀναγκοτροφέω "eat by regimen, not after one's own appetite, like athletes, Epict.
+  Ench. 29.2"; ἀναγκοφαγέω = ἀναγκοτροφέω, Arr. Epict. 3.15.3; ἰατρεῖον "surgery".
+- Catalogue / TEI headers: Schenkl, Teubner editio maior 1916 (all the Greek); Long, George Bell and Sons, 1887; Higginson, Thomas
+  Nelson and Sons, 1890.
+
+**Left out because it could not be confirmed**
+- "Born a slave" as a fact: only the Pisidian inscription says so (Boter: "whether or not this is true"). Kept as reported.
+- Epaphroditus "let him study" with Musonius: no source says the master gave permission (Wikipedia says so, citing only the
+  Discourses, which do not).
+- A single date for Domitian's expulsion (SEP 89; Oldfather 89 or 92; Wikipedia about 93; Boter 94) and for the death.
+- The draft's "Gnomologium Epictetum ... some are certainly by others": Oldfather says the doubts were serious enough to drop them,
+  not that each is certainly by someone else; kept as doubtful.
+- Wolf's edition date (Oldfather and Wikipedia 1560; Boter 1563 for the complete works, 1561 for the Encheiridion translation).
+- Mowat's article date (Boter 1876, Oldfather 1877): the article names Mowat without a year.
+- The Bodleian catalogue entry for Auct. T. 4. 13 (blocked by a bot check); the manuscript's date rests on Boter, Oldfather and
+  Wikipedia.
+- Hadrian's friendship (Historia Augusta 16.10), the epigram "Slave, poor as Irus" (Anthology 7.676, in a Greek edition the Scroll's
+  default does not show), Epaphroditus' shoemaker (Disc. 1.19.19–22) and the Trajan coin (4.5.17): all checked, cut for length.
+- James Stockdale, the Golden Sayings, the Altercatio Hadriani et Epicteti, Arrian's Homiliai as a separate work (Oldfather doubts it).
+
+**Corrected from the draft**
+- "Born a slave at Hierapolis" → from Hierapolis (Suda); the slave birth only reported (inscription), slavery at Rome certain.
+- "(c. 50–c. 135)" → kept as about 50 to about 135, with the disagreements (SEP, Boter, Oldfather ca. 50–120, Suda) marked {debated}.
+- "Domitian expelled the philosophers from Italy (c. 93)" → date marked {debated} with all four datings; Gellius quoted for the decree.
+- "Like Socrates, Epictetus wrote nothing" → "published nothing" (Oldfather; Boter "did not publish anything himself"), with Dobbin's
+  dissent.
+- "an eleventh- or twelfth-century codex in the Bodleian Library at Oxford (Auct. T. 4. 13, S)" → copied about 1100 (Boter),
+  s. xi/xii (Oldfather); the proof by the stain added (Lindsay, Boter).
+- "Angelo Poliziano's Latin translation of the Handbook is printed, the first printed edition of any of his work" → the first
+  printed edition of the Handbook (Wikipedia, Boter); "of any of his work" not stated by the sources.
+- "Marcus Aurelius learned from these notes" → Marcus thanks Rusticus for the ὑπομνήματα of Epictetus and quotes him (1.7.3, 4.41).
+- "Christian monks adapted the Handbook" → three adaptations, the oldest manuscripts tenth century (Boter).
+- "T. W. Higginson, The Works of Epictetus (1865) — the translations used here" → the Scroll uses the 1890 Nelson printing.
+- "W. A. Oldfather (Loeb, 1925–28)" → publisher given as Heinemann and Putnam (title pages of the first issues), later Harvard.
+
+**Weak points to revisit**
+- Boter's article was read from page images of a scanned PDF (pages 2–10 only; the bibliography of translations was not read).
+- The Oldfather volumes read are later reprints; the first-issue title pages (Heinemann/Putnam, vol. 1 dated 1926, vol. 2 1928)
+  were checked only in the OCR text.
+- Oldfather's note crediting φιλοψογούντων to "Schenkl" is read from OCR ("Schenkl: φ . . . των S"); the article says only that the
+  words are modern restorations by Mowat, Schenkl and Capps, as his notes list them.
+- The identification of the Scroll's Gnomologium Epicteteum with the doubtful material Oldfather left out is general (both are
+  Stobaeus-based gnomic collections); Oldfather does not name Schenkl's Gnomologium as such.
+- The Gellius Latin on LacusCurtius comes from an unnamed online edition (Thayer's note); the English of book 1 is Rolfe's.
+- Arrian's consulship rests on the Suda and Wikipedia; Photius' translator Freese gives other dates in his note, not used.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/epictetus.md):** 8 findings, each checked against the
+cited passage or page (Discourses 1.16.20 in the Scroll; the TEI headers; Wikipedia, Discourses of Epictetus and Contra Celsum), all
+corrected: Origen's remark is in Against Celsus, about 248 (Wikipedia, Contra Celsum, added as source 42); Simplicius "chiefly", not
+the only evidence on the marriage; the Discourses debate given at both extremes (Wirth: largely Arrian's; Dobbin: Epictetus' own) with
+the mainstream between; "we owe to a pupil, Arrian"; the lame old man's hymn "without self-pity", not a joke; the 1528 Handbook "most of
+it" (the checker's Nuremberg 1529 claim not added, being unchecked); the stain at 1.18 and "about 108" footnoted to source 33; Long's
+header says 1890, the scan 1887. Outside the article: the checker reports that in the Scroll's Lucian, Demonax, Harmon's English is one
+section off around §§54–56.
+
+## Marcus Aurelius (tlg0562), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0562.ts` (24 sources). The Scroll has only the Greek of the *Meditations* (Leopold's text, `perseus-grc2`), with no English translation, so every English rendering of Marcus, of Herodian and of the Suda is our own and is listed in `outsideQuotes`. Greek quotations were copied from `scripts/passage.ts`. The Internet Archive scans of Leopold (1908) and Haines (1916) were read in their OCR text (Greek OCR is poor in places; Latin and English are clear).
+
+**Confirmed and kept**
+- Wikipedia (Marcus Aurelius): born in Rome 26 April 121; emperor 161–180; Stoic; last of the "Five Good Emperors"; father died when he was three; raised by mother and grandfather; Hadrian adopted Antoninus in 138, who adopted Marcus and Lucius; Greek tutors including Herodes Atticus, Latin tutor Fronto, "the most esteemed orators of their time"; Rusticus the strongest influence, who drew him away from oratory; acceded with Lucius Verus in 161; Parthian war; Marcomanni, Quadi, Iazyges; Antonine Plague broke out 165 or 166, Galen in Rome when it reached the city in 166; Lucius died 169, probably of the plague; Commodus co-ruler from 177; died 17 March 180 aged 58 at Vindobona or near Sirmium (Aurelius Victor against Tertullian); the Historia Augusta's lives of Avidius Cassius not reliable; Christians named only once (11.3); "Meditations" written in Greek on campaign between 170 and 180; equestrian statue c. 175, Capitoline Museums, the only Roman equestrian statue surviving into modern times; a favourite of Frederick the Great, Mill, Arnold, Goethe; 100,000 copies sold in 2019.
+- Wikipedia (Marcomannic Wars): about 166–180.
+- Wikipedia (Meditations): twelve books in Koine Greek; Swain's note that close imitation of Attic was not required since he wrote without thought of publication; the Quadi note (Granua = Hron, Slovakia) for Book 1 and Carnuntum for Book 2; unlikely to have been meant for publication; Herodian's remark "may refer" to the Meditations; Historia Augusta's story of the three days; Themistius' "doubtful" mention about 364 to Valens; Arethas before 907, letter to Demetrius of Heraclea, "so old indeed that it is altogether falling to pieces" (Farquharson's English); Arethas' scholia to Lucian and Dio, τὰ εἰς ἑαυτὸν ἠθικά, the title of the manuscript behind the first edition; Arethas' copy the likely ancestor; Suda late tenth century, "a directing (ἀγωγή) of his own life by Marcus the Emperor in twelve books", first mention of twelve books, about thirty quotations from books 1, 3, 4, 5, 9, 11; Tzetzes about 1150 (Books 4 and 5); Greek compilations of the 14th–16th centuries; P and A; A from Stefano Gradi's collection in 1683; 42 lines lost in A; Xylander's first edition "1558 or 1559" at Zurich, at Conrad Gesner's instigation, printed by Andreas Gesner, with Latin translation and notes; manuscript from Otto Heinrich's library through Toxites; second edition 1568 without access; translations of Hard and Gill (OUP 2011), Hammond (Penguin 2006), Hays (2002).
+- Wikipedia (Wilhelm Xylander): 1558 first edition, Heidelberg manuscript now lost.
+- IEP (John Sellars, "Marcus Aurelius"): personal notebook, probably written on campaign c. 171–175; no particular order; Book 1 may have been written separately; Themistius 364 the first recorded mention; the title ta eis heauton from a manuscript now lost, maybe a later addition, first recorded c. 900 (Arethas); text from the Vatican manuscript and the lost one behind the 1558 edition; Lucius' death and sole rule from 169; influence of Epictetus, quoted at 11.33–38; Marcus never calls himself a Stoic, open to other traditions; "From a modern perspective … certainly not in the first rank of ancient philosophers"; the book as written philosophical exercises; Hadot's 1978 article on the three topoi as "a key"; editions: Leopold OCT 1908, Haines Loeb (Heinemann 1916, later Harvard reprints), Farquharson 1944 2 vols ("arguably the definitive edition"), Dalfen Teubner 1979 / 2nd ed. 1987 (word index), Gataker 1652, Hadot, The Inner Citadel (trans. Chase, Harvard 1998), Hard (OUP 2011), Hammond (Penguin 2006), Hays (Weidenfeld & Nicolson 2003).
+- Haines, Loeb 1916 (Internet Archive, London: Heinemann; New York: Putnam): preface "in many places corrupt beyond cure"; Teubner's text used as basis; introduction: "this small but priceless book of private devotional memoranda"; not known how it was preserved; the notes "shew that the second Book was composed … among the Quadi on the Gran, and the third at Carnuntum"; headquarters at Carnuntum 171–173; Schenkl: Book 1 written last; Book 1 probably written as a whole, the rest disconnected jottings; style abrupt and concise, words to be supplied; footnote: Marcus may mean this work by ὑπομνημάτια at 3.14; Epictetus "his true spiritual father"; Suda, Arethas (Cappadocian bishop), Tzetzes, Nicephorus, Planudes anthology in twenty-five or more MSS of practically no help; P "contains the whole work", first printed 1558; A, forty-two lines lost; D and C give some independent help; Casaubon's first English translation 1634; Gataker 1652 Cambridge with voluminous notes; Casaubon's Greek edition 1643. Notes on 1.17: τούτου PA, τὸ τοῦ ἐν Καιήτῃ "ὥσπερ χρήσῃ" Lofft; the Quadi note "may be intended either to conclude the first book or, more likely, head the second" (Gataker's point about τάδε). Note on 11.3: ὡς οἱ Χριστιανοί bracketed, "ungrammatical and pretty certainly a gloss"; the Note on Christians pp. 381–2 argues the same.
+- Leopold, OCT 1908 (Internet Archive, Oxonii e typographeo Clarendoniano): preface: P = Xylander's edition from the Palatine library of Otto Heinrich (1558), the codex lost; A = Vat. gr. 1950, bombycinus, 14th century, fols. 341–392; first used by Cardinal Barberini 1675 for an Italian translation, copied in 1770 for de Joly, used by Schultz 1802 and Coraes 1816; D = Darmstadt 2773, 14th century; C = Paris suppl. gr. 319, 15th century; the X excerpt manuscripts, an anthology apparently by Planudes; all manuscripts closely related; P and A share lacunae and corruptions "sescenties", down to spelling, so from a common recension; P purer, A full of scribal faults but often keeps the genuine reading; Schultz's complaint; Xylander Zurich 1559 (sic, against 1558 in section I), Basel 1568; anonymous Lyon 1626 first divided the books into chapters (Xylander's translation had done much the same); Casaubon 1643, Gataker Cambridge 1652, de Joly Paris 1774, Schultz 1802, Stich Leipzig 1882 and 1903. Testimonia: Suda s.v. Μάρκος; Themistius Or. 6; Arethas scholia on Lucian (ἐν τοῖς εἰς ἑαυτὸν Ἠθικοῖς); Arethas' letter to Demetrius of Heraclea, Μάρκου τοῦ αὐτοκράτορος τὸ μεγαλωφελέστατον βιβλίον. Apparatus: Book 1 end: "A caret subscriptione et spatio trium fere versuum intermisso librum secundum instituit; P … exhibet, tria proxima capita subnectit, tum librum secundum inchoat per Μέμνησο"; Book 2 end: "subscriptione carent A D Mo 1: in P verba Τὰ ἐν Κ. libro tertio praefixa sunt"; 2.17: "ῥόμβος P adscripto ῥεμβός: ῥεμβός A D C Mo 1"; Leopold cites the Suda in his notes (e.g. at 1.5–1.6, s.v. Πρασιανός, ἀκενόσπουδον); he prints ὡς οἱ Χριστιανοί in 11.3 without brackets.
+- LSJ (site's copy): ἡγεμονικόν "the authoritative part of the soul (reason), esp. in Stoic philosophy"; ἀποκαισαρόομαι, Pass., only M.Ant. 6.30; βάπτω "dip", "dye"; ῥόμβος bull-roarer, boy's toy, magic wheel, whirling motion; ῥεμβός "roaming, roving", ψυχή M.Ant. 2.17 (v.l.); ἀκενόσπουδος "shunning vain pursuits", M.Ant. 1.6.
+- Scroll passages (Greek only): Med. 1.1, 1.6, 1.7 (Rusticus; Epictetus' ὑπομνήματα shared οἴκοθεν), 1.17.9 (Caieta; the Quadi note), 2.1, 2.2, 2.17 (the Carnuntum note; ῥόμβος), 3.5, 3.14, 4.3, 5.1, 6.30, 11.3, 12.36; Herodian 1.2.3 (his writings "that have come down to us"), 1.2.4 (μόνος τε βασιλέων …), 1.3.1–1.4.7 (illness, speech to friends, death after a night and a day); Suda α 830 (quoting 1.6, "Μάρκοϲ ὁ φιλόϲοφοϲ βαϲιλεύϲ") and α 1903 (quoting 3.5 with ἀναμένων where Leopold has περιμένων).
+- Catalogue and TEI header: the Scroll's Greek is Leopold's 1908 text; the header gives "Teubner, Leipzig", but the Internet Archive scan it links to is the Oxford Clarendon Press edition (Scriptorum Classicorum Bibliotheca Oxoniensis), as IEP also says. The article names Oxford and points out the header's slip.
+
+**Left out because it could not be confirmed**
+- Epictetus as "the strongest single influence on the work" in those words: Wikipedia gives "the strongest influence" among his teachers to Rusticus; IEP and Haines support the influence of Epictetus, so the article says that instead.
+- "Rusticus lent him the lecture notes of Epictetus": Marcus says only ὧν οἴκοθεν μετέδωκεν, "which he shared from his own house"; IEP says "borrowed a copy". Our rendering follows the Greek.
+- The number of extracts in D: Haines's scan reads 119, Wikipedia (citing Haines) 112; Leopold's list counts about 111 chapters. The article says "more than a hundred passages".
+- Dio's "kingdom of gold to one of iron and rust" and his books on Marcus: Dio books 71–72 are not in the Scroll (it stops at book 55); not used.
+- The Antonine Plague's death toll; the "miraculous victory" of 174; Marcus' four chairs of philosophy at Athens (IEP) — not needed and not further checked.
+- The Lyon 1626 edition's reading χρησμόν at 1.17 (in Leopold's OCR as "χρησμόν ed. Lugd."): the line-reference could not be tied with certainty in the OCR; left out. Haines's English rendering of the Caieta phrase was not quoted because the OCR of that line is garbled ("shall use itr").
+- Theiler (Zürich 1951), Waterfield (2021), the Hickses (2002), Staniforth (1964), Long (1862): not given as editions (details not opened beyond the lists in Wikipedia and IEP).
+- The Historia Augusta's date of the three-day discussion (Haines: before the last campaign, 178; Wikipedia: before the Marcomannic Wars): the article gives no date.
+
+**Corrected from the draft**
+- "The title found in the manuscripts, Τὰ εἰς ἑαυτόν": the title comes from the lost manuscript behind the first edition, may be a later addition, and is first recorded about 900 (IEP; Wikipedia).
+- "The editio princeps by Xylander at Zürich, 1559": 1558 or 1559 (Leopold gives both; Wikipedia "1558 or 1559"; Haines, IEP and the Xylander page 1558).
+- "A lost manuscript (T) that belonged to Michael Toxites": it came from the library of the Elector Palatine Otto Heinrich at Heidelberg; Toxites passed it to Gesner (Wikipedia; Leopold).
+- "Vaticanus gr. 1950 … the only complete manuscript": kept, with Haines's 42 lost lines and Leopold's description (paper, 14th century).
+- "Excerpts survive in Byzantine anthologies and in a manuscript at Darmstadt": kept, with D (14th century), C (Paris, 15th century) and the Planudean anthology, and Haines's judgement of their value.
+- "The chapter numbers are early modern (Thomas Gataker, 1652)": Leopold gives the first division into chapters to the anonymous Lyon edition of 1626 (with Xylander's translation already divided much the same way); Gataker's 1652 edition is kept for its notes.
+- "Notes … stand between Books 1–2 and 2–3, and it is disputed whether each belongs to the book before or after": confirmed and sharpened from Leopold's apparatus (P and A differ) and Haines ("more likely, head the second") against Wikipedia (Books 1 and 2).
+- "Dies at Vindobona or Sirmium; the sources differ": confirmed (Wikipedia; Aurelius Victor against Tertullian); Herodian added.
+- "Arethas … first clear evidence … around 900": confirmed as "before 907" (Wikipedia, after Farquharson).
+- "Leopold (OCT, 1908) — the text used here": confirmed; the Scroll's TEI header wrongly says Teubner, Leipzig.
+- "Haines (Loeb, 1916)": confirmed, publisher Heinemann and Putnam (Internet Archive record), not Harvard.
+- "Dalfen (Teubner, 2nd ed. 1987)": confirmed, first edition 1979 (IEP). "Farquharson 1944, 2 vols, with commentary": confirmed (IEP).
+- Added from sources: Herodian on Marcus (Scroll), the Suda's quotations and its reading ἀναμένων, the ῥόμβος/ῥεμβός variant, the Caieta crux, and the bracketing of ὡς οἱ Χριστιανοί.
+
+**Weak points to revisit**
+- Leopold's and Haines's apparatus were read in OCR; the Greek is garbled in places. The readings used (subscriptions, ῥόμβος/ῥεμβός, τούτου/τὸ τοῦ, the brackets in 11.3) are each clear in the OCR, but the page images were not opened.
+- The Scroll's text has no chapter 12.18: its 12.17 ends with "ιη′" and the words of 12.18 (a digitisation quirk of the Perseus file, not an editor's variant). Not mentioned in the article.
+- The date of the Suda: Wikipedia says late tenth century, Haines "about 900"; the article follows Wikipedia.
+- Themistius' date: Wikipedia and IEP 364, Haines "about 350"; the article says "about 364" and marks the mention as doubtful.
+- Haines's Loeb series number (58) was seen only in an Internet Archive search listing of the 1961 Harvard reprint, so it is not given.
+- The modern translations (Hard–Gill, Hammond, Hays) and Hadot rest on IEP and Wikipedia; no publisher pages or reviews were opened.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/marcus-aurelius.md):** 10 findings, each checked against
+the cited passage or page (Herodian 1.3.1 in the Scroll; Wikipedia, Marcus Aurelius, Meditations and Equestrian statue), all corrected:
+the Capitoline statue is "almost the only" surviving Roman equestrian bronze, spared by being taken for Constantine (Wikipedia's
+Marcus Aurelius page says "the only", which is not so; Wikipedia, Equestrian statue, added as source 25); Lucius "perhaps" died of the
+plague; the first edition's lost manuscript was headed τῶν εἰς ἑαυτόν; "very probably" never meant to be published; Herodian's
+"age, toil and care", then illness; Haines added as a source for "precepts"; Leopold for Basel 1568; Haines's place-notes reading is
+in his introduction; the Suda quotes 1.6 in its own words; the timeline's Suda mark no longer cites Haines; Meditations 3.5 a source of
+its own (26), so source 22 is 1.6 only.
+
+## Menander (tlg0541), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0541.ts` (42 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+
+**Confirmed and kept**
+- Life, from the ancient testimonies in English on attalus.org (lives page): the inscription IG 14.1184 (son of Diopeithes, of Cephisia; born under Sosigenes, 342/1; died aged 52 under Philippus, 292/1, in Ptolemy Soter's 32nd year); the anonymous history of comedy (Prolegomena 3: long with Alexis, "seems to have been instructed by him"; "He produced his first play as an ephebe", archon Philocles, given there as 322 BC; 108 plays; died at Athens aged 52); the production note of the *Dyskolos* (P.Bodmer 4, Arnott's translation: Lenaea, archon Demogenes, January 316, first prize, actor Aristodemus of Scarphe); P.Oxy. 1235 (*The Imbrians* written for the Dionysia of 302/1, not performed because of the tyrant Lachares); the scholia on Ovid, *Ibis* 591 (drowned swimming in the harbour of Piraeus; marked legend); "no Byzantine manuscripts of Menander's plays".
+- Suda On Line mu 589 (108 comedies; parents); its note gives the OCD's dates 344/3–292/1, kept as the "debated" alternative. Wikipedia (Menander): c. 342/341 – c. 290.
+- Gellius 17.4 (Latin on LacusCurtius; English in attalus.org's Apollodorus fr. 43): Philemon's wins by *ambitus gratiaque et factionibus*; the "don't you blush" question (legend); 108 or 109 plays; Apollodorus: 105 plays, 8 victories.
+- Parian Marble (attalus.org, Greek Chronicles B 13–14): Demetrius "set laws in Athens" 317/6; Menander's first victory 316/5 (noted as not quite agreeing with the production note).
+- Scroll passages (all quotations copied from `passage.ts`): Strabo 14.1.18 (ephebe with Epicurus), 10.5.6 (law of Ceos, Greek and Jones's English); Diogenes Laertius 5.36 (Theophrastus taught him, after Pamphila), 5.79 (nearly tried as Demetrius' friend; Telesphorus the nephew); Pausanias 1.2.2 (grave, «Μενάνδρου τοῦ Διοπείθους»), 1.21.1 (statue in the theatre); Athenaeus 13.8 (*Arrhephoros* or *Auletris*, «ἀνερρίφθω κύβος», Yonge's "the die is cast"); Plutarch, *Pompey* 60.2 (Caesar's Greek words at the Rubicon); 1 Corinthians 15.33–34 (the Greek line stands under 15.34 in this edition; WEB English under 15.33); Plutarch, *Comparison of Aristophanes and Menander* 2–3 (Fowler's English); Clement, *Stromata* 1.14.59 («ἰαμβείῳ συγκέχρηται τραγικῷ», our translation); Euripides fr. 1024 in Nauck's TGF (1889), with χρήσθ’; the *Sententiae* 1.2, 1.11, 1.28 (Greek; our translations).
+- LSJ (site copy): ἔφηβος "one arrived at adolescence (i.e. the age of 18 years)"; δύσκολος "prop. hard to satisfy with food … generally, hard to please, discontented, fretful, peevish".
+- Papyri: Wikipedia (Cairo Codex): fifth century; Epitrepontes, Perikeiromene, Samia, Heros and an unknown play; found by Lefebvre at Kom Ishgaw, used as a jar stopper with Dioscorus documents; Egyptian Museum; Lefebvre 1907 and 1911. Allinson's Loeb introduction (1921, Internet Archive): Cairo papyrus "discovered in Egypt in 1905"; "portions of five comedies"; connected scenes restored since 1891 and mostly since 1905; Lefebvre ed. princeps Cairo 1907, facsimile 1911; "758 gnomic verses loosely attributed" and "various other Byzantine anthologies". Internet Archive record of Lefebvre 1907.
+- Bodmer Lab record of P.Bodmer 25+4+26: Samia, Dyskolos, Aspis; single quire of 16 sheets (64 pages); 52 folios and fragments; possible educational use; received September and October 1956, "said to have been purchased in Egypt"; leaves taken by Bodmer in Cairo, September 1957; dates: early 3rd (Martin), 4th (Turner), late 4th (Orsini); acts marked ΧΟΡΟΥ; Martin 1958, Kasser and Austin 1969.
+- Wikipedia (Dyskolos): only play surviving nearly complete; about 969 lines, about 9 missing (Photiades 1958); Lenaea 316; published 1958 by Victor Martin; Phyle 13 miles north-west of Athens; Pan comes out of his temple; act 4: Gorgias goes down the well, Sostratos hauls Knemon out; the chorus dances at the end of each act.
+- Greek Wikisource text of the *Dyskolos*: lines 1–7 (Pan; Knemon «ἀπάνθρωπός τις ἄνθρωπος σφόδρα καὶ δύσκολος πρὸς ἅπαντας») and 713–714, 722–726; quoted in English only (our translation), since Greek in guillemets must come from the Scroll.
+- Harlfinger, *Forum Classicum* 1/2004 (archived): 400 lines in a Syriac palimpsest of the late ninth century (catalogue: written 886), from a fourth-century Menander codex; half *Dyskolos*, half an unknown play; found by Francesco D'Aiuto; made known in *L'Osservatore Romano* of 6 December; Bodmer as "Bibliophile". Wikipedia: 2003.
+- BMCR 1997.10.07 (Anderson, read via the Wayback Machine): Allinson's single Loeb volume of 1921; Arnott vol. 1 1979 (six plays), vol. 2 1996; Heros: about fifty lines, twelve-line metrical hypothesis and cast list; Bodmer's didascalic notes date the *Dyskolos*; Dis Exapaton parallels Plautus' *Bacchides*; Terence's prologues on Kolax/Eunuchus and Andria/Perinthia; Misoumenos "work of 1970–94"; mainly iambic trimeters.
+- BMCR 2001.05.16 (Goldberg, via the Wayback Machine): Arnott 1979–2000; personal inspection of the Bodmer and Cairo codices; Sandbach's first OCT had eighteen plays; *Samia* 96 ff. (Bodmer gives all to Demeas; Sandbach 98–101 to Nikeratos; Arnott back to the papyrus, citing Kassel on the proverb; Goldberg doubtful); *Dyskolos* 430 ff. (B gives lines to Getas; OCT and Arnott to Sostratos' mother).
+- Smith's *Dictionary* (1849, Perseids): the Aristophanes of Byzantium saying (Greek given; our English), "several hundred lines" of Γνῶμαι μονόστιχοι. GEDSH: Syriac sentences of "Menander the Wise", probably translated from a lost Greek original; the Greek monostichs (ed. Jaekel) often not Menander's.
+- Quintilian 10.1.69–72 (Butler, LacusCurtius); Suetonius, *Life of Terence* (Rolfe, LacusCurtius): Caesar's "thou half-Menander"; Socrates Scholasticus 3.16 (Zenos, New Advent): "the tragedies of Euripides".
+- Wikipedia (Ancient Greek comedy): New Comedy's everyday subjects, stock characters, recognitions; influence through Plautus and Terence on Shakespeare, Jonson, Congreve, Wycherley and Molière. Wikipedia (Menander): fragments collected by Meineke (1855) and Kock (1888), some 1,650 verses; the 1 Corinthians line "probably" from *Thais*; Kassel–Austin PCG VI.2 and Arnott's Loeb as standard; Austin's OCT unfinished at his death; Sandbach 1972, 1990.
+- Editions: Ullmann 1961 (TEI headers of the Scroll's three files and the catalogue titles: Men Ar I, Men Ar II, Gregory Nazianzen *Carmen morale* XXX); Martin 1958 (Bodmer Lab); Sandbach 1972 (Patras library record) and 1990 (Classical Review 41.1, 1991, Arnott's review: metadata read); Gomme–Sandbach 1973 (Internet Archive record); Arnott's Loeb (CiNii: LCL 132, 459–460, Harvard UP and Heinemann, 1979–2000); Kassel–Austin 1998 (AbeBooks record); Jaekel 1964 (ELTE library record); Miller, Penguin 1987 (Internet Archive record, associated name "Miller, N. P").
+
+**Left out because it could not be confirmed**
+- *Orge* ("Anger") as his first play in 321: the Prolegomena name no play (and give 322); attalus.org's index ties *Orge* to his first victory. Sources confused; left out.
+- Demetrius of Phalerum governing "for Macedon from 317 to 307": only the Parian Marble's 317/6 is kept.
+- Ptolemy Soter's invitation, the villa at Piraeus and Glycera (Alciphron's letters, not read); Philemon as rival in love.
+- "Whom the gods love die young" (no edition of the line opened); "The property of friends is common".
+- 23 plays with Psellus' commentary in eleventh-century Constantinople; the complete Menander at Urbino (Wikipedia itself doubts it).
+- Old Church Slavonic versions of the *Sententiae*; the Arabic versions are kept only through Ullmann's title.
+- Molière's *Misanthrope* inspired by the theme of the *Dyskolos* (one popular web essay only).
+- "Recovered in Egypt in 1952" (Wikipedia, Dyskolos): the Bodmer Lab record has the leaves arriving in 1956–57; no find date kept.
+- Austin's death in 2010 (the Guardian obituary was not opened).
+- Maurice Balme's Oxford World's Classics translation (no page opened).
+- Ancient testimony that Menander's statue in the theatre was by Praxiteles' sons (only a Wikipedia picture caption).
+
+**Corrected from the draft**
+- "Born 342/1, died c. 291/0": the inscription gives 292/1 (aged 52); the article marks the dates as debated and gives the OCD's 344/3 and Wikipedia's c. 290 as alternatives.
+- "First play, Orge, in 321": first production as an ephebe in the archonship of Philocles (322); no title (see above).
+- "The complete Dyskolos": nearly complete (about nine of about 969 lines missing).
+- "Cairo codex found in 1907": Allinson says discovered in 1905; 1907 is the year of publication (both given, marked debated in the timeline).
+- "The third-century Bodmer codex": its date is disputed, early third to late fourth century.
+- "Large parts of the Samia from the Cairo codex (1907) … most of the Samian Woman and the Shield published 1969": kept, with editors Kasser and Austin named.
+- "Studied with Theophrastus" kept, but as Diogenes' report from Pamphila.
+- "The Aristophanes of Byzantium quotation": kept as a saying *ascribed* to him (legend), translated from Smith's Greek.
+- "Translated into Arabic and other languages": only Arabic (Ullmann) and Syriac (GEDSH) kept.
+- "Plots shaped European comedy from Shakespeare to Molière": kept for New Comedy in general, through Plautus and Terence (Wikipedia, Ancient Greek comedy), not claimed for Menander's plots in particular.
+
+**Weak points to revisit**
+- Much of the life rests on late testimonies read in attalus.org's English (not checked against Kassel–Austin's Greek), and on Wikipedia pages (Menander, Dyskolos, Cairo Codex, Ancient Greek comedy).
+- The archon years in brackets (322; January 316; 317/6; 316/5) are the translators' conversions on attalus.org.
+- BMCR article pages were down (502); both reviews were read in Wayback Machine copies, and the sources point to those copies.
+- Kassel–Austin is confirmed only by a bookseller's record (De Gruyter, ÖAW and other library pages refused access); Gomme–Sandbach, Sandbach 1972, Jaekel and Miller by library records only.
+- The Dyskolos lines are translated from the Greek Wikisource text, whose edition is not named on the page.
+- Wikipedia's "Cairo Codex" says "discovered in 1907" against Allinson's 1905; Lefebvre's own 1907 preface (Internet Archive) was not read.
+- The palimpsest's year (2003) comes from Wikipedia; Harlfinger's article gives only "6 December" in a 2004 issue.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/menander.md):** 7 findings, each checked against the
+cited passage or page (Strabo 14.1.18 in the Scroll; the P.Oxy. 1235 note on Attalus.org; the Scroll's TEI headers; Wikipedia,
+Menander), all corrected: The Imbrians was put off in 302/1 and "subsequently acted by the Athenian Callippus"; the Bodmer codex's 52
+are pages, not leaves; the Cairo codex has large parts of three comedies and pieces of two; Strabo's ephebe story is "it is said";
+no Byzantine copy, rather than no medieval copy (the palimpsests are medieval); Ullmann's pages 17–59, 64–73 and 77–80; the
+palimpsest's other play "then unknown", now identified by Wikipedia as the Titthe.
+
+## Callimachus (tlg0533), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0533.ts` (42 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0533 npx vitest run src/wiki/author-articles.test.ts` (11 passed), `CORPUS=1 ARTICLE=tlg0533 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed), `npx tsc --noEmit -p .` (clean).
+
+Note: the Scroll has no English translation of Callimachus. English quoted from his poems is either A. W. Mair's (Loeb 1921, read
+in the Internet Archive scan, listed in `outsideQuotes`) or our own translation, said so in the prose.
+
+**Confirmed and kept**
+- Life: Wikipedia (Callimachus): poet, scholar and librarian at Alexandria; the Suda (tenth century) the main source, with inaccuracies
+  (after Ferguson); calls himself Battiades, perhaps after the founder Battus; patronage of Ptolemy II, established at court by 270 at
+  the latest (Ferguson); writing until about 240; Cameron on the schoolteacher story, "almost certainly outright fiction"; six hymns,
+  about 60 epigrams, 13 Iambi, Hecale, Aetia in four books; mimetic hymns (Apollo, Demeter, Athena) after Stephens; epigrams mostly in
+  the Palatine Anthology (tenth-century manuscript, found at Heidelberg in 1606); Pinakes 120 volumes, from the shelf-lists, poetry and
+  prose, subcategories, alphabetical with biography and works, Casson's "first comprehensive bibliographic resource"; Roman poets'
+  "principal model[s]"; Cameron on the Hecale scholion (limited authority); Gutzwiller's sentence (quoted). Mair's Loeb introduction
+  (Internet Archive): birth "circ. 310", death "circ. 235"; descent from Battus (Strabo 17.837); the Suda notice in translation; the
+  librarianship of Callimachus "not an ascertained fact"; the bitter feud (as Mair told it); Ovid's Ibis modelled on Callimachus'
+  Ibis; Athenaeus' "a big book is a big evil" and the modern explanation of an inconvenient roll; Hymns 5 and 6 in Doric, 5 alone in
+  elegiacs; the manuscripts of the Hymns (Byzantine sylloge with Homer, Orpheus, Proclus; Aurispa, 1423; three families; Athous Laurae
+  587, fourteenth century; Laur. 32.45 torn out for the editio princeps; Politian's Latin Bath of Pallas, 1489); the Rainer tablet
+  (Vienna, Phoenissae on the back, Gomperz 1893); the note on Hymn 1.3 (Πηλογόνων of the manuscripts, corrected by Salmasius from E.M.);
+  the note that "Cretans are ever liars" was attributed to Epimenides and quoted in Titus 1:12; Cory's version in Ionica (1858);
+  translations quoted (Hymn 1.8, 2.108–112, Ep. 30 Mair, Hecale "unbarred house"); title page: London, Heinemann; New York, Putnam, 1921,
+  Callimachus and Lycophron translated by A. W. Mair, Aratus by G. R. Mair.
+- Susan Stephens, Dickinson College Commentaries (Aetia site): "Callimachus of Cyrene" (most influential poet of the Hellenistic age;
+  born about 305, died some time after 240 judging from his subjects; Pinakes by genre with lives, works cited by first words; never head
+  of the Library; Apollonius followed Zenodotus; six hymns and about sixty epigrams intact; Hecale about 1,000 lines); "The Aetia"
+  (Lindos aition; 4,000–6,000 lines; Berenice married Ptolemy III in 246, the Lock no earlier than 245; 37 papyri; Lille papyrus within
+  a generation of his death with interlinear comments; PSI 1092 first century BC, main source of the Lock; P.Oxy. 17.2079 second century
+  AD, opening of Book 1; P.Oxy. 2258 sixth/seventh century collected edition; Florentine and London scholia; Milan Diegeseis, first or
+  second century AD, summaries of Aetia and Iambi, each with its first line); "The Organization of the Aetia" (Hesiodic dream; Pfeiffer's
+  reissue thesis "now commonly accepted", Cameron's alternative, Knox on fr. 112; order of Books 3–4 from the Diegeseis; Lille papyrus
+  published 1976; SH 238/253 and Harder 137m; Harder fr. 75b for Aristaenetus 1.10); "Prologue: Against the Telchines" (Greek text of
+  fr. 1 Harder = 1 Pf. = 1 Massimilla; λεπταλέην at line 24; the Telchines as mythical sorcerers destroyed by Zeus or Apollo; not
+  certain whether real people; βροντᾶν οὐκ ἐμόν, ἀλλὰ Διός; the tablet on his knees, line 21).
+- LSJ (Perseus and the site's copy): λεπταλέος "fine, delicate", Call. Dian. 243, and metaphorically of the Muse, Call. Aet. Oxy. 2079.24.
+- Scroll passages (all copied from `scripts/passage.ts`): Suda κ 227 (parents, "grammarian", more than 800 books, Philadelphus, Eleusis,
+  Euergetes, the Ibis against Apollonius, the Pinakes in 120 books; lunate sigma kept as printed); Strabo 17.3.22; Hymn to Zeus 1–9;
+  Hymn to Apollo 105–113; Hymn to Artemis 243; Epigrams 2 and 28 (Wilamowitz) and 2 and 30 (Mair); Hecale 1.1 (Rainer tablet), 2.1
+  (unbarred house) and testimonium 2 (scholion on Hymn 2.106); Aetia testimonia 1 (A.P. 11.275, "Apollonius") and 3 (Martial 10.4);
+  Aetia 1.1–1.2 (Mair's fragment 1, a dinner party, then P.Ryl. 13); Athenaeus 3.1 with Yonge's English; Titus 1:12 with WEB English.
+- Wikipedia: Pinakes (pinax = tablet; Callimachus never head librarian; Apollonius succeeded Zenodotus); Aetia (Muses on Helicon,
+  Hesiod; Victory and Lock of Berenice; about 4,000 lines; still read about 500; Eustathius the last first-hand reader; vanished in the
+  thirteenth century; Poliziano; Oxyrhynchus breakthrough; Martial 10.4; Catullus 66 and Pope 1712); Hecale (deme and sanctuary of Zeus
+  Hecaleus; Rainer tablet fourth century AD, after Wessely via Mair's Loeb); Apollonius of Rhodes (little evidence of a feud; the Lives
+  stress friendship; epigram attributed to "Apollonius the grammarian" maybe not Apollonius of Rhodes; most scholars think it
+  sensationalised); Catullus (c. 84–c. 54 BC); Rudolf Pfeiffer (Callimachi fragmenta nuper reperta 1923; vol. 1 1949, vol. 2 1953,
+  Clarendon; "landmark"; P.Ryl. I 13 became Aetia fr. 26 in 1949); List of editiones principes in Greek (Hymni, Florence, Laurentius de
+  Alopa, ed. Janus Lascaris, undated, 1494–96).
+- Treccani, Dizionario Biografico (Mondolfo, "Alopa, Lorenzo"): Lascaris' editions of Callimachus and others "tutto nel 1496, o circa";
+  Greek printed in elegant capitals designed by Lascaris.
+- Latin texts (The Latin Library): Catullus 65.16 "haec expressa tibi carmina Battiadae" and 66 (Berenice's lock, Conon); Propertius
+  4.1.64 "Vmbria Romani patria Callimachi"; Ovid, Amores 1.15.13–14.
+- Ionica (ed. Benson 1905, Internet Archive): "Heraclitus" on p. 7; pages 1–104 appeared in the 1858 volume.
+- Editions: Wilamowitz 1897 and Mair 1921 (Scroll TEI headers / catalogue); Pfeiffer (Wikipedia, Pfeiffer); Trypanis, LCL 421,
+  Harvard 1958 (Open Library; a 1968 record adds Heinemann); SH, de Gruyter 1983 (Open Library); Hollis 1990 Clarendon (Classical
+  Review 44.1, Williams) and 2nd ed. OUP 2009 (Classical Review 61.1, D'Alessio); Harder 2012, 2 vols, xii + 362 + vi + 1,061 pp.
+  (Classical Review 63.2, Jeffrey Hunt); Stephens, Callimachus: The Hymns, OUP 2015 (Open Library). P.Oxy. part 17 = 1927, ed. Hunt
+  (Internet Archive record), with DCC's "P Oxy 17.2079".
+
+**Left out because it could not be confirmed**
+- His mother's name: the Suda's κ 227 has Mesatma; κ 228 makes Megatima his *sister* (mother of the younger Callimachus); Hemsterhuys
+  conjectured Megatima for the mother too (Mair); Wikipedia (Ferguson) states Megatima as the mother. Too tangled for the article.
+- Where and with whom he studied: Wikipedia (Ferguson) puts his study with Praxiphanes and Hermocrates at Alexandria in the 280s; Mair
+  puts Praxiphanes at Athens, about 287–281. Left out.
+- The draft's dates "moves to Alexandria c. 280" and "compiles the Pinakes c. 270": no source dates either; only Ferguson's "at court by
+  270 at the latest" is kept. Wikipedia's Pinakes page gives "about 245 BCE" on a weak citation; not used.
+- "The ancient list of the Library's heads does not include him" (P.Oxy. 1241): the papyrus edition was not opened; replaced by
+  Stephens's "never head of the Library" and Mair's warning.
+- The year the Milan Diegeseis were found (a search summary says Tebtunis, 1934, by Vogliano and Bagnani; the Falivene PDF returned an
+  HTML page, and papyri.info showed a bot check, which was not bypassed). Only DCC's date of the papyrus is kept.
+- The Suda's Olympiad date for Ptolemy III (ρκζ΄), "manifestly wrong" (Mair), with Merkel's and Kaibel's corrections: the OCR of
+  Mair's numerals is garbled.
+- φθόνος / φθόρος in the Hymn to Apollo (Mair's apparatus): the OCR is too poor to tell which line and which manuscripts.
+- Hymn 1.6 in the Scroll's Wilamowitz text reads "Ζεῦ δὲ μὲν" where Mair has "Ζεῦ, σὲ μὲν": probably a transcription slip in the
+  digital file, not an editorial choice; not used.
+- Ep. 28.2 / 30.2: Mair's digital text lacks "καὶ ὧδε" (his own translation has "to and fro"): probably a transcription slip; not used.
+- "Βροντᾶν οὐκ ἐμόν" and the λεπταλέην line could not be quoted in Greek (not in the Scroll: Mair's Aetia predates the prologue); given
+  in English (our translation) and transliteration, with DCC as the source.
+- Frank Nisetich, The Poems of Callimachus (OUP 2001): only an Open Library record; not needed.
+- The Pinakes date "about 245 BCE", the "first library catalogue in the West" label (Wikipedia Pinakes, weak sourcing).
+- "Printed in capitals ... 1494–96": kept, but Mair gives 1494 outright; the article says "about 1494–96".
+
+**Corrected from the draft**
+- "c. 305–c. 240 BCE": the sources disagree: about 310 (Mair; Ferguson via Wikipedia) or about 305 (Stephens); death about 235 (Mair) or
+  after 240 (Stephens). Marked {debated}, both given.
+- "The Lock of Berenice ... (246/5)": DCC says no earlier than 245 (marriage in 246); the timeline says "no earlier than 245", approximate.
+- "A. W. and G. R. Mair, Callimachus, Lycophron, Aratus": the title page shows A. W. Mair translated Callimachus and Lycophron and
+  G. R. Mair Aratus; publisher London: Heinemann; New York: Putnam (1921), now stated.
+- "The ancient list of the Library's heads does not include him": reworded to what the sources say (never head; Apollonius followed
+  Zenodotus; Mair's 1921 warning), marked {debated}.
+- "Founder of Greek bibliography": softened to Casson's "first comprehensive" guide (via Wikipedia).
+- "Pfeiffer ... the standard edition": no opened source says "standard"; Wikipedia's "landmark" is used.
+- "The surviving manuscripts, mostly of the fifteenth century, go back to one lost archetype": made precise from Mair (a lost Byzantine
+  collection, a copy brought to Venice in 1423; one manuscript of the fourteenth century).
+- The feud "may be a later invention built on the Aetia prologue": the link to the prologue was not found; the article gives the Suda,
+  the "Apollonius" epigram, Mair's 1921 account and the modern view (Wikipedia, Apollonius of Rhodes).
+- Wikipedia (Apollonius of Rhodes) cites the "Apollonius" epigram as Pal. Anth. 11.322; Mair's testimonia in the Scroll give A.P. 11.275,
+  which matches the Greek Anthology file in the corpus (book 11, no. 275). 11.275 is used.
+- "Λεπταλέην, leptaleēn": kept as a transliteration with DCC's Greek text and LSJ, whose entry cites this very line (Aet. Oxy. 2079.24).
+
+**Weak points to revisit**
+- Much of the life rests on Wikipedia (Ferguson 1980, Cameron 1995) and on Mair's Loeb introduction of 1921, which is old: it tells the
+  feud as fact and its manuscript account follows Schneider; the article marks Mair's views as his.
+- The 1927 date of P.Oxy. 2079 rests on combining DCC's "P Oxy 17.2079" with the Internet Archive record of part 17 (1927); the volume
+  itself is lending-only and was not read.
+- Trypanis's 1958 Loeb, Stephens 2015 and SH 1983 are confirmed only by Open Library records; the Harder and Hollis volumes by
+  Classical Review records (BMCR returned 502 errors on 2026-10-07).
+- Mair's English is read from an OCR text; the quoted phrases were checked against both the introduction and the translation pages
+  where possible (the Hymn to Apollo line about Envy differs between the two, "songs in number" / "things for number", so our own
+  translation is used for that line).
+- "Mair's fragment 1 is a dinner-party scene, and the lines that follow come from P.Ryl. 13": read from the Scroll's TEI (section 1.2
+  opens with the heading "Papyrus Rylands 13"); Pfeiffer's fr. 26 from the Wikipedia caption on Pfeiffer's page.
+- Summary is about 1,400 English words (about 1,470 counting the Greek), at the top of the requested range.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/callimachus.md):** 4 findings, each checked, all
+corrected: the Suda is a tenth-century Byzantine encyclopaedia, not "an ancient reference book"; the Aetia's dream comes after the
+prologue; William Johnson (later Cory) put the Heraclitus epigram into English in Ionica (1858), without "made it famous" (Wikipedia: he
+changed his name to Cory in 1872); Pfeiffer's dating "followed by many" footnoted to Stephens's preface (source 8). Also "tablets"
+footnoted to source 1 as well.
+
+## Theocritus (tlg0005), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0005.ts` (33 sources). Not yet registered in `author-articles.ts` / `author-articles-all.ts`.
+Tests: `ARTICLE=tlg0005 npx vitest run src/wiki/author-articles.test.ts` (11 passed), `CORPUS=1 ARTICLE=tlg0005 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed), `npx tsc --noEmit -p .` (clean).
+
+Note: the Scroll has no English translation of Theocritus. Every English rendering of his Greek is our own translation, said so in the
+prose and listed in `outsideQuotes`; the Greek words were checked in LSJ (site's copy). The Greek Anthology in the Scroll opens only on
+its books 13–16 (the passage tool and the corpus test read the first file), so AP 9.205 and 9.434 could not be cited as Scroll
+passages: they are given in English only, from the Greek printed by Cholmeley and Wilamowitz.
+
+**Confirmed and kept**
+- Life: Loeb jacket text in the BnF record of Hopkinson's Loeb 28 (2015): early third century BC, born in Syracuse, active on Cos and at
+  Alexandria, "inventor of the bucolic genre", "little forms", epic metre with the Doric of his native Sicily, the genre "remained vital
+  … into the modern era"; Edmonds's Loeb 28 was the previous edition of the volume. Wikipedia (Theocritus, largely after Clark's
+  Britannica article of 1911): born c. 300 BC; little known beyond the poems; Polyphemus his "countryman"; probably in Alexandria;
+  Artemidorus "in the time of Sulla"; the Suda's list of works; Idyll 1 (Daphnis, Hermes, Priapus, Aphrodite); Idyll 7 set on Cos,
+  narrator called Simichidas by his friends, Sicelidas = Asclepiades (ancient critics), Philitas the veteran poet of Cos; singing
+  matches; mimes 2, 14 (Aeschines advised to enlist with Ptolemy), 15 (Gorgo and Praxinoa, Adonis); hymns 16, 17, 22; 13 and 24; 16 and
+  17 the only datable poems; Hiero made general in 275; 17 celebrates the marriage with his sister Arsinoe; 15 and 17 between 275 and
+  270; 28 and 29 Aeolic, 28 with a distaff to Theugenis, wife of Nicias, doctor of Miletus; 8 and 9 suspected but in Virgil's Theocritus;
+  26 attacked by Wilamowitz, defended, quoted by Eustathius as Theocritus'; 19, 20, 21, 23, 25 "generally considered to be spurious";
+  doubtful epigrams; P.Oxy. 694 (Idyll 13), second century AD; death date unknown.
+- Cholmeley, *The Idylls of Theocritus* (1919 edition; first published May 1901), Internet Archive OCR text: the ancient evidence (Suda,
+  anonymous life, arguments, scholia, Choeroboscus, the epigram "not by Theocritus") "to a large extent merely inferences from the poet's
+  own works, and are not consistent"; Idyll 16 to 275–274, 17 after the marriage and before Arsinoe's death (271–270); the later datings
+  of Beloch (263–2) and Gercke (c. 268); court poet in Alexandria; the evidence for Syracuse (xi.7 and others); Cos theory and the
+  scholium on 7.21 (Hauler πατρῴου "step-father", Meineke πατρὸς θετοῦ, Hiller πατριώτου, Cholmeley πατρίου ξένου; the note refers to
+  "another" in his reading); the Philitas teacher-claim "merely an inference from Id. vii. 40", but "confirmation is however not
+  altogether lacking"; Greek "naturally difficult … at the beginning of a new epoch"; smaller corrections of spelling and dialect not
+  recorded, "the great majority of these are due to H. L. Ahrens"; rejection of 19, 20, 21, 23, 27 (and the Adonis poem), Megara
+  included with 25; "now traditional order" only from Stephanus (1566 and 1579); editio princeps "Mediolana, 1481", i–xviii; Aldines
+  1495; Juntine 1515 and Callierges 1516 from Musurus' copy of a lost Codex Patavinus; MSS vary enormously in contents and order; none
+  older than the twelfth century, most fourteenth–fifteenth, fuller ones compilations; 26 among the undoubtedly genuine; Artemidorus'
+  epigram (AP 9.205, Greek); the epigram ἄλλος ὁ Χῖος (Greek), probably attached to Munatius' edition; addenda: Artemidorus "about
+  70 B.C.", his son Theo "published the first annotated edition"; the argument to Idyll 11 (Nicias "fellow-student" of Erasistratus).
+- Edmonds, *The Greek Bucolic Poets* (Internet Archive, printing of 1916, London: Heinemann; New York: Putnam; preface dated
+  8 October 1912): "The rest—and that means much of the following account—is conjecture"; the argument of Idyll 1 (shepherd Thyrsis and a
+  goatherd at noon, the cup, Daphnis, the gods); the Syrinx a pipe dedicated to Pan by Theocritus, "strongest reason for doubting" the
+  ascription (equal-length pipes), an argument of Gow's; his emendation of the argument to Idyll 11 (ᾧ for ὅς, nominative for genitive),
+  "otherwise … unintelligible", and his guess that Theocritus studied medicine under Erasistratus.
+- Suda On Line θ 166 (tr. Malcolm Heath): the Chian rhetor first; the second Theocritus, son of Praxagoras and Philinna "(though others
+  [say], of Simmichas)", of Syracuse or from Cos; "wrote the so-called Bucolics in the Doric dialect"; Proetides, Hopes, hymns, Heroines,
+  funeral songs, elegies and iambi, epigrams.
+- Wilamowitz, *Bucolici Graeci* (OCT 1905), Internet Archive OCR (Latin preface, conspectus, sigla): "nobis necessario Theocritus is est
+  quem Artemidorus edidit"; Theon, son of Artemidorus, edited Theocritus with a commentary, and this edition brought him fame "maxime per
+  Vergilium"; editions "ornata epigrammate ἄλλος ὁ Χῖος"; Munatius and Amarantus; silence until Tzetzes and Eustathius, collection and
+  correction from the twelfth century; Idylls 8 and 9 "a Theocrito alienissima"; many epigrams falsely ascribed; Oxyrhynchus papyrus
+  of Hylas (lines 19–34, second century) the only one he could use, other scraps "abdita"; K "ceteros omnes … aequiparat auctoritate
+  unus", "sed incedere uno hoc duce nequaquam licet"; M next for the first twelve poems; one family "in dialecticis saepe Doridem
+  proterva intrudit interpolatione"; no change in dialect against the agreeing manuscripts without notice; in the appendix even false
+  dialect forms kept knowingly; everything owed to Ahrens; appendix numbers for 19, 20, 21, 23, 25, 26, 27; sigla K (Ambrosianus 222,
+  thirteenth century, Theocr. 1–17, 29, Epigr.), M (Vaticanus 915, thirteenth), P (Laur. 32.37, fourteenth), S (Laur. 32.16,
+  fourteenth); B the lost Padua codex used by Musurus in Callierges' and Junta's editions of 1516.
+- Scroll passages (copied from `scripts/passage.ts`): Idyll 1.1–3; 7.21; 7.39–41; 11.1–8 (Nicias, doctor; ὁ Κύκλωψ ὁ παρʼ ἁμῖν;
+  Polyphemus); 11.72; 14.58–68 (μισθοδότας Πτολεμαῖος; ᾇ τάχος εἰς Αἴγυπτον); 15.22–24 (to the house of King Ptolemy to see the Adonis);
+  15.87–95; Epigrams 23 (Berenice, from Athenaeus) and 24 (Megara); Syrinx 1–20; Athenaeus 7.20 with Yonge's English (Berenice). File
+  headers: Idylls and Epigrams from Cholmeley (London: George Bell and Sons, 1901–1919); Syrinx from Gow's *Bucolici Graeci* (Oxford,
+  1952 printing).
+- LSJ (site's copy): ἡδύς (Dor. ἁδύς); τῆνος (Dor. for ἐκεῖνος; Theoc. 1.1); ποτί (Dor. for πρός); πηγή (Dor. παγά); μελίζω (Dor.
+  μελίσδω, Theoc. 1.2); συρίζω (Dor. συρίσδω, Theoc. 1.3); ψιθύρισμα ("any low whispering noise, as of trees rustling, Theoc. 1.1");
+  εἰδύλλιον (dim. of εἶδος, "short, highly wrought descriptive poem, mostly on pastoral subjects", Sch. Theoc. Proll.); βουκολέω "tend
+  cattle"; βουκολικός; βουκολιαστής "pastoral poet, Theoc. 5.68" (only example); πλατειάζω "pronounce broadly, like the Dorians,
+  Theoc. 15.88"; ἐκκναίω; Δωρίζω (Theoc. 15.93); μάνδρα "fold"; σποράς ("not collected into a volume", AP 9.205); also πατριώτης,
+  θετός for the glosses of the conjectures.
+- Wikipedia (Pastoral): landscape probably reflecting Cos; may have drawn on Sicilian shepherds' folk traditions; Doric with the epic
+  hexameter; Pope's *Pastorals* (1709) imitating Spenser; Arnold's *Thyrsis* (1867). Wikipedia (Eclogues): Theocritus the model; ten
+  poems; Eclogue 2 from Idyll 11, Eclogue 3 mostly Idyll 5, Eclogue 7 on pseudo-Theocritus 8; Eclogue 4 dated to 40 BC. The Latin
+  Library: Eclogue 6.1–2 (Prima Syracosio dignata est ludere uersu … Thalia).
+- Papyri: Bulloch, CQ 37 (1987) (Cambridge Core extract and footnote 1): P.Oxy. 2064, late second century AD, published 1930 by Hunt and
+  Johnson; very fragmentary; most important witness before the fifth century; P.Oxy. 3548 (more of the roll) published 1983; order
+  closest (except Id. 5) to the Laurentian family, against the Ambrosian and Vatican groups; modern order follows the Vatican family and
+  "still has no ancient support". Gow's review in CR 44 (1930): *Two Theocritus Papyri*, ed. Hunt and Johnson, London: Egypt Exploration
+  Fund, 1930. McNamee, GRBS 36 (1995), note 7 and table: annotations in the Antinoe Theocritus (Hunt–Johnson 1930) "abundant", but
+  "intermittent" and below "the relatively high standard of Theocritean scholia"; listed among papyrus codices of the fourth century and
+  later.
+- Manuscript K: ParaText (Pavia) shows Ambr. C 222 inf. with Theocritus 9, 10, 16 and 29 and scholia; Fries, GRBS 57 (2017): Mazzucchi
+  redated Ambr. C 222 inf. (Pindar's A) from c. 1280 to the 1180s.
+- Print: Wikipedia, List of editiones principes in Greek: Milan, undated, c. 1482, Bonus Accursius, first 18 idylls; Aldine 1495–1496,
+  idylls I–XXIII; Callierges, Rome, 1516, with the old scholia.
+- Editions: BnF records of Gow's *Theocritus*, 2nd ed., 2 vols, Cambridge University Press 1952 (Idylls I–XXXI, fragments incl. Berenice,
+  epigrams); Hunter, *A Selection* (CGLC, CUP 1999; also CR 51.2 (2001) review record); Verity–Hunter, *Idylls* (OUP 2002); Hopkinson,
+  Loeb 28 (Harvard 2015). Internet Archive record of Gow's *Theocritus* vol. 1 dated 1950. CR 46.1 (1996) notice of Gallavotti's 3rd
+  edition (Rome 1993).
+
+**Left out because it could not be confirmed**
+- The Antinoë papyrus as "fifth century" (draft): only a search-engine summary said "5th/6th century"; the papyri.info page would not
+  open (a bot check) and McNamee's table could not be read reliably from the PDF. Kept only as "a papyrus book of late antiquity".
+- "Confirm the ancient text" (draft, of the papyri): not said in any source read; replaced with what Bulloch and McNamee say.
+- Hopkinson's Loeb text as based on Gow (1952) and Gallavotti (1993): only a search summary of a Classics for All review, which is
+  behind a Cloudflare check; Harvard's and the Loeb site's pages would not open. Left out.
+- That "a few use … epic Ionic" (draft): no source read says so. Only the Aeolic poems (28, 29) are kept.
+- "Vaticanus gr. 915 and related manuscripts" as the Vatican family and Laur. 32.16 and 32.37 as the Laurentian (draft): the three
+  family names are confirmed (Bulloch), but no source read assigns these manuscripts to them. The manuscripts are named with
+  Wilamowitz's dates only.
+- The BMCR reviews (2004.09.22 of Verity–Hunter; 1999.11.16 of Hunter) could not be opened (the BMCR site returned 502 errors).
+- The DBI (Treccani) article on Bonus Accursius, cited by Wikipedia for the Milan edition, would not open.
+- Idyll 31 (Gow's numbering) and its papyrus; the Antinoë codex's list of poems; who speaks which line in Idyll 15 (the Scroll's Greek
+  has no speaker labels, so the article does not name Gorgo or Praxinoa for the replies).
+- The "Daughters of Proetus" link to Virgil, Eclogue 6.48 (Wikipedia says only "may have been known").
+- Philitas' death date ("cannot be placed later than 283", Cholmeley) and Arsinoe's death date (271–270 in Cholmeley, 270 in Wikipedia):
+  not needed and disputed, so not given.
+- Milton and Spenser's *Shepheardes Calender* by title (Wikipedia's Pastoral page spells it "Calendar" and does not link it to
+  Theocritus); Dover (1971), Hine (1982), Trevelyan, Calverley, Lang, Way, Wells translations: listed on Wikipedia only, not opened.
+
+**Corrected from the draft**
+- "He is the inventor of pastoral poetry": kept in substance, with the Loeb jacket's and Wikipedia's wording ("inventor of the bucolic
+  genre", "creator of … pastoral poetry"), and with the countryside poems shown to be only part of the book.
+- "The name … was given later" (εἰδύλλιον): replaced by LSJ's definition and its source (the ancient notes); no source says when the
+  name was first used.
+- "Idyll 16 addressed to Hieron II (c. 275)" and "Idyll 17 (c. 273–270)": kept as approximate and debated, with the usual range 275–270
+  and the nineteenth-century later datings of Idyll 16 noted (Cholmeley).
+- "His latest datable poems belong to the 270s; nothing is known of his death": kept only as "the date of his death is unknown".
+- "Artemidorus of Tarsus gathers the bucolic poets" dated -50: about 70 BC (Cholmeley's addenda, correcting his own "Augustan times";
+  Wikipedia: time of Sulla), marked approximate and debated; "of Tarsus" dropped, since only Wikipedia makes the editor of the bucolic
+  poets the grammarian of Tarsus (Cholmeley and Wilamowitz call him simply Artemidorus).
+- "Editio princeps of Idylls 1–18 (Milan, c. 1480); Aldine 1495": undated; Cholmeley 1481, Wikipedia's list c. 1482; Aldine 1495–96 with
+  Idylls 1–23.
+- "Ambrosianus C 222 inf., K, thirteenth century": Wilamowitz's date, but Mazzucchi has redated the codex to the 1180s (Fries). Both are
+  given.
+- "Scribes often normalized Theocritus' Doric forms": the source read (Wilamowitz) says one family often thrusts Doric forms in; the
+  article says the manuscripts disagree, and gives Wilamowitz's complaint.
+- "Most editors regard Idylls 8, 9, 19, 20, 21, 23, 25 and 27 as not by Theocritus": the sources disagree; the article gives the
+  Britannica/Wikipedia list (19, 20, 21, 23, 25), Cholmeley's (19, 20, 21, 23, 27) and Wilamowitz's (19–21, 23, 25–27, and 8 and 9).
+- "The poem for Ptolemy (Idyll 17) and the Syracusan Women (15) are securely his": not stated so in any source read; left implicit.
+- "The Syrinx … is also of doubtful authorship": kept, with Edmonds's reason (Gow's argument about the pipes).
+- "Editions differ markedly in how much Doric colouring they restore": kept in substance, resting on Wilamowitz's and Cholmeley's own
+  statements about dialect.
+- "R. J. Cholmeley … (London, 1901; 2nd ed. 1919)": the 1919 book calls itself a "new edition, revised and augmented"; the Scroll's file
+  header gives 1901–1919. "A. S. F. Gow, Bucolici Graeci (OCT, 1952) — the text of the Syrinx used here": confirmed by the file header
+  ("1952 (printing)").
+- "Gallavotti (Rome, 3rd ed. 1993)": confirmed (CR notice: Istituto Poligrafico e Zecca dello Stato). "Hopkinson (Loeb, 2015)": Loeb 28,
+  Harvard University Press. "Hunter, Theocritus: A Selection (Cambridge, 1999)": confirmed (BnF, CR).
+- The draft's first line of Idyll 1 had commas the Scroll's text does not; the quotation is copied from the Scroll.
+
+**Weak points to revisit**
+- Much of the life rests on Wikipedia, which itself follows the 1911 Britannica, and on Cholmeley (1919) and Edmonds (1912). Modern
+  accounts (Hunter, Hopkinson, Gow) could not be opened beyond catalogue records.
+- Gow's first edition year (1950) rests on an Internet Archive library record (volume 1, 1950) and Hunter's blurb seen only in a search
+  summary; the BnF confirms the second edition of 1952.
+- K is "Ambrosianus 222" in Wilamowitz; its identity with Ambr. C 222 inf. rests on ParaText's pages showing Theocritus with scholia in
+  that codex (the same contents as K). Mazzucchi's redating is reported by Fries in an article on Pindar.
+- Wilamowitz's and Cholmeley's texts were read in OCR; the Latin quoted is clear in the OCR, but the Greek in their pages was not used
+  for quotation.
+- The Edmonds copy read is the 1916 printing; the 1912 date rests on the preface's date and the Internet Archive's 1912 items.
+- The Eclogues dates and models rest on Wikipedia.
+- Our translations of AP 9.205 and 9.434 were made from the Greek as printed by Cholmeley; they should be compared with a modern
+  translation (Hopkinson) when one can be opened.
+
+**Fact check (2026-10-07, a second, independent check; report pipeline/factcheck/theocritus.md):** 7 findings, each checked against the
+cited page (Edmonds's Loeb in the Internet Archive text; ParaText, Pavia), all corrected: Edmonds reported Gow's argument against the
+Syrinx (the pipes' equal reeds) and answered it, keeping the poem as Theocritus'; the Aeolic poems are 28, 29 and 30 (found 1864);
+the birth "about 300 BC or a little earlier" (Cholmeley 310–308); goatherds speak "the Doric of Sicily", not a country dialect; "the
+first poet of pastoral", not of the countryside; Hunter's Selection includes the Hylas; K = Ambr. C 222 inf. now footnoted to
+ParaText's page on that manuscript (source 34).
