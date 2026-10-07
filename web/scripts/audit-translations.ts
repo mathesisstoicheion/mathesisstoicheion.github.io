@@ -55,7 +55,7 @@ for (const a of idx.catalog.authors) for (const w of a.works) {
   for (const ed of eds) for (const tr of trs) {
     const g = load(ed), e0 = load(tr);
     const scheme = schemeFor(w.id, tr);
-    const e = g && e0 && scheme ? renumber(scheme, g, e0) : e0;
+    const e = g && e0 && scheme ? renumber(scheme, g, e0, tr.urn) : e0;
     if (!g || !e) { out.push({ work: w.id, title: w.title, grc: ed.urn, eng: tr.urn, default: ed === defEd && tr === trs[0], grcUnits: g?.units.length ?? 0, trUnits: e?.units.length ?? 0, trWords: 0, rawWords: 0, kept: 0, stray: 0, pile: 0, covered: 0, pages: 0, emptyBefore: 0, emptyInside: [], emptyAfter: 0, problems: [!g ? "Greek did not load" : "translation did not load"] }); continue; }
     const pieces = translationPieces(g, e);
     const index = new Set(g.units.map((u) => u.ref.join(".")));

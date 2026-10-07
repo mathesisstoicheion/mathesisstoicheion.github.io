@@ -47,7 +47,7 @@ if (a === "refs") {
   while (end + 1 < g.units.length && g.units[end + 1].ref.join(".").startsWith(toKey + ".")) end++;
   console.log(`# ${w.title} · ${versionOf(ed.urn)} (${g.levels.join(".")})${tr ? ` · translation ${versionOf(tr.urn)}: ${tr.desc ?? ""}` : ""}`);
   const t0 = tr ? load(tr) : null, scheme = tr ? schemeFor(w.id, tr) : undefined;
-  const t = t0 && scheme ? renumber(scheme, g, t0) : t0;
+  const t = t0 && scheme ? renumber(scheme, g, t0, tr?.urn) : t0;
   const rows = alignChunk(g, { first: i, last: end }, t ? placePieces(g, translationPieces(g, t)) : null);
   for (const r of rows) {
     console.log(`\n[${r.key}]`);

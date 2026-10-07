@@ -32,3 +32,14 @@ test("the Septuagint Psalms, Andocides and Euclid stand beside the right English
   await expect(def).not.toContainText("Not translated");
   await expect(def).not.toHaveText("—");
 });
+
+test("a translation numbered out of step is offered after the others and says so; a misnumbered stretch is corrected", async ({ page }) => {
+  // Lucian's Demonax opens with Fowler's English, which lines up; Harmon's says it is out of step
+  await page.goto("/read?w=tlg0062.tlg008&at=30");
+  await expect(page.locator('[data-key="30"]')).toContainText("Cethegus", { timeout: 30_000 });
+  await page.goto("/read?w=tlg0062.tlg008&tr=perseus-eng2&at=30");
+  await expect(page.getByRole("note", { name: "About the translation on this page" })).toContainText("numbered out of step", { timeout: 30_000 });
+  // the Trial in the Court of Vowels: Cadmus and Palamedes beside their Greek
+  await page.goto("/read?w=tlg0062.tlg014&at=5");
+  await expect(page.locator('[data-key="5"]')).toContainText("Cadmus", { timeout: 30_000 });
+});

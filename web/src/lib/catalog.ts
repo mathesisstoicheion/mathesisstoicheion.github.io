@@ -53,7 +53,15 @@ export function indexCatalog(catalog: Catalog): CatalogIndex {
 export const versionOf = (urn: string) => urn.slice(urn.lastIndexOf(".") + 1);
 
 export const greekEditions = (w: CatWork) => w.texts.filter((t) => t.kind === "edition" && t.lang === "grc");
-export const translations = (w: CatWork, lang = "eng") => w.texts.filter((t) => t.kind === "translation" && t.lang === lang);
+/**
+ * Translation files whose passage numbers drift out of step with the Greek, so that their English can stand a passage
+ * away from the Greek it translates, found by scripts/audit-names.ts and read side by side. They are offered after the
+ * others, and the reader says so when one is open.
+ * - Lucian, Demonax, Harmon's English: about sections 28–43 one behind the Greek, about 45–64 one ahead (Fowler's agrees).
+ */
+export const OUT_OF_STEP = new Set(["urn:cts:greekLit:tlg0062.tlg008.perseus-eng2"]);
+export const translations = (w: CatWork, lang = "eng") =>
+  w.texts.filter((t) => t.kind === "translation" && t.lang === lang).sort((a, b) => Number(OUT_OF_STEP.has(a.urn)) - Number(OUT_OF_STEP.has(b.urn)));
 export const hasTranslation = (w: CatWork) => translations(w).length > 0;
 
 /** Where GitHub serves the file, pinned to the catalogue's exact version of the collection. */

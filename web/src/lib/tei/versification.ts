@@ -14,10 +14,22 @@
  */
 import type { TeiDoc, Unit } from "./types";
 
-export type Scheme = "lxx-psalms-hebrew" | "lxx-2ezra-nehemiah";
+export type Scheme = "lxx-psalms-hebrew" | "lxx-2ezra-nehemiah" | "fix-numbering";
+
+/**
+ * Translation files whose own passage numbers are wrong, checked by reading the Greek and English side by side
+ * (scripts/audit-names.ts finds candidates): English passage → the Greek passage it translates.
+ * - Lucian, Trial in the Court of Vowels, Harmon's English: its section 5 is the last sentence of Greek 4
+ *   ("one has no right is the act of a law-breaker"), and its 6–9 translate Greek 5–8 (Cadmus and Palamedes,
+ *   Tau's violence, the visit to Cybelus, tin and tar); from 10 the numbers agree again.
+ */
+const FIXES: Record<string, Record<string, string>> = {
+  "urn:cts:greekLit:tlg0062.tlg014.perseus-eng2": { 5: "4", 6: "5", 7: "6", 8: "7", 9: "8" },
+};
 
 /** The renumbering a translation needs beside a work's Greek, if any. */
 export function schemeFor(work: string, tr: { urn: string; desc?: string | null; label?: string | null }): Scheme | undefined {
+  if (FIXES[tr.urn]) return "fix-numbering";
   const about = `${tr.desc ?? ""} ${tr.label ?? ""}`;
   if (work === "tlg0527.tlg027" && /World English Bible/i.test(about)) return "lxx-psalms-hebrew";
   if (work === "tlg0527.tlg018" && /Nehemiah/i.test(about)) return "lxx-2ezra-nehemiah";
@@ -40,7 +52,11 @@ function hebrewParts(c: number): [number, number, number][] {
 }
 
 /** The translation with its references in the Greek's numbering (units that find no place keep theirs). */
-export function renumber(scheme: Scheme, grc: TeiDoc, tr: TeiDoc): TeiDoc {
+export function renumber(scheme: Scheme, grc: TeiDoc, tr: TeiDoc, urn?: string): TeiDoc {
+  if (scheme === "fix-numbering") {
+    const fix = (urn && FIXES[urn]) || {};
+    return { ...tr, units: tr.units.map((u) => (u.ref.length === 1 && fix[u.ref[0]] ? { ...u, ref: [fix[u.ref[0]]] } : u)) };
+  }
   if (scheme === "lxx-2ezra-nehemiah") {
     return { ...tr, units: tr.units.map((u) => (/^\d+$/.test(u.ref[0]) ? { ...u, ref: [String(+u.ref[0] + 10), ...u.ref.slice(1)] } : u)) };
   }

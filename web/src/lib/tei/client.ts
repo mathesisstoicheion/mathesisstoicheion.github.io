@@ -24,10 +24,10 @@ function getWorker() {
   return worker;
 }
 
-export function parseInWorker(grc: string, tr?: string | null, scheme?: Scheme): Promise<Parsed> {
+export function parseInWorker(grc: string, tr?: string | null, scheme?: Scheme, trUrn?: string): Promise<Parsed> {
   return new Promise((resolve, reject) => {
     const id = ++seq;
     waiting.set(id, { resolve, reject });
-    getWorker().postMessage({ id, grc, tr, scheme } satisfies ParseRequest);
+    getWorker().postMessage({ id, grc, tr, scheme, trUrn } satisfies ParseRequest);
   });
 }
