@@ -1,0 +1,119 @@
+/* The home page's first-visit question (StartChoice.tsx), the returning visitor's desk (Desk.tsx) and the five
+   doors (Doors.tsx). Which half shows is decided before the first paint by <html data-visitor> (lib/visitor.ts). */
+:global(html[data-visitor="back"]) .firstOnly { display: none; }
+:global(html:not([data-visitor="back"])) .backOnly { display: none; }
+
+.start { padding-block: clamp(20px, 3vw, 32px) 0; }
+
+/* ---------------------------------------------------------------- Where are you starting? */
+.ask { display: grid; gap: 14px; container-type: inline-size; }
+.askTitle { font-size: var(--step-2); }
+/* three cards side by side where there is room (a tablet); a list of three otherwise (beside the vase, on a phone) */
+.choices { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+.choice {
+  display: grid; align-content: start; gap: 6px; padding: 22px 22px 20px; text-align: left; color: var(--ink);
+  background: var(--surface); border: 1.5px solid var(--rule); border-radius: var(--radius); cursor: pointer;
+  transition: transform 0.3s var(--ease), opacity 0.3s, border-color 0.3s, box-shadow 0.3s;
+  animation: rise 0.7s var(--ease) both; animation-delay: calc(0.15s + var(--i) * 80ms);
+}
+.choice:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -16px var(--shadow); }
+.choice:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.choices[data-picked] .choice { opacity: 0.5; }
+.choices[data-picked] .choice[aria-pressed="true"] { opacity: 1; border-color: var(--accent); transform: translateY(-4px); box-shadow: 0 14px 30px -16px var(--shadow); }
+.glyph { font-family: var(--f-greek); font-size: 2.3rem; line-height: 1.1; color: var(--accent); margin-bottom: 6px; }
+.choice b { font-size: 1.2rem; }
+.choiceText { color: var(--ink-2); }
+@keyframes rise { from { opacity: 0; transform: translateY(14px); } }
+
+.setup { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.55s var(--ease); }
+.setup[data-open] { grid-template-rows: 1fr; }
+.setup > * { overflow: hidden; min-height: 0; }
+.setupIn {
+  display: grid; grid-template-columns: 1fr auto; gap: 16px 32px; align-items: center; padding: 22px 26px;
+  background: var(--inv-bg); color: var(--inv-fg); border: 1px solid var(--inv-edge); border-radius: var(--radius);
+  --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink);
+}
+@media (max-width: 760px) { .setupIn { grid-template-columns: 1fr; } }
+.setupIn :global(.label) { color: var(--ink-2); }
+.setupIn ul { list-style: none; margin: 10px 0 8px; padding: 0; display: grid; gap: 8px; }
+.setupIn li { display: flex; gap: 10px; align-items: flex-start; animation: slide 0.45s var(--ease) both; animation-delay: calc(0.2s + var(--i) * 150ms); }
+.setupIn li svg { flex: none; width: 20px; height: 20px; margin-top: 2px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 24; animation: tick 0.5s var(--ease) both; animation-delay: calc(0.3s + var(--i) * 150ms); }
+.setupIn small { color: var(--ink-2); }
+.setupIn :global(.btn) { background: var(--accent); border-color: var(--accent); color: var(--accent-ink-on-ink); }
+@keyframes slide { from { opacity: 0; transform: translateX(-10px); } }
+@keyframes tick { from { stroke-dashoffset: 24; } to { stroke-dashoffset: 0; } }
+@container (max-width: 680px) {
+  .choices { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .choice { grid-template-columns: 4.4rem minmax(0, 1fr); column-gap: 14px; row-gap: 2px; padding: 14px 18px; align-items: center; }
+  .glyph { grid-row: span 2; margin: 0; font-size: 1.7rem; text-align: center; }
+  .choiceText { font-size: 0.95rem; }
+  .setupIn { grid-template-columns: minmax(0, 1fr); padding: 18px 20px; }
+  .setupIn :global(.btn) { justify-self: start; }
+}
+.guide { color: var(--ink-2); margin: 0; }
+
+/* ---------------------------------------------------------------- Your desk */
+.deskWrap { display: grid; gap: 6px; }
+.deskTitle { font-size: var(--step-3); margin-bottom: 12px; }
+.desk { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: 16px; }
+@media (max-width: 960px) { .desk { grid-template-columns: 1fr 1fr; } .dmain { grid-column: 1 / -1; } }
+@media (max-width: 600px) { .desk { grid-template-columns: 1fr; } }
+.dcard {
+  display: flex; flex-direction: column; gap: 8px; min-height: 220px; padding: 20px 22px;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  animation: rise 0.7s var(--ease) both;
+}
+.dcard:nth-child(2) { animation-delay: 80ms; }
+.dcard:nth-child(3) { animation-delay: 160ms; }
+@media (max-width: 600px) { .dcard { min-height: 0; } }
+.dmain { background: var(--inv-bg); color: var(--inv-fg); border-color: var(--inv-edge); --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); }
+.dmain :global(.btn) { background: var(--accent); border-color: var(--accent); color: var(--accent-ink-on-ink); }
+.dlink { text-decoration: none; }
+.dlink:hover .dbig { color: var(--accent); }
+.dbig { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.5rem, 2.6vw, 2.1rem); line-height: 1.15; transition: color 0.2s; }
+.dmid { font-size: 1.3rem; line-height: 1.25; }
+.dsub { color: var(--ink-2); }
+.dbooks { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 2px; font-size: 0.95rem; }
+.dbooks a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.dbooks small { color: var(--ink-2); }
+.dgo { margin-top: auto; padding-top: 8px; }
+
+/* due words, fanned like cards; they spread when the card is hovered */
+.stack { position: relative; height: 82px; margin: 4px 0; }
+.stack span {
+  position: absolute; left: 50%; top: 4px; width: 132px; margin-left: -66px; padding: 14px 0; text-align: center;
+  font-family: var(--f-greek); font-size: 1.35rem; background: var(--bg); border: 1px solid var(--rule); border-radius: 4px;
+  box-shadow: 0 6px 16px -10px var(--shadow); transition: transform 0.6s var(--ease);
+}
+.stack span:nth-child(1) { transform: rotate(-8deg) translateX(-30px); }
+.stack span:nth-child(2) { transform: rotate(5deg) translateX(28px); }
+.stack span:nth-child(3) { transform: rotate(-1deg); }
+.dcard:hover .stack span:nth-child(1) { transform: rotate(-13deg) translateX(-56px); }
+.dcard:hover .stack span:nth-child(2) { transform: rotate(10deg) translateX(52px); }
+.stack span:only-child { transform: none; }
+
+.also { margin: 12px 0 0; color: var(--ink-2); }
+.also :global(.label) { margin-right: 4px; }
+.also a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.forget { border: 0; background: transparent; padding: 0; margin-left: 8px; color: var(--ink-2); font-size: 0.85rem; text-decoration: underline; cursor: pointer; }
+
+/* ---------------------------------------------------------------- the five doors */
+.doors { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+@media (max-width: 1100px) { .doors { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (max-width: 760px) { .doors { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 460px) { .doors { grid-template-columns: 1fr; } }
+.door {
+  display: flex; flex-direction: column; height: 100%; overflow: hidden; text-decoration: none;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.door:hover { transform: translateY(-4px); box-shadow: 0 14px 34px -16px var(--shadow); }
+.doorPic { aspect-ratio: 4 / 3; overflow: hidden; background: var(--bg-2); }
+.doorPic img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+.door:hover .doorPic img { transform: scale(1.05); }
+.doorTxt { display: grid; gap: 2px; padding: 14px 16px 16px; }
+.doorTxt b { font-size: 1.3rem; }
+.doorGr { font-family: var(--f-greek); color: var(--accent); }
+.doorTxt > span:last-child { color: var(--ink-2); font-size: 0.95rem; }
+.doorCredit { font-size: 0.75rem; color: var(--ink-2); margin: 10px 0 0; }

@@ -5,7 +5,12 @@ import LetterTiles from "@/components/LetterTiles";
 import PassageOfTheDay from "@/components/PassageOfTheDay";
 import OfflineActions from "@/components/OfflineActions";
 import ForumActivity from "@/components/ForumActivity";
-import { ContinueCard } from "@/components/Resume";
+import StartChoice from "@/components/home/StartChoice";
+import Desk from "@/components/home/Desk";
+import Doors from "@/components/home/Doors";
+import VisitorMark from "@/components/home/VisitorMark";
+import start from "@/components/home/Start.module.css";
+import { LESSONS } from "@/data/lessons";
 import HomeFold from "@/components/HomeFold";
 import GuideInvite from "@/components/guide/GuideInvite";
 import { AREAS, SITE } from "@/config/areas";
@@ -52,18 +57,11 @@ const START_CARDS: Start[] = STARTS.map((id) => {
 export default function Home() {
   return (
     <Page>
-      {/* ---------------------------------------------------------------- for beginners: where to start */}
-      <div className="wrap">
-        <aside className={styles.newcomer} aria-label="New to Greek?">
-          <p><span className="label">New to Greek?</span> Start in the Academy: the letters and their sounds first, then short lessons with real sentences. You need no Greek to begin. New to the site? <Link href="/guide" transitionTypes={["page-turn"]}>See how it works</Link>.</p>
-          <div className={styles.newcomerActs}>
-            <Link className="btn small" href={AREAS.study.href} transitionTypes={["page-turn"]}>Go to the Academy <span className="arr" aria-hidden="true">→</span></Link>
-            <Link className="btn small ghost" href="/academy/alphabet" transitionTypes={["page-turn"]}>Begin with the alphabet</Link>
-          </div>
-        </aside>
-      </div>
+      {/* ---------------------------------------------------------------- returning: the desk comes first */}
+      <VisitorMark />
+      <div className={`wrap ${start.start} ${start.backOnly}`}><Desk /></div>
 
-      {/* ---------------------------------------------------------------- hero */}
+      {/* ---------------------------------------------------------------- hero; on a first visit, the question */}
       <section className={styles.hero} aria-labelledby="hero-title">
         <div className={`wrap ${styles.heroGrid}`}>
           <div>
@@ -72,10 +70,8 @@ export default function Home() {
               Μάθησις<span>Στοιχείων</span>
             </h1>
             <p className={styles.sub}>{SITE.tagline}</p>
-            <div className={styles.cta}>
-              <Link className="btn" href={AREAS.study.href} transitionTypes={["page-turn"]}>Start learning Greek <span className="arr" aria-hidden="true">→</span></Link>
-              <Link className="btn ghost" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open the library</Link>
-            </div>
+            {/* a first visit: one question, beside the vase on wide screens and before it on narrow ones */}
+            <div className={`${styles.startCell} ${start.firstOnly}`}><StartChoice /></div>
             <dl className={styles.stats}>
               {STATS.map(([n, what]) => <div key={what}><dt>{n.toLocaleString("en-GB")}</dt><dd>{what}</dd></div>)}
             </dl>
@@ -85,8 +81,17 @@ export default function Home() {
         <div className="wrap"><div className="meander draw" aria-hidden="true" /></div>
       </section>
 
-      {/* ---------------------------------------------------------------- continue (only when there is something) */}
-      <ContinueCard styles={styles} />
+      {/* ---------------------------------------------------------------- first visit: the whole site at a glance */}
+      <section className={`${styles.block} ${start.firstOnly}`} aria-labelledby="doors-title">
+        <div className="wrap">
+          <div className={`${styles.secHead} rv`}>
+            <div><span className="label">What&apos;s inside</span>
+              <h2 id="doors-title" className={styles.h2}>Five doors</h2></div>
+            <p className="muted">The same five on every page: across the top, or along the bottom of a phone.</p>
+          </div>
+          <Doors works={WORKS.length} lessons={LESSONS.length} />
+        </div>
+      </section>
 
       {/* ---------------------------------------------------------------- learn */}
       <section className={`${styles.block} ${styles.learn}`} aria-labelledby="learn-title" data-fold="learn">

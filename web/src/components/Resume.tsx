@@ -13,7 +13,7 @@ import { recentPositions, getPosition } from "@/lib/position";
 import { LESSONS } from "@/data/lessons";
 import { AREAS } from "@/config/areas";
 
-const RESTORE = "mathesis:restore-scroll";
+export const RESTORE = "mathesis:restore-scroll";
 
 export function ResumeTracker() {
   const pathname = usePathname();
@@ -44,7 +44,7 @@ export function ResumeTracker() {
 }
 
 /** A plain description of a remembered page. */
-function describe(v: Visit, idx: CatalogIndex | null): { what: string; where?: string } {
+export function describe(v: Visit, idx: CatalogIndex | null): { what: string; where?: string } {
   const u = new URL(v.href, "http://x");
   const q = u.searchParams;
   if (u.pathname === "/read") {
@@ -61,7 +61,7 @@ function describe(v: Visit, idx: CatalogIndex | null): { what: string; where?: s
 }
 
 /** Where to send the reader back to: the reader resumes at its own remembered passage. */
-function resumeHref(v: Visit): string {
+export function resumeHref(v: Visit): string {
   const u = new URL(v.href, "http://x");
   if (u.pathname === "/read") {
     const at = getPosition(u.searchParams.get("w") ?? "")?.at;
@@ -71,7 +71,7 @@ function resumeHref(v: Visit): string {
   return u.pathname + u.search;
 }
 
-const ago = (t: number) => {
+export const ago = (t: number) => {
   const m = Math.round((Date.now() - t) / 60000);
   if (m < 2) return "just now";
   if (m < 60) return `${m} minutes ago`;

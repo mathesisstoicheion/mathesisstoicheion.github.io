@@ -19,6 +19,7 @@
 }
 .hero { padding-block: clamp(24px, 4vw, 40px) 0; }
 .heroGrid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 24px; align-items: center; }
+.startCell { margin-top: 26px; text-align: left; }
 .kicker { display: flex; align-items: center; gap: 12px; }
 .kicker :global(.tongues) { width: 72px; }
 .title { font-size: var(--step-4); letter-spacing: -0.01em; margin-top: 18px; }

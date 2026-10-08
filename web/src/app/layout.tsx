@@ -13,6 +13,7 @@ import Tour from "@/components/tour/Tour";
 import { Suspense } from "react";
 import { SITE } from "@/config/areas";
 import { BOOT_SCRIPT, THEME_COLOURS } from "@/lib/settings";
+import { VISITOR_SCRIPT } from "@/lib/visitor";
 import { SHARE_IMAGE, SITE_URL } from "@/lib/seo";
 import "./globals.css";
 
@@ -58,6 +59,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="en" className={`${didot.variable} ${alegreya.variable} ${alegreyaSC.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
+        {/* first visit or returning, before the first paint: the home page shows the question or the desk (lib/visitor.ts) */}
+        <script dangerouslySetInnerHTML={{ __html: VISITOR_SCRIPT }} />
       </head>
       <body>
         <a className="skip" href="#main">Skip to content</a>

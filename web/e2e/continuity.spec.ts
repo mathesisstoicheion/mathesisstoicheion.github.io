@@ -130,13 +130,13 @@ test("a passage dragged from the reader lands in a note with its citation", asyn
   await expect(box).toHaveValue(/^“μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος.*” \(Homer, Iliad 1\.1\)$/);
 });
 
-test("the home page offers to continue where you left off", async ({ page }) => {
+test("the home page's desk offers to continue where you left off", async ({ page }) => {
   await openIliad(page, "1.100");
   await page.waitForTimeout(1200);
   await page.goto("/academy/lesson/case");
   await page.waitForTimeout(1200);
   await page.goto("/");
-  const card = page.getByRole("region", { name: /Lesson 3/ });
+  const card = page.getByRole("region", { name: "Your desk" });
   await expect(card.getByRole("link", { name: /Lesson 3: Who does what/ })).toBeVisible();
   // the reader remembers the passage (a group of lines) that line 1.100 is in
   await expect(card.getByRole("link", { name: /Homer, Iliad/ })).toHaveAttribute("href", /at=1\.(9[5-9]|100)(&|$)/);
