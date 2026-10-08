@@ -105,12 +105,13 @@ export const TOURS: Record<string, Tour> = {
     title: "Reading aids",
     start: "/read?w=tlg0012.tlg001&at=1.1",
     steps: [
-      { at: [t('[role=group][aria-label="Reading aids"]'), t('button[aria-controls="read-aids"]')], title: "Reading aids", text: "Help for when the Greek is hard: each one switches on and off.", phoneText: "Help for when the Greek is hard, under Aids: each one switches on and off." },
+      { at: [t('[role=group][aria-label="Reading aids"]'), t('button[aria-controls="read-aids"]')], title: "Reading aids", text: "Help for when the Greek is hard, in three groups: the Greek itself, this passage, and this work. Each one switches on and off.", phoneText: "Help for when the Greek is hard, under Aids, in three groups: the Greek itself, this passage, and this work. Each one switches on and off." },
       // on a phone, open the Aids sheet so the next steps can point inside it
       { click: [t('button[aria-controls="read-aids"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
       { at: [t("button[aria-pressed]", "Colour by case")], title: "Colour by case", text: "A Greek word's ending shows its job in the sentence (its case): who acts, who or what is acted on, whose it is. This colours each word by its case, so you can see who does what to whom." },
-      { at: [t("button[aria-pressed]", "Vocabulary")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
+      { at: [t("button[aria-pressed]", "Words I know")], title: "Words I know", text: "Marks the words you have learned in the daily practice, so you can see how much of the page you can already read. The more you practise, the more of it lights up." },
       { at: [t("button[aria-pressed]", "Try it first")], title: "Try it first", text: "Hides each translation until you ask for it, so you read the Greek yourself first. A good way to learn." },
+      { at: [t("button[aria-pressed]", "Vocabulary")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
       { at: [t('button[title^="Find a word or phrase"]'), t("#read-aids button", "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
       { at: [t('button[title^="Hear the English translation"]'), t("#read-aids button", "Listen")], title: "Listen", text: "Hear the English read aloud, passage by passage, with each passage marked as it is read." },
       { at: [t("button[aria-pressed]", "Places")], with: [t("button[aria-pressed]", "Manuscript")], title: "Places and manuscripts", text: "Places puts the places on the page on a map. Manuscript shows the passage as it would have been written by hand, in capitals without spaces, and for some works on a real medieval manuscript page." },

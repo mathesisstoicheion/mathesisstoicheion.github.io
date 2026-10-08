@@ -264,8 +264,8 @@ the owner picks what to keep.
 ---
 
 ## 8. Phase 11: the new flow (approved 2026-10-08)
-The owner liked all six ideas and the clickable mock-up (`flow-preview/index.html`; open it with the
-`flow-preview` server in `.claude/launch.json`, then `/flow-preview/`). Built on the real site in stages,
+The owner liked all six ideas and the clickable mock-up (`flow-preview/index.html`; serve the project
+folder with `python -m http.server 8766`, then open `/flow-preview/`). Built on the real site in stages,
 one commit (and a check of the Guide's tours, which point at the real controls) after each:
 
 1. **Five plain doors.** The menu reads **Learn · Read · Explore · Talk · Mine**, each with its Greek

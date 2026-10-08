@@ -91,6 +91,19 @@ export async function threads(o: ThreadQuery = {}): Promise<{ rows: Thread[]; mo
   return { rows: rows.slice(0, PAGE), more: rows.length > PAGE };
 }
 
+/** A thread that quotes a passage, as the reader's "Talk about this passage" lists it (Phase 11). */
+export type PassageThread = Pick<Thread, "id" | "title" | "reply_count" | "quote" | "last_activity_at" | "answered_post_id">;
+/** Every thread that quotes a passage of this work, the most recently active first (the reader keeps those on its page). */
+export async function threadsAbout(work: string): Promise<PassageThread[]> {
+  return must(await supabase().from("threads").select("id, title, reply_count, quote, last_activity_at, answered_post_id")
+    .eq("quote->>work", work).order("last_activity_at", { ascending: false }).limit(200)) as PassageThread[];
+}
+/** Where in the text a quoted passage starts: the reader link's `at`, or the start of its reference ("1.1–1.4"). */
+export function quoteStart(q: Quote): string {
+  try { const at = new URL(q.href, "http://x").searchParams.get("at"); if (at) return at; } catch { /* not a link */ }
+  return q.ref.split(/[–-]/)[0].trim();
+}
+
 export async function thread(id: number): Promise<Thread | null> {
   return must(await supabase().from("threads").select(`*, ${THREAD_AUTHOR}`).eq("id", id).maybeSingle()) as Thread | null;
 }

@@ -185,6 +185,15 @@
 .here { display: grid; gap: 6px; justify-items: start; }
 .lemmaBig { font-family: var(--f-greek); font-size: 1.7rem; line-height: 1.1; color: var(--accent); }
 .parse { font-size: 1rem; }
+/* the lesson that explains this form (lib/lookup/lesson-link.ts) */
+.lessonLink {
+  display: flex; gap: 10px; align-items: center; margin-top: 4px; padding: 8px 12px; text-decoration: none;
+  border: 1px dashed var(--accent); border-radius: var(--radius); transition: background-color 0.2s, transform 0.2s var(--ease);
+}
+.lessonLink:hover { background: var(--bg-2); transform: translateY(-1px); }
+.lessonLink svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linejoin: round; }
+.lessonLink b { display: block; font-size: 0.95rem; }
+.lessonLink b + span { font-size: 0.88rem; color: var(--ink-2); }
 .gloss { font-size: 1.02rem; }
 .lsj { display: grid; gap: 8px; font-size: 0.93rem; line-height: 1.55; max-height: 50vh; overflow-y: auto; padding-right: 6px; }
 .lsjGr { font-family: var(--f-greek); font-size: 1.05em; }
@@ -327,9 +336,20 @@
 }
 
 /* ------------------------------------------------------------ reading aids */
-.aids { display: flex; flex-wrap: wrap; gap: 6px; }
+/* the reading aids, in three labelled groups (Phase 11): a row of their own on wide screens, stacked in the phone's sheet */
+.aids { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 26px; flex-basis: 100%; order: 10; }
+.aidGroup { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.aids a:global(.chip) { text-decoration: none; }
+.aidGroup:not(:has(> :not(.aidLabel))) { display: none; }
+.aidLabel { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); margin-right: 4px; }
+@media (max-width: 760px) {
+  .aids { flex-direction: column; align-items: stretch; gap: 14px; }
+  .aidLabel { flex-basis: 100%; margin: 0 0 2px; }
+}
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
+/* words I know (the "Words I know" aid): a soft wash of green, under any case colour */
+.reader [data-known] { background: color-mix(in srgb, var(--ok) 17%, transparent); border-radius: 3px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 17%, transparent); }
 .reader [data-case] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.18em; }
 .reader [data-case="nominative"] { text-decoration-color: #4F7CA8; }
 .reader [data-case="genitive"] { text-decoration-color: #D9A441; }
@@ -569,3 +589,14 @@ p.translit { margin: -0.3em 0 0.8em; }
 .listenBtn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 @media (min-width: 761px) { .listenChip { display: none !important; } }
 @media (max-width: 760px) { .listenBtn { display: none !important; } }
+
+/* Talk about this passage (TalkPanel.tsx): the Town Hall's threads on this page */
+.talk { list-style: none; margin: 10px 0 0; padding: 0; display: grid; }
+.talk li { display: grid; gap: 2px; padding: 10px 0; border-top: 1px solid var(--rule); }
+.talk li:first-child { border-top: 0; }
+.talk a { text-decoration: none; }
+.talk a:hover b { color: var(--accent); }
+.talk .muted { font-size: 0.88rem; }
+.talkRef { border: 0; background: none; padding: 0; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.talkAsk { display: grid; gap: 6px; justify-items: start; margin-top: 18px; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+.talkAsk p { margin: 0; color: var(--ink-2); font-size: 0.92rem; }

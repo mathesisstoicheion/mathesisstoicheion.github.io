@@ -491,3 +491,18 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 .guideSources { display: grid; gap: 8px; padding-top: 16px; border-top: 1px solid var(--rule); font-size: 0.9rem; }
 .guideSources ol { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
 .guideNo { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.06em; }
+
+/* the end of a lesson: its last real passage, to open in the reader (Phase 11) */
+.forReal {
+  display: grid; gap: 6px; margin: 8px 0 24px; padding: 20px 24px; text-decoration: none;
+  background: var(--inv-bg); color: var(--inv-fg); border: 1px solid var(--inv-edge); border-radius: var(--radius);
+  --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.forReal:hover { transform: translateY(-3px); box-shadow: 0 16px 34px -18px var(--shadow); }
+.forReal :global(.label) { color: var(--accent); }
+.forRealGr { font-family: var(--f-greek); font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.3; }
+.forReal > span:last-child { color: var(--ink-2); }
+.forReal :global(.arr) { display: inline-block; transition: transform 0.25s var(--ease); }
+.forReal:hover :global(.arr) { transform: translateX(5px); }
+.askLesson { margin: 14px 0 0; color: var(--ink-2); }
+.askLesson a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }

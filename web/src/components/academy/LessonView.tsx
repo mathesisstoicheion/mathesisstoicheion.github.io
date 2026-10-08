@@ -246,16 +246,30 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
   const complete = useAcademy((s) => s.completeLesson);
   const i = LESSONS.findIndex((l) => l.id === lesson.id);
   const next = LESSONS[i + 1];
+  // the lesson's last real passage: "Read it for real" opens it in the reader (Phase 11)
+  const real = lesson.sections.flatMap((s) => (s.kind === "real" ? s.items : [])).at(-1);
 
   return (
     <article className={styles.lesson}>
       {lesson.sections.map((s, k) => <SectionView key={k} s={s} onWord={(w, ctx) => setWord({ w, ctx })} />)}
       <LessonWords lesson={lesson} />
+      {real && (
+        <Link className={styles.forReal} href={`/read?w=${real.work}&at=${real.ref}`} transitionTypes={["page-turn"]}>
+          <span className="label">Now read it for real</span>
+          <span className={styles.forRealGr} lang="grc">{real.quote}</span>
+          <span>{real.label}, in the reader, with the English beside it and every word ready to look up. <span className="arr" aria-hidden="true">→</span></span>
+        </Link>
+      )}
       <footer className={styles.lessonEnd}>
         {done ? <p className={styles.good}>You have completed this lesson.</p>
           : <button type="button" className="btn" onClick={() => complete(lesson.id)}>I have finished this lesson</button>}
         {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
       </footer>
+      {/* talk where you learn (Phase 11): a question about the lesson goes to the Town Hall's board for it */}
+      <p className={styles.askLesson}>
+        Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Town Hall</Link>,
+        in {i < 2 ? "Beginners' questions" : "Grammar help"}: no question is too small.
+      </p>
       <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onClose={() => setWord(null)} />
     </article>
   );

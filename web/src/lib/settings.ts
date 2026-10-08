@@ -20,6 +20,7 @@ export interface Settings {
   columns: Columns;    // reader: Greek and translation, or one of them
   translit: boolean;   // reader aid: transliteration under the Greek
   cases: boolean;      // reader aid: colour words by case
+  known: boolean;      // reader aid: mark the words the learner knows from the daily practice (Phase 11)
   metre: boolean;      // reader aid: show the scansion of verse
   tryFirst: boolean;   // reader aid: each translation stays hidden until tapped, so the Greek is read first
   fitLines: boolean;   // reader aid: verse lines shrink to fit the width instead of wrapping
@@ -30,7 +31,7 @@ export interface Settings {
   textFace: TextFace;
 }
 
-export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
+export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
 export const LIMITS = {
   greekSize: { min: 1, max: 2, step: 0.0625 },
   leading: { min: 1.4, max: 2.2, step: 0.1 },
@@ -65,7 +66,7 @@ export const useSettings = create<SettingsStore>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
-      partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }),
+      partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }),
       skipHydration: true,
     },
   ),

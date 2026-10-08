@@ -34,6 +34,7 @@ import ShareDialog, { type ShareData } from "./ShareDialog";
 import WorkPicker from "./WorkPicker";
 import VocabPanel from "./VocabPanel";
 import PlacesPanel from "./PlacesPanel";
+import TalkPanel from "./TalkPanel";
 import OrigTitle from "@/components/library/OrigTitle";
 import ManuscriptPanel from "./ManuscriptPanel";
 import Listen from "./Listen";
@@ -43,6 +44,7 @@ import EchoesPanel, { type EchoMarks, type EchoQuery, type EchoTarget } from "./
 import MetreBar from "./MetreBar";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
 import { useFloat } from "@/lib/float";
+import { useAcademy, knownLemmas } from "@/lib/academy";
 import { ASK_KEY } from "@/lib/community/ask";
 import { lastOtherPage } from "@/lib/resume";
 import { metreIndex, publishedFor, loadLengths } from "@/lib/metre/load";
@@ -171,11 +173,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
   const cases = useSettings((s) => s.cases);
+  const known = useSettings((s) => s.known);
+  const deck = useAcademy((s) => s.deck);
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
   const fitLines = useSettings((s) => s.fitLines);
   const [vocabOpen, setVocabOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
+  const [talkOpen, setTalkOpen] = useState(false);
   const [msOpen, setMsOpen] = useState(false);
   const [listenOpen, setListenOpen] = useState(false);
   const [findOpen, setFindOpen] = useState(false);
@@ -211,7 +216,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const gotoRef = useRef<HTMLInputElement>(null);
   /** Open Find in this text (or, if open, go back to its box). */
   const openFind = () => {
-    setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false);
+    setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
     // already open: back to its box
     requestAnimationFrame(() => (rootRef.current ?? document).querySelector<HTMLInputElement>("[aria-label='Find in this text'] input")?.focus());
   };
@@ -472,7 +477,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   // Opening or closing a side panel narrows or widens the text, and its lines re-flow: keep the passage that
   // was at the top where it was, instead of letting the page slide back or ahead by many lines.
   const topAnchor = useRef<{ key: string; top: number } | null>(null);
-  const panelOpen = !!(word || echo || vocabOpen || placesOpen || msOpen);
+  const panelOpen = !!(word || echo || vocabOpen || placesOpen || talkOpen || msOpen);
   useLayoutEffect(() => {
     const a = topAnchor.current;
     const el = a ? root().querySelector<HTMLElement>(`article [data-key="${CSS.escape(a.key)}"]`) : null;
@@ -598,7 +603,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
 
   useEffect(() => {
     const openFindNow = () => {
-      setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false);
+      setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
       requestAnimationFrame(() => (rootRef.current ?? document).querySelector<HTMLInputElement>("[aria-label='Find in this text'] input")?.focus());
     };
     const onKey = (e: KeyboardEvent) => {
@@ -844,6 +849,30 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cases, rows, doc, workId]);
 
+  // words I know: mark each Greek word whose dictionary form the daily practice counts as learned (Phase 11)
+  const learned = useMemo(() => knownLemmas(deck), [deck]);
+  const knownCount = learned.size;
+  useEffect(() => {
+    const clear = () => root().querySelectorAll("[data-known]").forEach((el) => el.removeAttribute("data-known"));
+    if (!known || !rows.length || !doc) { clear(); return; }
+    let live = true;
+    loadWordPack(workId).then((pack) => {
+      if (!live) return;
+      clear();
+      if (!pack) { toast("No word analyses exist for this text yet, so the words you know can't be marked."); return; }
+      const placed = placeAnalyses(pack, doc);
+      if (placed.cover < 0.05) return;
+      root().querySelectorAll<HTMLElement>("[data-u]").forEach((unit) => {
+        const spans = [...unit.querySelectorAll<HTMLElement>("[data-w]")];
+        positionsFor(placed, unit.dataset.u!, spans.map((sp) => sp.dataset.w!)).forEach((p, i) => {
+          if (p >= 0 && placed.lemma[p] >= 0 && learned.has(pack.lemmas[placed.lemma[p]].normalize("NFC"))) spans[i].dataset.known = "";
+        });
+      });
+    }).catch(() => undefined);
+    return () => { live = false; };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [known, learned, rows, doc, workId]);
+
   const pointOf = (span: HTMLElement) => {
     const unit = span.closest<HTMLElement>("[data-u]")!;
     return { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(span) };
@@ -1073,7 +1102,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   function openEchoes(start: Point, end: Point) {
     if (!doc || !grcText || !work) return;
     setEcho({ work: workId, urn: grcText.urn, doc, title: work.title, start, end });
-    setWord(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false);
+    setWord(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
   }
   const echoJump = (t: EchoTarget) => {
     const q = new URLSearchParams(params.toString());
@@ -1219,23 +1248,37 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
 
   const chunkInfo = doc?.chunks[chunk];
   const hasLines = rows.some((r) => r.greek.some((u) => u.blocks.some((b) => b.t === "l")));
+  // the reading aids, grouped by the question they answer (Phase 11): help with the Greek, this passage, this work.
+  // The same buttons on wide screens (a row of their own) and in the phone's aids sheet (stacked).
   const aids = (
     <div className={styles.aids} role="group" aria-label="Reading aids">
-      <button type="button" className="chip" aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters">Transliteration</button>
-      <button type="button" className="chip" aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case">Colour by case</button>
-      {mInfo && <button type="button" className="chip" aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura">Metre</button>}
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-      <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
-      {canDiff && <>
-        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
-        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
-        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setFindOpen(false); setWord(null); }}>List of differences</button>
-      </>}
-      <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
-      {trText && !cmpText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
-      {trText && !cmpText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
-      {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
+      <div className={styles.aidGroup} role="group" aria-label="Help with the Greek">
+        <span className={styles.aidLabel} aria-hidden="true">The Greek</span>
+        <button type="button" className="chip" aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters">Transliteration</button>
+        <button type="button" className="chip" aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case">Colour by case</button>
+        <button type="button" className="chip" aria-pressed={known} onClick={() => setSettings({ known: !known })} title="Mark the words you have learned in the daily practice">Words I know</button>
+        {mInfo && <button type="button" className="chip" aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura">Metre</button>}
+        {trText && !cmpText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
+        {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
+      </div>
+      <div className={styles.aidGroup} role="group" aria-label="This passage">
+        <span className={styles.aidLabel} aria-hidden="true">This passage</span>
+        <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
+        <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
+        <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>
+        {canDiff && <>
+          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
+          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
+          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setFindOpen(false); setWord(null); }}>List of differences</button>
+        </>}
+        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
+        {trText && !cmpText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
+      </div>
+      <div className={styles.aidGroup} role="group" aria-label="This work">
+        <span className={styles.aidLabel} aria-hidden="true">This work</span>
+        <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
+        {author && <Link className="chip" data-closes-sheet="" href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]} title={`${author.name}: life, works, and how the text survived`}>About {author.name}</Link>}
+      </div>
     </div>
   );
   const setCols = (c: Columns) => setColsFor({ work: workId, c });
@@ -1249,7 +1292,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1389,6 +1432,14 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               <span className="muted">From GLAUx&apos;s analyses of this text.</span>
             </p>
           )}
+          {known && (
+            <p className={`wrap ${styles.legend}`}>
+              <span data-known="">Marked</span>{" "}
+              <span className="muted">{knownCount
+                ? `the words you know: the ${knownCount} you have reviewed successfully in the daily practice. The more you practise, the more of the page lights up.`
+                : "the words you know, once you have reviewed some in the daily practice. Save words from the look-up, practise them, and they light up here."}</span>
+            </p>
+          )}
           {metreOn && mInfo && <MetreBar info={mInfo} about={mIndex?.about ?? null} />}
           {translit && <p className={`wrap ${styles.legend}`}><span className="muted">Transliteration uses a simple scheme: η ē, ω ō, rough breathing h, υ y (u in diphthongs), χ ch, φ ph, θ th, iota subscript i; accents are left out.</span></p>}
           {help && (
@@ -1413,7 +1464,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
                     </span>
                     <button type="button" className={styles.floatBtn} onClick={() => goDiff(-1)} disabled={!allDiffs.length}>← Previous difference</button>
                     <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length}>Next difference →</button>
-                    <button type="button" className={styles.floatBtn} aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setFindOpen(false); }}>List them all</button>
+                    <button type="button" className={styles.floatBtn} aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); }}>List them all</button>
                     <label className={styles.compareCheck}>
                       <input type="checkbox" checked={strict === "spelling"} onChange={(e) => nav.go(setParam("cmpx", e.target.checked ? "1" : null))} /> Spelling too
                     </label>
@@ -1536,20 +1587,20 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
             onClose={() => setVocabOpen(false)} onPick={(lemma) => setWord({ w: lemma, ctx: null, at: null })} />
         </PanelGuard>
       )}
-      {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && (
+      {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && (
         <PanelGuard name="find panel" className={styles.panel} onClose={() => setFindOpen(false)}>
           <FindPanel doc={doc} placed={cmpText ? null : placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks}
             onClose={() => { setFindOpen(false); requestAnimationFrame(() => root().querySelector<HTMLElement>(`.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
-      {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && (
+      {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && (
         <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
           <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)}
             onNotebook={(ds, what) => setNbPick({ what, items: ds.map((x) => ({ kind: "variant" as const, work: workId, urn: grcText.urn, other: cmpText.urn, from: x.key, a: x.a, b: x.b })) })} />
         </PanelGuard>
       )}
       {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
-      {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
+      {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
           <SentencePanel work={workId} doc={doc} at={sentenceAt} onMarks={setSynMarks}
             onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
@@ -1559,6 +1610,11 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       {listenOpen && trText && !cmpText && work && rows.length > 0 && (
         <Listen rows={rows} root={root} startKey={topRow} title={work.title}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
+      )}
+      {talkOpen && !word && !echo && (
+        <PanelGuard name="talk panel" className={styles.panel} onClose={() => setTalkOpen(false)}>
+          <TalkPanel work={workId} pageKeys={pageKeys} onJump={jumpToRef} onClose={() => setTalkOpen(false)} />
+        </PanelGuard>
       )}
       {placesOpen && doc && !word && !echo && (
         <PanelGuard name="places panel" className={styles.panel} onClose={() => setPlacesOpen(false)}>
@@ -1584,7 +1640,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
         <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
           onSentence={word?.at ? () => {
             const a = word.at!;
-            setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
+            setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
             setSentenceAt(a);
           } : undefined}
           onStep={word?.at ? stepWord : undefined} sheet={!floating} />
