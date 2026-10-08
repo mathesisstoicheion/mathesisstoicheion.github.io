@@ -29,7 +29,8 @@ function QueryFromUrl({ onQuery }: { onQuery: (q: string) => void }) {
   return null;
 }
 
-export default function StoaIndex({ reference = [] }: { reference?: RefCard[] }) {
+/** `lead`: what opens the page above the day's entry (the map, the Census and Archaeology), hidden while searching. */
+export default function StoaIndex({ reference = [], lead }: { reference?: RefCard[]; lead?: React.ReactNode }) {
   const [q, setQ] = useState("");
   const n = fold(q).trim();
   const found = useMemo(() => (n ? HAYSTACK.filter((h) => h.hay.includes(n)).map((h) => h.e) : []), [n]);
@@ -51,6 +52,8 @@ export default function StoaIndex({ reference = [] }: { reference?: RefCard[] })
           <ul>{found.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}><b>{e.title}</b> <span>{e.kicker}</span></Link></li>)}</ul>
         </section>
       )}
+
+      {!n && lead}
 
       {featured && !n && (
         <Link href={`/stoa/${featured.slug}`} className={styles.featured} transitionTypes={["page-turn"]} data-pic={pic ? "" : undefined}>

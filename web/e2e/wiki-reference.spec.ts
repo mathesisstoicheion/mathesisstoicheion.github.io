@@ -8,6 +8,20 @@ test("the Wiki front offers the three reference pages", async ({ page }) => {
   await expect(ref.getByRole("link", { name: /Editions & translations/ })).toBeVisible();
 });
 
+test("the Explore door leads with the map, the Census and Archaeology, drawn from the site's own data", async ({ page }) => {
+  await page.goto("/stoa");
+  const lead = page.getByRole("navigation", { name: "Explore the Greek world" });
+  const links = lead.getByRole("link");
+  await expect(links).toHaveCount(3);
+  expect(await links.evaluateAll((as) => as.map((a) => a.getAttribute("href")))).toEqual(["/stoa/periplus", "/stoa/census", "/stoa/kerameikos"]);
+  // the map names the most-named towns; the Census card shows its real top god
+  await expect(lead.locator("svg text", { hasText: "Athens" })).toHaveCount(1);
+  await expect(lead.getByText("Ζεύς")).toBeVisible();
+  // it comes first, above the day's entry, and steps aside while searching
+  await page.getByRole("searchbox", { name: "Search the Painted Stoa" }).fill("melos");
+  await expect(lead).toHaveCount(0);
+});
+
 test("the Authors index groups by period, filters by period and kind, and opens an author", async ({ page }) => {
   await page.goto("/stoa/authors");
   await expect(page.getByRole("heading", { level: 1, name: /^Authors/ })).toBeVisible();

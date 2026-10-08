@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, NAV, SITE } from "@/config/areas";
+import { AREAS, NAV, SITE, TABS, doorWord } from "@/config/areas";
 import { useSettings, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
@@ -110,11 +110,13 @@ export default function Header() {
         <nav ref={navRef} className={styles.areas} aria-label="Areas of the site">
           {NAV.map((id) => {
             const a = AREAS[id];
-            const active = isActive(pathname, a.href);
+            // the Read door is also current in the reader and on work and author pages (TABS' `also`)
+            const active = [a.href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
             return (
-              <Link key={id} href={a.href} transitionTypes={["page-turn"]} aria-current={active ? "page" : undefined}>
-                <b>{a.name}</b>
-                <small>{a.english}</small>
+              <Link key={id} href={a.href} transitionTypes={["page-turn"]} aria-current={active ? "page" : undefined}
+                aria-label={`${doorWord(id)}: ${a.name}`}>
+                <b>{doorWord(id)}</b>
+                {a.greek ? <small className={styles.gr} lang="grc">{a.greek}</small> : <small>{a.name}</small>}
               </Link>
             );
           })}
@@ -127,9 +129,9 @@ export default function Header() {
 
         <div className={styles.tools}>
           <ConnectionLight />
-          {/* phones: the bottom bar has Search, so the header offers the forum here instead */}
+          {/* phones: the bottom bar has Search, so the header offers the Talk door (the forum) here instead */}
           <Link className={`${styles.tbtn} ${styles.phoneOnly}`} href={AREAS.forum.href} transitionTypes={["page-turn"]}
-            aria-label={`${AREAS.forum.name}: ${AREAS.forum.english}`} aria-current={isActive(pathname, AREAS.forum.href) ? "page" : undefined}>
+            aria-label={`${doorWord("forum")}: ${AREAS.forum.name}`} aria-current={isActive(pathname, AREAS.forum.href) ? "page" : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M4.5 4.5h10a1.5 1.5 0 0 1 1.5 1.5v5.5a1.5 1.5 0 0 1-1.5 1.5H9.5L6 16v-3H4.5A1.5 1.5 0 0 1 3 11.5V6a1.5 1.5 0 0 1 1.5-1.5z" /><path d="M18.5 9h1a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 1-1.5 1.5H19v3l-3.5-3h-4a1.5 1.5 0 0 1-1.5-1.5V15" /></svg>
           </Link>
           <button className={`${styles.tbtn} ${styles.notPhone}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog"

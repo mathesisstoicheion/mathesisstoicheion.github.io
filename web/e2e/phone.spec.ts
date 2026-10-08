@@ -10,14 +10,14 @@ const noSideways = (page: Page) => page.evaluate(() => document.documentElement.
 test.describe("on a phone", () => {
   test.use(PHONE);
 
-  test("the bottom bar holds the five places in order, and the header fits in one row", async ({ page }) => {
+  test("the bottom bar holds the five doors in order, and the header fits in one row", async ({ page }) => {
     await page.goto("/");
     const links = tabBar(page).locator("a, button");
     await expect(links).toHaveCount(5);
     const labels = await links.evaluateAll((els) => els.map((e) => e.firstElementChild?.nextElementSibling?.firstChild?.textContent));
-    expect(labels).toEqual(["Library", "Learn Greek", "Search", "Wiki", "My Library"]);
-    // the forum moves to the header, where the search button was
-    await expect(page.locator("header").getByRole("link", { name: "The Town Hall: Forum" })).toBeVisible();
+    expect(labels).toEqual(["Learn", "Read", "Search", "Explore", "Mine"]);
+    // Talk, the forum, moves to the header, where the search button was
+    await expect(page.locator("header").getByRole("link", { name: "Talk: The Town Hall" })).toBeVisible();
     await expect(page.locator("header").getByRole("button", { name: "The Oracle: Search" })).toBeHidden();
     // the bar is along the bottom edge of the screen
     const box = (await tabBar(page).boundingBox())!;
@@ -35,13 +35,13 @@ test.describe("on a phone", () => {
   test("a place in the bar opens without reloading, and is marked as the current one", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => { (window as unknown as { marker: string }).marker = "kept"; });
-    await tabBar(page).getByRole("link", { name: /Learn Greek/ }).click();
+    await tabBar(page).getByRole("link", { name: /^Learn/ }).click();
     await expect(page).toHaveURL(/\/academy$/);
-    await expect(tabBar(page).getByRole("link", { name: /Learn Greek/ })).toHaveAttribute("aria-current", "page");
+    await expect(tabBar(page).getByRole("link", { name: /^Learn/ })).toHaveAttribute("aria-current", "page");
     expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
-    // the reader belongs to the Library
+    // the reader belongs to the Read door, and so do work pages
     await page.goto("/read?w=tlg0012.tlg001");
-    await expect(tabBar(page).getByRole("link", { name: /^Library/ })).toHaveAttribute("aria-current", "page");
+    await expect(tabBar(page).getByRole("link", { name: /^Read/ })).toHaveAttribute("aria-current", "page");
     // pages outside the five places mark none
     await page.goto("/about");
     await expect(tabBar(page).locator("[aria-current]")).toHaveCount(0);

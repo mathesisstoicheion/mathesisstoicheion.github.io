@@ -40,7 +40,7 @@ test("Esc ends a tour, and the passage actions are put away before the Treasury 
   await card(page).getByRole("button", { name: "Next" }).click();
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeVisible();
   await card(page).getByRole("button", { name: "Next" }).click();
-  await expect(card(page)).toContainText("The Treasury");
+  await expect(card(page)).toContainText("Mine: the Treasury");
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeHidden();
   const r = await new AxeBuilder({ page }).include("[data-tour-card]").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(r.violations.map((x) => x.id)).toEqual([]);

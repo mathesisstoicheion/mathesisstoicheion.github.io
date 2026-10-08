@@ -1,0 +1,46 @@
+/* The Explore door's lead: three picture cards (ExploreLead.tsx). */
+.lead { display: grid; gap: 10px; }
+.lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+@media (max-width: 900px) { .lead ul { grid-template-columns: 1fr 1fr; } .lead li:first-child { grid-column: 1 / -1; } }
+@media (max-width: 560px) { .lead ul { grid-template-columns: 1fr; } }
+
+.card {
+  display: flex; flex-direction: column; height: 100%; overflow: hidden; text-decoration: none;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px -16px var(--shadow); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* the picture area: the same height for all three */
+.map, .bars, .pic { display: block; width: 100%; aspect-ratio: 16 / 10; }
+.pic { height: auto; object-fit: cover; transition: transform 1.2s var(--ease); }
+.card:hover .pic { transform: scale(1.04); }
+
+.land { fill: var(--map-land); }
+.sea { fill: var(--map-sea); stroke: var(--map-coast); stroke-width: 1.4; stroke-linejoin: round; }
+.town circle { fill: var(--map-name); stroke: var(--map-halo); stroke-width: 2.5; }
+.town text {
+  font-family: var(--f-body); font-size: 25px; font-weight: 700; fill: var(--map-name);
+  paint-order: stroke; stroke: var(--map-halo); stroke-width: 5px; stroke-linejoin: round;
+}
+/* the towns appear one after another, the most named first */
+/* (the site's "Reduce animation" setting stops these, globals.css) */
+.town { animation: town 0.6s var(--ease) both; animation-delay: calc(0.25s + var(--i) * 90ms); transform-box: fill-box; transform-origin: center; }
+@keyframes town { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+
+.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; background: var(--bg-2); }
+.bar { display: grid; grid-template-columns: minmax(0, 11em) 1fr auto; align-items: center; gap: 10px; font-size: 0.88rem; }
+.who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.who [lang="grc"] { font-family: var(--f-greek); font-size: 1.05rem; }
+.fill { height: 9px; border-radius: 9px; background: color-mix(in srgb, var(--ink) 10%, transparent); overflow: hidden; }
+.fill i { display: block; height: 100%; width: var(--w); background: var(--accent); border-radius: 9px; transform-origin: left; }
+.fill i { animation: grow 1.1s var(--ease) both; animation-delay: calc(0.3s + var(--i) * 110ms); }
+@keyframes grow { from { transform: scaleX(0); } }
+.n { font-variant-numeric: tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }
+
+.txt { display: grid; gap: 2px; padding: 14px 18px 18px; }
+.txt b { font-size: 1.25rem; }
+.txt > span:last-child { color: var(--ink-2); font-size: 0.95rem; }
+.gr { font-family: var(--f-greek); color: var(--accent); font-size: 1rem; }
+.credit { margin: 0; font-size: 0.75rem; color: var(--ink-2); }

@@ -5,6 +5,7 @@
  * offering (notes, favourite passages, bookmarks…) with its count, and opens that section.
  */
 import Link from "next/link";
+import { AREAS } from "@/config/areas";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo } from "react";
 import { useTreasury, plural } from "./data";
@@ -104,6 +105,13 @@ export default function Treasury() {
       </section>
 
       <KeepSafe t={t} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
+
+      {/* the Mine door also keeps what you download for reading offline (Phase 11: Downloads moved here from the footer) */}
+      <Link className={styles.offline} href={AREAS.downloads.href} transitionTypes={["page-turn"]}>
+        <span className="label">{AREAS.downloads.name} · {AREAS.downloads.english}</span>
+        <b>Read without a connection</b>
+        <span>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</span>
+      </Link>
     </div>
   );
 }

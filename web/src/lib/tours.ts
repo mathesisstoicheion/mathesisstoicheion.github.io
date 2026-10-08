@@ -129,7 +129,7 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header nav[aria-label="Areas of the site"] a[href="/treasury"]'), t('nav[style*="site-tabbar"] a[href="/treasury"]')], title: "The Treasury", text: "Everything you keep goes to the Treasury, My Library: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      { esc: true, at: [t('header nav[aria-label="Areas of the site"] a[href="/treasury"]'), t('nav[style*="site-tabbar"] a[href="/treasury"]')], title: "Mine: the Treasury", text: "Everything you keep goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 
@@ -138,11 +138,11 @@ export const TOURS: Record<string, Tour> = {
     title: "Explore the Greek world",
     start: "/stoa",
     steps: [
+      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/periplus"]')], title: "The Periplus: the map", text: "The places the texts name, on a map you can pan and zoom, with the passages that mention each one." },
+      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/census"]')], title: "The Census", text: "The people, gods, places and things in the texts, counted: who is mentioned most, and where." },
+      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/kerameikos"]')], title: "The Kerameikos", text: "Archaeology: what digging, broken pots and graves tell us about the Greeks." },
       { at: [t('main a[class*="featured"]'), t('input[aria-label="Search the Painted Stoa"]')], title: "The Painted Stoa", text: "Articles on the Greek world, its people, ideas and everyday life, each with its sources and links into the texts. Here is one of them." },
       { at: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/authors"]')], with: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/eras"]'), t('nav[aria-labelledby="ref-h"] a[href="/stoa/editions"]')], title: "Authors, eras and editions", text: "Every author with their works and dates, the centuries of Greek, and the printed editions behind the texts." },
-      { at: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/periplus"]')], title: "The Periplus: the map", text: "The places the texts name, on a map you can pan and zoom, with the passages that mention each one." },
-      { at: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/census"]')], title: "The Census", text: "The people, gods, places and things in the texts, counted: who is mentioned most, and where." },
-      { at: [t('main a[href="/stoa/kerameikos"]')], title: "The Kerameikos", text: "Archaeology: what digging, broken pots and graves tell us about the Greeks." },
     ],
   },
 

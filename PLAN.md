@@ -260,3 +260,24 @@ the owner picks what to keep.
 - **Swipe to turn pages in the reader: no.** The reader stays scrolling.
 - **Short vibrations: yes** (Android phones that allow them; a Settings switch turns them off).
 - **Every other idea in this section is approved**, as written above.
+
+---
+
+## 8. Phase 11: the new flow (approved 2026-10-08)
+The owner liked all six ideas and the clickable mock-up (`flow-preview/index.html`; open it with the
+`flow-preview` server in `.claude/launch.json`, then `/flow-preview/`). Built on the real site in stages,
+one commit (and a check of the Guide's tours, which point at the real controls) after each:
+
+1. **Five plain doors.** The menu reads **Learn · Read · Explore · Talk · Mine**, each with its Greek
+   name beneath; the site's name is the way home. The phone bar becomes **Learn · Read · Search ·
+   Explore · Mine** (replacing the 2026-09-29 order); Talk stays as the forum button in the phone header.
+   Explore (the Painted Stoa page) leads with the Map, the Census and Archaeology; Mine (the Treasury)
+   reaches Downloads; Talk always reaches the Pnyx.
+2. **A home page that knows who you are.** A first visit asks "Where are you starting?" (no Greek / a
+   little / just want to read), and the answer sets the reading aids. A returning visit opens on **your
+   desk**: carry on reading, today's practice, the next lesson. The rest of today's home page moves down.
+3. **Learning and reading as one loop.** The word look-up names the lesson that explains the form; each
+   lesson ends with "Read it for real"; looked-up words go to the review pile; "Words I know" marks them.
+4. **A calmer reader.** Its tools grouped by the question asked: this word, this passage, this work.
+5. **Talk where you read.** "Discuss this passage" in the reader and "Questions about this lesson" in the
+   Academy (a database change: a thread can name a passage).

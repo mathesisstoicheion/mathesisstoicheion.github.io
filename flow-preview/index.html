@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>New Flow Mock-up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=GFS+Didot&family=Alegreya:ital,wght@0,400;0,600;0,700;1,400&family=Alegreya+Sans+SC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* The site's own "Black-Figure" tokens (web/src/app/globals.css), copied so the mock-up looks like the site. */
+:root {
+  --bg:#E6C39B; --bg-2:#DDB186; --surface:#F3E3CC; --ink:#1B1410; --ink-2:#5A3E2B; --accent:#93300F; --accent-ink:#F6ECDD;
+  --band:#1B1410; --rule:rgba(27,20,16,.28); --shadow:rgba(40,20,5,.35); --ok:#275B34;
+  --inv-bg:var(--ink); --inv-fg:var(--bg); --sel-bg:var(--ink); --sel-fg:var(--bg); --sel-edge:var(--ink); --accent-on-ink:#E0673A;
+  --hl:rgba(39,91,52,.16);
+  --f-greek:"GFS Didot",Georgia,serif; --f-display:"GFS Didot",Georgia,serif; --f-body:"Alegreya",Georgia,serif; --f-label:"Alegreya Sans SC",system-ui,sans-serif;
+  --ease:cubic-bezier(.2,.7,.2,1); --gut:clamp(16px,4vw,48px);
+  --meander:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M0 1H20M0 19H20M3.5 19V4H16.5V16H7.5V8H12.5V12' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
+  --tongue:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1 0H11V6A5 5 0 0 1 1 6Z'/%3E%3C/svg%3E");
+  color-scheme:light;
+}
+:root[data-theme="dark"] {
+  --bg:#16110E; --bg-2:#1F1712; --surface:#241A14; --ink:#EDCBA0; --ink-2:#BE9876; --accent:#E0673A; --accent-ink:#16110E;
+  --band:#C8703A; --rule:rgba(237,203,160,.22); --shadow:rgba(0,0,0,.6); --ok:#7CC08E;
+  --inv-bg:#2A1F18; --inv-fg:#EDCBA0; --sel-bg:#4A2616; --sel-fg:#F6E2C4; --sel-edge:#E0673A; --hl:rgba(124,192,142,.18);
+  color-scheme:dark;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#16110E; --bg-2:#1F1712; --surface:#241A14; --ink:#EDCBA0; --ink-2:#BE9876; --accent:#E0673A; --accent-ink:#16110E;
+  --band:#C8703A; --rule:rgba(237,203,160,.22); --shadow:rgba(0,0,0,.6); --ok:#7CC08E;
+  --inv-bg:#2A1F18; --inv-fg:#EDCBA0; --sel-bg:#4A2616; --sel-fg:#F6E2C4; --sel-edge:#E0673A; --hl:rgba(124,192,142,.18);
+  color-scheme:dark; } }
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{background:#2a211b;color:var(--ink);font-family:var(--f-body);font-size:1.0625rem;line-height:1.55}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit}
+[lang="grc"]{font-family:var(--f-greek)}
+.label{font-family:var(--f-label);font-size:.85rem;letter-spacing:.08em;color:var(--ink-2)}
+.muted{color:var(--ink-2)}
+
+/* ------------------------------------------------ the mock-up's own control bar (not part of the design) */
+.mock{position:relative;z-index:50;display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;padding:10px 16px;
+  background:#0e0a08;color:#f0dcc0;font:500 13px/1.3 system-ui,sans-serif;border-bottom:2px dashed #c8703a}
+.mock b{color:#ffb487;font-weight:700}
+.mock .seg{display:inline-flex;border:1px solid #6b5444;border-radius:999px;overflow:hidden}
+.mock .seg button{background:none;border:0;padding:6px 12px;color:#f0dcc0;font:inherit}
+.mock .seg button[aria-pressed="true"]{background:#c8703a;color:#140d09}
+.mock .idea{flex:1 1 320px;min-width:0;color:#d9c2a3}
+.mock .idea i{color:#ffb487;font-style:normal;font-weight:700}
+
+/* ------------------------------------------------ the stage: full width, or a phone */
+.stage{min-height:calc(100vh - 52px);display:flex;justify-content:center;align-items:flex-start}
+.device{width:100%;background:var(--bg);min-height:calc(100vh - 52px);position:relative;container-type:inline-size}
+.stage.phone{padding:28px 16px 40px}
+.stage.phone .device{width:390px;max-width:100%;height:800px;min-height:0;overflow-y:auto;border-radius:34px;
+  border:10px solid #0e0a08;box-shadow:0 30px 80px rgba(0,0,0,.55);scrollbar-width:none}
+.stage.phone .device::-webkit-scrollbar{display:none}
+
+.wrap{max-width:1180px;margin:0 auto;padding:0 var(--gut)}
+.meander{height:14px;background:var(--band);-webkit-mask:var(--meander) 0 0/14px 14px repeat-x;mask:var(--meander) 0 0/14px 14px repeat-x}
+.tongues{height:12px;background:var(--band);-webkit-mask:var(--tongue) 0 0/10px 12px repeat-x;mask:var(--tongue) 0 0/10px 12px repeat-x}
+
+/* ------------------------------------------------ header: five plain doors */
+header.hdr{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.hdr .row{display:flex;align-items:center;gap:22px;height:66px}
+.brand{display:flex;flex-direction:column;line-height:1.05;text-decoration:none;cursor:pointer}
+.brand b{font-family:var(--f-display);font-size:1.35rem;font-weight:400}
+.brand small{font-family:var(--f-label);font-size:.7rem;letter-spacing:.12em;color:var(--ink-2)}
+.doors{display:flex;gap:4px;margin:0 auto}
+.doors a{position:relative;display:flex;flex-direction:column;align-items:center;padding:8px 14px;text-decoration:none;border-radius:2px;cursor:pointer}
+.doors a b{font-weight:700;font-size:1.02rem;letter-spacing:.01em}
+.doors a small{font-family:var(--f-greek);font-size:.82rem;color:var(--ink-2);line-height:1}
+.doors a::after{content:"";position:absolute;left:14px;right:14px;bottom:2px;height:2px;background:var(--accent);transform:scaleX(0);transition:transform .35s var(--ease)}
+.doors a:hover::after,.doors a[aria-current="page"]::after{transform:scaleX(1)}
+.search{display:flex;align-items:center;gap:8px;border:1px solid var(--rule);background:var(--surface);border-radius:999px;padding:7px 12px 7px 14px;min-width:220px;color:var(--ink-2);cursor:text}
+.search kbd{margin-left:auto;font:600 .75rem system-ui;border:1px solid var(--rule);border-radius:4px;padding:1px 6px}
+.ibtn{display:grid;place-items:center;width:40px;height:40px;border:0;background:none;border-radius:50%}
+.ibtn:hover{background:var(--bg-2)}
+.ibtn svg{width:21px;height:21px}
+.only-phone{display:none}
+.phone .only-phone{display:flex}
+.phone .doors,.phone .search,.phone .only-wide{display:none}
+@container (max-width:900px){.doors,.search,.only-wide{display:none!important}.only-phone{display:flex}.hdr .row{height:56px;gap:6px}.brand{margin-right:auto}
+  .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:sticky;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--rule);padding:6px 4px 10px}}
+.brand b{white-space:nowrap}
+.phone .hdr .row{height:56px;gap:6px}
+.phone .brand{margin-right:auto}
+
+/* phone bottom bar: the same five doors */
+.tabbar{display:none}
+.phone .tabbar{display:grid;grid-template-columns:repeat(5,1fr);position:sticky;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--rule);padding:6px 4px 10px}
+.tabbar a{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.72rem;text-decoration:none;color:var(--ink-2);cursor:pointer;padding:4px 0}
+.tabbar a svg{width:22px;height:22px}
+.tabbar a[aria-current="page"]{color:var(--accent);font-weight:700}
+
+/* ------------------------------------------------ buttons, cards */
+.btn{display:inline-flex;align-items:center;gap:10px;padding:12px 20px;border:1.5px solid var(--sel-edge);background:var(--sel-bg);color:var(--sel-fg);border-radius:2px;font-weight:600;text-decoration:none;transition:transform .2s var(--ease)}
+.btn:hover{transform:translateY(-2px)}
+.btn.ghost{background:transparent;color:var(--ink)}
+.btn.small{padding:8px 14px;font-size:.92rem}
+.btn .arr{transition:transform .25s var(--ease)}
+.btn:hover .arr{transform:translateX(4px)}
+.chip{display:inline-flex;align-items:center;gap:7px;padding:6px 12px;border:1px solid var(--rule);border-radius:999px;font-size:.9rem;background:transparent}
+.chip[aria-pressed="true"]{background:var(--sel-bg);color:var(--sel-fg);border-color:var(--sel-edge)}
+.card{background:var(--surface);border:1px solid var(--rule);border-radius:3px;box-shadow:0 1px 0 var(--rule)}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;line-height:1.1;margin:0}
+h2{font-size:clamp(1.6rem,3vw,2.2rem)}
+.sec{padding:clamp(36px,6vw,64px) 0}
+.sec-head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:8px 24px;margin-bottom:22px}
+
+/* entrance animation: things rise into place, one after another */
+.rise{opacity:0;transform:translateY(14px);animation:rise .7s var(--ease) forwards;animation-delay:calc(var(--i,0) * 70ms)}
+@keyframes rise{to{opacity:1;transform:none}}
+.view{animation:turn .45s var(--ease)}
+@keyframes turn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion: reduce){.rise,.view{animation:none;opacity:1;transform:none}}
+
+/* ------------------------------------------------ home: first visit */
+.hero{padding:clamp(40px,8vw,90px) 0 30px;text-align:center;position:relative;overflow:hidden}
+.hero .kicker{display:inline-flex;align-items:center;gap:10px}
+.hero h1{font-size:clamp(3rem,9vw,6.4rem);margin:14px 0 6px;letter-spacing:.01em}
+.hero h1 span{display:block;font-size:.55em;color:var(--accent)}
+.hero .sub{font-size:clamp(1.1rem,2vw,1.35rem);max-width:34em;margin:0 auto}
+.ask{margin-top:clamp(28px,5vw,48px)}
+.ask h2{font-size:clamp(1.5rem,3vw,2rem)}
+.choices{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin:22px auto 0;max-width:1000px;text-align:left}
+@container (max-width:700px){.choices{grid-template-columns:1fr}}
+.choice{position:relative;padding:22px 22px 20px;border:1.5px solid var(--rule);background:var(--surface);border-radius:3px;text-align:left;transition:transform .3s var(--ease),opacity .3s,border-color .3s,box-shadow .3s}
+.choice:hover{transform:translateY(-4px);box-shadow:0 12px 30px -14px var(--shadow)}
+.choice .glyph{font-family:var(--f-greek);font-size:2.4rem;line-height:1;color:var(--accent);display:block;margin-bottom:10px}
+.choice b{display:block;font-size:1.2rem;margin-bottom:4px}
+.choice span.t{color:var(--ink-2);font-size:.98rem}
+.choices.picked .choice{opacity:.45}
+.choices.picked .choice.on{opacity:1;border-color:var(--accent);transform:translateY(-4px)}
+.setup{max-width:1000px;margin:18px auto 0;overflow:hidden;max-height:0;transition:max-height .6s var(--ease)}
+.setup.open{max-height:420px}
+.setup .inner{display:grid;grid-template-columns:1fr auto;gap:18px 30px;align-items:center;text-align:left;padding:22px 24px;background:var(--inv-bg);color:var(--inv-fg);border-radius:3px}
+@container (max-width:700px){.setup .inner{grid-template-columns:1fr}}
+.setup .inner .label{color:var(--inv-fg);opacity:.75}
+.setup ul{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:6px}
+.setup li{display:flex;gap:10px;align-items:center;opacity:0;transform:translateX(-8px);transition:opacity .4s var(--ease),transform .4s var(--ease)}
+.setup.open li{opacity:1;transform:none}
+.setup li svg{width:18px;height:18px;flex:none;stroke:var(--accent-on-ink);stroke-dasharray:24;stroke-dashoffset:24;transition:stroke-dashoffset .5s var(--ease)}
+.setup.open li svg{stroke-dashoffset:0}
+.setup .inner .btn{background:var(--accent-on-ink);border-color:var(--accent-on-ink);color:#140d09}
+.setup small{display:block;margin-top:8px;opacity:.7}
+.tourlink{margin-top:18px}
+
+.doorgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px}
+@container (max-width:1000px){.doorgrid{grid-template-columns:repeat(2,1fr)}}
+@container (max-width:520px){.doorgrid{grid-template-columns:1fr}}
+.door{display:flex;flex-direction:column;text-decoration:none;cursor:pointer;overflow:hidden;transition:transform .3s var(--ease),box-shadow .3s}
+.door:hover{transform:translateY(-4px);box-shadow:0 14px 34px -16px var(--shadow)}
+.door figure{margin:0;aspect-ratio:4/3;overflow:hidden;background:var(--bg-2)}
+.door img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.door:hover img{transform:scale(1.05)}
+.door .body{padding:14px 16px 16px}
+.door h3{font-family:var(--f-body);font-weight:700;font-size:1.25rem}
+.door .gk{font-family:var(--f-greek);color:var(--ink-2);font-size:.95rem}
+.door ul{margin:10px 0 0;padding-left:18px;font-size:.93rem;color:var(--ink-2)}
+
+/* passage */
+.passage{padding:24px clamp(18px,3vw,32px);display:grid;grid-template-columns:1fr 1fr;gap:14px 36px}
+@container (max-width:700px){.passage{grid-template-columns:1fr}}
+.passage .grc{font-family:var(--f-greek);font-size:1.3rem;line-height:1.75}
+.passage .eng{color:var(--ink-2)}
+
+/* ------------------------------------------------ home: returning */
+.welcome{padding:clamp(28px,5vw,48px) 0 6px}
+.welcome h1{font-size:clamp(2.2rem,5vw,3.4rem)}
+.desk{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:16px;margin-top:22px}
+@container (max-width:900px){.desk{grid-template-columns:1fr}}
+.dcard{padding:20px 22px;display:flex;flex-direction:column;gap:10px;min-height:230px}
+.dcard h3{font-family:var(--f-body);font-weight:700;font-size:1.3rem}
+.dcard .go{margin-top:auto}
+.dcard.main{background:var(--inv-bg);color:var(--inv-fg);border-color:transparent}
+.dcard.main .label,.dcard.main .muted{color:var(--inv-fg);opacity:.75}
+.dcard.main .btn{background:var(--accent-on-ink);border-color:var(--accent-on-ink);color:#140d09}
+.dcard .gline{font-family:var(--f-greek);font-size:1.35rem;line-height:1.5}
+.bar{height:4px;background:color-mix(in srgb,currentColor 18%,transparent);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent-on-ink);border-radius:4px;animation:fill 1.4s .4s var(--ease) forwards}
+@keyframes fill{to{width:var(--w)}}
+.stack{position:relative;height:96px;margin:6px 0 4px}
+.stack span{position:absolute;left:50%;top:6px;width:150px;margin-left:-75px;padding:16px 0;text-align:center;font-family:var(--f-greek);font-size:1.5rem;
+  background:var(--bg);border:1px solid var(--rule);border-radius:4px;box-shadow:0 6px 16px -10px var(--shadow);transition:transform .6s var(--ease)}
+.stack span:nth-child(1){transform:rotate(-9deg) translateX(-34px)}
+.stack span:nth-child(2){transform:rotate(5deg) translateX(30px)}
+.stack span:nth-child(3){transform:rotate(-1deg)}
+.dcard:hover .stack span:nth-child(1){transform:rotate(-14deg) translateX(-62px)}
+.dcard:hover .stack span:nth-child(2){transform:rotate(11deg) translateX(58px)}
+.strip{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}
+@container (max-width:900px){.strip{grid-template-columns:1fr}}
+.strip .card{padding:16px 20px;display:flex;gap:14px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none;box-shadow:0 0 0 0 var(--accent);animation:pulse 2.4s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 color-mix(in srgb,var(--accent) 50%,transparent)}70%,100%{box-shadow:0 0 0 10px transparent}}
+.minidoors{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@container (max-width:900px){.minidoors{grid-template-columns:repeat(2,1fr)}}
+.minidoors a{display:flex;gap:12px;align-items:center;padding:10px;text-decoration:none;cursor:pointer;transition:background .2s}
+.minidoors a:hover{background:var(--bg-2)}
+.minidoors img{width:54px;height:54px;object-fit:cover;border-radius:2px;flex:none}
+.minidoors b{display:block}
+
+/* ------------------------------------------------ door pages */
+.band{background:var(--inv-bg);color:var(--inv-fg);padding:clamp(28px,5vw,48px) 0 clamp(22px,4vw,34px)}
+.band .label{color:var(--inv-fg);opacity:.75}
+.band h1{font-size:clamp(2.4rem,6vw,4rem)}
+.band h1 small{display:block;font-family:var(--f-greek);font-size:.42em;color:var(--accent-on-ink);margin-top:6px}
+.band p{max-width:40em;opacity:.85;margin:10px 0 0}
+.groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;padding:28px 0 60px}
+.group{padding:18px 20px}
+.group h3{font-family:var(--f-body);font-weight:700;font-size:1.15rem;margin-bottom:8px;display:flex;justify-content:space-between;gap:8px}
+.group ul{list-style:none;margin:0;padding:0}
+.group li{padding:7px 0;border-top:1px solid var(--rule);display:flex;justify-content:space-between;gap:10px}
+.group li:first-child{border-top:0}
+.group li span{color:var(--ink-2);font-size:.92rem;text-align:right}
+.group.feature{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;padding:0;overflow:hidden}
+@container (max-width:620px){.group.feature{grid-column:auto;grid-template-columns:1fr}}
+.group.feature img{width:100%;height:100%;object-fit:cover;min-height:180px}
+.group.feature .txt{padding:18px 20px}
+.new{font-family:var(--f-label);font-size:.72rem;letter-spacing:.08em;color:var(--accent);border:1px solid currentColor;border-radius:999px;padding:1px 8px;white-space:nowrap;align-self:center}
+.lessons li{align-items:center}
+.lessons .n{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:50%;border:1.5px solid var(--rule);font-size:.8rem;margin-right:10px;flex:none}
+.lessons .done .n{background:var(--ok);border-color:var(--ok);color:var(--bg)}
+.lessons .now .n{border-color:var(--accent);color:var(--accent);font-weight:700}
+.lessons .now{font-weight:700}
+.realread{font-size:.82rem;color:var(--accent)!important;white-space:nowrap}
+
+/* ------------------------------------------------ reader */
+.rhead{padding:22px 0 10px;display:flex;flex-wrap:wrap;gap:10px 24px;align-items:end;justify-content:space-between}
+.rhead h1{font-size:clamp(1.8rem,4vw,2.6rem)}
+.tools{position:sticky;top:66px;z-index:10;background:var(--bg);border-block:1px solid var(--rule);padding:8px 0}
+.phone .tools{top:56px}
+.tools .wrap{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.tools .sep{width:1px;height:24px;background:var(--rule);margin:0 4px}
+.menu{position:relative}
+.menu .pop{position:absolute;top:calc(100% + 6px);left:0;z-index:12;min-width:230px;padding:8px;display:none}
+.menu.open .pop{display:block;animation:rise .25s var(--ease) forwards}
+.pop button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:2px}
+.pop button:hover{background:var(--bg-2)}
+.pop button small{display:block;color:var(--ink-2);font-size:.82rem}
+.discuss{margin-left:auto}
+.rows{padding:18px 0 80px}
+.rowp{display:grid;grid-template-columns:52px 1fr 1fr;gap:10px 28px;padding:16px 0;border-bottom:1px solid var(--rule)}
+@container (max-width:700px){.rowp{grid-template-columns:1fr}}
+.rowp .ref{font-family:var(--f-label);color:var(--ink-2);font-size:.85rem;padding-top:6px}
+.gk-lines{font-family:var(--f-greek);font-size:1.32rem;line-height:1.7}
+.gk-lines .ln{display:block}
+.gk-lines .tl{display:block;font-family:var(--f-body);font-style:italic;font-size:.88rem;color:var(--ink-2);line-height:1.2;margin:-2px 0 6px;max-height:0;opacity:0;overflow:hidden;transition:max-height .4s var(--ease),opacity .4s}
+.show-tl .gk-lines .tl{max-height:30px;opacity:1}
+.w{cursor:pointer;border-radius:2px;transition:background .2s,box-shadow .2s;padding:0 1px}
+.w:hover{background:var(--bg-2)}
+.w.sel{background:var(--sel-bg);color:var(--sel-fg)}
+.show-known .w.known{box-shadow:inset 0 -2px 0 var(--ok);background:var(--hl)}
+.en{color:var(--ink-2);line-height:1.65}
+.look{position:fixed;right:24px;bottom:24px;z-index:30;width:min(360px,calc(100% - 32px));padding:18px 20px;display:none;
+  box-shadow:0 20px 50px -18px var(--shadow)}
+.stage.phone .look{position:sticky;right:auto;left:0;bottom:66px;width:auto;margin:0 10px}
+.look.open{display:block;animation:pop .35s var(--ease)}
+@keyframes pop{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
+.look .lemma{font-family:var(--f-greek);font-size:1.8rem;line-height:1.1}
+.look .parse{font-family:var(--f-label);letter-spacing:.06em;color:var(--ink-2);font-size:.85rem}
+.look .mean{font-size:1.1rem;margin:6px 0 10px}
+.look .lesson{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px dashed var(--accent);border-radius:3px;margin:10px 0;text-decoration:none;cursor:pointer}
+.look .lesson svg{width:22px;height:22px;flex:none;color:var(--accent)}
+.look .saved{display:flex;gap:8px;align-items:center;color:var(--ok);font-size:.92rem;opacity:0;transform:translateY(4px);transition:all .4s .5s var(--ease)}
+.look.open .saved{opacity:1;transform:none}
+.look .x{position:absolute;top:8px;right:8px}
+.look .acts{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(400px,100%);z-index:40;padding:22px;transform:translateX(105%);transition:transform .45s var(--ease);overflow:auto;border-radius:0}
+.stage.phone .drawer{position:sticky;display:none;transform:none;height:auto;margin:10px}
+.drawer.open{transform:none}
+.stage.phone .drawer.open{display:block;bottom:66px}
+.thread{padding:12px 0;border-top:1px solid var(--rule)}
+.thread b{display:block}
+.example{font-family:var(--f-label);font-size:.7rem;letter-spacing:.08em;background:var(--bg-2);border-radius:2px;padding:1px 6px;color:var(--ink-2)}
+
+/* search overlay */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(14,10,8,.55);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding:12vh 16px 0}
+.overlay.open{display:flex;animation:turn .3s var(--ease)}
+.sbox{width:min(640px,100%);padding:18px}
+.sbox input{width:100%;font:inherit;font-size:1.3rem;padding:12px 14px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);border-radius:2px}
+.sres{display:grid;gap:4px;margin-top:14px}
+.sres .grp{font-family:var(--f-label);letter-spacing:.08em;color:var(--ink-2);font-size:.8rem;margin-top:8px}
+.sres a{display:flex;justify-content:space-between;gap:10px;padding:8px 10px;border-radius:2px;text-decoration:none;cursor:pointer}
+.sres a:hover{background:var(--bg-2)}
+.sres a span{color:var(--ink-2);font-size:.9rem}
+
+footer.foot{padding:30px 0 40px;color:var(--ink-2);font-size:.9rem}
+.credit{font-size:.75rem;color:var(--ink-2);margin-top:6px}
+</style>
+</head>
+<body>
+
+<!-- ============================================== the mock-up's own controls (not part of the design) -->
+<div class="mock" role="region" aria-label="Mock-up controls">
+  <span><b>Mock-up</b> · not the real site</span>
+  <span>Visitor <span class="seg" id="segVisitor"><button data-v="first" aria-pressed="true">First visit</button><button data-v="back" aria-pressed="false">Returning</button></span></span>
+  <span>Screen <span class="seg" id="segScreen"><button data-s="wide" aria-pressed="true">Computer</button><button data-s="phone" aria-pressed="false">Phone</button></span></span>
+  <span class="seg" id="segTheme"><button data-t="light" aria-pressed="true">Light</button><button data-t="dark" aria-pressed="false">Dark</button></span>
+  <span class="idea" id="idea"></span>
+</div>
+
+<div class="stage" id="stage">
+  <div class="device" id="device">
+    <header class="hdr">
+      <div class="wrap row">
+        <a class="brand" data-go="home"><b lang="grc">Μάθησις Στοιχείων</b><small>MATHESIS STOICHEION</small></a>
+        <nav class="doors" aria-label="Areas of the site" id="doors"></nav>
+        <div class="search only-wide" data-search><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>Search everything<kbd>/</kbd></div>
+        <button class="ibtn only-phone" data-go="talk" aria-label="Talk: the Town Hall"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v10H9l-5 4z"/></svg></button>
+        <button class="ibtn" id="themeBtn" aria-label="Light or dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/></svg></button>
+        <button class="ibtn" aria-label="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9 7 7M17 17l2.1 2.1M4.9 19.1 7 17M17 7l2.1-2.1"/></svg></button>
+      </div>
+    </header>
+
+    <main id="view"></main>
+
+    <nav class="tabbar" id="tabbar" aria-label="Areas of the site"></nav>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sbox card">
+    <input id="sinput" value="wrath" aria-label="Search everything">
+    <div class="sres">
+      <div class="grp">IN THE TEXTS</div>
+      <a data-go="reader">Homer, <i>Iliad</i> 1.1 · μῆνιν ἄειδε θεὰ… <span>Read</span></a>
+      <div class="grp">WORDS</div>
+      <a data-go="reader"><span lang="grc" style="color:var(--ink);font-size:1.1rem">μῆνις</span> <span>“wrath” · LSJ</span></a>
+      <div class="grp">LESSONS</div>
+      <a data-go="learn">Lesson 3 · Who does what: the idea of case <span>Learn</span></a>
+      <div class="grp">ONE BOX, EVERY PART OF THE SITE</div>
+      <p class="muted" style="margin:4px 10px;font-size:.92rem">Texts, words, lessons, the wiki, the map and the forum, from one box on every page. Results here are illustrative.</p>
+    </div>
+  </div>
+</div>
+
+<aside class="look card" id="look" aria-live="polite"></aside>
+<aside class="drawer card" id="drawer"></aside>
+
+<script>
+const IMG = (f) => `../web/public/images/w640/${f}.jpg`;
+const ICON = {
+  learn: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l9-4 9 4-9 4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>',
+  read: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h6a2 2 0 0 1 2 2v12a2 2 0 0 0-2-2H4zM20 5h-6a2 2 0 0 0-2 2v12a2 2 0 0 1 2-2h6z"/></svg>',
+  search: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/></svg>',
+  explore: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="m15.5 8.5-2 5-5 2 2-5z"/></svg>',
+  talk: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v10H9l-5 4z"/></svg>',
+  mine: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12v18l-6-4-6 4z"/></svg>',
+  tick: '<svg viewBox="0 0 24 24" fill="none" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12.5 9.5 18 20 6"/></svg>',
+  book: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 8l9-4 9 4-9 4z"/><path d="M7 10v5c3 2 7 2 10 0v-5"/></svg>',
+};
+
+/* The five doors. Plain English first; the area's Greek name beneath. */
+const DOORS = [
+  { id: "learn", en: "Learn", gk: "Ἀκαδήμεια", area: "The Academy", img: "douris-school-cup",
+    alt: "A red-figure drinking cup by Douris with seated teachers and standing pupils.",
+    line: "From the alphabet to reading Homer.", items: ["Lessons, one step at a time", "Today’s practice", "Tables and vocabulary"] },
+  { id: "read", en: "Read", gk: "Μουσεῖον", area: "The Mouseion", img: "socrates-louvre",
+    alt: "A Roman marble portrait head of Socrates.",
+    line: "1,837 works, Greek with English beside it.", items: ["Where to begin", "Reading paths", "The whole library"] },
+  { id: "explore", en: "Explore", gk: "Στοὰ Ποικίλη", area: "The Painted Stoa", img: "mask-of-agamemnon",
+    alt: "The gold funeral mask from Mycenae called the Mask of Agamemnon.",
+    line: "The world that wrote the texts.", items: ["The map", "The Census of names", "Archaeology and the wiki"] },
+  { id: "talk", en: "Talk", gk: "Πνύξ", area: "The Town Hall and the Pnyx", img: "themistocles-ostraka",
+    alt: "Pottery fragments scratched with the name of Themistocles.",
+    line: "Ask, answer and argue.", items: ["Questions and answers", "Weekly debates", "Talk about a passage"] },
+  { id: "mine", en: "Mine", gk: "θησαυρός", area: "The Treasury", img: "athenian-owl",
+    alt: "A silver tetradrachm of Athens showing Athena in a crested helmet.",
+    line: "Everything you keep.", items: ["Saved passages and words", "Notes and notebooks", "Downloads for offline"] },
+];
+
+/* Iliad 1.1–7, Perseus grc2; English: A. T. Murray (1924), as the site's reader shows them (scripts/passage.ts). */
+const LINES = [
+  ["1.1", "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος", "mēnin aeide thea Pēlēiadeō Achilēos"],
+  ["1.2", "οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε,", "oulomenēn, hē myri’ Achaiois alge’ ethēke,"],
+  ["1.3", "πολλὰς δʼ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν", "pollas d’ iphthimous psychas Aidi proiapsen"],
+  ["1.4", "ἡρώων, αὐτοὺς δὲ ἑλώρια τεῦχε κύνεσσιν", "hērōōn, autous de helōria teuche kynessin"],
+  ["1.5", "οἰωνοῖσί τε πᾶσι, Διὸς δʼ ἐτελείετο βουλή,", "oiōnoisi te pasi, Dios d’ eteleieto boulē,"],
+  ["1.6", "ἐξ οὗ δὴ τὰ πρῶτα διαστήτην ἐρίσαντε", "ex hou dē ta prōta diastētēn erisante"],
+  ["1.7", "Ἀτρεΐδης τε ἄναξ ἀνδρῶν καὶ δῖος Ἀχιλλεύς.", "Atreidēs te anax andrōn kai dios Achilleus."],
+];
+const EN = [
+  ["1.1", "The wrath sing, goddess, of Peleus' son, Achilles, that destructive wrath which brought countless woes upon the Achaeans, and sent forth to Hades many valiant souls of heroes, and made them themselves spoil for dogs and every bird; thus the plan of Zeus came to fulfillment,"],
+  ["1.5", "from the time when first they parted in strife Atreus' son, king of men, and brilliant Achilles."],
+];
+/* Words with a filled-in look-up in this mock-up (the real reader has every word). */
+const LOOK = {
+  "μῆνιν": { lemma: "μῆνις", parse: "NOUN · ACCUSATIVE SINGULAR", mean: "wrath (LSJ)", why: "Why accusative? It is what the goddess is asked to sing.", lesson: "Lesson 3 · Who does what: the idea of case" },
+  "ἄειδε": { lemma: "ἀείδω", parse: "VERB · PRESENT IMPERATIVE ACTIVE, 2ND SINGULAR", mean: "sing (LSJ)", why: "A command: “sing!”", lesson: "Lesson 8 · Verbs: the present tense" },
+  "θεὰ":   { lemma: "θεά", parse: "NOUN · VOCATIVE SINGULAR", mean: "goddess (LSJ)", why: "Calling on someone: “O goddess”.", lesson: "Lesson 6 · First declension: ψυχή, χώρα, δόξα" },
+};
+const KNOWN = new Set(["θεὰ", "ψυχὰς", "δὲ", "δʼ", "τε", "καὶ", "τὰ"]);
+
+const IDEAS = {
+  "home-first": "<i>Idea 1</i> · A first visit asks one question instead of showing eleven sections. The answer sets up the reading aids. Pick a card.",
+  "home-back": "<i>Idea 1 + 3</i> · Coming back, the top of the home page is your desk: carry on reading, today’s practice, and the next lesson, chosen from the words you looked up.",
+  learn: "<i>Idea 2 + 3</i> · Learn holds everything for learning. Each lesson ends with “Read it for real”, opening the passage in the reader.",
+  read: "<i>Idea 2</i> · Read: find a text, follow a path, or browse the whole library. Downloads are reachable from here too.",
+  explore: "<i>Idea 2</i> · Explore brings the Map, the Census and Archaeology up out of the wiki, to the same level as the wiki itself.",
+  talk: "<i>Idea 2 + 5</i> · Talk joins the Town Hall and the Pnyx, and adds talk about a particular passage.",
+  mine: "<i>Idea 2</i> · Mine: everything you have kept, in one place, with Downloads moved here from the footer.",
+  reader: "<i>Idea 3 + 4 + 5</i> · A calm reader: tools grouped by question (this word, this passage, this work). Click μῆνιν, ἄειδε or θεὰ: the look-up links to the lesson and saves the word for practice.",
+};
+
+let state = { visitor: "first", screen: "wide", page: "home", picked: null, tl: false, known: false };
+const $ = (s, r = document) => r.querySelector(s);
+const view = $("#view");
+
+function navHtml() {
+  $("#doors").innerHTML = DOORS.map((d) => `<a data-go="${d.id}" ${state.page === d.id || (d.id === "read" && state.page === "reader") ? 'aria-current="page"' : ""}><b>${d.en}</b><small lang="grc">${d.gk}</small></a>`).join("");
+  const tabs = ["learn", "read", "search", "explore", "mine"];
+  $("#tabbar").innerHTML = tabs.map((t) => {
+    const d = DOORS.find((x) => x.id === t);
+    const cur = state.page === t || (t === "read" && state.page === "reader");
+    return t === "search" ? `<a data-search>${ICON.search}Search</a>` : `<a data-go="${t}" ${cur ? 'aria-current="page"' : ""}>${ICON[t]}${d.en}</a>`;
+  }).join("");
+}
+
+const doorTile = (d, i) => `
+  <a class="door card rise" style="--i:${i}" data-go="${d.id}">
+    <figure><img src="${IMG(d.img)}" alt="${d.alt}" loading="lazy"></figure>
+    <div class="body"><h3>${d.en}</h3><div class="gk"><span lang="grc">${d.gk}</span> · ${d.area}</div>
+      <p class="muted" style="margin:6px 0 0;font-size:.95rem">${d.line}</p>
+      <ul>${d.items.map((x) => `<li>${x}</li>`).join("")}</ul></div>
+  </a>`;
+
+const passageBlock = () => `
+  <section class="sec" style="padding-top:10px"><div class="wrap">
+    <div class="sec-head"><div><span class="label">PASSAGE OF THE DAY</span><h2>Homer, <i>Iliad</i> 1.1–7</h2></div>
+      <p class="muted" style="margin:0">The opening of the Iliad: the poet asks the goddess to sing of the wrath of Achilles.</p></div>
+    <div class="card passage rise"><div class="grc" lang="grc">${LINES.slice(0, 4).map((l) => l[1]).join("<br>")}</div>
+      <div><p class="eng" style="margin:0">${EN[0][1]}</p><p style="margin:14px 0 0"><a class="btn small" data-go="reader">Read on <span class="arr">→</span></a></p></div></div>
+  </div></section>`;
+
+const CHOICES = [
+  { id: "none", glyph: "Αα", title: "I know no Greek", text: "Begin with the letters and their sounds. A real line of Homer by the end of the first lesson.",
+    sets: ["Start at the alphabet", "Latin letters shown under the Greek", "Each reading aid explained the first time you meet it"], go: "learn", cta: "Meet the alphabet" },
+  { id: "some", glyph: "λόγος", title: "I know a little", text: "Pick up the lessons where you are, and read real texts with help one tap away.",
+    sets: ["Lessons, with the ones you know ticked off", "Look up any word with a tap", "Words you look up saved for practice"], go: "learn", cta: "Choose where to start" },
+  { id: "read", glyph: "Α | A", title: "I just want to read", text: "Greek and English side by side. Read the English, glance at the Greek, dig in when you like.",
+    sets: ["The library, English beside the Greek", "Reading aids off; switch any on later", "Some good first texts to choose from"], go: "read", cta: "Open the library" },
+];
+
+function homeFirst() {
+  return `<div class="view">
+  <section class="hero"><div class="wrap">
+    <div class="kicker rise"><span class="tongues" style="width:60px"></span><span class="label">ANCIENT GREEK, FROM THE FIRST LETTER</span><span class="tongues" style="width:60px"></span></div>
+    <h1 class="rise" style="--i:1" lang="grc">Μάθησις<span>Στοιχείων</span></h1>
+    <p class="sub rise" style="--i:2">Learn to read Ancient Greek, and meet the world that wrote it.</p>
+    <div class="ask">
+      <h2 class="rise" style="--i:3">Where are you starting?</h2>
+      <div class="choices ${state.picked ? "picked" : ""}" id="choices">
+        ${CHOICES.map((c, i) => `<button class="choice rise ${state.picked === c.id ? "on" : ""}" style="--i:${4 + i}" data-pick="${c.id}" aria-pressed="${state.picked === c.id}">
+          <span class="glyph" lang="grc">${c.glyph}</span><b>${c.title}</b><span class="t">${c.text}</span></button>`).join("")}
+      </div>
+      <div class="setup" id="setup"></div>
+      <p class="tourlink muted rise" style="--i:7">Not sure? <a data-go="guide" style="cursor:pointer">See how the site works in two minutes</a>.</p>
+    </div>
+  </div><div class="wrap" style="margin-top:26px"><div class="meander"></div></div></section>
+
+  <section class="sec"><div class="wrap">
+    <div class="sec-head"><div><span class="label">WHAT’S INSIDE</span><h2>Five doors</h2></div>
+      <p class="muted" style="margin:0;max-width:32em">The same five on every page, and along the bottom of a phone.</p></div>
+    <div class="doorgrid">${DOORS.map(doorTile).join("")}</div>
+    <p class="credit">Pictures: Douris school cup (CC BY-SA 3.0); Socrates, Louvre (public domain); Mask of Agamemnon (CC0); ostraka of Themistocles (CC BY-SA 4.0); Athenian tetradrachm, the Met (CC0). From the site's own picture library.</p>
+  </div></section>
+  ${passageBlock()}
+  <footer class="foot"><div class="wrap"><div class="meander" style="margin-bottom:16px"></div>About · Credits · Privacy · How to use the site · Report a problem</div></footer>
+  </div>`;
+}
+
+function setupPanel() {
+  const c = CHOICES.find((x) => x.id === state.picked);
+  const el = $("#setup");
+  if (!c) { el.className = "setup"; el.innerHTML = ""; return; }
+  el.innerHTML = `<div class="inner"><div><span class="label">WE’LL SET THINGS UP FOR YOU</span>
+    <ul>${c.sets.map((s, i) => `<li style="transition-delay:${150 + i * 160}ms">${ICON.tick.replace("<svg", `<svg style="transition-delay:${250 + i * 160}ms"`)}${s}</li>`).join("")}</ul>
+    <small>You can change any of this later in Settings.</small></div>
+    <a class="btn" data-go="${c.go}">${c.cta} <span class="arr">→</span></a></div>`;
+  el.className = "setup";
+  requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add("open")));
+  if ($("#device").clientWidth < 700) setTimeout(() => el.scrollIntoView({ behavior: "smooth", block: "center" }), 350);
+}
+
+function homeBack() {
+  return `<div class="view">
+  <section class="welcome"><div class="wrap">
+    <span class="label rise">WELCOME BACK</span>
+    <h1 class="rise" style="--i:1">Your desk</h1>
+    <div class="desk">
+      <div class="card dcard main rise" style="--i:2">
+        <span class="label">CARRY ON READING</span>
+        <h3>Homer, <i>Iliad</i></h3>
+        <div class="gline" lang="grc">οἰωνοῖσί τε πᾶσι, Διὸς δʼ ἐτελείετο βουλή,</div>
+        <div class="muted">Book 1, line 5 of 611 · left yesterday</div>
+        <div class="bar"><i style="--w:1%"></i></div>
+        <div class="go"><a class="btn" data-go="reader">Carry on <span class="arr">→</span></a></div>
+      </div>
+      <div class="card dcard rise" style="--i:3">
+        <span class="label">TODAY’S PRACTICE</span>
+        <h3>12 words to review</h3>
+        <div class="stack" aria-hidden="true"><span lang="grc">ψυχή</span><span lang="grc">ἄλγος</span><span lang="grc">μῆνις</span></div>
+        <div class="muted">About 4 minutes. Three are words you looked up in the Iliad.</div>
+        <div class="go"><a class="btn small" data-go="learn">Start <span class="arr">→</span></a></div>
+      </div>
+      <div class="card dcard rise" style="--i:4">
+        <span class="label">YOUR NEXT LESSON</span>
+        <h3>Who does what: the idea of case</h3>
+        <div class="muted">Lesson 3 · 20 minutes</div>
+        <p style="margin:0">You met <span lang="grc">μῆνιν</span>, an accusative, in the Iliad. This lesson explains why the ending changes.</p>
+        <div class="go"><a class="btn small ghost" data-go="learn">Open the lesson <span class="arr">→</span></a></div>
+      </div>
+    </div>
+    <div class="strip">
+      <a class="card rise" style="--i:5;text-decoration:none;cursor:pointer" data-go="reader"><span class="dot"></span><div><span class="label">PASSAGE OF THE DAY</span><br><b>Homer, <i>Iliad</i> 1.1–7</b> · the wrath of Achilles</div></a>
+      <a class="card rise" style="--i:6;text-decoration:none;cursor:pointer" data-go="talk"><span class="dot"></span><div><span class="label">IN THE TOWN HALL</span> <span class="example">EXAMPLE</span><br><b>2 replies</b> to your question on <span lang="grc">ἄειδε</span></div></a>
+    </div>
+  </div></section>
+  <section class="sec" style="padding-top:20px"><div class="wrap">
+    <div class="sec-head"><div><span class="label">EVERYTHING ELSE</span><h2>The five doors</h2></div></div>
+    <div class="minidoors">${DOORS.map((d, i) => `<a class="card rise" style="--i:${i}" data-go="${d.id}"><img src="${IMG(d.img)}" alt=""><div><b>${d.en}</b><span class="muted" style="font-size:.88rem">${d.line}</span></div></a>`).join("")}</div>
+  </div></section>
+  <footer class="foot"><div class="wrap"><div class="meander" style="margin-bottom:16px"></div>About · Credits · Privacy · How to use the site · Report a problem</div></footer>
+  </div>`;
+}
+
+const band = (id, text) => {
+  const d = DOORS.find((x) => x.id === id);
+  return `<section class="band"><div class="wrap"><span class="label">${d.area.toUpperCase()}</span><h1 class="rise">${d.en}<small lang="grc">${d.gk}</small></h1><p class="rise" style="--i:1">${text}</p></div></section>`;
+};
+const group = (title, rows, i, extra = "") => `<div class="card group rise" style="--i:${i}"><h3>${title}${extra}</h3><ul>${rows.map(([a, b]) => `<li><span style="color:var(--ink);text-align:left">${a}</span><span>${b ?? ""}</span></li>`).join("")}</ul></div>`;
+const feature = (img, alt, title, text, i, isNew) => `<div class="card group feature rise" style="--i:${i}"><img src="${IMG(img)}" alt="${alt}"><div class="txt"><h3>${title}${isNew ? '<span class="new">MOVED UP</span>' : ""}</h3><p class="muted" style="margin:0">${text}</p><p style="margin:12px 0 0"><a class="btn small ghost">Open <span class="arr">→</span></a></p></div></div>`;
+
+const LESSONS = [
+  ["Letters into sounds", "done"], ["Breathings, accents and punctuation", "done"], ["Who does what: the idea of case", "now"],
+  ["The article: ὁ, ἡ, τό", ""], ["Second declension: λόγος, δῶρον", ""], ["First declension: ψυχή, χώρα, δόξα", ""],
+];
+function learn() {
+  return `<div class="view">${band("learn", "Start from the alphabet, or pick up where you are. Every lesson ends in a real passage, and the words you meet come back in practice.")}
+  <div class="wrap"><div class="groups">
+    <div class="card group rise lessons" style="--i:0;grid-row:span 2"><h3>Your lessons <span class="muted" style="font-weight:400;font-size:.9rem">2 of 15 done</span></h3><ul>
+      ${LESSONS.map(([t, s], i) => `<li class="${s}"><span style="display:flex;align-items:center;color:var(--ink);text-align:left"><span class="n">${s === "done" ? "✓" : i + 1}</span><span ${/[α-ω]/.test(t) ? "" : ""}>${t}</span></span><span class="realread">Read it for real →</span></li>`).join("")}
+      <li><span style="color:var(--ink-2)">… and 9 more, to participles</span><span></span></li></ul></div>
+    ${group("Practice", [["Today’s review", "12 words"], ["Vocabulary by text", ""], ["Tables of forms", ""]], 1, '<span class="new">FROM YOUR READING</span>')}
+    ${group("Help", [["How to use the site", "the Guide"], ["Practical guides", "4 guides"], ["The alphabet", ""]], 2)}
+  </div></div></div>`;
+}
+function read() {
+  const starts = [["Homer", "Iliad"], ["Homer", "Odyssey"], ["Plato", "Apology"], ["Plato", "Symposium"], ["Sophocles", "Antigone"], ["Euripides", "Medea"]];
+  return `<div class="view">${band("read", "Greek with an English translation beside it, passage by passage: 1,837 works by 373 authors.")}
+  <div class="wrap"><div class="groups">
+    <div class="card group rise" style="--i:0;grid-column:1/-1"><h3>Where to begin</h3>
+      <div style="display:flex;flex-wrap:wrap;gap:8px">${starts.map(([a, w]) => `<a class="chip" data-go="reader" style="cursor:pointer;text-decoration:none">${a}, <i>${w}</i></a>`).join("")}</div></div>
+    ${group("Reading paths", [["First steps in Greek prose", "5 works"], ["Epic from the beginning", "5 works"], ["The Athenian stage", ""], ["Philosophy in sequence", ""], ["Koine Greek", ""], ["History in Greek", ""]], 1)}
+    ${group("The whole library", [["Authors A to Z", "373"], ["By kind of writing", ""], ["By period and dialect", ""], ["Easiest Greek first", ""]], 2)}
+    ${group("Read without a connection", [["Download texts", "in Mine"]], 3)}
+  </div></div></div>`;
+}
+function explore() {
+  return `<div class="view">${band("explore", "The people, places and things behind the texts: a map of the Greek world, every name counted, the archaeology, and the wiki.")}
+  <div class="wrap"><div class="groups">
+    ${feature("kerameikos-street", "The Street of the Tombs in the Kerameikos.", "The map · Periplus", "The places of the Greek world, named in English or Greek, with the passages that mention them.", 0, true)}
+    ${feature("mask-of-agamemnon", "The gold mask from Mycenae.", "Archaeology · Kerameikos", "Sites, finds and what they tell us, beside the texts that talk about them.", 1, true)}
+    ${group("The Census · most mentioned", [["People", ""], ["Gods", ""], ["Places", ""], ["Things", ""]], 2, '<span class="new">MOVED UP</span>')}
+    ${group("The wiki · Painted Stoa", [["Stories and essays", ""], ["Everyday life", ""], ["The dark side", ""]], 3)}
+    ${group("Reference", [["Authors", "373"], ["Eras of Greek", ""], ["Editions and translations", ""]], 4)}
+  </div></div></div>`;
+}
+function talk() {
+  return `<div class="view">${band("talk", "Questions from beginners, help with a passage, and a debate each week. Reading is open to all; a free account lets you join in.")}
+  <div class="wrap"><div class="groups">
+    ${group("The Town Hall · questions", [["Help with a passage", ""], ["Grammar questions", ""], ["Off-topic", ""]], 0)}
+    ${group("The Pnyx · debates", [["This week’s motion", "vote"], ["Past debates", ""]], 1)}
+    ${group("Talk about a passage", [["Started from the reader", "“Discuss this passage”"], ["Your threads", ""]], 2, '<span class="new">NEW</span>')}
+  </div></div></div>`;
+}
+function mine() {
+  return `<div class="view">${band("mine", "Everything you keep: kept in this browser, or on every device once you sign in.")}
+  <div class="wrap"><div class="groups">
+    ${group("Saved", [["Passages", ""], ["Words", "to practise"], ["Places", ""]], 0)}
+    ${group("Writing", [["Notes", ""], ["Notebooks", "with citations"]], 1)}
+    ${group("Downloads · the Scroll Case", [["Texts for offline reading", ""], ["Dictionary and word packs", ""]], 2, '<span class="new">FROM THE FOOTER</span>')}
+    ${group("You", [["Your account", ""], ["Settings", ""], ["Export or restore", ""]], 3)}
+  </div></div></div>`;
+}
+
+function reader() {
+  const words = (line) => line.split(" ").map((w) => {
+    const bare = w.replace(/[,.;·]$/, "");
+    const tail = w.slice(bare.length);
+    return `<span class="w ${KNOWN.has(bare) ? "known" : ""}" data-w="${bare}">${bare}</span>${tail}`;
+  }).join(" ");
+  const row = (from, to, en) => `<div class="rowp rise"><div class="ref">${from}</div>
+    <div class="gk-lines" lang="grc">${LINES.slice(from === "1.1" ? 0 : 4, from === "1.1" ? 4 : 7).map((l) => `<span class="ln">${words(l[1])}</span><span class="tl">${l[2]}</span>`).join("")}</div>
+    <div class="en">${en}</div></div>`;
+  return `<div class="view ${state.tl ? "show-tl" : ""} ${state.known ? "show-known" : ""}" id="readerView">
+  <div class="wrap rhead"><div><span class="label">HOMER · BOOK 1</span><h1>Iliad</h1></div><span class="muted" style="font-size:.92rem">Greek: Perseus · English: A. T. Murray, 1924</span></div>
+  <div class="tools"><div class="wrap">
+    <div class="menu"><button class="chip" data-menu>This word ▾</button><div class="pop card">
+      <button>Look it up<small>dictionary form, grammar, meaning</small></button><button>How the sentence is built<small>a diagram of the sentence</small></button><button>Everywhere it appears<small>in every text</small></button></div></div>
+    <div class="menu"><button class="chip" data-menu>This passage ▾</button><div class="pop card">
+      <button>Vocabulary<small>the words in this passage</small></button><button>Metre<small>hear the rhythm</small></button><button>Places<small>on the map</small></button><button>Listen<small>the English, read aloud</small></button></div></div>
+    <div class="menu"><button class="chip" data-menu>This work ▾</button><div class="pop card">
+      <button>About Homer<small>life, and how the text survived</small></button><button>The manuscript<small>see a medieval copy</small></button><button>Other editions and translations</button></div></div>
+    <span class="sep"></span>
+    <button class="chip" id="tlBtn" aria-pressed="${state.tl}"><span>Latin letters</span></button>
+    <button class="chip" id="knownBtn" aria-pressed="${state.known}"><span>Words I know</span></button>
+    <button class="btn small ghost discuss" id="discussBtn">${ICON.talk.replace("<svg", '<svg width="18" height="18"')} Discuss this passage</button>
+  </div></div>
+  <div class="wrap rows">${row("1.1", "1.4", EN[0][1])}${row("1.5", "1.7", EN[1][1])}
+    <p class="muted" style="margin-top:20px;font-size:.92rem">In this mock-up μῆνιν, ἄειδε and θεὰ have a filled-in look-up; in the real reader every word does.</p></div>
+  </div>`;
+}
+
+function guide() {
+  return `<div class="view"><section class="band"><div class="wrap"><span class="label">THE GUIDE · ὁδηγός</span><h1>How to use the site</h1><p>Already live: ten short chapters, each with “Show me”. In the new flow it sits under Learn and is offered once on a first visit.</p></div></section>
+  <div class="wrap" style="padding:30px var(--gut) 60px"><a class="btn" data-go="home">Back to the home page</a></div></div>`;
+}
+
+function render() {
+  const p = state.page;
+  const html = p === "home" ? (state.visitor === "first" ? homeFirst() : homeBack())
+    : ({ learn, read, explore, talk, mine, reader, guide })[p]();
+  view.innerHTML = html;
+  navHtml();
+  if (p === "home" && state.visitor === "first") setupPanel();
+  const key = p === "home" ? `home-${state.visitor}` : p;
+  $("#idea").innerHTML = IDEAS[key] ?? "";
+  closeLook(); $("#drawer").classList.remove("open");
+}
+
+function go(page) {
+  state.page = page;
+  const dev = $("#device");
+  if (state.screen === "phone") dev.scrollTo({ top: 0 }); else window.scrollTo({ top: 0 });
+  if (document.startViewTransition && !matchMedia("(prefers-reduced-motion: reduce)").matches) document.startViewTransition(render); else render();
+}
+
+function closeLook() { const l = $("#look"); l.classList.remove("open"); document.querySelectorAll(".w.sel").forEach((x) => x.classList.remove("sel")); }
+function openLook(el) {
+  const w = el.dataset.w, d = LOOK[w], l = $("#look");
+  document.querySelectorAll(".w.sel").forEach((x) => x.classList.remove("sel"));
+  el.classList.add("sel");
+  l.innerHTML = d ? `<button class="ibtn x" data-close aria-label="Close">✕</button>
+    <div class="lemma" lang="grc">${d.lemma}</div><div class="parse">${d.parse}</div><div class="mean">${d.mean}</div>
+    <div class="muted" style="font-size:.95rem">${d.why}</div>
+    <a class="lesson" data-go="learn">${ICON.book}<span><b>${d.lesson}</b><br><span class="muted" style="font-size:.88rem">The lesson that explains this</span></span></a>
+    <div class="saved">${ICON.tick.replace("<svg", '<svg width="18" height="18" stroke="currentColor"')} Saved for practice: it comes back tomorrow</div>
+    <div class="acts"><button class="chip">How the sentence is built</button><button class="chip">Everywhere it appears</button></div>`
+    : `<button class="ibtn x" data-close aria-label="Close">✕</button><div class="lemma" lang="grc">${w}</div><p class="muted">In the real reader this word opens its full look-up. In the mock-up, try μῆνιν, ἄειδε or θεὰ.</p>`;
+  l.classList.remove("open"); void l.offsetWidth; l.classList.add("open");
+  if (state.screen === "phone") $("#device").appendChild(l); else document.body.appendChild(l);
+}
+function openDiscuss() {
+  const d = $("#drawer");
+  d.innerHTML = `<button class="ibtn x" data-close-drawer aria-label="Close" style="position:absolute;top:10px;right:10px">✕</button>
+    <span class="label">TALK ABOUT THIS PASSAGE</span><h2 style="font-size:1.6rem;margin:4px 0 6px">Iliad 1.1–4</h2>
+    <p class="muted" style="margin:0 0 10px;font-size:.95rem">Questions people have asked about these lines, without leaving the reader. <span class="example">EXAMPLES</span></p>
+    <div class="thread"><b>Why does the Iliad begin with “wrath”?</b><span class="muted">3 replies</span></div>
+    <div class="thread"><b>Who is the “goddess” here?</b><span class="muted">2 replies</span></div>
+    <div class="thread"><b>How do I scan the first line?</b><span class="muted">1 reply</span></div>
+    <p style="margin-top:16px"><a class="btn small">Ask a question <span class="arr">→</span></a></p>`;
+  if (state.screen === "phone") $("#device").appendChild(d); else document.body.appendChild(d);
+  requestAnimationFrame(() => d.classList.add("open"));
+}
+
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("[data-go],[data-pick],[data-search],[data-menu],.w,[data-close],[data-close-drawer],#tlBtn,#knownBtn,#discussBtn,#themeBtn");
+  if (!e.target.closest(".menu")) document.querySelectorAll(".menu.open").forEach((m) => m.classList.remove("open"));
+  if (!t) { if (e.target.id === "overlay") e.target.classList.remove("open"); return; }
+  if (t.dataset.go) { $("#overlay").classList.remove("open"); go(t.dataset.go); }
+  else if (t.dataset.pick) { state.picked = state.picked === t.dataset.pick ? null : t.dataset.pick;
+    $("#choices").classList.toggle("picked", !!state.picked);
+    document.querySelectorAll(".choice").forEach((c) => { c.classList.toggle("on", c.dataset.pick === state.picked); c.setAttribute("aria-pressed", c.dataset.pick === state.picked); });
+    setupPanel(); }
+  else if (t.hasAttribute("data-search")) { $("#overlay").classList.add("open"); $("#sinput").focus(); }
+  else if (t.hasAttribute("data-menu")) { const m = t.parentElement; const was = m.classList.contains("open"); document.querySelectorAll(".menu.open").forEach((x) => x.classList.remove("open")); if (!was) m.classList.add("open"); }
+  else if (t.classList.contains("w")) openLook(t);
+  else if (t.hasAttribute("data-close")) closeLook();
+  else if (t.hasAttribute("data-close-drawer")) $("#drawer").classList.remove("open");
+  else if (t.id === "tlBtn") { state.tl = !state.tl; t.setAttribute("aria-pressed", state.tl); $("#readerView").classList.toggle("show-tl", state.tl); }
+  else if (t.id === "knownBtn") { state.known = !state.known; t.setAttribute("aria-pressed", state.known); $("#readerView").classList.toggle("show-known", state.known); }
+  else if (t.id === "discussBtn") openDiscuss();
+  else if (t.id === "themeBtn") setTheme(document.documentElement.dataset.theme === "dark" ? "light" : "dark");
+});
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/" && document.activeElement.tagName !== "INPUT") { e.preventDefault(); $("#overlay").classList.add("open"); $("#sinput").focus(); }
+  if (e.key === "Escape") { $("#overlay").classList.remove("open"); closeLook(); $("#drawer").classList.remove("open"); }
+});
+
+function seg(id, attr, fn) {
+  $(id).addEventListener("click", (e) => { const b = e.target.closest("button"); if (!b) return;
+    $(id).querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x === b)); fn(b.dataset[attr]); });
+}
+function setTheme(t) { document.documentElement.dataset.theme = t; $("#segTheme").querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", x.dataset.t === t)); }
+seg("#segVisitor", "v", (v) => { state.visitor = v; state.picked = null; go("home"); });
+seg("#segScreen", "s", (s) => { state.screen = s; $("#stage").classList.toggle("phone", s === "phone"); $("#device").classList.toggle("phone", s === "phone"); render(); });
+seg("#segTheme", "t", setTheme);
+if (matchMedia("(prefers-color-scheme: dark)").matches) setTheme("dark");
+render();
+</script>
+</body>
+</html>

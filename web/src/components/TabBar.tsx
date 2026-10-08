@@ -1,13 +1,13 @@
 "use client";
 /**
- * Phones only: the five places of the site along the bottom of the screen, in reach of the thumb.
+ * Phones only: the five doors of the site along the bottom of the screen (Search in the middle), in reach of the thumb.
  * It tucks away with the header while you read on, and comes back on any scroll up (Header.tsx).
  * A small red "tongue", like the pendant tongues of a vase band, slides to the place you are in.
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { CSSProperties, ReactNode } from "react";
-import { AREAS, TABS, type AreaId } from "@/config/areas";
+import { AREAS, TABS, doorWord, type AreaId } from "@/config/areas";
 import { status, useConnection } from "@/lib/connection";
 import { useUI } from "@/lib/ui";
 import styles from "./TabBar.module.css";
@@ -54,7 +54,7 @@ export default function TabBar() {
           return (
             <Link key={t.id} className={styles.tab} href={a.href} transitionTypes={["page-turn"]} aria-current={i === current ? "page" : undefined}>
               <svg viewBox="0 0 24 24" aria-hidden="true">{ICONS[t.id]}</svg>
-              <span className={styles.label}>{a.english}<span className="visually-hidden">, {a.name}</span></span>
+              <span className={styles.label}>{doorWord(t.id)}<span className="visually-hidden">, {a.name}</span></span>
             </Link>
           );
         })}

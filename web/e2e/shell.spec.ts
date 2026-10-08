@@ -17,6 +17,14 @@ test("moving between areas does not reload the page", async ({ page }) => {
   expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
 });
 
+test("the menu is the five doors, in plain words with their Greek names, and Read is current in the reader", async ({ page }) => {
+  await page.goto("/read?w=tlg0012.tlg001");
+  const doors = page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link");
+  expect(await doors.evaluateAll((as) => as.map((a) => a.querySelector("b")?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk", "Mine"]);
+  await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
+  await expect(page.getByRole("link", { name: "Learn: The Academy" })).toBeVisible();
+});
+
 test("the chosen theme is remembered after a reload", async ({ page }) => {
   await page.goto("/");
   await page.getByRole("button", { name: "Settings" }).click();
