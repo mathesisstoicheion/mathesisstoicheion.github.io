@@ -9,6 +9,7 @@ import Reveal from "@/components/Reveal";
 import QuickSearch from "@/components/search/QuickSearch";
 import FloatingReaderSlot from "@/components/reader/FloatingReaderSlot";
 import { ResumeTracker } from "@/components/Resume";
+import Tour from "@/components/tour/Tour";
 import { Suspense } from "react";
 import { SITE } from "@/config/areas";
 import { BOOT_SCRIPT, THEME_COLOURS } from "@/lib/settings";
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <QuickSearch />
         <FloatingReaderSlot />
         <Suspense fallback={null}><ResumeTracker /></Suspense>
+        <Suspense fallback={null}><Tour /></Suspense>
       </body>
     </html>
   );

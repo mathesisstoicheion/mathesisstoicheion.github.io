@@ -150,7 +150,8 @@ function Sheet({ id, label, open, onClose, children }: { id: string; label: stri
     // a tap anywhere else puts it away (its own button in the bar toggles it instead)
     const outside = (e: PointerEvent) => {
       const t = e.target as Element;
-      if (!ref.current?.contains(t) && !t.closest?.("[data-sheet-toggle]")) onClose();
+      // a tap on the sheet itself, its button, or the Guide's tour card (which points into the sheet) leaves it open
+      if (!ref.current?.contains(t) && !t.closest?.("[data-sheet-toggle], [data-tour-card]")) onClose();
     };
     addEventListener("keydown", key);
     addEventListener("pointerdown", outside, true);

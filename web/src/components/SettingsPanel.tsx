@@ -6,6 +6,7 @@ import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
 import OfflineActions from "./OfflineActions";
+import Link from "next/link";
 import styles from "./SettingsPanel.module.css";
 
 const THEMES: [ThemePref, string][] = [["auto", "Automatic"], ["light", "Papyrus (light)"], ["dark", "Black-figure (dark)"]];
@@ -158,6 +159,7 @@ export default function SettingsPanel() {
         <button type="button" className={styles.reset} onClick={s.reset}>
           Restore default settings
         </button>
+        <p className={styles.guideLink}><Link href="/guide" onClick={close}>How to use the site →</Link></p>
       </div>
     </dialog>
   );

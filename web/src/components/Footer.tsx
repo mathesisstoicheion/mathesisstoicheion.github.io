@@ -12,6 +12,7 @@ export default function Footer() {
           <p className="muted">Free for everyone. No adverts, no trackers.</p>
         </div>
         <nav aria-label="About this site" className="site-footer-links">
+          <Link href="/guide" transitionTypes={["page-turn"]}>How to use the site</Link>
           <Link href="/about" transitionTypes={["page-turn"]}>About the names</Link>
           <Link href="/credits" transitionTypes={["page-turn"]}>Credits, licences &amp; privacy</Link>
           <ReportBugLink />

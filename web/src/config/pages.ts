@@ -12,7 +12,7 @@ export const STATIC_PAGES = [
   "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/kerameikos", "/stoa/census", "/stoa/periplus",
   "/town-hall", "/town-hall/pnyx", "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation",
   "/town-hall/pnyx/debate", "/account",
-  "/about", "/credits",
+  "/about", "/credits", "/guide",
 ];
 
 /**

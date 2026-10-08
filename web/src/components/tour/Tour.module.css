@@ -1,0 +1,57 @@
+/* The "Show me" tours: a light that glides from control to control over a dimmed page, and a card beside it. */
+.light {
+  --dim: rgb(28 18 8 / 0.46);
+  position: fixed; top: 0; left: 0; z-index: 78;
+  border-radius: 8px; pointer-events: none;
+  box-shadow: 0 0 0 2px var(--accent), 0 0 0 7px color-mix(in srgb, var(--accent) 22%, transparent), 0 0 0 200vmax var(--dim);
+  transition: transform 0.5s var(--ease), width 0.5s var(--ease), height 0.5s var(--ease);
+  animation: arrive 0.6s var(--ease) both;
+}
+:root[data-theme="dark"] .light { --dim: rgb(0 0 0 / 0.62); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .light { --dim: rgb(0 0 0 / 0.62); } }
+@keyframes arrive { from { opacity: 0; } to { opacity: 1; } }
+/* a ring that breathes out once each time the light arrives on a new control */
+.light::after {
+  content: ""; position: absolute; inset: -2px; border-radius: inherit;
+  border: 2px solid var(--accent); opacity: 0;
+  animation: breathe 1.6s var(--ease) 0.45s;
+}
+@keyframes breathe { 0% { opacity: 0.9; transform: scale(1); } 100% { opacity: 0; transform: scale(1.12); } }
+
+.card {
+  position: fixed; z-index: 80;
+  background: var(--surface); color: var(--ink);
+  border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: 4px;
+  box-shadow: 0 18px 50px -12px rgb(0 0 0 / 0.45);
+  padding: 14px 16px 14px;
+  animation: rise 0.35s var(--ease) both;
+  transition: top 0.45s var(--ease), left 0.45s var(--ease);
+}
+@keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.card h2 { font-family: var(--f-display); font-size: 1.3rem; font-weight: 400; margin: 6px 0 6px; outline: none; }
+.card p { margin: 0 0 12px; line-height: 1.5; font-size: 0.98rem; }
+.card p:global(.label) { margin: 0; }
+/* phones, and the closing card: along the bottom, above the bars */
+.docked {
+  left: 12px; right: 12px; top: auto; width: auto; max-width: 520px; margin-inline: auto;
+  bottom: calc(12px + max(var(--tabbar-vis, 0px) + var(--readbar-vis, 0px), env(safe-area-inset-bottom, 0px)));
+}
+
+.dockTop { bottom: auto; top: calc(var(--hdr-vis, 0px) + 10px); }
+
+.head { display: flex; align-items: center; gap: 10px; }
+.dots { display: flex; gap: 5px; margin-left: auto; }
+.dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--rule); transition: background 0.3s, transform 0.3s; }
+.dots i[data-past] { background: color-mix(in srgb, var(--accent) 45%, var(--rule)); }
+.dots i[data-on] { background: var(--accent); transform: scale(1.35); }
+.close {
+  width: 32px; height: 32px; margin: -6px -8px -6px 0; border: 0; background: none; color: var(--ink-2);
+  font-size: 1.4rem; line-height: 1; cursor: pointer; border-radius: 50%;
+}
+.head .close { margin-left: 2px; }
+.close:hover, .close:focus-visible { color: var(--ink); background: var(--bg-2); }
+.acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: flex-end; }
+.acts .close { margin: 0 0 0 auto; }
+.hint { font-size: 0.86rem !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }
+.tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-size: 0.75em; vertical-align: 0.15em; animation: stamp 0.5s var(--ease) 0.15s both; }
+@keyframes stamp { from { transform: scale(0.2) rotate(-30deg); opacity: 0; } }

@@ -15,6 +15,7 @@ import { useHidden } from "@/lib/community/hidden";
 import { useLoad, useReloadable, type Load } from "@/lib/use-load";
 import { SignInPrompt, StatusTag } from "./parts";
 import PullToRefresh from "@/components/PullToRefresh";
+import { AREAS } from "@/config/areas";
 import styles from "./Community.module.css";
 
 const SORTS: [NonNullable<ThreadQuery["sort"]>, string][] = [["active", "Latest activity"], ["new", "Newest"], ["top", "Most valued"], ["unanswered", "Unanswered"]];
@@ -64,6 +65,12 @@ export default function TownHall() {
         <button type="submit" className="btn small">Search</button>
       </form>
       {featured.state === "done" && featured.value && <FeaturedDebate d={featured.value} />}
+      {/* the Pnyx is always a click away, whether or not a debate is featured this week */}
+      {featured.state !== "loading" && <Link href={AREAS.debates.href} className={featured.state === "done" && featured.value ? styles.pnyxMore : styles.pnyxCard} transitionTypes={["page-turn"]}>
+        {featured.state === "done" && featured.value
+          ? <>All the debates on {AREAS.debates.name} →</>
+          : <><span className="label">{AREAS.debates.name} <span lang="grc">{AREAS.debates.greek}</span> · {AREAS.debates.english}</span><b>{AREAS.debates.fit}</b><span>See the motions and cast your pebble →</span></>}
+      </Link>}
 
       <nav className={styles.cats} aria-label="Categories">
         <button type="button" className={styles.cat} aria-pressed={!c} onClick={() => go({ c: null, state: null })}>

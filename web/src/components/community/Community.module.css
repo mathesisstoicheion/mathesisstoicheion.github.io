@@ -60,6 +60,12 @@
 }
 @keyframes glint { 0%, 70% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
+.pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--surface); transition: transform 0.2s var(--ease), border-color 0.2s; }
+.pnyxCard:hover, .pnyxCard:focus-visible { transform: translateY(-2px); border-color: var(--accent); }
+.pnyxCard b { font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; }
+.pnyxCard span:last-child { font-size: 0.92rem; color: var(--ink-2); }
+.pnyxCard [lang="grc"] { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
+.pnyxMore { justify-self: end; font-family: var(--f-label); font-size: 0.95rem; color: var(--accent); text-underline-offset: 3px; margin-top: -4px; }
 .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
 .cat {
   text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1.5px solid var(--ink); border-radius: var(--radius);

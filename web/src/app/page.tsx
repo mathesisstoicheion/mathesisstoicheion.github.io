@@ -7,6 +7,7 @@ import OfflineActions from "@/components/OfflineActions";
 import ForumActivity from "@/components/ForumActivity";
 import { ContinueCard } from "@/components/Resume";
 import HomeFold from "@/components/HomeFold";
+import GuideInvite from "@/components/guide/GuideInvite";
 import { AREAS, SITE } from "@/config/areas";
 import StoaCards, { type StoaCard } from "@/components/StoaCards";
 import { ENTRIES, categoryOf } from "@/wiki/index";
@@ -54,7 +55,7 @@ export default function Home() {
       {/* ---------------------------------------------------------------- for beginners: where to start */}
       <div className="wrap">
         <aside className={styles.newcomer} aria-label="New to Greek?">
-          <p><span className="label">New to Greek?</span> Start in the Academy: the letters and their sounds first, then short lessons with real sentences. You need no Greek to begin.</p>
+          <p><span className="label">New to Greek?</span> Start in the Academy: the letters and their sounds first, then short lessons with real sentences. You need no Greek to begin. New to the site? <Link href="/guide" transitionTypes={["page-turn"]}>See how it works</Link>.</p>
           <div className={styles.newcomerActs}>
             <Link className="btn small" href={AREAS.study.href} transitionTypes={["page-turn"]}>Go to the Academy <span className="arr" aria-hidden="true">→</span></Link>
             <Link className="btn small ghost" href="/academy/alphabet" transitionTypes={["page-turn"]}>Begin with the alphabet</Link>
@@ -197,6 +198,7 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <GuideInvite />
     </Page>
   );
 }
