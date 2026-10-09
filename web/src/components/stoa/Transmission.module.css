@@ -1,0 +1,52 @@
+/* "Manuscripts & transmission" and "Textual variants" (Transmission.tsx) */
+.page { display: grid; gap: clamp(28px, 4vw, 44px); padding-bottom: 64px; }
+
+/* ------------------------------------------------ the roads of the texts */
+.roads { margin: 0; display: grid; gap: 14px; padding: 18px 20px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
+.chart { display: grid; gap: 2px; }
+.axis, .rows li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 14px; }
+.axis { position: relative; height: 18px; order: 2; }
+.axisTrack { position: relative; }
+.axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); white-space: nowrap; }
+.rows { list-style: none; margin: 0; padding: 0; display: grid; }
+.rows li { height: 22px; align-items: center; }
+.who { font-size: 0.8rem; color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track { position: relative; height: 100%; }
+.track i { position: absolute; top: 50%; }
+.grid { width: 1px; top: 0 !important; bottom: 0; height: 100%; background: var(--rule); }
+.road { height: 2px; translate: 0 -50%; background: color-mix(in srgb, var(--ink) 18%, transparent); transform-origin: left; animation: road 1.4s var(--ease) both; animation-delay: calc(var(--i) * 25ms); }
+@keyframes road { from { transform: scaleX(0); } }
+.mark { width: 9px; height: 9px; translate: -50% -50%; }
+.track .mark { animation: mark 0.5s var(--ease) both; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
+@keyframes mark { from { opacity: 0; scale: 0.2; } }
+.writing { background: var(--ink); border-radius: 50%; }
+.copy { background: var(--accent); }
+.print { background: var(--blue); rotate: 45deg; width: 8px; height: 8px; }
+.reception { border: 2px solid var(--ochre); border-radius: 50%; }
+.key { position: static !important; display: inline-block; translate: none; flex: none; align-self: center; }
+/* the site's "Reduce animation" setting stops the animations (globals.css) */
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.9rem; }
+.legend li { display: flex; align-items: baseline; gap: 6px; }
+.legend span { color: var(--ink-2); }
+.roads figcaption { display: grid; gap: 8px; }
+.roads figcaption p { margin: 0; color: var(--ink-2); max-width: 75ch; }
+/* phones: the chart keeps its proportions and scrolls sideways */
+@media (max-width: 760px) {
+  .roads { padding: 14px; overflow-x: auto; }
+  .chart { min-width: 680px; }
+}
+
+/* ------------------------------------------------ the authors' accounts */
+.list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 14px; }
+.card {
+  display: grid; align-content: start; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none;
+  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); border-left: 4px solid var(--accent);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.card:hover { transform: translateY(-3px); box-shadow: 0 14px 30px -18px var(--shadow); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.when { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); }
+.card b { font-size: 1.25rem; }
+.text { color: var(--ink); line-height: 1.6; }
+.go { margin-top: 4px; font-size: 0.88rem; color: var(--accent); }
+.more { margin: 0; color: var(--ink-2); max-width: 70ch; }

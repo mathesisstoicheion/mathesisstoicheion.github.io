@@ -70,3 +70,22 @@ test("Editions & translations groups texts by publisher and opens the exact text
   await row.click();
   await expect(page).toHaveURL(/\/read\?w=tlg0012\.tlg002&tr=/);
 });
+
+test("Manuscripts & transmission and Textual variants gather the checked author articles' accounts", async ({ page }) => {
+  await page.goto("/stoa");
+  const ref = page.getByRole("navigation", { name: "Reference" });
+  await ref.getByRole("link", { name: /Manuscripts & transmission/ }).click();
+  await expect(page).toHaveURL(/\/stoa\/manuscripts$/);
+  await expect(page.getByRole("heading", { level: 1, name: /Manuscripts & transmission/ })).toBeVisible();
+  // the roads of the texts: one row per checked author, in time order, Homer first
+  const chart = page.getByRole("figure", { name: /timelines of \d+ author articles/ });
+  await expect(chart.locator("li").first()).toContainText("Homer");
+  // each author's account links to the whole of it, on the author's page
+  const homer = page.getByRole("link", { name: /^7th century BC Homer/ });
+  await expect(homer).toHaveAttribute("href", "/author/tlg0012#survive-title");
+  await page.goto("/stoa/variants");
+  await expect(page.getByRole("heading", { level: 1, name: /Textual variants/ })).toBeVisible();
+  await expect(page.getByRole("link", { name: /Herodotus/ }).first()).toHaveAttribute("href", "/author/tlg0016#survive-title");
+  // no markup left in the excerpts
+  expect(await page.locator("main ol").first().innerText()).not.toMatch(/\*|\[\^/);
+});

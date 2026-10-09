@@ -9,7 +9,7 @@ import { ENTRIES } from "@/wiki/index";
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
   "/academy", "/academy/today", "/academy/alphabet", "/academy/review", "/academy/tables", "/academy/vocabulary", "/academy/practice",
-  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/kerameikos", "/stoa/census", "/stoa/periplus",
+  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/manuscripts", "/stoa/variants", "/stoa/kerameikos", "/stoa/census", "/stoa/periplus",
   "/town-hall", "/town-hall/pnyx", "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation",
   "/town-hall/pnyx/debate", "/account",
   "/about", "/credits", "/guide",

@@ -76,6 +76,8 @@ export const PAGE_DESCRIPTIONS = {
   practice: "Practise Greek endings and parse real words from the Gospel of John, using tables and analyses checked by scholars.",
   stoa: "The Painted Stoa, the wiki: entries on Greek history, daily life, religion and archaeology, each saying how sure we can be, with reference pages for authors, eras and editions.",
   authors: "Every author in the library by period and kind of writing, with dates and birthplaces from Wikidata, each opening their works in Greek and English.",
+  manuscripts: "How the Greek authors' words reached us, author by author: papyri, medieval manuscripts and the first printed editions, with the sources for every claim.",
+  variants: "Where the manuscripts of the Greek authors disagree about the words, and how editors choose, author by author, with the sources for every claim.",
   eras: "Two thousand years of Greek writing: how many works the library holds from each century and each period, from Archaic to Byzantine.",
   editions: "The printed edition and translation behind every text in the library, as the collections describe it, grouped by publisher.",
   census: "Every word, person, god and place in the Greek texts, counted: what the library mentions most, and where.",

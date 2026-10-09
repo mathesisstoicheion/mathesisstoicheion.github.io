@@ -68,8 +68,9 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "A guide to the places of the Greek world.", phase: 7,
   },
   forum: {
-    id: "forum", name: "The Town Hall", english: "Forum", door: "Talk", href: "/town-hall",
-    origin: "The community's meeting place.",
+    id: "forum", name: "The Town Hall", greek: "Ἀγορά", english: "Forum", door: "Talk", href: "/town-hall",
+    // the senses of ἀγορά as LSJ gives them (A, II, II.2)
+    origin: "Ἀγορά, from ἀγείρω “to gather”: first an assembly of the people, then the place where it met, and later the market-place (LSJ).",
     fit: "Questions, answers and conversation.", phase: 8,
   },
   debates: {
