@@ -1,9 +1,11 @@
 /**
- * The Periplus drawn on a canvas: the sea and coasts at a level of detail that suits the zoom, then only
- * as many places and names as fit without touching (the most-named first), each fading in and out as
- * the view changes. Pure drawing and layout; Periplus.tsx owns the view and the gestures.
+ * The Periplus drawn on a canvas: the satellite picture of the land and sea (relief.ts), then only as many
+ * places and names as fit without touching (the most-named first), each fading in and out as the view
+ * changes. Names are drawn once into small images and then only moved, so they glide with the map. Pure
+ * drawing and layout; engine.ts owns the view.
  */
 import { shortName, type Place } from "@/lib/map";
+import type { Relief } from "./relief";
 
 export interface View { k: number; tx: number; ty: number }
 export interface Pt { p: Place; x: number; y: number; kind: string; r: number; name: "region" | "sea" | "river" | null }
@@ -61,29 +63,36 @@ export const lodFor = (lods: Lod[], k: number) => lods.reduce((best, l) => (l.to
 // ---------------------------------------------------------------- colours and type
 
 export interface Look {
-  land: string; sea: string; coast: string; wave: string; name: string; halo: string; seaName: string;
-  accent: string; accentOnSea: string; ink: string; ink2: string; greek: string; body: string; label: string;
+  edge: string; land: string; sea: string; dim: string; shadow: string;
+  name: string; halo: string; seaName: string; seaHalo: string; region: string; regionHalo: string;
+  accent: string; ink: string; greek: string; body: string; label: string;
 }
 export function readLook(el: Element): Look {
   const cs = getComputedStyle(el), v = (n: string) => cs.getPropertyValue(n).trim();
   return {
-    land: v("--map-land"), sea: v("--map-sea"), coast: v("--map-coast"), wave: v("--map-wave"), name: v("--map-name"),
-    halo: v("--map-halo"), seaName: v("--map-sea-name"), accent: v("--accent"), accentOnSea: v("--map-accent-sea") || v("--accent"), ink: v("--ink"), ink2: v("--ink-2"),
+    edge: v("--map-edge"), land: v("--map-land"), sea: v("--map-sea"), dim: v("--map-dim"), shadow: v("--map-shadow"),
+    name: v("--map-name"), halo: v("--map-halo"), seaName: v("--map-sea-name"), seaHalo: v("--map-sea-halo"),
+    region: v("--map-region"), regionHalo: v("--map-region-halo"),
+    accent: v("--accent"), ink: v("--ink"),
     greek: v("--f-greek"), body: v("--f-body"), label: v("--f-label"),
   };
 }
 
-/** A small tile of sea with painted waves, to fill the sea with in one pass (at the screen's pixel density). */
-export function waveTile(look: Look, dpr: number): HTMLCanvasElement {
+/**
+ * Where the sea is, as a small grid (a pixel to every four map units), so that deciding whether a name sits on
+ * the sea costs a lookup, not a walk round every coastline.
+ */
+export function seaMask(sea: Path2D, W: number, H: number): (x: number, y: number) => boolean {
+  const S = 0.25, cw = Math.ceil(W * S), ch = Math.ceil(H * S);
   const c = document.createElement("canvas");
-  c.width = Math.round(16 * dpr); c.height = Math.round(10 * dpr);
-  const g = c.getContext("2d")!;
-  g.fillStyle = look.sea;
-  g.fillRect(0, 0, c.width, c.height);
-  g.scale(dpr, dpr);
-  g.strokeStyle = look.wave; g.lineWidth = 1;
-  g.beginPath(); g.moveTo(0, 6); g.quadraticCurveTo(4, 2.5, 8, 6); g.quadraticCurveTo(12, 9.5, 16, 6); g.stroke();
-  return c;
+  c.width = cw; c.height = ch;
+  const g = c.getContext("2d", { willReadFrequently: true })!;
+  g.scale(S, S);
+  g.fillStyle = "#000";
+  g.fill(sea, "evenodd");
+  const a = g.getImageData(0, 0, cw, ch).data, m = new Uint8Array(cw * ch);
+  for (let i = 0; i < m.length; i++) m[i] = a[i * 4 + 3] > 127 ? 1 : 0;
+  return (x, y) => { const i = Math.floor(x * S), j = Math.floor(y * S); return i >= 0 && j >= 0 && i < cw && j < ch && m[j * cw + i] === 1; };
 }
 
 /** Greek and English capitals as maps letter them: no accents or breathings. */
@@ -128,6 +137,8 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
   look: Look; greek: boolean; kinds: Set<string>; selected: string | null; saved: Record<string, number>; shown: Set<string>;
   avoid: Box[];                              // the buttons, compass and scale over the map
   onSea: (x: number, y: number) => boolean;  // is this point of the frame on the sea?
+  prefer?: Map<string, Label["align"]>;      // the side each name was on a moment ago: tried first, so names do not hop
+  only?: Set<string>;                        // while the map moves, keep to what is shown (some may drop out, none come in)
 }): Layout {
   const small = w < 520;
   const area = w * h;
@@ -147,6 +158,7 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
   for (const b of o.avoid) add(b);
 
   const cand = pts.filter((t) => {
+    if (o.only && !o.only.has(t.p.id)) return false;
     if (!o.kinds.has(t.kind) && t.kind !== "other" && t.p.id !== o.selected) return false;
     const sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
     return sx > -60 && sy > -30 && sx < w + 60 && sy < h + 30;
@@ -170,6 +182,8 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
     const tries: [number, number, Label["align"]][] = t.name
       ? [[sx, sy + size * 0.35, "center"]]
       : [[sx + r + 4, sy + size * 0.35, "left"], [sx - r - 4, sy + size * 0.35, "right"], [sx, sy - r - 5, "center"], [sx, sy + r + size + 3, "center"]];
+    const was = o.prefer?.get(t.p.id);
+    if (was) tries.sort((a, b) => +(b[2] === was) - +(a[2] === was));
     for (const [x, y, align] of tries) {
       const x0 = align === "left" ? x : align === "right" ? x - tw : x - tw / 2;
       const b = { x0: x0 - 2, y0: y - size * 0.95, x1: x0 + tw + 2, y1: y - size * 0.95 + th };
@@ -197,12 +211,50 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
   const withDots = cand.filter((t) => !t.name);
   for (const t of withDots.slice(0, great)) dot(t);
   for (const t of withDots.slice(0, great)) { const b = placed.get(t); if (b && (labels.length < labelBudget || t.p.id === o.selected)) name(t, b); }
-  for (const t of withDots.slice(great)) { const b = dot(t); if (b && (labels.length < labelBudget || t.p.id === o.selected)) name(t, b); }
-  for (const t of cand) if (t.name && (labels.length < labelBudget + 6 || t.p.id === o.selected)) name(t, undefined);
+  for (const t of withDots.slice(great)) { const b = dot(t); if (b && (labels.length < labelBudget || t.p.id === o.selected || o.only)) name(t, b); }
+  for (const t of cand) if (t.name && (labels.length < labelBudget + 6 || t.p.id === o.selected || o.only)) name(t, undefined);
   return { dots, labels };
 }
 
 // ---------------------------------------------------------------- painting
+
+/**
+ * A name drawn once, with its halo, into a small image at the screen's density; moving it is then a single
+ * image copy at any fraction of a pixel, so names glide with the map instead of shimmering.
+ */
+interface Sprite { c: ImageBitmap | HTMLCanvasElement; x: number; y: number; w: number; h: number }
+const sprites = new Map<string, Sprite>();
+export const clearSprites = () => { for (const s of sprites.values()) if ("close" in s.c) s.c.close(); sprites.clear(); };
+function sprite(l: Label, fill: string, halo: string, haloW: number, dpr: number): Sprite {
+  const key = `${l.text}|${l.font}|${l.spacing}|${fill}|${halo}|${haloW}|${dpr}|${l.align}`;
+  let s = sprites.get(key);
+  if (s) return s;
+  if (sprites.size > 1500) clearSprites();
+  const size = Number(/([\d.]+)px/.exec(l.font)?.[1] ?? 13), pad = Math.ceil(haloW / 2 + 2);
+  const w = Math.ceil(l.w + 2 * pad), h = Math.ceil(size * 1.45 + 2 * pad), base = pad + size * 1.08;
+  // an OffscreenCanvas turned into an ImageBitmap: a fixed picture the graphics card keeps, so copying it each
+  // frame is cheap (a plain canvas would be sent to the card again every time)
+  const off = typeof OffscreenCanvas !== "undefined";
+  const c = off ? new OffscreenCanvas(Math.ceil(w * dpr), Math.ceil(h * dpr)) : document.createElement("canvas");
+  if (!off) { c.width = Math.ceil(w * dpr); c.height = Math.ceil(h * dpr); }
+  const sg = c.getContext("2d") as CanvasRenderingContext2D;
+  sg.scale(dpr, dpr);
+  sg.textBaseline = "alphabetic";
+  // the name laid out from its left end, whatever its alignment on the map
+  text(sg, { ...l, align: "left", x: pad, y: base }, fill, halo, haloW);
+  // where the image's corner sits relative to the label's anchor point
+  const x = l.align === "left" ? -pad : l.align === "right" ? -l.w - pad : -l.w / 2 - pad;
+  s = { c: off ? (c as OffscreenCanvas).transferToImageBitmap() : (c as HTMLCanvasElement), x, y: -base, w, h };
+  sprites.set(key, s);
+  return s;
+}
+function drawName(g: CanvasRenderingContext2D, l: Label, fill: string, halo: string, haloW: number, dpr: number, snap: boolean) {
+  const s = sprite(l, fill, halo, haloW, dpr);
+  let x = l.x + s.x, y = l.y + s.y;
+  // at rest, on whole screen pixels, so the letters are crisp; while moving, wherever the map puts them
+  if (snap) { x = Math.round(x * dpr) / dpr; y = Math.round(y * dpr) / dpr; }
+  g.drawImage(s.c, x, y, s.w, s.h);
+}
 
 function text(g: CanvasRenderingContext2D, l: Label, fill: string, halo: string, haloW: number) {
   g.font = l.font;
@@ -227,52 +279,61 @@ function text(g: CanvasRenderingContext2D, l: Label, fill: string, halo: string,
 }
 
 export interface Frame {
-  g: CanvasRenderingContext2D; dpr: number; w: number; h: number; v: View; look: Look; lod: Lod; waves: CanvasPattern | null;
+  g: CanvasRenderingContext2D; dpr: number; w: number; h: number; v: View; look: Look; lod: Lod; relief: Relief | null; moving: boolean;
   dots: { t: Pt; a: number }[]; labels: { l: Label; a: number; t: Pt }[]; selected: string | null; hover: string | null; saved: Record<string, number>;
 }
 
 export function paint(f: Frame) {
-  const { g, dpr, w, h, v, look } = f;
+  const { g, dpr, w, h, v, look } = f, snap = !f.moving;
   g.setTransform(dpr, 0, 0, dpr, 0, 0);
   g.globalAlpha = 1;
-  g.fillStyle = look.land;
-  g.fillRect(0, 0, w, h);
-
-  // the sea with its waves (a steady size on screen, in one pass), lakes, and the coast where it shows
-  g.setTransform(dpr * v.k, 0, 0, dpr * v.k, dpr * v.tx, dpr * v.ty);
-  if (f.waves) f.waves.setTransform(new DOMMatrix([1 / (dpr * v.k), 0, 0, 1 / (dpr * v.k), 0, 0]));
-  g.fillStyle = f.waves ?? look.sea;
-  g.fill(f.lod.sea, "evenodd");
-  g.fillStyle = look.sea;
-  g.globalAlpha = 0.9;
-  g.fill(f.lod.lakes, "evenodd");
-  if (look.coast !== look.sea) {   // by day the coast is the sea's own black: nothing to draw
-    g.globalAlpha = 0.55;
-    g.strokeStyle = look.coast;
-    g.lineWidth = 0.8 / v.k;
-    g.lineJoin = "round";
-    g.stroke(f.lod.sea);
+  g.globalCompositeOperation = "source-over";
+  if (f.relief?.ready) {
+    // beyond the picture's edges, a plain dark border
+    g.fillStyle = look.edge;
+    g.fillRect(0, 0, w, h);
+    f.relief.paint(g, v.k, v.tx, v.ty, w, h, dpr, f.moving);
   }
-  g.globalAlpha = 1;
-  g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  else {
+    // no picture (yet, or offline): the flat map, clay land and a plain sea
+    g.fillStyle = look.land;
+    g.fillRect(0, 0, w, h);
+    g.setTransform(dpr * v.k, 0, 0, dpr * v.k, dpr * v.tx, dpr * v.ty);
+    g.fillStyle = look.sea;
+    g.fill(f.lod.sea, "evenodd");
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+  // by night the picture is dimmed, as the land looks from above after dark
+  if (look.dim && look.dim !== "none") {
+    g.globalCompositeOperation = "multiply";
+    g.fillStyle = look.dim;
+    g.fillRect(0, 0, w, h);
+    g.globalCompositeOperation = "source-over";
+  }
+
   g.textBaseline = "alphabetic";
 
   // names across the land and sea go under the dots
   for (const { l, a } of f.labels) {
     if (l.style === "place") continue;
-    g.globalAlpha = a * (l.style === "region" ? 0.78 : 0.95);
-    if (l.sea) text(g, l, look.seaName, look.sea, 3);
-    else if (l.style === "region") text(g, l, look.ink2, look.halo, 3);
-    else text(g, l, look.name, look.halo, 3);
+    g.globalAlpha = a * (l.style === "region" ? 0.9 : 0.95);
+    if (l.style === "region" && !l.sea) drawName(g, l, look.region, look.regionHalo, 3, dpr, snap);
+    else drawName(g, l, look.seaName, look.seaHalo, 3, dpr, snap);
   }
 
-  // dots: filled red where checked by hand, hollow where matched automatically
+  // dots: filled red where checked by hand, hollow where matched automatically; each with a soft shadow, so it
+  // stands on the ground
   for (const { t, a } of f.dots) {
     const sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
-    const grow = f.hover === t.p.id ? 1.5 : 0;
+    const grow = f.hover === t.p.id ? 1.5 : 0, r = (t.r + grow) * (0.55 + 0.45 * a);
+    g.globalAlpha = a * 0.4;
+    g.beginPath();
+    g.arc(sx, sy + 1.2, r + 1.5, 0, Math.PI * 2);
+    g.fillStyle = look.shadow;
+    g.fill();
     g.globalAlpha = a;
     g.beginPath();
-    g.arc(sx, sy, (t.r + grow) * (0.55 + 0.45 * a), 0, Math.PI * 2);
+    g.arc(sx, sy, r, 0, Math.PI * 2);
     g.fillStyle = t.p.checked ? look.accent : look.halo;
     g.fill();
     g.lineWidth = f.saved[t.p.id] ? 2.4 : 1.4;
@@ -280,16 +341,14 @@ export function paint(f: Frame) {
     g.stroke();
   }
 
-  // place names on top
+  // place names on top, in ink wherever they fall, haloed so they read on the picture
   for (const { l, a, t } of f.labels) {
     if (l.style !== "place") continue;
     g.globalAlpha = a;
     const sel = t.p.id === f.selected || t.p.id === f.hover;
     const font = l.font;
     if (sel) l.font = `bold ${l.font}`;
-    // a town's name stays in ink wherever it falls (blue is for seas and rivers), haloed with what lies under it
-    if (l.sea) text(g, l, sel ? look.accentOnSea : look.name, look.sea, 3.5);
-    else text(g, l, sel ? look.accent : look.name, look.halo, 3.5);
+    drawName(g, l, sel ? look.accent : look.name, look.halo, 3.5, dpr, snap);
     l.font = font;
   }
   g.globalAlpha = 1;

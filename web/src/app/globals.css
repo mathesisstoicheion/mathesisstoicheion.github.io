@@ -107,20 +107,28 @@ html[data-hdr="hidden"] { --tabbar-vis: 0px; --readbar-vis: 0px; }
 }
 
 /* ---------------------------------------------------------------- maps
-   Every map (the Periplus, the reader's Places, My Library's places): warm vase-clay land and a muted Aegean
-   sea, so land and water tell apart at a glance in both themes; names in ink with a halo of the land. */
+   The small maps (the reader's Places, My Library's places, the Explore card): warm vase-clay land and a muted
+   Aegean sea, so land and water tell apart at a glance in both themes; names in ink with a halo of the land.
+   The Periplus lies on NASA's satellite picture: town names in ink with a halo of clay, names on the sea and
+   across regions pale with a dark halo; by night the picture is dimmed (--map-dim multiplies it). */
 :root {
   --map-land: #EFDCBC; --map-sea: #A9C1C6; --map-coast: #5F8590; --map-wave: rgba(255, 255, 255, 0.30);
-  --map-name: #2A1C12; --map-halo: #EFDCBC; --map-sea-name: #24505C; --map-accent-sea: #9E2F17;
+  --map-name: #2A1C12; --map-halo: #EFDCBC; --map-accent-sea: #9E2F17;
+  --map-edge: #3A3530; --map-dim: none; --map-shadow: #000;
+  --map-sea-name: #E8F1F5; --map-sea-halo: rgba(8, 30, 62, 0.6); --map-region: #FBF3E4; --map-region-halo: rgba(36, 24, 14, 0.6);
 }
 :root[data-theme="dark"] {
   --map-land: #3B3026; --map-sea: #15283A; --map-coast: #7FA3B5; --map-wave: rgba(140, 185, 210, 0.10);
-  --map-name: #F2DDBB; --map-halo: #3B3026; --map-sea-name: #9CC3D6; --map-accent-sea: #F08A5D;
+  --map-name: #F2DDBB; --map-halo: #3B3026; --map-accent-sea: #F08A5D;
+  --map-edge: #15120F; --map-dim: #858B9C; --map-shadow: #000;
+  --map-sea-name: #C4DAE6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #EADBC0; --map-region-halo: rgba(0, 0, 0, 0.65);
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --map-land: #3B3026; --map-sea: #15283A; --map-coast: #7FA3B5; --map-wave: rgba(140, 185, 210, 0.10);
-    --map-name: #F2DDBB; --map-halo: #3B3026; --map-sea-name: #9CC3D6; --map-accent-sea: #F08A5D;
+    --map-name: #F2DDBB; --map-halo: #3B3026; --map-accent-sea: #F08A5D;
+    --map-edge: #15120F; --map-dim: #858B9C; --map-shadow: #000;
+    --map-sea-name: #C4DAE6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #EADBC0; --map-region-halo: rgba(0, 0, 0, 0.65);
   }
 }
 

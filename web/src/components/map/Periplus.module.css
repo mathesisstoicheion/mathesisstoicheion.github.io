@@ -9,7 +9,7 @@
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
   border-radius: var(--radius); box-shadow: 0 0 0 1px var(--rule), 0 18px 40px -26px var(--shadow);
-  background: var(--map-land); animation: unroll 0.9s var(--ease) both;
+  background: var(--map-edge); animation: unroll 0.9s var(--ease) both;
 }
 .stage:active { cursor: grabbing; }
 /* touch screens: one finger moves the map, two zoom it (Periplus.tsx); phones keep some page in view, to scroll by */

@@ -4,7 +4,8 @@
  * outside React, so moving the map never waits for the page to re-render; Periplus.tsx feeds it events
  * and what is chosen or filtered.
  */
-import { clearWidths, layout, lodFor, paint, readLook, waveTile, zoomPath, type Box, type Label, type Layout, type Look, type Lod, type Pt, type View } from "./draw";
+import { clearSprites, clearWidths, layout, lodFor, paint, readLook, seaMask, zoomPath, type Box, type Label, type Layout, type Look, type Lod, type Pt, type View } from "./draw";
+import { loadReliefMeta, Relief } from "./relief";
 
 const KM_PER_UNIT = 1.1132;   // a map unit is a hundredth of a degree of latitude
 export const MAX_ZOOM = 14;    // times the opening view
@@ -34,7 +35,8 @@ export class MapEngine {
   lay: Layout | null = null;
   private dpr = 1;
   private look: Look | null = null;
-  private waves: CanvasPattern | null = null;
+  private relief: Relief | null = null;
+  private onSeaMap: ((x: number, y: number) => boolean) | null = null;
   private motion: Motion | null = null;
   private raf = 0;
   private last = 0;
@@ -52,8 +54,12 @@ export class MapEngine {
 
   constructor(private W: number, private H: number, private pts: Pt[], private byId: Map<string, Pt>, private lods: Lod[], private opening: [[number, number], [number, number]]) {}
 
-  attach(els: Els, onHome: () => void) { this.els = els; this.onHome = onHome; this.restyle(); }
-  detach() { cancelAnimationFrame(this.raf); this.raf = 0; this.els = null; }
+  attach(els: Els, onHome: () => void) {
+    this.els = els; this.onHome = onHome; this.restyle();
+    // the picture of the land and sea; without it (no connection) the flat map is drawn instead
+    if (!this.relief) loadReliefMeta().then((m) => { if (this.els) { this.relief = new Relief(m, () => this.request()); this.request(); } }, () => undefined);
+  }
+  detach() { cancelAnimationFrame(this.raf); this.raf = 0; this.els = null; this.relief?.dispose(); this.relief = null; }
 
   setOptions(o: Options) { this.opts = o; this.laidFor = ""; this.request(); }
 
@@ -63,12 +69,12 @@ export class MapEngine {
     if (!els) return;
     const look = readLook(els.stage);
     this.look = look;
-    this.waves = els.canvas.getContext("2d")!.createPattern(waveTile(look, this.dpr), "repeat");
+    clearSprites();
     this.fontsChanged();
     // names are measured and drawn in the site's fonts, once they have arrived
     Promise.all([document.fonts.load(`13px ${look.greek}`, "Ἀθῆναι Ῥώμη"), document.fonts.load(`11px ${look.label}`, "ΘΡΑΚΗ")]).then(() => this.fontsChanged(), () => undefined);
   }
-  fontsChanged() { clearWidths(); this.laidFor = ""; this.request(); }
+  fontsChanged() { clearWidths(); clearSprites(); this.laidFor = ""; this.request(); }
 
   /** the frame has a new size (first show, a window resized, a phone turned round) */
   resize(w: number, h: number) {
@@ -85,7 +91,7 @@ export class MapEngine {
       // open on the Aegean; the whole map is the furthest you can zoom out
       const [[x0, y0], [x1, y1]] = this.opening;
       const k = Math.min(w / (x1 - x0), h / (y1 - y0));
-      this.home = { k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k };
+      this.home = this.clamp({ k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k });
       this.v = this.home;
       this.onHome();
     }
@@ -112,8 +118,10 @@ export class MapEngine {
   limitK(k: number) { return Math.max(Math.min(this.w / this.W, this.h / this.H), Math.min(this.home ? this.home.k * MAX_ZOOM : k, k)); }
   clamp(v: View): View {
     const k = this.limitK(v.k), { w, h, W, H } = this;
-    // keep some of the map on screen
-    return { k, tx: Math.min(w * 0.6, Math.max(w * 0.4 - W * k, v.tx)), ty: Math.min(h * 0.6, Math.max(h * 0.4 - H * k, v.ty)) };
+    // the picture stops at its edges: where the map is wider (or taller) than the frame, it cannot be dragged
+    // past them; where it is narrower, it sits in the middle
+    const axis = (t: number, frame: number, size: number) => (size * k >= frame ? Math.min(0, Math.max(frame - size * k, t)) : (frame - size * k) / 2);
+    return { k, tx: axis(v.tx, w, W), ty: axis(v.ty, h, H) };
   }
   stop() { this.motion = null; }
 
@@ -222,26 +230,32 @@ export class MapEngine {
     if (!els || !g || !look || !this.w) return false;
     const { v, w, h } = this;
     const key = `${v.k.toFixed(6)} ${v.tx.toFixed(2)} ${v.ty.toFixed(2)} ${w} ${h}`;
-    // while the map moves, what fits is worked out a few times a second (the dots and names still move every frame)
-    const now = performance.now(), busy = !!this.motion || now - this.touchedAt < 120;
-    if (!this.lay || (key !== this.laidFor && (this.laidFor === "" || !busy || now - this.laidAt > 60))) {
+    // While the map moves, the names and dots move with it and keep their sides; a few times a second those
+    // that now crowd one another are let go, but nothing new comes in until the map comes to rest. Then what
+    // fits is worked out afresh, and the newcomers fade in.
+    const now = performance.now(), busy = !!this.motion || now - this.touchedAt < 150;
+    const full = !this.lay || this.laidFor === "" || (key !== this.laidFor && !busy);
+    if (full || (key !== this.laidFor && now - this.laidAt > 250)) {
       this.laidAt = now;
       const shown = new Set<string>();
       for (const [id, a] of this.dotA) if (a > 0.5) shown.add(id);
-      // a coarse coastline is plenty to tell whether a name sits on the sea
-      const coarse = this.lods[Math.min(3, this.lods.length - 1)].sea;
-      const onSea = (x: number, y: number) => g.isPointInPath(coarse, (x - v.tx) / v.k, (y - v.ty) / v.k, "evenodd");
+      const prefer = new Map<string, Label["align"]>();
+      for (const [id, e] of this.labA) if (e.on) prefer.set(id, e.l.align);
+      const only = full ? undefined : new Set([...(this.lay?.dots ?? []).map((t) => t.p.id), ...(this.lay?.labels ?? []).map((l) => l.key)]);
+      // whether a name sits on the sea: a lookup in a small grid of the coastline
+      this.onSeaMap ??= seaMask(this.lods[Math.min(3, this.lods.length - 1)].sea, this.W, this.H);
+      const mask = this.onSeaMap, onSea = (x: number, y: number) => mask((x - v.tx) / v.k, (y - v.ty) / v.k);
       g.setTransform(1, 0, 0, 1, 0, 0);
-      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea });
-      this.laidFor = key;
+      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only });
+      this.laidFor = full ? key : "moving";
     }
     const step = op.reduce ? 1 : Math.min(1, dt / 200);
-    let fading = key !== this.laidFor;   // come back to lay out the final view
-    const want = new Set(this.lay.dots.map((t) => t.p.id));
+    let fading = key !== this.laidFor;   // come back to lay out the view where it rests
+    const want = new Set(this.lay!.dots.map((t) => t.p.id));
     for (const id of want) { const a = Math.min(1, (this.dotA.get(id) ?? 0) + step); this.dotA.set(id, a); if (a < 1) fading = true; }
     for (const [id, a] of this.dotA) if (!want.has(id)) { const b = a - step; if (b <= 0) this.dotA.delete(id); else { this.dotA.set(id, b); fading = true; } }
     for (const e of this.labA.values()) e.on = false;
-    for (const l of this.lay.labels) {
+    for (const l of this.lay!.labels) {
       const t = this.byId.get(l.key)!, sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
       this.labA.set(l.key, { l, dx: l.x - sx, dy: l.y - sy, a: this.labA.get(l.key)?.a ?? 0, on: true });
     }
@@ -255,7 +269,7 @@ export class MapEngine {
       labels.push({ l: e.l, a: e.a, t });
     }
     const dots = [...this.dotA].map(([id, a]) => ({ t: this.byId.get(id)!, a }));
-    paint({ g, dpr: this.dpr, w, h, v, look, lod: lodFor(this.lods, v.k), waves: this.waves, dots, labels, selected: op.selected, hover: op.hover, saved: op.saved });
+    paint({ g, dpr: this.dpr, w, h, v, look, lod: lodFor(this.lods, v.k), relief: this.relief, moving: busy, dots, labels, selected: op.selected, hover: op.hover, saved: op.saved });
 
     // the ring round the chosen place, and the scale bar, are plain HTML over the canvas
     const sel = op.selected ? this.byId.get(op.selected) : null;

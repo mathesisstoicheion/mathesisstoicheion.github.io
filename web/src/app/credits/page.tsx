@@ -112,6 +112,12 @@ export default function CreditsPage() {
           <li><b>Plato, Paris grec 1807</b>: Source gallica.bnf.fr / Bibliothèque nationale de France (<a href="https://gallica.bnf.fr/edit/und/conditions-dutilisation-des-contenus-de-gallica" rel="noopener">free non-commercial reuse</a>); contents by folio from the BnF&apos;s Archives et manuscrits.</li>
         </ul>
 
+        <h2>Maps</h2>
+        <ul>
+          <li><b>The land and sea on the Periplus</b>: <a href="https://earthobservatory.nasa.gov/features/BlueMarble" rel="noopener">NASA Earth Observatory, Blue Marble: Next Generation</a> with topography and bathymetry, July 2004, by Reto Stöckli; public domain. Prepared for the map by <code>pipeline/build_relief.py</code>.</li>
+          <li><b>Coastlines, seas and lakes</b>: <a href="https://github.com/AWMC/geodata" rel="noopener">Ancient World Mapping Center, geodata</a>, ODbL 1.0, derived from the Barrington Atlas of the Greek and Roman World.</li>
+          <li><b>Places</b>: <a href="https://pleiades.stoa.org" rel="noopener">Pleiades</a>, CC BY 3.0, matched to the names in GLAUx (above).</li>
+        </ul>
         <h2>Fonts and software</h2>
         <ul>
           {SOFTWARE.map((s) => (

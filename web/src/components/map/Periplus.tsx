@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Periplus: a map of the Greek world in the colours of a painted vase (clay land, an Aegean sea), with
+ * The Periplus: a map of the Greek world on NASA's satellite picture of the land and sea in summer, with
  * every place the library mentions. Dots grow with the number of mentions; click one to see what the
  * texts say of it, and where. Wheel, drag (one finger on a phone), pinch, double-click or the buttons to move about; the
  * keyboard works too (arrows to pan, + and − to zoom). ?p=<Pleiades id> opens a place.

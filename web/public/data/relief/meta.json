@@ -1,0 +1,60 @@
+{
+ "source": "NASA Earth Observatory, Blue Marble: Next Generation with Topography and Bathymetry (Reto St\u00f6ckli), July 2004; public domain",
+ "bbox": [
+  -11.0,
+  22.0,
+  50.0,
+  48.5
+ ],
+ "tile": 512,
+ "levels": [
+  {
+   "z": 0,
+   "scale": 0.075,
+   "w": 361,
+   "h": 199,
+   "cols": 1,
+   "rows": 1
+  },
+  {
+   "z": 1,
+   "scale": 0.15,
+   "w": 721,
+   "h": 398,
+   "cols": 2,
+   "rows": 1
+  },
+  {
+   "z": 2,
+   "scale": 0.3,
+   "w": 1442,
+   "h": 795,
+   "cols": 3,
+   "rows": 2
+  },
+  {
+   "z": 3,
+   "scale": 0.6,
+   "w": 2884,
+   "h": 1590,
+   "cols": 6,
+   "rows": 4
+  },
+  {
+   "z": 4,
+   "scale": 1.2,
+   "w": 5768,
+   "h": 3180,
+   "cols": 12,
+   "rows": 7
+  },
+  {
+   "z": 5,
+   "scale": 2.4,
+   "w": 11536,
+   "h": 6360,
+   "cols": 23,
+   "rows": 13
+  }
+ ]
+}
