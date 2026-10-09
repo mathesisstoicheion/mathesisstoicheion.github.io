@@ -1,13 +1,41 @@
 import { test, expect } from "@playwright/test";
 
-test("the library opens with its search, and lists authors with their works", async ({ page }) => {
+test("the library opens with its search, and lists authors who open to show their works", async ({ page }) => {
   await page.goto("/library");
   const search = page.getByRole("searchbox", { name: "Search the library" });
   const first = page.locator("section[id^=lib-]").first();
   await expect(first).toBeVisible();
   // the search comes before everything else in the list
   expect((await search.boundingBox())!.y).toBeLessThan((await first.boundingBox())!.y);
-  await expect(page.locator("#author-tlg0012").getByRole("link", { name: /^Iliad/ })).toBeVisible();
+  // an author is one row, closed, that says who they were and how many works there are
+  const aristotle = page.locator("#author-tlg0086");
+  const row = aristotle.getByRole("button", { name: /^Aristotle/ });
+  await expect(row).toHaveAttribute("aria-expanded", "false");
+  await expect(row).toContainText("Greek philosopher");
+  await expect(row).toContainText("48 works");
+  await expect(aristotle.getByRole("link", { name: /^Poetics/ })).toHaveCount(0);
+  // clicking the name opens the works in place, those with English first; the author's page is a link inside
+  await row.click();
+  await expect(row).toHaveAttribute("aria-expanded", "true");
+  await expect(aristotle.getByRole("heading", { name: /With English beside the Greek/ })).toBeVisible();
+  await expect(aristotle.getByRole("link", { name: /^Poetics/ })).toHaveAttribute("href", /\/read\?w=tlg0086\./);
+  await expect(page).toHaveURL(/\/library$/);
+  await expect(aristotle.getByRole("link", { name: /^About Aristotle/ })).toHaveAttribute("href", "/library/author?a=tlg0086");
+  await row.click();
+  await expect(row).toHaveAttribute("aria-expanded", "false");
+});
+
+test("a search marks what matched, and offers the authors it names first", async ({ page }) => {
+  await page.goto("/library");
+  await page.getByRole("searchbox", { name: "Search the library" }).fill("aristot");
+  const hits = page.getByRole("button", { name: /^Aristotle \d+$/ });
+  await expect(hits).toBeVisible();
+  await expect(page.locator("#author-tlg0086 mark").first()).toHaveText("Aristot");
+  // matching authors are open, and "where to begin" steps aside
+  await expect(page.locator("#author-tlg0086").getByRole("button", { name: /^Aristotle/ })).toHaveAttribute("aria-expanded", "true");
+  await expect(page.getByText("Not sure where to begin?")).toBeHidden();
+  await hits.click();
+  await expect(page.locator("#author-tlg0086")).toBeInViewport();
 });
 
 test("the library sorts by title and by period, and jumps to a letter", async ({ page }) => {
@@ -26,10 +54,15 @@ test("the genre chips count and filter, and a long list of works folds", async (
   await expect(page.locator("#author-tlg0011")).toBeVisible();      // Sophocles
   await expect(page.locator("#author-tlg0012")).toHaveCount(0);     // Homer wrote no drama
   await expect(page.getByText(/of 1,\d{3} works/)).toBeVisible();
+  // while a filter narrows the list, the authors stand open
+  await expect(page.locator("#author-tlg0011").getByRole("link", { name: /^Antigone/ })).toBeVisible();
   await page.getByRole("button", { name: "Show everything" }).click();
-  const plato = page.locator("#author-tlg0059");
-  await plato.getByRole("button", { name: /Show all \d+ works/ }).click();
-  await expect(plato.getByRole("button", { name: "Show fewer" })).toBeVisible();
+  await expect(page.locator("#author-tlg0011").getByRole("link", { name: /^Antigone/ })).toHaveCount(0);
+  // "Open every author" opens them all, and closes them again
+  await page.getByRole("button", { name: "Open every author" }).click();
+  await expect(page.locator("#author-tlg0059").getByRole("link", { name: /^Apology/ })).toBeVisible();
+  await page.getByRole("button", { name: "Close every author" }).click();
+  await expect(page.locator("#author-tlg0059").getByRole("link", { name: /^Apology/ })).toHaveCount(0);
 });
 
 test("wiki categories have their signs, and the featured entry its picture or sign", async ({ page }) => {

@@ -62,7 +62,7 @@ export const TOURS: Record<string, Tour> = {
       { at: [t('[role=radiogroup][aria-label="Translation"]')], title: "With or without English", text: "Show every work, only the ones with an English translation beside the Greek, or only Greek." },
       { at: [t("details summary", "Not sure where to begin")], title: "Not sure where to begin?", text: "Our suggestions, from the easiest Greek to the hardest. Under each work, “common words” says how much of its text is the commonest Greek: the higher, the easier." },
       { at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
-      { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Each author lists their works. Click a title and it opens in the Scroll, the reader, with the Greek and the English side by side.", phoneText: "Each author lists their works. Tap a title and it opens in the Scroll, the reader, with the Greek and the English side by side." },
+      { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Click an author to see their works, those with English first. Click a title and it opens in the Scroll, the reader, with the Greek and the English side by side.", phoneText: "Tap an author to see their works, those with English first. Tap a title and it opens in the Scroll, the reader, with the Greek and the English side by side." },
     ],
   },
 

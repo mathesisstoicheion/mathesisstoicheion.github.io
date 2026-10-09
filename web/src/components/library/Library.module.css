@@ -73,27 +73,42 @@
   border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) both;
 }
 .groupHead[data-period] { font-size: 1.6rem; }
-.author {
-  display: grid; grid-template-columns: minmax(170px, 250px) minmax(0, 1fr); gap: 4px 28px; padding: 12px 0;
-  border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent);
-}
+/* an author: one row that opens to show their works (Phase 11) */
+.author { border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }
 @keyframes picked { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 @keyframes rise { from { opacity: 0; translate: 0 6px; } }
-.who { display: grid; align-content: start; gap: 2px; padding-top: 6px; }
-.name { font-weight: 600; font-size: 1.05rem; text-decoration: none; justify-self: start; }
-.name:hover { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; }
-.dates { font-size: 0.84rem; color: var(--ink-2); }
+.authorHead { margin: 0; font: inherit; }
+.toggle {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name chev" "desc chev" "facts chev";
+  align-items: center; gap: 1px 16px; width: 100%; padding: 12px 10px; margin: 0; text-align: left; color: var(--ink);
+  background: none; border: 0; border-radius: var(--radius); cursor: pointer; transition: background-color 0.15s;
+}
+.toggle:hover { background: var(--bg-2); }
+.toggle:hover .name { color: var(--accent); }
+.toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.name { grid-area: name; font-weight: 700; font-size: 1.12rem; transition: color 0.15s; }
+.desc { grid-area: desc; color: var(--ink-2); font-size: 0.95rem; }
+.desc::first-letter { text-transform: uppercase; }
+.facts { grid-area: facts; display: flex; flex-wrap: wrap; gap: 0 14px; font-size: 0.84rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.chev { grid-area: chev; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; color: var(--ink-2); transition: transform 0.35s var(--ease); }
+.author[data-open] .chev { transform: rotate(180deg); color: var(--accent); }
+/* the works slide open beneath the name */
+.worksPanel { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.4s var(--ease); }
+.author[data-open] .worksPanel { grid-template-rows: 1fr; }
+.worksPanel > div { overflow: hidden; min-height: 0; padding-inline: 10px; }
+.author[data-open] .worksPanel > div { padding-bottom: 14px; }
+.author[data-open] .rows { animation: rise 0.35s var(--ease) both; }
+.aboutAuthor { display: inline-block; margin-top: 8px; font-size: 0.92rem; color: var(--accent); text-underline-offset: 3px; }
+.sub { margin: 10px 0 2px; font-family: var(--f-label); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-2); }
+.sub small { font-size: inherit; opacity: 0.7; margin-left: 4px; }
+.authorHits { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0; }
+.authorHits small { color: var(--ink-2); }
+.hint { margin: -6px 0 0; color: var(--ink-2); font-size: 0.92rem; }
+.lib mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .titleRows { padding-top: 8px; }
-.more {
-  margin: 4px 0 2px; padding: 4px 0; font: inherit; font-size: 0.9rem; font-weight: 600; color: var(--accent);
-  background: none; border: 0; cursor: pointer; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px;
-}
-.more::after { content: " ▾"; text-decoration: none; display: inline-block; margin-left: 4px; transition: transform 0.2s var(--ease); }
-.more[aria-expanded="true"]::after { transform: rotate(180deg); }
-@media (pointer: coarse) { .more { min-height: var(--tap); } }
 .row {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 18px;
   padding: 7px 10px; margin-inline: -10px; border-radius: var(--radius); text-decoration: none;
@@ -126,15 +141,11 @@
   .selects { display: none; grid-template-columns: minmax(0, 1fr); width: 100%; }
   .selects[data-open] { display: grid; animation: rise 0.3s var(--ease) both; }
   .selects select { width: 100%; min-width: 0; font-size: 1rem; }
-  .who { display: flex; flex-wrap: wrap; align-items: baseline; gap: 0 12px; }
   .genres { display: grid; gap: 6px; }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding-inline: var(--gutter, 20px); scroll-padding-inline: var(--gutter, 20px); }
   .chipRow :global(.chip) { flex: none; }
   .jumpBar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
   .jumpBar button { flex: none; min-width: 40px; height: 40px; }
-  .author { grid-template-columns: minmax(0, 1fr); gap: 2px; }
-  .who { padding-top: 4px; }
-  .name { min-height: var(--tap); display: inline-flex; align-items: center; }
   .row { grid-template-columns: minmax(0, 1fr); min-height: var(--tap); padding-block: 9px; }
   .rowMeta { flex-wrap: wrap; gap: 6px 10px; }
   .go { display: none; }
