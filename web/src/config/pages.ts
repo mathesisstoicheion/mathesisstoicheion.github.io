@@ -34,6 +34,6 @@ export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.map((l) => `/acad
 
 /** Small data files every page may need, kept offline with the pages. */
 export const OFFLINE_DATA = [
-  "/data/catalog.json", "/data/core.json", "/data/abbrev.json", "/data/works-meta.json", "/data/authors-meta.json", "/data/difficulty.json",
+  "/data/catalog.json", "/data/core.json", "/data/abbrev.json", "/data/works-meta.json", "/data/authors-meta.json", "/data/author-names.json", "/data/difficulty.json",
   "/data/metre/_index.json", "/data/metre/_lengths.json", "/audio/index.json",
 ];

@@ -123,8 +123,9 @@ def main() -> None:
     catalog["authors"] = out
 
     # English titles for works the collections name only in Latin or Greek (pipeline/work_titles.tsv)
-    from apply_work_titles import apply, load_titles
+    from apply_work_titles import apply, apply_names, load_names, load_titles
     apply(catalog, load_titles())
+    apply_names(catalog, load_names())
 
     n_works = sum(len(a["works"]) for a in out)
     n_texts = sum(len(w["texts"]) for a in out for w in a["works"])

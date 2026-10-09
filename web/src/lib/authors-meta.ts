@@ -20,6 +20,15 @@ export function loadAuthorsMeta(): Promise<Record<string, AuthorMeta>> {
   return pending;
 }
 
+/** Each author's Ancient Greek name and the other names they go by, from Wikidata's labels and aliases
+ * (web/public/data/author-names.json, built by pipeline/build_author_names.py; CC0), for the library's search. */
+export interface AuthorNames { grc?: string; also?: string[] }
+let namesPending: Promise<Record<string, AuthorNames>> | null = null;
+export function loadAuthorNames(): Promise<Record<string, AuthorNames>> {
+  namesPending ??= fetch("/data/author-names.json").then((r) => (r.ok ? r.json() : { authors: {} })).then((d) => d.authors ?? {}).catch(() => ({}));
+  return namesPending;
+}
+
 /** The periods of Greek, by the usual conventions. `to` is the last year of the period (BC negative). */
 export interface Era { id: string; name: string; from: number; to: number; span: string }
 export const ERAS: Era[] = [

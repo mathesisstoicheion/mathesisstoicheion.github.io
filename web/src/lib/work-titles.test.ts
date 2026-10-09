@@ -37,3 +37,19 @@ describe("English titles for works the collections name in Latin or Greek", () =
     expect(readReference("De mixtione 1", idx, {}).map((r) => r.work)).toContain("tlg0732.tlg001");
   });
 });
+
+describe("English names for the anonymous works and collections filed under a Latin label", () => {
+  const named = catalog.authors.filter((a) => a.orig);
+  it("keep the collection's Latin label beside the site's English name, for every line of author_names.tsv", () => {
+    const tsv = readFileSync("../pipeline/author_names.tsv", "utf8").split("\n").filter((l) => l.trim() && !l.startsWith("#"));
+    expect(named.length).toBe(tsv.length);
+    for (const a of named) {
+      expect(a.nameFrom, a.id).toBe("site");
+      expect(a.name, a.id).not.toBe(a.orig);
+    }
+    expect(catalog.authors.find((a) => a.id === "tlg1805")).toMatchObject({ name: "Lives of Homer", orig: "Vitae Homeri" });
+    expect(catalog.authors.find((a) => a.id === "tlg5034")).toMatchObject({ name: "Scholia on Pindar", orig: "Scholia in Pindarum" });
+    // real people keep their names
+    expect(catalog.authors.find((a) => a.id === "tlg0086")?.orig).toBeUndefined();
+  });
+});

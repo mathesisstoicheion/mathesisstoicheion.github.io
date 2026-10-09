@@ -21,10 +21,13 @@ test("an unknown author is said to be unknown, not guessed at", async ({ page })
 test("the library can be filtered by how familiar a text's vocabulary is, and says what that measures", async ({ page }) => {
   await page.goto("/library");
   await page.locator("#library-vocab").selectOption("familiar");
-  await expect(page.getByText(/\b8\d% common words/).first()).toBeVisible();
+  // each work shows a meter: easy words (one bar), some rarer words (two), many rare words (three)
+  await expect(page.locator("[data-level]").first()).toHaveAttribute("title", /^8\d% common words/);
+  await expect(page.getByText("Easy words").first()).toBeVisible();
   await expect(page.getByText(/measures words only, not grammar, dialect or how hard the ideas are/)).toBeVisible();
   await page.locator("#library-vocab").selectOption("rare");
-  await expect(page.getByText(/\b[1-6]\d% common words/).first()).toBeVisible();
+  await expect(page.locator("[data-level]").first()).toHaveAttribute("title", /^[1-6]\d% common words/);
+  await expect(page.getByText("Many rare words").first()).toBeVisible();
 });
 
 test("the library opens an author arriving by ?a=, with a link to their page", async ({ page }) => {

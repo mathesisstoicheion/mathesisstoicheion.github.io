@@ -11,7 +11,9 @@ export interface CatText {
 /** `title` is English. Where the collection names a work only in Latin or Greek, its own title is `orig`, and
  *  `titleFrom` says where the English comes from: the library's English translation ("tr") or this site ("site"). */
 export interface CatWork { id: string; title: string; orig?: string; titleFrom?: "tr" | "site"; lang: string | null; texts: CatText[] }
-export interface CatAuthor { id: string; name: string; works: CatWork[] }
+/** `name` is English. Where the collection files anonymous works, letters or lives under a Latin label (Vitae Homeri),
+ *  that label is `orig` and `nameFrom` is "site": the English is this site's plain translation (pipeline/author_names.tsv). */
+export interface CatAuthor { id: string; name: string; orig?: string; nameFrom?: "site"; works: CatWork[] }
 export interface Catalog {
   built: string;
   collections: Record<CollectionId, { owner: string; repo: string; sha: string }>;

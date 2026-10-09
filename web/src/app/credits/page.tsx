@@ -48,7 +48,11 @@ export default function CreditsPage() {
           <b>What this site adds to the collections&apos; catalogue information:</b> an English title for works the
           collections name only in Latin or Greek. Some are taken from the collections&apos; own English translations; the
           rest are this site&apos;s translations of the Latin or Greek title, and are labelled as such. The library, the reader and
-          each work&apos;s page show the original title under the English one. The texts themselves are unchanged.
+          each work&apos;s page show the original title under the English one. Likewise an English name for the 66 anonymous
+          works, collections, letters and lives that the collections file under a Latin label as if it were an author (<i>Vitae
+          Homeri</i> is shown as &ldquo;Lives of Homer&rdquo;), translated by this site with the Latin beside it. For searching, the
+          library also knows each author&apos;s Greek name and the other names they go by, from Wikidata&apos;s labels and aliases
+          (CC0). The texts themselves are unchanged.
         </p>
 
         <h2>Words and dictionaries</h2>

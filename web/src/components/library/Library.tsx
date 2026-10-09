@@ -7,7 +7,10 @@ import { Fragment, useDeferredValue, useEffect, useMemo, useRef, useState, type 
 import { loadCatalog, fold, greekEditions, hasTranslation, type CatalogIndex, type CatAuthor, type CatWork } from "@/lib/catalog";
 import { loadWorksMeta, FAMILIES, PERIODS, familyOf, periodOf, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { commonShare, loadDifficulty, VOCAB_BANDS } from "@/lib/difficulty";
-import { loadAuthorsMeta, type AuthorMeta } from "@/lib/authors-meta";
+import { loadAuthorsMeta, loadAuthorNames, type AuthorMeta, type AuthorNames } from "@/lib/authors-meta";
+import { BEST_KNOWN } from "@/data/best-known";
+import { STARTS } from "@/data/starts";
+import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import styles from "./Library.module.css";
@@ -90,16 +93,22 @@ export default function Library() {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // the search, the order and the filters start from the address and are written back to it (replacing, not adding,
+  // a history entry), so Back returns to the same list and a filtered list can be shared as a link
+  const pick = <T extends string>(k: string, ok: readonly T[], d: T): T => { const v = params.get(k) as T | null; return v && ok.includes(v) ? v : d; };
   const [q, setQ] = useState(params.get("q") ?? "");
-  const [sort, setSort] = useState<Sort>("author");
-  const [tr, setTr] = useState<Tr>("all");
-  const [family, setFamily] = useState("");
-  const [period, setPeriod] = useState("");
-  const [dialect, setDialect] = useState("");
-  const [vocab, setVocab] = useState("");
+  const [sort, setSort] = useState<Sort>(pick("sort", ["author", "title", "period"] as const, "author"));
+  const [tr, setTr] = useState<Tr>(pick("tr", ["all", "with", "greek"] as const, "all"));
+  const [family, setFamily] = useState(params.get("genre") ?? "");
+  const [period, setPeriod] = useState(params.get("period") ?? "");
+  const [dialect, setDialect] = useState(params.get("dialect") ?? "");
+  const [vocab, setVocab] = useState(params.get("vocab") ?? "");
   const [diff, setDiff] = useState<Record<string, [number, number]>>({});
   const [meta, setMeta] = useState<Record<string, WorkMeta>>({});
   const [who, setWho] = useState<Record<string, AuthorMeta>>({});
+  const [names, setNames] = useState<Record<string, AuthorNames>>({});
+  const [reading, setReading] = useState<Map<string, string>>(new Map());     // work id → where the reader stopped
+  useEffect(() => { const t = setTimeout(() => setReading(new Map(recentPositions(30).map(([w, p]) => [w, p.at]))), 0); return () => clearTimeout(t); }, []);
   // Each author is a row that opens to show their works (Phase 11). Closed at first; open while a search or a filter
   // narrows the list, and for an author arriving by ?a=. `flips` holds the authors the reader has opened or closed
   // against that, for the present search and filters only (`ctx`); "Open every author" turns the starting point round.
@@ -107,7 +116,13 @@ export default function Library() {
   const [flips, setFlips] = useState<{ ctx: string; ids: Set<string> }>({ ctx: "", ids: new Set() });
   const [more, setMore] = useState(false);                        // phones: the extra filters shown
   const query = useDeferredValue(q);
-  useEffect(() => { loadCatalog().then(setIdx, (e: Error) => setError(e.message)); loadWorksMeta().then(setMeta); loadDifficulty().then(setDiff); loadAuthorsMeta().then(setWho); }, []);
+  useEffect(() => {
+    const u = new URL(location.href);
+    const set = (k: string, v: string, d = "") => { if (v && v !== d) u.searchParams.set(k, v); else u.searchParams.delete(k); };
+    set("q", query.trim()); set("sort", sort, "author"); set("tr", tr, "all"); set("genre", family); set("period", period); set("dialect", dialect); set("vocab", vocab);
+    if (u.href !== location.href) history.replaceState(history.state, "", u);
+  }, [query, sort, tr, family, period, dialect, vocab]);
+  useEffect(() => { loadCatalog().then(setIdx, (e: Error) => setError(e.message)); loadWorksMeta().then(setMeta); loadDifficulty().then(setDiff); loadAuthorsMeta().then(setWho); loadAuthorNames().then(setNames); }, []);
   // "where to begin" stays as the reader left it (the box itself holds whether it is open)
   const beginRef = useRef<HTMLDetailsElement>(null);
   useEffect(() => { try { if (beginRef.current && localStorage.getItem("mathesis:lib-begin") === "open") beginRef.current.open = true; } catch {} }, []);
@@ -131,16 +146,24 @@ export default function Library() {
   }, [tr, period, dialect, vocab, meta, diff]);
 
   /** The works that match the search and the filters (other than genre), by author. */
+  /** The other name of an author's that a search matches (Aristoteles, Ἀριστοτέλης), if it matches one. */
+  const alias = (id: string, f: string): string | null => {
+    const nm = names[id];
+    if (!nm || !f) return null;
+    return [nm.grc, ...(nm.also ?? [])].find((x): x is string => !!x && fold(x).includes(f)) ?? null;
+  };
+
   const found = useMemo(() => {
     const f = fold(query.trim());
     const out: { a: CatAuthor; works: CatWork[] }[] = [];
     for (const a of authors) {
-      const whole = f.length > 0 && fold(a.name).includes(f);
+      const whole = f.length > 0 && (fold(`${a.name} ${a.orig ?? ""}`).includes(f) || !!alias(a.id, f));
       const works = a.works.filter((w) => keepBut(w) && (!f || whole || fold(`${w.title} ${w.orig ?? ""} ${greekEditions(w)[0]?.label ?? ""} ${w.id}`).includes(f)));
       if (works.length) out.push({ a, works });
     }
     return out;
-  }, [authors, keepBut, query]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [authors, keepBut, query, names]);
 
   const familyCounts = useMemo(() => {
     const c = new Map<string, number>();
@@ -175,11 +198,14 @@ export default function Library() {
     return [...by.values()];
   }, [rows, sort]);
 
-  // a search that names an author: those authors are offered first, as links to their place in the list
+  // a search that names an author (by any of their names): those authors are offered first, as links to their place
   const authorHits = useMemo(() => {
     const f = fold(query.trim());
-    return f.length < 2 ? [] : rows.filter((r) => fold(r.a.name).includes(f)).sort((x, y) => fold(x.a.name).indexOf(f) - fold(y.a.name).indexOf(f) || byName(x.a.name, y.a.name)).slice(0, 5);
-  }, [rows, query]);
+    if (f.length < 2) return [];
+    const at = (r: Row) => { const i = fold(r.a.name).indexOf(f); return i >= 0 ? i : alias(r.a.id, f) ? 50 : -1; };
+    return rows.filter((r) => at(r) >= 0).sort((x, y) => at(x) - at(y) || byName(x.a.name, y.a.name)).slice(0, 5);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [rows, query, names]);
   const goAuthor = (id: string) => {
     const el = document.getElementById(`author-${id}`);
     if (el) scrollBelowHeader(el, (barRef.current?.offsetHeight ?? 0) + 12, !prefersReducedMotion(useSettings.getState().motion));
@@ -216,6 +242,7 @@ export default function Library() {
     });
   }, [idx, selected]);
 
+  const active = (tr !== "all" ? 1 : 0) + (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
@@ -229,6 +256,11 @@ export default function Library() {
           placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
       </div>
 
+      {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
+      <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
+        Order and filters{active ? ` (${active} on)` : ""}
+      </button>
+      <div id="library-filters" className={styles.filters} data-open={more ? "" : undefined}>
       <div className={styles.controls}>
         <div className="segmented" role="radiogroup" aria-label="Order">
           {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
@@ -236,11 +268,7 @@ export default function Library() {
         <div className="segmented" role="radiogroup" aria-label="Translation">
           {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
         </div>
-        {/* phones: the three menus wait behind one button */}
-        <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-more" onClick={() => setMore(!more)}>
-          More filters{(period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0) ? ` (${(period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0)})` : ""}
-        </button>
-        <div id="library-more" className={styles.selects} role="group" aria-label="More filters" data-open={more ? "" : undefined}>
+        <div className={styles.selects} role="group" aria-label="More filters">
           <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
             <option value="">Every period</option>
             {PERIODS.map(([p]) => <option key={p} value={p}>{p}</option>)}
@@ -266,6 +294,7 @@ export default function Library() {
           })}
         </div>
       </div>
+      </div>
 
       {vocab && <p className={styles.note}>Vocabulary is the share of a text&apos;s running words that are among the 516 core words, the commonest in Greek (the Dickinson College Commentaries core list, counted over the GLAUx analysis; texts under 2,000 words are not rated). It measures words only, not grammar, dialect or how hard the ideas are: Aristotle&apos;s words are common, his arguments are not.</p>}
 
@@ -286,6 +315,41 @@ export default function Library() {
         </div>
       </details>
 
+      {/* famous works to begin with (data/starts.ts, the home page's choice): a shelf of their Greek titles */}
+      {idx && !narrowed && (
+        <section className={styles.shelf} aria-labelledby="shelf-h">
+          <h2 id="shelf-h" className="label">Famous works, with English beside the Greek</h2>
+          <ul>
+            {STARTS.map((id, i) => {
+              const w = idx.work.get(id), a = idx.authorOf.get(id);
+              if (!w || !a) return null;
+              const gr = greekEditions(w)[0]?.label;
+              const pct = commonShare(diff[id]);
+              return (
+                <li key={id} style={{ "--i": i } as React.CSSProperties}>
+                  <Link href={`/read?w=${id}`} transitionTypes={["page-turn"]} className={styles.spine}>
+                    {gr && <span className={styles.spineGr} lang="grc">{gr}</span>}
+                    <b>{w.title}</b>
+                    <span className={styles.spineBy}>{a.name}</span>
+                    {pct !== null && <VocabMeter pct={pct} />}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      {reading.size > 0 && !query.trim() && idx && (
+        <div className={styles.reading} role="group" aria-label="Your books in progress">
+          <span className="label">Reading now</span>
+          {[...reading].slice(0, 4).map(([w, at]) => {
+            const wk = idx.work.get(w), a = idx.authorOf.get(w);
+            return wk ? <Link key={w} className="chip" href={`/read?w=${w}&at=${encodeURIComponent(at)}`} transitionTypes={["page-turn"]}>{a ? `${a.name}, ` : ""}<i>{wk.title}</i> <small>at {at}</small></Link> : null;
+          })}
+        </div>
+      )}
+
       <nav ref={barRef} className={styles.jumpBar} aria-label={sort === "period" ? "Jump to a period" : "Jump to a letter"} data-periods={sort === "period" ? "" : undefined}>
         {jumps.map((j) => <button key={j.key} type="button" disabled={!j.on} onClick={() => jump(j.key)}>{j.short}</button>)}
       </nav>
@@ -301,7 +365,9 @@ export default function Library() {
           <span className="label">{authorHits.length === 1 ? "Author" : "Authors"}</span>
           {authorHits.map((r) => (
             <button key={r.a.id} type="button" className="chip" onClick={() => goAuthor(r.a.id)}>
-              <span>{marked(r.a.name, query)}</span> <small>{n(r.works.length)}</small>
+              <span>{marked(r.a.name, query)}</span>
+              {!fold(r.a.name).includes(fold(query.trim())) && alias(r.a.id, fold(query.trim())) && <span className="muted"> ({marked(alias(r.a.id, fold(query.trim()))!, query)})</span>}
+              <small>{n(r.works.length)}</small>
             </button>
           ))}
         </p>
@@ -310,17 +376,29 @@ export default function Library() {
 
       {idx && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
 
-      <div className={styles.list}>
+      {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
+      <div className={styles.list} onKeyDown={(e) => {
+        const t = e.target as HTMLElement;
+        if (!t.matches?.("[data-author-row]") || !["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+        const all = [...document.querySelectorAll<HTMLElement>("[data-author-row]")];
+        const i = all.indexOf(t);
+        const to = e.key === "Home" ? 0 : e.key === "End" ? all.length - 1 : i + (e.key === "ArrowDown" ? 1 : -1);
+        if (to < 0 || to >= all.length) return;
+        e.preventDefault();
+        all[to].focus();
+        all[to].scrollIntoView({ block: "nearest" });
+      }}>
         {groups.map((g) => (
           <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
             <h2 id={`lib-h-${g.key}`} className={styles.groupHead} data-period={sort === "period" ? "" : undefined}>{g.label}</h2>
             {g.rows?.map((r) => (
-              <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
-                selected={r.a.id === selected} query={query} meta={meta} diff={diff} />
+              <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
+                aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
+                selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} />
             ))}
             {g.titles && (
               <ul className={`${styles.rows} ${styles.titleRows}`}>
-                {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} common={commonShare(diff[w.id])} query={query} />)}
+                {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} d={diff[w.id]} query={query} at={reading.get(w.id)} />)}
               </ul>
             )}
           </section>
@@ -330,22 +408,48 @@ export default function Library() {
   );
 }
 
+/** For an author Wikidata does not describe: the kinds of writing of their works (GLAUx's genres), "Medicine · Letters". */
+function kindsLine(a: CatAuthor, meta: Record<string, WorkMeta>): string | undefined {
+  const kinds = [...new Set(a.works.map((w) => familyOf(meta[w.id]?.genre ?? null)).filter((f): f is string => !!f))];
+  return kinds.length ? kinds.join(" · ") : undefined;
+}
+
+/** How hard a text's words are, from the share of common words: 1 easy, 2 medium, 3 hard (VOCAB_BANDS). */
+const LEVELS = [null, ["Easy words", "80% or more of its running words are among the 516 commonest in Greek"], ["Some rarer words", "70–79% of its running words are among the 516 commonest"], ["Many rare words", "under 70% of its running words are among the 516 commonest"]] as const;
+const levelOf = (pct: number) => (pct >= 80 ? 1 : pct >= 70 ? 2 : 3);
+/** A text's length in words, rounded: "about 16,000 words". */
+const length = (words: number) => `about ${n(words < 1000 ? Math.round(words / 100) * 100 || 100 : Math.round(words / 1000) * 1000)} words`;
+
+function VocabMeter({ pct }: { pct: number }) {
+  const l = levelOf(pct), [label, why] = LEVELS[l]!;
+  return (
+    <span className={styles.meter} data-level={l} title={`${pct}% common words: ${why}`}>
+      <span className={styles.bars} aria-hidden="true"><i /><i /><i /></span>
+      {label}<span className="visually-hidden"> ({pct}% common words)</span>
+    </span>
+  );
+}
+
 /** One work in the list: its title, Greek title, and what it offers, the whole row a link into the reader. */
-function Title({ w, by, meta, common, query = "" }: { w: CatWork; by?: CatAuthor; meta?: WorkMeta; common: number | null; query?: string }) {
+function Title({ w, by, meta, d, query = "", best = false, at }: { w: CatWork; by?: CatAuthor; meta?: WorkMeta; d?: [number, number]; query?: string; best?: boolean; at?: string }) {
   const grc = greekEditions(w)[0];
   const tr = hasTranslation(w);
+  const common = commonShare(d);
   return (
     <li>
-      <Link href={readHref(w)} transitionTypes={["page-turn"]} className={styles.row}>
+      <Link href={at ? `/read?w=${w.id}&at=${encodeURIComponent(at)}` : readHref(w)} transitionTypes={["page-turn"]} className={styles.row}>
         <span className={styles.rowTitle}>
           <span className={styles.t}>{marked(w.title, query)}</span>
           {grc?.label && grc.label !== w.title && <span className={styles.gr} lang="grc">{marked(grc.label, query)}</span>}
           {w.orig && w.orig !== grc?.label && <OrigTitle work={w} className={styles.orig} />}
           {by && <span className={styles.by}>{marked(by.name, query)}</span>}
+          {best && <span className={styles.best}>Best known</span>}
+          {at && <span className={styles.best}>Reading · at {at}</span>}
         </span>
         <span className={styles.rowMeta}>
           {meta?.genre && <span className={styles.genre}>{meta.genre}</span>}
-          {common !== null && <span className={styles.common} title={`${common}% of this text's running words are among the 516 core words, the commonest in Greek`}>{common}% common words</span>}
+          {d && d[0] >= 100 && <span className={styles.len}>{length(d[0])}</span>}
+          {common !== null && <VocabMeter pct={common} />}
           {tr ? <span className={styles.badge}>English</span> : <span className={`${styles.badge} ${styles.off}`}>Greek only</span>}
           <span className={styles.go} aria-hidden="true">→</span>
         </span>
@@ -359,19 +463,28 @@ function Title({ w, by, meta, common, query = "" }: { w: CatWork; by?: CatAuthor
  * The row says who they were (Wikidata's one-line description), when, and how many works the library holds;
  * opened, it lists the works, each a link into the reader, and then a link to the author's own page.
  */
-function AuthorRow({ r, desc, open, onToggle, selected, query, meta, diff }: {
-  r: Row; desc?: string; open: boolean; onToggle: () => void; selected: boolean; query: string;
-  meta: Record<string, WorkMeta>; diff: Record<string, [number, number]>;
+function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, diff, reading }: {
+  r: Row; desc?: string; grc?: string; aka: string | null; open: boolean; onToggle: () => void; selected: boolean; query: string;
+  meta: Record<string, WorkMeta>; diff: Record<string, [number, number]>; reading: Map<string, string>;
 }) {
   const all = r.a.works.length, english = r.a.works.filter(hasTranslation).length;
   const panel = `works-${r.a.id}`;
-  const withEn = r.works.filter(hasTranslation), greekOnly = r.works.filter((w) => !hasTranslation(w));
-  const item = (w: CatWork) => <Title key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} query={query} />;
+  // the best-known work (data/best-known.ts) and the books being read come first
+  const best = BEST_KNOWN[r.a.id];
+  const rank = (w: CatWork) => (reading.has(w.id) ? 0 : w.id === best ? 1 : 2);
+  const ordered = [...r.works].sort((x, y) => rank(x) - rank(y));
+  const withEn = ordered.filter(hasTranslation), greekOnly = ordered.filter((w) => !hasTranslation(w));
+  const item = (w: CatWork) => <Title key={w.id} w={w} meta={meta[w.id]} d={diff[w.id]} query={query} best={w.id === best} at={reading.get(w.id)} />;
   return (
     <div id={`author-${r.a.id}`} className={styles.author} data-selected={selected ? "" : undefined} data-open={open ? "" : undefined}>
       <h3 className={styles.authorHead}>
-        <button type="button" className={styles.toggle} aria-expanded={open} aria-controls={panel} onClick={onToggle}>
-          <span className={styles.name}>{marked(r.a.name, query)}</span>
+        <button type="button" className={styles.toggle} aria-expanded={open} aria-controls={panel} onClick={onToggle} data-author-row="">
+          <span className={styles.name}>
+            {marked(r.a.name, query)}
+            {grc && <span className={styles.nameGr} lang="grc"> {marked(grc, query)}</span>}
+            {aka && aka !== grc && <span className={styles.aka}> also called {marked(aka, query)}</span>}
+          </span>
+          {r.a.orig && <span className={styles.latin} title="The collection's own Latin name; the English is this site's translation">{marked(r.a.orig, query)}</span>}
           {desc && <span className={styles.desc}>{desc}</span>}
           <span className={styles.facts}>
             {r.from !== null && <span title={DATE_NOTE}>{centuries(r.from, r.to)}</span>}
@@ -393,7 +506,7 @@ function AuthorRow({ r, desc, open, onToggle, selected, query, meta, diff }: {
                   <h4 className={styles.sub}>Greek only <small>{greekOnly.length}</small></h4>
                   <ul className={styles.rows}>{greekOnly.map(item)}</ul>
                 </>
-              ) : <ul className={styles.rows}>{r.works.map(item)}</ul>}
+              ) : <ul className={styles.rows}>{ordered.map(item)}</ul>}
               <Link href={`/library/author?a=${r.a.id}`} transitionTypes={["page-turn"]} className={styles.aboutAuthor}>
                 About {r.a.name}: life, works, and how the texts survived <span aria-hidden="true">→</span>
               </Link>

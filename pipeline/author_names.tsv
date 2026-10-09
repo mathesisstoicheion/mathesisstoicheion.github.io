@@ -1,0 +1,70 @@
+# English names for "authors" the collections name only by a Latin label: anonymous works, collections, letters and
+# lives filed as if they were authors (pipeline/apply_work_titles.py puts them into catalog.json, after the titles).
+# id <TAB> English name. Each is the collection's Latin label translated plainly by this site; the Latin is always kept
+# beside it as `orig`, shown in the library and searchable. Real personal names (Longinus, Comarius) are left alone.
+tlg2949	Acts of Barnabas
+tlg0317	Acts of John
+tlg2948	Acts of Philip
+tlg2038	Acts of Thomas
+tlg1129	Anonymous, On Barbarism and Solecism
+tlg2972	Anonymous, On Earthquakes
+tlg3156	Anonymous commentary on Hesiod's Theogony
+tlg0092	Anonymous, A Short Account of Geography
+tlg4026	Anonymous commentaries on Aristotle's Rhetoric
+tlg4027	Anonymous commentary on Aristotle's Categories
+tlg4033	Anonymous commentary on Aristotle's Nicomachean Ethics
+tlg9004	Anonymous commentary on Aristotle's Posterior Analytics, Book 2
+tlg4193	Anonymous commentary on Aristotle's Sophistical Refutations
+tlg4037	Anonymous writer of marvels
+tlg2029	Anonymous, A Short Account of Geography on the Sphere
+tlg1131	Anonymous, To Avircius Marcellus, against the Cataphrygians
+tlg0618	Letter of Antigonus
+tlg9007	Appendix of Proverbs
+tlg0045	Letters of Artaxerxes
+tlg1216	Epistle of Barnabas
+tlg1803	Letters of Brutus
+tlg2138	Song of Euripides
+tlg0362	Songs Found at Delphi
+tlg4102	Catenae on the New Testament
+tlg1252	The Contest of Homer and Hesiod
+tlg0041	Letters of Chion
+tlg2371	The Paschal Chronicle
+tlg0623	Letters of Crates
+tlg1325	Letters of Diogenes of Sinope
+tlg2139	The Epitaph of Seikilos
+tlg1367	Letters of Euripides
+tlg2140	Iamblichus the Alchemist
+tlg1463	The Book of Enoch
+tlg2016	The Martyrdom of Perpetua and Felicity
+tlg1484	The Martyrdom of Polycarp
+tlg1487	Maximus the Astrologer
+tlg0039	Letter of Mithridates
+tlg0046	Letter of Nicias
+tlg1551	The Sibylline Oracles
+tlg0579	Orphic Writings
+tlg4174	Paraphrases of Dionysius Periegetes
+tlg1801	Anonymous Parodies
+tlg0053	Letters of Phalaris
+tlg5019	Scholia on Dionysius Periegetes
+tlg5022	Scholia on Euclid
+tlg5023	Scholia on Euripides
+tlg5026	Scholia on Homer
+tlg5028	Scholia on Isocrates
+tlg5029	Scholia on Lucian
+tlg5031	Scholia on Nicander
+tlg5034	Scholia on Pindar
+tlg5037	Scholia on Sophocles
+tlg1664	The Elders of Alexandria
+tlg1665	The Elders Quoted by Irenaeus
+tlg1669	Serapion the Astrologer
+tlg0636	Letters of Socrates
+tlg0637	Letters of the Socratics
+tlg1681	Letters of Solon
+tlg0077	The Stadiasmus of the Great Sea
+tlg1701	The Testament of Abraham
+tlg1802	Heroic Verses
+tlg1765	Lives of Aesop
+tlg1749	Part of a Life of Hesiod
+tlg1805	Lives of Homer
+tlg4170	Lives of Pindar, and Other Writings on Pindar
+tlg1750	Lives of the Prophets

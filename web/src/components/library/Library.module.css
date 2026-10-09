@@ -24,6 +24,8 @@
 }
 .moreBtn::after { content: "▾"; margin-left: 8px; color: var(--ink-2); transition: transform 0.2s var(--ease); }
 .moreBtn[aria-expanded="true"]::after { transform: rotate(180deg); }
+/* wide screens: the controls stand in the page as they are; phones fold them away (below) */
+.filters { display: contents; }
 .genres { display: flex; gap: 8px 14px; align-items: baseline; }
 .chipRow { display: flex; flex-wrap: wrap; gap: 8px; }
 .chipRow :global(.chip) small { font-variant-numeric: tabular-nums; opacity: 0.7; font-size: 0.85em; }
@@ -80,7 +82,7 @@
 @keyframes rise { from { opacity: 0; translate: 0 6px; } }
 .authorHead { margin: 0; font: inherit; }
 .toggle {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name chev" "desc chev" "facts chev";
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name chev" "latin chev" "desc chev" "facts chev";
   align-items: center; gap: 1px 16px; width: 100%; padding: 12px 10px; margin: 0; text-align: left; color: var(--ink);
   background: none; border: 0; border-radius: var(--radius); cursor: pointer; transition: background-color 0.15s;
 }
@@ -138,8 +140,10 @@
   .controls > :global(.segmented) { display: flex; width: 100%; }
   .controls > :global(.segmented) > button { flex: 1 1 0; padding-inline: 6px; }
   .moreBtn { display: flex; }
-  .selects { display: none; grid-template-columns: minmax(0, 1fr); width: 100%; }
-  .selects[data-open] { display: grid; animation: rise 0.3s var(--ease) both; }
+  .selects { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
+  /* the order and every filter behind one button (Library.tsx) */
+  .filters { display: none; }
+  .filters[data-open] { display: grid; gap: 12px; animation: rise 0.3s var(--ease) both; }
   .selects select { width: 100%; min-width: 0; font-size: 1rem; }
   .genres { display: grid; gap: 6px; }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding-inline: var(--gutter, 20px); scroll-padding-inline: var(--gutter, 20px); }
@@ -177,3 +181,41 @@
 
 /* the collection's own Latin or Greek title, under an English one (OrigTitle.tsx) */
 .orig { font-size: 0.85em; color: var(--ink-2); }
+
+/* the vocabulary meter: three bars, one filled for easy words, three for many rare ones */
+.meter { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
+.bars i { width: 4px; border-radius: 1px; background: color-mix(in srgb, var(--ink-2) 30%, transparent); }
+.bars i:nth-child(1) { height: 5px; } .bars i:nth-child(2) { height: 8px; } .bars i:nth-child(3) { height: 12px; }
+.meter[data-level="1"] .bars i:nth-child(-n+1),
+.meter[data-level="2"] .bars i:nth-child(-n+2),
+.meter[data-level="3"] .bars i { background: var(--ink-2); }
+.meter[data-level="1"] .bars i:nth-child(1) { background: var(--ok); }
+.meter[data-level="3"] .bars i { background: var(--accent); }
+.len { white-space: nowrap; }
+.best { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; padding: 0 8px; white-space: nowrap; }
+.reading { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.reading :global(.chip) { text-decoration: none; }
+.reading small { color: var(--ink-2); }
+/* the author's Greek name, and the other name a search found them by (lib/authors-meta.ts, from Wikidata) */
+.nameGr { font-family: var(--f-greek); font-weight: 400; color: var(--ink-2); margin-left: 6px; }
+.aka { font-weight: 400; font-size: 0.9rem; color: var(--ink-2); margin-left: 6px; }
+.latin { grid-area: latin; font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
+
+/* the shelf of famous works: cards like book spines, their Greek titles large; a row to swipe through on phones */
+.shelf { display: grid; gap: 10px; }
+.shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
+  gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+.shelf li { scroll-snap-align: start; animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.spine {
+  display: grid; align-content: start; gap: 4px; height: 100%; min-height: 168px; padding: 16px 16px 14px; text-decoration: none;
+  background: var(--inv-bg); color: var(--inv-fg); border: 1px solid var(--inv-edge); border-radius: var(--radius);
+  border-top: 4px solid var(--accent-on-ink); --ink-2: var(--ink-2-on-ink);
+  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+}
+.spine:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -16px var(--shadow); }
+.spine:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.spineGr { font-family: var(--f-greek); font-size: 1.45rem; line-height: 1.15; color: var(--accent-on-ink); }
+.spine b { font-size: 1.05rem; line-height: 1.25; }
+.spineBy { color: var(--ink-2); font-size: 0.9rem; }
+.spine .meter { margin-top: auto; padding-top: 8px; font-size: 0.8rem; color: var(--ink-2); }

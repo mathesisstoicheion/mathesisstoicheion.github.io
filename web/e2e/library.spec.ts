@@ -25,6 +25,46 @@ test("the library opens with its search, and lists authors who open to show thei
   await expect(row).toHaveAttribute("aria-expanded", "false");
 });
 
+test("the search and the filters are kept in the address, so Back and shared links return to the same list", async ({ page }) => {
+  await page.goto("/library");
+  await page.getByRole("searchbox", { name: "Search the library" }).fill("odyssey");
+  await page.getByRole("radio", { name: "With translation" }).click();
+  await expect(page).toHaveURL(/[?&]q=odyssey/);
+  await expect(page).toHaveURL(/[?&]tr=with/);
+  await page.goto("/library?q=medea&tr=greek");
+  await expect(page.getByRole("searchbox", { name: "Search the library" })).toHaveValue("medea");
+  await expect(page.getByRole("radio", { name: "Greek only" })).toHaveAttribute("aria-checked", "true");
+});
+
+test("arrow keys move between the authors, and the best-known work comes first", async ({ page }) => {
+  await page.goto("/library");
+  const first = page.locator("[data-author-row]").first();
+  await first.focus();
+  await page.keyboard.press("ArrowDown");
+  await expect(page.locator("[data-author-row]").nth(1)).toBeFocused();
+  await page.keyboard.press("End");
+  await expect(page.locator("[data-author-row]").last()).toBeFocused();
+  await page.keyboard.press("Home");
+  await expect(first).toBeFocused();
+  // Plato's Republic leads his works, marked as his best known; each work gives its length in words
+  const plato = page.locator("#author-tlg0059");
+  await plato.getByRole("button", { name: /^Plato/ }).click();
+  await expect(plato.locator("ul li").first()).toContainText("Republic");
+  await expect(plato.locator("ul li").first()).toContainText("Best known");
+  await expect(plato.getByText(/^about [\d,]+ words$/).first()).toBeVisible();
+});
+
+test("a book in progress is offered above the list and leads its author's works", async ({ page }) => {
+  await page.goto("/library");
+  await page.evaluate(() => localStorage.setItem("mathesis:positions", JSON.stringify({ "tlg0012.tlg002": { ed: "", tr: null, at: "5.1", t: Date.now() } })));
+  await page.reload();
+  const now = page.getByRole("group", { name: "Your books in progress" });
+  await expect(now.getByRole("link", { name: /Odyssey/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg002&at=5.1");
+  const homer = page.locator("#author-tlg0012");
+  await homer.getByRole("button", { name: /^Homer/ }).click();
+  await expect(homer.locator("ul li").first()).toContainText("Reading · at 5.1");
+});
+
 test("a search marks what matched, and offers the authors it names first", async ({ page }) => {
   await page.goto("/library");
   await page.getByRole("searchbox", { name: "Search the library" }).fill("aristot");
@@ -81,4 +121,29 @@ test("the map and the Town Hall put their search first", async ({ page }) => {
   const hall = page.getByRole("searchbox", { name: "Search the Town Hall" });
   const cats = page.getByRole("navigation", { name: "Categories" });
   expect((await hall.boundingBox())!.y).toBeLessThan((await cats.boundingBox())!.y);
+});
+
+test("authors are found by their other names and their Greek name, and Latin labels read in English", async ({ page }) => {
+  await page.goto("/library");
+  const search = page.getByRole("searchbox", { name: "Search the library" });
+  // Wikidata's other names: Aristoteles, and the Greek Ἀριστοτέλης typed without accents
+  await search.fill("aristoteles");
+  await expect(page.locator("#author-tlg0086")).toContainText("also called Aristoteles");
+  await search.fill("αριστοτελης");
+  await expect(page.locator("#author-tlg0086").getByRole("button", { name: /^Aristotle/ })).toBeVisible();
+  // a Latin label is shown in English, with the Latin beside it, and either finds it
+  await search.fill("vitae homeri");
+  const lives = page.locator("#author-tlg1805");
+  await expect(lives.getByRole("button", { name: /^Lives of Homer/ })).toBeVisible();
+  await expect(lives).toContainText("Vitae Homeri");
+});
+
+test("a shelf of famous works opens the library, each with how hard its words are", async ({ page }) => {
+  await page.goto("/library");
+  const shelf = page.getByRole("region", { name: /Famous works/ });
+  await expect(shelf.getByRole("link", { name: /Ἰλιάς.*Iliad.*Homer/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001");
+  await expect(shelf.locator("[data-level]").first()).toBeVisible();
+  // it steps aside while a search narrows the list
+  await page.getByRole("searchbox", { name: "Search the library" }).fill("medea");
+  await expect(shelf).toHaveCount(0);
 });

@@ -5,6 +5,9 @@ searchable), and `titleFrom` says where the English comes from: "tr" (the librar
 the work) or "site" (translated by this site). Safe to run again: the collection's title is never lost.
 build_catalog.py runs this at its end, so a rebuilt catalogue keeps the English titles.
 
+It also puts English names (pipeline/author_names.tsv) on the "authors" the collections name only by a Latin label
+(Vitae Homeri, Scholia in Pindarum): the Latin is kept as the author's `orig`, and `nameFrom` is "site".
+
 Usage:  python pipeline/apply_work_titles.py
 """
 import json
@@ -13,6 +16,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 CATALOG = ROOT / "web" / "public" / "data" / "catalog.json"
 TITLES = ROOT / "pipeline" / "work_titles.tsv"
+NAMES = ROOT / "pipeline" / "author_names.tsv"
 
 
 def load_titles() -> dict[str, tuple[str, str]]:
@@ -43,9 +47,38 @@ def apply(catalog: dict, titles: dict[str, tuple[str, str]]) -> int:
     return len(titles)
 
 
+def load_names() -> dict[str, str]:
+    out = {}
+    for n, line in enumerate(NAMES.read_text(encoding="utf-8").splitlines(), 1):
+        if not line.strip() or line.startswith("#"):
+            continue
+        parts = line.split("	")
+        if len(parts) != 2 or not parts[1].strip():
+            raise SystemExit(f"{NAMES.name}:{n}: expected id, English name")
+        if parts[0] in out:
+            raise SystemExit(f"{NAMES.name}:{n}: {parts[0]} given twice")
+        out[parts[0]] = parts[1].strip()
+    return out
+
+
+def apply_names(catalog: dict, names: dict[str, str]) -> int:
+    authors = {a["id"]: a for a in catalog["authors"]}
+    missing = sorted(set(names) - set(authors))
+    if missing:
+        raise SystemExit(f"authors not in the catalogue: {', '.join(missing[:10])}")
+    for aid, en in names.items():
+        a = authors[aid]
+        orig = a.get("orig") or a["name"]
+        if en == orig:
+            continue
+        a["orig"], a["name"], a["nameFrom"] = orig, en, "site"
+    return len(names)
+
+
 def main() -> None:
     catalog = json.loads(CATALOG.read_text(encoding="utf-8"))
     n = apply(catalog, load_titles())
+    apply_names(catalog, load_names())
     CATALOG.write_text(json.dumps(catalog, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
     print(f"{n} English titles in {CATALOG}")
 
