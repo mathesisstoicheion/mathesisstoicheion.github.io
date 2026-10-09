@@ -81,7 +81,7 @@ At Rome, Demosthenes inspired Cicero's speeches against Mark Antony,[^1] and Plu
 
 **Print.** The *Letters* were printed first, in 1499, in an Aldine collection of letters edited by Marcus Musurus; the speeches followed from Aldus Manutius at Venice in 1504.[^29] The Aldine was based on three manuscripts of F's family, not on F itself, which is why the speeches are still arranged in that family's order.[^22]`,
 
-  variants: `**S against the rest.** Editors have long quarrelled over whether to follow S or the other old manuscripts, A, F and Y. Dilts, in the new Oxford text, refuses to favour either side across the board and decides each case on its merits.[^28]
+  variants: `**S against the rest.** Editors have long quarrelled over whether to follow S, a ninth-century parchment book in Paris, or the other old manuscripts, A, F and Y. Dilts, in the new Oxford text, refuses to favour either side across the board and decides each case on its merits.[^28]
 
 **Gaps between vowels.** When one word ends in a vowel and the next begins with one, the clash is called *hiatus*. From the nineteenth century editors printed Demosthenes with hiatus strictly removed. Dilts prints the words in full wherever S and A, or one of them, write them so, and hiatus appears on the page far more often. His reviewer points out that the old consistency had no basis in any copy, medieval or ancient.[^28]
 

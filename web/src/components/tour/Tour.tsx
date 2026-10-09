@@ -190,7 +190,6 @@ export default function Tour() {
 
   if (!tour) return null;
   const s = tour.steps[step];
-  const n = tour.steps.length;
   // the steps for this screen (some are only for phones, some only for wide screens), and where this one is among them
   const phoneNow = typeof window !== "undefined" && phoneScreen();
   const seen = tour.steps.filter((x) => !x.only || (x.only === "phone") === phoneNow);

@@ -112,7 +112,7 @@ export default function Home() {
             </div>
             <div className="rv" data-fold-hide="">
               <LetterTiles />
-              <p className={styles.note}>Hover or tap a letter. Sounds follow the reconstructed pronunciation of Classical Athens; you&apos;ll be able to switch to Erasmian or Modern Greek.</p>
+              <p className={styles.note}>Hover or tap a letter. Sounds follow the reconstructed pronunciation of Classical Athens; on <Link href="/academy/alphabet" transitionTypes={["page-turn"]}>the alphabet page</Link> you can switch to Erasmian or Modern Greek.</p>
             </div>
           </div>
         </div>

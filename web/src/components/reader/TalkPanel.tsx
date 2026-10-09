@@ -51,7 +51,7 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
       ))}
       <div className={styles.talkAsk}>
         <b>Ask about a passage</b>
-        <p>Click a passage number in the margin, or select some Greek words, then choose <i>Ask in the forum</i>. The passage goes with your question, and the question shows up here.</p>
+        <p>Tap or click a passage number in the margin, or select some Greek words, then choose <i>Ask in the forum</i>. The passage goes with your question, and the question shows up here.</p>
         <Link className="chip" href="/town-hall" transitionTypes={["page-turn"]}>The Town Hall →</Link>
       </div>
     </aside>

@@ -152,6 +152,8 @@ test.describe("on a phone", () => {
       for (const path of ["/", "/library", "/academy", "/stoa", "/town-hall", "/treasury", "/read?w=tlg0012.tlg001"]) {
         await page.goto(path);
         await expect(page.locator("h1").first()).toBeVisible();
+        // the library's shelf of famous works arrives after the heading; its cards once widened the page to 2,100 px
+        if (path === "/library") await expect(page.getByRole("region", { name: /^Famous works/ }).getByRole("listitem").first()).toBeVisible();
         expect(await noSideways(page), `${path} at ${width}px`).toBeLessThanOrEqual(0);
       }
     }

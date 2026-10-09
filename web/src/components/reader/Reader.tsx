@@ -1292,7 +1292,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)]} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (

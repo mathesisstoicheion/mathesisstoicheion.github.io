@@ -62,7 +62,7 @@ export default function SectionDrawing({ layers }: { layers: Layer[] }) {
 
         {/* the deposits, each with its hatching, then their outlines drawn on */}
         {["dots", "dash", "pebble", "hatch", "cross"].map((p, i) => (
-          <path key={p} d={band(i)} className={`${styles.fill} ${styles[`f${i}`]}`} style={{ "--i": i } as React.CSSProperties} fill={`url(#kd-${p})`} />
+          <path key={p} d={band(i)} className={`${styles.fill} ${styles[`f${i}`] ?? ""}`} style={{ "--i": i } as React.CSSProperties} fill={`url(#kd-${p})`} />
         ))}
         <path d={`M ${smooth(B[0])} L ${W} ${BOTTOM} L 0 ${BOTTOM} Z`} className={styles.frame} pathLength={1} />
         {B.map((ys, i) => <path key={i} d={`M ${smooth(ys)}`} className={styles.line} pathLength={1} style={{ "--i": i } as React.CSSProperties} />)}

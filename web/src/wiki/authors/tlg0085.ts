@@ -64,7 +64,7 @@ After his death his plays were honoured in a way no one else's were: his were th
 
 **Print.** The first printed edition came from the Aldine press at Venice in 1518. It has only six plays: its manuscripts had fused the *Agamemnon* and the *Libation Bearers*, leaving out lines 311–1066 of the *Agamemnon*. The error was first put right in 1552, in Francesco Robortello's edition at Venice.[^18]`,
 
-  variants: `**A lost opening, saved by a joke.** The *Libation Bearers* has lost its opening in M.[^16] Its first lines are known because Aristophanes quotes them in the *Frogs*, where “Euripides” picks at them: «ἥκω γὰρ ἐς γῆν τήνδε καὶ κατέρχομαι» “I have come to this land and I return”, he says, is saying the same thing twice.[^19] In the Scroll's Greek text of the play these opening lines are printed as the editor's additions, with gaps where words are still missing.[^20]
+  variants: `**A lost opening, saved by a joke.** The *Libation Bearers* has lost its opening in M, the Medicean manuscript in Florence.[^16] Its first lines are known because Aristophanes quotes them in the *Frogs*, where “Euripides” picks at them: «ἥκω γὰρ ἐς γῆν τήνδε καὶ κατέρχομαι» “I have come to this land and I return”, he says, is saying the same thing twice.[^19] In the Scroll's Greek text of the play these opening lines are printed as the editor's additions, with gaps where words are still missing.[^20]
 
 {debated} **Is *Prometheus Bound* his?** No one doubted it in antiquity. Since the nineteenth century scholars have questioned it on grounds of language, metre, vocabulary and style; Mark Griffith (1977) made the case at length, and Martin West suggested it could be the work of Aeschylus' son Euphorion, also a playwright. The question is still argued.[^21]
 

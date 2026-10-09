@@ -205,7 +205,8 @@
 /* the shelf of famous works: cards like book spines, their Greek titles large; a row to swipe through on phones */
 .shelf { display: grid; gap: 10px; }
 .shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
-  gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+  gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;
+  position: relative; /* holds the cards' visually hidden labels inside the row: without it they widen the whole page on phones */ }
 .shelf li { scroll-snap-align: start; animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
 .spine {
   display: grid; align-content: start; gap: 4px; height: 100%; min-height: 168px; padding: 16px 16px 14px; text-decoration: none;

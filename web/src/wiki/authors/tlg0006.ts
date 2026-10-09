@@ -50,7 +50,7 @@ He is the tragedian who sounds most like people talking. Aristotle says so in th
 
 **Print.** Four plays were printed at Florence in about 1494 (*Medea*, *Hippolytus*, *Alcestis* and *Andromache*), and Aldus Manutius printed all the plays but the *Electra* at Venice in 1503.[^3]`,
 
-  variants: `**Plays with only two witnesses.** The nine alphabetical plays survive through L and P alone, so they have no second route to fall back on.[^1]
+  variants: `**Plays with only two witnesses.** The nine alphabetical plays survive through two manuscripts alone, L in the Laurentian Library at Florence and P in the Palatine Library, so they have no second route to fall back on.[^1]
 
 **A play in dispute.** The authorship of the *Rhesus* is a matter of dispute.[^1]
 
