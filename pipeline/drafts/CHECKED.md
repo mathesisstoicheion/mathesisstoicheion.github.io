@@ -2298,3 +2298,386 @@ Syrinx (the pipes' equal reeds) and answered it, keeping the poem as Theocritus'
 the birth "about 300 BC or a little earlier" (Cholmeley 310–308); goatherds speak "the Doric of Sicily", not a country dialect; "the
 first poet of pastoral", not of the countryside; Hunter's Selection includes the Hylas; K = Ambr. C 222 inf. now footnoted to
 ParaText's page on that manuscript (source 34).
+
+## Apollonius of Rhodes (tlg0001), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0001.ts` (43 sources). Registered 2026-10-09.
+Tests: `ARTICLE=tlg0001 npx vitest run src/wiki/author-articles.test.ts` (11 passed), `CORPUS=1 ARTICLE=tlg0001 npx vitest run
+src/wiki/author-articles.corpus.test.ts` (3 passed; a deliberately broken Greek quotation was caught, then restored), `npx tsc --noEmit -p .` (clean).
+
+Note: the Scroll has only Mooney's Greek text of the *Argonautica* (Perseus, perseus-grc2), with no English translation. Every
+English rendering of a line of the poem is our own translation, said so in the prose and listed in `outsideQuotes`; the only English
+taken from the Scroll is Strabo 14.2.13 (Jones) and Athenaeus 7.19 (Yonge). The catalogue's `desc` calls Mooney "editor, translator";
+his book is a Greek text with an English introduction and commentary, not a translation (Internet Archive title page; the TEI header
+names him only as editor). The article says so in the editions note.
+
+**Confirmed and kept**
+- Life: Wikipedia (Apollonius of Rhodes, after Lefkowitz, Bulloch, Race): fl. first half of the third century BC; almost nothing
+  known; the sources are the two *Lives* in the scholia, the *Suda*, and P.Oxy. 1241; father Silleus/Illeus; Alexandria (Lives, Suda,
+  Strabo) or Naucratis (Athenaeus, Aelian), some 70 km south of Alexandria on the Nile; no source gives a birth date; "pupil" a figure
+  of speech in ancient biography; P.Oxy. 1241 makes Eratosthenes his successor, after the accession of Ptolemy III in 247/246, whom
+  Apollonius probably tutored; the Suda's order (successor of Eratosthenes) does not fit; the later librarian Apollonius the
+  Eidographer as a source of confusion; the exile stories probably invented to explain the second edition (Lefkowitz); "of Rhodes"
+  perhaps only from a poem about Rhodes; the epigram under "Apollonius the grammarian" (perhaps not him: Race); the Ibis deliberately
+  obscure (Cameron); both Lives stress the friendship; most scholars now think the feud "enormously sensationalised, if it happened
+  at all"; first scholarly monograph on Homer, against Zenodotus; works on Archilochus and Hesiod "credited"; foundation poems
+  (Alexandria, Naucratis, Caunus, Cnidus, Rhodes, Lesbos); a "weaker, more human protagonist"; "a kind of poetic dictionary of Homer"
+  (Rengakos); once dismissed as an imitator of Homer, now re-valued.
+- The Lives in English (attalus.org, from Wendel): failure as a youth, Rhodes, polishing, citizenship; "Some say" he returned, was put
+  in charge of the libraries, buried next to Callimachus. P.Oxy. 1241 in English: "Apollonius son of Silleus, of Alexandria, called
+  the Rhodian, the disciple of Callimachus", teacher of the "first" king (the translator's note: a mistake for "third"), succeeded by
+  Eratosthenes; Zenodotus before him; the papyrus of the second century AD. The Greek of both Lives also read in Mooney (pp. 1–2), who
+  says they are appended to the scholia in the Laurentian manuscript.
+- The *Suda* α 3419 and κ 227 (Ibis aimed at Apollonius, who wrote the Argonautica), Strabo 14.2.13, Athenaeus 7.19 (the *Foundation
+  of Naucratis*, Pompilus), Aelian NA 15.23: all opened in the Scroll and quoted from it. The epigram «Καλλίμαχος τὸ κάθαρμα …» from
+  the Aetia testimonia (tlg0533.tlg006 0.1); its translation is the one used in the Callimachus article (our translation).
+- Mooney (1912), Internet Archive: dates guessed from 296 to 235 BC; his own picture of the feud, "the most bitter in the ancient world
+  of letters" (quoted as his view); L, Laurentianus 32.9, tenth century, with Aeschylus and Sophocles; G (Wolfenbüttel), Laur. 32.16
+  and Vat. 280 three centuries later; Merkel's 26 manuscripts, the last 22 (fifteenth–sixteenth century) far inferior; Brunck relied on
+  the Paris manuscripts, Merkel disparaged them; the scholia "as valuable as those … on any ancient author", preserving lines of
+  Hesiod; the subscription naming Lucillus of Tarrha, Sophocles and Theon; the Lives appended to the scholia in L; editio princeps by
+  Lascaris, Alopa, Florence 1496, text in capitals with accents, scholia in minuscule in the margin; Aldine 1521; Brunck 1780 the first
+  critical edition. Appendix I: six places in Book 1 where the scholia quote the προέκδοσις (1.285, 515, 543, 725, 788, 801); at 515
+  the earlier text lacked 516–518 and had four other lines (third dawn, wind from Zeus, Tiphys) before our 524; at 788 δίφραξ and
+  πρόδομος for κλισμός and παστάς; 4.538–547 (the line τυτθὸς ἐών ποτ᾽ ἔναιεν in different places, in L's margin with letters;
+  Brunck's arrangement from Cardinal Angelus Quirinus' *Primordia Corcyrae*; all later numbering from Brunck; no modern editor
+  followed him). Commentary on 1.8 (τεήν kept after Samuelsson; Merkel's ἐτεήν; suspected by almost all critics) and 1.18
+  (ἐπικλείουσιν Brunck, ἔτι κλείουσιν codd.).
+- Seaton's Loeb (Internet Archive, 1919 reprint; "First printed 1912"; London: Heinemann; New York: Putnam on this reprint): two
+  editions by Apollonius, the first known only from the scholia; L "far the best authority for the text", dated by him to the early
+  eleventh century; G and L 32.16 of the thirteenth century; the second type of text attested in the *Etymologicum Magnum* as old as
+  the fifth century; editions 1496 (Lascaris), 1521 (Aldine), Brunck 1780, Schaefer 1810–13, Merkel 1854 with Keil's scholia, Seaton's
+  Oxford text 1900; the Loeb text is his Oxford text; 1.8 note "μετέπειτ᾽ ἐτεὴν Merkel: μετέπειτα τεὴν LG" and his English "in
+  accordance with that true report"; 1.18 note.
+- Dickinson College Commentaries (Peter Hulse, Book 4): date "might have been officially published in 238"; the poem whole; the route
+  home; Chares, a friend; Theon (1st c. BC), Lucillus (mid-1st c. AD), Sophocles (2nd c. AD) named at the end of Book 4 of the
+  scholia; roughly 49 papyri, 1st–4th c. AD, mostly Oxyrhynchus, some to the 7th/8th c.; 24/9/10/6 by book; Varro of Atax's Latin
+  translation; Virgil's debt; Catullus imitates Apollonius "constantly" in poem 64; Longinus' "a poet without fault"; Macrobius. The
+  language page: -οιο used more than in the Iliad; new forms by analogy; never a pure imitator.
+- Wikipedia (Argonautica): the only entirely surviving Hellenistic epic; four books, fewer than 6,000 lines; plot by book (Book 2 ends
+  in the Phasis; Erato "the Muse of love poetry"; Medea lures Apsyrtus, Jason kills him); date under Ptolemy II or a generation later,
+  Murray's 238; Fränkel and ἀμηχανία; Bulloch's "the pathology of love"; 1.1309 a verbatim line of Callimachus (Köhnken); editions
+  (Seaton LCL 1, 1912; Race LCL 1N; Mooney; Vian–Delage Budé 1974, 1980, 1981; Hunter III 1989, IV 2015); Wendel's scholia 1935;
+  Green's verse translation 1997.
+- The Scroll: Argonautica 1.1–4, 1.5–19, 1.512–524, 1.788–789, 1.1309, 3.1–5, 3.284–298, 3.744–760, 4.445–467, 4.538–548 (the numbering
+  really jumps from 543 to 546), 4.1773–1781; Longinus 33.4 (Greek only).
+- LSJ (site copy; Perseus entry for ἄπτωτος opened): ἄπτωτος "never thrown, of a wrestler", metaph. "faultless, Longin. 33.4";
+  ἀμηχανία "helplessness"; σχέτλιος "merciless"; στύγος "object of hatred, abomination".
+- Quintilian 10.1.54 (Butler, LacusCurtius): left out of the lists because Aristarchus and Aristophanes included no contemporary poets;
+  "his work is by no means to be despised". Macrobius, Saturnalia 5.17.4 (Latin, LacusCurtius): "librum Aeneidos suae quartum totum
+  paene formaverit", Medea's love for Jason given to Dido.
+- Wikipedia (Varro Atacinus): 82 – c. 35 BC; translated the Argonautica. Wikipedia (Valerius Flaccus): Argonautica written during or
+  shortly after AD 70; a free imitation and in parts a translation. Wikipedia (Aeneid): 29–19 BC, unfinished at Virgil's death in 19 BC.
+- Biblissima (Plut. 32.9): tenth century; Sophocles, Aeschylus, Apollonius Rhodius. Wikipedia (List of editiones principes): 1496,
+  Laurentius de Alopa, Florence, edited by Janus Lascaris, with the Florentine scholia.
+- Editions: Mooney (IA title page; TEI header: London, Longmans, Green, 1912); Seaton (as above); Fränkel OCT 1961 (Wikipedia, Hermann
+  Fränkel, English and German; Internet Archive record, 1961, no publisher shown); Vian (Wikipedia; Open Library record of tome 2, Livre
+  3, Les Belles Lettres, 1980); Race (Propylaeum page of Sistakou's review: Harvard University Press, Cambridge MA, 2008, LCL 1, xxi +
+  511 pp.); Hunter (Open Library records: Book III, CUP, Cambridge Greek and Latin Classics, 1989; Book IV, CUP, 2015); Green (Open
+  Library record: University of California Press, 1997, later printings 2007 and 2008).
+
+**Left out because it could not be confirmed**
+- A birth year ("perhaps c. 295"): no ancient source gives one; Mooney reports guesses from 296 to 235, Seaton from 296 to 260; the
+  article gives the range and an approximate, debated timeline mark only.
+- A date for his headship of the Library; it is shown only relative to Ptolemy III's accession and Eratosthenes' appointment.
+- That the Argonautica is "the only Greek epic to survive from the long gap between Homer and the Roman empire": only "the only
+  Hellenistic epic to survive entire" was found.
+- That he "avoids the repetitions of oral epic", and that editors disagree "mainly over Homeric forms" and the geography of Book 4.
+- The passages older editors read as moves in the quarrel (Callimachus' Hymn to Apollo 105–113; Argonautica 3.927–947), told by Seaton
+  and Mooney but not checked against a modern source.
+- A modern count of the manuscripts (only Merkel's 26, via Mooney) and a modern stemma (Vian's); a modern view on whether the
+  "earlier edition" is really the poet's own (only Mooney, Seaton and Lefkowitz-via-Wikipedia were read).
+- P.Oxy. 1241 in Grenfell and Hunt's volume X (1914): the Internet Archive copy is print-disabled and its text would not download; the
+  papyrus is used through attalus.org's translation.
+- The Cambridge, Harvard/Loeb, Britannica and Classics for All pages (403), the BMCR review of Hunter's Book IV (502): not used.
+- Lucian's joke "Here comes Apollonius and his Argonauts" (Demonax), reported by DCC: it concerns a different Apollonius and shows only
+  that the myth was known.
+
+**Corrected from the draft**
+- "Head of the Library … after Zenodotus" kept but marked debated, with the papyrus's own words and the Suda's conflicting order.
+- "Tutored the future Ptolemy III": the papyrus says the "first" king (a slip for the third, as its translator notes); kept as "said to"
+  / "probably" (Wikipedia, after Bulloch).
+- "About 5,800 lines" → "fewer than 6,000 lines" (Wikipedia; the Scroll's text has 5,834 numbered lines).
+- "The other medieval manuscripts, mostly of the thirteenth to fifteenth centuries, form a few related groups" → three of the thirteenth
+  century (G, Laur. 32.16, Vat. 280), the rest of the fifteenth–sixteenth (Mooney).
+- "Lucillus of Tarrha, Sophocleus and Theon" → Lucillus of Tarrha, Sophocles and Theon (Mooney's text of the subscription; DCC).
+- "Papyri of the Roman period add early evidence" → roughly forty-nine papyri, 1st–4th c. AD, with the count by book (DCC).
+- "Varro of Atax adapts the Argonautica in Latin" dated -60 → only his death about 35 BC is dated; the mark is "about 35 BC".
+- "Valerius Flaccus … 75" → begun about AD 70 (Wikipedia).
+- "One of the first great studies of love in European literature" → Bulloch's "seems to have been the first narrative poet to study
+  'the pathology of love'" (as Wikipedia quotes him).
+- The draft's Rhodes story and quarrel are kept only as legend / debated, with the modern doubts.
+- Mooney: the draft says "London, 1912 … the text used here"; the article adds the publisher (Longmans, Green) and that it is not a
+  translation. Seaton's Loeb is given as London: Heinemann, 1912 (the US co-publisher of the first printing could not be confirmed:
+  the scanned 1919 reprint names Putnam, one Internet Archive record says Macmillan; neither is printed).
+- Race: 2008 (Wikipedia; the review heading); one bibliography site says 2009. Kept 2008.
+
+**Weak points to revisit**
+- Much of the life and the quarrel rests on Wikipedia's Apollonius page (itself built on Lefkowitz, Bulloch, Race and Cameron); the
+  papyrus date is given as second century AD by attalus.org and Wikipedia's Argonautica page, but as "2nd-century BC" on Wikipedia's
+  Apollonius page (apparently a slip there).
+- Manuscript and edition history comes from Mooney (1912) and Seaton (1912); modern work (Vian, Fränkel's Einleitung of 1964, the
+  Brill Companion) could not be opened. L's date: tenth century (Mooney, Biblissima) against "early eleventh" (Seaton); the article
+  gives both.
+- The 4.544–545 explanation is Mooney's, as of 1912 ("no modern editor has followed Brunck").
+- Fränkel's OCT is confirmed only by Wikipedia and a bare Internet Archive record; Vian's volumes by Wikipedia and one Open Library
+  record; Hunter and Green by Open Library records.
+
+**Fact check (2026-10-09, a second, independent check; report pipeline/factcheck/apollonius.md):** 8 findings, each checked against the cited page or passage (the Greek of Book 3 and Book 1; Mooney's 1912 edition, Internet Archive text; the Lives at attalus.org; the Dickinson commentary; Wikipedia's Argonautica editions), all corrected: in the night scene of Book 3 the sailors are awake and travellers and gatekeepers only long for sleep, only the bereaved mother sleeps; the earlier edition at 1.515 lacked lines 516–523, not 516–518 (the scholion goes on at 524); Mooney names three thirteenth-century manuscripts (Vaticanus 280, G, Laurentianus 32.16), not two; the Lives give the name "the Rhodian" from the poem's title or his living there, not from the citizenship; in 1.8 it is the poet who addresses Phoebus, not Jason; Catullus imitates Apollonius constantly in poem 64; Delage alone translated Vian's Books I–III; δίφραξ is a very rare word for a woman's chair.
+
+
+## Diogenes Laertius (tlg0004), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0004.ts` (33 sources). Written from the old-site draft (`old-site-author-articles.json`, key
+`tlg0004`); every claim below was compared with the source named. Greek and English quotations of Diogenes and Homer were copied
+from `scripts/passage.ts` (Hicks's Greek and English; Murray's Homer).
+
+**Confirmed and kept**
+- Wikipedia (Diogenes Laertius, read as raw wikitext): after Sextus Empiricus (c. 200), whom he mentions, and before Sopater of
+  Apamea (c. 300), who quotes him; flourished in the first half of the 3rd century; manuscripts call him "Laertius Diogenes", the
+  form "Diogenes Laertius" much rarer; Laerte as a possible home town; the prevailing view that "Laertius" is a nickname from the
+  Homeric epithet of Odysseus; home town unknown; ten books, Ionian (Anaximander to Clitomachus, Theophrastus, Chrysippus) and
+  Italian (Pythagoras to Epicurus) lines; the book-by-book table; Book 7 breaks off in Chrysippus, the index in P lists the lost
+  Stoics down to Cornutus; Favorinus and Diocles as chief authorities, the others used "either directly or indirectly"; B 12th
+  century (Naples), P 11th/12th (Paris, after Dorandi), F 13th (Laurentian, after Dorandi); all lack the end of Book 7; Hicks's
+  "scribe knew no Greek" rejected by Long, Dorandi's "little knowledge" and the later corrector; headings of the lives absent from
+  the oldest manuscripts, added in P by a later hand; Henricus Aristippus's lost Latin version, late 1150s; Traversari in Florence
+  1424–1433 (Cao), presentation copy to Cosimo dated 8 February 1433 (de la Mare); Latin printed at Rome 1472; Aldine Aristotle
+  1497; Froben 1533; Estienne 1570; Meibom 1692 and his numbering; Long's OCT 1964 the first critical edition, superseded by
+  Marcovich (1999–2002; vol. 3 indexes by Gärtner); Dorandi 2013; Yonge 1853 "more literal" but with "many inaccuracies";
+  Montaigne's wish; Usener's "asinus germanus"; Jaeger's "that great ignoramus"; Long's "importance out of all proportion to his
+  merits"; the partial rehabilitation by reading him in a Hellenistic literary context.
+- Hicks, Loeb vol. 1 (1925), Internet Archive OCR of the preface, introduction and bibliography: title page London, William
+  Heinemann / New York, G. P. Putnam's Sons, MCMXXV; nothing known of who he was, when or where born; Eustathius calls him Laertes;
+  his book the one that survives of many; date from Saturninus, pupil of Sextus (ix. 116), Sextus "supposed to have flourished
+  towards the end of the second century"; no allusion to Neoplatonism; the *Pammetros* in at least two books, epitaphs, "but sorry
+  stuff"; the lady Platonist of iii. 47 and the singular address in x. 29, Arria and Julia Domna as the only names proposed; no
+  claim to have studied philosophy; the Sceptic question (ix. 109) and the excerpt explanation; "Dryasdust ... of multifarious
+  reading, amazing industry, and insatiable curiosity"; the two hundred sources cited; wills of six philosophers; fashion for
+  anecdotes; "successions" as a family tree; the Presocratics scattered in Books 1, 2, 8, 9 and treated perfunctorily; Plato and
+  Epicurus each a whole book, padded with doctrine and extracts; the Epicurus extracts "by far the most precious thing ..."; the
+  Stoic summary vii. 39–160 "comprehensive and trustworthy"; P's index of Book 7 and "the book would be doubled in size";
+  Favorinus "the most eminent sophist of his day", friend of Plutarch; Antigonus, Hermippus, Sotion, Apollodorus; Nietzsche 1868
+  "rashly inferred" that Laertius owed all to Diocles; the scholia in Book X, and Hicks's view that Laertius may be their author;
+  Usener's note to x. 74 ("Hiat oratio ..."); the Homer line of vi. 63 inserted by some editors into the Iliad; Sopater via
+  Photius, Stephanus of Byzantium three times, Photius, Eustathius, Tzetzes; Traversari (Camaldoli, pupil of Chrysoloras,
+  "completed in 1431 (for an extant copy is dated February 1432)"); Aldine 1497, Froben and Episcopius 1533, printed from "a
+  worthless interpolated later ms." identified by Von der Mühll (Z, Raudnitz); Estienne 1570; Meibom "1691-92" (bibliography:
+  Amsterdam, 1692, 1693); neglect until the 19th century; Cobet (Didot, 1850), no reasons given; Usener, *Epicurea* 1887; B "about
+  A.D. 1200", "the most faithful to the archetype"; P "probably ... circa 1300"; F Laur. plut. 69.13; shared mistakes from a common
+  archetype; Von der Mühll's "suspicamur": a single copy found at Constantinople about the ninth century; Hicks's text "eclectic",
+  "based largely on the Didot edition"; ἀρετῶν for ἐτῶν (iv. 48) from Herbert Richards; von Arnim's SVF incorporates most of Book
+  VII; Diels's fragment collections; Meineke and the Anthology editors.
+- Dorandi's introduction (Cambridge Core summary, read in the page source): "a hundred or so manuscripts"; B, P, F "datable between
+  the end of the eleventh century and the thirteenth century"; two excerpt collections in a 12th-century Vatican MS, one in Vienna
+  dated 28 July 925; P Paris gr. 1759, 11th/12th century, written at Constantinople by two contemporary hands.
+- Dorandi's book page (Cambridge Core): CCTC 50, 2013; "radically improved text"; used Von der Mühll's Nachlass for the first time
+  in its entirety.
+- BMCR 2000.07.09 (Todd on Marcovich, Internet Archive copy): Long's OCT "discredited"; Marcovich 1999, two volumes, exhaustive
+  reports of B, P, F and the Magnum Excerptum; vol. 2 with Photius, the Suda, Hesychius and the Magnum Excerptum; F = Med.-Laur.
+  69.13; 4.43 περιών (Wilamowitz's crux, περιιών adopted and rendered "in all his life" by Hicks, Marcovich's 〈τῇ οὐσίᾳ〉, Todd's
+  reading); 4.48 ἐτῶν, Reiske's ἀνιῶν, Russell's αἰτιῶν ("charges"), Marcovich's further rewriting.
+- BMCR 2019.02.28 (McConnell on Mensch, Internet Archive copy): OUP 2018, ed. James Miller; first English translation of Dorandi's
+  text; Hicks largely used the Didot text of 1850; 556 colour images; sixteen essays, among them Gutzwiller on the epigrams ("much
+  more sophisticated than they appear at first") and Most on Nietzsche and *Quellenforschung*.
+- BMCR 2022.01.04 (Moore on White, Internet Archive copy): Cambridge 2021; both White and Mensch rely on Dorandi; White's 128
+  departures listed.
+- JHS 85 (1965) 185–186, Cambridge Core record of N. G. Wilson's review: Long, 2 vols, Clarendon Press, 1964.
+- Montaigne, Essays II.10, Cotton/Hazlitt (Project Gutenberg): "I am very sorry we have not a dozen Laertii".
+- Wikipedia (Chreia): the definition and the "On being asked" (ἐρωτηθείς) / "He said" (ἔφη) patterns.
+- LSJ (site's copy): κολοφών "summit, top, finishing", κολοφῶνα ἐπιτιθέναι "put the finishing touch to"; ἀνία "grief, sorrow";
+  αἰτία "accusation"; ἔτος "year".
+- The Scroll (passage.ts): 1.1–3 (prologue and his reply), 1.13–15 (two beginnings, the successions), 1.34 (λέγεται; Thales and
+  the ditch), 1.36 (ἐρωτηθεὶς τί δύσκολον), 1.39 (his epigram from "my first book, Epigrams in Various Metres"), 1.63 (what the
+  collection contains), 3.47 (Φιλοπλάτωνι δέ σοι ... ὑπαρχούσῃ), 4.43, 4.48 (〈ἀρ〉ετῶν), 6.38 (Alexander), 6.63 (the Homer line),
+  7.202 (the break, "[Pleasure]"), 8.53 (ἐγὼ δʼ εὗρον), 8.91 (σποράδην), 9.109 (ὁ παρʼ ἡμῶν), 9.116 (Saturninus), 10.16 (the will),
+  10.29, 10.74 (gap and bracketed scholion), 10.138 (κολοφῶνα); Iliad 2.173 (διογενὲς Λαερτιάδη); the Perseus TEI headers (Hicks,
+  Harvard University Press and Heinemann, 1925).
+
+**Left out because it could not be confirmed**
+- His Greek as "the plain prose of the imperial period and one of the easier texts for a reader moving on from a grammar": no source.
+- "All three go back to a single damaged ancestor": a common archetype is confirmed (Hicks), "damaged" is not.
+- "A Vatican manuscript (Vaticanus gr. 96) preserves an independent set of excerpts": Dorandi's summary confirms excerpts in a
+  twelfth-century Vatican manuscript but gives no shelfmark here, so the number is left out.
+- "The Suda draws on the work extensively": Hicks is cautious (Hesychius' extracts "presumably from the selfsame authors"); only
+  Marcovich's printing of Suda passages among the Byzantine extracts is kept.
+- The authenticity of the Letter to Pythocles "also debated", and repairing the letters "central to the study of Epicureanism": no
+  source opened says so (Wikipedia has no page on the letter; the Epicurus page does not discuss it).
+- "Rather weak epigrams" kept only as Hicks's own judgement, set against Gutzwiller's.
+- A date for Montaigne's remark: the Essays first appeared in 1580, but this sentence may be a later addition, so no timeline mark.
+- The number of lost Stoic lives in P's index: Hicks lists nineteen (with Cato) and speaks of "22 names" (the OCR may be at fault);
+  Wikipedia lists twenty (without Cato). The article says "about twenty".
+- Stephanus of Byzantium, Cobet, F and Estienne kept in the prose but not in the timeline (held to twenty marks).
+
+**Corrected from the draft**
+- "Names more than two hundred earlier authors" → "some two hundred" (Hicks: "the two hundred sources cited").
+- The woman reader "who 'loves Plato'" was given as a quotation; it is no one's translation. Replaced with Hicks's English of 3.47.
+- The draft's line that the work "ends with Epicurus" after describing the Ionian line could be read as the end of the Ionian line;
+  Diogenes says the Ionian line ends with Clitomachus, Chrysippus and Theophrastus, the Italian with Epicurus (1.14). The
+  "sporadic" philosophers (8.91) added.
+- "The three primary manuscripts (B, P, F) are copied" in the "twelfth and thirteenth centuries": Dorandi dates them between the end
+  of the eleventh century and the thirteenth (P 11th/12th); Hicks put P about 1300. Now given as {debated}.
+- Traversari's translation "finished about 1433": Hicks says completed 1431 (a copy dated February 1432); Wikipedia (Cao, de la
+  Mare) 1424–1433, presentation copy 8 February 1433. Both given, marked debated.
+- Book 7 "breaks off in the middle of the life of Chrysippus": more exactly in the list of Chrysippus' writings (7.202).
+- Meibom's numbering "1692": kept, with the note that Hicks gives 1691–92 (bibliography: Amsterdam 1692–93).
+- Hicks's Loeb (1925): the first printing is London: Heinemann and New York: Putnam (title page), not Harvard; Perseus's header gives
+  the later Harvard and Heinemann imprint. Both are stated.
+- Dorandi "the new standard text": softened to "the text now followed by translators" (BMCR 2022: both recent translations use it).
+- Marcovich "1999–2002": vols 1–2 in 1999 (BMCR), vol. 3 indexes 2002 (Wikipedia).
+
+**Weak points to revisit**
+- Several facts rest on Wikipedia alone (Sopater's date; Henricus Aristippus; Traversari's 1424–1433 and the 1433 presentation copy;
+  Rome 1472; the headings added in P; Long's rejection of Hicks on B's scribe; Usener, Jaeger and Long's quotations). Dorandi's
+  introduction or Cao's article in *The Classical Tradition* would be better.
+- The BMCR site was down (502); its three reviews were read in the Internet Archive's copies, whose URLs are given.
+- Hicks's dates for B and P (1925) are old; Dorandi's full introduction was not accessible beyond its summary, so B's date "12th
+  century" comes via Wikipedia.
+- White's translation: BMCR says 2021, Wikipedia 2020; the article follows BMCR.
+- The gloss of περιών "wealth to spare" follows Todd's reading; the exact Greek of Marcovich's text was not seen.
+
+**Fact check (2026-10-09, a second, independent check; report pipeline/factcheck/diogenes-laertius.md):** 10 findings, each checked against the cited page or passage (Wikipedia's wikitext; Todd's and Moore's BMCR reviews; Hicks's introduction, Internet Archive text; Iliad 2.172–173), all corrected: the Bion variants cited the LSJ entry for κολοφών (now Todd alone; "griefs" dropped, αἰτιῶν glossed "charges" as Todd does); Dorandi's corrector changed readings "rightly or wrongly"; Hicks's verdict quoted whole ("a Dryasdust, vain and credulous, …"); Long's "prevailing view" of the nickname dated to 1972 and White's argument for the town of Laertes added (source 28), "home town is not recorded"; Apollodorus' verse chronicle, not a biography; Homer's characters, gods among them (Athena speaks Iliad 2.173); Henricus Aristippus translated "at least part"; the 8 February 1433 date credited to de la Mare, not Cao; "many of his sayings" are chreiai, not "much of the book"; B "most faithful" given as the agreement of Hicks's day, with Todd's ranking of B and P together.
+
+
+## Arrian (tlg0074), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0074.ts` (39 sources). The Scroll has Arrian's Greek only (no English translation), so every English rendering of his words is either E. J. Chinnock's (1884, Project Gutenberg), Philip Stadter's (GRBS 1967), or ours, and all are listed in `outsideQuotes`.
+
+**Confirmed and kept**
+- Life: Wikipedia (Arrian): Lucius Flavius Arrianus of Nicomedia (İzmit); born c. 86/89 (also "within a few years prior to 90"), died "after 146/160"; consul around 130; Cappadocia; Cassius Dio 69.15.1 on the Alans, Vologases III; Epictetus in Epirus, "probably Nicopolis"; Tactics 136/137, Hadrian's twentieth year; Bowie (Past & Present 46, 1970, 25 n. 72) against Stadter's "Lucius Flavius Arrianus Xenophon" as the official name; Landmark Arrian (Pantheon 2010); Hammond's OUP translation of 2013; the first part of the Indica after Megasthenes, the second after Nearchus. Livius (Jona Lendering): born between 85 and 90; family Roman citizens from an earlier stage; priesthood of Demeter and Kore, "perhaps already as a young man"; Epictetus at Nicopolis; consul in 129 or 130; Cappadocia, a frontier province with two legions; voyage of inspection along the Black Sea as one of his first acts; the Alans in 134, the two legions taken into the field; Tactics as a present for Hadrian's twentieth anniversary (136/137); after 137 settled at Athens, citizen, "important Athenian office" in 145/146; the Indica in Ionic after Herodotus; Megasthenes a Greek envoy; Arrian chose eyewitnesses; modern scholarship follows Arrian and adds details from the vulgate; "Alexander as we know him was, until recently, very much a creation by Arrian".
+- Stadter, "Arrianus, Flavius", Catalogus Translationum et Commentariorum 3 (1976) 1–20 (scanned PDF, read page by page): ca. 95–175; consul ca. 129; legatus of Cappadocia 131–137; "repelled the Alan invasion of 134"; retired, Athens, citizen, civic offices; Discourses in eight books (four preserved) and the Encheiridion; Periplus as a letter to Hadrian ca. 131; Acies contra Alanos; Ars tactica dated 137, first page lost; Anabasis in seven books "presumably written in Athens"; Indica; Cynegeticus; the six extant works; Post-Alexandrian History (to 321 BC), Bithynica, Parthica known from Photius codd. 58, 92, 93 and fragments, "including at least one papyrus"; Alanike and three short biographies "ascribed" to him; the Periplus Maris Erythraei and the anonymous Periplus Ponti Euxini not his, preserved with his Periplus in one manuscript; Byzantine readers (Dexippus, Stephanus of Byzantium, Photius, the Constantinian Excerpts, the Suda, two palimpsest leaves, Eustathius, Tzetzes, Zonaras); all Greek manuscripts of Anabasis and Indica from Vindobonensis hist. gr. 4 (s. XII ex.–XIII in.); apographs 1 / 5 / 25 in the 13th / 14th / 15th centuries; Pal. gr. 398 (s. IX) and Laur. 55,4 (s. X) for the minor works; Aurispa's manuscript in 1421; four Latin translations 1433–1508, Vergerio's for Sigismund probably 1433–37; Gelenius, Basel 1533 (Periplus); Trincavelli, Venice, Zanetti, September 1535 (Anabasis and Indica); Holstenius, Paris 1644 (Cynegeticus); Scheffer, Uppsala 1664 (Tactica and Acies); Roos, Teubner, vol. 1 Anabasis 1907, vol. 2 Scripta minora incl. Indica 1928, corrected by Wirth 1967–68; fragments in Roos 2 and Jacoby FGrHist 156.
+- Stadter, "Flavius Arrianus: the New Xenophon", GRBS 8 (1967) 155–161: Photius cod. 58 and the Suda on the "new Xenophon"; Xenophon parallels (teacher's words, Cynegeticus, the title Anabasis, seven books); Periplus 1.1, 2.3, 12.5, 25.1 "that Xenophon" / "the elder"; Cynegeticus 1.4, 5.6, 16.6, 22.1; the title in Pal. gr. 398 altered to "of Xenophon the Athenian, the second"; Acies 10 and 22, the commander Xenophon = Arrian; archonship in 146 by inscription; Periplus ca. 131–132; Alans 134; priesthood of Demeter and Kore; the second preface (Anabasis 1.12.5) and Stadter's translation of it; the Periplus greeting and his translation of it; Epictetus "wrote nothing himself"; Photius on Arrian's plain style.
+- Cassius Dio 69.15.1 (Cary's Loeb translation, LacusCurtius; the page is the epitome of Book 69): the Alans persuaded by gifts from Vologaesus and in dread of Flavius Arrianus.
+- Photius, Bibliotheca codd. 58, 91–93 (Freese, Tertullian Project): Parthica 17 books, Bithynica 8, Alanica; "young Xenophon"; lectures of Epictetus in eight books; "His style is dry, and he is a genuine imitator of Xenophon"; the Anabasis in seven books "continued by the Indica, in one book"; the Indica "written in the Ionic dialect"; the History of the Successors in ten books. (Freese's own footnotes, governor in 136 and consul in 146, are out of date and not used.)
+- Scroll passages (all copied from passage.ts): Periplus 1.1–1.4 (greeting; Trapezus; the statue), 12.5 and 25.1 (Ξενοφῶν ὁ πρεσβύτερος); Tactics 44.3 (twentieth year); Battle Order 10 and 22; On Hunting 1.4 and 5.6; the letter to Lucius Gellius (tlg0074.tlg008) and Long's English of it in Epictetus' Discourses; Suda alpha 3868 (νέοϲ Ξενοφῶν); Lucian, Alexander 2 (Harmon's English); Anabasis 1.pr.1–3, 1.2.7, 1.9.5, 1.9.10, 1.12.1–5, 1.28.7, 4.7.4, 7.12.7–7.13.1 (the dots of the gap), 7.30.3; Indica 1.2 (τοῖσι πολλοῖσιν Ἰνδοῖσιν) and 19.8 (ὅκως; ἐν τῇ ἄλλῃ τῇ Ἀττικῇ συγγραφῇ).
+- Chinnock 1884 (Gutenberg 46976): title page (London: Hodder and Stoughton, MDCCCLXXXIV); his English for the preface, 1.9.10, 1.12.5, 4.7.4, 7.30.3.
+- Wikipedia (Anabasis of Alexander): composed in the second century, seven books after Xenophon; fullest surviving account of the conquest of the Persian Empire; 336–323; Thebes 335; Ptolemy later king in Egypt; Bosworth and the critical view since the 1970s (hagiography, apologia, misleading passages); the digression at 4.7–14; the Loeb of 1929 revised by Brunt in 1976 with a new introduction and appendices; Landmark 2010; Hammond and Atkinson 2013. Wikipedia (Indica (Arrian)): Ionic, Herodotus as model; Nearchus' voyage from India to the Persian Gulf. Wikipedia (List of editiones principes in Greek): 1533 Basel (Gelenius, Froben), 1535 Venice (Trincavelli, Zanetti), 1644 Paris (Holstenius), 1664 Uppsala (Scheffer).
+- LSJ (site's copy): ἀνάβασις "expedition up from the coast, esp. into Central Asia, as that of the younger Cyrus related by X."; ὅκως "Ion. for ὅπως"; συγγραφή "book, esp. in prose: history".
+- German school-programme essay (ULB Düsseldorf PDF, about 1905, author unnamed in the scan; his father edited the Anabasis, Leipzig 1903): Roos, Prolegomena (Groningen 1904); the Vienna codex A as archetype; the gap at 7.12.7 in all manuscripts, from a lost leaf of A; the corrector's reworking of A (A²), from which Gronovius' Florentine "optimus" (Laur. IX 32, edition of 1704) derives; h keeps the opening of the Anabasis, missing in A; one manuscript family joins Books 6 and 7; the Venice edition of 1535 counts six books with the Indica as the seventh; Basel 1539 gets seven.
+- Robson's Loeb vol. 1 (Internet Archive scan of a later reprint, OCR): note to 1.9.5 "Editors add καὶ τῇ ὀλιγότητι. Roos marks lacuna."; note to 1.28.7 "After πεντακοσίους Krüger and Roos mark a lacuna, supplying ζῶντες δὲ ὀλίγοι ἐλήφθησαν (R.)". Both match the dots in the Scroll's text.
+- Editions: Classical Review 45.2 (J. O. Thomson; Cambridge Core record): Roos vol. 2, Leipzig: Teubner, 1928; Robson vol. 1, Loeb, London: Heinemann, New York: Macmillan, 1929. University of Patras library record: Brunt, LCL 236 and 269, Harvard, 1976–1983, vol. 2 with the Indica. Bibliothekai: Brunt vol. 1, 1976, numerous appendices, revising Robson. BMCR 1997.04.07 (Heckel; read through the Wayback Machine, the BMCR site gave 502 errors): Bosworth, Historical Commentary, Clarendon, vol. 1 (1980, Books 1–3), vol. 2 (1995, Books 4–5); the Book 4 digression out of context, "The whole digression serves the function of a sermon on the evils of intemperance". Scroll file headers: Roos 1907 (Anabasis); Hercher and Eberhard 1885 (Indica, Cynegeticus, Periplus, Tactica, Acies); Roos vol. 2 dated 1910 (letter to Gellius).
+
+**Left out because it could not be confirmed**
+- A single birth year (c. 86, 85–90, c. 95, c. 96 are all given) or death year (c. 160, c. 175, before or about 180): given as a range and marked debated.
+- The year he studied with Epictetus (Wikipedia gives both about 108 and 117–120).
+- The draft's "damaged by damp in the fifteenth century" and "leaves carrying ... the end of the Indica were lost": not found in any source opened (only the loss of the opening of the Anabasis in A, and the leaf at 7.12.7, are confirmed).
+- Livius' speculative early career (military tribune, Noricum or Dacia, proconsul of Baetica, Africa) and Hadrian as a fellow pupil of Epictetus; Pliny's letters to an "Arrianus"; a lost Meteorology and life of Epictetus; the papyrus and palimpsests of the History of the Successors by name (Wikipedia gives PSI 12.1284 and the Gothenburg palimpsest; only Stadter's "at least one papyrus" and "two palimpsest folia" are kept, and only the papyrus is mentioned).
+- The date of the Anabasis (Stadter: presumably at Athens; Wikipedia: most probably under Hadrian). Not stated.
+- The Tillorobus life (Lucian, Alexander 2) was confirmed but cut for length; the lives of Dion and Timoleon (Wikipedia, Chinnock via Photius) not named.
+- Robson's second volume and its date (1933 appears only indirectly on Bibliothekai and in a library record).
+- Encyclopaedia Iranica "Arrian" and OUP's page for Bosworth's commentary were blocked (Cloudflare); BMCR's own site gave 502 errors.
+
+**Corrected from the draft**
+- "his own writings call him a 'new Xenophon'": the nickname "new/young Xenophon" is in Photius (9th c.) and the Suda (10th c.), both Byzantine; in his own works Arrian calls himself Xenophon (On Hunting, Battle Order) and the classical author "the elder" (Periplus).
+- "drove back an invasion of the Alans": Stadter says he repelled it, but Cassius Dio (epitome of Book 69) says the war stopped because the Alans were bought off by Vologaesus and feared Arrian; both given, marked debated. Date 134 (Stadter, Livius) or 135 (Wikipedia).
+- "Roos, Teubner, 1907–10": vol. 1 1907, vol. 2 1928 (Stadter; the Classical Review record), corrected by Wirth 1967–68. The Scroll's file header for the letter to Gellius says 1910; the article notes the discrepancy.
+- "Vindobonensis hist. gr. 4, c. 1200": Stadter gives s. XII ex.–XIII in.; kept as "about the end of the twelfth century or the beginning of the thirteenth".
+- "Roos showed in 1904": kept, with his proof (the gap at 7.12.7 from a lost leaf of A) from the 1905 programme essay.
+- "consul around 130", "archon 145/6", "born c. 86/89", "dies perhaps c. 160": consul "about 129 or 130"; archon 145/6 (Stadter: 146; Robson: 147); birth and death as ranges.
+- "edition princeps of the Anabasis (Venice)": kept as 1535, Trincavelli, with the six-book count of that edition.
+- "His Greek is clear Atticising prose in Xenophon's manner": not stated as such; the article uses Photius' "dry"/plain style and Arrian's own phrase "my other, Attic, history" (Indica 19.8).
+
+**Weak points to revisit**
+- Stadter's Catalogus article is of 1976 and his GRBS article of 1967; newer work (Syme's "The Career of Arrian", HSCP 1982; Bosworth; Leon, Arrian the Historian, 2021) could not be read. The career dates rest on Stadter, Livius and Wikipedia, which differ by a year here and there.
+- The 1905 programme essay is anonymous in the scan (it is a school-programme supplement; its author's father edited the Anabasis in 1903, so probably a son of K. Abicht, but this is not confirmed and not said in the article). It reports Roos's Prolegomena second-hand.
+- Robson's notes to 1.9.5 and 1.28.7 were read in OCR of a later reprint; the "(R.)" after the supplement at 1.28.7 is ambiguous (Roos or Robson), so the article says only "the Loeb note gives".
+- Wikipedia's Arrian article is badly referenced; it is used only for points also found elsewhere, or (Bowie 1970 against Stadter) clearly attributed.
+- Our translations: Periplus 1.4, On Hunting 1.4 and 5.6, Indica 19.8, Anabasis 7.12.7–7.13.1, 1.9.5 and 1.28.7, and the altered title in Pal. gr. 398 (Stadter gives it in Greek only).
+
+**Fact check (2026-10-09, a second, independent check; report pipeline/factcheck/arrian.md):** 6 findings, each checked against the cited page or passage (the Indica and Anabasis in the Scroll; Wikipedia's Arrian and Anabasis wikitext); the two resting on scanned pages (Stadter's Catalogus survey, the 1905 Düsseldorf essay) were applied because they only narrow the claim. Corrected: the Indica's first sentence is already Ionic, and ὅκως comes later (19.8); the Erythraean Sea voyage was taken for Arrian's in the Renaissance, the anonymous Black Sea voyage only came to bear his name; Stadter's 1967 view stated as he gave it (a Greek name beside the Roman, which alone appears in inscriptions), and Bowie's reply as reported; "the fullest account of Alexander the Great's campaigns" (source 18 added); Gronovius filled the gaps from the Florentine manuscript; after the lost leaf the text starts again at «… Ἡφαιστίων.».
+
+
+## Strabo (tlg0099), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0099.ts` (39 sources). Tests: `author-articles.test.ts` and the CORPUS check pass with ARTICLE=tlg0099; `tsc --noEmit` clean.
+
+**Confirmed and kept**
+- Life: Jones's Loeb introduction (vol. 1, 1917, on LacusCurtius; per Jones's preface left substantially as Sterrett wrote it): born at Amaseia in 64 or 63 BC; Aristodemus at Nysa (14.1.48), Tyrannion (12.3.16), Xenarchus (14.5.4), "Aristotelized" with Boethus (16.2.24); a Stoic ("our Zeno" 1.2.34; "what our School avoids" 2.3.8); Rome in 44 BC aged nineteen or twenty, again 35 and about 31 BC; Gyaros in 29 BC (10.5.3); Egypt with Aelius Gallus 25–24 BC, still there in 20 BC, more than five years in Alexandria, excerpts "may infer" made in the library; "it cannot be said that he was a great traveller"; perhaps no place in Greece but Corinth; the extracts "with which his book is filled"; Pais (first version about 7 BC, revised about AD 18, written at Amasia) against Niese (Rome, AD 18–19); the Geography not known to the Romans, not even Pliny; his habit of naming famous men of eastern cities. Wikipedia (Strabo): 64 or 63 BC to c. AD 24; Amaseia = Amasya; paternal grandfather (as reported); Rome 44 BC; only extant work on Greek and Roman peoples under Augustus. Diller and Kristeller, CTC 2 (1971): born about 63 BC, probably died AD 24; Geography "which we have entire" (Book 7 apart, Stronk); little attention before the sixth century, often cited by Byzantine authors from the ninth; copies to Italy from 1424; Nicholas V's commission; Guarino (Books I–X) and Gregorio (XI–XVII) from Ciriaco's two volumes; Guarino's holograph dated Ferrara 13 July 1458, at eighty-four; ed. (1469) Rome, Sweynheym and Pannartz, I–X Guarino, XI–XVII Gregorio, revised by Bussi; Bussi's preface (much missing from Guarino's Europe); Vat. lat. 2049 supplemented with another Greek manuscript by Bussi and others; Heresbach 1523 revised from the 1516 Greek, called Guarino's part worse than Gregorio's; editio princeps Venice, Aldus, November 1516; Kramer 1844–52 as the critical edition; Casaubon 1587 (Geneva), reprinted after his death 1620; Chrestomathy anonymous, probably ninth century, in the contemporary Pal. gr. 398, ed. pr. Basel 1533, Müller GGM II (1861).
+- Stronk, CJ-Online 2019.02.04 (review of Roller's Guide, 2018): c. 63 BC – c. AD 24; not "absolutely sure" Strabo was his real name; Juba's death AD 23 the latest datable passage; complete except parts of Book 7; not read extensively, unnoticed by the Romans even Pliny, known in the East; some thirty manuscripts; Casaubon 1587 and 1620, C 1–840; Radt 2002–11 "the edition to be used"; Roller's translation 2014; topics (Alexander, cults, eastern Mediterranean, women's history); "primary source for the history of Greek scholarship on geography".
+- Wikipedia (Geographica): seventeen books and the book-by-book contents (Books 1–2 against Eratosthenes, Hipparchus, Polybius, Posidonius; 3 Iberia ... 17 North Africa); Dueck's AD 18–24; the fifth-century palimpsest (bi-rescriptus); table after Radt: Paris gr. 1397 tenth century, Books 1–9; Paris gr. 1393 thirteenth century, whole text; Bohn translation the first complete English.
+- Pothecary, strabo.ca: editions (about thirty medieval manuscripts; Radt 10 vols 2002–11 used papyri and a dismembered fifth-century manuscript; vol. 2 replaces the lost end of Book 7 with Epitome and Chrestomathy passages; vol. 9 Epitome and Chrestomathy, "fourteenth and ninth centuries"; Budé vols 1966–2015 = Books 1–12 and 17; Jones 1917–32 based on Meineke; Meineke 1852–53 based on Kramer with variations listed; Kramer 1844–52 full apparatus); translations (Hamilton and Falconer from Kramer's text, Bohn 1854–57); papyri (P. Köln 8 from the lost end of Book 7, P. Oxy. 3447 Book 9, P. Oxy. 4459 Book 2, second and third centuries); lost History (fragments; P. Vogliano 46 "?"); when written (AD 17–23; Juba AD 23).
+- Jones vol. 1 (Internet Archive, title page and bibliography): London, Heinemann; New York, Putnam, 1917; "based in part upon the unfinished version of J. R. S. Sterrett", who died June 15, 1914; manuscripts: "not much read in antiquity: in a sense he was discovered in Byzantine times", one archetype, the gap at the end of Book 7 in all manuscripts, Paris 1397 for Books 1–9 (contains no more), Vatican 1329, Epitome Vaticana, Venice 640 for 10–17, the Epitome going back to the end of the tenth century and made from a copy with the end of Book 7; Aldine 1516 from a poor manuscript, Par. 1395; the Latin made from better manuscripts since perished; citation by Casaubon's pages; Jones's own Greek text (preface).
+- Vatican Library palimpsest page: an early copy of Strabo recycled in Vat. gr. 2061A, Vat. gr. 2306 and Crypt. A.δ.XXIII; "double palimpsest".
+- BnF Archives et manuscrits, Grec 1397: eleventh century, parchment, 232 leaves, Books 1–9, end mutilated.
+- LSJ (site copy): στράβων = στραβός; στραβός "squinting".
+- Scroll passages (Greek and English copied from passage.ts and the Bohn file): 12.3.39, 10.4.10, 12.3.33 (my mother's great grandfather; "my maternal grandfather"; fifteen garrisons; "great promises..."), 14.1.48, 12.3.16, 14.5.4, 16.2.24, 1.2.34, 2.3.8, 10.5.3, 2.5.11–12, 17.1.46, 1.1.1–2, 1.1.22–23, 11.9.3, 3.4.10–11, 17.3.7, 7.7.12 and 7.fragments.1 (Stephanus, s.v. Δωδώνη); Plutarch, Lucullus 28.7 and Caesar 63.2; Josephus, AJ 14.104–118 ("Strabo of Cappadocia"); Athenaeus 14.75; Chrestomathy 1.1 (tlg0099.tlg004).
+
+**Left out because it could not be confirmed**
+- The number of books of the lost history: Jones's introduction says forty-seven, the Bohn preface (in the Scroll's English file) forty-three; no modern source opened settles it.
+- "Studied with Athenodorus" (Wikipedia says teacher; Strabo 16.4.21 only calls him "my friend"); Wikipedia's Rome-based study with Xenarchus as fact (Jones says "probably").
+- "His Greek is the plain, educated prose of the Augustan age" and "a treasure-house of lost works": no source opened says so (only Jones's "numerous excerpts" is used).
+- The Epitome and Chrestomathy "sometimes preserve readings lost elsewhere": not found as stated.
+- The Aldine's errors "persisted in later editions until the manuscripts were collated afresh": not found as stated (Jones says only that Casaubon "did much for the text of the first three books").
+- Columbus's use of the Latin translation (Wikipedia, unsourced there); the 1424 "modern edition" in Stronk (unclear, not used); Athenaeus's date.
+- Whether Josephus quotes the History or the Geography (Jones's introduction says the Geography; modern view not checked).
+- BMCR reviews of Radt's volumes (2003.07.08, 2006.12.24) and of Roller: the site returned 502 errors all day; Fizzarotti's chapter on the palimpsest (Brill), Pinakes and ISTC were blocked.
+
+**Corrected from the draft**
+- "Studied with Tyrannion and Xenarchus ... spent long periods in Rome": kept, but the length of the stays is not claimed (Jones: "It does not appear that he lived for any very long stretch of time at Rome").
+- "Historical Sketches, a continuation of Polybius in forty-seven books": the article says part of the history continued Polybius (11.9.3: the sixth book was the second "after Polybius"), and leaves the book count out.
+- "The work was barely read in antiquity and was first widely used by Byzantine scholars": kept with Diller's precise wording (little attention before the sixth century; often cited from the ninth) and Athenaeus as an early exception.
+- "It was completed late in his life, after 18 CE": presented as a debate (Pais, Niese, Pothecary, Dueck).
+- "Latin translation by Guarino of Verona and Gregorio Tifernate printed at Rome 1469": Diller gives "(1469)", undated; the article says "about 1469". Jones's bibliography gives Rome 1472, but Diller lists 1472 as a Venice edition (Vindelinus de Spira); Jones's date not used.
+- "For the last eight we depend on later manuscripts of the thirteenth and fourteenth centuries": made specific (Vatican 1329, Venice 640, the Epitome: Jones; Paris gr. 1393, thirteenth century, whole text: Wikipedia after Radt).
+- "Parisinus gr. 1397, tenth century": the BnF catalogue says eleventh; both given, marked debated.
+- "Epitome ... and the excerpts known as the Chrestomathy": the Chrestomathy is ninth century (Diller; Pothecary); the Epitome's date differs (Jones: end of tenth; Pothecary: fourteenth), marked debated.
+- "Meineke, 3 vols (Teubner, 1877)": Meineke's edition is of 1852–53; 1877 is the reprint Perseus used.
+- "Jones, Loeb 1917–32" with no publisher: vol. 1 was London, Heinemann, and New York, Putnam (title page), the Scroll's later volumes Harvard and Heinemann (file header).
+- "Aujac, Lasserre and others (Budé, 1966–)": Baladié and Laudenbach added; by 2015 Books 1–12 and 17.
+- The grandfather: Jones's introduction and Wikipedia say "paternal"; Strabo's Greek (ὁ πάππος ἡμῶν ὁ πρὸς αὐτῆς) and Jones's own translation say maternal. The article gives both, marked debated.
+- Wikipedia (Geographica) says Sterrett died in 1915; Jones's preface says June 15, 1914 (not used in the article, noted here).
+
+**Weak points to revisit**
+- Much of the life rests on Jones's introduction of 1917 (largely Sterrett's), which is old; modern accounts (Dueck 2000, Roller 2014, Radt's prolegomena) were not opened.
+- The fifth-century date of the palimpsest rests on Pothecary and Wikipedia (citing Fizzarotti 2020), not on the Vatican's own catalogue (DigiVatLib gave no description).
+- Jones's English at 10.4.10 says "My mother's mother was the sister of Lagetas", but the Greek (in Meineke and in Jones's own Greek) has θυγάτηρ, daughter; and his English there names Lagetas where the Greek has ἐκείνου (the other Dorylaus, as 12.3.33 shows). Not used in the article; a reader comparing the columns may notice.
+- Wikipedia's table date for Paris gr. 1397 (tenth century) is said to follow Radt; Radt was not opened.
+- The Athenaeus "variant" is our own comparison of two Scroll passages (Athenaeus 14.75 and Strabo 3.4.10–11); no modern discussion of it was opened.
+
+**Fact check (2026-10-09, a second, independent check; report pipeline/factcheck/strabo.md):** 7 findings, each checked against the cited page or passage (Diller and Kristeller, Catalogus 2, pp. 226 and 229, read from the scanned PDF; Athenaeus 14.75 and Strabo 3.4.10 and 10.5.3 in the Scroll; Perrin's note in the Perseus file of Plutarch's Caesar), all corrected: the Latin translators' Greek copies survive (Ciriaco's two volumes, now Eton and Moscow, with Guarino's notes), not "since lost"; Athenaeus' πρὸς τῇ Ἀκυτανίᾳ is "near Aquitania" (our translation; Yonge's "in the province of" was wrong); the gaps in Guarino's Greek are Bussi's guess ("ut puto"), for Guarino's part only; Guarino translated the whole work, finished at Ferrara 13 July 1458, and the 1469 print joined his Books 1–10 to Gregorio's 11–17; the Caesar omens "probably" from the history (Perrin); "Octavian, the future Augustus" in 29 BC; στράβων "also a Greek word", not "ordinary" (LSJ cites one comic fragment).
+
+
+## Pausanias (tlg0525), checked 2026-10-07
+
+Article: `web/src/wiki/authors/tlg0525.ts` (39 sources). Registered 2026-10-09.
+
+**Confirmed and kept**
+- Life and date. Wikipedia (Pausanias (geographer)): nothing known beyond his own writing; Lydia, Asia Minor; honest about second-hand information; classicists dismissed him (after Wilamowitz) until twentieth-century archaeology showed his accuracy (Habicht). Jones, Loeb vol. 1 (1918; Internet Archive): nothing known except hints in the book; 5.13.7 makes Lydia "a fair inference"; 5.1.2 (217 years since Corinth was repeopled, restored 44 BC) gives book 5 in AD 174; 7.20.6 (Odeion of Herodes not yet built when Attica was written); the war of "the second Antonine" against Germans and Sauromatae (166, triumph 176); no mention of his death in 180. Frazer, vol. 1 (1898; Internet Archive): Antinous' death "appears to have fallen in 130", Pausanias old enough to have seen him and born "a good many years before 130"; the Costobocs the latest event; Regilla's death 160 or 161, so book 1 finished by then at the latest; Gurlitt's later dates (book 1 not before 143); book 5 in 174; at least fourteen years of work and probably many more; the rule restated at Sparta as an answer to critics; Lydia near Sipylus; Magnesia "we cannot say". Wikipedia (Costoboci): invasion of 170 or 171. Mazzaferro's review of the Valla edition: Musti's two phases (135–145/150 and 161–180); Herodotus and Thucydides as models. Sánchez Hernández, CFC(G) 17 (2007), abstract: Habicht argues for Magnesia ad Sipylum; the author for Smyrna.
+- Scroll passages, Greek and English copied from passage.ts: 5.1.2, 7.20.6, 8.9.7, 10.34.5, 8.43.6, 5.13.7, 1.39.3, 3.11.1, 1.26.4, 10.4.1, 8.8.3, 2.16.5–7, 5.17.3, 8.36.6, 1.1.1, 1.2.5, 1.4.3, 1.4.5, 1.10.4; Strabo 8.6.10; Aelian, Historical Miscellany 12.61 (Greek only; our translation).
+- The book. Wikipedia (Description of Greece): ten books on mainland Greece; the islands left out; title Ἑλλάδος περιήγησις; Habicht's "He definitely prefers the sacred to the profane and the old to the new" and "It was not read … not a whisper before the sixth century (Stephanus Byzantius), and only three or two references … throughout the Middle Ages"; his few words often the only surviving literary source. Upatras record of the Loeb: Elis in two books (vol. 2 ends "Elis 1", vol. 3 begins "Elis 2"). LSJ (site's copy): περιήγησις "leading round and explaining, as is done by guides and cicerones"; "geographical description". Jones: the method (road to a centre, then each road out and back); main interest sanctuaries, statues, tombs and legends; omissions (scenery, agriculture, trade); the footnote on "a night's lodging"; style simple, with verbose expressions and transpositions "sometimes so violent as to throw doubt upon the sense"; some nineteen references to the guides (ἐξηγηταί). Frazer's critical notes: imitations of Herodotus' conjunctions (Pfundtner).
+- Archaeology. Frazer: Preller's idea of copying from Polemo revived by Wilamowitz (Hermes 1877); Kalkmann's theory (1886), substantially retracted (Archäologischer Anzeiger 1895); Strabo's "not a vestige of Mycenae" against Pausanias' walls and lion gate; Strabo wrote under Augustus. Wikipedia (Grave Circle A): Schliemann and Stamatakis, 1876, following Homer and Pausanias; five shafts recognised as Pausanias' graves; the burials about three centuries older than Agamemnon's supposed time. Wikipedia (Hermes and the Infant Dionysus): found on 8 May 1877 in the temple of Hera, excavations led by Curtius; the attribution to Praxiteles rests on Pausanias' mention and is fiercely contested. Frazer's "one of the most curious and valuable records bequeathed to us by antiquity".
+- Transmission. Frazer: Aelian VH 12.61 refers to Pausanias 8.36.6; Herodian and Philostratus may have used him; Stephanus of Byzantium cites him by name and by the numbers of all ten books. Wikipedia (Claudius Aelianus): c. 175 – c. 235. Wikipedia (Description of Greece, after Diller 1957): a single lost manuscript; Buondelmonti brought it to Italy; Niccoli had it in Florence around 1418; to San Marco after his death in 1437; lost after 1500; eighteen manuscripts known in the 1830s, fifteenth or sixteenth century, full of lacunae; first edition Venice 1516, Aldine firm, Musurus from Venetian Crete; Latin by Amaseo, Rome 1547; Italian 1593; Taylor 1794; Frazer still credible; Levi often thought loose and restructured. Mazzaferro: single archetype belonging to Niccoli; fourteen codices with the whole work or nearly, all by 1550; Parisinus gr. 1410 (1491) long preferred, Marcianus gr. 413 and Laurentianus 56.11 now trusted more, being older; 1516 edition by the heirs of Aldus and Andrea Torresano, edited by Musurus; Amaseo 1547, Bonacciuoli at Mantua 1593; the Valla edition in ten volumes, 1982–2017, directed by Musti and Torelli. Jones: three classes of manuscripts; Parisinus 1410 written 1491; gaps "where the manuscript tradition fails us entirely"; chief editions 1516 Musurus … 1903 Spiro; English translations Taylor 1794, Shilleto 1886, Frazer 1898. Frazer's preface: translated from Schubart's Teubner recension (1853–54); journeys in 1890 and 1895.
+- Variants. Frazer's critical notes (on Schubart's text), compared with Spiro's text in the Scroll: 1.1.1 the conjectural Πτολεμαίου "probably right" (Spiro prints it; Jones "Ptolemy, son of Ptolemy, son of Lagus"); 1.2.5 Ἀπόλλων (some manuscripts) against Ἀπόλλωνός (others, and the editions before Schubart), with the consequence for Eubulides; 1.4.3 Λαμιακοῦ, Kiehl's Μαλιακοῦ (Mnemosyne 1852); 1.10.4 the words "unintelligible" and omitted by Frazer, printed with a dagger by Spiro and translated by Jones; 1.4.5 a lacuna marked in Schubart's text, "not absolutely necessary" (Frazer), none in Spiro. Wikipedia (Dagger (mark)): the obelus marked questionable or corrupt words.
+- Editions. Perseus file headers: Spiro, Teubner, Leipzig 1903, vols 1–3; Jones and Ormerod, Loeb, Harvard and Heinemann, 1918–1935, vols 1–4. Jones vol. 1 title page: London, Heinemann; New York, Putnam; 1918. Upatras record: LCL 93, 188, 272, 297–298; Ormerod co-translator of vol. 2; vol. 5 maps, plans, illustrations and index, ed. Wycherley. Rocha-Pereira: Classical Review 29 (1979) review of vols 1–2 (1973, 1977); BNP dictionary (1973, 1977, 1981); Classical Review 40 (1990) review of the revised edition of 1989. Frazer: title page (London, Macmillan, 1898; six volumes). Levi: ARCE record (Penguin Classics, Harmondsworth, copyright 1971).
+
+**Left out because it could not be confirmed**
+- A birth year: the draft's "c. 115" (no source); Wikipedia's "c. 110" rests on a book about the Panathenaic Stadium. Only Frazer's inference from Antinous is kept.
+- "Begins his Description with Attica (c. 155)" and "completes the work (c. 180)": not found as such; replaced by Frazer's book-by-book dates and the absence of Marcus' death.
+- "Ionic turns of phrase": no source; only the borrowed conjunctions (Frazer) and Herodotus as a model (Musti) are kept.
+- "Excavators at Olympia, Delphi and Mycenae used him as a guidebook": Mycenae (Schliemann) and Olympia (the Hermes) kept with sources; Delphi left out.
+- Frazer's commentary as "the basis of modern archaeological study": not found; Wikipedia's "a credible work of scholarship" was not needed.
+- The Suda's silent borrowings (Frazer mentions them; no date opened for the Suda here).
+- Wikipedia's account of the ending (a poetess told in a dream to present the book to the Greeks): the Scroll's 10.38.13 tells of Anyte bringing a sealed tablet to heal Phalysius' eyes; the claim is not used.
+- Wikipedia's Tartessos claim; Habicht's book *Pausanias' Guide to Ancient Greece* (only the publisher's page opened, which dates it 1999; Wikipedia gives 1985).
+- Diller's articles (JSTOR would not open); his findings are used only as reported on Wikipedia.
+
+**Corrected from the draft**
+- "Probably from Magnesia ad Sipylum" → very probably a Lydian from near Mount Sipylus; Magnesia marked {debated} (Frazer undecided; Habicht for Magnesia; Sánchez Hernández for Smyrna).
+- "Datable references show that he was writing between about 155 and 180" → the dates his remarks actually give: book 1 finished by 160/161 at the latest (Frazer), book 5 in 174, the Costoboci in 170 or 171, nothing on 180; Musti's two phases (135–150, 161–180) given as a debated alternative.
+- "Mentions the invasion of the Costoboci (170/1)" kept as 170 or 171 (Wikipedia), not as one year.
+- "He was little read in antiquity" → kept, but marked {debated}: Aelian (c. 175–235) names him (VH 12.61, matching 8.36.6), as Frazer noted, against Habicht's "not a single mention".
+- "All the surviving manuscripts, some twenty, were copied in Italy in the fifteenth century" → eighteen known in the 1830s, fifteenth or sixteenth century (Wikipedia); fourteen with the whole or nearly, all by 1550 (Valla edition). "In Italy" left out.
+- "Niccoli had it in Florence in 1418" → "around 1418" (Wikipedia, after Diller); San Marco after 1437 and lost after 1500 kept.
+- Loeb "5 vols (1918–35)" → four volumes of text, 1918–35, with a fifth (maps and index) edited by Wycherley; first volume published by Heinemann and Putnam; Ormerod co-translator of vol. 2 only.
+- "His Greek … deliberately varied and often awkward, with an unusual word order" → Jones's words: roundabout expressions and violent transpositions of words.
+- The draft's Delphi is not called a site where excavators followed him (no source).
+
+**Weak points to revisit**
+- Much of the manuscript history rests on Wikipedia's summary of Diller (1957) and on a blog review of the Valla edition (Mazzaferro, 2019) reporting Musti's introduction; Diller and Musti themselves were not read.
+- Habicht's words are taken from Wikipedia's quotation of his 1985 article (JSTOR would not open).
+- The two Wikipedia counts (eighteen manuscripts in the 1830s; fourteen complete or nearly in the Valla edition) are both given; they need not conflict, but neither was checked against a manuscript catalogue.
+- The Schubart lacuna at 1.4.5 is inferred from the asterisks in Frazer's lemma (his notes are made on Schubart's text); the OCR of Frazer's notes is rough in places, and only readings written out clearly were used.
+- The Rocha-Pereira third volume (1981) is confirmed by the BNP dictionary page; the Teubner and De Gruyter catalogue pages would not open.
+- The Hermes find: the English part of Wikipedia's page gives the date and place; "found ... in the ruins of that very temple" also follows its first sentence. The Wikipedia page has untranslated French sections, which were not used.
+
+**Fact check (2026-10-09, a second, independent check; report pipeline/factcheck/pausanias.md):** 9 findings, each checked against the cited page or passage (Pausanias 1.4.5 and 8.36.6 in the Scroll; Frazer vol. 1 and Jones vol. 1, Internet Archive texts; Wikipedia's Description of Greece and Geographica; the CiNii record; the UCM abstract), all corrected: the Gauls, not the people of Pergamum, took Ancyra and Pessinus (Jones's English slips; Frazer and the Greek agree), and the passage is earlier in the book, not "a few lines"; Strabo's date given as "about a century and a half before him" (Frazer's "reign of Augustus" is out of date; Dueck dates the Geography AD 18–24); Wilamowitz revived only the general borrowing from Polemo, the Athens–Olympia–Delphi theory is Kalkmann's; Rocha-Pereira's revision 1989–90; the tour ends in Phocis with western Locris; Jones reported the three classes of manuscripts, he did not make them; the North Wind honoured "second to none of the gods"; "the one work of his that we know"; Smyrna the centre "of the Second Sophistic".
