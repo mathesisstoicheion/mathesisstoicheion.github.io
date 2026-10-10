@@ -9,7 +9,7 @@ import styles from "./Start.module.css";
 
 /** One picture and one line for each door; `n` is filled in by the home page from the catalogue. */
 const DOOR: Partial<Record<AreaId, { pic: string; line: (n: { works: number; lessons: number }) => string }>> = {
-  study: { pic: "douris-school-cup", line: (n) => `From the alphabet to participles, in ${n.lessons} lessons, with a few minutes' practice a day.` },
+  study: { pic: "douris-school-cup", line: (n) => `From the alphabet to participles and pronouns, in ${n.lessons} lessons, with a few minutes' practice a day.` },
   library: { pic: "socrates-louvre", line: (n) => `${n.works.toLocaleString("en-GB")} works, from Homer to the Byzantine scholars, many with English beside the Greek.` },
   wiki: { pic: "mask-of-agamemnon", line: () => "The world that wrote them: the map, the Census of names, archaeology and the wiki." },
   forum: { pic: "themistocles-ostraka", line: () => "Ask a question, help with a passage, and argue a motion in the weekly debate." },

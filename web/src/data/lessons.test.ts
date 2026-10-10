@@ -6,6 +6,7 @@ import { PARADIGMS } from "./paradigms";
 import { indexCatalog, greekEditions, rawUrl, fold, type Catalog } from "@/lib/catalog";
 import { parseTei } from "@/lib/tei/parse";
 import { findRef } from "@/lib/tei/refs";
+import { bare } from "@/components/academy/Refer";
 
 const idx = indexCatalog(JSON.parse(readFileSync("public/data/catalog.json", "utf8")) as Catalog);
 const plain = (s: string) => fold(s).replace(/[^\p{L}\s]/gu, "").replace(/\s+/g, " ").trim();
@@ -20,6 +21,16 @@ describe("lessons", () => {
     for (const l of LESSONS) for (const s of l.sections) {
       if (s.kind === "timeline") for (const t of s.items) expect(t.grc.split(/\s+/), `${l.id}: ${t.ptc} / ${t.verb}`).toEqual(expect.arrayContaining([t.ptc, t.verb]));
       if (s.kind === "voice") for (const v of s.items) expect(v.grc, `${l.id}: ${v.verb}`).toContain(v.verb);
+      if (s.kind === "report") for (const r of s.items) for (const [from, to] of r.pairs) {
+        expect(r.a.split(/\s+/), `${l.id}: ${from}`).toContain(from);
+        expect(r.b.split(/\s+/), `${l.id}: ${to}`).toContain(to);
+      }
+      if (s.kind === "sigma") for (const g of s.items) expect(g.result, `${l.id}: ${g.present}`).toContain(g.mark);
+      if (s.kind === "refer") for (const r of s.items) for (const k of r.links) {
+        const words = r.grc.split(/\s+/).map(bare);
+        expect(words, `${l.id}: ${k.from}`).toContain(k.from);
+        expect(words, `${l.id}: ${k.to}`).toContain(k.to);
+      }
     }
   });
 
@@ -30,14 +41,16 @@ describe("lessons", () => {
   // Fetches the real files from GitHub; run with NETWORK=1.
   it.skipIf(!process.env.NETWORK)("quote real passages that are really there", async () => {
     for (const l of [...LESSONS, ...GUIDES]) for (const s of l.sections) {
-      if (s.kind !== "real" && s.kind !== "timeline") continue;
-      for (const r of s.items.map((x) => ({ ...x, quote: "quote" in x ? x.quote : x.grc }))) {
+      if (s.kind !== "real" && s.kind !== "timeline" && s.kind !== "refer") continue;
+      for (const r of s.items.map((x) => ({ ...x, quote: "quote" in x ? x.quote : x.grc, to: "to" in x ? x.to : undefined }))) {
         const w = idx.work.get(r.work)!;
         const ed = greekEditions(w).find((t) => t.col === "perseus") ?? greekEditions(w)[0];
         const doc = parseTei(await (await fetch(rawUrl(idx, ed))).text());
-        const i = findRef(doc, r.ref);
+        const i = findRef(doc, r.ref), j = r.to ? findRef(doc, r.to) : i;
         expect(i, `${l.id}: ${r.label}`).toBeGreaterThanOrEqual(0);
-        const text = doc.units[i].blocks.map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" ");
+        expect(j, `${l.id}: ${r.label}`).toBeGreaterThanOrEqual(i);
+        // a passage may run over two references (refer items' `to`)
+        const text = doc.units.slice(i, j + 1).flatMap((u) => u.blocks).map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" ");
         expect(plain(text), `${l.id}: ${r.label}`).toContain(plain(r.quote));
       }
     }

@@ -89,6 +89,37 @@ test("lesson 15: participles on a timeline (before, at the same time, after) and
   await strips.getByRole("button", { name: "Again" }).click();
   await expect(page.getByRole("table").first()).toContainText("λυούσης");
   await expect(page.getByRole("table").nth(1)).toContainText("λυσάντων");
-  await expect(page.getByRole("link", { name: /Next:/ })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Next:.*Infinitives/ })).toBeVisible();
   await expect(page.locator("[data-quote]").first()).toBeVisible({ timeout: 30_000 });
+});
+
+test("lesson 16: infinitives, and a statement turned into reported speech", async ({ page }) => {
+  await page.goto("/academy/lesson/infinitives");
+  await expect(page.getByRole("table").first()).toContainText("λυθῆναι");
+  await expect(page.getByText("ὁ Κῦρος ἀναβαίνει.")).toBeVisible();
+  await page.getByRole("button", { name: "Report it" }).first().click();
+  await expect(page.getByText("φασὶ τὸν Κῦρον ἀναβαίνειν.", { exact: false }).first()).toBeVisible();
+  await expect(page.getByText("They say that Cyrus is going up.", { exact: false }).first()).toBeVisible();
+  await expect(page.getByRole("button", { name: "Say it plainly" })).toBeVisible();
+  await expect(page.locator("[data-quote]").first()).toBeVisible({ timeout: 30_000 });
+});
+
+test("lesson 17: the future, with the stem, σ and ending drawn together", async ({ page }) => {
+  await page.goto("/academy/lesson/future");
+  const sigma = page.locator("figure").filter({ hasText: "Stem, σ, ending" });
+  for (const w of ["γράψω", "ἄξω", "πείσω", "ποιήσω"]) await expect(sigma).toContainText(w);
+  await sigma.getByRole("button", { name: "Again" }).click();
+  await expect(page.getByRole("table").filter({ hasText: "ἔσονται" })).toBeVisible();
+  await expect(page.locator("[data-quote]").first()).toBeVisible({ timeout: 30_000 });
+});
+
+test("lesson 18: pronouns joined to the words they stand for, and their tables", async ({ page }) => {
+  await page.goto("/academy/lesson/pronouns");
+  const refer = page.locator("figure").filter({ hasText: "the word it stands for" });
+  await expect(refer).toContainText("Οὗτος ἦν ἐν ἀρχῇ");
+  await expect(refer.locator("svg path[marker-end]")).toHaveCount(4);
+  await page.getByRole("button", { name: "Move αὐτός" }).click();
+  await expect(page.getByText("the king himself", { exact: false }).first()).toBeVisible();
+  for (const f of ["ταύτης", "ἧς", "τίνος"]) await expect(page.getByRole("table").filter({ hasText: f }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /Next:/ })).toHaveCount(0);
 });

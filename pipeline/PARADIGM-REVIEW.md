@@ -40,3 +40,12 @@ On 2026-09-29 the present and aorist active participles of λύω were added (`l
 | λύσασι(ν) masc. and neut. | ἀκούσασιν 26, ποιήσασιν 12 (masc.); neuter ἀδικήσασι, γεννήσασιν and 8 more |
 
 Any new form that shows up in the check's list must be reviewed here before it is published.
+
+On 2026-10-10 twelve tables were added (232 forms): πατήρ, ἀνήρ, βασιλεύς; οὗτος, the relative ὅς, the interrogative τίς; the contract verbs ποιέω, τιμάω, δηλόω in the present and imperfect; the infinitives of λύω; the future of εἰμί; the participles λυόμενος, λυθείς and ὤν. 552 forms checked, 493 attested with the expected analysis. Every new form of the nouns, pronouns, εἰμί and the infinitives is attested. (`check_paradigms.py` now reads the tables through `npx tsx` instead of rewriting the TypeScript.) The 9 new forms not attested for their own verb, and the same ending with the same analysis on other verbs (GLAUx counts):
+
+| Form(s) | The same ending elsewhere (GLAUx) |
+|---|---|
+| δηλοῦτε, ἐδηλοῦτε (2nd pl. present and imperfect of δηλόω) | -οῦτε on verbs in -όω, 82 in the present (ἀξιοῦτε 47, ζηλοῦτε 5, βεβαιοῦτε 4), 15 in the imperfect (ἠξιοῦτε 10, ἐστεφανοῦτε 1) |
+| λυομέναις (fem. dat. pl.), λυομένοις (neut. dat. pl.) | 469 in -ομέναις (λεγομέναις 34, γινομέναις 30), 1,828 neuter in -ομένοις (λεγομένοις 412, φαινομένοις 181) |
+| λυθεισῶν (fem. gen. pl.) | 375 in -θεισῶν (δοθεισῶν 32, ἀνοιχθεισῶν 19, λεχθεισῶν 14) |
+| λυθεῖσι(ν) masc. and neut. dat. pl. | masculine: 372 in -θεῖσι (πεισθεῖσι 11), 448 in -θεῖσιν (πεμφθεῖσιν 12); neuter: 164 in -θεῖσι (ῥηθεῖσι 26), 256 in -θεῖσιν (πραχθεῖσιν 27) |

@@ -9,13 +9,15 @@ const CASES: [string, string | null, string | null][] = [
   ["v3siia---", "λύω", "past-tenses"],            // ἔλυε: imperfect
   ["v3saia---", "λύω", "past-tenses"],            // ἔλυσε: aorist
   ["v-sapamn-", "λύω", "participles"],            // λύσας: participle, before tense or voice
-  ["v--pna---", "λύω", null],                     // an infinitive: no lesson yet
-  ["v3sfia---", "λύω", null],                     // a future: no lesson yet
+  ["v--pna---", "λύω", "infinitives"],            // λύειν: an infinitive
+  ["v3sfia---", "λύω", "future"],                 // λύσει: a future
+  ["v1sfim---", "λύω", "future"],                 // λύσομαι: a future before a middle
   ["v3spia---", "εἰμί", "to-be"],                 // ἐστί
   ["l-s---mn-", "ὁ", "article"],
   ["r--------", "ἐν", "prepositions"],
   ["a-s---fa-", "ἀγαθός", "adjectives"],
-  ["p-s---ma-", "αὐτός", null],                    // pronouns: no lesson yet
+  ["p-s---ma-", "αὐτός", "pronouns"],              // αὐτόν
+  ["v2spma---", "λύω", "present-tense"],          // λῦε: an imperative still goes to the present
   ["b--------", "καί", null],
 ];
 

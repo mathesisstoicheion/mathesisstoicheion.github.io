@@ -4,7 +4,7 @@
  * (the words glide from where they were: a FLIP animation), the English and the name of the
  * position change with it. With reduced motion the words simply appear in the new order.
  */
-import { useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useLayoutEffect, useRef, useState } from "react";
 import type { Section } from "@/data/lessons";
 import { fold } from "@/lib/catalog";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
@@ -61,14 +61,14 @@ function ShiftItem({ it }: { it: Item }) {
     <div className={styles.shiftItem}>
       <p className={styles.shiftGr} lang="grc">
         <span ref={box}>
-          {words.map((x) => <span key={x.key} data-k={x.key} className={shifted.has(x.key) ? styles.shiftAdj : undefined}>{x.w}</span>)}
+          {words.map((x, i) => <Fragment key={x.key}>{i > 0 && " "}<span data-k={x.key} className={shifted.has(x.key) ? styles.shiftAdj : undefined}>{x.w}</span></Fragment>)}
         </span>
       </p>
       <p className={styles.shiftEn} aria-live="polite">
         <span className={styles.shiftTag}>{moved ? "predicate" : "attributive"}</span> <span key={String(moved)} className={styles.shiftSay}>“{moved ? it.bEn : it.aEn}”</span>
       </p>
       {moved && <p className={styles.small}>{it.note}</p>}
-      <button type="button" className="chip" onClick={flip} aria-pressed={moved}>{moved ? "Move it back" : "Move the adjective"}</button>
+      <button type="button" className="chip" onClick={flip} aria-pressed={moved}>{moved ? "Move it back" : `Move ${it.move ?? "the adjective"}`}</button>
     </div>
   );
 }

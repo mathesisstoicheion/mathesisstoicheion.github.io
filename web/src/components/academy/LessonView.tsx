@@ -23,6 +23,9 @@ import Motion from "./Motion";
 import Shift from "./Shift";
 import Voice from "./Voice";
 import Timeline from "./Timeline";
+import Report from "./Report";
+import Sigma from "./Sigma";
+import Refer from "./Refer";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
 
@@ -160,6 +163,9 @@ export function SectionView({ s, onWord }: { s: Section; onWord: (w: string, ctx
     case "shift": return <Shift {...s} />;
     case "voice": return <Voice {...s} />;
     case "timeline": return <Timeline {...s} />;
+    case "report": return <Report {...s} />;
+    case "sigma": return <Sigma {...s} />;
+    case "refer": return <Refer {...s} />;
     case "grid": return (
       <div className={styles.gridBox}>
         <span className="label">{s.title}</span>

@@ -25,15 +25,9 @@ def norm(s: str) -> str:
 
 
 def load_paradigms() -> list[dict]:
-    # evaluate the TypeScript data with node, so there is one source of truth
-    js = (ROOT / "web" / "src" / "data" / "paradigms.ts").read_text(encoding="utf-8")
-    js = re.sub(r"^export (interface|type) [\s\S]*?^}\n", "", js, flags=re.M)
-    js = re.sub(r":\s*(Paradigm\[\]|string\[\]|string)(?=\s*[=)])", "", js)
-    js = js.replace("export const", "const").replace("export function", "function")
-    js = re.sub(r"\((\w+): \w+(\[\])?, (\w+): \w+(\[\])?(?:, (\w+) = (C))?\)", lambda m: f"({m.group(1)}, {m.group(3)}{', ' + m.group(5) + ' = ' + m.group(6) if m.group(5) else ''})", js)
-    js = re.sub(r"\(cell: string\): string\[\]", "(cell)", js)
-    js += "\nconsole.log(JSON.stringify(PARADIGMS));"
-    out = subprocess.run(["node", "-e", js], capture_output=True, text=True, encoding="utf-8")
+    # read the TypeScript data through tsx (the site's own runner), so there is one source of truth
+    code = "import('./src/data/paradigms.ts').then((m) => console.log(JSON.stringify(m.PARADIGMS)))"
+    out = subprocess.run("npx tsx -e \"" + code + "\"", cwd=ROOT / "web", capture_output=True, text=True, encoding="utf-8", shell=True)
     if out.returncode:
         raise SystemExit(out.stderr)
     return json.loads(out.stdout)
