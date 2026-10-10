@@ -24,4 +24,3 @@ async function tx<T>(mode: IDBTransactionMode, fn: (s: IDBObjectStore) => IDBReq
 
 export const kvGet = <T>(key: string) => tx<T | undefined>("readonly", (s) => s.get(key) as IDBRequest<T | undefined>).catch(() => undefined);
 export const kvSet = (key: string, value: unknown) => tx("readwrite", (s) => s.put(value, key)).then(() => undefined);
-export const kvDel = (key: string) => tx("readwrite", (s) => s.delete(key)).then(() => undefined);

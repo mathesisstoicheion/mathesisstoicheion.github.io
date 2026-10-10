@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import type { CatalogIndex } from "@/lib/catalog";
 import { recordVisit, saveScroll, savedScroll, pageKey, type Visit } from "@/lib/resume";
 import { getPosition } from "@/lib/position";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { AREAS } from "@/config/areas";
 
 export const RESTORE = "mathesis:restore-scroll";

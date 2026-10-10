@@ -2,7 +2,7 @@
  * Every page of the site that the offline copy keeps (the service worker, public/sw.js, fetches
  * this list from /offline.json). A test checks it against the pages in src/app.
  */
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { GUIDES } from "@/data/guides";
 import { ENTRIES } from "@/wiki/index";
 

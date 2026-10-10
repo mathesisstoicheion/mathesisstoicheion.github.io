@@ -5,8 +5,9 @@
  * it (future, dashed: intended, not yet done). The bars grow in the order the actions happen when
  * the strips scroll into view; "Again" replays. With reduced motion they are simply drawn.
  */
-import { useEffect, useRef, useState } from "react";
+
 import type { Section } from "@/data/lessons";
+import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
 
 type Props = Extract<Section, { kind: "timeline" }>;
@@ -50,15 +51,7 @@ function Marked({ it }: { it: Item }) {
 }
 
 export default function Timeline({ title, items }: Props) {
-  const ref = useRef<HTMLElement>(null);
-  const [run, setRun] = useState(0);   // 0 = not yet in view; each increase plays the strips once
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !("IntersectionObserver" in window)) { setRun(1); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setRun((n) => n || 1); io.disconnect(); } }, { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref, run, again } = usePlay<HTMLElement>(0.3);   // 0 = not yet in view; each "Again" plays once more
 
   return (
     <figure ref={ref} className={styles.timeline} data-go={run > 0 ? "" : undefined}>
@@ -76,7 +69,7 @@ export default function Timeline({ title, items }: Props) {
       </div>
       <figcaption className={styles.motCap}>
         <span>In red, the participle; the other bar is the main verb. Dashed: intended, not yet done.</span>
-        <button type="button" className="chip" onClick={() => setRun((n) => n + 1)}>Again</button>
+        <button type="button" className="chip" onClick={again}>Again</button>
       </figcaption>
     </figure>
   );

@@ -5,10 +5,10 @@
  * words that changed are then in red, and every word glides from where it was (a FLIP animation, as in Shift.tsx).
  * With reduced motion the words simply appear in their new form.
  */
-import { Fragment, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import type { Section } from "@/data/lessons";
 import { fold } from "@/lib/catalog";
-import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import { useFlip } from "@/lib/use-flip";
 import styles from "./Academy.module.css";
 
 type Item = Extract<Section, { kind: "report" }>["items"][number];
@@ -26,36 +26,15 @@ function keyed(phrase: string, alias: Map<string, string>) {
 
 function ReportItem({ it }: { it: Item }) {
   const [told, setTold] = useState(false);
-  const motion = useSettings((s) => s.motion);
-  const box = useRef<HTMLSpanElement>(null);
-  const before = useRef<Map<string, DOMRect> | null>(null);
+  const { box, capture } = useFlip<HTMLSpanElement>(told, { transform: "translateX(-14px)" }, 560);
   // a word in the reported form is keyed by the plain-statement word it came from
   const alias = new Map(it.pairs.map(([from, to]) => [to, fold(from)]));
   const words = told ? keyed(it.b, alias) : keyed(it.a, new Map());
   // in red: the words that changed, once they have
   const changed = new Set(told ? it.pairs.map(([, to]) => to) : []);
 
-  const flip = () => {
-    const el = box.current;
-    if (el && !prefersReducedMotion(motion)) {
-      before.current = new Map([...el.querySelectorAll<HTMLElement>("[data-k]")].map((s) => [s.dataset.k!, s.getBoundingClientRect()]));
-    }
-    setTold(!told);
-  };
+  const flip = () => { capture(); setTold(!told); };
 
-  useLayoutEffect(() => {
-    const el = box.current, old = before.current;
-    before.current = null;
-    if (!el || !old) return;
-    for (const s of el.querySelectorAll<HTMLElement>("[data-k]")) {
-      const r0 = old.get(s.dataset.k!);
-      const r1 = s.getBoundingClientRect();
-      const anim = r0
-        ? [{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: "none" }]
-        : [{ opacity: 0, transform: "translateX(-14px)" }, { opacity: 1, transform: "none" }];
-      s.animate(anim, { duration: 560, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
-    }
-  }, [told]);
 
   return (
     <div className={styles.shiftItem}>

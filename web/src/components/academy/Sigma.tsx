@@ -5,8 +5,9 @@
  * finished word takes their place with the fused letters in red. Plays when it scrolls into view; "Again"
  * replays. At rest, and with reduced motion, the finished words are shown with their parts written beside them.
  */
-import { useEffect, useRef, useState } from "react";
+
 import type { Section } from "@/data/lessons";
+import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
 
 type Props = Extract<Section, { kind: "sigma" }>;
@@ -20,15 +21,7 @@ function Marked({ it }: { it: Item }) {
 }
 
 export default function Sigma({ title, items }: Props) {
-  const ref = useRef<HTMLElement>(null);
-  const [run, setRun] = useState(0);   // 0 = not yet in view; each increase plays once more
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !("IntersectionObserver" in window)) { setRun(1); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setRun((n) => n || 1); io.disconnect(); } }, { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref, run, again } = usePlay<HTMLElement>(0.3);   // 0 = not yet in view; each "Again" plays once more
 
   return (
     <figure ref={ref} className={styles.sigma} data-go={run > 0 ? "" : undefined}>
@@ -52,7 +45,7 @@ export default function Sigma({ title, items }: Props) {
       </ol>
       <figcaption className={styles.motCap}>
         <span>Stem, σ, ending: in red, where they meet.</span>
-        <button type="button" className="chip" onClick={() => setRun((n) => n + 1)}>Again</button>
+        <button type="button" className="chip" onClick={again}>Again</button>
       </figcaption>
     </figure>
   );

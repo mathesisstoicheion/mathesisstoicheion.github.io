@@ -8,6 +8,7 @@
  *    source file itself; `quote` only says which words to highlight, and a test checks that they are there.
  */
 import type { TextKind } from "@/lib/metre/text";
+import { LESSON_INFO, type LessonInfo } from "./lesson-index";
 
 export type Section =
   | { kind: "p"; text: string }
@@ -30,14 +31,11 @@ export type Section =
   | { kind: "links"; items: { href: string; label: string; note?: string }[] }   // other pages of the site (guides)
   | { kind: "real"; title?: string; items: { work: string; ref: string; quote: string; label: string; note: string; metre?: TextKind }[] };
 
-export interface Lesson { id: string; title: string; greek: string; summary: string; minutes: number; words: string[]; sections: Section[] }
+export interface Lesson extends LessonInfo { sections: Section[] }
 
-export const LESSONS: Lesson[] = [
-  {
-    id: "letters", title: "Letters into sounds", greek: "γράμματα", minutes: 15,
-    summary: "Read Greek words aloud, and meet your first line of Homer.",
-    words: ["λόγος", "ψυχή", "θεός", "κόσμος", "ἄνθρωπος"],
-    sections: [
+/** Each lesson's sections, by id; its title, summary and words are in lesson-index.ts. */
+const SECTIONS: Record<string, Section[]> = {
+  "letters": [
       { kind: "p", text: "Greek has 24 letters. Many look familiar, because our own alphabet grew from a Greek one (it reached the Romans by way of the Etruscans), and mathematics and science still use Greek letters. A few are traps: «ρ» is an r, «η» is a long e, «ν» is an n, and «χ» is not an x." },
       { kind: "alphabet" },
       { kind: "p", text: "Before you learn a single word, you can already learn to **read aloud**. Greek spelling is regular: each letter keeps its sound, so once you know the letters you can say any word you see. Tap the letters above as often as you like; **The alphabet** page in the Academy also shows how to write each one." },
@@ -61,13 +59,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0012.tlg001", ref: "1.1", quote: "μῆνιν ἄειδε θεὰ", label: "Homer, Iliad 1.1",
           note: "The opening line of the Iliad, probably composed in the 8th or 7th century BC. Say it aloud: you have just read Homer. The small marks above the letters come in the next lesson." },
       ] },
-    ],
-  },
-  {
-    id: "marks", title: "Breathings, accents and punctuation", greek: "τόνοι καὶ πνεύματα", minutes: 15,
-    summary: "The little marks above the letters: which matter now and which can wait.",
-    words: ["ἤ", "εἰ", "δέ"],
-    sections: [
+  ],
+  "marks": [
       { kind: "p", text: "Look again at «μῆνιν ἄειδε θεὰ». Above the letters are small marks. They were not written in Classical times: they were added by scholars in Hellenistic Alexandria (tradition credits Aristophanes of Byzantium, around 200 BC) to help readers, and they became standard in medieval manuscripts." },
       { kind: "p", text: "**Breathings** sit on a vowel that begins a word. The *rough breathing* «ἁ» means an h-sound before the vowel: «ἡ» is hē. The *smooth breathing* «ἀ» means no h: «ἀρχή» is archē. Every word that starts with a vowel has one, and a word-initial «ῥ» always takes the rough breathing." },
       { kind: "p", text: "**Accents** come in three shapes: acute «ά», grave «ὰ» and circumflex «ᾶ». In Classical Attic they marked *pitch*: the voice rose on the accented syllable (acute) or rose and fell on a long one (circumflex). What the grave marked is debated. Today most people read them as stress." },
@@ -85,13 +78,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg003", ref: "18.19", quote: "Τί με λέγεις ἀγαθόν;", label: "Gospel of Luke 18.19",
           note: "A question, with the Greek question mark. The square brackets show a word the editors were unsure of." },
       ] },
-    ],
-  },
-  {
-    id: "case", title: "Who does what: the idea of case", greek: "πτώσεις", minutes: 20,
-    summary: "Greek shows each word's job with its ending, not its position.",
-    words: ["πατήρ", "υἱός", "φιλέω", "ἀγαπάω"],
-    sections: [
+  ],
+  "case": [
       { kind: "p", text: "In English, word order tells you who does what: *the father loves the son* is not *the son loves the father*. Greek works differently. The **ending** of a noun shows its job in the sentence, so the words can come in almost any order." },
       { kind: "p", text: "English still has a trace of this: *he* sees *him*, *she* sees *her*. The form changes with the job. Greek does this with every noun, adjective and article. These different forms are called **cases**." },
       { kind: "p", text: "The two cases to meet first: the **nominative** is the *subject* (who does it), and the **accusative** is the *direct object* (who or what it is done to). The little word for \"the\" changes too: «ὁ» is nominative, «τόν» accusative." },
@@ -107,13 +95,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg004", ref: "3.35", quote: "ὁ πατὴρ ἀγαπᾷ τὸν υἱόν", label: "Gospel of John 3.35",
           note: "«ὁ πατὴρ» (nominative) is the subject; «ἀγαπᾷ» means \"loves\"; «τὸν υἱόν» (accusative) is the object: \"The father loves the son.\" Click any word to see its analysis." },
       ] },
-    ],
-  },
-  {
-    id: "article", title: "The article: ὁ, ἡ, τό", greek: "τὸ ἄρθρον", minutes: 20,
-    summary: "The commonest word in Greek, and your best guide to every noun's case.",
-    words: ["ὁ", "σῶμα", "οὗτος"],
-    sections: [
+  ],
+  "article": [
       { kind: "p", text: "«ὁ, ἡ, τό» means \"the\". It is the commonest word in Greek, and it is your best friend: it usually agrees with its noun, so the article tells you the noun's **gender**, **number** and **case** even before you know the noun." },
       { kind: "p", text: "Greek nouns have three **genders**: masculine, feminine and neuter. Gender is grammatical: «λόγος» \"word\" is masculine, «ψυχή» \"soul\" feminine, «δῶρον» \"gift\" neuter. Learn each noun with its article: «ὁ λόγος», «ἡ ψυχή», «τὸ δῶρον»." },
       { kind: "p", text: "There are four cases to learn now. Besides the nominative (subject) and accusative (object): the **genitive** is roughly English *of* (\"the word *of the god*\"), and the **dative** roughly *to* or *for* (\"he gave it *to the man*\")." },
@@ -127,13 +110,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg002", ref: "14.22", quote: "τοῦτό ἐστιν τὸ σῶμά μου", label: "Gospel of Mark 14.22",
           note: "«τὸ σῶμα» \"the body\": «τό» shows the noun is neuter, and here it is nominative. «τοῦτό ἐστιν» is \"this is\"; «μου» \"of me, my\"." },
       ] },
-    ],
-  },
-  {
-    id: "second-declension", title: "Second declension: λόγος, δῶρον", greek: "ἡ δευτέρα κλίσις", minutes: 20,
-    summary: "The -ος and -ον nouns: one set of endings for thousands of words.",
-    words: ["δῶρον", "ἀγαθός", "πρός"],
-    sections: [
+  ],
+  "second-declension": [
       { kind: "p", text: "Greek nouns fall into three families, called **declensions**. Each has its own set of endings. The second declension is the easiest place to start, because its endings look like the article's." },
       { kind: "table", paradigm: "logos" },
       { kind: "table", paradigm: "doron" },
@@ -148,13 +126,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg003", ref: "18.19", quote: "οὐδεὶς ἀγαθὸς", label: "Gospel of Luke 18.19",
           note: "«ἀγαθός» \"good\" and «θεός» \"god\" are both second-declension nominatives: \"No one is good except one, God.\"" },
       ] },
-    ],
-  },
-  {
-    id: "first-declension", title: "First declension: ψυχή, χώρα, δόξα", greek: "ἡ πρώτη κλίσις", minutes: 20,
-    summary: "The -η and -α nouns, nearly all feminine.",
-    words: ["χώρα", "δόξα", "ἀλήθεια"],
-    sections: [
+  ],
+  "first-declension": [
       { kind: "p", text: "The first declension holds nouns ending in -η or -α. Almost all are feminine, so their endings look like the feminine article «ἡ τῆς τῇ τήν»." },
       { kind: "table", paradigm: "psyche" },
       { kind: "p", text: "After ε, ι or ρ the singular keeps α instead of η (χώρα \"land\"). Some nouns have a short α in the nominative and accusative singular (δόξα \"opinion, glory\"). The plural is the same for all of them." },
@@ -168,13 +141,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0012.tlg001", ref: "1.3", quote: "ψυχὰς", label: "Homer, Iliad 1.3",
           note: "«ψυχάς» is accusative plural of «ψυχή»: the wrath of Achilles sent many \"souls\" down to Hades. (Homer's Greek differs from Classical Attic in many ways, but this ending is the same.)" },
       ] },
-    ],
-  },
-  {
-    id: "to-be", title: "The verb \"to be\": εἰμί", greek: "εἰμί", minutes: 15,
-    summary: "I am, you are, it is: the commonest verb, and a first taste of verb endings.",
-    words: ["εἰμί", "ἐγώ", "φῶς", "ὁδός", "ζωή"],
-    sections: [
+  ],
+  "to-be": [
       { kind: "p", text: "Greek verbs show **who** is doing the action with their ending, so the pronoun (\"I\", \"you\") is often left out: «εἰμί» alone means \"I am\"." },
       { kind: "table", paradigm: "eimi" },
       { kind: "tip", text: "With «εἰμί», the noun on each side is in the **nominative**: \"the word was God\" has no object, only two things said to be the same." },
@@ -188,13 +156,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg004", ref: "14.6", quote: "Ἐγώ εἰμι ἡ ὁδὸς καὶ ἡ ἀλήθεια καὶ ἡ ζωή", label: "Gospel of John 14.6",
           note: "Three feminine nouns, each with «ἡ»: \"the way and the truth and the life\"." },
       ] },
-    ],
-  },
-  {
-    id: "present-tense", title: "Verbs: the present tense", greek: "ὁ ἐνεστὼς χρόνος", minutes: 20,
-    summary: "λύω, λύεις, λύει: six endings you will meet on thousands of verbs.",
-    words: ["λύω", "ἔχω", "λέγω", "ἀνήρ", "οὐ"],
-    sections: [
+  ],
+  "present-tense": [
       { kind: "p", text: "Most Greek verbs end in -ω in the dictionary: «λύω» \"I loosen, I free\", «ἔχω» \"I have\", «λέγω» \"I say\". Take off the -ω and add these endings to say who is acting." },
       { kind: "table", paradigm: "luo" },
       { kind: "tip", text: "For now, learn the **present** column. The others (imperfect, future, aorist) come in later lessons, but notice already how the aorist and imperfect add ἐ- at the front for past time." },
@@ -210,13 +173,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg004", ref: "4.17", quote: "Οὐκ ἔχω ἄνδρα", label: "Gospel of John 4.17",
           note: "«ἔχω» \"I have\", «οὐκ» \"not\", «ἄνδρα» \"husband, man\" (accusative): \"I have no husband.\" The phrase comes back later in the verse, in a different order." },
       ] },
-    ],
-  },
-  {
-    id: "metre", title: "Hearing Homer's rhythm: the hexameter", greek: "ἑξάμετρος", minutes: 20,
-    summary: "Long and short syllables, six feet to a line, and the pause in the middle.",
-    words: ["μέτρον", "πούς", "ἔπος"],
-    sections: [
+  ],
+  "metre": [
       { kind: "p", text: "Greek poetry does not rhyme, and its rhythm is not a pattern of stressed and unstressed syllables, as in English verse. It is a pattern of **long** and **short** syllables. Ancient writers on metre counted a long syllable as two units of time and a short one as one." },
       { kind: "p", text: "**Which syllables are long?** A syllable is long *by nature* if its vowel is long: «η» and «ω», any diphthong («αι», «ει», «οι», «ου», «αυ», «ευ»…), and any vowel with a circumflex «ῆ» or an iota subscript «ῳ». It is long *by position* if its vowel is followed by two consonants, even when one of them begins the next word; «ζ», «ξ» and «ψ» count as two. Every other syllable is short: «ε» and «ο» always, and «α», «ι», «υ» when they are short vowels." },
       { kind: "tip", text: "«α», «ι» and «υ» can be long or short, and the spelling usually does not say which. The accent can help: a circumflex on the next-to-last syllable («Μοῦσα») means the last vowel is short. Often the metre itself decides." },
@@ -242,13 +200,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0016.tlg001", ref: "1.47.3", quote: "οἶδα δʼ ἐγὼ ψάμμου", label: "Herodotus 1.47.3: an oracle in hexameters", metre: "hexameter",
           note: "Herodotus writes prose, but he says the Pythia at Delphi gave this answer «ἐν ἑξαμέτρῳ τόνῳ», \"in hexameter verse\" (1.47.2). The lines scan just like Homer's." },
       ] },
-    ],
-  },
-  {
-    id: "prepositions", title: "Prepositions: from, in, to", greek: "προθέσεις", minutes: 20,
-    summary: "Small words of place and direction, and the case each one takes.",
-    words: ["ἐν", "εἰς", "ἐκ", "ἀπό", "πρός", "παρά"],
-    sections: [
+  ],
+  "prepositions": [
       { kind: "p", text: "English shows place and direction with small words: *in* the house, *into* the house, *out of* the house. Greek has these words too, called **prepositions**, and each one is followed by a noun in a particular case: genitive, dative or accusative. We say the preposition *takes* that case." },
       { kind: "p", text: "Behind many of them is one simple pattern. The **genitive** goes with movement *away from* a place, the **dative** with being *at rest in* it, and the **accusative** with movement *towards* or *into* it." },
       { kind: "motion", noun: { from: "ἐκ τῆς οἰκίας", in: "ἐν τῇ οἰκίᾳ", to: "εἰς τὴν οἰκίαν" }, en: "the house" },
@@ -286,13 +239,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0032.tlg006", ref: "1.1.2", quote: "μεταπέμπεται ἀπὸ τῆς ἀρχῆς", label: "Xenophon, Anabasis 1.1.2",
           note: "Classical prose: King Darius \"sends for\" his son Cyrus «ἀπὸ τῆς ἀρχῆς», \"from the province\" he governed. Later in the sentence the edition prints «ἐς», the other spelling of «εἰς»: «ἐς Καστωλοῦ πεδίον», \"to the plain of Castolus\"." },
       ] },
-    ],
-  },
-  {
-    id: "adjectives", title: "Adjectives: agreement and position", greek: "τὰ ἐπίθετα", minutes: 20,
-    summary: "ἀγαθός, ἀγαθή, ἀγαθόν, and why \"the good man\" and \"the man is good\" differ only in word order.",
-    words: ["ἀγαθός", "καλός", "κακός", "δίκαιος", "ἀληθινός"],
-    sections: [
+  ],
+  "adjectives": [
       { kind: "p", text: "An adjective describes a noun, and it **agrees** with it: it takes the same gender, number and case. So an adjective has a full set of forms for each gender." },
       { kind: "p", text: "Good news: you know these endings already. The commonest adjectives use the second declension for the masculine and neuter (like «λόγος» and «δῶρον») and the first declension for the feminine (like «ψυχή»). Dictionaries list all three: «ἀγαθός, ἀγαθή, ἀγαθόν»." },
       { kind: "table", paradigm: "agathos" },
@@ -315,13 +263,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0032.tlg006", ref: "1.1.1", quote: "πρεσβύτερος μὲν Ἀρταξέρξης, νεώτερος δὲ Κῦρος", label: "Xenophon, Anabasis 1.1.1",
           note: "The opening of the Anabasis. Darius and Parysatis have two sons: \"the elder (was) Artaxerxes, the younger Cyrus\". There is no article and no verb: the context shows that the adjectives «πρεσβύτερος» \"older\" and «νεώτερος» \"younger\" say something about each son. «μέν… δέ…» sets them side by side: \"on the one hand… on the other…\"." },
       ] },
-    ],
-  },
-  {
-    id: "third-declension", title: "Third declension: φύλαξ, σῶμα, πόλις", greek: "ἡ τρίτη κλίσις", minutes: 25,
-    summary: "The biggest family of nouns: find the stem in the genitive.",
-    words: ["σάρξ", "πνεῦμα", "ὄνομα", "πόλις", "χάρις"],
-    sections: [
+  ],
+  "third-declension": [
       { kind: "p", text: "The third declension holds nouns of every gender and many shapes. Its secret is that the nominative often hides the **stem**. The genitive singular shows it: take off «-ος» and what is left is the stem. «φύλαξ» \"guard\" has the genitive «φύλακος», so its stem is «φυλακ-»." },
       { kind: "p", text: "That is why dictionaries give two forms and the article: «φύλαξ, φύλακος, ὁ». Always learn a third-declension noun with its genitive." },
       { kind: "table", paradigm: "phylax" },
@@ -347,13 +290,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg001", ref: "5.14", quote: "οὐ δύναται πόλις κρυβῆναι ἐπάνω ὄρους κειμένη", label: "Gospel of Matthew 5.14",
           note: "«πόλις» is nominative: \"a city cannot be hidden\". «ὄρους» is the genitive of «ὄρος» \"mountain\", a third-declension neuter of yet another type, after «ἐπάνω» \"on top of\"." },
       ] },
-    ],
-  },
-  {
-    id: "past-tenses", title: "The past: imperfect and aorist", greek: "παρατατικὸς καὶ ἀόριστος", minutes: 25,
-    summary: "The augment ἐ- marks the past; the imperfect paints a scene, the aorist tells what happened.",
-    words: ["γίγνομαι", "βούλομαι", "ἄγω", "γράφω", "πέμπω"],
-    sections: [
+  ],
+  "past-tenses": [
       { kind: "p", text: "Greek has two common past tenses. The **imperfect** shows an action going on, or repeated, in the past: \"I was loosening\", \"I used to loosen\". The **aorist** tells the action simply as an event: \"I loosened\". Stories are told in the aorist; scenes and circumstances in the imperfect." },
       { kind: "p", text: "Both mark past time the same way: with the **augment**, an addition at the front of the verb. Look at the imperfect and aorist columns." },
       { kind: "table", paradigm: "luo" },
@@ -385,13 +323,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0003.tlg001", ref: "1.1.1", quote: "Θουκυδίδης Ἀθηναῖος ξυνέγραψε τὸν πόλεμον", label: "Thucydides 1.1.1",
           note: "The opening words of Thucydides' history of the Peloponnesian War. «ξυνέγραψε» \"wrote (the history of)\" is the aorist of «ξυγγράφω», the old Attic spelling of «συγγράφω»: the augment sits after «ξυν-». In the same sentence, «ἐπολέμησαν» \"they fought\" is another aorist." },
       ] },
-    ],
-  },
-  {
-    id: "middle-passive", title: "Middle and passive: λύομαι", greek: "μέση καὶ παθητικὴ φωνή", minutes: 25,
-    summary: "Being freed, and freeing for yourself: the two other voices of the Greek verb.",
-    words: ["πείθω", "γίγνομαι", "ἔρχομαι", "θυγάτηρ", "ὑπό"],
-    sections: [
+  ],
+  "middle-passive": [
       { kind: "p", text: "So far every verb has been **active**: the subject does the action, «ὁ πατὴρ λύει» \"the father frees\". Greek has two more **voices**. In the **passive**, the subject has the action done to it: \"the daughter *is freed*\". In the **middle**, which English does not have, the subject acts *for itself*, *on itself* or in its own interest." },
       { kind: "voice", caption: "Sentences made up for this lesson. «λύεται» appears twice: the same form can be middle or passive, and the rest of the sentence decides.", items: [
         { voice: "active", grc: "ὁ πατὴρ λύει τὴν θυγατέρα.", verb: "λύει", en: "The father frees his daughter.",
@@ -442,13 +375,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0031.tlg004", ref: "1.3", quote: "πάντα διʼ αὐτοῦ ἐγένετο", label: "Gospel of John 1.3",
           note: "«ἐγένετο», from «γίγνομαι», is middle in form, active in meaning: \"all things came into being through him\"." },
       ] },
-    ],
-  },
-  {
-    id: "participles", title: "Participles: verbs that work as adjectives", greek: "μετοχή", minutes: 25,
-    summary: "λύων \"freeing\", λύσας \"having freed\": how Greek packs a whole clause into one word.",
-    words: ["πιστεύω", "λαμβάνω", "φέρω", "μήτηρ", "ἀποκτείνω"],
-    sections: [
+  ],
+  "participles": [
       { kind: "p", text: "A **participle** is a verb that works as an adjective: \"the *believing* man\", \"Cyrus, *having taken* a friend along\". Like an adjective, it **agrees** with a noun in gender, number and case. Like a verb, it has a **tense** and a **voice**, and it can take an object." },
       { kind: "p", text: "The Greek grammarians called it «μετοχή», \"sharing\", because it shares in the nature of both the verb and the noun. The Latin *participium*, and so our *participle*, translates that name." },
       { kind: "table", paradigm: "luon" },
@@ -499,13 +427,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0032.tlg006", ref: "1.1.3", quote: "ἡ δὲ μήτηρ ἐξαιτησαμένη αὐτὸν ἀποπέμπει", label: "Xenophon, Anabasis 1.1.3",
           note: "«ἐξαιτησαμένη», an aorist middle participle, is feminine nominative, agreeing with «ἡ μήτηρ»: \"the mother, having begged for him, sends him back\". First she pleads, then she sends him: the aorist shows the order." },
       ] },
-    ],
-  },
-  {
-    id: "infinitives", title: "Infinitives: to free, to be", greek: "ἀπαρέμφατος", minutes: 25,
-    summary: "λύειν \"to free\", εἶναι \"to be\": the verb used as a noun, and how Greek reports what people say.",
-    words: ["βούλομαι", "δύναμαι", "δεῖ", "φημί", "νομίζω"],
-    sections: [
+  ],
+  "infinitives": [
       { kind: "p", text: "An **infinitive** is the verb's *to* form: «λύειν» \"to free\", «εἶναι» \"to be\". It has a tense and a voice, and it can take an object, but it has no person or number: «λύειν» does not say who frees. The Greek grammarians called it «ἡ ἀπαρέμφατος», \"the mood that does not indicate\"." },
       { kind: "table", paradigm: "luo-inf" },
       { kind: "tip", text: "Four endings to look for: «-ειν» (present and future active), «-σαι» (aorist active), «-σθαι» (every middle, and the present and future passive) and «-ναι» (the aorist passive «λυθῆναι», «εἶναι», and the perfect, as in «εἰδέναι» \"to know\"). Verbs with a second aorist (lesson 13) add «-εῖν» to that stem: «λαβεῖν» \"to take\", «ἐλθεῖν» \"to go\", «ἰδεῖν» \"to see\", «εἰπεῖν» \"to say\"." },
@@ -555,13 +478,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0032.tlg006", ref: "1.1.1", quote: "ἐβούλετο τὼ παῖδε ἀμφοτέρω παρεῖναι", label: "Xenophon, Anabasis 1.1.1",
           note: "Darius is dying: \"he wanted both his sons to be with him\". «παρεῖναι» is «εἶναι» with «παρα-» \"beside\": to be present. Its subject, the two sons, is in the accusative; «τὼ παῖδε ἀμφοτέρω» is a dual, the form for a pair." },
       ] },
-    ],
-  },
-  {
-    id: "future", title: "The future: λύσω, ἔσομαι", greek: "ὁ μέλλων", minutes: 25,
-    summary: "λύσω \"I shall free\": a σ before the ending, and the verbs that do it their own way.",
-    words: ["γράφω", "ἄγω", "πείθω", "μένω", "ὁράω"],
-    sections: [
+  ],
+  "future": [
       { kind: "p", text: "The Greek grammarians called the future «ὁ μέλλων», \"the (tense) about to be\". It is easy to spot: most verbs put a **σ** between the stem and the endings of the present. «λύω» \"I free\", «λύσω» \"I shall free\"; «λύει» \"he frees\", «λύσει» \"he will free\". Compare the first and third columns of the table from lesson 8:" },
       { kind: "table", paradigm: "luo" },
       { kind: "sigma", title: "Stem, σ, ending: what happens where they meet", items: [
@@ -612,13 +530,8 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0012.tlg001", ref: "1.29", quote: "τὴν δʼ ἐγὼ οὐ λύσω", label: "Homer, Iliad 1.29",
           note: "Agamemnon (lesson 14): \"Her I shall not free.\" The plainest future there is: «λυ» + «σ» + «ω»." },
       ] },
-    ],
-  },
-  {
-    id: "pronouns", title: "Pronouns: I, you, this, who", greek: "ἀντωνυμίαι", minutes: 25,
-    summary: "ἐγώ, σύ, αὐτός, οὗτος, ὅς, τίς: the small words that point, refer back and ask.",
-    words: ["ἐγώ", "σύ", "οὗτος", "ἐκεῖνος", "ὅς", "τίς"],
-    sections: [
+  ],
+  "pronouns": [
       { kind: "p", text: "A **pronoun** stands in for a noun: \"*he* came\", \"*this* is the man *who*…\". The Greek name «ἀντωνυμία» says just that, \"a word instead of a name\" (and the Latin *pronomen*, \"for a noun\"). A pronoun takes its gender and number from the word it stands for, and its case from its own place in the sentence." },
       { kind: "p", text: "**I and you.** The verb's ending already says who acts, so «ἐγώ» and «σύ» in the nominative are there for emphasis or contrast: «ἐγὼ δέ…» \"but I…\". In the other cases they are the ordinary words for *me*, *you*, *us*:" },
       { kind: "table", paradigm: "ego-sy" },
@@ -678,8 +591,9 @@ export const LESSONS: Lesson[] = [
         { work: "tlg0059.tlg002", ref: "21", quote: "οὗτος μὲν οἴεταί τι εἰδέναι οὐκ εἰδώς, ἐγὼ δέ, ὥσπερ οὖν οὐκ οἶδα, οὐδὲ οἴομαι", label: "Plato, Apology 21d",
           note: "Socrates on a man thought wise: \"he thinks he knows something when he does not, but I, as I do not know, do not think I do either\". «οὗτος» \"this man\" is set against «ἐγώ». «τι» \"something\" is the indefinite pronoun; leaning on «οἴεται», it gives that word a second accent, «οἴεταί». «εἰδέναι» is the infinitive of «οἶδα» (lesson 16)." },
       ] },
-    ],
-  },
-];
+  ],
+};
+
+export const LESSONS: Lesson[] = LESSON_INFO.map((info) => ({ ...info, sections: SECTIONS[info.id] }));
 
 export const lessonById = (id: string) => LESSONS.find((l) => l.id === id);

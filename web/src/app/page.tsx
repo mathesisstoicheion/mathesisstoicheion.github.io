@@ -10,7 +10,7 @@ import Desk from "@/components/home/Desk";
 import Doors from "@/components/home/Doors";
 import VisitorMark from "@/components/home/VisitorMark";
 import start from "@/components/home/Start.module.css";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import HomeFold from "@/components/HomeFold";
 import GuideInvite from "@/components/guide/GuideInvite";
 import { AREAS, SITE } from "@/config/areas";

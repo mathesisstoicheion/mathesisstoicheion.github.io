@@ -26,21 +26,8 @@ import { PageNoteEditor } from "./AuthorsSection";
 import { reviewStatus } from "./WordsSection";
 import BarChart from "./BarChart";
 import { wordHref } from "./data";
+import { useLoad } from "@/lib/use-load";
 import styles from "./WordStudy.module.css";
-
-type Load<T> = { state: "loading" } | { state: "done"; value: T } | { state: "error"; message: string };
-const loading = { state: "loading" } as const;
-function useLoad<T>(key: string, fn: () => Promise<T>, enabled = true): Load<T> {
-  const [v, setV] = useState<{ key: string; load: Load<T> }>({ key: "", load: loading });
-  useEffect(() => {
-    if (!enabled) return;
-    let live = true;
-    fn().then((value) => { if (live) setV({ key, load: { state: "done", value } }); }, (e: Error) => { if (live) setV({ key, load: { state: "error", message: e.message } }); });
-    return () => { live = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, enabled]);
-  return v.key === key ? v.load : loading;
-}
 
 export default function WordStudy() {
   const params = useSearchParams();

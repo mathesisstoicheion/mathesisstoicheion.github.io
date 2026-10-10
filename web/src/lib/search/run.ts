@@ -1,5 +1,5 @@
 /** Running one search: from what was typed to hits grouped by work. */
-import { fold, type CatalogIndex } from "@/lib/catalog";
+import type { CatalogIndex } from "@/lib/catalog";
 import { greekKey, englishKey } from "./codec";
 import { canonLemma } from "@/lib/lexicon";
 import { detectScript, queryWords, toPattern, type KeyPattern, type Script } from "./input";
@@ -189,17 +189,6 @@ export function nearFilter(hits: Hit[], others: { text: number; unit: number; wo
     const close = typeof within === "number" ? here.filter((w) => dist(w) <= within) : here;
     if (close.length) { out.push({ ...h, near: [close.reduce((a, b) => (dist(b) < dist(a) ? b : a))] }); continue; }
     if (within === "pp" && (at.has(`${h.text}:${h.unit - 1}`) || at.has(`${h.text}:${h.unit + 1}`))) out.push({ ...h, near: [] });
-  }
-  return out;
-}
-
-/** Works matching a free-text filter on author or title. */
-export function worksNamed(idx: CatalogIndex, text: string): Set<string> {
-  const n = fold(text).trim();
-  const out = new Set<string>();
-  for (const a of idx.catalog.authors) {
-    const an = fold(a.name);
-    for (const w of a.works) if (an.includes(n) || fold(w.title).includes(n) || (!!w.orig && fold(w.orig).includes(n)) || w.id === text || a.id === text) out.add(w.id);
   }
   return out;
 }

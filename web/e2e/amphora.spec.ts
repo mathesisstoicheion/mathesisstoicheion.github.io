@@ -7,6 +7,8 @@ const stored = (page: Page) => page.evaluate((k) => { const s = localStorage.get
 
 async function openStudio(page: Page) {
   await page.goto("/");
+  // the vase is drawn once it comes into view (below the first screen on a phone)
+  await page.getByRole("button", { name: "Paint it yourself" }).scrollIntoViewIfNeeded();
   await expect(page.locator("canvas[aria-label*='amphora']")).toBeVisible();
   await page.getByRole("button", { name: "Paint it yourself" }).click();
   const studio = page.getByRole("dialog", { name: "Paint your own vase" });

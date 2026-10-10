@@ -4,7 +4,7 @@
  * (lib/lookup/postag.ts) and, for εἰμί, its dictionary form, never on guesses about the word's declension; a form
  * no lesson covers yet (a perfect, a numeral) gets no link.
  */
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 
 export interface LessonLink { id: string; n: number; title: string; why: string }
 

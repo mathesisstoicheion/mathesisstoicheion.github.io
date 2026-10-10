@@ -18,7 +18,7 @@ import styles from "./Amphora.module.css";
  * clay, with added red. It turns slowly and can be dragged; on phones it also turns as the phone is tilted,
  * where the phone allows it (an iPhone asks first). "Paint it yourself" opens a studio: brush, scratch and
  * rub out straight onto the pot, choose its patterns and style, write its words. The visitor's vase is kept
- * in this browser (lib/amphora.ts). three.js is loaded only when this component mounts.
+ * in this browser (lib/amphora.ts). three.js is loaded only when the vase comes into view.
  */
 
 type Tool = "brush" | "scratch" | "rub" | "strike" | "turn";
@@ -223,7 +223,7 @@ export default function Amphora() {
     let disposed = false;
     let cleanup = () => {};
 
-    import("three").then((THREE) => {
+    const begin = () => import("three").then((THREE) => {
       if (disposed) return;
       // the visitor's own vase, if they have painted one (read here, after the page has been drawn as built)
       const saved = loadDesign();
@@ -592,7 +592,23 @@ export default function Amphora() {
       };
     });
 
-    return () => { disposed = true; cleanup(); clearTimeout(saveTimer.current); };
+    // three.js is large (about 190 KB to download, and a second or two of work for a phone to set up and paint),
+    // so it is fetched only when the vase comes into view, and once the browser has a moment to spare: the page
+    // is ready to use first. Until then the stage shows its halo and shadow.
+    let idle = 0;
+    const near = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      near.disconnect();
+      const go = () => { if (!disposed) void begin(); };
+      idle = typeof requestIdleCallback === "function" ? requestIdleCallback(go, { timeout: 1500 }) : Number(setTimeout(go, 200));
+    }, { threshold: 0.15 });
+    near.observe(stage);
+
+    return () => {
+      disposed = true; near.disconnect();
+      if (typeof cancelIdleCallback === "function") cancelIdleCallback(idle); else clearTimeout(idle);
+      cleanup(); clearTimeout(saveTimer.current);
+    };
   }, []);
 
   const toolInfo = TOOLS.find((t) => t.id === tool)!;

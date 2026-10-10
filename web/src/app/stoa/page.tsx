@@ -4,6 +4,8 @@ import AreaHeader from "@/components/AreaHeader";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
+import { cardOf } from "@/wiki/cards";
+import { ENTRIES } from "@/wiki/index";
 import ExploreLead from "@/components/stoa/ExploreLead";
 import type { Catalog } from "@/lib/catalog";
 import { AREAS } from "@/config/areas";
@@ -29,7 +31,7 @@ export default function StoaPage() {
   return (
     <Page>
       <AreaHeader id="wiki" />
-      <StoaIndex reference={REFERENCE} lead={<ExploreLead />} />
+      <StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} lead={<ExploreLead />} />
     </Page>
   );
 }

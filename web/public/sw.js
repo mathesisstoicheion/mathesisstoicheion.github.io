@@ -26,6 +26,12 @@ function assetsIn(html) {
   for (const m of html.matchAll(/(?:src|href)="(\/_next\/static\/[^"]+)"/g)) out.add(m[1].replace(/&amp;/g, "&"));
   return out;
 }
+/** The chunks a script loads later, when needed (panels, the 3D vase, the manuscript viewer): kept too, so they work offline. */
+function chunksIn(js) {
+  const out = new Set();
+  for (const m of js.matchAll(/["'](static\/chunks\/[^"']+\.js)["']/g)) out.add(`/_next/${m[1]}`);
+  return out;
+}
 /** Fonts and images a stylesheet refers to. */
 function assetsInCss(css) {
   const out = new Set();
@@ -52,6 +58,7 @@ async function keepAll() {
       const res = await fetch(a);
       if (!res.ok) continue;
       if (a.endsWith(".css")) for (const f of assetsInCss(await res.clone().text())) assets.add(f);
+      if (a.endsWith(".js")) for (const f of chunksIn(await res.clone().text())) assets.add(f);
       await statics.put(a, res);
     } catch { /* ignore */ }
   }
@@ -71,6 +78,12 @@ self.addEventListener("activate", (e) => {
     const pages = await caches.open(PAGES);
     for (const req of await pages.keys()) { const r = await pages.match(req); if (r) for (const a of assetsIn(await r.text())) used.add(a); }
     const statics = await caches.open(STATIC);
+    // and the chunks those scripts load later
+    for (const a of [...used]) {
+      if (!a.endsWith(".js")) continue;
+      const r = await statics.match(a);
+      if (r) for (const f of chunksIn(await r.text())) used.add(f);
+    }
     if (used.size) for (const req of await statics.keys()) {
       const p = new URL(req.url).pathname;
       if (!used.has(p) && !/\.(woff2?|ttf|otf)$/.test(p) && !p.includes("/media/")) await statics.delete(req);

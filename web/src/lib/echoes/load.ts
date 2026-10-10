@@ -1,5 +1,5 @@
 /** Getting books ready for Echoes: the text as a word stream, with GLAUx's dictionary words where they exist. */
-import { greekEditions, versionOf, type CatalogIndex } from "@/lib/catalog";
+import { greekEditions, type CatalogIndex } from "@/lib/catalog";
 import { loadWordPack } from "@/lib/lookup/words";
 import { loadDoc } from "@/lib/search/context";
 import type { TeiDoc } from "@/lib/tei/types";
@@ -68,5 +68,3 @@ export function authorPlan(idx: CatalogIndex, work: string, urn: string): Author
   }
   return { author: { id: a.id, name: a.name }, works, bytes, local: works.length <= AUTHOR_MAX_WORKS && bytes <= AUTHOR_MAX_BYTES };
 }
-
-export const editionOf = (b: Book) => versionOf(b.stream.urn);

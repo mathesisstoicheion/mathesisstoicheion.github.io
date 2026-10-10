@@ -68,12 +68,6 @@ export function readingHunks(ka: string[], kb: string[], strict: Strictness): Hu
   return strict === "spelling" ? hunks : hunks.filter((h) => ka.slice(h.a0, h.a1).join("") !== kb.slice(h.b0, h.b1).join(""));
 }
 
-/** How many of the first edition's passages the second has under the same reference (0–1): below about ½ they cannot be lined up. */
-export function sharedRefs(A: TeiDoc, B: TeiDoc): number {
-  const keys = new Set(B.units.map((u) => u.ref.join(".")));
-  return A.units.length ? A.units.filter((u) => keys.has(u.ref.join("."))).length / A.units.length : 0;
-}
-
 /** One passage (row) where the editions differ, with the words of each. */
 export interface RowDiff { key: string; chunk: number; first: number; a: string[]; b: string[]; hunks: Hunk[] }
 

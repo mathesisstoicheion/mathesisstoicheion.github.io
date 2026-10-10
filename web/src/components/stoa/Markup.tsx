@@ -7,7 +7,9 @@ import { Fragment, type ReactNode } from "react";
 import type { Blk, Inl } from "@/wiki/markup";
 import { CERTAINTY, type Certainty, type Entry } from "@/wiki/types";
 import { IMAGES, srcSet } from "@/wiki/images";
-import { entryBySlug } from "@/wiki/index";
+// only the kickers, for the links' tooltips: importing the entries themselves would put every entry's whole text
+// into each page that shows an author article
+import HINTS from "@/wiki/entry-hints.json";
 import { SectionNote } from "./EntryNotes";
 import styles from "./Stoa.module.css";
 
@@ -53,8 +55,7 @@ export function Inline({ xs }: { xs: Inl[] }) {
         if ("src" in x) return <SourceMark key={i} n={x.src} />;
         if ("cite" in x) return <Link key={i} className={styles.cite} href={readHref(x.cite)} transitionTypes={["page-turn"]} title="Read this passage in the Scroll">{emphAware(x.text, "t")}</Link>;
         if ("wiki" in x) {
-          const e = entryBySlug.get(x.wiki);
-          return <Link key={i} className={styles.wikiLink} href={`/stoa/${x.wiki}`} transitionTypes={["page-turn"]} title={e?.kicker}>{emphAware(x.text, "t")}</Link>;
+          return <Link key={i} className={styles.wikiLink} href={`/stoa/${x.wiki}`} transitionTypes={["page-turn"]} title={(HINTS as Record<string, string>)[x.wiki]}>{emphAware(x.text, "t")}</Link>;
         }
         return <a key={i} href={x.ext} target="_blank" rel="noopener noreferrer">{emphAware(x.text, "t")}</a>;
       })}

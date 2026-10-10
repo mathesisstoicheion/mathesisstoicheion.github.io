@@ -4,10 +4,10 @@
  * (the words glide from where they were: a FLIP animation), the English and the name of the
  * position change with it. With reduced motion the words simply appear in the new order.
  */
-import { Fragment, useLayoutEffect, useRef, useState } from "react";
+import { Fragment, useState } from "react";
 import type { Section } from "@/data/lessons";
 import { fold } from "@/lib/catalog";
-import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import { useFlip } from "@/lib/use-flip";
 import styles from "./Academy.module.css";
 
 type Item = Extract<Section, { kind: "shift" }>["items"][number];
@@ -26,36 +26,15 @@ function keyed(phrase: string) {
 
 function ShiftItem({ it }: { it: Item }) {
   const [moved, setMoved] = useState(false);
-  const motion = useSettings((s) => s.motion);
-  const box = useRef<HTMLSpanElement>(null);
-  const before = useRef<Map<string, DOMRect> | null>(null);
+  const { box, capture } = useFlip<HTMLSpanElement>(moved, { transform: "translateY(-10px)" }, 520);
   const a = keyed(it.a), b = keyed(it.b);
   const words = moved ? b : a;
   const other = moved ? a : b;
   // the word that changed place (not an article) is the adjective: mark it
   const shifted = new Set(words.filter((x, i) => !ARTICLES.has(x.key.split("#")[0]) && other.findIndex((y) => y.key === x.key) !== i).map((x) => x.key));
 
-  const flip = () => {
-    const el = box.current;
-    if (el && !prefersReducedMotion(motion)) {
-      before.current = new Map([...el.querySelectorAll<HTMLElement>("[data-k]")].map((s) => [s.dataset.k!, s.getBoundingClientRect()]));
-    }
-    setMoved(!moved);
-  };
+  const flip = () => { capture(); setMoved(!moved); };
 
-  useLayoutEffect(() => {
-    const el = box.current, old = before.current;
-    before.current = null;
-    if (!el || !old) return;
-    for (const s of el.querySelectorAll<HTMLElement>("[data-k]")) {
-      const r0 = old.get(s.dataset.k!);
-      const r1 = s.getBoundingClientRect();
-      const anim = r0
-        ? [{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: "none" }]
-        : [{ opacity: 0, transform: "translateY(-10px)" }, { opacity: 1, transform: "none" }];
-      s.animate(anim, { duration: 520, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
-    }
-  }, [moved]);
 
   return (
     <div className={styles.shiftItem}>

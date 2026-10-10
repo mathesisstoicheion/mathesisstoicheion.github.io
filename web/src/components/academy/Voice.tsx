@@ -6,8 +6,9 @@
  * turns back to the father: he frees her for himself. The drawings play when they scroll into
  * view; "Again" plays them once more. With reduced motion they are still, in their final state.
  */
-import { useEffect, useId, useRef, useState } from "react";
+import { useId } from "react";
 import type { Section } from "@/data/lessons";
+import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
 
 type Props = Extract<Section, { kind: "voice" }>;
@@ -59,16 +60,8 @@ function Who({ w }: { w: Item["left"] }) {
 }
 
 export default function Voice({ items, caption }: Props) {
-  const ref = useRef<HTMLElement>(null);
+  const { ref, run, again } = usePlay<HTMLElement>(0.3);   // 0 = not yet in view; each "Again" plays once more
   const uid = useId().replace(/:/g, "");
-  const [run, setRun] = useState(0);   // 0 = not yet in view; each increase plays the drawings once
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !("IntersectionObserver" in window)) { setRun(1); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setRun((n) => n || 1); io.disconnect(); } }, { threshold: 0.3 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
 
   return (
     <figure ref={ref} className={styles.voice} data-go={run > 0 ? "" : undefined}>
@@ -88,7 +81,7 @@ export default function Voice({ items, caption }: Props) {
       </div>
       <figcaption className={styles.motCap}>
         <span>{caption}</span>
-        <button type="button" className="chip" onClick={() => setRun((n) => n + 1)}>Again</button>
+        <button type="button" className="chip" onClick={again}>Again</button>
       </figcaption>
     </figure>
   );

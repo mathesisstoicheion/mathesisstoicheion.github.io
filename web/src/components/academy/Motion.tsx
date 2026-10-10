@@ -4,8 +4,9 @@
  * case. The traveller leaves (genitive), stays (dative) or enters (accusative) when the drawing
  * scrolls into view; "Again" plays it once more. With reduced motion the drawings are still.
  */
-import { useEffect, useRef, useState } from "react";
+
 import type { Section } from "@/data/lessons";
+import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
 
 type Props = Extract<Section, { kind: "motion" }>;
@@ -32,15 +33,7 @@ function House({ cls }: { cls: string }) {
 }
 
 export default function Motion({ noun, en }: Props) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [run, setRun] = useState(0);   // 0 = not yet in view; each increase plays the drawings once
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || !("IntersectionObserver" in window)) { setRun(1); return; }
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) { setRun((n) => n || 1); io.disconnect(); } }, { threshold: 0.4 });
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
+  const { ref, run, again } = usePlay<HTMLDivElement>(0.4);   // 0 = not yet in view; each "Again" plays once more
 
   return (
     <figure ref={ref} className={styles.motion} data-go={run > 0 ? "" : undefined}>
@@ -55,7 +48,7 @@ export default function Motion({ noun, en }: Props) {
       </div>
       <figcaption className={styles.motCap}>
         <span>Away from: genitive. At rest: dative. Towards: accusative.</span>
-        <button type="button" className="chip" onClick={() => setRun((n) => n + 1)}>Again</button>
+        <button type="button" className="chip" onClick={again}>Again</button>
       </figcaption>
     </figure>
   );

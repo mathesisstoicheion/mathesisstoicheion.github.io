@@ -1,5 +1,5 @@
 import { STATIC_PAGES, PRIVATE_PAGES } from "@/config/pages";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { GUIDES } from "@/data/guides";
 import { ENTRIES } from "@/wiki/index";
 import { siteData } from "./build-data";

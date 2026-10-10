@@ -10,7 +10,7 @@ import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { trail, clearTrail, pageKey, type Visit } from "@/lib/resume";
 import { recentPositions } from "@/lib/position";
 import { useAcademy, dueCards, type DeckCard } from "@/lib/academy";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import styles from "./Start.module.css";
 

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { useAcademy, dueCards, streak, knownLemmas } from "@/lib/academy";
 import styles from "./Academy.module.css";
 

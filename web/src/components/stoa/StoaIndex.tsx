@@ -2,14 +2,16 @@
 /**
  * The Painted Stoa's front: a colonnade of painted panels, one per category, each listing its
  * entries, with a search across every entry and a featured entry that changes each day.
+ * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
+ * search also looks through, are fetched only when a search begins, so the page itself stays light.
  */
 import Link from "next/link";
 import { Suspense, useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { fold } from "@/lib/catalog";
-import { ENTRIES, entriesIn } from "@/wiki/index";
 import { inline, plain } from "@/wiki/markup";
-import { CATEGORIES } from "@/wiki/types";
+import { CATEGORIES, type CategoryId } from "@/wiki/types";
+import type { EntryCard } from "@/wiki/cards";
 import { IMAGES, srcSet } from "@/wiki/images";
 import CategoryIcon from "./CategoryIcon";
 import styles from "./Stoa.module.css";
@@ -17,7 +19,10 @@ import styles from "./Stoa.module.css";
 const text = (s: string) => plain(inline(s));
 const noSubscribe = () => () => {};
 /** What a search looks in, folded once: the title, the hook and the whole text of each entry (not only its opening). */
-const HAYSTACK = ENTRIES.map((e) => ({ e, hay: fold(`${e.title} ${e.greek ?? ""} ${e.kicker} ${text(e.hook)} ${e.body}`) }));
+const hayOf = (e: EntryCard & { body?: string }) => fold(`${e.title} ${e.greek ?? ""} ${e.kicker} ${text(e.hook)} ${e.body ?? ""}`);
+/** every entry's whole text, folded for searching: fetched once, when the first search is typed */
+let haystack: Promise<Map<string, string>> | null = null;
+const loadHaystack = () => (haystack ??= import("@/wiki/index").then(({ ENTRIES }) => new Map(ENTRIES.map((e) => [e.slug, hayOf(e)]))));
 
 /** A reference page the Wiki offers besides its entries (Authors, Eras, Editions). */
 export interface RefCard { href: string; title: string; greek: string; blurb: string }
@@ -30,13 +35,18 @@ function QueryFromUrl({ onQuery }: { onQuery: (q: string) => void }) {
 }
 
 /** `lead`: what opens the page above the day's entry (the map, the Census and Archaeology), hidden while searching. */
-export default function StoaIndex({ reference = [], lead }: { reference?: RefCard[]; lead?: React.ReactNode }) {
+export default function StoaIndex({ entries, reference = [], lead }: { entries: EntryCard[]; reference?: RefCard[]; lead?: React.ReactNode }) {
   const [q, setQ] = useState("");
   const n = fold(q).trim();
-  const found = useMemo(() => (n ? HAYSTACK.filter((h) => h.hay.includes(n)).map((h) => h.e) : []), [n]);
+  // until the whole texts arrive (a moment, on the first search), the cards alone are searched
+  const [full, setFull] = useState<Map<string, string> | null>(null);
+  useEffect(() => { if (n && !full) loadHaystack().then(setFull, () => undefined); }, [n, full]);
+  const cards = useMemo(() => new Map(entries.map((e) => [e.slug, hayOf(e)])), [entries]);
+  const found = useMemo(() => (n ? entries.filter((e) => (full?.get(e.slug) ?? cards.get(e.slug)!).includes(n)) : []), [n, entries, full, cards]);
+  const entriesIn = (c: CategoryId) => entries.filter((e) => e.category === c).sort((a, b) => a.title.localeCompare(b.title));
   // one entry featured each day, the same for everyone (by date, not at random); the built page shows the first
   const day = useSyncExternalStore(noSubscribe, () => Math.floor(Date.now() / 864e5), () => 0);
-  const featured = ENTRIES.length ? [...ENTRIES].sort((a, b) => a.slug.localeCompare(b.slug))[day % ENTRIES.length] : null;
+  const featured = entries.length ? [...entries].sort((a, b) => a.slug.localeCompare(b.slug))[day % entries.length] : null;
   const pic = featured?.image ? IMAGES[featured.image] : undefined;
 
   return (
@@ -44,7 +54,7 @@ export default function StoaIndex({ reference = [], lead }: { reference?: RefCar
       <Suspense fallback={null}><QueryFromUrl onQuery={setQ} /></Suspense>
       <div className={styles.searchRow} role="search">
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${ENTRIES.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
+        <input enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
       </div>
       {n && (
         <section className={styles.found} aria-live="polite">

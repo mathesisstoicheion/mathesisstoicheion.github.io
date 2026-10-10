@@ -7,6 +7,7 @@ import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { indexCatalog, type Catalog } from "@/lib/catalog";
 import { ENTRIES, entryBySlug } from "./index";
+import HINTS from "./entry-hints.json";
 import { BIB } from "./bibliography";
 import { blocks, inline, linksIn } from "./markup";
 import { CATEGORIES } from "./types";
@@ -85,5 +86,11 @@ describe("the Kerameikos", () => {
     expect(new Set(slugs).size).toBe(slugs.length);
     for (const e of ENTRIES) if (e.category === "archaeology") expect(slugs, `archaeology entry ${e.slug} is not in a Kerameikos layer`).toContain(e.slug);
     for (const s of DIG_SITES) expect(MAP_PLACES.has(s.id), `Kerameikos: ${s.en} (${s.id}) is not on the map`).toBe(true);
+  });
+});
+
+describe("the kickers kept for links' tooltips (entry-hints.json)", () => {
+  it("match the entries (if not: npx tsx scripts/build-entry-hints.ts)", () => {
+    expect(HINTS).toEqual(Object.fromEntries(ENTRIES.map((e) => [e.slug, e.kicker])));
   });
 });

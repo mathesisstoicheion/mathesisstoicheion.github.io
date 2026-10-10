@@ -6,7 +6,7 @@
  */
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { LESSONS } from "@/data/lessons";
+import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { useSettings, scrollBehavior, type Settings } from "@/lib/settings";
 import { saveStart, type StartChoice as Choice } from "@/lib/visitor";
 import styles from "./Start.module.css";

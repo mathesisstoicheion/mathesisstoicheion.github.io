@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createContext, memo, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
@@ -13,10 +14,8 @@ import { schemeFor } from "@/lib/tei/versification";
 import { alignChunk, untranslated, type Row } from "@/lib/tei/align";
 import { findRef, chunkOf } from "@/lib/tei/refs";
 import type { EnglishHit, FindHit } from "@/lib/find";
-import FindPanel, { type FindMarks } from "./FindPanel";
-import ComparePanel from "./ComparePanel";
-import SentencePanel, { type SentenceMarks } from "./SentencePanel";
-import NotebookPicker from "@/components/notebook/NotebookPicker";
+import type { FindMarks } from "./FindPanel";
+import type { SentenceMarks } from "./SentencePanel";
 import type { NewItem } from "@/lib/notebooks";
 import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
@@ -30,17 +29,11 @@ import { useMarks, cmp, type Mark, type Colour, type Point } from "@/lib/annotat
 import type { Block } from "@/lib/tei/types";
 import PassageToolbar, { type Selection } from "./PassageToolbar";
 import NoteEditor from "./NoteEditor";
-import ShareDialog, { type ShareData } from "./ShareDialog";
-import WorkPicker from "./WorkPicker";
-import VocabPanel from "./VocabPanel";
-import PlacesPanel from "./PlacesPanel";
-import TalkPanel from "./TalkPanel";
+import type { ShareData } from "./ShareDialog";
 import OrigTitle from "@/components/library/OrigTitle";
-import ManuscriptPanel from "./ManuscriptPanel";
-import Listen from "./Listen";
 import { greekKey } from "@/lib/search/codec";
 import PanelGuard from "@/components/PanelGuard";
-import EchoesPanel, { type EchoMarks, type EchoQuery, type EchoTarget } from "./EchoesPanel";
+import type { EchoMarks, EchoQuery, EchoTarget } from "./EchoesPanel";
 import MetreBar from "./MetreBar";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
 import { useFloat } from "@/lib/float";
@@ -58,6 +51,21 @@ import { headerVisible, scrollBelowHeader, setBars } from "@/lib/header";
 import ReadBar, { PHONE } from "./ReadBar";
 import { buzz } from "@/lib/haptics";
 import styles from "./Reader.module.css";
+
+// The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
+// and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
+const FindPanel = dynamic(() => import("./FindPanel"), { ssr: false });
+const ComparePanel = dynamic(() => import("./ComparePanel"), { ssr: false });
+const SentencePanel = dynamic(() => import("./SentencePanel"), { ssr: false });
+const NotebookPicker = dynamic(() => import("@/components/notebook/NotebookPicker"), { ssr: false });
+const ShareDialog = dynamic(() => import("./ShareDialog"), { ssr: false });
+const WorkPicker = dynamic(() => import("./WorkPicker"), { ssr: false });
+const VocabPanel = dynamic(() => import("./VocabPanel"), { ssr: false });
+const PlacesPanel = dynamic(() => import("./PlacesPanel"), { ssr: false });
+const TalkPanel = dynamic(() => import("./TalkPanel"), { ssr: false });
+const ManuscriptPanel = dynamic(() => import("./ManuscriptPanel"), { ssr: false });
+const Listen = dynamic(() => import("./Listen"), { ssr: false });
+const EchoesPanel = dynamic(() => import("./EchoesPanel"), { ssr: false });
 import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };

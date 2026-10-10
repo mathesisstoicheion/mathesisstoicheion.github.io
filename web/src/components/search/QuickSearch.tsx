@@ -107,8 +107,8 @@ function Box({ onClose }: { onClose: () => void }) {
     dialog.current?.showModal();
     loadCatalog().then(setIdx, () => undefined);
     loadAbbrevs().then(setAbbrevs);
-    Promise.all([import("@/wiki/index"), import("@/data/lessons"), import("@/data/guides")]).then(([w, l, g]) => setItems([
-      ...l.LESSONS.map((x, i) => ({ href: `/academy/lesson/${x.id}`, title: x.title, greek: x.greek, about: x.summary, words: x.words, kind: `Lesson ${i + 1}` })),
+    Promise.all([import("@/wiki/index"), import("@/data/lesson-index"), import("@/data/guides")]).then(([w, l, g]) => setItems([
+      ...l.LESSON_INFO.map((x, i) => ({ href: `/academy/lesson/${x.id}`, title: x.title, greek: x.greek, about: x.summary, words: x.words, kind: `Lesson ${i + 1}` })),
       ...g.GUIDES.map((x) => ({ href: `/academy/guide/${x.id}`, title: x.title, greek: x.greek, about: x.summary, kind: "Guide" })),
       ...w.ENTRIES.map((x) => ({ href: `/stoa/${x.slug}`, title: x.title, greek: x.greek, about: x.kicker, kind: "Painted Stoa" })),
     ]), () => undefined);

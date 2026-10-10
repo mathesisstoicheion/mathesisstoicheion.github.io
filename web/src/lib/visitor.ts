@@ -40,6 +40,3 @@ export function markVisitor(): boolean {
 export function saveStart(choice: StartChoice) {
   try { localStorage.setItem(START_KEY, JSON.stringify({ choice, t: Date.now() })); } catch { /* storage unavailable */ }
 }
-export function savedStart(): StartChoice | null {
-  try { return (JSON.parse(localStorage.getItem(START_KEY) || "null") as { choice: StartChoice } | null)?.choice ?? null; } catch { return null; }
-}
