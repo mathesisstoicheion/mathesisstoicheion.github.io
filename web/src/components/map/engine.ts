@@ -254,17 +254,19 @@ export class MapEngine {
       g.setTransform(1, 0, 0, 1, 0, 0);
       this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only, nameBar: nameBar(this.home ? v.k / this.home.k : 1) });
       this.laidFor = full ? key : "moving";
+      // each name's offset from its place, taken once, where it was laid out: from then on the name is drawn at
+      // that offset wherever the place goes, so it stays fixed to it while the map moves
+      for (const e of this.labA.values()) e.on = false;
+      for (const l of this.lay.labels) {
+        const t = this.byId.get(l.key)!, sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
+        this.labA.set(l.key, { l, dx: l.x - sx, dy: l.y - sy, a: this.labA.get(l.key)?.a ?? 0, on: true });
+      }
     }
     const step = op.reduce ? 1 : Math.min(1, dt / 200);
     let fading = key !== this.laidFor;   // come back to lay out the view where it rests
     const want = new Set(this.lay!.dots.map((t) => t.p.id));
     for (const id of want) { const a = Math.min(1, (this.dotA.get(id) ?? 0) + step); this.dotA.set(id, a); if (a < 1) fading = true; }
     for (const [id, a] of this.dotA) if (!want.has(id)) { const b = a - step; if (b <= 0) this.dotA.delete(id); else { this.dotA.set(id, b); fading = true; } }
-    for (const e of this.labA.values()) e.on = false;
-    for (const l of this.lay!.labels) {
-      const t = this.byId.get(l.key)!, sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
-      this.labA.set(l.key, { l, dx: l.x - sx, dy: l.y - sy, a: this.labA.get(l.key)?.a ?? 0, on: true });
-    }
     const labels: { l: Label; a: number; t: Pt }[] = [];
     for (const [id, e] of this.labA) {
       e.a = e.on ? Math.min(1, e.a + step) : e.a - step;
