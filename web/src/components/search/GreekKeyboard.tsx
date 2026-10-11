@@ -12,8 +12,8 @@ const NAMES: Record<string, string> = {
   υ: "upsilon", φ: "phi", χ: "chi", ψ: "psi", ω: "omega",
 };
 
-/** `docked`: fixed along the bottom of a sheet (Quick search), edge to edge like a phone's own keyboard. */
-export default function GreekKeyboard({ onKey, docked }: { onKey: (k: string) => void; docked?: boolean }) {
+/** `docked`: fixed along the bottom of a sheet (Quick search), edge to edge like a phone's own keyboard. `wildcards`: the search's * and ? keys. */
+export default function GreekKeyboard({ onKey, docked, wildcards = true }: { onKey: (k: string) => void; docked?: boolean; wildcards?: boolean }) {
   return (
     <div className={`${styles.kbd}${docked ? ` ${styles.kbdDocked}` : ""}`} role="group" aria-label="Greek letters">
       {ROWS.map((row, i) => (
@@ -23,8 +23,8 @@ export default function GreekKeyboard({ onKey, docked }: { onKey: (k: string) =>
           ))}
           {i === 2 && (
             <>
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("*")} aria-label="wildcard: any letters" title="any letters">*</button>
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("?")} aria-label="wildcard: one letter" title="one letter">?</button>
+              {wildcards && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("*")} aria-label="wildcard: any letters" title="any letters">*</button>}
+              {wildcards && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("?")} aria-label="wildcard: one letter" title="one letter">?</button>}
               <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("Backspace")} aria-label="delete">⌫</button>
             </>
           )}

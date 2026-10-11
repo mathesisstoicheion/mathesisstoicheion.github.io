@@ -22,6 +22,7 @@ describe("the offline copy", () => {
     const kept = new Set(offlinePages());
     for (const p of pages) {
       if (DEV_PAGES.includes(p)) continue;
+      if (p === "/academy/lesson/[id]/practice" || p === "/academy/lesson/[id]/test") { for (const l of LESSONS) expect(kept.has(p.replace("[id]", l.id)), l.id).toBe(true); continue; }
       if (p === "/academy/lesson/[id]") { for (const l of LESSONS) expect(kept.has(`/academy/lesson/${l.id}`), l.id).toBe(true); continue; }
       if (p === "/academy/guide/[id]") { for (const g of GUIDES) expect(kept.has(`/academy/guide/${g.id}`), g.id).toBe(true); continue; }
       if (p === "/stoa/[slug]") { for (const e of ENTRIES) expect(kept.has(`/stoa/${e.slug}`), e.slug).toBe(true); continue; }

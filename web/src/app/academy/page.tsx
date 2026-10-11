@@ -4,8 +4,8 @@ import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
 import AcademyProgress from "@/components/academy/AcademyProgress";
 import AlphabetGlance from "@/components/academy/AlphabetGlance";
+import LessonPath from "@/components/academy/LessonPath";
 import { AREAS } from "@/config/areas";
-import { LESSONS } from "@/data/lessons";
 import { GUIDES } from "@/data/guides";
 import styles from "@/components/academy/Academy.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -36,21 +36,12 @@ export default function AcademyPage() {
           <div>
             <span className="label">A path from nothing to Homer</span>
             <h2 id="lessons-title" style={{ marginTop: 8 }}>Lessons</h2>
+            <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
+              Read each lesson, practise it, then pass its short test. A passed lesson comes back for a quick refresh
+              after three days, a week, then a month, so what you learn stays with you.
+            </p>
           </div>
-          <ol className={styles.path}>
-            {LESSONS.map((l, i) => (
-              <li key={l.id}>
-                <Link href={`/academy/lesson/${l.id}`} transitionTypes={["page-turn"]} className={styles.pathItem}>
-                  <span className={styles.pathNo}>{i + 1}</span>
-                  <span>
-                    <b>{l.title}</b> <span lang="grc" className={styles.pathGr}>{l.greek}</span>
-                    <span className={styles.pathAbout}>{l.summary}</span>
-                  </span>
-                  <span className={styles.pathMin}>{l.minutes} min</span>
-                </Link>
-              </li>
-            ))}
-          </ol>
+          <LessonPath />
         </section>
 
         <section style={{ display: "grid", gap: 18 }} aria-labelledby="guides-title">

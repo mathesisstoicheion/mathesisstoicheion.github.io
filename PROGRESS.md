@@ -1,5 +1,28 @@
 # PROGRESS.md — project memory
 
+## Lessons that stick: practise, test, refresh (2026-10-11; draft, not yet published)
+The owner: "besides the gamified games for learning, we also need proper lessons ... to make the words and things you've learned
+stick". Each of the 18 lessons now has four steps: **learn** (the lesson as before), **practise**, **pass the test**, **refresh**.
+- **The questions** (`lib/workout.ts`) are made from material already checked elsewhere, never written for the workout: the
+  lesson's own "Check yourself" questions; its words, with meanings from the DCC core list or LSJ's first glosses (`lib/glosses.ts`,
+  cut to the first sense); every form in the lesson's tables (`paradigms.ts`, checked in GLAUx), asked three ways (pick the form,
+  write it, name it); the letters and their names in lesson 1. Tables shown in several lessons are drilled only in the columns that
+  lesson teaches (`LESSON_COLS`: λύω's present in lesson 8, imperfect and aorist in 13, future in 17). A round never asks about one
+  word or one form twice. Written answers accept Greek or the site's Latin letters, without accents (`isRightWritten`, the Oracle's
+  own `toPattern`); an on-screen Greek keyboard is there too (`GreekKeyboard` gained `wildcards={false}`).
+- **Practice** `/academy/lesson/<id>/practice`: 12 questions, 4 from earlier lessons when there are any; a missed question comes
+  back at the end of the round (up to twice). **Test** `/academy/lesson/<id>/test`: up to 10 on this lesson alone, one try each,
+  80% to pass (lessons 2, 3 and 9 have only 6–7 questions to ask). Passing stamps a seal, completes the lesson and adds its words to
+  the daily review. **Warm-up**: three questions from earlier lessons the learner has completed, at the top of a lesson not yet passed.
+- **Refreshes** (`lib/mastery.ts`, `mastery` in the Academy store): a passed lesson comes back after 3 days, then 7, 30, 90, 180;
+  a failed refresh comes back the next day; a test retaken before it is due changes nothing. The lesson list (`LessonPath.tsx`)
+  marks passed lessons (✓) and refreshes due (↻), and the progress panel's next step offers the refresh first.
+- "I have finished this lesson" became "Mark as read, without the test".
+- Tests: `lib/workout.test.ts` (every lesson has a test of at least 5 well-formed questions; wrong answers never also right;
+  written forms; the refresh schedule); `e2e/academy.spec.ts` +2. Checked wide (light) and phone (dark). Not yet tried with
+  the live LSJ pack (it is not reachable from the build machine): words without a core-list meaning get theirs from LSJ there.
+- Next, if the owner wants them: a mixed checkpoint test every four or five lessons, and lesson refreshes inside Today's session.
+
 ## The logo (2026-10-11)
 The owner chose the **Stoichedon** mark from four concepts: the word ΣΤΟΙΧΕΙΑ cut in a 3 × 3 grid, as Athenian inscriptions of the
 fifth and fourth centuries BC were laid out (the *stoichedon* style), with the mason's faint guide lines and a three-dot word-divider

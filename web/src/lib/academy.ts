@@ -5,6 +5,7 @@
  */
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
+import { afterTest, type Mastery } from "./mastery";
 import { createEmptyCard, fsrs, Rating, State, TypeConvert, type Card, type Grade } from "ts-fsrs";
 
 export { Rating, State };
@@ -24,6 +25,10 @@ interface AcademyState {
   completed: Record<string, number>;
   days: string[];
   deck: Record<string, DeckCard>;
+  /** lesson tests: passed when, and when each lesson next comes back for a refresh (lib/mastery.ts) */
+  mastery: Record<string, Mastery>;
+  /** records a lesson test; passing it also completes the lesson. Returns the lesson's new record. */
+  recordTest: (id: string, right: number, total: number) => Mastery;
   completeLesson: (id: string) => void;
   markActive: () => void;
   addCard: (lemma: string, gloss: string, source: Source) => boolean;
@@ -37,6 +42,16 @@ export const useAcademy = create<AcademyState>()(
       completed: {},
       days: [],
       deck: {},
+      mastery: {},
+      recordTest: (id, right, total) => {
+        const m = afterTest(get().mastery[id], right, total);
+        set((s) => ({
+          mastery: { ...s.mastery, [id]: m },
+          completed: m.passed ? { ...s.completed, [id]: s.completed[id] ?? m.passed } : s.completed,
+          days: markToday(s.days),
+        }));
+        return m;
+      },
       completeLesson: (id) => set((s) => ({ completed: { ...s.completed, [id]: s.completed[id] ?? Date.now() }, days: markToday(s.days) })),
       markActive: () => set((s) => ({ days: markToday(s.days) })),
       addCard: (lemma, gloss, source) => {

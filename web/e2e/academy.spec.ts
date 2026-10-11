@@ -123,3 +123,45 @@ test("lesson 18: pronouns joined to the words they stand for, and their tables",
   for (const f of ["ταύτης", "ἧς", "τίνος"]) await expect(page.getByRole("table").filter({ hasText: f }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Next:/ })).toHaveCount(0);
 });
+
+test("a lesson's test runs to the end and says what to go over; the lesson list shows its standing", async ({ page }) => {
+  await page.goto("/academy/lesson/article/test");
+  await expect(page.getByText(/^1 of \d+$/)).toBeVisible({ timeout: 30_000 });
+  for (let i = 0; i < 12; i++) {
+    const input = page.getByRole("textbox", { name: "Your answer" });
+    if (await input.count()) { await input.fill("x"); await page.getByRole("button", { name: "Check" }).click(); }
+    else if (await page.getByRole("group", { name: "Answers" }).count()) await page.getByRole("group", { name: "Answers" }).getByRole("button").first().click();
+    else break;
+    await page.getByRole("button", { name: /^(Next|See how you did)/ }).click();
+  }
+  await expect(page.getByText(/You need \d+ to pass|Lesson passed/)).toBeVisible();
+  await page.goto("/academy");
+  await expect(page.getByRole("link", { name: /The article/ })).toBeVisible();
+});
+
+test("a written form counts in Latin letters without accents", async ({ page }) => {
+  await page.goto("/academy/lesson/second-declension/practice");
+  await expect(page.getByText(/^1 of \d+$/)).toBeVisible({ timeout: 30_000 });
+  // find a written question: answer the others, then write the form the prompt asks for
+  const forms: Record<string, string> = { "nominative singular": "os", "genitive singular": "ou", "dative singular": "ō", "accusative singular": "on",
+    "nominative plural": "oi", "genitive plural": "ōn", "dative plural": "ois", "accusative plural": "ous" };
+  const neuter: Record<string, string> = { "nominative singular": "on", "genitive singular": "ou", "dative singular": "ō", "accusative singular": "on",
+    "nominative plural": "a", "genitive plural": "ōn", "dative plural": "ois", "accusative plural": "a" };
+  for (let i = 0; i < 60; i++) {
+    if (await page.getByRole("button", { name: "Practise again" }).count()) { await page.getByRole("button", { name: "Practise again" }).click(); continue; }
+    const input = page.getByRole("textbox", { name: "Your answer" });
+    const prompt = (await page.locator("section p").first().textContent()) ?? "";
+    const m = /Write the (\w+ \w+) of (λόγος|δῶρον)/.exec(prompt);
+    if (await input.count() && m) {
+      await input.fill(m[2] === "λόγος" ? `log${forms[m[1]]}` : `dōr${neuter[m[1]]}`);
+      await page.getByRole("button", { name: "Check" }).click();
+      await expect(page.getByRole("status").filter({ hasText: /Right|Yes|Well done|Exactly|Correct/ })).toBeVisible();
+      return;
+    }
+    if (await input.count()) { await page.getByRole("button", { name: "I don't know yet" }).click(); }
+    else if (await page.getByRole("group", { name: "Answers" }).count()) await page.getByRole("group", { name: "Answers" }).getByRole("button").first().click();
+    else break;
+    await page.getByRole("button", { name: /^(Next|See how you did)/ }).click();
+  }
+  throw new Error("no written question came up");
+});
