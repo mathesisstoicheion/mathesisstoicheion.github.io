@@ -15,6 +15,7 @@ import { readReference, loadAbbrevs, type RefHit } from "@/lib/search/refs";
 import { runSearch, QueryProblem, readWithin, WITHIN, type Mode, type Outcome, type WorkHits } from "@/lib/search/run";
 import Concordance, { hitHref } from "./Concordance";
 import Stats from "./Stats";
+import Constructions from "./Constructions";
 import { TAG_FIELDS, loadTags, type TagFilter } from "@/lib/search/engine";
 import { loadDoc, snippet, type Part } from "@/lib/search/context";
 import { readTag } from "@/lib/lookup/postag";
@@ -26,11 +27,12 @@ import { useSwipeNav } from "@/lib/use-swipe-nav";
 import styles from "./Search.module.css";
 import { stoaLabel, useStoaTitles } from "@/wiki/useTitles";
 
-type Tab = Mode | "library";
+type Tab = Mode | "syntax" | "library";
 const TABS: { id: Tab; label: string; hint: string }[] = [
   { id: "forms", label: "Greek words", hint: "Words exactly as printed, accents ignored. Several words find them side by side." },
   { id: "lemma", label: "Dictionary word", hint: "Every form of a word (λόγος finds λόγου, λόγοις…), as the GLAUx treebank analyses it. Add grammar to narrow it, or search by grammar alone." },
   { id: "english", label: "Translations", hint: "Words in the English translations." },
+  { id: "syntax", label: "Constructions", hint: "Sentences found by how they are built: the genitive absolute, ἄν with the optative, everything that is the object of λέγω…, from GLAUx's sentence analyses." },
   { id: "library", label: "My library", hint: "Your notes, bookmarks, highlights and saved words, on this device." },
 ];
 const SCRIPTS: { id: Script | "auto"; label: string }[] = [
@@ -40,6 +42,7 @@ const EXAMPLES: Record<Tab, string[]> = {
   forms: ["μῆνιν", "ἄνδρα μοι", "rhododaktylos", "λογ*"],
   lemma: ["λόγος", "ψυχή", "ἀρετή", "δίκη"],
   english: ["wrath", "rosy-fingered", "justice", "wine-dark"],
+  syntax: [],
   library: [],
 };
 const DIALECTS = ["Attic", "Attic/Koine", "Ionic", "Ionic/Epic", "Doric", "Koine"];
@@ -132,7 +135,9 @@ export default function Search() {
             <Filters idx={idx} tab={tab} scope={scope} allEditions={allEditions} tagStr={tagStr} go={go} near={near} nearWithin={nearWithin} />
           </aside>
           <div className={styles.results}>
-            {!q && !(tab === "lemma" && Object.values(tags).some(Boolean)) ? (
+            {tab === "syntax" ? (
+              idx ? <Constructions idx={idx} works={works} params={params} go={go} /> : <p className={styles.status}>Opening the catalogue…</p>
+            ) : !q && !(tab === "lemma" && Object.values(tags).some(Boolean)) ? (
               <Welcome tab={tab} onExample={(e) => go({ q: e, lem: null }, true)} />
             ) : idx && works !== undefined ? (
               <Results key={`${tab}|${q}|${script}|${lemma}|${tagStr}|${[...(works ?? [])].length}|${scope.a}|${scope.w}|${scope.g}|${scope.p}|${scope.d}|${allEditions}|${near}|${nearWithin}`}
@@ -179,7 +184,7 @@ function SearchBox({ tab, initial, script, onTab, onScript, onSubmit }: {
           <button key={t.id} type="button" role="tab" aria-selected={t.id === tab} onClick={() => onTab(t.id)}>{t.label}</button>
         ))}
       </div>
-      <form className={styles.form} role="search" onSubmit={(e) => { e.preventDefault(); onSubmit(text); }}>
+      {tab !== "syntax" && <form className={styles.form} role="search" onSubmit={(e) => { e.preventDefault(); onSubmit(text); }}>
         <label className="visually-hidden" htmlFor="oracle-q">{TABS.find((t) => t.id === tab)!.label}</label>
         <input id="oracle-q" ref={input} className={styles.input} value={text} onChange={(e) => setText(e.target.value)}
           lang={greekTab ? "grc" : undefined} autoComplete="off" autoCapitalize="off" spellCheck={false} enterKeyHint="search"
@@ -190,7 +195,7 @@ function SearchBox({ tab, initial, script, onTab, onScript, onSubmit }: {
           </button>
         )}
         <button className="btn" type="submit">Ask</button>
-      </form>
+      </form>}
       <p className={styles.hint}>{TABS.find((t) => t.id === tab)!.hint}</p>
       {greekTab && (
         <div className={styles.readAs}>
@@ -254,7 +259,7 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }:
   const any = Object.values(scope).some(Boolean) || tagStr.replace(/-/g, "") || allEditions || near;
   return (
     <div className={styles.filterBody}>
-      <NearField key={`${tab}|${near}`} tab={tab} near={near} within={nearWithin} go={go} />
+      {tab !== "syntax" && <NearField key={`${tab}|${near}`} tab={tab} near={near} within={nearWithin} go={go} />}
       {tab === "lemma" && (
         <fieldset className={styles.fs}>
           <legend>Grammar</legend>
@@ -310,10 +315,10 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }:
           </select>
         </label>
         {(scope.g || scope.p || scope.d) && <p className={styles.small}>Kind, period and dialect are known for the 1,186 works GLAUx describes; other works are left out when these are set.</p>}
-        <label className={styles.check}>
+        {tab !== "syntax" && <label className={styles.check}>
           <input type="checkbox" checked={allEditions} onChange={(e) => go({ all: e.target.checked ? "1" : null })} />
           <span>Every {tab === "english" ? "translation" : "edition"}, not only the one the reader opens first</span>
-        </label>
+        </label>}
       </fieldset>
       {any && <button type="button" className="chip" onClick={() => go({ a: null, w: null, g: null, p: null, d: null, t: null, all: null, lem: null, n: null, nw: null })}>Clear all</button>}
     </div>
