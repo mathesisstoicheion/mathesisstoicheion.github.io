@@ -15,6 +15,7 @@ export interface Area {
   greek?: string;      // the Greek word, where there is a natural one
   english: string;     // plain English subtitle
   door?: string;       // its one plain word in the menu and the phone bar, for the five doors (Learn, Read…)
+  menu?: string;       // its plain word in the header's menu, for a place there that is not one of the doors
   href: string;
   origin: string;
   fit: string;
@@ -38,7 +39,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "This is where you read.", phase: 2,
   },
   search: {
-    id: "search", name: "The Oracle", english: "Search", href: "/search",
+    id: "search", name: "The Oracle", english: "Search", menu: "Research", href: "/search",
     origin: "At Delphi, Apollo's priestess, the Pythia, answered the questions of cities and individuals.",
     fit: "Ask a question, get an answer, and a clearer one than Delphi was remembered for.", phase: 4,
   },
@@ -97,6 +98,12 @@ export const AREAS: Record<AreaId, Area> = {
 export const NAV: AreaId[] = ["study", "library", "wiki", "forum", "treasury"];
 
 /**
+ * The header's menu on wide screens: the five doors, then the Oracle, so its research tools (concordance,
+ * statistics, constructions) have a button of their own rather than only the quick search (owner's request, 2026-10-11).
+ */
+export const MENU: AreaId[] = [...NAV, "search"];
+
+/**
  * The bar along the bottom of the screen on phones, left to right: the five doors with Search in the middle
  * (owner's decision 2026-10-08, replacing Library, Learn Greek, Search, Wiki, My Library). Talk, the forum, is a
  * button in the phone's header. `also` lists other paths that belong to a place.
@@ -111,6 +118,8 @@ export const TABS: { id: AreaId; also?: string[] }[] = [
 
 /** A door's plain word, or the area's English name for places that are not doors. */
 export const doorWord = (id: AreaId) => AREAS[id].door ?? AREAS[id].english;
+/** A place's word in the header's menu. */
+export const menuWord = (id: AreaId) => AREAS[id].menu ?? doorWord(id);
 
 export const SITE = {
   greek: "Μάθησις Στοιχείων",

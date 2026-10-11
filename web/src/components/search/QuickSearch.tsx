@@ -339,7 +339,7 @@ function Box({ onClose }: { onClose: () => void }) {
           </div>
         )}
         <a className={styles.full} href={AREAS.search.href} onClick={(e) => { e.preventDefault(); if (t) addRecentSearch(t); go(t ? `${AREAS.search.href}?q=${encodeURIComponent(t)}` : AREAS.search.href); }}>
-          {AREAS.search.name}: the full search, with grammar and filters <span aria-hidden="true">→</span>
+          {AREAS.search.name}: the full search and research tools (grammar, concordance, statistics, constructions) <span aria-hidden="true">→</span>
         </a>
         </div>
         {kbd && <GreekKeyboard onKey={key} docked />}
