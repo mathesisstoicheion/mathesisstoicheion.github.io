@@ -18,7 +18,8 @@ test.describe("on a phone", () => {
     expect(labels).toEqual(["Learn", "Read", "Search", "Explore", "Mine"]);
     // Talk, the forum, moves to the header, where the search button was
     await expect(page.locator("header").getByRole("link", { name: "Talk: The Town Hall" })).toBeVisible();
-    await expect(page.locator("header").getByRole("button", { name: "The Oracle: Search" })).toBeHidden();
+    await expect(page.locator("header").getByRole("button", { name: "Quick search" })).toBeHidden();
+    await expect(page.locator("header").getByRole("link", { name: "Research: The Oracle" })).toBeHidden();
     // the bar is along the bottom edge of the screen
     const box = (await tabBar(page).boundingBox())!;
     expect(Math.round(box.y + box.height)).toBe(812);
@@ -180,8 +181,12 @@ test("wide screens keep the header's menu and have no bottom bar", async ({ page
   await page.goto("/");
   await expect(page.locator("header").getByRole("link", { name: /The Mouseion/ })).toBeVisible();
   await expect(page.locator("nav[style*='site-tabbar']")).toBeHidden();
+  // the Oracle has a button of its own in the menu, which goes straight to its page
+  const oracle = page.locator("header").getByRole("link", { name: "Research: The Oracle" });
+  await expect(oracle).toBeVisible();
+  await expect(oracle).toHaveAttribute("href", "/search");
   // the header's search button opens Quick search, which also leads to the Oracle's full page
-  await page.getByRole("button", { name: "The Oracle: Search" }).click();
+  await page.getByRole("button", { name: "Quick search" }).click();
   const box = page.getByRole("dialog", { name: "Quick search" });
   await box.getByRole("link", { name: /the full search/ }).click();
   await expect(page).toHaveURL(/\/search$/);

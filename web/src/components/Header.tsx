@@ -4,7 +4,7 @@ import Link from "next/link";
 import LogoMark from "@/components/LogoMark";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, NAV, SITE, TABS, doorWord } from "@/config/areas";
+import { AREAS, MENU, SITE, TABS, doorWord, menuWord } from "@/config/areas";
 import { useSettings, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
@@ -112,14 +112,14 @@ export default function Header() {
 
         <div className={styles.areasWrap} data-more-left={more.left || undefined} data-more-right={more.right || undefined}>
         <nav ref={navRef} className={styles.areas} aria-label="Areas of the site">
-          {NAV.map((id) => {
+          {MENU.map((id) => {
             const a = AREAS[id];
             // the Read door is also current in the reader and on work and author pages (TABS' `also`)
             const active = [a.href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
             return (
               <Link key={id} href={a.href} transitionTypes={["page-turn"]} aria-current={active ? "page" : undefined}
-                aria-label={`${doorWord(id)}: ${a.name}`}>
-                <b>{doorWord(id)}</b>
+                aria-label={`${menuWord(id)}: ${a.name}`}>
+                <b>{menuWord(id)}</b>
                 {a.greek ? <small className={styles.gr} lang="grc">{a.greek}</small> : <small>{a.name}</small>}
               </Link>
             );
@@ -139,9 +139,9 @@ export default function Header() {
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M4.5 4.5h10a1.5 1.5 0 0 1 1.5 1.5v5.5a1.5 1.5 0 0 1-1.5 1.5H9.5L6 16v-3H4.5A1.5 1.5 0 0 1 3 11.5V6a1.5 1.5 0 0 1 1.5-1.5z" /><path d="M18.5 9h1a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 1-1.5 1.5H19v3l-3.5-3h-4a1.5 1.5 0 0 1-1.5-1.5V15" /></svg>
           </Link>
           <button className={`${styles.tbtn} ${styles.notPhone}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog"
-            aria-label={`${AREAS.search.name}: ${AREAS.search.english}`} title="Search (or press / on any page)">
+            aria-label="Quick search" title="Quick search (or press / on any page)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
-            <span className={styles.txt}>{AREAS.search.name}</span>
+            <span className={styles.txt}>Search</span>
           </button>
           <AccountButton />
           <button className={`${styles.tbtn} ${styles.theme}`} type="button" onClick={toggleTheme} aria-label="Switch between light and dark">

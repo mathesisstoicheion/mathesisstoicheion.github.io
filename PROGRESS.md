@@ -625,6 +625,9 @@ The owner asked for more tools for researching Greek; offered: a construction fi
 - Where the filters choose; with none, five starting texts are offered. More than 150 MB of word packs (from `words/_index.json`) is refused with a request to narrow. Up to 20,000 matches. Each result: the sentence with the found words marked, "checked by hand" or "computer analysis", a link into the reader at the passage with the words marked (worked out from the text itself, as `placed.ts` lines GLAUx up with the edition), "+" to a notebook; a spreadsheet of all of them.
 - Tests: `constructions.test.ts` (Herodotus, Republic; skipped without the packs), `e2e/constructions.spec.ts` (with axe, both colour schemes). Measured: a ready-made search over Herodotus takes 5–70 ms once the packs are loaded.
 
+## The Oracle in the menu (2026-10-11)
+The owner found the Oracle buried: the header's search button was labelled "The Oracle" but opened Quick search. Now the header's menu on wide screens has a sixth place after the five doors, **Research · The Oracle**, a link to /search (`MENU` and `menuWord` in `config/areas.ts`; `NAV`, the five doors the home page's cards also use, is unchanged). The search button is labelled "Search" (accessible name "Quick search"), and Quick search's link names the research tools. The phone bar is unchanged (its Search button opens Quick search, which links to the Oracle). Tests: `shell.spec.ts`, `phone.spec.ts`.
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|
