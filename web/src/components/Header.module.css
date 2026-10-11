@@ -10,7 +10,9 @@
 :global(html[data-scrolled]) .top { box-shadow: 0 10px 24px -18px var(--shadow); }
 .row { display: flex; align-items: center; gap: 20px; min-height: 68px; }
 
-.brand { display: flex; flex-direction: column; text-decoration: none; line-height: 1.1; flex: none; }
+.brand { display: flex; align-items: center; gap: 11px; text-decoration: none; line-height: 1.1; flex: none; }
+.logo { width: 42px; height: 42px; }
+.brandName { display: flex; flex-direction: column; min-width: 0; }
 .brandGr { font-family: var(--f-greek); font-size: 1.3rem; }
 .brandEn { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.14em; color: var(--ink-2); }
 
@@ -81,7 +83,8 @@
   .tbtn { width: var(--tap); height: var(--tap); min-height: 0; justify-content: center; padding: 0; border-radius: 10px; }
   .tbtn svg { width: 19px; height: 19px; }
   .tools .light { padding-inline: 0; }
-  .brand { flex: 0 1 auto; min-width: 0; min-height: var(--tap); justify-content: center; }
+  .brand { flex: 0 1 auto; min-width: 0; min-height: var(--tap); gap: 9px; }
+  .logo { width: 36px; height: 36px; }
   .brandGr { font-size: 1.22rem; white-space: nowrap; }
   .brandEn { font-size: 0.72rem; letter-spacing: 0.1em; }
 }

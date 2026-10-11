@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import LogoMark from "@/components/LogoMark";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, NAV, SITE, TABS, doorWord } from "@/config/areas";
@@ -102,8 +103,11 @@ export default function Header() {
     <header ref={ref} className={styles.top} style={{ viewTransitionName: "site-header" }}>
       <div className={`wrap ${styles.row}`}>
         <Link className={styles.brand} href="/" transitionTypes={["page-turn"]} aria-label={`${SITE.latin}, home`}>
-          <span className={styles.brandGr} lang="grc">{SITE.greek}</span>
-          <span className={styles.brandEn}>{SITE.latin}</span>
+          <LogoMark className={styles.logo} />
+          <span className={styles.brandName}>
+            <span className={styles.brandGr} lang="grc">{SITE.greek}</span>
+            <span className={styles.brandEn}>{SITE.latin}</span>
+          </span>
         </Link>
 
         <div className={styles.areasWrap} data-more-left={more.left || undefined} data-more-right={more.right || undefined}>

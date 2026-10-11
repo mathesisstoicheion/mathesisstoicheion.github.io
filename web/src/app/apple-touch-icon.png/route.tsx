@@ -8,5 +8,5 @@ import { AppIcon } from "@/lib/app-icon";
 export const dynamic = "force-static";
 
 export function GET() {
-  return new ImageResponse(<AppIcon px={180} pot={0.74} round={false} />, { width: 180, height: 180 });
+  return new ImageResponse(<AppIcon px={180} mark={0.62} round={false} />, { width: 180, height: 180 });
 }
