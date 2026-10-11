@@ -9,6 +9,12 @@ import { loadReliefMeta, Relief } from "./relief";
 
 const KM_PER_UNIT = 1.1132;   // a map unit is a hundredth of a degree of latitude
 export const MAX_ZOOM = 14;    // times the opening view
+/**
+ * Only the famous are named at the opening view (places the library names 400 times or more, about the top
+ * fifty); as the map is zoomed in the bar falls, so lesser places earn their names, until at the closest zoom
+ * every place can be named. z is how far in from the opening view.
+ */
+export const nameBar = (z: number) => Math.max(0, 400 * (Math.max(1, z) ** -1.2 - MAX_ZOOM ** -1.2));
 const ease = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
 const fmt = (n: number) => n.toLocaleString("en-GB");
 
@@ -246,7 +252,7 @@ export class MapEngine {
       this.onSeaMap ??= seaMask(this.lods[Math.min(3, this.lods.length - 1)].sea, this.W, this.H);
       const mask = this.onSeaMap, onSea = (x: number, y: number) => mask((x - v.tx) / v.k, (y - v.ty) / v.k);
       g.setTransform(1, 0, 0, 1, 0, 0);
-      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only });
+      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only, nameBar: nameBar(this.home ? v.k / this.home.k : 1) });
       this.laidFor = full ? key : "moving";
     }
     const step = op.reduce ? 1 : Math.min(1, dt / 200);
