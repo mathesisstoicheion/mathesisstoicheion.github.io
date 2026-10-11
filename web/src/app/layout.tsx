@@ -40,7 +40,8 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: [SHARE_IMAGE.url] },
   // added to an iPhone's home screen, it opens as an app of its own (the manifest says the same for other phones)
   appleWebApp: { capable: true, title: SITE.latin, statusBarStyle: "default" },
-  icons: { apple: "/apple-touch-icon.png" },
+  // the tab icon: the small form of the site's mark (app/icon.svg), with /favicon.ico (app/favicon.ico/route.tsx) for browsers that want that
+  icons: { icon: [{ url: "/favicon.ico", sizes: "48x48" }, { url: "/icon.svg", type: "image/svg+xml" }], apple: "/apple-touch-icon.png" },
 };
 
 export const viewport: Viewport = {

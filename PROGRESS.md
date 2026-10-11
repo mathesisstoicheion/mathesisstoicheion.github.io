@@ -1,5 +1,13 @@
 # PROGRESS.md — project memory
 
+## The logo (2026-10-11)
+The owner chose the **Stoichedon** mark from four concepts: the word ΣΤΟΙΧΕΙΑ cut in a 3 × 3 grid, as Athenian inscriptions of the
+fifth and fourth centuries BC were laid out (the *stoichedon* style), with the mason's faint guide lines and a three-dot word-divider
+in the last square. The drawing is in `web/src/lib/logo.ts`; `components/LogoMark.tsx` shows it beside the name in the header, in
+the theme's colours, with the letters cut one after another on page load. Small sizes use its first letter, Σ, clay on black:
+the tab icon (`app/icon.svg`, and `app/favicon.ico/route.tsx` drawing /favicon.ico), the install icons and the iPhone icon (`lib/app-icon.tsx`). This replaced
+Next.js's default triangle favicon and the amphora app icon.
+
 ## START HERE: handoff to a new account (2026-09-30)
 The owner is moving the project to another account. A new session should read `CLAUDE.md`, the brief, this section, then `PLAN.md`. The notes the old account kept in its private memory are copied below, so nothing depends on them.
 
@@ -400,7 +408,7 @@ Plan: `PLAN.md` section 7. Phones are **up to 760 px wide** everywhere (CSS medi
   - **Pull down to refresh** the Town Hall and a thread (`components/PullToRefresh.tsx`): a ring comes down and spins until the new posts arrive; the browser's own pull-to-reload is switched off on those pages.
   - **The map** moves with two fingers; one finger scrolls the page past it and shows "Use two fingers to move the map".
   - **Swipe sideways** between the Oracle's kinds of search and between the Census's lists (`lib/use-swipe-nav.ts`; swipes near the screen's edges are left to the phone's own "back").
-  - **Installing**: an iPhone home-screen icon (`app/apple-touch-icon.png/route.tsx`, drawn by `lib/app-icon.tsx`, the same amphora as the other icons); the manifest has an `id` and `scope`; an "Offline · your downloaded texts, library and study still work" sign above the bottom bar when the connection goes.
+  - **Installing**: an iPhone home-screen icon (`app/apple-touch-icon.png/route.tsx`, drawn by `lib/app-icon.tsx`, the same Σ as the other icons; see "The logo" below); the manifest has an `id` and `scope`; an "Offline · your downloaded texts, library and study still work" sign above the bottom bar when the connection goes.
   - **Sizes**: every text box on every page is 16 px or larger (iPhones zoom into smaller ones). On touch screens Word Study's "As tables / As a list", its Greek family words and its passage links are 44 px tall. The Kerameikos drawing's numbered circles stay small (they are closer than a finger's width on a phone), because the list right under the drawing offers each layer as a full-width row; they carry `data-tap-equivalent`, which the phone checker skips.
   - **Phone checker** (`scripts/phone-audit.mjs`) now also lists text boxes under 16 px, and no longer counts a map's own shapes (clipped by their frame) as poking out. `TAP=44` on all 26 main pages: nothing left.
   - **Tests**: `e2e/phone-pages.spec.ts` (7 tests). With steps 1–3: 32 phone tests, all passing; the accessibility tests (both themes) pass too.
