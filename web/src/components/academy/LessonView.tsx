@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LESSONS, type Lesson, type Section } from "@/data/lessons";
 import { PARADIGMS } from "@/data/paradigms";
 import { loadPassage, type LoadedPassage } from "@/lib/passage";
@@ -26,22 +26,10 @@ import Timeline from "./Timeline";
 import Report from "./Report";
 import Sigma from "./Sigma";
 import Refer from "./Refer";
+import Rich from "./Rich";
+import { WarmUp, LessonSteps } from "./LessonSteps";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
-
-/** «Greek», **bold** and *italic* inside lesson text. */
-function Rich({ text }: { text: string }) {
-  return (
-    <>
-      {text.split(/(«[^»]+»|\*\*[^*]+\*\*|\*[^*]+\*)/).map((part, i) => {
-        if (part.startsWith("«")) return <span key={i} lang="grc" className={styles.inlineGr}>{part.slice(1, -1)}</span>;
-        if (part.startsWith("**")) return <b key={i}>{part.slice(2, -2)}</b>;
-        if (part.startsWith("*") && part.length > 1) return <i key={i}>{part.slice(1, -1)}</i>;
-        return <Fragment key={i}>{part}</Fragment>;
-      })}
-    </>
-  );
-}
 
 function Check({ items }: { items: Extract<Section, { kind: "check" }>["items"] }) {
   const [picked, setPicked] = useState<Record<number, number>>({});
@@ -257,6 +245,7 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
 
   return (
     <article className={styles.lesson}>
+      <WarmUp lesson={lesson} />
       {lesson.sections.map((s, k) => <SectionView key={k} s={s} onWord={(w, ctx) => setWord({ w, ctx })} />)}
       <LessonWords lesson={lesson} />
       {real && (
@@ -266,9 +255,10 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
           <span>{real.label}, in the reader, with the English beside it and every word ready to look up. <span className="arr" aria-hidden="true">→</span></span>
         </Link>
       )}
+      <LessonSteps lesson={lesson} />
       <footer className={styles.lessonEnd}>
         {done ? <p className={styles.good}>You have completed this lesson.</p>
-          : <button type="button" className="btn" onClick={() => complete(lesson.id)}>I have finished this lesson</button>}
+          : <button type="button" className="btn ghost" onClick={() => complete(lesson.id)}>Mark as read, without the test</button>}
         {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
       </footer>
       {/* talk where you learn (Phase 11): a question about the lesson goes to the Town Hall's board for it */}

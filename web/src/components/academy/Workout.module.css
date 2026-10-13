@@ -1,0 +1,94 @@
+/* A lesson's practice, test and warm-up (Workout.tsx) */
+.workout { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; max-width: 760px; }
+.warm { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
+
+/* the track: one bar per question, coloured as it is answered */
+.track { display: flex; gap: 5px; list-style: none; margin: 0; padding: 0; }
+.track li { flex: 1; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--rule) 70%, transparent); transition: background-color 0.4s; }
+.track li[data-state="right"] { background: var(--ok); }
+.track li[data-state="wrong"] { background: var(--accent); }
+.track li[data-state="now"] { background: var(--ink-2); animation: grow 0.5s var(--ease); transform-origin: left; }
+@keyframes grow { from { transform: scaleX(0.2); } }
+
+.card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: clamp(18px, 3vw, 28px); background: var(--surface); border-top: 3px double var(--rule); border-bottom: 3px double var(--rule); animation: cardIn 0.45s var(--ease); }
+.warm .card { border: 1px solid var(--rule); border-radius: var(--radius); padding: 16px 18px; }
+@keyframes cardIn { from { opacity: 0; transform: translateX(28px); } }
+.prompt { font-size: clamp(1.2rem, 2.4vw, 1.45rem); line-height: 1.45; }
+.prompt :global([lang="grc"]) { font-size: 1.2em; }
+.gr { font-family: var(--f-greek); font-size: 1.15em; }
+
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+.options button { min-height: var(--tap); padding: 12px 16px; text-align: left; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); font-size: 1.05rem; transition: transform 0.15s, background-color 0.25s, opacity 0.25s; }
+.options button:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ink-2); }
+.options button:disabled { cursor: default; }
+.optGr { font-family: var(--f-greek); font-size: 1.35rem !important; }
+.right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; border-color: var(--ok) !important; animation: pop 0.35s var(--ease); }
+.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; border-color: var(--accent) !important; animation: shake 0.35s; }
+.faded { opacity: 0.55; }
+@keyframes pop { 50% { transform: scale(1.03); } }
+@keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
+
+.write { display: grid; gap: 12px; }
+.writeRow { display: flex; gap: 10px; flex-wrap: wrap; }
+.writeInput { flex: 1 1 240px; min-width: 0; min-height: var(--tap); font: inherit; font-family: var(--f-greek); font-size: 1.4rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 14px; }
+.writeInput:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+.writeTools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
+.dunno { background: none; border: 0; padding: 6px 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; font-size: 0.95rem; min-height: var(--tap); }
+.hint { font-size: 0.88rem; color: var(--ink-2); }
+
+.feedback { padding: 12px 16px; border-left: 3px solid; font-size: 1.05rem; line-height: 1.55; animation: rise 0.35s var(--ease); }
+.fbGood { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 10%, transparent); }
+.fbGood b { color: var(--ok); }
+.fbBad { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.fbBad b { color: var(--accent); }
+@keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+
+.foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; min-height: 48px; }
+.count { font-family: var(--f-label); font-size: 0.85rem; color: var(--ink-2); }
+
+/* the end of a round */
+.end { display: grid; gap: 14px; justify-items: start; max-width: 680px; animation: rise 0.45s var(--ease); }
+.endBig { font-family: var(--f-display); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; }
+.endRow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
+.warmEnd { display: grid; gap: 10px; justify-items: start; padding: 14px 18px; border: 1px solid var(--rule); border-radius: var(--radius); animation: rise 0.35s var(--ease); }
+
+/* the seal a passed lesson earns: stamped onto the page, then its ring is drawn */
+.seal { width: clamp(150px, 30vw, 190px); height: auto; color: var(--accent); animation: stamp 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: 50% 50%; }
+@keyframes stamp { 0% { opacity: 0; transform: scale(1.7) rotate(-24deg); } 60% { opacity: 1; } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
+.sealRim { fill: color-mix(in srgb, var(--accent) 12%, var(--surface)); stroke: currentColor; stroke-width: 3; }
+.sealRing { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 0.012 0.012; animation: ring 1.1s 0.4s var(--ease) both; }
+@keyframes ring { from { stroke-dashoffset: 1; opacity: 0; } to { opacity: 1; } }
+.sealIn { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.6; }
+.sealLabel { fill: currentColor; font: 600 13px var(--f-label); letter-spacing: 0.16em; }
+.sealScore { fill: currentColor; font: 40px var(--f-display); }
+.sealGr { fill: currentColor; font: 17px var(--f-greek); }
+
+/* where a lesson ends: practise, test, and the lesson's standing */
+.steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
+.step { display: grid; gap: 6px; align-content: start; padding: 18px 20px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); text-decoration: none; color: inherit; transition: transform 0.3s var(--ease), border-color 0.2s; }
+.step:hover { transform: translateY(-3px); border-color: var(--ink-2); }
+.step b { font-size: 1.2rem; }
+.stepGr { font-family: var(--f-greek); color: var(--accent); }
+.stepMain { background: var(--inv-bg); color: var(--inv-fg); border-color: var(--inv-edge); --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); }
+.stepMain :global(.muted) { color: var(--ink-2-on-ink); }
+.standing { font-size: 1.02rem; }
+.standing b { color: var(--ok); }
+.due { color: var(--accent); font-weight: 600; }
+
+/* warm-up at the top of a lesson */
+.warmBox { display: grid; gap: 12px; padding: 16px 18px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--surface) 60%, transparent); }
+.warmHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
+
+/* the lesson list: each lesson's standing */
+.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
+.markPassed { background: var(--accent); color: var(--accent-ink); }
+.markDue { border-style: dashed; animation: breathe 2.4s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.08); } }
+
+/* on a phone the questions start on the first screen: the page's introduction gives way */
+@media (max-width: 600px) { .pageIntro { display: none; } }
+
+/* a checkpoint in the lesson list: a band across the path, its numeral in a ring */
+.cpRow { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%); }
+.cpItem { border-bottom: 3px double var(--rule) !important; }
+.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font: 1.05rem var(--f-display); }

@@ -1,23 +1,31 @@
 "use client";
 /**
  * Today's session: a few minutes of study as the pages of a small book, turned forward with Next or
- * a swipe to the left (Phase 10). A few flashcards, one question on the forms, and one real sentence;
+ * a swipe to the left (Phase 10). A few flashcards, a lesson's refresh when one is due, one question on the
+ * forms, and one real sentence;
  * then a last page with what was done and the days in a row. Full screen on phones.
  */
 import Link from "next/link";
 import { useRef, useState } from "react";
+import dynamic from "next/dynamic";
+import { dueRefreshes, type Due } from "@/lib/refreshes";
 import { useAcademy, streak } from "@/lib/academy";
 import { AREAS } from "@/config/areas";
 import Review from "./Review";
 import { Endings, Parsing } from "./Practice";
 import styles from "./Academy.module.css";
 
-const STEPS = [
-  { title: "Your cards", gr: "ἀνάμνησις", note: "Up to ten words from your review deck, due today." },
-  { title: "One ending", gr: "ἄσκησις", note: "One question on the forms, from the tables." },
-  { title: "One real sentence", gr: "λόγος", note: "A word in a verse of the Gospel of John, its analysis checked by hand." },
-  { title: "Done for today", gr: "τέλος", note: "" },
-] as const;
+// the refresh carries the lessons with it, so it loads only when one is due
+const SessionRefresh = dynamic(() => import("./SessionRefresh"), { loading: () => <p className="muted">Setting out the questions…</p> });
+
+type StepId = "cards" | "refresh" | "ending" | "sentence" | "done";
+const STEP: Record<StepId, { title: string; gr: string; note: string }> = {
+  cards: { title: "Your cards", gr: "ἀνάμνησις", note: "Up to ten words from your review deck, due today." },
+  refresh: { title: "A refresh", gr: "ἀνανέωσις", note: "" },
+  ending: { title: "One ending", gr: "ἄσκησις", note: "One question on the forms, from the tables." },
+  sentence: { title: "One real sentence", gr: "λόγος", note: "A word in a verse of the Gospel of John, its analysis checked by hand." },
+  done: { title: "Done for today", gr: "τέλος", note: "" },
+};
 const CARDS = 10;
 
 export default function DailySession() {
@@ -27,13 +35,23 @@ export default function DailySession() {
   const [ending, setEnding] = useState<boolean | null>(null);
   const [sentence, setSentence] = useState<boolean[]>([]);
   const days = useAcademy((s) => s.days);
+  const mastery = useAcademy((s) => s.mastery);
+  // the refresh due when the session began (the store fills in after the first paint; once under way, the pages stay put)
+  const [kept, setKept] = useState<Due | null | undefined>(undefined);
+  const dueNow = dueRefreshes(mastery)[0] ?? null;
+  const refresh = kept !== undefined ? kept : dueNow;
+  const [refreshed, setRefreshed] = useState(false);
+  const ids: StepId[] = refresh ? ["cards", "refresh", "ending", "sentence", "done"] : ["cards", "ending", "sentence", "done"];
+  const STEPS = ids.map((id) => (id === "refresh" && refresh ? { ...STEP.refresh, note: `${refresh.name}, ${refresh.title}, has come round again: a short test to keep it fresh.` } : STEP[id]));
   const markActive = useAcademy((s) => s.markActive);
   const box = useRef<HTMLDivElement>(null);
-  const done = [cards !== null, ending !== null, sentence.length >= 2, true];
+  const doneBy: Record<StepId, boolean> = { cards: cards !== null, refresh: refreshed, ending: ending !== null, sentence: sentence.length >= 2, done: true };
+  const done = ids.map((id) => doneBy[id]);
   const last = STEPS.length - 1;
 
   const go = (n: number) => {
     if (n < 0 || n > last) return;
+    if (kept === undefined) setKept(refresh);
     setDir(n > step ? 1 : -1);
     setStep(n);
     if (n === last) markActive();
@@ -58,6 +76,7 @@ export default function DailySession() {
   };
 
   const s = STEPS[step];
+  const at = ids[step];
   return (
     <div ref={box} className={styles.session}>
       <div className={styles.sessionTop}>
@@ -77,13 +96,15 @@ export default function DailySession() {
           <h1 id="session-title">{s.title} <span lang="grc">{s.gr}</span></h1>
           {s.note && <p className="muted">{s.note}</p>}
         </header>
-        {step === 0 && <div data-noswipe=""><Review limit={CARDS} onDone={(n) => setCards(n)} /></div>}
-        {step === 1 && <Endings once onScore={(ok) => setEnding(ok)} />}
-        {step === 2 && <Parsing once onScore={(ok) => setSentence((a) => [...a, ok])} />}
-        {step === last && (
+        {at === "cards" && <div data-noswipe=""><Review limit={CARDS} onDone={(n) => setCards(n)} /></div>}
+        {at === "refresh" && refresh && <div data-noswipe=""><SessionRefresh due={refresh} onFinish={() => setRefreshed(true)} /></div>}
+        {at === "ending" && <Endings once onScore={(ok) => setEnding(ok)} />}
+        {at === "sentence" && <Parsing once onScore={(ok) => setSentence((a) => [...a, ok])} />}
+        {at === "done" && (
           <div className={styles.sessionDone}>
             <ul>
               <li>{cards ? `${cards} card${cards === 1 ? "" : "s"} reviewed` : "No cards were due"}</li>
+              {refresh && <li>{refreshed ? `${refresh.name}: refresh taken` : `${refresh.name}: refresh skipped, still due`}</li>}
               <li>{ending === null ? "The ending was skipped" : ending ? "The ending: right" : "The ending: one to look at again in the tables"}</li>
               <li>{sentence.length < 2 ? "The sentence was skipped" : `The sentence: ${sentence.filter(Boolean).length} of 2 right`}</li>
             </ul>

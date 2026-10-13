@@ -3,6 +3,7 @@
  * this list from /offline.json). A test checks it against the pages in src/app.
  */
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
+import { CHECKPOINTS } from "@/data/checkpoints";
 import { GUIDES } from "@/data/guides";
 import { ENTRIES } from "@/wiki/index";
 
@@ -37,7 +38,7 @@ export const DEV_PAGES = ["/academy/studio"];
  */
 export const ADMIN_PAGES = ["/admin/translations"];
 
-export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.map((l) => `/academy/lesson/${l.id}`), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
+export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.flatMap((l) => [`/academy/lesson/${l.id}`, `/academy/lesson/${l.id}/practice`, `/academy/lesson/${l.id}/test`]), ...CHECKPOINTS.map((c) => `/academy/checkpoint/${c.id}`), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
 
 /** Small data files every page may need, kept offline with the pages. */
 export const OFFLINE_DATA = [

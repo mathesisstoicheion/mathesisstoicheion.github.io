@@ -4,6 +4,7 @@ import { join } from "node:path";
 import { STATIC_PAGES, DEV_PAGES, ADMIN_PAGES, offlinePages } from "@/config/pages";
 import { LESSONS } from "@/data/lessons";
 import { GUIDES } from "@/data/guides";
+import { CHECKPOINTS } from "@/data/checkpoints";
 import { ENTRIES } from "@/wiki/index";
 import { snapRect, clampRect, snapFor, expandHref } from "./float";
 import { pageKey, recordVisit, trail, lastOtherPage, saveScroll, savedScroll } from "./resume";
@@ -22,6 +23,8 @@ describe("the offline copy", () => {
     const kept = new Set(offlinePages());
     for (const p of pages) {
       if (DEV_PAGES.includes(p)) continue;
+      if (p === "/academy/lesson/[id]/practice" || p === "/academy/lesson/[id]/test") { for (const l of LESSONS) expect(kept.has(p.replace("[id]", l.id)), l.id).toBe(true); continue; }
+      if (p === "/academy/checkpoint/[id]") { for (const c of CHECKPOINTS) expect(kept.has(`/academy/checkpoint/${c.id}`), c.id).toBe(true); continue; }
       // the moderator's pages need the database: never fetched into every visitor's offline copy
       if (ADMIN_PAGES.includes(p)) { expect(kept.has(p), p).toBe(false); continue; }
       if (p === "/academy/lesson/[id]") { for (const l of LESSONS) expect(kept.has(`/academy/lesson/${l.id}`), l.id).toBe(true); continue; }
