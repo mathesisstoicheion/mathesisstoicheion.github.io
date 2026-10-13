@@ -50,6 +50,12 @@ export default function Moderation() {
     <div className={`wrap ${styles.narrow}`}>
       <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / The moderator&apos;s desk</p>
       {error && <p className={styles.error}>{error}</p>}
+      {/* the moderator's own page, linked from here only (the desk shows nothing to anyone else) */}
+      <Link className={styles.pnyxCard} href="/admin/translations">
+        <span className="label">Private · only you can see it</span>
+        <b>Our own translations</b>
+        <span>Read our English side by side with the Greek, and add or update a translation.</span>
+      </Link>
       <section className={styles.motions}>
         <h2>Reports {open && <small>({open.length})</small>}</h2>
         {open?.length === 0 && <p className={styles.empty}>Nothing waiting. The Town Hall is calm.</p>}
