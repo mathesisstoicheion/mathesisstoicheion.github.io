@@ -139,12 +139,17 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
   onSea: (x: number, y: number) => boolean;  // is this point of the frame on the sea?
   prefer?: Map<string, Label["align"]>;      // the side each name was on a moment ago: tried first, so names do not hop
   only?: Set<string>;                        // while the map moves, keep to what is shown (some may drop out, none come in)
+  nameBar?: number;                          // how often a place must be named in the library to be named on the map
 }): Layout {
   const small = w < 520;
   const area = w * h;
   const dotBudget = Math.max(24, Math.round(area / 3600));
   const labelBudget = Math.max(10, Math.round(area / 8000));
   const pad = 4;
+  // only places named often enough get a name (a name already shown keeps it a little longer, so names do not
+  // flicker at the edge); the chosen and saved places always do
+  const bar = o.nameBar ?? 0;
+  const famous = (t: Pt) => t.p.id === o.selected || !!o.saved[t.p.id] || t.p.n * (o.shown.has(t.p.id) ? 1.25 : 1) >= bar;
 
   // a coarse grid of the boxes placed so far, so each test looks only nearby
   const CELL = 48, cols = Math.ceil(w / CELL) + 2, grid = new Map<number, Box[]>();
@@ -173,6 +178,7 @@ export function layout(g: CanvasRenderingContext2D, pts: Pt[], v: View, w: numbe
   // rivers) come last, where room is left.
   const dots: Pt[] = [], labels: Label[] = [];
   const name = (t: Pt, own: Box | undefined) => {
+    if (!famous(t)) return;
     const style: Label["style"] = t.name ?? "place";
     const raw = o.greek ? t.p.grc : shortName(t.p);
     const text = style === "region" ? caps(raw) : raw;
