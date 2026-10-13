@@ -21,7 +21,7 @@ const fmt = (n: number) => n.toLocaleString("en-GB");
 type Motion =
   | { type: "path"; t0: number; ms: number; at: (t: number) => [number, number, number]; to: View }
   | { type: "wheel"; k: number; ax: number; ay: number; wx: number; wy: number }
-  | { type: "fling"; vx: number; vy: number };
+  | { type: "fling"; vx: number; vy: number; lv: number; ax: number; ay: number };
 
 export interface Options { kinds: Set<string>; greek: boolean; selected: string | null; saved: Record<string, number>; hover: string | null; reduce: boolean }
 interface Els { stage: HTMLElement; canvas: HTMLCanvasElement; ring: HTMLElement; scale: HTMLElement }
@@ -49,6 +49,7 @@ export class MapEngine {
   private laidFor = "";
   private laidAt = 0;
   private touchedAt = 0;   // the last time a finger or the mouse moved the map directly
+  private zoomTrail: { t: number; lk: number }[] = [];   // the zoom over the last moments of a pinch, for its glide
   private dotA = new Map<string, number>();
   private labA = new Map<string, { l: Label; dx: number; dy: number; a: number; on: boolean }>();
   private scaleKm = 0;
@@ -97,7 +98,7 @@ export class MapEngine {
       // open on the Aegean; the whole map is the furthest you can zoom out
       const [[x0, y0], [x1, y1]] = this.opening;
       const k = Math.min(w / (x1 - x0), h / (y1 - y0));
-      this.home = this.clamp({ k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k });
+      this.home = this.clamp({ k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k }, false);
       this.v = this.home;
       this.onHome();
     }
@@ -122,11 +123,15 @@ export class MapEngine {
 
   /** the zoom kept between the whole map and MAX_ZOOM times the opening view */
   limitK(k: number) { return Math.max(Math.min(this.w / this.W, this.h / this.H), Math.min(this.home ? this.home.k * MAX_ZOOM : k, k)); }
-  clamp(v: View): View {
+  clamp(v: View, loose = true): View {
     const k = this.limitK(v.k), { w, h, W, H } = this;
-    // the picture stops at its edges: where the map is wider (or taller) than the frame, it cannot be dragged
-    // past them; where it is narrower, it sits in the middle
-    const axis = (t: number, frame: number, size: number) => (size * k >= frame ? Math.min(0, Math.max(frame - size * k, t)) : (frame - size * k) / 2);
+    // the picture can be dragged a little past its edges (a third of the frame), so the map moves freely in
+    // every direction, even diagonally beside an edge, instead of sliding along it; where the map is narrower
+    // than the frame it moves about the middle
+    const axis = (t: number, frame: number, size: number) => {
+      const slack = loose ? frame / 3 : 0, lo = Math.min(0, frame - size * k), hi = Math.max(0, frame - size * k);
+      return Math.min(hi + slack, Math.max(lo - slack, t));
+    };
     return { k, tx: axis(v.tx, w, W), ty: axis(v.ty, h, H) };
   }
   stop() { this.motion = null; }
@@ -162,13 +167,45 @@ export class MapEngine {
     this.request();
   }
 
+  /**
+   * A pinch (two fingers on a screen or a trackpad): the map follows the fingers at once, the point under them
+   * staying under them; nothing is smoothed, so it never trails behind the hand. When the fingers let go,
+   * pinchEnd lets the zoom carry on a little and settle, as it would in a phone's own maps.
+   */
+  pinch(factor: number, ax: number, ay: number, dx = 0, dy = 0) {
+    const v = this.v, k = this.limitK(v.k * factor);
+    this.set({ k, tx: ax + dx - ((ax - v.tx) * k) / v.k, ty: ay + dy - ((ay - v.ty) * k) / v.k });
+    this.trackZoom();
+  }
+  /** note the zoom now, so the glide after a pinch knows how fast it was going */
+  trackZoom() {
+    const t = performance.now();
+    this.zoomTrail.push({ t, lk: Math.log(this.v.k) });
+    while (this.zoomTrail.length && t - this.zoomTrail[0].t > 120) this.zoomTrail.shift();
+  }
+  /** how fast the zoom was changing as the fingers let go (log of the zoom per ms) */
+  private zoomVelocity() {
+    // over the pinch's last tenth of a second; nothing if the fingers had already stopped before letting go
+    const trail = this.zoomTrail, end = trail[trail.length - 1];
+    this.zoomTrail = [];
+    if (!end || performance.now() - end.t > 160) return 0;
+    const recent = trail.filter((p) => end.t - p.t < 100);
+    if (recent.length < 2) return 0;
+    const a = recent[0], b = recent[recent.length - 1];
+    return b.t > a.t ? (b.lk - a.lk) / (b.t - a.t) : 0;
+  }
+  /** the fingers have let go: the zoom (and any movement) glides on about (ax, ay) and slows to a stop */
+  pinchEnd(ax: number, ay: number, vel: { vx: number; vy: number } | null = null) { this.fling(vel, this.zoomVelocity(), ax, ay); }
+
   /** move the map by so many pixels (a trackpad's two-finger scroll, which carries its own glide) */
   panBy(dx: number, dy: number) { const v = this.v; this.set({ k: v.k, tx: v.tx - dx, ty: v.ty - dy }); }
 
   /** let go while moving: the map drifts on and slows to a stop */
-  fling(vel: { vx: number; vy: number } | null) {
-    if (!vel || this.opts.reduce || Math.hypot(vel.vx, vel.vy) < 0.25) return;
-    this.motion = { type: "fling", vx: Math.max(-4, Math.min(4, vel.vx)), vy: Math.max(-4, Math.min(4, vel.vy)) };
+  fling(vel: { vx: number; vy: number } | null, lv = 0, ax = this.w / 2, ay = this.h / 2) {
+    const pan = !!vel && Math.hypot(vel.vx, vel.vy) >= 0.25, zoom = Math.abs(lv) >= 0.0008;
+    if (this.opts.reduce || (!pan && !zoom)) return;
+    const c = (x: number, most: number) => Math.max(-most, Math.min(most, x));
+    this.motion = { type: "fling", vx: pan ? c(vel!.vx, 4) : 0, vy: pan ? c(vel!.vy, 4) : 0, lv: zoom ? c(lv, 0.006) : 0, ax, ay };
     this.request();
   }
 
@@ -216,10 +253,22 @@ export class MapEngine {
       this.v = this.clamp({ k, tx: m.ax - m.wx * k, ty: m.ay - m.wy * k });
       if (Math.abs(goal - next) > 0.002) moving = true; else this.motion = null;
     } else if (m?.type === "fling") {
-      this.v = this.clamp({ k: this.v.k, tx: this.v.tx + m.vx * dt, ty: this.v.ty + m.vy * dt });
+      // drift on, and keep zooming about the point the fingers left, both slowing to a stop (the zoom sooner)
+      const v = this.v, k = this.limitK(v.k * Math.exp(m.lv * dt));
+      this.v = this.clamp({ k, tx: m.ax - ((m.ax - v.tx) * k) / v.k + m.vx * dt, ty: m.ay - ((m.ay - v.ty) * k) / v.k + m.vy * dt });
       const d = Math.exp(-dt / 325);
-      m.vx *= d; m.vy *= d;
-      if (Math.hypot(m.vx, m.vy) > 0.015) moving = true; else this.motion = null;
+      m.vx *= d; m.vy *= d; m.lv *= Math.exp(-dt / 160);
+      if (k === v.k) m.lv = 0;   // at the furthest or closest zoom: stop zooming
+      if (Math.hypot(m.vx, m.vy) > 0.015 || Math.abs(m.lv) > 0.00006) moving = true; else this.motion = null;
+    }
+    if (!this.motion) {
+      // past the picture's edge when the hand lets go: spring back to it
+      const strict = this.clamp(this.v, false);
+      if (Math.abs(strict.tx - this.v.tx) > 0.5 || Math.abs(strict.ty - this.v.ty) > 0.5) {
+        if (performance.now() - this.touchedAt < 160) moving = true;   // still in hand: look again next frame
+        else if (this.opts.reduce) this.v = strict;
+        else { this.go(strict, 380); cancelAnimationFrame(this.raf); this.raf = 0; moving = true; }   // go asks for a frame; this one asks below
+      }
     }
     const fading = this.draw(dt);
     if (moving || fading) this.raf = requestAnimationFrame(this.frame);

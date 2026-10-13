@@ -150,28 +150,37 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
     if (id) select(id === selectedId ? null : id);
   };
 
-  // ---- touch: one finger moves the map (with a glide when let go), two fingers zoom it (and move it as they go).
-  // On a phone the map leaves part of the page in view above or below it, to scroll the page by.
+  // ---- touch: one finger moves the map (with a glide when let go), two fingers zoom it (and move it as they go),
+  // and when they let go the zoom glides on a little and settles. A double tap zooms in there; a tap with two
+  // fingers zooms out. On a phone the map leaves part of the page in view above or below it, to scroll the page by.
   useEffect(() => {
     const el = stage.current!;
     let last: { x: number; y: number; d: number } | null = null, one: { x: number; y: number } | null = null;
     let trail: { t: number; x: number; y: number }[] = [];
+    // taps: when and where a one-finger touch began and the last tap ended; when a two-finger touch began and whether it moved
+    let tapStart = { t: 0, x: 0, y: 0 }, lastTap = { t: -1e9, x: 0, y: 0 }, twoStart = { t: 0, x: 0, y: 0, d: 0 }, twoMoved = false;
+    // the moment two fingers became one, where they were, and how fast they were moving
+    let pinchOff = { t: -1e9, x: 0, y: 0, vel: null as { vx: number; vy: number } | null, tap: false };
     const mid = (t: TouchList) => ({ x: (t[0].clientX + t[1].clientX) / 2, y: (t[0].clientY + t[1].clientY) / 2, d: Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY) });
     const track = (x: number, y: number) => { trail.push({ t: performance.now(), x, y }); if (trail.length > 12) trail.shift(); };
     const start = (e: TouchEvent) => {
-      lastTouch.current = performance.now();
+      const now = performance.now();
+      lastTouch.current = now;
       engine.stop();
-      if (e.touches.length === 2) { last = mid(e.touches); one = null; trail = []; }
-      else if (e.touches.length === 1) { moved.current = 0; one = { x: e.touches[0].clientX, y: e.touches[0].clientY }; trail = []; track(one.x, one.y); }
+      if (e.touches.length === 2) { last = mid(e.touches); one = null; trail = []; twoStart = { t: now, ...last }; twoMoved = false; track(last.x, last.y); }
+      else if (e.touches.length === 1) {
+        moved.current = 0; one = { x: e.touches[0].clientX, y: e.touches[0].clientY }; trail = []; track(one.x, one.y);
+        tapStart = { t: now, ...one };
+      }
     };
     const move = (e: TouchEvent) => {
       if (e.touches.length === 2 && last) {
         e.preventDefault();
         // follow both fingers: the point that was between them stays between them, their spread sets the zoom
-        const m = mid(e.touches), r = el.getBoundingClientRect(), v = engine.v;
-        const k = engine.limitK(v.k * (last.d > 0 ? m.d / last.d : 1)), wx = (last.x - r.left - v.tx) / v.k, wy = (last.y - r.top - v.ty) / v.k;
-        engine.set({ k, tx: m.x - r.left - wx * k, ty: m.y - r.top - wy * k });
+        const m = mid(e.touches), r = el.getBoundingClientRect();
+        engine.pinch(last.d > 0 ? m.d / last.d : 1, last.x - r.left, last.y - r.top, m.x - last.x, m.y - last.y);
         moved.current += 10;
+        if (Math.abs(m.d - twoStart.d) > 10 || Math.hypot(m.x - twoStart.x, m.y - twoStart.y) > 10) twoMoved = true;
         track(m.x, m.y);
         last = m;
       } else if (e.touches.length === 1 && one) {
@@ -185,28 +194,54 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
       }
     };
     const end = (e: TouchEvent) => {
-      lastTouch.current = performance.now();
+      const now = performance.now(), r = el.getBoundingClientRect();
+      lastTouch.current = now;
       if (e.touches.length === 1) {
-        // from two fingers back to one: carry on moving from where that finger is, without a jump
+        // from two fingers back to one: carry on moving from where that finger is, without a jump; if the other
+        // lifts straight after, the pinch is over and glides on
+        if (last) pinchOff = { t: now, x: last.x - r.left, y: last.y - r.top, vel: trailVelocity(trail), tap: !twoMoved && now - twoStart.t < 300 };
         last = null; trail = [];
         one = { x: e.touches[0].clientX, y: e.touches[0].clientY };
         track(one.x, one.y);
         return;
       }
-      if (!e.touches.length) {
-        if (e.type === "touchend" && moved.current > 6) engine.fling(trailVelocity(trail));
-        last = null; one = null; trail = [];
+      if (e.touches.length) return;
+      const wasTwo = !!last;
+      if (e.type === "touchend") {
+        if (wasTwo && !twoMoved && now - twoStart.t < 300) engine.zoomAt(0.5, twoStart.x - r.left, twoStart.y - r.top);   // a two-finger tap
+        else if (wasTwo) engine.pinchEnd(last!.x - r.left, last!.y - r.top, trailVelocity(trail));
+        else if (now - pinchOff.t < 150 && Math.hypot(trail[trail.length - 1].x - trail[0].x, trail[trail.length - 1].y - trail[0].y) < 12) {
+          // the second finger of two lifting just after the first
+          if (pinchOff.tap) engine.zoomAt(0.5, twoStart.x - r.left, twoStart.y - r.top);
+          else engine.pinchEnd(pinchOff.x, pinchOff.y, pinchOff.vel);
+        }
+        else if (moved.current > 6) engine.fling(trailVelocity(trail));
+        else if (now - tapStart.t < 250 && now - pinchOff.t > 400) {
+          // a tap; a second one soon after, close by, zooms in there
+          if (now - lastTap.t < 320 && Math.hypot(tapStart.x - lastTap.x, tapStart.y - lastTap.y) < 30) { engine.zoomAt(2, tapStart.x - r.left, tapStart.y - r.top); lastTap.t = -1e9; }
+          else lastTap = { t: now, x: tapStart.x, y: tapStart.y };
+        }
       }
+      last = null; one = null; trail = [];
     };
     // a mouse wheel and a trackpad's pinch zoom, gliding, about the pointer; two fingers on a trackpad move the map
+    // A trackpad's pinch follows the fingers at once (a mouse wheel's notches glide); it sends no event when the
+    // fingers lift, so a short pause means they have, and the zoom glides on from there.
     const readWheel = wheelReader();
+    let pinchOver = 0;
+    const pinched = (factor: number, x: number, y: number) => {
+      engine.pinch(factor, x, y);
+      clearTimeout(pinchOver);
+      pinchOver = window.setTimeout(() => engine.pinchEnd(x, y), 70);
+    };
     const wheel = (e: WheelEvent) => {
       e.preventDefault();
       const kind = readWheel(e);
       if (kind === "pan") engine.panBy(e.deltaX, e.deltaY);
-      else engine.wheel(kind === "pinch" ? pinchFactor(e) : wheelFactor(e), ...local(e));
+      else if (kind === "pinch") pinched(pinchFactor(e), ...local(e));
+      else engine.wheel(wheelFactor(e), ...local(e));
     };
-    const stopGesture = onGesture(el, (scaleBy, _r, x, y) => engine.wheel(scaleBy, ...local({ clientX: x, clientY: y })));
+    const stopGesture = onGesture(el, (scaleBy, _r, x, y) => pinched(scaleBy, ...local({ clientX: x, clientY: y })));
     el.addEventListener("touchstart", start, { passive: true });
     el.addEventListener("touchmove", move, { passive: false });
     el.addEventListener("touchend", end);
@@ -216,6 +251,7 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
       el.removeEventListener("touchstart", start); el.removeEventListener("touchmove", move);
       el.removeEventListener("touchend", end); el.removeEventListener("touchcancel", end);
       el.removeEventListener("wheel", wheel);
+      clearTimeout(pinchOver);
       stopGesture();
     };
   }, [engine]);
@@ -262,7 +298,7 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
           data-hover={hover ? "" : undefined}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
           onPointerLeave={() => setHover(null)} onClick={onClick}
-          onDoubleClick={(e) => { if (!(e.target as Element).closest("button")) engine.zoomAt(2, ...local(e)); }}
+          onDoubleClick={(e) => { if (!(e.target as Element).closest("button") && performance.now() - lastTouch.current > 800) engine.zoomAt(2, ...local(e)); }}
           onKeyDown={onKey}>
           <canvas ref={canvas} className={styles.canvas} aria-hidden="true" />
           <div ref={ring} className={styles.ring} hidden aria-hidden="true" />
