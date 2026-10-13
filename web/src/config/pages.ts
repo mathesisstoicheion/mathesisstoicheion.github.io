@@ -30,6 +30,13 @@ export const PRIVATE_PAGES = [
 /** Pages that exist only while developing (the recording studio): never kept offline. */
 export const DEV_PAGES = ["/academy/studio"];
 
+/**
+ * The moderator's own pages (the private translations): linked only from the moderator's desk, never kept
+ * offline (nothing on them works without the database, and every visitor's offline copy would fetch them),
+ * left out of the sitemap and the site's search, and disallowed to crawlers in robots.txt.
+ */
+export const ADMIN_PAGES = ["/admin/translations"];
+
 export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.map((l) => `/academy/lesson/${l.id}`), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
 
 /** Small data files every page may need, kept offline with the pages. */

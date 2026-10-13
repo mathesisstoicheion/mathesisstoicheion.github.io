@@ -4,7 +4,8 @@ import { join } from "node:path";
 import { PAGE_DESCRIPTIONS, SITE_URL, absolute, authorDescription, workDescription, workIdOf, workPath } from "./seo";
 import { sitePaths } from "./site-paths";
 import { siteData } from "./build-data";
-import { PRIVATE_PAGES, STATIC_PAGES } from "@/config/pages";
+import { ADMIN_PAGES, PRIVATE_PAGES, STATIC_PAGES } from "@/config/pages";
+import robots from "@/app/robots";
 
 describe("descriptions", () => {
   it("describe an author from what is known, and only that", () => {
@@ -37,9 +38,14 @@ describe("the sitemap", () => {
     for (const a of idx.catalog.authors) expect(paths, a.id).toContain(`/author/${a.id}`);
     for (const w of works) expect(paths, w.id).toContain(workPath(w.id));
   });
-  it("leaves out every private page and the recording studio", () => {
-    for (const p of [...PRIVATE_PAGES, "/academy/studio"]) expect(paths, p).not.toContain(p);
+  it("leaves out every private page, the moderator's own pages and the recording studio", () => {
+    for (const p of [...PRIVATE_PAGES, ...ADMIN_PAGES, "/academy/studio"]) expect(paths, p).not.toContain(p);
     for (const p of STATIC_PAGES.filter((x) => !PRIVATE_PAGES.includes(x))) expect(paths, p).toContain(p);
+  });
+  it("tells crawlers to keep out of the private pages and the moderator's own pages", () => {
+    const rules = robots().rules;
+    const disallow = (Array.isArray(rules) ? rules : [rules]).flatMap((r) => r.disallow ?? []);
+    for (const p of [...PRIVATE_PAGES, ...ADMIN_PAGES]) expect(disallow, p).toContain(p);
   });
   it("gives every address as one clean path: no spaces, queries or doubled slashes", () => {
     for (const p of paths) expect(p, p).toMatch(/^\/[A-Za-z0-9._\-\/[\]]*$/);

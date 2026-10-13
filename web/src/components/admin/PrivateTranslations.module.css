@@ -1,0 +1,317 @@
+/* The moderator's private translations (PrivateTranslations.tsx, TranslationReader.tsx, parts.tsx, Rich.tsx):
+   the shelf, adding a file, and the side-by-side reader. The reader is set like the site's own (a ruled band of
+   clay slip, references in the margin in rubric red), and a small seal on every view says the page is private. */
+
+/* ------------------------------------------------------------ shared */
+.page { padding-bottom: clamp(48px, 8vw, 96px); }
+.status { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); }
+.status > p { flex-basis: 100%; }
+.spinner {
+  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.small { font-size: 0.88rem; color: var(--ink-2); }
+.error { color: var(--accent); font-weight: 600; }
+.warn { color: var(--ochre); font-weight: 600; }
+.btnRow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+/* signed in, but not the moderator: one quiet line, nothing more */
+.privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font-size: var(--step-3); color: var(--ink-2); }
+
+.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }
+.crumbs a { text-decoration: none; padding-block: 5px; }  /* taller than the words, for a finger */
+.crumbs a:hover { color: var(--accent); }
+.kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
+.kicker :global(.tongues) { width: 72px; }
+
+/* the seal: pressed on as the page opens, like wax on a letter */
+.seal {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
+  font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent);
+  border: 1px solid currentColor; border-radius: 999px;
+  animation: press 0.7s var(--ease) 0.35s backwards;
+}
+.seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+@keyframes press {
+  from { opacity: 0; transform: scale(1.4) rotate(-8deg); }
+  60% { opacity: 1; transform: scale(0.96) rotate(1deg); }
+}
+
+.statusTag {
+  display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px;
+  font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ink-2);
+  border: 1px solid currentColor; border-radius: 999px;
+}
+.statusTag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.statusTag[data-status="sample"] { color: var(--ochre); }
+.statusTag[data-status="draft"] { color: var(--blue); }
+.statusTag[data-status="complete"] { color: var(--ok); }
+
+/* a small button for a tool (Download, Remove), in whatever colour it stands on */
+.act {
+  display: inline-flex; align-items: center; padding: 6px 13px; font-size: 0.86rem; line-height: 1.2;
+  background: transparent; color: inherit; border: 1px solid color-mix(in srgb, currentColor 40%, transparent); border-radius: var(--radius);
+  transition: background-color 0.2s, border-color 0.2s, color 0.2s;
+}
+.act:hover { border-color: currentColor; background: color-mix(in srgb, currentColor 8%, transparent); }
+.act:disabled { opacity: 0.6; cursor: progress; }
+.act[aria-expanded="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+@media (pointer: coarse) { .act { min-height: var(--tap); } }
+
+@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
+@keyframes unfold { from { opacity: 0; transform: translateY(-6px); } }
+
+/* ------------------------------------------------------------ the shelf */
+.deskHead { padding-top: clamp(28px, 5vw, 56px); display: grid; gap: 14px; }
+.deskTitle { font-size: clamp(2.6rem, 5.6vw, 4.4rem); margin-top: 4px; }
+.deskTitle::first-letter { color: var(--accent); }
+.lead { max-width: 62ch; font-size: 1.1rem; line-height: 1.6; color: var(--ink-2); }
+.deskHead :global(.meander) { margin-top: clamp(18px, 4vw, 40px); }
+
+.shelfSec { margin-top: var(--after-head); }
+.secHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 18px; }
+.secHead h2 { font-size: var(--step-2); }
+.count { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--ink-2); }
+.empty { font-style: italic; color: var(--ink-2); padding-block: 12px; }
+
+/* what was just done: a tick drawn in, and a way to read what was saved */
+.done {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 16px; padding: 10px 14px;
+  background: var(--surface); border-left: 3px solid var(--ok); animation: rise 0.45s var(--ease) backwards;
+}
+.done svg {
+  flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
+  stroke-dasharray: 18; animation: tick 0.5s var(--ease) 0.2s backwards;
+}
+@keyframes tick { from { stroke-dashoffset: 18; } }
+
+/* each translation, a black-gloss panel with a band of added red along its top, rising into place in turn */
+.shelf { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
+.book {
+  --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
+  --ochre: #D9A15A; --blue: #8FB0CC; --ok: #7CC08E; --rule: color-mix(in srgb, var(--inv-fg) 30%, transparent);
+  display: flex; flex-direction: column; background: var(--inv-bg); color: var(--inv-fg);
+  border: 1px solid var(--inv-edge); border-radius: var(--radius);
+  box-shadow: inset 0 3px 0 var(--accent), 0 14px 30px -22px var(--shadow);
+  animation: rise 0.6s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 8) * 70ms);
+  transition: transform 0.25s var(--ease), box-shadow 0.25s;
+}
+.book:has(.bookLink:hover) { transform: translateY(-3px); box-shadow: inset 0 3px 0 var(--accent), 0 22px 36px -24px var(--shadow); }
+.bookLink { flex: 1; display: grid; align-content: start; gap: 4px; padding: 24px 22px 18px; color: inherit; text-decoration: none; }
+.bookLink:focus-visible { outline-offset: -5px; }
+.bookGr { font-family: var(--f-greek); font-size: 1.3rem; line-height: 1.3; color: var(--accent); }
+.bookTitle { font-family: var(--f-display); font-weight: 400; font-size: 1.55rem; line-height: 1.12; text-wrap: balance; }
+.bookBy { color: var(--ink-2); }
+.bookGo { margin-top: 12px; font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--accent); transition: transform 0.25s var(--ease); }
+.bookLink:hover .bookGo { transform: translateX(4px); }
+.bookFoot { display: grid; gap: 10px; padding: 12px 22px 16px; border-top: 1px solid var(--rule); }
+.bookMeta { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; font-size: 0.85rem; color: var(--ink-2); }
+.bookActs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.bookActs .error { flex-basis: 100%; font-size: 0.85rem; }
+
+/* "are you sure?", asked in the page */
+.ask {
+  flex-basis: 100%; display: grid; gap: 10px; padding: 12px 14px; font-size: 0.9rem; line-height: 1.45;
+  border: 1px solid var(--accent); border-radius: var(--radius); animation: unfold 0.3s var(--ease) backwards;
+}
+.askRow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.ask :global(.chip) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); transition: background-color 0.2s; }
+.ask :global(.chip):hover { background: color-mix(in srgb, var(--accent) 22%, transparent); }
+
+/* ------------------------------------------------------------ adding or updating a translation */
+.add {
+  margin-top: clamp(40px, 6vw, 64px); padding: clamp(20px, 3vw, 32px); display: grid; gap: 14px; justify-items: start;
+  border: 1.5px dashed var(--rule); border-radius: 6px; background: color-mix(in srgb, var(--surface) 55%, transparent);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+.add[data-over] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.add h2 { font-size: var(--step-2); }
+.addLead { max-width: 64ch; color: var(--ink-2); }
+.problems {
+  justify-self: stretch; display: grid; gap: 8px; padding: 14px 18px; background: var(--surface);
+  border-left: 3px solid var(--accent); animation: rise 0.35s var(--ease) backwards;
+}
+.problems ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
+.problems li::marker { color: var(--accent); }
+.preview {
+  justify-self: stretch; display: grid; gap: 14px; padding: clamp(18px, 2.4vw, 26px); background: var(--surface);
+  border: 1px solid var(--rule); border-top: 3px solid var(--ink); border-radius: var(--radius); animation: rise 0.4s var(--ease) backwards;
+}
+.previewGr { font-size: 1.25rem; color: var(--accent); }
+.previewTitle { font-size: var(--step-2); }
+.facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; }
+.facts dt, .about dt { font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.08em; color: var(--ink-2); }
+.facts dd { margin: 2px 0 0; overflow-wrap: anywhere; }
+
+/* ------------------------------------------------------------ the reader */
+.reading { --ref-w: 76px; --col-gap: clamp(18px, 2.6vw, 40px); --band-pad: clamp(10px, 1.6vw, 20px); }
+.docHead { padding-top: clamp(24px, 4vw, 40px); display: grid; gap: 14px; }
+.docTitle { margin-top: 2px; }
+.docTitle::first-letter { color: var(--accent); }
+.docGr { display: block; font-size: 0.5em; margin-top: 8px; letter-spacing: 0.01em; }
+.docBy { font-family: var(--f-display); font-size: 1.4rem; color: var(--ink-2); }
+.about { margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 12px 36px; font-size: 0.95rem; }
+.about > div { max-width: 48ch; }
+.about dd { margin: 2px 0 0; }
+.docHead :global(.meander) { margin-top: clamp(16px, 3vw, 30px); }
+.messageTitle { font-size: var(--step-3); }
+.message { padding-block: 24px 60px; display: grid; gap: 16px; justify-items: start; max-width: 70ch; }
+
+/* the introduction opens with a red initial, as a rubricated book would */
+.intro { max-width: 68ch; margin-top: var(--after-head); font-size: 1.1rem; line-height: 1.75; }
+.intro p + p { margin-top: 0.85em; }
+.intro > p:first-child::first-letter {
+  float: left; font-family: var(--f-display); font-size: 3.3em; line-height: 0.82; padding: 0.08em 0.12em 0 0; color: var(--accent);
+}
+.key { display: flex; align-items: baseline; gap: 12px; max-width: 68ch; margin-top: 20px; font-size: 0.92rem; color: var(--ink-2); }
+.keyMark { flex: none; font-family: var(--f-greek); color: var(--accent); letter-spacing: 0.12em; }
+
+.contents { margin-top: 28px; display: grid; gap: 6px; }
+.contents ol { list-style: none; margin: 0; padding: 0; columns: 2 280px; column-gap: 32px; }
+.contents li { break-inside: avoid; }
+.contents a { display: flex; gap: 10px; align-items: baseline; padding-block: 5px; text-decoration: none; }
+.contents a:hover { color: var(--accent); }
+.cNum { flex: none; min-width: 1.6em; font-family: var(--f-label); font-size: 0.85rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+
+/* the bar that follows the page down: the published English on or off, and Download */
+.bar {
+  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5; transition: top 0.35s var(--ease);
+  margin-top: clamp(24px, 4vw, 36px); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px;
+  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--rule);
+}
+.barSize { font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }
+.barEnd { margin-left: auto; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
+
+/* a passage: its place and heading over the Greek column, then its rows on a ruled band, then its notes */
+.passage { margin-top: clamp(32px, 5vw, 52px); outline: none; animation: rise 0.7s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 4) * 90ms + 0.1s); }
+/* reached by a link: clear of the site header and the bar that follows the page */
+.reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-h) + 76px); }
+.passageHead { display: grid; gap: 4px; margin-bottom: 12px; padding-left: calc(var(--ref-w) + var(--col-gap) + var(--band-pad)); }
+/* the locator and the margin are in the text face, not small capitals, so a line number keeps its small letter ("1097a15") */
+.locator { font-size: 0.95rem; letter-spacing: 0.02em; color: var(--accent); font-variant-numeric: lining-nums; }
+.passageTitle { font-size: var(--step-2); }
+/* reached from the list of passages: the heading glows red for a moment */
+.passageTitle.flash { animation: ink 1.8s ease-out; }
+@keyframes ink { 0%, 30% { color: var(--accent); } }
+
+.heads, .line {
+  display: grid; column-gap: var(--col-gap);
+  grid-template-columns: var(--ref-w) minmax(0, 1.12fr) minmax(0, 1fr);
+  grid-template-areas: "ref grc ours";
+}
+[data-pub] .heads, [data-pub] .line {
+  grid-template-columns: var(--ref-w) minmax(0, 1.08fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-areas: "ref grc ours pub";
+}
+.heads { padding: 0 var(--band-pad) 8px; font-family: var(--f-label); font-size: 0.82rem; letter-spacing: 0.08em; color: var(--ink-2); }
+.hGrc { grid-area: grc; }
+.hOurs { grid-area: ours; padding-left: clamp(14px, 1.8vw, 24px); }
+.hPub { grid-area: pub; padding-left: clamp(14px, 1.8vw, 24px); animation: wipe 0.55s var(--ease) backwards; }
+
+.lines { background: var(--surface); border-top: 3px double var(--rule); border-bottom: 3px double var(--rule); padding: 2px var(--band-pad); }
+.line {
+  position: relative; margin-inline: calc(-1 * var(--band-pad)); padding: 16px var(--band-pad);
+  border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); outline: none; transition: background-color 0.25s;
+}
+.line:last-child { border-bottom: 0; }
+/* a faint wash under the row the pointer is on, so the eye keeps its line across the columns */
+.line:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+.line:focus-visible { box-shadow: inset 3px 0 0 var(--accent); }
+.flash { animation: flash 2.4s ease-out; }
+@keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
+
+.margin {
+  grid-area: ref; text-align: right; padding-top: 0.4em; font-size: 0.88rem; letter-spacing: 0.02em;
+  line-height: 1.35; font-variant-numeric: lining-nums tabular-nums; overflow-wrap: anywhere;
+}
+.refName { color: var(--accent); }
+.refLink { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 3px; color: var(--accent); text-decoration: none; }
+.refLink:hover .refName { text-decoration: underline; text-underline-offset: 3px; }
+.go { font-size: 0.9em; transition: transform 0.2s var(--ease); }
+.refLink:hover .go { transform: translate(2px, -2px); }
+@media (pointer: coarse) { .refLink { padding-block: 10px; margin-block: -10px; } }
+/* the words "open in the reader": spoken by screen readers everywhere, shown on phones */
+.goText, .cellLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.grc { grid-area: grc; font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
+.ours { grid-area: ours; font-size: 1.06rem; line-height: 1.72; color: var(--ink); border-left: 1px solid var(--rule); padding-left: clamp(14px, 1.8vw, 24px); }
+.pub {
+  grid-area: pub; font-size: 0.98rem; line-height: 1.68; color: var(--ink-2); border-left: 1px dashed var(--rule); padding-left: clamp(14px, 1.8vw, 24px);
+  /* drawn in from the left when the column is turned on, row after row */
+  animation: wipe 0.55s var(--ease) backwards; animation-delay: calc(min(var(--j, 0), 10) * 22ms);
+}
+@keyframes wipe { from { clip-path: inset(0 100% 0 0); opacity: 0.2; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
+.grc p + p, .ours p + p, .pub p + p { margin-top: 0.65em; }
+.none { font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
+
+/* the light markup: words the editor thinks were added later, fainter, between their brackets */
+.added { color: var(--ink-2); text-decoration: underline dotted 1px color-mix(in srgb, var(--ink-2) 55%, transparent); text-underline-offset: 0.3em; cursor: help; }
+.bracket { color: var(--accent); font-size: 0.9em; }
+
+/* under the passage: notes and differences, lined up with the Greek */
+.apparatus {
+  display: grid; gap: 24px 44px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
+  padding: 24px 0 0 calc(var(--ref-w) + var(--col-gap) + var(--band-pad));
+}
+.appHead { font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.notes ol { list-style: none; margin: 0; padding: 0; counter-reset: note; display: grid; gap: 12px; }
+.notes li { counter-increment: note; display: grid; grid-template-columns: 1.8em minmax(0, 1fr); font-size: 0.97rem; line-height: 1.65; }
+.notes li::before { content: counter(note); font-family: var(--f-label); font-size: 0.85rem; color: var(--accent); padding-top: 0.12em; }
+.notes li > p { grid-column: 2; }
+.notes li > p + p { margin-top: 0.5em; }
+.diffs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+.diff { display: grid; gap: 8px; padding: 4px 0 4px 16px; border-left: 2px solid var(--accent); }
+.diffGr { font-size: calc(var(--greek-size) * 0.95); line-height: 1.45; color: var(--accent); }
+.pair { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 6px 22px; }
+.pair dt { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); }
+.pair dd { margin: 2px 0 0; font-size: 0.97rem; line-height: 1.5; color: var(--ink-2); }
+.pairOurs dd { color: var(--ink); }
+.why { font-size: 0.95rem; line-height: 1.6; }
+.why p + p { margin-top: 0.5em; }
+.seeIt {
+  justify-self: start; padding: 4px 0; background: none; border: 0; font-family: var(--f-label); font-size: 0.82rem; letter-spacing: 0.06em;
+  color: var(--accent); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 3px;
+}
+.seeIt:hover { text-decoration-color: currentColor; }
+@media (pointer: coarse) { .seeIt { min-height: var(--tap); } }
+
+/* middle widths: with the published English on, it goes under ours, and the Greek spans both */
+@media (min-width: 761px) and (max-width: 1100px) {
+  .reading { --ref-w: 64px; }
+  [data-pub] .heads, [data-pub] .line {
+    grid-template-columns: var(--ref-w) minmax(0, 1fr) minmax(0, 1fr);
+    grid-template-areas: "ref grc ours" "ref grc pub";
+  }
+  .hPub { display: none; }
+  .pub { border-left-style: solid; border-top: 1px dashed var(--rule); padding-top: 12px; margin-top: 12px; }
+  .pub .cellLabel {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
+    display: block; margin-bottom: 4px; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; line-height: 1.3;
+  }
+}
+
+/* phones: each row stacked, its reference above it */
+@media (max-width: 760px) {
+  .reading { --ref-w: 0px; --band-pad: var(--gutter); }
+  .heads { display: none; }
+  .line, [data-pub] .line { grid-template-columns: minmax(0, 1fr); grid-template-areas: "ref" "grc" "ours" "pub"; row-gap: 10px; padding-block: 14px 18px; }
+  .margin { text-align: left; padding-top: 0; }
+  .margin:empty { display: none; }
+  .refLink { justify-content: flex-start; gap: 0 8px; }
+  .go { order: 2; }
+  .goText {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
+    font-family: var(--f-label); font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-2);
+  }
+  .ours { border-left: 0; padding-left: 0; }
+  .pub { border-left: 0; padding-left: 0; border-top: 1px dashed var(--rule); padding-top: 10px; }
+  [data-pub] .ours .cellLabel, .pub .cellLabel {
+    position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
+    display: block; margin-bottom: 4px; font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; line-height: 1.3; color: var(--ink-2);
+  }
+  .lines { margin-inline: calc(-1 * var(--gutter)); border-inline: 0; }
+  .passageHead, .apparatus { padding-left: 0; }
+  .bar { position: static; }
+  .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-h) + 16px); }
+}
