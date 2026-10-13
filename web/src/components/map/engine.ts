@@ -9,6 +9,12 @@ import { loadReliefMeta, Relief } from "./relief";
 
 const KM_PER_UNIT = 1.1132;   // a map unit is a hundredth of a degree of latitude
 export const MAX_ZOOM = 14;    // times the opening view
+/**
+ * Only the famous are named at the opening view (places the library names 400 times or more, about the top
+ * fifty); as the map is zoomed in the bar falls, so lesser places earn their names, until at the closest zoom
+ * every place can be named. z is how far in from the opening view.
+ */
+export const nameBar = (z: number) => Math.max(0, 400 * (Math.max(1, z) ** -1.2 - MAX_ZOOM ** -1.2));
 const ease = (u: number) => (u < 0.5 ? 4 * u * u * u : 1 - (-2 * u + 2) ** 3 / 2);
 const fmt = (n: number) => n.toLocaleString("en-GB");
 
@@ -240,31 +246,36 @@ export class MapEngine {
       const shown = new Set<string>();
       for (const [id, a] of this.dotA) if (a > 0.5) shown.add(id);
       const prefer = new Map<string, Label["align"]>();
-      for (const [id, e] of this.labA) if (e.on) prefer.set(id, e.l.align);
+      for (const e of this.labA.values()) if (e.on) prefer.set(e.l.key, e.l.align);
       const only = full ? undefined : new Set([...(this.lay?.dots ?? []).map((t) => t.p.id), ...(this.lay?.labels ?? []).map((l) => l.key)]);
       // whether a name sits on the sea: a lookup in a small grid of the coastline
       this.onSeaMap ??= seaMask(this.lods[Math.min(3, this.lods.length - 1)].sea, this.W, this.H);
       const mask = this.onSeaMap, onSea = (x: number, y: number) => mask((x - v.tx) / v.k, (y - v.ty) / v.k);
       g.setTransform(1, 0, 0, 1, 0, 0);
-      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only });
+      this.lay = layout(g, this.pts, v, w, h, { look, greek: op.greek, kinds: op.kinds, selected: op.selected, saved: op.saved, shown, avoid: this.avoid, onSea, prefer, only, nameBar: nameBar(this.home ? v.k / this.home.k : 1) });
       this.laidFor = full ? key : "moving";
+      // each name's offset from its place, taken once, where it was laid out: from then on the name is drawn at
+      // that offset wherever the place goes, so it stays fixed to it while the map moves. A name that has to
+      // move to another side of its place does not jump there: the old one fades out where it was and the new
+      // one fades in.
+      for (const e of this.labA.values()) e.on = false;
+      for (const l of this.lay.labels) {
+        const t = this.byId.get(l.key)!, dx = l.x - (t.x * v.k + v.tx), dy = l.y - (t.y * v.k + v.ty);
+        const id = `${l.key}|${Math.round(dx)}|${Math.round(dy)}`, was = this.labA.get(id);
+        this.labA.set(id, { l, dx: was?.dx ?? dx, dy: was?.dy ?? dy, a: was?.a ?? 0, on: true });
+      }
     }
     const step = op.reduce ? 1 : Math.min(1, dt / 200);
     let fading = key !== this.laidFor;   // come back to lay out the view where it rests
     const want = new Set(this.lay!.dots.map((t) => t.p.id));
     for (const id of want) { const a = Math.min(1, (this.dotA.get(id) ?? 0) + step); this.dotA.set(id, a); if (a < 1) fading = true; }
     for (const [id, a] of this.dotA) if (!want.has(id)) { const b = a - step; if (b <= 0) this.dotA.delete(id); else { this.dotA.set(id, b); fading = true; } }
-    for (const e of this.labA.values()) e.on = false;
-    for (const l of this.lay!.labels) {
-      const t = this.byId.get(l.key)!, sx = t.x * v.k + v.tx, sy = t.y * v.k + v.ty;
-      this.labA.set(l.key, { l, dx: l.x - sx, dy: l.y - sy, a: this.labA.get(l.key)?.a ?? 0, on: true });
-    }
     const labels: { l: Label; a: number; t: Pt }[] = [];
     for (const [id, e] of this.labA) {
       e.a = e.on ? Math.min(1, e.a + step) : e.a - step;
       if (e.a <= 0) { this.labA.delete(id); continue; }
       if (e.a < 1) fading = true;
-      const t = this.byId.get(id)!;
+      const t = this.byId.get(e.l.key)!;
       e.l.x = t.x * v.k + v.tx + e.dx; e.l.y = t.y * v.k + v.ty + e.dy;
       labels.push({ l: e.l, a: e.a, t });
     }
