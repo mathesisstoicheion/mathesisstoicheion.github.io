@@ -1,7 +1,7 @@
 import { describe, expect, it, beforeEach } from "vitest";
 import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
-import { STATIC_PAGES, DEV_PAGES, offlinePages } from "@/config/pages";
+import { STATIC_PAGES, DEV_PAGES, ADMIN_PAGES, offlinePages } from "@/config/pages";
 import { LESSONS } from "@/data/lessons";
 import { GUIDES } from "@/data/guides";
 import { CHECKPOINTS } from "@/data/checkpoints";
@@ -10,7 +10,7 @@ import { snapRect, clampRect, snapFor, expandHref } from "./float";
 import { pageKey, recordVisit, trail, lastOtherPage, saveScroll, savedScroll } from "./resume";
 
 describe("the offline copy", () => {
-  it("keeps every page of the site (except the development-only studio)", () => {
+  it("keeps every page of the site (except the development-only studio and the moderator's own pages)", () => {
     const pages: string[] = [];
     const walk = (dir: string, route: string) => {
       for (const f of readdirSync(dir)) {
@@ -25,6 +25,8 @@ describe("the offline copy", () => {
       if (DEV_PAGES.includes(p)) continue;
       if (p === "/academy/lesson/[id]/practice" || p === "/academy/lesson/[id]/test") { for (const l of LESSONS) expect(kept.has(p.replace("[id]", l.id)), l.id).toBe(true); continue; }
       if (p === "/academy/checkpoint/[id]") { for (const c of CHECKPOINTS) expect(kept.has(`/academy/checkpoint/${c.id}`), c.id).toBe(true); continue; }
+      // the moderator's pages need the database: never fetched into every visitor's offline copy
+      if (ADMIN_PAGES.includes(p)) { expect(kept.has(p), p).toBe(false); continue; }
       if (p === "/academy/lesson/[id]") { for (const l of LESSONS) expect(kept.has(`/academy/lesson/${l.id}`), l.id).toBe(true); continue; }
       if (p === "/academy/guide/[id]") { for (const g of GUIDES) expect(kept.has(`/academy/guide/${g.id}`), g.id).toBe(true); continue; }
       if (p === "/stoa/[slug]") { for (const e of ENTRIES) expect(kept.has(`/stoa/${e.slug}`), e.slug).toBe(true); continue; }
@@ -32,6 +34,8 @@ describe("the offline copy", () => {
       if (p === "/author/[id]" || p === "/work/[id]") { expect(kept.has(p), p).toBe(false); continue; }
       expect(STATIC_PAGES, p).toContain(p);
     }
+    // and the list of the moderator's pages names real pages
+    for (const a of ADMIN_PAGES) expect(pages, a).toContain(a);
   });
 });
 
@@ -77,6 +81,11 @@ describe("where you left off", () => {
   });
   it("never remembers the recording studio", () => {
     recordVisit("/academy/studio", "Studio", 1);
+    expect(trail()).toEqual([]);
+  });
+  it("never lists the moderator's private pages among the recent pages", () => {
+    recordVisit("/admin/translations?id=test-placeholder", "Private translations", 1);
+    recordVisit("/admin/translations", "Private translations", 2);
     expect(trail()).toEqual([]);
   });
   it("remembers how far down each page was", () => {
