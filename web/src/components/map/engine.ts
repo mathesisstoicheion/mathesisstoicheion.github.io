@@ -98,7 +98,7 @@ export class MapEngine {
       // open on the Aegean; the whole map is the furthest you can zoom out
       const [[x0, y0], [x1, y1]] = this.opening;
       const k = Math.min(w / (x1 - x0), h / (y1 - y0));
-      this.home = this.clamp({ k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k });
+      this.home = this.clamp({ k, tx: w / 2 - ((x0 + x1) / 2) * k, ty: h / 2 - ((y0 + y1) / 2) * k }, false);
       this.v = this.home;
       this.onHome();
     }
@@ -123,11 +123,15 @@ export class MapEngine {
 
   /** the zoom kept between the whole map and MAX_ZOOM times the opening view */
   limitK(k: number) { return Math.max(Math.min(this.w / this.W, this.h / this.H), Math.min(this.home ? this.home.k * MAX_ZOOM : k, k)); }
-  clamp(v: View): View {
+  clamp(v: View, loose = true): View {
     const k = this.limitK(v.k), { w, h, W, H } = this;
-    // the picture stops at its edges: where the map is wider (or taller) than the frame, it cannot be dragged
-    // past them; where it is narrower, it sits in the middle
-    const axis = (t: number, frame: number, size: number) => (size * k >= frame ? Math.min(0, Math.max(frame - size * k, t)) : (frame - size * k) / 2);
+    // the picture can be dragged a little past its edges (a third of the frame), so the map moves freely in
+    // every direction, even diagonally beside an edge, instead of sliding along it; where the map is narrower
+    // than the frame it moves about the middle
+    const axis = (t: number, frame: number, size: number) => {
+      const slack = loose ? frame / 3 : 0, lo = Math.min(0, frame - size * k), hi = Math.max(0, frame - size * k);
+      return Math.min(hi + slack, Math.max(lo - slack, t));
+    };
     return { k, tx: axis(v.tx, w, W), ty: axis(v.ty, h, H) };
   }
   stop() { this.motion = null; }
@@ -256,6 +260,15 @@ export class MapEngine {
       m.vx *= d; m.vy *= d; m.lv *= Math.exp(-dt / 160);
       if (k === v.k) m.lv = 0;   // at the furthest or closest zoom: stop zooming
       if (Math.hypot(m.vx, m.vy) > 0.015 || Math.abs(m.lv) > 0.00006) moving = true; else this.motion = null;
+    }
+    if (!this.motion) {
+      // past the picture's edge when the hand lets go: spring back to it
+      const strict = this.clamp(this.v, false);
+      if (Math.abs(strict.tx - this.v.tx) > 0.5 || Math.abs(strict.ty - this.v.ty) > 0.5) {
+        if (performance.now() - this.touchedAt < 160) moving = true;   // still in hand: look again next frame
+        else if (this.opts.reduce) this.v = strict;
+        else { this.go(strict, 380); cancelAnimationFrame(this.raf); this.raf = 0; moving = true; }   // go asks for a frame; this one asks below
+      }
     }
     const fading = this.draw(dt);
     if (moving || fading) this.raf = requestAnimationFrame(this.frame);
