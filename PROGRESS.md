@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Lessons that stick: practise, test, refresh (2026-10-11; draft, not yet published)
+## Lessons that stick: practise, test, refresh, checkpoints (2026-10-11 and 13; draft, not yet published)
 The owner: "besides the gamified games for learning, we also need proper lessons ... to make the words and things you've learned
 stick". Each of the 18 lessons now has four steps: **learn** (the lesson as before), **practise**, **pass the test**, **refresh**.
 - **The questions** (`lib/workout.ts`) are made from material already checked elsewhere, never written for the workout: the
@@ -21,7 +21,13 @@ stick". Each of the 18 lessons now has four steps: **learn** (the lesson as befo
 - Tests: `lib/workout.test.ts` (every lesson has a test of at least 5 well-formed questions; wrong answers never also right;
   written forms; the refresh schedule); `e2e/academy.spec.ts` +2. Checked wide (light) and phone (dark). Not yet tried with
   the live LSJ pack (it is not reachable from the build machine): words without a core-list meaning get theirs from LSJ there.
-- Next, if the owner wants them: a mixed checkpoint test every four or five lessons, and lesson refreshes inside Today's session.
+- **Checkpoints** (2026-10-13, the owner: "I like that. Go on"): four mixed tests (`data/checkpoints.ts`): I after lessons 1–4,
+  II after 5–8, III after 9–13, IV after 14–18, at `/academy/checkpoint/<id>`. Fifteen questions shared over the stretch's lessons
+  (`checkpointRound`), 12 to pass; a failed one names the lessons to go back to. Passed checkpoints are kept as `checkpoint:<id>`
+  in `mastery` and come back for refreshes like a lesson. They sit in the lesson list after their last lesson; the progress panel
+  suggests one once all its lessons are done (`lib/refreshes.ts`).
+- **Today's session** gains a page, "A refresh" (ἀνανέωσις), when a lesson or checkpoint refresh is due: its test, inside the
+  session (`SessionRefresh.tsx`, loaded only then, so the session page does not carry the lessons otherwise).
 
 ## The logo (2026-10-11)
 The owner chose the **Stoichedon** mark from four concepts: the word ΣΤΟΙΧΕΙΑ cut in a 3 × 3 grid, as Athenian inscriptions of the

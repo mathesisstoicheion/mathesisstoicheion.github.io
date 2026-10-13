@@ -201,5 +201,19 @@ export function warmUp(lesson: Lesson, glosses: Record<string, string>, rand: Ra
   return spread(earlier, 3, rand);
 }
 
+export const CHECKPOINT_LENGTH = 15;
+
+/** A checkpoint: fifteen questions shared out over a stretch of lessons, so each lesson is asked about. */
+export function checkpointRound(lessons: Lesson[], glosses: Record<string, string>, rand: Rand = Math.random): Question[] {
+  const per = Math.ceil(CHECKPOINT_LENGTH / lessons.length);
+  const asked = new Set<string>();
+  const out: Question[] = [];
+  for (const l of shuffle(lessons, rand)) {
+    for (const q of spread(lessonPool(l, glosses, rand).filter((x) => !asked.has(x.about)), per, rand)) { asked.add(q.about); out.push(q); }
+  }
+  // fewer than `per` from a small lesson leaves room; trim from the lessons that gave most
+  return shuffle(out, rand).slice(0, CHECKPOINT_LENGTH);
+}
+
 /** The words a round needs meanings for: this lesson's and every earlier one's. */
 export const wordsFor = (lesson: Lesson) => [...new Set([...earlierLessons(lesson), lesson].flatMap((l) => l.words))];

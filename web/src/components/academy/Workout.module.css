@@ -87,3 +87,8 @@
 
 /* on a phone the questions start on the first screen: the page's introduction gives way */
 @media (max-width: 600px) { .pageIntro { display: none; } }
+
+/* a checkpoint in the lesson list: a band across the path, its numeral in a ring */
+.cpRow { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%); }
+.cpItem { border-bottom: 3px double var(--rule) !important; }
+.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font: 1.05rem var(--f-display); }

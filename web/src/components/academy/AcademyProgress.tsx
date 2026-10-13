@@ -4,13 +4,14 @@ import Link from "next/link";
 import { useMemo } from "react";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { useAcademy, dueCards, streak, knownLemmas } from "@/lib/academy";
-import { refreshDue } from "@/lib/mastery";
+import { dueRefreshes, readyCheckpoint } from "@/lib/refreshes";
 import styles from "./Academy.module.css";
 
 /** Where the learner stands, and what to do next. */
 export default function AcademyProgress() {
   const { completed, days, deck, mastery } = useAcademy();
-  const refresh = LESSONS.find((l) => refreshDue(mastery[l.id]));
+  const refresh = dueRefreshes(mastery)[0];
+  const checkpoint = readyCheckpoint(completed, mastery);
   const done = LESSONS.filter((l) => completed[l.id]).length;
   const next = LESSONS.find((l) => !completed[l.id]);
   const due = useMemo(() => dueCards(deck).length, [deck]);
@@ -28,7 +29,8 @@ export default function AcademyProgress() {
       </div>
       <div className={styles.nextStep}>
         <span className="label">Next step</span>
-        {refresh && <p>Lesson {LESSONS.indexOf(refresh) + 1} is due for a refresh. <Link href={`/academy/lesson/${refresh.id}/test`} transitionTypes={["page-turn"]}>Refresh {refresh.title} →</Link></p>}
+        {refresh && <p>{refresh.name} is due for a refresh. <Link href={refresh.href} transitionTypes={["page-turn"]}>Refresh {refresh.title} →</Link></p>}
+        {checkpoint && <p>You have done every lesson before Checkpoint {checkpoint.numeral}. <Link href={`/academy/checkpoint/${checkpoint.id}`} transitionTypes={["page-turn"]}>Test them together →</Link></p>}
         {due > 0
           ? <p>You have {due} word{due === 1 ? "" : "s"} to review. <Link href="/academy/review" transitionTypes={["page-turn"]}>Start today&apos;s review →</Link></p>
           : next

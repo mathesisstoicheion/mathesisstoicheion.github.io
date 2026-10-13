@@ -2,14 +2,16 @@
 /**
  * A lesson's workout: the practice (anything missed comes back at the end of the round, and a third of the
  * questions are from earlier lessons), the test (ten questions on this lesson, 8 right to pass) and the
- * warm-up (three quick questions from earlier lessons, at the top of a lesson). The questions are made in
+ * warm-up (three quick questions from earlier lessons, at the top of a lesson); and a checkpoint, fifteen
+ * questions over a stretch of lessons (data/checkpoints.ts). The questions are made in
  * lib/workout.ts from material checked elsewhere on the site.
  */
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import type { Lesson } from "@/data/lessons";
 import { LESSONS } from "@/data/lessons";
-import { practiceRound, testRound, warmUp, wordsFor, isRightWritten, type Question } from "@/lib/workout";
+import { practiceRound, testRound, warmUp, checkpointRound, wordsFor, isRightWritten, type Question } from "@/lib/workout";
+import { checkpointKey, CHECKPOINT_GREEK, type Checkpoint } from "@/data/checkpoints";
 import { passMark, refreshDue, REFRESH_DAYS, type Mastery } from "@/lib/mastery";
 import { glossesFor } from "@/lib/glosses";
 import { useAcademy } from "@/lib/academy";
@@ -90,30 +92,42 @@ const PRAISE = ["Right.", "Yes.", "Well done.", "Exactly.", "Correct."];
 const pickPraise = (key: string) => PRAISE[[...key].reduce((a, c) => a + c.charCodeAt(0), 0) % PRAISE.length];
 
 /** The seal a passed lesson earns: stamped when the test is passed. */
-function Seal({ lesson, n, right, total }: { lesson: Lesson; n: number; right: number; total: number }) {
+function Seal({ label, greek, right, total }: { label: string; greek: string; right: number; total: number }) {
   return (
-    <svg className={styles.seal} viewBox="0 0 200 200" role="img" aria-label={`Lesson ${n} passed, ${right} of ${total}`}>
+    <svg className={styles.seal} viewBox="0 0 200 200" role="img" aria-label={`${label} passed, ${right} of ${total}`}>
       <circle cx="100" cy="100" r="92" className={styles.sealRim} />
       <circle cx="100" cy="100" r="80" className={styles.sealRing} pathLength={1} />
       <circle cx="100" cy="100" r="74" className={styles.sealIn} />
-      <text x="100" y="72" textAnchor="middle" className={styles.sealLabel}>LESSON {n}</text>
+      <text x="100" y="72" textAnchor="middle" className={styles.sealLabel}>{label.toUpperCase()}</text>
       <text x="100" y="112" textAnchor="middle" className={styles.sealScore}>{right}/{total}</text>
-      <text x="100" y="140" textAnchor="middle" className={styles.sealGr} lang="grc">{lesson.greek.length > 16 ? "" : lesson.greek}</text>
+      <text x="100" y="140" textAnchor="middle" className={styles.sealGr} lang="grc">{greek.length > 16 ? "" : greek}</text>
     </svg>
   );
 }
 
 const fmtDate = (t: number) => new Date(t).toLocaleDateString(undefined, { weekday: "long", day: "numeric", month: "long" });
 
-export default function Workout({ lesson, mode, onExit }: { lesson: Lesson; mode: Mode; onExit?: () => void }) {
-  const glosses = useGlosses(lesson);
-  const [round, setRound] = useState(0);
-  if (!glosses) return <p className="muted">Setting out the questions…</p>;
-  return <Round key={round} lesson={lesson} mode={mode} glosses={glosses} onExit={onExit} again={() => setRound((r) => r + 1)} />;
+interface Props {
+  lesson: Lesson;              // the lesson; for a checkpoint, the last lesson of its stretch
+  mode: Mode;
+  checkpoint?: Checkpoint;     // a checkpoint test (mode "test") over the checkpoint's lessons
+  embedded?: boolean;          // inside Today's session: no links away at the end
+  onExit?: () => void;
+  onFinish?: (passed: boolean) => void;   // a test or checkpoint has been marked
 }
 
-function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode: Mode; glosses: Record<string, string>; onExit?: () => void; again: () => void }) {
-  const [queue, setQueue] = useState<Question[]>(() => mode === "practice" ? practiceRound(lesson, glosses) : mode === "test" ? testRound(lesson, glosses)
+export default function Workout(props: Props) {
+  const glosses = useGlosses(props.lesson);
+  const [round, setRound] = useState(0);
+  if (!glosses) return <p className="muted">Setting out the questions…</p>;
+  return <Round key={round} {...props} glosses={glosses} again={() => setRound((r) => r + 1)} />;
+}
+
+function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, again }: Props & { glosses: Record<string, string>; again: () => void }) {
+  const cpLessons = checkpoint ? LESSONS.filter((l) => checkpoint.lessons.includes(l.id)) : [];
+  const recordId = checkpoint ? checkpointKey(checkpoint.id) : lesson.id;
+  const [queue, setQueue] = useState<Question[]>(() => checkpoint ? checkpointRound(cpLessons, glosses)
+    : mode === "practice" ? practiceRound(lesson, glosses) : mode === "test" ? testRound(lesson, glosses)
     : warmUp(lesson, glosses, Math.random, new Set(Object.keys(useAcademy.getState().completed))));
   const [at, setAt] = useState(0);
   const [answer, setAnswer] = useState<Answer | null>(null);
@@ -127,7 +141,7 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
   const nextBtn = useRef<HTMLButtonElement>(null);
   const n = LESSONS.findIndex((l) => l.id === lesson.id) + 1;
   // a refresh is the test taken when it is due (decided at the start, before the result moves the date)
-  const [refresh] = useState(() => mode === "test" && refreshDue(useAcademy.getState().mastery[lesson.id]));
+  const [refresh] = useState(() => mode === "test" && refreshDue(useAcademy.getState().mastery[recordId]));
 
   useEffect(() => { if (answer) nextBtn.current?.focus({ preventScroll: true }); }, [answer]);
 
@@ -153,12 +167,13 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
   const next = () => {
     const done = at + 1 >= queue.length;
     if (done && mode === "test") {
-      const m = record(lesson.id, right, total);
+      const m = record(recordId, right, total);
       setResult(m);
+      onFinish?.(right >= passMark(total));
       if (m.passed) {
-        // passing puts the lesson's words in the daily review
+        // passing puts the lesson's words (a checkpoint's: all its lessons') in the daily review
         let k = 0;
-        for (const w of lesson.words) if (glosses[w] && addCard(w, glosses[w], "lesson")) k++;
+        for (const w of checkpoint ? cpLessons.flatMap((l) => l.words) : lesson.words) if (glosses[w] && addCard(w, glosses[w], "lesson")) k++;
         setAdded(k);
         buzz("done");
       }
@@ -190,23 +205,37 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
     );
     const passed = right >= passMark(total);
     const nextLesson = LESSONS[n];
+    // a checkpoint's misses are named by lesson, so the learner knows which to go back to
+    const missedLessons = [...new Set(queue.filter((x) => first[x.key] === false).map((x) => x.lesson))]
+      .map((id) => ({ id, n: LESSONS.findIndex((l) => l.id === id) + 1 })).sort((a, b) => a.n - b.n);
     return (
       <div className={styles.end}>
-        {passed ? <Seal lesson={lesson} n={n} right={right} total={total} /> : <p className={styles.endBig}>{right} of {total}</p>}
+        {passed
+          ? <Seal label={checkpoint ? `Checkpoint ${checkpoint.numeral}` : `Lesson ${n}`} greek={checkpoint ? CHECKPOINT_GREEK : lesson.greek} right={right} total={total} />
+          : <p className={styles.endBig}>{right} of {total}</p>}
         {passed ? (
           <>
-            <p className={styles.endBig}>{refresh ? "Refreshed." : "Lesson passed."}</p>
+            <p className={styles.endBig}>{refresh ? "Refreshed." : checkpoint ? "Checkpoint passed." : "Lesson passed."}</p>
             <p>
-              {added > 0 && <>{added} word{added === 1 ? "" : "s"} from this lesson joined your daily review. </>}
+              {added > 0 && <>{added} word{added === 1 ? "" : "s"} from {checkpoint ? "these lessons" : "this lesson"} joined your daily review. </>}
               {result && <>It will come back for a short refresh on <b>{fmtDate(result.due)}</b>, so it stays with you.</>}
             </p>
           </>
         ) : (
           <>
-            <p>You need {passMark(total)} to pass{total < 10 ? ` this lesson's ${total} questions` : ""}. Nothing is lost: practise the parts you missed and try again.</p>
-            {missed.length > 0 && <p>Go over: {missed.map((t, i) => <span key={t}>{i ? ", " : ""}<Rich text={t} /></span>)}.</p>}
+            <p>You need {passMark(total)} to pass{!checkpoint && total < 10 ? ` this lesson's ${total} questions` : ""}. Nothing is lost: {checkpoint ? "go back to the lessons you missed and try again" : "practise the parts you missed and try again"}.</p>
+            {checkpoint
+              ? missedLessons.length > 0 && <p>Go back to: {missedLessons.map((x, i) => <span key={x.id}>{i ? ", " : ""}<Link href={`/academy/lesson/${x.id}/practice`} transitionTypes={["page-turn"]}>lesson {x.n}</Link></span>)}.</p>
+              : missed.length > 0 && <p>Go over: {missed.map((t, i) => <span key={t}>{i ? ", " : ""}<Rich text={t} /></span>)}.</p>}
           </>
         )}
+        {embedded ? null : checkpoint ? (
+          <div className={styles.endRow}>
+            {nextLesson && <Link className="btn" href={`/academy/lesson/${nextLesson.id}`} transitionTypes={["page-turn"]}>{passed ? "On to" : "Or carry on with"} lesson {n + 1} →</Link>}
+            <button type="button" className={nextLesson ? "btn ghost" : "btn"} onClick={again}>{passed ? "Take it again" : "Try again"}</button>
+            <Link className="btn ghost" href="/academy" transitionTypes={["page-turn"]}>Back to the Academy</Link>
+          </div>
+        ) : (
         <div className={styles.endRow}>
           {passed
             ? nextLesson && <Link className="btn" href={`/academy/lesson/${nextLesson.id}`} transitionTypes={["page-turn"]}>Next: {nextLesson.title} →</Link>
@@ -214,6 +243,7 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
           <button type="button" className="btn ghost" onClick={again}>{passed ? "Take it again" : "Try again"}</button>
           <Link className="btn ghost" href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>Back to the lesson</Link>
         </div>
+        )}
       </div>
     );
   }
@@ -227,7 +257,7 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
       </ol>
       <section key={`${at}:${q.key}`} className={styles.card} aria-live="polite">
         <span className="label">
-          {from ? <>From lesson {from}</> : mode === "test" ? (refresh ? "Refresh" : "Test") : "Practice"}
+          {checkpoint ? <>{refresh ? "Refresh" : `Checkpoint ${checkpoint.numeral}`} · lesson {from || n}</> : from ? <>From lesson {from}</> : mode === "test" ? (refresh ? "Refresh" : "Test") : "Practice"}
           {queue.indexOf(q) < at ? " · again" : ""}
         </span>
         <p className={styles.prompt}><Rich text={q.prompt} /></p>
@@ -241,8 +271,8 @@ function Round({ lesson, mode, glosses, onExit, again }: { lesson: Lesson; mode:
         {answer && <button ref={nextBtn} type="button" className="btn" onClick={next}>{at + 1 >= queue.length ? "See how you did" : "Next"} <span className="arr" aria-hidden="true">→</span></button>}
         {!answer && mode === "warmup" && onExit && <button type="button" className={styles.dunno} onClick={onExit}>Skip the warm-up</button>}
       </div>
-      {mode === "test" && at === 0 && !answer && (
-        <p className={styles.hint}>{queue.length} questions on this lesson, {passMark(queue.length)} right to pass. A passed lesson comes back for short refreshes, after {REFRESH_DAYS[0]} days, then {REFRESH_DAYS[1]}, then a month, so that it sticks.</p>
+      {mode === "test" && at === 0 && !answer && !embedded && (
+        <p className={styles.hint}>{queue.length} questions on {checkpoint ? `lessons ${LESSONS.findIndex((l) => l.id === checkpoint.lessons[0]) + 1} to ${n}` : "this lesson"}, {passMark(queue.length)} right to pass. Once passed, it comes back for short refreshes, after {REFRESH_DAYS[0]} days, then {REFRESH_DAYS[1]}, then a month, so that it sticks.</p>
       )}
     </div>
   );

@@ -72,3 +72,18 @@ describe("lesson workouts", () => {
     expect(passMark(6)).toBe(5);
   });
 });
+
+describe("checkpoints", () => {
+  it("cover every lesson in the app's order, and ask fifteen questions spread over their lessons", async () => {
+    const { CHECKPOINTS } = await import("@/data/checkpoints");
+    const { checkpointRound } = await import("./workout");
+    expect(CHECKPOINTS.flatMap((c) => c.lessons)).toEqual(LESSONS.map((l) => l.id));
+    for (const c of CHECKPOINTS) {
+      const ls = c.lessons.map((id) => LESSONS.find((l) => l.id === id)!);
+      const r = checkpointRound(ls, glosses);
+      expect(r).toHaveLength(15);
+      expect(new Set(r.map((q) => q.about)).size).toBe(15);
+      for (const l of ls) expect(r.some((q) => q.lesson === l.id), `${c.id}: ${l.id}`).toBe(true);
+    }
+  });
+});

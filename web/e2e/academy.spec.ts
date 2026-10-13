@@ -165,3 +165,16 @@ test("a written form counts in Latin letters without accents", async ({ page }) 
   }
   throw new Error("no written question came up");
 });
+
+test("a checkpoint asks fifteen questions over its lessons and names the lessons to go back to", async ({ page }) => {
+  await page.goto("/academy/checkpoint/first-steps");
+  await expect(page.getByText(/^1 of 15$/)).toBeVisible({ timeout: 30_000 });
+  for (let i = 0; i < 20; i++) {
+    const input = page.getByRole("textbox", { name: "Your answer" });
+    if (await input.count()) { await input.fill("x"); await page.getByRole("button", { name: "Check" }).click(); }
+    else if (await page.getByRole("group", { name: "Answers" }).count()) await page.getByRole("group", { name: "Answers" }).getByRole("button").first().click();
+    else break;
+    await page.getByRole("button", { name: /^(Next|See how you did)/ }).click();
+  }
+  await expect(page.getByText(/You need 12 to pass|Checkpoint passed/)).toBeVisible();
+});
