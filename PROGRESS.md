@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Lessons that stick: practise, test, refresh, checkpoints (2026-10-11 and 13; draft, not yet published)
+## Lessons that stick: practise, test, refresh, checkpoints (2026-10-11 and 13; published 2026-10-13 at the owner's word)
 The owner: "besides the gamified games for learning, we also need proper lessons ... to make the words and things you've learned
 stick". Each of the 18 lessons now has four steps: **learn** (the lesson as before), **practise**, **pass the test**, **refresh**.
 - **The questions** (`lib/workout.ts`) are made from material already checked elsewhere, never written for the workout: the
