@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 
-// The moderator's private translations (/admin/translations). A pretend account and a pretend database: nothing is
+// The moderator's private translations, in Mine (/treasury/translations). A pretend account and a pretend database: nothing is
 // sent to, or written in, the real one. The translations here are made-up placeholders: no real translation may
 // ever be in this repository, which is public.
 
@@ -117,28 +117,32 @@ test.use({ timezoneId: "UTC", locale: "en-GB" });
 
 test("signed out, the page only offers to sign in, and asks the database nothing", async ({ page }) => {
   const db = await pretend(page, { role: null });
-  await page.goto("/admin/translations");
+  await page.goto("/treasury/translations");
   const main = page.getByRole("main");
   await expect(main).toContainText("Sign in to open this page.");
-  await expect(main.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", "/account?next=%2Fadmin%2Ftranslations");
+  await expect(main.getByRole("link", { name: "Sign in" })).toHaveAttribute("href", "/account?next=%2Ftreasury%2Ftranslations");
   await expect(page.locator('meta[name="robots"]')).toHaveAttribute("content", /noindex/);
   expect(db.asked).toEqual([]);
 });
 
 test("signed in as anyone but the moderator, the page says only that it is private", async ({ page }) => {
   const db = await pretend(page, { role: "member" });
-  await page.goto("/admin/translations?id=placeholder-one");
+  await page.goto("/treasury/translations?id=placeholder-one");
   await expect(page.getByRole("heading", { level: 1, name: "This page is private." })).toBeVisible();
   await expect(page.getByRole("main")).toHaveText("This page is private.");
   await page.waitForTimeout(500);
   expect(db.asked).toEqual([]);
 });
 
-test("the moderator's desk links to the page; the shelf lists each translation and opens it", async ({ page }) => {
+test("Mine shows the moderator the way in, with how many there are; the shelf lists each translation and opens it", async ({ page }) => {
   const db = await pretend(page);
-  await page.goto("/town-hall/moderation");
-  await page.getByRole("link", { name: /Our own translations/ }).click();
-  await expect(page).toHaveURL(/\/admin\/translations$/);
+  await page.goto("/treasury");
+  const way = page.getByRole("link", { name: /Our own translations/ });
+  await expect(way).toContainText("Private · only you can see this");
+  await expect(way).toContainText("2 translations");
+  await way.click();
+  await expect(page).toHaveURL(/\/treasury\/translations$/);
+  await expect(page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { level: 1, name: "Private translations" })).toBeVisible();
   await expect(page.getByText("Private · only you can see this")).toBeVisible();
   await expect(page.getByText("2 translations")).toBeVisible();
@@ -156,14 +160,46 @@ test("the moderator's desk links to the page; the shelf lists each translation a
   expect(db.asked.some((q) => q.startsWith("GET") && q.includes("doc-%3E%3Etitle") && !/select=[^&]*%2Cdoc%2C/.test(q))).toBe(true);
 
   await one.getByRole("link", { name: /Placeholder Work One/ }).click();
-  await expect(page).toHaveURL(/\/admin\/translations\?id=placeholder-one$/);
+  await expect(page).toHaveURL(/\/treasury\/translations\?id=placeholder-one$/);
   await expect(page.getByRole("heading", { level: 1, name: /Placeholder Work One/ })).toBeVisible();
+
+  // and back to Mine
+  await page.getByRole("main").getByRole("link", { name: "The Treasury" }).click();
+  await expect(page).toHaveURL(/\/treasury$/);
+  await expect(page.getByRole("link", { name: /Our own translations/ })).toBeVisible();
+});
+
+for (const role of [null, "member"] as const) {
+  test(`Mine shows nobody else the way in, and asks the database for no translations (${role ?? "signed out"})`, async ({ page }) => {
+    const db = await pretend(page, { role });
+    await page.goto("/treasury");
+    await expect(page.getByRole("navigation", { name: "Sections of the Treasury" })).toBeVisible();
+    await page.waitForTimeout(1500);
+    await expect(page.getByText("Our own translations")).toHaveCount(0);
+    await expect(page.getByText("Private · only you can see this")).toHaveCount(0);
+    expect(db.asked).toEqual([]);
+  });
+}
+
+test("the first address leads to Mine, with the translation it named; the moderator's desk no longer has the way in", async ({ page }) => {
+  await pretend(page);
+  await page.goto("/admin/translations?id=placeholder-one");
+  await expect(page).toHaveURL(/\/treasury\/translations\?id=placeholder-one$/);
+  await expect(page.getByRole("heading", { level: 1, name: /Placeholder Work One/ })).toBeVisible();
+  await page.goto("/admin/translations");
+  await expect(page).toHaveURL(/\/treasury\/translations$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Private translations" })).toBeVisible();
+  expect(await (await page.request.get("/admin/translations")).text()).toContain('<meta name="robots" content="noindex');
+
+  await page.goto("/town-hall/moderation");
+  await expect(page.getByText("Nothing waiting. The Town Hall is calm.")).toBeVisible();
+  await expect(page.getByRole("link", { name: /Our own translations/ })).toHaveCount(0);
 });
 
 test("the reader: Greek beside our English, labels in the margin, notes and differences, and the published English at a touch", async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 });
   await pretend(page);
-  await page.goto("/admin/translations?id=placeholder-one");
+  await page.goto("/treasury/translations?id=placeholder-one");
   const h1 = page.getByRole("heading", { level: 1 });
   await expect(h1).toContainText("Placeholder Work One");
   await expect(h1).toContainText("Λόγος πρῶτος");
@@ -229,7 +265,7 @@ test("the reader: Greek beside our English, labels in the margin, notes and diff
 test("on a phone each row is stacked: its reference, the Greek, ours, then the published English", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await pretend(page, { pub: true });
-  await page.goto("/admin/translations?id=placeholder-one");
+  await page.goto("/treasury/translations?id=placeholder-one");
   const row1 = page.locator("#row-1-1");
   const ref = row1.getByRole("link", { name: /1a10/ });
   await expect(ref).toBeVisible();
@@ -246,7 +282,7 @@ test("on a phone each row is stacked: its reference, the Greek, ours, then the p
 
 test("adding a translation: the file is checked and shown first, then saved or replaced", async ({ page }) => {
   const db = await pretend(page, { start: [] });
-  await page.goto("/admin/translations");
+  await page.goto("/treasury/translations");
   await expect(page.getByText("Nothing is stored yet.")).toBeVisible();
   const input = page.locator('input[type="file"]');
   const file = (name: string, text: string) => ({ name, mimeType: "application/json", buffer: Buffer.from(text) });
@@ -283,7 +319,7 @@ test("adding a translation: the file is checked and shown first, then saved or r
 test("Download gives back the stored file in the format's order; Remove asks first, in the page", async ({ page }) => {
   const db = await pretend(page);
   page.on("dialog", (d) => { throw new Error(`a browser pop-up appeared: ${d.message()}`); });
-  await page.goto("/admin/translations");
+  await page.goto("/treasury/translations");
   const one = page.getByRole("main").getByRole("listitem").filter({ hasText: "Placeholder Work One" });
 
   const [download] = await Promise.all([page.waitForEvent("download"), one.getByRole("button", { name: "Download" }).click()]);
@@ -304,22 +340,26 @@ test("Download gives back the stored file in the format's order; Remove asks fir
 });
 
 for (const theme of ["light", "dark"] as const) {
-  test(`the shelf and the reader pass the accessibility check (${theme})`, async ({ page }) => {
+  test(`the way in from Mine, the shelf and the reader pass the accessibility check (${theme})`, async ({ page }) => {
     await pretend(page, { theme, pub: true });
     const check = async () => {
       await page.waitForTimeout(400);
-      const res = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+      // as in a11y.spec.ts: the big faint Greek word behind the empty Treasury is decoration (WCAG 1.4.3 exempts it)
+      const res = await new AxeBuilder({ page }).exclude("[data-decorative]").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical")
         .map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 5).map((n) => n.target.join(" ")) }));
       expect(bad, JSON.stringify(bad, null, 1)).toEqual([]);
     };
-    await page.goto("/admin/translations");
+    await page.goto("/treasury");
+    await expect(page.getByRole("link", { name: /Our own translations/ })).toContainText("2 translations");
+    await check();
+    await page.goto("/treasury/translations");
     const one = page.getByRole("main").getByRole("listitem").filter({ hasText: "Placeholder Work One" });
     await one.getByRole("button", { name: "Remove", exact: true }).click();
     await page.locator('input[type="file"]').setInputFiles({ name: "placeholder-two.json", mimeType: "application/json", buffer: Buffer.from(JSON.stringify(DOC_TWO)) });
     await expect(page.getByRole("button", { name: "Save it" })).toBeVisible();
     await check();
-    await page.goto("/admin/translations?id=placeholder-one");
+    await page.goto("/treasury/translations?id=placeholder-one");
     await expect(page.locator("#row-1-1").getByText("Published placeholder one.")).toBeVisible();
     await check();
   });
