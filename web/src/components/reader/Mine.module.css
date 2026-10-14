@@ -1,0 +1,102 @@
+/* The private collection's window in the reader (MineDialog.tsx): a shelf of the moderator's own books, and "Import a text". */
+.dialog {
+  width: min(820px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0;
+  border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); color: var(--ink);
+  box-shadow: 0 40px 80px -30px var(--shadow);
+}
+.dialog[open] { animation: rise 0.45s var(--ease); }
+.dialog::backdrop { background: rgba(10, 6, 3, 0.45); animation: fade 0.3s ease; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px) scale(0.985); } }
+@keyframes fade { from { opacity: 0; } }
+.inner { display: grid; gap: 18px; padding: 22px clamp(16px, 4vw, 28px) 26px; }
+
+.head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
+.title { font-size: clamp(1.7rem, 4vw, 2.3rem); margin-top: 10px; }
+.title::first-letter { color: var(--accent); }
+.x { width: 36px; height: 36px; flex: none; font-size: 24px; line-height: 1; background: transparent; color: inherit; border: 1px solid var(--rule); border-radius: var(--radius); }
+.seal {
+  display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
+  font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent);
+  border: 1px solid currentColor; border-radius: 999px;
+  animation: press 0.7s var(--ease) 0.2s backwards;
+}
+.seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
+@keyframes press {
+  from { opacity: 0; transform: scale(1.4) rotate(-8deg); }
+  60% { opacity: 1; transform: scale(0.96) rotate(1deg); }
+}
+
+/* two tabs, the chosen one underlined in red, the line sliding across */
+.tabs { display: flex; gap: 4px; border-bottom: 3px double var(--rule); }
+.tabs button {
+  position: relative; background: transparent; border: 0; color: var(--ink-2); padding: 10px 14px 12px;
+  font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px;
+}
+.tabs button[aria-selected="true"] { color: var(--ink); }
+.tabs button::after {
+  content: ""; position: absolute; left: 10px; right: 10px; bottom: -3px; height: 3px; background: var(--accent);
+  transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease);
+}
+.tabs button[aria-selected="true"]::after { transform: scaleX(1); }
+.n { font-size: 0.78rem; min-width: 1.6em; padding: 0 6px; border-radius: 999px; background: var(--bg-2); color: var(--ink-2); text-align: center; }
+
+.panel { display: grid; gap: 16px; overflow-y: auto; max-height: calc(100dvh - 240px); padding-right: 2px; animation: fade 0.3s ease; }
+.quiet { color: var(--ink-2); font-size: 0.92rem; }
+.foot { color: var(--ink-2); font-size: 0.88rem; }
+.error { color: var(--accent); font-weight: 600; }
+.warn { color: var(--accent); }
+.link { background: transparent; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font: inherit; cursor: pointer; justify-self: start; }
+.spinner {
+  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%;
+  border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* the books: cards that rise in turn, and lift under the pointer */
+.books { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); }
+.books li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
+.book {
+  width: 100%; height: 100%; display: grid; gap: 4px; align-content: start; text-align: left; padding: 14px 16px 12px;
+  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius);
+  border-top: 3px solid var(--accent); transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s;
+}
+.book:hover, .book:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 22px -14px var(--shadow); border-color: var(--accent); }
+.book[aria-current] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.bookGr { color: var(--accent); font-size: 1.02rem; }
+.bookTitle { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; line-height: 1.15; }
+.bookBy { color: var(--ink-2); font-size: 0.92rem; }
+.bookFoot { display: flex; justify-content: space-between; align-items: center; gap: 8px; margin-top: 8px; }
+.go, .now { font-family: var(--f-label); font-size: 0.86rem; letter-spacing: 0.04em; color: var(--accent); transition: transform 0.25s var(--ease); }
+.book:hover .go { transform: translateX(4px); }
+.now { color: var(--ink-2); }
+
+/* importing */
+.importer { display: grid; gap: 16px; border-radius: var(--radius); transition: background 0.2s, outline-color 0.2s; outline: 2px dashed transparent; outline-offset: 6px; }
+.importer[data-over] { outline-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
+.lead { max-width: 64ch; }
+.drop { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+.fields { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
+.fields label, .textBox { display: grid; gap: 5px; align-content: start; }
+.wide { grid-column: 1 / -1; }
+.opt { text-transform: none; letter-spacing: 0; color: var(--ink-2); font-family: inherit; }
+.fields input, .textBox textarea {
+  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 10px; width: 100%;
+}
+.fields input:focus, .textBox textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.textBox textarea { resize: vertical; min-height: 9rem; line-height: 1.5; }
+.textBox textarea[lang="grc"], .fields input[lang="grc"] { font-family: var(--f-greek, inherit); }
+.texts { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
+.file { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; padding: 10px 12px; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); }
+.row { display: flex; flex-wrap: wrap; gap: 10px; }
+.problems { padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--bg); }
+.problems ul { margin: 6px 0 0; padding-left: 1.2em; }
+.preview { display: grid; gap: 6px; padding: 16px; background: var(--bg); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: var(--radius); animation: rise 0.4s var(--ease); }
+.preview .row { margin-top: 8px; }
+
+@media (max-width: 640px) {
+  .dialog { width: 100vw; max-width: 100vw; max-height: 100dvh; height: 100dvh; margin: 0; border-radius: 0; border: 0; }
+  .panel { max-height: none; }
+  .fields, .texts { grid-template-columns: 1fr; }
+}
+.answer { display: grid; gap: 16px; scroll-margin-bottom: 8px; }
+.answer:empty { display: none; }

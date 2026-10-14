@@ -315,3 +315,4 @@
   .bar { position: static; }
   .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-h) + 16px); }
 }
+.statusTag[data-status="imported"] { color: var(--accent); }

@@ -17,6 +17,7 @@ import { isModerator, useAccount } from "@/lib/community/client";
 import {
   fileTooBig, isIsoDate, plainText, readTranslationFile, sizeOf, type Checked,
 } from "@/lib/private-translations";
+import { mineHref } from "@/lib/mine";
 import { listTranslations, removeTranslation, saveTranslation, trouble, type StoredSummary } from "@/lib/private-translations-db";
 import { useReloadable } from "@/lib/use-load";
 import { DownloadButton, HERE, Seal, StatusTag, docDate, savedDate } from "./parts";
@@ -85,7 +86,7 @@ function Shelf() {
         {notice && (
           <p className={styles.done} role="status">
             <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10.5l4 4 8-9" /></svg>
-            {notice.text}{notice.id && <> <Link href={`${HERE}?id=${encodeURIComponent(notice.id)}`}>Read it →</Link></>}
+            {notice.text}{notice.id && <> <Link href={mineHref(notice.id)}>Read it in the reader →</Link></>}
           </p>
         )}
         {error && <p className={styles.error} role="alert">{error}</p>}
@@ -114,11 +115,11 @@ function Book({ r, i, onRemoved }: { r: StoredSummary; i: number; onRemoved: (go
   const title = r.title ?? r.id;
   return (
     <li className={styles.book} style={{ "--i": i } as CSSProperties}>
-      <Link className={styles.bookLink} href={`${HERE}?id=${encodeURIComponent(r.id)}`}>
+      <Link className={styles.bookLink} href={mineHref(r.id)} title="Open it in the reader, with all the reading aids">
         {r.greekTitle && <span className={styles.bookGr} lang="grc"><Rich text={r.greekTitle} inline /></span>}
         <b className={styles.bookTitle}><Rich text={title} inline /></b>
         <span className={styles.bookBy}>{r.author ? <Rich text={r.author} inline /> : "No author given"}</span>
-        <span className={styles.bookGo} aria-hidden="true">Read it →</span>
+        <span className={styles.bookGo} aria-hidden="true">Read it in the reader →</span>
       </Link>
       <div className={styles.bookFoot}>
         <p className={styles.bookMeta}>
@@ -126,6 +127,7 @@ function Book({ r, i, onRemoved }: { r: StoredSummary; i: number; onRemoved: (go
           <span>Saved <time dateTime={r.updated_at}>{savedDate(r.updated_at)}</time></span>
         </p>
         <div className={styles.bookActs}>
+          <Link className={styles.act} href={`${HERE}?id=${encodeURIComponent(r.id)}`} title="Side by side with the published English, with the introduction and the translator's notes">Notes and comparison</Link>
           <DownloadButton id={r.id} />
           <RemoveButton id={r.id} title={title} onRemoved={onRemoved} />
         </div>

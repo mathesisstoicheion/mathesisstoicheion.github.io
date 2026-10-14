@@ -13,6 +13,7 @@ import {
   type Difference, type Passage, type TranslationDoc, type TranslationRow,
 } from "@/lib/private-translations";
 import { getTranslation, trouble } from "@/lib/private-translations-db";
+import { mineHref } from "@/lib/mine";
 import { scrollBehavior } from "@/lib/settings";
 import { useReloadable } from "@/lib/use-load";
 import { DownloadButton, HERE, Seal, StatusTag, docDate, savedTime } from "./parts";
@@ -154,6 +155,7 @@ function ReaderView({ id, doc, raw, savedAt }: { id: string; doc: TranslationDoc
             <span className="dot" aria-hidden="true" /> Published English
           </button>
         )}
+        <Link className="chip" href={mineHref(id)} title="Read it in the site's reader, with all the reading aids">Open in the reader →</Link>
         <span className={styles.barSize}>{sizeOf(doc)}</span>
         <span className={styles.barEnd}><DownloadButton id={id} doc={raw} /></span>
       </div>

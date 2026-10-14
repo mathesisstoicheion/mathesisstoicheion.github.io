@@ -126,7 +126,7 @@ describe("checking a translation file", () => {
       `The id ("id") is missing.`,
       `The author ("author") is missing.`,
       `The title ("title") is missing.`,
-      `The status ("status") is missing: it should be "sample", "draft" or "complete".`,
+      `The status ("status") is missing: it should be "sample", "draft", "complete" or "imported".`,
       `The passages ("passages") are missing: a translation needs at least one passage.`,
     ]);
   });
@@ -139,7 +139,7 @@ describe("checking a translation file", () => {
     expect(problems(withFields({ id: "a".repeat(81) }))).toEqual([`The id ("id") is 81 characters long; it may be at most 80.`]);
     expect(ok(withFields({ id: "a".repeat(80) })).id).toHaveLength(80);
     expect(problems(withFields({ status: "finished" }))).toEqual([
-      `The status ("status") must be "sample", "draft" or "complete" (found "finished").`,
+      `The status ("status") must be "sample", "draft", "complete" or "imported" (found "finished").`,
     ]);
     expect(problems(withFields({ title: "   " }))).toEqual([`The title ("title") is empty.`]);
     expect(problems(withFields({ author: 4.1 }))).toEqual([`The author ("author") must be text in "quotation marks" (found the number 4.1).`]);

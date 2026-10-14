@@ -23,7 +23,7 @@ const COLOURS: [Colour, string][] = [["red", "Red"], ["ochre", "Ochre"], ["blue"
  * (the phone's own Copy and Share menu sits by the words), with finger-sized buttons; when one word is
  * selected (press and hold it) it starts with the word's dictionary form and one-line meaning.
  */
-export default function PassageToolbar({ sel, onAction, onClose, xref = null, word = null, onLookUp }: {
+export default function PassageToolbar({ sel, onAction, onClose, xref = null, word = null, onLookUp, ask = true }: {
   sel: Selection;
   onAction: (a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | "notebook" | { highlight: Colour }) => void;
   onClose: () => void;
@@ -31,6 +31,8 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
   /** the one word selected, for its quick meaning (phones) */
   word?: { w: string; ctx: WordContext | null } | null;
   onLookUp?: () => void;
+  /** "Ask in the forum": left out for a book of the private collection, whose text is never to be posted */
+  ask?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
   const quick = useQuickGloss(word?.w ?? null, word?.ctx ?? null);
@@ -94,9 +96,11 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
       <button type="button" onClick={() => onAction("echoes")} title="Where these words recur, in this book and beyond">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h2M9 7v10M13 4v16M17 8v8M21 11v2" /></svg><span>Echoes</span>
       </button>
-      <button type="button" onClick={() => onAction("ask")} title="Ask the Town Hall about this passage">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the forum</span>
-      </button>
+      {ask && (
+        <button type="button" onClick={() => onAction("ask")} title="Ask the Town Hall about this passage">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the forum</span>
+        </button>
+      )}
     </div>
   );
 }
