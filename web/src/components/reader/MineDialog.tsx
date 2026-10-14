@@ -1,6 +1,6 @@
 "use client";
 /**
- * The private collection, opened from the reader, or from the library's own buttons (owner's requests, 2026-10-14): the moderator's own translations and the
+ * The private collection's window in the reader (owner's request, 2026-10-14): the moderator's own translations and the
  * texts they imported, to open in the reader with all its aids (lib/mine.ts), and "Import a text" (lib/import-text.ts).
  * Shown only to the moderator (Reader.tsx); the database lets nobody else read or save anything anyway
  * (lib/private-translations-db.ts). This window is loaded only when opened, so the database's library stays out of
@@ -8,7 +8,7 @@
  */
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { PRIVATE_TRANSLATIONS } from "@/config/admin";
+import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS } from "@/config/admin";
 import { fromPlainText, fromTei, kindOf, teiMeta } from "@/lib/import-text";
 import { isMine, mineId } from "@/lib/mine";
 import { fileTooBig, plainText, readTranslationFile, sizeOf, type Checked } from "@/lib/private-translations";
@@ -21,21 +21,12 @@ export type Tab = "shelf" | "import";
 
 export default function MineDialog({ current, onOpen, onClose, start = "shelf" }: {
   current: string | null; onOpen: (id: string) => void; onClose: () => void;
-  /** the tab it opens on: the shelf, or "Import a text" (the library's Import button) */
+  /** the tab it opens on: the shelf, or "Import a text" */
   start?: Tab;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<Tab>(start);
-  const [rows, setRows] = useState<StoredSummary[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [round, setRound] = useState(0);
   useEffect(() => { ref.current?.showModal(); }, []);
-  useEffect(() => {
-    let live = true;
-    listTranslations().then((r) => { if (live) { setRows(r); setError(null); } }, (e) => { if (live) setError(trouble(e)); });
-    return () => { live = false; };
-  }, [round]);
-  const here = isMine(current) ? mineId(current) : null;
   const close = () => ref.current?.close();
 
   return (
@@ -44,55 +35,78 @@ export default function MineDialog({ current, onOpen, onClose, start = "shelf" }
       <div className={styles.inner}>
         <header className={styles.head}>
           <div>
-            <span className={styles.seal}>
-              <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>
-              Private · only you can see this
-            </span>
+            <span className={styles.seal}>{LOCK} Private · only you can see this</span>
             <h2 id="mine-title" className={styles.title}>Private collection</h2>
           </div>
           <button type="button" className={styles.x} onClick={close} aria-label="Close">×</button>
         </header>
-
-        <div className={styles.tabs} role="tablist" aria-label="Private collection">
-          <button type="button" role="tab" id="mine-tab-shelf" aria-controls="mine-shelf" aria-selected={tab === "shelf"} onClick={() => setTab("shelf")}>
-            On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
-          </button>
-          <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => setTab("import")}>Import a text</button>
-        </div>
-
-        {tab === "shelf" ? (
-          <section id="mine-shelf" role="tabpanel" aria-labelledby="mine-tab-shelf" className={styles.panel}>
-            {error && <p className={styles.error} role="alert">{error} <button type="button" className={styles.link} onClick={() => setRound(round + 1)}>Try again</button></p>}
-            {!rows && !error && <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
-            {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. Import a text, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
-            {rows && rows.length > 0 && (
-              <ul className={styles.books}>
-                {rows.map((r, i) => (
-                  <li key={r.id} style={{ "--i": i } as CSSProperties}>
-                    <button type="button" className={styles.book} onClick={() => onOpen(r.id)} aria-current={r.id === here || undefined}>
-                      {r.greekTitle && <span className={styles.bookGr} lang="grc">{plainText(r.greekTitle)}</span>}
-                      <b className={styles.bookTitle}>{r.title ? plainText(r.title) : r.id}</b>
-                      <span className={styles.bookBy}>{r.author ? plainText(r.author) : "No author given"}</span>
-                      <span className={styles.bookFoot}>
-                        <StatusTag status={r.status} />
-                        {r.id === here ? <span className={styles.now}>Reading now</span> : <span className={styles.go} aria-hidden="true">Read →</span>}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-            <p className={styles.foot}>
-              To add, replace, download or remove translations, use the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.
-            </p>
-          </section>
-        ) : (
-          <section id="mine-import" role="tabpanel" aria-labelledby="mine-tab-import" className={styles.panel}>
-            <Importer taken={rows?.map((r) => r.id) ?? []} stored={rows} onSaved={(id) => { setRound(round + 1); onOpen(id); }} />
-          </section>
-        )}
+        <Collection current={current} onOpen={onOpen} tab={tab} onTab={setTab} />
+        <p className={styles.foot}><Link href={PRIVATE_COLLECTION}>Open the private collection as a page</Link></p>
       </div>
     </dialog>
+  );
+}
+
+export const LOCK = <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>;
+
+/**
+ * The shelf and "Import a text", as tabs: in the reader's window above, and on the private collection's own page
+ * (components/library/PrivateCollection.tsx, /library/private).
+ */
+export function Collection({ current, onOpen, tab, onTab }: {
+  current: string | null; onOpen: (id: string) => void; tab: Tab; onTab: (t: Tab) => void;
+}) {
+  const [rows, setRows] = useState<StoredSummary[] | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [round, setRound] = useState(0);
+  useEffect(() => {
+    let live = true;
+    listTranslations().then((r) => { if (live) { setRows(r); setError(null); } }, (e) => { if (live) setError(trouble(e)); });
+    return () => { live = false; };
+  }, [round]);
+  const here = isMine(current) ? mineId(current) : null;
+
+  return (
+    <>
+      <div className={styles.tabs} role="tablist" aria-label="Private collection">
+        <button type="button" role="tab" id="mine-tab-shelf" aria-controls="mine-shelf" aria-selected={tab === "shelf"} onClick={() => onTab("shelf")}>
+          On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
+        </button>
+        <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => onTab("import")}>Import a text</button>
+      </div>
+
+      {tab === "shelf" ? (
+        <section id="mine-shelf" role="tabpanel" aria-labelledby="mine-tab-shelf" className={styles.panel}>
+          {error && <p className={styles.error} role="alert">{error} <button type="button" className={styles.link} onClick={() => setRound(round + 1)}>Try again</button></p>}
+          {!rows && !error && <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
+          {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={styles.link} onClick={() => onTab("import")}>Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
+          {rows && rows.length > 0 && (
+            <ul className={styles.books}>
+              {rows.map((r, i) => (
+                <li key={r.id} style={{ "--i": i } as CSSProperties}>
+                  <button type="button" className={styles.book} onClick={() => onOpen(r.id)} aria-current={r.id === here || undefined}>
+                    {r.greekTitle && <span className={styles.bookGr} lang="grc">{plainText(r.greekTitle)}</span>}
+                    <b className={styles.bookTitle}>{r.title ? plainText(r.title) : r.id}</b>
+                    <span className={styles.bookBy}>{r.author ? plainText(r.author) : "No author given"}</span>
+                    <span className={styles.bookFoot}>
+                      <StatusTag status={r.status} />
+                      {r.id === here ? <span className={styles.now}>Reading now</span> : <span className={styles.go} aria-hidden="true">Read →</span>}
+                    </span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className={styles.foot}>
+            To add, replace, download or remove translations, use the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.
+          </p>
+        </section>
+      ) : (
+        <section id="mine-import" role="tabpanel" aria-labelledby="mine-tab-import" className={styles.panel}>
+          <Importer taken={rows?.map((r) => r.id) ?? []} stored={rows} onSaved={(id) => { setRound(round + 1); onOpen(id); }} />
+        </section>
+      )}
+    </>
   );
 }
 

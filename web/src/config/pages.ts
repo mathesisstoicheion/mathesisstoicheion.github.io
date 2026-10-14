@@ -6,7 +6,7 @@ import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { CHECKPOINTS } from "@/data/checkpoints";
 import { GUIDES } from "@/data/guides";
 import { ENTRIES } from "@/wiki/index";
-import { PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD } from "./admin";
+import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD } from "./admin";
 
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
@@ -33,12 +33,12 @@ export const PRIVATE_PAGES = [
 export const DEV_PAGES = ["/academy/studio"];
 
 /**
- * The moderator's own pages (the private translations, in Mine, and their first address, which now leads there):
- * linked only from the Treasury, for the moderator alone; never kept offline (nothing on them works without the
+ * The moderator's own pages (the private translations, in Mine, and their first address, which now leads there; the
+ * private collection, in the library): linked only for the moderator; never kept offline (nothing on them works without the
  * database, and every visitor's offline copy would fetch them), left out of the sitemap and the site's search,
  * and disallowed to crawlers in robots.txt.
  */
-export const ADMIN_PAGES = [PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD];
+export const ADMIN_PAGES = [PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD, PRIVATE_COLLECTION];
 
 export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.flatMap((l) => [`/academy/lesson/${l.id}`, `/academy/lesson/${l.id}/practice`, `/academy/lesson/${l.id}/test`]), ...CHECKPOINTS.map((c) => `/academy/checkpoint/${c.id}`), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
 
