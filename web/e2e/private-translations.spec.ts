@@ -502,3 +502,51 @@ for (const theme of ["light", "dark"] as const) {
     await check();
   });
 }
+
+test("the library shows the moderator a Private collection button and an Import button of their own", async ({ page }) => {
+  const db = await pretend(page);
+  await page.goto("/library");
+  const mine = page.getByRole("group", { name: "Your private collection" });
+  await expect(mine).toContainText("Only you can see these");
+  await mine.getByRole("button", { name: /^Private collection/ }).click();
+  const dialog = page.getByRole("dialog", { name: "Private collection" });
+  await expect(dialog.getByRole("tab", { name: "On the shelf" })).toHaveAttribute("aria-selected", "true");
+  await dialog.getByRole("button", { name: /Placeholder Work One/ }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-one$/);
+  await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
+
+  await page.goto("/library");
+  await mine.getByRole("button", { name: /^Import a text/ }).click();
+  await expect(dialog.getByRole("tab", { name: "Import a text" })).toHaveAttribute("aria-selected", "true");
+  await dialog.getByLabel("Title", { exact: true }).fill("Placeholder Library Import");
+  await dialog.getByLabel("Author").fill("Placeholder Author");
+  await dialog.getByLabel("The Greek text").fill("λόγος ἐστί");
+  await dialog.getByRole("button", { name: "Check it" }).click();
+  await dialog.getByRole("button", { name: "Save and read" }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-library-import$/);
+  expect(db.saved.map((s) => s.id)).toEqual(["placeholder-library-import"]);
+});
+
+for (const role of [null, "member"] as const) {
+  test(`the library shows nobody else the private buttons, and asks the database nothing (${role ?? "signed out"})`, async ({ page }) => {
+    const db = await pretend(page, { role });
+    await page.goto("/library");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByRole("group", { name: "Your private collection" })).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /^(Private collection|Import a text)/ })).toHaveCount(0);
+    expect(db.asked).toEqual([]);
+  });
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`the library's private buttons pass the accessibility check (${theme})`, async ({ page }) => {
+    await pretend(page, { theme });
+    await page.goto("/library");
+    await expect(page.getByRole("group", { name: "Your private collection" })).toBeVisible();
+    await page.waitForTimeout(600);
+    const res = await new AxeBuilder({ page }).include("[aria-label='Your private collection']").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+    const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 5).map((n) => n.target.join(" ")) }));
+    expect(bad, JSON.stringify(bad, null, 1)).toEqual([]);
+  });
+}

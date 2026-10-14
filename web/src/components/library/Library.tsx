@@ -13,6 +13,7 @@ import { STARTS } from "@/data/starts";
 import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
+import MineButtons from "./MineButtons";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
@@ -249,6 +250,8 @@ export default function Library() {
 
   return (
     <div className={`wrap ${styles.lib}`}>
+      {/* the moderator alone: their private collection, and importing a text into it */}
+      <MineButtons />
       {/* the search comes first: straight to the point */}
       <div className={styles.searchBox}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>

@@ -1,6 +1,6 @@
 "use client";
 /**
- * The private collection, opened from the reader (owner's request, 2026-10-14): the moderator's own translations and the
+ * The private collection, opened from the reader, or from the library's own buttons (owner's requests, 2026-10-14): the moderator's own translations and the
  * texts they imported, to open in the reader with all its aids (lib/mine.ts), and "Import a text" (lib/import-text.ts).
  * Shown only to the moderator (Reader.tsx); the database lets nobody else read or save anything anyway
  * (lib/private-translations-db.ts). This window is loaded only when opened, so the database's library stays out of
@@ -17,11 +17,15 @@ import { scrollBehavior } from "@/lib/settings";
 import { StatusTag } from "@/components/admin/parts";
 import styles from "./Mine.module.css";
 
-type Tab = "shelf" | "import";
+export type Tab = "shelf" | "import";
 
-export default function MineDialog({ current, onOpen, onClose }: { current: string | null; onOpen: (id: string) => void; onClose: () => void }) {
+export default function MineDialog({ current, onOpen, onClose, start = "shelf" }: {
+  current: string | null; onOpen: (id: string) => void; onClose: () => void;
+  /** the tab it opens on: the shelf, or "Import a text" (the library's Import button) */
+  start?: Tab;
+}) {
   const ref = useRef<HTMLDialogElement>(null);
-  const [tab, setTab] = useState<Tab>("shelf");
+  const [tab, setTab] = useState<Tab>(start);
   const [rows, setRows] = useState<StoredSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [round, setRound] = useState(0);
