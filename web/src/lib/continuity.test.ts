@@ -84,9 +84,13 @@ describe("where you left off", () => {
     expect(trail()).toEqual([]);
   });
   it("never lists the moderator's private pages among the recent pages", () => {
-    recordVisit("/admin/translations?id=test-placeholder", "Private translations", 1);
-    recordVisit("/admin/translations", "Private translations", 2);
+    recordVisit("/treasury/translations?id=test-placeholder", "Private translations", 1);
+    recordVisit("/treasury/translations", "Private translations", 2);
+    recordVisit("/admin/translations?id=test-placeholder", "Private translations", 3);
     expect(trail()).toEqual([]);
+    // the rest of the Treasury is remembered as before
+    recordVisit("/treasury/word?l=λόγος", "Word Study", 4);
+    expect(trail().map((v) => v.href)).toEqual(["/treasury/word?l=λόγος"]);
   });
   it("remembers how far down each page was", () => {
     saveScroll("/academy/lesson/case", 1234.4);

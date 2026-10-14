@@ -55,6 +55,28 @@
   .metope { min-height: 104px; }
 }
 
+/* ------------------------------------------------ the moderator's private translations (PrivateShelf.tsx), under the frieze */
+.private {
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 28px;
+  padding: 18px 22px 16px; text-decoration: none; color: var(--ink); background: var(--surface);
+  border: 1.5px solid var(--ink); border-left-width: 6px; border-radius: var(--radius);
+  transition: border-color 0.25s, transform 0.25s var(--ease), box-shadow 0.25s;
+  animation: rise 0.6s var(--ease) both; animation-delay: 0.6s;   /* it waits for the account too, so it comes about as the frieze finishes */
+}
+.private:hover, .private:focus-visible { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 18px -12px var(--shadow); }
+.privateSeal, .privateTitle, .privateText { grid-column: 1; }   /* the count keeps the right-hand column, even when it is not shown */
+.privateSeal { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: 0.82rem; letter-spacing: 0.06em; color: var(--ink-2); }
+.privateSeal svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
+.privateTitle { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.35rem, 2.6vw, 1.7rem); line-height: 1.15; }
+.privateText { color: var(--ink-2); max-width: 60ch; }
+.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: 2px; min-width: 5.5rem; }
+.privateGo { grid-column: 1 / -1; justify-self: end; font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.04em; color: var(--accent); transition: transform 0.25s var(--ease); }
+.private:hover .privateGo, .private:focus-visible .privateGo { transform: translateX(4px); }
+@media (max-width: 520px) {
+  .private { gap: 4px 14px; padding: 16px 16px 14px; }
+  .privateCount { min-width: 0; }
+}
+
 /* ------------------------------------------------ section frame */
 .section { display: grid; gap: 22px; animation: rise 0.45s var(--ease) both; }
 .section h2 { font-size: var(--step-2); }

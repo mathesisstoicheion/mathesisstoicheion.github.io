@@ -1,11 +1,13 @@
 "use client";
 /** Small pieces shared by the private translations' shelf and reader (components/admin/PrivateTranslations.tsx). */
 import { useState } from "react";
+import { PRIVATE_TRANSLATIONS } from "@/config/admin";
 import { canonical, isIsoDate, STATUS_LABEL, STATUSES, type Status } from "@/lib/private-translations";
 import { getTranslation, trouble } from "@/lib/private-translations-db";
 import styles from "./PrivateTranslations.module.css";
 
-export const HERE = "/admin/translations";
+/** Where the shelf is, in Mine (config/admin.ts). */
+export const HERE = PRIVATE_TRANSLATIONS;
 
 /** "13 October 2026", from the database's time. */
 export const savedDate = (iso: string) => new Date(iso).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" });

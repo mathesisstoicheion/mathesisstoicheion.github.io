@@ -18,6 +18,7 @@ import styles from "./Treasury.module.css";
 import PlacesSection from "./PlacesSection";
 import { loadSavedPlaces, useSavedPlaces } from "@/lib/map";
 import NotebooksSection from "./NotebooksSection";
+import PrivateShelf from "./PrivateShelf";
 import { useNotebooks } from "@/lib/notebooks";
 
 export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
@@ -80,6 +81,9 @@ export default function Treasury() {
           ))}
         </ol>
       </nav>
+
+      {/* the moderator's private translations: shown to the moderator alone */}
+      <PrivateShelf />
 
       {t.error && <p className={styles.error} role="alert">{t.error}</p>}
       {empty && (

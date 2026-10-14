@@ -4,7 +4,7 @@
  * the margin, each row level with its English; at a touch, the published English as a third column (the choice is
  * remembered in this browser). Under each passage come the translator's notes and the places where our English
  * parts from the published one. Phones stack each row: reference, Greek, ours, then the published English.
- * URL: /admin/translations?id=<id>. PrivateTranslations.tsx shows this to the moderator alone.
+ * URL: /treasury/translations?id=<id>. PrivateTranslations.tsx shows this to the moderator alone.
  */
 import Link from "next/link";
 import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
@@ -104,7 +104,7 @@ function ReaderView({ id, doc, raw, savedAt }: { id: string; doc: TranslationDoc
     <article className={`wrap ${styles.page} ${styles.reading}`} data-pub={showPub ? "" : undefined} aria-labelledby="doc-title">
       <header className={styles.docHead}>
         <p className={styles.crumbs}>
-          <Link href="/town-hall/moderation">The moderator&apos;s desk</Link> <span aria-hidden="true">/</span>{" "}
+          <Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span>{" "}
           <Link href={HERE}>Private translations</Link>
         </p>
         <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /><StatusTag status={doc.status} /></div>

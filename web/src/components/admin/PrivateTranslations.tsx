@@ -1,14 +1,14 @@
 "use client";
 /**
- * The moderator's private translations: our own English beside the Greek. URL: /admin/translations (the shelf,
- * and adding or updating a translation from a .json file), /admin/translations?id=<id> (reading one).
+ * The moderator's private translations: our own English beside the Greek, in Mine. URL: /treasury/translations (the
+ * shelf, and adding or updating a translation from a .json file), /treasury/translations?id=<id> (reading one).
  *
  * The text lives only in the database, where row-level security lets the moderator alone read or change it
  * (lib/private-translations-db.ts); nothing of it is in the site's code. This page asks only once the account
  * is known to be the moderator's: signed out, it offers to sign in; signed in as anyone else, it says
  * "This page is private." and nothing more (and the database would hand them nothing anyway).
- * It is linked only from the moderator's desk, and kept out of the sitemap, robots and the offline copy
- * (config/pages.ts, ADMIN_PAGES).
+ * It is linked only from the Treasury, and only for the moderator (components/treasury/PrivateShelf.tsx), and kept
+ * out of the sitemap, robots and the offline copy (config/pages.ts, ADMIN_PAGES).
  */
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -67,7 +67,7 @@ function Shelf() {
   return (
     <div className={`wrap ${styles.page}`}>
       <header className={styles.deskHead}>
-        <p className={styles.crumbs}><Link href="/town-hall/moderation">The moderator&apos;s desk</Link> <span aria-hidden="true">/</span> Private translations</p>
+        <p className={styles.crumbs}><Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span> Private translations</p>
         <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /></div>
         <h1 className={styles.deskTitle}>Private translations</h1>
         <p className={styles.lead}>

@@ -16,7 +16,7 @@ function load(): Saved {
 function save(d: Saved) { try { localStorage.setItem(KEY, JSON.stringify(d)); } catch { /* storage unavailable */ } }
 
 /** Pages not worth returning to on their own, and the moderator's private pages (never shown among recent pages). */
-const SKIP = /^\/(academy\/studio|admin)(\/|$)/;
+const SKIP = /^\/(academy\/studio|admin|treasury\/translations)(\/|$)/;
 
 /** One entry per page; the reader counts as one page per set of books open. */
 export function pageKey(href: string): string {
