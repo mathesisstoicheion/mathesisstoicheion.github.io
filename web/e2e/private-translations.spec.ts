@@ -502,3 +502,77 @@ for (const theme of ["light", "dark"] as const) {
     await check();
   });
 }
+
+test("the library leads the moderator to the private collection's own page, on its shelf or on Import a text", async ({ page }) => {
+  const db = await pretend(page);
+  await page.goto("/library");
+  const mine = page.getByRole("navigation", { name: "Your private collection" });
+  await expect(mine).toContainText("Only you can see these");
+  await mine.getByRole("link", { name: /^Private collection/ }).click();
+  await expect(page).toHaveURL(/\/library\/private\/?$/);
+  await expect(page.getByRole("heading", { level: 1, name: "Private collection" })).toBeVisible();
+  await expect(page.getByRole("tab", { name: /On the shelf/ })).toHaveAttribute("aria-selected", "true");
+  await page.getByRole("button", { name: /Placeholder Work One/ }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-one$/);
+  await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
+
+  await page.goto("/library");
+  await mine.getByRole("link", { name: /^Import a text/ }).click();
+  await expect(page).toHaveURL(/\/library\/private\/?\?tab=import$/);
+  await expect(page.getByRole("tab", { name: "Import a text" })).toHaveAttribute("aria-selected", "true");
+  await page.getByLabel("Title", { exact: true }).fill("Placeholder Library Import");
+  await page.getByLabel("Author").fill("Placeholder Author");
+  await page.getByLabel("The Greek text").fill("λόγος ἐστί");
+  await page.getByRole("button", { name: "Check it" }).click();
+  await page.getByRole("button", { name: "Save and read" }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-library-import$/);
+  expect(db.saved.map((s) => s.id)).toEqual(["placeholder-library-import"]);
+
+  // the tabs change the address, and the reader's window leads to the page
+  await page.goto("/library/private");
+  await page.getByRole("tab", { name: "Import a text" }).click();
+  await expect(page).toHaveURL(/\?tab=import$/);
+  await page.goto("/read");
+  await page.getByRole("button", { name: "Private collection" }).click();
+  await page.getByRole("dialog").getByRole("link", { name: "Open the private collection as a page" }).click();
+  await expect(page).toHaveURL(/\/library\/private\/?$/);
+});
+
+for (const role of [null, "member"] as const) {
+  test(`the library and the private collection's page show nobody else anything, and ask the database nothing (${role ?? "signed out"})`, async ({ page }) => {
+    const db = await pretend(page, { role });
+    await page.goto("/library");
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByRole("navigation", { name: "Your private collection" })).toHaveCount(0);
+    await expect(page.getByRole("link", { name: /^(Private collection|Import a text)/ })).toHaveCount(0);
+    await page.goto("/library/private");
+    if (role) await expect(page.getByRole("heading", { level: 1, name: "This page is private." })).toBeVisible();
+    else await expect(page.getByRole("link", { name: "Sign in" }).last()).toBeVisible();
+    await page.waitForTimeout(800);
+    await expect(page.getByText("Placeholder")).toHaveCount(0);
+    expect(db.asked).toEqual([]);
+  });
+}
+
+for (const theme of ["light", "dark"] as const) {
+  test(`the library's private buttons and the private collection's page pass the accessibility check (${theme})`, async ({ page }) => {
+    await pretend(page, { theme });
+    const check = async (include?: string) => {
+      await page.waitForTimeout(600);
+      let axe = new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]);
+      if (include) axe = axe.include(include);
+      const res = await axe.analyze();
+      const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical").map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 5).map((n) => n.target.join(" ")) }));
+      expect(bad, JSON.stringify(bad, null, 1)).toEqual([]);
+    };
+    await page.goto("/library");
+    await expect(page.getByRole("navigation", { name: "Your private collection" })).toBeVisible();
+    await check("[aria-label='Your private collection']");
+    await page.goto("/library/private");
+    await expect(page.getByRole("button", { name: /Placeholder Work Three/ })).toBeVisible();
+    await check();
+    await page.getByRole("tab", { name: "Import a text" }).click();
+    await check();
+  });
+}

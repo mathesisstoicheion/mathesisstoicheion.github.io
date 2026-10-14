@@ -4,3 +4,5 @@
  */
 export const PRIVATE_TRANSLATIONS = "/treasury/translations";
 export const PRIVATE_TRANSLATIONS_OLD = "/admin/translations";
+/** The private collection's own page (components/library/PrivateCollection.tsx): the books to read, and "Import a text". */
+export const PRIVATE_COLLECTION = "/library/private";
