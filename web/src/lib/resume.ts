@@ -29,8 +29,13 @@ export function pageKey(href: string): string {
   return u.pathname + u.search;
 }
 
+/** A book of the private collection (lib/mine.ts): read in the reader, but kept off the list of recent pages too. */
+const PRIVATE_BOOK = /^mine:/;
+
 export function recordVisit(href: string, title: string, now = Date.now()) {
-  if (SKIP.test(new URL(href, "http://x").pathname)) return;
+  const u = new URL(href, "http://x");
+  if (SKIP.test(u.pathname)) return;
+  if (u.pathname === "/read" && ["w", "w2"].some((k) => PRIVATE_BOOK.test(u.searchParams.get(k) ?? ""))) return;
   const d = load();
   const key = pageKey(href);
   d.trail = [{ href, title, t: now }, ...d.trail.filter((v) => pageKey(v.href) !== key)].slice(0, MAX_TRAIL);

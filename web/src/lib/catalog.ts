@@ -74,6 +74,8 @@ export function rawUrl(idx: CatalogIndex, t: CatText) {
 
 /** Describe an edition or translation for a picker: "Murray, 1924" style from the CTS description. */
 export function describe(t: CatText): string {
+  // the private collection's books (lib/mine.ts) carry their own plain description
+  if (t.urn.startsWith("mine:")) return t.desc ?? versionOf(t.urn);
   const d = t.desc ?? "";
   // "Butler, Samuel, 1835-1902, translator" → Butler; life dates are not the publication year
   const who = /([A-Z][\w'’-]+),\s*[A-Z][^,;]*?(?:,\s*[\d?]{4}\s*-\s*[\d?]{0,4})?,\s*(?:translator|editor)/.exec(d)?.[1];

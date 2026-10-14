@@ -159,9 +159,13 @@ test("Mine shows the moderator the way in, with how many there are; the shelf li
   // only the list's few fields are asked for, not the whole text
   expect(db.asked.some((q) => q.startsWith("GET") && q.includes("doc-%3E%3Etitle") && !/select=[^&]*%2Cdoc%2C/.test(q))).toBe(true);
 
+  // a book opens in the site's reader; the side-by-side page, with the notes, is a step away
+  await expect(one.getByRole("link", { name: "Notes and comparison" })).toHaveAttribute("href", "/treasury/translations?id=placeholder-one");
   await one.getByRole("link", { name: /Placeholder Work One/ }).click();
-  await expect(page).toHaveURL(/\/treasury\/translations\?id=placeholder-one$/);
+  await expect(page).toHaveURL(/\/read\?w=mine:placeholder-one$/);
   await expect(page.getByRole("heading", { level: 1, name: /Placeholder Work One/ })).toBeVisible();
+  await page.goto("/treasury/translations?id=placeholder-one");
+  await expect(page.getByRole("link", { name: "Open in the reader →" })).toHaveAttribute("href", "/read?w=mine:placeholder-one");
 
   // and back to Mine
   await page.getByRole("main").getByRole("link", { name: "The Treasury" }).click();
@@ -361,6 +365,140 @@ for (const theme of ["light", "dark"] as const) {
     await check();
     await page.goto("/treasury/translations?id=placeholder-one");
     await expect(page.locator("#row-1-1").getByText("Published placeholder one.")).toBeVisible();
+    await check();
+  });
+}
+
+// ------------------------------------------------------------ the private collection in the site's reader (lib/mine.ts)
+test("a private translation opens in the reader, with the reading aids and its two Englishes, but nothing that posts to the forum", async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 });
+  await pretend(page);
+  await page.goto("/read?w=mine:placeholder-one");
+  await expect(page.getByRole("heading", { level: 1, name: /Placeholder Work One/ })).toBeVisible();
+  await expect(page.getByText("Only you can see this")).toBeVisible();
+  const text = page.locator("article");
+  // the Greek's words are the reader's own, to look up; the label stands at the start of its row
+  await expect(text.locator("[data-w]").first()).toHaveText("λόγος");
+  await expect(text.getByText("1a10")).toBeVisible();
+  await expect(text.getByText("Placeholder sentence one.")).toBeVisible();
+  await expect(text.getByText("Placeholder heading one")).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
+  // the two Englishes, as the translation menu's choices
+  const tr = page.getByRole("combobox", { name: "Translation" });
+  await expect(tr.locator("option")).toHaveText(["None", "Our English", "Published English"]);
+  await tr.selectOption({ label: "Published English" });
+  await expect(text.getByText("Published placeholder one.")).toBeVisible();
+  await expect(text.getByText("Placeholder sentence one.")).toHaveCount(0);
+  // the forum and the manuscripts are not offered; the notes are a step away
+  await expect(page.getByRole("button", { name: "Talk about it" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Manuscript" })).toHaveCount(0);
+  await expect(page.getByRole("link", { name: "Notes and comparison" }).first()).toHaveAttribute("href", "/treasury/translations?id=placeholder-one");
+  await text.locator("[data-row]").first().click();
+  await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Ask in the forum" })).toHaveCount(0);
+  await expect(page.getByText("From your private collection")).toBeVisible();
+  // a word opens the look-up, as in any book
+  await text.locator("[data-w]").first().click();
+  await expect(page.getByRole("dialog").or(page.locator("aside")).filter({ hasText: "λόγος" }).first()).toBeVisible();
+  // and it is not listed among the recent pages
+  expect(await page.evaluate(() => localStorage.getItem("mathesis:resume") ?? "")).not.toContain("mine:");
+});
+
+for (const role of [null, "member"] as const) {
+  test(`a private book's address shows nobody else anything, and asks the database nothing (${role ?? "signed out"})`, async ({ page }) => {
+    const db = await pretend(page, { role });
+    await page.goto("/read?w=mine:placeholder-one");
+    await expect(page.getByRole("heading", { level: 1, name: role ? "This book is private." : "A private book" })).toBeVisible();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText("Placeholder")).toHaveCount(0);
+    expect(db.asked).toEqual([]);
+    await page.goto("/read");
+    await expect(page.getByRole("heading", { level: 1, name: "No work chosen" })).toBeVisible();
+    await page.waitForTimeout(800);
+    await expect(page.getByRole("button", { name: "Private collection" })).toHaveCount(0);
+  });
+}
+
+test("the private collection button lists the shelf, and a book chosen there opens in the reader", async ({ page }) => {
+  await pretend(page);
+  await page.goto("/read");
+  await page.getByRole("button", { name: "Private collection" }).click();
+  const dialog = page.getByRole("dialog", { name: "Private collection" });
+  await expect(dialog.getByRole("button", { name: /Placeholder Work Three/ })).toBeVisible();
+  await dialog.getByRole("button", { name: /Placeholder Work One/ }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-one$/);
+  await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
+  // from inside a book, too, with the book being read marked
+  await page.getByRole("button", { name: "Private collection" }).first().click();
+  await expect(dialog.getByRole("button", { name: /Placeholder Work One/ })).toContainText("Reading now");
+  await dialog.getByRole("button", { name: /Placeholder Work Three/ }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-three$/);
+  await expect(page.getByRole("heading", { level: 1, name: /Placeholder Work Three/ })).toBeVisible();
+});
+
+test("a text typed in is checked, saved in the private collection and opened in the reader", async ({ page }) => {
+  const db = await pretend(page);
+  await page.goto("/read");
+  await page.getByRole("button", { name: "Private collection" }).click();
+  const dialog = page.getByRole("dialog", { name: "Private collection" });
+  await dialog.getByRole("tab", { name: "Import a text" }).click();
+  await dialog.getByRole("button", { name: "Check it" }).isDisabled();
+  await dialog.getByLabel("The Greek text").fill("λόγος ἐστί\n\nἄλφα βῆτα");
+  await dialog.getByRole("button", { name: "Check it" }).click();
+  await expect(dialog.getByRole("alert")).toHaveText("Give the text a title and an author first.");
+  await dialog.getByLabel("Title", { exact: true }).fill("Placeholder Import");
+  await dialog.getByLabel("Author").fill("Placeholder Author");
+  await dialog.getByLabel("The English translation").fill("Placeholder one.\n\nPlaceholder two.");
+  await dialog.getByRole("button", { name: "Check it" }).click();
+  await expect(dialog.getByText("2 rows, with English")).toBeVisible();
+  await dialog.getByRole("button", { name: "Save and read" }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-import$/);
+  expect(db.saved).toHaveLength(1);
+  expect(db.saved[0].id).toBe("placeholder-import");
+  expect((db.saved[0].doc as { status: string; passages: unknown[] }).status).toBe("imported");
+  await expect(page.locator("article").getByText("Placeholder two.")).toBeVisible();
+  await expect(page.getByRole("combobox", { name: "Translation" }).locator("option")).toHaveText(["None", "English"]);
+});
+
+test("a TEI file is imported with what its header says, one row per passage", async ({ page }) => {
+  const db = await pretend(page);
+  await page.goto("/read");
+  await page.getByRole("button", { name: "Private collection" }).click();
+  const dialog = page.getByRole("dialog", { name: "Private collection" });
+  await dialog.getByRole("tab", { name: "Import a text" }).click();
+  const xml = `<?xml version="1.0"?><TEI><teiHeader><fileDesc><titleStmt><title>Placeholder Tei</title><author>Placeholder Author</author></titleStmt></fileDesc></teiHeader>
+    <text><body><div type="edition" n="urn:cts:greekLit:tlg9999.tlg002.placeholder-grc1"><div type="textpart" subtype="section" n="1"><p>λόγος ἐστί</p></div>
+    <div type="textpart" subtype="section" n="2"><p>ἄλφα βῆτα</p></div></div></body></text></TEI>`;
+  await dialog.getByLabel("Choose a text file").setInputFiles({ name: "placeholder.xml", mimeType: "text/xml", buffer: Buffer.from(xml) });
+  await expect(dialog.getByLabel("Title", { exact: true })).toHaveValue("Placeholder Tei");
+  await expect(dialog.getByLabel("Author")).toHaveValue("Placeholder Author");
+  await dialog.getByRole("button", { name: "Check it" }).click();
+  await expect(dialog.getByText("2 rows, Greek only")).toBeVisible();
+  await dialog.getByRole("button", { name: "Save and read" }).click();
+  await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-tei$/);
+  const saved = db.saved[0].doc as { urn: string; passages: { rows: { ref: string }[] }[] };
+  expect(saved.urn).toBe("urn:cts:greekLit:tlg9999.tlg002");
+  expect(saved.passages.flatMap((p) => p.rows.map((r) => r.ref))).toEqual(["1", "2"]);
+  await expect(page.locator("article [data-w]").first()).toHaveText("λόγος");
+});
+
+for (const theme of ["light", "dark"] as const) {
+  test(`a private book in the reader and the private collection's window pass the accessibility check (${theme})`, async ({ page }) => {
+    await pretend(page, { theme });
+    const check = async () => {
+      await page.waitForTimeout(600);
+      const res = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
+      const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical")
+        .map((v) => ({ id: v.id, nodes: v.nodes.slice(0, 5).map((n) => n.target.join(" ")) }));
+      expect(bad, JSON.stringify(bad, null, 1)).toEqual([]);
+    };
+    await page.goto("/read?w=mine:placeholder-one");
+    await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
+    await check();
+    await page.getByRole("button", { name: "Private collection" }).first().click();
+    await expect(page.getByRole("dialog", { name: "Private collection" }).getByRole("button", { name: /Placeholder Work Three/ })).toBeVisible();
+    await check();
+    await page.getByRole("tab", { name: "Import a text" }).click();
     await check();
   });
 }

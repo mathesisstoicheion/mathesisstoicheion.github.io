@@ -40,6 +40,10 @@ import { useFloat } from "@/lib/float";
 import { useAcademy, knownLemmas } from "@/lib/academy";
 import { ASK_KEY } from "@/lib/community/ask";
 import { lastOtherPage } from "@/lib/resume";
+import { isMine, mineBook, mineId, mineParsed, type MineVersion } from "@/lib/mine";
+import { useIsModerator, useMineBook, type MineState } from "@/lib/mine-load";
+import { workOf } from "@/lib/private-translations";
+import { PRIVATE_TRANSLATIONS } from "@/config/admin";
 import { metreIndex, publishedFor, loadLengths } from "@/lib/metre/load";
 import { renderPassages, type LineRender } from "@/lib/metre/render";
 import { lineHash, type MetreIndex } from "@/lib/metre/text";
@@ -66,11 +70,15 @@ const TalkPanel = dynamic(() => import("./TalkPanel"), { ssr: false });
 const ManuscriptPanel = dynamic(() => import("./ManuscriptPanel"), { ssr: false });
 const Listen = dynamic(() => import("./Listen"), { ssr: false });
 const EchoesPanel = dynamic(() => import("./EchoesPanel"), { ssr: false });
+const MineDialog = dynamic(() => import("./MineDialog"), { ssr: false });
 import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };
 
-const FROM_TEXT: Record<From, string> = { github: "GitHub", browser: "your browser storage", folder: "your folder" };
+type Src = From | "private";
+/** A book's texts as loaded and parsed, or why they could not be. */
+type Loaded = { key: string; parsed?: Parsed; from?: { grc: Src; tr: Src | null }; error?: string };
+const FROM_TEXT: Record<Src, string> = { github: "GitHub", browser: "your browser storage", folder: "your folder", private: "your private collection" };
 
 function pickEdition(w: CatWork, ed: string | null, remembered: string | null): CatText | undefined {
   const eds = greekEditions(w);
@@ -145,7 +153,7 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
   );
 });
 
-export interface PaneProps { pane: 1 | 2; split: boolean; onOpenSecond: () => void }
+export interface PaneProps { pane: 1 | 2; split: boolean; onOpenSecond: () => void; onOpenMine: () => void }
 
 /**
  * Where the reader keeps what it shows. On the reader's page that is the address bar (/read?w=…);
@@ -164,7 +172,7 @@ const paneTops: Record<1 | 2, string | null> = { 1: null, 2: null };
 const useNav = () => useContext(ReaderNavContext)!;
 
 /** One reading pane. With two panes, pane 2 uses the same query keys with a "2" on the end. */
-function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
+function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const nav = useNav();
   const params = nav.params;
   const floating = nav.floating;
@@ -206,7 +214,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   const at = P("at");
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [catalogError, setCatalogError] = useState<string | null>(null);
-  const [result, setResult] = useState<{ key: string; parsed?: Parsed; from?: { grc: From; tr: From | null }; error?: string } | null>(null);
+  const [result, setResult] = useState<Loaded | null>(null);
   const [step, setStep] = useState<{ key: string; text: string } | null>(null);
   const [word, setWord] = useState<{ w: string; ctx: WordContext | null; at: Point | null } | null>(null);
   const [echo, setEcho] = useState<EchoQuery | null>(null);
@@ -236,8 +244,16 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   if (idx && snap?.work !== workId) setSnap({ work: workId, pos: getPosition(workId) });
   const remembered = snap?.work === workId ? snap.pos : null;
 
-  const work = idx?.work.get(workId);
-  const author = idx?.authorOf.get(workId);
+  // a book of the private collection (lib/mine.ts) comes from the database, not the catalogue
+  const mine = useMineBook(workId, retry);
+  const mineDoc = mine.state === "ready" ? mine.doc : null;
+  const mineBk = useMemo(() => (mineDoc ? mineBook(mineDoc) : null), [mineDoc]);
+  const isPrivate = isMine(workId);
+  const moderator = useIsModerator();
+  const work = isPrivate ? mineBk?.work : idx?.work.get(workId);
+  const author = isPrivate ? mineBk?.author : idx?.authorOf.get(workId);
+  // the word analyses (GLAUx) are per work: a private book uses those of the work it is a text of, if it names one
+  const lexWork = mineDoc ? workOf(mineDoc.urn)?.work ?? workId : workId;
   // the browser tab names the book being read ("Iliad · Homer"), on the reader's own page (not the floating window)
   const tabTitle = work && !floating && pane === 1 ? `${work.title}${author ? ` · ${author.name}` : ""} · ${SITE.latin}` : null;
   useEffect(() => {
@@ -266,6 +282,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   // ------------------------------------------------------------ load and parse the texts
   useEffect(() => {
     if (!idx || !grcText || !loadKey) return;
+    if (isPrivate) return;   // made from the database's document, below
     let stale = false;
     (async () => {
       try {
@@ -283,9 +300,16 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     return () => { stale = true; };
     // grcText and the second text are identified by loadKey
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [idx, loadKey, toast]);
+  }, [idx, loadKey, toast, isPrivate]);
+  // a book of the private collection is made from its document at once (lib/mine.ts): nothing to fetch or parse
+  const secondUrn = second?.urn;
+  const minePart = useMemo<Loaded | null>(() => {
+    if (!isPrivate || !mineDoc || !loadKey) return null;
+    const v = secondUrn ? (versionOf(secondUrn) as MineVersion) : null;
+    return { key: loadKey, parsed: mineParsed(mineDoc, v), from: { grc: "private", tr: v ? "private" : null } };
+  }, [isPrivate, mineDoc, loadKey, secondUrn]);
 
-  const current = result && result.key === loadKey ? result : null;
+  const current = minePart ?? (result && result.key === loadKey ? result : null);
   const load: Load = catalogError ? { state: "error", message: catalogError }
     : !current ? { state: "loading", step: !idx ? "Opening the catalogue…" : step?.key === loadKey ? step.text : "Fetching the Greek text…" }
     : current.error ? { state: "error", message: current.error } : { state: "ready" };
@@ -837,7 +861,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     const clear = () => root().querySelectorAll("[data-case]").forEach((el) => el.removeAttribute("data-case"));
     if (!cases || !rows.length || !doc) { clear(); return; }
     let live = true;
-    loadWordPack(workId).then((pack) => {
+    loadWordPack(lexWork).then((pack) => {
       if (!live) return;
       clear();
       if (!pack) { toast("No word analyses exist for this text yet, so words can't be coloured by case."); return; }
@@ -855,7 +879,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     }).catch(() => undefined);
     return () => { live = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [cases, rows, doc, workId]);
+  }, [cases, rows, doc, lexWork]);
 
   // words I know: mark each Greek word whose dictionary form the daily practice counts as learned (Phase 11)
   const learned = useMemo(() => knownLemmas(deck), [deck]);
@@ -864,7 +888,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     const clear = () => root().querySelectorAll("[data-known]").forEach((el) => el.removeAttribute("data-known"));
     if (!known || !rows.length || !doc) { clear(); return; }
     let live = true;
-    loadWordPack(workId).then((pack) => {
+    loadWordPack(lexWork).then((pack) => {
       if (!live) return;
       clear();
       if (!pack) { toast("No word analyses exist for this text yet, so the words you know can't be marked."); return; }
@@ -879,7 +903,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     }).catch(() => undefined);
     return () => { live = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [known, learned, rows, doc, workId]);
+  }, [known, learned, rows, doc, lexWork]);
 
   const pointOf = (span: HTMLElement) => {
     const unit = span.closest<HTMLElement>("[data-u]")!;
@@ -926,8 +950,8 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     const span = unit?.querySelectorAll<HTMLElement>("[data-w]")[sel.start.i];
     if (!unit || !span) return null;
     const same = [...unit.querySelectorAll<HTMLElement>("[data-w]")].filter((x) => norm(x.dataset.w!) === norm(span.dataset.w!));
-    return { w: span.dataset.w!, ctx: { work: workId, unitKey: sel.start.u, occurrence: same.indexOf(span), keys: unitKeys, depth: doc.levels.length }, span };
-  }, [sel, doc, workId, unitKeys]);
+    return { w: span.dataset.w!, ctx: { work: lexWork, unitKey: sel.start.u, occurrence: same.indexOf(span), keys: unitKeys, depth: doc.levels.length }, span };
+  }, [sel, doc, lexWork, unitKeys]);
 
   async function act(a: "bookmark" | "favourite" | "note" | "share" | "xref" | "xref-here" | "echoes" | "ask" | "notebook" | { highlight: Colour }) {
     if (!sel || !edV) return;
@@ -959,6 +983,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     if (a === "xref-here") return;   // no first passage chosen yet
     const base = { work: workId, ed: edV, start: sel.start, end: sel.end, quote: sel.quote };
     const where = rangeLabel(sel.start.u, sel.end.u);
+    if (a === "ask" && isPrivate) return;   // a private book's text is never posted to the forum
     if (a === "ask") {
       // the Town Hall's new-thread page picks this up (components/community/NewThread.tsx)
       const tr = rows.filter((r) => sel.rowKeys.includes(r.key)).map((r) => blockText(r.trans)).filter(Boolean).join(" ");
@@ -1025,7 +1050,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
     let ctx: WordContext | null = null;
     if (unit && doc) {
       const same = [...unit.querySelectorAll<HTMLElement>("[data-w]")].filter((x) => norm(x.dataset.w!) === norm(w.dataset.w!));
-      ctx = { work: workId, unitKey: unit.dataset.u!, occurrence: same.indexOf(w), keys: unitKeys, depth: doc.levels.length };
+      ctx = { work: lexWork, unitKey: unit.dataset.u!, occurrence: same.indexOf(w), keys: unitKeys, depth: doc.levels.length };
     }
     setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null });
     // phones and tablets: the look-up rises from the bottom over up to 62% of the screen, so the word moves up above it
@@ -1229,12 +1254,16 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   }, [canSync, sync, pane, order]);
 
   // ------------------------------------------------------------ render
+  if (isPrivate && mine.state !== "ready") return <MineStatus s={mine} work={workId} retry={() => setRetry((r) => r + 1)} onOpenMine={onOpenMine} />;
   if (!workId || (idx && !work)) {
     return (
       <div className={`wrap ${styles.message}`}>
         <h1>{workId ? "This work is not in the library" : "No work chosen"}</h1>
         <p className="muted">{workId ? <>There is no work <code>{workId}</code> in the catalogue: the link may be mistyped. </> : null}Choose something to read in {AREAS.library.name}.</p>
-        <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open {AREAS.library.name}</Link>
+        <div className={styles.statusActions}>
+          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open {AREAS.library.name}</Link>
+          {moderator && <button type="button" className="btn ghost" onClick={onOpenMine}>Private collection</button>}
+        </div>
       </div>
     );
   }
@@ -1273,7 +1302,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
         <span className={styles.aidLabel} aria-hidden="true">This passage</span>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-        <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>
+        {!isPrivate && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>}
         {canDiff && <>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
@@ -1284,8 +1313,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       </div>
       <div className={styles.aidGroup} role="group" aria-label="This work">
         <span className={styles.aidLabel} aria-hidden="true">This work</span>
-        <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>
-        {author && <Link className="chip" data-closes-sheet="" href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]} title={`${author.name}: life, works, and how the text survived`}>About {author.name}</Link>}
+        {!isPrivate && <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>}
+        {author && !isPrivate && <Link className="chip" data-closes-sheet="" href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]} title={`${author.name}: life, works, and how the text survived`}>About {author.name}</Link>}
+        {isPrivate && mineDoc && mineDoc.status !== "imported" && (
+          <Link className="chip" data-closes-sheet="" href={`${PRIVATE_TRANSLATIONS}?id=${encodeURIComponent(mineDoc.id)}`} transitionTypes={["page-turn"]}
+            title="The introduction, the translator's notes, and where our English parts from the published one">Notes and comparison</Link>
+        )}
       </div>
     </div>
   );
@@ -1316,7 +1349,10 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
           <>
             <nav className={styles.crumbs} aria-label="Breadcrumbs">
               <Link href={AREAS.library.href} transitionTypes={["page-turn"]}>{AREAS.library.name}</Link>
-              {author && <><span aria-hidden="true">›</span><Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link></>}
+              {isPrivate ? (
+                <><span aria-hidden="true">›</span><button type="button" className={styles.crumbBtn} onClick={onOpenMine}>Private collection</button>
+                  <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span></>
+              ) : author && <><span aria-hidden="true">›</span><Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link></>}
             </nav>
             <h1 className={styles.title}>{work?.title ?? " "}
               {grcText?.label && grcText.label !== work?.title && <span className={styles.titleGr} lang="grc">{grcText.label}</span>}
@@ -1354,6 +1390,11 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               </label>
             )}
             {!split && <button type="button" className="chip" onClick={onOpenSecond}>Open a second book beside this one</button>}
+            {moderator && !floating && (
+              <button type="button" className={`chip ${styles.mineChip}`} onClick={onOpenMine} title="Your own translations and imported texts, which only you can see">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg> Private collection
+              </button>
+            )}
             {columnsSeg}
           </div>
           {floating && aids}
@@ -1525,7 +1566,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
           </article>
           {sel && <PassageToolbar sel={sel} onAction={act} onClose={() => { setSel(null); getSelection()?.removeAllRanges(); }}
             xref={split ? (pendingXref && pendingXref.pane !== pane ? "here" : "start") : null}
-            word={selWord} onLookUp={selWord ? () => { const s = selWord.span; setSel(null); getSelection()?.removeAllRanges(); openWord(s); } : undefined} />}
+            word={selWord} onLookUp={selWord ? () => { const s = selWord.span; setSel(null); getSelection()?.removeAllRanges(); openWord(s); } : undefined} ask={!isPrivate} />}
           {share && <ShareDialog data={share} onClose={() => setShare(null)} />}
 
           <div className={`wrap ${styles.bottom}`}>
@@ -1576,7 +1617,12 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
               )} />
           )}
 
-          {from && (
+          {from && isPrivate && (
+            <p className={`wrap ${styles.source}`}>
+              From your private collection: kept only in the site&apos;s database, where nobody but you can open it, and never in the site&apos;s code.
+            </p>
+          )}
+          {from && !isPrivate && (
             <p className={`wrap ${styles.source}`}>
               Greek read from {FROM_TEXT[from.grc]}{from.tr ? `, translation from ${FROM_TEXT[from.tr]}` : ""}. Files from{" "}
               {idx!.catalog.collections[grcText!.col].repo} ({grcText!.urn}), shown exactly as published. CC BY-SA 4.0.
@@ -1591,7 +1637,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       {/* each panel keeps its own failures to itself: the text stays readable */}
       {vocabOpen && doc && !word && (
         <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
-          <VocabPanel work={workId} doc={doc} pageKeys={pageKeys}
+          <VocabPanel work={lexWork} doc={doc} pageKeys={pageKeys}
             onClose={() => setVocabOpen(false)} onPick={(lemma) => setWord({ w: lemma, ctx: null, at: null })} />
         </PanelGuard>
       )}
@@ -1610,7 +1656,7 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
       {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
       {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
-          <SentencePanel work={workId} doc={doc} at={sentenceAt} onMarks={setSynMarks}
+          <SentencePanel work={lexWork} doc={doc} at={sentenceAt} onMarks={setSynMarks}
             onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
             onClose={() => { setSentenceAt(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
         </PanelGuard>
@@ -1619,17 +1665,17 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
         <Listen rows={rows} root={root} startKey={topRow} title={work.title}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
       )}
-      {talkOpen && !word && !echo && (
+      {talkOpen && !isPrivate && !word && !echo && (
         <PanelGuard name="talk panel" className={styles.panel} onClose={() => setTalkOpen(false)}>
           <TalkPanel work={workId} pageKeys={pageKeys} onJump={jumpToRef} onClose={() => setTalkOpen(false)} />
         </PanelGuard>
       )}
       {placesOpen && doc && !word && !echo && (
         <PanelGuard name="places panel" className={styles.panel} onClose={() => setPlacesOpen(false)}>
-          <PlacesPanel work={workId} doc={doc} pageKeys={pageKeys} onJump={jumpToRef} onMarks={setPlaceMarks} onClose={() => setPlacesOpen(false)} />
+          <PlacesPanel work={lexWork} doc={doc} pageKeys={pageKeys} onJump={jumpToRef} onMarks={setPlaceMarks} onClose={() => setPlacesOpen(false)} />
         </PanelGuard>
       )}
-      {msOpen && doc && !word && !echo && (() => {
+      {msOpen && !isPrivate && doc && !word && !echo && (() => {
         const row = rows.find((r) => r.key === topRow) ?? rows[0];
         const units = row?.greek ?? [];
         return (
@@ -1657,6 +1703,41 @@ function ReaderPane({ pane, split, onOpenSecond }: PaneProps) {
   );
 }
 
+/** A book of the private collection that is not open yet, or cannot be: why, in a few words, and the way on. */
+function MineStatus({ s, work, retry, onOpenMine }: { s: MineState; work: string; retry: () => void; onOpenMine: () => void }) {
+  const back = `/read?w=${work}`;
+  if (s.state === "waiting" || s.state === "none" || s.state === "ready") {
+    return (
+      <div className={`wrap ${styles.status}`} aria-busy="true">
+        <h1 className="visually-hidden">Private collection</h1>
+        <span className={`meander ${styles.loadingBand}`} aria-hidden="true" /><p>Opening your private collection…</p>
+      </div>
+    );
+  }
+  const title = { "signed-out": "A private book", private: "This book is private.", missing: "Not in your private collection", broken: "This book cannot be shown", error: "The book could not be opened" }[s.state];
+  return (
+    <div className={`wrap ${styles.message}`}>
+      <h1>{title}</h1>
+      {s.state === "signed-out" && <p className="muted"><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open it.</p>}
+      {s.state === "missing" && <p className="muted">Nothing in your private collection has the id “{mineId(work)}”. It may have been removed.</p>}
+      {s.state === "broken" && (
+        <>
+          <p className="muted">It is stored, but no longer passes the check:</p>
+          <ul className={styles.mineProblems}>{s.problems.slice(0, 8).map((p, i) => <li key={i}>{p}</li>)}</ul>
+          <p className="muted">Download it from the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>, mend the file, and add it again.</p>
+        </>
+      )}
+      {s.state === "error" && <p className={styles.warn} role="alert">{s.message}</p>}
+      {s.state !== "private" && s.state !== "signed-out" && (
+        <div className={styles.statusActions}>
+          {s.state === "error" && <button type="button" className="btn" onClick={retry}>Try again</button>}
+          <button type="button" className={s.state === "error" ? "btn ghost" : "btn"} onClick={onOpenMine}>Private collection</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 /** In the floating window the book's settings fold away, so the text shows first. */
 function FloatFold({ floating, children }: { floating: boolean; children: React.ReactNode }) {
   if (!floating) return <>{children}</>;
@@ -1673,6 +1754,16 @@ export function ReaderBooks() {
   const nav = useNav();
   const split = !!nav.params.get("w2");
   const [picking, setPicking] = useState(false);
+  // the private collection's window, opened from either book: a book chosen there opens in that pane
+  const [mineFor, setMineFor] = useState<1 | 2 | null>(null);
+  const openMine = (pane: 1 | 2, id: string) => {
+    const q = new URLSearchParams(nav.params.toString());
+    const k = (x: string) => (pane === 1 ? x : `${x}2`);
+    q.set(k("w"), `mine:${id}`);
+    for (const x of ["ed", "tr", "at", "cmp", "cmpx", "hl", "find", "tu"]) q.delete(k(x));
+    nav.go(q, "push");
+    setMineFor(null);
+  };
   const open = (w: string) => {
     const q = new URLSearchParams(nav.params.toString());
     q.set("w2", w);
@@ -1682,9 +1773,10 @@ export function ReaderBooks() {
   };
   return (
     <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""}`}>
-      <ReaderPane pane={1} split={split} onOpenSecond={() => setPicking(true)} />
-      {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} />}
+      <ReaderPane pane={1} split={split} onOpenSecond={() => setPicking(true)} onOpenMine={() => setMineFor(1)} />
+      {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} onOpenMine={() => setMineFor(2)} />}
       {picking && <WorkPicker onPick={open} onClose={() => setPicking(false)} />}
+      {mineFor && <MineDialog current={nav.params.get(mineFor === 1 ? "w" : "w2")} onOpen={(id) => openMine(mineFor, id)} onClose={() => setMineFor(null)} />}
     </div>
   );
 }

@@ -10,9 +10,10 @@
  */
 
 export const FORMAT = "mathesis-translation/1";
-export const STATUSES = ["sample", "draft", "complete"] as const;
+/** "imported": a text brought in from the reader's "Import a text" (lib/import-text.ts), not one of our translations. */
+export const STATUSES = ["sample", "draft", "complete", "imported"] as const;
 export type Status = (typeof STATUSES)[number];
-export const STATUS_LABEL: Record<Status, string> = { sample: "Sample", draft: "Draft", complete: "Complete" };
+export const STATUS_LABEL: Record<Status, string> = { sample: "Sample", draft: "Draft", complete: "Complete", imported: "Imported" };
 /** The same rule as the database's check on private_translations.id. */
 export const ID_PATTERN = /^[a-z0-9-]{1,80}$/;
 /** A translation file larger than this is refused before it is read. */
@@ -25,7 +26,8 @@ export interface TranslationRow {
   /** shown in the margin instead of `ref`, e.g. a Bekker line ("1097a15") inside a chapter the reader cites whole */
   label?: string;
   greek: string;
-  english: string;
+  /** required in a translation; an imported text may leave it out (a Greek text read on its own) */
+  english?: string;
   published?: string;
 }
 /** A place where our English parts from the published translation, and why. */
@@ -158,9 +160,9 @@ export function checkTranslation(input: unknown): Checked {
   const author = c.text(input, "author", "", true);
   const title = c.text(input, "title", "", true);
   let status: Status | undefined;
-  if (input.status === undefined || input.status === null) c.problems.push(`The status ("status") is missing: it should be "sample", "draft" or "complete".`);
+  if (input.status === undefined || input.status === null) c.problems.push(`The status ("status") is missing: it should be "sample", "draft", "complete" or "imported".`);
   else if (typeof input.status === "string" && (STATUSES as readonly string[]).includes(input.status)) status = input.status as Status;
-  else c.problems.push(`The status ("status") must be "sample", "draft" or "complete" (found ${what(input.status)}).`);
+  else c.problems.push(`The status ("status") must be "sample", "draft", "complete" or "imported" (found ${what(input.status)}).`);
 
   const opt: Partial<TranslationDoc> = {};
   for (const k of ["greekTitle", "updated", "urn", "greekEdition", "publishedTranslation", "intro"] as const) {
@@ -193,10 +195,11 @@ export function checkTranslation(input: unknown): Checked {
     } else rows.forEach((r, ri) => {
       const rw = rowPlace(pi + 1, ri + 1, r);
       if (!isObj(r)) { c.problems.push(`${rw} must be a group of fields in { curly brackets } (found ${what(r)}).`); return; }
-      const greek = c.text(r, "greek", rw, true), english = c.text(r, "english", rw, true);
+      const greek = c.text(r, "greek", rw, true), english = c.text(r, "english", rw, status !== "imported");
       const ref = c.text(r, "ref", rw, false), label = c.text(r, "label", rw, false), published = c.text(r, "published", rw, false);
-      if (greek === undefined || english === undefined) return;
-      const row: TranslationRow = { greek, english };
+      if (greek === undefined || (english === undefined && status !== "imported")) return;
+      const row: TranslationRow = { greek };
+      if (english !== undefined) row.english = english;
       if (ref !== undefined) row.ref = ref.trim();
       if (label !== undefined) row.label = label.trim();
       if (published !== undefined) row.published = published;
