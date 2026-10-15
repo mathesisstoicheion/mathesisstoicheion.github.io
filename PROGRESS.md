@@ -1,5 +1,11 @@
 # PROGRESS.md — project memory
 
+## Site redesign (2026-10-15; samples only, the site itself is unchanged)
+The owner asked for a fresh-start redesign. The look is agreed and written down in `DESIGN.md`; the decision is
+`docs/adr/0001-visual-direction.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 2 is current);
+sources in the project files under `redesign/prototype/`. Waiting on the owner's pick of a scroll style (Windows, Shutters or Stage).
+Next: design tokens, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:
