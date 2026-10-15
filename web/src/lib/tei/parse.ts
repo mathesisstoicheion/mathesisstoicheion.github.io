@@ -285,31 +285,61 @@ function makeChunks(units: Unit[], levels: string[], containers: number[]): TeiD
     const x = units[a].ref.join("."), y = units[b].ref.join(".");
     return x === y ? x : `${x}–${y}`;
   };
+  const len = units.map((u) => u.blocks.reduce((n, b) => n + b.c.reduce((m, x) => m + (typeof x === "string" ? x.length : 0), 0), 0));
+  const chars = (a: number, b: number) => { let n = 0; for (let i = a; i <= b; i++) n += len[i]; return n; };
   if (levels.length >= 2) {
     // one page per top-level division; a very long one is split by the next level down, and
-    // anything still too long into runs, so no page becomes unwieldy
-    const MAX = 1500, RUN = 600;
-    const group = (a: number, b: number, depth: number, label: string) => {
-      if (b - a + 1 <= MAX) { chunks.push({ label, first: a, last: b }); return; }
+    // anything still too long into runs, so no page becomes unwieldy. Prose is also measured in
+    // letters: a whole book of Aristotle as one page was slow to show on phones, so a long book of
+    // prose is cut into runs of its chapters (verse keeps its books whole, as readers expect)
+    const MAX = 1500, RUN = 600, PROSE = 16000;
+    const isProse = (a: number, b: number) => {
+      let l = 0, all = 0;
+      for (let i = a; i <= b; i++) for (const x of units[i].blocks) { all++; if (x.t === "l") l++; }
+      return l * 2 < all;
+    };
+    const tooBig = (a: number, b: number, prose: boolean) => b - a + 1 > MAX || (prose && chars(a, b) > PROSE * 1.5);
+    const group = (a: number, b: number, depth: number, label: string, prose: boolean) => {
+      if (!tooBig(a, b, prose)) { chunks.push({ label, first: a, last: b }); return; }
       if (depth < levels.length - 1) {
+        const kids: [number, number][] = [];
         let s = a;
         for (let i = a + 1; i <= b + 1; i++) {
-          if (i > b || units[i].ref[depth] !== units[s].ref[depth]) {
-            group(s, i - 1, depth + 1, `${label}, ${levels[depth]} ${units[s].ref[depth]}`);
-            s = i;
-          }
+          if (i > b || units[i].ref[depth] !== units[s].ref[depth]) { kids.push([s, i - 1]); s = i; }
         }
+        const name = (k: [number, number]) => units[k[0]].ref[depth];
+        if (!prose) { for (const k of kids) group(k[0], k[1], depth + 1, `${label}, ${levels[depth]} ${name(k)}`, prose); return; }
+        // prose: gather neighbouring divisions into pages of about PROSE letters
+        let run: [number, number][] = [];
+        const flush = () => {
+          if (!run.length) return;
+          const [f, l] = [run[0], run[run.length - 1]];
+          chunks.push({ label: run.length === 1 ? `${label}, ${levels[depth]} ${name(f)}` : `${label}, ${plural(levels[depth])} ${name(f)}–${name(l)}`, first: f[0], last: l[1] });
+          run = [];
+        };
+        for (const k of kids) {
+          if (tooBig(k[0], k[1], prose)) { flush(); group(k[0], k[1], depth + 1, `${label}, ${levels[depth]} ${name(k)}`, prose); continue; }
+          if (run.length && (chars(run[0][0], k[1]) > PROSE || k[1] - run[0][0] + 1 > MAX)) flush();
+          run.push(k);
+        }
+        flush();
         return;
       }
-      for (let s = a; s <= b; s += RUN) {
-        const e = Math.min(b, s + RUN - 1);
-        chunks.push({ label: `${label} (${range(s, e)})`, first: s, last: e });
+      let s = a;
+      for (let i = a; i <= b; i++) {
+        if (i === b || i - s + 1 >= RUN || (prose && chars(s, i) >= PROSE)) {
+          // "Book 2, chapters 1–4" reads better than "Book 2 (2.1–2.4)" when the passages are whole chapters
+          const x = units[s].ref[depth], y = units[i].ref[depth];
+          const named = depth === levels.length - 1 && units.slice(s, i + 1).every((u, j) => j === 0 || u.ref[depth - 1] === units[s].ref[depth - 1]);
+          chunks.push({ label: named ? (x === y ? `${label}, ${levels[depth]} ${x}` : `${label}, ${plural(levels[depth])} ${x}–${y}`) : `${label} (${range(s, i)})`, first: s, last: i });
+          s = i + 1;
+        }
       }
     };
     let first = 0;
     for (let i = 1; i <= units.length; i++) {
       if (i === units.length || units[i].ref[0] !== units[first].ref[0]) {
-        group(first, i - 1, 1, `${cap(levels[0])} ${units[first].ref[0]}`);
+        group(first, i - 1, 1, `${cap(levels[0])} ${units[first].ref[0]}`, isProse(first, i - 1));
         first = i;
       }
     }
@@ -318,14 +348,13 @@ function makeChunks(units: Unit[], levels: string[], containers: number[]): TeiD
   // One-level texts: follow the top-level divisions (a play's scenes) when they give sensible
   // pages; otherwise cut pages of roughly PAGE characters, and keep short works on one page.
   const PAGE = 12000;
-  const len = units.map((u) => u.blocks.reduce((n, b) => n + b.c.reduce((m, x) => m + (typeof x === "string" ? x.length : 0), 0), 0));
-  const total = len.reduce((a, b) => a + b, 0);
+  const total = chars(0, units.length - 1);
   const byContainer: TeiDoc["chunks"] = [];
   let first = 0;
   for (let i = 1; i <= units.length; i++) {
     if (i === units.length || containers[i] !== containers[first]) { byContainer.push({ label: "", first, last: i - 1 }); first = i; }
   }
-  const sizeOf = (c: { first: number; last: number }) => len.slice(c.first, c.last + 1).reduce((a, b) => a + b, 0);
+  const sizeOf = (c: { first: number; last: number }) => chars(c.first, c.last);
   let base: TeiDoc["chunks"];
   if (total <= PAGE * 2) base = [{ label: "", first: 0, last: units.length - 1 }];
   else if (byContainer.length > 1 && byContainer.every((c) => sizeOf(c) <= PAGE * 4)) base = byContainer;
@@ -337,7 +366,13 @@ function makeChunks(units: Unit[], levels: string[], containers: number[]): TeiD
       if (acc >= PAGE || i === units.length - 1) { base.push({ label: "", first: start, last: i }); start = i + 1; acc = 0; }
     }
   }
+  // a page with next to nothing on it (the cast list before a play's first scene, Perseus's hidden
+  // line 0) joins the page after it
+  for (let i = 0; i < base.length - 1; i++) {
+    if (sizeOf(base[i]) < 200) { base[i + 1] = { ...base[i + 1], first: base[i].first }; base.splice(i, 1); i--; }
+  }
   return base.map((c) => ({ ...c, label: `${cap(levels[0] ?? "part")}${c.first === c.last ? "" : "s"} ${range(c.first, c.last)}` }));
 }
 
+const plural = (s: string) => (s.endsWith("s") ? s : `${s}s`);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

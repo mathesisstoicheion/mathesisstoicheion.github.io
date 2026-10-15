@@ -1,5 +1,30 @@
 # PROGRESS.md — project memory
 
+## Reader bug search (2026-10-15; committed, not yet published)
+The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
+English translation but the translation isn't offered", "and fix loading times". Found and fixed:
+- **Texts stuck on "Preparing the text…" on every visit after the first** (the main cause). The bundler starts the parsing worker
+  with its settings in the script address's `#params=` hash; once the offline helper (`public/sw.js`) served the worker's script from
+  its cache, the hash was lost and the worker died ("Missing worker bootstrap config"). `sw.js` now leaves worker scripts alone, and
+  `lib/tei/client.ts` parses on the page itself if the worker ever fails (`lib/tei/run.ts` holds the shared work). Checked: first
+  visit, reload, other texts, and offline, all with the helper active.
+- **Long prose books are cut into pages of about 16,000 letters, by whole chapters** (`makeChunks` in `parse.ts`): On the Soul went
+  from 3 pages of about 45,000 letters to 8 ("Book 2, chapters 1–4"). Verse keeps whole books (the Iliad still 24 pages). A page with
+  next to nothing on it (Perseus's hidden line 0 before a play's cast list) joins the next page.
+- **Downloads can no longer wait for ever**: the text shows a percentage as it arrives; a stall of 30 s, or a saved copy that does not
+  answer in 6 s, gives a clear message or falls back to GitHub. A saved copy that does not end in `</TEI>` (cut short) is passed over.
+- **A running Scroll Case download pauses between files while the reader opens a text** (`lib/texts/priority.ts`).
+- **Three English translations the reader never offered** (their metadata called them Greek, or an edition): Armstrong's Economics,
+  Burtt's Against Leocrates, Jones's Epidemics (perseus-eng4). Every one of the catalogue's 2,816 files was checked against the
+  collections' file lists at the pinned commits: none is missing. `pipeline/catalog_fixes.py` corrects the catalogue (run by
+  `build_catalog.py`, or directly); all three line up with the Greek passage for passage.
+- Changing the edition or translation keeps the reader's place; Back after Next/Previous goes to the previous page (page changes are
+  now history steps); the column label in Greek-only view on phones no longer wraps one word per line.
+- Known, not fixed: a few huge commentaries (Simplicius on the Physics) are cut by their source into "chapters" of up to 600,000
+  letters, and a page cannot be smaller than one passage, so they stay slow on phones.
+Tests: unit 462 (+3 page tests); reader browser tests 52 passed, the 12 others need the word-analysis, LSJ and Echoes packs, which
+are not on the build machine.
+
 ## Lessons that stick: practise, test, refresh, checkpoints (2026-10-11 and 13; published 2026-10-13 at the owner's word)
 The owner: "besides the gamified games for learning, we also need proper lessons ... to make the words and things you've learned
 stick". Each of the 18 lessons now has four steps: **learn** (the lesson as before), **practise**, **pass the test**, **refresh**.

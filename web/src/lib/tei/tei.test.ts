@@ -203,3 +203,27 @@ describe("numbers that match only by coincidence", () => {
     expect(at[6]).toBe("2.12");         // the last with the last, not "2.6" by its number
   });
 });
+
+describe("pages", () => {
+  // a made-up text in the shape of Aristotle's On the Soul: books of long prose chapters
+  const prose = (books: number, chapters: number, letters: number) => `<TEI><teiHeader><encodingDesc><refsDecl n="CTS">
+    <cRefPattern n="chapter" replacementPattern="#xpath(/tei:TEI/tei:text/tei:body/tei:div/tei:div[@n='$1']/tei:div[@n='$2'])"/>
+    <cRefPattern n="book" replacementPattern="#xpath(/tei:TEI/tei:text/tei:body/tei:div/tei:div[@n='$1'])"/></refsDecl></encodingDesc></teiHeader>
+    <text><body><div type="edition">${Array.from({ length: books }, (_, b) => `<div type="textpart" subtype="book" n="${b + 1}">${
+      Array.from({ length: chapters }, (_, c) => `<div type="textpart" subtype="chapter" n="${c + 1}"><p>${"α".repeat(letters)}</p></div>`).join("")}</div>`).join("")}</div></body></text></TEI>`;
+  it("a long book of prose is cut into runs of its chapters, named by chapter", () => {
+    const d = parseTei(prose(2, 12, 4000));
+    expect(d.levels).toEqual(["book", "chapter"]);
+    expect(d.chunks.length).toBeGreaterThan(2);
+    expect(d.chunks[0].label).toBe("Book 1, chapters 1–4");
+    // every passage is on exactly one page, in order
+    expect(d.chunks.flatMap((c) => Array.from({ length: c.last - c.first + 1 }, (_, i) => c.first + i))).toEqual(d.units.map((_, i) => i));
+  });
+  it("a short book of prose stays one page", () => {
+    expect(parseTei(prose(2, 3, 1000)).chunks.map((c) => c.label)).toEqual(["Book 1", "Book 2"]);
+  });
+  it("a play's cast list does not get a page of its own", () => {
+    const d = doc("tlg0011.tlg002.perseus-grc2");
+    expect(d.chunks.every((c) => d.units.slice(c.first, c.last + 1).some((u) => plain(u.blocks).trim().length > 0))).toBe(true);
+  });
+});

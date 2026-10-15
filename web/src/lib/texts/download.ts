@@ -7,6 +7,7 @@
 import { rawUrl, type CatalogIndex, type CatText, type CollectionId } from "@/lib/catalog";
 import { kvGet, kvSet } from "./kv";
 import { folderWrite, opfsWrite, repoOf, askPersistence } from "./local";
+import { afterReader } from "./priority";
 
 export interface Plan { texts: CatText[]; bytes: number }
 export interface PlanOptions { cols: CollectionId[]; langs: string[]; workIds?: Set<string> | null }
@@ -76,6 +77,8 @@ export async function runDownload(idx: CatalogIndex, plan: Plan, target: Target,
   let next = 0;
   const workers = Array.from({ length: Math.min(concurrency, queue.length) }, async () => {
     while (next < queue.length && !signal.aborted) {
+      await afterReader(signal);
+      if (signal.aborted || next >= queue.length) break;
       const t = queue[next++];
       await one(t);
       p.files++; p.bytes += t.size;

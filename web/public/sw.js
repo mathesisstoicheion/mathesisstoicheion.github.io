@@ -139,6 +139,10 @@ self.addEventListener("fetch", (e) => {
   // to loading the page itself, which is answered from the kept copy below.
   if (request.headers.get("RSC") || url.searchParams.has("_rsc")) return;
   if (request.mode === "navigate") { e.respondWith(page(request)); return; }
+  // a worker's script is left to the browser: the bundler hands a worker its start-up details in the
+  // address's #hash, and a copy served from here loses it, so the worker would fail to start (the reader
+  // then parses on the page itself, src/lib/tei/client.ts)
+  if (request.destination === "worker" || request.destination === "sharedworker") return;
   if (url.pathname.startsWith("/_next/static/")) { e.respondWith(staticFile(request)); return; }
   // the Oracle's index is too large to keep; the other data packs live in /data locally and /packs online
   if (url.pathname.startsWith("/data/search/") || url.pathname.startsWith("/packs/search/")) return;

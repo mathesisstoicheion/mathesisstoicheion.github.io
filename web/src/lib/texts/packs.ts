@@ -9,6 +9,7 @@ import { WORD_PACK_DIR } from "@/lib/lookup/words";
 import { LSJ_DIR } from "@/lib/lookup/lsj";
 import { LEXICON_DIR } from "@/lib/lexicon";
 import { PACKS } from "@/config/packs";
+import { afterReader } from "./priority";
 
 export interface PackFile { url: string; dir: string; name: string; size: number; sha: string; key: string }
 type Index = Record<string, [number, string]>;
@@ -53,6 +54,8 @@ export async function runPackDownload(files: PackFile[], onProgress: (done: numb
   onProgress(0, todo.length, 0, totalBytes);
   const worker = async () => {
     while (next < todo.length && !signal.aborted) {
+      await afterReader(signal);
+      if (signal.aborted || next >= todo.length) break;
       const f = todo[next++];
       try {
         const res = await fetch(f.url, { signal });
