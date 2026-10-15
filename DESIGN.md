@@ -68,12 +68,15 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 - With "reduce motion" switched on, everything is drawn once and holds still.
 
 ## Motion
-Each page has its own scroll effect. Three versions were sampled:
-- **1 Windows:** art fixed behind a still black page, with outline letters drifting at other speeds.
-- **2 Shutters:** windows open like shutters as they arrive, the art inside moves more slowly than the page, and gold letters float at three depths.
-- **3 Stage:** one picture is pinned behind the page and changes with the scroll, while black blocks slide over it.
-
-**Pending the owner's pick** (recommended: 2 Shutters). This section will name the chosen version and how each page uses it.
+Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
+- **Shutters** for the home page and most other pages:
+  - Windows open like shutters as they arrive, and the art inside moves more slowly than the page.
+  - Sparks drift behind the page at three depths.
+  - Moving the pointer or scrolling fast fans the fire. The heat builds the longer you fan, more sparks fly and they burn brighter, and a hearth glow rises along the bottom of the screen. Left alone, it dies back to a few embers.
+- **Stage** for the library:
+  - Socrates is pinned behind the whole page and gathers out of loose letters as you scroll.
+  - The Apology rises through his face as you go down, and black blocks slide over him.
+- **The reader** has no scroll effect.
 
 Other motion:
 - Titles rise line by line on arrival.
@@ -86,9 +89,16 @@ Other motion:
 - One column on phones, with a 16px gutter. Windows sit above the text on phones.
 
 ## Signature details
-1. **Socrates spelled out of the Apology.** The library's face of Socrates is made of the whole Greek text of Plato's Apology, in reading order, from "ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι" to "τῷ θεῷ" (Burnet's Oxford text, via the Perseus Digital Library). The brightness of each letter draws the face, and the lamp lets you read it. The speech slowly rises through the face. Socrates wrote nothing, which is why the face is drawn from the speech Plato gave him.
+1. **Socrates spelled out of the Apology.** The library's face of Socrates is made of the whole Greek text of Plato's Apology, in reading order, from "ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι" to "τῷ θεῷ" (Burnet's Oxford text, via the Perseus Digital Library). Socrates wrote nothing, which is why the face is drawn from the speech Plato gave him.
+   - The brightness and size of each letter draw the face. The letters are fine enough for the features to show clearly.
+   - The speech slowly rises through the face.
+   - The pointer carries a lamp and a reading glass that enlarges the letters under it, so the speech can be read.
 2. **Every text has its own emblem.** It shows the author's face, the thing the text is best known for, or one of its themes, drawn in Greek letters inside an oval. It appears on the book's row in the library and at the top right of the reader. Each emblem is a licensed image with its credit beside it. The Socrates emblem is also spelled out of the Apology.
 3. **The engraved coin.** On the home page, Athena's head is engraved in gold lines on Pompeian red. It comes from a silver tetradrachm of Athens, c. 440–404 BC, in the Metropolitan Museum of Art (2021.40.80, CC0).
+4. **The Muses' flames.** A section of the home page opens with Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White).
+   - Below it, the nine Muses he names (Theogony 76–79) each have a small oil lamp.
+   - Fanning a flame with the pointer makes it flare, throw sparks and light up her name.
+   - The arts given to each Muse are later tradition, and the page says so.
 
 ## Avoid
 - Light mode anywhere but the reader's Daylight page.
@@ -96,3 +106,5 @@ Other motion:
 - Stock photos, invented quotations, uncredited images, or images without a clear licence.
 - Default system fonts, pure white text, rounded cards, drop shadows, and bright saturated blues or greens.
 - Accents on Greek capitals in labels, and Greek set in a font that drops its accents or breathings.
+- Blend modes (overlay, multiply) on full-screen layers. In testing, the grain's overlay halved the frame rate. Grain and scan lines use plain transparency.
+- Reading colours from styles inside an animation frame, and drawing thousands of letters as text every frame. Read colours once per page. Stamp letters from a prepared sheet of letters. Keep a still picture of anything that has not changed.
