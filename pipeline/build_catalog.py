@@ -122,6 +122,11 @@ def main() -> None:
         out.append({"id": a["id"], "name": a.get("name") or a["id"], "works": works})
     catalog["authors"] = out
 
+    # English translations the metadata mislabels as Greek or as editions (pipeline/catalog_fixes.py)
+    from catalog_fixes import fix_languages
+    for change in fix_languages(catalog):
+        print(f"  corrected {change}")
+
     # English titles for works the collections name only in Latin or Greek (pipeline/work_titles.tsv)
     from apply_work_titles import apply, apply_names, load_names, load_titles
     apply(catalog, load_titles())

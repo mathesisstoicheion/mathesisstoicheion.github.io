@@ -22,12 +22,24 @@ async function opfsDir(parts: string[], create: boolean): Promise<FileSystemDire
 export const repoOf = (idx: CatalogIndex, col: CollectionId) => idx.catalog.collections[col].repo;
 const splitPath = (p: string) => p.split("/").filter(Boolean);
 
-export async function opfsRead(repo: string, path: string): Promise<string | null> {
+/**
+ * A text file is whole when it ends with its closing </TEI> tag: a copy cut short by an interrupted save is passed over
+ * (and the text fetched again) rather than shown broken. Its size is not compared with the catalogue's, since a copy
+ * imported from a newer ZIP of the collection may differ a little and is still good to read.
+ */
+const whole = (xml: string) => /<\/(?:tei:)?TEI>\s*$/.test(xml.slice(-400));
+
+/** A stored file's text; with `xml`, only a whole TEI file. */
+export async function opfsRead(repo: string, path: string, xml = false): Promise<string | null> {
   if (!hasBrowserStorage()) return null;
   const parts = splitPath(path);
   const dir = await opfsDir([repo, ...parts.slice(0, -1)], false);
   if (!dir) return null;
-  try { return await (await (await dir.getFileHandle(parts[parts.length - 1])).getFile()).text(); } catch { return null; }
+  try {
+    const f = await (await dir.getFileHandle(parts[parts.length - 1])).getFile();
+    const text = await f.text();
+    return !xml || whole(text) ? text : null;
+  } catch { return null; }
 }
 
 export async function opfsWrite(repo: string, path: string, data: BufferSource | Blob | string) {
@@ -138,7 +150,11 @@ export async function folderWrite(root: FileSystemDirectoryHandle, repo: string,
 async function readFrom(dir: FileSystemDirectoryHandle, parts: string[]): Promise<string | null> {
   let d = dir;
   for (const p of parts.slice(0, -1)) { const n = await childDir(d, p); if (!n) return null; d = n; }
-  try { return await (await (await d.getFileHandle(parts[parts.length - 1])).getFile()).text(); } catch { return null; }
+  try {
+    const f = await (await d.getFileHandle(parts[parts.length - 1])).getFile();
+    const text = await f.text();
+    return whole(text) ? text : null;
+  } catch { return null; }
 }
 
 // ------------------------------------------------------------------ look-up order
@@ -147,7 +163,7 @@ export type Origin = "browser" | "folder";
 /** Find a text in local copies: browser storage first, then connected folders. */
 export async function readLocal(idx: CatalogIndex, t: CatText): Promise<{ xml: string; from: Origin } | null> {
   const repo = repoOf(idx, t.col);
-  const fromBrowser = await opfsRead(repo, t.path).catch(() => null);
+  const fromBrowser = await opfsRead(repo, t.path, true).catch(() => null);
   if (fromBrowser != null) return { xml: fromBrowser, from: "browser" };
   if (!canUseFolders()) return null;
   for (const f of await listFolders()) {

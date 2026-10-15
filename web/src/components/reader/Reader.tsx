@@ -9,6 +9,7 @@ import {
   type CatalogIndex, type CatText, type CatWork,
 } from "@/lib/catalog";
 import { getXml, type From } from "@/lib/texts/source";
+import { readerBusy } from "@/lib/texts/priority";
 import { parseInWorker, type Parsed } from "@/lib/tei/client";
 import { schemeFor } from "@/lib/tei/versification";
 import { alignChunk, untranslated, type Row } from "@/lib/tei/align";
@@ -284,9 +285,18 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     if (!idx || !grcText || !loadKey) return;
     if (isPrivate) return;   // made from the database's document, below
     let stale = false;
+    const release = readerBusy();   // a Scroll Case download waits until the text is up
     (async () => {
       try {
-        const [g, t] = await Promise.all([getXml(idx, grcText), second ? getXml(idx, second).catch(() => null) : null]);
+        // on a slow connection, show how much of the Greek has arrived (only when the percentage moves)
+        let shown = -1;
+        const progress = (got: number, total: number) => {
+          const pc = Math.min(99, Math.floor((got / total) * 100));
+          if (stale || pc === shown) return;
+          shown = pc;
+          setStep({ key: loadKey, text: `Fetching the Greek text… ${pc}%` });
+        };
+        const [g, t] = await Promise.all([getXml(idx, grcText, progress), second ? getXml(idx, second).catch(() => null) : null]);
         if (stale) return;
         setStep({ key: loadKey, text: "Preparing the text…" });
         const p = await parseInWorker(g.xml, t?.xml ?? null, cmpText || !work || !second ? undefined : schemeFor(work.id, second), second?.urn);
@@ -295,9 +305,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         if (second && !t) toast(cmpText ? "The other edition could not be loaded." : "The translation could not be loaded; showing the Greek only.");
       } catch (e) {
         if (!stale) setResult({ key: loadKey, error: (e as Error).message });
-      }
+      } finally { release(); }
     })();
-    return () => { stale = true; };
+    return () => { stale = true; release(); };
     // grcText and the second text are identified by loadKey
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [idx, loadKey, toast, isPrivate]);
@@ -619,7 +629,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const href = (o: { ed?: string; tr?: string | null; at?: string }) => `/read?${query(o)}`;
   const goChunk = (i: number) => {
     if (!doc || i < 0 || i >= doc.chunks.length) return;
-    nav.go(query({ at: doc.units[doc.chunks[i].first].ref.join(".") }));
+    // a new page is a step in the browser's history, so Back returns to the page before
+    nav.go(query({ at: doc.units[doc.chunks[i].first].ref.join(".") }), "push");
   };
   const goChunkRef = useRef(goChunk);
   useEffect(() => { goChunkRef.current = goChunk; });
@@ -629,7 +640,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     if (!doc) return;
     const i = findRef(doc, goto);
     if (i < 0) { toast(`No passage "${goto}" in this text. Try a reference like ${doc.units[Math.min(40, doc.units.length - 1)].ref.join(".")}.`); return; }
-    nav.go(query({ at: goto.trim().replace(/\s+/g, ".") }));
+    nav.go(query({ at: goto.trim().replace(/\s+/g, ".") }), "push");
     setGoto("");
   };
 
@@ -1366,12 +1377,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           <FloatFold floating={floating}>
           <div className={styles.controls}>
             <label className={styles.pick}><span className="label">Greek text</span>
-              <select value={versionOf(grcText.urn)} onChange={(e) => nav.go(query({ ed: e.target.value }))}>
+              <select value={versionOf(grcText.urn)} onChange={(e) => nav.go(query({ ed: e.target.value, at: topKey() ?? undefined }))}>
                 {(greekEditions(work).length ? greekEditions(work) : work.texts.filter((t) => t.kind === "edition")).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
               </select>
             </label>
             <label className={styles.pick}><span className="label">Translation</span>
-              <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value }))} disabled={!!cmpText}
+              <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value, at: topKey() ?? undefined }))} disabled={!!cmpText}
                 title={cmpText ? "The translation comes back when you stop comparing editions" : undefined}>
                 <option value="none">None</option>
                 {translations(work).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
