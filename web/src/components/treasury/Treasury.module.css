@@ -144,10 +144,12 @@
 
 /* ------------------------------------------------ continue reading: book spines on a shelf */
 .continue { display: grid; gap: 14px; }
-.shelf { list-style: none; margin: 0; padding: 0 0 12px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 12px; overflow-x: auto; border-bottom: 6px solid var(--ink); }
+.shelf { list-style: none; margin: 0; padding: 0 0 12px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: 12px; overflow-x: auto;
+  /* the shelf is a dark ledge cut into the wall, its lip caught by the torch */
+  border-bottom: 8px solid var(--bg-deep); box-shadow: 0 1px 0 var(--line-1); }
 .shelf li { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 60ms); display: grid; }
 .spine { display: grid; gap: 4px; align-content: start; padding: 16px 18px; min-height: 120px; text-decoration: none;
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: 3px 3px 0 0; border-top: 4px solid var(--accent);
+  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); border-top: 4px solid var(--accent);
   transition: transform 0.3s var(--ease); }
 .spine:hover { transform: translateY(-5px); }
 .spine .byline { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }

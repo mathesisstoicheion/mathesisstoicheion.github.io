@@ -1,35 +1,29 @@
 /**
- * The site's mark, "Stoichedon" (owner's choice, 2026-10-11): the word ΣΤΟΙΧΕΙΑ ("letters") in a 3 × 3 grid, every
- * letter under the one above, as Athenian inscriptions of the fifth and fourth centuries BC were laid out (the style
- * called stoichedon), with the mason's faint guide lines and an ancient three-dot word-divider in the last square.
- * Drawn on a 100 × 100 square. Small sizes (the tab icon, phone and install icons) use its first letter alone, SIGMA.
+ * The site's mark: the flat form of the name's emblem (DESIGN.md, Signature details 1) on a 48 × 40 drawing. A wax
+ * tablet in its frame, Euclid's first proposition scratched in the wax (the two circles and the equilateral triangle on
+ * the line ΑΒ), and the stylus standing upright in it like a sundial's pointer. It replaced the Stoichedon mark of
+ * 2026-10-11 when design B was chosen (2026-10-16). The header draws it in the current colour (EmblemMark.tsx); the tab,
+ * phone and install icons draw it in torchlight on the stone, with heavier lines so it holds at 16 pixels (app-icon.tsx).
  */
 
-/** monoline inscription capitals, centred on (x, y), 16 units tall */
-const LETTER: Record<string, (x: number, y: number) => string> = {
-  Σ: (x, y) => `M${x + 7} ${y - 8}L${x - 7} ${y - 6}L${x + 4} ${y}L${x - 7} ${y + 6}L${x + 7} ${y + 8}`,
-  Τ: (x, y) => `M${x - 8} ${y - 8}H${x + 8}M${x} ${y - 8}V${y + 8}`,
-  Ο: (x, y) => `M${x} ${y - 7.5}a7.5 7.5 0 1 1 0 15a7.5 7.5 0 1 1 0-15`,
-  Ι: (x, y) => `M${x} ${y - 8}V${y + 8}`,
-  Χ: (x, y) => `M${x - 7} ${y - 8}L${x + 7} ${y + 8}M${x + 7} ${y - 8}L${x - 7} ${y + 8}`,
-  Ε: (x, y) => `M${x + 7} ${y - 8}H${x - 6}V${y + 8}H${x + 7}M${x - 6} ${y}H${x + 5}`,
-  Α: (x, y) => `M${x - 8} ${y + 8}L${x} ${y - 8}L${x + 8} ${y + 8}M${x - 5} ${y + 2}H${x + 5}`,
-};
+export const MARK_BOX = { w: 48, h: 40 };
 
-const CELL = [26, 50, 74];
+/** one stroke of the mark: its shape, and how heavy it is in the header and in the small icons */
+export interface MarkPart { el: "rect" | "circle" | "path"; a: Record<string, number | string>; w: number; icon: number; faint?: boolean; join?: boolean }
 
-/** the eight letters, each one path, in reading order */
-export const LOGO_LETTERS: string[] = [..."ΣΤΟΙΧΕΙΑ"].map((ch, i) => LETTER[ch](CELL[i % 3], CELL[Math.floor(i / 3)]));
-/** the three dots of the word-divider, in the last square */
-export const LOGO_DOTS: [number, number][] = [[74, 68], [74, 74], [74, 80]];
-/** the mason's guide lines between the rows and columns */
-export const LOGO_GUIDES = "M14 38H86M14 62H86M38 14V86M62 14V86";
-/** the stone the letters are cut in */
-export const LOGO_TILE = { x: 4, y: 4, size: 92, r: 5 };
+export const MARK: MarkPart[] = [
+  { el: "rect", a: { x: 2.5, y: 10.5, width: 43, height: 27 }, w: 1.6, icon: 3.2 },          // the tablet's frame
+  { el: "rect", a: { x: 6.5, y: 14.5, width: 35, height: 19 }, w: 0.7, icon: 0, faint: true }, // the wax's edge (too fine for icons)
+  { el: "circle", a: { cx: 20, cy: 27, r: 7 }, w: 0.9, icon: 1.7 },                             // the two circles
+  { el: "circle", a: { cx: 27, cy: 27, r: 7 }, w: 0.9, icon: 1.7 },
+  { el: "path", a: { d: "M20 27 L27 27 L23.5 20.94 Z" }, w: 1.1, icon: 1.5, join: true },        // the triangle
+  { el: "path", a: { d: "M20 27 L27 27" }, w: 2, icon: 2.6 },                                    // the line ΑΒ
+  { el: "path", a: { d: "M20 27 V5.5" }, w: 1.3, icon: 2.6 },                                    // the stylus
+];
+/** the stylus's flat head, filled */
+export const MARK_HEAD = "M18.4 1.5 h3.2 l-.7 4 h-1.8 z";
+export const MARK_HEAD_ICON = "M17.6 0.6 h4.8 l-1 5.4 h-2.8 z";
 
-/** the small mark: the first letter, SIGMA, large */
-export const SIGMA = "M73 16L27 23L62 50L27 77L73 84";
-
-/** the colours of the small icons (the light theme's black gloss and clay, from globals.css) */
-export const ICON_INK = "#1B1410";
-export const ICON_CLAY = "#E6C39B";
+/** the colours of the icons: the stone of the wall, and the torchlight (styles/tokens.css, --stone-1 and --honey) */
+export const ICON_STONE = "#14100d";
+export const ICON_LIGHT = "#efc27a";

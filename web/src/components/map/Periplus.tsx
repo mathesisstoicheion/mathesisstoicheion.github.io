@@ -75,20 +75,15 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
   const ring = useRef<HTMLDivElement>(null);
   const scaleBar = useRef<HTMLDivElement>(null);
 
-  // give the engine its canvas, follow the frame's size and the theme
+  // give the engine its canvas and follow the frame's size (the site is dark only, so its colours never change)
   useLayoutEffect(() => {
     const el = stage.current!;
     engine.attach({ stage: el, canvas: canvas.current!, ring: ring.current!, scale: scaleBar.current! }, () => setHomeReady(true));
     const ro = new ResizeObserver(() => engine.resize(el.clientWidth, el.clientHeight));
     ro.observe(el);
-    const restyle = () => engine.restyle();
-    const mo = new MutationObserver(restyle);
-    mo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
-    const mq = matchMedia("(prefers-color-scheme: dark)");
-    mq.addEventListener("change", restyle);
     const fonts = () => engine.fontsChanged();
     document.fonts?.addEventListener?.("loadingdone", fonts);
-    return () => { ro.disconnect(); mo.disconnect(); mq.removeEventListener("change", restyle); document.fonts?.removeEventListener?.("loadingdone", fonts); engine.detach(); };
+    return () => { ro.disconnect(); document.fonts?.removeEventListener?.("loadingdone", fonts); engine.detach(); };
   }, [engine]);
 
   // what is shown, and what is chosen, feed the next frame

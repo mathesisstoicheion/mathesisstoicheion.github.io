@@ -76,7 +76,9 @@ Light text is never pure white.
 6. The five rooms as carved panels.
 7. "Why Stoics are called Stoics", beside a grave stele cut out of its background and re-lit.
 
-**Library ("The Mouseion").** ΜΟΥΣΕΙΟΝ is carved at the top; search and filters are cut stone. The books stand as stelai (gravestones), each with its picture in a round medallion re-lit by the torch, then the author, the title, the Greek title and the picture's credit. A stele's words light up as a torch passes.
+The vase to paint yourself, which stood on the old home page, moved to the Kerameikos (the potters' quarter, `/stoa/kerameikos`).
+
+**Library ("The Mouseion").** ΜΟΥΣΕΙΟΝ is carved at the top; search and filters are cut stone. The books stand as stelai (gravestones), each with its picture in a round medallion re-lit by the torch, then the author, the title, the Greek title and the picture's credit. A stele's words light up as a torch passes. On a phone each group of stelai is one row to swipe sideways (it does not snap), so the wall costs a screen or two of scrolling, not six.
 
 **Reader.** Greek and English side by side on a computer, one above the other on a phone. Controls: Both / Greek / English; Aa (Night or Daylight, the Greek typeface, the text size); Tools. Dotted words open a word panel.
 
@@ -85,7 +87,7 @@ Light text is never pure white.
    - a **wax tablet**, on which Greek children learned their letters, for στοιχεῖον as a letter: "a simple sound of speech, as the first component of the syllable" (LSJ, citing Plato, Cratylus 424d);
    - the **stylus** standing upright in the wax like a sundial's pointer, for στοιχεῖον as "the shadow of the gnomon, the length of which in feet indicated the time of day" (LSJ); Aristophanes, Assemblywomen 652: ὅταν ᾖ δεκάπουν τὸ στοιχεῖον, "when the shadow is ten feet long";
    - a **compass** and Euclid's first proposition scratched in the wax, for the Στοιχεῖα, Euclid's *Elements*: ἐπὶ τῆς δοθείσης εὐθείας πεπερασμένης τρίγωνον ἰσόπλευρον συστήσασθαι, "On a given finite straight line to construct an equilateral triangle" (Elements 1.1, Heiberg's text, tr. Heath). The points are lettered Α Β Γ Δ Ε as Euclid letters them, and the given line ΑΒ is the stylus's shadow.
-   - It draws itself slowly (about four seconds) when it comes into view, and every light casts its own shadows across it. The small flat version (tablet, circles, triangle and stylus) is the header's mark, in honey.
+   - It draws itself slowly (about four seconds) when it comes into view, and every light casts its own shadows across it. The small flat version (tablet, circles, triangle and stylus) is the header's mark, in honey, and the tab and app icons (honey on the stone, with heavier lines; `web/src/lib/logo.ts`). It replaced the Stoichedon mark of 2026-10-11.
 2. **The carved Apology.** The home page's wall is the speech Socrates gave, as Plato wrote it, cut in the stoichedon grid.
 3. **Reliefs re-lit by the torch.** Real ancient reliefs (the Great Eleusinian Relief, the Parthenon frieze, a grave stele from Attica) lit from the side the flame is on.
 4. **The Muses' niches.** Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White), above the nine Muses he names (Theogony 76–79), each in her own lit niche. The arts given to each Muse are later tradition, and the page says so.

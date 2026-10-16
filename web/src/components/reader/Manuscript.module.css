@@ -23,14 +23,12 @@
 .page p + p { margin-top: 2px; }
 .w { display: inline-block; }
 .page[data-stage="2"], .page[data-stage="3"] {
-  --ms-ink: #4A2A14; background: #EAD9B5; letter-spacing: 0.05em;
+  --ms-ink: #3B2110; background: #D9C49A; letter-spacing: 0.05em;
   background-image: radial-gradient(ellipse at 30% 20%, rgba(255, 255, 255, 0.35), transparent 60%);
 }
 .page[data-stage="3"] { word-break: break-all; }
-:global([data-theme="dark"]) .page[data-stage="2"], :global([data-theme="dark"]) .page[data-stage="3"] { --ms-ink: #3B2110; background-color: #D9C49A; }
-@media (prefers-color-scheme: dark) {
-  :global(html:not([data-theme="light"])) .page[data-stage="2"], :global(html:not([data-theme="light"])) .page[data-stage="3"] { --ms-ink: #3B2110; background-color: #D9C49A; }
-}
+/* on the reader's Daylight page the parchment is paler */
+:global([data-reader-page="day"]) .page[data-stage="2"], :global([data-reader-page="day"]) .page[data-stage="3"] { --ms-ink: #4A2A14; background-color: #EAD9B5; }
 .more { color: var(--ink-2); }
 .say { margin: 0; font-size: 0.92rem; line-height: 1.55; min-height: 4.6em; }
 

@@ -32,7 +32,8 @@
 .featured {
   position: relative; display: grid; gap: 10px; padding: clamp(24px, 4vw, 40px); text-decoration: none; overflow: hidden;
   background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius);
-  box-shadow: inset 0 0 0 6px var(--ink), inset 0 0 0 7px color-mix(in srgb, var(--accent) 60%, transparent);
+  /* a panel cut into the wall: the cut's dark edge, a margin of stone, then a thin line of torchlight */
+  box-shadow: inset 0 0 0 1px var(--cut-d), inset 0 0 0 10px var(--surface), inset 0 0 0 11px var(--line-2);
   animation: lift 0.7s var(--ease) both;
 }
 .featured[data-pic], .featured:has(.featuredIcon) { grid-template-columns: minmax(0, 1fr) minmax(200px, 38%); align-items: center; gap: 18px clamp(20px, 3vw, 40px); }

@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Site redesign (2026-10-15; samples only, the site itself is unchanged)
+## Site redesign (2026-10-15; being built on branch `claude/site-redesign-77uoc2`, not live)
 The owner asked for a fresh-start redesign. On 2026-10-16, after comparing three complete designs, they chose **B, "Stone and torch"**
 (`docs/adr/0006-stone-and-torch.md`); the look is written down in `DESIGN.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH
 (version 15 is current: it opens on B, with A and C a tab away). Sources in the project files under `redesign/prototype/`: B in `abc/b-sources/`,
@@ -10,7 +10,21 @@ the name's emblem in `emblem/`, A's rounds in `round3/` to `round9/`.
 - A quick, springy, flashy version was tried and rejected the same day ("It's horrible"). Motion stays calm: the wheel is a little slowed and smooth.
 - Snapping was then taken out ("no snapping. it's annoying"): the page stays exactly where it is left.
 - B gained "The name": a wax tablet with Euclid's first proposition, a stylus standing like a sundial's pointer and a compass, for the three meanings of στοιχεῖον; its flat form is the header's mark.
-Next: design tokens from B, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
+The owner (2026-10-16): "I like B. Let's build the site on B". Built so far on branch `claude/site-redesign-77uoc2` (nothing is
+live; it goes live only when the owner says "Publish"):
+- **Shared colours and type** (`styles/tokens.css`), dark only but for the reader's Daylight page; the torch (`lib/torch.ts`) and
+  the still stone on every page; the calm wheel; a drift check that only lets hardcoded values go down (`npm run check:tokens`).
+- **Home**: the carved Apology wall, "Read the Greeks in their own words", the first-visit question as three tabs (No Greek, A
+  little, Just reading) or the returning visitor's desk; the name and its emblem; the Passage of the day beside the Great
+  Eleusinian Relief; the lessons; Hesiod's line over the nine Muses' niches; the Parthenon frieze; the five rooms carved; the Stoics
+  beside a grave stele; a "Sources for this page" list. The art is in `lib/art/` (carving, reliefs, niches, the emblem) and
+  `components/art/`; pictures re-lit by the torch come from `pipeline/relit_images.py`. The paintable vase moved to the Kerameikos.
+- **Library**: ΜΟΥΣΕΙΟΝ carved; six books stand as stelai with medallions (`data/medallions.ts`, credits from `data/images.json`);
+  on phones each group is a sideways row (no snapping).
+- **Reader**: a cover with the book's Greek title carved (in even rows) and its medallion; the torch fades as you scroll into the
+  text. On the Daylight page the cover is limestone in an even light.
+- **Area pages**: each carves its Greek name above its title. The tab and app icons are now the emblem's flat mark (see The logo).
+Still to do: the rest of the pages (old bright ivory frames and rounded corners, the token count), screenshots for the owner.
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
@@ -66,7 +80,9 @@ stick". Each of the 18 lessons now has four steps: **learn** (the lesson as befo
 - **Today's session** gains a page, "A refresh" (ἀνανέωσις), when a lesson or checkpoint refresh is due: its test, inside the
   session (`SessionRefresh.tsx`, loaded only then, so the session page does not carry the lessons otherwise).
 
-## The logo (2026-10-11)
+## The logo (2026-10-11; replaced by the emblem's mark with design B, 2026-10-16)
+With design B the header, the tab icon and the app icons all show the flat mark of the name's emblem (a wax tablet with Euclid's
+first proposition and the stylus), honey on the stone, from `web/src/lib/logo.ts`. `LogoMark.tsx` is gone. Before that:
 The owner chose the **Stoichedon** mark from four concepts: the word ΣΤΟΙΧΕΙΑ cut in a 3 × 3 grid, as Athenian inscriptions of the
 fifth and fourth centuries BC were laid out (the *stoichedon* style), with the mason's faint guide lines and a three-dot word-divider
 in the last square. The drawing is in `web/src/lib/logo.ts`; `components/LogoMark.tsx` shows it beside the name in the header, in
