@@ -12,7 +12,7 @@
 
 .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; line-height: 1.1; flex: none; }
 /* the mark: the emblem's tablet, figure and stylus, drawn flat in honey */
-.logo { display: block; flex: none; width: 46px; height: 38px; color: var(--accent); overflow: visible; }
+.logo { display: block; flex: none; width: 46px; height: 38px; }
 .brandName { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
 .brandGr { font-family: var(--f-greek); font-size: 1.22rem; color: var(--ink); }
 .brandEn { font: 500 0.66rem / 1.2 var(--f-label); letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-3); }

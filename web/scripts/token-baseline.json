@@ -445,9 +445,6 @@
   "src/lib/art/relief.ts": {
     "colour": 7
   },
-  "src/lib/logo.ts": {
-    "colour": 2
-  },
   "src/lib/notebook-export.ts": {
     "colour": 4,
     "font-family": 6,

@@ -302,7 +302,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: 0.92rem; }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-3); font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
-.site-footer-mark { width: 40px; height: 33px; flex: none; color: var(--accent); }
+.site-footer-mark { width: 40px; height: 33px; flex: none; }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; }

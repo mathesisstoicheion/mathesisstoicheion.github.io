@@ -10,7 +10,8 @@
     "test": "vitest run",
     "e2e": "playwright test",
     "tokens:inventory": "node scripts/token-inventory.mjs",
-    "check:tokens": "node scripts/check-tokens.mjs"
+    "check:tokens": "node scripts/check-tokens.mjs",
+    "logo": "node scripts/make-logo.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

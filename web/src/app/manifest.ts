@@ -16,9 +16,10 @@ export default function manifest(): MetadataRoute.Manifest {
     background_color: "#14100d",
     theme_color: "#14100d",
     icons: [
-      { src: "/icons/192", sizes: "192x192", type: "image/png", purpose: "any" },
-      { src: "/icons/512", sizes: "512x512", type: "image/png", purpose: "any" },
-      { src: "/icons/maskable-512", sizes: "512x512", type: "image/png", purpose: "maskable" },
+      // the site's mark on the stone (made by scripts/make-logo.mjs)
+      { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
+      { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
+      { src: "/icons/maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
     ],
   };
 }

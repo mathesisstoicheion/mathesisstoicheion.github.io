@@ -1,15 +1,11 @@
-import { MARK, MARK_BOX, MARK_HEAD } from "@/lib/logo";
-
 /**
- * The site's mark (lib/logo.ts): the small flat form of the name's emblem (DESIGN.md, Signature details 1), drawn in
- * the current colour. A wax tablet with its frame, Euclid's first proposition scratched in it (the two circles and the
- * equilateral triangle on the line ΑΒ), and the stylus standing upright in the wax like a sundial's pointer.
+ * The site's mark: the small form of the name's emblem (DESIGN.md, Signature details 1), cut into the stone and laid
+ * with gold. A wax tablet in its frame, Euclid's first proposition scratched in the wax (the two circles and the
+ * equilateral triangle on the line ΑΒ), and the stylus standing upright in it like a sundial's pointer. The picture is
+ * drawn once, lit by the torch, by scripts/make-logo.mjs (as are the tab, phone and install icons); only the cut is in
+ * it, so the header's own stone shows round it. The size comes from `className`.
  */
 export default function EmblemMark({ className }: { className?: string }) {
-  return (
-    <svg className={className} viewBox={`0 0 ${MARK_BOX.w} ${MARK_BOX.h}`} aria-hidden="true" focusable="false" fill="none" stroke="currentColor">
-      {MARK.map(({ el: El, a, w, faint, join }, i) => <El key={i} {...a} strokeWidth={w} opacity={faint ? 0.55 : undefined} strokeLinejoin={join ? "round" : undefined} />)}
-      <path d={MARK_HEAD} fill="currentColor" stroke="none" />
-    </svg>
-  );
+  // eslint-disable-next-line @next/next/no-img-element -- a fixed picture, already made at the sizes it needs
+  return <img className={className} src="/logo/mark-2x.png" srcSet="/logo/mark-2x.png 2x, /logo/mark-3x.png 3x" width={46} height={38} alt="" decoding="async" draggable={false} />;
 }

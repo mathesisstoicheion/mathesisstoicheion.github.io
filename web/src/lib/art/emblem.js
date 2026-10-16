@@ -9,7 +9,7 @@
  After that every light (the pointer, or each finger on a phone) casts its own shadows across it, which follow the
  lights gently. (Design B's calm copy: no sparks, no flashes, no springs.)
  mountEmblem(canvas, {still}) draws it and returns a function that stops it; components/EmblemMark.tsx is its small
- flat form for the header. Ported from the design sample (redesign/prototype/emblem/ in the project files).
+ gilded form for the header (drawn by scripts/make-logo.mjs). Ported from the design sample (redesign/prototype/emblem/ in the project files).
  It is plain JavaScript, as the sample was; components/home/NameEmblem.tsx imports it in the browser only. */
 /* eslint-disable */
 let reduce=false;

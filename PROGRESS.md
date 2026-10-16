@@ -23,7 +23,7 @@ live; it goes live only when the owner says "Publish"):
   on phones each group is a sideways row (no snapping).
 - **Reader**: a cover with the book's Greek title carved (in even rows) and its medallion; the torch fades as you scroll into the
   text. On the Daylight page the cover is limestone in an even light.
-- **Area pages**: each carves its Greek name above its title. The tab and app icons are now the emblem's flat mark (see The logo).
+- **Area pages**: each carves its Greek name above its title.
 - **Every page and its content** (the owner, 2026-10-16: "All pages and content must match the theme", "Except for photos and
   text and buttons"): every module's panels, cards, tables, lists, charts, fields, frames and empty states are now stone (sunk
   fields, slabs, mouldings, cut lines, gilded channels, hollows; see DESIGN.md, "Everything on a page is stone"). The footer is a
@@ -33,8 +33,11 @@ live; it goes live only when the owner says "Publish"):
   all 47 pages, on a computer and a phone; the token count went from 4,612 to 4,500.
 - **The logo** (the owner, 2026-10-16: "Include a logo redesign"): three options drawn for the owner, all keeping the emblem's
   drawing and changing what it is made of: 1 cut in the stone, 2 gilded (the cut with gold laid in it; recommended), 3 a round
-  seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab); nothing built until the owner chooses.
-  The name beside the mark stays as text (the owner's rule: photos, text and buttons stay as they are).
+  seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab). The gilded one is built in while the
+  owner chooses: `scripts/make-logo.mjs` (`npm run logo -- gilt|cut|seal`) draws the header's and footer's mark
+  (`public/logo/`), the tab icon (`public/favicon.ico`, 16, 32 and 48 px), the iPhone icon and the install icons
+  (`public/icons/`), so another choice is one command. The name beside the mark stays as text (the owner's rule: photos, text
+  and buttons stay as they are). `lib/logo.ts`, `lib/app-icon.tsx`, `app/icon.svg` and the icon routes are gone.
 Still to do: the owner's choice of logo, the owner's review, then "Publish".
 
 ## Reader bug search (2026-10-15; committed, not yet published)
@@ -92,8 +95,8 @@ stick". Each of the 18 lessons now has four steps: **learn** (the lesson as befo
   session (`SessionRefresh.tsx`, loaded only then, so the session page does not carry the lessons otherwise).
 
 ## The logo (2026-10-11; replaced by the emblem's mark with design B, 2026-10-16)
-With design B the header, the tab icon and the app icons all show the flat mark of the name's emblem (a wax tablet with Euclid's
-first proposition and the stylus), honey on the stone, from `web/src/lib/logo.ts`. `LogoMark.tsx` is gone. Before that:
+With design B the header, the tab icon and the app icons all show the mark of the name's emblem (a wax tablet with Euclid's
+first proposition and the stylus), now gilded in the stone (see Site redesign, The logo). `LogoMark.tsx` is gone. Before that:
 The owner chose the **Stoichedon** mark from four concepts: the word ΣΤΟΙΧΕΙΑ cut in a 3 × 3 grid, as Athenian inscriptions of the
 fifth and fourth centuries BC were laid out (the *stoichedon* style), with the mason's faint guide lines and a three-dot word-divider
 in the last square. The drawing is in `web/src/lib/logo.ts`; `components/LogoMark.tsx` shows it beside the name in the header, in
