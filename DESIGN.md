@@ -3,7 +3,7 @@
 The look of the redesigned site. The owner compared three complete designs on 2026-10-16 and chose **B, "Stone and torch"**
 (thread "Site redesign"; `docs/adr/0006-stone-and-torch.md`). The earlier direction, A ("Gold and lamplight"), is kept for
 reference at the end of this file and in `docs/adr/0001`–`0005`.
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 14 is the current one; it opens on B, with A
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 15 is the current one; it opens on B, with A
 and C a tab away). Their source files are in the project files, under `redesign/prototype/` (B in `abc/b-sources/`, the
 emblem in `emblem/`).
 
@@ -18,7 +18,7 @@ emblem in `emblem/`).
 3. **Greek is carved as Plato's Athens wrote it.** Capitals set in a strict grid (the stoichedon style), with no accents or spaces, for carved Greek. Reading Greek is set in full polytonic type.
 4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Every quotation is checked against its source. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
-6. **All movement is calm.** Things ease, glide and settle. Nothing bounces, sparks or flashes. The owner: "Remember when I say movement it has to be calm" (2026-10-16). A quick, springy, flashy trial the same day was rejected: "Get rid of the flashy animations. It's horrible. I liked the way it was before."
+6. **All movement is calm.** Things ease and settle. Nothing bounces, sparks or flashes. The owner: "Remember when I say movement it has to be calm" (2026-10-16). A quick, springy, flashy trial the same day was rejected: "Get rid of the flashy animations. It's horrible. I liked the way it was before."
 7. **Every finger counts.** On a phone every finger on the glass carries its own light, all at once, and goes on doing so while the page scrolls (the owner: the site should track "where your finger is when scrolling", 2026-10-16).
 
 ## Type
@@ -55,8 +55,8 @@ Light text is never pure white.
 ## Motion
 - **Scrolling (Home and Library):**
   - The wheel is a little slowed (0.8 of the browser's distance per notch) and smooth: the page eases towards where the wheel sends it and keeps up with the hand (about 0.11 s). The owner wanted the slow scroll kept, "just not THAT slow" (2026-10-16).
-  - About 120 ms after the page stops (on a phone, after the finger lifts and the page has stopped), if a section's resting place is within 40% of a screen, the page glides there in about half a second on a smooth ease-out, with no bounce and no overshoot. A touch, a wheel, a key or a mouse press stops it at once. There is no gliding after keyboard scrolling.
-  - As the page comes to rest on a section, its carvings and reliefs brighten a little, and heading letters settle gently into line.
+  - **No snapping.** The page stops exactly where the wheel or the finger leaves it; nothing pulls it to a section. The owner: "no snapping. it's annoying" (2026-10-16). Until then the page glided to a nearby section after it stopped.
+  - As the page nears a section, its carvings and reliefs brighten a little, and heading letters settle gently into line as they rise into view.
   - Each part is cut in (it fades in and rises a few pixels) the first time you reach it.
 - **The reader** opens on a torch-lit cover (ΑΠΟΛΟΓΙΑ·ΣΩΚΡΑΤΟΥΣ carved in stone, with the Socrates portrait as a medallion). The cover fades as you scroll into the text; after that nothing moves, and scrolling is completely normal.
 - Nothing loops fast, flashes or throws sparks.
@@ -100,6 +100,7 @@ Light text is never pure white.
 - Blend modes (overlay, multiply) on full-screen layers; they halved the frame rate in testing.
 - Moving film grain or noise ("super distracting").
 - Flashy motion: sparks, flares, flashes, bounces and springy overshoot ("It's horrible", 2026-10-16).
+- Snapping or gliding the page into place after scrolling ("no snapping. it's annoying", 2026-10-16).
 - Effects that follow the pointer uninvited, such as a magnifying glass on hover. Show them on press and hold.
 - Reading colours from styles inside an animation frame. Draw only what is on screen, and only when a light moves.
 

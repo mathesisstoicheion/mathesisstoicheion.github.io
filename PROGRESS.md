@@ -3,11 +3,12 @@
 ## Site redesign (2026-10-15; samples only, the site itself is unchanged)
 The owner asked for a fresh-start redesign. On 2026-10-16, after comparing three complete designs, they chose **B, "Stone and torch"**
 (`docs/adr/0006-stone-and-torch.md`); the look is written down in `DESIGN.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH
-(version 14 is current: it opens on B, with A and C a tab away). Sources in the project files under `redesign/prototype/`: B in `abc/b-sources/`,
+(version 15 is current: it opens on B, with A and C a tab away). Sources in the project files under `redesign/prototype/`: B in `abc/b-sources/`,
 the name's emblem in `emblem/`, A's rounds in `round3/` to `round9/`.
 - The earlier direction A (rounds 1 to 10, `docs/adr/0001`–`0005`): a coin engraved in gold on Pompeian red, the library's Socrates spelled out of the Apology, the Muses' lamps.
 - Round 11: every finger counts on a phone, even while scrolling; the page glides and settles at nearby sections; three complete designs (A, B, C) side by side.
-- A quick, springy, flashy version was tried and rejected the same day ("It's horrible"). Motion stays calm: the wheel is a little slowed and the page glides into place in about half a second with no bounce.
+- A quick, springy, flashy version was tried and rejected the same day ("It's horrible"). Motion stays calm: the wheel is a little slowed and smooth.
+- Snapping was then taken out ("no snapping. it's annoying"): the page stays exactly where it is left.
 - B gained "The name": a wax tablet with Euclid's first proposition, a stylus standing like a sundial's pointer and a compass, for the three meanings of στοιχεῖον; its flat form is the header's mark.
 Next: design tokens from B, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
 

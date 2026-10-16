@@ -19,7 +19,7 @@ Decision:
 - The site is built on design B, "Stone and torch" (see `DESIGN.md`). A and C stay as they are, to look back at.
 - Motion stays calm:
   - the wheel is a little slowed (0.8 of normal) and smooth;
-  - when the page stops near a section it glides there in about half a second, with no bounce;
+  - there is no snapping: the page stays where it is left (see the note below);
   - nothing sparks, flares or flashes.
 - On a phone every finger carries its own light, even while the page scrolls.
 - The name gets an emblem that shows the three meanings of στοιχεῖον in one still life:
@@ -36,3 +36,8 @@ Consequences:
   - Euclid 1.1: Heiberg's text, via Perseus;
   - Ecclesiazusae 652: Hall and Geldart's text, via Perseus.
 - They must not be reworded without checking again.
+
+Later the same day:
+- The page had been gliding to a nearby section after it stopped. The owner: "no snapping. it's annoying".
+- So the snapping was taken out: the page stops exactly where the wheel or the finger leaves it. The calm, slightly slowed wheel stays.
+- Do not bring back snapping, or any automatic scroll, without asking the owner.
