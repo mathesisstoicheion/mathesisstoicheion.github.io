@@ -71,7 +71,8 @@ function middleSpot(): [number, number] {
 
 function setRadius() {
   T.R = clamp(Math.min(innerWidth, innerHeight) * 0.36, 170, 330);
-  document.documentElement.style.setProperty("--glow-d", `${Math.round(T.R * 3.6)}px`);
+  // on the pools' own box: on <html> it would restyle every element of the page
+  (glow?.parentElement ?? document.documentElement).style.setProperty("--glow-d", `${Math.round(T.R * 3.6)}px`);
 }
 
 function fingers() {
@@ -138,9 +139,14 @@ function updateTorch(dt: number, t: number) {
 
 function setGlow(g: HTMLElement, o: number, x: number, y: number) {
   const el = g as HTMLElement & { __o?: string; __t?: string };
-  const os = o.toFixed(3);
+  // in steps of a hundredth: finer steps change no pixel on the screen (the brightest pool adds a fifth of its colour,
+  // so a hundredth of that is less than one step of brightness), yet each one would make the graphics draw the whole
+  // screen again: the flicker alone did that sixty times a second
+  const os = o.toFixed(2);
   if (el.__o !== os) { el.style.opacity = os; el.__o = os; }
-  if (o > 0) { const ts = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`; if (el.__t !== ts) { el.style.transform = ts; el.__t = ts; } }
+  // and on a grid of two pixels: across a pool six hundred pixels or more wide, a two-pixel step changes no pixel by as
+  // much as one step of brightness, and the torch drifting by itself redraws the screen half as often
+  if (o > 0) { const ts = `translate3d(${Math.round(x / 2) * 2}px,${Math.round(y / 2) * 2}px,0)`; if (el.__t !== ts) { el.style.transform = ts; el.__t = ts; } }
 }
 
 function frame(ms: number) {

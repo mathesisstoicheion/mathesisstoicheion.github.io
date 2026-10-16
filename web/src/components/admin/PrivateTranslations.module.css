@@ -180,6 +180,7 @@
   background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
   box-shadow: var(--cut-under);   /* it follows the page down, so it keeps its own backing */
 }
+:global(html[data-hdr="hidden"]) .bar { --hdr-vis: 0px; }
 .barSize { font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }
 .barEnd { margin-left: auto; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
 

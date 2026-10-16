@@ -5,7 +5,9 @@
    ===================================================================== */
 
 :root {
-  /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts) */
+  /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts). How much
+     shows, here and for the phone bars below, is set to 0 on each element that uses it while the header is tucked
+     away (html[data-hdr="hidden"] .x), never here: a change here would restyle every element of the page. */
   --hdr-h: 68px;
   --hdr-vis: var(--hdr-h);
   /* phones: the bar along the bottom (TabBar.tsx), its height including the home-bar area, and how much of it
@@ -34,7 +36,6 @@
   }
 }
 @media (max-width: 760px) { html:has([data-readbar]) { --readbar-h: 54px; } }
-html[data-hdr="hidden"] { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 /* ---------------------------------------------------------------- maps
    The small maps (the reader's Places, My Library's places, the Explore card): dark warm land and a deep, muted
@@ -68,7 +69,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* the wall: the stone's colour, and its still texture (lib/stone.ts) */
+/* the wall: the stone's colour, and its still texture (lib/stone.ts, drawn by scripts/make-stone.mjs) */
+:root { --tex: url("/images/stone.webp"); }
 html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420px; }
 
 /* the torch's pools of light on the wall (components/Torch.tsx): moved by transform only, with normal blending */
@@ -138,6 +140,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round); background: var(--surface); box-shadow: 0 10px 24px -14px var(--shadow);
   transform: translateY(calc(var(--pull, 0px) - 46px)); opacity: var(--turn, 0); pointer-events: none; transition: transform 0.15s var(--ease), opacity 0.15s;
 }
+html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .pull[data-waiting] { opacity: 1; }
 .pull-ring { width: 20px; height: 20px; border: 2.5px solid var(--accent); border-right-color: transparent; border-radius: var(--radius-round); transform: rotate(calc(var(--turn, 0) * 320deg)); }
 .pull[data-ready] .pull-ring { border-color: var(--ok); border-right-color: transparent; }
@@ -277,13 +280,10 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .win figcaption b { font-weight: 500; color: var(--ink-2); }
 /* letters carved in the stone (components/art/Carving.tsx) */
 .carve { display: block; width: 100%; touch-action: pan-y; }
-/* a heading whose letters settle into line as it rises into view (components/art/Settle.tsx writes --sp, 0 to 1) */
+/* a heading whose letters settle into line as it rises into view: components/art/Settle.tsx moves each letter (--d,
+   --dy and --rz on each say when it settles and how far out of place it starts) */
 .sk .sw { display: inline-block; white-space: nowrap; }
-.sk .k {
-  display: inline-block; --p: clamp(0, calc((var(--sp, 1) - var(--d, 0)) / 0.7), 1);
-  transform: translate3d(0, calc((1 - var(--p)) * var(--dy, 0px)), 0) rotate(calc((1 - var(--p)) * var(--rz, 0deg)));
-  opacity: calc(0.34 + 0.66 * var(--p));
-}
+.sk .k { display: inline-block; }
 
 /* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
 .rv.in { animation: lift var(--dur-slow) var(--ease) both; }
@@ -325,6 +325,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
+html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */

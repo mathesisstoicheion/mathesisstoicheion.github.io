@@ -86,13 +86,15 @@
 .group { scroll-margin-top: 0; }
 .groupHead {
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
-  border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) both;
+  border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) backwards;
 }
 .groupHead[data-period] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
 .author { border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }
 @keyframes picked { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
+/* risings hold their first frame only until they start (backwards), and none holds its last: a finished one would
+   keep its element a layer of its own for the graphics */
 @keyframes rise { from { opacity: 0; translate: 0 6px; } }
 .authorHead { margin: 0; font: inherit; }
 .toggle {
@@ -114,7 +116,7 @@
 .author[data-open] .worksPanel { grid-template-rows: 1fr; }
 .worksPanel > div { overflow: hidden; min-height: 0; padding-inline: 10px; }
 .author[data-open] .worksPanel > div { padding-bottom: 14px; }
-.author[data-open] .rows { animation: rise 0.35s var(--ease) both; }
+.author[data-open] .rows { animation: rise 0.35s var(--ease) backwards; }
 .aboutAuthor { display: inline-block; margin-top: var(--space-2); font-size: 0.92rem; color: var(--accent); text-underline-offset: 3px; }
 .sub { margin: 10px 0 2px; font-family: var(--f-label); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-2); }
 .sub small { font-size: inherit; opacity: 0.7; margin-left: var(--space-1); }
@@ -157,7 +159,7 @@
   .selects { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
   /* the order and every filter behind one button (Library.tsx) */
   .filters { display: none; }
-  .filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) both; }
+  .filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) backwards; }
   .selects select { width: 100%; min-width: 0; font-size: 1rem; }
   .genres { display: grid; gap: 6px; }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding-inline: var(--gutter, 20px); scroll-padding-inline: var(--gutter, 20px); }
@@ -220,7 +222,7 @@
 .shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
   gap: var(--space-3); overflow-x: auto; scrollbar-width: thin;
   position: relative; /* holds the cards' visually hidden labels inside the row: without it they widen the whole page on phones */ }
-.shelf li { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.shelf li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 40ms); }
 .spine {
   display: grid; align-content: start; gap: var(--space-1); height: 100%; min-height: 168px; padding: var(--space-4) var(--space-4) 14px; text-decoration: none;
   background: var(--slab); color: var(--inv-fg); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius);

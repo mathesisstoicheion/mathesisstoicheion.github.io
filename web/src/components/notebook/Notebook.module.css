@@ -3,13 +3,13 @@
 /* ---- the window */
 .scrim {
   position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 16px;
-  background: color-mix(in srgb, var(--ink) 35%, transparent); animation: fade 0.2s var(--ease) both;
+  background: color-mix(in srgb, var(--ink) 35%, transparent); animation: fade 0.2s var(--ease) backwards;
 }
 @keyframes fade { from { opacity: 0; } }
 .picker {
   width: min(460px, 100%); max-height: min(80vh, 640px); overflow-y: auto; display: grid; gap: 14px; padding: 20px 22px;
   background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge);   /* a window over the page: it stays opaque */
-  animation: rise 0.3s var(--ease) both;
+  animation: rise 0.3s var(--ease) backwards;
 }
 @keyframes rise { from { opacity: 0; translate: 0 12px; } }
 .pickHead { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
@@ -47,7 +47,7 @@
 .items { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
 .item {
   position: relative; display: grid; gap: 8px; padding: 12px 14px; border-radius: var(--radius);
-  background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: rise 0.3s var(--ease) both;
+  background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: rise 0.3s var(--ease) backwards;
 }
 /* the other kinds keep their own colour, laid as a slim inlay down the left edge; plain text is only cut off at its left */
 .item[data-kind="line"] { box-shadow: var(--slab-edge), var(--inlay-left-blue); }

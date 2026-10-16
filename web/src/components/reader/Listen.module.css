@@ -6,9 +6,10 @@
   padding: 10px 10px 8px 12px; border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: var(--slab-edge), 0 18px 40px -18px var(--shadow);
   --accent: var(--accent-on-ink);
-  animation: rise 0.4s var(--ease) both;
+  animation: rise 0.4s var(--ease) backwards;
   transition: bottom 0.35s var(--ease);
 }
+:global(html[data-hdr="hidden"]) .bar { --tabbar-vis: 0px; --readbar-vis: 0px; }
 @keyframes rise { from { translate: -50% 24px; opacity: 0; } }
 
 /* how far through the page: a thin line along the top that grows as passages are read */

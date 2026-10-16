@@ -70,6 +70,7 @@
   background: var(--bg); box-shadow: var(--cut-under);   /* a sticky bar stays opaque */
   transition: top var(--dur) var(--ease);
 }
+:global(html[data-hdr="hidden"]) .letters { --hdr-vis: 0px; }
 .letter {
   min-width: var(--space-6); height: var(--space-6); padding: 0 var(--space-1); display: grid; place-items: center;
   font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink);

@@ -1,11 +1,13 @@
 /**
  * The stone (DESIGN.md: Texture and light): one still tile of mottled, pitted stone, 420 px square, laid over the wall's
- * colour on <html> as --tex. It never moves. It is made in the browser from a fixed seed (the same stone every time),
- * when the browser is idle after the page has appeared, so it costs the first paint nothing.
+ * colour on <html> as --tex (globals.css). It never moves. It is drawn from a fixed seed (the same stone every time)
+ * by scripts/make-stone.mjs, once, into public/images/stone.webp, which the page simply loads: drawing it in the browser
+ * on every visit, and then laying it on <html> (which restyled every element of the page), held the page up just after
+ * it appeared.
  */
 const S = 420;
 
-function make(): HTMLCanvasElement {
+export function make(): HTMLCanvasElement {
   const c = document.createElement("canvas"); c.width = S; c.height = S;
   const x = c.getContext("2d")!, im = x.createImageData(S, S), d = im.data;
   let seed = 19;
@@ -38,14 +40,4 @@ function make(): HTMLCanvasElement {
     }
   }
   return c;
-}
-
-let done = false;
-/** Lays the stone on the wall (once). */
-export function layStone() {
-  if (done || typeof document === "undefined") return;
-  done = true;
-  const go = () => make().toBlob((b) => { if (b) document.documentElement.style.setProperty("--tex", `url(${URL.createObjectURL(b)})`); }, "image/png");
-  const idle = (window as Window & { requestIdleCallback?: (f: () => void, o?: { timeout: number }) => number }).requestIdleCallback;
-  if (idle) idle(go, { timeout: 1500 }); else setTimeout(go, 200);
 }

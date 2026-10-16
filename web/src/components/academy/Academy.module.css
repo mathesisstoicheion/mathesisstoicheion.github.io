@@ -60,6 +60,7 @@
   display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 48px); align-items: start;
   padding: clamp(20px, 3vw, 36px); background: var(--field); box-shadow: var(--field-edge);
 }
+:global(html[data-hdr="hidden"]) .detail { --hdr-vis: 0px; }
 .detailDraw { display: grid; gap: 12px; justify-items: center; }
 .detailText { display: grid; gap: 12px; align-content: start; max-width: 60ch; }
 .bigName { display: flex; align-items: center; gap: 14px; font-family: var(--f-display); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
@@ -335,14 +336,15 @@ a.card:hover { background-color: var(--slab-lit); }
 .glanceTitle { margin: 0; font-size: var(--step-2); }
 .glanceTitle span { font-family: var(--f-greek); color: var(--ink-2); font-size: 0.8em; margin-left: 0.3em; }
 .glance .alphaGrid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-.glance .tile { animation: glanceTile 0.55s var(--ease) both; animation-delay: calc(var(--i, 0) * 28ms); }
+.glance .tile { animation: glanceTile 0.55s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 28ms); }
 @keyframes glanceTile { from { opacity: 0; transform: translateY(10px) scale(0.94); } }
 .glanceCard {
   min-height: 92px; display: grid; align-items: center; padding: 14px 18px; scroll-margin-bottom: calc(var(--tabbar-vis, 0px) + 16px);
   border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left);
 }
+:global(html[data-hdr="hidden"]) .glanceCard { --tabbar-vis: 0px; }
 .glanceCard p { margin: 0; }
-.glanceIn { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; animation: glanceIn 0.35s var(--ease) both; }
+.glanceIn { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; animation: glanceIn 0.35s var(--ease) backwards; }
 @keyframes glanceIn { from { opacity: 0; transform: translateX(-8px); } }
 .glanceBig { font-family: var(--f-greek); font-size: 3.2rem; line-height: 1; min-width: 2.2ch; text-align: center; color: var(--accent); }
 .glanceName { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; font-size: 1.1rem; margin-bottom: 4px !important; }
@@ -417,7 +419,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .shiftAdj { color: var(--accent); }
 .shiftEn { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
 .shiftTag { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; padding: 1px 8px; border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); }
-.shiftSay { font-size: 1.08rem; animation: shiftSay 0.4s var(--ease) both; }
+.shiftSay { font-size: 1.08rem; animation: shiftSay 0.4s var(--ease) backwards; }
 @keyframes shiftSay { from { opacity: 0; transform: translateY(4px); } }
 
 /* ------------------------------------------------ active, middle, passive (Voice.tsx) */

@@ -115,6 +115,18 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
   traces), at most twice, and stays so. At most 1.2 million pixels a piece on a computer, 640,000 on a phone.
 - Change only `transform` and `opacity` in animations where possible; animating sizes and margins makes the browser lay out
   the page again on every frame.
+- Never change a CSS variable on `<html>` (or `<body>`) in answer to scrolling or any other frequent event: every element of
+  the page is restyled, a pause of a tenth of a second on a computer and more on a phone. The header's slide sets only
+  `data-hdr` on `<html>`; each rule that sits below the header sets `--hdr-vis` (and `--tabbar-vis`, `--readbar-vis`) to 0 on
+  its own element under `html[data-hdr="hidden"]` (lib/header.ts). The stone texture is a ready-made picture
+  (`public/images/stone.webp`, from `scripts/make-stone.mjs`), not drawn and set on `<html>` on every visit.
+- Each frame of the torch first lets every piece read the page, then makes every change (lib/torch.ts: a piece's frame
+  function returns its changes), so the page is laid out at most once a frame.
+- No element is a layer of its own for the graphics unless it must be. No `translate3d` on small things (each settling letter
+  was a layer); no lasting `will-change`; and an entrance animation whose last frame is the element's own look ends with
+  `backwards`, not `both`: a held last frame keeps the element a layer for as long as the page is open.
+- The torch's pool of light changes in steps too small to see (its brightness in hundredths, its place on a two-pixel grid),
+  so its flicker and drift no longer redraw the whole screen on every frame.
 
 ## A to Z
 - **Author pages** with six or more works have an "A to Z" button. It opens the works in alphabetical order, under a row of
