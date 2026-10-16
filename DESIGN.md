@@ -1,8 +1,8 @@
 # Design
 
 The look of the redesigned site, agreed with the owner on 2026-10-15 (thread "Site redesign").
-The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout).
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 4 is the current one.
+The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it).
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 5 is the current one.
 Their source files are in the project files, under `redesign/prototype/`.
 
 ## Character
@@ -13,7 +13,7 @@ Their source files are in the project files, under `redesign/prototype/`.
 ## Principles
 1. **Darkness is the frame.** The site is dark only. The one light surface is the reader's "Daylight" page, which is a reading aid against eye strain.
 2. **Every page has something to touch, except the reader.** The home page, the library and every other page carry interactive art. The reader is for reading: it opens in lamplight with a little drifting dust, but once you scroll into the text nothing moves on its own.
-3. **Art is seen through windows, and is never hidden while it moves.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). On wide screens the page reads down a left-hand column and the moving art stands beside it, so nothing covers it.
+3. **Art is seen through windows, and nothing moves behind the page.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). A full-screen moving background distracts from the page (the owner, 2026-10-16), so there is none. In the library, where Socrates stands behind the page, wide screens give the text a left-hand column and set him beside it, so nothing covers him.
 4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
 
@@ -62,7 +62,6 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 ## Texture and light
 - Film grain and faint scan lines sit over the whole site.
 - Art is drawn in fine lines, dots, Greek letters or light, never as flat photographs:
-  - the home page's gold mask is lit only by the page's own fire;
   - the Athenian coin in the home page's windows is engraved in gold lines, with turning rays;
   - the library's Socrates is written in Greek letters.
 - The pointer acts as a lamp, or bends the engraved lines. On a phone a finger does the same, and without one the lamp drifts slowly.
@@ -71,15 +70,13 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 ## Motion
 Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
 - **Shutters** for the home page and most other pages:
-  - Windows open like shutters as they arrive. On the home page each window frames a whole coin, which drifts a little as it passes.
-  - **The hearth** (home page): a fire burns at the foot of the screen and never goes out. It lights the gold mask from Mycenae from below, so the brows, nose and beard catch the light and throw their shadows upward, and the mask's shadow climbs the wall behind it.
-  - Scrolling, up or down, fans the fire: the flames rise, the light reaches higher, and more of the face comes out of the dark. Left alone, it settles back to a low, steady burn. A few sparks rise from the flames.
-  - On wide screens the mask stands to the right and the page reads down the left, so the windows never cover it. On phones it stands behind the page, at the foot of the screen.
+  - Windows open like shutters as they arrive, and the art inside moves more slowly than the page.
+  - Nothing moves behind the page. The only sparks are the ones a Muse's lamp throws when you fan it.
 - **Stage** for the library:
-  - Socrates is pinned behind the page and gathers out of loose letters by himself within a few seconds; scrolling gathers him faster.
+  - Socrates is pinned behind the page, and his face comes together out of loose letters only as you scroll down (the owner: it "was cooler when his face only was revealed when you scrolled").
   - On wide screens he stands to the right of the shelves, so nothing covers him as you scroll. On phones he stands behind the page, and the blocks over him are partly see-through.
   - The Apology rises slowly through his face.
-  - When you do nothing, he is still alive: a light reads the speech across his face, a few words at a time; loose letters circle him; the lamp flickers; and now and then a band of light passes over him, as if someone carried a lamp by.
+  - While you wait, loose letters circle the stage, the lamp flickers, and now and then a band of light passes over it, as if someone carried a lamp by. None of this gathers his face. Once he has gathered, a light reads the speech across his face, a few words at a time.
 - **The reader** opens on a cover: the title large, lamplight, a shaft of light with dust drifting in it, and the title's letters faint in the dark. "Scroll to begin reading" waits at the foot. As you scroll into the text the cover fades out, and from then on nothing moves.
 
 Other motion:
@@ -103,7 +100,6 @@ Other motion:
    - Below it, the nine Muses he names (Theogony 76–79) each have a small oil lamp.
    - Fanning a flame with the pointer makes it flare, throw sparks and light up her name.
    - The arts given to each Muse are later tradition, and the page says so.
-5. **The hearth.** The home page's fire lights the gold funeral mask known as the "Mask of Agamemnon", found by Heinrich Schliemann in Shaft Grave V at Mycenae in 1876. It dates from the 16th century BC (National Archaeological Museum, Athens, 624; photograph by Jebulon, CC0). The page draws the fire itself, and only the fire's light falls on the mask: the mask's photograph is turned into its colour and the shape of its surface, so the light can fall across it.
 
 ## Avoid
 - Light mode anywhere but the reader's Daylight page.
@@ -113,5 +109,5 @@ Other motion:
 - Accents on Greek capitals in labels, and Greek set in a font that drops its accents or breathings.
 - Blend modes (overlay, multiply) on full-screen layers. In testing, the grain's overlay halved the frame rate. Grain and scan lines use plain transparency.
 - Moving art that the page's own blocks or windows cover. Put it beside the text on wide screens.
-- Graphics that need WebGL without a flat fallback. The hearth draws a simpler fire if WebGL is missing, and lowers its own resolution if a device cannot keep up.
+- Full-screen moving backgrounds (drifting sparks, a fire behind the page). The owner found them "super distracting".
 - Reading colours from styles inside an animation frame, and drawing thousands of letters as text every frame. Read colours once per page. Stamp letters from a prepared sheet of letters. Keep a still picture of anything that has not changed.

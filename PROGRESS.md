@@ -2,10 +2,11 @@
 
 ## Site redesign (2026-10-15; samples only, the site itself is unchanged)
 The owner asked for a fresh-start redesign. The look is agreed and written down in `DESIGN.md`; the decision is
-`docs/adr/0001-visual-direction.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 4 is current);
-sources in the project files under `redesign/prototype/` (round 4 in `round4/`). Scroll styles chosen: Stage for the library, Shutters elsewhere, with the Muses' flames (`docs/adr/0002-scroll-per-page.md`).
+`docs/adr/0001-visual-direction.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 5 is current);
+sources in the project files under `redesign/prototype/` (round 4 in `round4/`, round 5 in `round5/`). Scroll styles chosen: Stage for the library, Shutters elsewhere, with the Muses' flames (`docs/adr/0002-scroll-per-page.md`).
 Round 4 (`docs/adr/0003-hearth-and-side-art.md`): the home page's fire lights the gold mask from Mycenae from below and is fanned by scrolling;
-on wide screens the art stands beside a left-hand column of text; the library's Socrates moves when idle; the reader opens on a lamplit cover. Waiting for the owner's verdict.
+on wide screens the art stands beside a left-hand column of text; the library's Socrates moves when idle; the reader opens on a lamplit cover.
+Round 5 (`docs/adr/0004-round-3-home-scroll-only-socrates.md`), after the owner's verdict: the round 3 home page is back with nothing moving behind it, Socrates gathers only as you scroll, and the reader's cover stays. Waiting for the owner.
 Next: design tokens, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
 
 ## Reader bug search (2026-10-15; committed, not yet published)
