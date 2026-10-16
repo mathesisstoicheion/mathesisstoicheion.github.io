@@ -1,8 +1,8 @@
 # Design
 
 The look of the redesigned site, agreed with the owner on 2026-10-15 (thread "Site redesign").
-The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it).
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 5 is the current one.
+The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it, with a correction).
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 6 is the current one.
 Their source files are in the project files, under `redesign/prototype/`.
 
 ## Character
@@ -13,7 +13,7 @@ Their source files are in the project files, under `redesign/prototype/`.
 ## Principles
 1. **Darkness is the frame.** The site is dark only. The one light surface is the reader's "Daylight" page, which is a reading aid against eye strain.
 2. **Every page has something to touch, except the reader.** The home page, the library and every other page carry interactive art. The reader is for reading: it opens in lamplight with a little drifting dust, but once you scroll into the text nothing moves on its own.
-3. **Art is seen through windows, and nothing moves behind the page.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). A full-screen moving background distracts from the page (the owner, 2026-10-16), so there is none. In the library, where Socrates stands behind the page, wide screens give the text a left-hand column and set him beside it, so nothing covers him.
+3. **Art is seen through windows.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). In the library, where Socrates stands behind the page, wide screens give the text a left-hand column and set him beside it, so nothing covers him.
 4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
 
@@ -60,7 +60,7 @@ Each page lives in one of two rooms. The black frame (`--black` #050403) is the 
 Lines and borders are the accent at about 20% strength. Light text is never pure white.
 
 ## Texture and light
-- Film grain and faint scan lines sit over the whole site.
+- Faint scan lines sit still over the home page and the library. There is no film grain: the owner found the moving grain distracting (2026-10-16).
 - Art is drawn in fine lines, dots, Greek letters or light, never as flat photographs:
   - the Athenian coin in the home page's windows is engraved in gold lines, with turning rays;
   - the library's Socrates is written in Greek letters.
@@ -71,7 +71,8 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
 - **Shutters** for the home page and most other pages:
   - Windows open like shutters as they arrive, and the art inside moves more slowly than the page.
-  - Nothing moves behind the page. The only sparks are the ones a Muse's lamp throws when you fan it.
+  - Faint Greek letters float behind the home page at three depths, few and slow. They move at different speeds as you scroll, and step aside from the pointer, catching a little of its light. The owner asked for them back, "less distracting" (2026-10-16).
+  - The only sparks are the ones a Muse's lamp throws when you fan it.
 - **Stage** for the library:
   - Socrates is pinned behind the page, and his face comes together out of loose letters only as you scroll down (the owner: it "was cooler when his face only was revealed when you scrolled").
   - On wide screens he stands to the right of the shelves, so nothing covers him as you scroll. On phones he stands behind the page, and the blocks over him are partly see-through.
@@ -107,7 +108,8 @@ Other motion:
 - Stock photos, invented quotations, uncredited images, or images without a clear licence.
 - Default system fonts, pure white text, rounded cards, drop shadows, and bright saturated blues or greens.
 - Accents on Greek capitals in labels, and Greek set in a font that drops its accents or breathings.
-- Blend modes (overlay, multiply) on full-screen layers. In testing, the grain's overlay halved the frame rate. Grain and scan lines use plain transparency.
+- Blend modes (overlay, multiply) on full-screen layers. In testing, an overlay blend on the old grain halved the frame rate. Scan lines use plain transparency.
 - Moving art that the page's own blocks or windows cover. Put it beside the text on wide screens.
-- Full-screen moving backgrounds (drifting sparks, a fire behind the page). The owner found them "super distracting".
+- Moving film grain or noise. The owner found it "super distracting".
+- Busy motion behind the text: the home page's floating letters stay few, faint and slow.
 - Reading colours from styles inside an animation frame, and drawing thousands of letters as text every frame. Read colours once per page. Stamp letters from a prepared sheet of letters. Keep a still picture of anything that has not changed.
