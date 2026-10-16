@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import LogoMark from "@/components/LogoMark";
+import EmblemMark from "@/components/EmblemMark";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, MENU, SITE, TABS, doorWord, menuWord } from "@/config/areas";
-import { useSettings, scrollBehavior } from "@/lib/settings";
+import { scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
 import ConnectionLight from "./ConnectionLight";
@@ -18,8 +18,6 @@ function isActive(pathname: string, href: string) {
 
 export default function Header() {
   const pathname = usePathname();
-  const theme = useSettings((s) => s.theme);
-  const setSettings = useSettings((s) => s.set);
   const openSettings = useUI((s) => s.openSettings);
   const setSearchOpen = useUI((s) => s.setSearchOpen);
   const ref = useRef<HTMLElement>(null);
@@ -94,16 +92,11 @@ export default function Header() {
   }, [pathname]);
   const scrollMenu = () => navRef.current?.scrollBy({ left: navRef.current.clientWidth * 0.6, behavior: scrollBehavior() });
 
-  const toggleTheme = () => {
-    const dark = theme === "dark" || (theme === "auto" && matchMedia("(prefers-color-scheme: dark)").matches);
-    setSettings({ theme: dark ? "light" : "dark" });
-  };
-
   return (
     <header ref={ref} className={styles.top} style={{ viewTransitionName: "site-header" }}>
       <div className={`wrap ${styles.row}`}>
         <Link className={styles.brand} href="/" transitionTypes={["page-turn"]} aria-label={`${SITE.latin}, home`}>
-          <LogoMark className={styles.logo} />
+          <EmblemMark className={styles.logo} />
           <span className={styles.brandName}>
             <span className={styles.brandGr} lang="grc">{SITE.greek}</span>
             <span className={styles.brandEn}>{SITE.latin}</span>
@@ -144,9 +137,6 @@ export default function Header() {
             <span className={styles.txt}>Search</span>
           </button>
           <AccountButton />
-          <button className={`${styles.tbtn} ${styles.theme}`} type="button" onClick={toggleTheme} aria-label="Switch between light and dark">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z" /></svg>
-          </button>
           <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>
             <span className={styles.txt}>Settings</span>

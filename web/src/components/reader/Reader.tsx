@@ -20,7 +20,7 @@ import type { SentenceMarks } from "./SentencePanel";
 import type { NewItem } from "@/lib/notebooks";
 import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
-import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
+import { useSettings, LIMITS, type Columns, scrollBehavior, isDaylight } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { AREAS, SITE } from "@/config/areas";
 import { Blocks } from "./Blocks";
@@ -1764,6 +1764,8 @@ function FloatFold({ floating, children }: { floating: boolean; children: React.
 export function ReaderBooks() {
   const nav = useNav();
   const split = !!nav.params.get("w2");
+  // the reader's page: Night (the stone) or Daylight, the one light surface on the site (styles/tokens.css)
+  const daylight = useSettings((s) => isDaylight(s.theme));
   const [picking, setPicking] = useState(false);
   // the private collection's window, opened from either book: a book chosen there opens in that pane
   const [mineFor, setMineFor] = useState<1 | 2 | null>(null);
@@ -1783,7 +1785,7 @@ export function ReaderBooks() {
     setPicking(false);
   };
   return (
-    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""}`}>
+    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-page={daylight ? "day" : undefined}>
       <ReaderPane pane={1} split={split} onOpenSecond={() => setPicking(true)} onOpenMine={() => setMineFor(1)} />
       {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} onOpenMine={() => setMineFor(2)} />}
       {picking && <WorkPicker onPick={open} onClose={() => setPicking(false)} />}

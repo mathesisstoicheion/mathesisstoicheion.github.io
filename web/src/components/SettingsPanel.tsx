@@ -9,7 +9,8 @@ import OfflineActions from "./OfflineActions";
 import Link from "next/link";
 import styles from "./SettingsPanel.module.css";
 
-const THEMES: [ThemePref, string][] = [["auto", "Automatic"], ["light", "Papyrus (light)"], ["dark", "Black-figure (dark)"]];
+// the site is dark only; the reader's page can be Night (the stone) or Daylight (pale limestone), against eye strain
+const PAGES: [ThemePref, string][] = [["dark", "Night"], ["light", "Daylight"]];
 const MOTIONS: [MotionPref, string][] = [["auto", "Automatic"], ["reduce", "Reduced"], ["full", "Full"]];
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
@@ -19,7 +20,7 @@ const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[]
   { v: "sans", name: "Sans", about: "Clean, without serifs", font: "var(--font-noto-sans)" },
 ];
 const TEXT_FACES: { v: TextFace; name: string; font: string }[] = [
-  { v: "serif", name: "Serif", font: "var(--font-alegreya)" },
+  { v: "serif", name: "Serif", font: "var(--font-garamond)" },
   { v: "sans", name: "Sans", font: "var(--font-alegreya-sans)" },
 ];
 
@@ -112,12 +113,9 @@ export default function SettingsPanel() {
         </div>
 
         <section className={styles.group}>
-          <h3 className="label">Appearance</h3>
-          <Segmented label="Theme" value={s.theme} options={THEMES} onChange={(theme) => s.set({ theme })} />
-        </section>
-
-        <section className={styles.group}>
           <h3 className="label">Reading</h3>
+          <span className={styles.subLabel}>The reader&apos;s page</span>
+          <Segmented label="The reader's page" value={s.theme === "light" ? "light" : "dark"} options={PAGES} onChange={(theme) => s.set({ theme })} />
           <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
             μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
           </p>

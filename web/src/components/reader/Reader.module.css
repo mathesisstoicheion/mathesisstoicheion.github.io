@@ -1,5 +1,8 @@
-/* The Scroll: Papyrus & Rubric layout (margin references, ruled lines, rubric red) in Black-Figure colours. */
+/* The Scroll: margin references and ruled lines, on the stone by night or on pale limestone by day (styles/tokens.css). */
 .reader { padding-bottom: 40px; }
+/* the reader's page: on the Daylight page the books' area is painted light, edge to edge */
+.page { color: var(--ink); }
+.page[data-page="day"] { background-color: var(--bg); transition: background-color var(--dur-slow) ease, color var(--dur-slow) ease; }
 
 .top { padding-block: clamp(24px, 4vw, 40px) 16px; display: grid; gap: 14px; }
 .crumbs { display: flex; flex-wrap: wrap; gap: 8px; font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }

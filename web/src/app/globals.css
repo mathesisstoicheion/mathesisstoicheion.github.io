@@ -1,8 +1,7 @@
 /* =====================================================================
-   Mathesis Stoicheion — design system: "Black-Figure"
-   Light theme "Papyrus" = clay ground, black gloss ink.
-   Dark theme "Black-figure" = black gloss ground, clay-coloured ink.
-   Colours come from Attic pottery: clay, black gloss, added red, added white.
+   Mathesis Stoicheion: "Stone and torch" (DESIGN.md).
+   Colours, type sizes, spacing and motion are named in styles/tokens.css; this file uses those names.
+   The site is dark only; the reader's Daylight page redefines the same names inside the reader.
    ===================================================================== */
 
 :root {
@@ -16,57 +15,11 @@
   /* phones, in the reader: its own bar just above that one (ReadBar.tsx), and how much of it shows */
   --readbar-h: 0px;
   --readbar-vis: var(--readbar-h);
-  /* the smallest comfortable touch target (Phase 10) */
-  --tap: 44px;
   /* the space between an area page's header band and its first content, the same on every area page */
   --after-head: clamp(24px, 4vw, 32px);
-  /* colour */
-  --bg: #E6C39B;          /* pale fired clay */
-  --bg-2: #DDB186;        /* deeper clay, hover and bands */
-  --surface: #F3E3CC;     /* slip-coated panel */
-  --ink: #1B1410;         /* black gloss */
-  --ink-2: #5A3E2B;       /* diluted gloss */
-  --accent: #93300F;      /* added red (deep enough for small text on clay: 4.7:1) */
-  --accent-ink: #F6ECDD;
-  --band: #1B1410;
-  --white-slip: #F6EEDF;  /* added white */
-  --blue: #2F4F6B;        /* certainty: well established */
-  --ochre: #704A10;       /* certainty: debated */
-  --rule: rgba(27, 20, 16, 0.28);
-  --shadow: rgba(40, 20, 5, 0.35);
-  --ok: #275B34;
-  /* inside panels painted in the ink colour (black in this theme): see "on-ink" below */
-  --accent-on-ink: #E0673A; --accent-ink-on-ink: #16110E; --ink-2-on-ink: #BE9876;
-  /* two roles that differ by theme. Panels (feature cards, toolbars, tooltips): black gloss on the clay
-     page here, a raised black panel in the dark theme. Selected things (pressed chips, chosen tabs, main
-     buttons): solid ink here, a rust tint with a red edge in the dark theme, so nothing large turns bright. */
-  --inv-bg: var(--ink); --inv-fg: var(--bg); --inv-edge: var(--ink);
-  --sel-bg: var(--ink); --sel-fg: var(--bg); --sel-edge: var(--ink); --accent-on-sel: var(--accent-on-ink);
-
-  /* type */
-  --f-greek: var(--font-didot), "Gentium Book Plus", "Noto Serif", Georgia, serif;
-  --f-display: var(--font-didot), Georgia, serif;
-  --f-body: var(--font-alegreya), Georgia, serif;
-  --f-label: var(--font-alegreya-sc), var(--font-alegreya), system-ui, sans-serif;
-
   /* reader settings (changed from the Settings panel) */
   --greek-size: 1.25rem;
   --reading-leading: 1.75;
-
-  /* scale */
-  --step--1: 0.875rem;
-  --step-0: 1.0625rem;
-  --step-1: 1.3rem;
-  --step-2: 1.6rem;
-  --step-3: clamp(1.8rem, 3.4vw, 2.6rem);
-  --step-4: clamp(3.2rem, 7.4vw, 6.5rem);
-
-  --gutter: clamp(16px, 4vw, 48px);
-  --maxw: 1240px;
-  --radius: 2px;
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-
-  color-scheme: light;
 }
 
 /* ------------------------------------------------------------- phones */
@@ -76,66 +29,26 @@
     --tabbar-h: calc(58px + env(safe-area-inset-bottom, 0px));
     --step-1: 1.2rem;
     --step-2: 1.4rem;
-    --step-3: clamp(1.6rem, 7vw, 1.95rem);
-    --step-4: clamp(2.6rem, 13vw, 3.4rem);
+    --step-3: clamp(1.7rem, 7.4vw, 2.1rem);
+    --step-4: clamp(2.4rem, 11.5vw, 3.2rem);
   }
 }
 @media (max-width: 760px) { html:has([data-readbar]) { --readbar-h: 54px; } }
 html[data-hdr="hidden"] { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #16110E; --bg-2: #1F1712; --surface: #241A14;
-    --ink: #EDCBA0; --ink-2: #BE9876; --accent: #E0673A; --accent-ink: #16110E;
-    --band: #C8703A; --white-slip: #2B2019; --blue: #8FB0CC; --ochre: #D9A15A;
-    --rule: rgba(237, 203, 160, 0.22); --shadow: rgba(0, 0, 0, 0.6); --ok: #7CC08E;
-    --accent-on-ink: #E0673A; --accent-ink-on-ink: #16110E; --ink-2-on-ink: #BE9876;
-    --inv-bg: #2A1F18; --inv-fg: #EDCBA0; --inv-edge: rgba(237, 203, 160, 0.22);
-    --sel-bg: #4A2616; --sel-fg: #F6E2C4; --sel-edge: #E0673A; --accent-on-sel: #F2A27A;
-    color-scheme: dark;
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #16110E; --bg-2: #1F1712; --surface: #241A14;
-  --ink: #EDCBA0; --ink-2: #BE9876; --accent: #E0673A; --accent-ink: #16110E;
-  --band: #C8703A; --white-slip: #2B2019; --blue: #8FB0CC; --ochre: #D9A15A;
-  --rule: rgba(237, 203, 160, 0.22); --shadow: rgba(0, 0, 0, 0.6); --ok: #7CC08E;
-  --accent-on-ink: #E0673A; --accent-ink-on-ink: #16110E; --ink-2-on-ink: #BE9876;
-  --inv-bg: #2A1F18; --inv-fg: #EDCBA0; --inv-edge: rgba(237, 203, 160, 0.22);
-  --sel-bg: #4A2616; --sel-fg: #F6E2C4; --sel-edge: #E0673A; --accent-on-sel: #F2A27A;
-  color-scheme: dark;
-}
-
 /* ---------------------------------------------------------------- maps
-   The small maps (the reader's Places, My Library's places, the Explore card): warm vase-clay land and a muted
-   Aegean sea, so land and water tell apart at a glance in both themes; names in ink with a halo of the land.
-   The Periplus lies on NASA's satellite picture: town names in ink with a halo of clay, names on the sea and
-   across regions pale with a dark halo; by night the picture is dimmed (--map-dim multiplies it). */
+   The small maps (the reader's Places, My Library's places, the Explore card): dark warm land and a deep, muted
+   sea, so land and water tell apart at a glance; names in ivory with a halo of the land.
+   The Periplus lies on NASA's satellite picture, dimmed for the night (--map-dim multiplies it). */
 :root {
-  --map-land: #EFDCBC; --map-sea: #A9C1C6; --map-coast: #5F8590; --map-wave: rgba(255, 255, 255, 0.30);
-  --map-name: #2A1C12; --map-halo: #EFDCBC; --map-accent-sea: #9E2F17;
-  --map-edge: #3A3530; --map-dim: none; --map-shadow: #000;
-  --map-sea-name: #E8F1F5; --map-sea-halo: rgba(8, 30, 62, 0.6); --map-region: #FBF3E4; --map-region-halo: rgba(36, 24, 14, 0.6);
-}
-:root[data-theme="dark"] {
-  --map-land: #3B3026; --map-sea: #15283A; --map-coast: #7FA3B5; --map-wave: rgba(140, 185, 210, 0.10);
-  --map-name: #F2DDBB; --map-halo: #3B3026; --map-accent-sea: #F08A5D;
-  --map-edge: #15120F; --map-dim: #858B9C; --map-shadow: #000;
-  --map-sea-name: #C4DAE6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #EADBC0; --map-region-halo: rgba(0, 0, 0, 0.65);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --map-land: #3B3026; --map-sea: #15283A; --map-coast: #7FA3B5; --map-wave: rgba(140, 185, 210, 0.10);
-    --map-name: #F2DDBB; --map-halo: #3B3026; --map-accent-sea: #F08A5D;
-    --map-edge: #15120F; --map-dim: #858B9C; --map-shadow: #000;
-    --map-sea-name: #C4DAE6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #EADBC0; --map-region-halo: rgba(0, 0, 0, 0.65);
-  }
+  --map-land: #3b3026; --map-sea: #15283a; --map-coast: #7fa3b5; --map-wave: rgba(140, 185, 210, 0.10);
+  --map-name: #f2ddbb; --map-halo: #3b3026; --map-accent-sea: #f08a5d;
+  --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
+  --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
 }
 
-/* the home page vase: a warm glow behind it, so the black gloss never sinks into a dark page */
-:root { --vase-glow: rgba(255, 243, 224, 0.75); }
-:root[data-theme="dark"] { --vase-glow: rgba(214, 122, 62, 0.30); }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --vase-glow: rgba(214, 122, 62, 0.30); } }
+/* the home page vase: a warm glow behind it, so the black gloss never sinks into the dark */
+:root { --vase-glow: rgba(214, 122, 62, 0.30); }
 
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -149,11 +62,21 @@ main { overflow-x: clip; }
 body {
   margin: 0;
   padding-bottom: calc(var(--tabbar-h) + var(--readbar-h));  /* the end of every page clears the phone bars */
-  background: var(--bg);
+  background: transparent;   /* the wall is <html>'s, so the torch's light (z-index -1) falls on it, behind everything */
   color: var(--ink);
-  font: 400 var(--step-0) / 1.6 var(--f-body);
-  transition: background-color 0.5s ease, color 0.5s ease;
+  font: 400 var(--step-0) / 1.62 var(--f-body);
+  -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
+}
+/* the wall: the stone's colour, and its still texture (lib/stone.ts) */
+html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420px; }
+
+/* the torch's pools of light on the wall (components/Torch.tsx): moved by transform only, with normal blending */
+.torch .glow {
+  position: fixed; left: 0; top: 0; z-index: -1; pointer-events: none; border-radius: var(--radius-round); opacity: 0;
+  width: var(--glow-d, 1180px); height: var(--glow-d, 1180px); margin: calc(var(--glow-d, 1180px) / -2) 0 0 calc(var(--glow-d, 1180px) / -2);
+  background: radial-gradient(closest-side, var(--glow-torch), rgba(238, 132, 58, 0.09) 34%, rgba(205, 96, 36, 0.03) 66%, rgba(200, 90, 30, 0));
+  will-change: transform, opacity; transform: translate3d(-9999px, -9999px, 0);
 }
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing
    through the status bar while the header is tucked away */
@@ -161,7 +84,7 @@ body::before {
   content: ""; position: fixed; z-index: 31; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
   background: var(--bg); pointer-events: none;
 }
-h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
 p { margin: 0; }
@@ -177,11 +100,12 @@ input { text-overflow: ellipsis; }
 /* on touch screens, tick boxes and radio buttons are big enough for a finger */
 @media (pointer: coarse) { input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; flex: none; } }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); }
+::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent-hi); }
 /* the typefaces chosen in Settings (lib/settings.ts): Greek text, and English reading text; headings keep Didot */
 html[data-greek-face="gentium"] { --f-greek: var(--font-gentium), "Gentium Book Plus", var(--font-didot), serif; }
 html[data-greek-face="sans"] { --f-greek: var(--font-noto-sans), "Noto Sans", system-ui, sans-serif; }
 html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya Sans", system-ui, sans-serif; }
+/* wide-spaced capitals, the way labels are cut in the stone (DESIGN.md: Type) */
 [lang="grc"] { font-family: var(--f-greek); }
 
 .wrap {
@@ -189,8 +113,9 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   /* a phone on its side puts the notch at one edge: keep text clear of it */
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
-.label { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--ink-2); }
+.label { font-family: var(--f-label); font-weight: 500; font-size: var(--step--2); line-height: 1.3; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); }
 .muted { color: var(--ink-2); }
+.faint { color: var(--ink-3); }
 .skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 12px 16px; }
 .skip:focus { left: 8px; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -220,70 +145,43 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 @keyframes pull-spin { to { transform: rotate(360deg); } }
 
 /* ------------------------------------------------------------- ornament */
-/* Bands are drawn with CSS masks so they take any colour. The tiles repeat "round": only whole tiles,
-   stretched a hair to fill the width exactly, so a band never ends in a cut-off piece. The meander's key
-   sits in the middle of its tile (the same gap on both sides); its two rails are drawn as one unbroken line
-   each (drawn per tile they showed hairline seams), and a thin upright closes each end into a frame.
-   --meander-tile keeps the rails in the tile, for bands too small to show a seam. */
-:root {
-  --meander-key: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M3.5 19V4H16.5V16H7.5V8H12.5V12' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
-  --meander-tile: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M0 1H20M0 19H20M3.5 19V4H16.5V16H7.5V8H12.5V12' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
-  --solid: linear-gradient(#000 0 0);
-  --meander-image: var(--meander-key), var(--solid), var(--solid), var(--solid), var(--solid);
-  --meander-size: 16px 16px, 100% 1.6px, 100% 1.6px, 1.6px 100%, 1.6px 100%;
-  --meander-position: left top, left top, left bottom, left top, right top;
-  --meander-repeat: round no-repeat, no-repeat, no-repeat, no-repeat, no-repeat;
-  /* the keys are laid inside the padding (2.4 px each side), so the first and last stand clear of the uprights */
-  --meander-origin: content-box, border-box, border-box, border-box, border-box;
+/* Lines cut into the stone, not painted bands: each is a groove, its upper edge in shadow and its lower lip catching
+   the light (DESIGN.md: "Thin rules and cut lines instead of drop shadows"). The old pottery bands keep their class
+   names, so every page that drew a meander now draws a cut. */
+.meander, .tongues, .rays, .cut {
+  display: block; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px);
 }
-.meander, .tongues, .rays {
-  background: var(--band);
-  -webkit-mask-repeat: round no-repeat; mask-repeat: round no-repeat;
-}
-.meander {
-  height: 16px;
-  -webkit-mask-image: var(--meander-image); mask-image: var(--meander-image);
-  -webkit-mask-size: var(--meander-size); mask-size: var(--meander-size);
-  -webkit-mask-position: var(--meander-position); mask-position: var(--meander-position);
-  -webkit-mask-repeat: var(--meander-repeat); mask-repeat: var(--meander-repeat);
-  -webkit-mask-origin: var(--meander-origin); mask-origin: var(--meander-origin);
-  padding-inline: 2.4px;
-}
-.tongues {
-  height: 14px;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1 0H11V6A5 5 0 0 1 1 6Z'/%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 14'%3E%3Cpath d='M1 0H11V6A5 5 0 0 1 1 6Z'/%3E%3C/svg%3E");
-  -webkit-mask-size: 12px 14px; mask-size: 12px 14px;
-}
-.rays {
-  height: 22px;
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 22'%3E%3Cpath d='M1 22L8 0L15 22Z'/%3E%3C/svg%3E");
-          mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 22'%3E%3Cpath d='M1 22L8 0L15 22Z'/%3E%3C/svg%3E");
-  -webkit-mask-size: 16px 22px; mask-size: 16px 22px;
-}
-.draw { animation: draw 1.4s cubic-bezier(0.6, 0, 0.2, 1) both; }
+.tongues { width: 36px; flex: none; }
+.rays { width: 56px; }
+.draw { animation: draw 1.8s var(--ease-cut) both; }
 @keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ------------------------------------------------------------- buttons */
+/* The main button is a honey plate with dark capitals; .ghost is a cut outline; both settle, never jump. */
 .btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 13px 22px; border: 1.5px solid var(--sel-edge); background: var(--sel-bg); color: var(--sel-fg);
-  border-radius: var(--radius); font-weight: 600; font-size: 1rem; text-decoration: none;
-  transition: transform 0.2s var(--ease), background-color 0.2s, color 0.2s;
+  display: inline-flex; align-items: center; gap: 0.7em;
+  padding: 0.95em 1.35em 0.9em; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  border-radius: var(--radius); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none;
+  transition: background-color var(--dur) ease, border-color var(--dur) ease, color var(--dur) ease;
 }
-.btn:hover { transform: translateY(-2px); }
-.btn.ghost { background: transparent; color: var(--ink); }
+.btn:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule-2); }
+.btn.ghost:hover { border-color: var(--accent); color: var(--accent-hi); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 9px 16px; font-size: 0.92rem; gap: 8px; }
+.btn.small { padding: 0.8em 1.1em 0.75em; letter-spacing: 0.18em; gap: 8px; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
-.btn .arr { transition: transform 0.25s var(--ease); }
-.btn:hover .arr { transform: translateX(4px); }
-.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn .arr { transition: transform var(--dur) var(--ease); }
+.btn:hover .arr { transform: translateX(3px); }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+@media (max-width: 760px) { .btn { letter-spacing: 0.16em; padding-inline: 1.1em; } }
 
+/* a chip: a small plate cut into the stone; pressed, it is lit from within */
 .chip {
   display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
-  border: 1px solid var(--rule); border-radius: 999px; font-size: var(--step--1); background: transparent;
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent;
+  transition: border-color var(--dur) ease, color var(--dur) ease, background-color var(--dur) ease;
 }
+.chip:hover { border-color: var(--rule-2); }
 .chip[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); border-color: var(--sel-edge); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 4 px beyond it (a 44 px target) */
 @media (pointer: coarse) {
@@ -291,35 +189,39 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   .chip::after { content: ""; position: absolute; inset: -4px 0; }
 }
 /* a row of joined buttons, one of which is chosen (role="radiogroup" with role="radio" buttons) */
-.segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
-.segmented > button { border: 0; background: transparent; color: inherit; padding: 8px 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color 0.2s, color 0.2s; }
+.segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--bg-deep); }
+.segmented > button { border: 0; background: transparent; color: var(--ink-2); padding: 8px 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) ease, color var(--dur) ease; }
 .segmented > button + button { border-left: 1px solid var(--rule); }
-.segmented > button:hover:not([aria-checked="true"]) { background: var(--bg-2); }
-.segmented > button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
+.segmented > button:hover:not([aria-checked="true"]) { background: var(--surface); color: var(--ink); }
+.segmented > button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); box-shadow: inset 0 -2px 0 var(--sel-edge); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
-.chip .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; opacity: 0.5; }
+.chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
+/* fields: cut into the stone, a little deeper than the wall */
+:where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type]), textarea, select) {
+  background-color: var(--bg-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius);
+}
+:where(input, textarea)::placeholder { color: var(--ink-3); }
+
 /* certainty labels */
-.tag { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: 0.8rem;
-  letter-spacing: 0.06em; padding: 2px 9px; border-radius: 999px; border: 1px solid currentColor; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font: 500 0.66rem / 1.3 var(--f-label);
+  letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 9px 2px; border-radius: var(--radius); border: 1px solid currentColor; }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
-.tag.legend { color: var(--accent); }
+.tag.legend { color: var(--legend); }
 
 /* --------------------------------------------------------- page turn */
-/* Route changes unroll the new page from the right, like turning to the next stretch of a scroll. */
-::view-transition-old(.page-turn) { animation: 260ms ease-in both turn-out; }
-::view-transition-new(.page-turn) { animation: 560ms cubic-bezier(0.6, 0, 0.2, 1) 80ms both turn-in; }
-@keyframes turn-out { to { opacity: 0; transform: translateX(-2%); } }
-@keyframes turn-in {
-  from { clip-path: inset(0 0 0 100%); filter: brightness(0.92); }
-  to { clip-path: inset(0 0 0 0); filter: none; }
-}
+/* Route changes: the old page fades into the dark and the new one comes up out of it, calmly. */
+::view-transition-old(.page-turn) { animation: 240ms ease-in both turn-out; }
+::view-transition-new(.page-turn) { animation: 620ms var(--ease) 60ms both turn-in; }
+@keyframes turn-out { to { opacity: 0; } }
+@keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
-/* reveal: visible at rest, the class only adds a lift-in */
-.rv.in { animation: lift 0.8s var(--ease) both; }
-@keyframes lift { from { transform: translateY(18px); opacity: 0.35; } to { transform: none; opacity: 1; } }
+
+/* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
+.rv.in { animation: lift var(--dur-slow) var(--ease) both; }
+@keyframes lift { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
   animation: none !important; transition: none !important;
@@ -353,15 +255,18 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .toast {
   position: fixed; left: 50%; bottom: calc(20px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px))); z-index: 70;
   transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: 6px; font-size: 0.95rem;
+  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: 0.95rem;
+  box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
   transition: opacity 0.25s, transform 0.25s var(--ease);
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 .site-footer { margin-top: clamp(48px, 8vw, 96px); }
-.site-footer .meander { opacity: 0.8; }
+
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: 16px 40px; padding-block: 32px 48px; font-size: 0.92rem; }
-.site-footer-name { font-size: 1.4rem; }
+.site-footer-name { display: flex; align-items: center; gap: 12px; font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
+.site-footer-mark { width: 40px; height: 33px; flex: none; color: var(--accent); }
+.site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; }
 @media (max-width: 680px) {
@@ -373,7 +278,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 /* area header, shared by every area page */
 .area-head { padding-block: clamp(40px, 6vw, 72px) 0; }
 .area-kicker { display: flex; align-items: center; gap: 12px; }
-.area-kicker .tongues { width: 72px; }
+.area-kicker .tongues { width: 36px; }
+.area-kicker .label { color: var(--accent-2); }
 .area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: 16px; }
 .area-greek { display: block; font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
 .area-origin { max-width: 60ch; margin-top: 18px; font-size: 1.15rem; color: var(--ink-2); }

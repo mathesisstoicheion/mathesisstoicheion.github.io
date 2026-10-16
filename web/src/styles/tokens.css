@@ -1,0 +1,178 @@
+/* =====================================================================
+   Mathesis Stoicheion: design tokens for "Stone and torch" (DESIGN.md).
+   A wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry.
+   The site is dark only; the one light surface is the reader's Daylight page ([data-page="day"], below).
+
+   Two layers:
+   - primitives: the raw stone, ivory and torchlight colours, the spacing steps and the type sizes;
+   - semantic tokens, which the site's styles use (--bg, --ink, --accent, --rule …). Components use only these,
+     so a restyle changes this file.
+   Every value the site paints with is named here; scripts/check-tokens.mjs stops new hardcoded values creeping in.
+   ===================================================================== */
+
+:root {
+  /* ---------------------------------------------------------- primitives */
+  /* stone, darkest to lightest */
+  --stone-0: #0b0907;
+  --stone-1: #14100d;
+  --stone-2: #1b1612;
+  --stone-3: #251f19;
+  --stone-4: #332a21;
+  /* ivory text, and its quieter lines (never pure white) */
+  --ivory-1: #efe5d2;
+  --ivory-2: #bfb09a;
+  --ivory-3: #93856f;
+  /* torchlight */
+  --honey: #efc27a;
+  --honey-hi: #f9dfae;
+  --amber: #f0a24c;
+  --ember: #c8622c;
+  /* the second accent, a faded red ochre, and its lighter form for small text */
+  --ochre-red: #a65d40;
+  --ochre-red-text: #d4917a;
+  /* a dull bronze patina: the one cool colour, for what must read apart from the torchlight (well-established facts,
+     the second of two compared editions, a sentence's structure). Never bright. */
+  --patina: #92b0a6;
+  /* a muted sage, for "done" and "right" */
+  --sage: #9fc39a;
+  /* the dark ink set on honey (a main button) */
+  --on-honey: #1b130b;
+  /* the reader's Daylight page: pale limestone, dark ink, a burnt-sienna accent */
+  --limestone: #e8e0cf;
+  --limestone-2: #f1eadc;
+  --limestone-3: #ddd2bd;
+  --day-ink: #2a221a;
+  --day-ink-2: #5a4c3c;
+  --day-ink-3: #6e5f4c;
+  --sienna: #8a3e1e;
+  --sienna-deep: #6b2c12;
+  /* lines: torchlight thinned on stone, and the two edges of a cut (its shadowed side and its lit lip) */
+  --line-1: rgba(239, 194, 122, 0.14);
+  --line-2: rgba(239, 194, 122, 0.32);
+  --cut-dark: rgba(0, 0, 0, 0.62);
+  --cut-light: rgba(255, 226, 186, 0.075);
+  --black-62: rgba(0, 0, 0, 0.62);
+
+  /* spacing: the steps of DESIGN.md (4, 8, 12, 16, 24, 36, 56 and 80 px) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 36px;
+  --space-7: 56px;
+  --space-8: 80px;
+
+  /* type sizes */
+  --step--2: 0.74rem;                         /* wide-spaced capital labels */
+  --step--1: 0.875rem;                        /* captions, credits, small print */
+  --step-0: 1.125rem;                         /* reading text (EB Garamond is small on its body) */
+  --step-1: 1.32rem;                          /* a lede */
+  --step-2: 1.6rem;                           /* h3 */
+  --step-3: clamp(2rem, 3.8vw, 3.1rem);       /* h2 */
+  --step-4: clamp(2.6rem, 5.3vw, 5.1rem);     /* a page's title */
+
+  /* typefaces (the next/font variables are set in app/layout.tsx) */
+  --face-didot: var(--font-didot), "GFS Didot", "EB Garamond", Georgia, serif;
+  --face-garamond: var(--font-garamond), "EB Garamond", Georgia, serif;
+  --face-carved: var(--font-carved), "Noto Serif Display", var(--font-didot), serif;
+
+  /* motion: everything eases and settles; nothing bounces (DESIGN.md, "All movement is calm") */
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0, 0, 0.58, 1);
+  --ease-cut: cubic-bezier(0.3, 0.6, 0.2, 1);
+  --dur-quick: 0.25s;
+  --dur: 0.4s;
+  --dur-slow: 1.2s;
+
+  /* shape: thin rules and cut lines, no rounded cards */
+  --radius: 0px;
+  --radius-round: 50%;
+
+  /* ---------------------------------------------------------- semantic tokens */
+  --bg: var(--stone-1);            /* the wall */
+  --bg-deep: var(--stone-0);       /* deep recesses: a window cut into the wall, an inset field */
+  --bg-2: var(--stone-3);          /* hover, and bands across the wall */
+  --surface: var(--stone-2);       /* a panel set into the wall */
+  --surface-2: var(--stone-3);     /* a raised panel, a pressed chip */
+  --ink: var(--ivory-1);
+  --ink-2: var(--ivory-2);
+  --ink-3: var(--ivory-3);
+  --accent: var(--honey);
+  --accent-hi: var(--honey-hi);
+  --accent-ink: var(--on-honey);   /* text on an accent-coloured field */
+  --accent-2: var(--ochre-red-text);
+  --band: var(--line-2);
+  --white-slip: var(--stone-3);
+  --blue: var(--patina);           /* certainty: well established; a second, cooler mark in the reader */
+  --ochre: var(--amber);           /* certainty: debated; finds in the reader */
+  --legend: var(--ochre-red-text); /* certainty: legend */
+  --rule: rgba(239, 194, 122, 0.2);
+  --rule-2: var(--line-2);
+  --cut-d: var(--cut-dark);
+  --cut-l: var(--cut-light);
+  --shadow: rgba(0, 0, 0, 0.6);
+  --ok: var(--sage);
+  --warn: var(--amber);
+  --danger: var(--ember);
+  --glow-torch: rgba(255, 172, 98, 0.2);
+
+  /* inside panels painted in the ink colour, and selected things (pressed chips, chosen tabs, main buttons):
+     in stone and torch both are dark, raised panels, so nothing large turns bright */
+  --accent-on-ink: var(--honey);
+  --accent-ink-on-ink: var(--on-honey);
+  --ink-2-on-ink: var(--ivory-2);
+  --inv-bg: var(--stone-3);
+  --inv-fg: var(--ivory-1);
+  --inv-edge: var(--line-2);
+  --sel-bg: #3a2b1b;
+  --sel-fg: var(--honey-hi);
+  --sel-edge: var(--honey);
+  --accent-on-sel: var(--honey-hi);
+
+  /* type roles */
+  --f-greek: var(--face-didot);
+  --f-display: var(--face-didot);
+  --f-body: var(--face-garamond);
+  --f-label: var(--face-garamond);
+  --f-carved: var(--face-carved);
+
+  /* layout */
+  --gutter: clamp(16px, 4vw, 48px);
+  --maxw: 1240px;
+  --tap: 44px;
+
+  color-scheme: dark;
+}
+
+/* The reader's Daylight page: the same names, redefined inside it, so every reading tool turns light with the page. */
+[data-page="day"] {
+  --bg: var(--limestone);
+  --bg-deep: var(--limestone-3);
+  --bg-2: var(--limestone-3);
+  --surface: var(--limestone-2);
+  --surface-2: var(--limestone-3);
+  --ink: var(--day-ink);
+  --ink-2: var(--day-ink-2);
+  --ink-3: var(--day-ink-3);
+  --accent: var(--sienna);
+  --accent-hi: var(--sienna-deep);
+  --accent-ink: var(--limestone-2);
+  --accent-2: var(--sienna);
+  --blue: #2f5a52;
+  --ochre: #7a4c0e;
+  --legend: var(--sienna);
+  --rule: rgba(42, 34, 26, 0.18);
+  --rule-2: rgba(42, 34, 26, 0.32);
+  --shadow: rgba(40, 24, 10, 0.3);
+  --ok: #2f5f35;
+  --accent-on-ink: var(--honey);
+  --inv-bg: var(--day-ink);
+  --inv-fg: var(--limestone-2);
+  --inv-edge: var(--day-ink);
+  --sel-bg: var(--day-ink);
+  --sel-fg: var(--limestone-2);
+  --sel-edge: var(--day-ink);
+  --accent-on-sel: #f0b48f;
+  color-scheme: light;
+}

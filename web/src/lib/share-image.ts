@@ -45,7 +45,7 @@ function meander(ctx: CanvasRenderingContext2D, x: number, y: number, w: number,
 export async function renderPassageImage(input: ImageInput): Promise<HTMLCanvasElement> {
   const t = input.dark ? THEMES.dark : THEMES.light;
   const greekFont = fontVar("--font-didot", '"GFS Didot"');
-  const bodyFont = fontVar("--font-alegreya", "Alegreya");
+  const bodyFont = fontVar("--font-garamond", "EB Garamond");
   await Promise.all([document.fonts.load(`44px ${greekFont}`, "Ααω"), document.fonts.load(`italic 26px ${bodyFont}`), document.fonts.load(`600 22px ${bodyFont}`)]).catch(() => undefined);
 
   const W = 1200, PAD = 84, INNER = W - PAD * 2, BAND = 24;

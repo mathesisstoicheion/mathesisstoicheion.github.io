@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { SITE } from "@/config/areas";
 import ReportBugLink from "./ReportBugLink";
+import EmblemMark from "./EmblemMark";
 
 export default function Footer() {
   return (
@@ -8,7 +9,7 @@ export default function Footer() {
       <div className="meander" aria-hidden="true" />
       <div className="wrap site-footer-in">
         <div>
-          <p className="site-footer-name" lang="grc">{SITE.greek}</p>
+          <p className="site-footer-name"><EmblemMark className="site-footer-mark" /><span lang="grc">{SITE.greek}</span></p>
           <p className="muted">Free for everyone. No adverts, no trackers.</p>
         </div>
         <nav aria-label="About this site" className="site-footer-links">
