@@ -113,6 +113,51 @@
   --cut-l: var(--cut-light);
   --cut-deep: rgba(0, 0, 0, 0.7);  /* the shadowed side of a deep cut: an inset field, a stele's outline */
   --shadow: rgba(0, 0, 0, 0.6);
+
+  /* stone surfaces: every panel on the site is cut into the wall or set on it, never an outlined box. Both are
+     see-through, so the torch's light on the wall (behind everything) falls across them as it moves. */
+  --field: rgba(6, 4, 2, 0.34);    /* a panel sunk into the wall: shadow under its upper edge, a lit lower lip */
+  --field-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.52), inset 0 16px 24px -16px rgba(0, 0, 0, 0.8), inset 0 -1px 0 0 rgba(255, 222, 180, 0.065);
+  --slab: rgba(64, 52, 39, 0.24);  /* a slab set proud of the wall: a lit top edge, a shadowed foot */
+  --slab-edge: inset 0 1px 0 0 rgba(255, 226, 186, 0.11), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.46), 0 18px 26px -20px rgba(0, 0, 0, 0.9);
+  --slab-lit: rgba(76, 61, 45, 0.34);   /* a slab under the hand, or the chosen one */
+  /* a moulding: a fine line cut just inside a bigger panel's edge, as round a carved panel (outline with a negative offset) */
+  --moulding: 1px solid var(--line-1);
+  --moulding-in: -9px;
+  /* the plinth along the foot of every page: its lit top edge in a cut, and a little light caught on its face */
+  --plinth-edge: inset 0 1px 0 0 var(--lip), inset 0 2px 0 0 var(--groove), inset 0 22px 30px -24px var(--lip), 0 -1px 0 0 var(--groove);
+  /* a broken piece of stone: light caught on its upper edge, shadow gathered at its foot */
+  --broken-edge: inset 0 24px 40px -30px var(--lip), inset 0 -26px 36px -24px var(--cut-deep);
+  /* a field to type in, cut into the stone: a dark hollow with a lit lower lip */
+  --hollow: rgba(0, 0, 0, 0.36);
+  --hollow-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.7), inset 0 3px 6px -2px rgba(0, 0, 0, 0.7), inset 0 -1px 0 rgba(255, 226, 186, 0.08);
+  --hollow-focus: inset 0 0 0 1px var(--accent);
+  /* a line cut across the stone: its shadowed side, then its lit lip just under it */
+  --groove: rgba(0, 0, 0, 0.5);
+  --lip: rgba(255, 226, 186, 0.085);
+  --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
+  --cut-line-v: linear-gradient(90deg, var(--groove) 0 1px, var(--lip) 1px 2px);
+  /* the same cuts as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
+  --cut-under: inset 0 -1px 0 var(--lip), inset 0 -2px 0 var(--groove);
+  --cut-over: inset 0 1px 0 var(--groove), inset 0 2px 0 var(--lip);
+  --cut-left: inset 1px 0 0 var(--groove), inset 2px 0 0 var(--lip);
+  /* a slim gilded inlay along a call-out's edge (a tip, a note, a right answer) */
+  /* a frame cut round a picture or a map: a groove, then its lit lip */
+  --frame: 0 0 0 1px var(--groove), 0 0 0 2px var(--lip);
+  --inlay-left: inset 2px 0 0 var(--accent);
+  --inlay-left-ok: inset 2px 0 0 var(--ok);
+  --inlay-left-ochre: inset 2px 0 0 var(--ochre);
+  --inlay-left-blue: inset 2px 0 0 var(--blue);
+  --inlay-left-legend: inset 2px 0 0 var(--legend);
+  --inlay-top: inset 0 2px 0 var(--accent);
+  /* a channel cut for a bar or a meter, and the gilded inlay laid in it */
+  --channel: rgba(0, 0, 0, 0.4);
+  --channel-edge: inset 0 1px 3px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 226, 186, 0.07);
+  --inlay: linear-gradient(180deg, var(--honey-hi), var(--honey) 38%, #a8743a);
+  --inlay-side: linear-gradient(90deg, #a8743a, var(--honey) 62%, var(--honey-hi));
+  --inlay-dim: linear-gradient(180deg, rgba(239, 194, 122, 0.55), rgba(168, 116, 58, 0.45));
+  --inlay-edge: inset 0 1px 0 rgba(255, 244, 220, 0.55), inset 0 -1px 0 rgba(60, 34, 10, 0.6);
+
   --ok: var(--sage);
   --warn: var(--amber);
   --danger: var(--ember);
@@ -166,6 +211,40 @@
   --rule: rgba(42, 34, 26, 0.18);
   --rule-2: rgba(42, 34, 26, 0.32);
   --shadow: rgba(40, 24, 10, 0.3);
+  /* in daylight the same cuts and slabs, in pale limestone */
+  --field: rgba(120, 96, 64, 0.07);
+  --field-edge: inset 0 0 0 1px rgba(42, 34, 26, 0.16), inset 0 10px 16px -12px rgba(42, 34, 26, 0.22), inset 0 -1px 0 0 rgba(255, 255, 255, 0.55);
+  --slab: rgba(255, 255, 255, 0.32);
+  --slab-edge: inset 0 1px 0 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 0 rgba(42, 34, 26, 0.14), 0 0 0 1px rgba(42, 34, 26, 0.14), 0 12px 20px -18px rgba(40, 24, 10, 0.4);
+  --slab-lit: rgba(255, 255, 255, 0.5);
+  --moulding: 1px solid rgba(42, 34, 26, 0.16);
+  --hollow: rgba(255, 255, 255, 0.45);
+  --hollow-edge: inset 0 0 0 1px rgba(42, 34, 26, 0.22), inset 0 2px 4px -2px rgba(42, 34, 26, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.7);
+  --hollow-focus: inset 0 0 0 1px var(--accent);
+  --groove: rgba(42, 34, 26, 0.2);
+  --lip: rgba(255, 255, 255, 0.6);
+  /* restated, so they take the day's groove and lip (a custom property keeps the values it was made with) */
+  --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
+  --cut-line-v: linear-gradient(90deg, var(--groove) 0 1px, var(--lip) 1px 2px);
+  /* the same cuts as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
+  --cut-under: inset 0 -1px 0 var(--lip), inset 0 -2px 0 var(--groove);
+  --cut-over: inset 0 1px 0 var(--groove), inset 0 2px 0 var(--lip);
+  --cut-left: inset 1px 0 0 var(--groove), inset 2px 0 0 var(--lip);
+  /* a slim gilded inlay along a call-out's edge (a tip, a note, a right answer) */
+  /* a frame cut round a picture or a map: a groove, then its lit lip */
+  --frame: 0 0 0 1px var(--groove), 0 0 0 2px var(--lip);
+  --inlay-left: inset 2px 0 0 var(--accent);
+  --inlay-left-ok: inset 2px 0 0 var(--ok);
+  --inlay-left-ochre: inset 2px 0 0 var(--ochre);
+  --inlay-left-blue: inset 2px 0 0 var(--blue);
+  --inlay-left-legend: inset 2px 0 0 var(--legend);
+  --inlay-top: inset 0 2px 0 var(--accent);
+  --channel: rgba(42, 34, 26, 0.1);
+  --channel-edge: inset 0 1px 2px rgba(42, 34, 26, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
+  --inlay: linear-gradient(180deg, #a5552c, var(--sienna) 50%, var(--sienna-deep));
+  --inlay-side: linear-gradient(90deg, var(--sienna-deep), var(--sienna) 50%, #a5552c);
+  --inlay-dim: linear-gradient(180deg, rgba(138, 62, 30, 0.45), rgba(107, 44, 18, 0.4));
+  --inlay-edge: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(40, 16, 4, 0.4);
   --ok: #2f5f35;
   --accent-on-ink: var(--honey);
   --inv-bg: var(--day-ink);

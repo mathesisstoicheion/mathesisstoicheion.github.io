@@ -24,7 +24,18 @@ live; it goes live only when the owner says "Publish"):
 - **Reader**: a cover with the book's Greek title carved (in even rows) and its medallion; the torch fades as you scroll into the
   text. On the Daylight page the cover is limestone in an even light.
 - **Area pages**: each carves its Greek name above its title. The tab and app icons are now the emblem's flat mark (see The logo).
-Still to do: the rest of the pages (old bright ivory frames and rounded corners, the token count), screenshots for the owner.
+- **Every page and its content** (the owner, 2026-10-16: "All pages and content must match the theme", "Except for photos and
+  text and buttons"): every module's panels, cards, tables, lists, charts, fields, frames and empty states are now stone (sunk
+  fields, slabs, mouldings, cut lines, gilded channels, hollows; see DESIGN.md, "Everything on a page is stone"). The footer is a
+  plinth with ΜΑΘΗΣΙΣΣΤΟΙΧΕΙΩΝ carved along it (no space, as Greek was carved); sub-pages carve their Greek name above the title; the Oracle carves "Know
+  thyself" with its source; the 404 page is a broken piece of stone carved ΥΔ. Buttons, photos and text are unchanged. A carving
+  is measured as soon as the page opens, so one lower on the page no longer leaves a gap that closes as you reach it. Checked on
+  all 47 pages, on a computer and a phone; the token count went from 4,612 to 4,500.
+- **The logo** (the owner, 2026-10-16: "Include a logo redesign"): three options drawn for the owner, all keeping the emblem's
+  drawing and changing what it is made of: 1 cut in the stone, 2 gilded (the cut with gold laid in it; recommended), 3 a round
+  seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab); nothing built until the owner chooses.
+  The name beside the mark stays as text (the owner's rule: photos, text and buttons stay as they are).
+Still to do: the owner's choice of logo, the owner's review, then "Publish".
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an

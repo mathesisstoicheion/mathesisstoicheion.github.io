@@ -4,6 +4,7 @@ import Workout, { type Mode } from "./Workout";
 import { LESSONS, type Lesson } from "@/data/lessons";
 import { AREAS } from "@/config/areas";
 import styles from "./Workout.module.css";
+import NameCarving from "@/components/art/NameCarving";
 
 /** The page around a lesson's practice or test. */
 export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Exclude<Mode, "warmup"> }) {
@@ -15,6 +16,7 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
           <Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> ›{" "}
           <Link href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>Lesson {n}</Link> › {mode === "practice" ? "Practice" : "Test"}
         </nav>
+        <NameCarving greek={mode === "practice" ? "ἄσκησις" : "δοκιμασία"} />
         <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4.5vw, 2.8rem)" }}>
           {mode === "practice" ? "Practise" : "Test yourself"}: {lesson.title}
           <span lang="grc" style={{ display: "block", fontSize: "0.55em", marginTop: 6 }}>{mode === "practice" ? "ἄσκησις" : "δοκιμασία"}</span>

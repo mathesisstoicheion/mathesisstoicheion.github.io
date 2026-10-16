@@ -8,7 +8,7 @@
 .h4 { margin: 4px 0 6px; font: 600 0.85rem var(--f-label); color: var(--ink-2); letter-spacing: 0.02em; }
 
 /* ---- concordance: reference | words before | the match | words after | grammar */
-.lines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
+.lines { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 .addLine {
   width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round);
@@ -19,9 +19,10 @@
 @media (pointer: coarse) { .addLine { opacity: 1; width: 32px; height: 32px; } }
 .lines li {
   display: grid; grid-template-columns: minmax(5em, 11em) minmax(0, 1fr) auto minmax(0, 1fr) auto auto; align-items: baseline;
-  padding: 7px 6px; border-bottom: 1px solid color-mix(in srgb, var(--rule) 55%, transparent); transition: background 0.15s;
+  padding: 7px 6px; box-shadow: var(--cut-under); transition: background 0.15s;
 }
-.lines li:hover { background: color-mix(in srgb, var(--ink) 5%, transparent); }
+.lines li:last-child { box-shadow: none; }
+.lines li:hover { background-color: var(--slab-lit); }
 .lines[data-lang="grc"] { font-family: var(--f-greek); font-size: 1.06rem; }
 .ref {
   padding-right: 12px; font: 600 0.8rem var(--f-label); color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
@@ -56,18 +57,18 @@
   position: relative; display: grid; grid-template-columns: minmax(6em, 14em) minmax(0, 1fr) 3.6em; gap: 10px; align-items: center;
   padding: 4px 6px; border-radius: var(--radius); outline: none;
 }
-.bars li:hover, .bars li:focus-visible { background: color-mix(in srgb, var(--ink) 6%, transparent); }
+.bars li:hover, .bars li:focus-visible { background-color: var(--slab-lit); }
 .bars li:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
 .barLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
 .barLabel small { color: var(--ink-2); }
-.track { height: 10px; }
-.fill { display: block; height: 100%; background: var(--accent); border-radius: var(--radius); transform-origin: left; animation: grow 0.6s var(--ease) both; }
+.track { height: 10px; background: var(--channel); box-shadow: var(--channel-edge); }
+.fill { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow 0.6s var(--ease) both; }
 @keyframes grow { from { transform: scaleX(0); } }
 .barValue { text-align: right; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
 .bars li::after {
   content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + 4px); z-index: 5; width: max-content; max-width: min(340px, 80vw);
   padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: 0.82rem; line-height: 1.35;
-  box-shadow: 0 8px 20px -10px var(--shadow); pointer-events: none; opacity: 0; translate: 0 4px; transition: opacity 0.15s, translate 0.15s;
+  box-shadow: var(--slab-edge); pointer-events: none; opacity: 0; translate: 0 4px; transition: opacity 0.15s, translate 0.15s;
 }
 .bars li:hover::after, .bars li:focus-visible::after { opacity: 1; translate: 0 0; }
 @media (max-width: 760px) { .bars li { grid-template-columns: minmax(5em, 9em) minmax(0, 1fr) 3.2em; gap: 8px; } }

@@ -15,14 +15,14 @@
 }
 .word[data-in] { background: color-mix(in srgb, var(--k) 16%, transparent); }
 .word[aria-current] { background: color-mix(in srgb, var(--k) 32%, transparent); }
-.checked { margin: 0; padding: 8px 10px; border-left: 3px solid var(--ochre); background: var(--bg); font-size: 0.86rem; color: var(--ink-2); }
-.checked[data-manual] { border-left-color: var(--ok); }
+.checked { margin: 0; padding: 8px 10px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); font-size: 0.86rem; color: var(--ink-2); }
+.checked[data-manual] { box-shadow: var(--slab-edge), var(--inlay-left-ok); }
 
 /* the tree: each branch hangs from a line, as on a family tree turned on its side */
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
-.tree ul { margin-left: 13px; padding-left: 14px; border-left: 1.5px solid color-mix(in srgb, var(--rule) 100%, transparent); }
+.tree ul { margin-left: 13px; padding-left: 14px; box-shadow: var(--cut-left); }
 .tree li { position: relative; padding-top: 4px; animation: grow 0.35s var(--ease) both; }
-.tree ul > li::before { content: ""; position: absolute; left: -14px; top: 22px; width: 12px; border-top: 1.5px solid var(--rule); }
+.tree ul > li::before { content: ""; position: absolute; left: -14px; top: 22px; width: 12px; height: 2px; background: var(--cut-line); }
 @keyframes grow { from { opacity: 0; translate: -6px 0; } }
 .node {
   display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; align-items: baseline; width: 100%;

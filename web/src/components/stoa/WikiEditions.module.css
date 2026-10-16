@@ -1,5 +1,5 @@
-/* Editions & translations: one collapsible group per publisher. */
-.group { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); }
+/* Editions & translations (Stone and torch): one collapsible group per publisher, a sunk panel whose rows are divided by cut lines. */
+.group { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .group > summary { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 14px 18px; cursor: pointer; list-style: none; min-height: var(--tap); }
 .group > summary::-webkit-details-marker { display: none; }
 .group > summary::before { content: "▸"; color: var(--accent); margin-right: 10px; transition: rotate 0.2s var(--ease); display: inline-block; }
@@ -7,12 +7,13 @@
 .group > summary:hover .gname { color: var(--accent); }
 .gname { flex: 1; font-family: var(--f-display); font-size: 1.25rem; line-height: 1.25; }
 .gcount { font-variant-numeric: tabular-nums; color: var(--ink-2); }
-.list { list-style: none; margin: 0; padding: 0; border-top: 3px double var(--rule); }
+.list { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .row {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 2px 20px; padding: 10px 18px; text-decoration: none; color: inherit;
-  border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); transition: background-color 0.15s;
+  box-shadow: var(--cut-under); transition: background-color 0.15s;
 }
-.row:hover, .row:focus-visible { background: var(--bg-2); }
+.list li:last-child .row { box-shadow: none; }
+.row:hover, .row:focus-visible { background-color: var(--slab-lit); }
 .row:hover .title, .row:focus-visible .title { color: var(--accent); }
 .what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
 .title { font-weight: 600; }

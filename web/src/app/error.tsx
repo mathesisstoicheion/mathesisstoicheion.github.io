@@ -6,12 +6,14 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import ReportBugLink from "@/components/ReportBugLink";
+import NameCarving from "@/components/art/NameCarving";
 
 export default function PageError({ error, reset }: { error: Error & { digest?: string }; reset: () => void }) {
   useEffect(() => { console.error(error); }, [error]);
   return (
     <div className="wrap" style={{ paddingBlock: "clamp(48px, 8vw, 96px)", display: "grid", gap: 18, maxWidth: 720 }} role="alert">
       <p className="label">Something went wrong</p>
+      <NameCarving greek="σφάλμα" />
       <h1 className="page-title">This page stumbled <span lang="grc">σφάλμα</span></h1>
       <p className="muted" style={{ fontSize: "1.1rem" }}>
         Part of this page failed while it was working. Your notes, marks and saved words are safe: they are kept in this browser.

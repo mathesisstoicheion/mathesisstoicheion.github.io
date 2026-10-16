@@ -34,11 +34,11 @@ export default function PrivateCollection() {
     return (
       <div className={`wrap ${styles.pageStatus}`}>
         <h1 className="visually-hidden">Private collection</h1>
-        <p><Link href={`/account?next=${encodeURIComponent(href(tab))}`}>Sign in</Link> to open this page.</p>
+        <p className="notice"><Link href={`/account?next=${encodeURIComponent(href(tab))}`}>Sign in</Link> to open this page.</p>
       </div>
     );
   }
-  if (!isModerator(profile)) return <div className="wrap"><h1 className={styles.privateLine}>This page is private.</h1></div>;
+  if (!isModerator(profile)) return <div className="wrap"><div className="notice"><h1 className={styles.privateLine}>This page is private.</h1></div></div>;
   return (
     <div className={`wrap ${styles.page}`}>
       <nav className={styles.crumbs} aria-label="Breadcrumb"><Link href="/library">Library</Link> <span aria-hidden="true">/</span> Private collection</nav>

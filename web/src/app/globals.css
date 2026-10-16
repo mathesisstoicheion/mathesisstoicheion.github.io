@@ -198,10 +198,21 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
-/* fields: cut into the stone, a little deeper than the wall */
+/* fields: cut into the stone, a dark hollow with a lit lower lip (the library's search, everywhere) */
 :where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type]), textarea, select) {
-  background-color: var(--bg-deep); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius);
+  background-color: var(--hollow); color: var(--ink); border: 1px solid transparent; border-radius: var(--radius); box-shadow: var(--hollow-edge);
 }
+:where(input, textarea, select):focus-visible { outline: none; box-shadow: var(--hollow-focus), var(--hollow-edge); }
+:where(select) option { background-color: var(--stone-2); color: var(--ink); }
+
+/* a short message on a page of its own (sign in first; nothing chosen yet): a tablet sunk into the wall */
+.notice {
+  max-width: 640px; margin-block: var(--space-7); padding: var(--space-6); display: grid; gap: var(--space-3);
+  background: var(--field); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in); color: var(--ink-2);
+}
+/* stone surfaces, for markup that has no module of its own: a panel sunk into the wall, and a slab set on it */
+.field { background: var(--field); box-shadow: var(--field-edge); }
+.slab { background: var(--slab); box-shadow: var(--slab-edge); }
 :where(input, textarea)::placeholder { color: var(--ink-3); }
 
 /* certainty labels */
@@ -282,9 +293,14 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-.site-footer { margin-top: clamp(48px, 8vw, 96px); }
+/* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */
+.site-footer {
+  margin-top: clamp(48px, 8vw, 96px); background: var(--slab);
+  box-shadow: var(--plinth-edge);
+}
+.site-footer-carve { grid-column: 1 / -1; margin-bottom: var(--space-2); }
 
-.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: 32px 48px; font-size: 0.92rem; }
+.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: 0.92rem; }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-3); font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
 .site-footer-mark { width: 40px; height: 33px; flex: none; color: var(--accent); }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
@@ -300,6 +316,10 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .area-head { padding-block: clamp(40px, 6vw, 72px) 0; }
 .area-kicker { display: flex; align-items: center; gap: var(--space-3); }
 .area-carve { margin-top: 18px; }
+/* the source of a line carved in place of an area's name */
+.area-carve-cap { margin-top: var(--space-2); max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
+/* a page's own Greek name, cut above its title (components/art/NameCarving.tsx) */
+.page-carve { margin-top: var(--space-2); }
 .area-kicker .label { color: var(--accent-2); }
 .area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: var(--space-4); }
 .area-greek { display: block; font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
@@ -323,7 +343,7 @@ select { max-width: 100%; }
 .page-title > [lang="grc"] { color: var(--accent); }
 
 .soon { padding-block: clamp(32px, 5vw, var(--space-7)); }
-.soon-card { max-width: 720px; display: grid; gap: var(--space-4); justify-items: start; }
+.soon-card { max-width: 720px; display: grid; gap: var(--space-4); justify-items: start; padding: var(--space-6); background: var(--field); box-shadow: var(--field-edge); }
 .soon-card ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); }
 .soon-card li::marker { color: var(--accent); }
 

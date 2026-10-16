@@ -6,7 +6,7 @@
 
 .top { position: relative; padding-block: clamp(var(--space-5), 4vw, 40px) var(--space-4); display: grid; gap: 14px; }
 /* the cover (ReaderCover.tsx): the Greek title carved across the stone, the book's medallion beside the title */
-.cover { display: contents; }
+.coverBox { display: contents; }
 .coverCarve { margin: var(--space-2) 0 var(--space-1); max-width: 900px; }
 .coverMedal { position: absolute; right: max(var(--gutter), env(safe-area-inset-right, 0px)); top: clamp(var(--space-5), 4vw, 40px); width: 150px; height: 150px; }
 .coverMedal canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
@@ -21,8 +21,8 @@
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-3) 20px; align-items: end; }
 .pick { display: grid; gap: var(--space-1); }
 .pick select, .pager select {
-  font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; max-width: min(360px, 90vw);
+  font: inherit; font-size: 0.92rem; color: var(--ink);
+  border-radius: var(--radius); padding: 7px 10px; max-width: min(360px, 90vw);
 }
 .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
 .seg button { background: transparent; border: 0; padding: var(--space-2) var(--space-3); font-size: 0.9rem; }
@@ -41,7 +41,7 @@
   position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5; transition: top 0.35s var(--ease);
   display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; padding-block: 10px;
   background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--rule);
+  box-shadow: var(--cut-under);
 }
 .pager { display: flex; align-items: center; gap: 6px; }
 .pager button, .goto button, .helpBtn {
@@ -49,7 +49,7 @@
 }
 .pager button:disabled { opacity: 0.35; cursor: default; }
 .goto { display: flex; gap: 6px; }
-.goto input { width: 150px; font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; }
+.goto input { width: 150px; font: inherit; font-size: 0.92rem; color: var(--ink); border-radius: var(--radius); padding: 7px 10px; }
 .helpBtn { margin-left: auto; font-size: 0.85rem; }
 .findBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .findBtn[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
@@ -75,7 +75,7 @@
 @keyframes unfold { from { opacity: 0; transform: translateY(-6px); } }
 .help { padding-block: 10px; font-size: 0.92rem; color: var(--ink-2); }
 .cover { font-size: 0.88rem; color: var(--ink-2); padding-block: var(--space-3) 0; max-width: 90ch; }
-.cover p { margin: 0 0 6px; padding-left: var(--space-3); border-left: 3px solid var(--accent); }
+.cover p { margin: 0 0 6px; padding: var(--space-2) var(--space-3); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); }
 .cover b { color: var(--ink); }
 /* a passage the translation leaves out: said in words, quietly, in the English column */
 .untr { display: block; font-size: 0.82rem; font-style: italic; color: var(--ink-2); }
@@ -85,15 +85,14 @@
 .cols, .row { display: grid; grid-template-columns: 64px minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(18px, 2.6vw, 40px); }
 .cols { padding-block: 18px var(--space-2); }
 .text {
-  background: var(--surface);
-  border-top: 3px double var(--rule); border-bottom: 3px double var(--rule);
+  background: var(--field); box-shadow: var(--field-edge);
   padding-block: var(--space-2);
 }
 .row {
-  padding-block: 14px; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent);
+  padding-block: 14px; box-shadow: var(--cut-under);
   content-visibility: auto; contain-intrinsic-size: auto 160px; scroll-margin-top: calc(var(--hdr-vis) + var(--bar-h, 64px) + var(--space-3));
 }
-.row:last-child { border-bottom: 0; }
+.row:last-child { box-shadow: none; }
 .flash { animation: flash 2.4s ease-out; }
 @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 
@@ -106,10 +105,10 @@
 .ref button:hover { text-decoration: underline; }
 
 .grc { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); }
-.tr { font-size: 1.02rem; line-height: 1.7; color: var(--ink-2); border-left: 1px solid var(--rule); padding-left: clamp(var(--space-4), 2vw, 28px); }
+.tr { font-size: 1.02rem; line-height: 1.7; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: clamp(var(--space-4), 2vw, 28px); }
 /* comparing editions: the second column is Greek too, set like the first */
 .tr[data-greek] { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
-.compare { display: grid; gap: 10px; padding-block: var(--space-3); border-bottom: 1px solid var(--rule); }
+.compare { display: grid; gap: 10px; padding-block: var(--space-3); box-shadow: var(--cut-under); }
 .compareKey { margin: 0; font-size: 0.95rem; line-height: 1.55; }
 .keyA { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; text-decoration: underline wavy 1.5px var(--accent); text-underline-offset: 3px; padding: 0 3px; }
 .keyB { background: color-mix(in srgb, var(--blue) 24%, transparent); color: inherit; text-decoration: underline 2px var(--blue); text-underline-offset: 3px; padding: 0 3px; }
@@ -125,7 +124,7 @@
 .cols-greek .tr, .cols-greek .cols > :nth-child(3) { display: none; }
 .cols-trans .cols, .cols-trans .row { grid-template-columns: 64px minmax(0, 46rem); }
 .cols-trans .grc, .cols-trans .cols > :nth-child(2) { display: none; }
-.cols-trans .tr { border-left: 0; padding-left: 0; font-size: 1.1rem; color: var(--ink); }
+.cols-trans .tr { box-shadow: none; padding-left: 0; font-size: 1.1rem; color: var(--ink); }
 
 .p { margin: 0 0 0.6em; }
 .p:last-child { margin-bottom: 0; }
@@ -157,7 +156,7 @@
 .panel {
   position: fixed; z-index: 40; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0; transition: top 0.35s var(--ease);
   width: min(400px, 100vw); overflow-y: auto; padding: 20px 22px 32px;
-  background: var(--surface); border-left: 1px solid var(--rule); box-shadow: -24px 0 48px -32px var(--shadow);
+  background: var(--surface); box-shadow: var(--slab-edge), -24px 0 48px -32px var(--shadow);
   display: grid; align-content: start; gap: 18px; outline: none;
   animation: slide-in 0.35s var(--ease);
 }
@@ -182,11 +181,11 @@
 
 @media (max-width: 900px) {
   .cols, .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .tr { grid-column: 2; border-left: 0; padding-left: 0; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule); }
+  .tr { grid-column: 2; padding-left: 0; margin-top: 10px; padding-top: 12px; box-shadow: var(--cut-over); }
   .cols > :nth-child(3) { display: none; }
   .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .cols-trans .tr { border-top: 0; margin-top: 0; padding-top: 0; }
-  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-left: 0; border-top: 1px solid var(--rule); border-radius: var(--radius); }
+  .cols-trans .tr { box-shadow: none; margin-top: 0; padding-top: 0; }
+  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-radius: var(--radius); }
   .helpBtn { display: none; }
 }
 
@@ -197,9 +196,9 @@
 /* the lesson that explains this form (lib/lookup/lesson-link.ts) */
 .lessonLink {
   display: flex; gap: 10px; align-items: center; margin-top: var(--space-1); padding: var(--space-2) var(--space-3); text-decoration: none;
-  border: 1px dashed var(--accent); border-radius: var(--radius); transition: background-color 0.2s, transform 0.2s var(--ease);
+  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color 0.2s;
 }
-.lessonLink:hover { background: var(--bg-2); transform: translateY(-1px); }
+.lessonLink:hover { background-color: var(--slab-lit); }
 .lessonLink svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linejoin: round; }
 .lessonLink b { display: block; font-size: 0.95rem; }
 .lessonLink b + span { font-size: 0.88rem; color: var(--ink-2); }
@@ -240,10 +239,10 @@
 .mk-favourite { color: var(--ochre) !important; }
 
 .notes { grid-column: 2 / -1; display: grid; gap: 10px; margin-top: var(--space-3); }
-.noteBox { padding: var(--space-3) 14px; background: var(--bg); border-left: 3px solid var(--accent); border-radius: var(--radius); display: grid; gap: var(--space-2); }
+.noteBox { padding: var(--space-3) 14px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: var(--radius); display: grid; gap: var(--space-2); }
 .noteHead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); align-items: center; }
 .noteActs { display: inline-flex; gap: 6px; }
-.noteBox textarea { width: 100%; font: inherit; font-size: 1rem; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px; resize: vertical; }
+.noteBox textarea { width: 100%; font: inherit; font-size: 1rem; color: var(--ink); border-radius: var(--radius); padding: 10px; resize: vertical; }
 .noteText { white-space: pre-wrap; }
 .panelLinks { display: flex; flex-wrap: wrap; gap: 6px; }
 .panelLinks a { text-decoration: none; }
@@ -253,14 +252,14 @@
 .marksMenu > button { height: 36px; padding: 0 var(--space-3); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.9rem; }
 .marksMenu ul {
   position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; width: min(380px, 90vw); max-height: 60vh; overflow-y: auto;
-  list-style: none; margin: 0; padding: 6px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: 0 20px 40px -20px var(--shadow);
+  list-style: none; margin: 0; padding: 6px; background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow);
 }
 .marksMenu li > button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--space-2) 10px; background: transparent; border: 0; border-radius: var(--radius); }
 .marksMenu li > button:hover { background: var(--bg-2); }
 .marksMenu li.muted { padding: 10px; font-size: 0.9rem; }
 
 /* ------------------------------------------------------------ share */
-.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); box-shadow: 0 40px 80px -30px var(--shadow); }
+.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: var(--radius); background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge), 0 40px 80px -30px var(--shadow); }
 .share::backdrop { background: rgba(10, 6, 3, 0.45); }
 .shareIn { display: grid; gap: var(--space-4); padding: 22px var(--space-5); }
 .shareIn h2 { font-size: var(--step-1); }
@@ -270,7 +269,7 @@
 .pickWords button:hover { border-color: var(--rule); }
 .picked { background: color-mix(in srgb, var(--accent) 22%, transparent) !important; color: var(--accent); }
 .shareOpts { display: flex; flex-wrap: wrap; gap: var(--space-3) 20px; align-items: center; }
-.previewBox { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); display: grid; place-items: center; min-height: 120px; }
+.previewBox { max-height: 55vh; overflow: auto; box-shadow: var(--frame); border-radius: var(--radius); background: var(--bg-deep); display: grid; place-items: center; min-height: 120px; }
 .previewBox img { width: 100%; height: auto; display: block; }
 
 /* ------------------------------------------------------------ two books side by side */
@@ -278,32 +277,38 @@
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 .pane {
   height: calc(100dvh - var(--hdr-h) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain;
-  border-right: 1px solid var(--rule); padding-bottom: 60px;
+  padding-bottom: 60px;
 }
-.pane:last-child { border-right: 0; }
+.pane + .pane { box-shadow: var(--cut-left); }
 .pane .bar { top: 0; }
 .pane .title { font-size: clamp(1.6rem, 2.6vw, 2.4rem); }
 .pane .wrap { padding-inline: clamp(var(--space-3), 2vw, var(--space-5)); }
-.activePane { box-shadow: inset 0 3px 0 var(--accent); }
+.activePane { --pane-cap: inset 0 3px 0 var(--accent); box-shadow: var(--pane-cap); }
+.pane + .activePane { box-shadow: var(--cut-left), var(--pane-cap); }
 .paneBar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-2) clamp(var(--space-3), 2vw, var(--space-5)) 0; }
 .linkHere { background: var(--accent) !important; color: var(--accent-ink) !important; }
 
-.pickerInput { font: inherit; font-size: 1rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px var(--space-3); }
-.pickerList { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow-y: auto; border-top: 3px double var(--rule); }
-.pickerList button { width: 100%; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; text-align: left; padding: 9px 6px; background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
-.pickerList button:hover { background: var(--bg-2); }
+.pickerInput { font: inherit; font-size: 1rem; color: var(--ink); border-radius: var(--radius); padding: 10px var(--space-3); }
+.pickerList { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow-y: auto; box-shadow: var(--cut-over); }
+.pickerList button { width: 100%; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; text-align: left; padding: 9px 6px; background: transparent; border: 0; box-shadow: var(--cut-under); }
+.pickerList li:last-child button { box-shadow: none; }
+.pickerList button:hover { background-color: var(--slab-lit); }
 .enBadge { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--blue); border: 1px solid var(--blue); border-radius: var(--radius); padding: 0 7px; }
 
 /* each pane adapts to its own width */
 @container (max-width: 760px) {
   .cols, .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .tr { grid-column: 2; border-left: 0; padding-left: 0; margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--rule); }
+  .tr { grid-column: 2; padding-left: 0; margin-top: 10px; padding-top: 12px; box-shadow: var(--cut-over); }
   .cols > :nth-child(3) { display: none; }
   .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .cols-trans .tr { border-top: 0; margin-top: 0; padding-top: 0; }
+  .cols-trans .tr { box-shadow: none; margin-top: 0; padding-top: 0; }
   .notes { grid-column: 1 / -1; }
 }
-@media (max-width: 900px) { .split { grid-template-columns: minmax(0, 1fr); } .pane { height: auto; overflow: visible; border-right: 0; border-bottom: 3px double var(--rule); } }
+@media (max-width: 900px) {
+  .split { grid-template-columns: minmax(0, 1fr); }
+  .pane, .pane + .pane { height: auto; overflow: visible; box-shadow: var(--cut-under); }
+  .activePane, .pane + .activePane { box-shadow: var(--cut-under), var(--pane-cap); }
+}
 /* phones and the floating window: the passage number sits above its passage, so the text gets the whole width */
 @container (max-width: 520px) {
   .cols, .row, .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: minmax(0, 1fr); }
@@ -326,7 +331,7 @@
 /* texts cited by verse (the New Testament, the Septuagint): each unit is a sentence or two, so they read
    as running text, as in a printed Bible: no rule between verses, little space, the verse number in the margin */
 /* the space sits inside the cells, so the rule between Greek and English runs on unbroken */
-.verses .row { padding-block: 0; border-bottom-color: transparent; }
+.verses .row { padding-block: 0; box-shadow: none; }
 .verses .ref, .verses .grc, .verses .tr { padding-block: var(--space-1); }
 .verses .row:first-child > * { padding-top: 14px; }
 .verses .row:last-child > * { padding-bottom: 14px; }
@@ -340,7 +345,7 @@
   .verses .marks button { width: 26px; height: 26px; padding: var(--space-1); }
   .verses .grc, .verses .tr, .verses .notes { grid-column: 2; }
   /* the English sits right under its verse, set smaller, so each pair reads as one */
-  .verses .tr { margin-top: var(--space-1); padding-top: 0; border-top: 0; font-size: 0.94rem; line-height: 1.6; }
+  .verses .tr { margin-top: var(--space-1); padding-top: 0; box-shadow: none; font-size: 0.94rem; line-height: 1.6; }
   .verses.cols-trans .tr { font-size: 1.05rem; margin-top: 0; }
 }
 
@@ -369,8 +374,9 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 .vocabTitle { font-size: 1.3rem; }
 .vocab { list-style: none; margin: 0; padding: 0; display: grid; }
-.vocab button { width: 100%; display: grid; grid-template-columns: auto auto 1fr; gap: var(--space-1) 10px; align-items: baseline; text-align: left; padding: 7px var(--space-1); background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
-.vocab button:hover { background: var(--bg-2); }
+.vocab button { width: 100%; display: grid; grid-template-columns: auto auto 1fr; gap: var(--space-1) 10px; align-items: baseline; text-align: left; padding: 7px var(--space-1); background: transparent; border: 0; box-shadow: var(--cut-under); }
+.vocab li:last-child button { box-shadow: none; }
+.vocab button:hover { background-color: var(--slab-lit); }
 .vocabLemma { font-family: var(--f-greek); font-size: 1.15rem; }
 .vocabN { font-family: var(--f-label); font-size: 0.8rem; color: var(--accent); font-variant-numeric: tabular-nums; }
 .vocabGloss { grid-column: 1 / -1; font-size: 0.9rem; color: var(--ink-2); }
@@ -442,7 +448,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .kLic { color: var(--ochre); } .kQ { color: var(--ochre); font-family: var(--f-label) !important; } .kBeat { color: var(--accent); }
 .metreLinks { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .metreLinks a { text-decoration: none; }
-.metreHelp { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--surface); border-left: 3px solid var(--accent); border-radius: var(--radius); line-height: 1.6; }
+.metreHelp { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: var(--radius); line-height: 1.6; }
 .metreHelp a { text-underline-offset: 3px; }
 
 /* ------------------------------------------------------------ in the floating window */
@@ -478,14 +484,15 @@ p.translit { margin: -0.3em 0 0.8em; }
 .gotoPhone > div { display: flex; gap: var(--space-2); }
 .gotoPhone input {
   flex: 1; min-width: 0; min-height: var(--tap); font: inherit; font-size: 1.05rem; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius); padding: var(--space-2) var(--space-3);
 }
 .gotoPhone .btn { padding: 0 20px; min-height: var(--tap); }
 .marksPhone { list-style: none; margin: 0; padding: 0; display: grid; }
 .marksPhone button {
   width: 100%; min-height: var(--tap); display: grid; gap: 2px; padding: var(--space-2) var(--space-1); text-align: left; background: transparent; color: var(--ink);
-  border: 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 50%, transparent);
+  border: 0; box-shadow: var(--cut-under);
 }
+.marksPhone li:last-child button { box-shadow: none; }
 @media (max-width: 760px) {
   .barAway { display: none; }
   /* two fingers on the text resize the Greek (Reader.tsx) instead of zooming the page */
@@ -502,7 +509,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     --sheet-h: min(46dvh, 400px);
     display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
     top: auto; max-height: none; height: var(--sheet-h);
-    border-radius: var(--radius); box-shadow: 0 -24px 48px -24px var(--shadow);
+    border-radius: var(--radius); box-shadow: var(--slab-edge), 0 -24px 48px -24px var(--shadow);
     transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
     animation: sheet-up 0.35s var(--ease);
   }
@@ -511,9 +518,9 @@ p.translit { margin: -0.3em 0 0.8em; }
   .panel.wordSheet.sheetDragging { transition: none; }
   .wordSheet .panelHead {
     position: relative; flex: none; align-items: center; gap: var(--space-1); padding: 22px var(--space-3) 10px var(--space-4);
-    border-bottom: 1px solid color-mix(in srgb, var(--rule) 50%, transparent); touch-action: none; cursor: grab;
+    box-shadow: var(--cut-under); touch-action: none; cursor: grab;
   }
-  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: var(--radius); background: var(--rule); }
+  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); }
   .wordSheet .pw { flex: 1; min-width: 0; font-size: 1.75rem; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .wordSheet .stepBtn, .wordSheet .moreBtn {
     display: grid; place-items: center; flex: none; width: var(--tap); height: var(--tap); padding: 0;
@@ -601,13 +608,13 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 /* Talk about this passage (TalkPanel.tsx): the Town Hall's threads on this page */
 .talk { list-style: none; margin: 10px 0 0; padding: 0; display: grid; }
-.talk li { display: grid; gap: 2px; padding: 10px 0; border-top: 1px solid var(--rule); }
-.talk li:first-child { border-top: 0; }
+.talk li { display: grid; gap: 2px; padding: 10px 0; box-shadow: var(--cut-over); }
+.talk li:first-child { box-shadow: none; }
 .talk a { text-decoration: none; }
 .talk a:hover b { color: var(--accent); }
 .talk .muted { font-size: 0.88rem; }
 .talkRef { border: 0; background: none; padding: 0; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.talkAsk { display: grid; gap: 6px; justify-items: start; margin-top: 18px; padding: 14px var(--space-4); border: 1px dashed var(--rule); border-radius: var(--radius); }
+.talkAsk { display: grid; gap: 6px; justify-items: start; margin-top: 18px; padding: 14px var(--space-4); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .talkAsk p { margin: 0; color: var(--ink-2); font-size: 0.92rem; }
 
 /* ------------------------------------------------ a book of the private collection (lib/mine.ts) */

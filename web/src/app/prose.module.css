@@ -7,7 +7,7 @@
 .gr { display: block; font-size: 0.5em; color: var(--accent); margin-top: 8px; }
 .lead { font-size: 1.2rem; color: var(--ink-2); max-width: 60ch; }
 .names { margin: 0; display: grid; gap: 0; }
-.names > div { display: grid; grid-template-columns: minmax(180px, 0.8fr) 2fr; gap: 6px 28px; padding: 16px 0; border-top: 1px solid var(--rule); }
+.names > div { display: grid; grid-template-columns: minmax(180px, 0.8fr) 2fr; gap: 6px 28px; padding: 16px 0; box-shadow: var(--cut-over); }
 .names dt { font-family: var(--f-display); font-size: 1.3rem; line-height: 1.2; }
 .names dt span { color: var(--accent); font-size: 0.85em; }
 .names dt small { display: block; font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--ink-2); margin-top: 4px; }

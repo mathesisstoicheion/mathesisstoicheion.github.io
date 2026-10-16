@@ -1,14 +1,14 @@
-/* The Oracle: search in the Black-Figure style */
+/* The Oracle (Stone and torch): boxes are sunk into the wall or set on it as slabs, rows are divided by cut lines. Buttons, tabs, text keep their own look. */
 .page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: var(--after-head) 64px; }
 .gr { font-family: var(--f-greek); }
 .small { font-size: 0.86rem; color: var(--ink-2); }
 .warn { color: var(--accent); font-weight: 600; }
-.note { font-size: 0.92rem; padding: 8px 12px; border-left: 3px solid var(--ochre); background: var(--surface); max-width: 80ch; }
+.note { font-size: 0.92rem; padding: 8px 12px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); max-width: 80ch; }
 .status { color: var(--ink-2); display: flex; align-items: center; gap: 12px; padding-block: 24px; }
 
 /* ------------------------------------------------------------ the box */
 .box { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--rule); }
+.tabs { display: flex; flex-wrap: wrap; gap: 0; box-shadow: var(--cut-under); }
 .tabs button {
   background: transparent; border: 0; padding: 10px 16px; font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.95rem;
   color: var(--ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; transition: color 0.2s, border-color 0.25s var(--ease);
@@ -19,10 +19,9 @@
 .form { display: flex; gap: 10px; align-items: stretch; }
 .input {
   flex: 1; min-width: 0; font-family: var(--f-greek); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink);
-  background: var(--surface); border: 1px solid var(--rule-2); border-radius: var(--radius); padding: 12px 16px;
-  box-shadow: inset 0 -3px 0 color-mix(in srgb, var(--accent) 0%, transparent); transition: box-shadow 0.3s var(--ease);
+  border-radius: var(--radius); padding: 12px 16px;
+  transition: box-shadow 0.3s var(--ease);
 }
-.input:focus { outline: none; box-shadow: inset 0 -3px 0 var(--accent); }
 .kbdBtn {
   font-family: var(--f-greek); font-size: 1.05rem; padding: 0 14px; background: transparent; color: var(--ink);
   border: 1.5px solid var(--rule); border-radius: var(--radius);
@@ -31,12 +30,12 @@
 .hint { font-size: 0.95rem; color: var(--ink-2); max-width: 80ch; }
 .readAs { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: 0.95rem; }
 .readAs select, .field select {
-  font: inherit; font-size: 0.9rem; color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: var(--radius); padding: 5px 8px; max-width: 100%;
+  font: inherit; font-size: 0.9rem; color: var(--ink);
+  border-radius: var(--radius); padding: 5px 8px; max-width: 100%;
 }
 .readAs b { font-size: 1.2em; color: var(--accent); font-weight: 400; }
 
-.kbd { display: grid; gap: 6px; justify-items: center; padding: 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); animation: rise 0.3s var(--ease); }
+.kbd { display: grid; gap: 6px; justify-items: center; padding: 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise 0.3s var(--ease); }
 .kbdRow { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .kbd button {
   min-width: 42px; height: 42px; font-family: var(--f-greek); font-size: 1.25rem; color: var(--ink);
@@ -46,7 +45,7 @@
 .kbd button:active { transform: translateY(1px) scale(0.97); }
 .kbd .kbdSpace { min-width: 240px; font-family: var(--f-label); font-size: 0.9rem; }
 @keyframes rise { from { opacity: 0; transform: translateY(-6px); } }
-.kbdDocked { justify-items: stretch; gap: 7px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); border: 0; border-top: 1px solid var(--rule); border-radius: 0; background: var(--bg-2); animation: none; }
+.kbdDocked { justify-items: stretch; gap: 7px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); border: 0; box-shadow: var(--cut-over); border-radius: 0; background: var(--bg-2); animation: none; }   /* fixed to the foot of the sheet: it stays opaque */
 /* phones: a row of letters spans the width in equal keys, as on the phone's own keyboard, instead of wrapping */
 @media (max-width: 760px) {
   .kbdRow { flex-wrap: nowrap; width: 100%; gap: 5px; }
@@ -55,7 +54,7 @@
 }
 
 /* ------------------------------------------------------------ references */
-.refs { display: grid; gap: 8px; padding: 16px 20px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); animation: rise 0.35s var(--ease); }
+.refs { display: grid; gap: 8px; padding: 16px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); animation: rise 0.35s var(--ease); }
 .refs .label { color: var(--accent); }
 .refs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .refs a { color: var(--inv-fg); text-decoration: none; font-size: 1.15rem; }
@@ -99,8 +98,9 @@
 .seg button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .lemmas { display: grid; gap: 8px; }
 
-.groups { list-style: none; margin: 0; padding: 0; border-top: 3px double var(--rule); }
-.group { border-bottom: 1px solid var(--rule); animation: rise 0.35s var(--ease) backwards; }
+.groups { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
+.group { box-shadow: var(--cut-under); animation: rise 0.35s var(--ease) backwards; }
+.group:last-child { box-shadow: none; }
 .group:nth-child(2) { animation-delay: 40ms; } .group:nth-child(3) { animation-delay: 80ms; } .group:nth-child(4) { animation-delay: 120ms; }
 .groupHead {
   display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 14px; align-items: baseline; width: 100%;
@@ -117,7 +117,7 @@
 }
 .hits { padding: 0 4px 16px; display: grid; gap: 10px; justify-items: start; }
 .hits ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; width: 100%; }
-.hit { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; padding: 8px 0; border-top: 1px dotted color-mix(in srgb, var(--rule) 60%, transparent); }
+.hit { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; padding: 8px 0; box-shadow: var(--cut-over); }
 .hit p { margin: 0; line-height: 1.6; }
 .hit p[lang="grc"] { font-size: var(--greek-size); }
 .hit mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; padding: 0 2px; border-bottom: 2px solid var(--accent); }
@@ -128,7 +128,7 @@
 .hitLoading { color: var(--ink-2); padding: 8px 0; }
 
 .libList { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.libList li { padding: 12px 14px; background: var(--surface); border-left: 3px solid var(--accent); display: grid; gap: 4px; }
+.libList li { padding: 12px 14px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); display: grid; gap: 4px; }
 .libList a { text-decoration: none; }
 
 .pulse { width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--accent); animation: pulse 1s ease-in-out infinite alternate; }
@@ -145,4 +145,7 @@
   .pulse { animation: none; }
 }
 .nearBtns { display: flex; flex-wrap: wrap; gap: 8px; }
-.field input { width: 100%; min-width: 0; font: inherit; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: 7px 10px; }
+.field input { width: 100%; min-width: 0; font: inherit; color: var(--ink); border-radius: var(--radius); padding: 7px 10px; }
+
+/* the references panel carries a moulding, a fine line cut just inside the edge, as round a carved panel */
+.refs { outline: var(--moulding); outline-offset: var(--moulding-in); }

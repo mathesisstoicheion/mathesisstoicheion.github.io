@@ -5,10 +5,9 @@
 .row { position: relative; display: flex; align-items: center; gap: 6px; }
 .row input {
   flex: 1; min-width: 0; min-height: 44px; padding: 0 12px 0 38px; font: inherit; font-size: 1.05rem; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius);
-  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  border-radius: var(--radius);
+  transition: box-shadow 0.2s var(--ease);
 }
-.row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .glass { position: absolute; left: 12px; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .step {
   display: grid; place-items: center; width: 44px; height: 44px; flex: none; border: 1px solid var(--rule); border-radius: var(--radius);
@@ -30,7 +29,7 @@
 .help p { margin: 0; }
 .help [lang="grc"] { font-family: var(--f-greek); color: var(--ink); }
 
-.list { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--rule); }
+.list { list-style: none; margin: 0; padding: 0; display: grid; box-shadow: var(--cut-over); }
 .list li { animation: rise 0.35s var(--ease) both; }
 .list li:nth-child(2) { animation-delay: 30ms; } .list li:nth-child(3) { animation-delay: 60ms; } .list li:nth-child(4) { animation-delay: 90ms; }
 .list li:nth-child(5) { animation-delay: 120ms; } .list li:nth-child(n + 6) { animation-delay: 150ms; }
@@ -38,11 +37,13 @@
 .list button {
   width: 100%; display: grid; grid-template-columns: 4.6em minmax(0, 1fr); gap: 10px; align-items: baseline; padding: 10px 8px;
   text-align: left; background: transparent; color: var(--ink); cursor: pointer;
-  border: 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+  border: 0; box-shadow: var(--cut-under);
   transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
-.list button:hover { background: color-mix(in srgb, var(--ink) 6%, transparent); }
-.list button[aria-current] { background: color-mix(in srgb, var(--accent) 13%, transparent); box-shadow: inset 3px 0 0 var(--accent); }
+.list li:last-child button { box-shadow: none; }
+.list button:hover { background-color: var(--slab-lit); }
+.list button[aria-current] { background: color-mix(in srgb, var(--accent) 13%, transparent); box-shadow: var(--inlay-left), var(--cut-under); }
+.list li:last-child button[aria-current] { box-shadow: var(--inlay-left); }
 .ref { font: 600 0.82rem var(--f-label); color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .snip { font-size: 0.95rem; line-height: 1.45; }
 .snip[lang="grc"] { font-family: var(--f-greek); font-size: 1.04rem; }

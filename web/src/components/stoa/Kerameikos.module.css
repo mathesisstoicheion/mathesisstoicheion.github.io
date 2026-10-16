@@ -1,4 +1,6 @@
-/* ================================================================ the Kerameikos (archaeology) */
+/* ================================================================ the Kerameikos (archaeology) (Stone and torch) */
+/* The drawing is a sunk field, the finds and the site labels are slabs, the picture thumbnails sit in cut frames.
+   The trench's soil bands and the ranging pole are artwork and keep their own colours. */
 /* Every animation here starts from a hidden "from" and rests on the finished state, so with
    reduced motion (animation: none) the page is simply complete. */
 
@@ -9,22 +11,22 @@
   margin: 0; display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(220px, 1fr); gap: 18px 36px; align-items: center;
 }
 .drawing svg {
-  width: 100%; height: auto; display: block; background: var(--surface); border: 1px solid var(--rule);
-  box-shadow: 0 22px 40px -32px var(--shadow); border-radius: var(--radius);
+  width: 100%; height: auto; display: block; background: var(--field);
+  box-shadow: var(--field-edge); border-radius: var(--radius);
 }
 .drawing figcaption { grid-column: 1; font-size: 0.93rem; color: var(--ink-2); max-width: 72ch; }
 .drawing figcaption b { color: var(--ink); font-weight: 600; }
 .legend { grid-column: 2; grid-row: 1 / span 2; list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .legend a { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 8px 10px; text-decoration: none; border-radius: var(--radius); transition: background-color 0.2s; }
-.legend a:hover { background: var(--bg-2); }
+.legend a:hover { background-color: var(--slab-lit); }
 .legend b { font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; line-height: 1.15; }
 .legend small { grid-column: 2; color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; font-size: 0.8rem; }
 .legend li[aria-hidden] { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 4px 10px; }
 .num {
   grid-row: span 2; width: 30px; height: 30px; border-radius: var(--radius-round); display: grid; place-items: center;
-  border: 1px solid var(--rule-2); font-family: var(--f-display); font-size: 1rem; background: var(--surface);
+  font-family: var(--f-display); font-size: 1rem; background: var(--slab); box-shadow: var(--slab-edge);
 }
-.num.natural { border-style: dashed; color: var(--ink-2); }
+.num.natural { background: var(--field); box-shadow: var(--field-edge); color: var(--ink-2); }
 
 /* hatchings */
 .drawing pattern circle, .drawing pattern ellipse { fill: var(--ink-2); }
@@ -86,10 +88,10 @@
 .blurb { max-width: 68ch; color: var(--ink-2); margin-top: 8px; }
 .ctxLabel {
   width: 52px; height: 52px; border-radius: var(--radius-round); display: grid; place-items: center; margin-top: 6px;
-  border: 1px solid var(--rule-2); background: var(--surface); font-family: var(--f-display); font-size: 1.6rem;
-  box-shadow: 0 8px 18px -12px var(--shadow);
+  background: var(--slab); font-family: var(--f-display); font-size: 1.6rem;
+  box-shadow: var(--slab-edge);
 }
-.ctxNatural { border-style: dashed; color: var(--ink-2); }
+.ctxNatural { background: var(--field); box-shadow: var(--field-edge); color: var(--ink-2); }
 .soon { font-style: italic; color: var(--ink-2); padding-left: 72px; }
 
 /* entries: finds laid out on a tray */
@@ -97,12 +99,12 @@
 .finds li { animation-delay: calc(var(--j, 0) * 70ms); }
 .card {
   display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: center; height: 100%;
-  padding: 12px; text-decoration: none; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
-  box-shadow: 0 16px 28px -24px var(--shadow); transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.2s;
+  padding: 12px; text-decoration: none; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
+  transition: background-color var(--dur) ease;
 }
-.card:hover { transform: translateY(-3px) rotate(-0.4deg); box-shadow: 0 22px 36px -24px var(--shadow); border-color: var(--ink-2); }
+.card:hover { background-color: var(--slab-lit); }
 .card:hover b { color: var(--accent); }
-.thumb { width: 104px; height: 104px; overflow: hidden; border-radius: var(--radius); background: var(--bg-2); display: grid; place-items: center; }
+.thumb { width: 104px; height: 104px; overflow: hidden; border-radius: var(--radius); background: var(--bg-deep); box-shadow: var(--frame); display: grid; place-items: center; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .thumb img.tallImg { object-fit: contain; padding: 4px; }
 .noImg { width: 60%; height: 60%; background: var(--ink-2); opacity: 0.35;
@@ -117,11 +119,11 @@
 .sites { list-style: none; margin: 0; padding: 0 0 0 72px; display: flex; flex-wrap: wrap; gap: 14px 12px; }
 .sites a {
   position: relative; display: grid; gap: 2px; padding: 10px 16px 10px 30px; text-decoration: none;
-  background: var(--white-slip); border: 1px solid var(--rule); border-radius: var(--radius);
-  box-shadow: 0 10px 20px -16px var(--shadow); transition: transform 0.25s var(--ease);
+  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
+  transition: background-color var(--dur) ease;
 }
 .sites a::before { content: ""; position: absolute; left: 11px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: var(--radius-round); border: 1.5px solid var(--ink-2); background: var(--soil, var(--bg-2)); }
-.sites a:hover { transform: rotate(-2deg) translateY(-2px); }
+.sites a:hover { background-color: var(--slab-lit); }
 .sites b { font-family: var(--f-greek); font-weight: 400; font-size: 1.15rem; }
 .sites span { font-size: 0.9rem; }
 .sites small { font-family: var(--f-label); letter-spacing: 0.04em; font-size: 0.76rem; color: var(--ink-2); }

@@ -13,8 +13,8 @@
 /* the page: clay in light mode, a dark panel at night; parchment-coloured from the capitals on */
 .page {
   --ms-ink: var(--ink);
-  padding: 16px 18px; border-radius: var(--radius); background: var(--bg-2);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rule) 60%, transparent);
+  padding: 16px 18px; border-radius: var(--radius); background-color: var(--field);
+  box-shadow: var(--field-edge);
   font-family: var(--f-greek); font-size: 1.12rem; line-height: 1.6; color: var(--ms-ink);
   transition: background-color 0.6s var(--ease), color 0.6s var(--ease);
   overflow: hidden;   /* while its height eases to the new step's, words stay inside it */
@@ -34,11 +34,11 @@
 
 
 /* the manuscript */
-.ms { display: grid; gap: 8px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.ms { display: grid; gap: 8px; padding-top: 14px; box-shadow: var(--cut-over); }
 .msName { font-size: 1.15rem; margin: 0; }
 .msMeta { margin: 0; font-family: var(--f-label); font-size: 0.85rem; color: var(--ink-2); }
 .msAbout { margin: 0; font-size: 0.92rem; line-height: 1.55; }
-.viewerWrap { position: relative; border-radius: var(--radius); overflow: hidden; background: #1B1410; box-shadow: 0 14px 30px -22px var(--shadow); }
+.viewerWrap { position: relative; border-radius: var(--radius); overflow: hidden; background: #1B1410; box-shadow: var(--frame); }
 .viewer { height: min(520px, 58vh); }
 /* phones: one finger scrolls the panel past the photograph (the viewer would take every touch); two move and zoom it */
 @media (pointer: coarse) { .viewer, .viewer * { touch-action: pan-y !important; } }

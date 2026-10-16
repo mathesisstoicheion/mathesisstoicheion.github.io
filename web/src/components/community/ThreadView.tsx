@@ -33,7 +33,7 @@ export default function ThreadView() {
   const votes = data?.votes ?? { threads: new Set<number>(), posts: new Set<number>() };
   const load = async () => got.reload();
 
-  if (!id) return <p className={`wrap ${styles.status}`}>No thread was named. <Link href="/town-hall">Back to the Town Hall</Link></p>;
+  if (!id) return <div className="wrap"><p className="notice">No thread was named. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
   if (got.error && !data) return <p className={`wrap ${styles.error}`}>{problem(got.error)}</p>;
   if (!data) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the thread…</div>;
   if (!data.t) return <p className={`wrap ${styles.status}`}>This thread does not exist, or it has been removed. <Link href="/town-hall">Back to the Town Hall</Link></p>;

@@ -37,11 +37,11 @@ export default function PrivateTranslations() {
     return (
       <div className={`wrap ${styles.status}`}>
         <h1 className="visually-hidden">Private translations</h1>
-        <p><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open this page.</p>
+        <p className="notice"><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open this page.</p>
       </div>
     );
   }
-  if (!isModerator(profile)) return <div className="wrap"><h1 className={styles.privateLine}>This page is private.</h1></div>;
+  if (!isModerator(profile)) return <div className="wrap"><div className="notice"><h1 className={styles.privateLine}>This page is private.</h1></div></div>;
   return id ? <TranslationReader key={id} id={id} /> : <Shelf />;
 }
 

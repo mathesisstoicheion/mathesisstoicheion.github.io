@@ -1,4 +1,5 @@
 /* ================================================================ Word Study */
+/* Stone and torch: tables and the side panel are sunk into the wall, rows are divided by cut lines, bars are gilded inlays. */
 .ws { display: grid; gap: 28px; padding-block: clamp(24px, 4vw, 44px) 24px; }
 .crumbs { font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.04em; color: var(--ink-2); }
 .crumbs a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
@@ -34,7 +35,7 @@
 .seg button { border: 0; background: transparent; padding: 6px 12px; font-size: var(--step--1); }
 .seg button[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 
-.core { padding: 14px 18px; background: var(--surface); border-left: 3px solid var(--accent); display: grid; gap: 6px; }
+.core { padding: 14px 18px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); display: grid; gap: 6px; }
 .coreDef { font-size: 1.25rem; line-height: 1.4; }
 
 /* ------------------------------------------------ paradigm tables */
@@ -44,10 +45,11 @@
 .grid figcaption { font-family: var(--f-display); font-size: 1.2rem; }
 .grid figcaption small, .grid td small { font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); margin-left: 5px; font-variant-numeric: tabular-nums; }
 .scrollX { overflow-x: auto; }
-.grid table { border-collapse: collapse; min-width: 260px; background: var(--surface); border-top: 3px double var(--rule); border-bottom: 3px double var(--rule); }
+.grid table { border-collapse: collapse; min-width: 260px; background: var(--field); box-shadow: var(--field-edge); }
 .grid th { font-family: var(--f-label); font-weight: 500; font-size: 0.82rem; color: var(--ink-2); text-align: left; padding: 6px 10px; white-space: nowrap; }
-.grid thead th { border-bottom: 1px solid var(--rule); }
-.grid td { font-family: var(--f-greek); font-size: 1.2rem; padding: 6px 10px; vertical-align: top; border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent); white-space: nowrap; }
+.grid thead th, .grid tbody th { box-shadow: var(--cut-under); }
+.grid td { font-family: var(--f-greek); font-size: 1.2rem; padding: 6px 10px; vertical-align: top; box-shadow: var(--cut-under); white-space: nowrap; }
+.grid tbody tr:last-child > * { box-shadow: none; }
 .grid tbody tr { animation: slot 0.5s var(--ease) both; animation-delay: calc(var(--i) * 45ms); }
 @keyframes slot { from { opacity: 0; transform: translateX(-6px); } }
 .grid td.none { color: var(--rule); font-family: var(--f-body); }
@@ -59,7 +61,7 @@
 .minor[open] { display: grid; gap: 12px; }
 
 .formList { list-style: none; margin: 0; padding: 0; columns: 2 340px; column-gap: 28px; }
-.formList li { break-inside: avoid; display: grid; grid-template-columns: minmax(90px, auto) 1fr auto; gap: 12px; align-items: baseline; padding: 5px 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent); font-size: 0.95rem; }
+.formList li { break-inside: avoid; display: grid; grid-template-columns: minmax(90px, auto) 1fr auto; gap: 12px; align-items: baseline; padding: 5px 0; box-shadow: var(--cut-under); font-size: 0.95rem; }
 .formGr { font-family: var(--f-greek); font-size: 1.2rem; }
 .num { font-family: var(--f-label); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 
@@ -68,34 +70,35 @@
 .chart { margin: 0; display: grid; gap: 10px; align-content: start; }
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .barRow { position: relative; display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 12px; align-items: center; padding: 5px 4px; border-radius: var(--radius); outline: none; }
-.barRow[data-hover] { background: color-mix(in srgb, var(--rule) 30%, transparent); }
+.barRow[data-hover] { background-color: var(--slab-lit); }
 .barRow:focus-visible { outline: 2px solid var(--accent); }
 .barLabel { font-size: 0.92rem; line-height: 1.2; }
 .barLabel small { display: block; font-size: 0.78rem; color: var(--ink-2); }
 .barTrack { position: relative; height: 16px; display: flex; align-items: center; margin-right: 3.6em; }   /* room for the longest bar's value */
 /* one baseline on the left (square), a 4px rounded data-end on the right */
-.bar { display: block; height: 16px; width: var(--w); min-width: 2px; background: var(--accent); border-radius: var(--radius);
+.bar { display: block; height: 16px; width: var(--w); min-width: 2px; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius);
   transform-origin: left; animation: grow 0.8s var(--ease) both; animation-delay: calc(0.1s + var(--i) * 60ms); }
 @keyframes grow { from { transform: scaleX(0); } }
 .barValue { position: absolute; left: calc(var(--w) + 8px); font-family: var(--f-label); font-size: 0.85rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tip { position: absolute; z-index: 5; left: 38%; bottom: calc(100% + 4px); max-width: min(360px, 80vw); padding: 7px 10px; font-size: 0.85rem; line-height: 1.35;
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); box-shadow: 0 10px 24px -12px var(--shadow); pointer-events: none; }
+  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); box-shadow: var(--slab-edge); pointer-events: none; }   /* a tooltip: it stays opaque */
 .asTable summary { cursor: pointer; font-size: 0.85rem; color: var(--ink-2); }
 .asTable table { margin-top: 8px; border-collapse: collapse; font-size: 0.88rem; }
-.asTable th, .asTable td { text-align: left; padding: 4px 10px 4px 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 40%, transparent); vertical-align: top; }
+.asTable th, .asTable td { text-align: left; padding: 4px 10px 6px 0; box-shadow: var(--cut-under); vertical-align: top; }
+.asTable tbody tr:last-child > * { box-shadow: none; }
 .asTable th { font-weight: 600; }
 
 /* ------------------------------------------------ examples */
-.examples { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; border-left: 2px solid var(--rule); }
+.examples { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; box-shadow: var(--cut-left); }
 .examples li { position: relative; display: grid; gap: 6px; padding: 4px 0 4px 22px; animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 80ms); }
-.examples li::before { content: ""; position: absolute; left: -6px; top: 10px; width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
+.examples li::before { content: ""; position: absolute; left: -4px; top: 10px; width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--inlay); box-shadow: var(--inlay-edge); }
 .exWhere { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 .exWhere a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .exGr { font-family: var(--f-greek); font-size: 1.18rem; line-height: 1.6; }
 .exGr mark { background: color-mix(in srgb, var(--accent) 24%, transparent); color: inherit; border-radius: var(--radius); padding: 0 2px; }
 
 /* ------------------------------------------------ side: yours, family */
-.mine { padding: 18px 20px; background: var(--surface); border-top: 3px solid var(--rule-2); }
+.mine { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); }
 .review { display: grid; gap: 8px; justify-items: start; }
 .status { font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.04em; }
 .status[data-tone="new"] { color: var(--ink-2); }

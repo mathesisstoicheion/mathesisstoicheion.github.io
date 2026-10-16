@@ -4,7 +4,7 @@
   bottom: calc(14px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px)));
   width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 10px;
   padding: 10px 10px 8px 12px; border-radius: var(--radius); overflow: hidden;
-  background: var(--inv-bg); color: var(--inv-fg); box-shadow: 0 18px 40px -18px var(--shadow), 0 0 0 1px color-mix(in srgb, var(--inv-fg) 10%, transparent);
+  background: var(--inv-bg); color: var(--inv-fg); box-shadow: var(--slab-edge), 0 18px 40px -18px var(--shadow);
   --accent: var(--accent-on-ink);
   animation: rise 0.4s var(--ease) both;
   transition: bottom 0.35s var(--ease);

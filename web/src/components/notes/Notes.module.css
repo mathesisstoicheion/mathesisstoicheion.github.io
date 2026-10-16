@@ -1,10 +1,9 @@
 /* The note editor and note text, shared by the reader and the Treasury. */
 .field { display: grid; gap: 6px; }
 .field textarea {
-  width: 100%; font: inherit; font-size: 1rem; line-height: 1.55; color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: var(--radius); padding: 10px 12px; resize: vertical;
+  width: 100%; font: inherit; font-size: 1rem; line-height: 1.55; color: var(--ink);
+  border-radius: var(--radius); padding: 10px 12px; resize: vertical;
 }
-.field textarea:focus-visible, .greek input:focus-visible, .tags input:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 
 .tools { display: flex; flex-wrap: wrap; gap: 4px; }
 .tools button {
@@ -16,11 +15,11 @@
 
 .greek {
   display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: end;
-  padding: 10px 12px; border: 1px dashed var(--rule); border-radius: var(--radius); background: var(--bg);
+  padding: 10px 12px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge);
   animation: open 0.28s var(--ease) both;
 }
 .greek label { display: grid; gap: 4px; grid-column: 1 / -1; }
-.greek input { font: inherit; font-family: ui-monospace, Consolas, monospace; padding: 6px 8px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); }
+.greek input { font: inherit; font-family: ui-monospace, Consolas, monospace; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); }
 .preview { font-family: var(--f-greek); font-size: 1.35rem; min-height: 1.6em; }
 .help { grid-column: 1 / -1; font-size: 0.82rem; color: var(--ink-2); margin: 0; }
 @keyframes open { from { opacity: 0; transform: translateY(-6px); } }
@@ -32,7 +31,7 @@
 }
 .tag button { border: 0; background: transparent; color: var(--ink-2); width: 20px; height: 20px; border-radius: var(--radius-round); line-height: 1; }
 .tag button:hover { background: var(--rule); color: var(--ink); }
-.tags input { flex: 1 1 120px; min-width: 100px; font: inherit; font-size: 0.9rem; padding: 3px 8px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); }
+.tags input { flex: 1 1 120px; min-width: 100px; font: inherit; font-size: 0.9rem; padding: 3px 8px; border-radius: var(--radius); color: var(--ink); }
 @keyframes pop { from { transform: scale(0.8); opacity: 0; } }
 
 .rich p { margin: 0 0 0.5em; }

@@ -5,6 +5,7 @@ import { AREAS, type AreaId } from "@/config/areas";
 import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/GuideChapters";
 import styles from "@/components/guide/Guide.module.css";
 import { GuideSeen } from "@/components/guide/GuideChapters";
+import NameCarving from "@/components/art/NameCarving";
 
 export const metadata: Metadata = {
   title: "How to use the site",
@@ -97,6 +98,7 @@ export default function GuidePage() {
       <div className={`wrap ${styles.page}`}>
         <header className={styles.top}>
           <span className="label">The Guide <span lang="grc">ὁδηγός</span></span>
+          <NameCarving greek="ὁδηγός" />
           <h1 className="page-title">How to use the site</h1>
           <p className={styles.lead}>
             Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points

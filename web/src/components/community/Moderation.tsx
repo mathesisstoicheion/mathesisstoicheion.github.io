@@ -45,7 +45,7 @@ export default function Moderation() {
   const error = got.error ? problem(got.error) : null;
 
   if (!account.ready || (account.session && !account.profile)) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> One moment…</div>;
-  if (!mod) return <p className={`wrap ${styles.status}`}>This desk is for the moderator. <Link href="/town-hall">Back to the Town Hall</Link></p>;
+  if (!mod) return <div className="wrap"><p className="notice">This desk is for the moderator. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
   return (
     <div className={`wrap ${styles.narrow}`}>
       <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / The moderator&apos;s desk</p>

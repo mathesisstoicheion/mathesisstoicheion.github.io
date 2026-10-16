@@ -1,3 +1,4 @@
+/* Author and work pages (Stone and torch): the cards of the Stoa are slabs set on the wall. */
 .page { padding-block: 24px 24px; display: grid; gap: clamp(28px, 4vw, 44px); }
 .crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: 0.9rem; }
 .crumb a { text-decoration: none; }
@@ -14,10 +15,14 @@
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 12px; }
 .card {
   display: grid; gap: 8px; align-content: start; padding: 20px; text-decoration: none;
-  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); transition: transform 0.3s var(--ease), box-shadow 0.3s;
+  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color var(--dur) ease;
 }
-.card:hover { transform: translateY(-3px); box-shadow: 0 16px 32px -22px var(--shadow); }
+.card:hover { background-color: var(--slab-lit); }
 .card b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; line-height: 1.2; }
 .card span:last-child { color: var(--ink-2); font-size: 0.95rem; }
 .links { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
-@media (prefers-reduced-motion: reduce) { .card { transition: none; } .card:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .card { transition: none; } }
+
+/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+.card { outline: var(--moulding); outline-offset: var(--moulding-in); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }  /* the focus ring replaces the moulding */

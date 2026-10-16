@@ -3,30 +3,29 @@ import Link from "next/link";
 import Page from "@/components/Page";
 import ReportBugLink from "@/components/ReportBugLink";
 import NotFoundSearch from "@/components/NotFoundSearch";
+import Carving from "@/components/art/Carving";
 import { AREAS } from "@/config/areas";
 import styles from "./not-found.module.css";
 
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 
 /**
- * An address that leads nowhere: a broken sherd that pieces itself together, 404 in Greek numerals, and the
- * ways on (search, the main areas, a report). Also served as 404.html on the static site.
+ * An address that leads nowhere: a broken piece of stone set in the wall, with 404 cut into it in Greek numerals and
+ * lit by the torch, and the ways on (search, the main areas, a report). Also served as 404.html on the static site.
  */
 export default function NotFound() {
   return (
     <Page>
       <div className={`wrap ${styles.page}`}>
-        <figure className={styles.sherd} aria-labelledby="nf-num">
-          <svg viewBox="0 0 320 220" role="img" aria-label="A broken potsherd, pieced together, painted with υδʹ">
-            <g className={styles.pieceA}><path d="M22 70 L118 22 L152 96 L96 150 L30 128 Z" /></g>
-            <g className={styles.pieceB}><path d="M118 22 L236 18 L262 64 L200 104 L152 96 Z" /></g>
-            <g className={styles.pieceC}><path d="M96 150 L152 96 L200 104 L262 64 L298 132 L250 196 L130 200 Z" /></g>
-            <path className={styles.cracks} d="M118 22 L152 96 L96 150 M152 96 L200 104 L262 64" />
-            <text className={styles.num} x="160" y="138" textAnchor="middle" lang="grc">υδʹ</text>
-            <path className={styles.band} d="M126 186 C170 192 222 190 270 166" />
+        <figure className={styles.frag} aria-labelledby="nf-num">
+          <div className={styles.stone} role="img" aria-label="A broken piece of stone, carved with ΥΔ, 404 in Greek numerals">
+            <Carving text="ΥΔ" kind="fragment" delay={0.2} className={`carve ${styles.carve}`} />
+          </div>
+          <svg className={styles.edge} viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <polygon points="4,22 30,6 46,12 63,2 88,10 97,34 92,58 99,80 76,96 52,90 30,99 8,84 2,56" />
           </svg>
           <figcaption id="nf-num" className={styles.caption}>
-            404 in <a href="https://en.wikipedia.org/wiki/Greek_numerals" rel="noopener">Greek numerals</a>: υ is 400, δ is 4.
+            404 in <a href="https://en.wikipedia.org/wiki/Greek_numerals" rel="noopener">Greek numerals</a>: Υ is 400, Δ is 4.
           </figcaption>
         </figure>
 

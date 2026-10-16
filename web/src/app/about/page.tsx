@@ -4,6 +4,7 @@ import Page from "@/components/Page";
 import { AREAS, SITE, type AreaId } from "@/config/areas";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
+import NameCarving from "@/components/art/NameCarving";
 
 export const metadata: Metadata = { title: "About the names", description: PAGE_DESCRIPTIONS.about };
 
@@ -14,6 +15,7 @@ export default function AboutPage() {
     <Page>
       <article className={`wrap ${styles.prose}`}>
         <span className="label">About</span>
+        <NameCarving greek={SITE.greek} />
         <h1>{SITE.latin} <span lang="grc" className={styles.gr}>{SITE.greek}</span></h1>
         <p className={styles.lead}>
           <i>Mathēsis</i> means learning; <i>stoicheia</i> are the letters of the alphabet, and also the basic elements

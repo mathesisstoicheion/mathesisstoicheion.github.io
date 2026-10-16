@@ -1,8 +1,8 @@
 /* The private collection's window in the reader (MineDialog.tsx): a shelf of the moderator's own books, and "Import a text". */
 .dialog {
   width: min(820px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0;
-  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink);
-  box-shadow: 0 40px 80px -30px var(--shadow);
+  border: 0; border-radius: var(--radius); background: var(--surface); color: var(--ink);
+  box-shadow: var(--slab-edge), 0 40px 80px -30px var(--shadow);
 }
 .dialog[open] { animation: rise 0.45s var(--ease); }
 .dialog::backdrop { background: rgba(10, 6, 3, 0.45); animation: fade 0.3s ease; }
@@ -27,7 +27,7 @@
 }
 
 /* two tabs, the chosen one underlined in red, the line sliding across */
-.tabs { display: flex; gap: 4px; border-bottom: 3px double var(--rule); }
+.tabs { display: flex; gap: 4px; padding-bottom: var(--space-1); box-shadow: var(--cut-under); }
 .tabs button {
   position: relative; background: transparent; border: 0; color: var(--ink-2); padding: 10px 14px 12px;
   font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.05em; display: inline-flex; align-items: center; gap: 8px;
@@ -57,11 +57,10 @@
 .books li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 45ms); }
 .book {
   width: 100%; height: 100%; display: grid; gap: 4px; align-content: start; text-align: left; padding: 14px 16px 12px;
-  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius);
-  border-top: 3px solid var(--accent); transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), border-color 0.25s;
+  background: var(--slab); color: var(--ink); border-radius: var(--radius);
+  box-shadow: var(--slab-edge), var(--inlay-top); transition: background-color var(--dur-quick) ease;
 }
-.book:hover, .book:focus-visible { transform: translateY(-3px); box-shadow: 0 10px 22px -14px var(--shadow); border-color: var(--accent); }
-.book[aria-current] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.book:hover, .book:focus-visible, .book[aria-current] { background-color: var(--slab-lit); }
 .bookGr { color: var(--accent); font-size: 1.02rem; }
 .bookTitle { font-family: var(--f-display); font-weight: 400; font-size: 1.3rem; line-height: 1.15; }
 .bookBy { color: var(--ink-2); font-size: 0.92rem; }
@@ -74,23 +73,22 @@
 .importer { display: grid; gap: 16px; border-radius: var(--radius); transition: background 0.2s, outline-color 0.2s; outline: 2px dashed transparent; outline-offset: 6px; }
 .importer[data-over] { outline-color: var(--accent); background: color-mix(in srgb, var(--accent) 6%, transparent); }
 .lead { max-width: 64ch; }
-.drop { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 14px 16px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+.drop { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 14px 16px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .fields { display: grid; gap: 12px; grid-template-columns: 1fr 1fr; }
 .fields label, .textBox { display: grid; gap: 5px; align-content: start; }
 .wide { grid-column: 1 / -1; }
 .opt { text-transform: none; letter-spacing: 0; color: var(--ink-2); font-family: inherit; }
 .fields input, .textBox textarea {
-  font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 10px; width: 100%;
+  font: inherit; color: var(--ink); border-radius: var(--radius); padding: 8px 10px; width: 100%;
 }
-.fields input:focus, .textBox textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
 .textBox textarea { resize: vertical; min-height: 9rem; line-height: 1.5; }
 .textBox textarea[lang="grc"], .fields input[lang="grc"] { font-family: var(--f-greek, inherit); }
 .texts { display: grid; gap: 14px; grid-template-columns: 1fr 1fr; }
-.file { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; padding: 10px 12px; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); }
+.file { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; padding: 10px 12px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .row { display: flex; flex-wrap: wrap; gap: 10px; }
-.problems { padding: 12px 16px; border-left: 3px solid var(--accent); background: var(--bg); }
+.problems { padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); }
 .problems ul { margin: 6px 0 0; padding-left: 1.2em; }
-.preview { display: grid; gap: 6px; padding: 16px; background: var(--bg); border: 1px solid var(--rule); border-top: 3px solid var(--accent); border-radius: var(--radius); animation: rise 0.4s var(--ease); }
+.preview { display: grid; gap: 6px; padding: 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius); animation: rise 0.4s var(--ease); }
 .preview .row { margin-top: 8px; }
 
 @media (max-width: 640px) {
@@ -113,3 +111,6 @@
 .pageStatus { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); }
 .pageStatus > p { flex-basis: 100%; }
 .privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font-size: var(--step-3); color: var(--ink-2); }
+
+/* the bigger panel: a fine line cut just inside its edge */
+.preview { outline: var(--moulding); outline-offset: var(--moulding-in); }

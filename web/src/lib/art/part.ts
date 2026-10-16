@@ -23,7 +23,7 @@ export interface PartOptions {
   place?: boolean;
 }
 
-interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number }
+interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; tried: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number }
 
 const parts = new Set<Part>();
 let io: IntersectionObserver | null = null;
@@ -33,9 +33,11 @@ let resizeTimer = 0;
 function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: number }[]) {
   const H = innerHeight, still = torchStill();
   for (const p of parts) {
-    if (!p.vis) continue;
     const a = p.art;
-    if (!p.ok) { p.ok = a.layout() !== false; p.dirty = true; if (!p.ok) continue; }
+    // every piece is measured at once, in view or not, so the page does not jump when one comes into view (a hidden
+    // one is tried again only once it is in view)
+    if (!p.ok && (p.vis || !p.tried)) { p.tried = true; p.ok = a.layout() !== false; p.dirty = true; }
+    if (!p.vis || !p.ok) continue;
     const r = p.el.getBoundingClientRect();
     let local: LocalLight[];
     if (still || p.o.day?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: 1 }]; }
@@ -91,7 +93,7 @@ export function useTorchlit(ref: RefObject<HTMLCanvasElement | null>, make: (cv:
     let p: Part | null = null, gone = false;
     Promise.resolve(make(cv)).then((art) => {
       if (gone || !art) return;
-      p = { art, el: cv, o, vis: false, ok: false, last: null, revealing: false, dirty: true, sp: -1 };
+      p = { art, el: cv, o, vis: false, ok: false, tried: false, last: null, revealing: false, dirty: true, sp: -1 };
       add(p);
     });
     return () => { gone = true; if (p) remove(p); };

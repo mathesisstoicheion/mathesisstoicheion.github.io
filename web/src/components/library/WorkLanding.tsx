@@ -14,6 +14,7 @@ import { workPath } from "@/lib/seo";
 import type { RelatedEntry } from "@/wiki/related";
 import styles from "./AuthorProfile.module.css";
 import lib from "./Library.module.css";
+import NameCarving from "@/components/art/NameCarving";
 
 const num = (n: number) => n.toLocaleString("en-GB");
 const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
@@ -48,6 +49,7 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
       </p>
       <header className={styles.head}>
         <div className="area-kicker"><span className="label">Work</span></div>
+        <NameCarving greek={label} />
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
         {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
         {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}

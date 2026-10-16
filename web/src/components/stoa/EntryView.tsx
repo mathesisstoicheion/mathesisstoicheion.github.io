@@ -13,6 +13,7 @@ import { EntryMarkers, SectionNote } from "./EntryNotes";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
+import NameCarving from "@/components/art/NameCarving";
 
 const PLACE_NAME = new Map((mapData as { places: { id: string; grc: string; en: string }[] }).places.map((p) => [p.id, p]));
 
@@ -27,6 +28,7 @@ export default function EntryView({ e }: { e: Entry }) {
       <EntryMarkers slug={e.slug} heads={heads} />
       <header className={`wrap ${styles.entryHead}`}>
         <p className={styles.crumbs}><Link href="/stoa" transitionTypes={["page-turn"]}>The Painted Stoa</Link> › <Link href={cat.href ?? `/stoa#${cat.id}`} transitionTypes={["page-turn"]}>{cat.title}</Link></p>
+        <NameCarving greek={e.greek} />
         <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
         <p className={styles.kicker}>{e.kicker}</p>
       </header>

@@ -7,6 +7,7 @@ import { CHECKPOINTS, CHECKPOINT_GREEK, checkpointById } from "@/data/checkpoint
 import { LESSONS, lessonById } from "@/data/lessons";
 import { AREAS } from "@/config/areas";
 import styles from "@/components/academy/Workout.module.css";
+import NameCarving from "@/components/art/NameCarving";
 
 export function generateStaticParams() {
   return CHECKPOINTS.map((c) => ({ id: c.id }));
@@ -28,6 +29,7 @@ export default async function CheckpointPage({ params }: PageProps<"/academy/che
     <Page>
       <div className="wrap" style={{ paddingBlock: "clamp(28px, 5vw, 48px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, maxWidth: 820 }}>
         <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Checkpoint {c.numeral}</nav>
+        <NameCarving greek={CHECKPOINT_GREEK} />
         <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4.5vw, 2.8rem)" }}>
           Checkpoint {c.numeral}: {c.title}
           <span lang="grc" style={{ display: "block", fontSize: "0.55em", marginTop: 6 }}>{CHECKPOINT_GREEK}</span>

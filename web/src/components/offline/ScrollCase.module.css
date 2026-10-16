@@ -1,5 +1,6 @@
+/* The scroll case page (Stone and torch): the card is a sunk panel, its rows divided by cut lines. */
 .page { display: grid; gap: 28px; padding-block: var(--after-head) 32px; }
-.card { display: grid; gap: 16px; padding: clamp(20px, 3vw, 36px); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); }
+.card { display: grid; gap: 16px; padding: clamp(20px, 3vw, 36px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .card h2 { font-size: var(--step-2); }
 .cardHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; }
@@ -9,7 +10,8 @@
 .haveGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
 .haveGrid h3 { font-size: 0.85rem; margin-bottom: 8px; }
 .have { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
-.have li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
+.have li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; box-shadow: var(--cut-under); }
+.have li:last-child { box-shadow: none; }
 .confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 0.9rem; }
 .row { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
 .small { font-size: 0.85rem; color: var(--ink-2); }
@@ -19,9 +21,12 @@
 .check { display: inline-flex; gap: 8px; align-items: baseline; cursor: pointer; }
 .check input { accent-color: var(--accent); flex: none; align-self: flex-start; margin-top: 0.3em; }
 .picker { display: grid; gap: 8px; }
-.picker input[type="search"] { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 12px; max-width: 360px; }
-.picker ul { list-style: none; margin: 0; padding: 8px 12px; max-height: 260px; overflow-y: auto; columns: 3 220px; background: var(--bg); border: 1px solid var(--rule); }
+.picker input[type="search"] { font: inherit; color: var(--ink); border-radius: var(--radius); padding: 8px 12px; max-width: 360px; }
+.picker ul { list-style: none; margin: 0; padding: 8px 12px; max-height: 260px; overflow-y: auto; columns: 3 220px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .picker li { break-inside: avoid; }
-.go { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 16px; border-top: 3px double var(--rule); }
+.go { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px; padding-top: 18px; box-shadow: var(--cut-over); }
 
 @media (max-width: 800px) { .haveGrid { grid-template-columns: minmax(0, 1fr); } }
+
+/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+.card { outline: var(--moulding); outline-offset: var(--moulding-in); }

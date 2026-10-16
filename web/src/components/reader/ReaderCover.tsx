@@ -38,7 +38,7 @@ export default function ReaderCover({ workId, greek, day }: { workId: string; gr
   }, [day]);
 
   return (
-    <div ref={box} className={styles.cover}>
+    <div ref={box} className={styles.coverBox}>
       {carve && <Carving text={carve} kind="cover" delay={0.1} day={day} className={`carve ${styles.coverCarve}`} />}
       {med && <ReliefWindow pic={med.pic} kind="medallion" alt={med.alt} day={day} delay={0.3} frameClassName={styles.coverMedal} />}
     </div>

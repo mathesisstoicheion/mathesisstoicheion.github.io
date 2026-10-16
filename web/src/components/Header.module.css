@@ -107,8 +107,8 @@
 @keyframes ripple { from { transform: scale(0.7); opacity: 0.8; } to { transform: scale(1.7); opacity: 0; } }
 .connPanel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: min(380px, calc(100vw - 24px));
-  display: grid; gap: 12px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
-  box-shadow: 0 24px 48px -24px var(--shadow); animation: drop 0.3s var(--ease) both; font-size: 0.95rem;
+  display: grid; gap: 12px; padding: 16px 18px; background: var(--surface) var(--tex, none) center / 420px; border-radius: var(--radius);
+  box-shadow: var(--slab-edge), 0 24px 48px -24px var(--shadow); animation: drop 0.3s var(--ease) both; font-size: 0.95rem;
 }
 @keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
 /* phones: the light sits mid-row, so its panel hangs from the whole header instead, inside the screen */
@@ -119,5 +119,5 @@
 .connHead { display: flex; align-items: center; gap: 10px; font-size: 1.05rem; }
 .connList { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; color: var(--ink-2); }
 .connActs { display: flex; flex-wrap: wrap; gap: 8px; }
-.connReport { display: grid; gap: 4px; padding: 10px 12px; border-left: 3px solid var(--ok); background: var(--bg); font-size: 0.9rem; }
-.connReport[data-ok="false"] { border-left-color: var(--accent); }
+.connReport { display: grid; gap: 4px; padding: 10px 12px; background: var(--field); box-shadow: var(--field-edge), var(--inlay-left-ok); font-size: 0.9rem; }
+.connReport[data-ok="false"] { box-shadow: var(--field-edge), var(--inlay-left); }

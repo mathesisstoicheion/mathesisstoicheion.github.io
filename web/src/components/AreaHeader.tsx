@@ -1,17 +1,21 @@
+import type { ReactNode } from "react";
 import Carving from "@/components/art/Carving";
 import { AREAS, type AreaId } from "@/config/areas";
 
 /**
  * The header every area opens with (design B, Stone and torch): its plain name, its Greek name carved across the wall
- * and lit by the torch (where it has one), its name in full, and what the name means and why it fits.
+ * and lit by the torch (where it has one), its name in full, and what the name means and why it fits. An area with no
+ * Greek name of its own may carve a line that belongs to it instead, with its source (`carve`).
  */
-export default function AreaHeader({ id, children }: { id: AreaId; children?: React.ReactNode }) {
+export default function AreaHeader({ id, carve, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; children?: ReactNode }) {
   const a = AREAS[id];
+  const cut = a.greek ?? carve?.text;
   return (
     <header className="area-head">
       <div className="wrap">
         <div className="area-kicker"><span className="label">{a.english}</span></div>
-        {a.greek && <Carving text={a.greek} kind="title" delay={0.15} className="carve area-carve" />}
+        {cut && <Carving text={cut} kind="title" delay={0.15} className="carve area-carve" />}
+        {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
         <h1>
           {a.name}
           {a.greek && <span className="area-greek" lang="grc">{a.greek}</span>}

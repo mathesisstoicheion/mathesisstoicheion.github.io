@@ -37,7 +37,7 @@ export default function DebateView() {
   const pebble = got.data?.pebble ?? null;
   const count: Tally | null = got.data?.count ?? null;
 
-  if (!id) return <p className={`wrap ${styles.status}`}>No debate was named. <Link href="/town-hall/pnyx">Back to the Pnyx</Link></p>;
+  if (!id) return <div className="wrap"><p className="notice">No debate was named. <Link href="/town-hall/pnyx">Back to the Pnyx</Link></p></div>;
   if (got.error && !got.data) return <p className={`wrap ${styles.error}`}>{problem(got.error)}</p>;
   if (d === undefined) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Climbing the hill…</div>;
   if (!d) return <p className={`wrap ${styles.status}`}>This debate does not exist, or it is not open yet. <Link href="/town-hall/pnyx">Back to the Pnyx</Link></p>;

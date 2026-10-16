@@ -66,6 +66,29 @@ Light text is never pure white.
 - Thin rules and cut lines instead of drop shadows. No rounded cards.
 - One column on phones, with a 16px gutter. Pictures sit above the text on phones.
 
+## Everything on a page is stone
+The owner (2026-10-16): "All pages and content must match the theme", "Except for photos and text and buttons". So every panel,
+card, table, list, chart, form field, frame, empty-state box and the footer is cut from the wall; photos, text and buttons keep
+their own look. The torch's light lies on the wall behind everything, so a see-through stone panel is lit as the torch passes.
+The pieces (all in `web/src/styles/tokens.css`; a module uses only these names):
+| Thing | Token |
+|---|---|
+| A panel sunk into the wall (most boxes, lists, tables, figures, forms, empty states) | `--field`, `--field-edge` |
+| A slab set on the wall (a card that is a link, a featured item, a summary of numbers, a tip); lit when hovered or chosen | `--slab`, `--slab-edge`, `--slab-lit` |
+| A fine line cut just inside a big panel's edge | `--moulding` with `--moulding-in` (a moulded link card gets its focus ring back) |
+| A line between rows, above something, at the left | `--cut-under`, `--cut-over`, `--cut-left` (shadows, so a row's own background stays free) |
+| A slim gilded inlay at a slab's left or top (gold, green for right, ochre, blue, the legend's colour) | `--inlay-left`, `--inlay-left-ok`, `--inlay-left-ochre`, `--inlay-left-blue`, `--inlay-left-legend`, `--inlay-top` |
+| A bar or meter: a channel cut in the stone, filled with gilding | `--channel`, `--channel-edge`, `--inlay`, `--inlay-side`, `--inlay-dim`, `--inlay-edge` |
+| A field to type in: a hollow cut in the stone (the global style; focus adds a gold line) | `--hollow`, `--hollow-edge`, `--hollow-focus` |
+| A frame round a photo or map | `--frame` |
+| The foot of every page: a plinth with the site's name carved along it | `--plinth-edge` |
+| The page that has not survived (404): a broken piece of stone carved ΥΔ, 404 in Greek numerals | `--broken-edge` |
+- Pop-overs, menus, dialogs and sticky bars stay opaque (the page would show through them); only their edges are stone.
+- A page inside an area carves its own Greek name above its title (`components/art/NameCarving.tsx`): ΛΕΞΕΙΣ, ΑΝΑΜΝΗΣΙΣ, a
+  lesson's or an entry's Greek name. The Oracle, which has no Greek name of its own, carves ΓΝΩΘΙΣΑΥΤΟΝ, "Know thyself", one of the
+  maxims written in the fore-temple at Delphi (Pausanias 10.24.1, tr. Jones and Ormerod), with its source under it.
+- On the Daylight page the same names give limestone and burnt sienna.
+
 ## The screens
 **Home.** In order:
 1. The hero: a wall of the opening of Plato's *Apology*, carved in the stoichedon grid (Burnet's text with accents and breathings removed, iota subscript carved as a full Ι), cut in diagonally when the page opens and read by carrying the torch over it.

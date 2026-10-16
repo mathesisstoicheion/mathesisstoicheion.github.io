@@ -1,4 +1,5 @@
-/* The Explore door's lead: three picture cards (ExploreLead.tsx). */
+/* The Explore door's lead: three picture cards (ExploreLead.tsx) (Stone and torch): slabs set on the wall; the map and the photograph keep
+   their own look; the bars are gilded inlay laid in channels. */
 .lead { display: grid; gap: 10px; }
 .lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 900px) { .lead ul { grid-template-columns: 1fr 1fr; } .lead li:first-child { grid-column: 1 / -1; } }
@@ -6,10 +7,10 @@
 
 .card {
   display: flex; flex-direction: column; height: 100%; overflow: hidden; text-decoration: none;
-  background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
-  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
+  transition: background-color var(--dur) ease;
 }
-.card:hover { transform: translateY(-4px); box-shadow: 0 14px 34px -16px var(--shadow); }
+.card:hover { background-color: var(--slab-lit); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* the picture area: the same height for all three */
@@ -29,12 +30,12 @@
 .town { animation: town 0.6s var(--ease) both; animation-delay: calc(0.25s + var(--i) * 90ms); transform-box: fill-box; transform-origin: center; }
 @keyframes town { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
 
-.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; background: var(--bg-2); }
+.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; background: var(--field); box-shadow: var(--field-edge); }
 .bar { display: grid; grid-template-columns: minmax(0, 11em) 1fr auto; align-items: center; gap: 10px; font-size: 0.88rem; }
 .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .who [lang="grc"] { font-family: var(--f-greek); font-size: 1.05rem; }
-.fill { height: 9px; border-radius: var(--radius); background: color-mix(in srgb, var(--ink) 10%, transparent); overflow: hidden; }
-.fill i { display: block; height: 100%; width: var(--w); background: var(--accent); border-radius: var(--radius); transform-origin: left; }
+.fill { height: 9px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); overflow: hidden; }
+.fill i { display: block; height: 100%; width: var(--w); background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; }
 .fill i { animation: grow 1.1s var(--ease) both; animation-delay: calc(0.3s + var(--i) * 110ms); }
 @keyframes grow { from { transform: scaleX(0); } }
 .n { font-variant-numeric: tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }

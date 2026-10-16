@@ -42,7 +42,7 @@
 .note { font-size: 0.85rem; color: var(--ink-2); max-width: 90ch; }
 
 /* ---------------------------------------------------------------- where to begin */
-.begin { border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); }
+.begin { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .begin summary { position: relative; list-style: none; cursor: pointer; padding: 13px 44px 13px 18px; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) 10px; font-weight: 600; }
 .begin summary::-webkit-details-marker { display: none; }
 .begin summary::after { content: "▾"; position: absolute; right: 18px; top: 13px; color: var(--ink-2); transition: transform var(--dur-quick) var(--ease); }
@@ -50,18 +50,20 @@
 .begin summary :global(.muted) { font-weight: 400; font-size: 0.92rem; text-wrap: pretty; }
 .beginIcon { color: var(--accent); }
 .levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: var(--space-1) 18px 18px; }
-.level { display: grid; align-content: start; gap: var(--space-2); padding: 18px 20px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); }
+.level { display: grid; align-content: start; gap: var(--space-2); padding: 18px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); }
 .level h2 { font-size: 1.5rem; color: var(--accent); }
 .level :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 75%, var(--inv-bg)); font-size: 0.95rem; }
 .level ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; }
 .level a { text-decoration: none; font-weight: 600; }
 .level a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+.level { outline: var(--moulding); outline-offset: var(--moulding-in); }
 
 /* ---------------------------------------------------------------- the jump bar stays in reach while scrolling */
 .jumpBar {
   position: sticky; z-index: 4; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); transition: top 0.35s var(--ease);
   display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-2) 0; margin-top: var(--space-1);
-  background: var(--bg); border-bottom: 1px solid var(--rule);
+  background: var(--bg); box-shadow: var(--cut-under); /* sticky: stays opaque */
 }
 .jumpBar button {
   min-width: 32px; height: 32px; padding: 0 6px; display: grid; place-items: center;
@@ -167,9 +169,9 @@
 @media (prefers-reduced-motion: reduce) { .groupHead, .author[data-selected] { animation: none; } }
 
 /* ---------------------------------------------------------------- a work as other pages list it (author pages) */
-.works { list-style: none; margin: 18px 0 0; padding: 0; background: var(--surface); border-top: 3px double var(--rule); border-bottom: 3px double var(--rule); }
-.work { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: var(--space-3) 18px; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
-.work:last-child { border-bottom: 0; }
+.works { list-style: none; margin: 18px 0 0; padding: 0; background: var(--field); box-shadow: var(--field-edge); }
+.work { display: flex; justify-content: space-between; align-items: center; gap: var(--space-4); padding: var(--space-3) 18px; box-shadow: var(--cut-under); }
+.work:last-child { box-shadow: none; }
 .workLink { display: grid; text-decoration: none; min-width: 0; }
 .workLink:hover .workTitle { color: var(--accent); }
 .workTitle { font-size: 1.08rem; font-weight: 600; }
@@ -220,11 +222,12 @@
 .shelf li { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
 .spine {
   display: grid; align-content: start; gap: var(--space-1); height: 100%; min-height: 168px; padding: var(--space-4) var(--space-4) 14px; text-decoration: none;
-  background: var(--inv-bg); color: var(--inv-fg); border: 1px solid var(--inv-edge); border-radius: var(--radius);
-  border-top: 4px solid var(--accent-on-ink); --ink-2: var(--ink-2-on-ink);
-  transition: transform 0.3s var(--ease), box-shadow 0.3s;
+  background: var(--slab); color: var(--inv-fg); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius);
+  --ink-2: var(--ink-2-on-ink); outline: var(--moulding); outline-offset: var(--moulding-in);
+  transition: background-color var(--dur) ease;
 }
-.spine:hover { transform: translateY(-4px); box-shadow: 0 14px 30px -16px var(--shadow); }
+.spine:hover { background-color: var(--slab-lit); }
+.spine:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .spine:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .spineGr { font-family: var(--f-greek); font-size: 1.45rem; line-height: 1.15; color: var(--accent-on-ink); }
 .spine b { font-size: 1.05rem; line-height: 1.25; }
@@ -232,7 +235,7 @@
 .spine .meter { margin-top: auto; padding-top: var(--space-2); font-size: 0.8rem; color: var(--ink-2); }
 
 /* ------------------------------------------------ the moderator's private collection (MineButtons.tsx), above the search */
-.mine { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); padding: var(--space-3) 14px; border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius); background: var(--surface); animation: mineIn 0.5s var(--ease) backwards; }
+.mine { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); padding: var(--space-3) 14px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
 @keyframes mineIn { from { opacity: 0; transform: translateY(8px); } }
 .mineSeal { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent); }
 .mineSeal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }

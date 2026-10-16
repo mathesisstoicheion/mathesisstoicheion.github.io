@@ -85,7 +85,7 @@ test("an unknown address shows the not-found page, with a way into the search", 
   const res = await page.goto("/no-such-page");
   expect(res?.status()).toBe(404);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("This page has not survived");
-  await expect(page.getByRole("img", { name: /υδʹ/ })).toBeVisible();
+  await expect(page.getByRole("img", { name: /ΥΔ, 404 in Greek numerals/ })).toBeVisible();
   await page.getByRole("button", { name: "Search for what you were looking for" }).click();
   await expect(page.getByRole("dialog", { name: "Quick search" })).toBeVisible();
 });

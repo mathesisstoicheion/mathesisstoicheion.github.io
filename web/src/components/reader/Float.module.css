@@ -2,12 +2,17 @@
 .win {
   position: fixed; left: 0; top: 0; z-index: 48;
   display: flex; flex-direction: column; overflow: hidden;
-  background: var(--bg); border: 1px solid var(--rule-2); border-radius: var(--radius);
-  box-shadow: 0 30px 60px -28px var(--shadow), 0 0 0 1px color-mix(in srgb, var(--bg) 40%, transparent);
+  background: var(--bg); border-radius: var(--radius);
+  box-shadow: var(--slab-edge), 0 30px 60px -28px var(--shadow);
   transition: transform 0.38s var(--ease), width 0.38s var(--ease), height 0.38s var(--ease);
   animation: unroll 0.5s var(--ease) both;
 }
-.dragging { transition: none; box-shadow: 0 40px 80px -30px var(--shadow); }
+.dragging { transition: none; box-shadow: var(--slab-edge), 0 40px 80px -30px var(--shadow); }
+/* the window's edge, cut just inside it (the opening animation clips whatever lies outside the window, so a ring drawn outside would never show) */
+.win::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; border-radius: inherit;
+  border: 1px solid var(--groove); outline: 1px solid var(--lip); outline-offset: -2px;
+}
 .dragging .body { pointer-events: none; }
 /* opening unrolls the window from its title bar, like a scroll; closing rolls it up again */
 @keyframes unroll { from { clip-path: inset(0 0 calc(100% - 44px) 0 round 10px); opacity: 0.4; } to { clip-path: inset(0 0 0 0 round 10px); opacity: 1; } }

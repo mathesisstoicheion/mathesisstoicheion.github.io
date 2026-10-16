@@ -67,7 +67,7 @@ export default function WordStudy() {
 
 function Finder() {
   return (
-    <section className={styles.sec}>
+    <section className={`${styles.sec} notice`}>
       <h1>Word Study</h1>
       <p>Open a word from <Link href="/treasury?s=words">your saved words</Link>, or from the look-up panel in the reader (“Word Study”).</p>
     </section>

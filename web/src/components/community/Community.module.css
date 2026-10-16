@@ -1,6 +1,7 @@
 /* ================================================================ the Town Hall and the Pnyx */
-/* Clay and black gloss, as everywhere; For is fresco blue and Against added red. Every animation
-   rests on its finished state, so with reduced motion (handled site-wide) the page is complete. */
+/* Stone and torch: the boxes are sunk into the wall (threads, posts, forms) or set on it as slabs (links, call-outs); the rows
+   are divided by cut lines. For is patina blue and Against is honey. Every animation rests on its finished state, so with
+   reduced motion (handled site-wide) the page is complete. */
 
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
 .spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
@@ -9,7 +10,7 @@
 .ok { color: var(--ok); font-size: 0.93rem; }
 .fine { font-size: 0.86rem; color: var(--ink-2); }
 .small { font-size: 0.88rem; color: var(--ink-2); }
-.note { padding: 10px 14px; border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--surface) 70%, transparent); font-size: 0.95rem; }
+.note { padding: 10px 14px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); font-size: 0.95rem; }
 .empty { color: var(--ink-2); font-style: italic; padding: 10px 0; }
 .lead { max-width: 72ch; color: var(--ink-2); }
 .crumbs { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.88rem; color: var(--ink-2); margin: 0 0 14px; }
@@ -22,13 +23,13 @@
 
 /* ------------------------------------------------ cards and forms */
 .card {
-  padding: clamp(20px, 3vw, 32px); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
-  box-shadow: 0 22px 40px -32px var(--shadow); display: grid; gap: 14px; animation: rise 0.5s var(--ease) both;
+  padding: clamp(20px, 3vw, 32px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
+  display: grid; gap: 14px; animation: rise 0.5s var(--ease) both;
 }
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
-.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule-2); }
+.tabs { display: flex; gap: 4px; box-shadow: var(--cut-under); }
 .tabs button { font: inherit; font-family: var(--f-display); font-size: 1.25rem; padding: 6px 16px 8px; border: 0; background: none; color: var(--ink-2); cursor: pointer; position: relative; }
 .tabs button[aria-selected="true"] { color: var(--ink); }
 .tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1.5px; height: 3px; background: var(--accent); }
@@ -37,9 +38,8 @@
 .form label > span, .tagField > span { font-family: var(--f-label); letter-spacing: 0.04em; font-size: 0.92rem; }
 .form small, .tagField small { font-family: var(--f-body); letter-spacing: 0; color: var(--ink-2); font-size: 0.82rem; margin-left: 6px; }
 .form input:not([type="checkbox"]), .form select, .form textarea, .titleInput {
-  font: inherit; padding: 9px 11px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink);
+  font: inherit; padding: 9px 11px; border-radius: var(--radius); color: var(--ink);
 }
-.form input:focus-visible, .form select:focus-visible, .form textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .check { display: flex !important; gap: 10px; align-items: flex-start; }
 .check input { margin-top: 5px; }
 .form :global(.btn), .form .linkBtn { justify-self: start; cursor: pointer; }
@@ -48,9 +48,10 @@
 /* ------------------------------------------------ the Town Hall */
 .hall { display: grid; gap: 22px; padding-top: var(--after-head); padding-bottom: 72px; }
 .featured {
-  display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--inv-fg); background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
-  border-radius: var(--radius); box-shadow: 0 18px 30px -24px var(--shadow); position: relative; overflow: hidden;
+  display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--inv-fg); background: var(--slab); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
+  border-radius: var(--radius); box-shadow: var(--slab-edge), var(--inlay-left); position: relative; overflow: hidden; transition: background-color var(--dur) ease;
 }
+.featured:hover { background-color: var(--slab-lit); }
 .featured :global(.label) { color: color-mix(in srgb, var(--inv-fg) 75%, transparent); }
 .featured b { font-family: var(--f-display); font-weight: 400; font-size: 1.5rem; line-height: 1.15; }
 .featured span:last-child { font-size: 0.92rem; }
@@ -60,8 +61,8 @@
 }
 @keyframes glint { 0%, 70% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--surface); transition: transform 0.2s var(--ease), border-color 0.2s; }
-.pnyxCard:hover, .pnyxCard:focus-visible { transform: translateY(-2px); border-color: var(--accent); }
+.pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); transition: background-color var(--dur) ease; }
+.pnyxCard:hover, .pnyxCard:focus-visible { background-color: var(--slab-lit); }
 .pnyxCard b { font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; }
 .pnyxCard span:last-child { font-size: 0.92rem; color: var(--ink-2); }
 .pnyxCard [lang="grc"] { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
@@ -88,22 +89,22 @@
 .search { position: relative; display: flex; gap: 8px; align-items: stretch; }
 .search svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .search input {
-  flex: 1; min-width: 0; width: 0; font: inherit; font-size: 1.1rem; padding: 13px 16px 13px 48px; border: 1px solid var(--rule); border-radius: var(--radius);
-  background: var(--surface); color: var(--ink); transition: border-color 0.2s, box-shadow 0.2s;
+  flex: 1; min-width: 0; width: 0; font: inherit; font-size: 1.1rem; padding: 13px 16px 13px 48px; border-radius: var(--radius);
+  color: var(--ink); transition: box-shadow 0.2s;
 }
-.search input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .sorts .chip { cursor: pointer; }
 .sorts { display: flex; flex-wrap: wrap; gap: 6px; }
 /* phones: the four orders as an even two-by-two grid */
 @media (max-width: 760px) { .sorts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1 1 100%; } .sorts :global(.chip) { justify-content: center; } .sorts.three { grid-template-columns: repeat(3, 1fr); } }
 .listHead { font-size: var(--step-1); margin: 0 0 8px; }
 
-.threads { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule-2); }
+.threads { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .threads li {
   display: grid; grid-template-columns: 56px 1fr 96px; gap: 14px; align-items: center; padding: 12px 4px;
-  border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
+  box-shadow: var(--cut-under);
   animation: rise 0.4s var(--ease) both; animation-delay: calc(min(var(--i, 0), 20) * 25ms);
 }
+.threads li:last-child { box-shadow: none; }
 .threadScore, .threadReplies { display: grid; justify-items: center; text-align: center; line-height: 1.1; }
 .threadScore b, .threadReplies b { font-family: var(--f-display); font-size: 1.3rem; font-weight: 400; }
 .threadScore small, .threadReplies small { font-size: 0.72rem; color: var(--ink-2); }
@@ -121,13 +122,13 @@
 .tagRow { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .quoteMark { font-style: italic; }
 
-.rules { margin-top: 20px; padding: 22px 26px; border: 1px solid var(--rule); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 60%, transparent); scroll-margin-top: calc(var(--hdr-h) + 16px); }
+.rules { margin-top: 20px; padding: 22px 26px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .rules h2 { margin: 0 0 10px; font-size: var(--step-2); }
 .rules ol { margin: 0 0 12px; padding-left: 1.3em; display: grid; gap: 6px; }
 
 /* ------------------------------------------------ a thread */
 .threadPage, .debate { padding-top: 32px; padding-bottom: 72px; display: grid; gap: 18px; }
-.threadHead { display: grid; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--rule-2); }
+.threadHead { display: grid; gap: 12px; padding-bottom: 18px; box-shadow: var(--cut-under); }
 .threadHead h1 { font-size: var(--step-3); line-height: 1.1; margin: 0; }
 .titleInput { width: 100%; font-family: var(--f-display); font-size: 1.6rem; }
 .headRow { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
@@ -141,7 +142,7 @@
 .text { display: grid; gap: 0.6em; line-height: 1.6; overflow-wrap: anywhere; }
 .text p, .text ul { margin: 0; }
 .text a { color: var(--accent); }
-.quote { margin: 0; padding: 12px 16px; border-left: 3px solid var(--rule-2); background: color-mix(in srgb, var(--surface) 80%, transparent); display: grid; gap: 6px; }
+.quote { margin: 0; padding: 12px 16px; background: var(--field); box-shadow: var(--field-edge); display: grid; gap: 6px; }
 .quote blockquote { margin: 0; font-family: var(--f-greek); font-size: var(--greek-size); line-height: 1.5; }
 .quote .quoteEng { font-family: var(--f-body); font-size: 0.95rem; color: var(--ink-2); font-style: italic; }
 .quote figcaption { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.85rem; }
@@ -162,23 +163,23 @@
 .answerNote a { color: inherit; }
 .replies h2, .replyBox h2 { font-size: var(--step-1); margin: 0 0 8px; }
 .replyList, .subReplies, .argList { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.subReplies { margin: 10px 0 0 22px; padding-left: 14px; border-left: 1.5px solid var(--rule); }
+.subReplies { margin: 10px 0 0 22px; padding-left: 16px; box-shadow: var(--cut-left); }
 .reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-h) + 16px); }
 .reply:target { animation: flash 1.6s var(--ease); }
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
-.isAnswer { padding: 12px; border: 1.5px solid var(--ok); border-radius: var(--radius); background: color-mix(in srgb, var(--ok) 6%, transparent); }
+.isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); }
 .replyBody { min-width: 0; display: grid; gap: 8px; }
-.replyBox { padding-top: 12px; border-top: 1px solid var(--rule-2); }
+.replyBox { padding-top: 14px; box-shadow: var(--cut-over); }
 .composer { display: grid; gap: 10px; }
-.reportForm { display: grid; gap: 6px; width: 100%; max-width: 480px; padding: 10px; border: 1px dashed var(--rule); border-radius: var(--radius); }
+.reportForm { display: grid; gap: 6px; width: 100%; max-width: 480px; padding: 10px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .reportForm label { display: grid; gap: 4px; font-size: 0.85rem; }
-.reportForm input { font: inherit; padding: 6px 8px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink); }
+.reportForm input { font: inherit; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); }
 .reportForm .chip { justify-self: start; cursor: pointer; }
 .reportForm > span:first-child { font-size: 0.85rem; }
 /* an open box goes on its own line, under the buttons: its width plus the margin fill the row */
 .actions .reportForm { order: 1; flex: 0 0 auto; width: min(100%, 480px); margin-right: calc(100% - min(100%, 480px)); }
 .askRow { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
-.modPanel { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; margin-top: 8px; border: 1px dashed var(--accent); border-radius: var(--radius); font-size: 0.9rem; }
+.modPanel { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; padding: 10px 12px; margin-top: 8px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); font-size: 0.9rem; }
 .modPanel input[type="number"] { width: 64px; font: inherit; padding: 2px 6px; }
 .modPanel input:not([type]) { font: inherit; padding: 2px 6px; }
 .modPanel form { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
@@ -187,27 +188,29 @@
 .pnyx { display: grid; gap: 24px; padding-top: var(--after-head); padding-bottom: 72px; }
 .motionHero {
   display: grid; gap: 8px; padding: clamp(22px, 4vw, 40px); text-decoration: none; color: var(--ink);
-  background: var(--surface); border: 1px solid var(--rule-2); border-radius: var(--radius); text-align: center;
-  box-shadow: 0 26px 44px -34px var(--shadow);
+  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); text-align: center;
+  transition: background-color var(--dur) ease;
 }
+.motionHero:hover { background-color: var(--slab-lit); }
 .motionHero b { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.12; }
 .motionHero span:last-child { color: var(--accent); }
 .motionHero:hover b { color: var(--accent); }
 .motions h2, .proposed h2, .proposeBox h2 { font-size: var(--step-1); margin: 0 0 8px; }
-.motions ul, .proposed ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
-.motions li, .proposed li { padding: 12px 2px; border-bottom: 1px solid var(--rule); display: grid; gap: 4px; }
+.motions ul, .proposed ul { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
+.motions li, .proposed li { padding: 12px 2px; box-shadow: var(--cut-under); display: grid; gap: 4px; }
+.motions li:last-child, .proposed li:last-child { box-shadow: none; }
 .motions li a { text-decoration: none; color: var(--ink); }
 .motions li b { font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; }
 .motions li a:hover b { color: var(--accent); }
-.proposeBox { padding: 20px 22px; border: 1px dashed var(--rule); border-radius: var(--radius); display: grid; gap: 10px; }
+.proposeBox { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
-.resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); }
-.resultBar span { display: block; height: 100%; background: var(--blue); animation: grow 1s var(--ease) both; transform-origin: left; }
+.resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); box-shadow: var(--channel-edge); }   /* the two colours stay: they say For and Against */
+.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow 1s var(--ease) both; transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0); } }
 .result p { margin: 0; font-size: 0.9rem; }
 .resultSmall .resultBar { height: 6px; max-width: 320px; }
 
-.motionHead { text-align: center; display: grid; gap: 10px; justify-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--rule-2); }
+.motionHead { text-align: center; display: grid; gap: 10px; justify-items: center; padding-bottom: 20px; box-shadow: var(--cut-under); }
 .motionHead h1 { font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; max-width: 26ch; margin: 0; }
 .motionHead .text { text-align: left; max-width: 70ch; }
 
@@ -234,7 +237,7 @@
 .sideAgainst { border-color: var(--accent); }
 .side h2 { margin: 0; font-size: var(--step-2); }
 .side h2 small { font-size: 0.9rem; color: var(--ink-2); }
-.arg { padding: 12px 14px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) both; }
+.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) both; }
 
 @media (max-width: 760px) {
   .threads li { grid-template-columns: 44px 1fr; }
@@ -243,7 +246,7 @@
   .headRow { grid-template-columns: 40px 1fr; gap: 10px; }
 }
 
-.danger { border-top: 1px solid var(--rule); padding-top: 12px; }
+.danger { box-shadow: var(--cut-over); padding-top: 14px; }
 .danger summary { cursor: pointer; color: var(--accent); font-size: 0.92rem; }
 .danger p { margin: 8px 0; font-size: 0.9rem; color: var(--ink-2); }
 
@@ -259,7 +262,7 @@
 .statusTag[data-status="fixed"], .statusTag[data-status="done"] { border-color: var(--ok); color: var(--ok); }
 .threadTitle .statusTag, .threadHead h1 .statusTag { margin-left: 8px; }
 .statusRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.statusRow select { font: inherit; font-size: 0.85rem; padding: 3px 8px; border: 1px dashed var(--accent); border-radius: var(--radius); background: transparent; color: var(--accent); }
+.statusRow select { font: inherit; font-size: 0.85rem; padding: 3px 8px; border-radius: var(--radius); color: var(--accent); }
 
 .form textarea { resize: vertical; min-height: 5.5em; }
 
@@ -268,3 +271,8 @@
 .folded .linkBtn { font-style: normal; }
 .hiddenList { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .hiddenList li { display: flex; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+
+/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+.card, .rules, .featured, .motionHero, .proposeBox { outline: var(--moulding); outline-offset: var(--moulding-in); }
+/* the moulding uses the outline, so the two link cards give the focus ring back */
+.featured:focus-visible, .motionHero:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
