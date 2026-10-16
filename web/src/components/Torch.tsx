@@ -7,7 +7,7 @@ import { startCalmScroll, stopCalmScroll } from "@/lib/calm-scroll";
 import { layStone } from "@/lib/stone";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
-const POOLS = 6;   // the torch, and one for each of five fingers
+const POOLS = 6;   // the torch, and one for each of five fingers (a phone shows only the torch)
 
 /**
  * The torch's pools of light on the wall, behind everything on the page (lib/torch.ts), the still stone (lib/stone.ts)

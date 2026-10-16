@@ -33,9 +33,7 @@ interface Props {
 export default function Carving({ text, kind, cols, delay, gain, className, day }: Props) {
   const cv = useRef<HTMLCanvasElement>(null);
   const caps = carvedCaps(text);
-  // on a touch screen there is no torch until a finger touches the glass, so a page's name is cut a little brighter
-  const touch = typeof matchMedia !== "undefined" && matchMedia("(pointer: coarse)").matches;
   useTorchlit(cv, async (c) => { await carvingFontReady(); return new Carved(c, { ...KINDS[kind](caps, cols), pal: day ? "day" : "night" }); },
-    { delay, gain: gain ?? (touch && (kind === "title" || kind === "cover") ? 1.5 : undefined), day: () => !!day }, caps + kind + (day ? "day" : ""));
+    { delay, gain, day: () => !!day }, caps + kind + (day ? "day" : ""));
   return <canvas ref={cv} className={className ?? "carve"} aria-hidden="true" />;
 }

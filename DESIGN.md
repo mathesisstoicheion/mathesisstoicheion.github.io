@@ -19,7 +19,7 @@ emblem in `emblem/`).
 4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Every quotation is checked against its source. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
 6. **All movement is calm.** Things ease and settle. Nothing bounces, sparks or flashes. The owner: "Remember when I say movement it has to be calm" (2026-10-16). A quick, springy, flashy trial the same day was rejected: "Get rid of the flashy animations. It's horrible. I liked the way it was before."
-7. **Every finger counts.** On a phone every finger on the glass carries its own light, all at once, and goes on doing so while the page scrolls (the owner: the site should track "where your finger is when scrolling", 2026-10-16).
+7. **On a phone, scrolling is the torch.** Nothing needs touching: the light stands in the middle of the screen, so carvings and reliefs light up as they reach the middle and dim as they scroll away (the owner, 2026-10-16: lighting by touch "is a bit distracting"; earlier that day each finger carried its own light). Things a finger works directly, such as the vase, still answer every finger at once.
 
 ## Type
 | Role | Family | Notes |
@@ -47,7 +47,7 @@ Light text is never pure white.
 
 ## Texture and light
 - The stone has a still (never moving) mottled, pitted texture. There is no film grain.
-- The pointer is a torch. It eases along behind the hand, and drifts by itself when the hand leaves the page. On a phone each finger carries its own light, up to five; a light fades in when a finger touches and fades out when it lifts. Nothing blocks scrolling.
+- The pointer is a torch. It eases along behind the hand, and drifts by itself when the hand leaves the page. On a phone the torch stands in the middle of the screen (a little higher at the top of a page and lower at its foot, so the first and last things are lit too) and fingers carry no light. Nothing blocks scrolling.
 - Carved letters are V-shaped grooves lit from the side the flame is on (each letter is prepared lit from 16 directions; the page blends the two nearest).
 - Real reliefs are re-lit pixel by pixel, bright parts treated as raised, so the light rakes across the marble from the torch's side.
 - With "reduce motion" switched on, everything is drawn once and holds still.

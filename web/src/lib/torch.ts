@@ -1,8 +1,10 @@
 /**
  * The torch (DESIGN.md: Texture and light). One torch lights the whole site: on a computer it follows the mouse gently
- * (eased, a little behind) and drifts slowly by itself when the mouse leaves the page; on a phone every finger on the
- * glass carries its own light (up to five), all at once, and goes on doing so while the page scrolls. It flickers only
- * very slightly. Nothing here blocks scrolling: every listener is passive.
+ * (eased, a little behind) and drifts slowly by itself when the mouse leaves the page. On a phone (a touch screen with
+ * no mouse) nothing needs touching: the torch stands in the middle of the screen, so carvings and reliefs light up as
+ * scrolling brings them to the middle and dim as they scroll away (the owner, 2026-10-16: lighting by touch "is a bit
+ * distracting"). Near the top and the foot of a page it stands a little higher or lower, so the first and last things
+ * on the page are lit too. It flickers only very slightly. Nothing here blocks scrolling: every listener is passive.
  *
  * One animation loop drives it all. Art that the torch lights (carved letters, re-lit reliefs, the emblem) registers
  * with onFrame() and is handed the lights of each frame, in viewport pixels; it redraws only when they move relative
@@ -49,6 +51,17 @@ export const torchStill = () => reduce();
 
 function driftAnchor(): Drift { return drift ?? [0.56, 0.42, 0.3, 0.16]; }
 
+/** A touch screen with no mouse: the torch stands still in the middle of the screen and fingers carry no light. */
+let touchOnly = () => false;
+/** Where the torch stands on a touch screen: in the middle, but higher within the first half screen of the page and
+ *  lower within the last, so the top and the foot of the page can be lit too. */
+function middleSpot(): [number, number] {
+  const W = innerWidth, H = innerHeight, half = H / 2, end = H * 0.28;
+  const room = Math.max(0, document.documentElement.scrollHeight - H), y = scrollY;
+  const top = clamp(1 - y / half, 0, 1), foot = clamp(1 - (room - y) / half, 0, 1);
+  return [W / 2, half - (half - end) * top + (half - end) * foot];
+}
+
 function setRadius() {
   T.R = clamp(Math.min(innerWidth, innerHeight) * 0.36, 170, 330);
   document.documentElement.style.setProperty("--glow-d", `${Math.round(T.R * 3.6)}px`);
@@ -80,7 +93,17 @@ function updateFingers(dt: number) {
 }
 
 function updateTorch(dt: number, t: number) {
-  const W = innerWidth, H = innerHeight, nf = updateFingers(dt);
+  const W = innerWidth, H = innerHeight;
+  if (touchOnly() && !P.mouse) {
+    // fingers carry no light; their lights fade if one was showing
+    PT.clear(); TT.clear(); updateFingers(dt);
+    const [mx, my] = middleSpot(), k = 1 - Math.exp(-dt * 8);
+    T.x += (mx - T.x) * k; T.y += (my - T.y) * k;
+    T.a += (1 - T.a) * (1 - Math.exp(-dt * 1.1)); T.sy = scrollY; T.sVel = 0; T.had = 0;
+    T.f = 1 + 0.016 * Math.sin(t * 1.7 + 1.3 * Math.sin(t * 0.61)) + 0.008 * Math.sin(t * 3.9 + 0.7);
+    return;
+  }
+  const nf = updateFingers(dt);
   let tx: number, ty: number, rate: number;
   if (nf) T.hold = t + 0.9;
   // when the fingers lift, the torch comes back from where the last light was
@@ -153,8 +176,11 @@ export function startTorch(glows: HTMLElement[], still: () => boolean) {
   glow = glows[0];
   pool.length = 0; pool.push(...glows.slice(1));
   setRadius();
+  const mq = matchMedia("(hover: none) and (pointer: coarse)");
+  touchOnly = () => mq.matches;
   const [ax, ay] = driftAnchor();
   T.x = innerWidth * ax; T.y = innerHeight * ay; T.sy = scrollY;
+  if (touchOnly()) [T.x, T.y] = middleSpot();
   const onDown = (e: PointerEvent) => { if (e.pointerType === "mouse") { P.mouse = true; P.inside = true; P.x = e.clientX; P.y = e.clientY; } else PT.set(e.pointerId, { x: e.clientX, y: e.clientY }); };
   const onMove = (e: PointerEvent) => { if (e.pointerType === "mouse") { P.mouse = true; P.inside = true; P.x = e.clientX; P.y = e.clientY; } else if (PT.has(e.pointerId) || e.buttons) PT.set(e.pointerId, { x: e.clientX, y: e.clientY }); };
   const onUp = (e: PointerEvent) => { PT.delete(e.pointerId); };

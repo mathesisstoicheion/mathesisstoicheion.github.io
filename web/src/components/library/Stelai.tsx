@@ -2,7 +2,7 @@
 /**
  * The library's wall of stelai (design B, Stone and torch; DESIGN.md, Screens: Library): a few famous books, each
  * standing as a carved gravestone (a stele) with a pediment, its picture set in a round medallion re-lit by the torch
- * (pipeline/relit_images.py; the credits are those of data/images.json). As a torch, or a finger, passes over a stele
+ * (pipeline/relit_images.py; the credits are those of data/images.json). As the torch passes over a stele (on a phone, as it scrolls through the middle of the screen)
  * its title catches the light for a moment. Each stele opens its book in the reader. On a phone each group is one row
  * to swipe through sideways, so the wall costs a screen or two of scrolling, not six.
  */

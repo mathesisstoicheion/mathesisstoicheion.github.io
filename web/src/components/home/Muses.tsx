@@ -1,7 +1,7 @@
 "use client";
 /**
  * The nine Muses, as Hesiod names them (Theogony 76–79), each in a niche cut into the wall (lib/art/niche.ts). Pass a
- * torch, or a finger, over a niche and her name catches the light for a moment.
+ * torch over a niche (on a phone, scroll her to the middle of the screen) and her name catches the light for a moment.
  */
 import { useEffect, useRef } from "react";
 import { Niche } from "@/lib/art/niche";
