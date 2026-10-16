@@ -1,127 +1,113 @@
 # Design
 
-The look of the redesigned site, agreed with the owner on 2026-10-15 (thread "Site redesign").
-The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it, with a correction, 0005 calm motion and the library's gathering letters).
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 8 is the current one.
-Their source files are in the project files, under `redesign/prototype/`.
+The look of the redesigned site. The owner compared three complete designs on 2026-10-16 and chose **B, "Stone and torch"**
+(thread "Site redesign"; `docs/adr/0006-stone-and-torch.md`). The earlier direction, A ("Gold and lamplight"), is kept for
+reference at the end of this file and in `docs/adr/0001`–`0005`.
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 14 is the current one; it opens on B, with A
+and C a tab away). Their source files are in the project files, under `redesign/prototype/` (B in `abc/b-sources/`, the
+emblem in `emblem/`).
 
 ## Character
 - **Is:** beautiful, mysterious, insightful.
-- **Is not:** bright, busy, or like a template (no default blue, no cards everywhere, no stock icons as decoration).
-- **In one sentence:** a dark room where a single lamp, or the glint of old gold, lets you see the Greeks and read them in their own words.
+- **Is not:** bright, busy, flashy, or like a template (no default blue, no cards everywhere, no stock icons as decoration).
+- **In one sentence:** a wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry.
 
 ## Principles
-1. **Darkness is the frame.** The site is dark only. The one light surface is the reader's "Daylight" page, which is a reading aid against eye strain.
-2. **Every page has something to touch, except the reader.** The home page, the library and every other page carry interactive art. The reader is for reading: it opens in lamplight with a little drifting dust, but once you scroll into the text nothing moves on its own.
-3. **Art is seen through windows.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). In the library, where Socrates stands behind the page, wide screens give the text a left-hand column and set him beside it, so nothing covers him.
-4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Nothing is invented for decoration.
+1. **Darkness is the frame.** The site is dark only. The one light surface is the reader's "Daylight" page, a reading aid against eye strain.
+2. **Every page has something to touch, except the reader.** The home page, the library and every other page carry art that the torch lights. The reader is for reading: once you scroll into the text nothing moves.
+3. **Greek is carved as Plato's Athens wrote it.** Capitals set in a strict grid (the stoichedon style), with no accents or spaces, for carved Greek. Reading Greek is set in full polytonic type.
+4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Every quotation is checked against its source. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
-6. **All movement is calm.** Things drift, gather and fade slowly. Nothing jumps, flickers fast, or follows the pointer uninvited. The owner: "Remember when I say movement it has to be calm" (2026-10-16).
+6. **All movement is calm.** Things ease, glide and settle. Nothing bounces, sparks or flashes. The owner: "Remember when I say movement it has to be calm" (2026-10-16). A quick, springy, flashy trial the same day was rejected: "Get rid of the flashy animations. It's horrible. I liked the way it was before."
+7. **Every finger counts.** On a phone every finger on the glass carries its own light, all at once, and goes on doing so while the page scrolls (the owner: the site should track "where your finger is when scrolling", 2026-10-16).
 
 ## Type
 | Role | Family | Notes |
 |---|---|---|
-| Display (big titles) | Noto Serif Display | Condensed (width axis 62.5%) and thin (weights 100–300). Tall, narrow capitals. Italic for the words that matter. |
-| Reading text, library and reader | Literata | Also the reader's default Greek face. |
-| Reading text, home page | EB Garamond | EB Garamond has no archaic letters (digamma, koppa, sampi), so Greek falls back to Gentium Book Plus for those. |
-| Greek fallback, and reader choice | Gentium Book Plus | Full polytonic plus archaic letters, in all four styles. The reader offers Literata, Gentium or Garamond for Greek. |
-| Labels, captions, numbers | Noto Sans Mono | Small, upper case, widely spaced. Greek labels in capitals are written without accents (ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ). |
-| Logo mark | Noto Sans Display | The ΣΤΟΙΧΕΙΑ block in the header. |
+| Headings and Greek | GFS Didot | Polytonic Greek. |
+| Reading text, wide-spaced capital labels | EB Garamond | |
+| Letters carved on canvas | Noto Serif Display 500 | |
+| Third Greek choice in the reader | Noto Serif | |
 
-- All of these fonts are under the SIL Open Font Licence, so they can be bundled for offline use.
-- Greek text is stored precomposed (Unicode NFC). Google's font files leave out the combining breathings and accents.
-- Greek apostrophes are ’ (U+2019), not ʼ (U+02BC).
-- Reading size is about 1.3rem, with lines of 55–75 characters and line height 1.5–1.6.
+- All are Google Fonts under the SIL Open Font Licence, so they can be bundled for offline use.
+- Greek text is stored precomposed (Unicode NFC). Greek apostrophes are ’ (U+2019).
+- Greek capitals in labels are written without accents (ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ); where a label must keep its accents it is set in lower case.
 
 ## Colour
-Each page lives in one of two rooms. The black frame (`--black` #050403) is the same everywhere.
+| Role | Value |
+|---|---|
+| Stone, darkest to lightest | #0b0907, #14100d, #1b1612, #251f19, #332a21 |
+| Text, ivory | #efe5d2; quieter lines #bfb09a and #93856f |
+| Torchlight: honey | #efc27a (brighter #f9dfae) |
+| Torchlight: amber, ember | #f0a24c, #c8622c |
+| Second accent, faded red ochre | #a65d40 (labels #d4917a) |
+| Daylight page (reader only) | pale limestone #e8e0cf, dark ink #2a221a, burnt-sienna accent #8a3e1e |
 
-**The doorway** (home page): Pompeian red and gold, like an engraved coin.
-| Role | Token | Value |
-|---|---|---|
-| Art field | `--red` | #5c1910 |
-| Deep background | `--red-deep` | #1b0907 |
-| Accent, engraving | `--gold` | #e8bd70 |
-| Highlight | `--gold-hi` | #f6dca6 |
-| Text | `--bone` | #f2e0c6 |
-| Muted text | `--bone-2` | #c39f83 |
-
-**The lamp room** (library, reader and most other pages): near-black with amber lamplight.
-| Role | Token | Value |
-|---|---|---|
-| Background | `--room` | #0b0806 |
-| Raised surface | `--room-2` | #140f0a |
-| Text | `--parch` | #ecca97 |
-| Muted text | `--parch-2` | #8f7556 |
-| Accent, lamplight | `--amber` | #ffad45 |
-| Highlight | `--amber-hi` | #ffd59a |
-
-**Daylight** (reader only): warm paper, never white. Background #ece0c9, surface #f3e9d6, text #2a1c10, muted #6d5539, accent #a8550f.
-
-Lines and borders are the accent at about 20% strength. Light text is never pure white.
+Light text is never pure white.
 
 ## Texture and light
-- Faint scan lines sit still over the home page and the library. There is no film grain: the owner found the moving grain distracting (2026-10-16).
-- Art is drawn in fine lines, dots, Greek letters or light, never as flat photographs:
-  - each window on the home page shows its own real object, engraved in gold lines on Pompeian red, and always the whole object, never a close crop (the owner found the first crops "a bit too zoomed in", 2026-10-16);
-  - the library's Socrates is written in Greek letters.
-- The pointer acts as a lamp, or bends the engraved lines. On a phone every finger does the same, all at once, and goes on doing it while the page scrolls (the owner asked that it track "where your finger is when scrolling", not only a first touch, 2026-10-16). A finger that rests in one place for a moment counts as a press and hold. Without a finger, the lamp drifts slowly.
+- The stone has a still (never moving) mottled, pitted texture. There is no film grain.
+- The pointer is a torch. It eases along behind the hand, and drifts by itself when the hand leaves the page. On a phone each finger carries its own light, up to five; a light fades in when a finger touches and fades out when it lifts. Nothing blocks scrolling.
+- Carved letters are V-shaped grooves lit from the side the flame is on (each letter is prepared lit from 16 directions; the page blends the two nearest).
+- Real reliefs are re-lit pixel by pixel, bright parts treated as raised, so the light rakes across the marble from the torch's side.
 - With "reduce motion" switched on, everything is drawn once and holds still.
 
 ## Motion
-Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
-- **Shutters** for the home page and most other pages:
-  - On every screen, each window opens as a round iris as it arrives, following the scroll: first the middle of its picture alone, with a soft gold rim, then the whole window. The owner found the phone shutters "a bit awkward" and asked for "a different shutter effect that highlights the coin", then for "something different" in each window, "On PC, too" (2026-10-16).
-  - The first window shows the coin. The others show the Parthenon's east frieze, Socrates, a school cup by Douris, an amphora by the Berlin Painter, the Antikythera mechanism, an ostrakon of Themistocles, the Mask of Agamemnon, and Crates and Hipparchia. All are credited at the foot of the page.
-  - Faint Greek letters float behind the home page at three depths, few and slow. They move at different speeds as you scroll, and step aside from the pointer, catching a little of its light. The owner asked for them back, "less distracting" (2026-10-16).
-  - The only sparks are the ones a Muse's lamp throws when you fan it.
-- **Stage** for the library:
-  - Socrates is pinned behind the page. Before you scroll, the letters of the Apology wander slowly in the dark. As you scroll down they gather into his face, and his face comes together only that way (the owner: it "was cooler when his face only was revealed when you scrolled", and "it'd be a lot cooler if the letters in the library were moving around beforehand, then when you scroll, they gather to create the face", 2026-10-16).
-  - On wide screens he stands to the right of the shelves, so nothing covers him as you scroll. On phones he stands behind the page, and the blocks over him are partly see-through.
-  - The Apology rises slowly through his face.
-  - While you wait, the lamp flickers softly. Once he has gathered, a band of light passes slowly over his face alone, as if someone carried a lamp by, and a light reads the speech across his face, a few words at a time.
-  - The reading glass appears only while you press and hold on his face. It does not follow the pointer on its own (the owner found that "distracting").
-  - Scroll on past the middle of the page and his face falls apart: the letters drift down and rearrange into a papyrus roll, the Apology written in columns of capitals with no spaces, as books were written in Plato's time. A light reads slowly along the columns (the owner: "the letters make Socrates face, then as you scroll down they fall apart and rearrange into a scroll", 2026-10-16).
-- **The reader** opens on a cover: the title large, lamplight, a shaft of light with dust drifting in it, and the title's letters faint in the dark. "Scroll to begin reading" waits at the foot. As you scroll into the text the cover fades out, and from then on nothing moves.
-
-Scrolling (the owner: "some of the scrolling should be automatic and should snap into place. Make a slower scroll", 2026-10-16):
-- On the home page and the library, a mouse wheel scrolls more slowly than usual, and the page glides on a little after the wheel stops.
-- When scrolling stops near the start of a section (within about four tenths of the screen), the page glides the rest of the way and settles there. In the library it settles where Socrates' face is whole, and where the roll is whole. Touching the screen, pressing a key or the mouse stops a glide at once.
-- Headings settle as their section arrives: their letters (the Greek lines, word by word) drift in from small offsets and find their places, at the pace of the scroll, so a slow glide plays them slowly.
-- The reader keeps the ordinary scroll, and "reduce motion" turns all of this off.
-
-Other motion:
-- Titles rise line by line on arrival.
-- Emblems gather out of loose letters, and brighten when the pointer is over them. Once settled, an emblem stays as sharp as when it first appears.
-- Nothing loops fast or flashes.
+- **Scrolling (Home and Library):**
+  - The wheel is a little slowed (0.8 of the browser's distance per notch) and smooth: the page eases towards where the wheel sends it and keeps up with the hand (about 0.11 s). The owner wanted the slow scroll kept, "just not THAT slow" (2026-10-16).
+  - About 120 ms after the page stops (on a phone, after the finger lifts and the page has stopped), if a section's resting place is within 40% of a screen, the page glides there in about half a second on a smooth ease-out, with no bounce and no overshoot. A touch, a wheel, a key or a mouse press stops it at once. There is no gliding after keyboard scrolling.
+  - As the page comes to rest on a section, its carvings and reliefs brighten a little, and heading letters settle gently into line.
+  - Each part is cut in (it fades in and rises a few pixels) the first time you reach it.
+- **The reader** opens on a torch-lit cover (ΑΠΟΛΟΓΙΑ·ΣΩΚΡΑΤΟΥΣ carved in stone, with the Socrates portrait as a medallion). The cover fades as you scroll into the text; after that nothing moves, and scrolling is completely normal.
+- Nothing loops fast, flashes or throws sparks.
 
 ## Space and shape
 - Spacing steps of 4, 8, 12, 16, 24, 36, 56 and 80 px. Sections breathe; lists are compact.
-- Square corners. Thin 1px rules and borders instead of shadows. No rounded cards.
-- One column on phones, with a 16px gutter. Windows sit above the text on phones.
+- Thin rules and cut lines instead of drop shadows. No rounded cards.
+- One column on phones, with a 16px gutter. Pictures sit above the text on phones.
+
+## The screens
+**Home.** In order:
+1. The hero: a wall of the opening of Plato's *Apology*, carved in the stoichedon grid (Burnet's text with accents and breathings removed, iota subscript carved as a full Ι), cut in diagonally when the page opens and read by carrying the torch over it.
+2. "The name" (see Signature details).
+3. The Passage of the day, Greek and English, beside the Great Eleusinian Relief, re-lit.
+4. Hesiod's line carved in the wall, above nine Muse niches that cast real shadows; their names light as a torch passes.
+5. A wide window holding a cast of the Parthenon's east frieze.
+6. The five rooms as carved panels.
+7. "Why Stoics are called Stoics", beside a grave stele cut out of its background and re-lit.
+
+**Library ("The Mouseion").** ΜΟΥΣΕΙΟΝ is carved at the top; search and filters are cut stone. The books stand as stelai (gravestones), each with its picture in a round medallion re-lit by the torch, then the author, the title, the Greek title and the picture's credit. A stele's words light up as a torch passes.
+
+**Reader.** Greek and English side by side on a computer, one above the other on a phone. Controls: Both / Greek / English; Aa (Night or Daylight, the Greek typeface, the text size); Tools. Dotted words open a word panel.
 
 ## Signature details
-1. **Socrates spelled out of the Apology.** The library's face of Socrates is made of the whole Greek text of Plato's Apology, in reading order, from "ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι" to "τῷ θεῷ" (Burnet's Oxford text, via the Perseus Digital Library). Socrates wrote nothing, which is why the face is drawn from the speech Plato gave him.
-   - The brightness and size of each letter draw the face. The letters are fine enough for the features to show clearly.
-   - The speech slowly rises through the face.
-   - Pressing and holding on the face brings up a reading glass that enlarges the letters under it, so the speech can be read.
-2. **Every text has its own emblem.** It shows the author's face, the thing the text is best known for, or one of its themes, drawn in Greek letters inside an oval. It appears on the book's row in the library and at the top right of the reader. Each emblem is a licensed image with its credit beside it. The Socrates emblem is also spelled out of the Apology, in capitals with no spaces or accents, as Greek was written in Plato's time, which keeps the small face sharp.
-3. **The engraved objects.** In the home page's windows, real objects are engraved in gold lines on Pompeian red, one to a window. The first is Athena's head, from a silver tetradrachm of Athens, c. 440–404 BC, in the Metropolitan Museum of Art (2021.40.80, CC0). Every picture is a licensed image, credited at the foot of the page.
-4. **The Muses' flames.** A section of the home page opens with Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White).
-   - Below it, the nine Muses he names (Theogony 76–79) each have a small oil lamp.
-   - Fanning a flame with the pointer makes it flare, throw sparks and light up her name.
-   - The arts given to each Muse are later tradition, and the page says so.
+1. **The name, and its emblem.** Μάθησις στοιχείων, *Learning the elements*. The owner asked what object goes with the name, liked all three suggestions and asked for them together (2026-10-16). The emblem is one still life:
+   - a **wax tablet**, on which Greek children learned their letters, for στοιχεῖον as a letter: "a simple sound of speech, as the first component of the syllable" (LSJ, citing Plato, Cratylus 424d);
+   - the **stylus** standing upright in the wax like a sundial's pointer, for στοιχεῖον as "the shadow of the gnomon, the length of which in feet indicated the time of day" (LSJ); Aristophanes, Assemblywomen 652: ὅταν ᾖ δεκάπουν τὸ στοιχεῖον, "when the shadow is ten feet long";
+   - a **compass** and Euclid's first proposition scratched in the wax, for the Στοιχεῖα, Euclid's *Elements*: ἐπὶ τῆς δοθείσης εὐθείας πεπερασμένης τρίγωνον ἰσόπλευρον συστήσασθαι, "On a given finite straight line to construct an equilateral triangle" (Elements 1.1, Heiberg's text, tr. Heath). The points are lettered Α Β Γ Δ Ε as Euclid letters them, and the given line ΑΒ is the stylus's shadow.
+   - It draws itself slowly (about four seconds) when it comes into view, and every light casts its own shadows across it. The small flat version (tablet, circles, triangle and stylus) is the header's mark, in honey.
+2. **The carved Apology.** The home page's wall is the speech Socrates gave, as Plato wrote it, cut in the stoichedon grid.
+3. **Reliefs re-lit by the torch.** Real ancient reliefs (the Great Eleusinian Relief, the Parthenon frieze, a grave stele from Attica) lit from the side the flame is on.
+4. **The Muses' niches.** Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White), above the nine Muses he names (Theogony 76–79), each in her own lit niche. The arts given to each Muse are later tradition, and the page says so.
+5. **Every book has its medallion.** The author's face or the thing the text is best known for, a licensed image re-lit in a round medallion on its stele, credited beside it.
 
 ## Avoid
 - Light mode anywhere but the reader's Daylight page.
 - Moving or interactive art inside the reader's text.
 - Stock photos, invented quotations, uncredited images, or images without a clear licence.
-- Default system fonts, pure white text, rounded cards, drop shadows, and bright saturated blues or greens.
+- Default system fonts, pure white text, rounded cards, and bright saturated blues or greens.
 - Accents on Greek capitals in labels, and Greek set in a font that drops its accents or breathings.
-- Blend modes (overlay, multiply) on full-screen layers. In testing, an overlay blend on the old grain halved the frame rate. Scan lines use plain transparency.
-- Moving art that the page's own blocks or windows cover. Put it beside the text on wide screens.
-- Moving film grain or noise. The owner found it "super distracting".
-- Busy motion behind the text: the home page's floating letters stay few, faint and slow.
-- Effects that follow the pointer uninvited, such as a magnifying glass that appears on hover. Show them on press and hold.
-- Fast or jumpy movement of any kind. Every motion is slow and eased.
-- Reading colours from styles inside an animation frame, and drawing thousands of letters as text every frame. Read colours once per page. Stamp letters from a prepared sheet of letters. Keep a still picture of anything that has not changed.
+- Blend modes (overlay, multiply) on full-screen layers; they halved the frame rate in testing.
+- Moving film grain or noise ("super distracting").
+- Flashy motion: sparks, flares, flashes, bounces and springy overshoot ("It's horrible", 2026-10-16).
+- Effects that follow the pointer uninvited, such as a magnifying glass on hover. Show them on press and hold.
+- Reading colours from styles inside an animation frame. Draw only what is on screen, and only when a light moves.
+
+## Earlier direction A, "Gold and lamplight" (not chosen; kept for reference)
+Pompeian red and gold on the home page, amber lamplight elsewhere. Each home window opened as a round iris onto its own
+real object engraved in gold lines (an Athenian coin, the Parthenon frieze, Socrates, a cup by Douris, an amphora by the
+Berlin Painter, the Antikythera mechanism, an ostrakon of Themistocles, the Mask of Agamemnon, Crates and Hipparchia).
+The library's Socrates was spelled out of the whole Apology, gathered as you scrolled, then fell apart into a papyrus roll
+of capitals; a reading glass appeared on press and hold. Nine Muses' oil lamps could be fanned. Its decisions are in
+`docs/adr/0001`–`0005`, and its sources in `redesign/prototype/round3/` to `round9/`. A third design, C ("Clay and glaze",
+black glaze and terracotta, a turning prize amphora), is in `redesign/prototype/abc/`.

@@ -1,13 +1,15 @@
 # PROGRESS.md — project memory
 
 ## Site redesign (2026-10-15; samples only, the site itself is unchanged)
-The owner asked for a fresh-start redesign. The look is agreed and written down in `DESIGN.md`; the decision is
-`docs/adr/0001-visual-direction.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 6 is current);
-sources in the project files under `redesign/prototype/` (round 4 in `round4/`, round 5 in `round5/`, round 6 and 7 in `round6/`, round 8 in `round8/`). Scroll styles chosen: Stage for the library, Shutters elsewhere, with the Muses' flames (`docs/adr/0002-scroll-per-page.md`).
-Round 4 (`docs/adr/0003-hearth-and-side-art.md`): the home page's fire lights the gold mask from Mycenae from below and is fanned by scrolling;
-on wide screens the art stands beside a left-hand column of text; the library's Socrates moves when idle; the reader opens on a lamplit cover.
-Round 5 (`docs/adr/0004-round-3-home-scroll-only-socrates.md`), after the owner's verdict: the round 3 home page is back, Socrates gathers only as you scroll, and the reader's cover stays. Round 6: the moving film grain is gone from every page, and faint floating Greek letters are back behind the home page. Round 7 (`docs/adr/0005-calm-motion-and-gathering-letters.md`): all movement is calm, the reader's Socrates stays sharp, the library's glass appears only on press and hold, and the library's letters wander before you scroll, then gather into his face. Round 8: on phones the home page's windows open as a round iris onto the coin. Waiting for the owner.
-Next: design tokens, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
+The owner asked for a fresh-start redesign. On 2026-10-16, after comparing three complete designs, they chose **B, "Stone and torch"**
+(`docs/adr/0006-stone-and-torch.md`); the look is written down in `DESIGN.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH
+(version 14 is current: it opens on B, with A and C a tab away). Sources in the project files under `redesign/prototype/`: B in `abc/b-sources/`,
+the name's emblem in `emblem/`, A's rounds in `round3/` to `round9/`.
+- The earlier direction A (rounds 1 to 10, `docs/adr/0001`–`0005`): a coin engraved in gold on Pompeian red, the library's Socrates spelled out of the Apology, the Muses' lamps.
+- Round 11: every finger counts on a phone, even while scrolling; the page glides and settles at nearby sections; three complete designs (A, B, C) side by side.
+- A quick, springy, flashy version was tried and rejected the same day ("It's horrible"). Motion stays calm: the wheel is a little slowed and the page glides into place in about half a second with no bounce.
+- B gained "The name": a wax tablet with Euclid's first proposition, a stylus standing like a sundial's pointer and a compass, for the three meanings of στοιχεῖον; its flat form is the header's mark.
+Next: design tokens from B, then the build on branch `claude/site-redesign-77uoc2`. It goes live only when the owner says "Publish".
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
