@@ -8,7 +8,9 @@
     "start": "node scripts/serve-out.mjs",
     "lint": "eslint",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "tokens:inventory": "node scripts/token-inventory.mjs",
+    "check:tokens": "node scripts/check-tokens.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",

@@ -1,0 +1,512 @@
+{
+  "src/app/academy/alphabet/page.tsx": {
+    "font-size": 1,
+    "spacing": 3
+  },
+  "src/app/academy/checkpoint/[id]/page.tsx": {
+    "font-size": 3,
+    "spacing": 5
+  },
+  "src/app/academy/guide/[id]/page.tsx": {
+    "font-size": 2,
+    "spacing": 5
+  },
+  "src/app/academy/lesson/[id]/page.tsx": {
+    "font-size": 2,
+    "spacing": 5
+  },
+  "src/app/academy/page.tsx": {
+    "spacing": 8
+  },
+  "src/app/academy/practice/page.tsx": {
+    "font-size": 1,
+    "spacing": 3
+  },
+  "src/app/academy/review/page.tsx": {
+    "spacing": 3
+  },
+  "src/app/academy/studio/page.tsx": {
+    "spacing": 3
+  },
+  "src/app/academy/tables/page.tsx": {
+    "font-size": 1,
+    "spacing": 3
+  },
+  "src/app/academy/today/page.tsx": {
+    "spacing": 2
+  },
+  "src/app/academy/vocabulary/page.tsx": {
+    "font-size": 1,
+    "spacing": 3
+  },
+  "src/app/error.tsx": {
+    "font-family": 1,
+    "font-size": 2,
+    "spacing": 5
+  },
+  "src/app/globals.css": {
+    "colour": 18,
+    "font-family": 3,
+    "font-size": 16,
+    "spacing": 59,
+    "radius": 2,
+    "shadow": 4,
+    "z-index": 7,
+    "motion": 19
+  },
+  "src/app/home.module.css": {
+    "font-size": 19,
+    "spacing": 68,
+    "radius": 3,
+    "shadow": 3,
+    "motion": 9
+  },
+  "src/app/manifest.ts": {
+    "colour": 2
+  },
+  "src/app/not-found.module.css": {
+    "colour": 5,
+    "font-size": 4,
+    "spacing": 10,
+    "motion": 16
+  },
+  "src/app/prose.module.css": {
+    "font-size": 6,
+    "spacing": 11
+  },
+  "src/app/stoa/periplus/page.tsx": {
+    "font-size": 1,
+    "spacing": 1
+  },
+  "src/components/Amphora.module.css": {
+    "colour": 8,
+    "font-size": 11,
+    "spacing": 37,
+    "radius": 14,
+    "shadow": 5,
+    "z-index": 4,
+    "motion": 14
+  },
+  "src/components/Amphora.tsx": {
+    "colour": 1,
+    "font-size": 1
+  },
+  "src/components/BackToTop.module.css": {
+    "font-size": 1,
+    "spacing": 6,
+    "radius": 1,
+    "shadow": 1,
+    "z-index": 2,
+    "motion": 3
+  },
+  "src/components/Header.module.css": {
+    "colour": 8,
+    "font-size": 12,
+    "spacing": 42,
+    "shadow": 1,
+    "z-index": 2,
+    "motion": 11
+  },
+  "src/components/HomeFinder.module.css": {
+    "font-size": 6,
+    "spacing": 21,
+    "radius": 1,
+    "shadow": 2,
+    "motion": 5
+  },
+  "src/components/LetterTiles.module.css": {
+    "font-size": 4,
+    "spacing": 4,
+    "motion": 2
+  },
+  "src/components/LogoMark.module.css": {
+    "motion": 4
+  },
+  "src/components/OfflineActions.module.css": {
+    "font-size": 6,
+    "spacing": 17,
+    "radius": 2,
+    "motion": 3
+  },
+  "src/components/PanelGuard.tsx": {
+    "font-size": 1,
+    "spacing": 3
+  },
+  "src/components/PassageOfTheDay.module.css": {
+    "font-size": 3,
+    "spacing": 16
+  },
+  "src/components/SettingsPanel.module.css": {
+    "colour": 3,
+    "font-size": 10,
+    "spacing": 25,
+    "radius": 4,
+    "shadow": 3,
+    "z-index": 1,
+    "motion": 10
+  },
+  "src/components/TabBar.module.css": {
+    "font-size": 3,
+    "spacing": 10,
+    "shadow": 4,
+    "z-index": 1,
+    "motion": 7
+  },
+  "src/components/academy/Academy.module.css": {
+    "font-family": 2,
+    "font-size": 93,
+    "spacing": 246,
+    "radius": 7,
+    "shadow": 4,
+    "z-index": 2,
+    "motion": 58
+  },
+  "src/components/academy/Timeline.tsx": {
+    "motion": 5
+  },
+  "src/components/academy/Workout.module.css": {
+    "font-size": 18,
+    "spacing": 36,
+    "radius": 3,
+    "motion": 19
+  },
+  "src/components/academy/WorkoutPage.tsx": {
+    "font-size": 3,
+    "spacing": 5
+  },
+  "src/components/admin/PrivateTranslations.module.css": {
+    "colour": 3,
+    "font-size": 41,
+    "spacing": 147,
+    "radius": 5,
+    "shadow": 5,
+    "z-index": 1,
+    "motion": 34
+  },
+  "src/components/amphora/paint.ts": {
+    "colour": 11
+  },
+  "src/components/census/Census.module.css": {
+    "font-size": 29,
+    "spacing": 85,
+    "radius": 19,
+    "shadow": 5,
+    "z-index": 2,
+    "motion": 27
+  },
+  "src/components/community/Community.module.css": {
+    "font-size": 44,
+    "spacing": 160,
+    "radius": 7,
+    "shadow": 4,
+    "motion": 28
+  },
+  "src/components/guide/Guide.module.css": {
+    "colour": 11,
+    "font-size": 27,
+    "spacing": 78,
+    "radius": 21,
+    "shadow": 3,
+    "z-index": 1,
+    "motion": 56
+  },
+  "src/components/guide/Pictures.tsx": {
+    "motion": 3
+  },
+  "src/components/home/Start.module.css": {
+    "font-size": 12,
+    "spacing": 47,
+    "radius": 1,
+    "shadow": 4,
+    "motion": 22
+  },
+  "src/components/library/AuthorArticle.module.css": {
+    "font-size": 17,
+    "spacing": 62,
+    "radius": 5,
+    "z-index": 1,
+    "motion": 7
+  },
+  "src/components/library/AuthorProfile.module.css": {
+    "font-size": 7,
+    "spacing": 17,
+    "shadow": 1,
+    "motion": 2
+  },
+  "src/components/library/Library.module.css": {
+    "font-size": 36,
+    "spacing": 104,
+    "radius": 5,
+    "shadow": 4,
+    "z-index": 1,
+    "motion": 27
+  },
+  "src/components/library/WorkLanding.tsx": {
+    "font-size": 1,
+    "spacing": 1
+  },
+  "src/components/map/Periplus.module.css": {
+    "font-size": 14,
+    "spacing": 53,
+    "radius": 4,
+    "shadow": 7,
+    "z-index": 5,
+    "motion": 12
+  },
+  "src/components/map/draw.ts": {
+    "colour": 1
+  },
+  "src/components/map/engine.ts": {
+    "font-size": 2
+  },
+  "src/components/notebook/Notebook.module.css": {
+    "font-size": 12,
+    "spacing": 28,
+    "radius": 6,
+    "shadow": 1,
+    "z-index": 1,
+    "motion": 5
+  },
+  "src/components/notes/Notes.module.css": {
+    "font-family": 1,
+    "font-size": 6,
+    "spacing": 25,
+    "radius": 3,
+    "motion": 2
+  },
+  "src/components/offline/ScrollCase.module.css": {
+    "font-size": 4,
+    "spacing": 27,
+    "radius": 1,
+    "shadow": 1
+  },
+  "src/components/reader/Echoes.module.css": {
+    "font-size": 11,
+    "spacing": 27,
+    "radius": 1,
+    "shadow": 1,
+    "motion": 13
+  },
+  "src/components/reader/Find.module.css": {
+    "font-size": 10,
+    "spacing": 16,
+    "radius": 4,
+    "shadow": 2,
+    "z-index": 1,
+    "motion": 12
+  },
+  "src/components/reader/Float.module.css": {
+    "colour": 4,
+    "font-size": 5,
+    "spacing": 31,
+    "radius": 9,
+    "shadow": 3,
+    "z-index": 4,
+    "motion": 14
+  },
+  "src/components/reader/Listen.module.css": {
+    "font-size": 7,
+    "spacing": 12,
+    "radius": 4,
+    "shadow": 2,
+    "z-index": 1,
+    "motion": 6
+  },
+  "src/components/reader/Manuscript.module.css": {
+    "colour": 15,
+    "font-size": 12,
+    "spacing": 19,
+    "radius": 2,
+    "shadow": 3,
+    "z-index": 1,
+    "motion": 4
+  },
+  "src/components/reader/Markers.module.css": {
+    "colour": 5,
+    "font-size": 4,
+    "spacing": 23,
+    "radius": 7,
+    "shadow": 3,
+    "z-index": 2,
+    "motion": 7
+  },
+  "src/components/reader/Mine.module.css": {
+    "colour": 1,
+    "font-size": 13,
+    "spacing": 66,
+    "radius": 4,
+    "shadow": 3,
+    "motion": 24
+  },
+  "src/components/reader/Places.module.css": {
+    "colour": 1,
+    "font-size": 10,
+    "spacing": 21,
+    "radius": 2,
+    "shadow": 5,
+    "z-index": 4,
+    "motion": 7
+  },
+  "src/components/reader/ReadBar.module.css": {
+    "colour": 3,
+    "font-size": 9,
+    "spacing": 28,
+    "radius": 6,
+    "shadow": 3,
+    "z-index": 3,
+    "motion": 16
+  },
+  "src/components/reader/ReadBar.tsx": {
+    "font-size": 2
+  },
+  "src/components/reader/Reader.module.css": {
+    "colour": 14,
+    "font-size": 82,
+    "spacing": 290,
+    "radius": 28,
+    "shadow": 7,
+    "z-index": 5,
+    "motion": 34
+  },
+  "src/components/reader/Sentence.module.css": {
+    "font-size": 10,
+    "spacing": 22,
+    "radius": 2,
+    "motion": 4
+  },
+  "src/components/search/Constructions.module.css": {
+    "font-size": 12,
+    "spacing": 30,
+    "radius": 1,
+    "shadow": 2,
+    "motion": 4
+  },
+  "src/components/search/QuickSearch.module.css": {
+    "font-size": 15,
+    "spacing": 49,
+    "radius": 7,
+    "shadow": 1,
+    "motion": 5
+  },
+  "src/components/search/Research.module.css": {
+    "font-size": 14,
+    "spacing": 30,
+    "radius": 6,
+    "shadow": 2,
+    "z-index": 1,
+    "motion": 6
+  },
+  "src/components/search/Search.module.css": {
+    "font-size": 23,
+    "spacing": 74,
+    "radius": 2,
+    "shadow": 2,
+    "motion": 16
+  },
+  "src/components/stoa/ExploreLead.module.css": {
+    "font-size": 7,
+    "spacing": 10,
+    "radius": 2,
+    "shadow": 1,
+    "motion": 9
+  },
+  "src/components/stoa/Kerameikos.module.css": {
+    "font-size": 14,
+    "spacing": 42,
+    "radius": 8,
+    "shadow": 6,
+    "z-index": 1,
+    "motion": 30
+  },
+  "src/components/stoa/Stoa.module.css": {
+    "font-size": 37,
+    "spacing": 119,
+    "radius": 3,
+    "shadow": 8,
+    "z-index": 2,
+    "motion": 21
+  },
+  "src/components/stoa/Transmission.module.css": {
+    "font-size": 6,
+    "spacing": 20,
+    "radius": 2,
+    "shadow": 1,
+    "motion": 8
+  },
+  "src/components/stoa/WikiEditions.module.css": {
+    "font-size": 4,
+    "spacing": 17,
+    "motion": 2
+  },
+  "src/components/stoa/WikiEras.module.css": {
+    "font-size": 9,
+    "spacing": 25,
+    "radius": 2,
+    "motion": 3
+  },
+  "src/components/stoa/WikiIndex.module.css": {
+    "font-size": 12,
+    "spacing": 32,
+    "radius": 1,
+    "shadow": 1,
+    "motion": 3
+  },
+  "src/components/tour/Tour.module.css": {
+    "colour": 4,
+    "font-size": 5,
+    "spacing": 19,
+    "radius": 5,
+    "shadow": 2,
+    "z-index": 2,
+    "motion": 13
+  },
+  "src/components/treasury/Treasury.module.css": {
+    "colour": 4,
+    "font-size": 37,
+    "spacing": 129,
+    "radius": 9,
+    "shadow": 5,
+    "z-index": 2,
+    "motion": 36
+  },
+  "src/components/treasury/WordStudy.module.css": {
+    "font-size": 28,
+    "spacing": 75,
+    "radius": 8,
+    "shadow": 2,
+    "z-index": 1,
+    "motion": 10
+  },
+  "src/lib/amphora.ts": {
+    "colour": 29
+  },
+  "src/lib/logo.ts": {
+    "colour": 2
+  },
+  "src/lib/notebook-export.ts": {
+    "colour": 4,
+    "font-family": 6,
+    "font-size": 5,
+    "spacing": 12
+  },
+  "src/lib/settings.ts": {
+    "colour": 1
+  },
+  "src/lib/share-image.ts": {
+    "colour": 12,
+    "font-size": 9
+  },
+  "src/lib/stone.ts": {
+    "colour": 2
+  },
+  "src/lib/treasury-io.ts": {
+    "colour": 12,
+    "font-family": 5,
+    "font-size": 4,
+    "spacing": 13,
+    "radius": 1
+  },
+  "src/lib/use-swipe-card.ts": {
+    "motion": 4
+  }
+}
