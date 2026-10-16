@@ -45,21 +45,25 @@
     "spacing": 5
   },
   "src/app/globals.css": {
-    "colour": 18,
+    "colour": 20,
     "font-family": 3,
-    "font-size": 16,
-    "spacing": 59,
+    "font-size": 17,
+    "spacing": 39,
     "radius": 2,
-    "shadow": 4,
+    "shadow": 5,
     "z-index": 7,
-    "motion": 19
+    "motion": 17
   },
   "src/app/home.module.css": {
-    "font-size": 19,
-    "spacing": 68,
-    "radius": 3,
-    "shadow": 3,
-    "motion": 9
+    "colour": 15,
+    "font-size": 34,
+    "spacing": 84,
+    "shadow": 12,
+    "z-index": 1,
+    "motion": 15
+  },
+  "src/app/library/library.module.css": {
+    "spacing": 3
   },
   "src/app/manifest.ts": {
     "colour": 2
@@ -110,7 +114,6 @@
   "src/components/HomeFinder.module.css": {
     "font-size": 6,
     "spacing": 21,
-    "radius": 1,
     "shadow": 2,
     "motion": 5
   },
@@ -118,9 +121,6 @@
     "font-size": 4,
     "spacing": 4,
     "motion": 2
-  },
-  "src/components/LogoMark.module.css": {
-    "motion": 4
   },
   "src/components/OfflineActions.module.css": {
     "font-size": 6,
@@ -133,8 +133,8 @@
     "spacing": 3
   },
   "src/components/PassageOfTheDay.module.css": {
-    "font-size": 3,
-    "spacing": 16
+    "font-size": 4,
+    "spacing": 7
   },
   "src/components/SettingsPanel.module.css": {
     "colour": 3,
@@ -214,11 +214,11 @@
     "motion": 3
   },
   "src/components/home/Start.module.css": {
-    "font-size": 12,
-    "spacing": 47,
-    "radius": 1,
-    "shadow": 4,
-    "motion": 22
+    "colour": 3,
+    "font-size": 10,
+    "spacing": 23,
+    "shadow": 3,
+    "motion": 9
   },
   "src/components/library/AuthorArticle.module.css": {
     "font-size": 17,
@@ -234,12 +234,20 @@
     "motion": 2
   },
   "src/components/library/Library.module.css": {
-    "font-size": 36,
-    "spacing": 104,
+    "colour": 1,
+    "font-size": 39,
+    "spacing": 72,
     "radius": 5,
-    "shadow": 4,
+    "shadow": 5,
     "z-index": 1,
-    "motion": 27
+    "motion": 20
+  },
+  "src/components/library/Stelai.module.css": {
+    "colour": 8,
+    "font-size": 6,
+    "spacing": 16,
+    "shadow": 5,
+    "motion": 1
   },
   "src/components/library/WorkLanding.tsx": {
     "font-size": 1,
@@ -313,7 +321,7 @@
     "motion": 6
   },
   "src/components/reader/Manuscript.module.css": {
-    "colour": 15,
+    "colour": 13,
     "font-size": 12,
     "spacing": 19,
     "radius": 2,
@@ -362,11 +370,11 @@
   "src/components/reader/Reader.module.css": {
     "colour": 14,
     "font-size": 82,
-    "spacing": 290,
+    "spacing": 177,
     "radius": 28,
     "shadow": 7,
     "z-index": 5,
-    "motion": 34
+    "motion": 31
   },
   "src/components/reader/Sentence.module.css": {
     "font-size": 10,
@@ -452,7 +460,7 @@
     "motion": 3
   },
   "src/components/tour/Tour.module.css": {
-    "colour": 4,
+    "colour": 2,
     "font-size": 5,
     "spacing": 19,
     "radius": 5,
@@ -463,11 +471,11 @@
   "src/components/treasury/Treasury.module.css": {
     "colour": 4,
     "font-size": 37,
-    "spacing": 129,
-    "radius": 9,
-    "shadow": 5,
+    "spacing": 77,
+    "radius": 7,
+    "shadow": 6,
     "z-index": 2,
-    "motion": 36
+    "motion": 28
   },
   "src/components/treasury/WordStudy.module.css": {
     "font-size": 28,
@@ -479,6 +487,16 @@
   },
   "src/lib/amphora.ts": {
     "colour": 29
+  },
+  "src/lib/art/carve.ts": {
+    "colour": 3
+  },
+  "src/lib/art/part.ts": {
+    "font-family": 1,
+    "font-size": 2
+  },
+  "src/lib/art/relief.ts": {
+    "colour": 7
   },
   "src/lib/logo.ts": {
     "colour": 2

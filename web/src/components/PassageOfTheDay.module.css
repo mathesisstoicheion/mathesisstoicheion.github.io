@@ -1,7 +1,7 @@
 /* The passage of the day (design B, Stone and torch): the Greek large, in Didot, straight on the wall; the English
    in italic beneath it, or beside it where there is room; the note in the margin under a cut line. */
 .passage { display: grid; gap: 20px; container-type: inline-size; }
-.aids { display: flex; flex-wrap: wrap; gap: 8px; }
+.aids { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .loading { width: 200px; }
 
 .reading { display: grid; grid-template-columns: minmax(0, 1fr); gap: 22px; align-items: start; }
@@ -10,15 +10,15 @@
 .noNum :global([aria-hidden="true"]) { visibility: hidden; }
 
 .eng { font-style: italic; font-size: 1.16rem; line-height: 1.6; color: var(--ink-2); max-width: 60ch; }
-.eng :global(.label) { display: block; margin-bottom: 8px; font-style: normal; color: var(--ink-3); }
+.eng :global(.label) { display: block; margin-bottom: var(--space-2); font-style: normal; color: var(--ink-3); }
 
-.scholia { position: relative; display: grid; gap: 6px; padding-top: 16px; font-size: 0.95rem; line-height: 1.5; color: var(--ink-2); }
+.scholia { position: relative; display: grid; gap: 6px; padding-top: var(--space-4); font-size: 0.95rem; line-height: 1.5; color: var(--ink-2); }
 .scholia::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
 .scholia > :global(.label) { color: var(--accent-2); }
 
 /* where the column is wide, the English stands beside the Greek */
 @container (min-width: 820px) {
-  .reading { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(24px, 4cqw, 48px); }
+  .reading { grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(var(--space-5), 4cqw, 48px); }
   .noEng { grid-template-columns: minmax(0, 1fr); }
   .scholia { grid-column: 1 / -1; }
 }

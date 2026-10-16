@@ -92,7 +92,7 @@ a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; }
 img { max-width: 100%; }
 /* anything linked to by #id lands clear of the site header, whose height changes with the screen */
-[id] { scroll-margin-top: calc(var(--hdr-h) + 16px); }
+[id] { scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); }
 /* a long placeholder or value that does not fit ends in "…" instead of being cut mid-letter */
 input { text-overflow: ellipsis; }
 /* phones: a menu under 16 px makes iPhones zoom the page when it is tapped; and every menu is finger-sized */
@@ -116,8 +116,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .label { font-family: var(--f-label); font-weight: 500; font-size: var(--step--2); line-height: 1.3; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); }
 .muted { color: var(--ink-2); }
 .faint { color: var(--ink-3); }
-.skip { position: absolute; left: -9999px; top: 8px; z-index: 100; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 12px 16px; }
-.skip:focus { left: 8px; }
+.skip { position: absolute; left: -9999px; top: var(--space-2); z-index: 100; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: var(--space-3) var(--space-4); }
+.skip:focus { left: var(--space-2); }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 /* phones: a row of cards to swipe through sideways, the next one peeking in from the edge so it is plain there is
@@ -126,8 +126,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 @media (max-width: 760px) {
   .snap-row {
     display: grid !important; grid-template-columns: none !important; grid-auto-flow: column; grid-auto-columns: min(84%, 340px);
-    gap: 12px !important; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
-    margin-inline: calc(-1 * var(--gutter)); padding: 4px var(--gutter) 14px; scroll-padding-inline: var(--gutter);
+    gap: var(--space-3) !important; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
+    margin-inline: calc(-1 * var(--gutter)); padding: var(--space-1) var(--gutter) 14px; scroll-padding-inline: var(--gutter);
   }
   .snap-row::-webkit-scrollbar { display: none; }
 }
@@ -168,7 +168,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule-2); }
 .btn.ghost:hover { border-color: var(--accent); color: var(--accent-hi); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 0.8em 1.1em 0.75em; letter-spacing: 0.18em; gap: 8px; }
+.btn.small { padding: 0.8em 1.1em 0.75em; letter-spacing: 0.18em; gap: var(--space-2); }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
 .btn .arr { transition: transform var(--dur) var(--ease); }
 .btn:hover .arr { transform: translateX(3px); }
@@ -177,7 +177,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 
 /* a chip: a small plate cut into the stone; pressed, it is lit from within */
 .chip {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
+  display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-3);
   border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent;
   transition: border-color var(--dur) ease, color var(--dur) ease, background-color var(--dur) ease;
 }
@@ -190,7 +190,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 }
 /* a row of joined buttons, one of which is chosen (role="radiogroup" with role="radio" buttons) */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--bg-deep); }
-.segmented > button { border: 0; background: transparent; color: var(--ink-2); padding: 8px 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) ease, color var(--dur) ease; }
+.segmented > button { border: 0; background: transparent; color: var(--ink-2); padding: var(--space-2) 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) ease, color var(--dur) ease; }
 .segmented > button + button { border-left: 1px solid var(--rule); }
 .segmented > button:hover:not([aria-checked="true"]) { background: var(--surface); color: var(--ink); }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); box-shadow: inset 0 -2px 0 var(--sel-edge); }
@@ -226,9 +226,9 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .frame::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
-  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7), inset 0 0 0 2px rgba(255, 222, 180, 0.05), inset 0 18px 30px -18px rgba(0, 0, 0, 0.8);
+  box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 0 0 2px rgba(255, 222, 180, 0.05), inset 0 18px 30px -18px rgba(0, 0, 0, 0.8);
 }
-.win figcaption { font-size: 0.84rem; line-height: 1.5; color: var(--ink-3); margin-top: 12px; max-width: 62ch; }
+.win figcaption { font-size: 0.84rem; line-height: 1.5; color: var(--ink-3); margin-top: var(--space-3); max-width: 62ch; }
 .win figcaption b { font-weight: 500; color: var(--ink-2); }
 /* letters carved in the stone (components/art/Carving.tsx) */
 .carve { display: block; width: 100%; touch-action: pan-y; }
@@ -278,14 +278,14 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
   background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: 0.95rem;
   box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
-  transition: opacity 0.25s, transform 0.25s var(--ease);
+  transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 .site-footer { margin-top: clamp(48px, 8vw, 96px); }
 
-.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: 16px 40px; padding-block: 32px 48px; font-size: 0.92rem; }
-.site-footer-name { display: flex; align-items: center; gap: 12px; font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
+.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: 32px 48px; font-size: 0.92rem; }
+.site-footer-name { display: flex; align-items: center; gap: var(--space-3); font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
 .site-footer-mark { width: 40px; height: 33px; flex: none; color: var(--accent); }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
@@ -298,20 +298,20 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 
 /* area header, shared by every area page */
 .area-head { padding-block: clamp(40px, 6vw, 72px) 0; }
-.area-kicker { display: flex; align-items: center; gap: 12px; }
+.area-kicker { display: flex; align-items: center; gap: var(--space-3); }
 .area-carve { margin-top: 18px; }
 .area-kicker .label { color: var(--accent-2); }
-.area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: 16px; }
+.area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: var(--space-4); }
 .area-greek { display: block; font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
 .area-origin { max-width: 60ch; margin-top: 18px; font-size: 1.15rem; color: var(--ink-2); }
-.area-head .meander { margin-top: clamp(32px, 5vw, 56px); }
+.area-head .meander { margin-top: clamp(32px, 5vw, var(--space-7)); }
 /* phones: an area's title and its story take a third of the first screen, not half */
 @media (max-width: 760px) {
   .area-head { padding-top: 28px; }
-  .area-head h1 { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: 12px; }
+  .area-head h1 { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
   .area-greek { margin-top: 6px; }
-  .area-origin { font-size: 1.02rem; line-height: 1.5; margin-top: 12px; }
-  .area-head .meander { margin-top: 24px; }
+  .area-origin { font-size: 1.02rem; line-height: 1.5; margin-top: var(--space-3); }
+  .area-head .meander { margin-top: var(--space-5); }
 }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
@@ -322,8 +322,8 @@ h1, .page-title { overflow-wrap: anywhere; }
 select { max-width: 100%; }
 .page-title > [lang="grc"] { color: var(--accent); }
 
-.soon { padding-block: clamp(32px, 5vw, 56px); }
-.soon-card { max-width: 720px; display: grid; gap: 16px; justify-items: start; }
+.soon { padding-block: clamp(32px, 5vw, var(--space-7)); }
+.soon-card { max-width: 720px; display: grid; gap: var(--space-4); justify-items: start; }
 .soon-card ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); }
 .soon-card li::marker { color: var(--accent); }
 

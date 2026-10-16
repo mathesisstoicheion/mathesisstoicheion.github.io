@@ -111,6 +111,7 @@
   --rule-2: var(--line-2);
   --cut-d: var(--cut-dark);
   --cut-l: var(--cut-light);
+  --cut-deep: rgba(0, 0, 0, 0.7);  /* the shadowed side of a deep cut: an inset field, a stele's outline */
   --shadow: rgba(0, 0, 0, 0.6);
   --ok: var(--sage);
   --warn: var(--amber);
