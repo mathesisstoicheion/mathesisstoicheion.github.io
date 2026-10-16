@@ -49,7 +49,7 @@ Light text is never pure white.
 - The stone has a still (never moving) mottled, pitted texture. There is no film grain.
 - The pointer is a torch. It eases along behind the hand, and drifts by itself when the hand leaves the page. On a phone the torch stands in the middle of the screen (a little higher at the top of a page and lower at its foot, so the first and last things are lit too) and fingers carry no light. Nothing blocks scrolling.
 - Carved letters are V-shaped grooves lit from the side the flame is on (each letter is prepared lit from 16 directions; the page blends the two nearest).
-- Real reliefs are re-lit pixel by pixel, bright parts treated as raised, so the light rakes across the marble from the torch's side.
+- Real sculpture is lit in its own colour, its carving read from a height map, and the torch casts its real shadows (see "A sculpture on every page"). The books' medallions are re-lit greyscale copies, bright parts treated as raised.
 - With "reduce motion" switched on, everything is drawn once and holds still.
 
 ## Motion
@@ -89,6 +89,44 @@ The pieces (all in `web/src/styles/tokens.css`; a module uses only these names):
   maxims written in the fore-temple at Delphi (Pausanias 10.24.1, tr. Jones and Ormerod), with its source under it.
 - On the Daylight page the same names give limestone and burnt sienna.
 
+## A sculpture on every page
+The owner (2026-10-16): a dedicated lit sculpture on every page, lit by the mouse on a computer and by the light in the middle of
+the screen on a phone. Every page but Home (which has its three reliefs) and the reader has one.
+- **The pieces** are photographs from the Metropolitan Museum's Open Access collection (CC0), one chosen for each page
+  (`web/src/data/pieces.ts`; the credits page lists them all). A portrait stands only where it is the person the page is about or
+  the caption says why it is there; an author's page has a marble hand holding a book roll, not someone else's face.
+- **The niche** (`components/art/PagePiece.tsx`): cut into the wall at the right of the title, the words flowing round it; a
+  round-headed niche for a statue or a head, a plain window for a slab or a relief. On a phone it stands after the title, so the
+  title keeps the whole width. Pages with no title on show (a form, a private page) have theirs at the foot instead.
+- **The light** (`lib/art/piece.ts`, WebGL2): the photograph in its own colour, its carving read from a height map
+  (`pipeline/pieces.py` cuts each piece out of its photo and removes the museum's modern mounts). The torch casts the piece's
+  real shadow onto the back of the niche, like the gnomon's shadow of στοιχεῖον. Marble lets a little light through at its
+  edges; bronze shines and stays dark where it faces away.
+- **Arrival**: the first time a piece comes into view, the light arrives from far off, so its shadows shorten to their length
+  over two seconds.
+- **The lamp**: clicking a piece (tapping it, on a phone) sets a steady lamp before it, high on one side, so it can be seen
+  clearly; clicking again gives it back to the torch (the owner, 2026-10-16). The home page's reliefs do the same.
+
+## Never laggy
+The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature has its frame rate measured before it is shown.
+- A piece is drawn only while it is on screen and only when a light moves; a torch too far off to reach it draws nothing.
+- Its shadows are traced in steps of about 2.5 px (at most 32; 16 on a phone), so a short shadow costs little.
+- Each piece watches its own frames. If they keep coming slower than 42 a second, it steps down (fewer pixels, shorter shadow
+  traces), at most twice, and stays so. At most 1.2 million pixels a piece on a computer, 640,000 on a phone.
+- Change only `transform` and `opacity` in animations where possible; animating sizes and margins makes the browser lay out
+  the page again on every frame.
+
+## A to Z
+- **Author pages** with six or more works have an "A to Z" button. It opens the works in alphabetical order, under a row of
+  letters to jump by. The list is cut open like a carving: a fine line is cut across the top with a glint at the chisel's point,
+  the panel sinks beneath it, then the letters and the groups are cut in from left to right; closing runs it back, faster. On a
+  phone the letters are a strip down the right-hand edge: press and slide (the owner, 2026-10-16).
+- **The library** has no button and no separate block: one slim scroller of letters runs down the left of the list, on a
+  computer and a phone, and stays beside it as the page scrolls (the owner, 2026-10-16: "the A to Z should just be the side
+  scroller. On the left side"). Press and slide on a phone, with the letter shown beside the finger. It is hidden when the list
+  is ordered by period, or holds fewer than 20 authors.
+- **The settings panel**: every control is cut in the same stone (slabs, with the chosen one lit and gilded at its foot).
+
 ## The screens
 **Home.** In order:
 1. The hero: a wall of the opening of Plato's *Apology*, carved in the stoichedon grid (Burnet's text with accents and breathings removed, iota subscript carved as a full Ι), cut in diagonally when the page opens and read by carrying the torch over it.
@@ -112,7 +150,7 @@ The vase to paint yourself, which stood on the old home page, moved to the Keram
    - a **compass** and Euclid's first proposition scratched in the wax, for the Στοιχεῖα, Euclid's *Elements*: ἐπὶ τῆς δοθείσης εὐθείας πεπερασμένης τρίγωνον ἰσόπλευρον συστήσασθαι, "On a given finite straight line to construct an equilateral triangle" (Elements 1.1, Heiberg's text, tr. Heath). The points are lettered Α Β Γ Δ Ε as Euclid letters them, and the given line ΑΒ is the stylus's shadow.
    - It draws itself slowly (about four seconds) when it comes into view, and every light casts its own shadows across it. The small version (tablet, circles, triangle and stylus) is the site's logo: cut into the stone and laid with gold, lit by the torch, in the header and footer and as the tab, iPhone and install icons (heavier lines at small sizes). The pictures are drawn once by `web/scripts/make-logo.mjs` (renderer `web/scripts/logo/render.js`), which can also draw the two options the owner passed over (2026-10-16), cut in the stone and a seal-stone. It replaced the flat honey mark (2026-10-16) and the Stoichedon mark of 2026-10-11.
 2. **The carved Apology.** The home page's wall is the speech Socrates gave, as Plato wrote it, cut in the stoichedon grid.
-3. **Reliefs re-lit by the torch.** Real ancient reliefs (the Great Eleusinian Relief, the Parthenon frieze, a grave stele from Attica) lit from the side the flame is on.
+3. **Reliefs lit by the torch.** Real ancient reliefs (the Great Eleusinian Relief, the Parthenon frieze, a grave stele from Attica), drawn like every page's sculpture: in colour, casting their shadows away from the flame; click one to set a lamp before it.
 4. **The Muses' niches.** Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White), above the nine Muses he names (Theogony 76–79), each in her own lit niche. The arts given to each Muse are later tradition, and the page says so.
 5. **Every book has its medallion.** The author's face or the thing the text is best known for, a licensed image re-lit in a round medallion on its stele, credited beside it.
 

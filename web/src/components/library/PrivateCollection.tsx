@@ -14,6 +14,7 @@ import { isModerator, useAccount } from "@/lib/community/account";
 import { mineHref } from "@/lib/mine";
 import type { Tab } from "@/components/reader/MineDialog";
 import styles from "@/components/reader/Mine.module.css";
+import PagePiece, { PieceHold } from "@/components/art/PagePiece";
 
 const Collection = dynamic(() => import("@/components/reader/MineDialog").then((m) => m.Collection), {
   ssr: false, loading: () => <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>,
@@ -29,7 +30,7 @@ export default function PrivateCollection() {
   const tab: Tab = useSearchParams().get("tab") === "import" ? "import" : "shelf";
   const href = (t: Tab) => `${PRIVATE_COLLECTION}${t === "import" ? "?tab=import" : ""}`;
 
-  if (!ready || (session && !profile)) return <Waiting />;
+  if (!ready || (session && !profile)) return <><PieceHold /><Waiting /></>;
   if (!session) {
     return (
       <div className={`wrap ${styles.pageStatus}`}>
@@ -44,7 +45,9 @@ export default function PrivateCollection() {
       <nav className={styles.crumbs} aria-label="Breadcrumb"><Link href="/library">Library</Link> <span aria-hidden="true">/</span> Private collection</nav>
       <header className={styles.pageHead}>
         <span className={styles.seal}>{LOCK} Private · only you can see this</span>
+        <PagePiece className="piece-desk" />
         <h1 className={styles.pageTitle}>Private collection</h1>
+        <PagePiece className="piece-phone" />
         <p className={styles.pageLead}>Your own translations and the texts you have imported. Each opens in the reader, with all its reading aids.</p>
       </header>
       <Collection current={null} tab={tab} onTab={(t) => router.replace(href(t), { scroll: false })} onOpen={(id) => router.push(mineHref(id))} />

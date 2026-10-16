@@ -41,6 +41,34 @@ live; it goes live only when the owner says "Publish"):
 Published 2026-10-16 at the owner's word ("Just make the changes. Push to live"), without a separate preview round; the owner
 will report any bugs or design flaws they find on the live site.
 
+### Evening round: a sculpture on every page, A to Z, and no lag (2026-10-16; on the branch, not yet live)
+The owner asked (18:36 to 19:46): a dedicated lit sculpture on every page; refined textures, shadows, light and animation; click a
+sculpture to light it fully and click again to give it back to the torch; the settings panel's controls in one stone style; an
+"A to Z" on the author pages and the library (19:36: in the library, just a slim scroller of letters down the left); and "The
+site is not allowed to be laggy". Built (DESIGN.md: "A sculpture on every page", "Never laggy", "A to Z"):
+- **Pieces**: one Met Open Access (CC0) sculpture for each page (`web/src/data/pieces.ts`; listed with credits on the credits
+  page). `pipeline/pieces.py` cuts each out of its photo (rembg), removes the museum's modern mounts (per-piece "cut", "trim" and
+  "add" settings in `pipeline/pieces.json`) and makes its height map; the photos are in `pipeline/pieces-src/` (fetched by the
+  fetch-pictures workflow, which runs only on this branch, since this container cannot reach the Met), the lit files in
+  `web/public/images/pieces/lit/`. `lib/art/piece.ts` draws them in WebGL2; `components/art/PagePiece.tsx` places them.
+- **Home**: the three reliefs are drawn the same way; click one for the lamp.
+- **A to Z**: `components/library/AZList.tsx` (button, panel, rail) and `az.ts` (grouping, tested in `az.test.ts`,
+  `e2e/az.spec.ts`).
+- **Smoothness**: each piece steps down by itself if its frames keep coming slow; shadow traces take fewer steps when they are
+  short (half the drawing time, the same picture); the A to Z list opens and closes by uncovering (clip-paths), not by growing,
+  so the page is not laid out again on every frame, and it is built ahead while the page is idle.
+- **Fixes found while checking**: a piece at the foot of the page drew blank after moving between two pages that both had one
+  (a canvas whose WebGL light had been put out was reused: each piece now gets a fresh canvas); the foot piece no longer flashes
+  up while a page is still loading (`PieceHold`).
+- **Frame rates** (Playwright with software graphics, no graphics chip: the slowest case; the live site measured the same way):
+  pages with a sculpture run at about 85% of the live site's rate (computer 14 against 16.5 fps, phone 38 against 45); the home
+  page, the library and the author pages match it or better (library on a computer 18.7 against 9.0). The A to Z opening went
+  from 6.6 to 38.5 fps on a computer, and closing from 15 to 54.5. Real devices draw with their graphics chip and run far
+  faster; these numbers are for comparing versions.
+- **Found for the performance phase** (the owner, 19:44: after this round, a performance test, improvements, and an A/B test
+  in fps): on long pages every scroll recalculates styles and repaints the whole page (about 40 ms a jump in software, on the live
+  site too); on phones the torch reads the page's height every frame, which forces the page to be laid out early.
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:

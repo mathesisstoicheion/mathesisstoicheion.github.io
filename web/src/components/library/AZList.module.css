@@ -1,0 +1,168 @@
+/* "A to Z" (AZList.tsx; the owner asked for it on 2026-10-16): a button, and the list it opens in the stone, and a rail of letters.
+   The button is a small slab; open, it is lit from within with a gilded line along its foot. The panel is a sunk panel;
+   its row of letters are small slabs. It is cut open like a carving, each part after the one before: a fine line across the
+   top, the panel sinking beneath it, then the letters and the groups, left to right. Closing runs it back, faster.
+   (The "closing" animations wait for data-seen, which AZPanel sets once the list has been opened, so a list that has never been
+   opened is never drawn.)
+   (Nothing here is clipped once it has been cut in: a clipped part would paint over the sticky row of letters.)
+   The library has only the rail of letters (".side", at the end): a slim channel down the left of its list, sticky beside it. */
+
+/* ---------------------------------------------------------------- the button */
+.button {
+  display: inline-flex; align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); color: var(--ink);
+  font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.1em; text-transform: uppercase;
+  background: var(--slab); border: 0; border-radius: var(--radius); box-shadow: var(--slab-edge); cursor: pointer;
+  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+}
+.button:hover { background: var(--slab-lit); }
+.button[aria-expanded="true"] { background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+.chev { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; color: var(--ink-2); transition: transform var(--dur) var(--ease), color var(--dur) var(--ease); }
+.button[aria-expanded="true"] .chev { transform: rotate(180deg); color: var(--accent); }
+@media (pointer: coarse) { .button { min-height: var(--tap); } }
+
+/* ---------------------------------------------------------------- the panel: line, sink, then letters and groups */
+.panel {
+  --wipe-start: calc(var(--dur) * 0.8);          /* the letters and groups begin as the panel is nearly open */
+  --tick: calc(var(--dur-quick) / 6);            /* one group after the next */
+  --tick-letter: calc(var(--dur-quick) / 16);    /* one letter after the next */
+  display: grid; visibility: hidden;
+  transition: visibility 0s var(--ease) calc(var(--dur-quick) * 2.2);   /* hidden only once it has finished closing */
+}
+.panel[data-open] { visibility: visible; transition: visibility 0s; }
+
+/* The panel sinks open, and its shadow deepens as it goes. It takes its room all at once, as the list it replaces steps aside
+   (AuthorProfile.module.css), and is uncovered from the top down; a long list would open in a blink if its whole height were
+   uncovered, so it goes only as far as the height of the screen, and the rest of the list is simply there. Closing covers it
+   again from the foot up, and only then gives its room back. (As it moves only clip-paths and opacity change, so the page is
+   not laid out again on every frame: the owner, 2026-10-16, "The site is not allowed to be laggy".) */
+.sink { position: relative; transition: margin-top 0s var(--ease) calc(var(--dur-quick) * 2.2); }
+.panel[data-open] .sink { margin-top: var(--space-4); transition: margin-top 0s var(--ease) var(--dur-quick); }
+.well { position: relative; overflow: clip; max-height: 0; transition: max-height 0s var(--ease) calc(var(--dur-quick) * 2.2); }
+.panel[data-open] .well {
+  max-height: 1000000px; transition: max-height 0s var(--ease) var(--dur-quick);
+  animation: sinkOpen calc(var(--dur) * 1.25) var(--ease) var(--dur-quick) backwards;
+}
+.panel[data-seen]:not([data-open]) .well { animation: sinkShut var(--dur) var(--ease) calc(var(--dur-quick) * 0.6) both; }
+@keyframes sinkOpen { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(0 0 calc(100% - 100dvh) 0); } }
+@keyframes sinkShut { from { clip-path: inset(0 0 calc(100% - 100dvh) 0); } to { clip-path: inset(0 0 100% 0); } }
+.well::before {
+  content: ""; position: absolute; inset: 0; pointer-events: none; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); opacity: 0;
+  transition: opacity var(--dur) var(--ease) calc(var(--dur-quick) * 0.6);
+}
+.panel[data-open] .well::before { opacity: 1; transition: opacity calc(var(--dur) * 1.25) var(--ease) var(--dur-quick); }
+.body { position: relative; padding: 0 var(--space-5) var(--space-5); }
+
+/* the line cut across the top, left to right, with a faint glint at the chisel's point; closing fills it back in */
+.cut {
+  position: absolute; left: 0; right: 0; top: 0; height: 2px; pointer-events: none; background: var(--cut-line); clip-path: inset(0 100% 0 0);
+  transition: clip-path var(--dur-quick) var(--ease) calc(var(--dur-quick) * 1.2);
+}
+.panel[data-open] .cut { clip-path: inset(0 0 0 0); transition: clip-path var(--dur) var(--ease-cut); }
+.tip { position: absolute; top: 0; left: 0; width: var(--space-5); height: 100%; translate: -100% 0; opacity: 0; background: linear-gradient(90deg, transparent, var(--accent-hi)); }
+.panel[data-open] .tip { animation: chisel var(--dur) var(--ease-cut) both; }
+@keyframes chisel { from { left: 0; opacity: 0.8; } to { left: 100%; opacity: 0; } }
+
+/* ---------------------------------------------------------------- the row of letters (a strip on phones, below) */
+.letters {
+  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px));
+  display: flex; flex-wrap: wrap; gap: var(--space-1); margin-inline: calc(-1 * var(--space-5)); padding: var(--space-3) var(--space-5);
+  background: var(--bg); box-shadow: var(--cut-under);   /* a sticky bar stays opaque */
+  transition: top var(--dur) var(--ease);
+}
+.letter {
+  min-width: var(--space-6); height: var(--space-6); padding: 0 var(--space-1); display: grid; place-items: center;
+  font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink);
+  background: var(--slab); border: 0; border-radius: var(--radius); box-shadow: var(--slab-edge); cursor: pointer;
+  transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease), opacity var(--dur-quick) var(--ease);
+}
+.letter:hover:not([aria-disabled="true"]) { background: var(--slab-lit); color: var(--accent-hi); }
+.letter:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.letter[aria-disabled="true"] { opacity: 0.3; cursor: default; background: transparent; box-shadow: none; }
+@media (pointer: coarse) { .letter { min-width: var(--tap); height: var(--tap); } }
+
+.panel[data-open] .letter { animation: cutIn var(--dur-quick) var(--ease) calc(var(--wipe-start) + var(--i) * var(--tick-letter)) backwards; }
+.panel[data-seen]:not([data-open]) .letter { animation: cutOut var(--dur-quick) var(--ease) both; }
+
+/* ---------------------------------------------------------------- the groups */
+.list { display: grid; }
+.group {
+  display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-3) var(--space-5); padding-block: var(--space-4);
+  box-shadow: var(--cut-under); scroll-margin-top: calc(var(--hdr-h) + var(--space-8));
+}
+.group:last-child { box-shadow: none; }
+.panel[data-open] .group { animation: cutIn var(--dur) var(--ease) calc(var(--wipe-start) + min(var(--g), 6) * var(--tick)) backwards; }
+.panel[data-seen]:not([data-open]) .group { animation: cutOut var(--dur-quick) var(--ease) both; }
+.head { margin: 0; display: grid; align-content: start; gap: var(--space-1); font-weight: 400; }
+.head:focus { outline: none; }
+.head:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+.initial { font-family: var(--f-display); font-size: var(--step-3); line-height: 1; color: var(--accent); }
+.count { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+
+.names, .rows { list-style: none; margin: 0; padding: 0; }
+.names { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 0 var(--space-5); align-content: start; }
+.link { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-3); padding: var(--space-2) 0; text-decoration: none; color: var(--ink); box-shadow: var(--cut-under); transition: color var(--dur-quick) var(--ease); }
+a.link:hover { color: var(--accent); }
+a.link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+.note { color: var(--ink-2); font-size: var(--step--1); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+@keyframes cutIn { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(-0.5rem); } }
+@keyframes cutOut { from { clip-path: inset(-0.5rem); } to { clip-path: inset(0 100% 0 0); } }
+
+@keyframes cutInDown { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(-0.5rem); } }
+@keyframes cutOutUp { from { clip-path: inset(-0.5rem); } to { clip-path: inset(0 0 100% 0); } }
+
+/* ---------------------------------------------------------------- phones: the letters are a strip down the right-hand edge */
+@media (max-width: 760px) {
+  .body { padding: 0 var(--space-6) var(--space-4) var(--space-4); }   /* room at the right for the strip */
+  .group { grid-template-columns: minmax(0, 1fr); gap: var(--space-2); scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); }
+  .head { grid-auto-flow: column; justify-content: start; align-items: baseline; gap: var(--space-3); }
+  .initial { font-size: var(--step-2); }
+  .names { grid-template-columns: minmax(0, 1fr); }
+  .link { min-height: var(--tap); align-items: center; }
+
+  /* a narrow strip fixed to the right edge, from under the header to above the back-to-top button; it is there only while
+     the list is open and on the screen, and it is touch-interactive: press and slide (AZList.tsx) */
+  .letters {
+    position: fixed; right: env(safe-area-inset-right, 0px); margin: 0; width: var(--tap); padding: var(--space-1) 0; gap: 0;
+    flex-direction: column; flex-wrap: nowrap; box-shadow: var(--cut-left); touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+    top: calc(var(--hdr-h) + env(safe-area-inset-top, 0px) + var(--space-4));
+    bottom: calc(max(var(--tabbar-h) + var(--readbar-h), env(safe-area-inset-bottom, 0px)) + var(--space-8) + var(--space-2));
+    opacity: 0; visibility: hidden; pointer-events: none;
+    transition: opacity var(--dur-quick) var(--ease), visibility 0s var(--ease) var(--dur-quick);
+  }
+  .letters[data-show] { opacity: 1; visibility: visible; pointer-events: auto; transition: opacity var(--dur-quick) var(--ease); }
+  .letter { flex: 1 1 0; min-width: 0; min-height: 0; width: 100%; height: auto; padding: 0; font-size: var(--step--2); line-height: 1; background: transparent; box-shadow: none; }
+  .letter:hover:not([aria-disabled="true"]) { background: transparent; }
+  .letter[data-hot] { color: var(--accent); }
+  .panel[data-open] .letter { animation-name: cutInDown; }
+  .panel[data-seen]:not([data-open]) .letter { animation-name: cutOutUp; }
+
+}
+
+/* the bubble beside the finger, naming the letter it is on (only ever drawn while a finger is on the letters) */
+.bubble {
+  position: absolute; right: 100%; top: var(--by); margin-right: var(--space-3); translate: 0 -50%; pointer-events: none;
+  min-width: var(--tap); height: var(--tap); padding-inline: var(--space-3); display: grid; place-items: center;
+  font-family: var(--f-display); font-size: var(--step-2); line-height: 1; color: var(--sel-fg);
+  background: var(--sel-bg); box-shadow: var(--slab-edge), var(--chosen-foot); border-radius: var(--radius);
+  transition: top var(--dur-quick) var(--ease);
+}
+
+/* ---------------------------------------------------------------- the side rail (the library): a slim channel of letters
+   down the left of the list, sticky so that it stays beside the list as the page scrolls, at every width; it ends with the
+   list. A finger slides along it, so (like the phone strip above) it keeps its place whether the site's header is showing or
+   tucked away: sliding scrolls the page, and a rail that moved with the header would move under the finger. */
+.letters.side {
+  position: sticky; right: auto; bottom: auto; align-self: start; flex-direction: column; flex-wrap: nowrap; gap: 0; margin: 0; width: var(--space-6); padding: var(--space-1) 0;
+  top: calc(var(--hdr-h) + env(safe-area-inset-top, 0px) + var(--space-4));
+  height: min(calc(100dvh - var(--hdr-h) - var(--tabbar-h) - var(--readbar-h) - env(safe-area-inset-top, 0px) - var(--space-7)), 40rem);
+  background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
+  touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+  opacity: 1; visibility: visible; pointer-events: auto;
+}
+.letters.side .letter { flex: 1 1 0; min-width: 0; min-height: 0; width: 100%; height: auto; padding: 0; font-size: var(--step--1); line-height: 1; background: transparent; box-shadow: none; }
+.letters.side .letter:hover:not([aria-disabled="true"]) { background: var(--slab-lit); }
+.letters.side .letter[data-hot] { color: var(--accent); }
+.side .bubble { right: auto; left: 100%; margin-right: 0; margin-left: var(--space-3); }
+@media (max-width: 760px) { .letters.side .letter { font-size: var(--step--2); } }

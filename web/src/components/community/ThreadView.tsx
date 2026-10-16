@@ -17,6 +17,7 @@ import {
 import { AuthorLine, canWrite, Composer, DeleteButton, Folded, HideButton, PostText, QuoteBlock, ReportButton, SignInPrompt, StatusTag, VoteButton } from "./parts";
 import PullToRefresh from "@/components/PullToRefresh";
 import styles from "./Community.module.css";
+import PagePiece, { PieceHold } from "@/components/art/PagePiece";
 
 export default function ThreadView() {
   const params = useSearchParams();
@@ -35,7 +36,7 @@ export default function ThreadView() {
 
   if (!id) return <div className="wrap"><p className="notice">No thread was named. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
   if (got.error && !data) return <p className={`wrap ${styles.error}`}>{problem(got.error)}</p>;
-  if (!data) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the thread…</div>;
+  if (!data) return <div className={`wrap ${styles.status}`} aria-busy="true"><PieceHold /><span className={styles.spinner} aria-hidden="true" /> Opening the thread…</div>;
   if (!data.t) return <p className={`wrap ${styles.status}`}>This thread does not exist, or it has been removed. <Link href="/town-hall">Back to the Town Hall</Link></p>;
 
   const t = data.t;
@@ -84,6 +85,7 @@ function ThreadHead({ t, mine, mod, writer, votes, toggle, reload }: {
   const [title, setTitle] = useState(t.title);
   return (
     <header className={styles.threadHead}>
+      <PagePiece />
       <div className={styles.headRow}>
         <VoteButton count={t.score} on={votes.threads.has(t.id)} onToggle={writer ? toggle("thread", t.id) : null} label="This is a good question" />
         <div>

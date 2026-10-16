@@ -5,6 +5,7 @@ import Review from "@/components/academy/Review";
 import { AREAS } from "@/config/areas";
 import { NOINDEX } from "@/lib/seo";
 import NameCarving from "@/components/art/NameCarving";
+import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = { title: `Daily review · ${AREAS.study.name}`, ...NOINDEX };
 
@@ -12,9 +13,13 @@ export default function ReviewPage() {
   return (
     <Page>
       <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 20 }}>
-        <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Daily review</nav>
-        <NameCarving greek="ἀνάμνησις" />
-        <h1 className="page-title">Daily review <span lang="grc">ἀνάμνησις</span></h1>
+        <div className="page-head">
+          <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Daily review</nav>
+          <NameCarving greek="ἀνάμνησις" />
+          <PagePiece className="piece-desk" />
+          <h1 className="page-title">Daily review <span lang="grc">ἀνάμνησις</span></h1>
+          <PagePiece className="piece-phone" />
+        </div>
         <Review />
       </div>
     </Page>

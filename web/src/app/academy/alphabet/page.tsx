@@ -5,6 +5,7 @@ import Alphabet from "@/components/academy/Alphabet";
 import { AREAS } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 import NameCarving from "@/components/art/NameCarving";
+import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = { title: `The alphabet · ${AREAS.study.name}`, description: PAGE_DESCRIPTIONS.alphabet };
 
@@ -12,12 +13,16 @@ export default function AlphabetPage() {
   return (
     <Page>
       <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 20 }}>
-        <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › The alphabet</nav>
-        <NameCarving greek="τὰ γράμματα" />
-        <h1 className="page-title">The alphabet <span lang="grc">τὰ γράμματα</span></h1>
-        <p className="muted" style={{ maxWidth: "62ch", fontSize: "1.1rem" }}>
-          Twenty-four letters, seven of them vowels. Choose a letter to see how it is written, what it is called, and how it sounded.
-        </p>
+        <div className="page-head">
+          <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › The alphabet</nav>
+          <NameCarving greek="τὰ γράμματα" />
+          <PagePiece className="piece-desk" />
+          <h1 className="page-title">The alphabet <span lang="grc">τὰ γράμματα</span></h1>
+          <PagePiece className="piece-phone" />
+          <p className="muted" style={{ maxWidth: "62ch", fontSize: "1.1rem" }}>
+            Twenty-four letters, seven of them vowels. Choose a letter to see how it is written, what it is called, and how it sounded.
+          </p>
+        </div>
         <Alphabet />
       </div>
     </Page>

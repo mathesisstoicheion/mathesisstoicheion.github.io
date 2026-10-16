@@ -15,6 +15,7 @@ import type { RelatedEntry } from "@/wiki/related";
 import styles from "./AuthorProfile.module.css";
 import lib from "./Library.module.css";
 import NameCarving from "@/components/art/NameCarving";
+import PagePiece from "@/components/art/PagePiece";
 
 const num = (n: number) => n.toLocaleString("en-GB");
 const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
@@ -50,7 +51,9 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
       <header className={styles.head}>
         <div className="area-kicker"><span className="label">Work</span></div>
         <NameCarving greek={label} />
+        <PagePiece className="piece-desk" />
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
+        <PagePiece className="piece-phone" />
         {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
         {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}
         <p className={styles.note}>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.</p>

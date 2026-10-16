@@ -6,6 +6,7 @@ import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/G
 import styles from "@/components/guide/Guide.module.css";
 import { GuideSeen } from "@/components/guide/GuideChapters";
 import NameCarving from "@/components/art/NameCarving";
+import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = {
   title: "How to use the site",
@@ -99,7 +100,9 @@ export default function GuidePage() {
         <header className={styles.top}>
           <span className="label">The Guide <span lang="grc">ὁδηγός</span></span>
           <NameCarving greek="ὁδηγός" />
+          <PagePiece className="piece-desk" />
           <h1 className="page-title">How to use the site</h1>
+          <PagePiece className="piece-phone" />
           <p className={styles.lead}>
             Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.

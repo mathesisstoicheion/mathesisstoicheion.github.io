@@ -150,6 +150,7 @@
   --inlay-left-blue: inset 2px 0 0 var(--blue);
   --inlay-left-legend: inset 2px 0 0 var(--legend);
   --inlay-top: inset 0 2px 0 var(--accent);
+  --chosen-foot: inset 0 -2px 0 var(--sel-edge);   /* the chosen one of a set of choices: a gilded line along its foot */
   /* a channel cut for a bar or a meter, and the gilded inlay laid in it */
   --channel: rgba(0, 0, 0, 0.4);
   --channel-edge: inset 0 1px 3px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 226, 186, 0.07);
@@ -239,6 +240,7 @@
   --inlay-left-blue: inset 2px 0 0 var(--blue);
   --inlay-left-legend: inset 2px 0 0 var(--legend);
   --inlay-top: inset 0 2px 0 var(--accent);
+  --chosen-foot: inset 0 -2px 0 var(--sel-edge);
   --channel: rgba(42, 34, 26, 0.1);
   --channel-edge: inset 0 1px 2px rgba(42, 34, 26, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
   --inlay: linear-gradient(180deg, #a5552c, var(--sienna) 50%, var(--sienna-deep));

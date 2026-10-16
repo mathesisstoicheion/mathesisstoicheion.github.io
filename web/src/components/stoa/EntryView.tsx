@@ -14,6 +14,7 @@ import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
 import NameCarving from "@/components/art/NameCarving";
+import PagePiece from "@/components/art/PagePiece";
 
 const PLACE_NAME = new Map((mapData as { places: { id: string; grc: string; en: string }[] }).places.map((p) => [p.id, p]));
 
@@ -29,7 +30,9 @@ export default function EntryView({ e }: { e: Entry }) {
       <header className={`wrap ${styles.entryHead}`}>
         <p className={styles.crumbs}><Link href="/stoa" transitionTypes={["page-turn"]}>The Painted Stoa</Link> › <Link href={cat.href ?? `/stoa#${cat.id}`} transitionTypes={["page-turn"]}>{cat.title}</Link></p>
         <NameCarving greek={e.greek} />
+        <PagePiece className="piece-desk" />
         <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
+        <PagePiece className="piece-phone" />
         <p className={styles.kicker}>{e.kicker}</p>
       </header>
       {e.image ? <div className="wrap"><Figure id={e.image} lead /></div> : <div className="wrap"><div className={`${styles.band} rays draw`} aria-hidden="true" /></div>}

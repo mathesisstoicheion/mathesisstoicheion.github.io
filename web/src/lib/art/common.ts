@@ -67,4 +67,8 @@ export interface Art {
   draw(now: number, lights: LocalLight[]): boolean;
   /** Start the reveal at this time (seconds); null until it comes into view. */
   t0: number | null;
+  /** Told how long the frame after one in which it was drawn took (seconds), so it can draw less if that is slow. */
+  pace?(dt: number): void;
+  /** Lets go of what it holds (a WebGL context) when it leaves the page. */
+  dispose?(): void;
 }

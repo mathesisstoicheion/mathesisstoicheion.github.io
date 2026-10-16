@@ -3,6 +3,7 @@ import { GFS_Didot, EB_Garamond, Noto_Serif_Display, Gentium_Book_Plus, Noto_San
 import Header from "@/components/Header";
 import Torch from "@/components/Torch";
 import Footer from "@/components/Footer";
+import PagePiece from "@/components/art/PagePiece";
 import TabBar from "@/components/TabBar";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
 import Toast from "@/components/Toast";
@@ -71,6 +72,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Torch />
         <Header />
         {children}
+        <PagePiece place="foot" />
         <Footer />
         <TabBar />
         <SettingsPanel />

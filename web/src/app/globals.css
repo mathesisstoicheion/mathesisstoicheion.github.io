@@ -210,6 +210,38 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   max-width: 640px; margin-block: var(--space-7); padding: var(--space-6); display: grid; gap: var(--space-3);
   background: var(--field); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in); color: var(--ink-2);
 }
+/* a page's own sculpture in its niche (components/art/PagePiece.tsx): at the head of a page it stands at the right of the
+   title and the words run round it; a header that holds one is laid out as plain flow, since a grid would give the niche
+   a row of its own. The niche is a button: clicking it sets a lamp before the piece. */
+.piece { margin: 0; }
+.piece-niche {
+  display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
+  background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.piece-niche canvas { display: block; width: 100%; height: 100%; }
+.piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
+.piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.piece figcaption b { color: var(--ink); font-weight: 600; }
+.piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.piece-why { font-style: italic; }
+.piece-head { float: right; width: min(clamp(170px, 19vw, 250px), 310px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-4) var(--space-6); }
+.piece-head.piece-wide { width: clamp(220px, 27vw, 340px); }
+/* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
+.page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
+:is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
+.piece-foot { width: min(260px, 62vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
+.piece-foot.piece-wide { width: min(380px, 86vw); }
+/* a page's title is given its whole width on a phone: the piece there stands under it, beside the words that follow
+   (a header holds both, "piece-desk" before the title and "piece-phone" after it; the one not shown loads nothing) */
+.piece-phone { display: none; }
+@media (max-width: 760px) {
+  .piece-desk { display: none; }
+  .piece-phone { display: block; }
+  .piece-head { width: min(36vw, 62vw / var(--piece-ratio)); margin-left: var(--space-4); }
+  .piece-head.piece-wide { width: 46vw; }
+  .piece figcaption { font-size: var(--step--2); }
+}
+
 /* stone surfaces, for markup that has no module of its own: a panel sunk into the wall, and a slab set on it */
 .field { background: var(--field); box-shadow: var(--field-edge); }
 .slab { background: var(--slab); box-shadow: var(--slab-edge); }
@@ -235,6 +267,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .win { margin: 0; min-width: 0; }
 .frame { position: relative; background: var(--stone-0); overflow: hidden; }
 .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+/* a relief drawn like a page's piece: the whole window is the button that sets a lamp before it */
+.frame > .piece-niche { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
 .frame::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 0 0 2px rgba(255, 222, 180, 0.05), inset 0 18px 30px -18px rgba(0, 0, 0, 0.8);
