@@ -1,0 +1,32 @@
+Stefan Hagel, Ancient Greek Music: The Melodies (https://www.oeaw.ac.at/kal/agm/), list of documents as read on 2026-10-16
+(number | document | date | MIDI file)
+1 | Euripides, Orestes | s. V BC (?) | dam21
+2 | PZenon 59 533 | s. III m BC | dam35
+3 | PHibeh 231 | s. III BC | dagm07
+4 | PAshmol 89B/31,33 | s. III-II BC | dagm05
+5 | PAshmol 89B/29-32 | s. III-II BC | dagm06
+6 | Athenaios, Paian | 128 BC | dam19
+7 | Limenios, Paian and processional | 128 BC | dam20
+8 | POslo 1413, 1-15 | s. I-II AD | dam36
+9 | POslo 1413, 16-19 | s. I-II AD | dam37
+10 | Seikilos Song | s. II AD | dam18
+11 | Mesomedes (?), two invocations | s. II i AD | dam01
+12 | Mesomedes, hymn to Helios | s. II i AD | dam04
+13 | Mesomedes, hymn to Nemesis | s. II i AD | dam05
+14 | PYale CtYBR 4510 | s. II i AD | dagm41
+15 | POxy 2436 | s. II AD | dam38
+16 | PMichigan 2958, 1-18 | s. II AD | dam39
+17 | POxy 3704 (first piece) | s. II AD | agm34a
+18 | POxy 3704 (second piece) | s. II AD | agm34b
+19 | PMichigan 1250 | s. I-III AD | dagm61
+20 | Paian, PBerlin 6870, 1-15 | s. II-III AD | dam30
+21 | PBerlin 6870, 16-19.23 (Aiax) | s. II-III AD | dam32
+22 | PBerlin 6870, 20-22 (Instr.) | s. II-III AD | dam33
+23 | POxy 4463 | s. II-III AD | dagm47
+24 | POxy 4464 | s. II-III AD | dagm48
+25 | POxy 4465 | s. II-III AD | dagm49
+26 | POxy 3161 recto | s. III AD | agm45
+27 | POxy 3161 verso | s. III AD | agm46
+28 | POxy 3705 | s. III AD | agm48
+29 | POxy 4466 | s. III AD | dagm57
+30 | Christian hymn (POxy 1786) | s. III-IV AD | dam34
