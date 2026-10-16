@@ -43,7 +43,7 @@
 /* phones: one finger scrolls the panel past the photograph (the viewer would take every touch); two move and zoom it */
 @media (pointer: coarse) { .viewer, .viewer * { touch-action: pan-y !important; } }
 .touchHint {
-  position: absolute; z-index: 5; left: 50%; top: 42%; translate: -50% -50%; margin: 0; padding: 10px 16px; border-radius: 999px; pointer-events: none;
+  position: absolute; z-index: 5; left: 50%; top: 42%; translate: -50% -50%; margin: 0; padding: 10px 16px; border-radius: var(--radius); pointer-events: none;
   background: var(--inv-bg); color: var(--inv-fg); font-family: var(--f-label); letter-spacing: 0.03em; white-space: nowrap;
   animation: mark-in 0.3s var(--ease) both;
 }
@@ -63,7 +63,7 @@
 @media (pointer: coarse) { .tools button { min-width: 44px; height: 44px; } }
 .folio { font-family: var(--f-label); font-size: 0.95rem; min-width: 5.5em; text-align: center; }
 .gap { flex: 1; }
-.lineMark { border: 2px solid #E0673A; border-radius: 3px; box-shadow: 0 0 0 9999px rgba(10, 6, 4, 0.28); animation: mark-in 0.8s var(--ease) both; }
+.lineMark { border: 2px solid #E0673A; border-radius: var(--radius); box-shadow: 0 0 0 9999px rgba(10, 6, 4, 0.28); animation: mark-in 0.8s var(--ease) both; }
 @keyframes mark-in { from { opacity: 0; } to { opacity: 1; } }
 .err { margin: 0; color: var(--accent); font-size: 0.9rem; }
 .sources { font-size: 0.85rem; color: var(--ink-2); }

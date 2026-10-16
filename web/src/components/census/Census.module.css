@@ -4,7 +4,7 @@
 
 .census { padding-block: var(--after-head) 72px; display: grid; gap: 22px; }
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
-.spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+.spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .warn { color: var(--accent); font-size: 0.93rem; }
 .note { font-size: 0.9rem; color: var(--ink-2); border-left: 2px solid var(--rule); padding-left: 10px; }
@@ -15,7 +15,7 @@
 /* ------------------------------------------------ the tally */
 .tally {
   margin: 0 0 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0;
-  border-block: 1.5px solid var(--ink);
+  border-block: 1px solid var(--rule-2);
 }
 .tally > div {
   padding: 14px 18px 12px; display: grid; gap: 2px; border-left: 1px solid var(--rule);
@@ -29,7 +29,7 @@
 /* ------------------------------------------------ what to count */
 .shelves { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; }
 .shelf {
-  text-align: left; display: grid; gap: 4px; padding: 14px 16px 15px; border: 1.5px solid var(--ink); border-radius: var(--radius);
+  text-align: left; display: grid; gap: 4px; padding: 14px 16px 15px; border: 1px solid var(--rule-2); border-radius: var(--radius);
   background: var(--surface); color: var(--ink); cursor: pointer; position: relative; overflow: hidden;
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), color 0.3s;
 }
@@ -74,7 +74,7 @@
 .columns { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .comparing .columns { grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); }
 .rank { min-width: 0; }
-.rankHead { padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1.5px solid var(--ink); }
+.rankHead { padding-bottom: 10px; margin-bottom: 6px; border-bottom: 1px solid var(--rule-2); }
 .rankHead h2 { font-size: var(--step-2); line-height: 1.1; margin: 2px 0 0; }
 .rankSub { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-2); }
 .empty { color: var(--ink-2); font-style: italic; padding: 14px 0; }
@@ -97,7 +97,7 @@
 .auto { color: var(--accent); font-family: var(--f-body); margin-left: 2px; }
 .barCell { display: flex; align-items: center; gap: 8px; min-width: 0; }
 .bar {
-  height: 11px; width: var(--w); flex: none; max-width: calc(100% - 4.2em); background: var(--ink); border-radius: 1px;
+  height: 11px; width: var(--w); flex: none; max-width: calc(100% - 4.2em); background: var(--ink); border-radius: var(--radius);
   box-shadow: inset -3px 0 0 var(--accent); transform-origin: left;
   transition: width 0.65s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.2s;
   animation: bar-grow 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
@@ -127,7 +127,7 @@
 }
 @keyframes panel-in { from { opacity: 0; transform: translateX(14px); } }
 .panel p { margin: 0; }
-.close { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 1px solid var(--rule); border-radius: 50%; background: transparent; color: var(--ink); cursor: pointer; }
+.close { position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 1px solid var(--rule); border-radius: var(--radius-round); background: transparent; color: var(--ink); cursor: pointer; }
 .close:hover { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .panelWord { font-family: var(--f-greek); font-weight: 400; font-size: clamp(2rem, 3.4vw, 2.6rem); line-height: 1.05; margin: 0; padding-right: 34px; overflow-wrap: anywhere; }
 .panelSub { color: var(--ink-2); font-style: italic; }
@@ -178,7 +178,7 @@
 @keyframes sherd-in { from { opacity: 0; transform: translateY(12px) rotate(-1deg); } }
 
 /* ------------------------------------------------ how the counting was done */
-.method { margin-top: 36px; padding-top: 26px; border-top: 1.5px solid var(--ink); display: grid; gap: 16px; }
+.method { margin-top: 36px; padding-top: 26px; border-top: 1px solid var(--rule-2); display: grid; gap: 16px; }
 .method h2 { font-size: var(--step-3); margin: 0; }
 .methodCols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 48px; }
 .methodCols h3 { font-family: var(--f-label); font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; margin: 14px 0 4px; }

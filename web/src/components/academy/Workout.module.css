@@ -4,7 +4,7 @@
 
 /* the track: one bar per question, coloured as it is answered */
 .track { display: flex; gap: 5px; list-style: none; margin: 0; padding: 0; }
-.track li { flex: 1; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--rule) 70%, transparent); transition: background-color 0.4s; }
+.track li { flex: 1; height: 5px; border-radius: var(--radius); background: color-mix(in srgb, var(--rule) 70%, transparent); transition: background-color 0.4s; }
 .track li[data-state="right"] { background: var(--ok); }
 .track li[data-state="wrong"] { background: var(--accent); }
 .track li[data-state="now"] { background: var(--ink-2); animation: grow 0.5s var(--ease); transform-origin: left; }
@@ -80,7 +80,7 @@
 .warmHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
 
 /* the lesson list: each lesson's standing */
-.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
+.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-round); border: 1.5px solid var(--accent); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
 .markPassed { background: var(--accent); color: var(--accent-ink); }
 .markDue { border-style: dashed; animation: breathe 2.4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.08); } }
@@ -91,4 +91,4 @@
 /* a checkpoint in the lesson list: a band across the path, its numeral in a ring */
 .cpRow { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%); }
 .cpItem { border-bottom: 3px double var(--rule) !important; }
-.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--accent); color: var(--accent); font: 1.05rem var(--f-display); }
+.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); border: 1.5px solid var(--accent); color: var(--accent); font: 1.05rem var(--f-display); }

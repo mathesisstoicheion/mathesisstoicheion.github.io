@@ -66,7 +66,7 @@
 .jumpBar button {
   min-width: 32px; height: 32px; padding: 0 6px; display: grid; place-items: center;
   font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.04em; color: inherit;
-  background: transparent; border: 1px solid var(--rule); border-radius: 6px; transition: background-color 0.2s, color 0.2s;
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); transition: background-color 0.2s, color 0.2s;
 }
 .jumpBar[data-periods] button { padding: 0 var(--space-3); }
 .jumpBar button:hover:not(:disabled) { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
@@ -116,7 +116,7 @@
 .authorHits { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin: 0; }
 .authorHits small { color: var(--ink-2); }
 .hint { margin: -6px 0 0; color: var(--ink-2); font-size: 0.92rem; }
-.lib mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+.lib mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: var(--radius); padding: 0 1px; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .titleRows { padding-top: var(--space-2); }
@@ -135,7 +135,7 @@
 .go { color: var(--accent); opacity: 0; translate: -4px 0; transition: opacity 0.2s, translate 0.2s var(--ease); }
 .row:hover .go, .row:focus-visible .go { opacity: 1; translate: 0 0; }
 
-.badge { font-family: var(--f-label); letter-spacing: 0.05em; padding: 1px var(--space-2); border-radius: 999px; border: 1px solid var(--blue); color: var(--blue); white-space: nowrap; }
+.badge { font-family: var(--f-label); letter-spacing: 0.05em; padding: 1px var(--space-2); border-radius: var(--radius); border: 1px solid var(--blue); color: var(--blue); white-space: nowrap; }
 .off { border-color: var(--rule); color: var(--ink-2); }
 .genre { font-size: 0.82rem; color: var(--ink-2); }
 
@@ -194,7 +194,7 @@
 /* the vocabulary meter: three bars, one filled for easy words, three for many rare ones */
 .meter { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
 .bars { display: inline-flex; align-items: flex-end; gap: 2px; height: 12px; }
-.bars i { width: 4px; border-radius: 1px; background: color-mix(in srgb, var(--ink-2) 30%, transparent); }
+.bars i { width: 4px; border-radius: var(--radius); background: color-mix(in srgb, var(--ink-2) 30%, transparent); }
 .bars i:nth-child(1) { height: 5px; } .bars i:nth-child(2) { height: 8px; } .bars i:nth-child(3) { height: 12px; }
 .meter[data-level="1"] .bars i:nth-child(-n+1),
 .meter[data-level="2"] .bars i:nth-child(-n+2),
@@ -202,7 +202,7 @@
 .meter[data-level="1"] .bars i:nth-child(1) { background: var(--ok); }
 .meter[data-level="3"] .bars i { background: var(--accent); }
 .len { white-space: nowrap; }
-.best { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; padding: 0 var(--space-2); white-space: nowrap; }
+.best { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); border: 1px solid currentColor; border-radius: var(--radius); padding: 0 var(--space-2); white-space: nowrap; }
 .reading { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
 .reading :global(.chip) { text-decoration: none; }
 .reading small { color: var(--ink-2); }

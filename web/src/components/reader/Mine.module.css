@@ -1,7 +1,7 @@
 /* The private collection's window in the reader (MineDialog.tsx): a shelf of the moderator's own books, and "Import a text". */
 .dialog {
   width: min(820px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0;
-  border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink);
   box-shadow: 0 40px 80px -30px var(--shadow);
 }
 .dialog[open] { animation: rise 0.45s var(--ease); }
@@ -17,7 +17,7 @@
 .seal {
   display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
   font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent);
-  border: 1px solid currentColor; border-radius: 999px;
+  border: 1px solid currentColor; border-radius: var(--radius);
   animation: press 0.7s var(--ease) 0.2s backwards;
 }
 .seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
@@ -38,7 +38,7 @@
   transform: scaleX(0); transform-origin: left; transition: transform 0.35s var(--ease);
 }
 .tabs button[aria-selected="true"]::after { transform: scaleX(1); }
-.n { font-size: 0.78rem; min-width: 1.6em; padding: 0 6px; border-radius: 999px; background: var(--bg-2); color: var(--ink-2); text-align: center; }
+.n { font-size: 0.78rem; min-width: 1.6em; padding: 0 6px; border-radius: var(--radius); background: var(--bg-2); color: var(--ink-2); text-align: center; }
 
 .panel { display: grid; gap: 16px; overflow-y: auto; max-height: calc(100dvh - 240px); padding-right: 2px; animation: fade 0.3s ease; }
 .quiet { color: var(--ink-2); font-size: 0.92rem; }
@@ -47,7 +47,7 @@
 .warn { color: var(--accent); }
 .link { background: transparent; border: 0; padding: 0; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; font: inherit; cursor: pointer; justify-self: start; }
 .spinner {
-  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%;
+  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round);
   border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }

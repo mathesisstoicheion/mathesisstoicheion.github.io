@@ -5,13 +5,13 @@
 .row { position: relative; display: flex; align-items: center; gap: 6px; }
 .row input {
   flex: 1; min-width: 0; min-height: 44px; padding: 0 12px 0 38px; font: inherit; font-size: 1.05rem; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: 10px;
+  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius);
   transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 .row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
 .glass { position: absolute; left: 12px; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .step {
-  display: grid; place-items: center; width: 44px; height: 44px; flex: none; border: 1px solid var(--rule); border-radius: 10px;
+  display: grid; place-items: center; width: 44px; height: 44px; flex: none; border: 1px solid var(--rule); border-radius: var(--radius);
   background: transparent; color: var(--ink); cursor: pointer; transition: background 0.2s var(--ease), transform 0.15s var(--ease);
 }
 .step svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
@@ -46,7 +46,7 @@
 .ref { font: 600 0.82rem var(--f-label); color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
 .snip { font-size: 0.95rem; line-height: 1.45; }
 .snip[lang="grc"] { font-family: var(--f-greek); font-size: 1.04rem; }
-.snip mark { background: color-mix(in srgb, var(--accent) 26%, transparent); color: inherit; border-radius: 2px; padding: 0 1px; }
+.snip mark { background: color-mix(in srgb, var(--accent) 26%, transparent); color: inherit; border-radius: var(--radius); padding: 0 1px; }
 
 /* phones: once a match is chosen, only the search row stays, low on the screen, so the text shows above it */
 @media (max-width: 900px) {
@@ -61,7 +61,7 @@
 /* (written with the list's own class, so the list's full-width line buttons do not stretch it) */
 .list .add {
   position: absolute; right: 6px; top: 50%; translate: 0 -50%; z-index: 1; width: 30px; height: 30px; padding: 0; display: grid; place-items: center;
-  grid-template-columns: none; border: 1px solid var(--rule); border-radius: 50%; background: var(--surface); color: var(--ink);
+  grid-template-columns: none; border: 1px solid var(--rule); border-radius: var(--radius-round); background: var(--surface); color: var(--ink);
   font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: none;
 }
 .list .add:hover { border-color: var(--accent); color: var(--accent); background: var(--surface); }

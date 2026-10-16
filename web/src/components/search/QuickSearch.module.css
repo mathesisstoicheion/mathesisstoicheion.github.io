@@ -15,14 +15,14 @@
 .glass { flex: none; align-self: center; width: 20px; height: 20px; margin-left: 18px; color: var(--ink-2); }
 .input { padding-left: 12px; }
 .clear {
-  flex: none; align-self: center; width: 36px; height: 36px; margin-right: 6px; border: 0; border-radius: 50%;
+  flex: none; align-self: center; width: 36px; height: 36px; margin-right: 6px; border: 0; border-radius: var(--radius-round);
   background: transparent; color: var(--ink-2); font-size: 1.4rem; line-height: 1; cursor: pointer;
 }
 .clear:hover { background: var(--bg-2); color: var(--ink); }
 .input::-webkit-search-cancel-button { display: none; }
 .kbdBtn {
   flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-right: 10px; padding: 0 10px;
-  font-family: var(--f-greek); font-size: 1rem; color: var(--ink); background: transparent; border: 1.5px solid var(--rule); border-radius: 8px;
+  font-family: var(--f-greek); font-size: 1rem; color: var(--ink); background: transparent; border: 1.5px solid var(--rule); border-radius: var(--radius);
 }
 .kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .close { display: none; }
@@ -80,14 +80,14 @@
 .link:hover { color: var(--accent); }
 .chips { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
-  padding: 6px 12px; border: 1px solid var(--rule); border-radius: 999px; background: var(--bg);
+  padding: 6px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg);
   color: var(--ink); font-size: 0.95rem; cursor: pointer; transition: border-color 0.2s, background-color 0.2s;
 }
 .chip[lang="grc"] { font-family: var(--f-greek); font-size: 1.05rem; }
 .chip:hover, .chip:focus-visible { border-color: var(--accent); }
 .recent { display: inline-flex; align-items: center; }
-.recent .chip { border-radius: 999px 0 0 999px; border-right: 0; }
-.chipX { align-self: stretch; padding: 0 10px; border: 1px solid var(--rule); border-radius: 0 999px 999px 0; background: var(--bg); color: var(--ink-2); cursor: pointer; }
+.recent .chip { border-radius: var(--radius); border-right: 0; }
+.chipX { align-self: stretch; padding: 0 10px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink-2); cursor: pointer; }
 .chipX:hover { color: var(--accent); border-color: var(--accent); }
 .visits { list-style: none; margin: 0; padding: 0 6px; display: grid; }
 .visits button { width: 100%; padding: 8px 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: 0.98rem; cursor: pointer; }

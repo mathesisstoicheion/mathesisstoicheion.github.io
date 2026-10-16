@@ -19,10 +19,10 @@
 .mark { width: 9px; height: 9px; translate: -50% -50%; }
 .track .mark { animation: mark 0.5s var(--ease) both; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
 @keyframes mark { from { opacity: 0; scale: 0.2; } }
-.writing { background: var(--ink); border-radius: 50%; }
+.writing { background: var(--ink); border-radius: var(--radius-round); }
 .copy { background: var(--accent); }
 .print { background: var(--blue); rotate: 45deg; width: 8px; height: 8px; }
-.reception { border: 2px solid var(--ochre); border-radius: 50%; }
+.reception { border: 2px solid var(--ochre); border-radius: var(--radius-round); }
 .key { position: static !important; display: inline-block; translate: none; flex: none; align-self: center; }
 /* the site's "Reduce animation" setting stops the animations (globals.css) */
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.9rem; }

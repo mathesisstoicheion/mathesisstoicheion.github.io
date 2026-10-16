@@ -7,7 +7,7 @@
 .status { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); }
 .status > p { flex-basis: 100%; }
 .spinner {
-  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%;
+  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round);
   border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
 }
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -28,7 +28,7 @@
 .seal {
   display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
   font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent);
-  border: 1px solid currentColor; border-radius: 999px;
+  border: 1px solid currentColor; border-radius: var(--radius);
   animation: press 0.7s var(--ease) 0.35s backwards;
 }
 .seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
@@ -40,9 +40,9 @@
 .statusTag {
   display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px;
   font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; color: var(--ink-2);
-  border: 1px solid currentColor; border-radius: 999px;
+  border: 1px solid currentColor; border-radius: var(--radius);
 }
-.statusTag::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.statusTag::before { content: ""; width: 6px; height: 6px; border-radius: var(--radius-round); background: currentColor; }
 .statusTag[data-status="sample"] { color: var(--ochre); }
 .statusTag[data-status="draft"] { color: var(--blue); }
 .statusTag[data-status="complete"] { color: var(--ok); }
@@ -121,7 +121,7 @@
 /* ------------------------------------------------------------ adding or updating a translation */
 .add {
   margin-top: clamp(40px, 6vw, 64px); padding: clamp(20px, 3vw, 32px); display: grid; gap: 14px; justify-items: start;
-  border: 1.5px dashed var(--rule); border-radius: 6px; background: color-mix(in srgb, var(--surface) 55%, transparent);
+  border: 1.5px dashed var(--rule); border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 55%, transparent);
   transition: border-color 0.2s, background-color 0.2s;
 }
 .add[data-over] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
@@ -135,7 +135,7 @@
 .problems li::marker { color: var(--accent); }
 .preview {
   justify-self: stretch; display: grid; gap: 14px; padding: clamp(18px, 2.4vw, 26px); background: var(--surface);
-  border: 1px solid var(--rule); border-top: 3px solid var(--ink); border-radius: var(--radius); animation: rise 0.4s var(--ease) backwards;
+  border: 1px solid var(--rule); border-top: 3px solid var(--rule-2); border-radius: var(--radius); animation: rise 0.4s var(--ease) backwards;
 }
 .previewGr { font-size: 1.25rem; color: var(--accent); }
 .previewTitle { font-size: var(--step-2); }

@@ -45,7 +45,7 @@
 @keyframes rise { from { opacity: 0; transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { .list li { animation: none; } }
 .where { display: flex; align-items: center; gap: 10px; }
-.how { font: 0.74rem var(--f-label); color: var(--ink-2); border: 1px solid var(--rule); border-radius: 99px; padding: 1px 8px; }
+.how { font: 0.74rem var(--f-label); color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1px 8px; }
 .how[data-hand] { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 50%, var(--rule)); }
 .sentence { margin: 4px 0 0; font-family: var(--f-greek); font-size: 1.06rem; line-height: 1.6; color: var(--ink-2); }
 .sentence mark { background: none; color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--accent); }

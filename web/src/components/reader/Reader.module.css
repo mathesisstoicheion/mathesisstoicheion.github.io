@@ -144,7 +144,7 @@
 .note { font-family: var(--f-label); color: var(--accent); cursor: help; margin: 0 1px; }
 .gap { color: var(--ink-2); }
 
-.w { cursor: pointer; border-radius: 3px; transition: background-color 0.15s; }
+.w { cursor: pointer; border-radius: var(--radius); transition: background-color 0.15s; }
 .w:hover { background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
 .w:focus-visible { outline-offset: 1px; background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
 .sel { background-color: color-mix(in srgb, var(--accent) 28%, transparent); }
@@ -186,7 +186,7 @@
   .cols > :nth-child(3) { display: none; }
   .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: 44px minmax(0, 1fr); }
   .cols-trans .tr { border-top: 0; margin-top: 0; padding-top: 0; }
-  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-left: 0; border-top: 1px solid var(--rule); border-radius: 12px 12px 0 0; }
+  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-left: 0; border-top: 1px solid var(--rule); border-radius: var(--radius); }
   .helpBtn { display: none; }
 }
 
@@ -215,17 +215,17 @@
 .toolbar {
   position: fixed; z-index: 55; opacity: 0; transition: opacity 0.15s;
   display: flex; flex-wrap: wrap; align-items: center; gap: 2px; max-width: calc(100vw - 24px);
-  padding: 5px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: 8px; box-shadow: 0 16px 36px -14px var(--shadow);
+  padding: 5px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); box-shadow: 0 16px 36px -14px var(--shadow);
 }
-.toolbar button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; background: transparent; border: 0; border-radius: 6px; font-size: 0.86rem; color: inherit; }
+.toolbar button { display: inline-flex; align-items: center; gap: 6px; padding: 7px 10px; background: transparent; border: 0; border-radius: var(--radius); font-size: 0.86rem; color: inherit; }
 .toolbar button:hover:not(:disabled) { background: color-mix(in srgb, var(--inv-fg) 16%, transparent); }
 .toolbar button:disabled { opacity: 0.45; cursor: default; }
 .toolbar svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 .swatches { display: inline-flex; gap: var(--space-1); padding: 0 var(--space-2); border-left: 1px solid color-mix(in srgb, var(--inv-fg) 30%, transparent); border-right: 1px solid color-mix(in srgb, var(--inv-fg) 30%, transparent); }
-.swatches button { width: 20px; height: 20px; padding: 0; border-radius: 50%; border: 2px solid var(--inv-fg); }
+.swatches button { width: 20px; height: 20px; padding: 0; border-radius: var(--radius-round); border: 2px solid var(--inv-fg); }
 .sw-red { background: #C0492B !important; } .sw-ochre { background: #D9A441 !important; } .sw-blue { background: #4F7CA8 !important; } .sw-green { background: #6E9A5B !important; }
 
-.w[data-hl] { border-radius: 2px; }
+.w[data-hl] { border-radius: var(--radius); }
 .w[data-hl="red"] { background: color-mix(in srgb, #C0492B 32%, transparent); }
 .w[data-hl="ochre"] { background: color-mix(in srgb, #D9A441 42%, transparent); }
 .w[data-hl="blue"] { background: color-mix(in srgb, #4F7CA8 34%, transparent); }
@@ -253,24 +253,24 @@
 .marksMenu > button { height: 36px; padding: 0 var(--space-3); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.9rem; }
 .marksMenu ul {
   position: absolute; z-index: 20; top: calc(100% + 6px); left: 0; width: min(380px, 90vw); max-height: 60vh; overflow-y: auto;
-  list-style: none; margin: 0; padding: 6px; background: var(--surface); border: 1px solid var(--rule); border-radius: 6px; box-shadow: 0 20px 40px -20px var(--shadow);
+  list-style: none; margin: 0; padding: 6px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: 0 20px 40px -20px var(--shadow);
 }
-.marksMenu li > button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--space-2) 10px; background: transparent; border: 0; border-radius: 4px; }
+.marksMenu li > button { width: 100%; display: grid; gap: 2px; text-align: left; padding: var(--space-2) 10px; background: transparent; border: 0; border-radius: var(--radius); }
 .marksMenu li > button:hover { background: var(--bg-2); }
 .marksMenu li.muted { padding: 10px; font-size: 0.9rem; }
 
 /* ------------------------------------------------------------ share */
-.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--rule); border-radius: 8px; background: var(--surface); color: var(--ink); box-shadow: 0 40px 80px -30px var(--shadow); }
+.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); box-shadow: 0 40px 80px -30px var(--shadow); }
 .share::backdrop { background: rgba(10, 6, 3, 0.45); }
 .shareIn { display: grid; gap: var(--space-4); padding: 22px var(--space-5); }
 .shareIn h2 { font-size: var(--step-1); }
 .shareMenu { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
 .pickWords { display: flex; flex-wrap: wrap; gap: var(--space-1); font-family: var(--f-greek); font-size: 1.3rem; }
-.pickWords button { padding: 2px 6px; background: transparent; border: 1px solid transparent; border-radius: 4px; font: inherit; }
+.pickWords button { padding: 2px 6px; background: transparent; border: 1px solid transparent; border-radius: var(--radius); font: inherit; }
 .pickWords button:hover { border-color: var(--rule); }
 .picked { background: color-mix(in srgb, var(--accent) 22%, transparent) !important; color: var(--accent); }
 .shareOpts { display: flex; flex-wrap: wrap; gap: var(--space-3) 20px; align-items: center; }
-.previewBox { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: 4px; background: var(--bg); display: grid; place-items: center; min-height: 120px; }
+.previewBox { max-height: 55vh; overflow: auto; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); display: grid; place-items: center; min-height: 120px; }
 .previewBox img { width: 100%; height: auto; display: block; }
 
 /* ------------------------------------------------------------ two books side by side */
@@ -292,7 +292,7 @@
 .pickerList { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow-y: auto; border-top: 3px double var(--rule); }
 .pickerList button { width: 100%; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; text-align: left; padding: 9px 6px; background: transparent; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
 .pickerList button:hover { background: var(--bg-2); }
-.enBadge { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--blue); border: 1px solid var(--blue); border-radius: 999px; padding: 0 7px; }
+.enBadge { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--blue); border: 1px solid var(--blue); border-radius: var(--radius); padding: 0 7px; }
 
 /* each pane adapts to its own width */
 @container (max-width: 760px) {
@@ -358,7 +358,7 @@
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
 /* words I know (the "Words I know" aid): a soft wash of green, under any case colour */
-.reader [data-known] { background: color-mix(in srgb, var(--ok) 17%, transparent); border-radius: 3px; box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 17%, transparent); }
+.reader [data-known] { background: color-mix(in srgb, var(--ok) 17%, transparent); border-radius: var(--radius); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 17%, transparent); }
 .reader [data-case] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.18em; }
 .reader [data-case="nominative"] { text-decoration-color: #4F7CA8; }
 .reader [data-case="genitive"] { text-decoration-color: #D9A441; }
@@ -385,7 +385,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* every row of a line, even a wrapped one, needs room above it for the marks */
 .metreOn .lt { display: block; position: relative; padding-top: 0.2em; line-height: max(2.6, var(--reading-leading)); }
 .metreOn .ln { padding-top: calc(0.35em + 0.9em / 0.62); }
-.syl { position: relative; border-radius: 2px; transition: background-color 0.12s; }
+.syl { position: relative; border-radius: var(--radius); transition: background-color 0.12s; }
 .syl::before {
   /* spans the syllable's vowels, with the mark centred over them */
   position: absolute; left: -0.5em; right: -0.5em; bottom: calc(100% - 0.12em); text-align: center;
@@ -413,7 +413,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* sits in the margin, level with the first row of the line's text */
 .beatBtn, .metreQ {
   position: absolute; left: -5.6em; top: 1.6em; width: 1.5em; height: 1.5em; padding: 0; text-indent: 0;
-  display: inline-grid; place-items: center; font-size: 0.7em; line-height: 1; border-radius: 50%;
+  display: inline-grid; place-items: center; font-size: 0.7em; line-height: 1; border-radius: var(--radius-round);
 }
 .beatBtn::before { content: "▸"; }
 .metreQ::before { content: "?"; }
@@ -478,7 +478,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .gotoPhone > div { display: flex; gap: var(--space-2); }
 .gotoPhone input {
   flex: 1; min-width: 0; min-height: var(--tap); font: inherit; font-size: 1.05rem; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: 10px; padding: var(--space-2) var(--space-3);
+  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-2) var(--space-3);
 }
 .gotoPhone .btn { padding: 0 20px; min-height: var(--tap); }
 .marksPhone { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -491,7 +491,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   /* two fingers on the text resize the Greek (Reader.tsx) instead of zooming the page */
   .reader:not(.floating):not(.pane) .text { touch-action: pan-x pan-y; }
   .seg button { min-height: var(--tap); padding-inline: var(--space-4); }
-  .floatBtn { min-height: var(--tap); height: auto; padding: var(--space-2) 14px; border-radius: 10px; text-align: left; }
+  .floatBtn { min-height: var(--tap); height: auto; padding: var(--space-2) 14px; border-radius: var(--radius); text-align: left; }
 }
 
 /* Phones: the look-up as a sheet with a handle and three heights (WordPanel.tsx): peek, half and full.
@@ -502,7 +502,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     --sheet-h: min(46dvh, 400px);
     display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
     top: auto; max-height: none; height: var(--sheet-h);
-    border-radius: 16px 16px 0 0; box-shadow: 0 -24px 48px -24px var(--shadow);
+    border-radius: var(--radius); box-shadow: 0 -24px 48px -24px var(--shadow);
     transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
     animation: sheet-up 0.35s var(--ease);
   }
@@ -513,15 +513,15 @@ p.translit { margin: -0.3em 0 0.8em; }
     position: relative; flex: none; align-items: center; gap: var(--space-1); padding: 22px var(--space-3) 10px var(--space-4);
     border-bottom: 1px solid color-mix(in srgb, var(--rule) 50%, transparent); touch-action: none; cursor: grab;
   }
-  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--rule); }
+  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: var(--radius); background: var(--rule); }
   .wordSheet .pw { flex: 1; min-width: 0; font-size: 1.75rem; text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .wordSheet .stepBtn, .wordSheet .moreBtn {
     display: grid; place-items: center; flex: none; width: var(--tap); height: var(--tap); padding: 0;
-    background: transparent; color: var(--ink); border: 0; border-radius: 10px; font-size: 1.9rem; line-height: 1;
+    background: transparent; color: var(--ink); border: 0; border-radius: var(--radius); font-size: 1.9rem; line-height: 1;
   }
   .wordSheet .stepBtn:active, .wordSheet .moreBtn:active { background: var(--bg-2); }
   .wordSheet .moreBtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
-  .wordSheet .x { width: var(--tap); height: var(--tap); border-radius: 10px; }
+  .wordSheet .x { width: var(--tap); height: var(--tap); border-radius: var(--radius); }
   .wordSheet .panelBody {
     display: grid; align-content: start; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
     padding: var(--space-4) 20px calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); touch-action: pan-y;
@@ -540,7 +540,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tbClose, .quickRow { display: none; }
 @media (max-width: 760px) {
   .reader:not(.floating) .toolbar {
-    left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; border-radius: 16px 16px 0 0;
+    left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; border-radius: var(--radius);
     flex-wrap: wrap; justify-content: center; gap: 2px var(--space-1);
     padding: var(--space-2) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-2) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
     animation: sheet-up 0.3s var(--ease);
@@ -568,7 +568,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .reveal {
   position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding: var(--space-2) var(--space-3); min-height: var(--tap);
   background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--rule) 22%, transparent) 0 8px, transparent 8px 16px), var(--surface);
-  border: 1px dashed var(--rule); border-radius: 8px; color: var(--ink-2); font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.03em;
+  border: 1px dashed var(--rule); border-radius: var(--radius); color: var(--ink-2); font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.03em;
   text-align: center; cursor: pointer; transition: color 0.2s, border-color 0.2s;
 }
 .reveal:hover, .reveal:focus-visible { color: var(--accent); border-color: var(--accent); }
@@ -589,7 +589,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* Listen: the passage being read aloud, marked along its translation */
 .row[data-listening] .tr { position: relative; }
 .row[data-listening] .tr::before {
-  content: ""; position: absolute; left: -12px; top: 2px; bottom: 2px; width: 3px; border-radius: 2px; background: var(--accent);
+  content: ""; position: absolute; left: -12px; top: 2px; bottom: 2px; width: 3px; border-radius: var(--radius); background: var(--accent);
   transform-origin: top; animation: listen-in var(--dur) var(--ease) both;
 }
 @keyframes listen-in { from { transform: scaleY(0); } }
@@ -613,7 +613,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* ------------------------------------------------ a book of the private collection (lib/mine.ts) */
 .crumbBtn { background: transparent; border: 0; padding: 5px 0; font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; }
 .crumbBtn:hover { color: var(--accent); }
-.privateTag { display: inline-flex; align-items: center; gap: 5px; margin-left: 6px; padding: 1px 9px 1px 7px; color: var(--accent); border: 1px solid currentColor; border-radius: 999px; font-size: 0.78rem; align-self: center; }
+.privateTag { display: inline-flex; align-items: center; gap: 5px; margin-left: 6px; padding: 1px 9px 1px 7px; color: var(--accent); border: 1px solid currentColor; border-radius: var(--radius); font-size: 0.78rem; align-self: center; }
 .privateTag svg, .mineChip svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .mineChip { display: inline-flex; align-items: center; gap: 6px; }
 .mineProblems { margin: 0; padding-left: 1.2em; color: var(--ink-2); }

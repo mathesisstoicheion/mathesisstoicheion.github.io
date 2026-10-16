@@ -22,7 +22,7 @@
 .stage[data-hover] { cursor: pointer; }
 
 /* the chosen place: a pulsing ring over the canvas (moved by Periplus.tsx) */
-.ring { position: absolute; left: 0; top: 0; border-radius: 50%; border: 2px solid var(--accent); pointer-events: none; animation: pulse 1.8s var(--ease) infinite; }
+.ring { position: absolute; left: 0; top: 0; border-radius: var(--radius-round); border: 2px solid var(--accent); pointer-events: none; animation: pulse 1.8s var(--ease) infinite; }
 @keyframes pulse { 0% { opacity: 1; } 70% { opacity: 0.25; } 100% { opacity: 1; } }
 
 /* a place's name under the mouse */
@@ -83,7 +83,7 @@
 .found span, .top span { color: var(--ink-2); flex: 1; }
 .found small, .top small { font-family: var(--f-label); color: var(--accent); }
 
-.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--surface); border-top: 3px solid var(--ink); border-radius: var(--radius); animation: cardIn 0.4s var(--ease) both; }
+.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--surface); border-top: 3px solid var(--rule-2); border-radius: var(--radius); animation: cardIn 0.4s var(--ease) both; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } }
 .card p { margin: 0; }
 .placeName { margin: 0; display: grid; font: 400 2rem/1.1 var(--f-greek); }
@@ -96,20 +96,20 @@
 .works li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; font-size: 0.95rem; }
 .works a { color: inherit; }
 .works small { font-family: var(--f-label); color: var(--ink-2); grid-row: 1; grid-column: 2; }
-.bar { grid-column: 1 / -1; height: 3px; background: var(--accent); border-radius: 2px; transform-origin: left; animation: grow 0.6s var(--ease) both; }
+.bar { grid-column: 1 / -1; height: 3px; background: var(--accent); border-radius: var(--radius); transform-origin: left; animation: grow 0.6s var(--ease) both; }
 @keyframes grow { from { transform: scaleX(0); } }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .small { font-size: 0.88rem; color: var(--ink-2); }
 .small a { color: inherit; }
 .linkBtn { border: 0; background: none; padding: 0; color: inherit; font: inherit; text-decoration: underline; cursor: pointer; }
 .key { display: flex; flex-wrap: wrap; gap: 14px; font-size: 0.88rem; color: var(--ink-2); }
-.keyDot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; vertical-align: -1px; margin-right: 4px; border: 1.5px solid var(--accent); }
+.keyDot { display: inline-block; width: 10px; height: 10px; border-radius: var(--radius-round); vertical-align: -1px; margin-right: 4px; border: 1.5px solid var(--accent); }
 .keyDot.checked { background: var(--accent); }
 .method summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.04em; }
 .method p { margin: 8px 0 0; font-size: 0.93rem; line-height: 1.55; }
 
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
-.spinner { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+.spinner { width: 18px; height: 18px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 /* reduced motion is handled site-wide (globals.css), honouring the reader's own setting */
 

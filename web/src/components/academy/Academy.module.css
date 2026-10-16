@@ -68,7 +68,7 @@
 .ipa { font-family: "Gentium Book Plus", "Noto Serif", var(--f-body); color: var(--ink-2); }
 .example { display: grid; gap: 2px; }
 .navLetters { display: flex; justify-content: space-between; gap: 10px; }
-.say { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--rule); background: var(--bg); color: var(--accent); }
+.say { display: inline-grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); border: 1px solid var(--rule); background: var(--bg); color: var(--accent); }
 .say svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linejoin: round; }
 .say:hover { background: var(--bg-2); }
 
@@ -205,7 +205,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 .flash { position: relative; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .flipped { cursor: grab; touch-action: none; }
 .lean {
-  position: absolute; z-index: 3; top: 18px; padding: 4px 12px; border: 2px solid currentColor; border-radius: 6px; pointer-events: none;
+  position: absolute; z-index: 3; top: 18px; padding: 4px 12px; border: 2px solid currentColor; border-radius: var(--radius); pointer-events: none;
   font-family: var(--f-label); font-size: 1rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
   opacity: 0; transform: rotate(-10deg); background: var(--bg);
 }
@@ -232,7 +232,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 .covPick select, .coreList select { font: inherit; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); padding: 8px 10px; }
 .covBars { display: grid; gap: 10px; }
 .covRow { display: grid; grid-template-columns: minmax(180px, 1.2fr) 2fr 56px; gap: 14px; align-items: center; }
-.covBar { height: 14px; background: color-mix(in srgb, var(--rule) 45%, transparent); border-radius: 999px; overflow: hidden; }
+.covBar { height: 14px; background: color-mix(in srgb, var(--rule) 45%, transparent); border-radius: var(--radius); overflow: hidden; }
 .covBar i { display: block; height: 100%; background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 70%, var(--ink))); border-radius: inherit; transition: width 1s var(--ease); }
 .covRow b { font-family: var(--f-display); font-size: 1.4rem; text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 640px) { .covRow { grid-template-columns: 1fr 56px; } .covBar { grid-column: 1 / -1; order: 3; } }
@@ -275,7 +275,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 /* Phones: answers are large buttons, two to a row, in reach of the thumb; never the keyboard */
 @media (max-width: 760px) {
   .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .options button { min-height: 56px; padding: 10px 12px; font-size: 1.1rem; border-radius: 10px; }
+  .options button { min-height: 56px; padding: 10px 12px; font-size: 1.1rem; border-radius: var(--radius); }
   .optGr { font-size: 1.45rem !important; }
   .drillFoot .btn { flex: 1 1 100%; justify-content: center; min-height: 52px; }
 }
@@ -284,11 +284,11 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 .session { display: grid; grid-template-rows: auto 1fr auto; gap: 18px; max-width: 760px; margin-inline: auto; }
 .sessionTop { display: flex; align-items: center; gap: 14px; }
 .sessionX {
-  display: grid; place-items: center; width: var(--tap); height: var(--tap); flex: none; border: 1px solid var(--rule); border-radius: 10px;
+  display: grid; place-items: center; width: var(--tap); height: var(--tap); flex: none; border: 1px solid var(--rule); border-radius: var(--radius);
   font-size: 1.6rem; line-height: 1; text-decoration: none; color: var(--ink);
 }
 .dots { flex: 1; display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
-.dots li { flex: 1; height: 5px; border-radius: 3px; background: color-mix(in srgb, var(--rule) 70%, transparent); transition: background-color 0.4s; }
+.dots li { flex: 1; height: 5px; border-radius: var(--radius); background: color-mix(in srgb, var(--rule) 70%, transparent); transition: background-color 0.4s; }
 .dots li[data-done], .dots li[aria-current] { background: var(--accent); }
 .dots li[aria-current] { animation: dot-fill 0.6s var(--ease); transform-origin: left; }
 @keyframes dot-fill { from { transform: scaleX(0.2); } }
@@ -413,7 +413,7 @@ a.card:hover { transform: translateY(-3px); box-shadow: 0 18px 36px -24px var(--
 .shiftGr [data-k] { display: inline-block; }
 .shiftAdj { color: var(--accent); }
 .shiftEn { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
-.shiftTag { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; padding: 1px 8px; border: 1px solid var(--accent); border-radius: 999px; color: var(--accent); }
+.shiftTag { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; padding: 1px 8px; border: 1px solid var(--accent); border-radius: var(--radius); color: var(--accent); }
 .shiftSay { font-size: 1.08rem; animation: shiftSay 0.4s var(--ease) both; }
 @keyframes shiftSay { from { opacity: 0; transform: translateY(4px); } }
 

@@ -11,7 +11,7 @@
 .lines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule); }
 .barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 .addLine {
-  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: 50%;
+  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round);
   background: transparent; color: var(--ink-2); font: 1rem/1 var(--f-body); cursor: pointer; opacity: 0.55; transition: opacity 0.2s, color 0.2s;
 }
 .lines li:hover .addLine, .addLine:focus-visible { opacity: 1; }
@@ -34,7 +34,7 @@
 .left > span { direction: ltr; unicode-bidi: isolate; }
 .right { overflow: hidden; white-space: pre; text-overflow: ellipsis; color: var(--ink-2); }
 .key { background: none; color: var(--ink); font-weight: 700; white-space: pre; padding: 0 0.12em; margin-left: 0.3em; border-bottom: 2px solid var(--accent); }
-.near { background: color-mix(in srgb, var(--ochre) 24%, transparent); color: var(--ink); border-radius: 2px; }
+.near { background: color-mix(in srgb, var(--ochre) 24%, transparent); color: var(--ink); border-radius: var(--radius); }
 .gram { padding-left: 14px; font: 0.76rem var(--f-body); color: var(--ink-2); white-space: nowrap; }
 .missing { grid-column: 2 / -1; font: 0.85rem var(--f-body); color: var(--accent); }
 .order button { font-size: 0.86rem; }
@@ -54,19 +54,19 @@
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .bars li {
   position: relative; display: grid; grid-template-columns: minmax(6em, 14em) minmax(0, 1fr) 3.6em; gap: 10px; align-items: center;
-  padding: 4px 6px; border-radius: 4px; outline: none;
+  padding: 4px 6px; border-radius: var(--radius); outline: none;
 }
 .bars li:hover, .bars li:focus-visible { background: color-mix(in srgb, var(--ink) 6%, transparent); }
 .bars li:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
 .barLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
 .barLabel small { color: var(--ink-2); }
 .track { height: 10px; }
-.fill { display: block; height: 100%; background: var(--accent); border-radius: 0 4px 4px 0; transform-origin: left; animation: grow 0.6s var(--ease) both; }
+.fill { display: block; height: 100%; background: var(--accent); border-radius: var(--radius); transform-origin: left; animation: grow 0.6s var(--ease) both; }
 @keyframes grow { from { transform: scaleX(0); } }
 .barValue { text-align: right; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
 .bars li::after {
   content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + 4px); z-index: 5; width: max-content; max-width: min(340px, 80vw);
-  padding: 6px 10px; border-radius: 6px; background: var(--inv-bg); color: var(--inv-fg); font-size: 0.82rem; line-height: 1.35;
+  padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: 0.82rem; line-height: 1.35;
   box-shadow: 0 8px 20px -10px var(--shadow); pointer-events: none; opacity: 0; translate: 0 4px; transition: opacity 0.15s, translate 0.15s;
 }
 .bars li:hover::after, .bars li:focus-visible::after { opacity: 1; translate: 0 0; }

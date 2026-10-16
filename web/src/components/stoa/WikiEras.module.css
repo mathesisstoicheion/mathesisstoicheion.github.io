@@ -7,7 +7,7 @@
 .col { position: relative; flex: 1 1 0; min-width: 30px; display: grid; grid-template-rows: 18px 1fr 20px; justify-items: center; }
 .value { font-size: 0.75rem; color: var(--ink-2); font-variant-numeric: tabular-nums; align-self: end; line-height: 1; padding-bottom: 3px; }
 .bar {
-  align-self: end; width: 100%; height: var(--h); min-height: 2px; background: var(--accent); border-radius: 3px 3px 0 0; transform-origin: bottom;
+  align-self: end; width: 100%; height: var(--h); min-height: 2px; background: var(--accent); border-radius: var(--radius); transform-origin: bottom;
   animation: grow 0.8s var(--ease) both; animation-delay: calc(var(--i) * 30ms); transition: filter 0.2s;
 }
 .col[data-era="1"] .bar { background: var(--ochre); }

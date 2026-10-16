@@ -3,7 +3,7 @@
    rests on its finished state, so with reduced motion (handled site-wide) the page is complete. */
 
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
-.spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
+.spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 .error { color: var(--accent); font-size: 0.93rem; }
 .ok { color: var(--ok); font-size: 0.93rem; }
@@ -16,7 +16,7 @@
 .crumbs a { color: inherit; }
 .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .linkBtn { background: none; border: 0; padding: 4px 0; min-height: 28px; font: inherit; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: 0.9rem; }
-.modBtn { font: inherit; font-size: 0.85rem; padding: 3px 10px; border: 1px dashed var(--accent); border-radius: 999px; background: transparent; color: var(--accent); cursor: pointer; }
+.modBtn { font: inherit; font-size: 0.85rem; padding: 3px 10px; border: 1px dashed var(--accent); border-radius: var(--radius); background: transparent; color: var(--accent); cursor: pointer; }
 .modBtn:hover { background: var(--accent); color: var(--accent-ink); }
 .narrow { max-width: 820px; padding-top: 36px; padding-bottom: 72px; display: grid; gap: 22px; }
 
@@ -28,7 +28,7 @@
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
-.tabs { display: flex; gap: 4px; border-bottom: 1.5px solid var(--ink); }
+.tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule-2); }
 .tabs button { font: inherit; font-family: var(--f-display); font-size: 1.25rem; padding: 6px 16px 8px; border: 0; background: none; color: var(--ink-2); cursor: pointer; position: relative; }
 .tabs button[aria-selected="true"] { color: var(--ink); }
 .tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: 10px; right: 10px; bottom: -1.5px; height: 3px; background: var(--accent); }
@@ -60,7 +60,7 @@
 }
 @keyframes glint { 0%, 70% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-.pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border: 1.5px solid var(--ink); border-radius: var(--radius); background: var(--surface); transition: transform 0.2s var(--ease), border-color 0.2s; }
+.pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border: 1px solid var(--rule-2); border-radius: var(--radius); background: var(--surface); transition: transform 0.2s var(--ease), border-color 0.2s; }
 .pnyxCard:hover, .pnyxCard:focus-visible { transform: translateY(-2px); border-color: var(--accent); }
 .pnyxCard b { font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; }
 .pnyxCard span:last-child { font-size: 0.92rem; color: var(--ink-2); }
@@ -68,7 +68,7 @@
 .pnyxMore { justify-self: end; font-family: var(--f-label); font-size: 0.95rem; color: var(--accent); text-underline-offset: 3px; margin-top: -4px; }
 .cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
 .cat {
-  text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1.5px solid var(--ink); border-radius: var(--radius);
+  text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1px solid var(--rule-2); border-radius: var(--radius);
   background: var(--surface); color: var(--ink); cursor: pointer; position: relative; overflow: hidden; font: inherit;
   animation: rise 0.45s var(--ease) both; animation-delay: calc(var(--i, 0) * 40ms);
   transition: transform 0.2s var(--ease), color 0.3s;
@@ -98,7 +98,7 @@
 @media (max-width: 760px) { .sorts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; flex: 1 1 100%; } .sorts :global(.chip) { justify-content: center; } .sorts.three { grid-template-columns: repeat(3, 1fr); } }
 .listHead { font-size: var(--step-1); margin: 0 0 8px; }
 
-.threads { list-style: none; margin: 0; padding: 0; border-top: 1.5px solid var(--ink); }
+.threads { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--rule-2); }
 .threads li {
   display: grid; grid-template-columns: 56px 1fr 96px; gap: 14px; align-items: center; padding: 12px 4px;
   border-bottom: 1px solid color-mix(in srgb, var(--rule) 60%, transparent);
@@ -113,7 +113,7 @@
 .threadMeta { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: 0.84rem; color: var(--ink-2); }
 .answered { color: var(--ok); margin-right: 6px; }
 .catTag, .tag {
-  font: inherit; font-size: 0.78rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--rule); background: transparent;
+  font: inherit; font-size: 0.78rem; padding: 1px 8px; border-radius: var(--radius); border: 1px solid var(--rule); background: transparent;
   color: var(--ink-2); cursor: pointer; text-decoration: none;
 }
 .catTag { border-color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
@@ -127,21 +127,21 @@
 
 /* ------------------------------------------------ a thread */
 .threadPage, .debate { padding-top: 32px; padding-bottom: 72px; display: grid; gap: 18px; }
-.threadHead { display: grid; gap: 12px; padding-bottom: 16px; border-bottom: 1.5px solid var(--ink); }
+.threadHead { display: grid; gap: 12px; padding-bottom: 16px; border-bottom: 1px solid var(--rule-2); }
 .threadHead h1 { font-size: var(--step-3); line-height: 1.1; margin: 0; }
 .titleInput { width: 100%; font-family: var(--f-display); font-size: 1.6rem; }
 .headRow { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
 .byline { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 4px 0 0; font-size: 0.86rem; color: var(--ink-2); }
 .author { font-weight: 600; color: var(--ink); text-decoration: none; }
 .author:hover { color: var(--accent); }
-.modTag, .answerTag, .cites { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.74rem; padding: 0 7px; border-radius: 999px; }
+.modTag, .answerTag, .cites { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.74rem; padding: 0 7px; border-radius: var(--radius); }
 .modTag { border: 1px solid var(--accent); color: var(--accent); }
 .answerTag { background: var(--ok); color: var(--bg); }
 .cites { border: 1px solid var(--ochre); color: var(--ochre); }
 .text { display: grid; gap: 0.6em; line-height: 1.6; overflow-wrap: anywhere; }
 .text p, .text ul { margin: 0; }
 .text a { color: var(--accent); }
-.quote { margin: 0; padding: 12px 16px; border-left: 3px solid var(--ink); background: color-mix(in srgb, var(--surface) 80%, transparent); display: grid; gap: 6px; }
+.quote { margin: 0; padding: 12px 16px; border-left: 3px solid var(--rule-2); background: color-mix(in srgb, var(--surface) 80%, transparent); display: grid; gap: 6px; }
 .quote blockquote { margin: 0; font-family: var(--f-greek); font-size: var(--greek-size); line-height: 1.5; }
 .quote .quoteEng { font-family: var(--f-body); font-size: 0.95rem; color: var(--ink-2); font-style: italic; }
 .quote figcaption { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.85rem; }
@@ -168,7 +168,7 @@
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
 .isAnswer { padding: 12px; border: 1.5px solid var(--ok); border-radius: var(--radius); background: color-mix(in srgb, var(--ok) 6%, transparent); }
 .replyBody { min-width: 0; display: grid; gap: 8px; }
-.replyBox { padding-top: 12px; border-top: 1.5px solid var(--ink); }
+.replyBox { padding-top: 12px; border-top: 1px solid var(--rule-2); }
 .composer { display: grid; gap: 10px; }
 .reportForm { display: grid; gap: 6px; width: 100%; max-width: 480px; padding: 10px; border: 1px dashed var(--rule); border-radius: var(--radius); }
 .reportForm label { display: grid; gap: 4px; font-size: 0.85rem; }
@@ -187,7 +187,7 @@
 .pnyx { display: grid; gap: 24px; padding-top: var(--after-head); padding-bottom: 72px; }
 .motionHero {
   display: grid; gap: 8px; padding: clamp(22px, 4vw, 40px); text-decoration: none; color: var(--ink);
-  background: var(--surface); border: 1.5px solid var(--ink); border-radius: var(--radius); text-align: center;
+  background: var(--surface); border: 1px solid var(--rule-2); border-radius: var(--radius); text-align: center;
   box-shadow: 0 26px 44px -34px var(--shadow);
 }
 .motionHero b { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.12; }
@@ -201,13 +201,13 @@
 .motions li a:hover b { color: var(--accent); }
 .proposeBox { padding: 20px 22px; border: 1px dashed var(--rule); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
-.resultBar { height: 12px; border-radius: 999px; overflow: hidden; background: var(--accent); }
+.resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); }
 .resultBar span { display: block; height: 100%; background: var(--blue); animation: grow 1s var(--ease) both; transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0); } }
 .result p { margin: 0; font-size: 0.9rem; }
 .resultSmall .resultBar { height: 6px; max-width: 320px; }
 
-.motionHead { text-align: center; display: grid; gap: 10px; justify-items: center; padding-bottom: 18px; border-bottom: 1.5px solid var(--ink); }
+.motionHead { text-align: center; display: grid; gap: 10px; justify-items: center; padding-bottom: 18px; border-bottom: 1px solid var(--rule-2); }
 .motionHead h1 { font-size: clamp(1.9rem, 4vw, 3rem); line-height: 1.08; max-width: 26ch; margin: 0; }
 .motionHead .text { text-align: left; max-width: 70ch; }
 
@@ -253,13 +253,13 @@
 /* a status tag: open ones in the accent, finished ones in green (fixed, done) or plain (not planned, already reported) */
 .statusTag {
   display: inline-block; font-family: var(--f-label); font-size: 0.74rem; letter-spacing: 0.06em; line-height: 1.5;
-  padding: 0 8px; border-radius: 999px; border: 1px solid var(--accent); color: var(--accent); white-space: nowrap; vertical-align: 0.15em;
+  padding: 0 8px; border-radius: var(--radius); border: 1px solid var(--accent); color: var(--accent); white-space: nowrap; vertical-align: 0.15em;
 }
 .statusClosed { border-color: var(--ink-2); color: var(--ink-2); }
 .statusTag[data-status="fixed"], .statusTag[data-status="done"] { border-color: var(--ok); color: var(--ok); }
 .threadTitle .statusTag, .threadHead h1 .statusTag { margin-left: 8px; }
 .statusRow { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-.statusRow select { font: inherit; font-size: 0.85rem; padding: 3px 8px; border: 1px dashed var(--accent); border-radius: 999px; background: transparent; color: var(--accent); }
+.statusRow select { font: inherit; font-size: 0.85rem; padding: 3px 8px; border: 1px dashed var(--accent); border-radius: var(--radius); background: transparent; color: var(--accent); }
 
 .form textarea { resize: vertical; min-height: 5.5em; }
 

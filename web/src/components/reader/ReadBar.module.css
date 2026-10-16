@@ -27,7 +27,7 @@
 
   .sheet {
     display: flex; flex-direction: column; position: fixed; z-index: 45; left: 0; right: 0; bottom: 0; max-height: 70dvh;
-    background: var(--surface); border-top: 1px solid var(--rule); border-radius: 16px 16px 0 0;
+    background: var(--surface); border-top: 1px solid var(--rule); border-radius: var(--radius);
     box-shadow: 0 -24px 48px -24px var(--shadow); outline: none;
     transform: translateY(calc(100% + 24px)); visibility: hidden;
     transition: transform 0.35s var(--ease), visibility 0s linear 0.35s;
@@ -38,7 +38,7 @@
 
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: var(--tap); height: var(--tap); padding: 0 10px;
-  background: transparent; color: var(--ink); border: 1px solid transparent; border-radius: 10px; -webkit-tap-highlight-color: transparent;
+  background: transparent; color: var(--ink); border: 1px solid transparent; border-radius: var(--radius); -webkit-tap-highlight-color: transparent;
   transition: background-color 0.2s, transform 0.2s var(--ease);
 }
 .btn:active:not(:disabled) { transform: scale(0.94); background: var(--bg-2); }
@@ -72,7 +72,7 @@
 .drawerHead { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
 .drawerHead h2 { font-size: 1.6rem; }
 .drawerHead p { margin-top: 4px; }
-.x { flex: none; width: var(--tap); height: var(--tap); font-size: 26px; line-height: 1; background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: 10px; }
+.x { flex: none; width: var(--tap); height: var(--tap); font-size: 26px; line-height: 1; background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); }
 .parts { list-style: none; margin: 0; padding: 0; display: grid; }
 .parts button {
   width: 100%; min-height: var(--tap); padding: 8px 12px; text-align: left; background: transparent; color: var(--ink);
@@ -85,14 +85,14 @@
   flex: none; position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px;
   padding: 18px max(16px, env(safe-area-inset-right, 0px)) 8px max(20px, env(safe-area-inset-left, 0px)); touch-action: none; cursor: grab;
 }
-.handle { position: absolute; top: 7px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: 3px; background: var(--rule); }
+.handle { position: absolute; top: 7px; left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: var(--radius); background: var(--rule); }
 .sheetBody {
   overflow-y: auto; overscroll-behavior: contain; display: grid; gap: 14px;
   padding: 4px max(20px, env(safe-area-inset-right, 0px)) calc(20px + env(safe-area-inset-bottom, 0px)) max(20px, env(safe-area-inset-left, 0px));
 }
 .sizes { display: grid; gap: 12px; }
 .sizeRow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.stepper { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: 10px; }
+.stepper { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--radius); }
 .stepper button { width: var(--tap); height: var(--tap); background: transparent; border: 0; color: var(--ink); font-size: 1.3rem; }
 .stepper button:disabled { opacity: 0.3; }
 .stepper output { min-width: 60px; text-align: center; font-variant-numeric: tabular-nums; }
