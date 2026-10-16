@@ -3,7 +3,7 @@
  * "A to Z": a row of letters to jump by, and (on author pages) a button that opens the list under them. The owner asked for
  * it on 2026-10-16: "on author pages, there should be a dedicated button for expanding their works into a list from a to z,
  * with a row from a to z that you can click on each letter to take you to the works in alphabetical order. And on phone it
- * should be on the right side and is touch interactive". For the library he then asked for just the side scroller, on the
+ * should be on the right side and is touch interactive". For the library they then asked for just the side scroller, on the
  * left of the list itself (no button, nothing separate).
  *
  * There are three parts, so that a page can use what it needs:
@@ -111,6 +111,7 @@ export function AZRail({ keys, has, jump, noun, variant = "row", show = true, na
 
   return (
     <nav ref={nav} className={variant === "side" ? `${styles.letters} ${styles.side}` : styles.letters} aria-label={`${noun} by first letter`} data-show={show ? "" : undefined}
+      data-slide={finger ? "" : undefined}
       onPointerDown={touchOn} onPointerMove={touchMove} onPointerUp={touchOff} onPointerCancel={touchOff}>
       {keys.map((k, i) => (
         <button key={k} type="button" data-k={k} className={styles.letter} style={{ "--i": i } as CSSProperties} data-hot={finger?.k === k ? "" : undefined}
