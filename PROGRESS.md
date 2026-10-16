@@ -33,12 +33,12 @@ live; it goes live only when the owner says "Publish"):
   all 47 pages, on a computer and a phone; the token count went from 4,612 to 4,500.
 - **The logo** (the owner, 2026-10-16: "Include a logo redesign"): three options drawn for the owner, all keeping the emblem's
   drawing and changing what it is made of: 1 cut in the stone, 2 gilded (the cut with gold laid in it; recommended), 3 a round
-  seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab). The gilded one is built in while the
-  owner chooses: `scripts/make-logo.mjs` (`npm run logo -- gilt|cut|seal`) draws the header's and footer's mark
+  seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab). The owner CHOSE gilded (2026-10-16),
+  and it is built in: `scripts/make-logo.mjs` (`npm run logo -- gilt|cut|seal`) draws the header's and footer's mark
   (`public/logo/`), the tab icon (`public/favicon.ico`, 16, 32 and 48 px), the iPhone icon and the install icons
   (`public/icons/`), so another choice is one command. The name beside the mark stays as text (the owner's rule: photos, text
   and buttons stay as they are). `lib/logo.ts`, `lib/app-icon.tsx`, `app/icon.svg` and the icon routes are gone.
-Still to do: the owner's choice of logo, the owner's review, then "Publish".
+Still to do: the owner's review, then "Publish".
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
