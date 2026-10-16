@@ -1,0 +1,23 @@
+{{Short description|Ancient Greek stringed musical instrument}}
+{{for|the suffix -chelys|List of commonly used taxonomic affixes}}
+[[File:Apollo black bird AM Delphi 8140.jpg|thumb|[[Cylix of Apollo]] with the chelys lyre, on a 5th-century BC drinking cup ([[kylix]])]]
+
+The '''chelys''' or '''chelus''' ({{langx|el|χέλυς|link=no}}, {{langx|la|testudo|link=no}}, both meaning "turtle" or "tortoise") was a [[string instrument]], the common [[lyre]] of the ancient Greeks, which had a convex back of [[tortoiseshell]] or of wood shaped like the shell. The word ''chelys'' was used in allusion to the oldest lyre of the Greeks, which was said to have been invented by [[Hermes]].<ref name=Schlesinger>{{cite EB1911|first=Kathleen|last=Schlesinger|author-link=Kathleen Schlesinger |wstitle=Chelys|volume=6|page=26}}</ref> According to the ''[[Homeric Hymns|Homeric Hymn]] to Hermes'', he came across a tortoise near the threshold of his mother's home and decided to hollow out the shell to make the soundbox of an instrument with seven strings.<ref>{{Cite web|url=https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.01.0138:hymn=4|title=Hymn 4 to Hermes|last1=Anonymous|translator=Hugh G. Evelyn-White|translator-link=Hugh Evelyn-White|website=www.perseus.tufts.edu|publisher=Harvard University Press|at=Lines 26-65|year=1914|publication-place=Cambridge, Massachusetts|access-date=2017-02-05}}</ref>
+
+[[File:Britannica Lyre Chelys or Lyre.png|thumb|upright|left|Ancient Greek chelys or lyre from a drawing on a vase in the [[British Museum]]]]
+The word has been applied arbitrarily since classic times to various stringed instruments, some bowed and some plucked, probably owing to the back being much vaulted. [[Athanasius Kircher]] (''Musurgia universalis'', 486) applied the name of chelys to a kind of [[viol]] with eight strings. Numerous representations of the chelys lyre or testudo occur on Greek vases, in which the actual tortoiseshell is depicted. A good illustration is given in ''[[Le Antichità di Ercolano Esposte]]'' (vol. I, p. 1, 43).<ref>The ancient Roman site of [[Herculaneum]] is preserved from the 1st century AD. At Herculaneum a wall painting contains a painting of a chelys lyre. The painting is re-depicted in the book ''Le Antichità di Ercolano Esposte'' (the Antiquities of Herculaneum Exposed), vol. 1, p. 43, year 1757: [http://digi.ub.uni-heidelberg.de/diglit/ercolano1757bd1/0055?sid=12ff55c3799d6f6fe4e14b9411518fb7&zoomlevel=4 Online]. A picture of a modern replica of an ancient chelys lyre is at the website of [https://www.britishmuseum.org/research/collection_online/collection_object_details/collection_image_gallery.aspx?partid=1&assetid=256178&objectid=463837 the British Museum].</ref> [[Propertius]] (iv. 6) calls the instrument the ''lyra testudinea''. [[Joseph Justus Scaliger]]<ref>[[Joseph Justus Scaliger]], introductory notes to his edition of [[Marcus Manilius]], ''Astronomicon'', 1579.</ref> was probably the first writer to draw attention to the difference between the chelys and the [[kithara]].<ref name=Schlesinger />
+
+The acoustics of an authentically reconstructed ancient Greek tortoise-shell lyre, known as chelys, was investigated in 2011.<ref>E. Bakarezos, V. Vathis, S. Brezas, Y. Orphanos and N. A. Papadogiannis, "Acoustics of the Chelys – An ancient Greek tortoise-shell lyre" ''[[Applied Acoustics]]'' '''73''', 478 (2012)</ref> Modern experimental methods were employed, such as electronic speckle pattern laser interferometry and impulse response, to extract the vibrational behavior of the instrument and its main parts. Additionally, the emitted sound from the instrument was recorded, under controlled conditions, and spectrally analyzed. Major findings include the concentration of the emitted sound between 400&nbsp;Hz and 800&nbsp;Hz, with an amplitude modified in a manner consistent with the experimentally measured vibrational characteristics of the instrument’s sound box and bridge. The experimental results validate the historical evidence that chelys was used in Greek antiquity as an accompaniment instrument to the human voice.
+{{clear}}
+
+==Notes==
+{{reflist}}
+
+==External links==
+* [https://www.smith.edu/hsc/museum/ancient_inventions/hsc12b.htm "Chelys-Lyra, Greece, 400 BCE"], [[Smith College]]
+
+{{Greek musical instruments}}
+
+[[Category:Ancient Greek musical instruments]]
+[[Category:Lyres]]
+[[Category:String instruments]]<!--Keep in both categories because the term has also been applied to string instruments that are not lyres-->

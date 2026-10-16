@@ -1,4 +1,1 @@
-FAILED agm-main.htm https://www.oeaw.ac.at/kal/agm/docum/main.htm
-FAILED agm-index.htm https://www.oeaw.ac.at/kal/agm/index.htm
-FAILED wiki-Orestes_papyrus.txt https://en.wikipedia.org/w/index.php?action=raw&title=Orestes_papyrus
-FAILED elwiki-Seikilos.txt https://el.wikipedia.org/w/index.php?action=raw&title=%CE%95%CF%80%CE%AF%CE%B3%CF%81%CE%B1%CE%BC%CE%BC%CE%B1_%CF%84%CE%BF%CF%85_%CE%A3%CE%B5%CE%AF%CE%BA%CE%B9%CE%BB%CE%BF%CF%85
+FAILED wiki-Hymn_to_Nemesis.txt https://en.wikipedia.org/w/index.php?action=raw&title=Hymn_to_Nemesis

@@ -1,0 +1,41 @@
+[[Datei:Mesomede's Hymns.jpg|mini|Drei Hymnen von Mesomedes in der Transkription von [[Vincenzo Galilei]], 1581]]
+'''Mesomedes''' war ein antiker griechischer [[Kitharöde]] und [[Lyrik]]er. 
+
+Mesomedes stammte von [[Kreta]] und war laut [[Suda]] ein Freigelassener [[Hadrian (Kaiser)|Hadrians]]. [[Eusebius von Caesarea|Eusebius]] berichtet, dass seine Hauptschaffenszeit nach 144 anzusetzen ist. Je eines seiner Gedichte sind in der ''[[Griechische Anthologie|Anthologia Palatina]]''<ref>''Anthologia Palatina'' 14, 63.</ref> und der ''[[Griechische Anthologie|Anthologia Planudea]]''<ref>''Anthologia Planudea'' 16, 323.</ref> überliefert. Hinzu kommen weitere 13 erhaltene Gedichte. Vier von ihnen sind mit musikalischen Noten versehen.<ref>Egert Pöhlmann: ''Denkmäler altgriechischer Musik. Sammlung, Übertragung und Erläuterung aller Fragmente und Fälschungen''. Carl, Nürnberg 1970, S.&nbsp;14–21.</ref> Es handelt sich bei den Gedichten um [[Fabel|Tierfabeln]], [[Hymne]]n, die Beschreibung eines Schwammes und einer Uhr und die Beschreibung der Herstellung von Glas. Seine Sprache deutet einen [[Dorisches Griechisch|dorischen Dialekt]] an. Die Versmaße sind vielfältig, vor allem [[anapäst]]isch.
+
+Um 1565 entdeckte der [[Florentiner Camerata|Florentiner]] [[Klassische Philologie|Philologe]] und [[Humanismus|Humanist]] [[Girolamo Mei]] die Notenzeichen, die den handschriftlich überlieferten [[Hymne]]n des Mesomedes beigegeben waren und zu den wenigen überlieferten Beispielen griechischer Musik gehören.<ref>Nach [[Karl Heinrich Wörner|Karl H. Wörner]] war der Entdecker der ''Hymnen des Mesomedes'' [[Vincenzo Galilei]] († 1591). Siehe Karl H. Wörner: ''Geschichte der Musik''. Vandenhoeck und Ruprecht, Göttingen 1961 (Neufassung), § 162, S. 217.</ref> Aus den Versuchen, diese Noten zu entschlüsseln, entstand in der Folge eine inzwischen über Jahrhunderte dauernde Diskussion über die Praxis der [[Musik der griechischen Antike|antiken griechischen Musik]]. Die damaligen Gelehrten-Diskussionen und musikalischen Versuche zur Wiederbelebung der griechischen Musik führten zum ''recitar cantando'', einer Art [[Sprechgesang]], der von einem Instrument begleitet wurde ([[Monodie]]). Dies gilt als der Beginn der [[Gattung (Musik)|Gattung]] ''[[Oper]]''.<ref>Johannes Jansen: ''Ein folgenreiches Mißverständnis. Die Geburt der Oper aus dem Geist der Renaissance.'' In: Johannes Jansen: ''Oper. Schnellkurs.'' Dumont-Verlag, Köln 1998, ISBN 3-7701-4280-2, S. 8 ff.</ref>
+
+== Ausgaben ==
+* Sara Lanna (Hrsg.): Mesomede, ''Inno a Φύσις.'' Introduzione, testo critico, traduzione e commento (= ''Quaderni dei Seminari Romani di Cultura Greca,'' 15). Edizioni Quasar, Rom 2013, ISBN 9788871405148.
+* Sara Lanna (Hrsg.): Mesomede, ''Inno a Iside.'' Edizione con introduzione, traduzione, commento, e altri testi del culto isiaco (= ''Quaderni dei Seminari Romani di Cultura Greca,'' 27). Edizioni Quasar, Rom 2021, ISBN 9788854911512.
+* Sara Lanna (Hrsg.): ''Lyric addresses to ancient and new gods. Mesomedes, proems – hymns – prayers.'' Einleitung von [[Oliver Schelske]], [[Richard L. Gordon (Altphilologe)|Richard L. Gordon]] und [[Egert Pöhlmann]] (= ''[[SAPERE (Projekt)|SAPERE]]'', 45). Mohr Siebeck, Tübingen 2025, ISBN 9783161540202. – Rezension von Hanna Gołąb, [[Bryn Mawr Classical Review]] [https://bmcr.brynmawr.edu/2026/2026.08.15/ 2026.08.15]
+
+== Literatur == 
+* [[Egert Pöhlmann]]: ''Denkmäler altgriechischer Musik. Sammlung, Übertragung und Erläuterung aller Fragmente und Fälschungen'' (= ''Erlanger Beiträge zur Sprach- und Kunstwissenschaft.'' Band 31). Carl, Nürnberg 1970, S. 14–21 (zugleich: Habilitationsschrift, Universität Erlangen-Nürnberg 1970).
+* [[Martin Litchfield West]]: ''Ancient Greek Music.'' Clarendon Press, Oxford 1992, ISBN 0-19-814897-6<!-- , S. ?-->.
+
+== Anmerkungen ==
+<references />
+
+{{Normdaten|TYP=p|GND=118783467|LCCN=n/82/245065|VIAF=89040910}}
+
+[[Kategorie:Musiker (Griechenland)]]
+[[Kategorie:Musiker (Antike)]]
+[[Kategorie:Literatur (Altgriechisch)]]
+[[Kategorie:Autor]]
+[[Kategorie:Literatur der Antike]]
+[[Kategorie:Grieche (Antike)]]
+[[Kategorie:Geboren im 1. oder 2. Jahrhundert]]
+[[Kategorie:Gestorben im 2. Jahrhundert]]
+[[Kategorie:Mann]]
+[[Kategorie:Altgriechischer Hymnus|!]]
+
+{{Personendaten
+|NAME=Mesomedes
+|ALTERNATIVNAMEN=
+|KURZBESCHREIBUNG=griechischer Dichter und Musiker
+|GEBURTSDATUM=1. Jahrhundert oder 2. Jahrhundert
+|GEBURTSORT=
+|STERBEDATUM=2. Jahrhundert
+|STERBEORT=
+}}

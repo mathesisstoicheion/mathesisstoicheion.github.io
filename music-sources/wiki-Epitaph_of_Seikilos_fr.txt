@@ -1,0 +1,111 @@
+{{Infobox}}
+
+L''''épitaphe de Seikilos''' ou la '''chanson de Tralles''' est un fragment d'[[inscription lapidaire]] [[Grèce antique|grecque]], partiellement accompagné d'une [[notation musicale]], gravée sur une [[stèle]] de marbre placée sur la tombe qu'a fait ériger un certain Seikilos pour son épouse ou son père, dans l'ancienne [[Aydın|Tralles]] (à une trentaine de kilomètre d'[[Éphèse]]), en [[Asie Mineure]].
+
+La « Chanson de Seikilos », datée du {{sp|II|ou|I}} av. J.-C., est, à ce jour, le plus ancien exemple de [[composition musicale]] ''complète'', réunissant sur le même objet un texte et sa [[notation musicale]], qui soit parvenu jusqu'à nous<ref>{{Ouvrage|langue=fr grc|prénom1=Caroline|nom1=Fourgeaud-Laville|lien auteur1=|auteur2=François Lefèvre|titre=Graver pour l'éternité. La Grèce au fil des écritures|lieu=Paris|éditeur=Les Belles Lettres / La vie des classiques|année=2025|pages totales=315|passage=52-53|isbn=978-2-377-75115-0|présentation en ligne=https://www.lesbelleslettres.com/livre/9782377751150/graver-pour-l-eternite}}</ref>{{,}}<ref>{{Lien web |auteur=Céline Dekock |titre=Epitaphe de Seikilos, une musique du IIe siècle avant notre ère qui reprend vie |url=https://www.rtbf.be/article/epitaphe-de-seikilos-une-musique-du-iie-siecle-avant-notre-ere-qui-reprend-vie-10862338 |site=rtbf.be |date=1er juillet 2022 |consulté le=23 août 2026}}</ref>.
+
+== Histoire et découverte ==
+Datée du {{Ier siècle}}<ref>{{Ouvrage|langue=en|prénom1=Thomas J.|nom1=Mathiesen|titre=Apollo's lyre|sous-titre=Greek music and music theory in antiquity and the Middle Ages|lieu=Lincoln, Neb.|éditeur=[[University of Nebraska Press]]|année=1999|passage=148|isbn=0-8032-3079-6|lire en ligne=https://books.google.be/books?id=Td5odzctae8C|consulté le=2017-08-10}}</ref> ou du {{IIe siècle}}<ref>{{Ouvrage|langue=en|prénom1=Don Michael|nom1=Randel|titre=The Harvard Dictionary of Music|éditeur=Harvard University Press|année=2003|pages totales=767|isbn=978-0-674-01163-2|lire en ligne=https://books.google.be/books?id=02rFSecPhEsC|consulté le=2017-08-10}}</ref>, vraisemblablement contemporaine de [[Claude Ptolémée|Ptolémée]]<ref name=":0" />, cette épitaphe sous forme de chanson figure sur une colonne ornant la tombe dédiée par Seikilos à « Euter. » (le mot est incomplet) . Elle a été découverte dans la province turque d'[[Aydın]] à 30 km d'[[Éphèse]], à l'occasion de la construction du chemin de fer ottoman<ref name="Pöhlmann Litchfield 2001">{{En}} Egert Pöhlmann et Martin Litchfield West, ''Documents of Ancient Greek Music. The Extant Melodies and Fragments'', Oxford, Oxford University Press, 2001, 226 p. {{ISBN|978-0-198-15223-1}}
+pp. 90-91</ref>.
+
+La colonne rejoint alors la collection privée du directeur général des [[Chemins de fer Orientaux]], Edward Purser (1821-1906), et sert d'élément décoratif comme piédestal pour les fleurs de madame Purser<ref name="Pöhlmann Litchfield 2001" />. L'extraction de l'objet a occasionné des dégâts à sa base et la destruction de la dernière ligne du texte<ref name="Pöhlmann Litchfield 2001" />. C'est l'archéologue [[William Mitchell Ramsay]]<ref>William Mitchell Ramsay, « Inscriptions inédites de l'Asie Mineure », in ''Bulletin de correspondance hellénique''. volume 7, 1883, pp. 277-278, [http://www.persee.fr/web/revues/home/prescript/article/bch_0007-4217_1883_num_7_1_4159 article en ligne]</ref> qui en donne le premier la transcription exacte en [[1883]]<ref name="Pöhlmann Litchfield 2001" />.
+
+La colonne devient ensuite propriété du beau-fils de Purser, installé à [[Izmir]], chez lequel elle demeure jusqu'au terme de la [[Guerre gréco-turque (1919-1922)|guerre gréco-turque]] en [[1922]] ; c'est alors le consul des [[Pays-Bas]] qui la recueille pour la protéger [[Incendie de Smyrne|des troubles survenus]] après la victoire turque. Elle poursuit, avec le beau-fils de celui-ci, un périple qui la conduit à [[Istanbul]], [[Stockholm]] puis [[La Haye]], avant qu'elle ne soit acquise en [[1966]] par le Département d'Antiquités du [[Musée National du Danemark]] à [[Copenhague]]<ref name="Pöhlmann Litchfield 2001" />, où elle fait l'objet d'une communication scientifique qui remet en mémoire son existence l'année suivante<ref>{{Nl}} Jorgen Raasted, « ''Seikilos Gravskrift'', Foredrag til Dansk Selskab for Musikforskning » (<small>L'épitaphe de Seikilos, conférence donnée à la Société danoise de recherche musicale</small>), 06/12/1967. Inédit</ref>. C'est là qu'elle est exposée depuis, sous la cote {{nombre|14897}}<ref name="Pöhlmann Litchfield 2001" />.
+
+== Texte ==
+[[Fichier:Ο Επιτάφιος του Σεῖκιλου - Epitaph of Seikilos.ogg|thumb|gauche|La mélodie chantée avec la prononciation du [[Koinè (grec)|grec koinè (la langue commune)]].]]
+[[Fichier:Seikilos2.tif|thumb|gauche|Texte sur la stèle déployée.]]
+La [[stèle]] présente d'abord un [[distique élégiaque]], écrit dans le [[Trope (rhétorique)|trope]] [[Ionie|ionien]] et en [[Iambe|dipodies ïambiques]]<ref>{{Article|langue=fr-FR|auteur1=|prénom1=Francisque|nom1=Greif|titre=Études sur la musique antique|périodique=Revue des Études Grecques|volume=27|numéro=121|date=1914|issn=|doi=10.3406/reg.1914.6767|lire en ligne=http://www.persee.fr/doc/reg_0035-2039_1914_num_27_121_6767|consulté le=2017-08-10|pages=7}}</ref>{{,}}<ref>La traduction de [[Théodore Reinach]], ci-après se trouve sur {{Lien web |auteur=Claude Abromont |lien auteur=Claude Abromont |titre=L’Épitaphe de Seikilos, épisode 1 : une musique gravée dans la pierre |url=https://www.radiofrance.fr/francemusique/podcasts/les-enquetes-musicales-de-claude-abromont/l-epitaphe-de-seikilos-episode-1-une-musique-gravee-dans-la-pierre-6638789|site=radiofrance.fr/francemusique |date=17 juillet 2017 |consulté le=23 août 2026}}.</ref> :
+{{Citation bloc|{{grec ancien|ΕΙΚΩΝ Η ΛΙΘΟΣ}}<br />
+''Eikôn hê lithos''<br />
+{{grec ancien|ΕΙΜΙ· ΤΙΘΗΣΙ ΜΕ}}<br />
+''eimi; tithêsi me''<br />
+{{grec ancien|ΣΕΙΚΙΛΟΣ ΕΝΘΑ}}<br />
+''Seikilos entha''<br />
+{{grec ancien|ΜΝΗΜΗΣ ΑΘΑΝΑΤΟΥ}}<br />
+''mnêmês athanatou''<br />
+{{grec ancien|ΣΗΜΑ ΠΟΛΥΧΡΟΝΙΟΝ}}<br />
+''sêma polukhronion''}}
+
+{{Citation bloc|La pierre que je suis est une image.<br />
+Seikilos me pose ici,<br/>
+d'un souvenir immortel
+signe durable.}}
+
+L'inscription déploie ensuite une deuxième partie, dont les mots sont accompagnées d'une notation musicale :
+[[Fichier:Seikilos.svg|thumb|center|400px|Épitaphe reconstituée.]]
+{{Citation bloc|{{Grec ancien|[[wikt:ὅσος|Ὅσον]] [[wikt:ζάω|ζῇς]] [[wikt:φαίνω|φαίνου]]}}/ {{Lang|grc-Latn|''Hóson zễis, phaínou''}}<br/>{{Grec ancien|[[wikt:μηδείς|μηδὲν]] [[wikt:ὅλος|ὅλως]] [[wikt:σύ|σὺ]] [[wikt:λυπέω|λυποῦ]]}} / {{Lang|grc-Latn|''mêdèn hólôs sù lupoû·''}}<br/>{{Grec ancien|[[wikt:πρός|πρὸς]] [[wikt:ὀλίγος|ὀλίγον]] [[wikt:εἰμί|ἐστὶ]] [[wikt:ὁ|τὸ]] [[wikt:ζάω|ζῆν]]}} / {{Lang|grc-Latn|''pròs olígon estì tò zễn.''}}<br/>{{Grec ancien|τὸ [[wikt:τέλος|τέλος]] [[wikt:ὁ|ὁ]] [[wikt:χρόνος#Grec_ancien|χρόνος]] [[wikt:ἀπαιτέω|ἀπαιτεῖ]].}} / {{Lang|grc-Latn|''tò télos ho khrónos apaiteî.''}}}}
+
+{{Citation bloc|Tant que tu vis, brille !<br />
+Ne t'afflige absolument de rien !<br />
+La vie ne dure guère.<br />
+Le temps exige la fin (''ou'' : son tribut).|Traduction de {{!}}[[Théodore Reinach]]{{!}}, retouchée.}}
+
+===Dédicace===
+[[Fichier:Euterpe sarcophagus Louvre Ma475.jpg|thumb|[[Euterpe]], la muse de la musique. Détail du « Sarcophage des [[Muses]] », {{-s-|II|e}} [[Musée du Louvre]].|431x431px]]
+Les deux derniers mots (ΣΕΙΚΙΛΟΣ ΕΥΘΤΕΡ.) constituent la [[dédicace]], et le dernier nom pourrait être une [[abréviation]], à moins que la fin en soit manquante.  
+
+Sur cette base, la personne à laquelle le monument est dédié est sujette à débat, selon la reconstitution proposée<ref name="Pöhlmann Litchfield 2001" /> : {{lang|grc|Σείκιλος Εὐτέρ(πῃ)}} (''Seíkilos Eutér(pei)'', « De Seikilos à Euterpe ») suggère une dédicace de Seikilos à son épouse<ref>Don Michael Randel, « Seikilos epitaph », in ''The Harvard Dictionary of Music'', éd. Harvard University Press, 2003, p. 767</ref>. 
+
+Mais une autre reconstruction possible propose {{lang|grc|Σείκιλος Εὐτέρ[που]}} (''Seikilos Euter[pou]'', « Seikilos [fils] d'Euterpos »), suggérant la dédicace à son père<ref name="Pöhlmann Litchfield 2001" /> dans ce qui pourrait être une lignée de musiciens<ref>{{En}} John J.Pilch, ''Flights of the Soul. Visions, Heavenly Journeys, and Peak Experiences in the Biblical World'', éd. Eerdmans, 2011, 256 p. {{ISBN|978-0-802-86540-3}}
+
+p. 79</ref>. 
+
+Une autre traduction suggère encore « Seikilos [fils de la muse] [[Euterpe]] », [[muses|muse]] qui, dans la [[mythologie grecque]], préside à la [[musique]]<ref name="Owen Lee 2003" />.
+
+== Mélodie ==
+[[Fichier:Seikilos score.svg|thumb|center|600x600px|La mélodie de l'épitaphe de Seikilos, écrite en notation moderne.]]
+La [[mélodie (succession de hauteurs)|mélodie]], écrite en [[Mode (musique)|mode]] [[Mode phrygien|phrygien]]<ref>{{Ouvrage|langue=en|prénom1=M. L.|nom1=West|titre=Ancient Greek Music|éditeur=[[Oxford University Press|Clarendon Press]]|année=1992|pages totales=424|passage=186|isbn=978-0-19-158685-9|lire en ligne=https://books.google.be/books?id=So-Qpz6WDS4C|consulté le=2017-08-10}}</ref> et en [[Ton (musique)|ton]] iastien (ou ''[[Ionie|ionien]]'')<ref>{{Ouvrage|langue=en|prénom1=Charles H.|nom1=Cosgrove|titre=An Ancient Christian Hymn with Musical Notation : Papyrus Oxyrhynchus 1786 : Text and Commentary|lieu=Tübingen|éditeur=Mohr Siebeck|année=2011|passage=88|isbn=978-3-16-150923-0|lire en ligne=https://books.google.be/books?id=t9eWOhrG4qMC|consulté le=2017-08-10}}</ref>, emploie les degrés de la [[Échelle diatonique|gamme diatonique]] centrés sur le degré ''[[Sol (note de musique)|sol]]'' en guise de [[Tonique (musique)|tonique]]<ref>{{Ouvrage|langue=fr|prénom1=Jacques|nom1=Viret|titre=Le chant grégorien et la tradition grégorienne|éditeur=[[Éditions L'Âge d'Homme|L'Âge d'Homme]]|année=2001|pages totales=103|isbn=978-2-825-13238-8|lire en ligne=https://books.google.be/books?id=5GsIlHMqv7sC|consulté le=2017-08-10|lieu=Lausanne}}</ref> et se déploie sur un [[Intervalle (musique)|intervalle]] d'une [[octave (musique)|octave]] juste<ref name=":0">{{Ouvrage|langue=en|prénom1=Claude V.|nom1=Palisca|titre=Music and Ideas in the Sixteenth and Seventeenth Centuries|éditeur=[[University of Illinois Press]]|année=2010|pages totales=312|passage=78|isbn=978-0-252-09207-7|lire en ligne=https://books.google.be/books?id=q2sU4q2XGooC|consulté le=2017-08-10}}</ref>. La chanson est mélancolique, et souvent classée comme ''[[skolion]]'' (ou « chanson à boire »)<ref name="Owen Lee 2003">{{En}} M. Owen Lee, ''Athena Sings : [[Richard Wagner|Wagner]] and the Greeks'', University of Toronto Press, 2003, 80 p. {{ISBN|978-0-802-08580-1}}
+
+p. 50</ref> bien que ce point soit débattu, notamment par le contexte dans lequel est figuré le texte qui fait pencher certains chercheurs vers une simple [[épigramme]], forme que l'on retrouve régulièrement sur les [[Stèle|stèles]] funéraires et les tablettes votives<ref>Thomas J. Mathiesen, ''Apollo's Lyre : Greek Music and Music Theory in Antiquity and the Middle Ages'', éd. University of Nebraska Press, 1999, p.148</ref>.  
+
+Concernant la longueur des notes, dans la notation grecque, une brève dure un temps et une longue - marquée par un trait horizontal (''disèmè'') placé au-dessus de la note - deux<ref name=":1">{{Article|langue=|auteur1=Sylvain Perrot|titre=Comment déchiffrer une partition grecque ?|périodique=Dossiers d'Archéologie|numéro=383|date=septembre/octobre 2017|issn=1141-7137|lire en ligne=|pages=69}}</ref>. Le compositeur de l'épitaphe de Seilikos modifie le rythme naturel en allongeant certaines syllabes jusqu'à trois temps en utilisant un ''trisèmè'' composé du trait horizontal augmenté d'un trait vertical<ref name=":1" />.
+
+On ne connaît pas le [[tempo]] de la chanson, puisqu'il n'est jamais donné par les notations antiques, et qu'il est laissé à la libre interprétation de l'exécutant<ref name=":1" />.[[Fichier:Seikilos epitaph 02.jpg|thumb|La colonne, exposée au [[Musée national du Danemark]].|centré]]
+== Reprises ==
+La mélodie a été utilisée par [[Miklós Rózsa|Miklos Rozsa]], compositeur et historien de la musique, pour certaines parties des musiques du film [[Quo vadis (film, 1951)|''Quo Vadis'']], sorti en 1951, notamment dans deux scènes où [[Peter Ustinov]] compose et interprète la chanson sous les traits de l'[[Néron|empereur Néron]]<ref name = "dozolme">{{Lien web|langue = français|titre = La plus vieille partition du monde dans Minecraft et Assassin’s Creed ?|format = podcast|url = https://www.radiofrance.fr/francemusique/podcasts/maxxi-classique/la-plus-vieille-partition-du-monde-dans-minecraft-et-assassin-s-creed-8531965|accès url = libre|site = [[France Musique]]|date = 13 octobre 2023|consulté le = 21 août 2026|auteur = [[Max Dozolme]]}}.</ref>{{,}}<ref> Outre l'interprétation par Peter Ustinov à deux reprises ({{YouTube|id=pBIswXv28GI|titre=Nero sings|langue=en|date=25/06/2008|consulté le=29 juillet 2022}}, {{YouTube|id=YIMsfI-eeUoon|titre=MERVYN LEROY - QUO VADIS, NéRON, DE LA CATHARSiS...|langue=fr|date=15/02/2013|consulté le=29 juillet 2022}}), on en trouve une version instrumentale orchestrée dans la bande originale du film ({{YouTube|id=mIIFvCpymXU|titre=Nero sings|langue=en|date=10/06/2013|consulté le=29 juillet 2022}} à {{Heure|2=3|3=50}}) ; cf. {{Ouvrage|langue=en|prénom1=Goldhill|nom1=Simon|prénom2=Robin|nom2=Osborne|titre=Performance Culture and Athenian Democracy|passage=98|éditeur=Cambridge University Press|date=1999|isbn=978-0-521-64247-7}}</ref>. 
+ 
+Le thème musical sert de base à la chanson ''We've Just Begun to Dream'' (1983) (Gary Paben/Steve Skorija/Jack Eskew), thème officiel du parc à thème [[Epcot|Disney Epcot]]<ref>{{YouTube|id=I4Mb48hAatw|titre=Epcot Center - We’ve Just Begun to Dream (Opening Dedication LIVE Version)|langue=en|date=28/04/2022|consulté le=29 juillet 2022}}</ref>.
+
+Elle a aussi été reprise dans plusieurs jeux vidéos : 
+
+* ''[[Civilization V]]'' : thème d'[[Alexandre le Grand]]<ref name = "dozolme"/>{{,}}<ref>{{YouTube|id=YEKRE2uamyg|titre=Civilization V OST {{!}} Alexander Peace Theme {{!}} Epitaph of Seikilos|langue=en|date=23/12/2010|consulté le=29 juillet 2022}}</ref>;
+* ''[[Civilization VI]]'' : thème de la civilisation grecque avec deux traitements différents, [[Gorgô]] et [[Périclès]] <ref>{{YouTube|id=zxTg1TsemSA|titre=Civ 6 Greek Pericles&Gorgo Theme music FULL|langue=en|date=21/10/2016|consulté le=29 juillet 2022}} et {{YouTube|id=nVCkNCIm01U|titre=Civilization VI OST {{!}} Greece (Pericles & Gorgo) {{!}} Industrial Theme {{!}} Song of Seikilos|langue=en|date=13/01/2018|consulté le=29 juillet 2022}} </ref>;
+* ''[[Assassin's Creed Odyssey]]'' : version chantée en chœur<ref name = "dozolme"/>{{,}}<ref>{{YouTube|id=Y_qP7ajsDVU|titre=Seikilos epitaph - Assassin's Creed Odyssey|langue=en|date=20/09/2019|consulté le=29 juillet 2022}}</ref>;
+* ''[[Minecraft]]''<ref name = "dozolme"/>.
+
+==Notes et références==
+{{Références|colonnes=2}}
+
+== Voir aussi ==
+
+=== Bibliographie ===
+
+==== Ouvrages ====
+*{{en}} James Peter Burkholder & Claude V. Palisca (Eds.), ''Norton Anthology of Western Music. Volume I : Ancient to Baroque''. New York, W.W. Norton, 2010, {{isbn|978-0-393-93126-6}}
+*{{en}} Egert Pöhlmann et Martin Litchfield West, ''Documents of Ancient Greek Music. The Extant Melodies and Fragments'', Oxford, Oxford University Press, 2001.
+*{{en}} Thomas J. Mathiesen, ''Apollo's Lyre. Greek Music and Music Theory in Antiquity and the Middle Ages'', Lincoln (NE), University of Nebraska Press, 1999.
+*{{en}} John G. Landels, ''Music in Ancient Greece and Rome'', London & New York, Routledge, 1999.
+
+==== Articles ====
+*{{Article|langue=en|auteur1=Jon D. Solomon|titre=The Seikilos Inscription : A Theoretical Analysis|périodique=American Journal of Philology|numéro=107|pages=455–479|date=1986|lire en ligne=https://www.jstor.org/stable/295097|accès url=inscription}}
+
+=== Discographie ===
+* Ensemble Kérylos/[[Annie Bélis]], ''D'[[Euripide]] aux premiers chrétiens,'' Ensemble Kérylos, 2016
+* San Antonio Vocal Arts Ensemble, ''Ancient Echoes - Music from the time of Jesus and [[Second temple de Jérusalem|Jerusalem's Second Temple]]'', World Library Publications, 2005
+
+* [[Atrium Musicae de Madrid|Atrium Musica de Madrid]]/Gregorio Paniagua, ''Musique de la Grèce Antique'', Harmonia Mundi, 2007
+{{Autres projets|commons=Category:Seikilos epitaph}}
+
+=== Articles connexes ===
+
+=== Liens externes ===
+*[https://www.youtube.com/watch?v=X3ys7QyEVT4 YouTube.com] (autre version) (4'31)
+
+{{Palette|Notation musicale}}
+{{Portail|musique|Grèce antique}}
+
+{{DEFAULTSORT:Epitaphe de Seikilos}}
+[[Catégorie:Notation musicale]]
+[[Catégorie:Épigraphie grecque]]
+[[Catégorie:Musique de la Grèce antique]]
