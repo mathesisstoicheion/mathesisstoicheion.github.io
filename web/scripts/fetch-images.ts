@@ -12,6 +12,8 @@
  *   npx tsx scripts/fetch-images.ts info commons "<File>"   one Commons record
  *   npx tsx scripts/fetch-images.ts                         fetch everything in the list
  *   npx tsx scripts/fetch-images.ts sizes                   (re)make the smaller copies of every picture
+ * Another list can be fetched into its own folder and credits file, without the smaller copies:
+ *   LIST=scripts/pieces.list.json OUT=src/data/piece-images.json DIR=public/images/pieces SMALL=0 npx tsx scripts/fetch-images.ts
  */
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import sharp from "sharp";
@@ -93,19 +95,21 @@ if (mode === "search") {
     console.log(file);
   }
 } else {
-  const list = JSON.parse(readFileSync("scripts/images.list.json", "utf8")) as ListItem[];
+  const LIST = process.env.LIST || "scripts/images.list.json", OUT = process.env.OUT || "src/data/images.json";
+  const DIR = process.env.DIR || "public/images", SMALL = process.env.SMALL !== "0";
+  const list = JSON.parse(readFileSync(LIST, "utf8")) as ListItem[];
   const out: Record<string, ImageCredit> = {};
-  mkdirSync("public/images", { recursive: true });
+  mkdirSync(DIR, { recursive: true });
   for (const it of list) {
     const [kind, ref] = [it.src.slice(0, it.src.indexOf(":")), it.src.slice(it.src.indexOf(":") + 1)];
     const x = kind === "met" ? await met(ref) : await commons(ref);
     const file = `${it.id}.jpg`;
-    if (!existsSync(`public/images/${file}`) || process.env.REFETCH) {
+    if (!existsSync(`${DIR}/${file}`) || process.env.REFETCH) {
       const buf = Buffer.from(await (await get(x.url)).arrayBuffer());
-      await sharp(buf).rotate().resize({ width: WIDTH, withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toFile(`public/images/${file}`);
+      await sharp(buf).rotate().resize({ width: WIDTH, withoutEnlargement: true }).jpeg({ quality: 80, mozjpeg: true }).toFile(`${DIR}/${file}`);
     }
-    await smaller(file);
-    const meta = await sharp(`public/images/${file}`).metadata();
+    if (SMALL) await smaller(file);
+    const meta = await sharp(`${DIR}/${file}`).metadata();
     out[it.id] = {
       file, width: meta.width!, height: meta.height!, alt: it.alt,
       ...x.credit,
@@ -114,7 +118,7 @@ if (mode === "search") {
     console.log(it.id, meta.width, meta.height, out[it.id].licence);
     await new Promise((r) => setTimeout(r, 3000)); // be gentle with the museums' servers
   }
-  writeFileSync("src/data/images.json", JSON.stringify(out, null, 1) + "\n");
+  writeFileSync(OUT, JSON.stringify(out, null, 1) + "\n");
 }
 }
 main();
