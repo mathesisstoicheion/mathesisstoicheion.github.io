@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Site redesign (2026-10-15; being built on branch `claude/site-redesign-77uoc2`, not live)
+## Site redesign (2026-10-15; built on branch `claude/site-redesign-77uoc2`; published 2026-10-16)
 The owner asked for a fresh-start redesign. On 2026-10-16, after comparing three complete designs, they chose **B, "Stone and torch"**
 (`docs/adr/0006-stone-and-torch.md`); the look is written down in `DESIGN.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH
 (version 15 is current: it opens on B, with A and C a tab away). Sources in the project files under `redesign/prototype/`: B in `abc/b-sources/`,
@@ -38,7 +38,8 @@ live; it goes live only when the owner says "Publish"):
   (`public/logo/`), the tab icon (`public/favicon.ico`, 16, 32 and 48 px), the iPhone icon and the install icons
   (`public/icons/`), so another choice is one command. The name beside the mark stays as text (the owner's rule: photos, text
   and buttons stay as they are). `lib/logo.ts`, `lib/app-icon.tsx`, `app/icon.svg` and the icon routes are gone.
-Still to do: the owner's review, then "Publish".
+Published 2026-10-16 at the owner's word ("Just make the changes. Push to live"), without a separate preview round; the owner
+will report any bugs or design flaws they find on the live site.
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
