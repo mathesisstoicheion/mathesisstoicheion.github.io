@@ -47,7 +47,7 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
         <Link href={AREAS.library.href} transitionTypes={["page-turn"]}>{AREAS.library.name}</Link> › <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>
       </p>
       <header className={styles.head}>
-        <div className="area-kicker"><span className="tongues draw" aria-hidden="true" /><span className="label">Work</span></div>
+        <div className="area-kicker"><span className="label">Work</span></div>
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
         {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
         {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}

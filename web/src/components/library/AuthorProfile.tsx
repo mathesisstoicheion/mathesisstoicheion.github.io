@@ -100,7 +100,7 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
     <div className={`wrap ${styles.page}`}>
       <p className={styles.crumb}><Link href={AREAS.library.href}>← {AREAS.library.name} · {AREAS.library.english}</Link></p>
       <header className={styles.head}>
-        <div className="area-kicker"><span className="tongues draw" aria-hidden="true" /><span className="label">Author</span></div>
+        <div className="area-kicker"><span className="label">Author</span></div>
         <h1 className={`page-title ${styles.name}`}>{author.name}</h1>
         {author.orig && <p className={styles.note}><i lang="la">{author.orig}</i> <span className="muted">· the collection&apos;s own Latin name; the English is this site&apos;s translation</span></p>}
         {wd?.desc && <p className={styles.note}>{wd.desc.charAt(0).toUpperCase() + wd.desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}

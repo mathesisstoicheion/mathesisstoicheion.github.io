@@ -90,7 +90,11 @@ interface Row { a: CatAuthor; works: CatWork[]; from: number | null; to: number 
 /** A lettered or dated section of the list. */
 interface Group { key: string; label: string; short: string; rows?: Row[]; titles?: { w: CatWork; a: CatAuthor }[] }
 
-export default function Library() {
+/**
+ * The library (design B, Stone and torch): the page's opening words (`hero`) beside the search, the order and the
+ * filters, then the wall of stelai (`stelai`, hidden while searching), then the catalogue.
+ */
+export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: ReactNode }) {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -252,11 +256,14 @@ export default function Library() {
     <div className={`wrap ${styles.lib}`}>
       {/* the moderator alone: their private collection, and importing a text into it */}
       <MineButtons />
-      {/* the search comes first: straight to the point */}
-      <div className={styles.searchBox}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-          placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+      {/* the search comes first, beside the page's name: straight to the point */}
+      <div className={styles.top}>
+        {hero && <div className={styles.topText}>{hero}</div>}
+        <div className={styles.searchBox}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
+            placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+        </div>
       </div>
 
       {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
@@ -300,6 +307,9 @@ export default function Library() {
       </div>
 
       {vocab && <p className={styles.note}>Vocabulary is the share of a text&apos;s running words that are among the 516 core words, the commonest in Greek (the Dickinson College Commentaries core list, counted over the GLAUx analysis; texts under 2,000 words are not rated). It measures words only, not grammar, dialect or how hard the ideas are: Aristotle&apos;s words are common, his arguments are not.</p>}
+
+      {/* a few famous books, each a carved stele (hidden while searching, so the results come straight up) */}
+      {stelai && !query.trim() && <div className={styles.stelai}>{stelai}</div>}
 
       <details ref={beginRef} className={styles.begin} hidden={!!query.trim()} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
         <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is</span></summary>

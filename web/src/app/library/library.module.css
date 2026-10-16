@@ -1,0 +1,4 @@
+/* The library's opening (design B, Stone and torch): its name carved across the wall above the search. */
+.head { padding-top: clamp(30px, 5vw, 64px); }
+.kick { color: var(--accent-2); }
+.carve { margin-top: 22px; }

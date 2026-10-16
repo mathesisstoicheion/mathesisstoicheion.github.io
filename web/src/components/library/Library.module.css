@@ -1,16 +1,25 @@
-/* The Mouseion: search first, then the order and filters, then every author with their works. */
-.lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: var(--after-head) 56px; }
+/* The Mouseion (design B, Stone and torch): its name beside the search, then the order and filters, the wall of
+   stelai, then every author with their works. */
+.lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding-block: 0 56px; }
+.top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 18px clamp(24px, 5vw, 80px); align-items: end; margin: clamp(18px, 3vw, 34px) 0 6px; }
+.topText h1 { font: 400 clamp(2.5rem, 5.2vw, 4.4rem) / 1 var(--f-display); margin: 0 0 16px; }
+.topText h1 span { display: block; font-size: 0.5em; color: var(--ink-2); margin-top: 10px; }
+.topText p { max-width: 46ch; font-size: 1.18rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
+@media (max-width: 860px) { .top { grid-template-columns: minmax(0, 1fr); } }
+.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(30px, 5vw, 60px); }
 .error { color: var(--accent); padding-block: 40px; }
 
 /* ---------------------------------------------------------------- search */
 .searchBox { position: relative; }
 .searchBox svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+/* the search is cut into the stone: a dark hollow with a lit lower lip */
 .searchBox input {
-  width: 100%; font: inherit; font-size: 1.1rem; color: var(--ink); background: var(--surface);
-  border: 1px solid var(--rule); border-radius: var(--radius); padding: 15px 16px 15px 48px;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%; font: inherit; font-size: 1.12rem; color: var(--ink); background: rgba(8, 6, 5, 0.66);
+  border: 0; border-radius: var(--radius); padding: 15px 16px 15px 48px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7), inset 0 3px 6px -2px rgba(0, 0, 0, 0.7), inset 0 -1px 0 var(--cut-l);
+  transition: box-shadow var(--dur);
 }
-.searchBox input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent); }
+.searchBox input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--accent), inset 0 3px 6px -2px rgba(0, 0, 0, 0.7); }
 
 /* ---------------------------------------------------------------- order and filters */
 .controls { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; }
@@ -202,12 +211,13 @@
 .aka { font-weight: 400; font-size: 0.9rem; color: var(--ink-2); margin-left: 6px; }
 .latin { grid-area: latin; font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
 
-/* the shelf of famous works: cards like book spines, their Greek titles large; a row to swipe through on phones */
+/* the shelf of famous works: cards like book spines, their Greek titles large; a row to swipe through on phones
+   (it does not snap: Noa, 2026-10-16, "no snapping. it's annoying") */
 .shelf { display: grid; gap: 10px; }
 .shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
-  gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: thin;
+  gap: 12px; overflow-x: auto; scrollbar-width: thin;
   position: relative; /* holds the cards' visually hidden labels inside the row: without it they widen the whole page on phones */ }
-.shelf li { scroll-snap-align: start; animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.shelf li { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
 .spine {
   display: grid; align-content: start; gap: 4px; height: 100%; min-height: 168px; padding: 16px 16px 14px; text-decoration: none;
   background: var(--inv-bg); color: var(--inv-fg); border: 1px solid var(--inv-edge); border-radius: var(--radius);
