@@ -63,16 +63,16 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 ## Texture and light
 - Faint scan lines sit still over the home page and the library. There is no film grain: the owner found the moving grain distracting (2026-10-16).
 - Art is drawn in fine lines, dots, Greek letters or light, never as flat photographs:
-  - the Athenian coin in the home page's windows is engraved in gold lines, with turning rays;
+  - each window on the home page shows its own real object, engraved in gold lines on Pompeian red, and always the whole object, never a close crop (the owner found the first crops "a bit too zoomed in", 2026-10-16);
   - the library's Socrates is written in Greek letters.
-- The pointer acts as a lamp, or bends the engraved lines. On a phone a finger does the same, and without one the lamp drifts slowly.
+- The pointer acts as a lamp, or bends the engraved lines. On a phone every finger does the same, all at once, and goes on doing it while the page scrolls (the owner asked that it track "where your finger is when scrolling", not only a first touch, 2026-10-16). A finger that rests in one place for a moment counts as a press and hold. Without a finger, the lamp drifts slowly.
 - With "reduce motion" switched on, everything is drawn once and holds still.
 
 ## Motion
 Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
 - **Shutters** for the home page and most other pages:
-  - Windows open like shutters as they arrive, and the art inside moves more slowly than the page.
-  - On phones (sample version 8, waiting for the owner) each window instead opens as a round iris the size of the coin, following the scroll: first Athena's coin alone, with a soft gold rim, then the whole window. Each phone window frames a whole coin of its own. The owner found the phone shutters "a bit awkward" and asked for "a different shutter effect that highlights the coin" (2026-10-16).
+  - On every screen, each window opens as a round iris as it arrives, following the scroll: first the middle of its picture alone, with a soft gold rim, then the whole window. The owner found the phone shutters "a bit awkward" and asked for "a different shutter effect that highlights the coin", then for "something different" in each window, "On PC, too" (2026-10-16).
+  - The first window shows the coin. The others show the Parthenon's east frieze, Socrates, a school cup by Douris, an amphora by the Berlin Painter, the Antikythera mechanism, an ostrakon of Themistocles, the Mask of Agamemnon, and Crates and Hipparchia. All are credited at the foot of the page.
   - Faint Greek letters float behind the home page at three depths, few and slow. They move at different speeds as you scroll, and step aside from the pointer, catching a little of its light. The owner asked for them back, "less distracting" (2026-10-16).
   - The only sparks are the ones a Muse's lamp throws when you fan it.
 - **Stage** for the library:
@@ -81,7 +81,14 @@ Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/
   - The Apology rises slowly through his face.
   - While you wait, the lamp flickers softly. Once he has gathered, a band of light passes slowly over his face alone, as if someone carried a lamp by, and a light reads the speech across his face, a few words at a time.
   - The reading glass appears only while you press and hold on his face. It does not follow the pointer on its own (the owner found that "distracting").
+  - Scroll on past the middle of the page and his face falls apart: the letters drift down and rearrange into a papyrus roll, the Apology written in columns of capitals with no spaces, as books were written in Plato's time. A light reads slowly along the columns (the owner: "the letters make Socrates face, then as you scroll down they fall apart and rearrange into a scroll", 2026-10-16).
 - **The reader** opens on a cover: the title large, lamplight, a shaft of light with dust drifting in it, and the title's letters faint in the dark. "Scroll to begin reading" waits at the foot. As you scroll into the text the cover fades out, and from then on nothing moves.
+
+Scrolling (the owner: "some of the scrolling should be automatic and should snap into place. Make a slower scroll", 2026-10-16):
+- On the home page and the library, a mouse wheel scrolls more slowly than usual, and the page glides on a little after the wheel stops.
+- When scrolling stops near the start of a section (within about four tenths of the screen), the page glides the rest of the way and settles there. In the library it settles where Socrates' face is whole, and where the roll is whole. Touching the screen, pressing a key or the mouse stops a glide at once.
+- Headings settle as their section arrives: their letters (the Greek lines, word by word) drift in from small offsets and find their places, at the pace of the scroll, so a slow glide plays them slowly.
+- The reader keeps the ordinary scroll, and "reduce motion" turns all of this off.
 
 Other motion:
 - Titles rise line by line on arrival.
@@ -99,7 +106,7 @@ Other motion:
    - The speech slowly rises through the face.
    - Pressing and holding on the face brings up a reading glass that enlarges the letters under it, so the speech can be read.
 2. **Every text has its own emblem.** It shows the author's face, the thing the text is best known for, or one of its themes, drawn in Greek letters inside an oval. It appears on the book's row in the library and at the top right of the reader. Each emblem is a licensed image with its credit beside it. The Socrates emblem is also spelled out of the Apology, in capitals with no spaces or accents, as Greek was written in Plato's time, which keeps the small face sharp.
-3. **The engraved coin.** In the home page's windows, Athena's head is engraved in gold lines on Pompeian red. It comes from a silver tetradrachm of Athens, c. 440–404 BC, in the Metropolitan Museum of Art (2021.40.80, CC0).
+3. **The engraved objects.** In the home page's windows, real objects are engraved in gold lines on Pompeian red, one to a window. The first is Athena's head, from a silver tetradrachm of Athens, c. 440–404 BC, in the Metropolitan Museum of Art (2021.40.80, CC0). Every picture is a licensed image, credited at the foot of the page.
 4. **The Muses' flames.** A section of the home page opens with Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White).
    - Below it, the nine Muses he names (Theogony 76–79) each have a small oil lamp.
    - Fanning a flame with the pointer makes it flare, throw sparks and light up her name.
