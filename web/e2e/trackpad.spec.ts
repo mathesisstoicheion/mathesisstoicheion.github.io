@@ -14,12 +14,14 @@ const wheel = (el: Locator, o: { deltaX?: number; deltaY?: number; ctrlKey?: boo
 const nums = async (el: Locator, attr: string) => ((await el.getAttribute(attr)) ?? "").split(" ").map(Number);
 
 test("the vase studio: pinch to come closer, two fingers to turn and move along it, the wheel zooms", async ({ page }) => {
-  await page.goto("/");
+  // the vase stands in the Kerameikos (the potters' quarter), below the first screen; it is drawn once it comes into view
+  await page.goto("/stoa/kerameikos");
+  await page.getByRole("button", { name: "Paint it yourself" }).scrollIntoViewIfNeeded();
   const canvas = page.locator("canvas[aria-label*='amphora']");
   await expect(canvas).toBeVisible();
   const stage = canvas.locator("xpath=..");
   await expect(stage).toHaveAttribute("data-view", /\d/);
-  // on the home page a sideways swipe turns it, and an up-and-down one is left to scroll the page
+  // on the page a sideways swipe turns it, and an up-and-down one is left to scroll the page
   const before = (await nums(stage, "data-view"))[2];
   expect(await wheel(canvas, { deltaY: 12.5 })).toBe(true);
   expect(await wheel(canvas, { deltaX: -40 })).toBe(false);

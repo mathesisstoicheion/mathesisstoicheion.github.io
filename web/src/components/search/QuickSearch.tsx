@@ -7,7 +7,7 @@
  * Before anything is typed: your recent searches, where you left off, and examples. Then, grouped:
  * a passage (a typed reference), the word (its dictionary entry, for Greek typed in any script), texts
  * and authors, lessons and guides, Painted Stoa entries, places on the map, the site's pages, quick
- * actions ("dark mode", "bigger text") and the full searches of the Oracle. Matching ignores case,
+ * actions ("daylight", "bigger text") and the full searches of the Oracle. Matching ignores case,
  * accents and breathings (lib/search/universal.ts).
  */
 import { useRouter } from "next/navigation";
@@ -55,7 +55,7 @@ const PAGES: { href: string; title: string; about: string }[] = [
   { href: "/credits", title: "Credits, licences and privacy", about: "sources, privacy" },
 ];
 
-const EXAMPLES = ["μῆνιν", "Il. 1.1", "logos", "Sparta", "aorist", "dark mode"];
+const EXAMPLES = ["μῆνιν", "Il. 1.1", "logos", "Sparta", "aorist", "daylight"];
 
 export default function QuickSearch() {
   const open = useUI((s) => s.searchOpen);
@@ -166,14 +166,14 @@ function Box({ onClose }: { onClose: () => void }) {
     }
     const greekSearches: Option[] = [];
     const acts = !hasDigit && t.length >= 2 ? matchActions(t) : [];
-    // English that only asks for something to be done ("dark mode") is not Greek in Latin letters
+    // English that only asks for something to be done ("daylight") is not Greek in Latin letters
     if (greekOk && !hasDigit && !(script !== "greek" && acts.length)) {
       greekSearches.push({ id: "forms", group: "everywhere", kind: "Search the Greek", href: `/search?q=${e}`, label: <>for <b lang="grc">{shown}</b></>, greek: true });
       if (queryWords(t).length === 1) greekSearches.push({ id: "lemma", group: "everywhere", kind: "Every form of", href: `/search?m=lemma&q=${e}`, label: <b lang="grc">{shown}</b>, greek: true });
     }
     if (script === "greek") out.push(...wordOpts, ...greekSearches);
 
-    // things to do: "dark mode", "bigger text", "gentium"
+    // things to do: "daylight", "bigger text", "gentium"
     for (const a of acts) out.push({ id: `do:${a.id}`, group: "actions", kind: "Do it", run: a.id, label: <b>{a.label}</b> });
 
     if (t.length >= 3 && !hasDigit) {
@@ -222,7 +222,6 @@ function Box({ onClose }: { onClose: () => void }) {
     switch (id) {
       case "theme-dark": s.set({ theme: "dark" }); break;
       case "theme-light": s.set({ theme: "light" }); break;
-      case "theme-auto": s.set({ theme: "auto" }); break;
       case "bigger": s.set({ greekSize: s.greekSize + step }); break;
       case "smaller": s.set({ greekSize: s.greekSize - step }); break;
       case "face-didot": s.set({ greekFace: "didot" }); break;
@@ -335,7 +334,7 @@ function Box({ onClose }: { onClose: () => void }) {
                 {EXAMPLES.map((x) => <li key={x}><button type="button" className={styles.chip} onClick={() => pick(x)} lang={/[α-ω]/.test(x) ? "grc" : undefined}>{x}</button></li>)}
               </ul>
             </section>
-            <p className={styles.help}>Type Greek, Latin letters or Beta Code, a reference such as <i>Il. 1.1</i>, an author or a work, a subject, a place, or what you want to do, such as <i>dark mode</i>.<span className={styles.keys}> <kbd>↑</kbd> <kbd>↓</kbd> to choose, <kbd>Enter</kbd> to go, <kbd>Esc</kbd> to close.</span></p>
+            <p className={styles.help}>Type Greek, Latin letters or Beta Code, a reference such as <i>Il. 1.1</i>, an author or a work, a subject, a place, or what you want to do, such as <i>daylight</i>.<span className={styles.keys}> <kbd>↑</kbd> <kbd>↓</kbd> to choose, <kbd>Enter</kbd> to go, <kbd>Esc</kbd> to close.</span></p>
           </div>
         )}
         <a className={styles.full} href={AREAS.search.href} onClick={(e) => { e.preventDefault(); if (t) addRecentSearch(t); go(t ? `${AREAS.search.href}?q=${encodeURIComponent(t)}` : AREAS.search.href); }}>

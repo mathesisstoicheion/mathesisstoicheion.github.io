@@ -30,6 +30,7 @@ describe("universal search matching", () => {
   it("offers actions for what people type to change the page", () => {
     expect(matchActions("dark")[0].id).toBe("theme-dark");
     expect(matchActions("dark mode")[0].id).toBe("theme-dark");
+    expect(matchActions("daylight")[0].id).toBe("theme-light");
     expect(matchActions("bigger")[0].id).toBe("bigger");
     expect(matchActions("gentium").map((a) => a.id)).toEqual(["face-gentium"]);
     expect(matchActions("font").length).toBeGreaterThan(1);

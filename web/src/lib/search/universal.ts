@@ -38,15 +38,15 @@ export function rank<T>(items: T[], query: string, texts: (x: T) => { main: stri
 
 /** Something the search can do rather than a page it can open. */
 export type ActionId =
-  | "theme-dark" | "theme-light" | "theme-auto" | "settings" | "bigger" | "smaller"
+  | "theme-dark" | "theme-light" | "settings" | "bigger" | "smaller"
   | "face-didot" | "face-gentium" | "face-sans" | "text-sans" | "text-serif" | "motion-reduce" | "motion-auto";
 
 export interface Action { id: ActionId; label: string; words: string[] }
 
 export const ACTIONS: Action[] = [
-  { id: "theme-dark", label: "Dark theme (Black-figure)", words: ["dark", "dark mode", "night", "black", "black-figure", "theme"] },
-  { id: "theme-light", label: "Light theme (Papyrus)", words: ["light", "light mode", "day", "papyrus", "theme"] },
-  { id: "theme-auto", label: "Theme follows my device", words: ["automatic theme", "system theme", "theme"] },
+  // the site is dark only; the reader's page can be Night (the stone) or Daylight, against eye strain
+  { id: "theme-dark", label: "Reader's page: Night (the stone)", words: ["dark", "dark mode", "night", "black", "theme"] },
+  { id: "theme-light", label: "Reader's page: Daylight", words: ["light", "light mode", "day", "daylight", "papyrus", "theme"] },
   { id: "bigger", label: "Bigger Greek text", words: ["bigger", "larger", "zoom in", "text size", "font size", "size"] },
   { id: "smaller", label: "Smaller Greek text", words: ["smaller", "zoom out", "text size", "font size", "size"] },
   { id: "face-didot", label: "Greek typeface: Didot", words: ["didot", "typeface", "font"] },

@@ -161,20 +161,14 @@ test.describe("on a phone", () => {
   });
 });
 
-test("the browser's bar takes the colour of the theme chosen in Settings", async ({ page }) => {
+test("the browser's bar is the colour of the stone, whichever reader's page is chosen", async ({ page }) => {
   await page.goto("/");
-  const first = () => page.locator('meta[name="theme-color"]').first().evaluate((m) => [m.getAttribute("media"), m.getAttribute("content")]);
+  const bars = () => page.locator('meta[name="theme-color"]').evaluateAll((ms) => ms.map((m) => m.getAttribute("content")));
+  expect(await bars()).toEqual(["#14100d"]);
   await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("radio", { name: "Black-figure (dark)" }).click();
-  expect(await first()).toEqual([null, "#16110E"]);
+  await page.getByRole("radio", { name: "Daylight" }).click();
   await page.reload();
-  expect(await first()).toEqual([null, "#16110E"]);
-  await expect(page.locator('meta[name="theme-color"]:not([media])')).toHaveCount(1);
-  await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("radio", { name: "Papyrus (light)" }).click();
-  expect(await first()).toEqual([null, "#E6C39B"]);
-  await page.getByRole("radio", { name: "Automatic" }).first().click();
-  await expect(page.locator('meta[name="theme-color"]:not([media])')).toHaveCount(0);
+  expect(await bars()).toEqual(["#14100d"]);
 });
 
 test("wide screens keep the header's menu and have no bottom bar", async ({ page }) => {

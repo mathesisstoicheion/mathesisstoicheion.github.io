@@ -38,12 +38,12 @@ test("home sections fold away, stay folded after a reload, and open again", asyn
   expect(await page.evaluate(() => localStorage.getItem("mathesis:folds"))).toBe("[]");
 });
 
-test("card rows scroll sideways and snap, with the next card peeking in", async ({ page }) => {
+test("card rows scroll sideways without snapping, with the next card peeking in", async ({ page }) => {
   await page.goto("/academy");
   const row = page.locator(".snap-row").first();
   const info = await row.evaluate((e) => ({ scroll: e.scrollWidth > e.clientWidth, snap: getComputedStyle(e).scrollSnapType, first: e.firstElementChild!.getBoundingClientRect().width }));
   expect(info.scroll).toBe(true);
-  expect(info.snap).toContain("x");
+  expect(info.snap).toBe("none");   // the row stops where the finger leaves it (the owner: "no snapping. it's annoying")
   expect(info.first).toBeLessThan(375 * 0.9);   // the next card shows at the edge
 });
 

@@ -2,7 +2,9 @@ import { test, expect } from "@playwright/test";
 
 test("home page shows the site name, the passage and the offline block", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("h1").first()).toContainText("Μάθησις");
+  await expect(page.locator("h1").first()).toHaveAccessibleName("Read the Greeks in their own words");
+  await expect(page.locator("h1").first()).toHaveText("Read the Greeks in their own words");
+  await expect(page.getByText("ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Passage of the day" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Read without a connection" })).toBeVisible();
   await expect(page.getByRole("link", { name: "canonical-greekLit" })).toHaveAttribute("href", /canonical-greekLit\/archive/);
@@ -25,13 +27,17 @@ test("the menu is the five doors, in plain words with their Greek names, then Re
   await expect(page.getByRole("link", { name: "Learn: The Academy" })).toBeVisible();
 });
 
-test("the chosen theme is remembered after a reload", async ({ page }) => {
+test("the reader's page chosen in Settings (Night or Daylight) is remembered after a reload", async ({ page }) => {
   await page.goto("/");
+  await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
   await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("radio", { name: "Black-figure (dark)" }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await page.getByRole("radio", { name: "Daylight" }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
+  await page.getByRole("button", { name: "Settings" }).click();
+  await page.getByRole("radio", { name: "Night" }).click();
+  await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
 });
 
 test("every area page opens and explains its name", async ({ page }) => {

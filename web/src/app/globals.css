@@ -120,16 +120,16 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .skip:focus { left: 8px; }
 .visually-hidden { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-/* phones: a row of cards to swipe through sideways, each snapping into place, the next one peeking in
-   from the edge so it is plain there is more (the home page's Painted Stoa cards, the Academy's tools) */
+/* phones: a row of cards to swipe through sideways, the next one peeking in from the edge so it is plain there is
+   more (the home page's Painted Stoa cards, the Academy's tools). Nothing snaps: the row stops where the finger
+   leaves it (the owner: "no snapping. it's annoying", 2026-10-16). */
 @media (max-width: 760px) {
   .snap-row {
     display: grid !important; grid-template-columns: none !important; grid-auto-flow: column; grid-auto-columns: min(84%, 340px);
-    gap: 12px !important; overflow-x: auto; overscroll-behavior-x: contain; scroll-snap-type: x mandatory; scrollbar-width: none;
+    gap: 12px !important; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
     margin-inline: calc(-1 * var(--gutter)); padding: 4px var(--gutter) 14px; scroll-padding-inline: var(--gutter);
   }
   .snap-row::-webkit-scrollbar { display: none; }
-  .snap-row > * { scroll-snap-align: start; }
 }
 
 /* pull down to refresh (PullToRefresh.tsx): a ring slides down from under the header, turning as it comes */
@@ -219,6 +219,27 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 @keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 
+/* ---------------------------------------------------------------- torchlit art (lib/art) */
+/* a window cut into the wall, with a relief re-lit by the torch in it (components/art/ReliefWindow.tsx) */
+.win { margin: 0; min-width: 0; }
+.frame { position: relative; background: var(--stone-0); overflow: hidden; }
+.frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+.frame::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.7), inset 0 0 0 2px rgba(255, 222, 180, 0.05), inset 0 18px 30px -18px rgba(0, 0, 0, 0.8);
+}
+.win figcaption { font-size: 0.84rem; line-height: 1.5; color: var(--ink-3); margin-top: 12px; max-width: 62ch; }
+.win figcaption b { font-weight: 500; color: var(--ink-2); }
+/* letters carved in the stone (components/art/Carving.tsx) */
+.carve { display: block; width: 100%; touch-action: pan-y; }
+/* a heading whose letters settle into line as it rises into view (components/art/Settle.tsx writes --sp, 0 to 1) */
+.sk .sw { display: inline-block; white-space: nowrap; }
+.sk .k {
+  display: inline-block; --p: clamp(0, calc((var(--sp, 1) - var(--d, 0)) / 0.7), 1);
+  transform: translate3d(0, calc((1 - var(--p)) * var(--dy, 0px)), 0) rotate(calc((1 - var(--p)) * var(--rz, 0deg)));
+  opacity: calc(0.34 + 0.66 * var(--p));
+}
+
 /* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
 .rv.in { animation: lift var(--dur-slow) var(--ease) both; }
 @keyframes lift { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -278,7 +299,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 /* area header, shared by every area page */
 .area-head { padding-block: clamp(40px, 6vw, 72px) 0; }
 .area-kicker { display: flex; align-items: center; gap: 12px; }
-.area-kicker .tongues { width: 36px; }
+.area-carve { margin-top: 18px; }
 .area-kicker .label { color: var(--accent-2); }
 .area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: 16px; }
 .area-greek { display: block; font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }

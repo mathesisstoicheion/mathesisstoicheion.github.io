@@ -1,13 +1,13 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// The home page vase and its studio: paint on it, change its patterns and words, undo, keep it, start again.
+// The vase and its studio, in the Kerameikos (the potters' quarter): paint on it, change its patterns and words, undo, keep it, start again.
 const KEY = "mathesis:amphora";
 const stored = (page: Page) => page.evaluate((k) => { const s = localStorage.getItem(k); return s ? JSON.parse(s) : null; }, KEY);
 
 async function openStudio(page: Page) {
-  await page.goto("/");
-  // the vase is drawn once it comes into view (below the first screen on a phone)
+  await page.goto("/stoa/kerameikos");
+  // the vase is drawn once it comes into view (below the first screen)
   await page.getByRole("button", { name: "Paint it yourself" }).scrollIntoViewIfNeeded();
   await expect(page.locator("canvas[aria-label*='amphora']")).toBeVisible();
   await page.getByRole("button", { name: "Paint it yourself" }).click();

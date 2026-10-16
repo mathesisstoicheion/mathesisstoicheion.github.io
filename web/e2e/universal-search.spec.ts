@@ -55,11 +55,11 @@ test("finds a word's meaning, a place, a lesson, and does what is asked", async 
   await expect(box.getByRole("option").nth(0)).toContainText("Homer");
   await expect(box.getByRole("option").nth(1)).toContainText("Iliad");
 
-  await box.getByRole("combobox").fill("dark mode");
-  await expect(box.getByRole("option").first()).toContainText("Dark theme");
+  await box.getByRole("combobox").fill("daylight");
+  await expect(box.getByRole("option").first()).toContainText("Reader's page: Daylight");
   await expect(box.getByRole("option", { name: /Search the Greek/ })).toHaveCount(0);
   await page.keyboard.press("Enter");
-  await expect(page.locator("html")).toHaveAttribute("data-theme", "dark");
+  await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
   box = page.getByRole("dialog", { name: "Quick search" });
   await expect(box).toBeVisible();
 });
