@@ -44,7 +44,7 @@ function StoneOf({ b, i }: { b: Stele; i: number }) {
       const reach = torchRadius() * 0.35;
       if (ls.some((l) => l.I >= 0.25 && Math.hypot(Math.max(r.left - l.x, 0, l.x - r.right), Math.max(r.top + 60 - l.y, 0, l.y - r.bottom + 80)) < reach)) until = now + 1.6;
       const on = now < until;
-      if (on !== lit) { lit = on; a.classList.toggle(styles.lit, on); }
+      if (on !== lit) { lit = on; return () => a.classList.toggle(styles.lit, on); }
     });
   }, []);
   return (

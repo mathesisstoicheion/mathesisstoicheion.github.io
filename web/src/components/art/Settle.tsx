@@ -16,6 +16,10 @@ interface Item { el: HTMLElement; sp: number; w: number | null }
 const items = new Set<Item>();
 let stop: (() => void) | null = null;
 
+const moved: Item[] = [];
+const write = () => { for (const h of moved) h.el.style.setProperty("--sp", h.w!.toFixed(3)); moved.length = 0; };
+
+/** Measures every heading, then (once all are measured: lib/torch.ts) moves the letters of those that changed. */
 function tick(_now: number, dt: number) {
   const H = innerHeight, still = torchStill(), k = 1 - Math.exp(-dt * 2.6);
   for (const h of items) {
@@ -28,8 +32,9 @@ function tick(_now: number, dt: number) {
       if (Math.abs(raw - sp) < 0.002) sp = raw;
     }
     h.sp = sp;
-    if (h.w === null || Math.abs(sp - h.w) > 0.003 || (sp !== h.w && (sp === 1 || sp === 0))) { h.w = sp; h.el.style.setProperty("--sp", sp.toFixed(3)); }
+    if (h.w === null || Math.abs(sp - h.w) > 0.003 || (sp !== h.w && (sp === 1 || sp === 0))) { h.w = sp; moved.push(h); }
   }
+  return moved.length ? write : undefined;
 }
 
 type Props = HTMLAttributes<HTMLElement> & { text: string; as?: ElementType };

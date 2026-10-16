@@ -24,6 +24,12 @@ function useRegister() {
 
     if (!("serviceWorker" in navigator)) setCopy("unsupported");
     else if (process.env.NODE_ENV === "production") {
+      // once the page has loaded and the browser is idle, so that keeping the offline copy (every page of the site) never
+      // competes with the page being opened
+      const later = () => (typeof requestIdleCallback === "function" ? requestIdleCallback(register, { timeout: 5000 }) : setTimeout(register, 1500));
+      if (document.readyState === "complete") later(); else addEventListener("load", later, { once: true });
+    }
+    function register() {
       navigator.serviceWorker.register(`/sw.js?build=${process.env.NEXT_PUBLIC_BUILD}`).then((reg) => {
         const watch = (w: ServiceWorker | null) => {
           if (!w) return;
