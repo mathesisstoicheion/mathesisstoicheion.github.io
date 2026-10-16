@@ -101,7 +101,7 @@ export default function Home() {
             </dl>
           </div>
         </div>
-        <p className={styles.wallCap} data-quiet="">Cut into the wall: the opening of Plato’s <i>Apology</i>, as Greek was written in Plato’s time: in capitals, with no spaces or accents. Carry the torch over it to read.</p>
+        <p className={styles.wallCap} data-quiet="">Cut into the wall: the opening of Plato’s <i>Apology</i>, as Greek was written in Plato’s time: in capitals, with no spaces or accents. Carry the torch over it to read; on a phone, scroll it through the light.</p>
       </section>
 
       {/* ---------------------------------------------------------------- the name */}
@@ -119,7 +119,7 @@ export default function Home() {
               <li className="rv"><b>An element.</b> <span lang="grc">Στοιχεῖα</span>, the <i>Elements</i>, is the name of Euclid’s geometry. Its first proposition is drawn in the wax: <span lang="grc">ἐπὶ τῆς δοθείσης εὐθείας πεπερασμένης τρίγωνον ἰσόπλευρον συστήσασθαι</span>, “On a given finite straight line to construct an equilateral triangle” (Elements 1.1). The given line is the stylus’s shadow.</li>
             </ol>
           </div>
-          <p className={`${styles.cap} rv`}>The definitions are quoted from Liddell, Scott and Jones, <i>A Greek-English Lexicon</i> (LSJ), under <span lang="grc">μάθησις</span> and <span lang="grc">στοιχεῖον</span>; the letter sense cites Plato, Cratylus 424d. Euclid’s Greek is Heiberg’s text (Teubner, 1883–88), translated by T. L. Heath; Aristophanes is Hall and Geldart’s text (Oxford, 1907); both via the Perseus Digital Library. The tablet, stylus and compass are drawn for this page. Move your torch over the tablet, or on a phone touch it with several fingers: each light casts its own shadows.</p>
+          <p className={`${styles.cap} rv`}>The definitions are quoted from Liddell, Scott and Jones, <i>A Greek-English Lexicon</i> (LSJ), under <span lang="grc">μάθησις</span> and <span lang="grc">στοιχεῖον</span>; the letter sense cites Plato, Cratylus 424d. Euclid’s Greek is Heiberg’s text (Teubner, 1883–88), translated by T. L. Heath; Aristophanes is Hall and Geldart’s text (Oxford, 1907); both via the Perseus Digital Library. The tablet, stylus and compass are drawn for this page. Move your torch over the tablet, or on a phone scroll it through the middle of the screen: the light casts its own shadows.</p>
         </div>
       </section>
 
