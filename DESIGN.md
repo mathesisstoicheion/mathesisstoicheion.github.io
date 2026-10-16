@@ -1,8 +1,8 @@
 # Design
 
 The look of the redesigned site, agreed with the owner on 2026-10-15 (thread "Site redesign").
-The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it, with a correction).
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 6 is the current one.
+The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it, with a correction, 0005 calm motion and the library's gathering letters).
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 7 is the current one.
 Their source files are in the project files, under `redesign/prototype/`.
 
 ## Character
@@ -16,6 +16,7 @@ Their source files are in the project files, under `redesign/prototype/`.
 3. **Art is seen through windows.** Pages are black, and pictures appear through framed openings. Each page has its own way of moving as you scroll (see Motion). In the library, where Socrates stands behind the page, wide screens give the text a left-hand column and set him beside it, so nothing covers him.
 4. **Real things only.** Every picture is a licensed image of a real object, and its credit is shown. Every Greek text is a real edition, and the edition is named. Nothing is invented for decoration.
 5. **Greek comes first, English beside it.** Greek is set as carefully as English, in fonts that carry every accent and breathing.
+6. **All movement is calm.** Things drift, gather and fade slowly. Nothing jumps, flickers fast, or follows the pointer uninvited. The owner: "Remember when I say movement it has to be calm" (2026-10-16).
 
 ## Type
 | Role | Family | Notes |
@@ -74,15 +75,16 @@ Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/
   - Faint Greek letters float behind the home page at three depths, few and slow. They move at different speeds as you scroll, and step aside from the pointer, catching a little of its light. The owner asked for them back, "less distracting" (2026-10-16).
   - The only sparks are the ones a Muse's lamp throws when you fan it.
 - **Stage** for the library:
-  - Socrates is pinned behind the page, and his face comes together out of loose letters only as you scroll down (the owner: it "was cooler when his face only was revealed when you scrolled").
+  - Socrates is pinned behind the page. Before you scroll, the letters of the Apology wander slowly in the dark. As you scroll down they gather into his face, and his face comes together only that way (the owner: it "was cooler when his face only was revealed when you scrolled", and "it'd be a lot cooler if the letters in the library were moving around beforehand, then when you scroll, they gather to create the face", 2026-10-16).
   - On wide screens he stands to the right of the shelves, so nothing covers him as you scroll. On phones he stands behind the page, and the blocks over him are partly see-through.
   - The Apology rises slowly through his face.
-  - While you wait, loose letters circle the stage, the lamp flickers, and now and then a band of light passes over it, as if someone carried a lamp by. None of this gathers his face. Once he has gathered, a light reads the speech across his face, a few words at a time.
+  - While you wait, the lamp flickers softly. Once he has gathered, a band of light passes slowly over his face alone, as if someone carried a lamp by, and a light reads the speech across his face, a few words at a time.
+  - The reading glass appears only while you press and hold on his face. It does not follow the pointer on its own (the owner found that "distracting").
 - **The reader** opens on a cover: the title large, lamplight, a shaft of light with dust drifting in it, and the title's letters faint in the dark. "Scroll to begin reading" waits at the foot. As you scroll into the text the cover fades out, and from then on nothing moves.
 
 Other motion:
 - Titles rise line by line on arrival.
-- Emblems gather out of loose letters, and brighten when the pointer is over them.
+- Emblems gather out of loose letters, and brighten when the pointer is over them. Once settled, an emblem stays as sharp as when it first appears.
 - Nothing loops fast or flashes.
 
 ## Space and shape
@@ -94,8 +96,8 @@ Other motion:
 1. **Socrates spelled out of the Apology.** The library's face of Socrates is made of the whole Greek text of Plato's Apology, in reading order, from "ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι" to "τῷ θεῷ" (Burnet's Oxford text, via the Perseus Digital Library). Socrates wrote nothing, which is why the face is drawn from the speech Plato gave him.
    - The brightness and size of each letter draw the face. The letters are fine enough for the features to show clearly.
    - The speech slowly rises through the face.
-   - The pointer carries a lamp and a reading glass that enlarges the letters under it, so the speech can be read.
-2. **Every text has its own emblem.** It shows the author's face, the thing the text is best known for, or one of its themes, drawn in Greek letters inside an oval. It appears on the book's row in the library and at the top right of the reader. Each emblem is a licensed image with its credit beside it. The Socrates emblem is also spelled out of the Apology.
+   - Pressing and holding on the face brings up a reading glass that enlarges the letters under it, so the speech can be read.
+2. **Every text has its own emblem.** It shows the author's face, the thing the text is best known for, or one of its themes, drawn in Greek letters inside an oval. It appears on the book's row in the library and at the top right of the reader. Each emblem is a licensed image with its credit beside it. The Socrates emblem is also spelled out of the Apology, in capitals with no spaces or accents, as Greek was written in Plato's time, which keeps the small face sharp.
 3. **The engraved coin.** In the home page's windows, Athena's head is engraved in gold lines on Pompeian red. It comes from a silver tetradrachm of Athens, c. 440–404 BC, in the Metropolitan Museum of Art (2021.40.80, CC0).
 4. **The Muses' flames.** A section of the home page opens with Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White).
    - Below it, the nine Muses he names (Theogony 76–79) each have a small oil lamp.
@@ -112,4 +114,6 @@ Other motion:
 - Moving art that the page's own blocks or windows cover. Put it beside the text on wide screens.
 - Moving film grain or noise. The owner found it "super distracting".
 - Busy motion behind the text: the home page's floating letters stay few, faint and slow.
+- Effects that follow the pointer uninvited, such as a magnifying glass that appears on hover. Show them on press and hold.
+- Fast or jumpy movement of any kind. Every motion is slow and eased.
 - Reading colours from styles inside an animation frame, and drawing thousands of letters as text every frame. Read colours once per page. Stamp letters from a prepared sheet of letters. Keep a still picture of anything that has not changed.
