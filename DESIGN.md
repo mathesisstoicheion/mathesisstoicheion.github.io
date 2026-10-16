@@ -2,7 +2,7 @@
 
 The look of the redesigned site, agreed with the owner on 2026-10-15 (thread "Site redesign").
 The decisions and the options weighed are in `docs/adr/` (0001 the look, 0002 the scroll styles, 0003 the hearth and the side-by-side layout, 0004 the owner's verdict on it, with a correction, 0005 calm motion and the library's gathering letters).
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 7 is the current one.
+The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH. Version 8 is the current one.
 Their source files are in the project files, under `redesign/prototype/`.
 
 ## Character
@@ -72,6 +72,7 @@ Lines and borders are the accent at about 20% strength. Light text is never pure
 Each page has its own scroll effect. The owner chose (2026-10-15, see `docs/adr/0002-scroll-per-page.md`):
 - **Shutters** for the home page and most other pages:
   - Windows open like shutters as they arrive, and the art inside moves more slowly than the page.
+  - On phones (sample version 8, waiting for the owner) each window instead opens as a round iris the size of the coin, following the scroll: first Athena's coin alone, with a soft gold rim, then the whole window. Each phone window frames a whole coin of its own. The owner found the phone shutters "a bit awkward" and asked for "a different shutter effect that highlights the coin" (2026-10-16).
   - Faint Greek letters float behind the home page at three depths, few and slow. They move at different speeds as you scroll, and step aside from the pointer, catching a little of its light. The owner asked for them back, "less distracting" (2026-10-16).
   - The only sparks are the ones a Muse's lamp throws when you fan it.
 - **Stage** for the library:
