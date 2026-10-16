@@ -70,7 +70,8 @@
   /* the last column, at the right end; the first stands at the left end (the first panel's ::before), mirror images */
   background: var(--column) right top / 13px 100% no-repeat;
 }
-.colonnade::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -18px; height: 6px; background: var(--ink); opacity: 0.6; }
+/* the step below the stylobate: stone, its edge caught by the torch */
+.colonnade::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -18px; height: 6px; background: var(--bg-2); border-top: 1px solid var(--line-1); }
 .panel { display: grid; padding: 0 14px; position: relative; animation: rise 0.6s var(--ease) both; animation-delay: calc(var(--i) * 50ms); }
 /* a fluted column on the left of every panel */
 .panel::before {
