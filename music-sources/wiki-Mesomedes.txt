@@ -1,0 +1,186 @@
+{{short description|Greek citharode and lyric poet (2nd century AD )}}
+{{Use dmy dates|date=September 2021}}
+
+[[File:Mesomede's_Hymns.jpg | thumb | right | alt=The page on Vincenzo Galilei's book (Dialogo della musica antica e della moderna), that shows the three hymns of Mesomedes | The page on Vincenzo Galilei's book (Dialogo della musica antica e della moderna), that shows the three hymns of Mesomedes]]
+'''Mesomedes of Crete''' ({{langx|grc|Μεσομήδης ὁ Κρής}}) was a Greek [[citharode]] and [[Greek lyric poet|lyric poet]] and composer of the early 2nd century AD in [[Roman Greece]]. Prior to the discovery of the [[Seikilos epitaph]] in the late 19th century, the hymns of Mesomedes were the only surviving written music from the ancient world.<ref>The notes to an ode of [[Pindar]] presented in a book by [[Athanasius Kircher]] ([[:File:Musurgia.jpg|book cover]], [[:File:Pindar-ode.jpg|notes to the ode]]) are now considered to be unauthentic.</ref>  Three were published by [[Vincenzo Galilei]] in his ''Dialogo della musica antica e della moderna'' ([[Florence]], 1581), during a period of intense investigation into music of the ancient Greeks. These hymns had been preserved through the Byzantine tradition (''Anthol. pal.'' xiv. 63, xvi. 323), and were presented to Vincenzo by [[Girolamo Mei]].
+
+==Life and career==
+He was a [[Slavery in ancient Rome|freedman]] of the Emperor [[Hadrian]], on whose favorite [[Antinous]] he is said to have written a [[panegyric]], specifically called a ''Citharoedic Hymn'' ([[Suda]]). Two [[epigram]]s by him in the [[Greek Anthology]] (''Anthol. pal.'' xiv. 63, xvi. 323) are extant, and a hymn to [[Nemesis (mythology)|Nemesis]]. The hymn is one of four which preserve the ancient musical notation written over the text. Two hymns formerly assigned to [[Dionysius of Alexandria]], one to the muse [[Calliope]] and one entitled ''Hymn to the Sun'', have also been attributed to Mesomedes. In an article published in 2003, [[Annie Bélis]] proves that the Berlin musical papyrus (inv. 6870) contains a [[Paean]] to Apollo written by Mesomedes.<ref>{{cite journal
+ | language = fr
+ | first    = Annie
+ | last     = Bélis
+ | title    = Le 'Péan de Berlin' : une relecture
+ | journal  = Revue des études grecques
+ | volume   = 116
+ | year     = 2003
+ | issue = 2
+ | pages     = 537–558
+ | doi = 10.3406/reg.2003.4549
+ | url      = http://www.persee.fr/doc/reg_0035-2039_2003_num_116_2_4549
+}}</ref> A total of 15 poems by Mesomedes are known.
+
+Mesomedes continued in the [[Musaeum]] in [[Alexandria]] even after Hadrian's death (138); there the ''[[Historia Augusta]]'' reports that during [[Antoninus Pius]]' reign (138–161) his state salary was reduced.  The emperor [[Caracalla]] (212–217) honored Mesomedes with a [[cenotaph]] approximately 50 to 60 years after his death.
+
+See J. F. Bellermann, ''Die Hymnen des Dionysius und Mesomedes'' (1840); C. de Jan, ''Musici scriptores graeci'' (1899); S. Reinach in ''Revue des études grecques'', ix (1896); ''[[Suda]]'' s.v.
+
+== Hymns ==
+=== Prayer to the Muse ===
+The dialect of this hymn is different from the others (Ionian rather than Doric), and the style is also slightly different; for this reason J.G. Landels believes that it is probably not by Mesomedes.<ref>Landels, John G. 1999. ''Music in Ancient Greece and Rome''. London and New York: Routledge; p. 254.</ref>
+
+{|width="550 px"
+|-
+| <poem>
+{{lang|grc|Ἄειδε μοῦσά μοι φίλη,}}
+{{lang|grc|μολπῆς δ’ ἐμῆς κατάρχου·}}
+{{lang|grc|αὔρη δὲ σῶν ἀπ’ ἀλσέων}}
+{{lang|grc|ἐμὰς φρένας δονείτω.}}
+</poem>
+| <poem>
+Sing to me, kind [[Muses|Muse]],
+and begin my song.
+Send a breeze from your groves
+to stir my mind.<ref name=Cosg>Cosgrove, Charles H. (2011). ''An Ancient Christian Hymn with Musical Notation.'' Mohr Siebeck. pp. 69, 70.</ref>
+</poem>
+|}
+
+=== Prayer to Calliope and Apollo ===
+
+{| width="550 px"
+|-
+| <poem>
+{{lang|grc|Καλλιόπεια σοφά,}}
+{{lang|grc|μουσῶν προκαθαγέτι τερπνῶν,}}
+{{lang|grc|καὶ σοφὲ μυστοδότα,}}
+{{lang|grc|Λατοῦς γόνε, Δήλιε, Παιάν,}}
+{{lang|grc|εὐμενεῖς πάρεστέ μοι.}}
+</poem>
+| <poem>
+Wise [[Calliope]],
+leader of the delight-making [[Muses]],
+and skilful initiator into the mysteries,
+son of [[Leto]], [[Delos|Delian]] [[Paean (god)|Paean]],
+favor me with your presence.<ref name=Cosg />
+</poem>
+|}
+
+[[File:Mesomedes Kalliopeia sopha.png|thumb|700px|center|Mesomedes' Prayer to Calliope transcribed into modern musical notation; adapted from Landels, John G. 1999. ''Music in Ancient Greece and Rome'', p. 255.]]
+
+=== Hymn to the Sun ===
+{| width="650 px"
+|-
+| <poem>
+{{lang|grc|Χιονοβλεφάρου πάτερ Ἀοῦς,}}
+{{lang|grc|ῥοδόεσσαν ὃς ἄντυγα πώλων}}
+{{lang|grc|πτανοῖς ὑπ’ ἴχνεσσι διώκεις,}}
+{{lang|grc|χρυσέαισιν ἀγαλλόμενος κόμαις,}}
+{{lang|grc|περὶ νῶτον ἀπείριτον οὐρανοῦ}}
+{{lang|grc|ἀκτῖνα πολύστροφον ἀμπλέκων,}}
+{{lang|grc|αἴγλας πολυδερκέα πάναν}}
+{{lang|grc|περὶ γαῖαν ἅπασαν ἑλίσσων.}}
+{{lang|grc|ποταμοὶ δὲ σέθεν πυρὸς ἀμβρότου}}
+{{lang|grc|τίκτουσιν ἐπήρατον ἁμέραν.}}
+
+{{lang|grc|σοὶ μὲν χορὸς εὔδιος ἀστέρων}}
+{{lang|grc|κατ’ Ὄλυμπον ἄνακτα χορεύει,}}
+{{lang|grc|ἄνετον μέλος αἰὲν ἀείδων,}}
+{{lang|grc|Φοιβηΐδι τερπόμενος λύρᾳ.}}
+{{lang|grc|γλαυκὰ δὲ πάροιθε Σελάνα}}
+{{lang|grc|χρόνον ὥριον ἁγεμονεύει,}}
+{{lang|grc|λευκῶν ὑπὸ σύρμασι μόσχων.}}
+{{lang|grc|γάνυται δέ τέ σοι νόος εὐμενὴς}}
+{{lang|grc|πολυείμονα κόσμον ἑλίσσων.}}<ref>Text from Pöhlmann & West (2001), pp. 97–99.</ref>
+
+</poem>
+| <poem>
+[[Helios|Father]] of the [[Eos|Dawn]] with her snow-white eyelids, 
+you who follow in your rose-pink chariot 
+the track of your flying steeds, 
+exulting in the gold of your hair, 
+twining your darting rays 
+across the boundless vault of sky, 
+whirling around the whole earth 
+the thread of your all-seeing beams, 
+while flowing rivers of your deathless fire 
+beget the lovely day.
+ 
+For you the peaceful chorus of stars 
+dance their measure across Olympos their lord, 
+forever singing their leisured song, 
+rejoicing in the music of [[Apollo]]’s lyre; 
+and leading them the silvery-grey [[Selene|Moon]] 
+marshals the months and seasons, 
+drawn by her team of milk-white heifers. 
+And your benevolent mind rejoices 
+as it whirls around the manifold raiment of the universe.<ref>Landels, John G. (1999). ''Music in Ancient Greece and Rome'', p. 256, but reading 'thread' (πάναν) for 'fount' (παγάν).</ref> 
+
+</poem>
+|}
+
+The metre of the hymn is known as the ''apokroton'', a metre of anapaestic character popular in the 2nd and 3rd centuries AD. The first two lines are ''paroemiac'', which is the same metre, but where the antepenultimate syllable is lengthened in the music to take up the space of – u:<ref>West, M. L. (1987). [https://archive.org/details/west-1987-introduction-to-greek-metre/mode/2up?view=theater ''Introduction to Greek Metre''] (Oxford); p. 75.</ref>
+
+: <u>uu</u> – u u – u u – u – (apokroton)
+: <u>uu</u> – u u – u u –u – (paroemiac)
+
+[[File:Mesomedes Hymn to the Sun.png|thumb|700px|center|The music for Mesomedes' Hymn to the Sun, according to Pöhlmann & West (2001), but divided into 2/4 time following Landels (1999).]]
+
+<!--
+=== Hymn to Nemesis ===
+-->
+
+==References==
+===Citations===
+{{reflist}}
+
+===Sources===
+* {{EB1911|wstitle=Mesomedes|volume=18|page=179}}
+* Egert Pöhlmann: "Mesomedes", Grove Music Online ed. L. Macy (Accessed 30 November 2005); [http://www.grovemusic.com (subscription access)] {{Webarchive|url=https://web.archive.org/web/20080516041031/http://www.grovemusic.com/ |date=16 May 2008 }}
+
+==Further reading==
+* [[Vincenzo Galilei]], ''Dialogo Di Vincentio Galilei Nobile Fiorentino Della Musica Antica, Et Della Moderna'' (Fiorenza, 1581) ([https://books.google.com/books?id=XdwPquJVBm4C google]), p. 97
+* Johann Friedrich Bellermann, ''Die Hymnen des Dionysius und Mesomedes. Text und Melodieen nach Handschriften und den alten Ausgaben bearbeitet von Dr. Friedrich Bellermann'' (Berlin, 1840) ([https://books.google.com/books?id=PssqAAAAYAAJ google])
+* ''Rheinisches Museum für Philologie. Neue Folge. Neunter Jahrgang'' (Frankfurt, 1854) ([https://books.google.com/books?id=DDYGAAAAQAAJ google]); p. 306–311: Theodor Bergk, ''Zu den Hymnen des Dionysius und Mesomedes''
+* [[Karl von Jan]] (Latin: Carolus Janus), ''Musici scriptores graeci. Aristoteles &nbsp; Euclides &nbsp; Nicomachus &nbsp; Bacchius &nbsp; Gaudentius &nbsp; Alypius &nbsp; et melodiarum veterum quidquid exstat. Recognovit prooemiis et indice instruxit Carolus Janus. Annexae sunt tabulae'' (Lipsia, 1895) ([https://books.google.com/books?id=tEEzAQAAMAAJ google-US]), p. 454ff.
+** ''Musici scriptores graeci. Recognovit prooemiis et indice instruxit Carolus Janus. Supplementum, melodiarum reliquiae'' (Lipsia, 1899) ([https://books.google.com/books?id=mzUsqOB510cC google-US])
+* ''Revue des études grecques. Tome IX. Année 1896'' (Paris, 1896) ([https://books.google.com/books?id=4DU70eJbm0AC google-US]); p. 1–22: Théodore Reinach, ''L'hymne a la Muse''
+*Landels, John G. (1999). ''Music in Ancient Greece and Rome''. Routledge. {{ISBN|0-203-04284-0}}. [https://web.archive.org/web/20160406154436/http://www.ganino.com/files/Latin%20Copyright%20Books/86%20Music%20in%20Ancient%20Greece%20and%20Rome.pdf]
+*Pöhlmann, Egert; West, Martin L. (2001). ''Documents of Ancient Greek Music: The Extant Melodies and Fragments'', edited and transcribed with commentary by Egert Pöhlmann and Martin L. West. Oxford: Clarendon Press. {{ISBN|0-19-815223-X}}.
+In anthologies:
+* [[Richard François Philippe Brunck]], ''Analecta veterum poetarum graecorum. Editore Rich. Fr. Phil. Brunck. Tom. II.'' (Argentoratum; ''ed. IV.'': Argentoratum, 1785) ([https://books.google.com/books?id=McBAAAAAcAAJ google]; ''ed. IV.'': [https://books.google.com/books?id=v5NDAAAAcAAJ google]), p. 292f.
+** [[Richard François Philippe Brunck]] and [[Christian Friedrich Wilhelm Jacobs]], ''Anthologia graeca sive poetarum graecorum lusus. Ex recensione Brunckii. Tom. III. Indices et commentarium adiecit Friedericus Iacobs'' (Lipsia, 1794) ([https://books.google.com/books?id=-1BCAAAAMAAJ&pg=PA6 google]), p. 6f.
+<!-- * Johann Friedrich Degen, ''Ἀνακρέοντος ᾠδαὶ καὶ ἄλλα λυρικά. – Anakreons Lieder, nebst andern lyrischen Gedichten von Ioh. Fried. Degen'' (Altenburg, 1787) ([https://books.google.com/books?id=zG9VAAAAcAAJ google] [https://books.google.com/books?id=zG9VAAAAcAAJ google] [https://books.google.com/books?id=XvBbAAAAcAAJ google]) [Greek texts without accents], p. 198ff.
+** ''Ἀνακρέοντος καὶ Σαπφοῦς ᾠδαὶ καὶ ἄλλα λυρικά. – Anakreons und Sapphos Lieder nebst andern lyrischen Gedichten. Text und Übersetzung von Ioh. Fried. Degen. Mit Anmerkungen für Freunde des griechischen Gesanges. Zweite sehr vermehrte und verbesserte Ausgabe'' (Leipzig, 1821) ([https://books.google.de/books?id=_x0OAAAAYAAJ google]) [Greek texts without accents], p. 246ff. -->
+* [[Jean François Boissonade de Fontarabie]], ''Ποιητῶν ἑλληνικῶν συλλογή. τόμ. ιεʹ. – Poetarum graecorum sylloge. Tom. XV. — Ἀλκαῖος Σαπφώ Σιμωνίδης σύνεσιος λυρικοὶ διάφοροι. – Lyrici graeci curante Jo. Fr. Boissonade'' (Paris, 1825) ([https://books.google.com/books?id=AORFAQAAMAAJ&pg=PA49 google]), p. 49ff.
+* {{lang|la|Anthologia lyrica Anacreontea et Anacreontis aliorumque lyricorum graecorum selecta fragmenta et scolia continens. Edidit cum notis criticis et metrorum expositione Fridericus Mehlhorn}} (Lipsia, 1827) ([https://books.google.com/books?id=vK4CAAAAYAAJ&pg=PA70 google]), p. 70f.
+* ''Anthologia graeca sive delectus poesis elegiacae melicae bucolicae. Scholarum in usum adornavit Nicolaus Bachius'' (Hannovera, 1838) ([https://books.google.com/books?id=1OIMAAAAYAAJ google]), p. 128
+* [[James Donaldson (classical scholar)|James Donaldson]], ''Lyra Græca: Specimens of the Greek Lyric Poets, from Callinus to Soutsos. Edited, with critical Notes, and a biographical Introduction, by James Donaldson'' (Edinburgh & London, 1854) ([https://books.google.com/books?id=Z0xWAAAAcAAJ&pg=PA96 google]), p. 96f.
+* [[Theodor Bergk]], {{lang|la|Anthologia lyrica continens Theognidem, Babrium, Anacreontea cum ceterorum poetarum reliqiis selectis. Edidit Theodorus Bergk}} (Lipsia, 1854) ([https://books.google.com/books?id=lLo9AAAAcAAJ google]), p. 403f.
+** {{lang|la|Anthologia lyrica continens Theogni[de]m, Babrium, Anacreontea cum ceterorum poetarum reliqiis selectis. Curavit Theodorus Bergk}} (Lipsia, 1868) ([https://books.google.com/books?id=zdkIAAAAQAAJ google]), p. 522ff.
+
+==External links==
+* [http://www.aoidoi.org/poets/mesomedes/meso-1.pdf "Hymn to the Muses"] (PDF) and [http://www.aoidoi.org/poets/mesomedes/meso-3.pdf "Hymn to Nemesis"] (PDF) in Greek with brief glosses/commentary
+* [https://poemsintranslation.blogspot.com/2011/05/mesomedes-hymn-to-nemesis-from-greek.html 'Hymn to Nemesis'] in English translation with Greek original
+
+* [http://www.musica-romana.de Homepage of the Ensemble Musica Romana for ancient music (English and German)]
+* [http://www.kerylos.fr/index_en.php Ensemble Kérylos] a music group directed by scholar [[Annie Bélis]] and dedicated to the recreation of ancient Greek and Roman music. Its recording ''D'Euripide aux premiers chrétiens'' contains the 5 known works by Mesomedes (tracks 9 to 13).
+* [https://www.oeaw.ac.at/kal/agm/ Prayer to Calliope and Apollo]. Sung to the lyre by Stefan Hagel.
+* [https://www.youtube.com/watch?v=-JKNqnDYwj0 Hymn to the Sun]. Petros Tabouris Ensemble.
+* [https://www.youtube.com/watch?v=alrVx6K9C4k Hymn to Nemesis]. Ensemble de Organographia.
+* [https://www.youtube.com/watch?v=aqfJwT23Qnc Hymn to Nemesis]/ Petros Tabouris Ensemble.
+
+{{Authority control}}
+
+[[Category:Ancient Cretan poets]]
+[[Category:Ancient Greek lyric poets]]
+[[Category:Ancient Greek composers]]
+[[Category:2nd-century Greek poets]]
+[[Category:2nd-century Romans]]
+[[Category:Slaves and freedmen in Ancient Greece]]
+[[Category:Emperor's slaves and freedmen]]
+[[Category:Roman Crete]]
+[[Category:Roman Alexandria]]
+[[Category:Ancient Greeks in Rome]]
+[[Category:Epigrammatists of the Greek Anthology]]
+[[Category:Doric Greek poets]]
+[[Category:Year of birth unknown]]
+[[Category:Year of death unknown]]
+[[Category:2nd-century musicians]]

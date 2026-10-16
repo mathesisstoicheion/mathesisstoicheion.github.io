@@ -1,0 +1,220 @@
+{{Short description|Oldest surviving complete piece of music}}
+{{Infobox artifact
+| name = Seikilos epitaph
+| image = Seikilos epitaph 04.jpg
+| writing = [[Koine Greek]]
+| created = {{circa|1st}} or 2nd century AD, [[Tralles (diocese)|Tralles]], [[Asia Minor]]
+| location = [[National Museum of Denmark]]
+| image_caption = Seikilos stele with poetry and musical notation
+| material = Marble
+| type = [[Stele]]
+| discovered_date = 1883
+| discovered_by = [[W. M. Ramsay]]
+}}
+
+The '''Seikilos epitaph''' is an [[Ancient Greece|Ancient Greek]] inscription that preserves the oldest surviving complete [[musical composition]], including [[musical notation]].{{sfn|Randel|2003|pp=361, 767}} Commonly dated between the [[1st century|1st]] and [[2nd century]] AD, the inscription was found engraved on a [[Column|pillar]] ([[stele]]) from the ancient Greek town of [[Tralles (diocese)|Tralles]] (modern [[Aydın]] in present-day [[Turkey]]) in 1883. The stele includes two poems; an [[elegiac]] [[Couplet|distich]] and a song with vocal notation signs above the words. A Hellenistic [[Ionia|Ionic]] song, it is either in the [[Mode (music)#Greek scales|Phrygian]] [[octave species]] or [[Musical system of ancient Greece#Ionian (Iastian)|Ionian (Iastian) tonos]]. The melody of the song is recorded, alongside its lyrics, in [[Musical notation#Ancient Greece|ancient Greek musical notation]]. While older music with notation exists (e.g. the [[Hurrian songs]] or the [[Delphic Hymns]]), all of it is in fragments; the Seikilos epitaph is unique in that it is a complete, though short, composition.
+
+Based on its structure and language, the artifact is generally understood to have been an [[epitaph]] (a tombstone inscription) created by a man named Seikilos and possibly dedicated to a woman named Euterpe. An alternative view, put forward by [[Armand D'Angour]], holds that the inscription does not mark a tomb, but was instead a monument erected by Seikilos himself to commemorate his musical and poetic skills.
+
+== Artifact ==
+The Seikilos [[stele]] is an inscribed marble column from the ancient settlement of [[Tralles (diocese)|Tralles]] in western [[Anatolia]], in what is now the city of [[Aydın|Aydın, Turkey]]. Serving as a [[gravestone]], it bears an [[Elegiac couplet|elegiac distich]] (a form of Ancient Greek poetry) and a song transcribed in [[Musical system of ancient Greece|Ancient Greek musical notation]].{{sfn|Pöhlmann|West|2001|p=90}}{{Sfn|D'Angour|2018b|pp=36–37}}
+
+=== Discovery ===
+The epitaph was discovered sometime around 1883 by Irish engineer Edward Purser during the construction of the [[Ottoman Railway Company|Ottoman Railway]] in [[Aydın]], Turkey. In 1883, the archaeologist [[William Mitchell Ramsay]] published a description of the epitaph in the {{Interlanguage link|Bulletin de correspondance hellénique|lt=''Bulletin de correspondance hellénique''|fr}}.{{Efn|Classicist John G. Landels instead describes the stele as discovered by Ramsay himself in 1883, before being rediscovered in private possession near [[İzmir]] in 1922.{{sfn|Landels|1999|p=252}}}} A [[Stone rubbing|rubbing]] was made of the inscription at some point prior to 1893, and was published in 1894 by French archaeologist [[Théodore Reinach]]. The base of the stele was in a damaged state; wishing to use it as a pedestal for his wife's flowerpots, Purser had the bottom of the pillar sawed flat so it would stand steadily. This destroyed a line of text on the monument, which is only documented via the earlier rubbing. The pillar later passed to the private collection of De Jongh, Purser's son-in-law, in nearby [[Buca]].{{Sfn|Pöhlmann|West|2001|pp=90, 205}}{{Sfn|Cosgrove|2022|pp=233–234}}{{Sfn|Pöhlmann|1970|p=56}}[[File:Seikilos_epitaph_02.jpg|right|thumb|245x245px|The stele along with other exhibits at the National Museum of Denmark]]
+The Dutch Consul in [[İzmir]] took the stele during the 1922 [[Burning of Smyrna]] in the [[Greco-Turkish War (1919–1922)|Greco-Turkish War]]. The consul's son-in-law transported it, via stops in [[Istanbul]] and [[Stockholm]], to [[The Hague]], where it remained until 1966. Presumed lost, it was acquired by the Department of Antiquities of the [[National Museum of Denmark]] in [[Copenhagen]] and revealed in December of the following year. The stele continues to be showcased at the museum.{{Sfn|Pöhlmann|West|2001|p=90}}{{Sfn|Cosgrove|2022|pp=233–234}}
+
+
+=== Dating ===
+The find has been variously dated, but the first or second century AD is the most probable guess. One authority states that on grounds of [[paleography]] the inscription can be "securely dated to the first century C.E.",{{sfn|Mathiesen|1999|p=148}} while on the same basis (the use of swallow-tail serifs, the almost triangular Φ with prolongation below, ligatures between N, H, and M, and above all the peculiar form of the letter omega) another is equally certain it dates from the second century AD, and makes comparisons to dated inscriptions of 127/128 AD and 149/150 AD.{{sfn|Pöhlmann|West|2001|p=88}}
+
+==Inscription==
+===Distich===
+The [[Elegiac couplet|elegiac distich]] (also called couplet) was written on top of the tombstone and precedes the song. Originally in [[Capital letter|all-capitals]] (followed below by the [[Greek diacritics|polytonic]] lowercase and [[Romanization of Greek|Latin transliteration]]), it reads:{{Sfn|D'Angour|2021|loc=Interpreting the stone}}
+{{Blockquote|text={{lang|grc|ΕΙΚΩΝ Η ΛΙΘΟΣ / ΕΙΜΙ ∙ ΤΙΘΗΣΙ ΜΕ / ΣΕΙΚΙΛΟΣ ΕΝΘΑ / ΜΝΗΜΗΣ ΑΘΑΝΑΤΟΥ / ΣΗΜΑ ΠΟΛΥΧΡΟΝΙΟΝ}}}}
+{{bquote|{{lang|grc|[[wikt:εἰκών|Εἰκὼν]] [[wikt:ἡ|ἡ]] [[wikt:λίθος#Ancient Greek|λίθος]] [[wikt:εἰμί|εἰμί]]. [[wikt:τίθημι|τίθησί]] [[wikt:ἐγώ|με]] Σεικίλος [[wikt:ἔνθα|ἔνθα]] [[wikt:μνήμη#Ancient Greek|μνήμης]] [[wikt:ἀθάνατος|ἀθανάτου]] [[wikt:σῆμα|σῆμα]] [[wikt:πολυχρόνιος#Ancient Greek|πολυχρόνιον]]}}.{{Sfn|Rohland|2022|p=1}}<br />{{grc-transl|εἰκὼν ἤ λίθος εἰμί. τίθησί με Σεικίλος ἔνθα μνήμης ἀθανάτου σῆμα}} ''polykhrónion''.}}<!--"polykhrónion" manually romanized; see edit comment: https://en.wikipedia.org/w/index.php?title=Seikilos_epitaph&type=revision&diff=1065841433&oldid=1064872254 -->
+
+Per Landels (2002),{{efn|{{harvnb|Landels|1999|p=252}}; See also {{Harvnb|Rohland|2022|p=2}}}} the distich translates in English as: 
+{{Blockquote|text={{lang|en|"I, the stone, am an image and Seikilos places me here (to be) a long-lasting monument to immortal memory"}}}}
+D'Angour (2021) maintains that the translation of the letter "Η" ([[Eta]]) as "the" ([[wikt:ἡ|ἡ]]) results in an awkward phrasing in Greek, and thus prefers the conjunctive "and" ([[wiktionary:ἤ|ἤ]]), which translates as "I am an image and a stone; Seikilos sets me up here as a long-lasting marker of undying memory".{{Sfn|D'Angour|2021|loc=Interpreting the stone}}  In all cases, the language of the distich implies that the stone should be imagined as speaking to the reader in [[First-person narrative|first person]] and in the [[present tense]]; a familiar structure that is commonly found in ancient epitaphs, where the stone appears to 'speak' to the passer-by (see the epitaph of [[Simonides of Ceos|Simonides]]).{{Sfn|D'Angour|2021|loc=Interpreting the stone}}
+
+=== Epitaph ===
+Below the distich follows a brief poem, also in all-capitals, with vocal notation signs above the words. The text, here excluding the musical notations (followed below by the polytonic script{{Sfn|Rohland|2022|p=1}} and Latin transliteration{{Sfn|D'Angour|2021|loc=Words and music}}), reads:
+
+{{Blockquote|text={{lang|grc|ΟΣΟΝ ΖΗΣ ΦΑΙΝΟΥ / ΜΗΔΕΝ ΟΛΩΣ ΣΥ / ΛΥΠΟΥ ΠΡΟΣ ΟΛΙ / ΓΟΝ ΕΣΤΙ ΤΟ ΖΗΝ / ΤΟ ΤΕΛΟΣ Ο ΧΡΟ / ΝΟΣ ΑΠΑΙΤΕΙ}}}}
+
+{{Interlinear|[[wikt:ὅσον|ὅσον]] [[wikt:ζάω|ζῇς]], [[wikt:φαίνω|φαίνου]] {{!}} [[wikt:μηδείς|μηδὲν]] [[wikt:ὅλως|ὅλως]] [[wikt:σύ|σὺ]] [[wikt:λυπέω|λυποῦ]] {{!}} [[wikt:πρός|πρὸς]] [[wikt:ὀλίγος|ὀλίγον]] [[wikt:εἰμί|ἔστι]] [[wikt:ὁ|τὸ]] [[wikt:ζῆν|ζῆν]] {{!}} [[wikt:ὁ|τὸ]] [[wikt:τέλος#Ancient Greek|τέλος]] [[wikt:ὁ|ὁ]] [[wikt:χρόνος#Ancient Greek|χρόνος]] [[wikt:ἀπαιτέω|ἀπαιτεῖ]].|[ˈoson] [ze̝s], [ˈpʰɛnu] {{!}} [me̝ˈden] [ˈolos] [sy] [ˈlypu] {{!}} [pros] [oˈliɡon] [ˈesti] [to] [ze̝n] {{!}} [to] [ˈtelos] [o] [ˈkʰronos] [aˈpɛti]|hóson zêis, phaínou {{!}} mēdèn hólōs sỳ lypoû {{!}} pròs olígon ésti tò zên {{!}} tò télos ho khrónos apaiteî.||
+| lang = grc
+}}
+
+In English the poem translates as: "As long as you're alive, shine, don't be sad at all; life is short, time asks for its due" per Rohland (2022).{{Sfn|Rohland|2022|p=2}} Landels (1999) provides the alternative translation: "As long as you live, let the world see you, and don't make yourself miserable; life is short, and Time demands his due".{{Sfn|Landels|1999|p=252}}
+
+===Dedication===
+[[File:Seikilos2.tif|thumb|The inscription as it currently exists (without the original final line {{gloss|ZEI}})]]
+Before the last line was ground off so Mrs. Purser (the wife of the discoverer) could use the stele as a flowerpot stand, the dedication read:
+
+{{blockquote|{{lang|grc|ΣΕΙΚΙΛΟΣ ΕΥΤΕΡ}}<br>{{lang|grc|[...]ΖΕΙ[...]}}}}
+
+The verb {{Gloss|{{lang|el|ζει}}}} {{transliteration|el|zei}}, meaning "is alive", was a common ancient convention indicating that the dedicator had survived the dedicatee and created the monument in their memory.{{Sfn|D'Angour|2021|loc=Interpreting the stone}} The last two surviving words on the tombstone itself are (with the bracketed characters denoting a partial possible reconstruction of the [[Lacuna (manuscripts)|lacuna]] or of a possible name abbreviation){{sfn|Pöhlmann|West|2001|p=91}}{{blockquote|{{lang|grc|Σεικίλος Εὐτέρ[πῃ]}}<br>{{grc-transl|Σεικίλος Εὐτέρ[πῃ]}}}} meaning "Seikilos to Euterpe"; hence, according to this reconstruction, the tombstone and the epigrams thereon were dedicated by Seikilos to a woman named Euterpe, who was possibly his wife.{{sfn|Randel|2003|pp=361, 767}} Alternatively, the inscription references [[Euterpe]], the [[Muses|Muse]] of [[Greek lyric|lyric poetry]] and music in [[Greek mythology]], as a way to emphasize Seikilos' poetic skill.{{Sfn|D'Angour|2021|loc=Conclusion}} Another possible partial reconstruction could be: {{blockquote|{{lang|grc|Σεικίλος Εὐτέρ[που]}}<br>{{grc-transl|Σεικίλος Εὐτέρ[που]}}}} meaning "Seikilos of Euterpes", i.e. "Seikilos, son of Euterpes".{{sfn|Pöhlmann|West|2001|p=91}}
+
+=== Word accent ===
+{{see also|Ancient Greek accent}}
+
+A German scholar [[Otto Crusius (1857–1918)|Otto Crusius]] in 1893, shortly after the publication of the inscription, was the first to observe that the music of this song as well as that of the hymns of [[Mesomedes]] tends to follow the pitch of the word accents.{{sfn|Cosgrove|Meyer|2006|pp=66, 75}} The publication of the two [[Delphic hymns]] in the same year confirmed this tendency. Thus in this epitaph, in most of the words, the accented syllable is higher in pitch than the syllable which follows; and the circumflex accents in {{lang|grc|λυποῦ}} {{grc-transl|λυποῦ}},  {{lang|grc|ζῆν}} {{grc-transl|ζῆν}} and {{lang|grc|ἀπαιτεῖ}} {{grc-transl|ἀπαιτεῖ}} have a falling contour within the syllable, just as described by the 1st century BC rhetorician [[Dionysius of Halicarnassus]], while the first syllable of {{lang|grc|φαίνου}} {{grc-transl|φαίνου}} (a long vowel with an acute accent) has a rising melody.{{sfn|Probert|2003|p=5}}
+
+One word which does not conform is the first word {{lang|grc|ὅσον}} {{grc-transl|ὅσον}}, where the music has a low note despite the acute accent. Another example of a low note at the beginning of a line which has been observed is {{lang|grc|βαῖν᾽ ἐπὶ}} {{grc-transl|βαῖν᾽ ἐπὶ}} in the 2nd Delphic Hymn. There are other places also where the initial syllable of a clause starts on a low note in the music.{{sfn|Cosgrove|Meyer|2006|p=75}}
+
+Another apparently anomalous word is {{lang|grc|ἐστὶ}} {{grc-transl|ἐστὶ}} 'is', where the music has a rising melody on the first syllable. However, there exists a second pronunciation {{lang|grc|ἔστι}} {{grc-transl|ἔστι}}, which is used, according to [[Philomen Probert]], "when the word expresses existence or possibility (i.e. when it is translatable with expressions such as 'exists', 'there is', or 'it is possible')",{{sfn|Probert|2003|p=144}} which is evidently the meaning here.<ref>Cf. {{harvnb|Devine|Stephens|1994|p=221}}, supporting {{lang|grc|ἔστι}}.</ref>
+
+==Melody==
+===Transcription===
+The inscription above each line of the lyrics (transcribed here in [[Greek diacritics|polytonic]] script), consists of letters and signs indicating the melody of the song:{{sfn|Pöhlmann|West|2001|p=88}}{{sfn|Mathiesen|1999|p=149}}
+
+[[Image:Epitaph of Seikilos, lyrics and ancient musical score-notation.png|thumb|500px|center|The Seikilos "score"]]
+
+<!--[[Image:Epitaph of Seikilos, lyrics and approximate modern musical score.png|thumb|800px|center|The Seikilos epitaph melody]]-->
+<!--the Lilypond code used to generate the original image was taken from https://en.wikipedia.org/wiki/File:Seikilos_score.png and adapted to work with the "score" extension (search "Help:score")-->
+{{Image frame
+|content = 
+<score raw midi="1" vorbis="1">
+\version "2.18.2"
+\header {
+  tagline = ""  %% removed "Music engraving by LilyPond 2.18.2—www.lilypond.org"
+}
+
+keyTime = { \key d \major \time 6/8 } %%\partial 4}
+
+Music   = {
+       a8 e'4 e4.
+       cis8( d e) d4.
+       cis4 d8 e d( cis)
+       b a4 b8( g4)
+       a8 cis e d cis( d)
+       cis a4 b8( g4)
+       a8 cis b d e cis
+       a a4 a8( fis e)
+       \bar "|." 
+}
+
+Original   = \lyricmode
+     {
+      Ὅ -- σον ζῇς φαί -- νου
+      μη -- δὲν ὅ -- λως σὺ λυ -- ποῦ
+      πρὸς ὀ -- λί -- γον ἔσ -- τι τὸ ζῆν
+      τὸ τέ -- λος ὁ χρό -- νος ἀπ -- αι -- τεῖ.
+      }
+
+Romanization =  \lyricmode
+       {
+       hó -- son zêis, phaí -- nou
+       mē -- dèn hó -- lōs sù lu -- poû
+       pròs o -- lí -- gon és -- ti tò zên
+       tò té -- los ho khró -- nos ap -- ai -- teî.
+       }
+
+Translation = \lyricmode
+       {
+       Whi -- le you-live, shi -- ine!
+       By-no-mea -- ns at-a -- ll, thou, gri -- eve!
+       For a-li -- tt -- le it-ex -- ists, the living;
+       the e -- nd, the ti -- me re -- qui -- res-it.
+       }
+
+\score {
+  \new ChoirStaff <<
+    \new Staff <<
+      \clef "treble"
+      \relative c''
+      \new Voice = "Voice"  { \keyTime \Music }
+      \new Lyrics \lyricsto "Voice" { \Original }
+      \new Lyrics \lyricsto "Voice" { \Romanization }
+      \new Lyrics \lyricsto "Voice" { \Translation }
+
+    >> %% \new Staff
+  >> %% \new ChoirStaff
+  \midi { \tempo 8 = 150 
+     \set Staff.midiInstrument = #"flute" %%please feel free to change to something else
+     %%\set Staff.midiInstrument = #"synth voice"
+     %%\set Staff.midiInstrument = #"voice oohs"
+     %%\set Staff.midiInstrument = #"choir aahs"
+  }
+  \layout { }
+}
+</score>
+|width=|align=center|caption = An approximate translation of the tune into modern musical notation, with the original text, a [[romanization]], and a rough word-for-word translation giving an indication of the meaning of each word. The original tune was a fourth lower (Iastian key).{{clarify|reason=Does the notation give the absolute starting pitch, in terms equivalent to a frequency in Hertz? If so, can we discuss this in the article, please? The caption in Delphic_Hymns#First_verse suggests we might have an idea of absolute pitches.|date=January 2024}} }}
+
+{{clear}}
+
+===Scholarly views===
+{{listen
+| type        = music
+| filename    = Ο Επιτάφιος του Σεῖκιλου - Epitaph of Seikilos.ogg
+| title       = Epitaph of Seikilos
+| description = Melody sung in an approximation of [[Koine Greek]] pronunciation and in modern popular vocal style; a mix of both rhythmizations (see {{section link||Alternative rhythmization}}, below) is used.
+}}
+Although the transcription of the melody is unproblematic, there is some disagreement about the nature of the melodic material itself. There are no modulations, and the notation is clearly in the diatonic genus, but while it is described by [[Thomas J. Mathiesen]] and Jon Solomon on the one hand as being clearly in the diatonic Iastian tonos,<ref>{{harvnb|Mathiesen|1999|p=150}}; {{harvnb|Solomon|1986|p=459}}.</ref> Mathiesen also says it would "fit perfectly" within Ptolemy's Phrygian tonos,{{sfn|Mathiesen|1999|p=150}} since, according to Jon Solomon, the arrangement of the tones (1 ½ 1 1 1 ½ 1 [ascending]) "is that of the Phrygian species" according to Cleonides.{{sfn|Solomon|1986|loc=p. 461, n14}} The overall note series is alternatively described by {{ill|Egert Pöhlmann|de}} and [[Martin Litchfield West]] as corresponding "to a segment from the Ionian scale".{{sfn|Pöhlmann|West|2001|p=90}} [[R. P. Winnington-Ingram]] says "The scale employed is the diatonic octave from ''e'' to ''e'' (in two sharps). The tonic seems to be ''a''; the cadence is ''a'' ''f{{Music|sharp}}'' ''e''. This piece is … [in] Phrygic (the D mode) with its tonic in the same relative position as that of the Doric."{{sfn|Winnington-Ingram|1929|p=343}} Yet [[Claude Palisca]] explains that the difficulty lies in the fact that "the ''harmoniai'' had no finals, dominants, or internal relationships that would establish a hierarchy of tensions and points of rest, although the ''mese'' ('middle note') may have had a gravitational function". Although the epitaph's melody is "clearly structured around a single octave, … the melody emphasizes the ''mese'' by position … rather than the ''mese'' by function".{{sfn|Palisca|2006|pp=77–78}} Moreover, Charles Cosgrove, building on West, shows that although the notes correspond to the Phrygian octave species, analyzing the song on the assumption that its orientation notes are the standing notes of a set of disjunct tetrachords forming the Phrygian octave species does not sufficiently illumine the melody's tonal structure. The song's pitch centers (notes of emphasis according to frequency, duration, and placement) are, in Greek notational nomenclature, C and Z, which correspond to G and D if the scale is mapped on the white keys of the piano (A and E in the "two sharps" transcription above). {{sfn|Cosgrove|2011|pp=88, 187}} These two pitches are mese and nete diezeugmenon of the octave species, but the two other standing notes of that scale's tetrachords (hypate and paramese) do not come into play in significant ways as pitch centers, whether individually or together in intervals forming fourths. The melody is dominated by fifths and thirds; and although the piece ends on hypate, that is the only occurrence of this note. This instance of hypate probably derives its suitability as a final by virtue of being "the same," through octave equivalency, as nete diezeugmenon, the pitch center Z.{{sfn|Cosgrove|2011|loc=pp. 187, 168, n48}}
+
+=== ''Stigmai'' ===
+The musical notation has certain dots above it, called ''stigmai'' ({{lang|grc|στιγμαί}}), singular ''stigmē'' ({{lang|grc|στιγμή}}), which are also found in certain other fragments of Greek music, such as the fragment from Euripides' ''Orestes''. The meaning of these is still uncertain. According to an ancient source (known as the ''[[Anonymus Bellermanni]]''), they represent an '[[Arsis and thesis|arsis]]', which has been taken to mean a kind of '[[Beat (music)#Downbeat and upbeat|upbeat]]' ('arsis' means 'raising' in Greek);{{sfn|Hagel|2008|loc=126}} [[Armand D'Angour]] argues, however, that this does not rule out the possibility of a dynamic stress.{{sfn|D'Angour|2018|loc=63}} Another view, by Solomon, is that the stigmai "signify a rhythmical emphasis".<ref>Solomon, J. [https://grbs.library.duke.edu/article/viewFile/7871/4831 "Orestes 344–45: Colometry and Music"].</ref> According to Mathiesen,
+{{bquote|The meaning of the stigme has been debated for years by scholars. Is it an [[wikt:ictus|ictus]] mark, does it indicate stress, does it show arsis or thesis, and which part of the foot ought to be called arsis?{{sfn|Matheisen|1981|p=27}}}}
+
+A stigme appears on all the syllables of the second half of each bar as it is printed above (for example on {{lang|grc|ὅλως, -γον ἔσ-, and ὁ χρόνος}}). If the ''Anonymus Bellermanni'' source is correct, this implies that whole of the first half of each double-foot bar or measure is the thesis, and the whole of the second half is the arsis. Stefan Hagel, however, argues that this does not preclude the possibility that within the thesis and arsis there was a further hierarchy of strong and weak notes.{{sfn|Hagel|2008|pp=127–28}}
+
+=== Alternative rhythmization ===
+A possible alternative way of rhythmizing the Seikilos song, in order to preserve the iambic ('rising', di-dum) feel of the rhythm, was suggested by classicist and musician [[Armand D'Angour]], with the barlines displaced one quaver to the right, as in the following transcription:{{sfn|D'Angour|2018|pp=70–71}}<ref>{{harvnb|Matheisen|1985|p=177}}, similarly suggests that the theses were placed on the long syllables of the song.</ref>
+
+[[File:Seikilos epitaph (variation).png|thumb|650px|center|A variation of the Seikilos epitaph with barlines as suggested by [[Armand D'Angour]] (2018)]]
+
+Stefan Hagel, discussing an example in the ''Anonymus Bellermanni'', suggests the possibility of a similar transcription with displaced barlines of a line of music with this same rhythm.{{sfn|Hagel|2008|p=128}} His hypothesis is based on an assumption about ancient rhythmical theory and practice, namely that "the regular iambic environment precluded accented shorts altogether; in other words, the accent of the iambic foot fell on its long".{{sfn|Hagel|2008|p=128}} 
+
+However, Tosca Lynch argues that this assumption is contradicted by ancient rhythmical theory and practice.{{sfn|Lynch|2020|pp=275–295}} She notes that the song in its conventional transcription corresponds to the rhythm referred to by ancient Greek rhythmicians as an "iambic dactyl" ({{lang|grc|δάκτυλος κατ᾽ ἴαμβον}} ({{grc-transl|δάκτυλος κατ᾽ ἴαμβον}}) {{Nowrap|(⏑⏔ ⁝ ⏑⏔)}} (using the term "dactyl" in the rhythmicians' sense of a foot in which the two parts are of equal length) (cf. [[Aristides Quintilianus]] 38.5–6).{{sfn|Lynch|2020}} According to this, the whole of the first half of each bar (e.g. {{lang|grc|ὅσον}} {{grc-transl|ὅσον}}) is the [[Arsis and thesis|thesis]], and the whole of the second ({{lang|grc|ζῇς}} {{grc-transl|ζῇς}}), as the ''stigmai'' imply, is the arsis. Therefore, in Lynch's opinion the conventional transcription is to be preferred as it accurately reflects the original rhythm.{{sfn|Lynch|2020}}
+
+== Posterity ==
+{{Main|Hosanna filio David}}
+A singularity, and not the least, of musical history, is the close relationship of this melody with one of those of the [[Roman Rite|Roman liturgy]], the ''Hosanna'' antiphon of the [[Palm Sunday]] office, but where the long notes are resolved by groups of simple beats. One plausible explanation is that the Greek melody gave rise to a citharodic variation, where this resolution of long values was the rule; preserved in the repertoire of instrumentalists, with its title alone, it was used by the centonisator of the ''Hosanna'' antiphon, to whom the rapprochement of ''Hoson'' and ''Hosanna'' will have given the idea of using the ancient theme. Thus, later, timbres of songs from the 14th or 15th century, whose titles had survived the words, gave rise to the polyphonists of the 16th and 17th centuries to write so many masses with bizarre titles, for those who do not know their origin. The similarity can be observed up to the word "''Domini''"; the rest is an interesting reminder of the theme.<ref>{{Cite book |last=Gastoué |first=Amédée |url=https://archive.org/details/lesoriginesducha00gast/page/40/mode/2up?view=theater |title=Les origines du chant romain; l'Antiphonaire grégorien |date=1907 |publisher=Paris, A. Picard & fils |others=University of Toronto |pages=40-41}}</ref>
+
+==Footnotes==
+===Notes===
+{{Notelist}}
+===Citations===
+{{Reflist|20em}}
+
+== Sources ==
+{{refbegin|2}}
+* {{cite journal|first1=Charles H.|last1=Cosgrove|first2=Mary C.|last2=Meyer|date=2006|title=Melody and Word Accent Relationships in Ancient Greek Musical Documents: The Pitch Height Rule|journal=[[The Journal of Hellenic Studies]]|volume=126|pages=68–81|doi=10.1017/S0075426900007667}}
+* {{cite book|first=Charles H.|last=Cosgrove|date=2011|title=An Ancient Christian Hymn with Musical Notation: Papyrus Oxyrhynchus 1786: Text and Commentary|publisher=[[Mohr Siebeck Verlag]]|isbn=9783161509230|location=Heidelberg}}
+*{{cite book|first=Charles H.|last=Cosgrove|title=Music at Social Meals in Greek and Roman Antiquity: From the Archaic Period to the Age of Augustine|date=2022|isbn=9781009161060|doi=10.1017/9781009161060|publisher=[[Cambridge University Press]]}}
+* {{cite book|first=Armand|last=D'Angour|author-link=Armand D'Angour|date=2018b|title=Sound and the Ancient Senses|chapter=Hearing Ancient Sounds Through Modern Ears|editor-first1=Shane|editor-last1=Butler|editor-first2=Sarah|editor-last2=Nooter|isbn=9781315648248|doi=10.4324/9781315648248|publisher=[[Routledge]]|location=London|pages=31–43}}
+* {{cite book|first=Armand|last=D'Angour|author-link=Armand D'Angour|date=2018|editor-first1=Tom|editor-last1=Phillips|editor-first2=Armand|editor-last2=D'Angour|isbn=9780198794462|chapter=The Song of Seikilos|title=Music, Text, and Culture in Ancient Greece|publisher=[[Oxford University Press]]|pages=64–72}}
+* {{Cite web |last=D'Angour |first=Armand |year=2021 |title=The Song of Seikilos: a Musically Notated Ancient Greek Poem |url=https://antigonejournal.com/2021/12/song-of-seikilos/ |website=Antigone Journal|author-link=Armand D'Angour}}
+*{{cite book|first1=A. M.|last1=Devine|first2=Laurence D.|last2=Stephens|date=1994|title=The Prosody of Greek Speech|publisher=[[Oxford University Press]]|isbn=9780195373356}}
+*{{cite journal|first1=Stefan|last1=Hagel|date=2008|title=Ancient Greek Rhythm: The Bellermann Exercises|journal=Quaderni Urbinati di Cultura Classica|volume=88|issue=1|jstor=20546457}}
+* {{Cite book |last=Landels |first=John G.|title=Music in Ancient Greece and Rome |publisher=[[Routledge]] |location=London|year=1999|isbn=9781134704873}}
+* {{cite book|first=Tosca A. C.|last1=Lynch|title=A Companion to Ancient Greek and Roman Music|publisher=[[Wiley-Blackwell]]|location=Hoboken|date=2020|editor-first1=Tosca A. C.|editor-last1=Lynch|editor-first2=Eleonora|editor-last2=Rocconi|isbn=9781119275473|doi=10.1002/9781119275510}}
+*{{cite journal|first=Thomas J.|last=Matheisen|author-link=Thomas J. Mathiesen|date=1981|jstor=932567|title=New Fragments of Ancient Greek Music|journal=[[Acta Musicologica]]|pages=14–32|volume=53|issue=1|doi=10.2307/932567}}
+*{{cite journal|first=Thomas J.|last=Matheisen|author-link=Thomas J. Mathiesen|date=1985|journal=[[Music Theory Spectrum]]|volume=7|jstor=745886|doi=10.2307/745886|pages=159-180|title=Rhythm and Meter in Ancient Greek Music}}
+*{{cite book|first=Thomas J.|last=Mathiesen|author-link=Thomas J. Mathiesen|date=1999|title=Apollo's Lyre: Greek Music and Music Theory in Antiquity and the Middle Ages|publisher=[[University of Nebraska Press]]|location=Lincoln|isbn=9780803230798}}
+*{{cite  book|first=Claude V.|last=Palisca|author-link=Claude V. Palisca|title=Music and Ideas in the Sixteenth and Seventeenth Centuries|publisher=[[University of Illinois Press]]|isbn=9780252031564|date=2006|doi=10.5406/j.ctt1xcmq8|jstor=10.5406/j.ctt1xcmq8|location=Champaign}}
+*{{cite book|first1=Egert|last1=Pöhlmann|title=Denkmäler Altgriechischer Musik: Sammlung, Übertragung und Erläuterung Aller Fragmente und Fälschungen|publisher=Hans Carl|location=Nuremberg|date=1970|oclc=62410676|language=German|trans-title=Monuments of Ancient Greek Music: Collection, Translation and Explanation of all Fragments and Forgeries}}
+*{{cite book|first1=Egert|last1=Pöhlmann|first2=Martin Litchfield|last2=West|date=2001|author-link2=Martin Litchfield West|isbn=9780198152231|publisher=[[Oxford University Press]]|title=Documents of Ancient Greek Music: The Extant Melodies and Fragments|url=https://archive.org/details/pohlmann-west-2001-documents-of-ancient-greek-music}}
+*{{cite book|first=Philomen|last=Probert|author-link=Philomen Probert|title=A New Short Guide the Accentuation of Ancient Greek|date=2003|publisher=Bristol Classical Press|isbn=9781853995996|url=https://archive.org/details/shortguidetoacce0000jppo}}
+* {{cite book |editor-last=Randel |editor-first=Don Michael |editor-link=Don Michael Randel |year=2003 |title=The Harvard Dictionary of Music |publisher=[[Harvard University Press]] |location=Cambridge |edition=4th |isbn=9780674011632}}
+* {{Cite book |last=Rohland |first=Robert |title=Carpe Diem, The Poetics of Presence in Greek and Latin Literature |publisher=[[Cambridge University Press]] |year=2022|isbn=9781316510827}}
+*{{cite journal|first=Jon D.|last=Solomon|date=1986|jstor=295097|title=The Seikilos Inscription: A Theoretical Analysis|journal=[[American Journal of Philology]]|volume=107|issue=4|pages=455–479}}
+*{{cite journal|first=Reginald P.|last=Winnington-Ingram|title=Ancient Greek Music:  A Survey|journal=[[Music & Letters]]|jstor=726126|volume=10|issue=4|pages=326–345|date=1929|author-link=R. P. Winnington-Ingram}}
+{{refend}}
+
+==External links==
+* {{IMSLP|work=Seikilos Epitaph (Anonymous)|cname=Seikilos Epitaph}}
+
+{{Ancient music}}
+{{portal bar|Music}}
+
+[[Category:Ancient Greek music inscriptions]]
+[[Category:Music of ancient Greece]]
+[[Category:1st-century inscriptions]]
+[[Category:2nd-century inscriptions]]
+[[Category:1883 archaeological discoveries]]
+[[Category:History of Aydın]]
+[[Category:National Museum of Denmark]]
+[[Category:Findings in Turkey outside Turkey]]
+[[Category:1883 in the Ottoman Empire]]

@@ -1,0 +1,578 @@
+{{Short description|Overview of ancient Greek music theory}}
+{{about|the music theory and musical intervals used in ancient Greece|a discussion of the cultural aspects and history of ancient Greek music|Music of ancient Greece}}
+
+The '''musical system of ancient Greece''' evolved over a period of more than 500 years from simple [[scale (music)|scales]] of [[tetrachord]]s, or divisions of the [[perfect fourth]], into several complex systems encompassing tetrachords and octaves, as well as octave scales divided into seven to thirteen intervals.{{sfn|Chalmers|1993|loc=ch. 6, p. 99}}
+
+Any discussion of the [[music of ancient Greece]], theoretical, philosophical or aesthetic, is fraught with two problems: there are few examples of written music, and there are many, sometimes fragmentary, theoretical and philosophical accounts. The empirical research of scholars like [[Richard Crocker (musicologist)|Richard Crocker]],{{sfn|Crocker|1963}}{{sfn|Crocker|1964}}{{sfn|Crocker|1966}} C. André Barbera,{{sfn|Barbera|1977}}{{sfn|Barbera|1984}} and John Chalmers{{sfn|Chalmers|1993}} has made it possible to look at the ancient Greek systems as a whole without regard to the tastes of any one ancient theorist. The primary genera they examine are those of Pythagoras and the [[Pythagoreanism|Pythagorean school]], [[Archytas]], [[Aristoxenus|Aristoxenos]], and [[Ptolemy]] (including his versions of the genera of [[Didymus the Musician|Didymos]] and [[Eratosthenes]]).{{sfn|Chalmers|1993|loc=ch. 5, pp. 48–51}}
+
+==Overview of the first complete tone system==
+As an initial introduction to the principal names and divisions of the Ancient Greek tone system this article will give a depiction of the "perfect system" or '''systema teleion''', which was elaborated in its entirety by about the turn of the 5th to 4th century [[BCE]].
+
+The [[#Systema teleion graphic anchor|diagram at the right]] reproduces information from {{harvp|Chalmers|1993}}. It shows the common ancient ''harmoniai'', the ''tonoi'' in all ''genera'', and the system as a whole in one complete map. (Half-sharp and double-sharp notes not used with the depicted notes are omitted.)
+
+[[File:Systema teleion English - Helmoltz notation.png|right|{{anchor|Systema_teleion_graphic_anchor}}Depiction of the ancient Greek tonal system]]
+
+The central three columns of the diagram show, first the modern note-names, then the two systems of symbols used in ancient Greece: the vocal symbols (favoured by singers) and instrumental symbols (favoured by instrument players). The modern note-names are given in the [[Helmholtz pitch notation]], and the Greek note symbols are as given in the work of {{ill|Egert Pöhlmann|de}}.{{sfn|Pöhlmann|1970}} The pitches of the notes in modern notation are conventional, going back to the time of a publication by {{ill|Johann Friedrich Bellermann|de}} in 1840;{{sfn|Bellermann|1840}} in practice the pitches would have been somewhat lower.{{sfn|Pöhlmann|West|2001|loc=7}}
+
+The section spanned by a blue brace is the range of the central [[octave]]. The range is approximately what is now depicted on a modern music staff and is given in the [[#central octave graphic anchor|graphic below, left]]. 
+Note that Greek theorists described scales as descending from higher pitch to lower, which is the opposite of modern practice and caused considerable confusion among Renaissance interpreters of ancient musicological texts.
+[[File:ancient-greek-middle-octave.png|thumb|left|500px|{{anchor|central_octave_graphic_anchor}}The central octave of the ancient Greek system]]
+
+The earliest Greek scales were organized in [[tetrachord]]s, which were series of four descending tones, with the top and bottom tones being separated by an [[perfect fourth|interval of a fourth]], in modern terms. The sub-intervals of the tetrachord were unequal, with the largest intervals always at the top, and the smallest at the bottom. The 'characteristic interval' of a tetrachord is its largest one.
+
+The '''Greater Perfect System''' (''systema teleion meizon'') was composed of four stacked tetrachords called (from lowest to highest) the ''Hypaton'', ''Meson'', ''Diezeugmenon'' and '' Hyperbolaion'' tetrachords. These are shown on the right hand side of the diagram. Octaves were composed from two stacked tetrachords connected by one common tone, the ''synaphe''.
+
+At the position of the ''paramese'', the continuity of the system encounters a boundary (at b-flat, b). To retain the logic of the internal divisions of the tetrachords and avoid the ''Meson'' being forced into three whole tone steps (b–a–g–f), an interstitial note, the ''diazeuxis'' ('dividing'), was introduced between the ''paramese'' and ''mese''. This procedure gives its name to the tetrachord ''diezeugmenon'', which means the 'divided'.
+
+To bridge the inconsistency of the ''diazeuxis'', the system allowed moving the ''nete'' one step up, permitting the construction of the ''Synemmenon'' ('conjunct') tetrachord, shown at the far left of the diagram.
+
+The use of the ''Synemmenon'' tetrachord effected a modulation of the system, hence the name ''systema metabolon'', the modulating system, also called the '''Lesser Perfect System'''. This was considered apart, built of three stacked tetrachords—the ''Hypaton'', ''Meson'' and ''Synemmenon''. The first two of these are the same as the first two tetrachords of the Greater Perfect System, with a third tetrachord placed above the ''Meson''. When all these are considered together, with the ''Synemmenon'' tetrachord placed between the ''Meson'' and ''Diezeugmenon'' tetrachords, they make up the '''Immutable''' (or Unmodulating) '''System''' (systema ametabolon). The lowest tone does not belong to the system of tetrachords, as is reflected in its name, the ''Proslambanomenos'', the adjoined.
+
+In sum, it is clear that the Ancient Greeks conceived of a unified system with the tetrachord as the basic structure, but the octave as the principle of unification.
+
+Below is an elaboration of the mathematics that led to the logic of the system of tetrachords just described. <!-- The inclusion of the synemmenon tetrachord recalls the well-known medieval practice of avoiding four-tone groups of three whole-tone steps ([[tritone]]), which form an augmented fourth. Medieval music theory demanded the avoidance of the tritone in music practice – but included it in the sound system. It was the other way around with the ancient Greeks. The practice of music allowed a wide range of tolerance – even if the music was thus removed from the Pythagorean ideal. -->
+
+==The Pythagoreans==
+{{Main|Pythagorean interval}}
+
+After the discovery of the fundamental intervals (octave, fourth and fifth), the first known systematic divisions of the octave were those of [[Pythagoras]] to whom was often attributed the discovery that the frequency of a vibrating string is inversely proportional to its length. [[Pythagoras]] construed the intervals arithmetically, allowing for 1:1 = Unison, 2:1 = Octave, 3:2 = Fifth, 4:3 = Fourth. Pythagoras's scale consists of a stack of perfect fifths, the ratio 3:2 (see also [[Pythagorean interval|Pythagorean Interval]] and [[Pythagorean tuning|Pythagorean Tuning]]).
+
+The earliest such description of a scale is found in Philolaus fr. B6. [[Philolaus]] recognizes that, if the interval of a fourth goes up from any given note, and then up the interval of a fifth, the final note is an octave above the first note. Thus, the octave is made up of a fourth and a fifth. ... Philolaus's scale thus consisted of the following intervals: 9:8, 9:8, 256:243 [these three intervals take us up a fourth], 9:8, 9:8, 9:8, 256:243 [these four intervals make up a fifth and complete the octave from our starting note]. This scale is known as the Pythagorean diatonic and is the scale that [[Plato]] adopted in the construction of the [[Anima mundi|world soul]] in the ''Timaeus'' (36a-b).{{sfn|Huffman|2011}}
+
+The next notable Pythagorean theorist known today is [[Archytas]], contemporary and friend of Plato, who explained the use of arithmetic, geometric and harmonic means in tuning musical instruments. [[Euclid]] further developed Archytas's theory in his ''The Division of the Canon'' (''Katatomē kanonos'', the Latin ''Sectio Canonis''). He elaborated the acoustics with reference to the frequency of vibrations (or movements).{{sfn|Levin|1990}}
+
+Archytas provided a rigorous proof that the basic musical intervals cannot be divided in half, or in other words, that there is no mean proportional between numbers in super-particular ratio (octave 2:1, fourth 4:3, fifth 3:2, 9:8).{{sfn|Huffman|2011}}{{sfn|Barker|1984–1989|loc=2:46–52}}
+
+Archytas was also the first ancient Greek theorist to provide ratios for all 3 [[Genus (music)|genera]].{{sfn|Chalmers|1993|loc=ch. 6, p. 99}} The three genera of [[tetrachord]]s recognized by Archytas have the following ratios: 
+*The enharmonic – 5:4, 36:35, and 28:27
+*The chromatic – 32:27, 243:224, and 28:27; 
+*The diatonic – 9:8, 8:7, and 28:27.{{sfn|Huffman|2011}} 
+These three tunings appear to have corresponded to the actual musical practice of his day.{{sfn|Barker|1984–1989|loc=2:46–52}}
+
+The [[Genus (music)|genera]] arose after the framing interval of the tetrachord was fixed, because the two internal notes (called ''lichanoi'' and ''parhypate'') still had variable tunings. Tetrachords were classified into genera depending on the position of the ''lichanos'' (thus the name ''lichanos'', which means "the indicator"). For instance a ''lichanos'' that is a [[minor third]] from the bottom and a [[major second]] from the top, defines the genus [[Diatonic genus|diatonic]]. The other two genera, [[Chromatic genus|chromatic]] and [[Enharmonic genus|enharmonic]], were defined in similar fashion.{{sfn|Chalmers|1993|loc=ch. 5, p. 47}}
+
+More generally, three ''genera'' of seven octave ''species''  can be recognized, depending on the positioning of the interposed tones in the component [[tetrachord]]s:
+
+*The diatonic genus is composed of tones and semitones, 
+*the chromatic genus is composed of semitones and a minor third, 
+*the enharmonic genus consists of a major third and two quarter-tones or diesis.{{sfn|Cleonides|1965|loc=35–36}} 
+ 
+Within these basic forms, the intervals of the chromatic and diatonic genera were varied further by three and two "shades" (''chroai''), respectively .{{sfn|Cleonides|1965|loc=39–40}}{{sfn|Mathiesen|2001a|loc=6(iii)(e)}}
+
+The elaboration of tetrachords was also accompanied by penta- and hexachords. The joining of a tetrachord and a pentachord yields an octachord, i.e. the complete seven-tone scale plus a higher octave of the base note. However, this was also produced by joining two tetrachords, which were linked by means of an intermediary or shared note. The final evolution of the system did not end with the octave as such but with the ''Systema teleion'', a set of five tetrachords linked by conjunction and disjunction<!--define --> into arrays of tones spanning two octaves, as explained above.{{sfn|Chalmers|1993|loc=ch. 6, p. 99}}
+
+==The system of Aristoxenus==
+Having elaborated the ''Systema teleion'', the most significant individual system, that of [[Aristoxenos]], which influenced much classification well into the Middle Ages, will be examined.
+
+Aristoxenus was a disciple of [[Aristotle]] who flourished in the 4th century BC. He introduced a radically different model for creating scales, and the nature of his scales deviated sharply from his predecessors. His system was based on seven "[[octave species]]" named after Greek regions and ethnicities – Dorian, Lydian, etc. This association of the ethnic names with the octave species appears to have preceded Aristoxenus,{{sfn|Mathiesen|2001a|loc=6(iii)(d)}} and the same system of names was revived in the [[Renaissance]] as names of musical [[mode (music)|modes]] according to the harmonic theory of that time, which was however quite different from that of the ancient Greeks. Thus the names Dorian, Lydian etc. should not be taken to imply a historical continuity between the systems.
+
+In contrast to Archytas who distinguished his "genera" only by moving the ''lichanoi'', Aristoxenus varied both ''lichanoi'' and ''parhypate'' in considerable ranges.{{sfn|Chalmers|1993|loc=ch. 5, p. 48}} Instead of using discrete ratios to place the intervals in his scales, Aristoxenus used continuously variable quantities: as a result he obtained scales of thirteen notes to an octave, and considerably  different qualities of consonance.{{sfn|Chalmers|1993|loc=ch. 3, pp. 17–22}}
+
+The octave species in the [[Aristoxenus|Aristoxenian]] tradition were:{{sfn|Barbera|1984|loc=240}}{{sfn|Mathiesen|2001a|loc=6(iii)(d)}}
+
+* [[Mixolydian mode#Greek Mixolydian|Mixolydian]]: ''hypate hypaton–paramese'' (b–b′)
+* [[Lydian mode|Lydian]]: ''parhypate hypaton–trite diezeugmenon'' (c′–c″)
+* [[Phrygian mode#Ancient Greek Phrygian mode|Phrygian]]: ''lichanos hypaton–paranete diezeugmenon'' (d′–d″)
+* [[Dorian mode|Dorian]]: ''hypate meson–nete diezeugmenon'' (e′–e″)
+* [[Hypolydian mode|Hypolydian]]: ''parhypate meson–trite hyperbolaion'' (f′–f″)
+* [[Hypophrygian mode|Hypophrygian]]: ''lichanos meson–paranete hyperbolaion'' (g′–g″)
+* Common, [[Locrian mode|Locrian]], or [[Hypodorian mode|Hypodorian]]: ''mese–nete hyperbolaion'' or ''proslambanomenos–mese'' (a′–a″ or a–a′)
+
+These names are derived from:
+*an Ancient Greek subgroup ([[Dorians]]), 
+*a small region in central Greece ([[Locris]]), 
+*certain neighboring (non-Greek) peoples from [[Asia Minor]] ([[Lydia]], [[Phrygia]]). 
+*The prefixes ''myxo'' and ''hypo'' were added to these to form associated scales above and below.
+
+===Aristoxenian ''tonoi''===
+The term ''tonos'' (pl. ''tonoi'') was used in four senses, for it could designate a note, an interval, a region of the voice, and a pitch.{{sfn|Cleonides|1965|loc=44}}
+
+The ancient writer [[Cleonides]] attributes thirteen ''tonoi'' to Aristoxenus, which represent a transposition of the tones of the Pythagorean system into a more uniform progressive scale over the range of an octave.{{sfn|Mathiesen|2001a|loc=6(iii)(e)}}
+
+According to Cleonides,{{sfn|Cleonides|1965|loc=44}} these transpositional ''tonoi'' were named analogously to the octave species, supplemented with new terms to raise the number of degrees from seven to thirteen. In fact, Aristoxenus criticized the application of these names by the earlier theorists, whom he called the "Harmonicists".{{sfn|Mathiesen|2001a|loc=6(iii)(d)}}
+
+According to the interpretation of at least two modern authorities, in the Aristoxenian ''tonoi'' the Hypodorian is the lowest, and the Mixolydian is next-to-highest: the reverse of the case of the octave species.{{sfn|Mathiesen|2001a|loc=6(iii)(e)}}{{sfn|Solomon|1984|loc=250}} The nominal base pitches are as follows (in descending order, after Mathiesen; Solomon uses the octave between '''A''' and '''a''' instead):
+
+{| class="wikitable"
+|-
+! f
+| Hypermixolydian || also called Hyperphrygian
+|-
+! e
+| High Mixolydian || also called Hyperiastian
+|-
+! e{{sup|{{music|♭}}}}
+| Low Mixolydian || also called Hyperdorian
+|-
+! d
+| High Lydian ||
+|-
+! c{{sup|{{music|♯}}}}
+| Low Lydian || also called Aeolian
+|-
+! c
+| High Phrygian ||
+|-
+! B
+| Low Phrygian || also called Iastian
+|-
+! B{{sup|{{music|♭}}}}
+| Dorian ||
+|-
+! A
+| High Hypolydian ||
+|-
+! G{{sup|{{music|♯}}}} (and A{{sup|{{music|♭}}}}?)
+| Low Hypolydian || also called Hypoaeolian
+|-
+! G
+| High Hypophrygian ||
+|-
+! F{{sup|{{music|♯}}}}
+| Low Hypophrygian 
+| also called Hypoiastian
+|-
+! F
+|  Hypodorian ||
+|}
+
+==The octave species in all genera<span class="anchor" id="octave_species_anchor"></span>==
+{{Main|Octave species}}
+
+Based on the above, it can be seen that the Aristoxene system of tones and octave species can be combined with the Pythagorean system of "genera" to produce a more complete system in which each octave species of thirteen tones (Dorian, Lydian, etc.) can be declined into a system of seven tones by selecting particular tones and semitones to form genera (Diatonic, Chromatic, and Enharmonic).
+
+The order of the [[octave species]] names in the following table are the original Greek ones, followed by later alternatives (Greek and other). The species and notation are built around the template of the Dorian.
+{{div col begin|colwidth=17em}}
+<br/>
+{| class="wikitable" style="text-align:center"
+|+ {{big|'''Diatonic'''}}{{anchor|diatonic_species_anchor}}
+|-
+! Tonic
+! Name
+! Mese
+|-
+| (A)
+| (Hypermixolydian, Hyperphrygian, Locrian)
+| (d)
+|-
+| B
+| Mixolydian, Hyperdorian
+| e
+|-
+| c
+| Lydian
+| f
+|-
+| d
+| Phrygian
+| g
+|-
+| e
+| Dorian
+| a
+|-
+| f
+| Hypolydian
+| b
+|-
+| g
+| Hypophrygian, Ionian
+| c′
+|-
+| a
+| Hypodorian, Aeolian
+| d′
+|-
+|}
+
+<br/>
+{| class="wikitable" style="text-align:center;"
+|+ {{big|'''Chromatic '''}}{{anchor|chromatic_species_anchor}}
+|-
+! Tonic
+! Name
+! Mese
+|-
+| (A)
+| (Hypermixolydian, Hyperphrygian, Locrian)
+| (d{{sup|{{music|b}}}})
+|-
+| B
+| Mixolydian, Hyperdorian
+| e
+|-
+| c
+| Lydian
+| f
+|-
+| d{{sup|{{music|b}}}}
+| Phrygian
+| g{{sup|{{music|b}}}}
+|-
+| e
+| Dorian
+| a
+|-
+| f
+| Hypolydian
+| b
+|-
+| g{{sup|{{music|b}}}}
+| Hypophrygian, Ionian
+| c′
+|-
+| a
+| Hypodorian, Aeolian
+| d′{{sup|{{music|b}}}}
+|-
+|}
+
+<br/>
+{| class="wikitable" style="text-align:center;"
+|+ {{big|'''Enharmonic'''}}{{anchor|enharmonic_species_anchor}}
+|-
+! Tonic
+! Name
+! Mese
+|-
+| (A)
+| (Hypermixolydian, Hyperphrygian, Locrian)
+| (d{{sup|{{music|bb}}}})
+|-
+| B
+| Mixolydian, Hyperdorian
+| e
+|-
+| c{{sup|{{music|d}}}}
+| Lydian
+| f{{sup|{{music|d}}}}
+|-
+| d{{sup|{{music|bb}}}}
+| Phrygian
+| g{{sup|{{music|bb}}}}
+|-
+| e
+| Dorian
+| a
+|-
+| f{{sup|{{music|d}}}}
+| Hypolydian
+| b
+|-
+| g{{sup|{{music|bb}}}}
+| Hypophrygian, Ionian
+| c′{{sup|{{music|d}}}}
+|-
+| a
+| Hypodorian, Aeolian
+| d′{{sup|{{music|bb}}}}
+|}
+
+{{div col end}}
+
+The notation "'''{{sc|c}}'''{{sup|{{music|d}}}}" is standard modern notation for the pitch of note '''{{sc|c}}''' when flattened by a [[quarter tone]].{{efn|
+That is, {{sc|'''c'''}}{{sup|{{music|d}}}} is a half-flattened {{sc|'''c'''}}, as opposed to {{sc|'''c'''}}{{sup|{{music|b}}}} is notation for a fully flattened {{sc|'''c'''}} as found in modern musical practice, except for fine-tuning differences. [[nota bene|''N.b.'']] that as well as being different [[musical note|''notes'']] {{sc|'''c'''}}{{sup|{{music|b}}}} and {{sc|'''B'''}} are also different [[musical pitch|''pitches'']] in every ancient, Medieval, and Renaissance [[tuning system]]. This is contrary to the expectation of people only trained in modern {{nobr|[[12 equal temperament|12 tone {{sc|et}}]].}} 
+}}
+The double-flats ({{music|bb}}) are used merely to adhere to the modern convention of that all standard pitches in an octave are assigned a distinct, sequential alphabetic letter.
+
+==The oldest ''harmoniai'' in three genera <span class="anchor" |id="harmoiai_anchor"></span>==
+In the notation above and below, the standard double-flat symbol {{music|bb}} is used to accommodate as far as possible the modern musical convention that demands every note in a scale to have a distinct, sequential letter; so interpret {{music|bb}} only as meaning the immediate prior letter in the alphabet.{{sfn|Chalmers|1993|loc=ch. 6, p. 109}} This complication is unnecessary in Greek notation, which had distinct symbols for each pitch, in set of three: half-flat, flat, or natural notes.
+
+The superscript symbol {{music|d}} after a letter indicates an approximately half-flattened version of the named note; the exact degree of flattening intended depending on which of several tunings was used. Hence a three-tone falling-pitch sequence '''d''', '''d{{sup|{{music|d}}}}''', '''d{{sup|{{music|b}}}}''', with the second note, '''d{{sup|{{music|d}}}}''', about {{nobr|{{sfrac| 1 | 2 }} flat}} (a [[quarter-tone]] flat: modern "{{sup|{{music|d}}}}") from the first note, '''d''', and the same '''d{{sup|{{music|d}}}}''' about {{nobr|{{sfrac| 1 | 2 }} sharp}} (a quarter-tone sharp: modern "{{music|t}}") from the following '''d{{sup|{{music|b}}}}'''.
+
+The ('''d''') listed first for the Dorian is the ''Proslambanómenos'', which was appended as it was, and falls outside of the linked-tetrachord scheme.
+
+These tables are a depiction of [[Aristides Quintilianus]]'s enharmonic ''harmoniai'', the diatonic of Henderson{{sfn|Henderson|1942}} and Chalmers{{sfn|Chalmers|1993}} chromatic versions. Chalmers, from whom they originate, states:
+{{blockquote|In the enharmonic and chromatic forms of some of the harmoniai, it has been necessary to use both a '''d''' and either a '''d{{sup|{{music|d}}}}''' or '''d{{sup|{{music|bb}}}}''' because of the non-heptatonic nature of these scales. '''C''' and '''F''' are synonyms for '''d{{sup|{{music|bb}}}}''' and '''g{{sup|{{music|bb}}}}''' [respectively]. The appropriate tunings for these scales are those of Archytas{{sfn|Mountford|1923}} and Pythagoras.{{sfn|Chalmers|1993|loc=ch. 6, p. 109}}}}
+
+The superficial resemblance of these octave species with the church [[mode (music)|modes]] is misleading: The conventional representation as a section (such as '''C D E F''' followed by '''D E F G''') is incorrect: The species were re-tunings of the central octave such that the sequences of intervals (the cyclical modes divided by ratios defined by genus) corresponded to the notes of the ''Perfect Immutable System'' described above.{{sfn|Chalmers|1993|loc=ch. 6, p. 106}}
+{{div col begin|colwidth=17em}}
+{| class="wikitable"
+|+ {{big|'''Dorian'''}}
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| (d) e &thinsp; f{{sup|{{music|d}}}} &thinsp; g{{sup|{{music|bb}}}} &thinsp; a &thinsp; b &thinsp; c′{{sup|{{music|d}}}} &thinsp; d′{{sup|{{music|bb}}}} &thinsp; e′ &thinsp;
+|-
+| Chromatic
+| (d) e &thinsp; f &thinsp; g{{sup|{{music|b}}}} &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′{{sup|{{music|b}}}} &thinsp; e′ &thinsp;
+|-
+| Diatonic
+| (d) e &thinsp; f &thinsp; g &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′ &thinsp; e′ &thinsp;
+|}
+<br/>
+<br/>
+{| class="wikitable"
+|+ {{big|'''Phrygian'''}}
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| d &thinsp; e &thinsp; f{{sup|{{music|d}}}} &thinsp; g{{sup|{{music|bb}}}} &thinsp; a &thinsp; b &thinsp; c′{{sup|{{music|d}}}} &thinsp; d′{{sup|{{music|bb}}}} &thinsp; d′ &thinsp;
+|-
+| Chromatic
+| d &thinsp; e &thinsp; f &thinsp; g{{sup|{{music|b}}}} &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′{{sup|{{music|b}}}} &thinsp; d′ &thinsp;
+|-
+| Diatonic
+| d &thinsp; e &thinsp; f &thinsp; g &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′ &thinsp;
+|}
+<br/>
+
+{| class="wikitable"
+|+ {{big|'''Lydian'''}}
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| f{{sup|{{music|d}}}} &thinsp; g{{sup|{{music|bb}}}} &thinsp; a &thinsp; b &thinsp; c′{{sup|{{music|d}}}} &thinsp; d′{{sup|{{music|bb}}}} &thinsp; e′ &thinsp; f′{{sup|{{music|d}}}} &thinsp;
+|-
+| Chromatic
+| f &thinsp; g &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′{{sup|{{music|b}}}} &thinsp; e′ &thinsp; f′ &thinsp;
+|-
+| Diatonic
+| f &thinsp; g &thinsp; a &thinsp; b &thinsp; c′ &thinsp; d′ &thinsp; e′ &thinsp; f′ &thinsp;
+|}
+<br/>
+
+<br/>
+{| class="wikitable"
+|+ {{big|'''Mixolydian'''}}
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| B &thinsp; c{{sup|{{music|d}}}} &thinsp; d{{sup|{{music|bb}}}} &thinsp; d &thinsp; e &thinsp; f{{sup|{{music|d}}}} &thinsp; g{{sup|{{music|bb}}}} &thinsp; b &thinsp;
+|-
+| Chromatic
+| B &thinsp; c &thinsp; d{{sup|{{music|b}}}} &thinsp; d &thinsp; e &thinsp; f{{sup|{{music|d}}}} &thinsp; g{{sup|{{music|b}}}} &thinsp; b &thinsp;
+|-
+| Diatonic
+| B &thinsp; c &thinsp; d &thinsp; e &thinsp; f &thinsp; (g) &thinsp; (a) &thinsp; b &thinsp;
+|}
+<br/>
+
+{| class="wikitable"
+|+ {{big|'''Syntonolydian'''}}
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| B &thinsp; c{{sup|{{music|d}}}} &thinsp; d{{sup|{{music|bb}}}} &thinsp; e &thinsp; g &thinsp;
+|-
+| Chromatic
+| B &thinsp; c &thinsp; d{{sup|{{music|b}}}} &thinsp; e &thinsp; g &thinsp;
+|-
+| 1st Diatonic
+| c &thinsp; d &thinsp; e &thinsp; f &thinsp; g &thinsp;
+|-
+| 2nd Diatonic
+| B &thinsp; c &thinsp; d &thinsp; e &thinsp; g &thinsp;
+|}
+<br/>
+
+{| class="wikitable"
+|+ {{big|'''Iastian'''}} (Ionian) 
+|-
+! Genus
+! Tones
+|-
+| Enharmonic
+| B &thinsp; c{{sup|{{music|d}}}} &thinsp; d{{sup|{{music|bb}}}} &thinsp; e &thinsp; g &thinsp; a &thinsp;
+|-
+| Chromatic
+| B &thinsp; c &thinsp; d{{sup|{{music|b}}}} &thinsp; e &thinsp; g &thinsp; a &thinsp;
+|-
+| 1st Diatonic
+| c &thinsp; e &thinsp; f &thinsp; g &thinsp;
+|-
+| 2nd Diatonic
+| B &thinsp; c &thinsp; d &thinsp; e &thinsp; g &thinsp; a &thinsp;
+|}
+
+{{div col end}}
+
+==Ptolemy and the Alexandrians==
+In marked contrast to his predecessors, [[Ptolemy]]'s scales employed a division of the ''pyknon'' in the ratio of 1:2, melodic, in place of equal divisions.{{sfn|Chalmers|1993|loc=ch. 2, p. 10}} Ptolemy, in his ''Harmonics'', ii.3–11, construed the ''tonoi'' differently, presenting all seven octave species within a fixed octave, through chromatic inflection of the scale degrees (comparable to the modern conception of building all seven modal scales on a single tonic). In Ptolemy's system, therefore there are only seven ''tonoi''.{{sfn|Mathiesen|2001a|loc=6(iii)(e)}}{{sfn|Mathiesen|2001c}} Ptolemy preserved Archytas's tunings in his ''Harmonics'' as well as transmitting the tunings of [[Eratosthenes]] and [[Didymos (music theorist)|Didymos]] and providing his own ratios and scales.{{sfn|Chalmers|1993|loc=ch. 6, p. 99}}
+
+==''Harmoniai''==
+In music theory the Greek word ''harmonia'' can signify the enharmonic genus of tetrachord, the seven octave species, or a style of music associated with one of the ethnic types or the ''tonoi'' named by them.{{sfn|Mathiesen|2001b}}
+
+Particularly in the earliest surviving writings, ''harmonia'' is regarded not as a scale, but as the epitome of the stylised singing of a particular district or people or occupation.{{sfn|Winnington-Ingram|1936|loc=3}} When the late 6th-century poet [[Lasus of Hermione]] referred to the Aeolian ''harmonia'', for example, he was more likely thinking of a [[Melody type|melodic style]] characteristic of Greeks speaking the Aeolic dialect than of a scale pattern.{{sfn|Anderson|Mathiesen|2001}}
+
+In the ''[[Republic (Plato)|Republic]]'', [[Plato]] uses the term inclusively to encompass a particular type of scale, range and register, characteristic rhythmic pattern, textual subject, etc.{{sfn|Mathiesen|2001a|loc=6(iii)(e)}}
+
+The philosophical writings of Plato and [[Aristotle]] (c. 350 [[BCE]]) include sections that describe the effect of different ''harmoniai'' on mood and character formation (see below on ethos). For example, in the ''Republic'' (iii.10–11) Plato describes the music a person is exposed to as molding the person's character, which he discusses as particularly relevant for the proper education of the guardians of his ideal State. Aristotle in the ''Politics'' (viii:1340a:40–1340b:5):
+
+{{blockquote|But melodies themselves do contain imitations of character. This is perfectly clear, for the ''harmoniai'' have quite distinct natures from one another, so that those who hear them are differently affected and do not respond in the same way to each. To some, such as the one called Mixolydian, they respond with more grief and anxiety, to others, such as the relaxed ''harmoniai'', with more mellowness of mind, and to one another with a special degree of moderation and firmness, Dorian being apparently the only one of the ''harmoniai'' to have this effect, while Phrygian creates ecstatic excitement. These points have been well expressed by those who have thought deeply about this kind of education; for they cull the evidence for what they say from the facts themselves.{{sfn|Barker|1984–1989|loc=1:175–176}}}}
+
+Aristotle remarks further: {{blockquote |sign=|source=| From what has been said it is evident what an influence music has over the disposition of the mind, and how variously it can fascinate it—and if it can do this, most certainly it is what youth ought to be instructed in.{{sfn|Aristotle|1912|loc=book 8, ch. 5}})}}
+
+==Ethos==
+The ancient Greeks have used the word ''ethos'' (ἔθος or ἦθος), in this context best rendered by "character" (in the sense of patterns of being and behaviour, but not necessarily with "moral" implications), to describe the ways music can convey, foster, and even generate emotional or mental states. Beyond this general description, there is no unified "Greek ethos theory" but "many different views, sometimes sharply opposed."{{sfn|Anderson|Mathiesen|2001}} Ethos is attributed to the ''tonoi'' or ''harmoniai'' or modes (for instance, Plato, in the ''Republic'' (iii: 398d–399a), attributes "virility" to the "[[Dorian mode|Dorian]]," and "relaxedness" to the "[[Lydian mode|Lydian]]" mode), instruments (especially the [[aulos]] and the [[cithara]], but also others), rhythms, and sometimes even the [[Genus (music)|genus]] and individual tones. The most comprehensive treatment of musical ethos is provided by [[Aristides Quintilianus]] in his book ''On Music'', with the original conception of assigning ethos to the various musical parameters according to the general categories of male and female. [[Aristoxenus]] was the first Greek theorist to point out that ethos does not only reside in the individual parameters but also in the musical piece as a whole (cited in Pseudo-Plutarch, ''De Musica'' 32: 1142d ff; see also Aristides Quintilianus 1.12). The Greeks were interested in musical ethos particularly in the context of education (so Plato in his ''Republic'' and Aristotle in his eighth book of his ''Politics''), with implications for the well-being of the State. Many other ancient authors refer to what is nowadays called psychological effect of music and draw judgments for the appropriateness (or value) of particular musical features or styles, while others, in particular [[Philodemus]] (in his fragmentary work ''De musica'') and [[Sextus Empiricus]] (in his sixth book of his work ''Adversus mathematicos''), deny that music possesses any influence on the human person apart from generating pleasure. These different views anticipate in some way the modern debate in [[Philosophy of music|music philosophy]] whether music on its own or [[absolute music]], independent of text, is able to [[Music and emotion|elicit emotions]] on the listener or musician.{{sfn|Kramarz|2016}}
+
+==Melos==
+Cleonides describes "melic" composition, "the employment of the materials subject to harmonic practice with due regard to the requirements of each of the subjects under consideration"{{sfn|Cleonides|1965|loc=35}} — which, together with the scales, ''tonoi'', and ''harmoniai'' resemble elements found in medieval modal theory.{{sfn|Mathiesen|2001a|loc=6(iii)}} According to Aristides Quintilianus (''On Music'', i.12), melic composition is subdivided into three classes: dithyrambic, nomic, and tragic. These parallel his three classes of rhythmic composition: systaltic, diastaltic and hesychastic. Each of these broad classes of melic composition may contain various subclasses, such as erotic, comic and panegyric, and any composition might be elevating (diastaltic), depressing (systaltic), or soothing (hesychastic).{{sfn|Mathiesen|2001a|loc=4}}
+
+The classification of the ''requirements'' we have from [[Proclus]] ''Useful Knowledge'' as preserved by [[Photios I of Constantinople|Photios]]:{{Citation needed|date=November 2009}}
+* for the gods—[[hymn]], [[prosodion]], [[paean]], [[dithyramb]], nomos, adonidia, iobakchos, and [[Hyporchema|hyporcheme]];
+* for humans—[[Encomium|encomion]], [[epinikion]], [[skolion]], [[erotica]], [[epithalamia]], [[hymenaios]], sillos, threnos, and epikedeion;
+* for the gods and humans—partheneion, daphnephorika, tripodephorika, oschophorika, and eutika
+
+According to Mathiesen:
+{{blockquote | Such pieces of music were called melos, which in its perfect form (teleion melos) comprised not only the melody and the text (including its elements of rhythm and diction) but also stylized dance movement. Melic and rhythmic composition (respectively, melopoiïa and rhuthmopoiïa) were the processes of selecting and applying the various components of melos and rhythm to create a complete work.{{sfn|Mathiesen|1999|loc=25}}}}
+
+==Unicode==
+{{Main|Ancient Greek Musical Notation|l1=Ancient Greek Musical Notation (Unicode block)}}
+Music symbols of ancient Greece were added to the [[Unicode]] Standard in March 2005 with the release of version 4.1.
+
+==Footnotes==
+{{notelist}}
+
+==See also==
+* [[Alypius of Alexandria]]
+* [[Delphic Hymns]]
+* [[Seikilos epitaph]]
+* [[Mesomedes]]
+* [[Oxyrhynchus hymn]]
+
+==References==
+{{reflist|18em}}
+
+
+==Sources==
+{{refbegin|colwidth=25em|small=yes}}
+
+* {{cite dictionary |last1=Anderson |first1=Warren |last2=Mathiesen |first2=T.J. |author2-link=Thomas J. Mathiesen |year=2001 |title=Ethos |dictionary=[[The New Grove Dictionary of Music and Musicians]] |edition=2nd |editor1-first=S. |editor1-last=Sadie |editor1-link=Stanley Sadie |editor2-first=J. |editor2-last=Tyrrell |editor2-link=John Tyrrell (musicologist) |place=London, UK |publisher=Macmillan }}
+
+*{{cite book |author = [[Aristotle]] |year = 1912 |url = http://www.gutenberg.org/files/6762/6762-h/6762-h.htm |title = A Treatise on Government |quote = alt. title ''[[Politics (Aristotle)|Politics]]'' |translator = Ellis, William |place = London, UK / Toronto, ON / New York, NY |publisher = J.M. Dent (UK, CA) / E.P. Dutton (NY) }}
+
+* {{cite journal |last=Barbera |first=C. André |date=Autumn 1977 |title=Arithmetic and geometric divisions of the tetrachord |journal=[[Journal of Music Theory]] |volume=21 |issue=2 |pages=294–323 |jstor=843492}}
+
+* {{cite journal |last=Barbera |first=C. André |date=Summer 1984 |title=Octave species |journal=[[The Journal of Musicology]] |volume=3 |issue=3 |pages=229–241 |doi=10.2307/763813 |jstor=763813}}
+
+*  {{cite book |editor-link = Andrew Barker (classicist) |editor-last = Barker |editor-first = A |year = 1984–1989 |title = Greek Musical Writings |place = Cambridge, UK / New York, NY |publisher = Cambridge University Press }} Volume&nbsp;1: {{ISBN|0-521-23593-6}}; Volume&nbsp;2: {{ISBN|0-521-30220-X}} 
+
+* {{cite book |editor-last = Bellermann |editor-first = J.F. |year = 1840 |url = https://books.google.com/books?id=PssqAAAAYAAJ |title = Die Hymnen des Dionysius und Mesomedes: Text und Melodieen nach Handschriften und den alten Ausgaben <!-- bearbeitet von Dr. Friedrich Bellermann --> |place = Berlin, DE |publisher = Albert Förstner }}
+
+* {{cite book |last = Chalmers |first = John H. |title = Divisions of the Tetrachord: A prolegomenon to the construction of musical scales |others = Harrison, Lou (foreword) |editor1-first = Larry |editor1-last = Polansky  |editor2-first = Carter  |editor2-last = Scholz |place = Hanover, NH |publisher = Frog Peak Music |year=1993 |url = http://eamusic.dartmouth.edu/~larry/published_articles/divisions_of_the_tetrachord/index.html |isbn = 0-945996-04-7}}
+
+* {{cite book |author = [[Cleonides]] |year = 1965 |section = Harmonic Introduction |translator=[[Oliver Strunk|Strunk, O.]] |title = Source Readings in Music History |volume = 1 Antiquity and the Middle Ages |editor-first=O. |editor-last=Strunk |editor-link=Oliver Strunk |pages = 35–46 |place = New York, NY |publisher = W.W. Norton }} 
+
+* {{cite journal |last=Crocker |first=Richard L. |author-link=Richard Crocker (musicologist) |date=Winter 1963 |title=Pythagorean mathematics and music |journal=[[The Journal of Aesthetics and Art Criticism]] |volume=22 |issue=2 |pages=189–198 |doi=10.2307/427754 |jstor=427754 }}
+
+* {{cite journal |last=Crocker |first=Richard L. |author-link=Richard Crocker (musicologist) |date=Spring 1964 |title=Pythagorean mathematics and music |journal=[[The Journal of Aesthetics and Art Criticism]] |volume=22 |issue=3 |pages=325–335 |doi=10.2307/427236 |jstor=427236 }}
+
+* {{cite journal |last=Crocker |first=Richard L. |author-link=Richard Crocker (musicologist) |date=April 1966 |title=The troping hypothesis |journal=[[The Musical Quarterly]] |volume=52 |issue=2 |pages=183–203 |doi=10.1093/mq/lii.2.183 }}
+
+* {{cite journal |last=Henderson |first=M.I. |date=October 1942 |title=The growth of the Greek {{math|ἁρμονιαι}} |journal=[[The Classical Quarterly]] |volume=36 |issue=3–4 |pages=94–103 }}
+
+* {{cite encyclopedia |last = Huffman |first = Carl A. |year = 2011 |url = http://plato.stanford.edu/entries/archytas/ |title = Archytas |encyclopedia = The Stanford Encyclopedia of Philosophy |via = plato.stanford.edu |publisher = [[Stanford University]] |place = Palo Alto, CA |access-date = 25 August 2014 }} 
+
+* {{cite book |last=Kramarz |first=Andreas |year=2016 |title=The Power and Value of Music: Its effect and ethos in classical authors and contemporary music theory |place=New York, NY / Bern, CH |publisher=Peter Lang |isbn=9781433133787 }}
+
+* {{cite journal | last = Levin | first = F.R. | author-link = Flora Levin | year = 1990 | issue = 4 | journal = Hermes | jstor = 4476778 | pages = 430–443 | title = Unity in Euclid's 'Sectio Canonis' | volume = 118 }}
+
+* {{cite book |last=Mathiesen |first=T.J. |author-link=Thomas J. Mathiesen |title=Apollo's Lyre: Greek music and music theory in antiquity and the middle ages |series=Publications of the Center for the History of Music Theory and Literature |volume = 2 |place=Lincoln, NE |publisher=University of Nebraska Press |year=1999 |isbn=9780803230798 }}
+
+* {{cite dictionary |last = Mathiesen |first = Thomas J. |author-link=Thomas J. Mathiesen |year = 2001a |title = Greece, §I: Ancient |dictionary = [[The New Grove Dictionary of Music and Musicians]] |edition = 2nd |editor1-first = Stanley |editor1-last = Sadie |editor1-link = Stanley Sadie |editor2-first = John |editor2-last = Tyrrell |editor2-link = John Tyrrell (musicologist) |place = London, UK |publisher = Macmillan }} 
+
+* {{cite dictionary |last = Mathiesen |first = Thomas J. |year = 2001b |title = Harmonia (i) |dictionary = [[The New Grove Dictionary of Music and Musicians]] |edition = 2nd |editor1-first = Stanley |editor1-last = Sadie |editor1-link = Stanley Sadie |editor2-first = John |editor2-last = Tyrrell |editor2-link = John Tyrrell (musicologist) |place = London, UK |publisher = Macmillan }} 
+
+*  {{cite dictionary |last = Mathiesen |first = Thomas J. |year = 2001c |title = Tonos |dictionary = [[The New Grove Dictionary of Music and Musicians]] |edition = 2nd |editor1-first = Stanley |editor1-last = Sadie |editor1-link = Stanley Sadie |editor2-first = John |editor2-last = Tyrrell |editor2-link = John Tyrrell (musicologist) |place = London, UK |publisher = Macmillan }}
+
+*  {{cite journal |last = Mountford |first = James Frederick |year = 1923 |title = The musical scales of Plato's ''Republic'' |journal = [[The Classical Quarterly]] |volume = 17 |issue = 3–4 |pages = 125–136 |doi = 10.1017/S0009838800006510 }}
+
+* {{cite book |last=Pöhlmann |first=Egert |year=1970 |title=Denkmäler altgriechischer Musik |series=Erlanger Beiträge zur Sprach- und Kunstwissenschaft |volume = 31 |place=Nuremberg, DE |publisher=Hans Carl Verlag |issn=0425-2268 }}
+
+* {{cite book |editor1-last = Pöhlmann |editor1-first = Egert |editor2-link = Martin Litchfield West |editor2-first = M.L. |editor2-last = West |year = 2001 |title = Documents of Ancient Greek Music: The extant melodies and fragments edited and transcribed with commentary |place = Oxford, UK |publisher = Clarendon Press |isbn = 0-19-815223-X }}
+
+* {{cite journal |last=Solomon |first=Jon |date=Summer 1984 |title=Towards a history of tonoi |journal=[[The Journal of Musicology]] |volume=3 |issue=3 |pages=242–251 |doi=10.2307/763814 |jstor=763814 }}
+
+* {{cite book |last=Winnington-Ingram |first=Reginald P. |year=1936 |title=Mode in Ancient Greek Music |place=London, UK |publisher=Cambridge University Press }}
+
+{{refend}}
+
+==Further reading==
+{{refbegin|colwidth=25em|small=yes}}
+* Jan, Karl von (ed.) (1895). ''Musici scriptores graeci: Aristoteles, Euclides, Nicomachus, Bacchius, Gaudentius, Alypius et melodiarum veterum quidquid exstat''. Bibliotheca scriptorum graecorum et romanorum Teubneriana. Leipzig: B. G. Teubner.
+* {{citation|last=Jowett|first=Benjamin|author-link=Benjamin Jowett|year=1937|title=The Dialogues of Plato|type=2 vols.|translator=Benjamin Jowett|edition=3rd|place=New York|publisher=Random House|ref=none}}
+* [[Thomas J. Mathiesen|Mathiesen, Thomas J.]] (2001d). "Alypius [Alupios]". ''[[The New Grove Dictionary of Music and Musicians]]'', second edition, edited by [[Stanley Sadie]] and [[John Tyrrell (musicologist)|John Tyrrell]]. London: Macmillan Publishers.
+* Meibom, Marcus (ed.) (1652). ''Antiquae musicae auctores septem: Graece et latine'', 2 vols. Amsterdam: Apud Ludovicum Elzevirium. Facsimile reprint in Monuments of Music and Music Literature in Facsimile, Second Series: Music Literature 51. New York: Broude Bros., 1977. {{ISBN|9780845022511}}.
+* {{cite journal|last=Winnington-Ingram|first=Reginald P.|year=1932|title=Aristoxenus and the Intervals of Greek Music|journal=[[The Classical Quarterly]]|volume=26|issue=3–4|pages=195–208|doi=10.1017/s0009838800014415|s2cid=170375844 |ref=none}}
+* Winnington-Ingram, Reginald P. (1954). "Greek Music (Ancient)". ''[[Grove's Dictionary of Music and Musicians]]'', fifth edition, edited by [[Eric Blom]]. New York: St. Martin's Press.
+{{refend}}
+
+==External links==
+{{refbegin|colwidth = 25em|small = yes}}
+* {{cite report
+ |first = Elsie |last = Hamilton 
+ |year = 1953  |edition = reprint
+ |title = The Modes of ancient Greece
+ |url = http://www.nakedlight.co.uk/pdf/articles/a-002.pdf
+ |url-status = dead  |access-date = 22 March 2024
+ |archive-url=https://web.archive.org/web/20081121100923/http://www.nakedlight.co.uk/pdf/articles/a-002.pdf 
+ |archive-date=2008-11-21
+}} — Booklet by composer Elsie Hamilton summarizes work of deceased friend and teacher, Dr.&nbsp;[[Kathleen Schlesinger]]. Gives detailed examples of the construction of Aolus (reed pipe instruments) and monochord, which might help reconstruct the intervals and modes of the Greeks.
+
+* {{cite web
+ |first = Nikolaos |last = Ioannidis  |author-link = Nikolaos Ioannidis
+ |title = Music of the ancient Greeks
+ |website = homoecumenicus.com
+ |url = http://homoecumenicus.com/ioannidis_music_ancient_greeks.htm
+}} — [[Nikolaos Ioannidis|Ioannidis]] is a musician and composer who has attempted to reconstruct ancient Greek music using a combination of the ancient texts (to be performed) and his own understanding of ancient music.
+
+* {{cite book
+ |author = [[Aristoxenus]]
+ |year = 1902
+ |editor-first = Henry S. |editor-last = Macran
+ |title = The Harmonics of Aristoxenus
+ |url = https://archive.org/stream/aristoxenouharm00arisgoog
+ |via = [[Internet Archive]] (archive.org)
+}} — A mid-19th century edition, but free; the Barbera translation, cited above, is more up to date.
+
+* {{cite web
+ |first = Joe |last = Monzo
+ |year = 2004
+ |title = Analysis of Aristoxenus
+ |website = tonalsoft.com
+ |url = http://www.tonalsoft.com/monzo/aristoxenus/aristoxenus.aspx
+}} — Full of interesting and insightful mathematical analysis. There are some original hypotheses outlined.
+
+* {{cite web
+ |first = R. |last = Erickson |author-link = Robert Erickson
+ |title = Analysis of Archytas
+ |website = ex-tempore.org
+ |url = http://www.ex-tempore.org/ARCHYTAS/ARCHYTAS.html
+}} — [[Robert Erickson|Erickson]] is an American composer and academic; something of a complement to the above Aristoxenus but, dealing with the earlier and arithmetically precise Archytas. An incidental note. Erickson is keen to demonstrate that Archytas' tuning system not only corresponds with Plato's ''harmonia'', but also with the practice of musicians. Erickson mentions the ease of tuning with the [[kithara]].
+
+* {{cite web
+ |title = Ancient Greek music
+ |publisher = [[Austrian Academy of Sciences]]
+ |website = oeaw.ac.at |url = http://www.oeaw.ac.at/kal/agm/
+}} — examples of instruments and compositions.
+
+* {{cite web
+ |title = Ensemble Kérylos
+ |website = kerylos.fr
+ |type = home page
+ |url = http://www.kerylos.fr/index_en.php
+}} — Kérylos is a music group led by scholar [[Annie Bélis]], dedicated to the recreation of ancient Greek and Roman music and playing scores written on inscriptions and [[Papyrus|papyri]].
+
+{{refend}}
+
+{{Musical notation}}
+{{Ancient Greece topics}}
+{{Modes}}
+
+{{DEFAULTSORT:Musical Mode}}
+[[Category:Music of ancient Greece]]
+[[Category:Ancient Greek music theory]]
+[[Category:Melody types]]
+[[Category:Modes (music)| ]]
+[[Category:Musical tuning]]

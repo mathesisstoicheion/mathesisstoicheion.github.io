@@ -1,0 +1,164 @@
+{{Short description|Musical compositions from Ancient Greece}}
+[[File:Delphic hymns to Apollo, 128 BC, inscription in AM of Delphi, 201386a (cropped).jpg|thumb|upright=1.4|Fragments of both hymns in the [[Delphi Archaeological Museum]]]]
+The '''Delphic Hymns''' are two musical compositions from [[Ancient Greece]], which survive in substantial fragments.  They were long regarded as being dated {{circa|138&nbsp;BC}} and 128&nbsp;BC, respectively, but recent scholarship has shown it likely they were both written for performance at the Athenian [[Pythaids]] in 128&nbsp;BC.{{sfnp|Pöhlmann|West|2001|pp=71–72}} If indeed it dates from ten years before the second, the First Delphic Hymn is the earliest unambiguous surviving example of notated music from anywhere in the Western world whose composer is known by name. Inscriptions indicate that the First Delphic Hymn was written by [[Athenaeus (musician)|Athenaeus, son of Athenaeus]], while [[Limenius]] is credited as the Second Delphic Hymn's composer.
+
+==History==
+Both Delphic Hymns were addressed to [[Apollo]], and were found inscribed on stone fragments from the south outer wall of the [[Athenian Treasury]] at [[Delphi]] in 1893 by [[France|French]] archaeologist [[Théophile Homolle]], while [[Henri Weil]] restored the Greek text and [[Théodore Reinach]] transcribed the music to modern [[musical notation|notation]].{{sfnp|Weil|1893}}{{sfnp|Reinach|1893}}) Reconstruction of the fragments was facilitated by the fact that the First Hymn uses vocal notation, and the second one employs instrumental notation.{{sfnp|Pöhlmann|West|2001|p=70}} It was long believed that all that could be told of the composer of the First Hymn is that it was written by an [[Athens|Athenian]], around 138&nbsp;BC, since the heading of the inscription giving the name of the composer is damaged and difficult to read. However, careful reading of this inscription shows that it cannot be the ethnic "Athenaîos" (from Athens), but rather names "[[Athenaeus (son of Athenaeus)|Athēnaios Athēnaiou]]" (Athénaios son of Athénaios) as the composer.{{sfnp|Bélis|1992|pp=48–49, 53–54}}{{sfnp|Pöhlmann|West|2001|p=71}} The Second Delphic hymn has been dated to precisely 128 BC; evidently it was first performed in the same year. The name of the composer has also survived, both in the heading of the hymn and in a separate inscription: [[Limenius|Limēnios]], son of Thoinos, an Athenian.{{sfnp|Pöhlmann|West|2001|p=71}} The occasion of the performance of both hymns was a Pythaid, a special religious procession of the Athenians towards Delphi held on specific occasions, usually after certain omens.
+
+==First Delphic Hymn==
+[[File:First Delphic Hymn,1st & 2nd verse.jpg|thumb|upright=1.4|First Delphic Hymn, 1st and 2nd verse]]
+Both hymns are [[texture (music)|monophonic]] (consisting of a single melodic line), but are differentiated by their notation. The First Hymn is in so-called vocal notation and it is in the [[cretic]] (quintuple) [[meter (music)|meter]] throughout.{{sfnp|Pöhlmann|West|2001|pp=70–71, 85}}
+
+The First Delphic Hymn falls into two large parts, a [[Paean]] (lines 1–27), in three verses, and what might have been called a [[Hyporchema]] or dance (lines 27–34). However, almost all of the last part is lost.
+
+===First verse===
+The image below shows the first verse of the hymn in conventional transcription. The letters above the words represent the notes of music. Various modern recordings of the music can be found in External links (see below).
+
+[[File:Paianmittext.png|thumb|650px|center|First stanza of the First Delphic Hymn. The pitch of the transcription is conventional; in performance the pitch would probably have been about a minor third lower.{{sfnp|Pöhlmann|West|2001|p=7}}]]
+
+In this verse the singers call on the [[Muses]] (goddesses of music and dance) to leave their home on [[Mount Helicon]] and to join in the song in honour of Apollo. This part has been translated by Armand d'Angour as follows:({{sfnp|Brown|d'Angour|2017|p=4}})
+
+{{Quote|text=Hark, you whose domain is deep-forested Helicon, loud-thundering Zeus' fair-armed daughters: come with songs to celebrate your brother Phoebus of the golden hair, who over the twin peaks of this mountain, Parnassus, accompanied by the far-famed Delphic maidens, comes to the streams of the flowing Castalian spring as he visits his mountain oracle.}}
+
+Ten different notes in all are used in this first verse. The fourth note from the bottom, written {{lang|grc|Μ}} (''[[Mu (letter)|Mu]]'' in the Greek alphabet, or the note&nbsp;'''C''' in the conventional modern transcription) is the so-called ''[[mese (mythology)|mesē]]'', or central note, to which the music most often returns.{{sfnp|Landels|1999|pp=96, 228}} Music with this ''mese'' was said to be in the (Greek) [[Phrygian mode]] (modern [[Dorian mode]]). There are more notes above the ''mese'' than below it. '''F''' and '''B'''{{music|flat}} below the ''mese'' are not used, and the lowest note, here '''E'''{{music|flat}}, is used only in the first section of the hymn. The note immediately above the ''mese'' '''D'''{{music|flat}} (written {{lang|grc|Λ}} ''[[Lambda]]'' in Greek) occurs only in one place in section one, in bar&nbsp;24, but is much more extensively used in verse&nbsp;2.
+
+[[File:First Delphic Hymn section A pattern.png|thumb|650px|center|[[File:1st delphic hymn.mid]] The pattern of the music in part&nbsp;&nbsp;{{sc|A}} of the First Delphic Hymn, clearly showing the repeated use of the ''mesē'' or central note]]
+
+According to Pöhlmann and West,{{sfnp|Pöhlmann|West|2001|p=73}} an archaic [[Pentatonic scale|pentatonic]] effect is produced in the lowest tetrachords by avoiding the ''lichanos'', while above the ''mese'' there is modulation between a conjunct chromatic tetrachord ('''C D'''{{music|flat}} '''D F''') and a disjunct diatonic one ('''D E'''{{music|flat}} '''F G'''), extended by two more chromatic notes, '''A'''{{music|flat}} and '''A'''. (A [[tetrachord]] is a series of four consecutive notes covering the interval of a fourth, e.g. '''C''', '''B'''{{music|flat}}, '''A'''{{music|flat}}, '''G'''; the ''[[lichanos]]'' ("forefinger string") was the second note of a tetrachord going down; the "conjunct tetrachord" is the tetrachord whose lowest note is the ''mese''; and the "disjunct tetrachord" is the one whose lowest note is the string above the ''mese'').{{sfnp|Landels|1999|pp=90, 228}}
+
+===Second verse===
+The second verse describes the presence of the delegation from Attica and the sacrifice of Arabian incense and young bulls that they are making. It also mentions the sound of the pipes (''[[Aulos|auloi]]'') and the ''[[kithara]]'' (lyre) accompanying the sacrifice.
+
+The text reads:{{sfnp|Landels|1999|p=231}}
+
+{{Quote|text=Behold, Attica with its great city {{grey|[Athens]}} is at prayer, dwellers on the unconquered land of the armed Tritonian goddess {{grey|[Athena]}}; and on the holy altars [[Hephaistos]] {{grey|[i.e. fire]}} consumes the thighs of bull-calves; and together with the smoke, Arabian incense rises to the heavens. And the shrill, blaring [[aulos]] weaves a melody with fluttering notes, and the golden, sweet-voiced [[kithara]] blends with the song of praise.}}
+
+In this verse there is a change of key; according to Pöhlmann and West{{sfnp|Pöhlmann|West|2001|p=73}} it changes from the (Greek) [[Phrygian mode]] to the Hyperphrygian. There is extensive use of the notes ('''D'''{{music|flat}} and '''D''') immediately above the ''[[Mese (mythology)|mese]]'', and there is also repeated use of the note '''B'''{{music|natural}} (written with the letter {{lang|grc|Ο}} ''[[Omicron]]'' in Greek notation) immediately below the ''mese''.{{sfnp|Landels|1999|p=230}} The strings of Greek [[kithara]] (lyre) were not tuned in exactly the same way as those of a modern piano, and the intervals from '''C''' to '''D'''{{music|flat}} and from '''D'''{{music|flat}} to '''D''' were probably less than a modern semitone.{{sfnp|Landels|1999|pp=96, 227}} Therefore, in this section the music wanders around a small group of closely spaced notes. The technical term for a group of closely spaced notes like this is a [[pyknon]].
+
+[[File:Delphic Hymn 1 section 2.png|thumb|650px|centre|The second verse of the First Delphic Hymn transcribed into modern musical notation. The fourth line, where the music wanders through the narrow range of notes of the pyknon, describes the melody of the aulos or pipe.]]
+
+The photograph below shows part of verse&nbsp;2 and the beginning of verse&nbsp;3 on the inscription, starting from the word {{lang|grc|φερόπλοιο}} {{grc-transl|φερόπλοιο}} "carrying arms" and ending at {{lang|grc|Ἀθθίδα}} {{grc-transl|Ἀθθίδα}} "Attica".
+
+[[Image:Delphichymn.jpg|thumb|center|594px|Photograph of the original stone at Delphi containing the first of the two hymns to Apollo. The music notation is the line of occasional symbols ''above'' the main, uninterrupted line of Greek lettering.]]
+
+===Third verse===
+[[File:First Delphic Hymn,3nd verse.jpg|alt=|thumb|230x230px|First Delphic Hymn, 3rd verse]]
+The third verse is rather fragmentary, with several gaps in the words and music, but enough survives to make sense of it. In this verse the singers address Apollo directly, and describe how he took over the prophetic tripod at Delphi after killing the snake that guarded it, and how once he thwarted an army of invading Gauls (see: [[Brennus (3rd century BC)]]).
+
+This verse returns to the same key as the first. As in the first verse, the small intervals above and below the ''mese'' are once again not used. There are some octave leaps, and "the tone is bright and clear".{{sfnp|Landels|1999|p=231}}
+
+==Second Delphic Hymn==
+[[File:Second Delphic Hymn.jpg|thumb|Second Delphic Hymn|alt=|230x230px]]
+The Second Hymn is headed ''[[Paean]] and [[Prosodion]] to the God'' and is described as having been composed by [[Limenius|Limēnios]] son of Thoinos, an Athenian.{{sfnp|Pöhlmann|West|2001|pp=75, 85}} It consists of ten sections in all, the first nine in [[cretic]] metre constituting the [[paean]], while the tenth in [[Aeolic verse|aeolic]] rhythms ([[glyconic]]s and [[choriamb]]ic [[dimeter]]s) is the prosodion. Slightly more lines of the music have survived than in the first hymn, but there are also numerous gaps where the stone has been broken. The style and subject matter of the second hymn is similar to the first, but the musical notation is different. In this hymn the notes are written with the symbols used by instrumental players (see below).
+
+Pöhlmann and West{{sfnp|Pöhlmann|West|2001|p=85}} divide the hymn up into ten short sections, with frequent changes of key. As in the First Delphic Hymn, the song opens by calling on the Muses to come to Delphi to join in the song in honour of Apollo:
+
+[[File:2nd Delphic Hymn section 1.png|thumb|650px|center|The first section of the Second Delphic Hymn (Limenios Paian) transcribed into modern notation (Places where the stone is broken have been indicated by rests in the music and empty brackets "[&nbsp;&nbsp;]" in the lyrics.)]]
+
+The first verse has been translated by J.G. Landels as follows:{{sfnp|Landels|1999|p=237}}
+
+{{quote|Come ye to this twin-peaked slope of [[Mount Parnassos|Parnassos]] with distant views, [where dancers are welcome], and [lead me in my songs], [[Pierian Spring|Pierian]] [[Muses|Goddesses]] who dwell on the snow-swept crags of [[Mount Helicon|Helikon]]. Sing in honour of Pythian [[Apollo|Phoebus]], golden-haired, skilled archer and musician, whom blessed [[Leto]] bore beside the celebrated marsh, grasping with her hands a sturdy branch of the grey-green [[olive]] tree in her time of travail.}}
+
+The hymn goes on to describe how the sky and sea rejoiced at Apollo's birth on the island of [[Delos]], and how Apollo, after his birth, visited [[Attica]]; ever since which time the people of Attica have addressed Apollo as "Paian" (healer) (sections&nbsp;2–5).
+
+Just as in the first hymn, the singers then address Apollo directly calling on him to come, and remind him how he killed the [[Python (mythology)|Python]] which formerly guarded the Delphic tripod and how he once defeated an army of marauding Gauls with a snowstorm (sections 6–9).
+
+The final part of the work is the [[prosodion]], or processional hymn, with the metre changing from [[cretic]] (— ᴗ —, with variants ᴗᴗ ᴗ — and — ᴗ ᴗᴗ) to [[glyconic]] (×× — ᴗᴗ — ᴗ —, with variant ×× — ᴗ — ᴗᴗ —). (The symbol ᴗ stands for a short syllable, — for a long one, equal in length to ᴗᴗ, and ×× for variable long-long, long-short, or short-long). In this part, the singers beg Apollo and his sister [[Artemis]] ("mistress of Cretan bows") to protect Athens as well as Delphi, and they close with a prayer for the continued dominion of the victorious Roman empire.{{sfnp|Landels|1999|p=243–245}}
+
+[[File:Delphic Hymn 2 section 10 (Prosodion).png|thumb|650px|center|Transcription into modern musical notation of the last section of the Second Delphic Hymn, showing its fragmentary condition. The prayer to "increase the empire of the Romans" is in the last line.]]
+
+The Second Hymn is composed in a different key from the First Hymn. The central note (''mese'') of the first section is '''D''' (in conventional notation), rather than '''C''', making it the (Greek) [[Lydian mode]].{{sfnp|Landels|1999|p=236}} Below the ''mese'' are the notes '''A''' and '''B'''{{music|flat}}, and above it are '''E''', '''E'''{{music|flat}}, '''F''', and '''G'''.
+
+The notes used in the second section are different from the first section. '''B'''{{music|flat}} is replaced by '''B'''{{music|natural}}; '''E'''{{music|flat}} and the top '''G''' are not used, and a bottom '''E''' and a top '''A''' are added, so the range of notes is wider. One way of interpreting this is to assume that the music has moved into the Hypolydian mode.{{sfnp|Landels|1999|p=239}} Mostly the melody moves up and down in small steps but there are some big jumps occasionally down to the bottom '''E'''.
+
+According to Pöhlmann and West,{{sfnp|Pöhlmann|West|2001|p=85}} the [[Musical mode#Greek|modes]] of the different sections as follows:
+# [[Lydian mode#Greek Lydian scale|Lydian]]
+# [[Lydian mode#Greek Lydian scale|Hypolydian]]
+# [[Lydian mode#Greek Lydian scale|Hypolydian]]
+# [[Tetrachord|Chromatic]] [[Lydian mode#Greek Lydian scale|Lydian]]
+# [[Lydian mode#Greek Lydian scale|Hypolydian]]
+# [[Lydian mode#Greek Lydian scale|Hypolydian]]
+# [[Tetrachord|Chromatic]] [[Lydian mode#Greek Lydian scale|Lydian]]
+# [[Lydian mode#Greek Lydian scale|Hypolydian]]
+# [[Lydian mode#Greek Lydian scale|Lydian]]
+# [[Lydian mode#Greek Lydian scale|Lydian]]
+
+==Musical notation==
+The musical symbols used for the hymns can be interpreted thanks to a treatise by [[Alypius (music writer)|Alypius]], a musicographer of [[late antiquity]] (3rd century AD).{{sfnp|Landels|1999|p=207}}
+
+Two different notations of music were used: One notation was simply the 24&nbsp;letters of the Ionian alphabet, one for each tone (including sharps and half-sharps). The other system was a complicated mix of special symbols, including ordinary letters, upside-down or backwards letters, letters from archaic alphabets, and broken, half-letters; with symbols for more notes it had a much wider tonal range. The first hymn uses the simple letter system; the Second Hymn uses the complicated special symbols. It was normal to use both systems in the same piece of music, both written in separate lines above the lyrics; when both were used, the special symbols were for the instrumental accompaniment, and the plain Ionic alphabet for the vocal part.
+{{sfnp|West|1992}}{{sfnp|Reinach|1926|p=161}}
+
+A suggested reason for the difference in notation in the two hymns is that the author of the first, Athenaios, is listed as a singer, while the author of the second, Limenios, was a [[kitharode|kithara-player]]. One difference between the two notations is that the symbols in the first hymn are placed above the vowels, while those in the Second Hymn are mostly placed above the consonants which begin the syllables.{{sfnp|Landels|1999|p=225}} The instrumental paean is tunable such that all intervals that are performed are pure, while the vocal paean cannot be tuned in such a way, requiring harmonic compromises.<ref>{{Cite journal |last=Baciu |first=Dan C. |date=2025-05-07 |title=Human touch? Acoustical analysis of ancient music reconstructs tuning and intonation, elucidating aspects of human behavior |url=https://www.science.org/doi/10.1126/sciadv.adv3101 |journal=Science Advances |volume=11 |issue=19 |article-number=eadv3101 |doi=10.1126/sciadv.adv3101 |pmc=12057680 |pmid=40333958}}</ref>
+
+==Aftermath==
+These hymns were thoroughly examined by musicologists and there have been many efforts to perform them with replicas of ancient musical instruments. The first modern public performance of the First Hymn was in June 1894, only one year after its discovery, during the international athletic convention in the Sorbonne University in Paris for the establishment of the modern Olympic Games.{{sfnp|Lucas|1974}}
+
+==See also==
+* [[Musical system of ancient Greece]]
+* [[Hurrian songs]]
+* [[Oxyrhynchus hymn]]
+* [[Seikilos epitaph]]
+
+==Recordings==
+* [[Arda Mandikian]] recorded these fragments at Delphi in 1950{{sfnp|Warrack|2013}}
+* {{cite AV media |title=Musiques de l'Antiquité Grecque: De la Pierre au son |url=http://www.kerylos.fr |collaboration=Ensemble Kérylos |people=[[Annie Bélis|Bélis, A.]] (director) |year=1996 |id=K617, K617-069 |medium=audio CD}}
+* {{cite AV media |title=D'Euripide aux premiers chrétiens: Musiques de l'antiquité grecque et romaine |url=http://www.kerylos.fr |collaboration=Ensemble Kérylos |people=[[Annie Bélis|Bélis, A.]] (director, tympanist);  Bredewold, Jan Jeroen (baritone); Albou, Frédéric (bass-baritone); Tessé, Benoît ([[kitharode]]); Berland, Nathalie ([[aulos|aulete]]) |year=2016 |medium=audio CD}}
+:: Both hymns are performed: The first is sung by baritone Jan Jeroen Bredewold, with [[tympanon|tympanist]] [[Annie Bélis]]; the second by bass-baritone Frédéric Albou, with [[kitharode]] Benoît Tessé and [[aulos|aulete]] Nathalie Berland.  
+* {{cite AV media |title=Music of Ancient Greece |collaboration=OP and PO Orchestra |people=Christodoulos Halaris (conductor) |publisher=Orata |id=ORANGM |year=2013 |medium=audio CD}}
+* {{cite AV media |title=Music of the Ancient Greeks |collaboration=De Organographia |people=Neuman, Gayle Stuwe; Neuman, Philip; Gavin, William |publisher=Pandourion Records |year=1997 |id=PRDC 1001 |medium=audio CD}}
+* {{cite AV media |title=Musique de la Grèce antique |collaboration=Atrium Musicæ de Madrid |people=Paniagua, Gregorio (directed by) |publisher=Harmonia Mundi |place=France |year=1979 |id=HMA 1901015 |medium=audio CD}}
+
+==References==
+{{reflist|25em}}
+
+;Sources:
+{{refbegin|25em|small=y}}
+* {{wikicite|ref={{harvid|Bélis|1992}}|reference=Bélis, Annie [ed.] (1992). ''Corpus des inscriptions de Delphes'', vol. 3: "Les Hymnes à Apollon". Paris: De Boccard. {{ISBN|2-86958-051-7}}.}}
+* {{wikicite|ref={{harvid|Brown|d'Angour|2017}}|reference=Brown, Barnaby; & d'Angour, Armand (2017). ''Delphic Paean by Athenaios Athenaiou. Performing Materials (Draft)''.}} <br/> {{cite web |title=Athenaios paean |type=draft |date=7 May 2017 |url=http://www.doublepipes.info/wp-content/uploads/2017/09/Athenaios-Paean-DRAFT-7-May-2017.pdf}}
+* {{wikicite|ref={{harvid|Landels|1999}}|reference=Landels, John Gray (1999). ''Music in Ancient Greece and Rome''. Routledge. {{ISBN|0-203-04284-0}}.}}<!-- Dead: [http://www.ganino.com/files/Latin%20Copyright%20Books/86%20Music%20in%20Ancient%20Greece%20and%20Rome.pdf] -->
+*{{wikicite|ref={{harvid|Lucas|1974}}|reference=Lucas, J.A. (1974). "The Genesis of the Modern Olympic Games: The Sorbonne Conferences of 1892 and 1894". A paper presented at the Third Canadian Symposium on History of Sport and Physical Education, Dalhousie University, Halifax, Nova Scotia, August 19–21, 1974. Reprinted in J. Segrave & D. Chu (eds) ''Olympism'' (1981)[http://library.la84.org/OlympicInformationCenter/OlympicReview/1974/ore85/ore85u.pdf]}}
+* {{wikicite|ref={{harvid|Pöhlmann|West|2001}}|reference=Pöhlmann, Egert; & West, Martin L. (2001). ''Documents of Ancient Greek Music: The Extant Melodies and Fragments'', edited and transcribed with commentary by Egert Pöhlmann and Martin L. West. Oxford: Clarendon Press. {{ISBN|0-19-815223-X}}.}}
+* {{wikicite|ref={{harvid|Reinach|1893}}|reference=[[Théodore Reinach|Reinach, Théodore]]. 1893. "La Musique des hymnes de Delphes". ''Bulletin de Correspondance Hellénique'' 17:584–610.}}
+* {{wikicite|ref={{harvid|Reinach|1926}}|reference=Reinach, Théodore. 1926. "La Musique grecque". Paris: n.p.}}
+* {{wikicite|ref={{harvid|Warrack|2013}}|reference=[[John Warrack|Warrack, John]] (2013). "[http://www.oxforddnb.com/view/article/101987 Mandikian, Arda (1924?–2009)]". ''Oxford Dictionary of National Biography''. Oxford and New York: Oxford University Press (accessed 7 Sept 2015). {{Subscription required}}}}
+* {{wikicite|ref={{harvid|Weil|1893}}|reference=Weil, Henri (1893). "Nouveaux fragments d'hymnes accompagnés de notes de musique". ''Bulletin de Correspondance Hellénique'' 17:569–83.}}
+* {{cite book
+ |last=West |first=M.L. |author-link=Martin Litchfield West
+ |year=1992
+ |title=Ancient Greek Music
+ |place=Oxford, UK / New York, NY
+ |publisher=(UK) Clarendon Press / (NY) Oxford University Press
+ |isbn=0-19-814897-6 |edition=hdbk.
+}} {{ISBN|0-19-814975-1}} (pbk).
+{{refend}}
+
+==Further reading==
+* {{cite dictionary |author1=Anderson, Warren |author2=Mathiesen, T.J. |author2-link=Thomas J. Mathiesen |year=2001 |title=Limenius |dictionary=[[Grove Music Online]] |editor=Macy, Laura }}
+* {{cite book |editor1=Davison, Archibald T. |editor2=Apel, Willi |date=1949–1950 |title=Historical Anthology of Music |place=Cambridge, MA |publisher=Harvard University Press |isbn=0-674-39300-7}} (two volumes)
+* {{cite journal |author=Weil, Henri |year=1894 |title=Un Nouvel Hymn à Apollon |journal=Bulletin de Correspondance Hellénique |volume=18 |pages=345–362|doi=10.3406/bch.1894.3704 }}
+* {{cite book |author-link=Martin Litchfield West |author=West, M.L. |year=1992 |title=Ancient Greek Music |place=Oxford, UK / New York, NY |publisher=Clarendon Press / Oxford University Press |isbn=0-19-814897-6 |edition=hdbk.}} {{ISBN|0-19-814975-1}} (pbk).
+
+== External links ==
+{{Commons category|Delphic hymns to Apollo}}
+*[http://www.doublepipes.info/athenaios-paean/ Four versions (spoken and sung) of the First Hymn]
+* [https://www.youtube.com/watch?v=gGVezj1gmLc Reconstructed recording of the First Delphic hymn] by The Ensemble de Organographia
+* [http://imslp.org/wiki/Hymne_à_Apollon_(Fauré,_Gabriel) ''Hymne à Apollon''], music scores of two versions of the First Hymn by [[Gabriel Fauré]] at [[IMSLP]].
+* Hackworth, Corey M. (2015). [https://etd.ohiolink.edu/!etd.send_file?accession=osu1419190918&disposition=inline "Reading Athenaios' Epigraphical Hymn to Apollo: Critical Edition and Commentaries"] {{Webarchive|url=https://web.archive.org/web/20180508053903/https://etd.ohiolink.edu/!etd.send_file?accession=osu1419190918&disposition=inline |date=2018-05-08 }}. Ohio State University PhD Dissertation.
+* [https://web.archive.org/web/20050826145113/http://www.wsu.edu:8080/~wldciv/world_civ_reader/world_civ_reader_1/delphic.html Limenios: Paean and Processional.]
+* [https://www.youtube.com/watch?v=bydqNRYgbuc Reconstructed recording of the Second Delphic Hymn]
+* [http://www.kerylos.fr/index_en.php Ensemble Kérylos] a music group directed by scholar Annie Bélis and dedicated to the recreation of ancient Greek and Roman music.
+** [http://www.medieval.org/emfaq/cds/k617069.htm Notes on Ensemble Kérylos recording]
+* [http://conferences.med.uoa.gr/ehrs-06/BODY/ABOUT%20DELPHI/BODY.htm Delphi Historical Information, including a description of the hymns]
+
+{{Ancient music}}
+
+[[Category:Collection of the Delphi Archaeological Museum]]
+[[Category:Hymns in ancient Greek]]
+[[Category:Ancient Greek music inscriptions]]
+[[Category:Greek religion inscriptions]]
+[[Category:Apollo]]
+[[Category:Culture of ancient Athens]]
+[[Category:1893 archaeological discoveries]]
+[[Category:1893 in Greece]]
+[[Category:Archaeological discoveries in Central Greece]]

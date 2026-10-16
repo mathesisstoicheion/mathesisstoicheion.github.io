@@ -1,0 +1,347 @@
+{{short description|Ancient Greek string instrument}}
+{{Other uses}}
+{{Infobox Instrument
+|name=Lyre
+|names=
+|image=Mousai Helikon Staatliche Antikensammlungen Schoen80 n1.jpg
+|image_capt=Greek vase with muse playing the [[phorminx]], a type of lyre
+|background=string
+|hornbostel_sachs=321.2
+|hornbostel_sachs_desc=Composite [[chordophone]] sounded with a [[plectrum]]
+|developed=[[Sumer]], [[Iraq]], [[Bronze Age]]
+|range=
+|related=* [[Barbitos]]
+* [[Çeng]]
+* [[Chang (instrument)]]
+* [[Cithara]] or Kithara
+* [[Crwth]]
+* [[Endongo]]
+* [[Harp]]
+* [[Konghou]]
+* [[Krar]]
+* [[Rotte (lyre)|Rotte]] or Germanic lyre
+}}
+The '''lyre''' ({{IPAc-en|'|l|aɪər}}) (from Greek λύρα and Latin ''lyra)'' is a [[string instrument|stringed musical instrument]] that is classified by [[Hornbostel–Sachs]] as a member of the [[History of lute-family instruments|lute family of instruments]].  In [[organology]], a lyre is considered a [[yoke lute]], since it is a [[lute]] in which the strings are attached to a [[yoke]] that lies in the same plane as the [[sound table]], and consists of two arms and a crossbar.
+
+The lyre has its origins in [[ancient history]]. Lyres were used in several ancient cultures surrounding the [[Mediterranean Sea]].  The earliest known examples of the lyre have been recovered at archeological sites that date to c. 2700 BC in [[Mesopotamia]].
+<ref name="Grove">
+{{Cite encyclopedia |author1=Klaus Wachsmann |author2=Bo Lawergren |author3=Ulrich Wegner |author4=John Clark |date=2002 |title=Lyre (from Gk.; Lat. lyra)|encyclopedia=[[The New Grove Dictionary of Music and Musicians|Grove Music Online]] |series=Oxford Music Online |publisher=[[Oxford University Press]] |doi=10.1093/gmo/9781561592630.article.50534}}
+</ref>
+<ref>
+{{cite journal 
+|last = Lawergren
+|first = Bo
+|date = February 1998
+|title = Distinctions among Canaanite Philistine and Israelite Lyres and their Global Lyrical Contexts
+|url = https://www.researchgate.net/publication/284520472
+|format = pdf
+|journal = Bulletin of the American Schools of Oriental Research 
+|issue = 309
+|pages = 41–68
+|doi = 10.2307/1357602
+|jstor = 1357602
+|s2cid = 163212339
+}}
+</ref> The oldest lyres from the [[Fertile Crescent]] are known as the '''eastern lyres''' and are distinguished from other ancient lyres by their flat base. They have been found at archaeological sites in [[Egypt]], [[Syria]], [[Anatolia]], and the [[Levant]].<ref name="Grove"/> In a discussion of the Nubian lyre, Carl Engel notes that modern Egyptians call it ''qytarah barbarîyeh'', reflecting its association with the Barbaras (Berbers)<ref>Engel, Carl. ''A Descriptive Catalogue of the Musical Instruments in the South Kensington Museum: Preceded by an Essay on the History of Musical Instruments.'' London: Eyre & Spottiswoode (H.M. Stationery Office), 1874, p. 149. https://archive.org/details/musicofmostancie64enge/page/156/mode/2up</ref>—linked to the brbrta of [[ancient Egypt]]ian references to [[Land of Punt|Punt]], a region identified with present-day [[Somalia]], where the shareero lyre remains in use.
+
+The '''round lyre''' or the '''Western lyre''' also originated in Syria and Anatolia, but was not as widely used and eventually died out in the east c. 1750 BC. The round lyre, so called for its rounded base, reappeared in [[ancient Greece]] c. 1700–1400 BC,<ref>
+{{cite journal
+|author = Josho Brouwers
+|date = 15 October 2019
+|title = The Agia Triada sarcophagus
+|url = https://www.joshobrouwers.com/articles/agia-triada-sarcophagus/
+|journal = Ancient World Magazine
+|access-date = 25 January 2023
+}}
+</ref> and then later spread throughout the [[Roman Empire]].<ref name="Grove"/> This lyre served as the origin of the European lyre known as the [[Germanic lyre]] or [[Rotte (instrument)|rotte]] that was widely used in north-western Europe from pre-Christian to medieval times.<ref name="rotte">{{Cite encyclopedia |author=Myrtle Bruce-Mitford |date=2002 |title=Rotte [round lyre, Germanic lyre]|encyclopedia=[[The New Grove Dictionary of Music and Musicians|Grove Music Online]] |series=Oxford Music Online |publisher=[[Oxford University Press]] |doi=10.1093/gmo/9781561592630.article.23943}}</ref>
+
+[[File:Fresco from Pompeii, 1st century AD, National Archaeological Museum of Naples, Italy.jpg|thumb|A [[Ancient Rome|Roman]] fresco from [[Pompeii]], 1st century AD, depicting a man in a theatre mask and a woman wearing a garland while playing a lyre]]
+
+==Etymology==
+The earliest reference to the word "lyre" is the [[Mycenaean Greek]] ''ru-ra-ta-e'', meaning "lyrists" and written in the [[Linear B]] script.<ref>
+{{cite web
+ |title=Palaeolexicon
+ |quote=word study tool of ancient languages
+ |url=http://www.palaeolexicon.com/
+}}
+</ref> In classical Greek, the word "lyre" could either refer specifically to an amateur instrument, which is a smaller version of the professional [[cithara]] and eastern-[[Aegean Sea|Aegean]] [[barbiton]], or "lyre" can refer generally to all three instruments as a family.<ref name=West1992>
+{{cite book 
+ |author-first=Martin L. |author-last=West  |author-link=Martin Litchfield West
+ |year=1992
+ |title=Ancient Greek Music
+ |isbn=0-19-814975-1
+ |location=Oxford, UK
+ |publisher=Oxford University Press
+}}
+</ref> The English word comes via [[Latin]] from the [[Ancient Greek language|Greek]].<ref name=Perseus>
+{{cite encyclopedia
+ |first1=Henry G. |last1=Liddell |author1-link=Henry George Liddell
+ |first2=Robert   |last2=Scott
+ |title=λύρα
+ |trans-title=lura / lyre
+ |dictionary=A Greek-English Lexicon
+ |via=[[Tufts University|Tufts U.]] / Perseus Digital Library
+ |url=https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057%3Aentry%3Dlu%2Fra
+}}
+</ref>
+
+==Classification==
+[[File:Museu arqueologic de Creta43.jpg|thumb|right|upright=1.2|The Minoan sarcophagus of Hagia Triada, 14th century BCE, depicting the earliest lyre with seven strings, held by a man with long robe, third from the left.]]
+[[Hornbostel–Sachs]] classifies the lyre as a member of the [[History of lute-family instruments|lute-family of instruments]] which is one of the families under the [[chordophone]] classification of instruments. Hornbostel–Sachs divide lyres into two groups, Bowl lyres ([[List of musical instruments by Hornbostel–Sachs number: 321.21|321.21]]) and Box lyres ([[List of musical instruments by Hornbostel–Sachs number: 321.22|321.22]]).
+<ref>
+{{cite journal
+|last = Ghirardini
+|first = Cristina
+|date = 2020
+|title = Reflecting on Hornbostel-Sachs's Versuch a century later
+|url = https://www.fondazionelevi.it/wp-content/uploads/2020/05/Reflecting-Hornbostel-Sachs.pdf
+|journal = Edizioni Fondazione Levi
+|volume = Quaderni di Etnomusicologia
+|access-date = 25 January 2023
+}}
+</ref> In [[organology]], a lyre is considered a [[yoke lute]], since it is a [[lute]] in which the strings are attached to a [[yoke]] that lies in the same plane as the [[sound table]], and consists of two arms and a crossbar.<ref>{{cite book|chapter-url=https://books.google.com/books?id=D_15UtgRVJsC&dq=lyre+is+considered+a+yoke+lute,&pg=PA284|chapter=Plucked and Hammered String Instruments; Historical Development|page=284|title=Musical Instruments: History, Technology, and Performance of Instruments of Western Music|author1=Murray Campbell |author2=Clive Greated |author3=Arnold Myers|publisher=[[Oxford University Press]]|year=2004|isbn=9780198165040}}</ref>
+
+==Ancient lyres==
+There is evidence of the development of many forms of lyres from the period 2700 BCE through 700 BCE. Lyres from the ancient world are divided by scholars  into two separate groups, the eastern lyres and the western lyres, which are defined by patterns of geography and chronology.<ref name="Grove"/>
+
+===Eastern lyres===
+[[File:Britannica Cithara Ancient Egyptian Cithara.jpg|thumb|upright|left|A lyre from [[Ancient Egypt]], found in [[Thebes, Egypt|Thebes]]]]
+[[File:Ur lyre.jpg|right|thumb|140px|A bull lyrist on the [[Standard of Ur]], {{circa|2500 BCE}}]]
+Eastern lyres, also known as flat-based lyres, are lyres which originated in the [[Fertile Crescent]] ([[Mesopotamia]]) in what is present day Syria, Anatolia, the Levant and Egypt. The eastern lyres all contain [[sound box]]es with flat bases. They are the oldest lyres with iconographical evidence of their existence, such as depictions of the eastern lyre on pottery, dating back to 2700 BCE.<ref name="Grove"/>
+
+While flat-based lyres originated in the East, they were also later found in the West after 700 BCE.<ref name="Grove"/> By the [[Hellenistic period]] (c. 330 BCE) what was once a clearly divided use of flat-based lyres in the East and round-based lyres in the West had disappeared, as trade routes between the East and the West dispersed both kinds of instruments across more geographic regions.<ref name="Grove"/>
+
+Eastern lyres are divided into four main types: bull lyres, thick lyres, thin lyres and giant lyres.<ref name="Grove"/>
+
+====Bull lyres==== 
+Bull lyres are a type of eastern lyre that have a flat base and bull's head on one side.<ref name="bull">{{Cite book |author=Bo Lawergren, Hormoz Farhat and Stephen Blum |date=2002 |chapter=Iran|publisher=[[The New Grove Dictionary of Music and Musicians|Grove Music Online]]. Oxford Music Online. [[Oxford University Press]] |doi=10.1093/gmo/9781561592630.article.13895 |isbn=978-1-56159-263-0 }}</ref> The ''[[lyres of Ur]]'' are bull lyres excavated in [[ancient Mesopotamia]] (modern [[Iraq]]), which date to 2500 BCE and are considered to be the world's oldest surviving [[stringed instrument]]s.<ref name="mp">{{cite book|author=Michael Chanan|title=Musica Practica: The Social Practice of Western Music from Gregorian Chant to Postmodernism|year=1994|publisher=Verso|isbn= 978-1-85984-005-4|page=170}}</ref> However, older pictorial evidence of bull lyres exist in other parts of Mesopotamia and [[Elam]], including [[Susa]].<ref name="bull"/>
+
+====Thick lyres====
+Thick lyres are a type of flat-based eastern lyre that comes from Egypt (2000–100 BCE) and Anatolia (c. 1600 BCE). The thick lyre is distinguished by a thicker [[sound box]] which allowed for the inclusion of more strings. These strings were held on a larger 'box-bridge' than the other type of eastern lyres, and the [[sound hole]] of the instrument was cut in the body of the lyre behind the box-bridge.<ref name="Grove"/>
+
+While similar to the bull lyre in size, the thick lyre did not contain the head of an animal, but did depict images of animals on the arms or yoke of the instrument. Like the bull lyre, the thick lyre did not use a [[plectrum]] but was plucked by hand.<ref name="Grove"/>
+
+While the clearest examples of the thick lyre are extant to archaeological sites in Egypt and Anatolia, similar large lyres with thicker soundboxes have been found in Mesopotamia (1900–1500 BCE). However, these Mesopotamia lyres lack the box-bridge found in the instruments from Egypt and Anatolia.<ref name="Grove"/>
+
+====Thin lyres====
+[[File:Kinnor played before a king.jpg|thumb|200px|right|Excavated at [[Tel Megiddo]], a lyre player 1350–1150 BCE, identified as a likely ''kinnor'' by scholars<ref name="GroveKinnor">{{cite book |entry= 'Kinnor |title=The New Grove Dictionary of Musical Instruments |date=1984 |publisher=MacMillan Press |editor=Sadie Stanley |last= Montagu |first= Jeremy |volume=2 |place=London |pages=432–433 |quote=[In New Grove Dictionary of Musical Instruments, this is the caption accompanying the image:] Kinnor played before a king: ivory plaque (1350-1150 BC) from Megiddo (Archaeological Museum, Jerusalem). }}</ref>  During the Iron Age, Megiddo was a royal city in the Kingdom of Israel.]]
+
+Thin lyres are a type of flat-based eastern lyre with a thinner [[soundbox]] where the [[sound hole]] is created by leaving the base of the [[resonator]] open. The earliest known example of the thin lyre dates to c. 2500 BCE in [[Syria]]. After this, examples of the thin lyre can be found throughout the [[Fertile Crescent]]. The thin lyre is the only one of the ancient eastern lyres that is still used in instrument design today among current practitioners of the instrument. As a means of support, players of the thin lyre wear a sling around the left wrist which is also attached to the base of the lyre's right arm. It is played using a plectrum or pic to strike the strings; a technique later used by the Greeks on the western lyres.<ref name="Grove"/>
+
+There are several regional variations in the design of thin lyres. The Egyptian thin lyre was characterized by arms that bulged outwards asymmetrically; a feature also found later in Samaria (c. 375–323 BCE). In contrast, thin lyres in Syria and [[Phoenicia]] (c. 700 BCE) were symmetrical in shape and had straight arms with a perpendicular yoke which formed the outline of a rectangle.<ref name="Grove"/>
+
+The [[kinnor]] is an ancient [[Israelite]] musical instrument that is thought to be a type of thin lyre based on iconographic archaeological evidence.<ref name="Grove"/> It is the first instrument from the lyre family mentioned in the [[Old Testament]]. Its exact identification is unclear, but in the modern day it is generally translated as "harp" or "lyre",<ref name="Bromiley">{{cite book|author=Geoffrey W. Bromiley|title=The International Standard Bible Encyclopedia|date=February 1995|url=https://books.google.com/books?id=Zkla5Gl_66oC&pg=PA442|accessdate=4 June 2013|publisher=Wm. B. Eerdmans Publishing|isbn=978-0-8028-3785-1|pages=442–}}</ref>{{rp|440}} and associated with a type of lyre depicted in Israelite imagery, particularly the [[Bar Kochba]] coins.<ref name="Bromiley"/>{{rp|440}} It has been referred to as the "national instrument" of the Jewish people,<ref name="PutnamUrban1968">{{cite book|author1=Nathanael D. Putnam|author2=Darrell E. Urban|author3=Horace Monroe Lewis|title=Three Dissertations on Ancient Instruments from Babylon to Bach|url=https://books.google.com/books?id=rLDoAAAAIAAJ|accessdate=4 June 2013|year=1968|publisher=F. E. Olds}}</ref> and modern [[luthiers]] have created reproduction lyres of the "kinnor" based on this imagery.
+
+====Giant lyres====
+Giant lyres are a type of flat-based eastern lyre of immense size that typically required two players. Played from a standing position, the instrument stood taller than the instrumentalists. The oldest extent example of the instrument was found in the ancient city of [[Uruk]] in what is present day Iraq, and dates to c. 2500 BCE. Well preserved giant lyres dating to c. 1600 BCE have been found in Anatolia. The instrument reached the height of its popularity in [[Ancient Egypt]] during the reign of [[Pharaoh]] [[Akhenaten]] (c. 1353—1336 BCE). A giant lyre found in the ancient city of [[Susa]] (c. 2500 BCE) is suspected to have been played by only a single instrumentalist, and giant lyres in Egypt dating from the [[Hellenistic period]] most likely also required only a single player.<ref name="Grove"/>
+
+<gallery>
+File:Woman playing lyre, Egypt 4th century AD,.jpg|Terracotta figurine of a woman with a lyre, Egypt, 4th century A.D.
+</gallery>
+
+===Western lyres===
+{{multiple image
+ |caption_align=center |header_align=center |align = right
+
+ | image1 = Pothos Apollo Musei Capitolini MC649.jpg
+ | width1 = 156
+ | alt1 = Pothos holding flat based kithara
+ | caption1  = [[Pothos (mythology)|Pothos]] (Desire) holding a flat-based [[kithara]]. The deity in the artwork was restored as [[Apollo Citharoedus]] during the Roman era (1st or {{nobr|2nd century {{sc|CE}},}} based on a Greek work {{nobr|{{circa|300 {{sc|BCE}}}});}} the kithara strings are not extant.
+
+ |image2 = Phorminx 470-460 BC, detail of work by the Hesiod Painter.jpg
+ |width2 = 250
+ |alt2 = Round-based lyre, a phorminx played by a muse.
+ |caption2 = [[Phorminx]] player, {{nobr|470-460 {{sc|BCE}},}}; round-based lyre. Detail of work by the [[Hesiod Painter]].
+
+ |footer= 
+}}
+
+Western lyres, sometimes referred to as round-based lyres, are lyres from the ancient history that were extant in the [[Aegean Sea|Aegean]], mainland [[Greece]], and southern [[Italy]]. They initially contained only round rather than flat bases; but by the [[Hellenistic period]] both constructs of lyre could be found in these regions. Like the flat-based Eastern lyres, the round-based lyre also originated in northern Syria and southern Anatolia in the 3rd millennium BCE. However, this round-based construction of the lyre was less common than its flat-based counterparts in the east, and by c. 1750 BCE the instrument had died out completely in this region. The round-based lyre re-appeared in the West in [[Ancient Greece]] where it was sole form of lyre used between 1400 and 700 BCE.<ref name="Grove" />
+
+Like the eastern flat-based lyre, the western round-based lyre also had several sub-types. [[Homer]] described two different western lyres in his writings, the [[phorminx]] and [[kitharis]]. However, both of these terms have not had uniform meaning across time, and their use during Homer's time was later altered. Today, scholars divide instruments referred to as kitharis into two subgroups, the round-based cylinder kithara and the flat-based concert kithara.
+
+<gallery>
+File:Diver Paestum 32.JPG|{{nobr|5th century {{sc|BCE}}.}} ''Lyra'' or [[barbiton|''barbitos'']] from the [[Tomb of the Diver]].
+File:Diver Paestum 30.JPG|{{nobr|5th century {{sc|BCE}}.}} ''Lyra'' or ''[[barbiton|''barbitos'']]'' from the [[Tomb of the Diver]]. [[Tortoiseshell]] body.<ref>{{cite book |first=Angela |last=Bellia |title=Strumenti musicali e oggetti sonori nell'Italia meridionale e in Sicilia (VI-III sec. a.C.) |pages=51–84 |url=https://core.ac.uk/download/pdf/33553811 |via=core.ac.uk }}</ref>
+
+</gallery>
+
+====Phorminx====
+{{main|phorminx}}
+
+====Kitharis====
+{{main|kithara}}
+
+====Barbitos====
+{{main|barbiton}}
+
+==Cultural use in Ancient Greece==
+[[File:Rhyton en forme de tête de chien, détail.JPG|thumb|Lyre with tortoiseshell body ([[rhyton]], {{circa|475 BC}}). Shows strap that stabilizes instrument. Musician holds a plectrum in his other hand.]]
+
+In [[Ancient Greece]], [[recitation]]s of [[lyric poetry]] were accompanied by lyre playing. The earliest picture of a Greek lyre appears in the famous [[Hagia Triada sarcophagus|sarcophagus]] of [[Hagia Triada]] (a [[Minoan civilization|Minoan]] settlement in [[Crete]]). The sarcophagus was used during the [[Mycenaean Greece|Mycenaean]] occupation of Crete ({{circa|1400 BCE}}).<ref>[https://wayback.archive-it.org/all/20160203074243/http://www.uark.edu/campus-resources/dlevine/Hagia-Triada.jpg Image of Hagia Triada Sarcophagus], University of Arkansas.</ref><ref>J. A. Sakellarakis. ''Herakleion Museum. Illustrated Guide to the Museum.'' Ekdotike Athinon, Athens 1987, p. 113 f.</ref>
+
+The lyre of classical antiquity was ordinarily played by being [[strum]]med like a [[guitar]] or a [[zither]], rather than being [[Plucked string instrument|plucked]] with the fingers as with a harp. A pick called a [[plectrum]] was held in one hand, while the fingers of the free hand silenced the unwanted strings.
+
+=== Construction ===
+A classical lyre has a hollow body or sound-chest (also known as [[soundbox]] or resonator), which in Greek tradition was anciently made out of a turtle shell.<ref name=Perseus/><ref>{{cite dictionary |title=Lyre |dictionary=Dictionary.com |url=http://dictionary.reference.com/browse/lyre |access-date=2012-09-17 |df=dmy-all }}</ref> Extending from this sound-chest are two raised arms, which are sometimes hollow, and are curved both outward and forward. They are connected near the top by a crossbar or yoke. An additional crossbar, fixed to the sound-chest, makes the bridge, which transmits the vibrations of the strings. The deepest note was that closest to the player's body; since the strings did not differ much in length, more weight may have been gained for the deeper notes by thicker strings, as in the [[violin]] and similar modern instruments, or they were tuned by having a slacker ''tension''. The strings were of [[catgut|gut]] (animal intestines). They were stretched between the yoke and bridge, or to a tailpiece below the bridge. There were two ways of tuning: One was to fasten the strings to pegs that might be turned, while the other was to change the placement of the string on the crossbar; it is likely that, as expedient, both methods were used simultaneously.{{sfn|Hipkins|Schlesinger|1911|pp=177–178}}<ref name=West1992/>
+
+Lyres were used without a [[fingerboard]], no Greek description or representation having ever been met with that can be construed as referring to one. Nor was a bow possible, the flat sound-board being an insuperable impediment. The pick, or plectrum, however, was in constant use. It was held in the right hand to set the upper strings in vibration; when not in use, it hung from the instrument by a ribbon. The fingers of the left hand touched the lower strings{{sfn|Hipkins|Schlesinger|1911|p=178}} (presumably to silence those whose notes were not wanted).<ref name=West1992/>
+
+=== Number of strings ===
+Before Greek civilization had assumed its historic form (c. 1200 BCE), there was likely to have been great freedom and independence of different localities in the matter of lyre stringing, which is corroborated by the antique use of the chromatic (half-tone) and enharmonic ([[quarter-tone]]) tunings - pointing to an early exuberance, and perhaps also to a bias towards refinements of intonation.{{original research inline|date=October 2019}} The number of strings on the classical lyre therefore varied, with three, four, six, seven, eight and ten having been popular at various times.{{sfn|Hipkins|Schlesinger|1911|p=178}}
+
+The priest and biographer [[Plutarch]] (c. 100 CE) wrote of the musicians of the [[Greek Heroic Age|archaic period]] [[Olympus (musician)|Olympus]] and [[Terpander]], that they used only three strings to accompany their recitation; but there is no evidence for or against this dating from that period. The earliest known lyre had four strings, tuned to create a [[tetrachord]] or series of four tones filling in the interval of a perfect fourth. By doubling the tetrachord a lyre with seven or eight strings was obtained. Likewise the three-stringed lyre may have given rise to the six-stringed lyre depicted on many archaic Greek vases. The accuracy of this representation cannot be insisted upon, the vase painters being little mindful of the complete expression of details; yet one may suppose their tendency would be rather to imitate than to invent a number. It was their constant practice to represent the strings as being damped by the fingers of the left hand of the player, after having been struck by the plectrum held in the right hand.{{sfn|Hipkins|Schlesinger|1911|p=178}}<ref name=West1992/>
+
+=== Origin ===
+[[File:A reconstruction of an ancient lyre, Kotsanas Museum of Ancient Greek Technology.jpg|thumb|right|200px|A modern reconstruction of [[Hermes]]' lyre by [[Museum of Ancient Greek Technology|Kotsanas Museum of Ancient Greek Technology]], in [[Athens]], Greece.]]
+
+According to ancient [[Greek mythology]], the young god [[Hermes]] stole a herd of sacred cows from Apollo. In order not to be followed, he made shoes for the cows which were facing backwards, making it appear that the animals had walked in the opposite direction. Apollo, following the trails, could not follow where the cows were going. Along the way, Hermes slaughtered one of the cows and offered all but the entrails to the gods. From the entrails and a [[tortoise]]/[[turtle shell]], he created the Lyre. Apollo, figuring out it was Hermes who had his cows, confronted the young god. Apollo was furious, but after hearing the sound of the lyre, his anger faded. Apollo offered to trade the herd of cattle for the lyre. Hence, the creation of the lyre is attributed to Hermes. Other sources credit it to Apollo himself.<ref>For example, the ''[[Annales Cambriae]]'' (B Text).</ref>
+
+Some of the cultures using and developing the lyre were the [[Aeolis|Aeolian]] and [[Ionia]]n Greek colonies on the coasts of Asia (ancient [[Anatolia|Asia Minor]], modern day [[Turkey]]) bordering the Lydian empire. Some mythic masters like [[Musaeus of Athens|Musaeus]], and [[Thamyris]] were believed to have been born in [[Thrace]], another place of extensive Greek colonization. The name ''kissar'' ([[cithara]]) given by the ancient Greeks to Egyptian box instruments reveals the apparent similarities recognized by Greeks themselves. The cultural peak of [[ancient Egypt]], and thus the possible age of the earliest instruments of this type, predates the 5th century classic [[Greece]]. This indicates the possibility that the lyre might have existed in one of Greece's neighboring countries, either [[Thrace]], [[Lydia]], or [[Egypt]], and was introduced into Greece at pre-classic times.
+
+==Central and Northern European lyres==
+:''See [[Rotte (lyre)]]''
+
+{{multiple image|caption_align=center|header_align=center
+ | align = right
+
+ | image3 = Sutton Hoo Lyre reconstruction BM SHR 9.jpg
+ | width3 = 152
+ | alt3 = Sutton Hoo lyre reproduction
+ | caption3 = Reproduction of the round Germanic-lyre from the [[Sutton Hoo]] royal burial (England), {{circa|600 CE}}
+
+| image1 = Buste à la lyre.jpg
+ | width1 = 176
+ | alt1 = Figurine of bard with lute from Brittany
+ | caption1  =2nd or 1st century BCE ''[[buste-socle]]'' found in the fortress of [[Paule]], in Brittany
+
+ |image2= Lid of a box (fragment), Muse of Comedy with lyre, masks and sword, found at Trier, St. Maximin (Germany).jpg
+ |width2=200
+ |alt2=Artwork from Trieve of muse with lyre 6th century A.D.
+ |caption2=Example of lyre (early 6th century A.D.) in Roman city of [[Trier]] at the time when the Germanic [[Franks]] took over the city (mid-5th century A.D.)
+
+ |footer= 
+}}
+
+Other instruments known as lyres have been fashioned and used in Europe outside the [[Greco-Roman]] world since at least the [[Iron Age]].<ref name="autogenerated1">{{cite news |url=https://www.bbc.co.uk/news/uk-scotland-highlands-islands-17537147 |publisher=[[BBC News]] |title=Skye cave find western Europe's 'earliest string instrument' |website=BBC.co.uk |date=2012-03-28 |access-date=2012-09-17 |df=dmy-all}}</ref> Lyres are depicted on ceramic and bronze vessels of the Proto-Celtic [[Hallstatt culture]] across central Europe.<ref name="Pomberger 2020 p471">{{cite journal | last=Pomberger | first=Beate Maria | title=Stringed Instruments of the Hallstatt Culture – from Iconographic Representation to Experimental Reproduction | journal=Slovenská archeológia | publisher=Central Library of the Slovak Academy of Sciences | volume=LXVIII | issue=Suppl. 1 | date=2020-12-31 | issn=1335-0102 | doi=10.31577/slovarch.2020.suppl.1.40 | pages=471–482| doi-access=free }}</ref> Among them there are lyres with rounded bottoms, stringed instruments whose resonators seem to be missing and lyres with strongly curved yokes and single or double bulging resonators.<ref name="Pomberger 2020 p471"/> The number of strings depicted varies from two to ten.<ref name="Pomberger 2020 p471"/> Fragmented tuning pegs and bridges made of wood have been discovered from the Iron Age industrial settlement in the Ramsau valley at [[Dürrnberg]], Austria.<ref name="Pomberger 2020 p471"/> Possible further wooden tuning pegs have been found in [[Glastonbury]] in Somerset in England and [[Biskupin]] in Poland.<ref name="Pomberger 2020 p471"/> The remains of what is thought to be the bridge of a [[High Pasture Cave#Finds|2300-year-old lyre]] were discovered on the [[Isle of Skye]], [[Scotland]] in 2010.<ref name="autogenerated1"/><ref>{{cite news |url=http://news.stv.tv/scotland/highlands-islands/301843-europes-oldest-stringed-instrument-discovered-on-scots-isle/ |title='Europe's oldest stringed instrument' discovered on Scots island |url-status=dead |publisher=STV |date=2012-03-28 |access-date=2012-09-17 |df=dmy-all |archive-date=2012-07-14 |archive-url=https://archive.today/20120714094546/http://news.stv.tv/scotland/highlands-islands/301843-europes-oldest-stringed-instrument-discovered-on-scots-isle/ }}</ref>
+
+In 1988, a stone bust from the 2nd or 1st century BCE was discovered in [[Brittany|Brittany, France]] which depicts a figure wearing a [[torc]] playing a seven-string lyre.<ref>{{Cite web|author=Bernadette Arnaud|title=Bretagne: le barde à la Lyre, où les secrets d'une statue gauloise révélée par la 3D|url=https://www.sciencesetavenir.fr/archeo-paleo/archeologie/le-barde-a-la-lyre-ou-les-secrets-d-une-statue-gauloise_132463|publisher=Sciences Avenir|date=28 March 2019}}</ref>
+
+The [[Anglo-Saxon lyre|Germanic lyre]] is representative of a separate strand of lyre development. Appearing in warrior graves of the first millennium CE, these lyres differ from the lyres of the Mediterranean antiquity, by a long, shallow and broadly rectangular shape, with a hollow soundbox curving at the base, and two hollow arms connected across the top by an integrated crossbar or 'yoke.<ref name="Kolltveit 2021 pp. 208–212">{{cite journal | last=Kolltveit | first=Gjermund | title=The Sutton Hoo lyre and the music of the Silk Road: a new find of the fourth century CE reveals the Germanic lyre's missing eastern connections | journal=Antiquity | publisher=Antiquity Publications | volume=96 | issue=385 | date=2021-12-15 | issn=0003-598X | doi=10.15184/aqy.2021.164 | pages=208–212| doi-access=free }}</ref> Famous examples include the lyre from the ship burial at [[Sutton Hoo]], and the decayed lyre discovered in silhouette at  the [[Prittlewell royal Anglo-Saxon burial]] in Essex.<ref name="Kolltveit 2021 pp. 208–212"/> The waterlogged lyre recovered from a grave at [[Trossingen]], Germany,  in 2001 is the best-preserved example found so far.<ref name="Kolltveit 2021 pp. 208–212"/>
+
+==Bowed lyres==
+
+Some instruments called "lyres" were played with a [[bow (music)|bow]] in [[Europe]] and parts of the [[Middle East]], namely the Arabic [[rebab]] and its descendants,<ref name="britannica">{{cite web|url=https://www.britannica.com/EBchecked/topic/487848/rabab |title=rabab (musical instrument) – Encyclopædia Britannica |publisher=Britannica.com |access-date=2013-08-17}}</ref> including the [[Byzantine lyra]].<ref>{{citation |last=Encyclopædia Britannica |title= lira |url= https://www.britannica.com/EBchecked/topic/343204/lira |publisher=[[Encyclopædia Britannica Online]] |access-date=2009-02-20 |year=2009 }}</ref>
+
+After the bow made its way into Europe from the [[Middle-East]], it was applied to several species of those lyres that were small enough to make bowing practical. The dates of origin and other evolutionary details of the European bowed lyres continue to be disputed among organologists, but there is general agreement that none of them were the ancestors of modern orchestral bowed stringed instruments, as once was thought.
+
+There came to be two different kinds of bowed European lyres: those with fingerboards, and those without.
+
+The last surviving examples of instruments within the latter class were the Scandinavian [[talharpa]] and the Finnish [[jouhikko]]. Different tones could be obtained from a single bowed string by pressing the fingernails of the player's left hand against various points along the string to fret the string.
+
+The last of the bowed lyres with a fingerboard was the "modern" ({{circa|1485–1800}}) [[Music of Wales|Welsh]] [[crwth]]. It had several predecessors both in the British Isles and in Continental Europe. Pitch was changed on individual strings by pressing the string firmly against the fingerboard with the fingertips. Like a violin, this method shortened the vibrating length of the string to produce higher tones, while releasing the finger gave the string a greater vibrating length, thereby producing a tone lower in pitch. This is the principle on which the modern violin and guitar work.
+
+<gallery>
+File:Britannica Bow Earliest Crémaillère Type.png|12th century A.D.<ref>{{cite web |publisher=British Library: Digitized Manuscripts |title= Add MS 37768/1 |url= http://www.bl.uk/manuscripts/FullDisplay.aspx?ref=Add_MS_37768/1 |archive-date= 11 April 2022 |archive-url= https://web.archive.org/web/20220411232532/http://www.bl.uk/manuscripts/FullDisplay.aspx?ref=Add_MS_37768/1 | quote=Date 1100-1199...Detached ivory from the cover of Add MS 37768 (the 'Lothar Psalter')}}</ref> Carolingian Empire. Bowed round lyre on the [[Lothair Psalter]]. Engraving lacks fine details in the original, such as the mechanism to adjust the tension of the bow.
+File:Musicians with bowed lyre, psaltery, monchord, and dancers, from the Psalterium cum Canticis ('Werdener Psalter') Berlin, Staatsbibliothek zu Berlin – Preußischer Kulturbesitz, Ms. theol. lat. fol. 561.png|1029-1050 A.D., Germany. Werner Psalter. Bowed Germanic lure (far left)
+File:Asaph playing bowed lyre, Winchcombe Psalter, Cambridge University Library, Ff.1.23, folio 4v.jpg|1025-1050, England. Asaph playing [[crwth|bowed lyre]], detail from Winchcombe Psalter, Cambridge University Library, Ff.1.23, folio 4v
+
+File:Bowed lyre from, Bayerische Staatsbibliothek Munchen, BSB, CLM 2599, folio 96v.jpg|Early 13th century A.D., Aldersbach, Germany. Bowed lyre without fingerboard from, Bayerische Staatsbibliothek Munchen, BSB, CLM 2599, folio 96v.
+File:Bowed lyre, from Simonovskaya Psalter, State Historical Museum, Moscow.jpg|13th century, Russia. Bowed lyre, from Simonovskaya Psalter, State Historical Museum, Moscow
+</gallery>
+
+==Modern lyres==
+[[File:Leier at Musical Instruments Fair Japan 2018-10-20 ライアー.jpg|left|thumb|Gärtner lyre; this modern lyre was created by Edmund Pracht and W. Lothar Gärtner in 1926.]]
+
+==In popular culture==
+The term is also used [[metaphor]]ically to refer to the work or skill of a poet, as in [[Percy Bysshe Shelley|Shelley's]] "Make me thy lyre, even as the forest is"<ref>Percy Bysshe Shelley, ''Ode to the West Wind'', I, 57–61.</ref> or [[Lord Byron|Byron's]] "I wish to tune my quivering lyre,&nbsp;/ To deeds of fame, and notes of fire".<ref>Lord Byron (1807), ''Hours of Idleness'': ''To His Lyre''.</ref>
+
+==Other instruments called "lyres"==
+Over time, the name in the wider Hellenic space came to be used to label mostly bowed lutes such as the [[Byzantine lyra]], the [[Kemenche#Kemenche of the Eastern Black Sea Region in Turkey|Pontic lyra]], the [[Classical kemençe|Constantinopolitan lyra]], the [[Cretan lyra]], the [[lira da braccio]], the [[Calabrian lira]], the [[lijerica]], the [[lyra viol]], the [[lirone]].
+
+==Global variants and parallels==
+<!-- TENTATIVELY ARRANGED IN ALPHABETICAL ORDER - Malcolm77, 7 June 2018 -->
+;Europe
+* Armenia: քնար (''knar'')
+* British Isles: Scotland [[cruit]], The Shetland Isles [[gue]] and Wales [[crwth]]
+* England: [[Anglo-Saxon Lyre]],  [[Giga (instrument)|giga]], [[Crwth|rote or crowd]]
+* Continental Europe: Germanic or Anglo-Saxon lyre (''hearpe''), rotte or crotte
+* Estonia: [[talharpa]]
+* Finland: [[jouhikko]]
+* Greece: λύρα (''lýra''; Modern Greek pronunciation: ''líra'') with the subtypes of [[Politiki lyra]] ("Constantinopolitan lyre"), [[Cretan lyra]] and [[Pontic lyra]] ("lyre of the Black Sea", also known as [[kemençe]])
+* Italy: the Latin ''chorus'', the modern [[Calabrian lira]]
+* Lithuania: lyra
+* Norway: [[Giga (instrument)|giga]], [[:sv:Kraviklyra|Kraviklyra]]
+* Poland: lira
+* Russia: Lyre-shaped gusli
+
+;Asia
+* Arabian peninsula: [[tanbūra]]
+* Iran: chang romi
+* Iraq ([[Sumer]]): [[tanbūra]], zami, [[Hittite music#Lyre|zinar]]
+* Israel: [[kinnor]]
+* India and Pakistan: [[tanpura]]
+* Kazakhstan: ''kossaz''[https://www.cambridge.org/core/journals/antiquity/article/sutton-hoo-lyre-and-the-music-of-the-silk-road-a-new-find-of-the-fourth-century-ad-reveals-the-germanic-lyres-missing-eastern-connections/C35D4310FE10FF85F0DD3AD4C077B6D7]
+* Siberia: [[nares-jux]]
+* Yemen: [[tanbūra]], [[simsimiyya]]
+
+;Africa
+* Egypt: [[kissar]], [[tanbūra]], [[simsimiyya]]
+* Ethiopia and Eritrea: [[begena]], [[dita (instrument)|dita]], [[krar]]
+* Kenya: [[kibugander]], [[litungu]], [[nyatiti]], [[obokano]]
+* Sudan: [[kissar]], [[tanbūra]]
+* Uganda: [[endongo]], [[ntongoli]]
+
+<gallery widths="200" heights="200">
+File:Vyap Saung.jpg|Burmese lyre, a Byat saung.
+File:Carl Haag A Nubian harper.jpg|Tanbūra In Cairo, played by a [[Nubian people|Nubian]], 1858.
+File:African Lyre Player c. 1640-1660, Deccan, at the Cleveland Museum of Art.jpg|Lyre Player c. 1640–1660, [[Deccan sultanates]]
+File:Ntongoli (Bowl Lyre), Aloni Kagya, 1968 (cropped).png|alt=Picture of a 1960s Ntongoli (Bowl Lyre) from St. Cecilia's Hall, Edinburgh|Picture of a 1960s Ntongoli (Bowl Lyre) from [[St Cecilia's Hall|St. Cecilia's Hall]], Edinburgh
+</gallery>
+
+==See also==
+* [[Asor]] &mdash; an otherwise-unknown instrument mentioned in the [[Old Testament]] which may have been a type of lyre or a type of [[harp]].
+*[[Ancient Greek harps]]
+* [[Barbiton]] (barbitos) &mdash; a [[bass (sound)|bass]] version of the [[kithara]] (''cithara'').
+* [[Kithara]] (''cithara'') &mdash; the version of the lyre used by professional musicians.
+* [[Lyre-guitar]] &mdash; a modern instrument that combines a [[guitar]] and a [[zither]]. Also called a "[[harp guitar]]".
+* [[Phorminx]] &mdash; an ancient wooden-frame lyre intermediate in size between the smaller tortoise-shell lyre and larger [[kithara]], which replaced it.
+
+==References==
+{{reflist|25em}}
+
+==Bibliography==
+* {{EB1911|wstitle=Lyre|volume=17|pages=177–179|first=Alfred James|last=Hipkins|author-link=Alfred James Hipkins|first2=Kathleen|last2=Schlesinger|author-link2=Kathleen Schlesinger}}
+* Andersson, Otto. ''The Bowed Harp'', translated and edited by Kathleen Schlesinger (London: New Temple Press, 1930).
+* Bachmann, Werner. ''The Origins of Bowing'', trans. Norma Deane (London: Oxford University Press, 1969).
+* Jenkins, J. "A Short Note on African Lyres in Use Today." ''Iraq'' 31 (1969), p.&nbsp;103 (+ pl. XVIII).
+* Kinsky, George. ''A History of Music in Pictures'' (New York: E.P. Dutton, 1937).
+* Sachs, Curt. ''The Rise of Music in the Ancient World, East and West'' (New York: W.W. Norton, 1943).
+* Sachs, Curt. ''The History of Musical Instruments'' (New York: W.W. Norton, 1940).
+
+==External links==
+{{Commons category|Lyres}}
+* {{Deprecated archive|url=https://archive.today/20130105114005/http://launch.groups.yahoo.com/group/Anglo_Saxon_Lyres/|title=Anglo Saxon Lyres|sec=el}} at Yahoo!Groups
+* [http://www.kerylos.fr/index_en.php Ensemble Kérylos] a music group directed by scholar [[Annie Bélis]], dedicated to the recreation of ancient Greek and Roman music, and playing instruments reconstructed on archaeological reference. 
+* [https://www.academia.edu/12639521/The_Universal_Lyre_-_from_three_perspectives "The Universal Lyre – From Three Perspectives" ] Article by Diana Rowan: a survey of three current lyre practitioners and builders – Temesgen Hussein of Ethiopia, Michalis Georgiou of Cyprus and Michael Levy of the United Kingdom.
+* [https://www.fondazionelevi.it/wp-content/uploads/2020/05/Reflecting-Hornbostel-Sachs.pdf Hornbostel-Sachs classification] for classification category
+* [https://www.researchgate.net/publication/301296021_Summary_of_the_evolution_of_structural_features_in_tonal_organization_of_human_music_from_prehistoric_times_to_the_18th_century Summary of Schemes of Tonal Organizations]
+* [https://www.joshobrouwers.com/articles/agia-triada-sarcophagus/ The Agia Triada sarcophagus]
+
+{{Greek musical instruments}}
+{{Authority control}}
+
+[[Category:Lyres| ]]
+[[Category:3rd-millennium BC introductions]]
+[[Category:Ancient Greek musical instruments]]
+[[Category:Ancient Roman musical instruments]]
+[[Category:Early musical instruments]]
+[[Category:Greek musical instruments]]
+[[Category:Italian musical instruments]]
+[[Category:French musical instruments]]
+[[Category:German musical instruments]]
+[[Category:English musical instruments]]
+[[Category:Cornish musical instruments]]
+[[Category:Welsh musical instruments]]
+[[Category:Scottish musical instruments]]
+[[Category:Irish musical instruments]]
