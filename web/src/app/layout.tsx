@@ -7,6 +7,7 @@ import PagePiece from "@/components/art/PagePiece";
 import TabBar from "@/components/TabBar";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
 import Toast from "@/components/Toast";
+import NavWait from "@/components/NavWait";
 import Reveal from "@/components/Reveal";
 import QuickSearch from "@/components/search/QuickSearch";
 import FloatingReaderSlot from "@/components/reader/FloatingReaderSlot";
@@ -85,6 +86,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <FloatingReaderSlot />
         <Suspense fallback={null}><ResumeTracker /></Suspense>
         <Suspense fallback={null}><Tour /></Suspense>
+        <Suspense fallback={null}><NavWait /></Suspense>
       </body>
     </html>
   );

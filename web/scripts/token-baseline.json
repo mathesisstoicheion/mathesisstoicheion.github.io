@@ -50,16 +50,16 @@
     "font-size": 17,
     "spacing": 38,
     "shadow": 3,
-    "z-index": 7,
+    "z-index": 6,
     "motion": 9
   },
   "src/app/home.module.css": {
-    "colour": 13,
-    "font-size": 34,
-    "spacing": 84,
-    "shadow": 9,
+    "colour": 9,
+    "font-size": 13,
+    "spacing": 43,
+    "shadow": 4,
     "z-index": 1,
-    "motion": 15
+    "motion": 11
   },
   "src/app/library/library.module.css": {
     "spacing": 3
@@ -216,15 +216,15 @@
   },
   "src/components/library/Library.module.css": {
     "colour": 1,
-    "font-size": 38,
-    "spacing": 71,
+    "font-size": 33,
+    "spacing": 67,
     "shadow": 3,
-    "motion": 16
+    "motion": 13
   },
   "src/components/library/Stelai.module.css": {
     "colour": 6,
-    "font-size": 6,
-    "spacing": 16,
+    "font-size": 2,
+    "spacing": 2,
     "shadow": 3
   },
   "src/components/library/WorkLanding.tsx": {
