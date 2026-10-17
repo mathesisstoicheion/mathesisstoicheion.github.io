@@ -41,15 +41,17 @@ live; it goes live only when the owner says "Publish"):
 Published 2026-10-16 at the owner's word ("Just make the changes. Push to live"), without a separate preview round; the owner
 will report any bugs or design flaws they find on the live site.
 
-### Evening round: a sculpture on every page, A to Z, and no lag (2026-10-16; on the branch, not yet live)
+### Evening round: a sculpture on every page, A to Z, and no lag (2026-10-16; published 2026-10-17)
 The owner asked (18:36 to 19:46): a dedicated lit sculpture on every page; refined textures, shadows, light and animation; click a
 sculpture to light it fully and click again to give it back to the torch; the settings panel's controls in one stone style; an
 "A to Z" on the author pages and the library (19:36: in the library, just a slim scroller of letters down the left); and "The
 site is not allowed to be laggy". Built (DESIGN.md: "A sculpture on every page", "Never laggy", "A to Z"):
 - **Pieces**: one Met Open Access (CC0) sculpture for each page (`web/src/data/pieces.ts`; listed with credits on the credits
   page). `pipeline/pieces.py` cuts each out of its photo (rembg), removes the museum's modern mounts (per-piece "cut", "trim" and
-  "add" settings in `pipeline/pieces.json`) and makes its height map; the photos are in `pipeline/pieces-src/` (fetched by the
-  fetch-pictures workflow, which runs only on this branch, since this container cannot reach the Met), the lit files in
+  "add" settings in `pipeline/pieces.json`) and makes its height map; the photos are in `pipeline/pieces-src/` (fetched by a
+  GitHub Actions workflow on the redesign branch, since this container cannot reach the Met; the workflow and the candidate
+  pictures it fetched for choosing, `.github/workflows/fetch-pictures.yml` and `pieces-candidates/`, were removed before
+  publishing and are in git history at 25ebcf5), the lit files in
   `web/public/images/pieces/lit/`. `lib/art/piece.ts` draws them in WebGL2; `components/art/PagePiece.tsx` places them.
 - **Home**: the three reliefs are drawn the same way; click one for the lamp.
 - **A to Z**: `components/library/AZList.tsx` (button, panel, rail) and `az.ts` (grouping, tested in `az.test.ts`,
@@ -69,7 +71,7 @@ site is not allowed to be laggy". Built (DESIGN.md: "A sculpture on every page",
   in fps): on long pages every scroll recalculates styles and repaints the whole page (about 40 ms a jump in software, on the live
   site too); on phones the torch reads the page's height every frame, which forces the page to be laid out early.
 
-### Speed work (2026-10-16 to 17; on the branch, not yet live)
+### Speed work (2026-10-16 to 17; published 2026-10-17)
 The owner (19:44): "a performance test on the website and a refining and improvement of efficiency and performance, without
 sacrificing quality. Then A. B. test and give me results in fps and tell me what changed"; and "The site is not allowed to be
 laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rules learned are in DESIGN.md, "Never laggy".
@@ -92,6 +94,7 @@ laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rul
   now waits for the visit to be remembered, instead of a fixed 1.2 s).
 - **Still slowest** (in software): tapping a sculpture's lamp on a phone (about 17 fps, unchanged; its light is WebGL); the
   phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
+Both published together on 2026-10-17, when the owner chose "Publish" on the results.
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an

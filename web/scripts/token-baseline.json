@@ -133,10 +133,10 @@
   "src/components/SettingsPanel.module.css": {
     "colour": 3,
     "font-size": 10,
-    "spacing": 25,
-    "shadow": 3,
+    "spacing": 23,
+    "shadow": 2,
     "z-index": 1,
-    "motion": 10
+    "motion": 8
   },
   "src/components/TabBar.module.css": {
     "font-size": 3,
@@ -220,11 +220,10 @@
   },
   "src/components/library/Library.module.css": {
     "colour": 1,
-    "font-size": 39,
-    "spacing": 72,
+    "font-size": 38,
+    "spacing": 71,
     "shadow": 4,
-    "z-index": 1,
-    "motion": 19
+    "motion": 16
   },
   "src/components/library/Stelai.module.css": {
     "colour": 8,
