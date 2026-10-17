@@ -5,8 +5,8 @@
  * page (lib/community/client.ts, which re-exports all of this).
  *
  * Privacy: the site contacts Supabase on the community pages and the account page, when someone is
- * already signed in (a saved session in this browser), and on the home page (a read-only request for
- * the latest threads, components/ForumActivity.tsx). Reading, study and the wiki never do. `hasSavedSession()` checks for a session without contacting anyone.
+ * already signed in (a saved session in this browser). The home page, reading, study and the wiki never do.
+ * `hasSavedSession()` checks for a session without contacting anyone.
  */
 import type { Session } from "@supabase/supabase-js";
 import { create } from "zustand";

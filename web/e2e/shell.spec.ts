@@ -1,13 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-test("home page shows the site name, the passage and the offline block", async ({ page }) => {
+test("home page shows the site name, the passage and the library search", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("h1").first()).toHaveAccessibleName("Read the Greeks in their own words");
   await expect(page.locator("h1").first()).toHaveText("Read the Greeks in their own words");
   await expect(page.getByText("ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ", { exact: true })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Passage of the day" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Read without a connection" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "canonical-greekLit" })).toHaveAttribute("href", /canonical-greekLit\/archive/);
+  await expect(page.getByRole("heading", { name: "Find something to read" })).toBeVisible();
 });
 
 test("moving between areas does not reload the page", async ({ page }) => {

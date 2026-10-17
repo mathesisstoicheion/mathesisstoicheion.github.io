@@ -1,10 +1,12 @@
 import { test, expect } from "@playwright/test";
 
-test("the home page suggests twelve starting points, and searches all works by several words", async ({ page }) => {
+test("the home page suggests eight starting points, and searches all works by several words", async ({ page }) => {
   await page.goto("/");
   const finder = page.locator("section[aria-labelledby=find-title]");
   await expect(finder.getByRole("heading", { level: 3, name: "Suggested starting points" })).toBeVisible();
-  await expect(finder.locator("ul li")).toHaveCount(12);
+  await expect(finder.locator("ul li")).toHaveCount(8);
+  // the switch for translated or Greek-only texts waits until there is a search
+  await expect(finder.getByRole("radio", { name: "Greek only" })).toHaveCount(0);
   const box = finder.getByRole("searchbox", { name: "Search the library" });
   await box.fill("homer odyssey");
   await expect(finder.getByRole("heading", { level: 3, name: /works? for/ })).toBeVisible();

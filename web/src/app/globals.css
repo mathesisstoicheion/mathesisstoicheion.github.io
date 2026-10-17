@@ -255,27 +255,50 @@ select:not([multiple]):not([size]) {
   display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
   background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.piece-niche canvas { display: block; width: 100%; height: 100%; }
+.piece-niche { position: relative; }
+.piece-niche canvas { position: relative; display: block; width: 100%; height: 100%; }
+/* before its piece has come the niche is already cut in the wall, a dark hollow of the same shape, so nothing on the page
+   is ever missing; it gives way to the drawn niche as the light comes up on the piece (PagePiece.tsx sets data-ready) */
+.piece > .piece-niche::before {
+  content: ""; position: absolute; inset: 0; background: var(--field); box-shadow: var(--field-edge);
+  transition: opacity 1.6s var(--ease);
+}
+.piece[data-niche="arch"] .piece-niche::before { border-radius: 999px 999px 0 0; }
+.piece > .piece-niche[data-ready]::before { opacity: 0; }
 .piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
 .piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
 .piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .piece-why { font-style: italic; }
-.piece-head { float: right; width: min(clamp(170px, 19vw, 250px), 310px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-4) var(--space-6); }
-.piece-head.piece-wide { width: clamp(220px, 27vw, 340px); }
+/* a big window, like the home page's reliefs (the owner, 2026-10-17: "I liked the bigger windows") */
+.piece-head { float: right; width: min(clamp(240px, 27vw, 380px), 500px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-5) var(--space-7); }
+.piece-head.piece-wide { width: clamp(300px, 38vw, 520px); }
+/* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and
+   the name and function of the page"): its name, its Greek name cut in the wall and what it is for rise into place one
+   after another, and last its niche, where the light then comes up on the piece. Only opacity and a small rise move, and
+   nothing holds its last frame. (:where keeps these weaker than any animation of an element's own.) */
+@keyframes enter { from { opacity: 0; transform: translateY(12px); } }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter 0.9s var(--ease) backwards; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(2)) { animation-delay: 0.1s; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(3)) { animation-delay: 0.2s; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(4)) { animation-delay: 0.3s; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(n + 5)) { animation-delay: 0.4s; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(.piece-head) { animation-duration: 1.4s; animation-delay: 0.35s; }
 /* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
 .page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
 :is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
-.piece-foot { width: min(260px, 62vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
-.piece-foot.piece-wide { width: min(380px, 86vw); }
-/* a page's title is given its whole width on a phone: the piece there stands under it, beside the words that follow
-   (a header holds both, "piece-desk" before the title and "piece-phone" after it; the one not shown loads nothing) */
+.piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
+.piece-foot.piece-wide { width: min(520px, 100%); }
+/* a page's title is given its whole width on a phone: the piece there stands under it, in a window of its own across
+   the screen, and the words follow (a header holds both, "piece-desk" before the title and "piece-phone" after it; the
+   one not shown loads nothing) */
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
   .piece-phone { display: block; }
-  .piece-head { width: min(36vw, 62vw / var(--piece-ratio)); margin-left: var(--space-4); }
-  .piece-head.piece-wide { width: 46vw; }
+  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto var(--space-5); }
+  .piece-head.piece-wide { width: 100%; }
+  .piece-head figcaption { text-align: center; }
   .piece figcaption { font-size: var(--step--2); }
 }
 

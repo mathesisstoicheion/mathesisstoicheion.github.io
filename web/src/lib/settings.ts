@@ -112,5 +112,4 @@ if(s.motion==="reduce"||s.motion==="full")e.setAttribute("data-motion",s.motion)
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));
 if(s.greekFace==="gentium"||s.greekFace==="sans")e.setAttribute("data-greek-face",s.greekFace);
-if(s.textFace==="sans")e.setAttribute("data-text-face","sans");}catch(_){}
-try{var f=JSON.parse(localStorage.getItem("mathesis:folds")||"[]");if(f.length)document.documentElement.setAttribute("data-folds",f.join(" "));}catch(_){}})();`;
+if(s.textFace==="sans")e.setAttribute("data-text-face","sans");}catch(_){}})();`;

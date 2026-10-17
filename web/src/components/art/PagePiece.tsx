@@ -6,9 +6,9 @@
  * round as it passes. Clicking it (tapping it, on a phone) sets a steady lamp before it so it can be seen clearly;
  * clicking again gives it back to the torch (the owner, 2026-10-16).
  *
- * `place="head"` stands it at the right of a page's title, the words flowing round it. A header holds it twice: before
- * the title for a computer (`className="piece-desk"`) and after it for a phone (`"piece-phone"`), where the title needs
- * the whole width; only the one shown is ever loaded and drawn. Pages with no title on show (a
+ * `place="head"` stands it in a big window at the right of a page's title, the words flowing round it. A header holds it
+ * twice: before the title for a computer (`className="piece-desk"`) and after the title and its subtitle for a phone
+ * (`"piece-phone"`), where it has a window of its own across the screen; only the one shown is ever loaded and drawn. Pages with no title on show (a
  * form, a private page) get theirs from the layout instead, at the foot of the page (`place="foot"`): it appears only
  * when no piece has been placed at the head.
  */
@@ -75,11 +75,15 @@ export default function PagePiece({ place = "head", spec: given, className }: { 
 
   useTorchlit(cv, async (c) => {
     if (!spec || !L) return null;
+    // until the piece has come, its niche is already cut in the wall (globals.css, .piece-niche::before); it gives
+    // way to the drawn niche as the light comes up on the piece
+    c.parentElement?.removeAttribute("data-ready");
     await near(c);
     const f = await loadPiece(spec.piece);
     if (!f) return null;
     const p = new Piece(c, f.alb, f.map, L.look);
     art.current = p;
+    requestAnimationFrame(() => c.parentElement?.setAttribute("data-ready", ""));
     return p;
   }, { still: (w, h) => ({ x: -w * 0.3, y: -h * 0.2 }) }, shown ? spec!.piece : "");
 
@@ -93,7 +97,7 @@ export default function PagePiece({ place = "head", spec: given, className }: { 
     if (p && c) { p.lampTo = on ? 1 : 0; redrawArt(c); }
   };
   return (
-    <figure className={`piece piece-${place}${L.wide ? " piece-wide" : ""}${className ? ` ${className}` : ""}`} style={{ "--piece-ratio": L.ratio } as React.CSSProperties}>
+    <figure className={`piece piece-${place}${L.wide ? " piece-wide" : ""}${className ? ` ${className}` : ""}`} data-niche={L.look.niche} style={{ "--piece-ratio": L.ratio } as React.CSSProperties}>
       <button type="button" className="piece-niche" aria-pressed={lit} onClick={toggle}
         title={lit ? "Click to give it back to your torch" : "Click to light it"}
         aria-label={lit ? "Take the lamp away, back to your torch" : "Set a lamp before the sculpture"}>

@@ -62,6 +62,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${didot.variable} ${garamond.variable} ${carved.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
       <head>
+        {/* the stone's colour from the very first byte, before the stylesheet arrives, so no page ever flashes white
+            (:where gives way to every rule of the stylesheet's own) */}
+        <style dangerouslySetInnerHTML={{ __html: `:where(html){background-color:${THEME_COLOUR}}` }} />
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         {/* first visit or returning, before the first paint: the home page shows the question or the desk (lib/visitor.ts) */}
         <script dangerouslySetInnerHTML={{ __html: VISITOR_SCRIPT }} />

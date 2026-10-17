@@ -3,8 +3,9 @@
  * The library's wall of stelai (design B, Stone and torch; DESIGN.md, Screens: Library): a few famous books, each
  * standing as a carved gravestone (a stele) with a pediment, its picture set in a round medallion re-lit by the torch
  * (pipeline/relit_images.py; the credits are those of data/images.json). As the torch passes over a stele (on a phone, as it scrolls through the middle of the screen)
- * its title catches the light for a moment. Each stele opens its book in the reader. On a phone each group is one row
- * to swipe through sideways, so the wall costs a screen or two of scrolling, not six.
+ * its title catches the light for a moment. Each stele opens its book in the reader. They stand in one row (the owner,
+ * 2026-10-17: "less clutter ... more concise"), to swipe through sideways on a phone; why each picture was chosen, and
+ * its credit, wait under the row until asked for.
  */
 import Link from "next/link";
 import { useEffect, useRef } from "react";
@@ -56,8 +57,7 @@ function StoneOf({ b, i }: { b: Stele; i: number }) {
         <Settle as="h3" className={styles.tt} text={b.title} />
         {b.greek && <span className={styles.gt} lang="grc">{b.greek}</span>}
         <span className={styles.rule} aria-hidden="true" />
-        <p className={styles.why}>{b.why}</p>
-        <span className={`${styles.tag} label`}>{b.english ? "Greek + English · open in the reader →" : "Greek · open in the reader →"}</span>
+        <span className={`${styles.tag} label`}>{b.english ? "Greek + English →" : "Greek →"}</span>
       </div>
       <span className={styles.foot} aria-hidden="true" />
     </Link>
@@ -65,14 +65,15 @@ function StoneOf({ b, i }: { b: Stele; i: number }) {
 }
 
 export default function Stelai({ groups }: { groups: { name: string; books: Stele[] }[] }) {
+  const books = groups.flatMap((g) => g.books);
   return (
-    <div className={styles.wall}>
-      {groups.map((g) => (
-        <section key={g.name} className={styles.grp} aria-label={g.name}>
-          <div className={styles.grpH}><Settle className="label" text={g.name} /><span className="label faint">{g.books.length} books</span></div>
-          <div className={`${styles.stelai} snap-row`}>{g.books.map((b, i) => <StoneOf key={b.id} b={b} i={i} />)}</div>
-        </section>
-      ))}
-    </div>
+    <section className={styles.wall} aria-labelledby="stelai-h">
+      <div className={styles.grpH}><Settle as="h2" id="stelai-h" className="label" text="Famous books to begin with" /></div>
+      <div className={styles.stelai}>{books.map((b, i) => <StoneOf key={b.id} b={b} i={i} />)}</div>
+      <details className={styles.whys}>
+        <summary>About the pictures</summary>
+        <ul>{books.map((b) => <li key={b.id}><b>{b.title}.</b> {b.why}</li>)}</ul>
+      </details>
+    </section>
   );
 }

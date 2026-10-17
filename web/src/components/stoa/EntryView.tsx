@@ -32,8 +32,8 @@ export default function EntryView({ e }: { e: Entry }) {
         <NameCarving greek={e.greek} />
         <PagePiece className="piece-desk" />
         <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
-        <PagePiece className="piece-phone" />
         <p className={styles.kicker}>{e.kicker}</p>
+        <PagePiece className="piece-phone" />
       </header>
       {e.image ? <div className="wrap"><Figure id={e.image} lead /></div> : <div className="wrap"><div className={`${styles.band} rays draw`} aria-hidden="true" /></div>}
 

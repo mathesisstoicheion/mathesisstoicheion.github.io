@@ -1,7 +1,8 @@
 /* The Guide (/guide), Stone and torch: ten chapters, each a moving picture of a real control beside a few plain sentences.
    Each picture is a window cut into the wall; the sample controls inside are pictures of the real ones and keep their look. */
 .page { max-width: 1080px; padding-block: var(--after-head, 28px) 72px; }
-.top { max-width: 70ch; }
+/* the header takes the page's width, so the big window of its piece stands beside the words, not over them */
+.top > :not(:global(.piece)) { max-width: 70ch; }
 .top :global(.label) span { font-family: var(--f-greek); letter-spacing: 0; text-transform: none; font-size: 1.05em; }
 .lead { font-size: var(--step-1); line-height: 1.5; margin: 6px 0 10px; }
 .small { color: var(--ink-2); margin: 0 0 22px; }

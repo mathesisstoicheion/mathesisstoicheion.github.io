@@ -53,9 +53,9 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
         <NameCarving greek={label} />
         <PagePiece className="piece-desk" />
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
-        <PagePiece className="piece-phone" />
         {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
         {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}
+        <PagePiece className="piece-phone" />
         <p className={styles.note}>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           <Link className="btn" href={`/read?w=${work.id}`} transitionTypes={["page-turn"]}>

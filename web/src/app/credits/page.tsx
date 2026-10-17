@@ -159,9 +159,8 @@ export default function CreditsPage() {
           <li>Downloading the library fetches the text files from GitHub. Links to Logeion and Perseus take you to those sites only when you click them.</li>
           <li>
             <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
-            Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in, and on the home page, which
-            reads the latest forum threads and the motion of the week (a read-only request that carries nothing but your internet address, as
-            every request does); reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+            Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
+            reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
             password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
             display name and what you write about yourself.
           </li>

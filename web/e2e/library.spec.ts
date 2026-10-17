@@ -71,9 +71,8 @@ test("a search marks what matched, and offers the authors it names first", async
   const hits = page.getByRole("button", { name: /^Aristotle \d+$/ });
   await expect(hits).toBeVisible();
   await expect(page.locator("#author-tlg0086 mark").first()).toHaveText("Aristot");
-  // matching authors are open, and "where to begin" steps aside
+  // matching authors are open
   await expect(page.locator("#author-tlg0086").getByRole("button", { name: /^Aristotle/ })).toHaveAttribute("aria-expanded", "true");
-  await expect(page.getByText("Not sure where to begin?")).toBeHidden();
   await hits.click();
   await expect(page.locator("#author-tlg0086")).toBeInViewport();
 });
@@ -87,7 +86,7 @@ test("the library sorts by title and by period, and jumps to a letter", async ({
   await expect(page.locator("#lib-O")).toBeInViewport();
   await page.getByRole("radio", { name: "By period" }).click();
   await expect(page.getByRole("navigation", { name: /by first letter/ })).toHaveCount(0);   // periods have no letters, so no rail
-  await expect(page.getByRole("heading", { level: 2, name: /^Archaic/ })).toBeVisible();
+  await expect(page.getByRole("heading", { level: 3, name: /^Archaic/ })).toBeVisible();
 });
 
 test("the genre chips count and filter, and a long list of works folds", async ({ page }) => {
@@ -140,12 +139,25 @@ test("authors are found by their other names and their Greek name, and Latin lab
   await expect(lives).toContainText("Vitae Homeri");
 });
 
-test("a shelf of famous works opens the library, each with how hard its words are", async ({ page }) => {
+test("the library opens with a row of famous books, then the search and filters standing on the list", async ({ page }) => {
   await page.goto("/library");
-  const shelf = page.getByRole("region", { name: /Famous works/ });
-  await expect(shelf.getByRole("link", { name: /Ἰλιάς.*Iliad.*Homer/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001");
-  await expect(shelf.locator("[data-level]").first()).toBeVisible();
-  // it steps aside while a search narrows the list
-  await page.getByRole("searchbox", { name: "Search the library" }).fill("medea");
-  await expect(shelf).toHaveCount(0);
+  const famous = page.getByRole("region", { name: "Famous books to begin with" });
+  await expect(famous.getByRole("link", { name: /Iliad/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001");
+  // the search, the order and the filters come straight before the list they narrow
+  const list = page.getByRole("region", { name: "Every work in the library" });
+  await expect(list.getByRole("searchbox", { name: "Search the library" })).toBeVisible();
+  await expect(list.getByRole("radiogroup", { name: "Order" })).toBeVisible();
+  await expect(list.locator("#lib-A")).toBeAttached();
+  // arriving with a search brings the list, and its search, into view
+  await page.goto("/library?q=medea");
+  await expect(list.getByRole("searchbox", { name: "Search the library" })).toBeInViewport();
+});
+
+test("the reading paths, once on the home page, wait in the library under \"Not sure where to begin?\"", async ({ page }) => {
+  await page.goto("/library");
+  const begin = page.locator("details", { hasText: "Not sure where to begin?" });
+  await expect(begin.getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
+  await begin.getByText("Not sure where to begin?").click();
+  await expect(begin.getByRole("heading", { level: 3 })).toHaveCount(6);
+  await expect(begin.getByRole("link", { name: "Lysias, On the Murder of Eratosthenes" })).toHaveAttribute("href", "/read?w=tlg0540.tlg001");
 });

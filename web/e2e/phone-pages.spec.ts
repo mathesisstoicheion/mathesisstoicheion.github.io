@@ -21,23 +21,6 @@ async function touch(page: Page, target: string, steps: [number, number][][]) {
   }, { target, steps });
 }
 
-test("home sections fold away, stay folded after a reload, and open again", async ({ page }) => {
-  await page.goto("/");
-  const fold = page.getByRole("button", { name: /Fold away “Passage of the day”/ });
-  await fold.click();
-  await expect(page.locator("html")).toHaveAttribute("data-folds", "passage");
-  await expect(page.locator('[data-fold="passage"] [data-fold-hide]').first()).toBeHidden();
-  await page.reload();
-  // folded before the page is drawn (the boot script), and the button says so once the page runs
-  await expect(page.locator("html")).toHaveAttribute("data-folds", "passage");
-  await expect(page.locator('[data-fold="passage"] [data-fold-hide]').first()).toBeHidden();
-  const open = page.getByRole("button", { name: /Show “Passage of the day”/ });
-  await expect(open).toHaveAttribute("aria-expanded", "false");
-  await open.click();
-  await expect(page.locator('[data-fold="passage"] [data-fold-hide]').first()).toBeVisible();
-  expect(await page.evaluate(() => localStorage.getItem("mathesis:folds"))).toBe("[]");
-});
-
 test("card rows scroll sideways without snapping, with the next card peeking in", async ({ page }) => {
   await page.goto("/academy");
   const row = page.locator(".snap-row").first();

@@ -11,8 +11,8 @@ export default function RefHead({ title, greek, children }: { title: string; gre
       <NameCarving greek={greek} />
       <PagePiece className="piece-desk" />
       <h1 className={styles.title}>{title}{greek && <span className={styles.titleGr} lang="grc">{greek}</span>}</h1>
-      <PagePiece className="piece-phone" />
       <p className={styles.kicker}>{children}</p>
+      <PagePiece className="piece-phone" />
     </header>
   );
 }
