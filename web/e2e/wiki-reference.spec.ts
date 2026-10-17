@@ -1,11 +1,25 @@
 import { test, expect } from "@playwright/test";
 
-test("the Wiki front offers the three reference pages", async ({ page }) => {
+test("the Wiki front offers the reference pages as the colonnade's last panel", async ({ page }) => {
   await page.goto("/stoa");
   const ref = page.getByRole("navigation", { name: "Reference" });
   await expect(ref.getByRole("link", { name: /Authors/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Eras of Greek/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Editions & translations/ })).toBeVisible();
+  await expect(ref.getByRole("link")).toHaveCount(5);
+  // it is a panel of the colonnade, like the categories
+  await expect(page.locator("ol > li#reference")).toBeAttached();
+});
+
+test("the Kerameikos article has an address of its own, apart from the Archaeology page", async ({ page }) => {
+  // the colonnade's line opens the article, not the Archaeology page it used to be hidden behind
+  await page.goto("/stoa");
+  await expect(page.locator("#archaeology").getByRole("link", { name: "The Kerameikos" })).toHaveAttribute("href", "/stoa/kerameikos-cemetery");
+  await page.goto("/stoa/kerameikos-cemetery");
+  await expect(page.getByRole("heading", { level: 2, name: "Potters and a hero" })).toBeVisible();
+  // and so does the card in the Archaeology page's "Great sites"
+  await page.goto("/stoa/kerameikos");
+  await expect(page.locator("#sites").getByRole("link", { name: /The Kerameikos/ })).toHaveAttribute("href", "/stoa/kerameikos-cemetery");
 });
 
 test("the Explore door leads with the map, the Census and Archaeology, drawn from the site's own data", async ({ page }) => {
@@ -17,9 +31,14 @@ test("the Explore door leads with the map, the Census and Archaeology, drawn fro
   // the map names the most-named towns; the Census card shows its real top god
   await expect(lead.locator("svg text", { hasText: "Athens" })).toHaveCount(1);
   await expect(lead.getByText("Ζεύς")).toBeVisible();
-  // it comes first, above the day's entry, and steps aside while searching
-  await page.getByRole("searchbox", { name: "Search the Painted Stoa" }).fill("melos");
-  await expect(lead).toHaveCount(0);
+  // it comes first, above the search; the search sits on the colonnade, whose place the results take while one is typed
+  const search = page.getByRole("searchbox", { name: "Search the Painted Stoa" });
+  expect((await lead.boundingBox())!.y).toBeLessThan((await search.boundingBox())!.y);
+  await expect(page.locator("#people")).toBeAttached();
+  await search.fill("melos");
+  await expect(page.locator("#people")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /Melos/ }).first()).toBeVisible();
+  await expect(lead).toHaveCount(1);
 });
 
 test("the Authors index groups by period, filters by period and kind, and opens an author", async ({ page }) => {

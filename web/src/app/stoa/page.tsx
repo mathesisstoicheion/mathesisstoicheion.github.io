@@ -6,15 +6,15 @@ import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
 import { cardOf } from "@/wiki/cards";
 import { ENTRIES } from "@/wiki/index";
-import ExploreLead from "@/components/stoa/ExploreLead";
+import ExploreLead, { ExploreCredit } from "@/components/stoa/ExploreLead";
 import type { Catalog } from "@/lib/catalog";
 import { AREAS } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
 export const metadata: Metadata = { title: `${AREAS.wiki.name} · ${AREAS.wiki.english}`, description: PAGE_DESCRIPTIONS.stoa };
 
-// The map and the Census lead the page (ExploreLead); the other reference pages follow the day's entry.
-// Counts for the reference cards, taken from the catalogue when the site is built.
+// The map, the Census and Archaeology lead the page (ExploreLead); the search and the colonnade follow, and the reference
+// pages are the colonnade's last panel. Counts for the reference pages, taken from the catalogue when the site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
 const TEXTS = CATALOG.authors.flatMap((a) => a.works.flatMap((w) => w.texts)).length;
 const n = (x: number) => x.toLocaleString("en-GB");
@@ -31,7 +31,7 @@ export default function StoaPage() {
   return (
     <Page>
       <AreaHeader id="wiki" />
-      <StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} lead={<ExploreLead />} />
+      <StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} lead={<ExploreLead />} foot={<ExploreCredit />} />
     </Page>
   );
 }

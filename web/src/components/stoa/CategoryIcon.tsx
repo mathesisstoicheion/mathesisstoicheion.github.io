@@ -25,6 +25,8 @@ const PATHS: Record<string, React.ReactNode> = {
   archaeology: <><path d="M3 21l3.5-8.5 5 5z" /><path d="M9 15l4.5-4.5" /><path d="M13 11l7-7" strokeWidth="2.6" /></>,
   // letters
   language: <><path d="M4 19l4.5-13L13 19M5.8 14.5h5.4" /><path d="M16 19V9.5a3 3 0 0 1 6 0c0 2-1.5 3-3.5 3 2.5 0 3.8 1.2 3.8 3.2A3.3 3.3 0 0 1 16 16" /></>,
+  // three volumes on a shelf, for the reference pages
+  reference: <><path d="M3 20.5h18" /><rect x="4.5" y="6" width="4" height="14.5" /><rect x="10" y="3.5" width="4" height="17" /><path d="M15.8 20.5L16.9 7l3.6.5-1.1 13" /></>,
 };
 
 export default function CategoryIcon({ id, className }: { id: string; className?: string }) {

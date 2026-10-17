@@ -78,7 +78,7 @@ On the Acropolis of Athens, the ground itself remembers a date. In 480 BC the Pe
     { work: "tlg0003.tlg001", ref: "3.104.1", to: "3.104.6", label: "Thucydides 3.104", why: "The purification of Delos, and the festival that followed." },
     { work: "tlg0016.tlg001", ref: "8.51.1", to: "8.55.1", label: "Herodotus 8.51–55", why: "The Persians on the Acropolis." },
   ],
-  related: ["black-and-red-figure", "kerameikos", "mycenae", "painted-statues"],
+  related: ["black-and-red-figure", "kerameikos-cemetery", "mycenae", "painted-statues"],
   places: ["599588", "599973", "579885"],
   primary: [
     { work: "tlg0003.tlg001", ref: "1.8.1", label: "Thucydides 1.8.1" },

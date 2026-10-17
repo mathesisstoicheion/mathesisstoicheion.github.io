@@ -1,7 +1,7 @@
 import type { Entry } from "../types";
 
 const entry: Entry = {
-  slug: "kerameikos",
+  slug: "kerameikos-cemetery",   // not "kerameikos": /stoa/kerameikos is the Archaeology hub (app/stoa/kerameikos)
   title: "The Kerameikos",
   greek: "Κεραμεικός",
   category: "archaeology",

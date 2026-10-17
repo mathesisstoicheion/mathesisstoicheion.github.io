@@ -3,7 +3,7 @@
 
 /* ------------------------------------------------ the front: a colonnade of painted panels */
 .index { display: grid; gap: 28px; padding-block: var(--after-head) 12px; }
-.searchRow { position: relative; }
+.searchRow { position: relative; scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); }
 .searchRow svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .searchRow input {
   width: 100%; font: inherit; font-size: 1.1rem; color: var(--ink);
@@ -14,20 +14,6 @@
 .found a:hover { background-color: var(--slab-lit); }
 .found b { font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; }
 .found span { color: var(--ink-2); font-size: 0.95rem; }
-
-/* the reference pages: Authors, Eras, Editions */
-.reference { display: grid; gap: 10px; }
-.reference ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.reference a {
-  display: grid; gap: 4px; align-content: start; height: 100%; padding: 16px 20px; text-decoration: none; color: inherit;
-  background: var(--slab); box-shadow: var(--inlay-top), var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
-}
-.reference a:hover, .reference a:focus-visible { background-color: var(--slab-lit); }
-.reference b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; }
-.reference a > span:last-child { color: var(--ink-2); font-size: 0.95rem; }
-.refGr { font-family: var(--f-greek); color: var(--accent); font-size: 0.95rem; }
-@media (max-width: 900px) { .reference ul { grid-template-columns: minmax(0, 1fr); } }
 
 .featured {
   position: relative; display: grid; gap: 10px; padding: clamp(24px, 4vw, 40px); text-decoration: none; overflow: hidden;
@@ -85,8 +71,10 @@
     var(--flutes) center / 13px 100% no-repeat, var(--shaft) center / 13px 100% no-repeat;
 }
 @keyframes rise { from { transform: translateY(16px); opacity: 0; } }
+/* one column (a phone): each panel is only as tall as its list; side by side, the panels of a row stand level between their columns */
+@media (max-width: 560px) { .colonnade { align-items: start; } }
 .panelIn {
-  display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px; min-height: 240px;
+  display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px;
   background: var(--field); box-shadow: var(--field-edge);
 }
 /* each category's sign, on a round boss of stone ringed with gold, hung over the panel's top edge like a medallion */

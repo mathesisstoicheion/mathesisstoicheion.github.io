@@ -7,7 +7,8 @@ import { AREAS, type AreaId } from "@/config/areas";
  * The header every area opens with (design B, Stone and torch): its plain name, its Greek name carved across the wall
  * and lit by the torch (where it has one), its name in full, and what the name means and why it fits. An area with no
  * Greek name of its own may carve a line that belongs to it instead, with its source (`carve`). The area's own piece of
- * sculpture stands in its niche at the right (components/art/PagePiece.tsx).
+ * sculpture stands in its niche at the right (components/art/PagePiece.tsx); on a phone it stands after the title and the line saying
+ * what the page is for, so those come first.
  */
 export default function AreaHeader({ id, carve, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; children?: ReactNode }) {
   const a = AREAS[id];
@@ -23,8 +24,8 @@ export default function AreaHeader({ id, carve, children }: { id: AreaId; carve?
           {a.name}
           {a.greek && <span className="area-greek" lang="grc">{a.greek}</span>}
         </h1>
-        <PagePiece className="piece-phone" />
         <p className="area-origin">{a.origin} {a.fit}</p>
+        <PagePiece className="piece-phone" />
         {children}
       </div>
       <div className="wrap"><div className="meander" aria-hidden="true" /></div>
