@@ -68,7 +68,8 @@ test("markers beside the scroll bar show notes and bookmarks, preview them and j
 
 test("the floating reader follows the reader around the site, snaps, minimises and expands back", async ({ page }) => {
   await page.goto("/treasury");
-  await page.waitForTimeout(1200);   // the visit is remembered once the page settles
+  // the visit is remembered once the page settles (lib/resume.ts): wait for that, however busy the test browser is
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("mathesis:resume") ?? "")).toContain('"/treasury"');
   await openIliad(page, "1.40");
   // wait until the reader has brought 1.40 to the top and the header has finished sliding away: a click on
   // the sticky bar while it still moves makes the test browser scroll the page first
