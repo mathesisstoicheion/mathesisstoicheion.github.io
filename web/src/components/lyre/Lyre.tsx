@@ -1,9 +1,10 @@
 "use client";
 /**
- * The lyre (/stoa/lyre): a chelys, the Greek tortoise-shell lyre, to play with the mouse, a finger,
- * the computer keyboard or a MIDI keyboard (velocity sets how hard each string is plucked), under a roll on which the
- * notes of a surviving ancient melody come down to their strings, each with the syllable sung to it. Instead of the
- * roll the melody can be read as modern sheet music (Sheet.tsx), the note now sounding lit.
+ * The lyre (/stoa/lyre): a Greek lyre, a different one for each song (instruments.ts), to play with the mouse, a finger,
+ * the computer keyboard (as a piano's keys) or a MIDI keyboard (velocity sets how hard each string is plucked), under a
+ * roll on which the notes of a surviving ancient melody come down to their strings, each with the syllable sung to it.
+ * Instead of the roll the melody can be read as modern sheet music (Sheet.tsx), a bead of light marking the note now
+ * sounding; another marks the syllable in the words below.
  *
  * "Listen" plays the melody as a player might (record.ts: phrasing, a little rubato, no two plucks alike), handed to
  * the audio clock a moment ahead, so its rhythm stays even whatever the page is doing; the roll follows what is heard.
@@ -13,7 +14,8 @@
  *
  * Nothing here waits on React while you play: the strings are rendered in a worker before the first touch (sound.ts),
  * every frame reads one mutable record, and the words, the caption and the score are lit by touching the elements
- * themselves. The instrument is painted once and repainted only when the torch's light on it moves (draw.ts).
+ * themselves. The instrument is painted once and lit again from that painting only when the torch's light on it moves
+ * (draw.ts).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Melody, MelodyNote, MelodyNotes } from "@/data/melodies/types";
@@ -25,8 +27,9 @@ import {
   type LyreString, type Tuning,
 } from "@/lib/lyre/tuning";
 import { lights, torchRadius, torchStill } from "@/lib/torch";
-import { geometry, paintBody, paintRoll, paintStrings, stringX, type Flare, type Geom, type Lamp, type NoteLook, type Trail } from "./draw";
-import Sheet, { type SheetHandle } from "./Sheet";
+import { geometry, glints, lightBody, paintRoll, paintStrings, plate, stringX, type Flare, type Geom, type Lamp, type NoteLook, type Plate, type Trail } from "./draw";
+import { designFor, type Design } from "./instruments";
+import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
 import styles from "./Lyre.module.css";
 
 type Mode = "listen" | "along";
@@ -97,7 +100,8 @@ interface Live {
   places: number[]; base: number;
   /** what the caption says about the keys while playing along ("" when nothing) */
   cue: string;
-  G: Geom | null; laidOut: LyreString[] | null; RH: number;
+  /** the instrument, where it is on the canvas, and its painted layers */
+  design: Design; G: Geom | null; plate: Plate | null; laidOut: Design | null; RH: number;
   dirty: boolean; visible: boolean;
 }
 
@@ -121,8 +125,16 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     return bestOctave(places, (i) => (notes ? (uses.get(strings[i].midi) ?? 0) : 1));
   }, [notes, places, strings]);
   const [moved, setMoved] = useState<{ on: LyreString[]; by: number }>({ on: strings, by: 0 });
+  // each song has an instrument of its own, and each tuning of the scale
+  const design = useMemo(() => designFor(song?.meta.id ?? `free-${tuning}`, strings.length), [song, tuning, strings.length]);
   const base = best + 12 * (moved.on === strings ? moved.by : 0);
   const [view, setView] = useState<View>("roll");
+  // how large the sheet music is drawn: medium, easy to read, unless the visitor chose otherwise here before (read at
+  // once: nothing that depends on it is drawn until the score is asked for)
+  const [sheetSize, setSheetSize] = useState<SheetSize>(() => {
+    try { const v = localStorage.getItem("lyre-sheet-size"); return v === "small" || v === "large" ? v : "medium"; } catch { return "medium"; }
+  });
+  const chooseSize = (v: SheetSize) => { setSheetSize(v); try { localStorage.setItem("lyre-sheet-size", v); } catch { /* no storage */ } };
   const [mode, setMode] = useState<Mode>("listen");
   const [playing, setPlaying] = useState(false);
   const [tempo, setTempo] = useState(1);
@@ -149,6 +161,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const cueDown = useRef<HTMLSpanElement>(null);
   const cueUp = useRef<HTMLSpanElement>(null);
   const sylEls = useRef<(HTMLSpanElement | null)[]>([]);
+  const bead = useRef<HTMLElement>(null);
   const wanted = useRef<string | null>(first.id);
   const labelsFor = useRef<(string | undefined)[] | null>(null);
 
@@ -160,12 +173,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     next: 0, waiting: false, hits: new Set(), missed: new Set(), shown: -1, sylPos: -1,
     vib: new Map(), trails: [], flares: [], held: new Map(), pedal: false, pedalled: new Set(),
     places, base, cue: "",
-    G: null, laidOut: null, RH: 300, dirty: true, visible: true,
+    design, G: null, plate: null, laidOut: null, RH: 300, dirty: true, visible: true,
   });
   useEffect(() => {
     const st = S.current;
-    st.strings = strings; st.notes = notes; st.gaps = song?.data.gaps ?? []; st.bpm = song?.data.bpm ?? 120; st.dirty = true;
-  }, [strings, notes, song]);
+    st.strings = strings; st.notes = notes; st.gaps = song?.data.gaps ?? []; st.bpm = song?.data.bpm ?? 120; st.design = design; st.dirty = true;
+  }, [strings, notes, song, design]);
   useEffect(() => { S.current.places = places; S.current.base = base; S.current.dirty = true; }, [places, base]);
   useEffect(() => { S.current.wait = wait; }, [wait]);
   useEffect(() => { S.current.damping = damping; }, [damping]);
@@ -240,6 +253,20 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     if (p < st.sylPos) { for (const e of els) e?.classList.remove(styles.sylNow, styles.sylPast); st.sylPos = -1; }
     for (let q = Math.max(0, st.sylPos); q < p; q++) { els[q]?.classList.remove(styles.sylNow); els[q]?.classList.add(styles.sylPast); }
     if (p >= 0) els[p]?.classList.add(styles.sylNow);
+    // the bead glides to the syllable now sung (straight there when it starts again or moves to a new line)
+    const b = bead.current, e = p >= 0 ? els[p] : null;
+    if (b) {
+      if (!e) b.classList.remove(styles.beadOn);
+      else {
+        const x = e.offsetLeft + e.offsetWidth / 2 - (/-$/.test(ns.filter((n) => n.syl)[p]?.syl ?? "") ? 0 : 2), y = e.offsetTop + e.offsetHeight - 4;
+        const jump = !b.classList.contains(styles.beadOn) || Math.abs(y - (+b.dataset.y! || 0)) > 4;
+        if (jump) b.style.transition = "opacity var(--dur) ease";
+        b.style.transform = `translate(${x}px, ${y}px)`;
+        b.dataset.y = String(y);
+        if (jump) { void b.offsetWidth; b.style.transition = ""; }
+        b.classList.add(styles.beadOn);
+      }
+    }
     st.sylPos = p;
   }, []);
 
@@ -384,6 +411,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     st.beat = -LEAD_BEATS; st.next = 0; st.hits = new Set(); st.missed = new Set(); st.shown = -1;
     sheetRef.current?.light(-1);
     for (const e of sylEls.current) e?.classList.remove(styles.sylNow, styles.sylPast);
+    bead.current?.classList.remove(styles.beadOn);
     st.sylPos = -1;
     setResult(null);
   }, [halt]);
@@ -451,21 +479,30 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const st = S.current;
     const body = document.createElement("canvas"), bodyG = body.getContext("2d")!;
     const face = getComputedStyle(document.documentElement).getPropertyValue("--f-greek").trim() || "serif";
-    let bodyKey = "", W = 0, LH = 0, rect = lyre.getBoundingClientRect();
+    let bodyKey = "", W = 0, LH = 0, dpr = 1, rect = lyre.getBoundingClientRect();
 
+    let later = 0;
     const layout = () => {
       if (!W) return;
-      st.G = geometry(W, LH, st.strings.length);
-      st.laidOut = st.strings;
+      st.G = geometry(W, LH, st.design);
+      const P = st.plate = plate(st.G, dpr);
+      st.laidOut = st.design;
+      // the glints on its edges a moment later, when the page is quiet
+      if (typeof cancelIdleCallback === "function") cancelIdleCallback(later); else clearTimeout(later);
+      const add = () => { if (st.plate === P) { glints(P); bodyKey = ""; } };
+      later = typeof requestIdleCallback === "function" ? requestIdleCallback(add, { timeout: 600 }) : window.setTimeout(add, 120);
+      bodyG.clearRect(0, 0, W, LH);
       bodyKey = "";
       st.vib.clear();
       st.dirty = true;
     };
     const measure = () => {
       W = stage.clientWidth;
-      const RH = Math.round(Math.max(230, Math.min(360, W * 0.4)));
-      LH = Math.round(Math.max(250, Math.min(360, W * 0.46)));
-      const dpr = Math.min(2, devicePixelRatio || 1);
+      // the instrument is drawn at its own proportions, as large as this height allows
+      const narrow = W < 560;
+      const RH = narrow ? 220 : Math.round(Math.max(230, Math.min(320, W * 0.3)));
+      LH = narrow ? Math.round(Math.min(W * 0.98, 360)) : Math.round(Math.max(340, Math.min(420, W * 0.4)));
+      dpr = Math.min(2, devicePixelRatio || 1);
       for (const [cv, h] of [[roll, RH], [lyre, LH], [body, LH]] as const) {
         cv.width = Math.round(W * dpr); cv.height = Math.round(h * dpr);
         if (cv !== body) cv.style.height = `${h}px`;
@@ -553,7 +590,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       const now = performance.now(), dt = Math.min(0.1, (now - prev) / 1000);
       prev = now;
       if (st.playing) advance(dt);
-      if (st.laidOut !== st.strings) layout();
+      if (st.laidOut !== st.design) layout();
       const G = st.G;
       if (!st.visible || !G) return;
       // the torch's light on the lyre (the strongest, if fingers carry lights too)
@@ -563,7 +600,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       const key = `${Math.round(lamp.x / 6)},${Math.round(lamp.y / 6)},${Math.round(lamp.I * 30)}`;
       const R = Math.max(260, torchRadius() * 1.7);
       const relit = key !== bodyKey;
-      if (relit) { paintBody(bodyG, G, lamp, R); bodyKey = key; }
+      if (relit && st.plate) { lightBody(bodyG, st.plate, lamp, R); bodyKey = key; }
       // let go of what has faded
       st.trails = st.trails.filter((t) => t.end === null || now - t.end < ((st.RH + 40) / 64) * 1000);
       st.flares = st.flares.filter((f) => now - f.at < 700);
@@ -592,7 +629,10 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       paintStrings(g, G, lamp, R, vib, labelsFor.current, face);
     };
     raf = requestAnimationFrame(frame);
-    return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); removeEventListener("scroll", onScroll); };
+    return () => {
+      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); removeEventListener("scroll", onScroll);
+      if (typeof cancelIdleCallback === "function") cancelIdleCallback(later); else clearTimeout(later);
+    };
   }, [laneOf, reached]);
 
   // the key labels drawn above the strings: the key each string is on, where the keys reach it (none on a touch screen)
@@ -715,7 +755,14 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
             {mode === "along" && (
               <button type="button" className="chip" aria-pressed={wait} onClick={() => setWait(!wait)}><span className="dot" />Wait for me</button>
             )}
-            <div className={`segmented ${styles.viewSwitch}`} role="radiogroup" aria-label="Show the melody as">
+            {view === "sheet" && (
+              <div className={`segmented ${styles.viewSwitch}`} role="radiogroup" aria-label="Size of the sheet music">
+                {SHEET_SIZES.map(([v, label]) => (
+                  <button key={v} type="button" role="radio" aria-checked={sheetSize === v} onClick={() => chooseSize(v)}>{label}</button>
+                ))}
+              </div>
+            )}
+            <div className={`segmented${view === "sheet" ? "" : ` ${styles.viewSwitch}`}`} role="radiogroup" aria-label="Show the melody as">
               <button type="button" role="radio" aria-checked={view === "roll"} onClick={() => setView("roll")}>Play-along roll</button>
               <button type="button" role="radio" aria-checked={view === "sheet"} onClick={() => setView("sheet")}>Sheet music</button>
             </div>
@@ -738,10 +785,10 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       <div ref={stageRef} className={styles.stage}>
         <canvas ref={rollRef} className={song && view === "sheet" ? styles.away : styles.roll} aria-hidden="true" />
         {song && view === "sheet" && (
-          <Sheet ref={sheetRef} melody={song.meta} notes={song.data.notes} bpm={song.data.bpm} onNote={onSheetNote} height={rollH} />
+          <Sheet ref={sheetRef} melody={song.meta} notes={song.data.notes} bpm={song.data.bpm} onNote={onSheetNote} height={rollH} size={sheetSize} />
         )}
         <canvas ref={lyreRef} className={styles.instrument} role="img"
-          aria-label={`A lyre with ${strings.length} strings. ${keyHint} A MIDI keyboard can play it too.`} />
+          aria-label={`A lyre with ${strings.length} strings (a ${design.name}). ${keyHint} A MIDI keyboard can play it too.`} />
       </div>
 
       <p className={styles.now}>
@@ -751,6 +798,10 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         <span ref={capNote} className="faint" />
         <span ref={cueDown} className={styles.cue} hidden> The next note is below the keys: press {key(OCTAVE_DOWN)}.</span>
         <span ref={cueUp} className={styles.cue} hidden> The next note is above the keys: press {key(OCTAVE_UP)}.</span>
+      </p>
+
+      <p className={styles.instrumentNote}>
+        The instrument: a {design.name} (<span lang="grc" className={styles.nowGreek}>{design.greek}</span>), {design.about}
       </p>
 
       {result && (
@@ -766,6 +817,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
               {n.syl!.replace(/-$/, "")}{/-$/.test(n.syl!) || k === syllables.length - 1 ? "" : " "}
             </span>
           ))}
+          <i ref={bead} className={styles.bead} aria-hidden="true" />
         </p>
       )}
 
