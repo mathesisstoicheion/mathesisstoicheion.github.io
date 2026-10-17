@@ -290,6 +290,8 @@ select:not([multiple]):not([size]) {
 /* a big window, like the home page's reliefs (the owner, 2026-10-17: "I liked the bigger windows") */
 .piece-head { float: right; width: min(clamp(240px, 27vw, 380px), 500px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-5) var(--space-7); }
 .piece-head.piece-wide { width: clamp(300px, 38vw, 520px); }
+/* a broad window in a narrow column of text (the credits, the about page) leaves the title room beside it */
+@media (min-width: 761px) { .page-head > .piece-head.piece-wide { width: min(clamp(300px, 38vw, 520px), 45%); } }
 /* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and
    the name and function of the page"): its name, its Greek name cut in the wall and what it is for rise into place one
    after another, and last its niche, where the light then comes up on the piece. Only opacity and a small rise move, and
@@ -454,8 +456,11 @@ html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
 .page-title { font-size: clamp(2.4rem, 5vw, 4rem); }
-/* a title that is one long word (Batrachomyomachia) may break inside the word on a narrow phone, never widen the page */
+/* a title that is one long word (Batrachomyomachia) may break inside the word on a narrow phone, never widen the page;
+   on a computer a word breaks only when it would not fit on a line of its own, so a title beside a piece's window wraps
+   at its spaces */
 h1, .page-title { overflow-wrap: anywhere; }
+@media (min-width: 761px) { h1, .page-title { overflow-wrap: break-word; } }
 /* a drop-down is as wide as its longest choice; never wider than its column */
 select { max-width: 100%; }
 .page-title > [lang="grc"] { color: var(--accent); }
