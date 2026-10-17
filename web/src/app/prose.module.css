@@ -24,7 +24,7 @@
 /* a long list folded away under a line that says what is in it */
 .fold { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .fold summary { cursor: pointer; display: list-item; list-style-position: inside; min-height: var(--tap); padding: var(--space-3) var(--space-4); font-weight: 600; }
-.prose .fold ul { padding: 0 var(--space-4) var(--space-4) calc(var(--space-4) + 1.2em); }
+.prose .fold ul { padding: 0 var(--space-4) var(--space-4) var(--space-6); }
 /* the groups on the About page: a small heading over each */
 .group { display: grid; gap: var(--space-1); }
 .prose h3.groupHead { font-family: var(--f-label); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); margin: var(--space-4) 0 0; }
