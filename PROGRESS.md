@@ -96,7 +96,7 @@ laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rul
   phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
 Both published together on 2026-10-17, when the owner chose "Publish" on the results.
 
-### The header and the phone's bars in stone (2026-10-17; on the branch, not yet published)
+### The header and the phone's bars in stone (2026-10-17; published 2026-10-17)
 The owner (01:38, with a phone screenshot of the Academy): "The text and buttons at the top are ugly and they overlap. Match the
 theme, and do the same for the buttons at the bottom". On phones 360 px wide or narrower the name's last letter ran under the first
 button (45 px into them at 320). Before and after: https://claude.ai/artifact/8LkEgsDKXaixZFuzLUUQZ6. Details in DESIGN.md
@@ -112,7 +112,7 @@ button (45 px into them at 320). Before and after: https://claude.ai/artifact/8L
   word test fails the same way on the live version (missing word list). The home desk test now waits for the lesson visit to be
   remembered instead of a fixed 1.2 s.
 
-### Every page in stone, and the library A to Z on the right (2026-10-17; on the branch, not yet published)
+### Every page in stone, and the library A to Z on the right (2026-10-17; published 2026-10-17)
 The owner (02:44, with phone screenshots of the Explore map, the Stoa's topic cards, Mine's temple and the library A to Z): "Make
 every page and page element match the theme and give the A to Z scroll smooth animation and match its theme better. Also, move
 it to the right side". Asked whether buttons should change too, they chose "Stone buttons" (02:59). Details in DESIGN.md
@@ -136,6 +136,8 @@ it to the right side". Asked whether buttons should change too, they chose "Ston
   live. `npm run check:tokens` passes (4,397 values against the 4,487 baseline). A recheck of phone scrolling (5 more runs):
   Mine 54.8 against 55.1 fps, the Stoa 53.2 against 55.0.
 - **Mine's gable** keeps a thin gilded line along its top edge (the live gable was a gold line; the stone one alone read too dim).
+
+Both published together on 2026-10-17 at 11:15 UTC, when the owner wrote "Publish recent changes". The lyre (its own branch) was not part of it.
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
