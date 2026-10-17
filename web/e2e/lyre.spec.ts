@@ -39,42 +39,55 @@ test("the keys pluck the strings, with no errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("the keyboard plays like a piano, and Z and X move the keys an octave", async ({ page }) => {
+test("the keys play the strings in order, from A", async ({ page }) => {
   await countPlucks(page);
   await page.goto("/stoa/lyre");
   await ready(page);
+  // the Seikilos song's eight strings are on A S D F G H J K
+  const lyre = page.getByRole("img", { name: /A lyre with 8 strings/ });
+  await expect(lyre).toHaveAttribute("aria-label", /A is the lowest, then S D F/);
+  for (const k of ["a", "k"]) {
+    const before = await plucks(page);
+    await page.keyboard.press(k);
+    await expect.poll(() => plucks(page)).toBeGreaterThan(before);
+  }
+  // a key with no string plays nothing
+  let before = await plucks(page);
+  await page.keyboard.press("l");
+  await page.waitForTimeout(300);
+  expect(await plucks(page)).toBe(before);
+  // fifteen strings: the higher half goes on to the row above, from Q
   await page.getByRole("radio", { name: /Free play/ }).click();
-  const lyre = page.getByRole("img", { name: /A lyre with 15 strings/ });
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C3/);
-  await page.keyboard.press("x");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("x");   // no higher: the keys would reach no string
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("z");
-  await page.keyboard.press("z");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C2/);
-  // a black key plays its own note, though the scale has no string for it
-  const before = await plucks(page);
-  await page.keyboard.press("w");
+  const scale = page.getByRole("img", { name: /A lyre with 15 strings/ });
+  await expect(scale).toHaveAttribute("aria-label", /row above, from Q/);
+  before = await plucks(page);
+  await page.keyboard.press("u");
   await expect.poll(() => plucks(page)).toBeGreaterThan(before);
 });
 
-test("playing along, a note beyond the keys says which way to move them", async ({ page }) => {
-  await page.goto("/stoa/lyre");
-  await ready(page);
-  await expect(page.getByRole("radio", { name: /Seikilos/ })).toHaveAttribute("aria-checked", "true");
-  const lyre = page.getByRole("img", { name: /A lyre with 8 strings/ });
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("z");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C3/);
-  await page.getByRole("button", { name: "Play along" }).click();
-  // the song opens on D4 (the L key, from C3), then A4, beyond the keys from C3
-  const up = page.getByText("The next note is above the keys: press X.");
-  await page.waitForTimeout(3000);
-  await page.keyboard.press("l");
-  await expect(up).toBeVisible({ timeout: 10_000 });
-  await page.keyboard.press("x");
-  await expect(up).toBeHidden();
+test.describe("on a French browser that cannot read the keyboard itself (as Firefox and Safari)", () => {
+  test.use({ locale: "fr-FR" });
+
+  test("the letters follow the language's layout, and another can be chosen", async ({ page }) => {
+    await page.addInitScript(() => Object.defineProperty(Navigator.prototype, "keyboard", { get: () => undefined }));
+    await countPlucks(page);
+    await page.goto("/stoa/lyre");
+    await ready(page);
+    const lyre = page.getByRole("img", { name: /A lyre with 8 strings/ });
+    // AZERTY: the key in A's place is Q
+    await expect(lyre).toHaveAttribute("aria-label", /Q is the lowest, then S D F/);
+    const pick = page.getByRole("combobox", { name: "Keyboard layout" });
+    await expect(pick.locator("option").first()).toHaveText("Automatic: French or Belgian (AZERTY)");
+    const before = await plucks(page);
+    await page.keyboard.press("a");
+    await expect.poll(() => plucks(page)).toBeGreaterThan(before);
+    await pick.selectOption("el");
+    await expect(lyre).toHaveAttribute("aria-label", /Α is the lowest, then Σ Δ Φ/);
+    // the choice is remembered
+    await page.reload();
+    await ready(page);
+    await expect(page.getByRole("combobox", { name: "Keyboard layout" })).toHaveValue("el");
+  });
 });
 
 test("a song shows its words, and the sheet music at the switch", async ({ page }) => {
@@ -138,11 +151,13 @@ test("a bead of light shows where the melody is, in the score and under the word
   await expect(mark).toHaveCount(1, { timeout: 10_000 });
   const lit = page.locator("[class*=noteNow]").first();
   await expect(lit).toBeVisible();
-  // the column of light stands over the note now sounding
-  const m = (await mark.boundingBox())!, n = (await lit.locator(".abcjs-notehead").first().boundingBox())!;
-  expect(Math.abs(m.x - (n.x + n.width / 2))).toBeLessThan(4);
   await expect(page.locator("[class*=beadOn]")).toHaveCount(1);
+  // paused, the column of light comes to rest over the note last sounded (while playing it glides on)
   await page.getByRole("button", { name: "Pause" }).click();
+  await expect.poll(async () => {
+    const m = (await mark.boundingBox())!, n = (await lit.locator(".abcjs-notehead").first().boundingBox())!;
+    return Math.abs(m.x - (n.x + n.width / 2));
+  }).toBeLessThan(4);
   await page.getByRole("button", { name: "From the start" }).click();
   await expect(page.locator("[class*=beadOn]")).toHaveCount(0);
 });
