@@ -65,6 +65,31 @@ test("the keys play the strings in order, from A", async ({ page }) => {
   await expect.poll(() => plucks(page)).toBeGreaterThan(before);
 });
 
+test.describe("on a French browser that cannot read the keyboard itself (as Firefox and Safari)", () => {
+  test.use({ locale: "fr-FR" });
+
+  test("the letters follow the language's layout, and another can be chosen", async ({ page }) => {
+    await page.addInitScript(() => Object.defineProperty(Navigator.prototype, "keyboard", { get: () => undefined }));
+    await countPlucks(page);
+    await page.goto("/stoa/lyre");
+    await ready(page);
+    const lyre = page.getByRole("img", { name: /A lyre with 8 strings/ });
+    // AZERTY: the key in A's place is Q
+    await expect(lyre).toHaveAttribute("aria-label", /Q is the lowest, then S D F/);
+    const pick = page.getByRole("combobox", { name: "Keyboard layout" });
+    await expect(pick.locator("option").first()).toHaveText("Automatic: French or Belgian (AZERTY)");
+    const before = await plucks(page);
+    await page.keyboard.press("a");
+    await expect.poll(() => plucks(page)).toBeGreaterThan(before);
+    await pick.selectOption("el");
+    await expect(lyre).toHaveAttribute("aria-label", /Α is the lowest, then Σ Δ Φ/);
+    // the choice is remembered
+    await page.reload();
+    await ready(page);
+    await expect(page.getByRole("combobox", { name: "Keyboard layout" })).toHaveValue("el");
+  });
+});
+
 test("a song shows its words, and the sheet music at the switch", async ({ page }) => {
   await page.goto("/stoa/lyre");
   await page.getByRole("radio", { name: /Seikilos/ }).click();
@@ -126,11 +151,13 @@ test("a bead of light shows where the melody is, in the score and under the word
   await expect(mark).toHaveCount(1, { timeout: 10_000 });
   const lit = page.locator("[class*=noteNow]").first();
   await expect(lit).toBeVisible();
-  // the column of light stands over the note now sounding
-  const m = (await mark.boundingBox())!, n = (await lit.locator(".abcjs-notehead").first().boundingBox())!;
-  expect(Math.abs(m.x - (n.x + n.width / 2))).toBeLessThan(4);
   await expect(page.locator("[class*=beadOn]")).toHaveCount(1);
+  // paused, the column of light comes to rest over the note last sounded (while playing it glides on)
   await page.getByRole("button", { name: "Pause" }).click();
+  await expect.poll(async () => {
+    const m = (await mark.boundingBox())!, n = (await lit.locator(".abcjs-notehead").first().boundingBox())!;
+    return Math.abs(m.x - (n.x + n.width / 2));
+  }).toBeLessThan(4);
   await page.getByRole("button", { name: "From the start" }).click();
   await expect(page.locator("[class*=beadOn]")).toHaveCount(0);
 });

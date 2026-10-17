@@ -24,7 +24,7 @@ import { bank, player, playerIfMade, type LyrePlayer } from "@/lib/lyre/sound";
 import { perform, recordOnPage, type Performed } from "@/lib/lyre/record";
 import { listenMidi, midiSupported } from "@/lib/lyre/midi-in";
 import {
-  freeStrings, keyLabels, keysOf, noteName, stringKeys, stringsFor,
+  freeStrings, keyLetters, keysOf, LAYOUTS, noteName, stringKeys, stringsFor, type KeyLetters,
   type LyreString, type Tuning,
 } from "@/lib/lyre/tuning";
 import { lights, torchRadius, torchStill } from "@/lib/torch";
@@ -38,6 +38,7 @@ type View = "roll" | "sheet";
 type MidiState = "off" | "asking" | "on" | "denied" | "none";
 
 const KEY_TOUCH = 0.62, KEY_TOUCH_SHIFT = 0.95, TAP_TOUCH = 0.6;
+const NO_LABELS: Record<string, string> = {};
 const LEAD_BEATS = 6;            // the roll starts this far before the first note, so the notes come down from the top
 const HIT_WINDOW = 0.6;          // playing along, a note played this many beats either side of its time counts
 const LOOKAHEAD = 0.25;          // seconds of a song handed to the audio clock ahead of time, so no slow frame makes it late
@@ -132,7 +133,8 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const [tempo, setTempo] = useState(1);
   const [wait, setWait] = useState(true);
   const [damping, setDamping] = useState(false);
-  const [labels, setLabels] = useState<Record<string, string>>({});
+  const [letters, setLetters] = useState<KeyLetters | null>(null);
+  const labels = letters?.labels ?? NO_LABELS;
   const [touchOnly, setTouchOnly] = useState(false);
   const [midi, setMidi] = useState<MidiState>("off");
   const [devices, setDevices] = useState<string[]>([]);
@@ -320,7 +322,9 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
 
   // the computer keyboard
   useEffect(() => {
-    void keyLabels().then(setLabels);
+    let saved = "auto";
+    try { saved = localStorage.getItem("lyre-keyboard") ?? "auto"; } catch { /* no storage */ }
+    void keyLetters(saved).then(setLetters);
     const mq = matchMedia("(hover: none) and (pointer: coarse)");
     const touch = () => setTouchOnly(mq.matches);
     touch();
@@ -675,10 +679,14 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   // ── the page ────────────────────────────────────────────────────────────────────────────────────────────────────
   const syllables = useMemo(() => (notes ? notes.map((n, i) => ({ n, i })).filter((x) => x.n.syl) : []), [notes]);
   const key = (c: string) => labels[c] ?? c.replace("Key", "");
+  const chooseKeyboard = (v: string) => {
+    try { if (v === "auto") localStorage.removeItem("lyre-keyboard"); else localStorage.setItem("lyre-keyboard", v); } catch { /* no storage */ }
+    void keyLetters(v).then(setLetters);
+  };
   const keyHint = touchOnly
     ? "Touch a string, or sweep a finger across them."
-    : `Your keyboard plays the strings in order: ${key(keys[0])} is the lowest, then ${keys.slice(1, 4).map(key).join(" ")}…`
-      + (keys.length > 11 ? `, and the higher strings go on to the row above, from ${key(keys[Math.ceil(keys.length / 2)])}` : "")
+    : `Your keyboard plays the strings in order: ${key(keys[0])} is the lowest, then ${keys.slice(1, 4).map(key).join(" ")} and so on`
+      + (keys.length > 11 ? `; the higher strings go on to the row above, from ${key(keys[Math.ceil(keys.length / 2)])}` : "")
       + `. The letter for each string is above it (Shift plucks harder). Or click the strings, or sweep across them with the mouse held down.`;
   const showing = picking ?? song?.meta.id ?? null;
 
@@ -808,6 +816,21 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
             <span className="label">Hall</span>
             <input type="range" min={0} max={1} step={0.05} value={room} onChange={(e) => setRoom(+e.target.value)} />
           </label>
+          {!touchOnly && (
+            <label className={styles.vol}>
+              <span className="label">Keyboard</span>
+              <select className={styles.layout} aria-label="Keyboard layout" value={letters?.from === "choice" ? letters.layout.id : "auto"}
+                onChange={(e) => chooseKeyboard(e.target.value)}
+                title={letters?.from === "keyboard" ? "The letters are read from your keyboard."
+                  : letters?.from === "language" ? "The letters are those of your browser's language. Choose another layout if your keys show different ones." : undefined}>
+                <option value="auto">
+                  {letters?.from === "keyboard" ? "Automatic: as on your keyboard"
+                    : letters?.from === "language" ? `Automatic: ${letters.layout.name}` : "Automatic"}
+                </option>
+                {LAYOUTS.map((l) => <option key={l.id} value={l.id}>{l.name}</option>)}
+              </select>
+            </label>
+          )}
         </div>
       </div>
 
