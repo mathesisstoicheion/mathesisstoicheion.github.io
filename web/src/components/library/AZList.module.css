@@ -145,7 +145,7 @@ a.link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 }
 
 /* the bubble beside the finger, naming the letter it is on (only ever drawn while a finger is on the letters). It goes from
-   letter to letter at once, as a phone's own index does: gliding would lay the page out again on every frame of the slide. */
+   letter to letter at once: gliding would lay the page out again on every frame of the slide. */
 .bubble {
   position: absolute; right: 100%; top: var(--by); margin-right: var(--space-3); translate: 0 -50%; pointer-events: none;
   min-width: var(--tap); height: var(--tap); padding-inline: var(--space-3); display: grid; place-items: center;

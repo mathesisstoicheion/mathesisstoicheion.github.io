@@ -69,6 +69,30 @@ site is not allowed to be laggy". Built (DESIGN.md: "A sculpture on every page",
   in fps): on long pages every scroll recalculates styles and repaints the whole page (about 40 ms a jump in software, on the live
   site too); on phones the torch reads the page's height every frame, which forces the page to be laid out early.
 
+### Speed work (2026-10-16 to 17; on the branch, not yet live)
+The owner (19:44): "a performance test on the website and a refining and improvement of efficiency and performance, without
+sacrificing quality. Then A. B. test and give me results in fps and tell me what changed"; and "The site is not allowed to be
+laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rules learned are in DESIGN.md, "Never laggy".
+- **What changed**: the header slides by flipping only `data-hdr` on `<html>`; every rule that uses `--hdr-vis`, `--tabbar-vis`
+  or `--readbar-vis` zeroes it on its own element under `html[data-hdr="hidden"]` (a change on `<html>` restyled all ~10,000
+  elements of the library, about 0.1 s each time). The torch's frame lets every piece measure first and write after
+  (`FrameFn` may return a write). The stone is a picture (`public/images/stone.webp`, from `scripts/make-stone.mjs`,
+  pixel-identical). Settling headings move only the letters that moved, with flat transforms. Finished from-only animations
+  use `backwards`, not `both`, so they let go of their layers (layers: library 167 → 16, home 189 → 49, author 89 → 14,
+  Census 69 → 19, Academy 36 → 12). The torch's pools step in hundredths of brightness and on a 2 px grid. While a finger slides
+  on the A to Z, letters light at once and the bubble has no glide. The offline helper registers when the browser is idle after
+  load; the scroll position is saved at rest.
+- **A/B** (Playwright, software graphics, so only for comparing; old = the evening round, dfbd358; each case at least twice):
+  phone (390 x 844 at 2x, CPU 4x slower): A to Z finger slide 18.1 → 32.1 fps, home page scroll 27.9 → 34.5, library scroll
+  54 → 59, sculpture scroll 50 → 53.5; opening the library stuck 5.5 → 4.2 s, the home page 5.0 → 4.1 s. Computer (1440 x 900):
+  frame rates are capped near 15 to 20 fps by software drawing; time stuck while scrolling the library 0.17 → 0 s, the header
+  sliding 0.24 → 0 s, A to Z closing 13 → 19 fps. The page's own work per second: library scroll 329 → 198 ms, home 203 → 141.
+- **Checked**: 22 still screenshots of 11 pages pixel-identical with the old version; settling headings caught mid-motion match;
+  unit tests 467 pass; browser tests 543 pass and the other 41 failed the same way on the old version (the floating-reader test
+  now waits for the visit to be remembered, instead of a fixed 1.2 s).
+- **Still slowest** (in software): tapping a sculpture's lamp on a phone (about 17 fps, unchanged; its light is WebGL); the
+  phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:
