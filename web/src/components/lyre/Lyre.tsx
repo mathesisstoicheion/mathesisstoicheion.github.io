@@ -17,10 +17,13 @@
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Melody, MelodyNote, MelodyNotes } from "@/data/melodies/types";
-import { bank, player, playerIfMade, type LyrePlayer } from "@/lib/lyre/sound";
+import { bank, layerOf, player, playerIfMade, type LyrePlayer } from "@/lib/lyre/sound";
 import { perform, recordOnPage, type Performed } from "@/lib/lyre/record";
 import { listenMidi, midiSupported } from "@/lib/lyre/midi-in";
-import { freeStrings, KEY_CODES, keyLabels, nearestString, noteName, stringsFor, type LyreString, type Tuning } from "@/lib/lyre/tuning";
+import {
+  bestOctave, CODE_AT, freeStrings, keyLabels, keysOf, KEYS_SPAN, noteName, OCTAVE_DOWN, OCTAVE_UP, octaves, PIANO_KEYS, stringsFor,
+  type LyreString, type Tuning,
+} from "@/lib/lyre/tuning";
 import { lights, torchRadius, torchStill } from "@/lib/torch";
 import { geometry, paintBody, paintRoll, paintStrings, stringX, type Flare, type Geom, type Lamp, type NoteLook, type Trail } from "./draw";
 import Sheet, { type SheetHandle } from "./Sheet";
@@ -90,6 +93,10 @@ interface Live {
   trails: Trail[]; flares: Flare[];
   held: Map<string, { m: number; trail: Trail }>;
   pedal: boolean; pedalled: Set<number>;
+  /** the computer keyboard: the piano key each string answers to, and the C the keys start from */
+  places: number[]; base: number;
+  /** what the caption says about the keys while playing along ("" when nothing) */
+  cue: string;
   G: Geom | null; laidOut: LyreString[] | null; RH: number;
   dirty: boolean; visible: boolean;
 }
@@ -105,6 +112,16 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const [tuning, setTuning] = useState<Tuning>("ancient");
   const notes = song?.data.notes ?? null;
   const strings = useMemo<LyreString[]>(() => (notes ? stringsFor(notes.map((n) => n.m)) : freeStrings(tuning)), [notes, tuning]);
+  // the computer keyboard is a piano (tuning.ts): each string has its key, and the keys start from the C that reaches
+  // the most of the song's notes, until Z or X moves them an octave
+  const places = useMemo(() => keysOf(strings), [strings]);
+  const best = useMemo(() => {
+    const uses = new Map<number, number>();
+    for (const n of notes ?? []) uses.set(n.m, (uses.get(n.m) ?? 0) + 1);
+    return bestOctave(places, (i) => (notes ? (uses.get(strings[i].midi) ?? 0) : 1));
+  }, [notes, places, strings]);
+  const [moved, setMoved] = useState<{ on: LyreString[]; by: number }>({ on: strings, by: 0 });
+  const base = best + 12 * (moved.on === strings ? moved.by : 0);
   const [view, setView] = useState<View>("roll");
   const [mode, setMode] = useState<Mode>("listen");
   const [playing, setPlaying] = useState(false);
@@ -129,6 +146,8 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const capGreek = useRef<HTMLSpanElement>(null);
   const capName = useRef<HTMLSpanElement>(null);
   const capNote = useRef<HTMLSpanElement>(null);
+  const cueDown = useRef<HTMLSpanElement>(null);
+  const cueUp = useRef<HTMLSpanElement>(null);
   const sylEls = useRef<(HTMLSpanElement | null)[]>([]);
   const wanted = useRef<string | null>(first.id);
   const labelsFor = useRef<(string | undefined)[] | null>(null);
@@ -140,12 +159,14 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     beat: -LEAD_BEATS, perf: [], t0: 0, sched: 0,
     next: 0, waiting: false, hits: new Set(), missed: new Set(), shown: -1, sylPos: -1,
     vib: new Map(), trails: [], flares: [], held: new Map(), pedal: false, pedalled: new Set(),
+    places, base, cue: "",
     G: null, laidOut: null, RH: 300, dirty: true, visible: true,
   });
   useEffect(() => {
     const st = S.current;
     st.strings = strings; st.notes = notes; st.gaps = song?.data.gaps ?? []; st.bpm = song?.data.bpm ?? 120; st.dirty = true;
   }, [strings, notes, song]);
+  useEffect(() => { S.current.places = places; S.current.base = base; S.current.dirty = true; }, [places, base]);
   useEffect(() => { S.current.wait = wait; }, [wait]);
   useEffect(() => { S.current.damping = damping; }, [damping]);
   useEffect(() => { S.current.view = view; S.current.dirty = true; }, [view]);
@@ -176,14 +197,17 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   }, [sound]);
   useEffect(() => { S.current.vol = vol; playerIfMade()?.setVolume(vol); }, [vol]);
   useEffect(() => { S.current.room = room; playerIfMade()?.setRoom(room); }, [room]);
-  // render the strings in the worker as soon as they are known, before anyone touches them
+  // render the strings in the worker as soon as they are known, before anyone touches them, and the notes of the keys
+  // that have no string (the black keys, on the scale), at the strengths a key plays
   useEffect(() => {
     const ms = strings.map((s) => s.midi);
     void bank.prepareHall(48000, 44100);         // the rates nearly every device runs at
     bank.prepare(ms);
-    bank.keep(ms);
+    const free = touchOnly ? [] : CODE_AT.map((_, k) => base + k).filter((m) => !places.includes(m));
+    bank.prepare(free, undefined, [layerOf(KEY_TOUCH), layerOf(KEY_TOUCH_SHIFT)]);
+    bank.keep([...ms, ...free]);
     playerIfMade()?.setStrings(ms);
-  }, [strings]);
+  }, [strings, places, base, touchOnly]);
 
   /** The x of a pitch on the roll: its string's lane, or between two strings for a note the lyre has no string for. */
   const laneOf = useCallback((m: number) => {
@@ -293,10 +317,19 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     };
     const down = (e: KeyboardEvent) => {
       if (e.repeat || e.ctrlKey || e.metaKey || e.altKey || typing(e.target)) return;
-      const i = KEY_CODES.indexOf(e.code), st = S.current, s = st.strings[i];
-      if (i < 0 || !s) return;
+      const st = S.current;
+      if (e.code === OCTAVE_DOWN || e.code === OCTAVE_UP) {
+        e.preventDefault();
+        const to = st.base + (e.code === OCTAVE_UP ? 12 : -12);
+        if (octaves(st.places).includes(to)) setMoved((m) => ({ on: st.strings, by: (m.on === st.strings ? m.by : 0) + (to - st.base) / 12 }));
+        return;
+      }
+      const k = PIANO_KEYS[e.code];
+      if (k === undefined) return;
       e.preventDefault();
-      pluck(i, s.midi, e.shiftKey ? KEY_TOUCH_SHIFT : KEY_TOUCH, e.code);
+      // the string on this key, or the key's own note where the lyre has no string for it
+      const note = st.base + k, i = st.places.indexOf(note);
+      pluck(i, i >= 0 ? st.strings[i].midi : note, e.shiftKey ? KEY_TOUCH_SHIFT : KEY_TOUCH, e.code);
     };
     const up = (e: KeyboardEvent) => { if (S.current.held.has(e.code)) release(e.code); };
     addEventListener("keydown", down);
@@ -304,7 +337,8 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     return () => { removeEventListener("keydown", down); removeEventListener("keyup", up); mq.removeEventListener("change", touch); };
   }, [pluck, release]);
 
-  // a MIDI keyboard, once the visitor asks for it: each key plays the nearest string, or its own pitch if none is near
+  // a MIDI keyboard, once the visitor asks for it: each key plays its string (as on the computer keyboard), or its own
+  // pitch where the lyre has no string for it
   const stopMidi = useRef<(() => void) | null>(null);
   const connectMidi = useCallback(async () => {
     if (!midiSupported()) { setMidi("none"); return; }
@@ -313,7 +347,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     try {
       stopMidi.current = await listenMidi({
         on: (note, v) => {
-          const st = S.current, i = nearestString(st.strings, note);
+          const st = S.current, i = st.places.indexOf(note);
           pluck(i, i >= 0 ? st.strings[i].midi : note, Math.max(0.04, v / 127), `midi${note}`);
         },
         off: (note) => release(`midi${note}`),
@@ -338,6 +372,9 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const st = S.current;
     if (st.playing && st.mode === "listen") playerIfMade()?.dampAll(0.35);
     st.playing = false; st.waiting = false; st.dirty = true;
+    st.cue = "";
+    if (cueDown.current) cueDown.current.hidden = true;
+    if (cueUp.current) cueUp.current.hidden = true;
     setPlaying(false);
   }, []);
 
@@ -483,6 +520,17 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         if (!st.wait) for (let i = st.next; i < ns.length && ns[i].t < nb - HIT_WINDOW; i++) if (!st.hits.has(i)) st.missed.add(i);
         st.beat = nb;
         while (st.shown + 1 < ns.length && ns[st.shown + 1].t <= nb + 1e-6) reached(++st.shown);
+        // the note awaited is beyond the keys: say which way to move them
+        let cue = "";
+        if (st.waiting && labelsFor.current) {
+          const k = st.places[st.strings.findIndex((s) => s.midi === ns[st.next].m)];
+          cue = k < st.base ? "down" : k > st.base + KEYS_SPAN ? "up" : "";
+        }
+        if (cue !== st.cue) {
+          st.cue = cue;
+          if (cueDown.current) cueDown.current.hidden = cue !== "down";
+          if (cueUp.current) cueUp.current.hidden = cue !== "up";
+        }
         if (nb > last.t + last.d + 2) finish();
       }
     };
@@ -547,11 +595,11 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     return () => { cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); removeEventListener("scroll", onScroll); };
   }, [laneOf, reached]);
 
-  // the key labels drawn above the strings (none on a touch screen)
+  // the key labels drawn above the strings: the key each string is on, where the keys reach it (none on a touch screen)
   useEffect(() => {
-    labelsFor.current = touchOnly ? null : strings.map((_, i) => labels[KEY_CODES[i]]);
+    labelsFor.current = touchOnly ? null : places.map((k) => labels[CODE_AT[k - base]]);
     S.current.dirty = true;
-  }, [labels, strings, touchOnly]);
+  }, [labels, places, base, touchOnly]);
 
   // ── fingers and the mouse on the lyre ────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -622,9 +670,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
 
   // ── the page ────────────────────────────────────────────────────────────────────────────────────────────────────
   const syllables = useMemo(() => (notes ? notes.map((n, i) => ({ n, i })).filter((x) => x.n.syl) : []), [notes]);
+  const key = (c: string) => labels[c] ?? c.replace("Key", "");
   const keyHint = touchOnly
     ? "Touch a string, or sweep a finger across them."
-    : `Keys ${labels[KEY_CODES[0]] ?? "A"} to ${labels[KEY_CODES[Math.min(strings.length, KEY_CODES.length) - 1]] ?? ""} pluck the strings, low to high (Shift plucks harder). Or click them, or sweep across them with the mouse held down.`;
+    : `Your keyboard plays like a piano: ${["KeyA", "KeyS", "KeyD", "KeyF"].map(key).join(" ")}… are the white keys from ${noteName(base)}, `
+      + `${["KeyW", "KeyE", "KeyT"].map(key).join(" ")}… the black keys, and ${key(OCTAVE_DOWN)} and ${key(OCTAVE_UP)} move them an octave down or up `
+      + `(Shift plucks harder). Or click the strings, or sweep across them with the mouse held down.`;
   const showing = picking ?? song?.meta.id ?? null;
 
   return (
@@ -698,6 +749,8 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         <span ref={capGreek} lang="grc" className={styles.nowGreek} />
         <span ref={capName} />
         <span ref={capNote} className="faint" />
+        <span ref={cueDown} className={styles.cue} hidden> The next note is below the keys: press {key(OCTAVE_DOWN)}.</span>
+        <span ref={cueUp} className={styles.cue} hidden> The next note is above the keys: press {key(OCTAVE_UP)}.</span>
       </p>
 
       {result && (
