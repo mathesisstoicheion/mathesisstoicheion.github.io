@@ -191,3 +191,8 @@ a.link:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .letters.side .letter[data-hot], .letters.side .letter[data-at] { color: var(--accent); }
 .letters.side .mark { display: block; }
 @media (max-width: 760px) { .letters.side .letter { font-size: var(--step--2); } }
+
+/* while a finger slides, the lit letter and the bubble show the place, and the mark rests out of sight: moving it on every
+   letter of a slide cost a slowed phone about 7 frames a second (37 to 30); it comes back at its letter when the finger lifts.
+   (Last, so that it wins over the side rail's own rule.) */
+.letters[data-slide] .mark, .letters.side[data-slide] .mark { display: none; }

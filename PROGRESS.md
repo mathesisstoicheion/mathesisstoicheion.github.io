@@ -112,6 +112,27 @@ button (45 px into them at 320). Before and after: https://claude.ai/artifact/8L
   word test fails the same way on the live version (missing word list). The home desk test now waits for the lesson visit to be
   remembered instead of a fixed 1.2 s.
 
+### Every page in stone, and the library A to Z on the right (2026-10-17; on the branch, not yet published)
+The owner (02:44, with phone screenshots of the Explore map, the Stoa's topic cards, Mine's temple and the library A to Z): "Make
+every page and page element match the theme and give the A to Z scroll smooth animation and match its theme better. Also, move
+it to the right side". Asked whether buttons should change too, they chose "Stone buttons" (02:59). Details in DESIGN.md
+("Everything on a page is stone", and the A to Z bullets under Motion).
+- **What changed**: every page was photographed on a phone and looked over. Outlined boxes are gone. The main buttons are gilded
+  plates that sink when pressed; every other button, chip and tag is a stone slab or a small channel; rows of choices are a
+  channel with the chosen one standing in it; tick boxes are small hollows with a gilded tick; drop-downs have a gilded chevron.
+  Carved: Mine's temple (a solid gable round a sunk tympanum, a frieze of grooved triglyphs, metopes sunk in the wall), the
+  Stoa's colonnade (round fluted shafts with capitals, on a step), the small maps (land cut in the stone, the sea sunk), the
+  Kerameikos section (grooves, lips, a sunk pit, a gilded pot) and the manuscripts chart (grooved roads, inlaid marks).
+- **The A to Z**: on the right of the list, a channel cut in the stone with carved letters; a lit slab with a gilded edge slides
+  to the letter you are reading under; a tap glides there (`glideTo` in `lib/header.ts`), a finger slide goes straight to each
+  letter.
+- **A/B** (3 runs each, phone slowed 4x): phone scrolling of the Stoa, Mine, the alphabet and the library list unchanged
+  (56 to 60 fps either way); the A to Z finger slide 38.8 against 38.9 (first measured at 24.8 with a glide on every letter and
+  the mark moving; both fixed); a tap on M 41.6 against 40.2, but its first frame, as the page arrives at the letter, takes
+  about 0.27 s against 0.17 s (the old version raced through the whole list instead of arriving at once). Computer numbers
+  unchanged within the test machine's limits (software drawing).
+- **Checked**: `npm run check:tokens` passes (4,397 values against the 4,487 baseline).
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:

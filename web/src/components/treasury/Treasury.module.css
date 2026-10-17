@@ -12,7 +12,8 @@
 .pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; animation: rise 0.7s var(--ease) 0.1s backwards; }
 .pediment .cornice { fill: url(#ped-stone); }
 .pediment .tympanum { fill: var(--tympanum); }
-.pediment .lit { fill: none; stroke: var(--lip-hi); stroke-width: 1.5; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
+/* the raking cornice's top edge is gilded, a thin gold line laid along the stone (as the live gable was a line of gold) */
+.pediment .lit { fill: none; stroke: var(--accent); stroke-opacity: 0.85; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
 .pediment .cut { fill: none; stroke: var(--cut-deep); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
 .pediment stop:first-child { stop-color: var(--stone-4); }
 .pediment stop:last-child { stop-color: var(--stone-2); }

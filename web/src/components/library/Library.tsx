@@ -238,7 +238,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
   const railKeys = useMemo(() => (present.has("#") ? [...LETTERS, "#"] : LETTERS), [present]);
   const jump = (key: string, instant: boolean) => {
     const el = document.getElementById(`lib-${key}`);
-    if (el) scrollBelowHeader(el, 12, prefersReducedMotion(useSettings.getState().motion) ? false : instant ? "glide-quick" : "glide");
+    if (el) scrollBelowHeader(el, 12, !instant && !prefersReducedMotion(useSettings.getState().motion) ? "glide" : false);
     return el ?? undefined;
   };
 

@@ -47,7 +47,7 @@ export function holdBars(ms = 3000) {
  * on which way the jump goes: plain scrollIntoView with a fixed scroll-margin would leave a gap
  * (showing the passages before `el`) once the header has slid away.
  */
-export function scrollBelowHeader(el: HTMLElement, gap: number, smooth: boolean | "glide" | "glide-quick" = false) {
+export function scrollBelowHeader(el: HTMLElement, gap: number, smooth: boolean | "glide" = false) {
   const h = headerHeight();
   const hidden = scrollY + el.getBoundingClientRect().top - gap;   // the place if the header is tucked away
   const dy = hidden - scrollY;
@@ -55,7 +55,7 @@ export function scrollBelowHeader(el: HTMLElement, gap: number, smooth: boolean 
   const pinned = !!document.querySelector("header:focus-within") || barsHeld();
   const tucked = !pinned && hidden > h && (dy > 6 || (dy >= -6 && headerVisible() === 0));
   const top = Math.max(0, tucked ? hidden : hidden - h);
-  if (smooth === "glide" || smooth === "glide-quick") glideTo(top, smooth === "glide-quick");
+  if (smooth === "glide") glideTo(top);
   else { stopGlide(); scrollTo({ top, behavior: smooth ? "smooth" : "auto" }); }
 }
 
@@ -63,8 +63,8 @@ export function scrollBelowHeader(el: HTMLElement, gap: number, smooth: boolean 
  * Glide the page to `top` (the A to Z's letters, AZList.tsx; the owner asked for a smooth A to Z on 2026-10-17). It eases in
  * to its place, slowing as it arrives. A long way off, it first goes straight to the last stretch, a little under half a
  * screen short, and glides only that: easing past a whole stretch of the library would have the browser draw every author
- * on the way, for a blur no one can read, and that is what makes a long smooth scroll stutter. `quick` is for a finger
- * sliding along the letters, so the page keeps up with it. A finger, the wheel or a key lets go of it at once.
+ * on the way, for a blur no one can read, and that is what makes a long smooth scroll stutter. (A finger sliding along the
+ * letters does not glide: the page goes straight to each letter, to keep up.) A finger, the wheel or a key lets go of it at once.
  */
 let glide = 0;
 const LET_GO = ["wheel", "touchstart", "keydown"] as const;
@@ -74,14 +74,14 @@ export function stopGlide() {
   glide = 0;
   LET_GO.forEach((e) => removeEventListener(e, stopGlide, true));
 }
-export function glideTo(top: number, quick = false) {
+export function glideTo(top: number) {
   stopGlide();
   const end = Math.round(Math.max(0, Math.min(top, document.documentElement.scrollHeight - innerHeight)));
   const lead = Math.round(innerHeight * 0.4);
   const from = Math.abs(end - scrollY) > lead ? end - Math.sign(end - scrollY) * lead : scrollY;
   if (Math.abs(end - from) < 1) { scrollTo(0, end); return; }
   if (from !== scrollY) scrollTo(0, from);
-  const t0 = performance.now(), dur = quick ? 240 : 460;
+  const t0 = performance.now(), dur = 460;
   // the browser may shift the scroll itself as long lists are laid out on arrival (scroll anchoring keeps what is on screen
   // still): follow that shift, so the page never steps back or leaps between two frames
   let start = from, stop = end, set = from;

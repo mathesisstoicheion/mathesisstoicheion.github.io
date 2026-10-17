@@ -160,8 +160,9 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
   or holds fewer than 20 authors.
 - Both A to Z rails are a channel cut in the stone with carved letters; a lit slab with a gilded edge marks the letter you are
   reading under, and slides (by transform) as you scroll. A tap jumps to the last stretch and glides the rest (lib/header.ts,
-  `glideTo`: about half a second; a quarter while a finger slides), so it reads as smooth without the browser drawing the
-  whole list on the way; any wheel, touch or key stops the glide.
+  `glideTo`: about half a second), so it reads as smooth without the browser drawing the whole list on the way; any wheel,
+  touch or key stops the glide. A finger sliding along the letters goes straight to each one (gliding there too measured
+  37 to 25 fps on a slowed phone).
 - **The settings panel**: every control is cut in the same stone (slabs, with the chosen one lit and gilded at its foot).
 
 ## The screens
