@@ -20,10 +20,10 @@
   },
   "src/app/academy/practice/page.tsx": {
     "font-size": 1,
-    "spacing": 3
+    "spacing": 2
   },
   "src/app/academy/review/page.tsx": {
-    "spacing": 3
+    "spacing": 2
   },
   "src/app/academy/studio/page.tsx": {
     "spacing": 3
@@ -83,7 +83,7 @@
   "src/components/Amphora.module.css": {
     "colour": 8,
     "font-size": 11,
-    "spacing": 36,
+    "spacing": 35,
     "shadow": 4,
     "z-index": 4,
     "motion": 12
@@ -147,10 +147,10 @@
   "src/components/academy/Academy.module.css": {
     "font-family": 2,
     "font-size": 93,
-    "spacing": 244,
+    "spacing": 230,
     "shadow": 1,
     "z-index": 2,
-    "motion": 54
+    "motion": 49
   },
   "src/components/academy/Timeline.tsx": {
     "motion": 5
@@ -162,7 +162,7 @@
   },
   "src/components/academy/WorkoutPage.tsx": {
     "font-size": 3,
-    "spacing": 5
+    "spacing": 4
   },
   "src/components/admin/PrivateTranslations.module.css": {
     "colour": 3,
@@ -176,7 +176,7 @@
   },
   "src/components/census/Census.module.css": {
     "font-size": 29,
-    "spacing": 85,
+    "spacing": 84,
     "radius": 16,
     "shadow": 4,
     "z-index": 1,
@@ -190,7 +190,7 @@
   "src/components/guide/Guide.module.css": {
     "colour": 5,
     "font-size": 27,
-    "spacing": 75,
+    "spacing": 72,
     "z-index": 1,
     "motion": 55
   },
@@ -205,9 +205,8 @@
   },
   "src/components/library/AuthorArticle.module.css": {
     "font-size": 17,
-    "spacing": 62,
-    "z-index": 1,
-    "motion": 7
+    "spacing": 54,
+    "z-index": 1
   },
   "src/components/library/AuthorProfile.module.css": {
     "font-size": 7,
@@ -217,7 +216,7 @@
   "src/components/library/Library.module.css": {
     "colour": 1,
     "font-size": 33,
-    "spacing": 67,
+    "spacing": 65,
     "shadow": 3,
     "motion": 13
   },
@@ -257,7 +256,7 @@
   },
   "src/components/offline/ScrollCase.module.css": {
     "font-size": 4,
-    "spacing": 27,
+    "spacing": 26,
     "shadow": 1
   },
   "src/components/reader/Echoes.module.css": {
@@ -330,11 +329,11 @@
   },
   "src/components/reader/Reader.module.css": {
     "colour": 14,
-    "font-size": 82,
-    "spacing": 177,
+    "font-size": 77,
+    "spacing": 162,
     "shadow": 6,
     "z-index": 5,
-    "motion": 28
+    "motion": 24
   },
   "src/components/reader/Sentence.module.css": {
     "font-size": 10,
@@ -377,11 +376,11 @@
     "motion": 28
   },
   "src/components/stoa/Stoa.module.css": {
-    "font-size": 37,
-    "spacing": 118,
+    "font-size": 34,
+    "spacing": 111,
     "shadow": 1,
     "z-index": 2,
-    "motion": 15
+    "motion": 14
   },
   "src/components/stoa/Transmission.module.css": {
     "font-size": 6,
@@ -389,7 +388,7 @@
     "motion": 7
   },
   "src/components/stoa/WikiEditions.module.css": {
-    "font-size": 4,
+    "font-size": 3,
     "spacing": 17,
     "motion": 2
   },
@@ -413,8 +412,8 @@
   },
   "src/components/treasury/Treasury.module.css": {
     "colour": 4,
-    "font-size": 37,
-    "spacing": 77,
+    "font-size": 36,
+    "spacing": 76,
     "z-index": 2,
     "motion": 24
   },
