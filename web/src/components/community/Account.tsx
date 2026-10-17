@@ -6,15 +6,41 @@
  */
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { isBanned, isModerator, problem, supabase, useAccount } from "@/lib/community/client";
 import { updateProfile } from "@/lib/community/data";
 import { useHidden, useHiddenPeople } from "@/lib/community/hidden";
+import PagePiece from "@/components/art/PagePiece";
 import styles from "./Community.module.css";
 
 type Mode = "in" | "join" | "forgot";
 
+/**
+ * The page: its head (as the pages inside an area have one: a small label, the title, and the page's sculpture in its niche,
+ * beside the title on a computer and after it on a phone), then the box. The title is "Sign in", or the member's name once signed
+ * in. The head is drawn without waiting for the address (only the box below it reads that), so it is in the page as it is built.
+ */
 export default function Account() {
+  const { ready, session, profile } = useAccount();
+  const title = !ready ? "Your account" : session ? profile?.display_name ?? "Your account" : "Sign in";
+  return (
+    <>
+      <div className={`wrap ${styles.signedOutHead}`}>
+        <div className="page-head">
+          <p className="label">Account</p>
+          <PagePiece className="piece-desk" />
+          <h1 className="page-title">{title}</h1>
+          <PagePiece className="piece-phone" />
+        </div>
+      </div>
+      <Suspense>
+        <AccountBox />
+      </Suspense>
+    </>
+  );
+}
+
+function AccountBox() {
   const { ready, session, profile, start, refreshProfile } = useAccount();
   const params = useSearchParams();
   const router = useRouter();
@@ -162,7 +188,6 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
   return (
     <section className={styles.card}>
       <p className="label">{isModerator(profile) ? "Moderator of the Town Hall" : "Member of the Town Hall"}</p>
-      <h2>{profile.display_name}</h2>
       <p className={styles.fine}>Signed in as {email} (never shown to anyone). Member since {new Date(profile.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.</p>
       {isBanned(profile) && <p className={styles.error}>The moderator has paused your writing until {new Date(profile.banned_until!).toLocaleString("en-GB")}{profile.ban_reason ? `: ${profile.ban_reason}` : "."}</p>}
       <form className={styles.form} onSubmit={async (e) => {

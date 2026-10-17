@@ -9,7 +9,7 @@
 /* a row: the name, then its track. Flex, not a grid, so that on a phone the name can stay in view while the marks
    scroll under it (a sticky item may move across the whole row, but not out of its grid cell). */
 .axis, .rows li { display: flex; gap: 0 14px; }
-.pin { flex: none; width: 9.5rem; position: sticky; left: 0; z-index: 2; }
+.pin { flex: none; width: 9.5rem; position: sticky; left: 0; z-index: var(--z-bar); }
 .axis { position: relative; height: 18px; }
 .axisTrack { position: relative; flex: 1 1 0; min-width: 0; }
 .axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); white-space: nowrap; }

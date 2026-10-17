@@ -29,7 +29,12 @@ const reportLines = (r: ApplyReport) => {
   ];
 };
 
-export default function KeepSafe({ t, summary }: { t: TreasuryState; summary: string }) {
+/**
+ * `compact`: the Treasury holds nothing yet, so there is nothing to download or to keep safe; the box shrinks to one small
+ * "Restore from a file" link (and the account's line). It is the same component in the same place, so a restore started from
+ * the link keeps its report on the page when the restored marks make the box grow back.
+ */
+export default function KeepSafe({ t, summary, compact = false }: { t: TreasuryState; summary: string; compact?: boolean }) {
   const file = useRef<HTMLInputElement>(null);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<{ ok: boolean; lines: string[] } | null>(null);
@@ -72,16 +77,16 @@ export default function KeepSafe({ t, summary }: { t: TreasuryState; summary: st
   };
 
   return (
-    <aside className={styles.keep} aria-labelledby="keep-h">
+    <aside className={compact ? styles.keepSmall : styles.keep} aria-labelledby="keep-h">
       <div>
-        <h2 id="keep-h">Keep your Treasury safe</h2>
-        <p>Everything here lives in this browser: {summary}. Download it as one file that reads like a book in any browser,
-          and restore from that file here, on this or another computer. Restoring adds what is missing and updates what is older.</p>
+        <h2 id="keep-h" className={compact ? "visually-hidden" : undefined}>Keep your Treasury safe</h2>
+        {!compact && <p>Everything here lives in this browser: {summary}. Download it as one file that reads like a book in any browser,
+          and restore from that file here, on this or another computer. Restoring adds what is missing and updates what is older.</p>}
         <Sync t={t} onResult={setResult} lines={reportLines} />
       </div>
       <div className={styles.keepActs}>
-        <button type="button" className="btn" onClick={download} disabled={busy}>Download my Treasury</button>
-        <button type="button" className="btn ghost" onClick={() => file.current?.click()} disabled={busy}>Restore from a file</button>
+        {!compact && <button type="button" className="btn" onClick={download} disabled={busy}>Download my Treasury</button>}
+        <button type="button" className={compact ? styles.linkBtn : "btn ghost"} onClick={() => file.current?.click()} disabled={busy}>Restore from a file</button>
         <input ref={file} type="file" accept=".html,.htm,.json,text/html,application/json" hidden aria-label="Choose a Treasury file to restore"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) restore(f); }} />
       </div>

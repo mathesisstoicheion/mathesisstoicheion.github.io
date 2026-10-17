@@ -137,9 +137,12 @@ test("the map and the Town Hall put their search first", async ({ page }) => {
   const map = page.getByRole("application");
   expect((await find.boundingBox())!.y).toBeLessThan((await map.boundingBox())!.y);
   await page.goto("/town-hall");
+  // the Town Hall's search stands in the toolbar, straight above the list it narrows
   const hall = page.getByRole("searchbox", { name: "Search the Town Hall" });
-  const cats = page.getByRole("navigation", { name: "Categories" });
-  expect((await hall.boundingBox())!.y).toBeLessThan((await cats.boundingBox())!.y);
+  const list = page.locator("#threads-h");
+  await expect(hall).toBeVisible();
+  await expect(list).toBeVisible();
+  expect((await hall.boundingBox())!.y).toBeLessThan((await list.boundingBox())!.y);
 });
 
 test("authors are found by their other names and their Greek name, and Latin labels read in English", async ({ page }) => {

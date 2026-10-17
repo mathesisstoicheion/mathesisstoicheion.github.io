@@ -222,7 +222,7 @@
   /* the four shelves are one compact row, without their blurbs */
   .shelves { gap: var(--space-2); }
   .shelf { padding: var(--space-3) var(--space-2); text-align: center; min-height: var(--tap); }
-  .shelf b { font-size: 1.1rem; }
+  .shelf b { font-size: var(--step-0); }
   .shelf span { display: none; }
   .comparing .columns { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .threads { display: none; }

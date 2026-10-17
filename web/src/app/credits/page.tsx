@@ -24,16 +24,44 @@ const SOFTWARE = [
   { name: "ts-fsrs (FSRS, which schedules the daily review)", by: "Open Spaced Repetition", licence: "MIT", href: "https://github.com/open-spaced-repetition/ts-fsrs" },
 ];
 
+/** The sections, in the order of the page, for the line of jumps under the title (Privacy stands second, not last, as the title names it). */
+const SECTIONS: [string, string][] = [
+  ["texts", "Texts"], ["privacy", "Privacy"], ["words", "Words"], ["pictures", "Pictures"], ["sculpture", "Sculpture"],
+  ["manuscripts", "Manuscripts"], ["maps", "Maps"], ["fonts", "Fonts"],
+];
+
+/**
+ * Where an object is now. The museum's record gives its name once, with the object's number in brackets
+ * ("The Metropolitan Museum of Art, New York (56.171.38)"); then that number is the link to the record, and the name is not
+ * said again as a link (see `Source`). Anywhere else, the place is as the record gives it.
+ */
+const museumNumber = (im: { place: string; sourceName: string }) => {
+  const m = im.place.match(/^(.*) \(([^()]+)\)$/);
+  return m && m[1].includes(im.sourceName) ? { before: m[1], number: m[2] } : null;
+};
+function Where({ im }: { im: { place: string; source: string; sourceName: string } }) {
+  const at = museumNumber(im);
+  return at ? <>{at.before} (<a href={im.source} rel="noopener">{at.number}</a>)</> : <>{im.place}</>;
+}
+/** The link to the record, named by the collection, unless the number in `Where` already is that link. */
+function Source({ im }: { im: { place: string; source: string; sourceName: string } }) {
+  return museumNumber(im) ? null : <><a href={im.source} rel="noopener">{im.sourceName}</a>, </>;
+}
+
 export default function CreditsPage() {
   return (
     <Page>
       <article className={`wrap ${styles.prose}`}>
         <div className="page-head">
-          <span className="label">Credits, licences &amp; privacy</span>
+          <span className="label">About</span>
           <PagePiece className="piece-desk" />
           <h1>Credits, licences &amp; privacy</h1>
           <PagePiece className="piece-phone" />
-          <h2>Texts and translations</h2>
+          {/* the page is long (the pictures alone are two lists of dozens): a line of jumps, in the order of the page */}
+          <nav className={styles.jump} aria-label="On this page">
+            {SECTIONS.map(([id, name]) => <a key={id} href={`#${id}`}>{name}</a>)}
+          </nav>
+          <h2 id="texts">Texts and translations</h2>
           <p>
             All Greek texts and English translations come from the collections below and are shown exactly as published.
             We never edit them. If we find an error, we report it to the collection rather than changing our copy.
@@ -61,7 +89,33 @@ export default function CreditsPage() {
           (CC0). The texts themselves are unchanged.
         </p>
 
-        <h2>Words and dictionaries</h2>
+        <h2 id="privacy">Privacy</h2>
+        <ul>
+          <li>No adverts, no analytics, no trackers and no cookies.</li>
+          <li>Fonts and code are served from this site, so your browser does not contact Google or any other company just to show a page.</li>
+          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint on the home page, and the people you have hidden in the Town Hall, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
+          <li>When you are online and a text is not in your downloaded library, your browser fetches that text&apos;s file from GitHub (raw.githubusercontent.com).</li>
+          <li>When you look up a word or open its Word Study page while online, that word (and nothing else) is sent to Wiktionary (en.wiktionary.org).</li>
+          <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>
+          <li>The reader&apos;s <b>Listen</b> button reads the English translation with a voice from your own device or browser; this site sends nothing. Most voices work on the device itself, but some browsers&apos; online voices (in Microsoft Edge, those whose names end in “Online (Natural)”) are made on the browser maker&apos;s servers, so the passage being read goes to them. The Greek is never read aloud.</li>
+          <li>Downloading the library fetches the text files from GitHub. Links to Logeion and Perseus take you to those sites only when you click them.</li>
+          <li>
+            <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
+            Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
+            reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+            password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
+            display name and what you write about yourself.
+          </li>
+          <li>What you write in the Town Hall and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
+            pebble in a debate cannot: only the totals are shown, once the debate closes. Reports are seen only by the moderator.</li>
+          <li>A bug report is a public thread like any other. The form fills in the page you were on and a short description of your browser
+            (its name and version, the system, and the window&apos;s size); you see both before sending and can change or remove them. Nothing else about your computer is sent.</li>
+          <li>If you choose to keep your Treasury in step between devices, a copy of it is stored in your account, readable only by you.</li>
+          <li>You can delete your account at any time from your account page: this removes your account, your profile, everything you
+            wrote in the Town Hall and the Pnyx, your votes and your stored Treasury.</li>
+        </ul>
+
+        <h2 id="words">Words and dictionaries</h2>
         <ul>
           <li>
             <b>Word analyses</b> (dictionary form and grammar of each word, in context), <b>the structure of each sentence</b> (which word
@@ -88,40 +142,48 @@ export default function CreditsPage() {
           <li><b>Wiktionary</b> entries, fetched live when you look up a word, and each word&apos;s origin, related Greek words and English descendants on its Word Study page: English Wiktionary contributors, CC BY-SA 4.0.</li>
         </ul>
 
-        <h2>Pictures</h2>
+        <h2 id="pictures">Pictures</h2>
+        <p>The amphora on the home page and all ornament are drawn by this site&apos;s own code. Photographs of real objects arrive with the wiki, each with its source, creator and licence listed here.</p>
         <p>
           Every picture in the Painted Stoa comes from a collection that states its licence, and the licence is copied from that record
           by the script that fetched it (<code>web/scripts/fetch-images.ts</code>). Pictures from The Metropolitan Museum of Art are from its
           Open Access programme (CC0: free for any use). Photographs from Wikimedia Commons keep their photographers&apos; licences.
         </p>
-        <ul>
-          {Object.entries(IMAGES).map(([id, im]) => {
-            const used = ENTRIES.find((e) => e.image === id);
-            return (
-              <li key={id}>
-                <b>{im.title}</b>{im.date && <>, {im.date}</>}. {im.place}. {im.creator !== "Unknown" && <>{im.creator}. </>}
-                <a href={im.source} rel="noopener">{im.sourceName}</a>, <a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
-                {used && <> Used in <a href={`/stoa/${used.slug}`}>{used.title}</a>.</>}
-              </li>
-            );
-          })}
-        </ul>
+        <details className={styles.fold}>
+          <summary>Every picture and its licence</summary>
+          <ul>
+            {Object.entries(IMAGES).map(([id, im]) => {
+              const used = ENTRIES.find((e) => e.image === id);
+              return (
+                <li key={id}>
+                  <b>{im.title}</b>{im.date && <>, {im.date}</>}. <Where im={im} />. {im.creator !== "Unknown" && <>{im.creator}. </>}
+                  <Source im={im} />
+                  <a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
+                  {used && <> Used in <a href={`/stoa/${used.slug}`}>{used.title}</a>.</>}
+                </li>
+              );
+            })}
+          </ul>
+        </details>
 
-        <h2>The sculpture on each page</h2>
+        <h2 id="sculpture">The sculpture on each page</h2>
         <p>
           Each page has its own piece of ancient sculpture standing in a niche. All are from The Metropolitan Museum of Art&apos;s Open Access
           programme (CC0); their titles and dates are copied from the museum&apos;s records by <code>web/scripts/fetch-images.ts</code>, and
           each photograph was cut out and shaped for the torch by <code>pipeline/pieces.py</code>.
         </p>
-        <ul>
-          {USED_PIECES.map((id) => [id, PIECE_CREDITS[id]] as const).filter(([, im]) => im).map(([id, im]) => (
-            <li key={id}>
-              <b>{im.title}</b>{im.date && <>, {im.date}</>}. {im.place}. <a href={im.source} rel="noopener">{im.sourceName}</a>, <a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
-            </li>
-          ))}
-        </ul>
+        <details className={styles.fold}>
+          <summary>Every piece of sculpture and its licence</summary>
+          <ul>
+            {USED_PIECES.map((id) => [id, PIECE_CREDITS[id]] as const).filter(([, im]) => im).map(([id, im]) => (
+              <li key={id}>
+                <b>{im.title}</b>{im.date && <>, {im.date}</>}. <Where im={im} />. <Source im={im} /><a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
+              </li>
+            ))}
+          </ul>
+        </details>
 
-        <h2>Manuscripts</h2>
+        <h2 id="manuscripts">Manuscripts</h2>
         <p>
           The reader&apos;s Manuscript panel shows pages of real manuscripts from the libraries&apos; and projects&apos; own image servers; no
           photograph is copied to this site. Which pages hold which work comes from each library&apos;s catalogue (<code>src/data/manuscripts.ts</code>).
@@ -132,47 +194,19 @@ export default function CreditsPage() {
           <li><b>Plato, Paris grec 1807</b>: Source gallica.bnf.fr / Bibliothèque nationale de France (<a href="https://gallica.bnf.fr/edit/und/conditions-dutilisation-des-contenus-de-gallica" rel="noopener">free non-commercial reuse</a>); contents by folio from the BnF&apos;s Archives et manuscrits.</li>
         </ul>
 
-        <h2>Maps</h2>
+        <h2 id="maps">Maps</h2>
         <ul>
           <li><b>The land and sea on the Periplus</b>: <a href="https://earthobservatory.nasa.gov/features/BlueMarble" rel="noopener">NASA Earth Observatory, Blue Marble: Next Generation</a> with topography and bathymetry, July 2004, by Reto Stöckli; public domain. Prepared for the map by <code>pipeline/build_relief.py</code>.</li>
           <li><b>Coastlines, seas and lakes</b>: <a href="https://github.com/AWMC/geodata" rel="noopener">Ancient World Mapping Center, geodata</a>, ODbL 1.0, derived from the Barrington Atlas of the Greek and Roman World.</li>
           <li><b>Places</b>: <a href="https://pleiades.stoa.org" rel="noopener">Pleiades</a>, CC BY 3.0, matched to the names in GLAUx (above).</li>
         </ul>
-        <h2>Fonts and software</h2>
+        <h2 id="fonts">Fonts and software</h2>
         <ul>
           {SOFTWARE.map((s) => (
             <li key={s.name}><a href={s.href} rel="noopener">{s.name}</a>, by {s.by}. {s.licence}.</li>
           ))}
         </ul>
 
-        <h2>Images</h2>
-        <p>The amphora on the home page and all ornament are drawn by this site&apos;s own code. Photographs of real objects arrive with the wiki, each with its source, creator and licence listed here.</p>
-
-        <h2 id="privacy">Privacy</h2>
-        <ul>
-          <li>No adverts, no analytics, no trackers and no cookies.</li>
-          <li>Fonts and code are served from this site, so your browser does not contact Google or any other company just to show a page.</li>
-          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint on the home page, and the people you have hidden in the Town Hall, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
-          <li>When you are online and a text is not in your downloaded library, your browser fetches that text&apos;s file from GitHub (raw.githubusercontent.com).</li>
-          <li>When you look up a word or open its Word Study page while online, that word (and nothing else) is sent to Wiktionary (en.wiktionary.org).</li>
-          <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>
-          <li>The reader&apos;s <b>Listen</b> button reads the English translation with a voice from your own device or browser; this site sends nothing. Most voices work on the device itself, but some browsers&apos; online voices (in Microsoft Edge, those whose names end in “Online (Natural)”) are made on the browser maker&apos;s servers, so the passage being read goes to them. The Greek is never read aloud.</li>
-          <li>Downloading the library fetches the text files from GitHub. Links to Logeion and Perseus take you to those sites only when you click them.</li>
-          <li>
-            <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
-            Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
-            reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
-            password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
-            display name and what you write about yourself.
-          </li>
-          <li>What you write in the Town Hall and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
-            pebble in a debate cannot: only the totals are shown, once the debate closes. Reports are seen only by the moderator.</li>
-          <li>A bug report is a public thread like any other. The form fills in the page you were on and a short description of your browser
-            (its name and version, the system, and the window&apos;s size); you see both before sending and can change or remove them. Nothing else about your computer is sent.</li>
-          <li>If you choose to keep your Treasury in step between devices, a copy of it is stored in your account, readable only by you.</li>
-          <li>You can delete your account at any time from your account page: this removes your account, your profile, everything you
-            wrote in the Town Hall and the Pnyx, your votes and your stored Treasury.</li>
-        </ul>
       </article>
     </Page>
   );

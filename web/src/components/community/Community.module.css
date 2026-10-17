@@ -8,7 +8,7 @@
 @keyframes spin { to { transform: rotate(360deg); } }
 .error { color: var(--accent); font-size: 0.93rem; }
 /* "could not be reached": the list's own stone panel, with a way to try again */
-.offline { display: grid; gap: 12px; justify-items: start; padding: 22px 24px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+.offline { display: grid; gap: var(--space-3); justify-items: start; padding: var(--space-5); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .offline p { margin: 0; max-width: 60ch; }
 .ok { color: var(--ok); font-size: 0.93rem; }
 .fine { font-size: 0.86rem; color: var(--ink-2); }
@@ -25,9 +25,9 @@
 .modBtn:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .narrow { max-width: 820px; padding-top: 36px; padding-bottom: 72px; display: grid; gap: 22px; }
 /* a signed-out visitor at a form: the head (as the pages inside an area have), then the way in */
-.signedOutHead { padding-top: clamp(32px, 5vw, 56px); }
+.signedOutHead { padding-top: var(--space-6); }
 .signedOutHead + .narrow { padding-top: var(--space-5); }
-.signIn { display: grid; gap: 14px; justify-items: start; }
+.signIn { display: grid; gap: var(--space-3); justify-items: start; }
 
 /* ------------------------------------------------ cards and forms */
 .card {

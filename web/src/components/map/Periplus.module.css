@@ -68,7 +68,7 @@
 
 /* the search and the layer chips are one bar (Periplus.tsx): in the page's header, beside the sculpture's niche on a computer,
    and just above the map on a phone. A grid, so it takes the room beside the niche rather than running under it. */
-.tools { display: grid; gap: 12px; max-width: 40rem; margin-top: var(--space-5); }
+.tools { display: grid; gap: var(--space-3); max-width: 40rem; margin-top: var(--space-5); }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; }
 /* phones: the chips are one row to slide sideways (its right edge fades while there is more), so the bar stays slim */
 @media (max-width: 760px) {

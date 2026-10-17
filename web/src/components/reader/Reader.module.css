@@ -28,7 +28,7 @@
 .edKind { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-right: var(--space-1); }
 .dot { color: var(--ink-3); }
 .change {
-  align-self: center; padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; color: var(--accent); cursor: pointer;
+  padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; color: var(--accent); cursor: pointer;
   text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 0.25em;
   transition: color var(--dur-quick) var(--ease), text-decoration-color var(--dur-quick) var(--ease);
 }
@@ -98,8 +98,8 @@
 .dropBtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; transition: transform var(--dur) var(--ease); }
 .dropBtn[aria-expanded="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .dropBtn[aria-expanded="true"] svg { transform: rotate(180deg); }
-.moreBtn { min-width: 40px; justify-content: center; }
-.moreBtn svg, .moreBtn[aria-expanded="true"] svg { width: 18px; height: 18px; fill: currentColor; stroke: none; transform: none; }
+.moreDrop { min-width: 40px; justify-content: center; }
+.moreDrop svg, .moreDrop[aria-expanded="true"] svg { width: 18px; height: 18px; fill: currentColor; stroke: none; transform: none; }
 .findBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
 .findBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 @media (max-width: 760px) { .findBtn { display: none !important; } }

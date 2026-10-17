@@ -1495,7 +1495,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                   {aids}
                 </Drop>
               )}
-              <Drop {...dropOf("marks")} label={`Your marks (${allMarks.length})`} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`}>
+              <Drop {...dropOf("marks")} label={`Your marks (${allMarks.length})`} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
                 <ul className={styles.marksList}>
                   {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
                   {sortedMarks.map((m) => (
@@ -1510,7 +1510,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
               </Drop>
               <Drop {...dropOf("more")} ariaLabel="More" title="Markers beside the scroll bar, the keys, and the floating reader" chevron={false}
                 label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
-                className={`${styles.dropBtn} ${styles.moreBtn}`} panelClass={`${styles.pop} ${styles.morePop}`}>
+                className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
                 <MarkersLegend inline counts={markerCounts} />
                 <div className={styles.moreActs}>
                   {!floating && pane === 1 && (
