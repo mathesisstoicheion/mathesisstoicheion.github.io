@@ -12,7 +12,6 @@ import { BEST_KNOWN } from "@/data/best-known";
 import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
-import MineButtons from "./MineButtons";
 import { AZRail } from "./AZList";
 import { bestMatch, nameMatch } from "./az";
 import styles from "./Library.module.css";
@@ -301,8 +300,6 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
         {hero && <div className={`enter ${styles.topText}`}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
         <div className={`enter ${styles.topSide}`}><PagePiece className={styles.pieceWide} /></div>
       </div>
-      {/* the moderator alone: their private collection, and importing a text into it */}
-      <MineButtons />
 
       {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
       {stelai && <div className={styles.stelai}>{stelai}</div>}

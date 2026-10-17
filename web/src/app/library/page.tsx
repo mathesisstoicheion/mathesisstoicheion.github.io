@@ -4,6 +4,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import Page from "@/components/Page";
 import Library from "@/components/library/Library";
+import MineButtons from "@/components/library/MineButtons";
 import Stelai, { type Stele } from "@/components/library/Stelai";
 import Carving from "@/components/art/Carving";
 import PagePiece from "@/components/art/PagePiece";
@@ -55,10 +56,14 @@ const Paths = () => (
 export default function LibraryPage() {
   return (
     <Page>
-      {/* on a phone the Mouseion's piece opens the page, above its carved name */}
+      {/* the page's name with, for the moderator alone, their private collection in the corner beside it; then, on a
+          phone, the Mouseion's piece, above its carved name */}
       <div className={`wrap enter ${styles.head}`}>
+        <div className={styles.kickRow}>
+          <span className={`label ${styles.kick}`}>{AREAS.library.door} · {AREAS.library.english}</span>
+          <MineButtons />
+        </div>
         <PagePiece className="piece-phone" />
-        <span className={`label ${styles.kick}`}>{AREAS.library.door} · {AREAS.library.english}</span>
         <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.6} className={`carve ${styles.carve}`} />
       </div>
       <Suspense fallback={null}>

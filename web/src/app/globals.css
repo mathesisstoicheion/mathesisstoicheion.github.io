@@ -317,6 +317,8 @@ select:not([multiple]):not([size]) {
   .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
   .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
 }
+/* a page's piece standing outside a header (the home page's): it rises first, like a header's */
+.piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) backwards; }
 :where(.tool-page) > :where(.piece-head) { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) backwards; }
 /* on a phone the piece opens the page, in a window of its own across the screen, and the carved name, the title and the
    words follow (a header holds both, "piece-desk" before the title and "piece-phone" at the top; the one not shown loads
@@ -325,7 +327,8 @@ select:not([multiple]):not([size]) {
 @media (max-width: 760px) {
   .piece-desk { display: none; }
   .piece-phone { display: block; }
-  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto var(--space-5); }
+  /* small enough that the carved name and the title still show under it on the first screen */
+  .piece-head { float: none; width: min(70vw, 44svh / var(--piece-ratio)); margin: var(--space-3) auto var(--space-5); }
   .piece-head.piece-wide { width: 100%; }
   .piece-head figcaption { text-align: center; }
   .piece figcaption { font-size: var(--step--2); }

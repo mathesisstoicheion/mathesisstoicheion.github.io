@@ -17,6 +17,7 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { preload } from "react-dom";
 import { Piece, loadPiece, type PieceLook } from "@/lib/art/piece";
 import { redrawArt, useTorchlit } from "@/lib/art/part";
+import { PHONE } from "@/lib/art/common";
 import { PIECE_CREDITS, PIECE_SHAPES, pieceFor, type PieceShape } from "@/data/pieces";
 
 // how many pieces stand at the head of the page now (the one at the foot waits for none)
@@ -56,7 +57,12 @@ export function PieceHold() {
   return null;
 }
 
-export default function PagePiece({ place = "head", spec: given, className }: { place?: "head" | "foot"; spec?: { piece: string; why?: string } | null; className?: string }) {
+/**
+ * `steady`: on a phone, the piece keeps one still light rather than the torch in the middle of the screen, so it is not
+ * redrawn as the page scrolls (the home page's, which stands in the carved wall: the wall and the piece both re-lit on
+ * every frame of scrolling halved its speed in the speed test, 2026-10-17).
+ */
+export default function PagePiece({ place = "head", spec: given, className, steady }: { place?: "head" | "foot"; spec?: { piece: string; why?: string } | null; className?: string; steady?: boolean }) {
   const path = usePathname() ?? "/";
   const spec = given !== undefined ? given : pieceFor(path);
   const shape = spec ? PIECE_SHAPES[spec.piece] : undefined;
@@ -86,7 +92,7 @@ export default function PagePiece({ place = "head", spec: given, className }: { 
     art.current = p;
     requestAnimationFrame(() => c.parentElement?.setAttribute("data-ready", ""));
     return p;
-  }, { still: (w, h) => ({ x: -w * 0.3, y: -h * 0.2 }) }, shown ? spec!.piece : "");
+  }, { still: (w, h) => ({ x: -w * 0.3, y: -h * 0.2 }), steady: steady ? PHONE : undefined }, shown ? spec!.piece : "");
 
   if (!shown || !L) return null;
   // the piece at the head of the page is the first thing seen, so it is the first thing fetched: the page asks for its two

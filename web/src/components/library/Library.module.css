@@ -221,25 +221,18 @@
 .aka { font-weight: 400; font-size: 0.9rem; color: var(--ink-2); margin-left: 6px; }
 .latin { grid-area: latin; font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
 
-/* ------------------------------------------------ the moderator's private collection (MineButtons.tsx), above the search */
-.mine { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); padding: var(--space-3) 14px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
-@keyframes mineIn { from { opacity: 0; transform: translateY(8px); } }
-.mineSeal { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent); }
+/* ------------------------------------------------ the moderator's private collection (MineButtons.tsx): a small stone
+   plaque at the right of the page's name (app/library/page.tsx), with a lock and two buttons */
+.mine { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
+@keyframes mineIn { from { opacity: 0; transform: translateY(6px); } }
+.mineSeal { display: inline-grid; place-items: center; width: 22px; color: var(--accent); }
 .mineSeal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-.mineBtns { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .mineBtn {
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 10px; padding: 9px var(--space-4) 9px var(--space-3); text-align: left; color: var(--ink);
-  background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: transform var(--dur-quick) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur-quick) var(--ease);
+  text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-width: var(--tap); min-height: var(--tap); padding: 5px 8px; color: var(--ink-2);
+  font: 500 0.6rem / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.mineBtn:hover, .mineBtn:focus-visible { transform: translateY(-2px); background: var(--slab-lit); box-shadow: var(--slab-edge), 0 8px 18px -12px var(--shadow); }
-.mineBtn svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s var(--ease); }
-.mineBtn:hover svg { transform: translateY(-1px) rotate(-4deg); }
-.mineBtn span { display: grid; line-height: 1.25; }
-.mineBtn b { font-weight: 600; }
-.mineBtn small { color: var(--ink-2); font-size: 0.82rem; }
-@media (max-width: 640px) {
-  .mineBtns { margin-left: 0; width: 100%; }
-  .mineBtn { flex: 1 1 100%; }
-}
+.mineBtn:hover, .mineBtn:focus-visible { background: var(--slab-lit); color: var(--ink); }
+.mineBtn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }

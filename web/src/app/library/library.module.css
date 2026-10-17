@@ -1,6 +1,7 @@
 /* The library's opening (design B, Stone and torch): its name carved across the wall above the search. */
 .head { padding-top: clamp(30px, 5vw, 64px); }
 .kick { color: var(--accent-2); }
+.kickRow { display: flex; align-items: center; gap: var(--space-3); min-height: var(--tap); }
 .carve { margin-top: 22px; }
 
 /* the reading paths, in "Not sure where to begin?" (components/library/Library.tsx): slabs like the levels above them */

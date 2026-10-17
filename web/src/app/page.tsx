@@ -10,6 +10,7 @@ import NameEmblem from "@/components/home/NameEmblem";
 import Muses from "@/components/home/Muses";
 import Settle from "@/components/art/Settle";
 import Carving from "@/components/art/Carving";
+import PagePiece from "@/components/art/PagePiece";
 import ReliefWindow from "@/components/art/ReliefWindow";
 import VisitorMark from "@/components/home/VisitorMark";
 import start from "@/components/home/Start.module.css";
@@ -62,6 +63,9 @@ export default function Home() {
       <section className={styles.hero} aria-labelledby="hero-title">
         <Wall className={styles.wall} />
         <div className={`wrap ${styles.heroIn}`}>
+          {/* the first thing a visitor sees: a piece standing in a niche cut into the wall (beside the words on a computer,
+              above them on a phone) */}
+          <PagePiece className={`piece-rise ${styles.heroPiece}`} steady />
           <div className={styles.heroText} data-quiet="">
             <p className={`label ${styles.kick}`}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</p>
             <CutTitle />

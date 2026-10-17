@@ -21,6 +21,8 @@ export interface PartOptions {
   day?: () => boolean;
   /** false: it does not brighten as it nears the middle of the screen */
   place?: boolean;
+  /** true while it keeps to its one still light, as on the Daylight page (it is not redrawn as the page scrolls) */
+  steady?: () => boolean;
 }
 
 interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; tried: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number; drew: boolean }
@@ -43,7 +45,7 @@ function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: n
     // near the screen but not on it (the observer looks a little beyond): nothing to see, so nothing to draw yet
     if (r.bottom <= 0 || r.top >= H) continue;
     let local: LocalLight[];
-    if (still || p.o.day?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: 1 }]; }
+    if (still || p.o.day?.() || p.o.steady?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: 1 }]; }
     else {
       // brighter near the middle of the screen (a piece taller than the screen: near its top)
       let raw = 1;
