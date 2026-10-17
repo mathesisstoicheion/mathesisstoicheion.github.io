@@ -6,6 +6,7 @@ import Page from "@/components/Page";
 import Library from "@/components/library/Library";
 import Stelai, { type Stele } from "@/components/library/Stelai";
 import Carving from "@/components/art/Carving";
+import PagePiece from "@/components/art/PagePiece";
 import { AREAS } from "@/config/areas";
 import { hasTranslation, greekEditions, type Catalog } from "@/lib/catalog";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -54,9 +55,11 @@ const Paths = () => (
 export default function LibraryPage() {
   return (
     <Page>
+      {/* on a phone the Mouseion's piece opens the page, above its carved name */}
       <div className={`wrap enter ${styles.head}`}>
+        <PagePiece className="piece-phone" />
         <span className={`label ${styles.kick}`}>{AREAS.library.door} · {AREAS.library.english}</span>
-        <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.2} className={`carve ${styles.carve}`} />
+        <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.6} className={`carve ${styles.carve}`} />
       </div>
       <Suspense fallback={null}>
         <Library

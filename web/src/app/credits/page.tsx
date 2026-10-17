@@ -54,9 +54,9 @@ export default function CreditsPage() {
       <article className={`wrap ${styles.prose}`}>
         <div className="page-head">
           <span className="label">About</span>
+          <PagePiece className="piece-phone" />
           <PagePiece className="piece-desk" />
           <h1>Credits, licences &amp; privacy</h1>
-          <PagePiece className="piece-phone" />
           {/* the page is long (the pictures alone are two lists of dozens): a line of jumps, in the order of the page */}
           <nav className={styles.jump} aria-label="On this page">
             {SECTIONS.map(([id, name]) => <a key={id} href={`#${id}`}>{name}</a>)}

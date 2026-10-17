@@ -31,10 +31,10 @@ export default function AboutPage() {
       <article className={`wrap ${styles.prose}`}>
         <div className="page-head">
           <span className="label">About</span>
+          <PagePiece className="piece-phone" />
           <NameCarving greek={SITE.greek} />
           <PagePiece className="piece-desk" />
           <h1>{SITE.latin} <span lang="grc" className={styles.gr}>{SITE.greek}</span></h1>
-          <PagePiece className="piece-phone" />
           <p className={styles.lead}>
             <i>Mathēsis</i> means learning; <i>stoicheia</i> are the letters of the alphabet, and also the basic elements
             of anything, as in the title of Euclid&apos;s <i>Elements</i>. Together, <i>learning the letters</i>: where every

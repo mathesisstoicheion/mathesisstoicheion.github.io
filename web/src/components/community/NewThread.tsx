@@ -48,9 +48,9 @@ export default function NewThread() {
       <div className={`wrap ${styles.signedOutHead}`}>
         <div className="page-head">
           <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / A new thread</p>
+          <PagePiece className="piece-phone" />
           <PagePiece className="piece-desk" />
           <h2 className="page-title">{heading}</h2>
-          <PagePiece className="piece-phone" />
         </div>
       </div>
       <div className={`wrap ${styles.narrow}`}>

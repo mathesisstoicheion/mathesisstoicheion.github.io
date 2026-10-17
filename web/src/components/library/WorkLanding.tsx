@@ -47,6 +47,7 @@ export default function WorkLanding({ work, author, meta, diff, related }: {
       </p>
       <header className={styles.head}>
         <div className="area-kicker"><span className="label">Work</span></div>
+        <PagePiece className="piece-phone" />
         <NameCarving greek={label} />
         <PagePiece className="piece-desk" />
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
@@ -65,7 +66,6 @@ export default function WorkLanding({ work, author, meta, diff, related }: {
           <Link className="btn ghost" href={`/author/${author.id}`} transitionTypes={["page-turn"]}>More by {author.name}</Link>
         </div>
         {/* on a phone the piece stands after the title, the author and the buttons: the first screen shows the way in to the text */}
-        <PagePiece className="piece-phone" />
         <dl className={styles.facts}>
           {meta?.genre && <div><dt>Kind of writing</dt><dd>{meta.genre}</dd></div>}
           {meta?.dialect && <div><dt>Dialect</dt><dd>{meta.dialect}</dd></div>}

@@ -295,13 +295,14 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
 
   return (
     <div className={`wrap ${styles.lib}`}>
-      {/* the moderator alone: their private collection, and importing a text into it */}
-      <MineButtons />
-      {/* the page's name, and the Mouseion's own piece: at the right on a computer, under the name on a phone */}
+      {/* the page's name, and the Mouseion's own piece: at the right on a computer, under the name on a narrow screen
+          (on a phone it stands above the carved name instead: app/library/page.tsx) */}
       <div className={styles.top}>
         {hero && <div className={`enter ${styles.topText}`}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
         <div className={`enter ${styles.topSide}`}><PagePiece className={styles.pieceWide} /></div>
       </div>
+      {/* the moderator alone: their private collection, and importing a text into it */}
+      <MineButtons />
 
       {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
       {stelai && <div className={styles.stelai}>{stelai}</div>}

@@ -71,9 +71,9 @@ function Shelf() {
       <header className={styles.deskHead}>
         <p className={styles.crumbs}><Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span> Private translations</p>
         <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /></div>
+        <PagePiece className="piece-phone" />
         <PagePiece className="piece-desk" />
         <h1 className={styles.deskTitle}>Private translations</h1>
-        <PagePiece className="piece-phone" />
         <p className={styles.lead}>
           Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
           the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.

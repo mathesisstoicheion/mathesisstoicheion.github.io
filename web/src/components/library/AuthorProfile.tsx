@@ -129,10 +129,10 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
     <div className={`wrap ${styles.page}`}>
       <p className={styles.crumb}><Link href={AREAS.library.href}>← {AREAS.library.name} · {AREAS.library.english}</Link></p>
       <header className={styles.head}>
+        <PagePiece className="piece-phone" />
         <div className="area-kicker"><span className="label">Author</span></div>
         <PagePiece className="piece-desk" />
         <h1 className={`page-title ${styles.name}`}>{author.name}</h1>
-        <PagePiece className="piece-phone" />
         {author.orig && <p className={styles.note}><i lang="la">{author.orig}</i> <span className="muted">· the collection&apos;s own Latin name; the English is this site&apos;s translation</span></p>}
         {wd?.desc && <p className={styles.note}>{wd.desc.charAt(0).toUpperCase() + wd.desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}
         <dl className={styles.facts}>

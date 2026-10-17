@@ -52,11 +52,11 @@ export default function EntryView({ e }: { e: Entry }) {
       <EntryMarkers slug={e.slug} heads={heads} />
       <header className={`wrap ${styles.entryHead}`}>
         <p className={styles.crumbs}><Link href="/stoa" transitionTypes={["page-turn"]}>The Painted Stoa</Link> › <Link href={cat.href ?? `/stoa#${cat.id}`} transitionTypes={["page-turn"]}>{cat.title}</Link></p>
+        <PagePiece className="piece-phone" />
         <NameCarving greek={e.greek} />
         <PagePiece className="piece-desk" />
         <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
         <p className={styles.kicker}>{e.kicker}</p>
-        <PagePiece className="piece-phone" />
         {/* the opening stands in the header's left column, beside the niche (after the phone's niche, under the title) */}
         <div className={styles.hookBlock}>
           <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>

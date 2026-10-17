@@ -28,9 +28,9 @@ export default function Account() {
       <div className={`wrap ${styles.signedOutHead}`}>
         <div className="page-head">
           <p className="label">Account</p>
+          <PagePiece className="piece-phone" />
           <PagePiece className="piece-desk" />
           <h1 className="page-title">{title}</h1>
-          <PagePiece className="piece-phone" />
         </div>
       </div>
       <Suspense>

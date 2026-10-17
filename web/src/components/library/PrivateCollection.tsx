@@ -44,10 +44,10 @@ export default function PrivateCollection() {
     <div className={`wrap ${styles.page}`}>
       <nav className={styles.crumbs} aria-label="Breadcrumb"><Link href="/library">Library</Link> <span aria-hidden="true">/</span> Private collection</nav>
       <header className={styles.pageHead}>
+        <PagePiece className="piece-phone" />
         <span className={styles.seal}>{LOCK} Private · only you can see this</span>
         <PagePiece className="piece-desk" />
         <h1 className={styles.pageTitle}>Private collection</h1>
-        <PagePiece className="piece-phone" />
         <p className={styles.pageLead}>Your own translations and the texts you have imported. Each opens in the reader, with all its reading aids.</p>
       </header>
       <Collection current={null} tab={tab} onTab={(t) => router.replace(href(t), { scroll: false })} onOpen={(id) => router.push(mineHref(id))} />

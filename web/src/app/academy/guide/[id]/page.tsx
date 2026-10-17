@@ -28,10 +28,10 @@ export default async function GuidePage({ params }: PageProps<"/academy/guide/[i
       <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
         <div className="page-head">
           <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Guide {n} of {GUIDES.length}</nav>
+          <PagePiece className="piece-phone" />
           <NameCarving greek={guide.greek} />
           <PagePiece className="piece-desk" />
           <h1 className="page-title">{guide.title} <span lang="grc" style={{ display: "block", fontSize: "0.5em", marginTop: 8 }}>{guide.greek}</span></h1>
-          <PagePiece className="piece-phone" />
           <p className="muted" style={{ fontSize: "1.1rem" }}>{guide.summary} · about {guide.minutes} minutes</p>
         </div>
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />

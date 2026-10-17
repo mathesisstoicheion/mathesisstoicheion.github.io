@@ -6,7 +6,7 @@ import { carvedCaps } from "@/lib/art/common";
  * the same words are in the title beside it, so the carving is only decoration. A name with no Greek letters, or too
  * long to carve well, is left to the title.
  */
-export default function NameCarving({ greek, delay = 0.1 }: { greek?: string | null; delay?: number }) {
+export default function NameCarving({ greek, delay = 0.6 }: { greek?: string | null; delay?: number }) {
   const n = greek ? carvedCaps(greek).length : 0;
   if (!greek || n < 2 || n > 42) return null;
   return <Carving text={greek} kind="name" delay={delay} className="carve page-carve" />;

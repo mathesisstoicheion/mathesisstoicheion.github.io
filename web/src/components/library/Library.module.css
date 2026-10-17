@@ -12,7 +12,7 @@
 .pieceNarrow { display: none; }
 @media (max-width: 860px) { .topSide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
 /* on a phone the piece has a window of its own across the screen, under the page's name (it comes first in the markup) */
-@media (max-width: 760px) { .topText { display: flex; flex-direction: column; } .topText > h1 { order: -1; } }
+@media (max-width: 760px) { .pieceNarrow { display: none; } }
 /* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
 .stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
 .error { color: var(--accent); padding-block: 40px; }

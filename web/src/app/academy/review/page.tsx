@@ -16,9 +16,9 @@ export default function ReviewPage() {
         <div className="tool-main">
         <div className="page-head">
           <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Daily review</nav>
+          <PagePiece className="piece-phone" />
           <NameCarving greek="ἀνάμνησις" />
           <h1 className="page-title">Daily review <span lang="grc">ἀνάμνησις</span></h1>
-          <PagePiece className="piece-phone" />
         </div>
         <Review />
         </div>

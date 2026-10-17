@@ -19,12 +19,12 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
             <Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> ›{" "}
             <Link href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>Lesson {n}</Link> › {mode === "practice" ? "Practice" : "Test"}
           </nav>
+          <PagePiece className="piece-phone" />
           <NameCarving greek={mode === "practice" ? "ἄσκησις" : "δοκιμασία"} />
           <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4.5vw, 2.8rem)" }}>
             {mode === "practice" ? "Practise" : "Test yourself"}: {lesson.title}
             <span lang="grc" style={{ display: "block", fontSize: "0.55em", marginTop: 6 }}>{mode === "practice" ? "ἄσκησις" : "δοκιμασία"}</span>
           </h1>
-          <PagePiece className="piece-phone" />
           <p className={`muted ${styles.pageIntro}`} style={{ fontSize: "1.05rem", maxWidth: "62ch" }}>
             {mode === "practice"
               ? "A round of questions on this lesson, with some from earlier lessons mixed in. Anything you miss comes back at the end of the round, until you have it."

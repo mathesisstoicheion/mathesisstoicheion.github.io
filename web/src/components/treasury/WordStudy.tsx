@@ -91,9 +91,9 @@ function Head({ lemma, entry, meta, lexState, alike }: { lemma: string; entry: L
   }, [entry, meta]);
   return (
     <header className={styles.head}>
+      <PagePiece className="piece-phone" />
       <PagePiece className="piece-desk" />
       <h1 lang="grc" className={styles.lemma}>{lemma}</h1>
-      <PagePiece className="piece-phone" />
       <p className={styles.headMeta}>
         <span className={styles.translit}>{transliterate(lemma)}</span>
         {pos && <span>{pos}</span>}

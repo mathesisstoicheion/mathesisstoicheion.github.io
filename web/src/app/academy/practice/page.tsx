@@ -16,9 +16,9 @@ export default function PracticePage() {
         <div className="tool-main">
         <div className="page-head">
           <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Practice</nav>
+          <PagePiece className="piece-phone" />
           <NameCarving greek="ἄσκησις" />
           <h1 className="page-title">Practice <span lang="grc">ἄσκησις</span></h1>
-          <PagePiece className="piece-phone" />
           <p className="muted" style={{ maxWidth: "62ch", fontSize: "1.1rem" }}>Short drills. Endings come from the checked tables; the sentences are real, and their answers come from hand-checked analyses.</p>
         </div>
         <PracticeClient />

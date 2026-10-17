@@ -99,11 +99,11 @@ export default function GuidePage() {
       <div className={`wrap ${styles.page}`}>
         <header className={styles.top}>
           <span className="label">The Guide</span>
+          <PagePiece className="piece-phone" />
           <NameCarving greek="ὁδηγός" />
           <PagePiece className="piece-desk" />
           <h1 className="page-title">How to use the site</h1>
           <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>
-          <PagePiece className="piece-phone" />
           <p className={styles.lead}>
             Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.

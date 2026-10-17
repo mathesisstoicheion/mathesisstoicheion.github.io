@@ -8,11 +8,11 @@ export default function RefHead({ title, greek, children }: { title: string; gre
   return (
     <header className={`wrap ${styles.entryHead}`}>
       <p className={styles.crumbs}><Link href="/stoa" transitionTypes={["page-turn"]}>The Painted Stoa</Link> › {title}</p>
+      <PagePiece className="piece-phone" />
       <NameCarving greek={greek} />
       <PagePiece className="piece-desk" />
       <h1 className={styles.title}>{title}{greek && <span className={styles.titleGr} lang="grc">{greek}</span>}</h1>
       <p className={styles.kicker}>{children}</p>
-      <PagePiece className="piece-phone" />
     </header>
   );
 }

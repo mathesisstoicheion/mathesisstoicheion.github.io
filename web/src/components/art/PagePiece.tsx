@@ -7,13 +7,14 @@
  * clicking again gives it back to the torch (the owner, 2026-10-16).
  *
  * `place="head"` stands it in a big window at the right of a page's title, the words flowing round it. A header holds it
- * twice: before the title for a computer (`className="piece-desk"`) and after the title and its subtitle for a phone
+ * twice: before the title for a computer (`className="piece-desk"`) and at the very top of the page for a phone
  * (`"piece-phone"`), where it has a window of its own across the screen; only the one shown is ever loaded and drawn. Pages with no title on show (a
  * form, a private page) get theirs from the layout instead, at the foot of the page (`place="foot"`): it appears only
  * when no piece has been placed at the head.
  */
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { preload } from "react-dom";
 import { Piece, loadPiece, type PieceLook } from "@/lib/art/piece";
 import { redrawArt, useTorchlit } from "@/lib/art/part";
 import { PIECE_CREDITS, PIECE_SHAPES, pieceFor, type PieceShape } from "@/data/pieces";
@@ -88,6 +89,12 @@ export default function PagePiece({ place = "head", spec: given, className }: { 
   }, { still: (w, h) => ({ x: -w * 0.3, y: -h * 0.2 }) }, shown ? spec!.piece : "");
 
   if (!shown || !L) return null;
+  // the piece at the head of the page is the first thing seen, so it is the first thing fetched: the page asks for its two
+  // pictures at once, ahead of everything else, before the page's scripts have even run (the same requests loadPiece
+  // makes, so the browser hands it these)
+  if (place === "head") {
+    for (const u of [`/images/pieces/lit/${spec!.piece}.jpg`, `/images/pieces/lit/${spec!.piece}-m.png`]) preload(u, { as: "fetch", crossOrigin: "anonymous", fetchPriority: "high" });
+  }
   // (the canvas is keyed by its piece: a piece's light is put out when it goes, and a canvas whose light has been put out
   // cannot be lit again, so the layout's piece at the foot of the page gets a fresh canvas when the page, and its piece, change)
   const toggle = () => {
