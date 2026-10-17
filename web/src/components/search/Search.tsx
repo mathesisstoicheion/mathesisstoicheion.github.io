@@ -7,7 +7,8 @@
 import { addRecentSearch } from "@/lib/recent-searches";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
+import AreaHeader from "@/components/AreaHeader";
 import { fold, loadCatalog, describe, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, familyOf, periodOf, FAMILIES, PERIODS, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { detectScript, queryWords, toPattern, type Script } from "@/lib/search/input";
@@ -47,12 +48,75 @@ const EXAMPLES: Record<Tab, string[]> = {
 };
 const DIALECTS = ["Attic", "Attic/Koine", "Ionic", "Ionic/Epic", "Doric", "Koine"];
 
+/**
+ * What was typed in "Near another word" and not yet applied. The word is asked for in the "Refine" fold beside the results,
+ * but "Ask", in the box at the head of the page, applies it too, so both read this one place. It belongs to the search it was
+ * typed for (`of`): a new address, by Back or by Clear all, shows the address's own word instead.
+ */
+interface NearDraft { of: string; text: string }
+const nearOf = (tab: Tab, near: string | null) => `${tab}|${near ?? ""}`;
+const nearText = (d: NearDraft, tab: Tab, near: string | null) => (d.of === nearOf(tab, near) ? d.text : near ?? "");
+
+/** The Oracle's carving: a line of the Delphic fore-temple, in place of a Greek name of its own, with its source set small beneath. */
+const CARVE = {
+  text: "Γνῶθι σαυτόν",
+  caption: <small className={styles.cap}><span lang="grc">Γνῶθι σαυτόν</span>, “Know thyself”: one of the maxims written in the fore-temple at Delphi
+    (Pausanias, <i>Description of Greece</i> 10.24.1, translated by W. H. S. Jones and H. A. Ormerod).</small>,
+};
+
+/**
+ * The Oracle in two parts that share one address and one unsent word: the area's header with the kinds of search and the box
+ * straight under its title, and the filters and results below it. Each part reads the address on its own, so each stands in its own
+ * Suspense (the address is only known in the browser); the header itself is in the page as it is built.
+ */
 export default function Search() {
+  const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
+  return (
+    <>
+      <AreaHeader id="search" carve={CARVE}>
+        <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
+          <OracleBox draft={draft} />
+        </Suspense>
+      </AreaHeader>
+      <Suspense fallback={null}>
+        <Oracle draft={draft} setDraft={setDraft} />
+      </Suspense>
+    </>
+  );
+}
+
+/** What the address says (the search is kept in it) and how to change it: a new query is a new history entry, a refinement replaces it. */
+function useAddress() {
   const params = useSearchParams();
   const router = useRouter();
   const tab = (TABS.some((t) => t.id === params.get("m")) ? params.get("m") : "forms") as Tab;
   const q = params.get("q") ?? "";
   const script = (params.get("s") ?? "auto") as Script | "auto";
+  const go = (patch: Record<string, string | null>, push = false) => {
+    const p = new URLSearchParams(params.toString());
+    for (const [k, v] of Object.entries(patch)) { if (v === null || v === "") p.delete(k); else p.set(k, v); }
+    const url = `/search?${p}`;
+    if (push) router.push(url, { scroll: false }); else router.replace(url, { scroll: false });
+  };
+  return { params, tab, q, script, go };
+}
+
+/** The box at the head of the page. */
+function OracleBox({ draft }: { draft: NearDraft }) {
+  const { params, tab, q, script, go } = useAddress();
+  const near = params.get("n");
+  return (
+    <SearchBox key={`${tab}|${q}`} tab={tab} initial={q} script={script}
+      onTab={(t) => go({ m: t === "forms" ? null : t, lem: null }, true)}
+      onScript={(s) => go({ s: s === "auto" ? null : s })}
+      // "Ask" also applies a word typed in "Near another word", so nothing typed is left behind
+      onSubmit={(text) => { addRecentSearch(text); go({ q: text.trim(), ...(tab === "library" || tab === "syntax" ? {} : { n: nearText(draft, tab, near).trim() || null }), lem: null }, true); }} />
+  );
+}
+
+/** The filters, the references and the results. */
+function Oracle({ draft, setDraft }: { draft: NearDraft; setDraft: (d: NearDraft) => void }) {
+  const { params, tab, q, script, go } = useAddress();
   const lemma = params.get("lem");
   const tagStr = (params.get("t") ?? "").padEnd(9, "-").slice(0, 9);
   const scope = { a: params.get("a"), w: params.get("w"), g: params.get("g"), p: params.get("p"), d: params.get("d") };
@@ -69,14 +133,6 @@ export default function Search() {
     loadWorksMeta().then(setMeta);
     loadAbbrevs().then(setAbbrevs);
   }, []);
-
-  /** Change the search: a new query is a new history entry, a refinement replaces it. */
-  const go = (patch: Record<string, string | null>, push = false) => {
-    const p = new URLSearchParams(params.toString());
-    for (const [k, v] of Object.entries(patch)) { if (v === null || v === "") p.delete(k); else p.set(k, v); }
-    const url = `/search?${p}`;
-    if (push) router.push(url, { scroll: false }); else router.replace(url, { scroll: false });
-  };
 
   const tags = useMemo<TagFilter>(() => Object.fromEntries(TAG_FIELDS.map((f, i) => [f.id, tagStr[i] === "-" ? undefined : tagStr[i]])), [tagStr]);
   const works = useMemo(() => {
@@ -105,11 +161,6 @@ export default function Search() {
 
   return (
     <div className={`wrap ${styles.page}`}>
-      <SearchBox key={`${tab}|${q}`} tab={tab} initial={q} script={script}
-        onTab={(t) => go({ m: t === "forms" ? null : t, lem: null }, true)}
-        onScript={(s) => go({ s: s === "auto" ? null : s })}
-        onSubmit={(text) => { addRecentSearch(text); go({ q: text.trim(), lem: null }, true); }} />
-
       {refs.length > 0 && (
         <section className={styles.refs} aria-label="Go to a passage">
           <span className="label">Go straight to the passage</span>
@@ -132,7 +183,7 @@ export default function Search() {
       ) : (
         <div className={styles.layout}>
           <aside className={styles.filters} aria-label="Narrow the search">
-            <Filters idx={idx} tab={tab} scope={scope} allEditions={allEditions} tagStr={tagStr} go={go} near={near} nearWithin={nearWithin} />
+            <Filters idx={idx} tab={tab} scope={scope} allEditions={allEditions} tagStr={tagStr} go={go} near={near} nearWithin={nearWithin} draft={draft} setDraft={setDraft} />
           </aside>
           <div className={styles.results}>
             {tab === "syntax" ? (
@@ -239,27 +290,35 @@ function Welcome({ tab, onExample }: { tab: Tab; onExample: (q: string) => void 
       <ul className={styles.tips}>
         <li>Accents and breathings never matter: <span lang="grc">λογος</span> finds <span lang="grc">λόγος</span>.</li>
         <li>Type Greek, or Latin letters (<i>psyche</i>, <i>anthrōpos</i>), or Beta Code (<code>a)/nqrwpos</code>).</li>
-        <li><code>*</code> stands for any letters and <code>?</code> for one: <span lang="grc">λογ*</span>, <span lang="grc">λ?γος</span>.</li>
-        <li>Type a reference such as <i>Il. 1.1</i>, <i>S. Ant. 332</i> or <i>Plato Republic 327a</i> to go straight there.</li>
-        <li>Press <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> on any page to search from there.</li>
-        <li>For study: <b>Concordance</b> lines up every result with the words around it (sort by the word before or after, and download it as a spreadsheet); <b>Statistics</b> shows where a word is used most, per 10,000 words and century by century; <b>Near another word</b> finds two words together.</li>
       </ul>
+      <details className={styles.moreTips}>
+        <summary>More search tips</summary>
+        <ul className={styles.tips}>
+          <li><code>*</code> stands for any letters and <code>?</code> for one: <span lang="grc">λογ*</span>, <span lang="grc">λ?γος</span>.</li>
+          <li>Type a reference such as <i>Il. 1.1</i>, <i>S. Ant. 332</i> or <i>Plato Republic 327a</i> to go straight there.</li>
+          <li>Press <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>K</kbd> on any page to search from there.</li>
+          <li>For study: <b>Concordance</b> lines up every result with the words around it (sort by the word before or after, and download it as a spreadsheet); <b>Statistics</b> shows where a word is used most, per 10,000 words and century by century; <b>Near another word</b> finds two words together.</li>
+        </ul>
+      </details>
     </div>
   );
 }
 
 // ------------------------------------------------------------ filters
-function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }: {
+function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin, draft, setDraft }: {
   idx: CatalogIndex | null; tab: Tab; scope: Record<"a" | "w" | "g" | "p" | "d", string | null>; allEditions: boolean; tagStr: string;
-  go: (p: Record<string, string | null>) => void; near: string | null; nearWithin: string | null;
+  go: (p: Record<string, string | null>) => void; near: string | null; nearWithin: string | null; draft: NearDraft; setDraft: (d: NearDraft) => void;
 }) {
   const authors = useMemo(() => (idx ? [...idx.catalog.authors].sort((a, b) => a.name.localeCompare(b.name)) : []), [idx]);
   const author = scope.a ? idx?.author.get(scope.a) : undefined;
   const setTag = (i: number, v: string) => go({ t: (tagStr.slice(0, i) + (v || "-") + tagStr.slice(i + 1)).replace(/-+$/, "") || null, lem: null });
   const any = Object.values(scope).some(Boolean) || tagStr.replace(/-/g, "") || allEditions || near;
+  // "Refine" holds the near word and where to look. It opens by itself when one of them is set, and says how many are on
+  // (an author and one of their works count once). Once the reader has opened it, or shut it, their hand decides.
+  const on = (near && tab !== "syntax" ? 1 : 0) + (scope.a || scope.w ? 1 : 0) + (scope.g ? 1 : 0) + (scope.p ? 1 : 0) + (scope.d ? 1 : 0) + (allEditions && tab !== "syntax" ? 1 : 0);
+  const [byHand, setByHand] = useState(false);
   return (
     <div className={styles.filterBody}>
-      {tab !== "syntax" && <NearField key={`${tab}|${near}`} tab={tab} near={near} within={nearWithin} go={go} />}
       {tab === "lemma" && (
         <fieldset className={styles.fs}>
           <legend>Grammar</legend>
@@ -275,6 +334,10 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }:
           <p className={styles.small}>As analysed in GLAUx: most of it by computer, some checked by hand.</p>
         </fieldset>
       )}
+      <details className={styles.refine} open={byHand || on > 0} onToggle={(e) => setByHand(e.currentTarget.open)}>
+      <summary>Refine{on > 0 && <span className={styles.refineOn}>{on} {on === 1 ? "filter" : "filters"} on</span>}</summary>
+      <div className={styles.refineBody}>
+      {tab !== "syntax" && <NearField tab={tab} near={near} within={nearWithin} draft={draft} setDraft={setDraft} go={go} />}
       <fieldset className={styles.fs}>
         <legend>Where</legend>
         <label className={styles.field}>
@@ -320,14 +383,18 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin }:
           <span>Every {tab === "english" ? "translation" : "edition"}, not only the one the reader opens first</span>
         </label>}
       </fieldset>
+      </div>
+      </details>
       {any && <button type="button" className="chip" onClick={() => go({ a: null, w: null, g: null, p: null, d: null, t: null, all: null, lem: null, n: null, nw: null })}>Clear all</button>}
     </div>
   );
 }
 
-/** Only results with another word near them: δίκη within five words of θεός. */
-function NearField({ tab, near, within, go }: { tab: Tab; near: string | null; within: string | null; go: (p: Record<string, string | null>) => void }) {
-  const [text, setText] = useState(near ?? "");
+/** Only results with another word near them: δίκη within five words of θεός. The word typed is kept in `draft`, so "Ask" can apply it too. */
+function NearField({ tab, near, within, draft, setDraft, go }: {
+  tab: Tab; near: string | null; within: string | null; draft: NearDraft; setDraft: (d: NearDraft) => void; go: (p: Record<string, string | null>) => void;
+}) {
+  const text = nearText(draft, tab, near);
   const w = String(readWithin(within));
   return (
     <form onSubmit={(e) => { e.preventDefault(); go({ n: text.trim() || null }); }}>
@@ -335,7 +402,7 @@ function NearField({ tab, near, within, go }: { tab: Tab; near: string | null; w
         <legend>Near another word</legend>
         <label className={styles.field}>
           <span>{tab === "lemma" ? "Another dictionary word" : tab === "english" ? "Another English word" : "Another Greek word"}</span>
-          <input value={text} onChange={(e) => setText(e.target.value)} lang={tab === "english" ? undefined : "grc"} placeholder={tab === "english" ? "god" : tab === "lemma" ? "θεός" : "θε*"}
+          <input value={text} onChange={(e) => setDraft({ of: nearOf(tab, near), text: e.target.value })} lang={tab === "english" ? undefined : "grc"} placeholder={tab === "english" ? "god" : tab === "lemma" ? "θεός" : "θε*"}
             autoComplete="off" autoCapitalize="off" spellCheck={false} />
         </label>
         <label className={styles.field}>
@@ -346,7 +413,7 @@ function NearField({ tab, near, within, go }: { tab: Tab; near: string | null; w
         </label>
         <div className={styles.nearBtns}>
           <button type="submit" className="chip">Find them together</button>
-          {near && <button type="button" className="chip" onClick={() => { setText(""); go({ n: null, nw: null }); }}>Remove</button>}
+          {near && <button type="button" className="chip" onClick={() => { setDraft({ of: nearOf(tab, null), text: "" }); go({ n: null, nw: null }); }}>Remove</button>}
         </div>
       </fieldset>
     </form>

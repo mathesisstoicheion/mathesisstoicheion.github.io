@@ -14,6 +14,7 @@ import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import MineButtons from "./MineButtons";
 import { AZRail } from "./AZList";
+import { bestMatch, nameMatch } from "./az";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import PagePiece from "@/components/art/PagePiece";
@@ -36,6 +37,8 @@ const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** How many authors (or titles) a list needs before the rail of letters stands beside it. */
 const RAIL_FROM = 20;
 const UNDATED = "Not dated";
+/** The key of the group that leads a search which names one author (a word, so it is never taken for a letter of the A to Z). */
+const BEST = "best";
 
 const readHref = (w: CatWork) => `/read?w=${w.id}`;
 const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
@@ -67,9 +70,18 @@ export function marked(text: string, query: string): ReactNode {
   return <>{out.map((x, i) => <Fragment key={i}>{x}</Fragment>)}</>;
 }
 
-export function WorkItem({ w, author, meta, common, about = false }: { w: CatWork; author?: CatAuthor; meta?: WorkMeta; common: number | null; about?: boolean }) {
+/**
+ * One work on an author's page. `usual` is what most of that author's works are (their kind of writing and their date): the row
+ * then names a kind or a date only where the work differs from it, and leaves out the file's size, because the same words
+ * on every row (37 times, for Plato) hide the few that are different.
+ */
+export function WorkItem({ w, author, meta, common, about = false, usual }: {
+  w: CatWork; author?: CatAuthor; meta?: WorkMeta; common: number | null; about?: boolean; usual?: { genre: string | null; when: string | null };
+}) {
   const grc = greekEditions(w)[0];
   const tr = hasTranslation(w);
+  const when = meta ? centuries(meta.from, meta.to) : null;
+  const kind = [meta?.genre && (!usual || meta.genre !== usual.genre) ? meta.genre : null, when && (!usual || when !== usual.when) ? when : null].filter(Boolean).join(" · ");
   return (
     <li className={styles.work}>
       <Link href={readHref(w)} transitionTypes={["page-turn"]} className={styles.workLink}>
@@ -78,10 +90,10 @@ export function WorkItem({ w, author, meta, common, about = false }: { w: CatWor
         {w.orig && w.orig !== grc?.label && <OrigTitle work={w} className={styles.orig} />}
       </Link>
       <span className={styles.meta}>
-        {meta?.genre && <span className={styles.genre}>{meta.genre}{meta.from !== null ? ` · ${centuries(meta.from, meta.to)}` : ""}</span>}
+        {kind && <span className={styles.genre}>{kind}</span>}
         {tr ? <span className={styles.badge}>English</span> : <span className={`${styles.badge} ${styles.off}`}>Greek only</span>}
         {common !== null && <span title={`${common}% of this text's running words are among the 516 core words, the commonest in Greek`}>{common}% common words</span>}
-        {grc && <span className={styles.size}>{kb(grc.size)}</span>}
+        {grc && !usual && <span className={styles.size}>{kb(grc.size)}</span>}
         {about && <Link href={workPath(w.id)} transitionTypes={["page-turn"]} className={styles.aboutLink}>About</Link>}
       </span>
     </li>
@@ -187,7 +199,18 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
     return { a, works: ws, from: froms.length ? Math.min(...froms) : null, to: tos.length ? Math.max(...tos) : null };
   }).filter((r) => r.works.length), [found, family, meta]);
 
+  // a search that plainly names one author (Plato, aristot, Ἀριστοτέλης): that author leads the list, opened, as the "Best match"
+  // (az.ts). Two authors equally close (Marcus A…) name no one in particular, so the A to Z stands as it is.
+  const bestId = useMemo(() => {
+    const f = fold(query.trim());
+    if (f.length < 2 || sort === "title") return null;
+    return bestMatch(rows, (r) => nameMatch([r.a.name, r.a.orig, names[r.a.id]?.grc, ...(names[r.a.id]?.also ?? [])], f))?.a.id ?? null;
+  }, [rows, query, names, sort]);
+
   const groups: Group[] = useMemo(() => {
+    const best = bestId ? rows.find((r) => r.a.id === bestId) : undefined;
+    const rest = best ? rows.filter((r) => r !== best) : rows;
+    const lead: Group[] = best ? [{ key: BEST, label: "Best match", short: "Best match", rows: [best] }] : [];
     if (sort === "title") {
       const all = rows.flatMap(({ a, works }) => works.map((w) => ({ w, a }))).sort((x, y) => byName(x.w.title, y.w.title));
       const by = new Map<string, Group>();
@@ -198,13 +221,13 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
       const by = new Map<string, Group>();
       for (const [p] of PERIODS) by.set(p, { key: p, label: p, short: p.split(" ·")[0], rows: [] });
       by.set(UNDATED, { key: UNDATED, label: "Not dated in GLAUx", short: "Undated", rows: [] });
-      for (const r of [...rows].sort((x, y) => (x.from ?? 1e9) - (y.from ?? 1e9) || byName(x.a.name, y.a.name))) by.get(periodOf(r.from) ?? UNDATED)!.rows!.push(r);
-      return [...by.values()].filter((g) => g.rows!.length);
+      for (const r of [...rest].sort((x, y) => (x.from ?? 1e9) - (y.from ?? 1e9) || byName(x.a.name, y.a.name))) by.get(periodOf(r.from) ?? UNDATED)!.rows!.push(r);
+      return [...lead, ...[...by.values()].filter((g) => g.rows!.length)];
     }
     const by = new Map<string, Group>();
-    for (const r of [...rows].sort((x, y) => byName(x.a.name, y.a.name))) { const k = initial(r.a.name); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, rows: [] }); by.get(k)!.rows!.push(r); }
-    return [...by.values()];
-  }, [rows, sort]);
+    for (const r of [...rest].sort((x, y) => byName(x.a.name, y.a.name))) { const k = initial(r.a.name); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, rows: [] }); by.get(k)!.rows!.push(r); }
+    return [...lead, ...by.values()];
+  }, [rows, sort, bestId]);
 
   // a search that names an author (by any of their names): those authors are offered first, as links to their place
   const authorHits = useMemo(() => {
@@ -254,7 +277,7 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
   const selected = params.get("a");
   const ctx = `${query}|${tr}|${family}|${period}|${dialect}|${vocab}|${allOpen}`;
   const flipped = flips.ctx === ctx ? flips.ids : new Set<string>();
-  const isOpen = (id: string) => flipped.has(id) !== (narrowed || allOpen || id === selected);
+  const isOpen = (id: string) => flipped.has(id) !== (narrowed || allOpen || id === selected || id === bestId);
   const toggle = (id: string) => { const t = new Set(flipped); if (t.has(id)) t.delete(id); else t.add(id); setFlips({ ctx, ids: t }); };
   useEffect(() => {
     if (!idx || !selected) return;
@@ -264,6 +287,7 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
     });
   }, [idx, selected]);
 
+  const filtering = !!query.trim() || tr !== "all" || !!period || !!dialect || !!vocab;
   const active = (tr !== "all" ? 1 : 0) + (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
@@ -344,6 +368,8 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
             <button type="button" className="chip" aria-pressed={!family} onClick={() => setFamily("")}>All <small>{n(familyCounts.all)}</small></button>
             {FAMILIES.map(([f]) => {
               const c = familyCounts.c.get(f) ?? 0;
+              // while a search or a filter is on, a kind of writing with nothing left in it is not offered (the one chosen stays, to be unchosen)
+              if (!c && family !== f && filtering) return null;
               return <button key={f} type="button" className="chip" aria-pressed={family === f} disabled={!c && family !== f} onClick={() => setFamily(family === f ? "" : f)}>{f} <small>{n(c)}</small></button>;
             })}
           </div>
@@ -402,7 +428,7 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
         }}>
           {groups.map((g) => (
             <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
-              <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" ? "" : undefined}>{g.label}</h3>
+              <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>{g.label}</h3>
               {g.rows?.map((r) => (
                 <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
                   aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}

@@ -18,25 +18,37 @@ export default function AcademyProgress() {
   const known = useMemo(() => knownLemmas(deck).size, [deck]);
   const cards = Object.keys(deck).length;
   const s = streak(days);
+  // the four numbers are for a visitor who has begun: a first visit would meet four zeros
+  const started = done > 0 || cards > 0;
 
   return (
-    <section className={styles.progress} aria-label="Your progress">
-      <div className={styles.stats}>
-        <div><b>{done}<small>/{LESSONS.length}</small></b><span>lessons done</span></div>
-        <div><b>{known}</b><span>words learned</span></div>
-        <div><b>{due}</b><span>cards due today</span></div>
-        <div><b>{s}</b><span>day{s === 1 ? "" : "s"} in a row</span></div>
-      </div>
+    <section className={`${styles.progress} ${started ? "" : styles.progressNew}`} aria-label="Your progress">
+      {started && (
+        <div className={styles.stats}>
+          <div><b>{done}<small>/{LESSONS.length}</small></b><span>lessons done</span></div>
+          <div><b>{known}</b><span>words learned</span></div>
+          <div><b>{due}</b><span>cards due today</span></div>
+          <div><b>{s}</b><span>day{s === 1 ? "" : "s"} in a row</span></div>
+        </div>
+      )}
       <div className={styles.nextStep}>
         <span className="label">Next step</span>
         {refresh && <p>{refresh.name} is due for a refresh. <Link href={refresh.href} transitionTypes={["page-turn"]}>Refresh {refresh.title} →</Link></p>}
         {checkpoint && <p>You have done every lesson before Checkpoint {checkpoint.numeral}. <Link href={`/academy/checkpoint/${checkpoint.id}`} transitionTypes={["page-turn"]}>Test them together →</Link></p>}
         {due > 0
-          ? <p>You have {due} word{due === 1 ? "" : "s"} to review. <Link href="/academy/review" transitionTypes={["page-turn"]}>Start today&apos;s review →</Link></p>
+          ? <>
+              <p>You have {due} word{due === 1 ? "" : "s"} to review.</p>
+              <Link className="btn" href="/academy/today" transitionTypes={["page-turn"]}>Start today&apos;s session <span className="arr" aria-hidden="true">→</span></Link>
+            </>
           : next
-            ? <p>{done ? "Carry on with" : "Begin with"} <Link href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Lesson {LESSONS.indexOf(next) + 1}: {next.title} →</Link></p>
-            : <p>You have finished every lesson so far. <Link href="/academy/vocabulary" transitionTypes={["page-turn"]}>Grow your vocabulary →</Link></p>}
-        {cards === 0 && <p className="muted">Your review deck is empty. Words from lessons, the vocabulary list and the reader&apos;s &ldquo;Save word&rdquo; all go into it.</p>}
+            ? <>
+                <p>{done ? "Carry on with" : "Begin with"}</p>
+                <Link className="btn" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Lesson {LESSONS.indexOf(next) + 1}: {next.title} <span className="arr" aria-hidden="true">→</span></Link>
+              </>
+            : <>
+                <p>You have finished every lesson so far.</p>
+                <Link className="btn" href="/academy/vocabulary" transitionTypes={["page-turn"]}>Grow your vocabulary <span className="arr" aria-hidden="true">→</span></Link>
+              </>}
       </div>
     </section>
   );

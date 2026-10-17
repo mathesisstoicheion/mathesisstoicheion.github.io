@@ -77,6 +77,24 @@ test("a search marks what matched, and offers the authors it names first", async
   await expect(page.locator("#author-tlg0086")).toBeInViewport();
 });
 
+test("a search that names one author puts that author first, opened, as the best match; the rest stay A to Z", async ({ page }) => {
+  await page.goto("/library");
+  const search = page.getByRole("searchbox", { name: "Search the library" });
+  const chips = page.getByRole("group", { name: "Kind of writing" }).getByRole("button");
+  const all = await chips.count();
+  await search.fill("plato");
+  const sections = page.locator("section[id^=lib-]");
+  await expect(sections.first()).toHaveAttribute("id", "lib-best");
+  await expect(sections.first().getByRole("heading", { name: "Best match" })).toBeVisible();
+  await expect(sections.first().locator("#author-tlg0059").getByRole("button", { name: /^Plato/ })).toHaveAttribute("aria-expanded", "true");
+  await expect(sections.nth(1)).toHaveAttribute("id", /^lib-[A-Z#]$/);
+  // while a search is on, the kinds of writing with nothing left in them are not offered
+  await expect.poll(() => chips.count()).toBeLessThan(all);
+  // two authors equally close (no one in particular) lead nothing
+  await search.fill("anonymous");
+  await expect(page.locator("#lib-best")).toHaveCount(0);
+});
+
 test("the library sorts by title and by period, and jumps to a letter", async ({ page }) => {
   await page.goto("/library");
   await page.getByRole("radio", { name: "Title A–Z" }).click();

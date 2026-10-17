@@ -57,8 +57,9 @@ export default function WikiEras() {
               </li>
             ))}
           </ol>
+          {/* each period's bracket under its columns is a link to its card below */}
           <div className={styles.bands} style={{ gridTemplateColumns: bands.map((b) => `${b.n}fr`).join(" ") }}>
-            {bands.map((b) => <span key={b.era.id} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2}>{b.era.name}</span>)}
+            {bands.map((b) => <a key={b.era.id} href={`#${b.era.id}`} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2} title={`${b.era.name}, ${b.era.span}`}>{b.era.name}</a>)}
           </div>
         </div>
       </section>
@@ -85,20 +86,26 @@ export default function WikiEras() {
                 </ul>
               </div>
             )}
-            {s.kinds.length > 0 && (
-              <div>
-                <p className="label">Kinds of writing</p>
-                <div className={styles.kinds}>
-                  {s.kinds.slice(0, 6).map(([k, n]) => (
-                    <Link key={k} className="chip" href={`/stoa/authors?e=${s.era.id}&k=${encodeURIComponent(k)}`} transitionTypes={["page-turn"]}>{kindLabel(k)} <small>{num(n)}</small></Link>
-                  ))}
-                </div>
-              </div>
-            )}
-            {s.dialects.length > 0 && (
-              <p className={idx.note}>
-                <b>Dialects</b>, where GLAUx classifies the works ({num(s.covered)} of {num(s.works)}): {s.dialects.map(([d, n]) => `${d} ${num(n)}`).join(" · ")}.
-              </p>
+            {(s.kinds.length > 0 || s.dialects.length > 0) && (
+              // the kinds of writing and the dialects repeat from one period to the next, so they fold away
+              <details className={styles.more}>
+                <summary>Kinds of writing and dialects</summary>
+                {s.kinds.length > 0 && (
+                  <div>
+                    <p className="label">Kinds of writing</p>
+                    <div className={styles.kinds}>
+                      {s.kinds.slice(0, 6).map(([k, n]) => (
+                        <Link key={k} className="chip" href={`/stoa/authors?e=${s.era.id}&k=${encodeURIComponent(k)}`} transitionTypes={["page-turn"]}>{kindLabel(k)} <small>{num(n)}</small></Link>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                {s.dialects.length > 0 && (
+                  <p className={idx.note}>
+                    <b>Dialects</b>, where GLAUx classifies the works ({num(s.covered)} of {num(s.works)}): {s.dialects.map(([d, n]) => `${d} ${num(n)}`).join(" · ")}.
+                  </p>
+                )}
+              </details>
             )}
             <Link className={styles.all} href={`/stoa/authors?e=${s.era.id}`} transitionTypes={["page-turn"]}>All {num(s.authors)} authors of this period →</Link>
           </li>

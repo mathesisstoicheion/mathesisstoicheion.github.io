@@ -31,6 +31,9 @@ import { WarmUp, LessonSteps } from "./LessonSteps";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
 
+/** An answer that is Greek and nothing else (a single letter, a word): set in the Greek face, larger. */
+const isGreek = (t: string) => /\p{Script=Greek}/u.test(t) && !/\p{Script=Latin}/u.test(t);
+
 function Check({ items }: { items: Extract<Section, { kind: "check" }>["items"] }) {
   const [picked, setPicked] = useState<Record<number, number>>({});
   return (
@@ -42,11 +45,14 @@ function Check({ items }: { items: Extract<Section, { kind: "check" }>["items"] 
           <fieldset key={i} className={styles.q}>
             <legend><Rich text={q.q} /></legend>
             <div className={styles.options}>
-              {q.options.map((o, j) => (
-                <button key={j} type="button" disabled={p !== undefined}
-                  className={p === undefined ? "" : j === q.answer ? styles.right : j === p ? styles.wrong : ""}
-                  onClick={() => setPicked((s) => ({ ...s, [i]: j }))}><Rich text={o} /></button>
-              ))}
+              {q.options.map((o, j) => {
+                const gr = isGreek(o);
+                return (
+                  <button key={j} type="button" disabled={p !== undefined} lang={gr ? "grc" : undefined}
+                    className={`${gr ? styles.optGr : ""} ${p === undefined ? "" : j === q.answer ? styles.right : j === p ? styles.wrong : ""}`}
+                    onClick={() => setPicked((s) => ({ ...s, [i]: j }))}>{gr ? o.replace(/[«»]/g, "") : <Rich text={o} />}</button>
+                );
+              })}
             </div>
             {p !== undefined && <p className={p === q.answer ? styles.good : styles.bad} role="status">{p === q.answer ? "Right. " : "Not quite. "}<Rich text={q.why} /></p>}
           </fieldset>
@@ -66,7 +72,10 @@ function Reveal({ title, items }: Extract<Section, { kind: "reveal" }>) {
           <button key={i} type="button" className={`${styles.revealCard} ${open.has(i) ? styles.revealed : ""}`}
             onClick={() => setOpen((s) => new Set(s).add(i))} aria-expanded={open.has(i)}>
             <span lang="grc" className={styles.revealGr}>{it.grc}</span>
-            <span className={styles.revealAns}>{open.has(i) ? it.answer : "Say it, then tap to check"}</span>
+            <span className={styles.revealAns}>
+              <span className={styles.revealText} aria-hidden={!open.has(i)}>{it.answer}</span>
+              {!open.has(i) && <span className={styles.revealMark} aria-hidden="true">?</span>}
+            </span>
           </button>
         ))}
       </div>
@@ -134,11 +143,11 @@ function RealPassage({ item, onWord }: { item: Extract<Section, { kind: "real" }
               </div>
             ))}
           </div>
-          {data.tr && <div className={styles.realTr}><span className="label">{describe(data.tr)}</span><Blocks blocks={data.rows.flatMap((r) => r.trans)} greek={false} keyPrefix="lesson-tr" /></div>}
+          {data.tr && <div className={styles.realTr}><span className="label">{describe(data.tr)}</span><Blocks blocks={data.rows.flatMap((r) => r.trans).filter((b) => b.t !== "head")} greek={false} keyPrefix="lesson-tr" /></div>}
         </div>
       )}
       <p className={styles.realNote}><Rich text={item.note} /></p>
-      <p className={styles.small}>Greek {data ? `from ${describe(data.grc)}, ` : ""}shown exactly as the source file gives it. Click any word to look it up.</p>
+      <p className={styles.small}>Greek {data ? `from ${describe(data.grc)}, ` : ""}shown exactly as the source file gives it. <span className={styles.hoverOnly}>Click</span><span className={styles.touchOnly}>Tap</span> any word to look it up.</p>
     </figure>
   );
 }
@@ -240,27 +249,20 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
   const complete = useAcademy((s) => s.completeLesson);
   const i = LESSONS.findIndex((l) => l.id === lesson.id);
   const next = LESSONS[i + 1];
-  // the lesson's last real passage: "Read it for real" opens it in the reader (Phase 11)
-  const real = lesson.sections.flatMap((s) => (s.kind === "real" ? s.items : [])).at(-1);
 
   return (
     <article className={styles.lesson}>
       <WarmUp lesson={lesson} />
       {lesson.sections.map((s, k) => <SectionView key={k} s={s} onWord={(w, ctx) => setWord({ w, ctx })} />)}
       <LessonWords lesson={lesson} />
-      {real && (
-        <Link className={styles.forReal} href={`/read?w=${real.work}&at=${real.ref}`} transitionTypes={["page-turn"]}>
-          <span className="label">Now read it for real</span>
-          <span className={styles.forRealGr} lang="grc">{real.quote}</span>
-          <span>{real.label}, in the reader, with the English beside it and every word ready to look up. <span className="arr" aria-hidden="true">→</span></span>
-        </Link>
-      )}
       <LessonSteps lesson={lesson} />
-      <footer className={styles.lessonEnd}>
-        {done ? <p className={styles.good}>You have completed this lesson.</p>
-          : <button type="button" className="btn ghost" onClick={() => complete(lesson.id)}>Mark as read, without the test</button>}
-        {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
-      </footer>
+      {!done && <button type="button" className={styles.markRead} onClick={() => complete(lesson.id)}>Mark as read, without the test</button>}
+      {(done || next) && (
+        <footer className={styles.lessonEnd}>
+          {done && <p className={styles.good}>You have completed this lesson.</p>}
+          {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
+        </footer>
+      )}
       {/* talk where you learn (Phase 11): a question about the lesson goes to the Town Hall's board for it */}
       <p className={styles.askLesson}>
         Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Town Hall</Link>,

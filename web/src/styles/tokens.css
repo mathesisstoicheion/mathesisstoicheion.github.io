@@ -95,6 +95,7 @@
 
   /* layers: just above the header */
   --z-over-header: 31;
+  --z-bar: 5;           /* a sticky bar under the header (the reader's, the tables' search): over what scrolls beneath it */
 
   /* ---------------------------------------------------------- semantic tokens */
   --bg: var(--stone-1);            /* the wall */

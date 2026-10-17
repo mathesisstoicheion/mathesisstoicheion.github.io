@@ -73,7 +73,11 @@ test("Eras of Greek draws a column for each century and a section for each perio
   for (const era of ["Archaic", "Classical", "Hellenistic", "Roman Imperial", "Late Antique", "Byzantine"]) {
     await expect(page.getByRole("heading", { level: 2, name: era, exact: true })).toBeVisible();
   }
-  // a period's kinds of writing lead to the Authors index, filtered
+  // each period's bracket under the chart is a link to its card
+  await expect(page.locator("a[href='#classical']").first()).toBeVisible();
+  // a period's kinds of writing, folded away until asked for, lead to the Authors index, filtered
+  await expect(page.locator("#classical").getByRole("link", { name: /^Drama/ })).toBeHidden();
+  await page.locator("#classical").getByText("Kinds of writing and dialects").click();
   await page.locator("#classical").getByRole("link", { name: /^Drama/ }).click();
   await expect(page).toHaveURL(/\/stoa\/authors\?e=classical&k=Drama/);
   await expect(page.getByRole("link", { name: /^Sophocles/ })).toBeVisible();
@@ -98,7 +102,9 @@ test("Manuscripts & transmission and Textual variants gather the checked author 
   await expect(page.getByRole("heading", { level: 1, name: /Manuscripts & transmission/ })).toBeVisible();
   // the roads of the texts: one row per checked author, in time order, Homer first
   const chart = page.getByRole("figure", { name: /timelines of \d+ author articles/ });
-  await expect(chart.locator("li").first()).toContainText("Homer");
+  await expect(chart.locator("ol li").first()).toContainText("Homer");
+  // the key stands above the chart (with the years), not below its last row
+  expect((await chart.locator("ul").first().boundingBox())!.y).toBeLessThan((await chart.locator("ol").first().boundingBox())!.y);
   // each author's account links to the whole of it, on the author's page
   const homer = page.getByRole("link", { name: /^7th century BC Homer/ });
   await expect(homer).toHaveAttribute("href", "/author/tlg0012#survive-title");

@@ -10,7 +10,6 @@ import { greekEditions, translations, versionOf, type CatAuthor, type CatText, t
 import { centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { commonShare } from "@/lib/difficulty";
 import { AREAS } from "@/config/areas";
-import { workPath } from "@/lib/seo";
 import type { RelatedEntry } from "@/wiki/related";
 import styles from "./AuthorProfile.module.css";
 import lib from "./Library.module.css";
@@ -18,8 +17,6 @@ import NameCarving from "@/components/art/NameCarving";
 import PagePiece from "@/components/art/PagePiece";
 
 const num = (n: number) => n.toLocaleString("en-GB");
-const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
-const MORE = 12;
 
 function TextRow({ w, t }: { w: CatWork; t: CatText }) {
   const href = `/read?w=${w.id}&${t.kind === "translation" ? "tr" : "ed"}=${encodeURIComponent(versionOf(t.urn))}`;
@@ -27,15 +24,15 @@ function TextRow({ w, t }: { w: CatWork; t: CatText }) {
     <li className={lib.work}>
       <Link href={href} transitionTypes={["page-turn"]} className={lib.workLink}>
         <span className={lib.workTitle}>{t.kind === "translation" ? "English translation" : t.kind === "commentary" ? "Commentary" : "Greek text"}</span>
-        <span className={lib.workGr}>{t.desc ?? t.label ?? versionOf(t.urn)}</span>
+        {/* the collection's own record of the file, in the body type: it is Latin or English, not a Greek title */}
+        <span className={styles.record}>{t.desc ?? t.label ?? versionOf(t.urn)}</span>
       </Link>
-      <span className={lib.meta}><span className={lib.size}>{kb(t.size)}</span></span>
     </li>
   );
 }
 
-export default function WorkLanding({ work, author, meta, diff, related, siblings }: {
-  work: CatWork; author: CatAuthor; meta: WorkMeta | undefined; diff: [number, number] | undefined; related: RelatedEntry[]; siblings: CatWork[];
+export default function WorkLanding({ work, author, meta, diff, related }: {
+  work: CatWork; author: CatAuthor; meta: WorkMeta | undefined; diff: [number, number] | undefined; related: RelatedEntry[];
 }) {
   const greek = greekEditions(work);
   const english = translations(work);
@@ -55,14 +52,20 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
         <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
         {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
         {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}
-        <PagePiece className="piece-phone" />
         <p className={styles.note}>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.</p>
         <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          <Link className="btn" href={`/read?w=${work.id}`} transitionTypes={["page-turn"]}>
-            {english.length ? "Read it with the English beside the Greek" : "Read the Greek"} <span className="arr" aria-hidden="true">→</span>
+          <Link className={`btn ${styles.readBtn}`} href={`/read?w=${work.id}`} transitionTypes={["page-turn"]}>
+            {/* "Read it" in capitals, and what it opens in a smaller line under it, so the label does not break in the middle on a phone */}
+            <span className={styles.readWords}>
+              <span>{english.length ? "Read it" : "Read the Greek"}</span>
+              {english.length > 0 && <> <small>with the English beside the Greek</small></>}
+            </span>
+            <span className="arr" aria-hidden="true">→</span>
           </Link>
           <Link className="btn ghost" href={`/author/${author.id}`} transitionTypes={["page-turn"]}>More by {author.name}</Link>
         </div>
+        {/* on a phone the piece stands after the title, the author and the buttons: the first screen shows the way in to the text */}
+        <PagePiece className="piece-phone" />
         <dl className={styles.facts}>
           {meta?.genre && <div><dt>Kind of writing</dt><dd>{meta.genre}</dd></div>}
           {meta?.dialect && <div><dt>Dialect</dt><dd>{meta.dialect}</dd></div>}
@@ -96,16 +99,6 @@ export default function WorkLanding({ work, author, meta, diff, related, sibling
               </Link>
             ))}
           </div>
-        </section>
-      )}
-
-      {siblings.length > 0 && (
-        <section className={styles.sec} aria-labelledby="more-title">
-          <h2 id="more-title">Also by {author.name}</h2>
-          <ul className={styles.links}>
-            {siblings.slice(0, MORE).map((s) => <li key={s.id}><Link href={workPath(s.id)} transitionTypes={["page-turn"]}>{s.title}</Link></li>)}
-          </ul>
-          {siblings.length > MORE && <p><Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>All {num(siblings.length + 1)} works of {author.name} →</Link></p>}
         </section>
       )}
     </div>

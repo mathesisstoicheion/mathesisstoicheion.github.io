@@ -45,10 +45,9 @@ export const TOURS: Record<string, Tour> = {
     title: "Learn Greek",
     start: "/academy",
     steps: [
-      { at: [t('section[aria-label="The alphabet"] [role=listbox]'), t('section[aria-label="The alphabet"]')], title: "The Academy: begin with the letters", text: "Twenty-four letters. Choose one to see its name and hear it. You need no Greek at all to start here.", phoneText: "Twenty-four letters. Tap one to see its name and hear it. You need no Greek at all to start here." },
-      { at: [t('section[aria-label="The alphabet"] [role=radiogroup][aria-label="Pronunciation"]')], title: "Three ways to say them", text: "As Athenians most probably spoke in the 5th and 4th centuries BC; the Erasmian way, used in Western schools since the 16th century; or with the sounds of modern Greek." },
-      { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "Start with lesson 1", text: "Each lesson teaches one thing with real sentences from the texts, then checks it with a few questions." },
+      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/alphabet"]')], title: "The Academy: begin with the letters", text: "Twenty-four letters. Open the alphabet to see each one's name and hear it. You need no Greek at all to start here." },
       { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session mixes practice with the words you are learning, each brought back just as you would start to forget it." },
+      { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "Start with lesson 1", text: "Each lesson teaches one thing with real sentences from the texts, then checks it with a few questions." },
       { at: [t('section[aria-labelledby="guides-title"] a[href^="/academy/guide/"]')], title: "Practical guides", text: "Which Greek is which, how a dictionary lists a word, and which dictionary to use." },
     ],
   },

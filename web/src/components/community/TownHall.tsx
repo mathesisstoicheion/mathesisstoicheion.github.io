@@ -1,7 +1,8 @@
 "use client";
 /**
- * The Town Hall: the forum's categories, the threads (newest activity first, or new, or most
- * valued, or still unanswered), a search, and the rules. Anyone may read; members write.
+ * The Town Hall: the forum's categories (the rooms), a search and the order of the threads in one toolbar directly above
+ * the list, the threads (newest activity first, or new, or most valued, or still unanswered), the Pnyx, and the rules.
+ * Anyone may read; members write.
  * In the site's own boards (bug reports, suggestions) each thread shows its status, and they can be
  * narrowed to open or closed ones. Threads by people you have hidden leave the list (with a count).
  * URL: ?c=<category>&tag=&q=&sort=&state=
@@ -42,7 +43,9 @@ export default function TownHall() {
     router.replace(`?${sp}`, { scroll: false });
   };
 
-  const cats = useLoad("forum-categories", categories);
+  // "Try again" after the Town Hall could not be reached: the rooms are asked for afresh (a new key), the list reloads
+  const [tries, setTries] = useState(0);
+  const cats = useLoad(`forum-categories|${tries}`, categories);
   // reloadable: a pull to refresh keeps the list on screen until the new one arrives
   const listR = useReloadable(`threads|${c}|${tag}|${q}|${sort}|${state}|${page}`, () => threads({ category: c, tag, q, sort, state, page }));
   const list: Load<Awaited<ReturnType<typeof threads>>> = listR.data !== undefined ? { state: "done", value: listR.data }
@@ -52,26 +55,13 @@ export default function TownHall() {
   const catById = new Map((cats.state === "done" ? cats.value : []).map((x) => [x.id, x]));
   const current = c ? catById.get(c) : null;
   const offline = cats.state === "error" || list.state === "error";
+  const retry = () => { setTries((n) => n + 1); listR.reload(); };
   const rows = list.state === "done" ? list.value.rows.filter((t) => showHidden || !hidden[t.author_id]) : [];
   const leftOut = list.state === "done" ? list.value.rows.length - rows.length : 0;
 
   return (
     <div className={`wrap ${styles.hall}`}>
       <PullToRefresh onPull={listR.reload} busy={listR.busy} />
-      {/* the search comes first */}
-      <form role="search" onSubmit={(e) => { e.preventDefault(); go({ q: typed.trim() || null }); }} className={styles.search}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input enterKeyHint="search" type="search" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Search the Town Hall" aria-label="Search the Town Hall" />
-        <button type="submit" className="btn small">Search</button>
-      </form>
-      {featured.state === "done" && featured.value && <FeaturedDebate d={featured.value} />}
-      {/* the Pnyx is always a click away, whether or not a debate is featured this week */}
-      {featured.state !== "loading" && <Link href={AREAS.debates.href} className={featured.state === "done" && featured.value ? styles.pnyxMore : styles.pnyxCard} transitionTypes={["page-turn"]}>
-        {featured.state === "done" && featured.value
-          ? <>All the debates on {AREAS.debates.name} →</>
-          : <><span className="label">{AREAS.debates.name} <span lang="grc">{AREAS.debates.greek}</span> · {AREAS.debates.english}</span><b>{AREAS.debates.fit}</b><span>See the motions and cast your pebble →</span></>}
-      </Link>}
-
       <nav className={styles.cats} aria-label="Categories">
         <button type="button" className={styles.cat} aria-pressed={!c} onClick={() => go({ c: null, state: null })}>
           <b>Everything</b><span>All the conversations</span>
@@ -83,7 +73,15 @@ export default function TownHall() {
         ))}
       </nav>
 
+      <SignInPrompt what="start a thread or reply" />
+
+      {/* the search and the order of the list, in one row directly above the list they work on */}
       <div className={styles.toolbar}>
+        <form role="search" onSubmit={(e) => { e.preventDefault(); go({ q: typed.trim() || null }); }} className={styles.search}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+          <input enterKeyHint="search" type="search" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Search the Town Hall" aria-label="Search the Town Hall" />
+          <button type="submit" className="btn small">Search</button>
+        </form>
         <div className={styles.sorts} role="group" aria-label="Order">
           {SORTS.map(([s, label]) => <button key={s} type="button" className="chip" aria-pressed={sort === s} onClick={() => go({ sort: s === "active" ? null : s })}>{label}</button>)}
         </div>
@@ -97,7 +95,6 @@ export default function TownHall() {
           ? <Link className="btn small" href={`/town-hall/new${c ? `?c=${c}` : ""}`}>{c === SITE_BOARDS.bugs ? "Report a bug" : c === SITE_BOARDS.ideas ? "Suggest an idea" : "Start a thread"} <span className="arr">→</span></Link>
           : null}
       </div>
-      <SignInPrompt what="start a thread or reply" />
 
       <section aria-labelledby="threads-h">
         <h2 id="threads-h" className={styles.listHead}>
@@ -105,7 +102,12 @@ export default function TownHall() {
           {tag && <> · tagged <span className={styles.tag}>{tag}</span> <button type="button" className={styles.linkBtn} onClick={() => go({ tag: null })}>clear</button></>}
           {q && <> · “{q}” <button type="button" className={styles.linkBtn} onClick={() => { setTyped(""); go({ q: null }); }}>clear</button></>}
         </h2>
-        {offline && <p className={styles.error}>The Town Hall could not be reached. It needs a connection; check the connection light at the top of the page.</p>}
+        {offline && (
+          <div className={styles.offline} role="alert">
+            <p className={styles.error}>The Town Hall could not be reached. It needs a connection; check the connection light at the top of the page.</p>
+            <button type="button" className="btn small ghost" onClick={retry}>Try again</button>
+          </div>
+        )}
         {list.state === "loading" && <p className="muted"><span className={styles.spinner} aria-hidden="true" /> Gathering the conversations…</p>}
         {list.state === "done" && rows.length === 0 && (
           <p className={styles.empty}>{q || tag || state ? "Nothing matches." : leftOut ? "Nothing here but threads from people you have hidden." : "No conversations here yet. The first one could be yours."}</p>
@@ -147,6 +149,15 @@ export default function TownHall() {
           </div>
         )}
       </section>
+
+      {/* the Pnyx, below the list so that it does not stand between the search and what it searches */}
+      {featured.state === "done" && featured.value && <FeaturedDebate d={featured.value} />}
+      {/* the Pnyx is always a click away, whether or not a debate is featured this week */}
+      {featured.state !== "loading" && <Link href={AREAS.debates.href} className={featured.state === "done" && featured.value ? styles.pnyxMore : styles.pnyxCard} transitionTypes={["page-turn"]}>
+        {featured.state === "done" && featured.value
+          ? <>All the debates on {AREAS.debates.name} →</>
+          : <><span className="label">{AREAS.debates.name} <span lang="grc">{AREAS.debates.greek}</span> · {AREAS.debates.english}</span><b>{AREAS.debates.fit}</b><span>See the motions and cast your pebble →</span></>}
+      </Link>}
 
       <Rules />
     </div>

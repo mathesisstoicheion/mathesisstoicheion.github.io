@@ -24,20 +24,20 @@ async function drag(page: Page, sel: string, dx: number, dy: number) {
 test("flashcards turn with a tap and answer with a swipe: right knew it, left again", async ({ page }) => {
   await recordBuzz(page);
   await page.goto("/academy/review");
-  await page.getByRole("button", { name: /Add the next 20 commonest words/ }).click();
-  await expect(page.getByText(/^20 to review/)).toBeVisible();
+  await page.getByRole("button", { name: /Add the next 10 commonest words/ }).click();
+  await expect(page.getByText(/^10 to review/)).toBeVisible();
   const card = "[data-noswipe]";
   // before it is turned, a swipe does nothing; a tap turns it
   await drag(page, card, 200, 0);
-  await expect(page.getByText(/^20 to review/)).toBeVisible();
+  await expect(page.getByText(/^10 to review/)).toBeVisible();
   await page.locator(card).click();
   await expect(page.getByText(/Swipe the card/)).toBeVisible();
   // a short drag springs back without answering
   await drag(page, card, 60, 0);
-  await expect(page.getByText(/^20 to review/)).toBeVisible();
+  await expect(page.getByText(/^10 to review/)).toBeVisible();
   // a throw to the right: "Good", with a buzz
   await drag(page, card, 220, 10);
-  await expect(page.getByText(/^19 to review · 1 done/)).toBeVisible();
+  await expect(page.getByText(/^9 to review · 1 done/)).toBeVisible();
   expect(await buzzes(page)).toBe(1);
   // a throw to the left: "Again" (the card stays due today), no buzz
   await page.locator(card).click();
@@ -61,7 +61,7 @@ test("practice answers are large buttons, and a right answer buzzes", async ({ p
 
 test("trace a letter over its guide: a good tracing is praised, a scribble is not", async ({ page }) => {
   await page.goto("/academy/alphabet");
-  await page.getByRole("button", { name: "Trace it yourself" }).click();
+  await page.getByRole("button", { name: "Trace" }).click();
   const box = page.getByRole("img", { name: /^Write α here/ });
   await expect(box).toBeVisible();
   // follow the guide stroke (α has one), point by point
@@ -118,7 +118,7 @@ test("the vibration switch in Settings stops the buzzes", async ({ page }) => {
   const sheet = page.getByRole("dialog", { name: "Settings" });
   await sheet.getByRole("radiogroup", { name: "Short vibrations" }).getByRole("radio", { name: "Off" }).click();
   await sheet.getByRole("button", { name: "Close settings" }).click();
-  await page.getByRole("button", { name: /Add the next 20 commonest words/ }).click();
+  await page.getByRole("button", { name: /Add the next 10 commonest words/ }).click();
   await page.locator("[data-noswipe]").click();
   await page.getByRole("button", { name: /^Good/ }).click();
   await expect(page.getByText(/1 done/)).toBeVisible();

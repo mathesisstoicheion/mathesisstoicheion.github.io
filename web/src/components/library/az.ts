@@ -52,3 +52,31 @@ export function groupAZ<T extends { title: string }>(items: readonly T[]): { key
   }
   return out;
 }
+
+/**
+ * How closely a search names an author, for the "Best match" at the head of the library's list (Library.tsx). Give it the
+ * words as `fold()` leaves them and every name the author goes by. 0: the words are a whole name; 1: they open a name;
+ * 2: they open a word inside a name ("Plato" in "Pseudo-Plato"); 3: they are only somewhere inside one; -1: not a name of theirs.
+ */
+export function nameMatch(names: readonly (string | undefined)[], folded: string): number {
+  if (!folded) return -1;
+  let best = -1;
+  for (const name of names) {
+    if (!name) continue;
+    const s = fold(name), i = s.indexOf(folded);
+    const t = i < 0 ? -1 : s === folded ? 0 : i === 0 ? 1 : /[^\p{L}\p{N}]/u.test(s.charAt(i - 1)) ? 2 : 3;
+    if (t >= 0 && (best < 0 || t < best)) best = t;
+  }
+  return best;
+}
+
+/** The one item that is plainly closer than all the rest (the lowest non-negative tier, held by it alone), or null when two are level or none match. */
+export function bestMatch<T>(items: readonly T[], tier: (x: T) => number): T | null {
+  let best: T | null = null, low = Infinity, level = false;
+  for (const x of items) {
+    const t = tier(x);
+    if (t < 0) continue;
+    if (t < low) { best = x; low = t; level = false; } else if (t === low) level = true;
+  }
+  return level ? null : best;
+}

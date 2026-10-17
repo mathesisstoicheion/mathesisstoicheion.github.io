@@ -18,7 +18,7 @@ const GRADES = [
   { g: Rating.Easy, key: "easy", label: "Easy", hint: "Too easy" },
 ] as const;
 
-function AddCommon({ n = 20 }: { n?: number }) {
+function AddCommon({ n = 10 }: { n?: number }) {
   const deck = useAcademy((s) => s.deck);
   const add = useAcademy((s) => s.addCard);
   const toast = useUI((s) => s.showToast);
@@ -77,10 +77,11 @@ export default function Review({ limit, onDone }: { limit?: number; onDone?: (n:
   });
 
   if (!card && onDone) {
+    // (in the daily session the page has its own heading: this line is ordinary text)
     return (
       <div className={styles.reviewEmpty}>
-        <p className={styles.reviewBig}>{doneToday ? `${doneToday} card${doneToday === 1 ? "" : "s"} reviewed.` : Object.keys(deck).length ? "No cards are due today." : "Your deck is empty for now."}</p>
-        {!Object.keys(deck).length && <p className="muted">Words you save in the reader or learn in the lessons come here. <AddCommon n={10} /></p>}
+        <p>{doneToday ? `${doneToday} card${doneToday === 1 ? "" : "s"} reviewed.` : Object.keys(deck).length ? "No cards are due today." : "Your deck is empty for now."}</p>
+        {!Object.keys(deck).length && <p className="muted">Words you save in the reader or learn in the lessons come here. <AddCommon /></p>}
       </div>
     );
   }
@@ -132,7 +133,7 @@ export default function Review({ limit, onDone }: { limit?: number; onDone?: (n:
         </div>
         </>
       )}
-      <p className={styles.small}>Scheduling by FSRS (ts-fsrs). Definitions from the DCC Greek Core Vocabulary or LSJ.</p>
+      <p className={styles.small}>Definitions from the DCC Greek Core Vocabulary or LSJ.</p>
     </div>
   );
 }

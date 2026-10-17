@@ -10,9 +10,17 @@
 .drawing {
   margin: 0; display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(220px, 1fr); gap: 18px 36px; align-items: center;
 }
+.drawScroll { min-width: 0; }
 .drawing svg {
   width: 100%; height: auto; display: block; background: var(--field);
   box-shadow: var(--field-edge); border-radius: var(--radius);
+}
+/* a phone: the drawing keeps a size its labels and numbers can be read at (it is not cropped or changed) and scrolls
+   sideways, its right edge fading while there is more to see */
+@media (max-width: 760px) {
+  .drawScroll { overflow-x: auto; scrollbar-width: thin; }
+  .drawScroll[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
+  .drawing .drawScroll svg { min-width: 720px; }
 }
 .drawing figcaption { grid-column: 1; font-size: 0.93rem; color: var(--ink-2); max-width: 72ch; }
 .drawing figcaption b { color: var(--ink); font-weight: 600; }
@@ -133,9 +141,9 @@
 .cardText small { font-family: var(--f-label); letter-spacing: 0.05em; font-size: 0.78rem; color: var(--accent); }
 
 /* excavated sites: find labels, tied on with string through a small drilled hole (dark, its lower lip lit) */
-.sites { list-style: none; margin: 0; padding: 0 0 0 72px; display: flex; flex-wrap: wrap; gap: 14px 12px; }
+.sites { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px 12px; }
 .sites a {
-  position: relative; display: grid; gap: 2px; padding: 10px 16px 10px 30px; text-decoration: none;
+  position: relative; display: grid; gap: 2px; height: 100%; align-content: center; padding: 10px 16px 10px 30px; text-decoration: none;
   background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
   transition: background-color var(--dur) ease;
 }

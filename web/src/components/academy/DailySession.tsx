@@ -6,7 +6,7 @@
  * then a last page with what was done and the days in a row. Full screen on phones.
  */
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import { dueRefreshes, type Due } from "@/lib/refreshes";
 import { useAcademy, streak } from "@/lib/academy";
@@ -45,6 +45,18 @@ export default function DailySession() {
   const STEPS = ids.map((id) => (id === "refresh" && refresh ? { ...STEP.refresh, note: `${refresh.name}, ${refresh.title}, has come round again: a short test to keep it fresh.` } : STEP[id]));
   const markActive = useAcademy((s) => s.markActive);
   const box = useRef<HTMLDivElement>(null);
+  const page = useRef<HTMLElement>(null);
+  // the footer's Next or Skip steps back to a ghost button while the page itself shows a gold one (Show the meaning, Add the next 10…)
+  const [gold, setGold] = useState(false);
+  useEffect(() => {
+    const el = page.current;
+    if (!el) return;
+    const look = () => setGold(!!el.querySelector(".btn:not(.ghost)"));
+    const first = requestAnimationFrame(look);
+    const watch = new MutationObserver(look);
+    watch.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+    return () => { cancelAnimationFrame(first); watch.disconnect(); };
+  }, [step]);
   const doneBy: Record<StepId, boolean> = { cards: cards !== null, refresh: refreshed, ending: ending !== null, sentence: sentence.length >= 2, done: true };
   const done = ids.map((id) => doneBy[id]);
   const last = STEPS.length - 1;
@@ -91,7 +103,7 @@ export default function DailySession() {
         <span className="label">{step + 1} of {STEPS.length}</span>
       </div>
 
-      <section key={step} className={styles.sessionPage} data-dir={dir} aria-labelledby="session-title" {...swipe}>
+      <section key={step} ref={page} className={styles.sessionPage} data-dir={dir} aria-labelledby="session-title" {...swipe}>
         <header className={styles.sessionHead}>
           <h1 id="session-title">{s.title} <span lang="grc">{s.gr}</span></h1>
           {s.note && <p className="muted">{s.note}</p>}
@@ -122,7 +134,7 @@ export default function DailySession() {
       <div className={styles.sessionFoot}>
         {step > 0 && <button type="button" className="btn ghost" onClick={() => go(step - 1)}>Back</button>}
         {step < last
-          ? <button type="button" className="btn" onClick={() => go(step + 1)}>{done[step] ? "Next" : "Skip"} <span className="arr" aria-hidden="true">→</span></button>
+          ? <button type="button" className={gold ? "btn ghost" : "btn"} onClick={() => go(step + 1)}>{done[step] ? "Next" : "Skip"} <span className="arr" aria-hidden="true">→</span></button>
           : <Link className="btn" href={AREAS.study.href} transitionTypes={["page-turn"]}>Back to {AREAS.study.name}</Link>}
       </div>
     </div>

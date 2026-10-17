@@ -67,62 +67,64 @@ export default function ScrollCase() {
   }
 
   const waiting = s.folders.filter((f) => f.access !== "granted").length;
+  // what is kept already, said in a line (the lists, with their Remove and Forget buttons, stand under it only when there is something)
+  const texts = s.browser.reduce((n, b) => n + b.files, 0) + Object.values(s.zipImported).reduce((n, z) => n + z, 0);
+  const bytes = s.browser.reduce((n, b) => n + b.bytes, 0);
+  const kept = s.browser.length > 0 || Object.keys(s.zipImported).length > 0;
+  const anything = kept || s.folders.length > 0 || s.lookups.words > 0 || s.lookups.lsj > 0;
 
   return (
     <div className={`wrap ${styles.page}`}>
-      {/* ---------------------------------------------------------- what you have */}
-      <section className={styles.card} aria-labelledby="have">
-        <div className={styles.cardHead}>
-          <h2 id="have">Your offline library</h2>
+      {/* ---------------------------------------------------------- what you have, in one line: the job is the download below */}
+      <section className={styles.have1} aria-labelledby="have">
+        <h2 id="have" className="label">Your offline library</h2>
+        <p className={styles.statusLine}>
           <span className={styles.status}><i className={s.online ? styles.on : styles.off} />{s.online ? "Online" : "Offline"}</span>
-        </div>
-        <div className={styles.haveGrid}>
-          <div>
-            <h3 className="label">In this browser</h3>
-            {!s.supportsBrowser && <p className="muted">This browser cannot store files. Use a recent Chrome, Edge, Firefox or Safari.</p>}
-            {s.supportsBrowser && !s.browser.length && !Object.keys(s.zipImported).length && <p className="muted">Nothing saved yet.</p>}
-            <ul className={styles.have}>
-              {COLLECTIONS.map((c) => {
-                const b = s.browser.find((x) => x.col === c.id);
-                const z = s.zipImported[c.repo];
-                if (!b && !z) return null;
-                return (
-                  <li key={c.id}>
-                    <span><b>{c.name}</b> {b ? `${b.files.toLocaleString("en-GB")} texts, ${mb(b.bytes)}` : ""}{z ? `${b ? " · " : ""}${z.toLocaleString("en-GB")} texts from a ZIP` : ""}</span>
-                    {confirm === c.id
-                      ? <span className={styles.confirm}>Remove them? <button type="button" className="chip" onClick={() => { s.removeBrowserCopy(c.id).then(() => toast(`Removed ${c.name} from this browser.`)); setConfirm(null); }}>Remove</button> <button type="button" className="chip" onClick={() => setConfirm(null)}>Keep</button></span>
-                      : <button type="button" className="chip" onClick={() => setConfirm(c.id)}>Remove</button>}
-                  </li>
-                );
-              })}
-            </ul>
-            {(s.lookups.words > 0 || s.lookups.lsj > 0) && (
-              <p className={styles.small}>Word look-ups offline: analyses for {s.lookups.words.toLocaleString("en-GB")} work{s.lookups.words === 1 ? "" : "s"}, {s.lookups.lsj} of the dictionary&apos;s 362 parts{s.lookups.lexicon ? `, and the Word Study index (${s.lookups.lexicon} parts)` : ""}.</p>
+          <span>{!s.supportsBrowser ? "This browser cannot store files" : kept ? `${texts.toLocaleString("en-GB")} texts saved${bytes ? `, ${mb(bytes)}` : ""}` : "Nothing saved yet"}</span>
+          {s.folders.length > 0 && <span>{s.folders.length} folder{s.folders.length === 1 ? "" : "s"} connected</span>}
+          {s.usage && s.usage.quota > 0 && <span title={`This site uses ${mb(s.usage.used)} of the ${mb(s.usage.quota)} your browser allows it.`}>{mb(s.usage.used)} of {mb(s.usage.quota)}</span>}
+        </p>
+        {!s.supportsBrowser && <p className="muted">This browser cannot store files. Use a recent Chrome, Edge, Firefox or Safari.</p>}
+        {anything && (
+          <div className={styles.haveGrid}>
+            {(kept || s.lookups.words > 0 || s.lookups.lsj > 0) && (
+              <div>
+                <h3 className="label">In this browser</h3>
+                <ul className={styles.have}>
+                  {COLLECTIONS.map((c) => {
+                    const b = s.browser.find((x) => x.col === c.id);
+                    const z = s.zipImported[c.repo];
+                    if (!b && !z) return null;
+                    return (
+                      <li key={c.id}>
+                        <span><b>{c.name}</b> {b ? `${b.files.toLocaleString("en-GB")} texts, ${mb(b.bytes)}` : ""}{z ? `${b ? " · " : ""}${z.toLocaleString("en-GB")} texts from a ZIP` : ""}</span>
+                        {confirm === c.id
+                          ? <span className={styles.confirm}>Remove them? <button type="button" className="chip" onClick={() => { s.removeBrowserCopy(c.id).then(() => toast(`Removed ${c.name} from this browser.`)); setConfirm(null); }}>Remove</button> <button type="button" className="chip" onClick={() => setConfirm(null)}>Keep</button></span>
+                          : <button type="button" className="chip" onClick={() => setConfirm(c.id)}>Remove</button>}
+                      </li>
+                    );
+                  })}
+                </ul>
+                {(s.lookups.words > 0 || s.lookups.lsj > 0) && (
+                  <p className={styles.small}>Word look-ups offline: analyses for {s.lookups.words.toLocaleString("en-GB")} work{s.lookups.words === 1 ? "" : "s"}, {s.lookups.lsj} of the dictionary&apos;s 362 parts{s.lookups.lexicon ? `, and the Word Study index (${s.lookups.lexicon} parts)` : ""}.</p>
+                )}
+              </div>
             )}
-            {s.usage && s.usage.quota > 0 && <p className={styles.small}>This site uses {mb(s.usage.used)} of the {mb(s.usage.quota)} your browser allows it.</p>}
+            {s.folders.length > 0 && (
+              <div>
+                <h3 className="label">Connected folders</h3>
+                <ul className={styles.have}>
+                  {s.folders.map((f) => (
+                    <li key={f.id}>
+                      <span><b>{f.name}</b> {f.roots.length ? `· ${f.roots.length} collection${f.roots.length === 1 ? "" : "s"}` : "· no collection found"} · {f.access === "granted" ? "available" : "needs reconnecting"}</span>
+                      <button type="button" className="chip" onClick={() => s.forget(f.id)}>Forget</button>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </div>
-          <div>
-            <h3 className="label">Connected folders</h3>
-            {!s.supportsFolders && <p className="muted">This browser cannot connect folders (Chrome and Edge can). Use a ZIP file or browser storage instead.</p>}
-            {s.supportsFolders && !s.folders.length && <p className="muted">None yet.</p>}
-            <ul className={styles.have}>
-              {s.folders.map((f) => (
-                <li key={f.id}>
-                  <span><b>{f.name}</b> {f.roots.length ? `· ${f.roots.length} collection${f.roots.length === 1 ? "" : "s"}` : "· no collection found"} · {f.access === "granted" ? "available" : "needs reconnecting"}</span>
-                  <button type="button" className="chip" onClick={() => s.forget(f.id)}>Forget</button>
-                </li>
-              ))}
-            </ul>
-            <div className={styles.row}>
-              {s.supportsFolders && <button type="button" className="btn ghost" onClick={() => act(s.connect())}>Load from a folder</button>}
-              <button type="button" className="btn ghost" onClick={() => zipInput.current?.click()}>Load a ZIP file</button>
-              {s.supportsFolders && <button type="button" className="btn" disabled={!waiting} onClick={() => act(s.reconnect())}>Reconnect folders{waiting ? ` (${waiting})` : ""}</button>}
-            </div>
-            <input ref={zipInput} type="file" accept=".zip,application/zip" hidden
-              onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) act(s.loadZip(f)); }} />
-          </div>
-        </div>
-        <JobProgress />
+        )}
       </section>
 
       {/* ---------------------------------------------------------- download */}
@@ -190,8 +192,25 @@ export default function ScrollCase() {
             {s.job?.running ? "Downloading…" : "Download"}
           </button>
         </div>
+        <JobProgress />
         <p className={styles.small}>Files you already have are skipped, so you can stop at any time and continue later.</p>
       </section>
+
+      {/* ---------------------------------------------------------- files already on this computer */}
+      <details className={styles.already} open={waiting > 0}>
+        <summary>Already have the files?</summary>
+        <div className={styles.alreadyBody}>
+          {!s.supportsFolders && <p className="muted">This browser cannot connect folders (Chrome and Edge can). Use a ZIP file or browser storage instead.</p>}
+          <div className={styles.row}>
+            {s.supportsFolders && <button type="button" className="btn ghost" onClick={() => act(s.connect())}>Load from a folder</button>}
+            <button type="button" className="btn ghost" onClick={() => zipInput.current?.click()}>Load a ZIP file</button>
+            {/* the gold button only when a folder is waiting to be reconnected: it has nothing to do before that */}
+            {s.supportsFolders && waiting > 0 && <button type="button" className="btn" onClick={() => act(s.reconnect())}>Reconnect folders ({waiting})</button>}
+          </div>
+          <input ref={zipInput} type="file" accept=".zip,application/zip" hidden
+            onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) act(s.loadZip(f)); }} />
+        </div>
+      </details>
     </div>
   );
 }

@@ -47,8 +47,12 @@
   background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow); animation: fade 0.18s backwards;
 }
 .legend[data-to-right] { right: auto; left: 0; }
-.legend label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 8px; align-items: center; font-size: 0.93rem; }
-.legend small { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 8px; align-items: center; font-size: 0.93rem; }
+.legend small, .legendInline small { color: var(--ink-2); font-variant-numeric: tabular-nums; }
+/* in the reader's More menu (Reader.tsx), which is already a panel: the legend set straight in it */
+.legendInline { display: grid; gap: var(--space-2); }
+.legendInline :global(.label) { display: flex; align-items: center; gap: var(--space-2); margin: 0; }
+.legendSub { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .sample { position: relative; justify-self: center; display: block; width: 12px; height: 6px; border-radius: var(--radius); }
 .sample[data-kind="echo"] { width: 6px; }
 .sample[data-kind="highlight"] { background: #C9922E; }

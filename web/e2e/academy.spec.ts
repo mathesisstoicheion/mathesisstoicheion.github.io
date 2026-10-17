@@ -35,22 +35,55 @@ test("the tables find a form without accents", async ({ page }) => {
   await expect(page.getByText("λόγου = genitive, singular of λόγος")).toBeVisible();
 });
 
+test("a form the tables search finds is a link that takes you to its table", async ({ page }) => {
+  await page.goto("/academy/tables");
+  await page.getByLabel("Find a form").fill("λυσαι");
+  const found = page.locator("p[class*=found] a").first();
+  await expect(found).toBeVisible();
+  await found.click();
+  // the table's heading is where you land (it takes the focus)
+  await expect(page.locator("h2:focus")).toBeInViewport();
+});
+
 test("vocabulary shows how much of a text the commonest words cover", async ({ page }) => {
   await page.goto("/academy/vocabulary");
   await expect(page.locator("[class*=covRow]").nth(1)).toContainText(/\d+%/, { timeout: 30_000 });
 });
 
-test("the alphabet is on the Academy's front page and in lesson 1: tap a letter to see how it sounds", async ({ page }) => {
-  for (const url of ["/academy", "/academy/lesson/letters"]) {
-    await page.goto(url);
-    const grid = page.getByRole("listbox", { name: /The 24 letters/ });
-    await expect(grid.getByRole("option")).toHaveCount(24);
-    await grid.getByRole("option", { name: /gamma/ }).click();
-    await expect(page.getByText(/always hard, as in "go"/)).toBeVisible();
-    await page.getByRole("radio", { name: "Modern Greek" }).first().click();
-    await expect(page.getByText(/a soft throaty g/)).toBeVisible();
-    await page.getByRole("radio", { name: "Classical Attic" }).first().click();
-  }
+test("the alphabet is in lesson 1: tap a letter to see how it sounds", async ({ page }) => {
+  await page.goto("/academy/lesson/letters");
+  const grid = page.getByRole("listbox", { name: /The 24 letters/ });
+  await expect(grid.getByRole("option")).toHaveCount(24);
+  await grid.getByRole("option", { name: /gamma/ }).click();
+  await expect(page.getByText(/always hard, as in "go"/)).toBeVisible();
+  await page.getByRole("radio", { name: "Modern Greek" }).first().click();
+  await expect(page.getByText(/a soft throaty g/)).toBeVisible();
+  await page.getByRole("radio", { name: "Classical Attic" }).first().click();
+});
+
+test("the Academy's front page puts the tools first and names the next step", async ({ page }) => {
+  await page.goto("/academy");
+  // a first visit meets no zeros: the four numbers wait until something has been done
+  await expect(page.getByLabel("Your progress")).not.toContainText("lessons done");
+  await expect(page.getByLabel("Your progress").getByRole("link", { name: /^Lesson 1:/ })).toBeVisible();
+  // the tools stand under it, before the lessons; Daily review is reached from the session, not listed here
+  const tools = page.locator('section[aria-labelledby="tools-title"]');
+  await expect(tools.getByRole("link")).toHaveCount(5);
+  await expect(tools.getByRole("link", { name: /Daily review/ })).toHaveCount(0);
+  const y = (s: string) => page.locator(s).evaluate((e) => e.getBoundingClientRect().top);
+  expect(await y('section[aria-labelledby="tools-title"]')).toBeLessThan(await y('section[aria-labelledby="lessons-title"]'));
+  // with a card due, the step is a button to today's session
+  await page.evaluate(() => {
+    const day = 864e5, now = Date.now();
+    const card = { due: new Date(now - day).toISOString(), stability: 1, difficulty: 5, elapsed_days: 1, scheduled_days: 1,
+      learning_steps: 0, reps: 1, lapses: 0, state: 2, last_review: new Date(now - 2 * day).toISOString() };
+    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: {}, days: [], deck: {
+      "θεά": { id: "θεά", lemma: "θεά", gloss: "goddess", source: "saved", added: now - 3 * day, card },
+    } }, version: 0 }));
+  });
+  await page.reload();
+  await expect(page.getByLabel("Your progress")).toContainText("cards due today");
+  await expect(page.getByLabel("Your progress").getByRole("link", { name: /Start today's session/ })).toHaveAttribute("href", "/academy/today");
 });
 
 test("lessons 10 to 13: prepositions drawn, adjectives that move, the third declension and the past", async ({ page }) => {

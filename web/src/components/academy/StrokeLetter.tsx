@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useRef, useState, type ReactNode } from "react";
 import { LOWER, UPPER } from "@/data/strokes";
 import { buzz } from "@/lib/haptics";
 import styles from "./Academy.module.css";
@@ -28,8 +28,9 @@ function score(guides: SVGPathElement[], drawn: Pt[][]) {
  * Each stroke uses pathLength = 1 so its dash animation is independent of its real length.
  * "Trace it" lets the learner write the letter over the guide with a finger (or the mouse); once as
  * many strokes as the letter has are drawn, they are checked against the guide.
+ * `children` (the alphabet's Small letter / Capital choice) join the controls under the drawing, all in one row.
  */
-export default function StrokeLetter({ letter, size = 220 }: { letter: string; size?: number }) {
+export default function StrokeLetter({ letter, size = 220, children }: { letter: string; size?: number; children?: ReactNode }) {
   const strokes = LOWER[letter] ?? UPPER[letter] ?? [];
   const [run, setRun] = useState(0);
   const [tracing, setTracing] = useState(false);
@@ -106,8 +107,9 @@ export default function StrokeLetter({ letter, size = 220 }: { letter: string; s
       <figcaption>
         {!tracing ? (
           <>
-            <button type="button" className="chip" onClick={() => setRun((r) => r + 1)}>Write it again</button>
-            <button type="button" className="chip" onClick={() => { clear(); setTracing(true); }}>Trace it yourself</button>
+            <button type="button" className="chip" onClick={() => setRun((r) => r + 1)}>Write <span className={styles.more}>it </span>again</button>
+            <button type="button" className="chip" onClick={() => { clear(); setTracing(true); }}>Trace<span className={styles.more}> it yourself</span></button>
+            {children}
             <span className="muted">{strokes.length} stroke{strokes.length === 1 ? "" : "s"} · a common way to write it</span>
           </>
         ) : (
@@ -117,6 +119,7 @@ export default function StrokeLetter({ letter, size = 220 }: { letter: string; s
             </span>
             <button type="button" className="chip" onClick={clear} disabled={!drawn.length}>Start again</button>
             <button type="button" className="chip" onClick={() => setTracing(false)}>Watch it written</button>
+            {children}
           </>
         )}
       </figcaption>

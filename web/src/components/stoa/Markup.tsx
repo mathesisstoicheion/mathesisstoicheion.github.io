@@ -91,16 +91,20 @@ export function Figure({ id, lead = false }: { id: string; lead?: boolean }) {
   );
 }
 
+/** The dated timeline that ends an entry, under a small heading of its own so it does not read as part of the last section. */
 export function Timeline({ items }: { items: NonNullable<Entry["timeline"]> }) {
   return (
-    <ol className={`${styles.timeline} rv`} aria-label="Timeline">
-      {items.map((t, i) => (
-        <li key={i}>
-          <span className={styles.when}>{t.when}</span>
-          <span className={styles.what}>{greekAware(t.what, i)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} />}</span>
-        </li>
-      ))}
-    </ol>
+    <div className={`${styles.timelineBlock} rv`}>
+      <h3 id="timeline-h" className="label">Timeline</h3>
+      <ol className={styles.timeline} aria-labelledby="timeline-h">
+        {items.map((t, i) => (
+          <li key={i}>
+            <span className={styles.when}>{t.when}</span>
+            <span className={styles.what}>{greekAware(t.what, i)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} />}</span>
+          </li>
+        ))}
+      </ol>
+    </div>
   );
 }
 
@@ -109,10 +113,11 @@ export function Blocks({ bs, entry }: { bs: Blk[]; entry: Entry }) {
     <>
       {bs.map((b, i) => {
         if ("h2" in b) return (
-          <Fragment key={i}>
+          // the note button stands at the right end of the heading's own line; a written note opens beneath it
+          <div key={i} className={styles.sectionHead}>
             <h2 id={b.id} data-key={b.id} className={`${styles.h2} rv`}>{emphAware(b.h2, "h")}</h2>
             <SectionNote slug={entry.slug} section={b.id} title={b.h2} />
-          </Fragment>
+          </div>
         );
         if ("h3" in b) return <h3 key={i} className={styles.h3}>{emphAware(b.h3, "h")}</h3>;
         if ("quote" in b) return <Quote key={i} q={entry.quotes![b.quote]} />;

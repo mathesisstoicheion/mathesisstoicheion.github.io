@@ -5,12 +5,18 @@
 /* ------------------------------------------------ the roads of the texts */
 .roads { margin: 0; display: grid; gap: 14px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .chart { display: grid; gap: 2px; }
-.axis, .rows li { display: grid; grid-template-columns: 9.5rem minmax(0, 1fr); gap: 0 14px; }
-.axis { position: relative; height: 18px; order: 2; }
-.axisTrack { position: relative; }
+.scroller { min-width: 0; }
+/* a row: the name, then its track. Flex, not a grid, so that on a phone the name can stay in view while the marks
+   scroll under it (a sticky item may move across the whole row, but not out of its grid cell). */
+.axis, .rows li { display: flex; gap: 0 14px; }
+.pin { flex: none; width: 9.5rem; position: sticky; left: 0; z-index: 2; }
+.axis { position: relative; height: 18px; }
+.axisTrack { position: relative; flex: 1 1 0; min-width: 0; }
 .axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); white-space: nowrap; }
+.axisTrack span:first-child { translate: 0 0; }   /* the first year starts at the track's edge, clear of the names */
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .rows li { height: 22px; align-items: center; }
+.rows .track { flex: 1 1 0; min-width: 0; }
 .who { font-size: 0.8rem; color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track { position: relative; height: 100%; }
 .track i { position: absolute; top: 50%; }
@@ -44,16 +50,21 @@
 .legend span { color: var(--ink-2); }
 .roads figcaption { display: grid; gap: 8px; }
 .roads figcaption p { margin: 0; color: var(--ink-2); max-width: 75ch; }
-/* phones: the chart keeps its proportions and scrolls sideways */
+/* phones: the key and the caption keep the width of the screen; the chart keeps its proportions and scrolls sideways
+   inside its panel, its right edge fading while there is more, with the names kept in view at the left */
 @media (max-width: 760px) {
-  .roads { padding: 14px; overflow-x: auto; }
+  .roads { padding: 14px; }
+  .scroller { overflow-x: auto; scrollbar-width: thin; }
+  .scroller[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
   .chart { min-width: 680px; }
+  /* the names are solid stone (the panel's own shade), so the marks pass under them rather than through the words */
+  .pin { width: 6.5rem; background: var(--bg-deep); }
 }
 
 /* ------------------------------------------------ the authors' accounts */
 .list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 14px; }
 .card {
-  display: grid; align-content: start; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: start; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none;
   background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: var(--radius);
   transition: background-color var(--dur) ease;
 }
@@ -61,11 +72,11 @@
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .when { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); }
 .card b { font-size: 1.25rem; }
-.text { color: var(--ink); line-height: 1.6; }
-.go { margin-top: 4px; font-size: 0.88rem; color: var(--accent); }
+/* the accounts are cut to four lines, so the cards in a row are alike; the whole account is one click away */
+.text { color: var(--ink); line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
+.go { margin-top: 4px; font-size: 0.88rem; color: var(--accent); white-space: nowrap; }
 .more { margin: 0; color: var(--ink-2); max-width: 70ch; }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .roads, .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
-/* on phones the chart scrolls sideways inside its panel, so the panel keeps no moulding */
-@media (max-width: 760px) { .roads { outline: 0; } }
+

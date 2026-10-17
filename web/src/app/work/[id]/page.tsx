@@ -53,7 +53,7 @@ export default async function WorkPage({ params }: PageProps<"/work/[id]">) {
         author: { "@type": "Person", name: f.author.name, url: absolute(`/author/${f.author.id}`) },
         ...(f.meta?.genre ? { genre: f.meta.genre } : {}),
       }} />
-      <WorkLanding work={f.work} author={f.author} meta={f.meta} diff={diff[id]} related={entriesForWork(id)} siblings={f.author.works.filter((w) => w.id !== id)} />
+      <WorkLanding work={f.work} author={f.author} meta={f.meta} diff={diff[id]} related={entriesForWork(id)} />
     </Page>
   );
 }

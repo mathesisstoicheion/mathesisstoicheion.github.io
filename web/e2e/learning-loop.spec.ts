@@ -23,11 +23,13 @@ test("the word look-up names the lesson that explains the form, and saves the wo
   await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" }).getByRole("link", { name: /Lesson 8: Verbs: the present tense/ })).toBeVisible();
 });
 
-test("a lesson ends with its real passage, to read for real", async ({ page }) => {
+test("a lesson's real passages open in the reader, and the lesson says where to ask", async ({ page }) => {
   await page.goto("/academy/lesson/letters");
-  const real = page.getByRole("link", { name: /Now read it for real/ });
-  await expect(real).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.1");
-  await expect(real).toContainText("μῆνιν ἄειδε θεὰ");
+  // the passage is shown in the lesson, with its own link to the reader (the lesson no longer repeats it in a card of its own)
+  const real = page.locator('[data-real="tlg0012.tlg001:1.1"]');
+  await expect(real).toContainText("μῆνιν ἄειδε θεὰ", { timeout: 30_000 });
+  await expect(real.getByRole("link", { name: /Open in the reader/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.1");
+  await expect(page.getByText("Now read it for real")).toHaveCount(0);
   // and a way to ask about it: the first two lessons go to Beginners' questions, the rest to Grammar help
   await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
   await page.goto("/academy/lesson/participles");

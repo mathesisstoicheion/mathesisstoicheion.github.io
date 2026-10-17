@@ -2,12 +2,11 @@
 .page { display: grid; gap: 28px; padding-block: var(--after-head) 32px; }
 .card { display: grid; gap: 16px; padding: clamp(20px, 3vw, 36px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .card h2 { font-size: var(--step-2); }
-.cardHead { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
 .status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; }
 .status i { width: 10px; height: 10px; border-radius: var(--radius-round); }
 .on { background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 25%, transparent); }
 .off { background: var(--accent); }
-.haveGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.haveGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: var(--space-4); }
 .haveGrid h3 { font-size: 0.85rem; margin-bottom: 8px; }
 .have { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
 .have li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; box-shadow: var(--cut-under); }
@@ -20,6 +19,8 @@
 .fs legend { margin-bottom: 6px; }
 .check { display: inline-flex; gap: 8px; align-items: baseline; cursor: pointer; }
 .check input { accent-color: var(--accent); flex: none; align-self: flex-start; margin-top: 0.3em; }
+/* a box or a choice that is not ticked keeps a fine gilt edge round its hollow, so it can be seen on the dark panel (the global style leaves it a dark square on dark stone) */
+.check input[type="checkbox"], .check input[type="radio"] { border: 1px solid color-mix(in srgb, var(--accent) 60%, transparent); }
 .picker { display: grid; gap: 8px; }
 .picker input[type="search"] { font: inherit; color: var(--ink); border-radius: var(--radius); padding: 8px 12px; max-width: 360px; }
 .picker ul { list-style: none; margin: 0; padding: 8px 12px; max-height: 260px; overflow-y: auto; columns: 3 220px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
@@ -30,3 +31,11 @@
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
+
+/* "Your offline library" in one line, above the download (the download is the page's work), and "Already have the files?" folded after it */
+.have1 h2 { margin-bottom: var(--space-1); }
+.statusLine { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-5); margin: 0; font-size: var(--step--1); color: var(--ink-2); }
+.statusLine .status { color: var(--ink); }
+.already { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.already summary { cursor: pointer; display: list-item; list-style-position: inside; min-height: var(--tap); padding: var(--space-3) var(--space-4); font-weight: 600; }
+.alreadyBody { display: grid; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); }

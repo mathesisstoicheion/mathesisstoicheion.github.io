@@ -79,13 +79,16 @@
 .welcome { display: grid; gap: 14px; padding-block: 8px; }
 .examples { display: flex; flex-wrap: wrap; gap: 8px; }
 .examples .chip, .examples button { font-size: 1rem; }
-/* phones: the four kinds of search, and the four examples, as even two-by-two grids */
+/* phones: the five kinds of search in two even rows (three, then two), and the four examples as a two-by-two grid */
 @media (max-width: 760px) {
-  .tabs { display: grid; grid-template-columns: 1fr 1fr; }
-  .tabs button { text-align: center; }
+  .tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tabs button { grid-column: span 2; text-align: center; padding-inline: var(--space-2); }
+  .tabs button:nth-child(n + 4) { grid-column: span 3; }
   .examples { display: grid; grid-template-columns: 1fr 1fr; }
   .examples .chip, .examples button { justify-content: center; }
 }
+.moreTips summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); font-size: var(--step--1); }
+@media (pointer: coarse) { .moreTips summary { min-height: var(--tap); padding-block: var(--space-2); } }
 .tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
 .tips span[lang] { font-family: var(--f-greek); color: var(--ink); }
 
@@ -152,3 +155,17 @@
 
 /* the references panel carries a moulding, a fine line cut just inside the edge, as round a carved panel */
 .refs { outline: var(--moulding); outline-offset: var(--moulding-in); }
+
+/* the Oracle's header (the area's title, then these): the line carved above the title has its source set small beneath it, and the box
+   waits in a hollow of its own height until the address is read, so the page does not jump when it comes */
+.cap { display: block; max-width: 56ch; font-size: var(--step--2); line-height: 1.4; }
+.boxHold { min-height: 10.5rem; }
+/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set) */
+.refine { width: 100%; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.refine summary { position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4); font-family: var(--f-label); letter-spacing: 0.08em; font-size: var(--step--1); color: var(--accent); }
+.refine summary::-webkit-details-marker { display: none; }
+.refine summary::after { content: "▾"; position: absolute; right: var(--space-4); top: var(--space-3); color: var(--ink-2); transition: transform var(--dur-quick) var(--ease); }
+.refine[open] summary::after { transform: rotate(180deg); }
+.refineOn { font-family: var(--f-body); letter-spacing: 0; font-size: var(--step--1); color: var(--ink-2); }
+.refineBody { display: grid; gap: var(--space-4); padding: var(--space-1) var(--space-4) var(--space-4); }
+@media (prefers-reduced-motion: reduce) { .refine summary::after { transition: none; } }

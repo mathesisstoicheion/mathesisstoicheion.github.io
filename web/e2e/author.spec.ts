@@ -13,6 +13,29 @@ test("an author page shows real dates, works and the wiki entries that read them
   await expect(page.getByRole("link", { name: /Your own notes on Homer/ })).toHaveAttribute("href", "/treasury?s=authors&a=tlg0012");
 });
 
+test("a work's row on an author page names a kind or a date only when it is unusual for that author, and gives no file size", async ({ page }) => {
+  await page.goto("/library/author?a=tlg0059");
+  await expect(page.getByRole("heading", { name: "What Plato wrote" })).toBeVisible();
+  await expect(page.getByText(/^\d+(\.\d)? (KB|MB)$/)).toHaveCount(0);
+  const rows = page.locator("section[aria-labelledby=works-title] ul").last().locator("li");   // (the A to Z list stands before it, shut)
+  await expect(rows.first()).toBeVisible();
+  // 37 rows repeating "Philosophic Dialogue · 5th–4th c. BC" would hide the few that differ
+  expect(await rows.filter({ hasText: "Philosophic Dialogue · 5th–4th c. BC" }).count()).toBeLessThan(5);
+});
+
+test("only the first four of the Painted Stoa's entries show on an author page; the rest wait under \"All N entries\"", async ({ page }) => {
+  await page.goto("/library/author?a=tlg0059");
+  const stoa = page.locator("section[aria-labelledby=stoa-title]");
+  await expect(stoa.getByRole("link")).not.toHaveCount(0);
+  const all = stoa.locator("details > summary", { hasText: /^All \d+ entries/ });
+  await expect(all).toBeVisible();
+  const n = Number((await all.innerText()).match(/\d+/)![0]);
+  expect(await stoa.locator("a").count()).toBe(n);   // every entry is on the page, the first four open
+  await expect(stoa.locator(":scope > div a")).toHaveCount(4);
+  await all.click();
+  await expect(stoa.locator("details a")).toHaveCount(n - 4);
+});
+
 test("an unknown author is said to be unknown, not guessed at", async ({ page }) => {
   await page.goto("/library/author?a=tlg9999");
   await expect(page.getByRole("heading", { level: 1, name: "No such author" })).toBeVisible();

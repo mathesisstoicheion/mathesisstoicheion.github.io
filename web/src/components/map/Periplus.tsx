@@ -8,19 +8,29 @@
  * The map is painted on a canvas by an engine outside React (engine.ts, draw.ts), once per screen frame
  * at most: the zoom glides, a flick keeps the map drifting a moment, and places fade in and out as they
  * find room. This component feeds it gestures and choices, and draws the panel.
+ *
+ * The place search and the layer chips are one bar, which the page puts in its header (a slot with the id `map-tools`,
+ * app/stoa/periplus/page.tsx), where it fills the header's empty left column on a computer and stands just above the map
+ * on a phone.
  */
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { createPortal } from "react-dom";
 import { fold, loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { KINDS, kindOf, loadMap, loadSavedPlaces, mapSize, project, shortName, typeLabel, useSavedPlaces, type Base, type Place, type PlacesMeta } from "@/lib/map";
-import { useSettings } from "@/lib/settings";
+import { scrollBehavior, useSettings } from "@/lib/settings";
+import SideScroll from "@/components/stoa/SideScroll";
 import { buildLods, type Pt } from "./draw";
 import { MapEngine, trailVelocity } from "./engine";
 import { onGesture, pinchFactor, wheelFactor, wheelReader } from "@/lib/wheel";
 import styles from "./Periplus.module.css";
 
 export interface EntryLink { slug: string; title: string }
+
+const noSubscribe = () => () => {};
+/** where the page keeps the map's search and layer chips (null while the page is built, or if the page has no such place) */
+const toolsSlot = () => document.getElementById("map-tools");
 
 const fmt = (n: number) => n.toLocaleString("en-GB");
 const radius = (n: number) => Math.min(9.5, 2.4 + Math.sqrt(n) / 6);
@@ -70,6 +80,7 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
   useEffect(() => { hoverRef.current = hover; }, [hover]);
   const [homeReady, setHomeReady] = useState(false);
 
+  const slot = useSyncExternalStore(noSubscribe, toolsSlot, () => null);
   const stage = useRef<HTMLDivElement>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const ring = useRef<HTMLDivElement>(null);
@@ -274,21 +285,39 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
   const sel = selectedId ? byId.get(selectedId) ?? null : null;
   const hovered = hover ? byId.get(hover.id) : null;
 
+  // the search and the layer chips, in one bar. A place chosen from the search is shown at once: the map may be below the
+  // fold when the bar stands in the header
+  const tools = (
+    <div className={styles.tools}>
+      <div className={styles.search} role="search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+        <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a place: Σπάρτη, Delos…" aria-label="Find a place" />
+        {found.length > 0 && (
+          <ul className={styles.found}>
+            {found.map((p) => (
+              <li key={p.id}><button type="button" onClick={() => { setQ(""); select(p.id); stage.current?.scrollIntoView({ behavior: scrollBehavior(), block: "nearest" }); }}><b>{shortName(p)}</b> <span lang="grc">{p.grc}</span> <small>{fmt(p.n)}</small></button></li>
+            ))}
+          </ul>
+        )}
+      </div>
+      <SideScroll className={styles.filtersScroll}>
+        <div className={styles.filters} role="group" aria-label="What to show">
+          {KINDS.map((kd) => (
+            <button key={kd.id} type="button" className="chip" aria-pressed={kinds.has(kd.id)}
+              onClick={() => setKinds((ks) => { const n = new Set(ks); if (n.has(kd.id)) n.delete(kd.id); else n.add(kd.id); return n; })}>{kd.label}</button>
+          ))}
+          <button type="button" className="chip" aria-pressed={greekNames} onClick={() => setGreekNames(!greekNames)}>Names in Greek</button>
+        </div>
+      </SideScroll>
+    </div>
+  );
+
   return (
+    <>
+    {slot && createPortal(tools, slot)}
     <div className={`wrap ${styles.layout}`}>
       <div className={styles.mapCol}>
-        {/* the search comes first, above the map; its suggestions drop down over it */}
-        <div className={styles.search} role="search">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find a place: Σπάρτη, Delos…" aria-label="Find a place" />
-          {found.length > 0 && (
-            <ul className={styles.found}>
-              {found.map((p) => (
-                <li key={p.id}><button type="button" onClick={() => { setQ(""); select(p.id); }}><b>{shortName(p)}</b> <span lang="grc">{p.grc}</span> <small>{fmt(p.n)}</small></button></li>
-              ))}
-            </ul>
-          )}
-        </div>
+        {!slot && tools}
         <div ref={stage} className={styles.stage} tabIndex={0} role="application" aria-label="Map of the Greek world. Use the arrow keys to move and plus or minus to zoom; places are listed in the panel."
           data-hover={hover ? "" : undefined}
           onPointerDown={onPointerDown} onPointerMove={onPointerMove} onPointerUp={onPointerUp} onPointerCancel={onPointerUp}
@@ -317,13 +346,6 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
           </div>
           <div ref={scaleBar} className={styles.scale} aria-hidden="true" data-avoid=""><i /><span /></div>
         </div>
-        <div className={styles.filters} role="group" aria-label="What to show">
-          {KINDS.map((kd) => (
-            <button key={kd.id} type="button" className="chip" aria-pressed={kinds.has(kd.id)}
-              onClick={() => setKinds((ks) => { const n = new Set(ks); if (n.has(kd.id)) n.delete(kd.id); else n.add(kd.id); return n; })}>{kd.label}</button>
-          ))}
-          <button type="button" className="chip" aria-pressed={greekNames} onClick={() => setGreekNames(!greekNames)}>Names in Greek</button>
-        </div>
       </div>
 
       <aside className={styles.panel} aria-live="polite">
@@ -331,6 +353,7 @@ function MapView({ base, places, meta, idx, entriesByPlace }: { base: Base; plac
           : <Intro places={places} meta={meta} onPick={select} />}
       </aside>
     </div>
+    </>
   );
 }
 

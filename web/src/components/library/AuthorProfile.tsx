@@ -31,6 +31,17 @@ import type { RelatedEntry } from "@/wiki/related";
 const num = (n: number) => n.toLocaleString("en-GB");
 /** How many works an author needs before the page offers them "A to Z". */
 const AZ_FROM = 6;
+/** How many of the Painted Stoa's entries that cite an author show at first; the rest wait behind "All N entries". */
+const SHOWN_ENTRIES = 4;
+
+function EntryCard({ e }: { e: RelatedEntry }) {
+  return (
+    <Link href={`/stoa/${e.slug}`} className={styles.card} transitionTypes={["page-turn"]}>
+      <b>{e.title}</b>
+      <span>{e.hook}</span>
+    </Link>
+  );
+}
 
 /** The page's own loading and "no such author" states; the page itself is AuthorView, which the static /author/[id] pages build at deploy time. */
 export default function AuthorProfile({ related }: { related: Record<string, RelatedEntry[]> }) {
@@ -76,9 +87,14 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
     for (const m of ms) if (m.genre) genres.set(m.genre, (genres.get(m.genre) ?? 0) + 1);
     const dialects = [...new Set(ms.map((m) => m.dialect).filter((d): d is string => !!d))];
     const words = ms.reduce((n, m) => n + (m.tokens ?? 0), 0);
+    // the date most of the works carry: a work's own row says its date only when it differs
+    const dates = new Map<string, number>();
+    for (const m of ms) { const d = centuries(m.from, m.to); if (d) dates.set(d, (dates.get(d) ?? 0) + 1); }
+    const sorted = [...genres].sort((a, b) => b[1] - a[1]);
     return {
       when: froms.length && tos.length ? centuries(Math.min(...froms), Math.max(...tos)) : null,
-      genres: [...genres].sort((a, b) => b[1] - a[1]),
+      genres: sorted,
+      usual: { genre: sorted[0]?.[0] ?? null, when: [...dates].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null },
       dialects, words,
       english: author.works.filter(hasTranslation).length,
     };
@@ -107,8 +123,8 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
   const [az, setAz] = useState(false);
   const longList = author.works.length >= AZ_FROM;
   const azItems = useMemo<AZItem[]>(() => author.works.map((w) => ({
-    id: w.id, title: w.title, node: <WorkItem w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} />,
-  })), [author, meta, diff, landing]);
+    id: w.id, title: w.title, node: <WorkItem w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} />,
+  })), [author, meta, diff, landing, facts.usual]);
   return (
     <div className={`wrap ${styles.page}`}>
       <p className={styles.crumb}><Link href={AREAS.library.href}>← {AREAS.library.name} · {AREAS.library.english}</Link></p>
@@ -130,15 +146,13 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
       </header>
       <div><div className="meander draw" aria-hidden="true" /></div>
 
-      {written && <AuthorArticleView name={author.name} article={written.article} draft={written.draft} />}
-
       {(begin.length > 0 || famous) && author.works.length > 3 && (
         <section className={styles.sec} aria-labelledby="begin-title">
           <h2 id="begin-title">Where to begin</h2>
           <p className="muted">{famous ? `First the work ${author.name} is best known for; then the` : "The"} works here with a translation and the most familiar vocabulary: the fewest rare words to look up. That is vocabulary only; grammar, dialect and ideas may still be demanding.</p>
           <ul className={lib.works}>
-            {famous && <WorkItem key={famous.id} w={famous} meta={meta[famous.id]} common={commonShare(diff[famous.id])} about={landing} />}
-            {begin.map(({ w, p }) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={p} about={landing} />)}
+            {famous && <WorkItem key={famous.id} w={famous} meta={meta[famous.id]} common={commonShare(diff[famous.id])} about={landing} usual={facts.usual} />}
+            {begin.map(({ w, p }) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={p} about={landing} usual={facts.usual} />)}
           </ul>
         </section>
       )}
@@ -153,25 +167,27 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
         <div className={styles.swap} data-away={az ? "" : undefined} inert={az}>
           <div className={styles.swapIn}>
             <ul className={lib.works}>
-              {author.works.map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} />)}
+              {author.works.map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} />)}
             </ul>
           </div>
         </div>
       </section>
 
+      {/* the works come straight after the header (the page's title promises them); the article that tells the text's story follows */}
+      {written && <AuthorArticleView name={author.name} article={written.article} draft={written.draft} />}
+
       {entries.length > 0 && (
         <section className={styles.sec} aria-labelledby="stoa-title">
           <h2 id="stoa-title">In {AREAS.wiki.name}</h2>
           <p className="muted">Entries that quote or point to {author.name}&apos;s Greek.</p>
-          <div className={styles.cards}>
-            {entries.map((e) => (
-              <Link key={e.slug} href={`/stoa/${e.slug}`} className={styles.card} transitionTypes={["page-turn"]}>
-                <span className="label">{e.kicker}</span>
-                <b>{e.title}</b>
-                <span>{e.hook}</span>
-              </Link>
-            ))}
-          </div>
+          {/* each card is its title and its one-line hook; the first four show, the rest wait in "All N entries" */}
+          <div className={styles.cards}>{entries.slice(0, SHOWN_ENTRIES).map((e) => <EntryCard key={e.slug} e={e} />)}</div>
+          {entries.length > SHOWN_ENTRIES && (
+            <details className={styles.allEntries}>
+              <summary>All {entries.length} entries <span aria-hidden="true">→</span></summary>
+              <div className={styles.cards}>{entries.slice(SHOWN_ENTRIES).map((e) => <EntryCard key={e.slug} e={e} />)}</div>
+            </details>
+          )}
         </section>
       )}
 

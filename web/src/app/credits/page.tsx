@@ -21,6 +21,7 @@ const SOFTWARE = [
   { name: "Zustand", by: "Poimandres", licence: "MIT", href: "https://github.com/pmndrs/zustand" },
   { name: "supabase-js (accounts, the Town Hall and the Pnyx)", by: "Supabase", licence: "MIT", href: "https://github.com/supabase/supabase-js" },
   { name: "OpenSeadragon (the reader's manuscript viewer)", by: "OpenSeadragon contributors", licence: "BSD 3-Clause", href: "https://openseadragon.github.io" },
+  { name: "ts-fsrs (FSRS, which schedules the daily review)", by: "Open Spaced Repetition", licence: "MIT", href: "https://github.com/open-spaced-repetition/ts-fsrs" },
 ];
 
 export default function CreditsPage() {

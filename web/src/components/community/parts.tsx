@@ -215,14 +215,22 @@ export function HideButton({ hidden, onChange }: { hidden: boolean; onChange: (h
 }
 
 /** Shown instead of a writing box: sign in, confirm, or wait out a pause. */
-export function SignInPrompt({ what }: { what: string }) {
+export function SignInPrompt({ what, button = false }: { what: string; button?: boolean }) {
   const { session, profile } = useAccount();
   const path = usePathname();
   const params = useSearchParams();
   const here = `${path}${params.toString() ? `?${params}` : ""}`;
   if (session && isBanned(profile)) return <p className={styles.note}>The moderator has paused your writing until {new Date(profile!.banned_until!).toLocaleString("en-GB")}.</p>;
   if (session) return null;
-  return <p className={styles.note}><Link href={`/account?next=${encodeURIComponent(here)}`}>Sign in or join</Link> to {what}. Reading needs no account.</p>;
+  const to = `/account?next=${encodeURIComponent(here)}`;
+  // `button`: on a page that is only this (a signed-out visitor at a form), the way in is a real button
+  if (button) return (
+    <div className={styles.signIn}>
+      <p className={styles.note}>Sign in or join to {what}. Reading needs no account.</p>
+      <Link className="btn" href={to}>Sign in or join <span className="arr">→</span></Link>
+    </div>
+  );
+  return <p className={styles.note}><Link href={to}>Sign in or join</Link> to {what}. Reading needs no account.</p>;
 }
 
 export const canWrite = (s: ReturnType<typeof useAccount.getState>) => !!s.session && !!s.profile && !isBanned(s.profile);

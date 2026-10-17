@@ -250,16 +250,20 @@ function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, 
 
   // ---------------------------------------------------------- one question
   const from = q.lesson !== lesson.id ? LESSONS.findIndex((l) => l.id === q.lesson) + 1 : 0;
+  // the card is labelled only when that says something new: where the question comes from, a refresh, a question come back;
+  // a plain "Practice" or "Test" is the page's own title
+  const where = checkpoint ? <>{refresh ? "Refresh" : `Checkpoint ${checkpoint.numeral}`} · lesson {from || n}</> : from ? <>From lesson {from}</> : refresh ? "Refresh" : null;
+  const retry = queue.indexOf(q) < at;
   return (
     <div className={mode === "warmup" ? styles.warm : styles.workout}>
-      <ol className={styles.track} aria-label={`Question ${at + 1} of ${queue.length}`}>
-        {queue.map((_, i) => <li key={i} data-state={i < at ? (log[i] ? "right" : "wrong") : i === at ? "now" : undefined} />)}
-      </ol>
+      <div className={styles.trackRow}>
+        <ol className={styles.track} aria-label={`Question ${at + 1} of ${queue.length}`}>
+          {queue.map((_, i) => <li key={i} data-state={i < at ? (log[i] ? "right" : "wrong") : i === at ? "now" : undefined} />)}
+        </ol>
+        <span className={styles.count}>{at + 1} of {queue.length}</span>
+      </div>
       <section key={`${at}:${q.key}`} className={styles.card} aria-live="polite">
-        <span className="label">
-          {checkpoint ? <>{refresh ? "Refresh" : `Checkpoint ${checkpoint.numeral}`} · lesson {from || n}</> : from ? <>From lesson {from}</> : mode === "test" ? (refresh ? "Refresh" : "Test") : "Practice"}
-          {queue.indexOf(q) < at ? " · again" : ""}
-        </span>
+        {(where || retry) && <span className="label">{where}{retry ? (where ? " · again" : "Again") : ""}</span>}
         <p className={styles.prompt}><Rich text={q.prompt} /></p>
         {q.kind === "choice"
           ? <ChoiceQ q={q} answer={answer} onAnswer={onAnswer} />
@@ -267,7 +271,6 @@ function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, 
         {answer && <Feedback q={q} answer={answer} />}
       </section>
       <div className={styles.foot}>
-        <span className={styles.count}>{at + 1} of {queue.length}</span>
         {answer && <button ref={nextBtn} type="button" className="btn" onClick={next}>{at + 1 >= queue.length ? "See how you did" : "Next"} <span className="arr" aria-hidden="true">→</span></button>}
         {!answer && mode === "warmup" && onExit && <button type="button" className={styles.dunno} onClick={onExit}>Skip the warm-up</button>}
       </div>

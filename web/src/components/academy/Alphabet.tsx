@@ -1,28 +1,30 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { LETTERS, DIPHTHONGS, SYSTEMS, ALLEN, type System } from "@/data/alphabet";
+import { LETTERS, DIPHTHONGS, SYSTEMS, ALLEN } from "@/data/alphabet";
 import { coreWords, type CoreEntry } from "@/lib/lookup/core";
 import { fold } from "@/lib/catalog";
 import { audioKey } from "@/lib/audio";
 import { useSettings, scrollBehavior } from "@/lib/settings";
 import StrokeLetter from "./StrokeLetter";
+import { ORDER, SHORT } from "./AlphabetGlance";
 import Say from "./Say";
 import styles from "./Academy.module.css";
-
-const ORDER: System[] = ["attic", "erasmian", "modern"];
 
 export function SystemPicker() {
   const pron = useSettings((s) => s.pron);
   const set = useSettings((s) => s.set);
   return (
     <div className={styles.systems}>
-      <div className={`${styles.seg} ${styles.segStack}`} role="radiogroup" aria-label="Pronunciation">
+      <div className={styles.seg} role="radiogroup" aria-label="Pronunciation">
         {ORDER.map((sys) => (
-          <button key={sys} type="button" role="radio" aria-checked={pron === sys} onClick={() => set({ pron: sys })}>{SYSTEMS[sys].name}</button>
+          <button key={sys} type="button" role="radio" aria-checked={pron === sys} title={SYSTEMS[sys].name} onClick={() => set({ pron: sys })}>{SHORT[sys]}</button>
         ))}
       </div>
-      <p className="muted">{SYSTEMS[pron].about}</p>
+      <details className={styles.about}>
+        <summary>About this pronunciation</summary>
+        <p className="muted">{SYSTEMS[pron].about}</p>
+      </details>
     </div>
   );
 }
@@ -74,11 +76,12 @@ export default function Alphabet() {
 
       <section ref={detailRef} className={styles.detail} aria-live="polite">
         <div className={styles.detailDraw}>
-          <StrokeLetter key={`${L.name}-${caps}`} letter={caps ? L.upper : L.lower} />
-          <div className={styles.seg} role="radiogroup" aria-label="Letter form">
-            <button type="button" role="radio" aria-checked={!caps} onClick={() => setCaps(false)}>Small letter</button>
-            <button type="button" role="radio" aria-checked={caps} onClick={() => setCaps(true)}>Capital</button>
-          </div>
+          <StrokeLetter key={`${L.name}-${caps}`} letter={caps ? L.upper : L.lower}>
+            <div className={styles.seg} role="radiogroup" aria-label="Letter form">
+              <button type="button" role="radio" aria-checked={!caps} onClick={() => setCaps(false)}>Small letter</button>
+              <button type="button" role="radio" aria-checked={caps} onClick={() => setCaps(true)}>Capital</button>
+            </div>
+          </StrokeLetter>
           {L.final && !caps && <p className={styles.small}>At the end of a word: <span lang="grc" className={styles.inlineGr}>{L.final}</span></p>}
         </div>
         <div className={styles.detailText}>

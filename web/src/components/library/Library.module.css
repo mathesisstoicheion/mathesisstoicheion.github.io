@@ -13,11 +13,12 @@
 @media (max-width: 860px) { .topSide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
 /* on a phone the piece has a window of its own across the screen, under the page's name (it comes first in the markup) */
 @media (max-width: 760px) { .topText { display: flex; flex-direction: column; } .topText > h1 { order: -1; } }
-.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(30px, 5vw, 60px); }
+/* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
+.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
 .error { color: var(--accent); padding-block: 40px; }
 
 /* ---------------------------------------------------------------- every work: the search, the order and filters, and the list */
-.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin-top: clamp(var(--space-6), 5vw, var(--space-8)); padding-top: var(--space-5); position: relative; scroll-margin-top: var(--space-4); }
+.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin-top: clamp(var(--space-4), 3vw, var(--space-6)); padding-top: var(--space-5); position: relative; scroll-margin-top: var(--space-4); }
 .find::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
 .findH { font: 400 var(--step-3) / 1.06 var(--f-display); margin: 0; }
 .pathsH { padding: var(--space-3) var(--space-4) 0; color: var(--accent-2); }
@@ -93,7 +94,7 @@
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
   box-shadow: var(--cut-under); animation: rise 0.5s var(--ease) backwards;
 }
-.groupHead[data-period] { font-size: 1.6rem; }
+.groupHead[data-period], .groupHead[data-best] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
 .author { box-shadow: var(--cut-under); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }

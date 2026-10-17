@@ -1,6 +1,6 @@
 "use client";
 /**
- * The 24 letters at a glance, for lesson 1 and the Academy's front page: tap a letter to see its
+ * The 24 letters at a glance, for lesson 1: tap a letter to see its
  * name and how it sounds in the chosen pronunciation (the same setting as the alphabet page), with
  * the recording where there is one. Writing each letter, and the diphthongs, are on /academy/alphabet.
  */
@@ -12,8 +12,8 @@ import { useSettings, prefersReducedMotion } from "@/lib/settings";
 import Say from "./Say";
 import styles from "./Academy.module.css";
 
-const ORDER: System[] = ["attic", "erasmian", "modern"];
-const SHORT: Record<System, string> = { attic: "Classical Attic", erasmian: "Erasmian", modern: "Modern Greek" };
+export const ORDER: System[] = ["attic", "erasmian", "modern"];
+export const SHORT: Record<System, string> = { attic: "Classical Attic", erasmian: "Erasmian", modern: "Modern Greek" };
 
 export default function AlphabetGlance({ headingLevel = 3 }: { headingLevel?: 2 | 3 }) {
   const pron = useSettings((s) => s.pron);

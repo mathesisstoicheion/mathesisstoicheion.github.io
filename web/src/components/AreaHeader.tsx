@@ -8,14 +8,16 @@ import { AREAS, type AreaId } from "@/config/areas";
  * and lit by the torch (where it has one), its name in full, and what the name means and why it fits. An area with no
  * Greek name of its own may carve a line that belongs to it instead, with its source (`carve`). The area's own piece of
  * sculpture stands in its niche at the right (components/art/PagePiece.tsx); on a phone it stands after the title and the line saying
- * what the page is for, so those come first.
+ * what the page is for, so those come first. A page that is part of another area may put a `crumb` (a line of links back to it)
+ * above the header; `children` follow the line saying what the page is for.
  */
-export default function AreaHeader({ id, carve, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; children?: ReactNode }) {
+export default function AreaHeader({ id, carve, crumb, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; crumb?: ReactNode; children?: ReactNode }) {
   const a = AREAS[id];
   const cut = a.greek ?? carve?.text;
   return (
     <header className="area-head">
       <div className="wrap">
+        {crumb}
         <div className="area-kicker"><span className="label">{a.english}</span></div>
         {cut && <Carving text={cut} kind="title" delay={0.15} className="carve area-carve" />}
         {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
