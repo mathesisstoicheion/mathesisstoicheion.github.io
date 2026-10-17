@@ -131,7 +131,11 @@ it to the right side". Asked whether buttons should change too, they chose "Ston
   the mark moving; both fixed); a tap on M 41.6 against 40.2, but its first frame, as the page arrives at the letter, takes
   about 0.27 s against 0.17 s (the old version raced through the whole list instead of arriving at once). Computer numbers
   unchanged within the test machine's limits (software drawing).
-- **Checked**: `npm run check:tokens` passes (4,397 values against the 4,487 baseline).
+- **Checked**: all 584 browser tests: 543 pass; of the 41 that fail, 40 fail the same way on the live version (missing word lists and
+  pictures on the test machine) and the Census swipe passes when rerun alone. The 304 accessibility checks pass wherever they pass
+  live. `npm run check:tokens` passes (4,397 values against the 4,487 baseline). A recheck of phone scrolling (5 more runs):
+  Mine 54.8 against 55.1 fps, the Stoa 53.2 against 55.0.
+- **Mine's gable** keeps a thin gilded line along its top edge (the live gable was a gold line; the stone one alone read too dim).
 
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
