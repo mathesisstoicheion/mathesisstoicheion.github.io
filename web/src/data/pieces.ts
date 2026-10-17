@@ -57,6 +57,7 @@ const PAGES: [string, PageSpec][] = [
   ["/stoa/kerameikos", { piece: "funerary-lekythos", why: "Marble vases like this stood over graves in Attica." }],
   ["/stoa/manuscripts", { piece: "herodotos-bust", why: "Herodotus’ name is carved on the front of the bust." }],
   ["/stoa/periplus", { piece: "neptune-bronze" }],
+  ["/stoa/lyre", { piece: "harp-player" }],
   ["/stoa/variants", { piece: "diadoumenos-terracotta", why: "Polykleitos’ bronze Diadoumenos is lost; it lives on in copies that differ." }],
   ["/stoa/[slug]", { piece: "banquet-relief" }],
   ["/stoa", { piece: "chrysippos-head", why: "Chrysippus was the third head of the Stoic school." }],
