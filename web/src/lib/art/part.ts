@@ -40,6 +40,8 @@ function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: n
     if (!p.ok && (p.vis || !p.tried)) { p.tried = true; p.ok = a.layout() !== false; p.dirty = true; }
     if (!p.vis || !p.ok) continue;
     const r = p.el.getBoundingClientRect();
+    // near the screen but not on it (the observer looks a little beyond): nothing to see, so nothing to draw yet
+    if (r.bottom <= 0 || r.top >= H) continue;
     let local: LocalLight[];
     if (still || p.o.day?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: 1 }]; }
     else {
