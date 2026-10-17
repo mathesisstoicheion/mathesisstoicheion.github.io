@@ -9,6 +9,9 @@
   animation: rise 0.4s var(--ease) backwards;
   transition: bottom 0.35s var(--ease);
 }
+/* in the reader on a phone, away from the top of the page, the reader's bar stands alone at the foot of the screen in the
+   site's bar's place (ReadBar.module.css): only the home bar's room is left of the site's bar */
+:global(html[data-reading][data-scrolled]) .bar { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
 :global(html[data-hdr="hidden"]) .bar { --tabbar-vis: 0px; --readbar-vis: 0px; }
 @keyframes rise { from { translate: -50% 24px; opacity: 0; } }
 

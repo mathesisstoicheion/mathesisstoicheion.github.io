@@ -12,6 +12,11 @@
     transition: transform 0.35s var(--ease);
   }
   .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--sill-head); pointer-events: none; }
+  /* Away from the top of the page (Header.tsx sets data-scrolled), the site's bar stays tucked away (TabBar.module.css)
+     and this one comes back alone, down in its place at the foot of the screen, clear of the phone's home bar; its
+     stone runs on under that */
+  .bar::after { content: ""; position: absolute; left: 0; right: 0; top: 100%; height: env(safe-area-inset-bottom, 0px); background: var(--bg); pointer-events: none; }
+  :global(html[data-scrolled]) .bar { transform: translateY(calc(var(--tabbar-h) - env(safe-area-inset-bottom, 0px))); }
   /* it tucks away with the site's bar below it: its own height, the bar's, and its shadow */
   :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + var(--tabbar-h) + 12px)); }
 
