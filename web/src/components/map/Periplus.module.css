@@ -7,6 +7,7 @@
 @media (max-width: 980px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 
 .mapCol { display: grid; gap: 12px; min-width: 0; }
+.stage { scroll-margin-top: calc(var(--hdr-h) + var(--space-3)); }
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
   border-radius: var(--radius); box-shadow: var(--frame);
@@ -65,9 +66,17 @@
 .scale i { display: block; height: 5px; border: 1.5px solid currentColor; border-top: 0; transition: width 0.12s linear; }
 .scale span { font: 0.75rem/1 var(--f-label); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
 
+/* the search and the layer chips are one bar (Periplus.tsx): in the page's header, beside the sculpture's niche on a computer,
+   and just above the map on a phone. A grid, so it takes the room beside the niche rather than running under it. */
+.tools { display: grid; gap: var(--space-3); max-width: 40rem; margin-top: var(--space-5); }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; }
-/* phones: each row of filters stretches to the full width, so both edges line up */
-@media (max-width: 760px) { .filters > :global(.chip) { flex: 1 1 auto; justify-content: center; } }
+/* phones: the chips are one row to slide sideways (its right edge fades while there is more), so the bar stays slim */
+@media (max-width: 760px) {
+  .filtersScroll { overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
+  .filtersScroll[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
+  .filters { flex-wrap: nowrap; }
+  .filters > :global(.chip) { flex: none; }
+}
 
 .panel { position: sticky; top: calc(var(--hdr-vis) + 20px); transition: top 0.35s var(--ease); display: grid; gap: 14px; }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }

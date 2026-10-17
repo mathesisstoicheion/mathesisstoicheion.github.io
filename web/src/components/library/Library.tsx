@@ -9,12 +9,12 @@ import { loadWorksMeta, FAMILIES, PERIODS, familyOf, periodOf, centuries, DATE_N
 import { commonShare, loadDifficulty, VOCAB_BANDS } from "@/lib/difficulty";
 import { loadAuthorsMeta, loadAuthorNames, type AuthorMeta, type AuthorNames } from "@/lib/authors-meta";
 import { BEST_KNOWN } from "@/data/best-known";
-import { STARTS } from "@/data/starts";
 import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import MineButtons from "./MineButtons";
 import { AZRail } from "./AZList";
+import { bestMatch, nameMatch } from "./az";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import PagePiece from "@/components/art/PagePiece";
@@ -37,6 +37,8 @@ const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** How many authors (or titles) a list needs before the rail of letters stands beside it. */
 const RAIL_FROM = 20;
 const UNDATED = "Not dated";
+/** The key of the group that leads a search which names one author (a word, so it is never taken for a letter of the A to Z). */
+const BEST = "best";
 
 const readHref = (w: CatWork) => `/read?w=${w.id}`;
 const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
@@ -68,9 +70,18 @@ export function marked(text: string, query: string): ReactNode {
   return <>{out.map((x, i) => <Fragment key={i}>{x}</Fragment>)}</>;
 }
 
-export function WorkItem({ w, author, meta, common, about = false }: { w: CatWork; author?: CatAuthor; meta?: WorkMeta; common: number | null; about?: boolean }) {
+/**
+ * One work on an author's page. `usual` is what most of that author's works are (their kind of writing and their date): the row
+ * then names a kind or a date only where the work differs from it, and leaves out the file's size, because the same words
+ * on every row (37 times, for Plato) hide the few that are different.
+ */
+export function WorkItem({ w, author, meta, common, about = false, usual }: {
+  w: CatWork; author?: CatAuthor; meta?: WorkMeta; common: number | null; about?: boolean; usual?: { genre: string | null; when: string | null };
+}) {
   const grc = greekEditions(w)[0];
   const tr = hasTranslation(w);
+  const when = meta ? centuries(meta.from, meta.to) : null;
+  const kind = [meta?.genre && (!usual || meta.genre !== usual.genre) ? meta.genre : null, when && (!usual || when !== usual.when) ? when : null].filter(Boolean).join(" · ");
   return (
     <li className={styles.work}>
       <Link href={readHref(w)} transitionTypes={["page-turn"]} className={styles.workLink}>
@@ -79,10 +90,10 @@ export function WorkItem({ w, author, meta, common, about = false }: { w: CatWor
         {w.orig && w.orig !== grc?.label && <OrigTitle work={w} className={styles.orig} />}
       </Link>
       <span className={styles.meta}>
-        {meta?.genre && <span className={styles.genre}>{meta.genre}{meta.from !== null ? ` · ${centuries(meta.from, meta.to)}` : ""}</span>}
+        {kind && <span className={styles.genre}>{kind}</span>}
         {tr ? <span className={styles.badge}>English</span> : <span className={`${styles.badge} ${styles.off}`}>Greek only</span>}
         {common !== null && <span title={`${common}% of this text's running words are among the 516 core words, the commonest in Greek`}>{common}% common words</span>}
-        {grc && <span className={styles.size}>{kb(grc.size)}</span>}
+        {grc && !usual && <span className={styles.size}>{kb(grc.size)}</span>}
         {about && <Link href={workPath(w.id)} transitionTypes={["page-turn"]} className={styles.aboutLink}>About</Link>}
       </span>
     </li>
@@ -98,7 +109,7 @@ interface Group { key: string; label: string; short: string; rows?: Row[]; title
  * The library (design B, Stone and torch): the page's opening words (`hero`) beside the search, the order and the
  * filters, then the wall of stelai (`stelai`, hidden while searching), then the catalogue.
  */
-export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: ReactNode }) {
+export default function Library({ hero, stelai, paths }: { hero?: ReactNode; stelai?: ReactNode; paths?: ReactNode }) {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -188,7 +199,18 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
     return { a, works: ws, from: froms.length ? Math.min(...froms) : null, to: tos.length ? Math.max(...tos) : null };
   }).filter((r) => r.works.length), [found, family, meta]);
 
+  // a search that plainly names one author (Plato, aristot, Ἀριστοτέλης): that author leads the list, opened, as the "Best match"
+  // (az.ts). Two authors equally close (Marcus A…) name no one in particular, so the A to Z stands as it is.
+  const bestId = useMemo(() => {
+    const f = fold(query.trim());
+    if (f.length < 2 || sort === "title") return null;
+    return bestMatch(rows, (r) => nameMatch([r.a.name, r.a.orig, names[r.a.id]?.grc, ...(names[r.a.id]?.also ?? [])], f))?.a.id ?? null;
+  }, [rows, query, names, sort]);
+
   const groups: Group[] = useMemo(() => {
+    const best = bestId ? rows.find((r) => r.a.id === bestId) : undefined;
+    const rest = best ? rows.filter((r) => r !== best) : rows;
+    const lead: Group[] = best ? [{ key: BEST, label: "Best match", short: "Best match", rows: [best] }] : [];
     if (sort === "title") {
       const all = rows.flatMap(({ a, works }) => works.map((w) => ({ w, a }))).sort((x, y) => byName(x.w.title, y.w.title));
       const by = new Map<string, Group>();
@@ -199,13 +221,13 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
       const by = new Map<string, Group>();
       for (const [p] of PERIODS) by.set(p, { key: p, label: p, short: p.split(" ·")[0], rows: [] });
       by.set(UNDATED, { key: UNDATED, label: "Not dated in GLAUx", short: "Undated", rows: [] });
-      for (const r of [...rows].sort((x, y) => (x.from ?? 1e9) - (y.from ?? 1e9) || byName(x.a.name, y.a.name))) by.get(periodOf(r.from) ?? UNDATED)!.rows!.push(r);
-      return [...by.values()].filter((g) => g.rows!.length);
+      for (const r of [...rest].sort((x, y) => (x.from ?? 1e9) - (y.from ?? 1e9) || byName(x.a.name, y.a.name))) by.get(periodOf(r.from) ?? UNDATED)!.rows!.push(r);
+      return [...lead, ...[...by.values()].filter((g) => g.rows!.length)];
     }
     const by = new Map<string, Group>();
-    for (const r of [...rows].sort((x, y) => byName(x.a.name, y.a.name))) { const k = initial(r.a.name); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, rows: [] }); by.get(k)!.rows!.push(r); }
-    return [...by.values()];
-  }, [rows, sort]);
+    for (const r of [...rest].sort((x, y) => byName(x.a.name, y.a.name))) { const k = initial(r.a.name); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, rows: [] }); by.get(k)!.rows!.push(r); }
+    return [...lead, ...by.values()];
+  }, [rows, sort, bestId]);
 
   // a search that names an author (by any of their names): those authors are offered first, as links to their place
   const authorHits = useMemo(() => {
@@ -242,11 +264,20 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
     return el ?? undefined;
   };
 
+  // arriving with a search or a filter in the address (the home page's "See all in the Library", a shared link): the list,
+  // with its search, comes into view at once; an author named by ?a= is brought into view below instead
+  useEffect(() => {
+    if (params.get("a") || ![...params.keys()].some((k) => ["q", "sort", "tr", "genre", "period", "dialect", "vocab"].includes(k))) return;
+    const el = document.getElementById("library-list");
+    if (el) scrollBelowHeader(el, 12);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   // arriving with ?a=tlg0012 (from the reader or an author page): bring that author into view and mark them
   const selected = params.get("a");
   const ctx = `${query}|${tr}|${family}|${period}|${dialect}|${vocab}|${allOpen}`;
   const flipped = flips.ctx === ctx ? flips.ids : new Set<string>();
-  const isOpen = (id: string) => flipped.has(id) !== (narrowed || allOpen || id === selected);
+  const isOpen = (id: string) => flipped.has(id) !== (narrowed || allOpen || id === selected || id === bestId);
   const toggle = (id: string) => { const t = new Set(flipped); if (t.has(id)) t.delete(id); else t.add(id); setFlips({ ctx, ids: t }); };
   useEffect(() => {
     if (!idx || !selected) return;
@@ -256,6 +287,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
     });
   }, [idx, selected]);
 
+  const filtering = !!query.trim() || tr !== "all" || !!period || !!dialect || !!vocab;
   const active = (tr !== "all" ? 1 : 0) + (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
@@ -265,67 +297,16 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
     <div className={`wrap ${styles.lib}`}>
       {/* the moderator alone: their private collection, and importing a text into it */}
       <MineButtons />
-      {/* the search comes first, beside the page's name: straight to the point */}
+      {/* the page's name, and the Mouseion's own piece: at the right on a computer, under the name on a phone */}
       <div className={styles.top}>
-        {/* the Mouseion's own piece: above the search on a computer, beside the words on a phone */}
-        {hero && <div className={styles.topText}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
-        <div className={styles.topSide}>
-          <PagePiece className={styles.pieceWide} />
-          <div className={styles.searchBox}>
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-            <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-              placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
-          </div>
-        </div>
+        {hero && <div className={`enter ${styles.topText}`}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
+        <div className={`enter ${styles.topSide}`}><PagePiece className={styles.pieceWide} /></div>
       </div>
 
-      {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
-      <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
-        Order and filters{active ? ` (${active} on)` : ""}
-      </button>
-      <div id="library-filters" className={styles.filters} data-open={more ? "" : undefined}>
-      <div className={styles.controls}>
-        <div className="segmented" role="radiogroup" aria-label="Order">
-          {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
-        </div>
-        <div className="segmented" role="radiogroup" aria-label="Translation">
-          {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
-        </div>
-        <div className={styles.selects} role="group" aria-label="More filters">
-          <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
-            <option value="">Every period</option>
-            {PERIODS.map(([p]) => <option key={p} value={p}>{p}</option>)}
-          </select>
-          <select id="library-dialect" aria-label="Dialect" value={dialect} onChange={(e) => setDialect(e.target.value)} data-set={dialect ? "" : undefined}>
-            <option value="">Every dialect</option>
-            {dialects.map((d) => <option key={d} value={d}>{d}</option>)}
-          </select>
-          <select id="library-vocab" aria-label="Vocabulary" value={vocab} onChange={(e) => setVocab(e.target.value)} data-set={vocab ? "" : undefined}>
-            <option value="">Any vocabulary</option>
-            {VOCAB_BANDS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
-          </select>
-        </div>
-      </div>
-
-      <div className={styles.genres} role="group" aria-label="Kind of writing">
-        <span className="label">Genre</span>
-        <div className={styles.chipRow}>
-          <button type="button" className="chip" aria-pressed={!family} onClick={() => setFamily("")}>All <small>{n(familyCounts.all)}</small></button>
-          {FAMILIES.map(([f]) => {
-            const c = familyCounts.c.get(f) ?? 0;
-            return <button key={f} type="button" className="chip" aria-pressed={family === f} disabled={!c && family !== f} onClick={() => setFamily(family === f ? "" : f)}>{f} <small>{n(c)}</small></button>;
-          })}
-        </div>
-      </div>
-      </div>
-
-      {vocab && <p className={styles.note}>Vocabulary is the share of a text&apos;s running words that are among the 516 core words, the commonest in Greek (the Dickinson College Commentaries core list, counted over the GLAUx analysis; texts under 2,000 words are not rated). It measures words only, not grammar, dialect or how hard the ideas are: Aristotle&apos;s words are common, his arguments are not.</p>}
-
-      {/* a few famous books, each a carved stele (hidden while searching, so the results come straight up) */}
-      {stelai && !query.trim() && <div className={styles.stelai}>{stelai}</div>}
-
-      <details ref={beginRef} className={styles.begin} hidden={!!query.trim()} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
-        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is</span></summary>
+      {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
+      {stelai && <div className={styles.stelai}>{stelai}</div>}
+      <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
+        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
         <div className={styles.levels}>
           {START.map((s) => (
             <div key={s.level} className={styles.level}>
@@ -339,98 +320,130 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
             </div>
           ))}
         </div>
+        {/* the reading paths (data/paths.ts), short routes through the library in a sensible order; once on the home page */}
+        {paths && <><h2 className={`label ${styles.pathsH}`}>Where to read next: six paths, each in a sensible order</h2>{paths}</>}
       </details>
 
-      {/* famous works to begin with (data/starts.ts, the home page's choice): a shelf of their Greek titles */}
-      {idx && !narrowed && (
-        <section className={styles.shelf} aria-labelledby="shelf-h">
-          <h2 id="shelf-h" className="label">Famous works, with English beside the Greek</h2>
-          <ul>
-            {STARTS.map((id, i) => {
-              const w = idx.work.get(id), a = idx.authorOf.get(id);
-              if (!w || !a) return null;
-              const gr = greekEditions(w)[0]?.label;
-              const pct = commonShare(diff[id]);
-              return (
-                <li key={id} style={{ "--i": i } as React.CSSProperties}>
-                  <Link href={`/read?w=${id}`} transitionTypes={["page-turn"]} className={styles.spine}>
-                    {gr && <span className={styles.spineGr} lang="grc">{gr}</span>}
-                    <b>{w.title}</b>
-                    <span className={styles.spineBy}>{a.name}</span>
-                    {pct !== null && <VocabMeter pct={pct} />}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
-        </section>
-      )}
-
-      {reading.size > 0 && !query.trim() && idx && (
-        <div className={styles.reading} role="group" aria-label="Your books in progress">
-          <span className="label">Reading now</span>
-          {[...reading].slice(0, 4).map(([w, at]) => {
-            const wk = idx.work.get(w), a = idx.authorOf.get(w);
-            return wk ? <Link key={w} className="chip" href={`/read?w=${w}&at=${encodeURIComponent(at)}`} transitionTypes={["page-turn"]}>{a ? `${a.name}, ` : ""}<i>{wk.title}</i> <small>at {at}</small></Link> : null;
-          })}
+      {/* every work: the search, the order and the filters stand on the list they sort and narrow (the owner, 2026-10-17:
+          the search "separated from the A to Z list ... isn't intuitive") */}
+      <section id="library-list" className={styles.find} aria-labelledby="library-list-h">
+        <h2 id="library-list-h" className={styles.findH}>Every work in the library</h2>
+        <div className={styles.searchBox}>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
+            placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
         </div>
-      )}
 
-      <p className={styles.count} aria-live="polite">
-        {!idx ? "Opening the catalogue…"
-          : narrowed ? <>{n(shown.works)} of {n(total.works)} works, by {n(shown.authors)} author{shown.authors === 1 ? "" : "s"} · <button type="button" onClick={clearAll}>Show everything</button></>
-          : `${n(total.works)} works by ${n(total.authors)} authors, ${n(total.english)} with an English translation`}
-        {idx && sort !== "title" && !narrowed && <> · <button type="button" onClick={() => setAllOpen(!allOpen)}>{allOpen ? "Close every author" : "Open every author"}</button></>}
-      </p>
-      {authorHits.length > 0 && sort !== "title" && (
-        <p className={styles.authorHits}>
-          <span className="label">{authorHits.length === 1 ? "Author" : "Authors"}</span>
-          {authorHits.map((r) => (
-            <button key={r.a.id} type="button" className="chip" onClick={() => goAuthor(r.a.id)}>
-              <span>{marked(r.a.name, query)}</span>
-              {!fold(r.a.name).includes(fold(query.trim())) && alias(r.a.id, fold(query.trim())) && <span className="muted"> ({marked(alias(r.a.id, fold(query.trim()))!, query)})</span>}
-              <small>{n(r.works.length)}</small>
-            </button>
-          ))}
+        {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
+        <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
+          Order and filters{active ? ` (${active} on)` : ""}
+        </button>
+        <div id="library-filters" className={styles.filters} data-open={more ? "" : undefined}>
+        <div className={styles.controls}>
+          <div className="segmented" role="radiogroup" aria-label="Order">
+            {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
+          </div>
+          <div className="segmented" role="radiogroup" aria-label="Translation">
+            {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
+          </div>
+          <div className={styles.selects} role="group" aria-label="More filters">
+            <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
+              <option value="">Every period</option>
+              {PERIODS.map(([p]) => <option key={p} value={p}>{p}</option>)}
+            </select>
+            <select id="library-dialect" aria-label="Dialect" value={dialect} onChange={(e) => setDialect(e.target.value)} data-set={dialect ? "" : undefined}>
+              <option value="">Every dialect</option>
+              {dialects.map((d) => <option key={d} value={d}>{d}</option>)}
+            </select>
+            <select id="library-vocab" aria-label="Vocabulary" value={vocab} onChange={(e) => setVocab(e.target.value)} data-set={vocab ? "" : undefined}>
+              <option value="">Any vocabulary</option>
+              {VOCAB_BANDS.map(([id, label]) => <option key={id} value={id}>{label}</option>)}
+            </select>
+          </div>
+        </div>
+
+        <div className={styles.genres} role="group" aria-label="Kind of writing">
+          <span className="label">Genre</span>
+          <div className={styles.chipRow}>
+            <button type="button" className="chip" aria-pressed={!family} onClick={() => setFamily("")}>All <small>{n(familyCounts.all)}</small></button>
+            {FAMILIES.map(([f]) => {
+              const c = familyCounts.c.get(f) ?? 0;
+              // while a search or a filter is on, a kind of writing with nothing left in it is not offered (the one chosen stays, to be unchosen)
+              if (!c && family !== f && filtering) return null;
+              return <button key={f} type="button" className="chip" aria-pressed={family === f} disabled={!c && family !== f} onClick={() => setFamily(family === f ? "" : f)}>{f} <small>{n(c)}</small></button>;
+            })}
+          </div>
+        </div>
+        </div>
+
+        {vocab && <p className={styles.note}>Vocabulary is the share of a text&apos;s running words that are among the 516 core words, the commonest in Greek (the Dickinson College Commentaries core list, counted over the GLAUx analysis; texts under 2,000 words are not rated). It measures words only, not grammar, dialect or how hard the ideas are: Aristotle&apos;s words are common, his arguments are not.</p>}
+
+        {reading.size > 0 && !query.trim() && idx && (
+          <div className={styles.reading} role="group" aria-label="Your books in progress">
+            <span className="label">Reading now</span>
+            {[...reading].slice(0, 4).map(([w, at]) => {
+              const wk = idx.work.get(w), a = idx.authorOf.get(w);
+              return wk ? <Link key={w} className="chip" href={`/read?w=${w}&at=${encodeURIComponent(at)}`} transitionTypes={["page-turn"]}>{a ? `${a.name}, ` : ""}<i>{wk.title}</i> <small>at {at}</small></Link> : null;
+            })}
+          </div>
+        )}
+
+        <p className={styles.count} aria-live="polite">
+          {!idx ? "Opening the catalogue…"
+            : narrowed ? <>{n(shown.works)} of {n(total.works)} works, by {n(shown.authors)} author{shown.authors === 1 ? "" : "s"} · <button type="button" onClick={clearAll}>Show everything</button></>
+            : `${n(total.works)} works by ${n(total.authors)} authors, ${n(total.english)} with an English translation.`}
+          {idx && sort !== "title" && !narrowed && !allOpen && " Click an author to see their works, then a work to read it."}
+          {idx && sort !== "title" && !narrowed && <> <button type="button" onClick={() => setAllOpen(!allOpen)}>{allOpen ? "Close every author" : "Open every author"}</button></>}
         </p>
-      )}
-      {idx && sort !== "title" && !narrowed && !allOpen && <p className={styles.hint}>Click an author to see their works, then a work to read it.</p>}
-
-      {idx && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
-
-      {/* the rail of letters down the right of the list, sticky beside it (none when sorted by period); the list leaves room for it */}
-      <div className={styles.listWrap} data-rail={railOn ? "" : undefined}>
-      {railOn && <AZRail variant="side" keys={railKeys} has={(k) => present.has(k)} jump={jump} noun={sort === "title" ? "Titles" : "Authors"}
-        part={(k) => document.getElementById(`lib-${k}`)} parts={`${sort}|${groups.length}`} />}
-      {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
-      <div className={styles.list} onKeyDown={(e) => {
-        const t = e.target as HTMLElement;
-        if (!t.matches?.("[data-author-row]") || !["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
-        const all = [...document.querySelectorAll<HTMLElement>("[data-author-row]")];
-        const i = all.indexOf(t);
-        const to = e.key === "Home" ? 0 : e.key === "End" ? all.length - 1 : i + (e.key === "ArrowDown" ? 1 : -1);
-        if (to < 0 || to >= all.length) return;
-        e.preventDefault();
-        all[to].focus();
-        all[to].scrollIntoView({ block: "nearest" });
-      }}>
-        {groups.map((g) => (
-          <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
-            <h2 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" ? "" : undefined}>{g.label}</h2>
-            {g.rows?.map((r) => (
-              <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
-                aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
-                selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} />
+        {authorHits.length > 0 && sort !== "title" && (
+          <p className={styles.authorHits}>
+            <span className="label">{authorHits.length === 1 ? "Author" : "Authors"}</span>
+            {authorHits.map((r) => (
+              <button key={r.a.id} type="button" className="chip" onClick={() => goAuthor(r.a.id)}>
+                <span>{marked(r.a.name, query)}</span>
+                {!fold(r.a.name).includes(fold(query.trim())) && alias(r.a.id, fold(query.trim())) && <span className="muted"> ({marked(alias(r.a.id, fold(query.trim()))!, query)})</span>}
+                <small>{n(r.works.length)}</small>
+              </button>
             ))}
-            {g.titles && (
-              <ul className={`${styles.rows} ${styles.titleRows}`}>
-                {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} d={diff[w.id]} query={query} at={reading.get(w.id)} />)}
-              </ul>
-            )}
-          </section>
-        ))}
-      </div>
-      </div>
+          </p>
+        )}
+
+        {idx && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
+
+        {/* the rail of letters down the right of the list, sticky beside it (none when sorted by period); the list leaves room for it */}
+        <div className={styles.listWrap} data-rail={railOn ? "" : undefined}>
+        {railOn && <AZRail variant="side" keys={railKeys} has={(k) => present.has(k)} jump={jump} noun={sort === "title" ? "Titles" : "Authors"}
+          part={(k) => document.getElementById(`lib-${k}`)} parts={`${sort}|${groups.length}`} />}
+        {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
+        <div className={styles.list} onKeyDown={(e) => {
+          const t = e.target as HTMLElement;
+          if (!t.matches?.("[data-author-row]") || !["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
+          const all = [...document.querySelectorAll<HTMLElement>("[data-author-row]")];
+          const i = all.indexOf(t);
+          const to = e.key === "Home" ? 0 : e.key === "End" ? all.length - 1 : i + (e.key === "ArrowDown" ? 1 : -1);
+          if (to < 0 || to >= all.length) return;
+          e.preventDefault();
+          all[to].focus();
+          all[to].scrollIntoView({ block: "nearest" });
+        }}>
+          {groups.map((g) => (
+            <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
+              <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>{g.label}</h3>
+              {g.rows?.map((r) => (
+                <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
+                  aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
+                  selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} />
+              ))}
+              {g.titles && (
+                <ul className={`${styles.rows} ${styles.titleRows}`}>
+                  {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} d={diff[w.id]} query={query} at={reading.get(w.id)} />)}
+                </ul>
+              )}
+            </section>
+          ))}
+        </div>
+        </div>
+      </section>
     </div>
   );
 }

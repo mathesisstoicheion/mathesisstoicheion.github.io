@@ -84,10 +84,18 @@
   --dur-quick: 0.25s;
   --dur: 0.4s;
   --dur-slow: 1.2s;
+  --dur-enter: 0.9s;    /* a page's name and its piece rising into place as it opens */
+  --enter-step: 0.1s;   /* ...each line a step after the one before */
+  --dur-fade: 1.6s;     /* a niche giving way to its piece as the light comes up */
 
   /* shape: thin rules and cut lines, no rounded cards */
   --radius: 0px;
   --radius-round: 50%;
+  --radius-arch: 999px 999px 0 0;   /* a niche with a round head */
+
+  /* layers: just above the header */
+  --z-over-header: 31;
+  --z-bar: 5;           /* a sticky bar under the header (the reader's, the tables' search): over what scrolls beneath it */
 
   /* ---------------------------------------------------------- semantic tokens */
   --bg: var(--stone-1);            /* the wall */

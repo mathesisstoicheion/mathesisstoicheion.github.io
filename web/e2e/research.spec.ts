@@ -61,6 +61,15 @@ test("near another word keeps only the results with it close by", async ({ page 
   expect(some).toBeLessThan(all);
 });
 
+test("Ask also applies a word typed in Near another word, so nothing typed is left behind", async ({ page }) => {
+  await page.goto(`/search?m=lemma&q=${DIKE}&a=tlg0012`);
+  const near = page.locator("form").filter({ has: page.getByText("Near another word") });
+  await near.getByRole("textbox").fill("θεός");
+  await page.getByRole("button", { name: "Ask" }).click();
+  await expect(page).toHaveURL(new RegExp(`n=${THEOS}`, "i"));
+  await expect(page.getByText(/^Only results with/)).toBeVisible({ timeout: 60_000 });
+});
+
 for (const scheme of ["light", "dark"] as const) {
   test(`the concordance and statistics pass the accessibility checks (${scheme})`, async ({ page }) => {
     await page.emulateMedia({ colorScheme: scheme });

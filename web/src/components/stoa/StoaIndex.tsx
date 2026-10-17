@@ -1,12 +1,14 @@
 "use client";
 /**
  * The Painted Stoa's front: a colonnade of painted panels, one per category, each listing its
- * entries, with a search across every entry and a featured entry that changes each day.
+ * entries (and one more, "Reference", listing the library's own reference pages), with a search across every entry
+ * directly on top of it, whose results stand in the colonnade's place while a search is typed, and a featured entry that
+ * changes each day, below it.
  * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
  * search also looks through, are fetched only when a search begins, so the page itself stays light.
  */
 import Link from "next/link";
-import { Suspense, useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { useSearchParams } from "next/navigation";
 import { fold } from "@/lib/catalog";
 import { inline, plain } from "@/wiki/markup";
@@ -34,9 +36,15 @@ function QueryFromUrl({ onQuery }: { onQuery: (q: string) => void }) {
   return null;
 }
 
-/** `lead`: what opens the page above the day's entry (the map, the Census and Archaeology), hidden while searching. */
-export default function StoaIndex({ entries, reference = [], lead }: { entries: EntryCard[]; reference?: RefCard[]; lead?: React.ReactNode }) {
+/**
+ * `lead`: what opens the page above the search (the map, the Census and Archaeology); it stays while searching, so the
+ * search does not move under the finger. `foot`: the small print that ends the page, above the footer.
+ */
+export default function StoaIndex({ entries, reference = [], lead, foot }: { entries: EntryCard[]; reference?: RefCard[]; lead?: React.ReactNode; foot?: React.ReactNode }) {
   const [q, setQ] = useState("");
+  const searchRow = useRef<HTMLDivElement>(null);
+  // a search handed over from Quick search: the page opens at the top, so bring the search and its results into view
+  const fromUrl = useCallback((v: string) => { setQ(v); searchRow.current?.scrollIntoView({ block: "start" }); }, []);
   const n = fold(q).trim();
   // until the whole texts arrive (a moment, on the first search), the cards alone are searched
   const [full, setFull] = useState<Map<string, string> | null>(null);
@@ -51,8 +59,10 @@ export default function StoaIndex({ entries, reference = [], lead }: { entries: 
 
   return (
     <div className={`wrap ${styles.index}`}>
-      <Suspense fallback={null}><QueryFromUrl onQuery={setQ} /></Suspense>
-      <div className={styles.searchRow} role="search">
+      <Suspense fallback={null}><QueryFromUrl onQuery={fromUrl} /></Suspense>
+      {lead}
+
+      <div className={styles.searchRow} role="search" ref={searchRow}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
         <input enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
       </div>
@@ -63,7 +73,36 @@ export default function StoaIndex({ entries, reference = [], lead }: { entries: 
         </section>
       )}
 
-      {!n && lead}
+      {!n && (
+        <ol className={styles.colonnade}>
+          {CATEGORIES.map((c, i) => {
+            const es = entriesIn(c.id);
+            return (
+              <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
+                <div className={styles.panelIn}>
+                  <span className={styles.roundel}><CategoryIcon id={c.id} /></span>
+                  <h2>{c.href ? <Link href={c.href} transitionTypes={["page-turn"]}>{c.title}</Link> : c.title}</h2>
+                  <p className={styles.blurb}>{c.blurb}</p>
+                  {es.length > 0
+                    ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
+                    : <p className={styles.soonLine}>Entries in preparation.</p>}
+                </div>
+              </li>
+            );
+          })}
+          {reference.length > 0 && (
+            // the library's own reference pages (Authors, Eras, Editions…) are one more panel of the colonnade
+            <li id="reference" className={styles.panel} style={{ "--i": CATEGORIES.length } as React.CSSProperties}>
+              <nav className={styles.panelIn} aria-labelledby="ref-h">
+                <span className={styles.roundel}><CategoryIcon id="reference" /></span>
+                <h2 id="ref-h">Reference</h2>
+                <p className={styles.blurb}>Who wrote the texts, when, and how they reached us.</p>
+                <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} title={r.blurb} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
+              </nav>
+            </li>
+          )}
+        </ol>
+      )}
 
       {featured && !n && (
         <Link href={`/stoa/${featured.slug}`} className={styles.featured} transitionTypes={["page-turn"]} data-pic={pic ? "" : undefined}>
@@ -80,40 +119,7 @@ export default function StoaIndex({ entries, reference = [], lead }: { entries: 
         </Link>
       )}
 
-      {!n && reference.length > 0 && (
-        <nav className={styles.reference} aria-labelledby="ref-h">
-          <h2 id="ref-h" className="label">Reference</h2>
-          <ul>
-            {reference.map((r) => (
-              <li key={r.href}>
-                <Link href={r.href} transitionTypes={["page-turn"]}>
-                  <span className={styles.refGr} lang="grc">{r.greek}</span>
-                  <b>{r.title}</b>
-                  <span>{r.blurb}</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      )}
-
-      <ol className={styles.colonnade}>
-        {CATEGORIES.map((c, i) => {
-          const es = entriesIn(c.id);
-          return (
-            <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
-              <div className={styles.panelIn}>
-                <span className={styles.roundel}><CategoryIcon id={c.id} /></span>
-                <h2>{c.href ? <Link href={c.href} transitionTypes={["page-turn"]}>{c.title}</Link> : c.title}</h2>
-                <p className={styles.blurb}>{c.blurb}</p>
-                {es.length > 0
-                  ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
-                  : <p className={styles.soonLine}>Entries in preparation.</p>}
-              </div>
-            </li>
-          );
-        })}
-      </ol>
+      {foot}
     </div>
   );
 }

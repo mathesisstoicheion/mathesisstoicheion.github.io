@@ -16,10 +16,23 @@ for (const theme of ["light", "dark"] as const) {
     expect(res.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([]);
   });
 }
+test("the sources wait in a closed fold, the works come before the article, and the key comes before the road", async ({ page }) => {
+  await page.goto("/author/tlg0016");
+  const fold = page.locator("details", { has: page.locator("summary", { hasText: /^Sources \(36\)$/ }) });
+  await expect(fold).not.toHaveAttribute("open", "");
+  await expect(page.locator("#src-4")).toBeHidden();
+  // the page's title promises the works, so they come straight after the header and the article follows
+  expect((await page.locator("#works-title").boundingBox())!.y).toBeLessThan((await page.locator("#life-title").boundingBox())!.y);
+  // the key to the marks stands above the road that uses them, with one line on the footnotes and labels
+  expect((await page.getByRole("list", { name: "What the marks mean" }).boundingBox())!.y).toBeLessThan((await page.getByRole("list", { name: "Timeline" }).boundingBox())!.y);
+  await expect(page.getByText("Little numbers like")).toBeVisible();
+});
+
 test("footnote jumps to its source, and a Scroll link opens the passage", async ({ page }) => {
   await page.goto("/author/tlg0016");
   await page.locator('a[aria-label="Source 4"]').first().click();
   await expect(page).toHaveURL(/#src-4$/);
+  await expect(page.locator("details[open]", { has: page.locator("#src-4") })).toBeVisible();
   await expect(page.locator("#src-4")).toBeInViewport();
   await page.locator("#src-6 a").click();
   await expect(page).toHaveURL(/\/read\?w=tlg0016\.tlg001&at=7\.137\.1/);

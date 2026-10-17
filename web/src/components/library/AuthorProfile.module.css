@@ -31,9 +31,22 @@
 .card:hover { background-color: var(--slab-lit); }
 .card b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; line-height: 1.2; }
 .card span:last-child { color: var(--ink-2); font-size: 0.95rem; }
+/* the entries past the first four: a plain fold under the cards */
+.allEntries { margin-top: var(--space-3); }
+.allEntries summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); color: var(--accent); text-underline-offset: 3px; }
+.allEntries summary:hover { text-decoration: underline; }
+.allEntries[open] summary { margin-bottom: var(--space-1); }
 .links { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }  /* the focus ring replaces the moulding */
+
+/* a work's page (WorkLanding.tsx): the main button says "Read it" and, in a smaller line under it, what it opens */
+.readBtn { align-items: center; gap: var(--space-3); }
+.readWords { display: grid; gap: var(--space-1); }
+.readWords > span { font-size: var(--step--1); }
+.readWords small { font-size: var(--step--2); letter-spacing: 0.08em; text-transform: none; opacity: 0.85; }
+/* the collection's own record of a text: quiet, in the body type */
+.record { color: var(--ink-2); font-size: var(--step--1); }

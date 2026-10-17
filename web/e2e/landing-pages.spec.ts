@@ -35,6 +35,10 @@ test("a work has a page of its own, with a way in to the reader", async ({ page 
   expect(ld).toMatchObject({ "@type": "CreativeWork", name: "Iliad", inLanguage: "grc", author: { name: "Homer" } });
   // each text the library holds is listed and opens itself in the reader
   await expect(page.getByRole("link", { name: /^English translation/ }).first()).toBeVisible();
+  // one way to the author's other works (the button), not a list of them as well; the records of the texts carry no file sizes
+  await expect(page.getByRole("link", { name: "More by Homer" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^Also by/ })).toHaveCount(0);
+  await expect(page.locator("section[aria-labelledby=texts-title]").getByText(/^\d+ KB$/)).toHaveCount(0);
   await page.getByRole("link", { name: /Read it with the English beside the Greek/ }).click();
   await expect(page).toHaveURL(/\/read\?w=tlg0012\.tlg001$/);
 });

@@ -70,10 +70,10 @@ export function GuideChapters({ chapters }: { chapters: Chapter[] }) {
             {c.text.map((p, k) => <p key={k}>{p}</p>)}
             <div className={styles.go}>
               <Link className="btn small" href={showHref(c.id)} transitionTypes={["page-turn"]}>
-                {done.includes(c.id) ? "Show me again" : "Show me"} <span className="arr" aria-hidden="true">→</span>
+                {done.includes(c.id) ? "Show me again" : <>Show me · {stepsOf(c.id)} steps</>} <span className="arr" aria-hidden="true">→</span>
               </Link>
               {c.also && <Link className="btn small ghost" href={c.also.href} transitionTypes={["page-turn"]}>{c.also.label}</Link>}
-              <span className={styles.steps}>{done.includes(c.id) ? "✓ Shown" : `${stepsOf(c.id)} steps`}</span>
+              {done.includes(c.id) && <span className={styles.steps}>✓ Shown</span>}
             </div>
           </div>
         </li>

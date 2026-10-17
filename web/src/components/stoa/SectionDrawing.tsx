@@ -3,9 +3,11 @@
  * layer by layer, each deposit with its own hatching, carved in relief: the boundaries are grooves cut
  * in the stone, the pits sunk hollows, the jar and the sherds gilded inlays. It is an illustration, not a
  * real site. The grooves cut themselves on arrival (visible at rest, so reduced motion shows the finished
- * drawing), and each numbered layer links to its part of the page.
+ * drawing), and each numbered layer links to its part of the page. On a phone the drawing keeps a size its labels can be read
+ * at and scrolls sideways, its right edge fading while there is more (Kerameikos.module.css).
  */
 import type { Layer } from "@/wiki/kerameikos";
+import SideScroll from "./SideScroll";
 import styles from "./Kerameikos.module.css";
 
 const W = 1000;
@@ -59,6 +61,7 @@ export default function SectionDrawing({ layers }: { layers: Layer[] }) {
   );
   return (
     <figure className={styles.drawing}>
+      <SideScroll className={styles.drawScroll}>
       <svg viewBox={`-20 0 ${W + 40} ${BOTTOM + 34}`} role="group" aria-labelledby="kd-cap">
         <defs>
           <pattern id="kd-dots" width="9" height="9" patternUnits="userSpaceOnUse"><circle cx="2" cy="3" r="0.9" /><circle cx="6.5" cy="7" r="0.7" /></pattern>
@@ -120,6 +123,7 @@ export default function SectionDrawing({ layers }: { layers: Layer[] }) {
           </a>
         ))}
       </svg>
+      </SideScroll>
       <figcaption id="kd-cap">
         <b>A section drawing.</b> Excavators draw the side of every trench like this, layer by layer, before the next layer is dug away. The deepest layers are usually the oldest, unless something, like the looters&apos; pit here, has cut through them. (An illustration, not a real site.)
       </figcaption>

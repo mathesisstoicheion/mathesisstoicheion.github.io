@@ -81,6 +81,18 @@ function CensusView({ meta, links }: { meta: CensusMeta; links: Links }) {
   const [regB] = useState(() => new Map<string, HTMLElement>());
 
   const setScope = (s: Scope, prefix = "") => go([...scopeParams(s, prefix)]);
+  // the "Where" choices fold into one disclosure whose summary says what is chosen (open from the start while comparing)
+  const [whereOpen, setWhereOpen] = useState(comparing);
+  const where = (i: { label: string }) => i.label.replace(/^The /, "the ");
+  // below 1080px the item's panel stands after the whole list: choosing a row brings the panel into view
+  const side = useRef<HTMLElement>(null);
+  const showPanel = useRef(false);
+  useEffect(() => {
+    if (!item || !showPanel.current) return;
+    showPanel.current = false;
+    if (matchMedia("(max-width: 1080px)").matches) side.current?.scrollIntoView({ behavior: scrollBehavior(), block: "start" });
+  }, [item]);
+  const pick = (r: Shown) => { showPanel.current = r.text !== item; go([["i", r.text === item ? null : r.text]]); };
   const shelf = cat.shelf;
   // phones: a sideways swipe moves to the next or previous list on this shelf (gods, people, places…)
   const swipe = useSwipeNav((d) => {
@@ -90,8 +102,6 @@ function CensusView({ meta, links }: { meta: CensusMeta; links: Links }) {
 
   return (
     <div className={`wrap ${styles.census}`} {...swipe}>
-      <Tally meta={meta} />
-
       <nav className={styles.shelves} aria-label="What to count">
         {SHELVES.map((s) => {
           const first = cats.find((c) => c.shelf === s.id)!;
@@ -114,24 +124,29 @@ function CensusView({ meta, links }: { meta: CensusMeta; links: Links }) {
       )}
       <p className={styles.blurb}>{cat.blurb}</p>
 
-      <div className={styles.scopes}>
-        <ScopePicker meta={meta} scope={scope} onChange={(s) => setScope(s)} title={comparing ? "Left" : "Where"} />
-        {comparing
-          ? <ScopePicker meta={meta} scope={scopeB} onChange={(s) => setScope(s, "b")} title="Right" onClose={() => go([["cmp", null], ...scopeParams(EMPTY_SCOPE, "b")])} />
-          : <button type="button" className={`btn ghost ${styles.compareBtn}`} onClick={() => go([["cmp", "1"], ...scopeParams({ ...EMPTY_SCOPE, a: scope.a === "tlg0012" ? "tlg0020" : "tlg0012" }, "b")])}>
-              Compare side by side <span className="arr">→</span>
-            </button>}
-      </div>
+      <details className={styles.where} open={whereOpen} onToggle={(e) => setWhereOpen(e.currentTarget.open)}>
+        <summary>
+          <span className="label">Where:</span> <b>{comparing ? `${where(infoA)} compared with ${where(infoB)}` : where(infoA)}</b>
+        </summary>
+        <div className={styles.scopes}>
+          <ScopePicker meta={meta} scope={scope} onChange={(s) => setScope(s)} title={comparing ? "Left" : "Where"} />
+          {comparing
+            ? <ScopePicker meta={meta} scope={scopeB} onChange={(s) => setScope(s, "b")} title="Right" onClose={() => go([["cmp", null], ...scopeParams(EMPTY_SCOPE, "b")])} />
+            : <button type="button" className={`btn ghost ${styles.compareBtn}`} onClick={() => go([["cmp", "1"], ...scopeParams({ ...EMPTY_SCOPE, a: scope.a === "tlg0012" ? "tlg0020" : "tlg0012" }, "b")])}>
+                Compare side by side <span className="arr">→</span>
+              </button>}
+        </div>
+      </details>
 
-      <div className={`${styles.layout} ${comparing ? styles.comparing : ""}`}>
+      <div className={`${styles.layout} ${comparing ? styles.comparing : ""}`} data-picked={picked ? "" : undefined}>
         <div className={styles.columns}>
           <Ranking side="a" cat={cat} label={infoA.label} words={infoA.words} rows={rowsA} state={listsA.state} selected={picked?.key ?? null}
-            onPick={(r) => go([["i", r.text === item ? null : r.text]])} register={regA} comparing={comparing} />
+            onPick={pick} register={regA} comparing={comparing} />
           {comparing && <Threads a={regA} b={regB} selected={picked?.key ?? null} deps={`${cat.id}|${groupA}|${groupB}|${rowsA?.length}|${rowsB?.length}`} />}
           {comparing && <Ranking side="b" cat={cat} label={infoB.label} words={infoB.words} rows={rowsB} state={listsB.state} selected={picked?.key ?? null}
-            onPick={(r) => go([["i", r.text === item ? null : r.text]])} register={regB} comparing={comparing} />}
+            onPick={pick} register={regB} comparing={comparing} />}
         </div>
-        <aside className={styles.side} aria-live="polite">
+        <aside className={styles.side} aria-live="polite" ref={side}>
           {picked
             ? <ItemPanel key={`${cat.id}|${picked.text}`} meta={meta} cat={cat} item={picked} listed={rowsA?.find((r) => r.text === picked.text)?.n ?? null} scope={scope} links={links} onClose={() => go([["i", null]])} />
             : <PanelHint cat={cat} />}
@@ -144,7 +159,16 @@ function CensusView({ meta, links }: { meta: CensusMeta; links: Links }) {
   );
 }
 
-// ------------------------------------------------------------ the tally at the top
+// ------------------------------------------------------------ the tally in the page's header
+/**
+ * The four big numbers, placed by the page in its header (app/stoa/census/page.tsx), where they fill the empty left column
+ * beside the sculpture. They load the same counts as the rest of the page, which are fetched once.
+ */
+export function CensusTally() {
+  const meta = useLoad("meta", loadCensusMeta);
+  return meta.state === "done" && meta.value ? <Tally meta={meta.value} /> : null;
+}
+
 function Tally({ meta }: { meta: CensusMeta }) {
   const names = ["person", "god", "place", "people"].reduce((s, k) => s + (meta.sizes[k] ?? 0), 0);
   const figures: [number, string][] = [[meta.words, "words read"], [meta.works, "works"], [names, "names sorted"], [meta.sizes.phrase ?? 0, "repeated phrases"]];

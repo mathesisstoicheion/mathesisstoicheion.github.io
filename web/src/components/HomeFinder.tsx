@@ -1,7 +1,8 @@
 "use client";
 /**
  * "Find something to read", on the home page: a search over every work (title, author, Greek title),
- * a switch for translated or Greek-only texts, and, until something is typed, suggested starting points.
+ * a switch for translated or Greek-only texts once something is typed, and, until then, a few suggested
+ * starting points (`suggest` of them).
  * The suggestions arrive with the page; the catalogue itself is fetched only when the reader first
  * uses the box, so the home page stays light.
  */
@@ -18,7 +19,7 @@ const SHOWN = 12;
 
 interface Hit { id: string; title: string; author: string; grc: string | null; tr: boolean }
 
-export default function HomeFinder({ starts, total }: { starts: Start[]; total: number }) {
+export default function HomeFinder({ starts, total, suggest = starts.length }: { starts: Start[]; total: number; suggest?: number }) {
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [failed, setFailed] = useState(false);
   const [diff, setDiff] = useState<Record<string, [number, number]>>({});
@@ -55,7 +56,7 @@ export default function HomeFinder({ starts, total }: { starts: Start[]; total: 
   }, [idx, query, tr, known]);
 
   // with the box empty: the suggestions ("Greek only" has none to suggest, since all have a translation)
-  const cards: Hit[] = hits ? hits.slice(0, SHOWN) : tr === "greek" ? [] : starts.map((s) => ({ ...s, tr: true }));
+  const cards: Hit[] = hits ? hits.slice(0, SHOWN) : tr === "greek" ? [] : starts.slice(0, suggest).map((s) => ({ ...s, tr: true }));
   const heading = hits
     ? `${hits.length.toLocaleString("en-GB")} ${hits.length === 1 ? "work" : "works"}${query ? ` for “${q.trim()}”` : ""}`
     : "Suggested starting points";
@@ -70,9 +71,12 @@ export default function HomeFinder({ starts, total }: { starts: Start[]; total: 
             onFocus={wake} onChange={(e) => setQ(e.target.value)} aria-label="Search the library"
             placeholder={`Search ${total.toLocaleString("en-GB")} works by title or author, English or Greek`} />
         </div>
-        <div className="segmented" role="radiogroup" aria-label="Show">
-          {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
-        </div>
+        {/* the switch waits until there is a search to narrow */}
+        {(q.trim() || tr !== "all") && (
+          <div className="segmented" role="radiogroup" aria-label="Show">
+            {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
+          </div>
+        )}
       </div>
 
       <h3 className={styles.heading} aria-live="polite">{pending ? "Searching…" : failed ? "The catalogue could not be loaded" : heading}</h3>

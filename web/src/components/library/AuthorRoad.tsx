@@ -3,8 +3,8 @@
  * "The long road of the text": an author's timeline drawn as a road. Each mark is a shape and a word
  * (the author, a copy, a printing, a reader), and the stretch between two marks says how many years
  * lie between them, so the long silence between an author and the oldest surviving copies is visible.
- * The road draws itself as it scrolls into view (nothing moves with reduced motion; the final drawing
- * is the resting state). On a phone it runs downwards.
+ * The road draws itself as it scrolls into view, its marks one after another for the first four and then together (nothing moves with
+ * reduced motion; the final drawing is the resting state). On a phone it runs downwards. The key to the marks stands above it.
  */
 import { useEffect, useRef } from "react";
 import { inline } from "@/wiki/markup";
@@ -53,6 +53,12 @@ export default function AuthorRoad({ items }: { items: AuthorArticle["timeline"]
   const kinds = [...new Set(rows.map((r) => r.kind))];
   return (
     <div className={styles.roadWrap}>
+      {/* the key comes first, so the marks are known before they are met */}
+      <ul className={styles.legend} aria-label="What the marks mean">
+        {kinds.map((k) => (
+          <li key={k} data-kind={k} title={PIN_KINDS[k].about}><span className={styles.keyPin}><PinIcon kind={k} /></span>{PIN_KINDS[k].label}</li>
+        ))}
+      </ul>
       <ol ref={ref} className={styles.road} aria-label="Timeline" tabIndex={0}>
         {rows.map((t, i) => {
           const gap = i ? gapText(yearsBetween(rows[i - 1].year, t.year), !!(rows[i - 1].approx || t.approx)) : "";
@@ -70,11 +76,6 @@ export default function AuthorRoad({ items }: { items: AuthorArticle["timeline"]
           );
         })}
       </ol>
-      <ul className={styles.legend} aria-label="What the marks mean">
-        {kinds.map((k) => (
-          <li key={k} data-kind={k} title={PIN_KINDS[k].about}><span className={styles.keyPin}><PinIcon kind={k} /></span>{PIN_KINDS[k].label}</li>
-        ))}
-      </ul>
     </div>
   );
 }

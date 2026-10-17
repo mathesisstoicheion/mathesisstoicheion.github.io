@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { offlinePages } from "../src/config/pages";
+import { aid } from "./reader-menus";
 
 /**
  * Accessibility: every page is checked by axe (the standard automated checker, WCAG 2.1 AA rules)
@@ -57,10 +58,10 @@ const STATES: [string, string, (page: Page) => Promise<void>][] = [
   ["quick search", "/", async (page) => { await page.keyboard.press("/"); await page.keyboard.type("λογος"); await page.waitForTimeout(800); }],
   ["word look-up", ILIAD, async (page) => { await iliad(page); await page.locator('[data-u="1.1"] [data-w="ἄειδε"]').click(); await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" })).toBeVisible(); }],
   ["passage toolbar and note", ILIAD, async (page) => { await iliad(page); await page.locator('[data-row="1.5"]').click(); await page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name: "Note", exact: true }).click(); }],
-  ["reading aids", ILIAD, async (page) => { await iliad(page); for (const b of ["Transliteration", "Colour by case", "Metre", "Vocabulary"]) await page.getByRole("button", { name: b }).click(); }],
+  ["reading aids", ILIAD, async (page) => { await iliad(page); for (const b of ["Transliteration", "Colour by case", "Metre", "Vocabulary"]) await aid(page, b); }],
   ["echoes", ILIAD, async (page) => { await iliad(page); await page.locator('[data-row="1.5"]').click(); await page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name: "Echoes" }).click(); await expect(page.getByRole("complementary", { name: "Echoes" })).toBeVisible(); await page.waitForTimeout(2000); }],
-  ["places panel", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=2.494", async (page) => { await expect(page.locator('[data-u="2.494"]').first()).toBeVisible({ timeout: 30_000 }); await page.getByRole("button", { name: "Places", exact: true }).click(); await expect(page.getByRole("complementary", { name: "Places on this page" }).locator("ol li").first()).toBeVisible({ timeout: 30_000 }); }],
-  ["manuscript panel", ILIAD, async (page) => { await iliad(page); await page.getByRole("button", { name: "Manuscript", exact: true }).click(); const p = page.getByRole("complementary", { name: "The manuscript" }); await p.getByRole("radio", { name: "No spaces" }).click(); await expect(p.getByText("f. 12r")).toBeVisible({ timeout: 30_000 }); }],
+  ["places panel", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=2.494", async (page) => { await expect(page.locator('[data-u="2.494"]').first()).toBeVisible({ timeout: 30_000 }); await aid(page, "Places"); await expect(page.getByRole("complementary", { name: "Places on this page" }).locator("ol li").first()).toBeVisible({ timeout: 30_000 }); }],
+  ["manuscript panel", ILIAD, async (page) => { await iliad(page); await aid(page, "Manuscript"); const p = page.getByRole("complementary", { name: "The manuscript" }); await p.getByRole("radio", { name: "No spaces" }).click(); await expect(p.getByText("f. 12r")).toBeVisible({ timeout: 30_000 }); }],
   ["census item", "/stoa/census", async (page) => { await page.getByRole("button", { name: /^1 Ζεύς/ }).first().click(); await expect(page.getByRole("heading", { level: 2, name: "Ζεύς" })).toBeVisible(); }],
   ["map place", "/stoa/periplus?p=570685", async (page) => { await expect(page.getByRole("heading", { level: 2 }).first()).toBeVisible(); }],
   ["wiki note editor", "/stoa/delphi", async (page) => { await page.getByRole("button", { name: /Write a note on/ }).first().click(); }],

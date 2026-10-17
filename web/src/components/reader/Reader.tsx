@@ -3,7 +3,7 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { useRouter, useSearchParams } from "next/navigation";
-import { createContext, memo, useCallback, useContext, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { createContext, memo, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   loadCatalog, greekEditions, translations, describe, versionOf, OUT_OF_STEP,
   type CatalogIndex, type CatText, type CatWork,
@@ -55,6 +55,7 @@ import { caseOf } from "@/lib/lookup/postag";
 import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
 import { headerVisible, scrollBelowHeader, setBars } from "@/lib/header";
 import ReadBar, { PHONE } from "./ReadBar";
+import Drop from "./Drop";
 import { buzz } from "@/lib/haptics";
 import styles from "./Reader.module.css";
 
@@ -76,6 +77,8 @@ const MineDialog = dynamic(() => import("./MineDialog"), { ssr: false });
 import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };
+/** The small panel open now, if any: from the bar (Aids, Your marks, More) or the edition's line under the title (Change). */
+type Dropped = "aids" | "marks" | "more" | "change";
 
 type Src = From | "private";
 /** A book's texts as loaded and parsed, or why they could not be. */
@@ -136,12 +139,13 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
         )}
       </div>
       <div className={styles.grc} lang="grc">
-        {row.greek.map((u) => <div key={u.ref.join(".")} data-u={u.ref.join(".")}><Blocks blocks={u.blocks} greek keyPrefix={u.ref.join(".")} translit={translit} metre={metre?.get(u.ref.join("."))} /></div>)}
+        {/* the margin shows the passage's number: the start of its first part does not say it again */}
+        {row.greek.map((u, i) => <div key={u.ref.join(".")} data-u={u.ref.join(".")}><Blocks blocks={u.blocks} greek keyPrefix={u.ref.join(".")} translit={translit} metre={metre?.get(u.ref.join("."))} margin={i === 0 ? row.key : undefined} /></div>)}
       </div>
       <div className={styles.tr} data-tr="" data-veiled={veiled || undefined} data-greek={trGreek || undefined} lang={trGreek ? "grc" : undefined}>
         {veiled && <button type="button" className={styles.reveal} onClick={() => setShown(true)}>Tap to see the translation</button>}
         {row.trans.length
-          ? <Blocks blocks={row.trans} greek={trGreek} keyPrefix={`t${row.key}`} translit={trGreek ? translit : undefined} />
+          ? <Blocks blocks={row.trans} greek={trGreek} keyPrefix={`t${row.key}`} translit={trGreek ? translit : undefined} margin={row.key} />
           : trGreek ? <span className={styles.none} aria-label="Not in the other edition">—</span>
           : row.cont ? <span className={styles.untr}>The English for these lines begins on the page before.</span>
           : <span className={styles.untr} data-untranslated=""><b>Not translated.</b> This translation leaves this passage out.</span>}
@@ -225,8 +229,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [sel, setSel] = useState<Selection | null>(null);
   const [share, setShare] = useState<ShareData | null>(null);
   const [openNote, setOpenNote] = useState<string | null>(null);
-  const [marksOpen, setMarksOpen] = useState(false);
-  const [toolsOpen, setToolsOpen] = useState(false);   // phones: the bar folds its tools away behind one button
+  // one small panel at a time (Drop.tsx); each has its own id for its button's aria-controls
+  const [drop, setDrop] = useState<Dropped | null>(null);
+  const uid = useId();
+  const dropOf = (d: Dropped) => ({ id: `${uid}-${d}`, open: drop === d, onOpen: (o: boolean) => setDrop((cur) => (o ? d : cur === d ? null : cur)) });
   const allMarks = useMarks((s) => s.byWork[workId]) ?? NO_MARKS;
   useEffect(() => { if (workId) useMarks.getState().load(workId); }, [workId]);
   const [goto, setGoto] = useState("");
@@ -1344,6 +1350,42 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     </div>
   );
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
+  // the edition, the translation, an edition to compare with, and a second book: in the panel that Change opens under
+  // the title (in the floating window, folded away above the text)
+  const editionControls = work && grcText && (
+    <>
+      <label className={styles.pick}><span className="label">Greek text</span>
+        <select value={versionOf(grcText.urn)} onChange={(e) => nav.go(query({ ed: e.target.value, at: topKey() ?? undefined }))}>
+          {editions.map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t, work.texts)}</option>)}
+        </select>
+      </label>
+      <label className={styles.pick}><span className="label">Translation</span>
+        <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value, at: topKey() ?? undefined }))} disabled={!!cmpText}
+          title={cmpText ? "The translation comes back when you stop comparing editions" : undefined}>
+          <option value="none">None</option>
+          {translations(work).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t, work.texts)}</option>)}
+        </select>
+      </label>
+      {editions.length > 1 && (
+        <label className={styles.pick}><span className="label">Compare with</span>
+          <select value={cmpText ? versionOf(cmpText.urn) : ""} onChange={(e) => {
+            const q = query({ at: topKey() ?? undefined });
+            if (e.target.value) q.set(pk("cmp"), e.target.value); else { q.delete(pk("cmp")); q.delete(pk("cmpx")); }
+            nav.go(q);
+          }}>
+            <option value="">No other edition</option>
+            {editions.filter((t) => t.urn !== grcText.urn).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t, work.texts)}</option>)}
+          </select>
+        </label>
+      )}
+      {!split && <button type="button" className="chip" data-closes-sheet="" onClick={onOpenSecond}>Open a second book beside this one</button>}
+      {moderator && !floating && (
+        <button type="button" className={`chip ${styles.mineChip}`} data-closes-sheet="" onClick={onOpenMine} title="Your own translations and imported texts, which only you can see">
+          <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg> Private collection
+        </button>
+      )}
+    </>
+  );
 
   return (
     <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
@@ -1377,44 +1419,30 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         )}
         {floating && split && <p className={styles.floatTitle}>{work?.title}</p>}
 
-        {work && grcText && (
-          <FloatFold floating={floating}>
-          <div className={styles.controls}>
-            <label className={styles.pick}><span className="label">Greek text</span>
-              <select value={versionOf(grcText.urn)} onChange={(e) => nav.go(query({ ed: e.target.value, at: topKey() ?? undefined }))}>
-                {(greekEditions(work).length ? greekEditions(work) : work.texts.filter((t) => t.kind === "edition")).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
-              </select>
-            </label>
-            <label className={styles.pick}><span className="label">Translation</span>
-              <select value={trText ? versionOf(trText.urn) : "none"} onChange={(e) => nav.go(query({ tr: e.target.value, at: topKey() ?? undefined }))} disabled={!!cmpText}
-                title={cmpText ? "The translation comes back when you stop comparing editions" : undefined}>
-                <option value="none">None</option>
-                {translations(work).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
-              </select>
-            </label>
-            {editions.length > 1 && (
-              <label className={styles.pick}><span className="label">Compare with</span>
-                <select value={cmpText ? versionOf(cmpText.urn) : ""} onChange={(e) => {
-                  const q = query({ at: topKey() ?? undefined });
-                  if (e.target.value) q.set(pk("cmp"), e.target.value); else { q.delete(pk("cmp")); q.delete(pk("cmpx")); }
-                  nav.go(q);
-                }}>
-                  <option value="">No other edition</option>
-                  {editions.filter((t) => t.urn !== grcText.urn).map((t) => <option key={t.urn} value={versionOf(t.urn)}>{describe(t)}</option>)}
-                </select>
-              </label>
-            )}
-            {!split && <button type="button" className="chip" onClick={onOpenSecond}>Open a second book beside this one</button>}
-            {moderator && !floating && (
-              <button type="button" className={`chip ${styles.mineChip}`} onClick={onOpenMine} title="Your own translations and imported texts, which only you can see">
-                <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg> Private collection
-              </button>
-            )}
-            {columnsSeg}
-          </div>
-          {floating && aids}
+        {work && grcText && (floating ? (
+          <FloatFold>
+            <div className={styles.controls}>{editionControls}{columnsSeg}</div>
+            {aids}
           </FloatFold>
-        )}
+        ) : (
+          // the edition named once, quietly, under the title; Change opens the choices (and a second book beside this one)
+          <div className={styles.editions}>
+            <div className={styles.edLine}>
+              <span className={styles.ed}><span className={styles.edKind}>Greek</span> {describe(grcText, work.texts)}</span>
+              {second && <>
+                <span className={styles.dot} aria-hidden="true">·</span>
+                <span className={styles.ed}><span className={styles.edKind}>{cmpText ? "Compared with" : "English"}</span> {describe(second, work.texts)}</span>
+              </>}
+              <span className={styles.dot} aria-hidden="true">·</span>
+              <Drop {...dropOf("change")} label="Change" chevron={false} className={styles.change} title="Choose the Greek text, the translation, an edition to compare with, or a second book"
+                panelClass={`${styles.pop} ${styles.changePop}`} panelLabel="Edition and translation">
+                {editionControls}
+              </Drop>
+            </div>
+            {/* phones have the columns in the reading aids' sheet (ReadBar), unless two books share the page */}
+            <div className={contained ? undefined : styles.notPhone}>{columnsSeg}</div>
+          </div>
+        ))}
       </header>
 
       {load.state === "loading" && <div className={`wrap ${styles.status}`}><span className={`meander ${styles.loadingBand}`} aria-hidden="true" /><p>{load.step}</p></div>}
@@ -1430,7 +1458,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
       {load.state === "ready" && doc && chunkInfo && (
         <>
-          <div className={`wrap ${styles.bar} ${contained ? "" : styles.barAway}`} data-tools={toolsOpen ? "open" : undefined}>
+          {/* one slim row that stays at the top while reading: the page, go to, Find and Listen; the reading aids, your
+              marks and the rest behind a button each (Drop.tsx). On phones ReadBar along the bottom does this instead. */}
+          <div className={`wrap ${styles.bar} ${contained ? "" : styles.barAway}`}>
             <div className={styles.pager}>
               <button type="button" onClick={() => goChunk(chunk - 1)} disabled={chunk === 0} aria-label="Previous page">←</button>
               <select aria-label="Page" value={chunk} onChange={(e) => goChunk(+e.target.value)}>
@@ -1438,32 +1468,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
               </select>
               <button type="button" onClick={() => goChunk(chunk + 1)} disabled={chunk === doc.chunks.length - 1} aria-label="Next page">→</button>
             </div>
-            <button type="button" className={styles.toolsBtn} onClick={() => setToolsOpen(!toolsOpen)} aria-expanded={toolsOpen}>
-              Tools <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-            </button>
             <form className={styles.goto} onSubmit={submitGoto} role="search">
               <input ref={gotoRef} id="reader-goto" value={goto} onChange={(e) => setGoto(e.target.value)} placeholder={`Go to ${doc.levels.join(".")}`} aria-label="Go to reference" />
               <button type="submit">Go</button>
             </form>
-            <div className={styles.more}>
-            {!floating && aids}
-            <div className={styles.marksMenu}>
-              <button type="button" onClick={() => setMarksOpen(!marksOpen)} aria-expanded={marksOpen}>Your marks ({allMarks.length})</button>
-              {marksOpen && (
-                <ul>
-                  {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
-                  {sortedMarks.map((m) => (
-                    <li key={m.id}>
-                      <button type="button" onClick={() => { setMarksOpen(false); nav.go(query({ at: m.start.u })); }}>
-                        <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
-                        <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              )}
-            </div>
-            <MarkersLegend counts={markerCounts} />
             <button type="button" className={`${styles.floatBtn} ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
               <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg> Find
             </button>
@@ -1474,18 +1482,45 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                 <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length} aria-label="Next difference" title="Next difference">→</button>
               </span>
             )}
-            {/* wide screens: Listen sits here, so the reading aids keep to one line (on phones it is in the aids sheet) */}
+            {/* wide screens: Listen sits here (on phones it is in the reading aids) */}
             {trText && !cmpText && (
               <button type="button" className={`${styles.floatBtn} ${styles.listenBtn}`} aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /></svg> Listen
               </button>
             )}
-            {!floating && pane === 1 && (
-              <button type="button" className={styles.floatBtn} onClick={() => floatAway("all")} title="Shrink the reader into a small window that follows you around the site, at the passage you are reading">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float {split ? "both books" : "the reader"}
-              </button>
-            )}
-            <button type="button" className={styles.helpBtn} onClick={() => setHelp((h) => !h)} aria-expanded={help}>Keys <kbd>?</kbd></button>
+            <div className={styles.barEnd}>
+              {/* (the floating window keeps its aids folded above the text) */}
+              {!floating && (
+                <Drop {...dropOf("aids")} label="Aids" title="Reading aids: help with the Greek, this passage and this work" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
+                  {aids}
+                </Drop>
+              )}
+              <Drop {...dropOf("marks")} label={`Your marks (${allMarks.length})`} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
+                <ul className={styles.marksList}>
+                  {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
+                  {sortedMarks.map((m) => (
+                    <li key={m.id}>
+                      <button type="button" data-closes-sheet="" onClick={() => nav.go(query({ at: m.start.u }))}>
+                        <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
+                        <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </Drop>
+              <Drop {...dropOf("more")} ariaLabel="More" title="Markers beside the scroll bar, the keys, and the floating reader" chevron={false}
+                label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
+                className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
+                <MarkersLegend inline counts={markerCounts} />
+                <div className={styles.moreActs}>
+                  {!floating && pane === 1 && (
+                    <button type="button" className={styles.floatBtn} data-closes-sheet="" onClick={() => floatAway("all")} title="Shrink the reader into a small window that follows you around the site, at the passage you are reading">
+                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float {split ? "both books" : "the reader"}
+                    </button>
+                  )}
+                  <button type="button" className={styles.helpBtn} data-closes-sheet="" onClick={() => setHelp((h) => !h)} aria-expanded={help}>Keys <kbd>?</kbd></button>
+                </div>
+              </Drop>
             </div>
           </div>
 
@@ -1517,7 +1552,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
               {canDiff ? (
                 <>
                   <p className={styles.compareKey}>
-                    Where they differ, the words are marked: <mark className={styles.keyA}>{describe(grcText)}</mark> on the left, <mark className={styles.keyB}>{describe(cmpText)}</mark> on the right.{" "}
+                    Where they differ, the words are marked: <mark className={styles.keyA}>{describe(grcText, work!.texts)}</mark> on the left, <mark className={styles.keyB}>{describe(cmpText, work!.texts)}</mark> on the right.{" "}
                     <span className="muted">{strict === "readings"
                       ? "Differences of reading only: accents, breathings, capitals, punctuation and word division are not counted."
                       : "Spelling too: accents, breathings and elision count as differences."}</span>
@@ -1569,11 +1604,14 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             </div>
           )}
 
-          <div className={`wrap ${styles.cols}`} aria-hidden="true">
-            <span />
-            <span className="label">Greek · {describe(grcText!)}</span>
-            <span className="label">{cmpText ? `Greek · ${describe(cmpText)}` : trText ? `English · ${describe(trText)}` : ""}</span>
-          </div>
+          {/* the editions are named under the title: above the columns only when two editions, or two books, stand side by side */}
+          {(cmpText || split) && (
+            <div className={`wrap ${styles.cols}`} aria-hidden="true">
+              <span />
+              <span className="label">Greek · {describe(grcText!, work!.texts)}</span>
+              <span className="label">{cmpText ? `Greek · ${describe(cmpText, work!.texts)}` : trText ? `English · ${describe(trText, work!.texts)}` : ""}</span>
+            </div>
+          )}
 
           <article ref={textRef} className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
@@ -1664,7 +1702,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       )}
       {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && (
         <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
-          <ComparePanel diffs={allDiffs} a={describe(grcText)} b={describe(cmpText)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)}
+          <ComparePanel diffs={allDiffs} a={describe(grcText, work?.texts)} b={describe(cmpText, work?.texts)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)}
             onNotebook={(ds, what) => setNbPick({ what, items: ds.map((x) => ({ kind: "variant" as const, work: workId, urn: grcText.urn, other: cmpText.urn, from: x.key, a: x.a, b: x.b })) })} />
         </PanelGuard>
       )}
@@ -1754,8 +1792,7 @@ function MineStatus({ s, work, retry, onOpenMine }: { s: MineState; work: string
 }
 
 /** In the floating window the book's settings fold away, so the text shows first. */
-function FloatFold({ floating, children }: { floating: boolean; children: React.ReactNode }) {
-  if (!floating) return <>{children}</>;
+function FloatFold({ children }: { children: React.ReactNode }) {
   return (
     <details className={styles.floatFold}>
       <summary>Edition, translation and reading aids</summary>

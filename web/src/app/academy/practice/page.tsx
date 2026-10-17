@@ -12,16 +12,18 @@ export const metadata: Metadata = { title: `Practice · ${AREAS.study.name}`, de
 export default function PracticePage() {
   return (
     <Page>
-      <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 20 }}>
+      <div className="wrap tool-page" style={{ paddingBlock: "clamp(32px, 5vw, 56px)" }}>
+        <div className="tool-main">
         <div className="page-head">
           <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Practice</nav>
           <NameCarving greek="ἄσκησις" />
-          <PagePiece className="piece-desk" />
           <h1 className="page-title">Practice <span lang="grc">ἄσκησις</span></h1>
           <PagePiece className="piece-phone" />
           <p className="muted" style={{ maxWidth: "62ch", fontSize: "1.1rem" }}>Short drills. Endings come from the checked tables; the sentences are real, and their answers come from hand-checked analyses.</p>
         </div>
         <PracticeClient />
+        </div>
+        <PagePiece className="piece-desk" />
       </div>
     </Page>
   );

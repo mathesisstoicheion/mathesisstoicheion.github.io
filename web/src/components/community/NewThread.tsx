@@ -10,6 +10,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import TagInput from "@/components/notes/TagInput";
+import PagePiece from "@/components/art/PagePiece";
 import { problem, useAccount } from "@/lib/community/client";
 import { categories, SITE_BOARDS, startThread, type Quote } from "@/lib/community/data";
 import { pageFrom } from "@/lib/community/bug";
@@ -40,13 +41,30 @@ export default function NewThread() {
   if (!account.ready) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> One moment…</div>;
   const bug = category === SITE_BOARDS.bugs;
   const idea = category === SITE_BOARDS.ideas;
-  if (!canWrite(account)) return <div className={`wrap ${styles.narrow}`}>{quote && <QuoteBlock quote={quote} />}<SignInPrompt what={bug ? "report a bug" : idea ? "suggest an idea" : "start a thread"} /></div>;
+  const heading = quote ? "Ask about this passage" : bug ? "Report a bug" : idea ? "Suggest an idea" : "Start a thread";
+  // not signed in: the same head as the form (the way back, the title, the page's sculpture), then the way in as a button
+  if (!canWrite(account)) return (
+    <>
+      <div className={`wrap ${styles.signedOutHead}`}>
+        <div className="page-head">
+          <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / A new thread</p>
+          <PagePiece className="piece-desk" />
+          <h2 className="page-title">{heading}</h2>
+          <PagePiece className="piece-phone" />
+        </div>
+      </div>
+      <div className={`wrap ${styles.narrow}`}>
+        {quote && <QuoteBlock quote={quote} />}
+        <SignInPrompt button what={bug ? "report a bug" : idea ? "suggest an idea" : "start a thread"} />
+      </div>
+    </>
+  );
 
   return (
     <div className={`wrap ${styles.narrow}`}>
       <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / A new thread</p>
       <section className={styles.card}>
-        <h2>{quote ? "Ask about this passage" : bug ? "Report a bug" : idea ? "Suggest an idea" : "Start a thread"}</h2>
+        <h2>{heading}</h2>
         {bug && <p className={styles.small}>Thank you for taking the time. A clear report is usually fixed quickly; the moderator marks it confirmed, then fixed.</p>}
         {quote && (
           <div className={styles.attached}>

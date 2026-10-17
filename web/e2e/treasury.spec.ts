@@ -10,6 +10,18 @@ const openIliad = async (page: Page) => {
 };
 const act = (page: Page, name: string) => page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name, exact: true }).click();
 
+test("an empty Treasury opens with what to do, not with nine zeros, and offers only a small restore link", async ({ page }) => {
+  await page.goto("/treasury");
+  const welcome = page.getByText("Your Treasury is empty so far");
+  await expect(welcome).toBeVisible();
+  await expect(page.getByRole("link", { name: "Open the Mouseion" })).toHaveAttribute("href", "/library");
+  // the message leads; the sections wait under it, with dots where the zeros were
+  expect((await welcome.boundingBox())!.y).toBeLessThan((await page.getByRole("navigation", { name: "Sections of the Treasury" }).boundingBox())!.y);
+  await expect(page.getByRole("navigation", { name: "Sections of the Treasury" }).getByText("0", { exact: true })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Download my Treasury" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Restore from a file" })).toBeVisible();
+});
+
 test("a note with formatting, Greek typed in Beta Code and a tag appears in the Treasury", async ({ page }) => {
   await openIliad(page);
   await page.locator('[data-row="1.5"]').click();

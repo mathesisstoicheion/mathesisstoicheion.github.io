@@ -63,7 +63,7 @@ Because painting styles changed quickly and are well studied, a single sherd of 
   readIt: [
     { work: "tlg0033.tlg003", ref: "10.1", to: "10.54", label: "Pindar, Nemean 10", why: "An ode for a wrestler of Argos who won the painted jars of oil at Athens." },
   ],
-  related: ["kerameikos"],
+  related: ["kerameikos-cemetery"],
   places: ["97294452"],
   primary: [
     { work: "tlg0033.tlg003", ref: "10.33", to: "10.36", label: "Pindar, Nemean 10.33–36" },

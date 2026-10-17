@@ -122,7 +122,7 @@ test.describe("on a phone", () => {
     const rail = page.getByRole("navigation", { name: "Authors by first letter" });
     await expect(rail).toBeVisible();
     await page.locator("#lib-C").scrollIntoViewIfNeeded();
-    const r = (await rail.boundingBox())!, g = (await page.locator("#lib-C h2").boundingBox())!;
+    const r = (await rail.boundingBox())!, g = (await page.locator("#lib-h-C").boundingBox())!;
     expect(r.x + r.width).toBeGreaterThan(335);              // at the right-hand edge
     expect(g.x + g.width).toBeLessThanOrEqual(r.x);          // the list ends to the left of the rail
     await expect(rail).toBeInViewport();

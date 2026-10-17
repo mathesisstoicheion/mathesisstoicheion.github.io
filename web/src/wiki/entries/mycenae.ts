@@ -106,7 +106,7 @@ The geographer Strabo, writing under Augustus, believed nothing was left at all:
     { work: "tlg0003.tlg001", ref: "1.9.1", to: "1.11.2", label: "Thucydides 1.9–11", why: "Agamemnon's power, and why ruins mislead." },
     { work: "tlg0060.tlg001", ref: "11.65.1", to: "11.65.5", label: "Diodorus 11.65", why: "How Argos destroyed Mycenae." },
   ],
-  related: ["linear-b", "kerameikos"],
+  related: ["linear-b", "kerameikos-cemetery"],
   places: ["570491"],
   primary: [
     { work: "tlg0012.tlg001", ref: "11.45", to: "11.46", label: "Homer, Iliad 11.45–46" },

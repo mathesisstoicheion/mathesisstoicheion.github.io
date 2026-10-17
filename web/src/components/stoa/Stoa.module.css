@@ -3,7 +3,7 @@
 
 /* ------------------------------------------------ the front: a colonnade of painted panels */
 .index { display: grid; gap: 28px; padding-block: var(--after-head) 12px; }
-.searchRow { position: relative; }
+.searchRow { position: relative; scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); }
 .searchRow svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .searchRow input {
   width: 100%; font: inherit; font-size: 1.1rem; color: var(--ink);
@@ -14,20 +14,6 @@
 .found a:hover { background-color: var(--slab-lit); }
 .found b { font-family: var(--f-display); font-weight: 400; font-size: 1.2rem; }
 .found span { color: var(--ink-2); font-size: 0.95rem; }
-
-/* the reference pages: Authors, Eras, Editions */
-.reference { display: grid; gap: 10px; }
-.reference ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.reference a {
-  display: grid; gap: 4px; align-content: start; height: 100%; padding: 16px 20px; text-decoration: none; color: inherit;
-  background: var(--slab); box-shadow: var(--inlay-top), var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
-}
-.reference a:hover, .reference a:focus-visible { background-color: var(--slab-lit); }
-.reference b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; }
-.reference a > span:last-child { color: var(--ink-2); font-size: 0.95rem; }
-.refGr { font-family: var(--f-greek); color: var(--accent); font-size: 0.95rem; }
-@media (max-width: 900px) { .reference ul { grid-template-columns: minmax(0, 1fr); } }
 
 .featured {
   position: relative; display: grid; gap: 10px; padding: clamp(24px, 4vw, 40px); text-decoration: none; overflow: hidden;
@@ -85,8 +71,10 @@
     var(--flutes) center / 13px 100% no-repeat, var(--shaft) center / 13px 100% no-repeat;
 }
 @keyframes rise { from { transform: translateY(16px); opacity: 0; } }
+/* one column (a phone): each panel is only as tall as its list; side by side, the panels of a row stand level between their columns */
+@media (max-width: 560px) { .colonnade { align-items: start; } }
 .panelIn {
-  display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px; min-height: 240px;
+  display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px;
   background: var(--field); box-shadow: var(--field-edge);
 }
 /* each category's sign, on a round boss of stone ringed with gold, hung over the panel's top edge like a medallion */
@@ -133,11 +121,33 @@
 .entryMain > p { margin: 0; }
 .entryAside { position: sticky; top: calc(var(--hdr-vis) + 22px); transition: top 0.35s var(--ease); display: grid; gap: 22px; }
 :global(html[data-hdr="hidden"]) .entryAside { --hdr-vis: 0px; }
-@media (max-width: 980px) { .entryGrid { grid-template-columns: minmax(0, 1fr); } .entryAside { position: static; order: -1; } }
+/* the phone's versions of the rail: a closed "On this page" above the article, and the rail's other three blocks at its end
+   (EntryView holds both; each is hidden where it does not belong) */
+.contentsFold, .entryExtras { display: none; }
+@media (max-width: 980px) {
+  .entryGrid { grid-template-columns: minmax(0, 1fr); }
+  .entryAside { display: none; }
+  .contentsFold { display: block; }
+  .entryExtras { display: grid; gap: 22px; padding-top: var(--space-5); box-shadow: var(--cut-over); }
+}
+.contentsFold { background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+.contentsFold > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) var(--space-4); cursor: pointer; list-style: none; }
+.contentsFold > summary::-webkit-details-marker { display: none; }
+.contentsFold > summary::before { content: "▸"; color: var(--accent); display: inline-block; transition: rotate var(--dur-quick) var(--ease); }
+.contentsFold[open] > summary::before { rotate: 90deg; }
+.contentsFold > .contents { padding: 0 var(--space-4) var(--space-3); }
+.contentsFold .contents ol { margin-top: 0; }
 
+/* the opening stands in the header, beside the niche on a computer, with the note button under it */
+.hookBlock { display: grid; gap: var(--space-2); max-width: 46rem; }
 .hook { font-size: 1.32rem; line-height: 1.6; }
 .hook::first-letter { float: left; font-family: var(--f-display); font-size: 4.2em; line-height: 0.8; margin: 0.08em 0.1em 0 0; color: var(--accent); }
 .h2 { font-size: var(--step-2); margin-top: 18px; scroll-margin-top: calc(var(--hdr-h) + 16px); }
+/* a section's heading with its note button at the right end of the same line; a written note opens beneath them. The pull of
+   the margin keeps the heading close to its text, as the grid gap of the article would otherwise leave it floating. */
+.sectionHead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--space-3); row-gap: var(--space-2); margin-bottom: calc(var(--space-2) * -1); }
+.sectionHead > .noteBtn { grid-column: 2; grid-row: 1; }
+.sectionHead > .sectionNote { grid-column: 1 / -1; }
 .h2::first-letter { color: var(--accent); }
 .h3 { font-size: 1.3rem; }
 .inGr { font-family: var(--f-greek); font-size: 1.04em; }
@@ -169,7 +179,8 @@
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat; }
 
-.timeline { list-style: none; margin: 8px 0; padding: 0 0 0 24px; display: grid; gap: 14px; box-shadow: var(--cut-left); font-size: 1rem; line-height: 1.5; }
+.timelineBlock { display: grid; gap: var(--space-2); margin: var(--space-4) 0 var(--space-2); }
+.timeline { list-style: none; margin: 0; padding: 0 0 0 24px; display: grid; gap: 14px; box-shadow: var(--cut-left); font-size: 1rem; line-height: 1.5; }
 .timeline li { position: relative; display: grid; gap: 2px; }
 .timeline li::before { content: ""; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--gem-shine), var(--inlay); box-shadow: var(--inlay-edge); }
 .when { font-family: var(--f-label); letter-spacing: 0.05em; color: var(--accent); font-size: 0.9rem; }
@@ -202,10 +213,11 @@
 .certKey p { margin: 0; display: grid; gap: 4px; justify-items: start; }
 
 /* ---------------------------------------------------------------- the reader's own notes on an entry */
-.noteBtn { justify-self: end; margin-top: -12px; font-size: 0.82rem; color: var(--ink-2); }
-.noteBtn:hover, .noteBtn:focus-visible { color: var(--ink); background: var(--slab-lit); }
-.entryMain > .noteBtn { justify-self: end; }
-.sectionNote { margin-top: -6px; padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: 1rem; animation: noteIn 0.35s var(--ease) backwards; }
+/* the note button is faint until the hand is on it (or it has focus); on a phone it is just the pencil (its label is read out) */
+button.noteBtn { justify-self: end; font-size: 0.82rem; color: var(--ink); opacity: 0.6; transition: opacity var(--dur-quick) var(--ease), background-color var(--dur) var(--ease); }
+button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; background: var(--slab-lit); }
+@media (max-width: 760px) { .noteWord { display: none; } }
+.sectionNote { padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: 1rem; animation: noteIn 0.35s var(--ease) backwards; }
 @keyframes noteIn { from { opacity: 0; transform: translateY(-4px); } }
 @media (prefers-reduced-motion: reduce) { .sectionNote { animation: none; } }
 .markersKey { position: fixed; right: 26px; bottom: calc(18px + var(--tabbar-vis)); z-index: 5; transition: bottom 0.35s var(--ease); }

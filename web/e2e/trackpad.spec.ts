@@ -1,4 +1,5 @@
 import { test, expect, type Locator } from "@playwright/test";
+import { aid } from "./reader-menus";
 
 // Trackpads: a pinch (sent as a wheel event with Ctrl held), a two-finger scroll (small, uneven steps, often
 // sideways) and a mouse wheel's notch (100 pixels) each do what a hand means by them, on the vase, the map
@@ -67,7 +68,7 @@ test("a manuscript page: a pinch zooms; two fingers then move about the page, or
   await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 0 })); });
   await page.goto("/read?w=tlg0012.tlg001&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  await page.getByRole("button", { name: "Manuscript", exact: true }).click();
+  await aid(page, "Manuscript");
   const panel = page.getByRole("complementary", { name: "The manuscript" });
   await expect(panel.getByText("f. 12r")).toBeVisible({ timeout: 30_000 });
   const canvas = panel.locator(".openseadragon-canvas");

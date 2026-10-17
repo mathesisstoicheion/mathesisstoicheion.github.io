@@ -18,7 +18,7 @@ const useNotesLoaded = () => {
   useEffect(() => { if (!loaded) usePageNotes.getState().load(); }, [loaded]);
 };
 
-/** Under a section heading: a note button, or the note itself once written. */
+/** At the right end of a section heading's line: a faint note button (just the pencil on a phone), or, beneath it, the note itself once written. */
 export function SectionNote({ slug, section, title }: { slug: string; section: string; title: string }) {
   useNotesLoaded();
   const note = usePageNotes((s) => s.notes[`stoa:${slug}#${section}`]);
@@ -29,7 +29,7 @@ export function SectionNote({ slug, section, title }: { slug: string; section: s
   if (!note && !open) {
     return (
       <button type="button" className={`chip ${styles.noteBtn}`} onClick={() => setOpen(true)} aria-label={`Write a note on “${title}”`}>
-        ✎ Note
+        <span aria-hidden="true">✎</span><span className={styles.noteWord}>Note</span>
       </button>
     );
   }

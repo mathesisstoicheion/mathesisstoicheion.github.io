@@ -15,6 +15,9 @@
   .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--sill-head); pointer-events: none; }
   /* reading on: it tucks away with the header, its shadow too, and comes back on any scroll up */
   :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + 12px)); }
+  /* ... except in the reader (ReadBar.tsx sets data-reading), whose own bar comes back alone in its place: this one waits
+     for the top of the page (Header.tsx sets data-scrolled while you are away from it) */
+  :global(html[data-reading][data-scrolled]) .bar { transform: translateY(calc(100% + 12px)); }
 }
 
 .tabs { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: 100%; }

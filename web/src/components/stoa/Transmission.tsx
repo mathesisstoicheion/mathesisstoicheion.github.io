@@ -12,6 +12,7 @@ import { ARTICLES } from "@/wiki/author-articles-all";
 import { PIN_KINDS, type AuthorArticle, type PinKind } from "@/wiki/author-articles";
 import { blocks, plain } from "@/wiki/markup";
 import type { Catalog } from "@/lib/catalog";
+import SideScroll from "./SideScroll";
 import styles from "./Transmission.module.css";
 
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
@@ -40,26 +41,44 @@ function opening(src: string): string {
 
 // ---------------------------------------------------------------- the roads of the texts
 // One row per author, the name beside its own track, so the two cannot drift apart; each mark is placed by its year,
-// as a share of the span from 800 BC to today (HTML shapes, so they keep their shape at any width).
+// as a share of the span from 800 BC to today (HTML shapes, so they keep their shape at any width). On a phone the chart
+// scrolls sideways under the names, which stay in view (Transmission.module.css).
 const X0 = -800, X1 = 2030;
 const pct = (y: number) => (((Math.min(Math.max(y, X0), X1) - X0) / (X1 - X0)) * 100);
 const TICKS = [-800, -400, 1, 400, 800, 1200, 1600, 2000];
 const tickLabel = (t: number) => (t === 1 ? "AD 1" : t < 0 ? `${-t} BC` : String(t));
 
+/** The years along the chart, above its rows and again below them. */
+function Axis() {
+  return (
+    <div className={styles.axis} aria-hidden="true">
+      <span className={styles.pin} />
+      <span className={styles.axisTrack}>{TICKS.map((t) => <span key={t} style={{ left: `${pct(t)}%` }}>{tickLabel(t)}</span>)}</span>
+    </div>
+  );
+}
+
 function Roads() {
   return (
     <figure className={styles.roads} aria-label={`The timelines of ${ALL.length} author articles side by side, from ${yearLabel(X0)} to the present`}>
+      {/* the key and what to look for stand above the chart, at the width of the screen; only the chart scrolls sideways */}
+      <figcaption>
+        <ul className={styles.legend}>
+          {(Object.keys(PIN_KINDS) as PinKind[]).map((k) => (
+            <li key={k}><i className={`${styles.mark} ${styles.key} ${styles[k]}`} aria-hidden="true" /><b>{PIN_KINDS[k].label}</b> <span>{PIN_KINDS[k].about}</span></li>
+          ))}
+        </ul>
+        <p>The marks of each author article&apos;s own timeline, drawn on one scale. Look for the gaps: between an author&apos;s own time and the copies of their words, and between the last copies made by hand and the first printed books. Point at a mark for its year; the article tells what happened.</p>
+      </figcaption>
+      <SideScroll className={styles.scroller}>
       <div className={styles.chart}>
-        <div className={styles.axis} aria-hidden="true">
-          <span />
-          <span className={styles.axisTrack}>{TICKS.map((t) => <span key={t} style={{ left: `${pct(t)}%` }}>{tickLabel(t)}</span>)}</span>
-        </div>
+        <Axis />
         <ol className={styles.rows}>
           {ALL.map((a, i) => {
             const ys = a.timeline.map((p) => p.year);
             return (
               <li key={a.id} style={{ "--i": i } as React.CSSProperties}>
-                <span className={styles.who}>{NAME.get(a.id) ?? a.id}</span>
+                <span className={`${styles.who} ${styles.pin}`} title={NAME.get(a.id) ?? a.id}>{NAME.get(a.id) ?? a.id}</span>
                 <span className={styles.track}>
                   {TICKS.map((t) => <i key={t} className={styles.grid} style={{ left: `${pct(t)}%` }} aria-hidden="true" />)}
                   <i className={styles.road} style={{ left: `${pct(Math.min(...ys))}%`, width: `${pct(Math.max(...ys)) - pct(Math.min(...ys))}%` }} aria-hidden="true" />
@@ -72,21 +91,14 @@ function Roads() {
             );
           })}
         </ol>
+        <Axis />
       </div>
-      <figcaption>
-        <ul className={styles.legend}>
-          {(Object.keys(PIN_KINDS) as PinKind[]).map((k) => (
-            <li key={k}><i className={`${styles.mark} ${styles.key} ${styles[k]}`} aria-hidden="true" /><b>{PIN_KINDS[k].label}</b> <span>{PIN_KINDS[k].about}</span></li>
-          ))}
-        </ul>
-        <p>The marks of each author article&apos;s own timeline, drawn on one scale. Look for the gaps: between an author&apos;s own time and the copies of their words, and between the last copies made by hand and the first printed books. Point at a mark for its year; the article tells what happened.</p>
-      </figcaption>
+      </SideScroll>
     </figure>
   );
 }
 
 export default function Transmission({ part }: { part: "transmission" | "variants" }) {
-  const title = part === "transmission" ? "How the words reached us" : "Where the copies disagree";
   return (
     <div className={`wrap ${styles.page}`}>
       {part === "transmission" && <Roads />}
@@ -99,7 +111,7 @@ export default function Transmission({ part }: { part: "transmission" | "variant
                 <span className={styles.when}>{century(firstYear(a))}</span>
                 <b>{NAME.get(a.id) ?? a.id}</b>
                 <span className={styles.text}>{opening(a[part])}</span>
-                <span className={styles.go}>{title}: the whole account, with its sources <span aria-hidden="true">→</span></span>
+                <span className={styles.go}>The whole account <span aria-hidden="true">→</span></span>
               </Link>
             </li>
           ))}

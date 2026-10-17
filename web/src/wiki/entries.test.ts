@@ -4,7 +4,7 @@
  * The check against the texts themselves is entries.corpus.test.ts.
  */
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { readdirSync, readFileSync } from "node:fs";
 import { indexCatalog, type Catalog } from "@/lib/catalog";
 import { ENTRIES, entryBySlug } from "./index";
 import HINTS from "./entry-hints.json";
@@ -75,6 +75,13 @@ describe("the bibliography", () => {
   it("has nothing unused", () => {
     const used = new Set(ENTRIES.flatMap((e) => e.secondary.map((s) => s.id)));
     for (const id of Object.keys(BIB)) expect(used.has(id), id).toBe(true);
+  });
+});
+
+describe("the entries' addresses", () => {
+  it("are not the address of a page of its own under /stoa, which would hide the entry (the Archaeology hub is /stoa/kerameikos)", () => {
+    const pages = new Set(readdirSync("src/app/stoa"));
+    for (const e of ENTRIES) expect(pages.has(e.slug), `entry "${e.slug}" is shadowed by the page src/app/stoa/${e.slug}`).toBe(false);
   });
 });
 

@@ -60,13 +60,14 @@ function driftAnchor(): Drift { return drift ?? [0.56, 0.42, 0.3, 0.16]; }
 
 /** A touch screen with no mouse: the torch stands still in the middle of the screen and fingers carry no light. */
 let touchOnly = () => false;
-/** Where the torch stands on a touch screen: in the middle, but higher within the first half screen of the page and
- *  lower within the last, so the top and the foot of the page can be lit too. */
+/** Where the torch stands on a touch screen: in the middle, and lower within the last half screen of the page, so the
+ *  foot of the page can be lit too. (It no longer rises at the top of a page: the piece in its big window under the
+ *  page's title stands in the lower half of the first screen, and is lit as the page opens.) */
 function middleSpot(): [number, number] {
   const W = innerWidth, H = innerHeight, half = H / 2, end = H * 0.28;
   const room = Math.max(0, document.documentElement.scrollHeight - H), y = scrollY;
-  const top = clamp(1 - y / half, 0, 1), foot = clamp(1 - (room - y) / half, 0, 1);
-  return [W / 2, half - (half - end) * top + (half - end) * foot];
+  const foot = clamp(1 - (room - y) / half, 0, 1);
+  return [W / 2, half + (half - end) * foot];
 }
 
 function setRadius() {

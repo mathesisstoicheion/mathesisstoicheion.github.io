@@ -98,10 +98,11 @@ export default function GuidePage() {
     <Page>
       <div className={`wrap ${styles.page}`}>
         <header className={styles.top}>
-          <span className="label">The Guide <span lang="grc">ὁδηγός</span></span>
+          <span className="label">The Guide</span>
           <NameCarving greek="ὁδηγός" />
           <PagePiece className="piece-desk" />
           <h1 className="page-title">How to use the site</h1>
+          <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>
           <PagePiece className="piece-phone" />
           <p className={styles.lead}>
             Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
@@ -111,7 +112,6 @@ export default function GuidePage() {
             <Link className="btn" href="/academy?tour=learn">Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
             <Link className="btn ghost" href="/library?tour=find">Want to read straight away? <span className="arr" aria-hidden="true">→</span></Link>
           </div>
-          <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>
         </header>
         <GuideSeen />
         <GuideContents chapters={CHAPTERS} />

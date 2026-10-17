@@ -8,18 +8,15 @@
 .draft { margin: 0 0 6px; padding: 12px 16px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); color: var(--ochre); font-size: 0.95rem; }
 
 /* ---------------------------------------------------------------- life and work */
-.lifeGrid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 28px 44px; align-items: start; }
 .lead { max-width: 66ch; font-size: 1.08rem; line-height: 1.7; }
 .lead p { margin: 0 0 1em; }
 /* the first letter is set as a rubric initial, in the red of the manuscripts */
 .lead p:first-child { font-size: 1.2rem; }
 .lead p:first-child::first-letter { float: left; font-family: var(--f-display); font-size: 3.7em; line-height: 0.82; padding: 0.06em 0.1em 0 0; color: var(--accent); }
-.key { display: grid; gap: 10px; padding: 18px 20px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: 0.92rem; line-height: 1.5; position: sticky; top: calc(var(--hdr-vis, 0px) + 16px); }
-:global(html[data-hdr="hidden"]) .key { --hdr-vis: 0px; }
-.key h3 { margin: 0; }
-.key p { margin: 0; }
-.key ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
-.key li { display: grid; gap: 4px; justify-items: start; color: var(--ink-2); }
+/* what the footnote numbers and the labels mean: one small line before the first place that uses them */
+.keyLine { margin: 0; max-width: 78ch; font-size: 0.88rem; line-height: 1.55; color: var(--ink-2); }
+.keyLine b { font-family: var(--f-label); font-weight: 500; letter-spacing: 0.04em; color: var(--ink); }
+.keyLine :global(.tag) { margin-inline: var(--space-1); }
 .fakeMark { font-family: var(--f-label); font-size: 0.8em; color: var(--accent); }
 
 /* ---------------------------------------------------------------- the road of the text */
@@ -45,11 +42,13 @@
 .keyPin { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-round); background: var(--bg-deep); box-shadow: var(--field-edge); }
 
 /* plays once, when the road scrolls into view; at rest (and with reduced motion) the road is fully drawn */
-.road[data-play] .stop::before { animation: stretch 0.7s var(--ease) both; animation-delay: calc(var(--i) * 0.28s); }
-.road[data-play] .pin { animation: pinPop 0.45s var(--ease) backwards; animation-delay: calc(var(--i) * 0.28s); }
-.road[data-play] .gap, .road[data-play] .when, .road[data-play] .kindName, .road[data-play] .what { animation: textIn 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 0.28s + 0.25s); }
+/* the delay stops growing after the fourth mark, so the marks that come into view later are not left waiting behind a long chain (on a
+   phone, with the road running down, the screen stood nearly empty for seconds) */
+.road[data-play] .stop::before { animation: stretch var(--dur) var(--ease) both; animation-delay: calc(min(var(--i), 3) * var(--enter-step)); }
+.road[data-play] .pin { animation: pinIn var(--dur-quick) var(--ease) backwards; animation-delay: calc(min(var(--i), 3) * var(--enter-step)); }
+.road[data-play] .gap, .road[data-play] .when, .road[data-play] .kindName, .road[data-play] .what { animation: textIn var(--dur) var(--ease) backwards; animation-delay: calc(min(var(--i), 3) * var(--enter-step) + var(--dur-quick)); }
 @keyframes stretch { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
-@keyframes pinPop { from { transform: scale(0); } 70% { transform: scale(1.18); } to { transform: scale(1); } }
+@keyframes pinIn { from { opacity: 0; transform: scale(0.6); } }
 @keyframes textIn { from { opacity: 0; transform: translateY(6px); } }
 
 /* ---------------------------------------------------------------- how the text survived */
@@ -66,6 +65,10 @@
 .eds li { padding: 12px 0 12px 22px; box-shadow: var(--cut-over); position: relative; line-height: 1.55; }
 .eds li:last-child { box-shadow: var(--cut-over), var(--cut-under); }
 .eds li::before { content: ""; position: absolute; left: 2px; top: 1.15em; width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); }
+/* the sources, folded away until a footnote or the reader asks for them (SourcesFold.tsx) */
+.sourcesFold { max-width: 78ch; }
+.sourcesFold summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
+.sourcesFold summary:hover { text-decoration: underline; text-underline-offset: 3px; }
 .sources { margin: 4px 0 0; padding-left: 1.6em; display: grid; gap: 8px; max-width: 78ch; line-height: 1.55; }
 .sources li::marker { font-family: var(--f-label); color: var(--accent); }
 .sources li:target { background: color-mix(in srgb, var(--accent) 14%, transparent); outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius); }
@@ -74,8 +77,6 @@
 
 /* ---------------------------------------------------------------- phones: the road runs downwards */
 @media (max-width: 899px) {
-  .lifeGrid { grid-template-columns: minmax(0, 1fr); }
-  .key { position: static; }
   .road { grid-auto-flow: row; grid-auto-columns: auto; overflow: visible; padding: 4px 0; gap: 0; }
   .stop { padding: 0 0 26px 48px; }
   .stop::before { top: 0; bottom: 0; left: calc(var(--pin) / 2 - 1px); right: auto; width: 2px; height: auto; background: var(--cut-line-v); }
@@ -88,6 +89,13 @@
 }
 @media (min-width: 900px) {
   .stop:first-child { padding-left: 0; }
+  /* the road is wider than the page and goes on past its right edge: a soft fade there says so, and the end padding keeps the last
+     mark clear of it once the road has been scrolled to its end */
+  .road {
+    padding-inline-end: var(--space-6);
+    -webkit-mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent);
+    mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent);
+  }
 }
 
 /* a subheading inside the summary */
@@ -95,4 +103,4 @@
 .lead p b { font-family: var(--f-label); letter-spacing: 0.03em; color: var(--accent); font-weight: 700; }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.key, .panel { outline: var(--moulding); outline-offset: var(--moulding-in); }
+.panel { outline: var(--moulding); outline-offset: var(--moulding-in); }

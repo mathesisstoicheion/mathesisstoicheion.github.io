@@ -5,10 +5,11 @@ const settings = (page: Page) => page.evaluate(() => JSON.parse(localStorage.get
 test("a first visit is asked where it is starting, and the answer sets up the reading aids", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).not.toHaveAttribute("data-visitor", "back");
-  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Your desk" })).toBeHidden();
-  // the five rooms, at a glance
-  await expect(page.getByRole("heading", { name: "Five rooms" })).toBeVisible();
+  // the question waits behind one quiet line under the two ways in
+  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeHidden();
+  await page.getByText("New here?").click();
+  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeVisible();
   // the first answer is open to begin with; picking another only changes what the panel says
   const none = page.getByRole("tab", { name: /I know no Greek/ }), some = page.getByRole("tab", { name: /I know a little/ });
   await expect(none).toHaveAttribute("aria-selected", "true");
@@ -35,6 +36,7 @@ test("a first visit is asked where it is starting, and the answer sets up the re
 
 test("I just want to read: the library, with reading aids off", async ({ page }) => {
   await page.goto("/");
+  await page.getByText("New here?").click();
   await page.getByRole("tab", { name: /I just want to read/ }).click();
   await page.locator("#start-setup").getByRole("link", { name: /Open the library/ }).click();
   await expect(page).toHaveURL(/\/library$/);
@@ -65,6 +67,9 @@ test.describe("on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   test("the question is in the opening, after the title, and nothing is wider than the screen", async ({ page }) => {
     await page.goto("/");
+    const ask = page.getByText("New here?");
+    expect((await ask.boundingBox())!.y).toBeLessThan(844);
+    await ask.click();
     const q = (await page.getByRole("heading", { name: "Where are you starting?" }).boundingBox())!.y;
     const title = (await page.locator("#hero-title").boundingBox())!.y;
     expect(q).toBeGreaterThan(title);

@@ -29,8 +29,9 @@ export default function Pnyx({ entryTitles }: { entryTitles: Record<string, stri
 
   return (
     <div className={`wrap ${styles.pnyx}`}>
+      {/* the page's header already says where the Pnyx was and who met there; this says what the citizens did, and what is done here */}
       <p className={styles.lead}>
-        On the real Pnyx the citizens of Athens met in Assembly, heard the speakers for and against a motion, and voted by a show of hands.
+        On the real Pnyx the citizens heard the speakers for and against a motion, and voted by a show of hands.
         Here each motion has two sides: argue for or against it, reply to the arguments, cite your sources, and cast a pebble for your side.
         The count is shown when the debate closes, with how many changed their minds.
       </p>

@@ -38,6 +38,9 @@ export function loadCatalog(): Promise<CatalogIndex> {
   return pending;
 }
 
+/** The catalogue indexed last, which describe() asks for a text's fellow editions when it is not given them. */
+let lastIndex: CatalogIndex | null = null;
+
 export function indexCatalog(catalog: Catalog): CatalogIndex {
   const idx: CatalogIndex = { catalog, work: new Map(), authorOf: new Map(), text: new Map(), author: new Map() };
   for (const a of catalog.authors) {
@@ -48,6 +51,7 @@ export function indexCatalog(catalog: Catalog): CatalogIndex {
       for (const t of w.texts) idx.text.set(t.urn, t);
     }
   }
+  lastIndex = idx;
   return idx;
 }
 
@@ -72,16 +76,31 @@ export function rawUrl(idx: CatalogIndex, t: CatText) {
   return `https://raw.githubusercontent.com/${c.owner}/${c.repo}/${c.sha}/${t.path}`;
 }
 
-/** Describe an edition or translation for a picker: "Murray, 1924" style from the CTS description. */
-export function describe(t: CatText): string {
-  // the private collection's books (lib/mine.ts) carry their own plain description
-  if (t.urn.startsWith("mine:")) return t.desc ?? versionOf(t.urn);
+/** "Murray, 1924" from the CTS description: the translator or editor, and the year of publication. */
+function plainName(t: CatText): string {
   const d = t.desc ?? "";
   // "Butler, Samuel, 1835-1902, translator" → Butler; life dates are not the publication year
   const who = /([A-Z][\w'’-]+),\s*[A-Z][^,;]*?(?:,\s*[\d?]{4}\s*-\s*[\d?]{0,4})?,\s*(?:translator|editor)/.exec(d)?.[1];
   const year = /\b(1[5-9]\d\d|20\d\d)\b/.exec(d.replace(/[\d?]{4}\s*-\s*[\d?]{0,4},\s*(?:translator|editor)/g, ""))?.[1];
-  const base = who ? `${who}${year ? `, ${year}` : ""}` : (t.label ?? versionOf(t.urn));
-  return `${base} (${versionOf(t.urn)})`;
+  return who ? `${who}${year ? `, ${year}` : ""}` : (t.label ?? versionOf(t.urn));
+}
+
+/** The work a text's URN belongs to ("urn:cts:greekLit:tlg0012.tlg001.perseus-grc2" → "tlg0012.tlg001"). */
+const workOfUrn = (urn: string) => urn.slice(urn.lastIndexOf(":") + 1, urn.lastIndexOf("."));
+
+/**
+ * Describe an edition or translation for a picker or a line of text: "Murray, 1924" style, from the CTS description.
+ * The file's own short name ("perseus-grc2") is added only where another text of the same work, of the same kind and
+ * language, would otherwise read the same (two printings of one edition, say), so that the two can be told apart.
+ * `among` is the work's texts; when it is not given, the work is looked up in the catalogue loaded last.
+ */
+export function describe(t: CatText, among?: readonly CatText[]): string {
+  // the private collection's books (lib/mine.ts) carry their own plain description
+  if (t.urn.startsWith("mine:")) return t.desc ?? versionOf(t.urn);
+  const base = plainName(t);
+  const others = among ?? lastIndex?.work.get(workOfUrn(t.urn))?.texts ?? [];
+  const twin = others.some((o) => o.urn !== t.urn && o.kind === t.kind && o.lang === t.lang && plainName(o) === base);
+  return twin ? `${base} (${versionOf(t.urn)})` : base;
 }
 
 /** Plain-text normalisation for searching: no accents, breathings or case; final sigma folded. */

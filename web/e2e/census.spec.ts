@@ -7,6 +7,8 @@ test("the Census ranks gods and heroes, and an item shows where it is mentioned"
   await ranking.getByRole("button", { name: /^1 Ζεύς/ }).click();
   await expect(page).toHaveURL(/[?&]i=/);
   await expect(page.getByRole("heading", { level: 2, name: "Ζεύς" })).toBeVisible();
+  // the four big numbers stand in the page's header
+  await expect(page.locator("header dl")).toContainText("words read");
   const more = page.getByRole("navigation", { name: "More about it" });
   await expect(more.getByRole("link", { name: "Word Study" })).toHaveAttribute("href", /\/treasury\/word\?l=/);
   await expect(more.getByRole("link", { name: /Every mention/ })).toHaveAttribute("href", /\/search\?m=lemma&q=/);
@@ -14,6 +16,10 @@ test("the Census ranks gods and heroes, and an item shows where it is mentioned"
 
 test("the Census filters by author, and compares two side by side", async ({ page }) => {
   await page.goto("/stoa/census?c=place");
+  // the choices of where to count are folded into one disclosure, whose summary says what is chosen
+  const where = page.locator("summary", { hasText: "Where:" });
+  await expect(where).toContainText("the whole library");
+  await where.click();
   await page.getByRole("combobox", { name: "Author" }).first().selectOption({ label: "Herodotus" });
   await expect(page).toHaveURL(/[?&]a=tlg0016/);
   const left = page.getByRole("region", { name: "Places in Herodotus" });
@@ -33,5 +39,8 @@ test("the Census counts things and phrases, and says how", async ({ page }) => {
   await page.getByRole("button", { name: /^Phrases/ }).click();
   await expect(page.getByRole("region", { name: "Phrases in The whole library" }).getByRole("button", { name: /^1 ὦ ἄνδρες Ἀθηναῖοι/ })).toBeVisible();
   await expect(page.getByRole("heading", { name: "How the counting was done" })).toBeVisible();
+  // the method after its first paragraph is folded away until asked for
+  await expect(page.getByText(/89\.2% accurate by GLAUx/)).toBeHidden();
+  await page.getByText("The full method").click();
   await expect(page.getByText(/89\.2% accurate by GLAUx/)).toBeVisible();
 });

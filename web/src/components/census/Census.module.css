@@ -13,15 +13,18 @@
 .blurb { color: var(--ink-2); max-width: 70ch; margin: 0; }
 
 /* ------------------------------------------------ the tally */
+/* it stands in the page's header, in the empty left column beside the sculpture: two by two, so each number has room */
 .tally {
-  margin: 0 0 6px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0;
+  margin: var(--space-5) 0 0; max-width: 34rem; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0;
   background: var(--slab); box-shadow: var(--slab-edge);
 }
 .tally > div {
   padding: 14px 18px 12px; display: grid; gap: 2px; box-shadow: var(--cut-left);
   animation: tally-in 0.7s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 110ms);
 }
-.tally > div:first-child { box-shadow: none; }
+.tally > div:nth-child(odd) { box-shadow: none; }
+.tally > div:nth-child(n + 3) { box-shadow: var(--cut-over); }
+.tally > div:nth-child(4) { box-shadow: var(--cut-left), var(--cut-over); }
 .tally dt { font-family: var(--f-label); font-size: 0.86rem; letter-spacing: 0.08em; color: var(--ink-2); order: 2; }
 .tally dd { margin: 0; font-family: var(--f-display); font-size: clamp(1.5rem, 3.2vw, 2.3rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
 @keyframes tally-in { from { opacity: 0; transform: translateY(8px); } }
@@ -46,6 +49,14 @@
 .size { font-size: 0.74rem; opacity: 0.7; font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------ where */
+/* the choices fold into one closed disclosure whose summary says what is chosen now */
+.where { background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+.where > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); min-height: var(--tap); padding: var(--space-3) var(--space-4); cursor: pointer; list-style: none; }
+.where > summary::-webkit-details-marker { display: none; }
+.where > summary::before { content: "▸"; color: var(--accent); display: inline-block; transition: rotate var(--dur-quick) var(--ease); }
+.where[open] > summary::before { rotate: 90deg; }
+.where > summary b { font-weight: 500; }
+.where > .scopes { padding: var(--space-1) var(--space-4) var(--space-4); }
 .scopes { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: end; }
 .scope { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: end; min-width: 0; }
 .scope legend { padding: 0; margin-bottom: 6px; }
@@ -117,7 +128,7 @@
 .threads path[data-on] { stroke: var(--accent); stroke-width: 2.4; opacity: 1; }
 @keyframes thread { from { stroke-dashoffset: 1; } }
 
-.side { position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: auto; overscroll-behavior: contain; }
+.side { scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: auto; overscroll-behavior: contain; }
 :global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
 .hint { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; }
 .hint p { margin: 0; }
@@ -184,9 +195,14 @@
 /* ------------------------------------------------ how the counting was done */
 .method { margin-top: 36px; padding-top: 28px; box-shadow: var(--cut-over); display: grid; gap: 16px; }
 .method h2 { font-size: var(--step-3); margin: 0; }
+/* after its first paragraph the method folds into one disclosure */
+.fullMethod { display: grid; }
+.fullMethod > summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.04em; min-height: var(--tap); display: flex; align-items: center; }
+.fullMethod[open] > summary { margin-bottom: var(--space-2); }
+.fullMethod > .leftOut { margin-top: var(--space-4); }
 .methodCols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 48px; }
-.methodCols h3 { font-family: var(--f-label); font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; margin: 14px 0 4px; }
-.methodCols p { margin: 0 0 8px; max-width: 64ch; }
+.methodCols h3, .methodFirst h3 { font-family: var(--f-label); font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; margin: 14px 0 4px; }
+.methodCols p, .methodFirst p { margin: 0 0 8px; max-width: 64ch; }
 .leftOut summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.04em; }
 .leftOut ul { list-style: none; padding: 0; margin: 10px 0 0; columns: 2 320px; column-gap: 40px; }
 .leftOut li { break-inside: avoid; padding: 3px 0; font-size: 0.92rem; }
@@ -199,11 +215,15 @@
 @media (max-width: 1080px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .side { position: static; max-height: none; overflow: visible; }
+  /* with nothing chosen, "Pick a…" stands above the list; a chosen item's panel follows the list (Census.tsx scrolls to it) */
+  .layout:not([data-picked]) .side { order: -1; }
 }
 @media (max-width: 760px) {
-  .tally { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tally > div:nth-child(3) { box-shadow: none; }
-  .shelves { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* the four shelves are one compact row, without their blurbs */
+  .shelves { gap: var(--space-2); }
+  .shelf { padding: var(--space-3) var(--space-2); text-align: center; min-height: var(--tap); }
+  .shelf b { font-size: var(--step-0); }
+  .shelf span { display: none; }
   .comparing .columns { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .threads { display: none; }
   .methodCols { grid-template-columns: minmax(0, 1fr); }

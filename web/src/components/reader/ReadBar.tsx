@@ -4,7 +4,9 @@
  * Previous and next page, the contents (a drawer from the left edge: books or chapters, "go to",
  * and your marks), the reading aids, and "Aa" for the size and spacing of the text. The bar tucks
  * away with the header and the site's bar while reading on, or at a tap on the page; a thin line at
- * the top of the screen then shows how far through the book you are.
+ * the top of the screen then shows how far through the book you are. Away from the top of the page,
+ * a scroll back up brings this bar alone, at the foot of the screen: the site's bar (TabBar) comes
+ * back only at the top of the page, so the two never stack up over the text while reading.
  * On wider screens the reader's sticky bar at the top does all this, and this renders nothing visible.
  */
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -32,6 +34,14 @@ interface Props {
 
 export default function ReadBar({ title, author, chunks, chunk, go: goTo, goto, marks, aids }: Props) {
   const [open, setOpen] = useState<Open>(null);
+  // While this bar is up, <html> says so (data-reading), once: with the header's data-scrolled (Header.tsx: away from the
+  // top of the page) the site's bar stays tucked away and this one takes its place at the foot of the screen (the CSS of
+  // both, and of what sits above them). Nothing is changed as the page scrolls.
+  useEffect(() => {
+    const root = document.documentElement;
+    root.dataset.reading = "";
+    return () => { delete root.dataset.reading; };
+  }, []);
   // turning a page from the bar keeps the bar in hand
   const go = (i: number) => { holdBars(); goTo(i); };
   const toggle = (o: Open) => setOpen((cur) => (cur === o ? null : o));

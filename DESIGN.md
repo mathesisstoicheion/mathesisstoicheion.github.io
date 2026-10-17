@@ -166,7 +166,7 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
 - **The settings panel**: every control is cut in the same stone (slabs, with the chosen one lit and gilded at its foot).
 
 ## The screens
-**Home.** In order:
+**Home.** (Shortened on 2026-10-17: see "Calmer pages" below for the new, shorter order. The older order was:)
 1. The hero: a wall of the opening of Plato's *Apology*, carved in the stoichedon grid (Burnet's text with accents and breathings removed, iota subscript carved as a full Ι), cut in diagonally when the page opens and read by carrying the torch over it.
 2. "The name" (see Signature details).
 3. The Passage of the day, Greek and English, beside the Great Eleusinian Relief, re-lit.
@@ -180,6 +180,31 @@ The vase to paint yourself, which stood on the old home page, moved to the Keram
 **Library ("The Mouseion").** ΜΟΥΣΕΙΟΝ is carved at the top; search and filters are cut stone. The books stand as stelai (gravestones), each with its picture in a round medallion re-lit by the torch, then the author, the title, the Greek title and the picture's credit. A stele's words light up as a torch passes. On a phone each group of stelai is one row to swipe sideways (it does not snap), so the wall costs a screen or two of scrolling, not six.
 
 **Reader.** Greek and English side by side on a computer, one above the other on a phone. Controls: Both / Greek / English; Aa (Night or Daylight, the Greek typeface, the text size); Tools. Dotted words open a word panel.
+
+## Calmer pages, and pages that open calmly (2026-10-17)
+The owner (2026-10-17): bigger windows with a statue on each page, a less cluttered home page, a clearer flow on every page, and
+a page that opens beautifully with nothing white while it loads. Not live until the owner says "Publish".
+- **Home, in a shorter order:** the hero; the name (sources folded); the passage of the day; the letters; the Muses; "Find
+  something to read"; the frieze; the Stoa; sources folded. The rooms, the Stoa cards, forum activity and offline actions moved to
+  the pages they belong to (`app/page.tsx`, `app/home.module.css`).
+- **Bigger windows:** `.piece-head` and `.piece-wide` in `globals.css`. On a phone the piece is 74vw wide, under the title and its
+  subtitle. A broad window in a narrow page head takes at most 45% of it.
+- **The library's flow:** the search and filters stand on the list they filter ("Every work in the library"), not apart from it;
+  levels and reading paths sit in a fold, "Not sure where to begin?". The same rule holds elsewhere: a control sits with what it
+  controls.
+- **The page entrance:** `@keyframes enter` in `globals.css` (zero-specificity `:where`) for `.area-head .wrap`, `.page-head`,
+  headers with a piece, and `.enter`. In order: the name, the Greek, the purpose, then the niche rises. Timings are tokens
+  (`--dur-enter`, `--enter-step`).
+- **The niche placeholder:** a niche is a dark hollow until its piece is drawn (`.piece > .piece-niche::before`); `PagePiece.tsx`
+  sets `data-ready` when the piece is ready. `<html>` has the stone colour from the first byte (`layout.tsx`), so nothing
+  flashes white. The library's medallions do the same.
+- **The wait light:** while the next page is fetched (`instrumentation-client.ts`, `components/NavWait.tsx`, `.navwait`), a gilded
+  light travels along the header's foot. It fades in after 0.25 s, so a fast page shows nothing.
+- **`.tool-page`** (practice, test, review, today's session): on a computer the piece stands beside the tool, so the first
+  question is on the first screen; on a phone it stays under the title.
+- **Phone pixel limit:** on phones the big windows are drawn with at most 220,000 pixels (`lib/art/piece.ts` `layout()`).
+  At full sharpness, scrolling past one fell from 49 to 25 fps in the slowed-phone test (now about 33). The owner is being asked
+  whether to keep this balance of sharpness and smoothness.
 
 ## Signature details
 1. **The name, and its emblem.** Μάθησις στοιχείων, *Learning the elements*. The owner asked what object goes with the name, liked all three suggestions and asked for them together (2026-10-16). The emblem is one still life:

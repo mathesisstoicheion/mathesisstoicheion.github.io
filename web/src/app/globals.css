@@ -84,7 +84,7 @@ html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing
    through the status bar while the header is tucked away */
 body::before {
-  content: ""; position: fixed; z-index: 31; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
+  content: ""; position: fixed; z-index: var(--z-over-header); top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
   background: var(--bg); pointer-events: none;
 }
 h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
@@ -134,6 +134,23 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   }
   .snap-row::-webkit-scrollbar { display: none; }
 }
+
+/* waiting for the next page (NavWait.tsx): the fillet along the header's foot is lit, and a warm light travels along
+   it until the page arrives. It fades in only after a moment, so a page that comes at once shows nothing. */
+.navwait {
+  position: fixed; z-index: var(--z-over-header); left: 0; right: 0; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px) - var(--space-1)); height: var(--space-1);
+  overflow: hidden; pointer-events: none; opacity: 0; transition: opacity var(--dur-quick) var(--ease);
+  background: linear-gradient(90deg, transparent, var(--accent) 12% 88%, transparent); background-size: 100% 1px; background-position: 0 1px; background-repeat: no-repeat;
+}
+html[data-hdr="hidden"] .navwait { --hdr-vis: var(--space-1); }
+.navwait::before {
+  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent 30%, var(--accent-hi) 50%, transparent 70%);
+}
+html[data-nav="wait"] .navwait { opacity: 0.9; transition: opacity var(--dur) var(--ease) var(--dur-quick); }
+html[data-nav="wait"] .navwait::before { animation: navwait calc(2 * var(--dur-slow)) var(--ease) infinite; }
+@keyframes navwait { to { transform: translateX(100%); } }
+@media (prefers-reduced-motion: reduce) { html[data-nav="wait"] .navwait::before { animation: none; transform: none; opacity: 0.6; } }
 
 /* pull down to refresh (PullToRefresh.tsx): a ring slides down from under the header, turning as it comes */
 .pull {
@@ -255,27 +272,61 @@ select:not([multiple]):not([size]) {
   display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
   background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.piece-niche canvas { display: block; width: 100%; height: 100%; }
+.piece-niche { position: relative; }
+.piece-niche canvas { position: relative; display: block; width: 100%; height: 100%; }
+/* before its piece has come the niche is already cut in the wall, a dark hollow of the same shape, so nothing on the page
+   is ever missing; it gives way to the drawn niche as the light comes up on the piece (PagePiece.tsx sets data-ready) */
+.piece > .piece-niche::before {
+  content: ""; position: absolute; inset: 0; background: var(--field); box-shadow: var(--field-edge);
+  transition: opacity var(--dur-fade) var(--ease);
+}
+.piece[data-niche="arch"] .piece-niche::before { border-radius: var(--radius-arch); }
+.piece > .piece-niche[data-ready]::before { opacity: 0; }
 .piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
 .piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
 .piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .piece-why { font-style: italic; }
-.piece-head { float: right; width: min(clamp(170px, 19vw, 250px), 310px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-4) var(--space-6); }
-.piece-head.piece-wide { width: clamp(220px, 27vw, 340px); }
+/* a big window, like the home page's reliefs (the owner, 2026-10-17: "I liked the bigger windows") */
+.piece-head { float: right; width: min(clamp(240px, 27vw, 380px), 500px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-5) var(--space-7); }
+.piece-head.piece-wide { width: clamp(300px, 38vw, 520px); }
+/* a broad window in a narrow column of text (the credits, the about page) leaves the title room beside it */
+@media (min-width: 761px) { .page-head > .piece-head.piece-wide { width: min(clamp(300px, 38vw, 520px), 45%); } }
+/* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and
+   the name and function of the page"): its name, its Greek name cut in the wall and what it is for rise into place one
+   after another, and last its niche, where the light then comes up on the piece. Only opacity and a small rise move, and
+   nothing holds its last frame. (:where keeps these weaker than any animation of an element's own.) */
+@keyframes enter { from { opacity: 0; transform: translateY(12px); } }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter var(--dur-enter) var(--ease) backwards; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(2)) { animation-delay: var(--enter-step); }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(3)) { animation-delay: calc(2 * var(--enter-step)); }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(4)) { animation-delay: calc(3 * var(--enter-step)); }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(n + 5)) { animation-delay: calc(4 * var(--enter-step)); }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(.piece-head) { animation-duration: calc(1.5 * var(--dur-enter)); animation-delay: calc(3.5 * var(--enter-step)); }
 /* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
 .page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
 :is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
-.piece-foot { width: min(260px, 62vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
-.piece-foot.piece-wide { width: min(380px, 86vw); }
-/* a page's title is given its whole width on a phone: the piece there stands under it, beside the words that follow
-   (a header holds both, "piece-desk" before the title and "piece-phone" after it; the one not shown loads nothing) */
+.piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
+.piece-foot.piece-wide { width: min(520px, 100%); }
+/* a page that is a tool (a round of questions, the day's cards): on a computer its piece stands in its big window beside the
+   tool rather than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
+.tool-page { display: grid; grid-template-columns: minmax(0, 1fr); }
+.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; }
+@media (min-width: 761px) {
+  .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
+  .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
+}
+:where(.tool-page) > :where(.piece-head) { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
+/* a page's title is given its whole width on a phone: the piece there stands under it, in a window of its own across
+   the screen, and the words follow (a header holds both, "piece-desk" before the title and "piece-phone" after it; the
+   one not shown loads nothing) */
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
   .piece-phone { display: block; }
-  .piece-head { width: min(36vw, 62vw / var(--piece-ratio)); margin-left: var(--space-4); }
-  .piece-head.piece-wide { width: 46vw; }
+  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto var(--space-5); }
+  .piece-head.piece-wide { width: 100%; }
+  .piece-head figcaption { text-align: center; }
   .piece figcaption { font-size: var(--step--2); }
 }
 
@@ -360,6 +411,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
 html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
+html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */
@@ -405,8 +457,11 @@ html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
 .page-title { font-size: clamp(2.4rem, 5vw, 4rem); }
-/* a title that is one long word (Batrachomyomachia) may break inside the word on a narrow phone, never widen the page */
+/* a title that is one long word (Batrachomyomachia) may break inside the word on a narrow phone, never widen the page;
+   on a computer a word breaks only when it would not fit on a line of its own, so a title beside a piece's window wraps
+   at its spaces */
 h1, .page-title { overflow-wrap: anywhere; }
+@media (min-width: 761px) { h1, .page-title { overflow-wrap: break-word; } }
 /* a drop-down is as wide as its longest choice; never wider than its column */
 select { max-width: 100%; }
 .page-title > [lang="grc"] { color: var(--accent); }

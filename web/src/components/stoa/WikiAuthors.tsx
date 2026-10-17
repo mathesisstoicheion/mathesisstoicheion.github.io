@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Wiki's Authors index: every author in the library, by period and by kind of writing, with a search.
+ * The Wiki's Authors index: every author in the library, by period (chips) and by kind of writing (a drop-down), with a search.
  * Dates, places and descriptions come from Wikidata (lib/authors-meta.ts); where Wikidata has no date, the
  * span GLAUx gives for the author's works is used and marked †. Authors no source dates (anonymous works,
  * collections) are listed last, not guessed.
@@ -37,7 +37,7 @@ export default function WikiAuthors() {
     history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
   };
   const pickEra = (v: string) => { const n = era === v ? "" : v; setEra(n); keep(n, kind); };
-  const pickKind = (v: string) => { const n = kind === v ? "" : v; setKind(n); keep(era, n); };
+  const pickKind = (v: string) => { setKind(v); keep(era, v); };
 
   const rows = useMemo<Row[]>(() => (idx ? authorRows(idx.catalog.authors, meta, wmeta) : []), [idx, meta, wmeta]);
 
@@ -75,11 +75,12 @@ export default function WikiAuthors() {
           </div>
         </div>
         <div className={styles.filterRow}>
-          <span className="label">Writing</span>
-          <div className={styles.chips}>
-            <button type="button" className="chip" aria-pressed={!kind} onClick={() => { setKind(""); keep(era, ""); }}>All <small>{num(kindCount(""))}</small></button>
-            {KINDS.map(([id, label]) => <button key={id} type="button" className="chip" aria-pressed={kind === id} disabled={!kindCount(id) && kind !== id} onClick={() => pickKind(id)}>{label} <small>{num(kindCount(id))}</small></button>)}
-          </div>
+          {/* one choice at a time, so a drop-down takes the room of thirteen chips */}
+          <label className="label" htmlFor="authors-kind">Writing</label>
+          <select id="authors-kind" className={styles.kindSelect} value={kind} onChange={(e) => pickKind(e.target.value)}>
+            <option value="">All kinds ({num(kindCount(""))})</option>
+            {KINDS.map(([id, label]) => <option key={id} value={id} disabled={!kindCount(id) && kind !== id}>{label} ({num(kindCount(id))})</option>)}
+          </select>
         </div>
       </div>
 

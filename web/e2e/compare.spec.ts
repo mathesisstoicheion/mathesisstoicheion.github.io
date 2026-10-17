@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { openChange } from "./reader-menus";
 
 // Comparing two editions in the reader: Aeschylus' Agamemnon, Smyth (1926) against Sidgwick (1902).
 // Needs a connection (the texts come from GitHub).
@@ -14,6 +15,7 @@ const total = async (page: Page) =>
 test("choose an edition to compare with, and the readings that differ are marked on both sides", async ({ page }) => {
   await page.goto(`${AGAM}&at=80`);
   await expect(page.locator('[data-key="80"]').first()).toBeVisible({ timeout: 60_000 });
+  await openChange(page);
   await page.getByLabel("Compare with").selectOption("1st1K-grc1");
   const bar = page.getByRole("region", { name: "Comparing two editions" });
   await expect(bar).toContainText("in the whole text", { timeout: 60_000 });
@@ -22,7 +24,8 @@ test("choose an edition to compare with, and the readings that differ are marked
   await expect.poll(() => marked(page, "diff-b-1")).toContain("πευθοῖ");
   // the second column is Greek, the translation is set aside, and Listen (English only) is not offered
   await expect(page.getByText(/^Greek · Sidgwick/)).toBeVisible();
-  await expect(page.getByLabel("Translation")).toBeDisabled();
+  await openChange(page);
+  await expect(page.getByRole("combobox", { name: "Translation" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Listen" })).toHaveCount(0);
 
   // the next difference, from the bar that stays on screen
@@ -45,7 +48,7 @@ test("choose an edition to compare with, and the readings that differ are marked
 
   // stop: the translation comes back
   await bar.getByRole("button", { name: "Stop comparing" }).click();
-  await expect(page.getByText(/^English · /)).toBeVisible({ timeout: 60_000 });
+  await expect(page.getByText(/^English \S/).first()).toBeVisible({ timeout: 60_000 });   // the edition line again names the English
   await expect(page).not.toHaveURL(/cmp=/);
 });
 

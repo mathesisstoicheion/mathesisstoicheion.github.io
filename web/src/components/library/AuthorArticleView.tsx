@@ -1,7 +1,8 @@
 /**
  * An author's written article on the author page (data: wiki/author-articles.ts). Sections, in order:
- * the road of the text (a timeline, first, so the whole story is seen at a glance), life and work (with a key to the labels), how the text survived
- * and where editors disagree, editions to read, and the numbered sources. Every claim is checked
+ * a line saying what the little numbers and labels mean (before the first of them), the road of the text (a timeline, first, so
+ * the whole story is seen at a glance), life and work, how the text survived and where editors disagree, editions to read, and
+ * the numbered sources (folded away until a footnote or the reader asks for them). Every claim is checked
  * against one of those sources before an article is added; a draft (development only) says plainly
  * that it has not been.
  */
@@ -11,6 +12,7 @@ import type { AuthorArticle } from "@/wiki/author-articles";
 import Link from "next/link";
 import { CertTag, Inline, emphAware, readHref } from "../stoa/Markup";
 import AuthorRoad from "./AuthorRoad";
+import SourcesFold from "./SourcesFold";
 import styles from "./AuthorArticle.module.css";
 
 const longDate = (iso: string) =>
@@ -42,6 +44,14 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
     [a.summary, a.transmission, a.variants].flatMap((s) => [...s.matchAll(/\{(well|debated|legend)\}/g)].map((m) => m[1] as Certainty)),
   );
   a.timeline.forEach((t) => t.certainty && used.add(t.certainty));
+  // what the footnote numbers and the labels mean, said once before the first place that uses them (the road of the text), in one line
+  const key = (
+    <p className={styles.keyLine}>
+      <b>Before you read.</b> Little numbers like <sup className={styles.fakeMark}>1</sup> are footnotes. Tap one and it jumps to the source at the bottom of the page, so you can check us.
+      {[...used].map((c) => <span key={c}> <CertTag c={c} /> {CERTAINTY[c].about}</span>)}
+      {" "}No label? Then the sources simply state it as fact.
+    </p>
+  );
   return (
     <>
       {draft && (
@@ -54,6 +64,7 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
         <section className={styles.sec} aria-labelledby="road-title">
           <h2 id="road-title">The road of the text</h2>
           <p className="muted">Follow the text from {name}&apos;s own day to the book in your hands. The gaps are the long silences between one mark and the next.</p>
+          {key}
           <AuthorRoad items={a.timeline} />
         </section>
       )}
@@ -63,21 +74,8 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
           <h2 id="life-title">Life and work</h2>
           {!draft && a.checked && <span className={styles.stamp} title="Every claim on this page was compared with the sources listed at the bottom">Checked against sources · {longDate(a.checked)}</span>}
         </div>
-        <div className={styles.lifeGrid}>
-          <div className={styles.lead}><Prose src={a.summary} /></div>
-          <aside className={styles.key} aria-label="How to read this article">
-            <h3 className="label">Before you read</h3>
-            <p>Little numbers like <sup className={styles.fakeMark}>1</sup> are footnotes. Tap one and it jumps to the source at the bottom of the page, so you can check us.</p>
-            {used.size > 0 && (
-              <ul>
-                {[...used].map((c) => (
-                  <li key={c}><CertTag c={c} /><span>{CERTAINTY[c].about}</span></li>
-                ))}
-              </ul>
-            )}
-            <p className="muted">No label? Then the sources simply state it as fact.</p>
-          </aside>
-        </div>
+        {a.timeline.length === 0 && key}
+        <div className={styles.lead}><Prose src={a.summary} /></div>
       </section>
 
       <section className={styles.sec} aria-labelledby="survive-title">
@@ -115,16 +113,18 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
       <section className={styles.sec} aria-labelledby="sources-title">
         <h2 id="sources-title">Where this comes from</h2>
         {a.sources.length > 0 ? (
-          <ol className={styles.sources}>
-            {a.sources.map((s, i) => (
-              <li key={i} id={`src-${i + 1}`}>
-                {s.cite
-                  ? <Link href={readHref(s.cite)} transitionTypes={["page-turn"]} title="Read this passage in the Scroll">{s.label}</Link>
-                  : <a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a>}
-                {s.note && <span className="muted"> {s.note}</span>}
-              </li>
-            ))}
-          </ol>
+          <SourcesFold count={a.sources.length}>
+            <ol className={styles.sources}>
+              {a.sources.map((s, i) => (
+                <li key={i} id={`src-${i + 1}`}>
+                  {s.cite
+                    ? <Link href={readHref(s.cite)} transitionTypes={["page-turn"]} title="Read this passage in the Scroll">{s.label}</Link>
+                    : <a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a>}
+                  {s.note && <span className="muted"> {s.note}</span>}
+                </li>
+              ))}
+            </ol>
+          </SourcesFold>
         ) : (
           <p className="muted">No sources are listed for this draft yet, which is why it is not published.</p>
         )}

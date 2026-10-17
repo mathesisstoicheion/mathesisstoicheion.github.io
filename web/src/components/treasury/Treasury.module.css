@@ -37,7 +37,7 @@
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
 
 .metope {
-  position: relative; display: grid; align-content: center; justify-items: center; gap: 2px; text-align: center;
+  position: relative; display: grid; align-content: start; justify-items: center; gap: 2px; text-align: center;   /* from the top, the number first, so the numbers of all the tiles stand on one line */
   min-height: 132px; padding: 18px 10px 14px; margin: 0;
   background: var(--bg-deep) var(--tex, none) 0 0 / 420px 420px; box-shadow: var(--field-edge); color: var(--ink); border: 0; border-radius: 0;
   transition: background-color 0.3s, color 0.3s;
@@ -93,9 +93,10 @@
 .empty { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); max-width: 72ch; color: var(--ink-2); }
 .soon { display: grid; gap: 10px; max-width: 64ch; padding: 22px; background: var(--field); box-shadow: var(--field-edge); }
 
-.welcome { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3) 28px; align-items: center; max-width: 900px; }
-.welcomeGr { font-family: var(--f-greek); font-size: clamp(2.4rem, 6vw, 4rem); color: var(--rule); line-height: 1; }
-@media (max-width: 640px) { .welcome { grid-template-columns: minmax(0, 1fr); } }
+.welcome { display: grid; gap: var(--space-4); justify-items: start; max-width: 70ch; }
+.welcome p { margin: 0; }
+/* with nothing saved, the nine sections wait quietly: their zeros are dots, and the stone is dimmed */
+.facade[data-bare] .metope { color: var(--ink-2); }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
 .filters input[type="search"], .inlineForm input, .pick input {
@@ -247,6 +248,12 @@
 .keepResult[data-ok="false"] { box-shadow: var(--slab-edge), var(--inlay-left); }
 .keepResult :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 @media (max-width: 760px) { .keep { grid-template-columns: minmax(0, 1fr); } }
+/* a Treasury with nothing in it: only "Restore from a file", a small link (KeepSafe.tsx) */
+.keepSmall { display: grid; gap: var(--space-2); justify-items: start; font-size: var(--step--1); color: var(--ink-2); }
+.keepSmall .keepActs { gap: var(--space-2); }
+.keepSmall .keepResult { color: var(--inv-fg); }
+.linkBtn { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@media (pointer: coarse) { .linkBtn { min-height: var(--tap); } }
 
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
 .places { display: grid; gap: var(--space-4); }

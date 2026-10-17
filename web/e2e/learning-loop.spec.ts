@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { aid } from "./reader-menus";
 
 // Phase 11, stage 3: learning and reading as one loop
 const openIliad = async (page: Page) => {
@@ -23,11 +24,13 @@ test("the word look-up names the lesson that explains the form, and saves the wo
   await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" }).getByRole("link", { name: /Lesson 8: Verbs: the present tense/ })).toBeVisible();
 });
 
-test("a lesson ends with its real passage, to read for real", async ({ page }) => {
+test("a lesson's real passages open in the reader, and the lesson says where to ask", async ({ page }) => {
   await page.goto("/academy/lesson/letters");
-  const real = page.getByRole("link", { name: /Now read it for real/ });
-  await expect(real).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.1");
-  await expect(real).toContainText("μῆνιν ἄειδε θεὰ");
+  // the passage is shown in the lesson, with its own link to the reader (the lesson no longer repeats it in a card of its own)
+  const real = page.locator('[data-real="tlg0012.tlg001:1.1"]');
+  await expect(real).toContainText("μῆνιν ἄειδε θεὰ", { timeout: 30_000 });
+  await expect(real.getByRole("link", { name: /Open in the reader/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.1");
+  await expect(page.getByText("Now read it for real")).toHaveCount(0);
   // and a way to ask about it: the first two lessons go to Beginners' questions, the rest to Grammar help
   await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
   await page.goto("/academy/lesson/participles");
@@ -45,7 +48,7 @@ test("Words I know marks the words learned in the daily practice", async ({ page
     } }, version: 0 }));
   });
   await openIliad(page);
-  await page.getByRole("group", { name: "Reading aids" }).getByRole("button", { name: "Words I know" }).first().click();
+  await aid(page, "Words I know");
   await expect(page.locator('[data-u="1.1"] [data-w="θεὰ"]')).toHaveAttribute("data-known", "");
   await expect(page.locator('[data-u="1.1"] [data-w="μῆνιν"]')).not.toHaveAttribute("data-known", "");
   await expect(page.getByText(/the 1 you have reviewed successfully/)).toBeVisible();
@@ -59,7 +62,7 @@ test("Talk about it lists the Town Hall's questions on this page, and says how t
     { id: 992, title: "Test question about book five", reply_count: 0, answered_post_id: null, last_activity_at: new Date().toISOString(), quote: quote("5.1", "5.1") },
   ] }));
   await openIliad(page);
-  await page.getByRole("group", { name: "This passage" }).getByRole("button", { name: "Talk about it" }).first().click();
+  await aid(page, "Talk about it");
   const panel = page.getByRole("complementary", { name: "Talk about this passage" });
   await expect(panel.getByRole("link", { name: "Test question about the first lines" })).toHaveAttribute("href", "/town-hall/thread?id=991");
   await expect(panel.getByText("2 replies · answered")).toBeVisible();

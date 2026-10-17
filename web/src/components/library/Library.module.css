@@ -1,24 +1,27 @@
 /* The Mouseion (design B, Stone and torch): its name beside the search, then the order and filters, the wall of
    stelai, then every author with their works. */
 .lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding-block: 0 var(--space-7); }
-.top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 18px clamp(var(--space-5), 5vw, var(--space-8)); align-items: end; margin: clamp(18px, 3vw, 34px) 0 6px; }
+.top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 18px clamp(var(--space-5), 5vw, var(--space-8)); align-items: center; margin: clamp(18px, 3vw, 34px) 0 6px; }
 .topText h1 { font: 400 clamp(2.5rem, 5.2vw, 4.4rem) / 1 var(--f-display); margin: 0 0 var(--space-4); }
 .topText h1 span { display: block; font-size: 0.5em; color: var(--ink-2); margin-top: 10px; }
 .topText p { max-width: 46ch; font-size: 1.18rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
 @media (max-width: 860px) { .top { grid-template-columns: minmax(0, 1fr); } }
-/* the page's piece (components/art/PagePiece.tsx): standing above the search on a computer, beside the words on a phone */
-.topSide { display: grid; gap: var(--space-4); min-width: 0; }
-.topSide > .pieceWide {
-  float: none; width: auto; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(130px, 12vw, 170px);
-  gap: var(--space-4); align-items: end;
-}
-/* its caption stands to the left of the niche, in the room above the search, so the page's name is not pushed down */
-.topSide > .pieceWide > :global(.piece-niche) { grid-column: 2; grid-row: 1; }
-.topSide > .pieceWide > figcaption { grid-column: 1; grid-row: 1; justify-self: end; max-width: 30ch; margin: 0; text-align: right; }
+/* the page's piece (components/art/PagePiece.tsx): at the right of the name on a computer, under it on a phone */
+.topSide { display: grid; justify-items: end; min-width: 0; }
+.topSide > .pieceWide { float: none; margin: 0; }
 .pieceNarrow { display: none; }
-@media (max-width: 860px) { .topSide > .pieceWide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
-.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(30px, 5vw, 60px); }
+@media (max-width: 860px) { .topSide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
+/* on a phone the piece has a window of its own across the screen, under the page's name (it comes first in the markup) */
+@media (max-width: 760px) { .topText { display: flex; flex-direction: column; } .topText > h1 { order: -1; } }
+/* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
+.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
 .error { color: var(--accent); padding-block: 40px; }
+
+/* ---------------------------------------------------------------- every work: the search, the order and filters, and the list */
+.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin-top: clamp(var(--space-4), 3vw, var(--space-6)); padding-top: var(--space-5); position: relative; scroll-margin-top: var(--space-4); }
+.find::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
+.findH { font: 400 var(--step-3) / 1.06 var(--f-display); margin: 0; }
+.pathsH { padding: var(--space-3) var(--space-4) 0; color: var(--accent-2); }
 
 /* ---------------------------------------------------------------- search */
 .searchBox { position: relative; }
@@ -91,7 +94,7 @@
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
   box-shadow: var(--cut-under); animation: rise 0.5s var(--ease) backwards;
 }
-.groupHead[data-period] { font-size: 1.6rem; }
+.groupHead[data-period], .groupHead[data-best] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
 .author { box-shadow: var(--cut-under); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }
@@ -125,7 +128,6 @@
 .sub small { font-size: inherit; opacity: 0.7; margin-left: var(--space-1); }
 .authorHits { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); margin: 0; }
 .authorHits small { color: var(--ink-2); }
-.hint { margin: -6px 0 0; color: var(--ink-2); font-size: 0.92rem; }
 .lib mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; border-radius: var(--radius); padding: 0 1px; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -218,27 +220,6 @@
 .nameGr { font-family: var(--f-greek); font-weight: 400; color: var(--ink-2); margin-left: 6px; }
 .aka { font-weight: 400; font-size: 0.9rem; color: var(--ink-2); margin-left: 6px; }
 .latin { grid-area: latin; font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
-
-/* the shelf of famous works: cards like book spines, their Greek titles large; a row to swipe through on phones
-   (it does not snap: Noa, 2026-10-16, "no snapping. it's annoying") */
-.shelf { display: grid; gap: 10px; }
-.shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
-  gap: var(--space-3); overflow-x: auto; scrollbar-width: thin;
-  position: relative; /* holds the cards' visually hidden labels inside the row: without it they widen the whole page on phones */ }
-.shelf li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 40ms); }
-.spine {
-  display: grid; align-content: start; gap: var(--space-1); height: 100%; min-height: 168px; padding: var(--space-4) var(--space-4) 14px; text-decoration: none;
-  background: var(--slab); color: var(--inv-fg); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius);
-  --ink-2: var(--ink-2-on-ink); outline: var(--moulding); outline-offset: var(--moulding-in);
-  transition: background-color var(--dur) ease;
-}
-.spine:hover { background-color: var(--slab-lit); }
-.spine:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.spine:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.spineGr { font-family: var(--f-greek); font-size: 1.45rem; line-height: 1.15; color: var(--accent-on-ink); }
-.spine b { font-size: 1.05rem; line-height: 1.25; }
-.spineBy { color: var(--ink-2); font-size: 0.9rem; }
-.spine .meter { margin-top: auto; padding-top: var(--space-2); font-size: 0.8rem; color: var(--ink-2); }
 
 /* ------------------------------------------------ the moderator's private collection (MineButtons.tsx), above the search */
 .mine { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); padding: var(--space-3) 14px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }

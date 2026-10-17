@@ -1,6 +1,8 @@
 /**
- * One entry of the Painted Stoa: title and lead picture, the hook, the body with its quotations and
- * boxes, "Read it yourself", related entries and sources.
+ * One entry of the Painted Stoa: title and its hook, the lead picture, the body with its quotations and
+ * boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
+ * sections ("On this page"), the places on the map, the Pnyx and the key to the certainty labels; on a phone the rail
+ * gives way to a closed "On this page" above the article, and the other three stand at its end, before "Read it yourself".
  */
 import Link from "next/link";
 import { blocks, inline } from "@/wiki/markup";
@@ -24,6 +26,27 @@ export default function EntryView({ e }: { e: Entry }) {
   const cat = categoryOf(e.category);
   const certs = new Set([...e.body.matchAll(/\{(well|debated|legend)\}/g)].map((m) => m[1] as keyof typeof CERTAINTY));
   const related = e.related.map((s) => entryBySlug.get(s)!).filter(Boolean);
+  // the rail's three other blocks: in the rail on a computer, at the end of the article on a phone (one is hidden at each width)
+  const extras = (
+    <>
+      {(e.places?.length ?? 0) > 0 && (
+        <div className={styles.onMap}>
+          <p className="label">On the map</p>
+          {e.places!.map((id) => { const p = PLACE_NAME.get(id); return p && <Link key={id} href={`/stoa/periplus?p=${id}`} transitionTypes={["page-turn"]}>{ENGLISH_NAMES[id] ?? p.en.split("/")[0].replace(/ \(.*\)$/, "")} <span lang="grc">{p.grc}</span> →</Link>; })}
+        </div>
+      )}
+      <div className={styles.onMap}>
+        <p className="label">Argue it out</p>
+        <Link href={`/town-hall/pnyx?from=${e.slug}#propose`} transitionTypes={["page-turn"]}>Debate this in the Pnyx →</Link>
+      </div>
+      {certs.size > 0 && (
+        <div className={styles.certKey}>
+          <p className="label">How sure is this?</p>
+          {[...certs].map((c) => <p key={c}><CertTag c={c} /> <span>{CERTAINTY[c].about}</span></p>)}
+        </div>
+      )}
+    </>
+  );
   return (
     <article className={styles.entry} data-entry={e.slug}>
       <EntryMarkers slug={e.slug} heads={heads} />
@@ -32,16 +55,21 @@ export default function EntryView({ e }: { e: Entry }) {
         <NameCarving greek={e.greek} />
         <PagePiece className="piece-desk" />
         <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
-        <PagePiece className="piece-phone" />
         <p className={styles.kicker}>{e.kicker}</p>
+        <PagePiece className="piece-phone" />
+        {/* the opening stands in the header's left column, beside the niche (after the phone's niche, under the title) */}
+        <div className={styles.hookBlock}>
+          <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>
+          <SectionNote slug={e.slug} section="top" title={e.title} />
+        </div>
       </header>
       {e.image ? <div className="wrap"><Figure id={e.image} lead /></div> : <div className="wrap"><div className={`${styles.band} rays draw`} aria-hidden="true" /></div>}
 
       <div className={`wrap ${styles.entryGrid}`}>
         <div className={styles.entryMain}>
-          <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>
-          <SectionNote slug={e.slug} section="top" title={e.title} />
+          {heads.length > 1 && <Contents heads={heads} fold />}
           <Blocks bs={body} entry={e} />
+          <div className={styles.entryExtras}>{extras}</div>
 
           <section className={`${styles.readIt} rv`} aria-labelledby="read-it">
             <h2 id="read-it" className={styles.h2}>Read it yourself</h2>
@@ -92,22 +120,7 @@ export default function EntryView({ e }: { e: Entry }) {
 
         <aside className={styles.entryAside}>
           {heads.length > 1 && <Contents heads={heads} />}
-          {(e.places?.length ?? 0) > 0 && (
-            <div className={styles.onMap}>
-              <p className="label">On the map</p>
-              {e.places!.map((id) => { const p = PLACE_NAME.get(id); return p && <Link key={id} href={`/stoa/periplus?p=${id}`} transitionTypes={["page-turn"]}>{ENGLISH_NAMES[id] ?? p.en.split("/")[0].replace(/ \(.*\)$/, "")} <span lang="grc">{p.grc}</span> →</Link>; })}
-            </div>
-          )}
-          <div className={styles.onMap}>
-            <p className="label">Argue it out</p>
-            <Link href={`/town-hall/pnyx?from=${e.slug}#propose`} transitionTypes={["page-turn"]}>Debate this in the Pnyx →</Link>
-          </div>
-          {certs.size > 0 && (
-            <div className={styles.certKey}>
-              <p className="label">How sure is this?</p>
-              {[...certs].map((c) => <p key={c}><CertTag c={c} /> <span>{CERTAINTY[c].about}</span></p>)}
-            </div>
-          )}
+          {extras}
         </aside>
       </div>
     </article>

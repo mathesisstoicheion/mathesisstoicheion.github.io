@@ -63,7 +63,17 @@ export default function Treasury() {
 
   return (
     <div className={`wrap ${styles.treasury}`}>
-      <nav className={styles.facade} aria-label="Sections of the Treasury">
+      {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
+      {empty && (
+        <div className={styles.welcome}>
+          <p>Your Treasury is empty so far. Open a text in <Link href="/library" transitionTypes={["page-turn"]}>the Mouseion</Link>, then
+            select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
+            Click any word to look it up, and press <b>Save word</b> to keep it here.</p>
+          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open the Mouseion</Link>
+        </div>
+      )}
+
+      <nav className={styles.facade} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
         <svg className={styles.pediment} viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
           <defs><linearGradient id="ped-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" /><stop offset="1" /></linearGradient></defs>
           <path className={styles.cornice} d="M0 90 L500 4 L1000 90 Z" />
@@ -76,7 +86,7 @@ export default function Treasury() {
             <li key={m.id} style={{ "--i": i } as React.CSSProperties}>
               <button type="button" className={styles.metope} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
                 data-empty={m.n === 0 || m.n === null ? "" : undefined}>
-                <span className={styles.count}>{m.n === null ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
+                <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
                 <span className={styles.metopeLabel}>{m.label}</span>
                 <span className={styles.metopeHint}>{m.hint}</span>
               </button>
@@ -89,15 +99,6 @@ export default function Treasury() {
       <PrivateShelf />
 
       {t.error && <p className={styles.error} role="alert">{t.error}</p>}
-      {empty && (
-        <div className={styles.welcome}>
-          <p className={styles.welcomeGr} lang="grc" aria-hidden="true" data-decorative="">θησαυρός</p>
-          <p>Your Treasury is empty so far. Open a text in <Link href="/library" transitionTypes={["page-turn"]}>the Mouseion</Link>, then
-            select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
-            Click any word to look it up, and press <b>Save word</b> to keep it here.</p>
-        </div>
-      )}
-
       <section className={styles.section} key={section} aria-live="polite">
         {section === "recent" && <RecentSection t={t} />}
         {section === "notes" && <NotesSection t={t} />}
@@ -111,7 +112,7 @@ export default function Treasury() {
         {section === "notebooks" && <NotebooksSection />}
       </section>
 
-      <KeepSafe t={t} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
+      <KeepSafe t={t} compact={empty} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
 
       {/* the Mine door also keeps what you download for reading offline (Phase 11: Downloads moved here from the footer) */}
       <Link className={styles.offline} href={AREAS.downloads.href} transitionTypes={["page-turn"]}>

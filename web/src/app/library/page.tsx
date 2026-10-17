@@ -10,6 +10,8 @@ import { AREAS } from "@/config/areas";
 import { hasTranslation, greekEditions, type Catalog } from "@/lib/catalog";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 import { MEDALLIONS } from "@/data/medallions";
+import { PATHS } from "@/data/paths";
+import Link from "next/link";
 import styles from "./library.module.css";
 
 export const metadata: Metadata = { title: `${AREAS.library.name} · ${AREAS.library.english}`, description: PAGE_DESCRIPTIONS.library };
@@ -31,10 +33,28 @@ const GROUPS = [...new Set(MEDALLIONS.map((b) => b.group))].map((name) => ({
   }),
 }));
 
+// the reading paths, each work named from the catalogue ("Plato, Apology"); every step opens the Greek with its English beside it
+const WORK_NAME = new Map(CATALOG.authors.flatMap((a) => a.works.map((w) => [w.id, `${a.name}, ${w.title}`] as const)));
+const Paths = () => (
+  <ul className={styles.paths}>
+    {PATHS.map((p) => (
+      <li key={p.id} className={styles.path}>
+        <h3>{p.title}</h3>
+        <p className="muted">{p.blurb}</p>
+        <ol>
+          {p.steps.map(([w, note]) => (
+            <li key={w}><Link href={`/read?w=${w}`} transitionTypes={["page-turn"]}><b>{WORK_NAME.get(w)}</b></Link><span>{note}</span></li>
+          ))}
+        </ol>
+      </li>
+    ))}
+  </ul>
+);
+
 export default function LibraryPage() {
   return (
     <Page>
-      <div className={`wrap ${styles.head}`}>
+      <div className={`wrap enter ${styles.head}`}>
         <span className={`label ${styles.kick}`}>{AREAS.library.door} · {AREAS.library.english}</span>
         <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.2} className={`carve ${styles.carve}`} />
       </div>
@@ -45,6 +65,7 @@ export default function LibraryPage() {
             <p>{AREAS.library.origin} This one holds {WORKS.length.toLocaleString("en-GB")} Greek works, from Homer to the Byzantine scholars, {WORKS.filter(hasTranslation).length.toLocaleString("en-GB")} of them with an English translation beside the Greek.</p>
           </>}
           stelai={<Stelai groups={GROUPS} />}
+          paths={<Paths />}
         />
       </Suspense>
     </Page>

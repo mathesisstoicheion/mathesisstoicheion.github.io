@@ -110,7 +110,11 @@ export default function ExploreLead() {
           </Link>
         </li>
       </ul>
-      <p className={styles.credit}>Map: the Ancient World Mapping Center (ODbL) and Pleiades (CC BY); counts from GLAUx (CC BY-SA). Photograph: {KER.title}, {KER.sourceName}, {KER.licence}.</p>
     </nav>
   );
+}
+
+/** The small print for the three cards' pictures and counts, which ends the page (StoaIndex's `foot`) rather than sitting under them. */
+export function ExploreCredit() {
+  return <p className={styles.credit}>Map: the Ancient World Mapping Center (ODbL) and Pleiades (CC BY); counts from GLAUx (CC BY-SA). Photograph: {KER.title}, {KER.sourceName}, {KER.licence}.</p>;
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
-import Census from "@/components/census/Census";
+import Census, { CensusTally } from "@/components/census/Census";
 import type { EntryLink, Links } from "@/components/census/shared";
 import { AREAS } from "@/config/areas";
 import { NAME_ENTRIES } from "@/lib/census";
@@ -22,7 +22,7 @@ for (const e of ENTRIES) for (const p of e.places ?? []) (links.byPlace[p] ??= [
 export default function StoaCensusPage() {
   return (
     <Page>
-      <AreaHeader id="census" />
+      <AreaHeader id="census"><CensusTally /></AreaHeader>
       <Suspense>
         <Census links={links} />
       </Suspense>

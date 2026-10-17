@@ -346,7 +346,9 @@ export class Piece implements Art {
     const r = this.cv.getBoundingClientRect();
     if (r.width < 4 || r.height < 4) return false;
     // at most so many pixels; and each level down draws it with fewer of them, however small it is
-    const phone = PHONE(), cap = phone ? 640000 : 1200000;
+    // (a phone's big window drawn at its full sharpness slowed scrolling past it from 49 to 25 fps in the speed test: its
+    // limit balances the two, 2026-10-17)
+    const phone = PHONE(), cap = phone ? 220000 : 1200000;
     let k = DPR();
     if (r.width * r.height * k * k > cap) k = Math.sqrt(cap / (r.width * r.height));
     k *= [1, 0.75, 0.55][this.level];

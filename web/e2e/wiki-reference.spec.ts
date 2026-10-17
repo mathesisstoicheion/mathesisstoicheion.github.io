@@ -1,11 +1,26 @@
 import { test, expect } from "@playwright/test";
 
-test("the Wiki front offers the three reference pages", async ({ page }) => {
+test("the Wiki front offers the reference pages as the colonnade's last panel", async ({ page }) => {
   await page.goto("/stoa");
   const ref = page.getByRole("navigation", { name: "Reference" });
   await expect(ref.getByRole("link", { name: /Authors/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Eras of Greek/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Editions & translations/ })).toBeVisible();
+  await expect(ref.getByRole("link", { name: /The lyre/ })).toBeVisible();
+  await expect(ref.getByRole("link")).toHaveCount(6);
+  // it is a panel of the colonnade, like the categories
+  await expect(page.locator("ol > li#reference")).toBeAttached();
+});
+
+test("the Kerameikos article has an address of its own, apart from the Archaeology page", async ({ page }) => {
+  // the colonnade's line opens the article, not the Archaeology page it used to be hidden behind
+  await page.goto("/stoa");
+  await expect(page.locator("#archaeology").getByRole("link", { name: "The Kerameikos" })).toHaveAttribute("href", "/stoa/kerameikos-cemetery");
+  await page.goto("/stoa/kerameikos-cemetery");
+  await expect(page.getByRole("heading", { level: 2, name: "Potters and a hero" })).toBeVisible();
+  // and so does the card in the Archaeology page's "Great sites"
+  await page.goto("/stoa/kerameikos");
+  await expect(page.locator("#sites").getByRole("link", { name: /The Kerameikos/ })).toHaveAttribute("href", "/stoa/kerameikos-cemetery");
 });
 
 test("the Explore door leads with the map, the Census and Archaeology, drawn from the site's own data", async ({ page }) => {
@@ -17,9 +32,14 @@ test("the Explore door leads with the map, the Census and Archaeology, drawn fro
   // the map names the most-named towns; the Census card shows its real top god
   await expect(lead.locator("svg text", { hasText: "Athens" })).toHaveCount(1);
   await expect(lead.getByText("Ζεύς")).toBeVisible();
-  // it comes first, above the day's entry, and steps aside while searching
-  await page.getByRole("searchbox", { name: "Search the Painted Stoa" }).fill("melos");
-  await expect(lead).toHaveCount(0);
+  // it comes first, above the search; the search sits on the colonnade, whose place the results take while one is typed
+  const search = page.getByRole("searchbox", { name: "Search the Painted Stoa" });
+  expect((await lead.boundingBox())!.y).toBeLessThan((await search.boundingBox())!.y);
+  await expect(page.locator("#people")).toBeAttached();
+  await search.fill("melos");
+  await expect(page.locator("#people")).toHaveCount(0);
+  await expect(page.getByRole("link", { name: /The Melian Dialogue/ }).first()).toBeVisible();
+  await expect(lead).toHaveCount(1);
 });
 
 test("the Authors index groups by period, filters by period and kind, and opens an author", async ({ page }) => {
@@ -54,7 +74,11 @@ test("Eras of Greek draws a column for each century and a section for each perio
   for (const era of ["Archaic", "Classical", "Hellenistic", "Roman Imperial", "Late Antique", "Byzantine"]) {
     await expect(page.getByRole("heading", { level: 2, name: era, exact: true })).toBeVisible();
   }
-  // a period's kinds of writing lead to the Authors index, filtered
+  // each period's bracket under the chart is a link to its card
+  await expect(page.locator("a[href='#classical']").first()).toBeVisible();
+  // a period's kinds of writing, folded away until asked for, lead to the Authors index, filtered
+  await expect(page.locator("#classical").getByRole("link", { name: /^Drama/ })).toBeHidden();
+  await page.locator("#classical").getByText("Kinds of writing and dialects").click();
   await page.locator("#classical").getByRole("link", { name: /^Drama/ }).click();
   await expect(page).toHaveURL(/\/stoa\/authors\?e=classical&k=Drama/);
   await expect(page.getByRole("link", { name: /^Sophocles/ })).toBeVisible();
@@ -79,7 +103,9 @@ test("Manuscripts & transmission and Textual variants gather the checked author 
   await expect(page.getByRole("heading", { level: 1, name: /Manuscripts & transmission/ })).toBeVisible();
   // the roads of the texts: one row per checked author, in time order, Homer first
   const chart = page.getByRole("figure", { name: /timelines of \d+ author articles/ });
-  await expect(chart.locator("li").first()).toContainText("Homer");
+  await expect(chart.locator("ol li").first()).toContainText("Homer");
+  // the key stands above the chart (with the years), not below its last row
+  expect((await chart.locator("ul").first().boundingBox())!.y).toBeLessThan((await chart.locator("ol").first().boundingBox())!.y);
   // each author's account links to the whole of it, on the author's page
   const homer = page.getByRole("link", { name: /^7th century BC Homer/ });
   await expect(homer).toHaveAttribute("href", "/author/tlg0012#survive-title");

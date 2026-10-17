@@ -1,42 +1,54 @@
 /* The library's wall of stelai (Stelai.tsx): each book a carved gravestone, its picture in a round medallion. */
 .wall { margin-top: clamp(10px, 2vw, var(--space-5)); }
-.grp + .grp { margin-top: clamp(50px, 7vw, 90px); }
 .grpH { position: relative; display: flex; justify-content: space-between; gap: var(--space-3); padding-top: var(--space-4); }
 .grpH::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
 .grpH > :first-child { color: var(--accent-2); }
-.stelai { display: flex; flex-wrap: wrap; justify-content: center; align-items: flex-end; gap: clamp(30px, 4.5vw, 68px); margin-top: clamp(34px, 5vw, var(--space-7)); }
+.stelai { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); align-items: end; gap: clamp(var(--space-3), 1.6vw, var(--space-5)); margin-top: clamp(var(--space-5), 3vw, var(--space-6)); }
 
-.stele { position: relative; display: block; width: 300px; max-width: 100%; text-decoration: none; color: var(--ink); }
-.ped { display: block; width: 100%; height: 70px; }
+.stele { position: relative; display: block; min-width: 0; text-decoration: none; color: var(--ink); }
+.ped { display: block; width: 100%; height: 44px; }
 .face { fill: rgba(44, 36, 29, 0.62); }
 .ln1 { stroke: var(--cut-deep); fill: none; stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .ln2 { stroke: var(--lip-hi); fill: none; stroke-width: 1; vector-effect: non-scaling-stroke; }
 /* the gable's triangle is sunk into the stone, not drawn round */
 .ped .ln1:nth-child(2) { fill: var(--field); }
 .slab {
-  position: relative; margin: 0 var(--space-2); padding: 28px 26px 30px; display: flex; flex-direction: column; align-items: center; text-align: center;
+  position: relative; margin: 0 var(--space-1); padding: var(--space-5) var(--space-3); display: flex; flex-direction: column; align-items: center; text-align: center;
   background: rgba(44, 36, 29, 0.6); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.5);
 }
 .slab::before { content: ""; position: absolute; inset: 10px; pointer-events: none; box-shadow: var(--panel-cut); }
 .foot { display: block; height: 14px; background: rgba(36, 29, 23, 0.75); box-shadow: inset 0 1px 0 var(--shadow), inset 0 0 0 1px rgba(0, 0, 0, 0.35); }
 /* the medallion, sunk into the stone (its carved ring is drawn with the picture) */
-.medal { position: relative; width: 190px; height: 190px; margin: 0 auto 22px; }
+.medal { position: relative; width: min(140px, 100%); aspect-ratio: 1; height: auto; margin: 0 auto var(--space-4); border-radius: var(--radius-round); background: var(--field); box-shadow: var(--field-edge); }   /* the hollow is cut before its picture comes */
 .medal canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .who { color: var(--accent-2); transition: color var(--dur-slow); }
-.tt { font: 400 1.7rem / 1.1 var(--f-display); margin: 10px 0 var(--space-2); transition: color var(--dur-slow), text-shadow var(--dur-slow); }
+.tt { font: 400 var(--step-1) / 1.1 var(--f-display); margin: var(--space-2) 0 var(--space-2); transition: color var(--dur-slow), text-shadow var(--dur-slow); }
 .gt { display: block; font-size: 1.1rem; line-height: 1.35; color: var(--ink-2); }
-.rule { display: block; width: 44px; height: 2px; margin: 18px auto var(--space-4); background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
-.why { font-size: 0.86rem; line-height: 1.5; color: var(--ink-3); margin: 0; transition: color var(--dur-slow); }
-.tag { margin-top: var(--space-4); font-size: 0.62rem; color: var(--accent); }
+.rule { display: block; width: 44px; height: 2px; margin: var(--space-3) auto 0; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
+.tag { margin-top: var(--space-3); font-size: 0.62rem; color: var(--accent); }
 .stele:focus-visible { outline-offset: 6px; }
 .lit .tt { color: var(--accent-hi); text-shadow: 0 0 22px rgba(242, 150, 70, 0.42); }
 .lit .who { color: var(--accent); }
-.lit .why { color: var(--ink-2); }
+/* why each picture was chosen, and its credit, under the row */
+.whys { margin-top: var(--space-1); font-size: var(--step--1); color: var(--ink-3); }
+/* a small caption line right under the row; a finger still gets a full-size target */
+.whys summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); }
+@media (pointer: coarse) { .whys summary { min-height: var(--tap); padding-block: var(--space-2); } }
+.whys[open] ul { margin-top: var(--space-2); }
+.whys ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: var(--space-3) var(--space-6); }
+.whys b { font-weight: 500; color: var(--ink-2); }
+@media (max-width: 1100px) {
+  /* a row to swipe through sideways, the next stele peeking in; nothing snaps */
+  .stelai { display: flex; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding: 0 var(--gutter, 20px) var(--space-2); }
+  .stelai::-webkit-scrollbar { display: none; }
+  .stele { flex: 0 0 clamp(170px, 24vw, 210px); }
+  /* a soft fade at the right edge, so the row shows it goes on; it falls mostly in the row's end padding, so the last stele is whole at the end */
+  .stelai { -webkit-mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-5)), transparent); mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-5)), transparent); }
+}
 @media (max-width: 760px) {
-  .stelai { margin-top: 22px; align-items: end; justify-content: start; }
-  .stele { width: auto; }
-  .slab { padding: 22px 18px var(--space-5); }
-  .medal { width: 136px; height: 136px; margin-bottom: var(--space-4); }
-  .tt { font-size: 1.45rem; }
-  .why { font-size: 0.8rem; }
+  /* the stelai stand on one line at their tops, so no blank stone hangs under the shorter ones */
+  .stelai { align-items: start; }
+  .slab { padding: var(--space-4) var(--space-3); }
+  .medal { width: min(120px, 100%); margin-bottom: var(--space-3); }
+  .stele { flex-basis: 44vw; }
 }

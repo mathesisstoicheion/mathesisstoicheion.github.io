@@ -17,6 +17,8 @@
 .map, .bars, .pic { display: block; width: 100%; aspect-ratio: 16 / 10; }
 .pic { height: auto; object-fit: cover; transition: transform 1.2s var(--ease); }
 .card:hover .pic { transform: scale(1.04); }
+/* on a phone the pictures take a shorter crop, so the three cards do not fill a screen and a half */
+@media (max-width: 760px) { .map, .bars, .pic { aspect-ratio: 16 / 9; } }
 
 /* the map is cut in the stone (globals.css, maps): the grain shows through the land and, darker, through the sunk sea */
 .map { background: var(--stone-3) var(--tex, none) center / 420px 420px; }
@@ -46,4 +48,5 @@
 .txt b { font-size: 1.25rem; }
 .txt > span:last-child { color: var(--ink-2); font-size: 0.95rem; }
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: 1rem; }
+/* the small print at the foot of the page (ExploreCredit) */
 .credit { margin: 0; font-size: 0.75rem; color: var(--ink-2); }

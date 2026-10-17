@@ -31,13 +31,23 @@
 .inkGood { stroke: var(--ok); }
 .numStill circle { fill: var(--accent); }
 .numStill text { fill: var(--accent-ink); font: 700 5px var(--f-label); }
-.stroke figcaption { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; justify-content: center; }
+.stroke figcaption { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; justify-content: center; max-width: 26rem; }
+/* (the letter's Small letter / Capital choice sits in this row: small, like the chips beside it) */
+.stroke .seg button { padding: var(--space-1) var(--space-2); font-size: var(--step--1); }
+@media (max-width: 760px) { .stroke .seg button { min-height: calc(var(--tap) - var(--space-2)); min-width: 0; } }
+/* "Write it again", "Trace it yourself": on a small phone the short forms, so the row has room */
+@media (max-width: 560px) { .more { display: none; } }
 @media (prefers-reduced-motion: reduce) { .pen { stroke-dashoffset: 0; } .num { opacity: 1; } }
 
 /* alphabet */
 .alphabet { display: grid; gap: 28px; }
-.systems { display: grid; gap: 10px; max-width: 80ch; }
-.alphaGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(96px, 1fr)); gap: 8px; }
+.systems { display: grid; gap: var(--space-3); max-width: 80ch; justify-items: start; }
+.systems .seg { max-width: 100%; }
+.about summary { cursor: pointer; padding-block: var(--space-3); color: var(--ink-2); }
+/* even rows: 4 x 6 on a phone, 8 x 3 from 700px, 12 x 2 from 1100px */
+.alphaGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); }
+@media (min-width: 700px) { .alphaGrid { grid-template-columns: repeat(8, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .alphaGrid { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
 .tile {
   display: grid; justify-items: center; gap: 2px; padding: 12px 6px; text-align: center;
   background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
@@ -51,7 +61,7 @@
 .tileGlyph { font-family: var(--f-greek); font-size: 1.8rem; line-height: 1.1; }
 .tileName { font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.05em; }
 @media (max-width: 480px) {
-  .alphaGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .alphaGrid { gap: 6px; }
   .tile { padding: 10px 2px; }
   .tileGlyph { font-size: 1.55rem; }
   .tileName { font-size: 0.72rem; letter-spacing: 0.02em; }
@@ -82,10 +92,16 @@
 .diph th { font-family: var(--f-label); font-weight: 500; font-size: 0.85rem; text-align: left; color: var(--ink-2); padding: 6px 8px; box-shadow: var(--cut-under); }
 .diph td { padding: 10px 8px; box-shadow: var(--cut-under); vertical-align: top; }
 
-@media (max-width: 760px) { .detail { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 760px) { .detail { grid-template-columns: minmax(0, 1fr); padding: var(--space-4); } }
 
 /* academy hub */
-.hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }  /* five cards: one row wide, none left alone below */
+.hub { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 18px; }  /* the practical guides: as many to a row as fit, none left alone below */
+/* the tools (Today's session first, wider than the rest, so five cards fill their rows): two to a row on a phone, three from 900px;
+   on a small phone a card is its Greek word and title only */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-3); }
+.tools > :first-child { grid-column: span 2; }
+@media (min-width: 900px) { .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); } }
+@media (max-width: 560px) { .tools .card { padding: var(--space-4); } .tools .card h3 { font-size: var(--step-1); } .tools .card p { display: none; } }
 .card { display: grid; gap: 8px; align-content: start; padding: 22px; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); text-decoration: none; transition: background-color var(--dur) ease; }
 a.card:hover { background-color: var(--slab-lit); }
 .card h3 { font-size: 1.5rem; }
@@ -93,19 +109,53 @@ a.card:hover { background-color: var(--slab-lit); }
 .soon { opacity: 0.6; }
 
 /* tables of forms */
-.tables { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
+/* (a column, so that the search bar below can stay under the header all the way down: a sticky grid item may not leave its grid row) */
+.tables { display: flex; flex-direction: column; gap: 28px; }
+.tableGrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
 .tablesTools { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+/* the search and the filters stay under the header while the tables go by: solid stone, with a cut line along its foot;
+   --hdr-vis is set to 0 here while the header is tucked away (never on <html>) */
+.tables > .tablesTools {
+  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: var(--z-bar);
+  padding-block: var(--space-3); background: var(--bg) var(--tex, none) 0 0 / 420px 420px; box-shadow: var(--cut-under);
+  transition: top var(--dur) var(--ease);
+}
+:global(html[data-hdr="hidden"]) .tables > .tablesTools { --hdr-vis: 0px; }
 .searchInput { flex: 1 1 320px; min-width: 0; font: inherit; font-size: 1rem; color: var(--ink); border-radius: var(--radius); padding: 10px 14px; }
 .found { display: grid; gap: 4px; font-size: 1.05rem; padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); }
-.table h2 { font-size: var(--step-2); }
+.found a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.found a:hover { color: var(--accent-hi); }
+.table { position: relative; }
+.table h2 { font-size: var(--step-2); scroll-margin-top: calc(var(--hdr-h) + var(--bar-h, 0px) + var(--space-3)); }  /* clear of the header and the search bar */
 .table h2::first-letter { color: var(--accent); }
+/* the table a search match led to: marked for a moment, then it fades (opacity only) */
+.marked::after { content: ""; position: absolute; inset: calc(-1 * var(--space-3)); pointer-events: none; background: color-mix(in srgb, var(--accent) 14%, transparent); animation: markedFade calc(2 * var(--dur-slow)) var(--ease) forwards; }
+@keyframes markedFade { 0%, 30% { opacity: 1; } 100% { opacity: 0; } }
 .scrollX { overflow-x: auto; margin-top: 10px; }
+/* while a table can still be scrolled sideways, its right edge fades into the wall (Tables.tsx sets data-more) */
+.scrollX[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
 .table table { border-collapse: collapse; min-width: 100%; background: var(--field); box-shadow: var(--field-edge); }
 .table th { font-family: var(--f-label); font-weight: 500; font-size: 0.85rem; color: var(--ink-2); text-align: left; padding: 8px 12px; white-space: nowrap; }
 .table thead th, .table tbody th { box-shadow: var(--cut-under); }
 .table tbody tr:last-child > * { box-shadow: none; }
 .table td { font-family: var(--f-greek); font-size: 1.3rem; padding: 8px 12px; box-shadow: var(--cut-under); white-space: nowrap; }
 .ending { color: var(--accent); display: inline-block; animation: slot 0.6s var(--ease) both; }
+/* wide: the small tables stand two to a row; the big ones (more than three columns) take the whole row */
+@media (min-width: 1000px) {
+  .tableGrid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
+  .tableWide { grid-column: 1 / -1; }
+}
+/* phones: the filters keep to one line (sliding sideways if they must), and a table keeps its row names in sight */
+@media (max-width: 760px) {
+  .tables > .tablesTools { gap: var(--space-2); padding-block: var(--space-2); }   /* the bar stays low on a small screen */
+  .tables > .tablesTools .seg { flex-wrap: nowrap; max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
+  .tables > .tablesTools .seg::-webkit-scrollbar { display: none; }
+  .tables > .tablesTools .seg button { flex: none; white-space: nowrap; }
+  .table thead th:first-child, .table tbody th {
+    position: sticky; left: 0;
+    background: linear-gradient(var(--field), var(--field)), var(--bg) var(--tex, none) 0 0 / 420px 420px;
+  }
+}
 @keyframes slot { from { transform: translateY(-0.5em); opacity: 0; } to { transform: none; opacity: 1; } }
 .count { font-family: var(--f-label); font-size: 0.6em; color: var(--ink-2); margin-left: 6px; vertical-align: 0.3em; }
 .hit { background-color: color-mix(in srgb, var(--accent) 22%, transparent); }
@@ -132,8 +182,10 @@ a.card:hover { background-color: var(--slab-lit); }
 .stats b { font-family: var(--f-display); font-size: 2.4rem; line-height: 1; color: var(--accent); font-variant-numeric: tabular-nums; }
 .stats small { font-size: 0.5em; color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 .stats span { font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.05em; color: color-mix(in srgb, var(--inv-fg) 75%, var(--inv-bg)); }
-.nextStep { display: grid; gap: 6px; }
-.nextStep a { color: inherit; font-weight: 600; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.progressNew { grid-template-columns: minmax(0, 1fr); }   /* nothing to count yet: the next step has the whole panel */
+.nextStep { display: grid; gap: 6px; justify-items: start; }
+.nextStep p a { color: inherit; font-weight: 600; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.nextStep :global(.btn) { margin-top: var(--space-2); }
 .nextStep :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 /* phones: the four numbers in two even columns (written after .stats, so it wins) */
 @media (max-width: 760px) {
@@ -150,11 +202,13 @@ a.card:hover { background-color: var(--slab-lit); }
 .check { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .q { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .q legend { font-size: 1.08rem; font-weight: 600; margin-bottom: 8px; }
-.options { display: flex; flex-wrap: wrap; gap: 8px; }
-.options button { padding: 9px 14px; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); font-size: 1rem; transition: transform 0.15s, background-color 0.2s; }
-.options button:hover:not(:disabled) { transform: translateY(-1px); background: var(--slab-lit); }
+/* the answers to a question: the same full-width, left-aligned rows as a lesson's practice and test (Workout.module.css) */
+.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--space-3); }
+.options button { min-height: var(--tap); padding: var(--space-3) var(--space-4); text-align: left; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); font-size: 1.05rem; transition: transform var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease); }
+.options button:hover:not(:disabled) { transform: translateY(-2px); background: var(--slab-lit); }
 .options button:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .options button:disabled { cursor: default; }
+.options [lang="grc"] { font-size: 1.4em; }   /* a single letter, such as ι, stays readable */
 .right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; }
 .wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake 0.35s; }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
@@ -162,13 +216,20 @@ a.card:hover { background-color: var(--slab-lit); }
 .bad { color: var(--accent); }
 .reveal { display: grid; gap: 10px; }
 .revealGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+@media (max-width: 560px) { .revealGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .revealCard { display: grid; gap: 6px; padding: 16px; text-align: left; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); transition: transform 0.3s var(--ease); }
 .revealCard:hover { transform: translateY(-2px); }
 .revealCard:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .revealGr { font-family: var(--f-greek); font-size: 1.8rem; }
-.revealAns { font-size: 0.95rem; color: var(--ink-2); }
+.revealAns { display: grid; font-size: 0.95rem; color: var(--ink-2); }
+.revealAns > * { grid-area: 1 / 1; }
+/* closed: only a faint ? shows, while the answer, unseen, holds the tile at its full height so nothing moves when it opens */
+.revealText { visibility: hidden; }
+.revealMark { color: var(--ink-3); font-size: var(--step-2); line-height: 1; }
 .revealed { background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
-.revealed .revealAns { color: var(--ink); animation: lift 0.4s var(--ease); }
+.revealed .revealAns { color: var(--ink); }
+.revealed .revealText { visibility: visible; animation: revealIn var(--dur) var(--ease) backwards; }
+@keyframes revealIn { from { opacity: 0; } }
 .realList { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .real { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: clamp(16px, 3vw, 26px); background: var(--field); box-shadow: var(--field-edge); }
 .realHead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; }
@@ -177,12 +238,19 @@ a.card:hover { background-color: var(--slab-lit); }
 .realGr [data-quote] { background: color-mix(in srgb, var(--accent) 18%, transparent); border-bottom: 2px solid var(--accent); }
 .realTr { font-size: 1rem; line-height: 1.65; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 18px; }
 .realNote { font-size: 1.05rem; }
+/* "Click" with a mouse, "Tap" on a touch screen: both are in the page, so the server's page and the browser's agree */
+.touchOnly { display: none; }
+@media (hover: none) { .hoverOnly { display: none; } .touchOnly { display: inline; } }
 @media (max-width: 760px) { .realBody { grid-template-columns: minmax(0, 1fr); } .realTr { box-shadow: var(--cut-over); padding: var(--space-3) 0 0; } }
 .words { display: grid; gap: 10px; }
 .words ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .inDeck { font-family: var(--f-label); font-size: 0.75rem; color: var(--ok); margin-left: 8px; }
 .words :global(.btn) { justify-self: start; }
-.lessonEnd { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; padding-top: 20px; box-shadow: var(--cut-over); }
+.lessonEnd { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding-top: 20px; box-shadow: var(--cut-over); }
+.lessonEnd :global(.btn) { margin-left: auto; }
+/* "Mark as read, without the test": a small text link under the two steps */
+.markRead { justify-self: start; min-height: var(--tap); padding: var(--space-2) 0; background: none; border: 0; color: var(--ink-2); font-size: 0.95rem; text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.markRead:hover { color: var(--ink); }
 
 /* review */
 .row { display: flex; flex-wrap: wrap; gap: 12px; }
@@ -279,14 +347,12 @@ a.card:hover { background-color: var(--slab-lit); }
 .practice { display: grid; gap: 20px; }
 .drill { display: grid; gap: 14px; padding: clamp(18px, 3vw, 28px); background: var(--field); box-shadow: var(--field-edge); }
 .drillQ { font-size: 1.2rem; }
-.optGr { font-family: var(--f-greek); font-size: 1.3rem !important; }
+.optGr { font-family: var(--f-greek); font-size: 1.35rem !important; }
 .drillFoot { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
 
-/* Phones: answers are large buttons, two to a row, in reach of the thumb; never the keyboard */
+/* Phones: answers are large rows, one under another, in reach of the thumb; never the keyboard */
 @media (max-width: 760px) {
-  .options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .options button { min-height: 56px; padding: 10px 12px; font-size: 1.1rem; border-radius: var(--radius); }
-  .optGr { font-size: 1.45rem !important; }
+  .options button { min-height: 56px; font-size: 1.1rem; }
   .drillFoot .btn { flex: 1 1 100%; justify-content: center; min-height: 52px; }
 }
 
@@ -331,12 +397,9 @@ a.card:hover { background-color: var(--slab-lit); }
 }
 
 @media (max-width: 760px) { .seg button { min-height: var(--tap); } }
-/* phones: three long choices as three even rows, not two uneven ones */
-@media (max-width: 760px) { .segStack { display: grid; grid-template-columns: minmax(0, 1fr); } }
-
 @media (max-width: 760px) { .seg button { min-width: var(--tap); } }
 
-/* ------------------------------------------------ the alphabet at a glance (lesson 1, the Academy's front page) */
+/* ------------------------------------------------ the alphabet at a glance (lesson 1) */
 /* even rows: 8 x 3 wide, 6 x 4 on a tablet, 4 x 6 on a phone; the tiles settle in one after another */
 .glance { display: grid; gap: 14px; }
 .glanceHead { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
@@ -504,18 +567,6 @@ a.card:hover { background-color: var(--slab-lit); }
 .guideSources ol { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
 .guideNo { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.06em; }
 
-/* the end of a lesson: its last real passage, to open in the reader (Phase 11) */
-.forReal {
-  display: grid; gap: 6px; margin: 8px 0 24px; padding: 20px 24px; text-decoration: none;
-  background: var(--slab); color: var(--inv-fg); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: var(--radius);
-  --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); transition: background-color var(--dur) ease;
-}
-.forReal:hover { background-color: var(--slab-lit); }
-.forReal :global(.label) { color: var(--accent); }
-.forRealGr { font-family: var(--f-greek); font-size: clamp(1.4rem, 3vw, 1.9rem); line-height: 1.3; }
-.forReal > span:last-child { color: var(--ink-2); }
-.forReal :global(.arr) { display: inline-block; transition: transform 0.25s var(--ease); }
-.forReal:hover :global(.arr) { transform: translateX(5px); }
 .askLesson { margin: 14px 0 0; color: var(--ink-2); }
 .askLesson a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 /* ------------------------------------------------ how the future is made (Sigma.tsx) */
@@ -559,6 +610,6 @@ a.card:hover { background-color: var(--slab-lit); }
 @keyframes rfDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.detail, .progress, .coverage, .drill, .check, .real, .card, .forReal { outline: var(--moulding); outline-offset: var(--moulding-in); }
+.detail, .progress, .coverage, .drill, .check, .real, .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* a panel that is a link keeps the site's focus ring (the moulding uses the outline too) */
-a.card:focus-visible, .forReal:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

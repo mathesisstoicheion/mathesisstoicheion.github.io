@@ -92,8 +92,11 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
   );
 }
 
-/** The legend: what each marker means, with a switch for each kind. */
-export function MarkersLegend({ counts }: { counts: Partial<Record<MarkerKind, number>> }) {
+/**
+ * The legend: what each marker means, with a switch for each kind. Behind a "Markers" button of its own, or `inline`
+ * (in the reader's More menu, which is already a panel).
+ */
+export function MarkersLegend({ counts, inline = false }: { counts: Partial<Record<MarkerKind, number>>; inline?: boolean }) {
   const shown = useSettings((s) => s.markers);
   const set = useSettings((s) => s.set);
   const [open, setOpen] = useState(false);
@@ -107,6 +110,23 @@ export function MarkersLegend({ counts }: { counts: Partial<Record<MarkerKind, n
     return () => removeEventListener("pointerdown", close);
   }, [open]);
   const toggle = (k: MarkerKind) => set({ markers: shown.includes(k) ? shown.filter((x) => x !== k) : MARKER_KINDS.filter((x) => x === k || shown.includes(x)) });
+  const kinds = MARKER_KINDS.map((k) => (
+    <label key={k}>
+      <input type="checkbox" checked={shown.includes(k)} onChange={() => toggle(k)} />
+      <span className={styles.sample} data-kind={k} aria-hidden="true" />
+      <span>{MARKER_LABEL[k]}</span>
+      <small>{counts[k] ?? 0}</small>
+    </label>
+  ));
+  if (inline) {
+    return (
+      <div className={styles.legendInline} role="group" aria-label="Markers beside the scroll bar">
+        <p className="label"><span className={styles.legendIcon} aria-hidden="true" /> Markers</p>
+        <p className={styles.legendSub}>Beside the scroll bar, on this page</p>
+        {kinds}
+      </div>
+    );
+  }
   return (
     <div className={styles.legendWrap} ref={box}
       onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); setOpen(false); box.current?.querySelector("button")?.focus(); } }}>
@@ -117,14 +137,7 @@ export function MarkersLegend({ counts }: { counts: Partial<Record<MarkerKind, n
       {open && (
         <div className={styles.legend} data-to-right={toRight || undefined} role="group" aria-label="Markers beside the scroll bar">
           <p className="label">Beside the scroll bar, on this page</p>
-          {MARKER_KINDS.map((k) => (
-            <label key={k}>
-              <input type="checkbox" checked={shown.includes(k)} onChange={() => toggle(k)} />
-              <span className={styles.sample} data-kind={k} aria-hidden="true" />
-              <span>{MARKER_LABEL[k]}</span>
-              <small>{counts[k] ?? 0}</small>
-            </label>
-          ))}
+          {kinds}
         </div>
       )}
     </div>

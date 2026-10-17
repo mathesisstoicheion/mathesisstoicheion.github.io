@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { azKey, compareAZ, groupAZ } from "./az";
+import { fold } from "@/lib/catalog";
+import { azKey, bestMatch, compareAZ, groupAZ, nameMatch } from "./az";
 
 describe("A to Z order", () => {
   it("files a title under its first Latin letter, skipping numbers, brackets and accents", () => {
@@ -31,5 +32,32 @@ describe("A to Z order", () => {
     const items = [{ title: "B" }, { title: "A" }];
     groupAZ(items);
     expect(items.map((x) => x.title)).toEqual(["B", "A"]);
+  });
+});
+
+describe("the best match for a search", () => {
+  it("tells a whole name from the start of one, of a word in one, and from the middle of one", () => {
+    expect(nameMatch(["Plato"], "plato")).toBe(0);
+    expect(nameMatch(["Aristotle"], "aristot")).toBe(1);
+    expect(nameMatch(["Pseudo-Plato"], "plato")).toBe(2);
+    expect(nameMatch(["Elias Neoplatonicus"], "plato")).toBe(3);
+    expect(nameMatch(["Homer"], "plato")).toBe(-1);
+  });
+
+  it("ignores accents, capitals and names that are missing, and takes the closest of an author's names", () => {
+    expect(nameMatch(["Albinus", undefined, "Albino platonico"], "platon")).toBe(2);
+    expect(nameMatch(["Ἀριστοτέλης", "Aristotle"], fold("αριστοτελης"))).toBe(0);
+    expect(nameMatch(["Plato Philosophus", "Platon"], "platon")).toBe(0);
+  });
+
+  it("picks an item only when it alone is closest", () => {
+    const tiers: Record<string, number> = { Plato: 0, "Pseudo-Plato": 2, Albinus: 2, Cato: -1 };
+    expect(bestMatch(Object.keys(tiers), (x) => tiers[x])).toBe("Plato");
+    expect(bestMatch(["Marcus Aurelius", "Marcus Argentarius"], () => 1)).toBeNull();
+    expect(bestMatch(["Cato"], (x) => tiers[x])).toBeNull();
+    expect(bestMatch([], () => 0)).toBeNull();
+    // "Anonymous" alone, but also the start of many others' names: no one in particular
+    expect(bestMatch(["Anonymous", "Anonymous of Byzantium", "Anonymous Seguerianus", "Anonymous on Rhetoric", "Anonymi Comment"], (x) => (x === "Anonymous" ? 0 : 1))).toBeNull();
+    expect(bestMatch(["Homer", "Homeric Hymns"], (x) => (x === "Homer" ? 0 : 1))).toBe("Homer");
   });
 });

@@ -48,7 +48,7 @@ describe("a stored document as a book of the reader", () => {
     expect(author.name).toBe("Placeholder Author");
     expect(work.texts.map((t) => t.urn)).toEqual(["mine:placeholder-one.grc", "mine:placeholder-one.ours", "mine:placeholder-one.published"]);
     expect(work.texts[0].label).toBe("Λόγος πρῶτος");
-    expect(work.texts.map(describeText)).toEqual(["Private collection", "Our English", "Published English"]);
+    expect(work.texts.map((t) => describeText(t))).toEqual(["Private collection", "Our English", "Published English"]);
     const greekOnly = ok({ format: FORMAT, id: "x", author: "A", title: "T", status: "imported", passages: [{ rows: [{ greek: "α" }] }] });
     expect(mineBook(greekOnly).work.texts.map((t) => t.kind)).toEqual(["edition"]);
   });

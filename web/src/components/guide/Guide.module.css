@@ -1,16 +1,18 @@
 /* The Guide (/guide), Stone and torch: ten chapters, each a moving picture of a real control beside a few plain sentences.
    Each picture is a window cut into the wall; the sample controls inside are pictures of the real ones and keep their look. */
 .page { max-width: 1080px; padding-block: var(--after-head, 28px) 72px; }
-.top { max-width: 70ch; }
+/* the header takes the page's width, so the big window of its piece stands beside the words, not over them */
+.top > :not(:global(.piece)) { max-width: 70ch; }
 .top :global(.label) span { font-family: var(--f-greek); letter-spacing: 0; text-transform: none; font-size: 1.05em; }
 .lead { font-size: var(--step-1); line-height: 1.5; margin: 6px 0 10px; }
-.small { color: var(--ink-2); margin: 0 0 22px; }
+.small { color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
 .small a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 
-/* the chapters as a row of numbered stones */
-.contents ol { list-style: none; margin: 0 0 22px; padding: 0; display: flex; flex-wrap: wrap; gap: 8px; counter-reset: none; }
+/* the chapters as an even grid of numbered stones: two across on a phone, five across (two rows) on a wide screen */
+.contents ol { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; counter-reset: none; }
+@media (min-width: 900px) { .contents ol { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
 .contents a {
-  display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border: 1px solid transparent;
+  display: flex; height: 100%; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border: 1px solid transparent;
   border-radius: var(--radius); color: var(--ink); text-decoration: none; font-size: 0.95rem; background: var(--slab); box-shadow: var(--slab-edge);
   transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform 0.2s var(--ease);
 }
@@ -29,12 +31,20 @@
 .kicker :global(.label) span { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
 .go { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
 .steps { font-family: var(--f-label); color: var(--ink-2); font-size: 0.9rem; }
-.fork { display: flex; flex-wrap: wrap; gap: 12px; margin: 18px 0 14px; }
+.fork { display: flex; flex-wrap: wrap; gap: 12px; margin: var(--space-4) 0 var(--space-5); }
 
 @media (max-width: 760px) {
   .chapter { grid-template-columns: 1fr; }
   .chapter:nth-child(even) > :first-child { order: 0; }
   .big { font-size: 2rem; }
+  /* the start buttons: one under the other, each the full width */
+  .fork { flex-direction: column; }
+  .fork > :global(.btn) { justify-content: center; text-align: center; }
+  /* each chapter is its own: a wide space before it and a cut line across its top; inside it the picture and the words keep close */
+  .chapters { gap: var(--space-8); }
+  .chapter { gap: var(--space-3); }
+  .chapter + .chapter { padding-top: var(--space-5); box-shadow: var(--cut-over); }
+  .steps { display: none; }   /* the step count is in the Show me button */
 }
 
 /* ------------------------------------------------------------------ the pictures */
