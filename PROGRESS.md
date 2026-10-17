@@ -852,6 +852,22 @@ The owner asked for a lyre to play with the computer keyboard, an interactive MI
 - **Measured** (headless Chromium): first key press 1.9 ms (was 65.8); saving Helios's 76 s takes about 9 s with no task over 50 ms on the page.
 - **Tests**: `e2e/lyre.spec.ts` (keys and clicks pluck, the piano keys and Z/X, the play-along cue, a song's words and the sheet music switch, each song's own instrument, one sheet-music size for every song with Small/Medium/Large kept, the gliding bead, a touch on a phone with no sideways scrolling, axe in both colour schemes; all 10 pass); `lib/lyre/tuning.test.ts` (the key mapping).
 
+## Calmer pages and pages that open calmly (2026-10-17)
+The owner asked for bigger sculpture windows on every page, a home page that is less of a mess, a clearer flow on every page ("find faults like this across the whole site"), and pages that open beautifully with nothing white while they load. Built on branch `claude/site-redesign-77uoc2` (handover in the project files, `redesign/HANDOFF.md`). **Nothing in this round is live yet: it waits for the owner's "Publish".**
+- **Bigger windows**: the sculpture window on each page is larger (`.piece-head`, `.piece-wide` in `globals.css`); on a phone it is 74% of the screen's width, under the title and its subtitle. Checked on 16 pages, old against new.
+- **A shorter home page**: hero, the name, passage of the day, the letters, the Muses, "Find something to read", the frieze, the Stoa. The rooms, the Stoa cards, forum activity and offline actions moved to the pages they belong to (the owner chose "Move them"). On a phone 21 screens became 13; on a computer 11,809 px became 7,842 px.
+- **The library's flow**: search and filters now stand on the list they filter ("Every work in the library"); famous books are one row; levels and reading paths sit in a fold, "Not sure where to begin?"; arriving with a search in the address scrolls to the list. The same idea was applied across the site: Explore and Talk pages, the reader (one quiet edition line with "Change", one slim toolbar), the Oracle, author and work pages, the Scroll Case, Mine, About, credits, and the Academy and Guide (see `PROGRESS.md`'s other 2026-10-17 notes and the audits in the project files).
+- **Pages open calmly**: each page's name, Greek name and purpose rise in one after another, then the stone piece (`@keyframes enter` in `globals.css`).
+- **Nothing flashes white**: the page is stone-coloured from the first byte, and each window is a dark hollow until its piece is drawn.
+- **A light while a slow page loads**: a thin gilded light travels along the header's foot after a quarter of a second of waiting (`components/NavWait.tsx`); fast pages show nothing. Tested on a very slow connection, phone and computer.
+- **Practice, test, review and today's session** show the piece beside the tool on a computer so the first question is on the first screen (`.tool-page`).
+- **Phone lighting**: the big piece under the title on a phone is lit as the page opens (it was nearly black until the first scroll).
+- **Tokens**: motion, corner and layer values are named values now; the count of hard-coded values went down from 4,397 to 4,208.
+- **The reader's browser tests now open the new Aids, Change and More menus** (helper `web/e2e/reader-menus.ts`), since those buttons moved into menus.
+- **Fixed**: Back to top and the pop-up message no longer float one tab-bar height too high while reading on a phone.
+- **Phone sharpness limit (the owner is being asked whether to keep this balance)**: on phones the big sculpture windows are drawn with at most 220,000 pixels (`web/src/lib/art/piece.ts`, `layout()`). At full sharpness, scrolling past one fell from 49 to 25 frames a second in the slowed-phone speed test; with the limit it is about 33. Pictures look a little softer on phones in return.
+- **Still to do**: build and look at every changed page on a phone and a computer, old against new; measure frame rates; run the whole browser test suite (about 40 tests fail on the live site too, for missing word packs and pictures on the test machine); show the owner before and after, ask whether to refine, then ask for "Publish".
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|
