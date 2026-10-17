@@ -48,24 +48,24 @@ export function stringsFor(midis: number[]): LyreString[] {
 }
 
 /**
- * The computer keyboard is a piano, as on most online pianos and in music programs: the row A S D F G H J K L ; ' gives
- * the white keys from C, the row above it (W E, T Y U, O P) the black keys between them, and Z and X move all of them an
- * octave down or up. Keys go by their place on the keyboard (event.code), so they work on any layout.
+ * The computer keyboard plays the strings in order, as they are seen: A is the lowest string, S the next, and so on
+ * along the row (A S D F G H J K L ; '). A lyre with more strings than that row has keys puts its lower half there and
+ * its higher half on the row above, from Q (Q W E R T Y U I O P [ ]). Keys go by their place on the keyboard
+ * (event.code), so they work on any layout.
  */
-export const PIANO_KEYS: Record<string, number> = {
-  KeyA: 0, KeyW: 1, KeyS: 2, KeyE: 3, KeyD: 4, KeyF: 5, KeyT: 6, KeyG: 7, KeyY: 8, KeyH: 9, KeyU: 10, KeyJ: 11,
-  KeyK: 12, KeyO: 13, KeyL: 14, KeyP: 15, Semicolon: 16, Quote: 17,
-};
-/** The key at each step above the lowest C the keys reach. */
-export const CODE_AT: string[] = [];
-for (const [c, k] of Object.entries(PIANO_KEYS)) CODE_AT[k] = c;
-export const OCTAVE_DOWN = "KeyZ", OCTAVE_UP = "KeyX";
-/** How far above their lowest C the keys reach (C to the F an octave up). */
-export const KEYS_SPAN = 17;
+export const HOME_ROW = ["KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote"];
+export const TOP_ROW = ["KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight"];
+
+/** The key for each of `n` strings, low to high. */
+export function stringKeys(n: number): string[] {
+  if (n <= HOME_ROW.length) return HOME_ROW.slice(0, n);
+  const low = Math.ceil(n / 2);
+  return [...HOME_ROW.slice(0, low), ...TOP_ROW.slice(0, Math.min(TOP_ROW.length, n - low))];
+}
 
 /**
- * The piano key (a whole MIDI note) each string answers to, low to high: the nearest key, but never one key for two
- * strings, so that a string tuned between two keys (the ancient tunings have steps smaller than a semitone) takes the
+ * The key of a MIDI keyboard (a whole MIDI note) each string answers to, low to high: the nearest key, but never one
+ * key for two strings, so that a string tuned between two keys (the ancient tunings have steps smaller than a semitone) takes the
  * key beside its neighbour's. The strings are in order, low to high.
  */
 export function keysOf(strings: LyreString[]): number[] {
@@ -90,29 +90,9 @@ export function keysOf(strings: LyreString[]): number[] {
   return out;
 }
 
-/** The lowest C for the keys that reaches the most of these keys (each counted `weight` times), the higher if tied. */
-export function bestOctave(keys: number[], weight: (i: number) => number = () => 1): number {
-  let best = 48, most = -1;
-  for (const c of octaves(keys)) {
-    let n = 0;
-    keys.forEach((k, i) => { if (k >= c && k <= c + KEYS_SPAN) n += weight(i); });
-    if (n >= most) { most = n; best = c; }
-  }
-  return best;
-}
-
-/** The lowest Cs the keys may start from: those from which at least one string can be reached. */
-export function octaves(keys: number[]): number[] {
-  if (!keys.length) return [48];
-  const lo = Math.min(...keys), hi = Math.max(...keys), out: number[] = [];
-  for (let c = 12 * Math.ceil((lo - KEYS_SPAN) / 12); c <= hi; c += 12) out.push(c);
-  return out;
-}
-
-const QWERTY: Record<string, string> = {
-  KeyA: "A", KeyS: "S", KeyD: "D", KeyF: "F", KeyG: "G", KeyH: "H", KeyJ: "J", KeyK: "K", KeyL: "L", Semicolon: ";", Quote: "'",
-  KeyW: "W", KeyE: "E", KeyT: "T", KeyY: "Y", KeyU: "U", KeyO: "O", KeyP: "P", KeyZ: "Z", KeyX: "X",
-};
+const QWERTY: Record<string, string> = Object.fromEntries(
+  [...HOME_ROW, ...TOP_ROW].map((c) => [c, ({ Semicolon: ";", Quote: "'", BracketLeft: "[", BracketRight: "]" } as Record<string, string>)[c] ?? c.slice(3)]),
+);
 
 /** What each key is labelled on this person's keyboard (where the browser can tell), else on an English one. */
 export async function keyLabels(): Promise<Record<string, string>> {

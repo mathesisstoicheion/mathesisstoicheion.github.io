@@ -39,42 +39,30 @@ test("the keys pluck the strings, with no errors", async ({ page }) => {
   expect(errors).toEqual([]);
 });
 
-test("the keyboard plays like a piano, and Z and X move the keys an octave", async ({ page }) => {
+test("the keys play the strings in order, from A", async ({ page }) => {
   await countPlucks(page);
   await page.goto("/stoa/lyre");
   await ready(page);
-  await page.getByRole("radio", { name: /Free play/ }).click();
-  const lyre = page.getByRole("img", { name: /A lyre with 15 strings/ });
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C3/);
-  await page.keyboard.press("x");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("x");   // no higher: the keys would reach no string
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("z");
-  await page.keyboard.press("z");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C2/);
-  // a black key plays its own note, though the scale has no string for it
-  const before = await plucks(page);
-  await page.keyboard.press("w");
-  await expect.poll(() => plucks(page)).toBeGreaterThan(before);
-});
-
-test("playing along, a note beyond the keys says which way to move them", async ({ page }) => {
-  await page.goto("/stoa/lyre");
-  await ready(page);
-  await expect(page.getByRole("radio", { name: /Seikilos/ })).toHaveAttribute("aria-checked", "true");
+  // the Seikilos song's eight strings are on A S D F G H J K
   const lyre = page.getByRole("img", { name: /A lyre with 8 strings/ });
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C4/);
-  await page.keyboard.press("z");
-  await expect(lyre).toHaveAttribute("aria-label", /white keys from C3/);
-  await page.getByRole("button", { name: "Play along" }).click();
-  // the song opens on D4 (the L key, from C3), then A4, beyond the keys from C3
-  const up = page.getByText("The next note is above the keys: press X.");
-  await page.waitForTimeout(3000);
+  await expect(lyre).toHaveAttribute("aria-label", /A is the lowest, then S D F/);
+  for (const k of ["a", "k"]) {
+    const before = await plucks(page);
+    await page.keyboard.press(k);
+    await expect.poll(() => plucks(page)).toBeGreaterThan(before);
+  }
+  // a key with no string plays nothing
+  let before = await plucks(page);
   await page.keyboard.press("l");
-  await expect(up).toBeVisible({ timeout: 10_000 });
-  await page.keyboard.press("x");
-  await expect(up).toBeHidden();
+  await page.waitForTimeout(300);
+  expect(await plucks(page)).toBe(before);
+  // fifteen strings: the higher half goes on to the row above, from Q
+  await page.getByRole("radio", { name: /Free play/ }).click();
+  const scale = page.getByRole("img", { name: /A lyre with 15 strings/ });
+  await expect(scale).toHaveAttribute("aria-label", /row above, from Q/);
+  before = await plucks(page);
+  await page.keyboard.press("u");
+  await expect.poll(() => plucks(page)).toBeGreaterThan(before);
 });
 
 test("a song shows its words, and the sheet music at the switch", async ({ page }) => {
