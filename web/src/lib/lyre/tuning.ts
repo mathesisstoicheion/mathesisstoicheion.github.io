@@ -47,24 +47,71 @@ export function stringsFor(midis: number[]): LyreString[] {
   return [...new Set(midis)].sort((a, b) => a - b).map((midi) => ({ midi }));
 }
 
-/** The string a MIDI key (a whole semitone) plays: the nearest string within a little over half a semitone, else none. */
-export function nearestString(strings: LyreString[], note: number) {
-  let best = -1, bd = 0.62;
-  strings.forEach((s, i) => { const d = Math.abs(s.midi - note); if (d < bd) { bd = d; best = i; } });
+/**
+ * The computer keyboard is a piano, as on most online pianos and in music programs: the row A S D F G H J K L ; ' gives
+ * the white keys from C, the row above it (W E, T Y U, O P) the black keys between them, and Z and X move all of them an
+ * octave down or up. Keys go by their place on the keyboard (event.code), so they work on any layout.
+ */
+export const PIANO_KEYS: Record<string, number> = {
+  KeyA: 0, KeyW: 1, KeyS: 2, KeyE: 3, KeyD: 4, KeyF: 5, KeyT: 6, KeyG: 7, KeyY: 8, KeyH: 9, KeyU: 10, KeyJ: 11,
+  KeyK: 12, KeyO: 13, KeyL: 14, KeyP: 15, Semicolon: 16, Quote: 17,
+};
+/** The key at each step above the lowest C the keys reach. */
+export const CODE_AT: string[] = [];
+for (const [c, k] of Object.entries(PIANO_KEYS)) CODE_AT[k] = c;
+export const OCTAVE_DOWN = "KeyZ", OCTAVE_UP = "KeyX";
+/** How far above their lowest C the keys reach (C to the F an octave up). */
+export const KEYS_SPAN = 17;
+
+/**
+ * The piano key (a whole MIDI note) each string answers to, low to high: the nearest key, but never one key for two
+ * strings, so that a string tuned between two keys (the ancient tunings have steps smaller than a semitone) takes the
+ * key beside its neighbour's. The strings are in order, low to high.
+ */
+export function keysOf(strings: LyreString[]): number[] {
+  const ps = strings.map((s) => s.midi);
+  if (!ps.length) return [];
+  const cand = ps.map((p) => [0, -1, 1, -2, 2].map((d) => Math.round(p) + d));
+  let cost = cand[0].map((k) => Math.abs(ps[0] - k));
+  const from: number[][] = [];
+  for (let i = 1; i < ps.length; i++) {
+    const next = cand[i].map(() => Infinity), back = cand[i].map(() => -1);
+    cand[i].forEach((k, a) => cand[i - 1].forEach((kp, b) => {
+      const c = cost[b] + Math.abs(ps[i] - k);
+      if (kp < k && c < next[a]) { next[a] = c; back[a] = b; }
+    }));
+    cost = next;
+    from.push(back);
+  }
+  let a = cost.indexOf(Math.min(...cost));
+  if (!Number.isFinite(cost[a])) return ps.map(Math.round);
+  const out = new Array<number>(ps.length);
+  for (let i = ps.length - 1; i >= 0; i--) { out[i] = cand[i][a]; if (i > 0) a = from[i - 1][a]; }
+  return out;
+}
+
+/** The lowest C for the keys that reaches the most of these keys (each counted `weight` times), the higher if tied. */
+export function bestOctave(keys: number[], weight: (i: number) => number = () => 1): number {
+  let best = 48, most = -1;
+  for (const c of octaves(keys)) {
+    let n = 0;
+    keys.forEach((k, i) => { if (k >= c && k <= c + KEYS_SPAN) n += weight(i); });
+    if (n >= most) { most = n; best = c; }
+  }
   return best;
 }
 
-/**
- * Computer keys, by their place on the keyboard (so they work on any layout): the home row from left to right, then the
- * row above it. Fifteen strings take the whole home row and the first four keys above it.
- */
-export const KEY_CODES = [
-  "KeyA", "KeyS", "KeyD", "KeyF", "KeyG", "KeyH", "KeyJ", "KeyK", "KeyL", "Semicolon", "Quote",
-  "KeyQ", "KeyW", "KeyE", "KeyR", "KeyT", "KeyY", "KeyU", "KeyI", "KeyO", "KeyP", "BracketLeft", "BracketRight",
-];
+/** The lowest Cs the keys may start from: those from which at least one string can be reached. */
+export function octaves(keys: number[]): number[] {
+  if (!keys.length) return [48];
+  const lo = Math.min(...keys), hi = Math.max(...keys), out: number[] = [];
+  for (let c = 12 * Math.ceil((lo - KEYS_SPAN) / 12); c <= hi; c += 12) out.push(c);
+  return out;
+}
+
 const QWERTY: Record<string, string> = {
   KeyA: "A", KeyS: "S", KeyD: "D", KeyF: "F", KeyG: "G", KeyH: "H", KeyJ: "J", KeyK: "K", KeyL: "L", Semicolon: ";", Quote: "'",
-  KeyQ: "Q", KeyW: "W", KeyE: "E", KeyR: "R", KeyT: "T", KeyY: "Y", KeyU: "U", KeyI: "I", KeyO: "O", KeyP: "P", BracketLeft: "[", BracketRight: "]",
+  KeyW: "W", KeyE: "E", KeyT: "T", KeyY: "Y", KeyU: "U", KeyO: "O", KeyP: "P", KeyZ: "Z", KeyX: "X",
 };
 
 /** What each key is labelled on this person's keyboard (where the browser can tell), else on an English one. */
@@ -73,7 +120,7 @@ export async function keyLabels(): Promise<Record<string, string>> {
   try {
     const kb = (navigator as Navigator & { keyboard?: { getLayoutMap(): Promise<Map<string, string>> } }).keyboard;
     const map = kb && (await kb.getLayoutMap());
-    if (map) for (const c of KEY_CODES) { const v = map.get(c); if (v) labels[c] = v.toUpperCase(); }
+    if (map) for (const c of Object.keys(QWERTY)) { const v = map.get(c); if (v) labels[c] = v.toUpperCase(); }
   } catch { /* not allowed here: keep the English labels */ }
   return labels;
 }

@@ -22,7 +22,7 @@ import { encodeWav } from "./wav";
 export const midiToHz = (m: number) => 440 * 2 ** ((m - 69) / 12);
 
 export const LAYERS = [0.18, 0.34, 0.5, 0.66, 0.82, 0.97];
-const layerOf = (s: number) => LAYERS.reduce((b, v, i) => (Math.abs(v - s) < Math.abs(LAYERS[b] - s) ? i : b), 0);
+export const layerOf = (s: number) => LAYERS.reduce((b, v, i) => (Math.abs(v - s) < Math.abs(LAYERS[b] - s) ? i : b), 0);
 const cents = (midi: number) => Math.round(midi * 100);
 const keyOf = (midi: number, layer: number, sr: number) => `${sr}:${cents(midi)}:${layer}`;
 const seedOf = (layer: number) => (layer % 3) + 1;
@@ -62,10 +62,13 @@ class Bank {
   get(midi: number, layer: number, sr = BANK_SR) { return this.store.get(keyOf(midi, layer, sr)); }
 
   /** A stand-in while a string is not ready: the same pitch at the nearest strength, else the nearest pitch within a
-   *  fourth (played faster or slower to sound at the right pitch). */
+   *  fourth (played faster or slower to sound at the right pitch), else the nearest of all (so nothing is made while a
+   *  key waits). */
   closest(midi: number, layer: number, sr = BANK_SR): { y: Buf; midi: number } | undefined {
     const c = cents(midi);
-    const near = [...(this.pitches.get(sr) ?? [])].filter((p) => Math.abs(p - c) <= 500).sort((a, b) => Math.abs(a - c) - Math.abs(b - c));
+    const all = [...(this.pitches.get(sr) ?? [])].sort((a, b) => Math.abs(a - c) - Math.abs(b - c));
+    const within = all.filter((p) => Math.abs(p - c) <= 500);
+    const near = within.length ? within : all.filter((p) => Math.abs(p - c) <= 2400).slice(0, 1);
     for (const p of near) for (const d of [0, 1, -1, 2, -2, 3, -3, 4, -4, 5, -5]) {
       const y = this.store.get(`${sr}:${p}:${layer + d}`);
       if (y) return { y, midi: p / 100 };
@@ -101,10 +104,11 @@ class Bank {
     return new Promise((done) => this.waits.push({ keys, done }));
   }
 
-  /** Render these pitches in the worker, the middle strengths first (a keyboard and a calm touch use those). */
-  prepare(midis: number[], sr = BANK_SR) {
+  /** Render these pitches in the worker, the middle strengths first (a keyboard and a calm touch use those), or only
+   *  the strengths given. */
+  prepare(midis: number[], sr = BANK_SR, layers = [3, 2, 4, 1, 5, 0]) {
     const jobs: Job[] = [];
-    for (const l of [3, 2, 4, 1, 5, 0]) for (const m of new Set(midis)) {
+    for (const l of layers) for (const m of new Set(midis)) {
       const key = keyOf(m, l, sr);
       if (!this.store.has(key) && !this.pending.has(key)) jobs.push({ key, midi: m, hz: midiToHz(m), strength: LAYERS[l], sr, seed: seedOf(l) });
     }

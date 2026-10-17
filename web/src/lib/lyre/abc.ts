@@ -7,7 +7,8 @@
  * - One beat, the χρόνος πρῶτος, is an eighth note. Lengths are rounded to the nearest half beat, since a player's
  *   small lengthenings in the rendering are not part of the written rhythm.
  * - The Seikilos song is barred in 6/8, as its usual transcription is. The other pieces have no regular bar: a bar
- *   line marks the end of each phrase, and each sung line starts a new staff.
+ *   line marks the end of each phrase, and an unseen one every few beats lets the score break its lines there, so
+ *   every piece is engraved at the same size and wraps to the width of the page (Sheet.tsx).
  * - The words go under the notes, a syllable held over several notes with an extender line. A silence in the rendering
  *   (often where the source is broken) is written as a rest.
  */
@@ -101,7 +102,7 @@ export function toAbc(notes: MelodyNote[], { id, sung, bpm }: { id: string; sung
   const staves: { notes: string[]; words: string[] }[] = [];
   let cur = { notes: [] as string[], words: [] as string[] };
   const flush = () => { if (cur.notes.length) staves.push(cur); cur = { notes: [], words: [] }; };
-  let pos = 0, bar = 0, sincePhrase = 0, engraved = 0;
+  let pos = 0, bar = 0, sinceBar = 0, engraved = 0;
   const map: number[][] = [];
   const used = new Set(placed.filter((p) => !p.quarter).map((p) => ((p.semi % 12) + 12) % 12));
   for (let i = 0; i < placed.length; i++) {
@@ -111,7 +112,7 @@ export function toAbc(notes: MelodyNote[], { id, sung, bpm }: { id: string; sung
     const gap = start - pos;
     if (gap >= 0.75) {                                   // a silence
       cur.notes.push(parts(gap).map((x) => `z${x}`).join(" "));
-      if (!metre) cur.notes.push("|");
+      if (!metre) { cur.notes.push("|"); sinceBar = 0; }
       else { bar += Math.round(gap * 2) / 2; while (bar >= metre - 0.01) { cur.notes.push("|"); bar -= metre; } }
     }
     pos = Math.max(pos, start);
@@ -122,21 +123,21 @@ export function toAbc(notes: MelodyNote[], { id, sung, bpm }: { id: string; sung
     // the words: a syllable that goes on in the same word ends with a hyphen; a held syllable (or a tied note) is
     // extended with "_"
     if (sung) { cur.words.push(n.syl ? n.syl.replace(/\s/g, "~") : "_"); for (let k = 1; k < ps.length; k++) cur.words.push("_"); }
-    pos += len; sincePhrase++;
+    pos += len; sinceBar += len;
     const next = notes[i + 1];
     if (metre) {
       bar += len;
       while (bar >= metre - 0.01) { cur.notes.push("|"); bar -= metre; }
     } else if (!next || next.t - (n.t + n.d) > 0.75 || n.d >= 3) {
-      cur.notes.push("|");
-      // a piece with no words starts a new staff every few phrases, so the lines are of a readable length
-      if (!sung && sincePhrase >= 10) { flush(); sincePhrase = 0; }
+      cur.notes.push("|"); sinceBar = 0;
+    } else if (sinceBar >= 4 && !(sung && next.br)) {
+      cur.notes.push("[|]"); sinceBar = 0;               // a place the line may break, not shown
     }
   }
   flush();
   const head = ["X:1", "L:1/8", metre ? `M:${metre}/8` : "M:none", `Q:1/8=${Math.round(bpm)}`, `K:${key}`];
   const body = staves.map((st) => {
-    const line = st.notes.join(" ").replace(/(\|\s*)+$/, "|").replace(/\|(\s*\|)+/g, "|");
+    const line = st.notes.join(" ").replace(/(\[\|\]\s*)+$/, "").replace(/(\|\s*)+$/, "|").replace(/(^|[^[])\|(\s*\|)+/g, "$1|");
     return sung && st.words.length ? `${line}\nw: ${joinWords(st.words)}` : line;
   });
   return { abc: `${head.join("\n")}\n${body.join("\n")}\n`, key, map };

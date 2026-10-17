@@ -1,25 +1,29 @@
 /**
  * Drawing the lyre page's two canvases (Lyre.tsx).
  *
- * The instrument is a chelys (χέλυς, "tortoise", and so a lyre: in the Homeric Hymn to Hermes the first lyre is strung on a
- * tortoise's shell): a shell with a hide stretched over it for a sounding board, two curving arms (πήχεις, "the horns of
- * the lyre"), a crossbar between them (ζυγόν) with a peg for each string (κόλλοψ), a bridge on the hide (μαγάς), and a
- * tailpiece below it that holds the strings taut (χορδοτόνον). The Greek words are as LSJ gives them. It is painted once into a layer
- * of its own, lit by the site's torch, and repainted only when the light on it moves; each frame then copies that layer
- * and draws the strings over it, so a lyre being played costs very little to draw.
+ * The instrument is one of those in instruments.ts, a different one for each song, drawn at its own proportions and
+ * made larger or smaller to fit, never stretched. It is painted once in its own colours, with the glints its edges
+ * would catch from either side (`plate`); whenever the torch's light on it moves, those pictures are lit again by
+ * copying them under the light (`lightBody`), which costs a few copies, not a repainting. Each frame then copies the lit
+ * instrument and draws the strings over it, so a lyre being played costs very little to draw.
  *
  * Above it the roll: each string's lane, the song's notes coming down to the strings with their syllables, and what
  * has been played rising away from them as light.
  */
+import { paintAlbedo, paintSheen, shapeOf, stringTops, type Design, type Shape } from "./instruments";
 
 export interface Geom {
   W: number; H: number; n: number; cx: number;
-  /** each string's x at the crossbar (where the roll's lanes are) and at the tailpiece */
+  design: Design; shape: Shape;
+  /** pixels to the instrument's unit (its height), and where its top middle is */
+  s: number; ox: number; oy: number;
+  /** each string's x at the yoke (where the roll's lanes are) and at the tailpiece */
   top: number[]; bot: number[];
-  yBar: number; yBridge: number; yTail: number;
-  shell: { cx: number; cy: number; rx: number; ry: number };
-  /** half the distance between the arms where they meet the crossbar */
-  armX: number;
+  yBar: number; yBridge: number; yTail: number; yBoard: number;
+  /** where the strings leave the yoke, and where the keys' letters go */
+  yFree: number; yLabel: number;
+  /** the part of the canvas the instrument and its shadow cover */
+  box: { x: number; y: number; w: number; h: number };
   narrow: boolean;
 }
 
@@ -27,39 +31,35 @@ export interface Geom {
 export interface Lamp { x: number; y: number; I: number }
 
 type RGB = [number, number, number];
-const AMBIENT = 0.2;
+const AMBIENT = 0.3;
 const clamp = (v: number, a: number, b: number) => (v < a ? a : v > b ? b : v);
 const rgb = ([r, g, b]: RGB, a = 1) => `rgba(${r | 0},${g | 0},${b | 0},${a})`;
 const mixRGB = (a: RGB, b: RGB, t: number): RGB => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t];
 
-// the materials, each as [lit, in shadow]
-const WOOD: [RGB, RGB] = [[184, 128, 70], [30, 19, 10]];
-const BAR: [RGB, RGB] = [[198, 146, 88], [34, 22, 12]];
-const SHELL: [RGB, RGB] = [[158, 104, 50], [22, 14, 8]];
-const HIDE: [RGB, RGB] = [[228, 206, 164], [48, 37, 26]];
-const LEATHER: [RGB, RGB] = [[214, 180, 128], [44, 31, 19]];
-const BRIDGE: [RGB, RGB] = [[222, 178, 116], [38, 26, 15]];
 const GUT: RGB = [238, 222, 188];
 const HONEY: RGB = [249, 223, 174];
 
-export function geometry(W: number, H: number, n: number): Geom {
-  const narrow = W < 560;
-  const span = Math.min(W - (narrow ? 92 : 170), Math.max(1, n - 1) * (narrow ? 40 : 50), 720);
-  const sp = n > 1 ? span / (n - 1) : 0;
-  const cx = W / 2;
-  const top = Array.from({ length: n }, (_, i) => cx + (i - (n - 1) / 2) * sp);
-  const fan = 0.7;                                   // the strings gather a little towards the tailpiece
-  const bot = top.map((x) => cx + (x - cx) * fan);
-  const yBar = 42;
-  const ry = H * 0.215, cy = H - ry - 12;
-  const yTail = cy + ry * 0.6, yBridge = cy - ry * 0.12;
-  const f = (yBridge - yBar) / (yTail - yBar), atBridge = span * (1 - f * (1 - fan));
-  const rx = Math.min(W / 2 - 8, Math.max(atBridge / 2 + 44, ry * 1.3));
-  const armX = span / 2 + (narrow ? 16 : 26);
-  return { W, H, n, cx, top, bot, yBar, yBridge, yTail, shell: { cx, cy, rx, ry }, armX, narrow };
+export function geometry(W: number, H: number, design: Design): Geom {
+  const shape = shapeOf(design), n = design.n, narrow = W < 560;
+  const padT = narrow ? 8 : 10, padB = 6;
+  const s = Math.min(H - padT - padB, (W - 16) / shape.w);
+  const ox = W / 2, oy = H - padB - s;
+  const X = (u: number) => ox + u * s, Y = (v: number) => oy + v * s;
+  const tops = stringTops(shape, n), k = shape.topSpan > 0 ? shape.botSpan / shape.topSpan : 1;
+  const m = Math.ceil(s * 0.04) + 4;
+  const x0 = Math.max(0, Math.floor(X(-shape.w / 2) - m)), x1 = Math.min(W, Math.ceil(X(shape.w / 2) + m));
+  const y0 = Math.max(0, Math.floor(oy - m)), y1 = Math.min(H, Math.ceil(Y(1) + m));
+  return {
+    W, H, n, cx: ox, design, shape, s, ox, oy,
+    top: tops.map(X), bot: tops.map((u) => X(u * k)),
+    yBar: Y(shape.barY), yBridge: Y(shape.bridgeY), yTail: Y(shape.tailY), yBoard: Y(shape.boardY),
+    yFree: Y(shape.barY + shape.barH * 0.62), yLabel: Y(shape.barY - shape.barH * 0.75) - 6,
+    box: { x: x0, y: y0, w: x1 - x0, h: y1 - y0 },
+    narrow,
+  };
 }
 
-/** Where string `i` is at height `y` (they lean from the crossbar to the tailpiece). */
+/** Where string `i` is at height `y` (they lean from the yoke to the tailpiece). */
 export function stringX(G: Geom, i: number, y: number) {
   const f = clamp((y - G.yBar) / (G.yTail - G.yBar), 0, 1);
   return G.top[i] + (G.bot[i] - G.top[i]) * f;
@@ -68,70 +68,105 @@ export function stringX(G: Geom, i: number, y: number) {
 /** How much light falls at a point: a little from the room, the rest from the torch, fading with distance. */
 function lum(l: Lamp, x: number, y: number, R: number) { return AMBIENT + l.I * Math.pow(Math.max(0, 1 - Math.hypot(l.x - x, l.y - y) / R), 1.25); }
 
-/** A fill for a material under the torch: lit near the light, falling away to its shadow colour. */
-function litFill(g: CanvasRenderingContext2D, l: Lamp, R: number, [lit, dark]: [RGB, RGB], boost = 1) {
-  const gr = g.createRadialGradient(l.x, l.y, 0, l.x, l.y, R);
-  for (const k of [0, 0.25, 0.5, 0.75, 1]) gr.addColorStop(k, rgb(mixRGB(dark, lit, clamp((AMBIENT + l.I * Math.pow(1 - k, 1.25)) * boost, 0, 1))));
-  return gr;
+// ── the instrument ──────────────────────────────────────────────────────────────────────────────────────────────────
+
+/** The instrument, painted once for its place on the canvas: in its colours, its glints from the left and from the
+ *  right (each covering only its box), and its silhouette, small, so that drawn larger it is a soft shadow. */
+export interface Plate { G: Geom; dpr: number; albedo: HTMLCanvasElement; sheen: [HTMLCanvasElement, HTMLCanvasElement] | null; shadow: HTMLCanvasElement }
+
+function layer(G: Geom, k: number) {
+  const c = document.createElement("canvas");
+  c.width = Math.max(1, Math.round(G.box.w * k)); c.height = Math.max(1, Math.round(G.box.h * k));
+  return c;
+}
+/** A context set to the instrument's units, `k` canvas pixels to a CSS pixel. */
+function units(c: HTMLCanvasElement, G: Geom, k: number) {
+  const g = c.getContext("2d")!;
+  g.setTransform(k * G.s, 0, 0, k * G.s, k * (G.ox - G.box.x), k * (G.oy - G.box.y));
+  return g;
 }
 
-/** A glint along an edge: strong near the light, gone far from it. */
-function glint(g: CanvasRenderingContext2D, l: Lamp, R: number, a: number) {
-  const gr = g.createRadialGradient(l.x, l.y, 0, l.x, l.y, R * 0.9);
-  gr.addColorStop(0, rgb(HONEY, a * l.I)); gr.addColorStop(1, rgb(HONEY, 0));
-  return gr;
+/** The plate, without its glints yet (`glints` adds them when the page has a moment), so a new song's instrument
+ *  appears at once. */
+export function plate(G: Geom, dpr: number): Plate {
+  const albedo = layer(G, dpr);
+  paintAlbedo(units(albedo, G, dpr), G.design, G.shape);
+  // the silhouette at an eighth of the size: drawn back at full size, it is blurred for nothing
+  const k = 0.125, shadow = layer(G, k), sg = shadow.getContext("2d")!;
+  sg.drawImage(albedo, 0, 0, shadow.width, shadow.height);
+  sg.globalCompositeOperation = "source-in"; sg.fillStyle = "#000"; sg.fillRect(0, 0, shadow.width, shadow.height);
+  return { G, dpr, albedo, sheen: null, shadow };
 }
 
-function seeded(seed: number) { let s = seed >>> 0 || 1; return () => ((s = (s * 1664525 + 1013904223) >>> 0) / 4294967296); }
+export function glints(P: Plate) {
+  const { G, dpr } = P, sheen: [HTMLCanvasElement, HTMLCanvasElement] = [layer(G, dpr), layer(G, dpr)];
+  paintSheen(units(sheen[0], G, dpr), G.design, G.shape, -1);
+  paintSheen(units(sheen[1], G, dpr), G.design, G.shape, 1);
+  P.sheen = sheen;
+}
 
-/** The centre line of an arm, from where it leaves the shell to its horn tip above the crossbar, with its width. */
-function armLine(G: Geom, side: -1 | 1) {
-  const { cx, shell, yBar, armX, W, narrow } = G;
-  const B = { x: cx + side * shell.rx * 0.6, y: shell.cy - shell.ry * 0.78 };
-  const T = { x: cx + side * armX, y: yBar };
-  const h = B.y - T.y;
-  const room = W / 2 - armX - 10;
-  const bulge = clamp(h * 0.2, 10, Math.max(10, Math.min(48, room)));
-  const dx = Math.abs(T.x - B.x);
-  const C1 = { x: B.x + side * (dx * 0.85 + bulge), y: B.y - h * 0.28 };
-  const C2 = { x: T.x + side * bulge * 0.75, y: T.y + h * 0.42 };
-  const pts: { x: number; y: number; w: number }[] = [];
-  const w0 = narrow ? 15 : 21, w1 = narrow ? 8 : 10;
-  const N = 22;
-  for (let k = 0; k <= N; k++) {
-    const t = k / N, u = 1 - t;
-    pts.push({
-      x: u * u * u * B.x + 3 * u * u * t * C1.x + 3 * u * t * t * C2.x + t * t * t * T.x,
-      y: u * u * u * B.y + 3 * u * u * t * C1.y + 3 * u * t * t * C2.y + t * t * t * T.y,
-      w: w0 + (w1 - w0) * t,
-    });
+/** The instrument under the torch, into `g` (a canvas the size of the lyre's, in CSS pixels): a few copies of the
+ *  plate's pictures and one gradient, so the light can follow the torch without repainting anything. */
+export function lightBody(g: CanvasRenderingContext2D, P: Plate, l: Lamp, R: number) {
+  const { G } = P, { box } = G;
+  g.clearRect(box.x, box.y, box.w, box.h);
+  g.drawImage(P.albedo, box.x, box.y, box.w, box.h);
+  // darker away from the torch
+  g.globalCompositeOperation = "source-atop";
+  const dark = g.createRadialGradient(l.x, l.y, 0, l.x, l.y, R);
+  for (const k of [0, 0.2, 0.45, 0.7, 1]) dark.addColorStop(k, `rgba(10,6,3,${clamp(1 - (AMBIENT + l.I * Math.pow(1 - k, 1.25)), 0, 0.92)})`);
+  g.fillStyle = dark; g.fillRect(box.x, box.y, box.w, box.h);
+  // the glints on the side the torch is on, as bright as the torch is near
+  const cy = G.oy + G.s * 0.5, near = l.I * clamp(1 - Math.hypot(l.x - G.ox, l.y - cy) / (R * 1.6), 0, 1);
+  const side = clamp((l.x - G.ox) / Math.max(1, G.s * G.shape.w * 0.6), -1, 1);
+  g.globalCompositeOperation = "lighter";
+  for (const [k, w] of [[0, 0.5 - side * 0.5], [1, 0.5 + side * 0.5]] as const) {
+    const a = near * (0.08 + 0.92 * w);
+    if (a > 0.02 && P.sheen) { g.globalAlpha = a; g.drawImage(P.sheen[k], box.x, box.y, box.w, box.h); }
   }
-  // the horn's tip, curling outwards above the bar
-  const tipLen = narrow ? 16 : 22;
-  for (let k = 1; k <= 6; k++) {
-    const t = k / 6;
-    pts.push({ x: T.x + side * (tipLen * 0.55) * t * t, y: T.y - tipLen * t, w: w1 * (1 - 0.75 * t) });
-  }
-  return pts;
+  // and behind it, its shadow on the stone, cast away from the torch
+  const ddx = G.ox - l.x, ddy = cy - l.y, dl = Math.hypot(ddx, ddy) || 1, off = G.s * 0.03;
+  g.globalCompositeOperation = "destination-over"; g.globalAlpha = 0.6;
+  g.drawImage(P.shadow, box.x + (ddx / dl) * off, box.y + (ddy / dl) * off * 0.7 + off * 0.5, box.w, box.h);
+  g.globalAlpha = 1; g.globalCompositeOperation = "source-over";
 }
 
-/** The outline of a band of varying width around a centre line, and its two edges. */
-function band(pts: { x: number; y: number; w: number }[]) {
-  const left: [number, number][] = [], right: [number, number][] = [];
-  for (let k = 0; k < pts.length; k++) {
-    const a = pts[Math.max(0, k - 1)], b = pts[Math.min(pts.length - 1, k + 1)];
-    const dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
-    const nx = -dy / len, ny = dx / len, h = pts[k].w / 2;
-    left.push([pts[k].x + nx * h, pts[k].y + ny * h]);
-    right.push([pts[k].x - nx * h, pts[k].y - ny * h]);
-  }
-  return { left, right };
-}
+/** What a string is doing this frame: how far it swings (px) and how much it glows (0 to 1). */
+export interface StringState { amp: number; glow: number }
 
-function poly(g: CanvasRenderingContext2D, ps: [number, number][], close = false) {
-  g.moveTo(ps[0][0], ps[0][1]);
-  for (let k = 1; k < ps.length; k++) g.lineTo(ps[k][0], ps[k][1]);
-  if (close) g.closePath();
+/** The strings, over the lit instrument, and the key that plucks each. */
+export function paintStrings(g: CanvasRenderingContext2D, G: Geom, l: Lamp, R: number, state: (i: number) => StringState, labels: (string | undefined)[] | null, face: string) {
+  const { n, top, bot, yBridge, yTail, yBoard, yFree, narrow } = G;
+  const ddx = G.ox - l.x, ddy = G.oy + G.s * 0.6 - l.y, dl = Math.hypot(ddx, ddy) || 1;
+  const ox = (ddx / dl) * 3, oy = (ddy / dl) * 1.6 + 1.6;
+  const thin = clamp(G.s / 380, 0.7, 1.1);
+  for (let i = 0; i < n; i++) {
+    const { amp, glow } = state(i);
+    const xb = stringX(G, i, yBridge), mx = (top[i] + xb) / 2, my = (yFree + yBridge) / 2;
+    const L = clamp(lum(l, top[i], my, R), 0, 1);
+    const w = (0.7 + 0.9 * (1 - i / Math.max(1, n - 1))) * thin;   // the low strings are a little thicker
+    // its shadow on the sounding board
+    const xh = stringX(G, i, yBoard);
+    g.beginPath(); g.moveTo(xh + ox, yBoard + oy); g.lineTo(xb + ox + amp * 0.3, yBridge + oy); g.lineTo(bot[i] + ox, yTail + oy);
+    g.strokeStyle = "rgba(12,7,3,0.32)"; g.lineWidth = w + 0.6; g.stroke();
+    const path = () => { g.beginPath(); g.moveTo(top[i], yFree); g.quadraticCurveTo(mx + amp * 2, my, xb, yBridge); g.lineTo(bot[i], yTail); };
+    if (glow > 0.04) { path(); g.strokeStyle = rgb(HONEY, 0.2 * glow); g.lineWidth = w + 2 + 5 * glow; g.stroke(); }
+    path();
+    g.strokeStyle = rgb(mixRGB(GUT, HONEY, glow), clamp(0.34 + 0.62 * L + 0.4 * glow, 0, 1));
+    g.lineWidth = w + 0.5 * glow; g.stroke();
+  }
+  if (labels) {
+    g.textAlign = "center"; g.textBaseline = "alphabetic";
+    const sp = n > 1 ? top[1] - top[0] : 30;
+    g.font = `600 ${sp < 15 ? 9.5 : narrow ? 10 : 11}px ${face}`;
+    for (let i = 0; i < n; i++) {
+      const lab = labels[i];
+      if (!lab) continue;
+      const { glow } = state(i);
+      g.fillStyle = glow > 0.05 ? rgb(HONEY, 0.6 + 0.4 * glow) : "rgba(191,176,154,0.7)";
+      g.fillText(lab, top[i], G.yLabel);
+    }
+  }
 }
 
 export function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: number, h: number, r: number) {
@@ -139,228 +174,6 @@ export function roundRect(g: CanvasRenderingContext2D, x: number, y: number, w: 
   g.beginPath();
   g.moveTo(x + rr, y); g.arcTo(x + w, y, x + w, y + h, rr); g.arcTo(x + w, y + h, x, y + h, rr);
   g.arcTo(x, y + h, x, y, rr); g.arcTo(x, y, x + w, y, rr); g.closePath();
-}
-
-/** The instrument without its strings, lit by the lamp. `R` is how far the torch's light reaches. */
-export function paintBody(g: CanvasRenderingContext2D, G: Geom, l: Lamp, R: number) {
-  const { W, H, cx, shell, yBar, yBridge, yTail, top, bot, n, armX, narrow } = G;
-  g.clearRect(0, 0, W, H);
-  if (!n) return;
-  // which way shadows fall: away from the light
-  const ddx = shell.cx - l.x, ddy = shell.cy - l.y, dl = Math.hypot(ddx, ddy) || 1;
-  const sx = (ddx / dl) * 9, sy = (ddy / dl) * 6 + 4;
-
-  // the lyre's shadow on the stone
-  g.save();
-  g.translate(shell.cx + sx, shell.cy + sy);
-  g.scale(1, shell.ry / shell.rx);
-  const sh = g.createRadialGradient(0, 0, shell.rx * 0.6, 0, 0, shell.rx * 1.12);
-  sh.addColorStop(0, "rgba(0,0,0,0.55)"); sh.addColorStop(1, "rgba(0,0,0,0)");
-  g.fillStyle = sh;
-  g.beginPath(); g.arc(0, 0, shell.rx * 1.12, 0, Math.PI * 2); g.fill();
-  g.restore();
-
-  // the arms
-  for (const side of [-1, 1] as const) {
-    const pts = armLine(G, side);
-    const { left, right } = band(pts);
-    // its shadow on the wall behind
-    g.beginPath(); poly(g, left.map(([x, y]) => [x + sx * 0.8, y + sy * 0.8] as [number, number])); poly(g, [...right].reverse().map(([x, y]) => [x + sx * 0.8, y + sy * 0.8] as [number, number])); g.closePath();
-    g.fillStyle = "rgba(0,0,0,0.32)"; g.fill();
-    g.beginPath(); poly(g, left); for (let k = right.length - 1; k >= 0; k--) g.lineTo(right[k][0], right[k][1]); g.closePath();
-    g.fillStyle = litFill(g, l, R, WOOD); g.fill();
-    g.strokeStyle = "rgba(8,5,2,0.6)"; g.lineWidth = 1; g.stroke();
-    // the curve of the horn: a band of light along the side turned to the torch, and shade along the other
-    const mid = Math.floor(pts.length / 2);
-    const nl = Math.sign((left[mid][0] - right[mid][0]) * (l.x - pts[mid].x) + (left[mid][1] - right[mid][1]) * (l.y - pts[mid].y)) || 1;
-    const [litE, darkE] = nl > 0 ? [left, right] : [right, left];
-    const along = (f: number) => litE.map(([x, y], k) => [x + (darkE[k][0] - x) * f, y + (darkE[k][1] - y) * f] as [number, number]);
-    g.lineCap = "round";
-    g.beginPath(); poly(g, along(0.3));
-    g.strokeStyle = glint(g, l, R, 0.38); g.lineWidth = narrow ? 3 : 4; g.stroke();
-    g.beginPath(); poly(g, along(0.82));
-    g.strokeStyle = "rgba(10,5,2,0.4)"; g.lineWidth = narrow ? 3 : 4; g.stroke();
-    // the grain of the horn: fine lines along it
-    g.lineWidth = 0.6;
-    for (const f of [0.18, 0.47, 0.64]) {
-      g.beginPath(); poly(g, along(f));
-      g.strokeStyle = "rgba(24,12,4,0.2)"; g.stroke();
-    }
-    g.lineCap = "butt";
-    // the edge turned to the light catches it
-    g.beginPath(); poly(g, litE);
-    g.strokeStyle = glint(g, l, R, 0.8); g.lineWidth = 1.2; g.stroke();
-    // a band where the arm is set into the shell
-    let kb = pts.findIndex((q) => ((q.x - shell.cx) / shell.rx) ** 2 + ((q.y - shell.cy) / shell.ry) ** 2 > 1);
-    kb = Math.max(0, Math.min(pts.length - 2, kb + 1));
-    const b0 = pts[kb], b1 = pts[kb + 1], ang = Math.atan2(b1.y - b0.y, b1.x - b0.x);
-    const lx = l.x - b0.x, ly = l.y - b0.y, ca = Math.cos(-ang), sa = Math.sin(-ang);
-    g.save();
-    g.translate(b0.x, b0.y); g.rotate(ang);
-    roundRect(g, -3, -b0.w / 2 - 1.5, 6, b0.w + 3, 2);
-    g.fillStyle = litFill(g, { x: lx * ca - ly * sa, y: lx * sa + ly * ca, I: l.I }, R, BRIDGE); g.fill();
-    g.strokeStyle = "rgba(8,5,2,0.6)"; g.lineWidth = 0.8; g.stroke();
-    g.restore();
-  }
-
-  // the shell: the rim of a tortoise's back, its plates around the edge, and the hide over it
-  const hx = shell.rx * 0.84, hy = shell.ry * 0.8;
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, shell.rx, shell.ry, 0, 0, Math.PI * 2);
-  g.fillStyle = litFill(g, l, R, SHELL); g.fill();
-  g.save();
-  g.beginPath();
-  g.ellipse(shell.cx, shell.cy, shell.rx, shell.ry, 0, 0, Math.PI * 2);
-  g.ellipse(shell.cx, shell.cy, hx, hy, 0, 0, Math.PI * 2, true);
-  g.clip("evenodd");
-  const K = narrow ? 18 : 24, rnd = seeded(31);
-  for (let k = 0; k < K; k++) {
-    const a0 = (k / K) * Math.PI * 2, a1 = ((k + 1) / K) * Math.PI * 2;
-    // each plate a slightly different brown, as a real shell's are
-    const v = rnd();
-    g.beginPath();
-    g.moveTo(shell.cx, shell.cy);
-    g.ellipse(shell.cx, shell.cy, shell.rx * 1.02, shell.ry * 1.02, 0, a0, a1);
-    g.closePath();
-    g.fillStyle = v > 0.55 ? `rgba(214,150,72,${0.06 + 0.1 * (v - 0.55)})` : `rgba(0,0,0,${0.06 + 0.18 * (0.55 - v)})`;
-    g.fill();
-    // the seam between plates
-    g.beginPath();
-    g.moveTo(shell.cx + Math.cos(a0) * hx, shell.cy + Math.sin(a0) * hy);
-    g.lineTo(shell.cx + Math.cos(a0) * shell.rx, shell.cy + Math.sin(a0) * shell.ry);
-    g.strokeStyle = "rgba(10,6,2,0.72)"; g.lineWidth = 1.3; g.stroke();
-    // and its growth rings
-    for (const f of [0.9, 0.955]) {
-      g.beginPath();
-      g.ellipse(shell.cx, shell.cy, shell.rx * f, shell.ry * f, 0, a0 + 0.12 * (a1 - a0), a1 - 0.12 * (a1 - a0));
-      g.strokeStyle = "rgba(12,7,3,0.28)"; g.lineWidth = 0.8; g.stroke();
-    }
-  }
-  g.restore();
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, shell.rx, shell.ry, 0, 0, Math.PI * 2);
-  g.strokeStyle = "rgba(6,4,2,0.7)"; g.lineWidth = 1.2; g.stroke();
-  // the rim's lit edge
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, shell.rx - 1, shell.ry - 1, 0, 0, Math.PI * 2);
-  g.strokeStyle = glint(g, l, R, 0.5); g.lineWidth = 1.2; g.stroke();
-
-  // the hide, stretched and sewn to the rim
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, hx, hy, 0, 0, Math.PI * 2);
-  g.fillStyle = litFill(g, l, R, HIDE, 0.8); g.fill();
-  g.save();
-  g.clip();
-  const rh = seeded(7);
-  for (let k = 0; k < 7; k++) {                     // the hide's uneven colour
-    const x = shell.cx + (rh() * 2 - 1) * hx * 0.8, y = shell.cy + (rh() * 2 - 1) * hy * 0.7, r = (0.25 + rh() * 0.4) * hx;
-    const m = g.createRadialGradient(x, y, 0, x, y, r);
-    m.addColorStop(0, `rgba(70,48,24,${0.05 + rh() * 0.06})`); m.addColorStop(1, "rgba(70,48,24,0)");
-    g.fillStyle = m; g.fillRect(x - r, y - r, 2 * r, 2 * r);
-  }
-  // and its fibres, faint
-  g.lineWidth = 0.6;
-  for (let k = 0; k < (narrow ? 26 : 44); k++) {
-    const x = shell.cx + (rh() * 2 - 1) * hx, y = shell.cy + (rh() * 2 - 1) * hy, len = 10 + rh() * 26, a = (rh() - 0.5) * 0.7;
-    g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + len * 0.5, y + Math.sin(a) * len * 0.5 + 2, x + len * Math.cos(a), y + len * Math.sin(a));
-    g.strokeStyle = rh() > 0.5 ? "rgba(255,240,210,0.07)" : "rgba(60,40,20,0.08)"; g.stroke();
-  }
-  // the rim's shadow on the hide, on the side away from the light
-  g.beginPath(); g.ellipse(shell.cx + sx * 0.5, shell.cy + sy * 0.4, hx, hy, 0, 0, Math.PI * 2);
-  g.ellipse(shell.cx - sx * 0.2, shell.cy - sy * 0.2 + 2, hx * 1.2, hy * 1.2, 0, 0, Math.PI * 2, true);
-  g.fillStyle = "rgba(10,6,3,0.22)"; g.fill("evenodd");
-  g.restore();
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, hx, hy, 0, 0, Math.PI * 2);
-  g.strokeStyle = "rgba(20,12,5,0.65)"; g.lineWidth = 1.4; g.stroke();
-  // the stitches that hold it
-  g.save();
-  g.setLineDash([1.6, narrow ? 6 : 8]);
-  g.beginPath(); g.ellipse(shell.cx, shell.cy, hx - 4, hy - 3.5, 0, 0, Math.PI * 2);
-  g.strokeStyle = "rgba(40,24,10,0.45)"; g.lineWidth = 1.4; g.stroke();
-  g.restore();
-
-  // the tailpiece, where the strings are tied
-  const tl = bot[0] - 10, tr = bot[n - 1] + 10;
-  roundRect(g, tl + sx * 0.3, yTail - 4 + sy * 0.3 + 1, tr - tl, 9, 4); g.fillStyle = "rgba(10,6,3,0.35)"; g.fill();
-  roundRect(g, tl, yTail - 4, tr - tl, 8, 4); g.fillStyle = litFill(g, l, R, BAR); g.fill();
-  g.strokeStyle = "rgba(8,5,2,0.6)"; g.lineWidth = 1; g.stroke();
-  for (let i = 0; i < n; i++) {
-    g.beginPath(); g.arc(bot[i], yTail, 2.2, 0, Math.PI * 2);
-    g.fillStyle = litFill(g, l, R, LEATHER); g.fill();
-  }
-
-  // the bridge on the hide, which the strings run over
-  const bl = stringX(G, 0, yBridge) - 12, br = stringX(G, n - 1, yBridge) + 12;
-  roundRect(g, bl + sx * 0.45, yBridge - 3 + sy * 0.45 + 2, br - bl, 8, 3); g.fillStyle = "rgba(10,6,3,0.38)"; g.fill();
-  roundRect(g, bl, yBridge - 3.5, br - bl, 7, 3); g.fillStyle = litFill(g, l, R, BRIDGE); g.fill();
-  g.strokeStyle = "rgba(8,5,2,0.6)"; g.lineWidth = 1; g.stroke();
-  g.beginPath(); g.moveTo(bl + 3, yBridge - 3); g.lineTo(br - 3, yBridge - 3);
-  g.strokeStyle = glint(g, l, R, 0.6); g.lineWidth = 1; g.stroke();
-
-  // the crossbar between the arms' tips, a turned rod with a knob at each end
-  const xl = cx - armX - (narrow ? 12 : 16), xr = cx + armX + (narrow ? 12 : 16), bh = narrow ? 11 : 13;
-  roundRect(g, xl + sx * 0.6, yBar - bh / 2 + sy * 0.6, xr - xl, bh, bh / 2); g.fillStyle = "rgba(0,0,0,0.35)"; g.fill();
-  roundRect(g, xl, yBar - bh / 2, xr - xl, bh, bh / 2);
-  g.fillStyle = litFill(g, l, R, BAR); g.fill();
-  const rod = g.createLinearGradient(0, yBar - bh / 2, 0, yBar + bh / 2);
-  rod.addColorStop(0, "rgba(255,236,200,0.16)"); rod.addColorStop(0.3, "rgba(255,236,200,0.04)");
-  rod.addColorStop(0.65, "rgba(0,0,0,0.12)"); rod.addColorStop(1, "rgba(0,0,0,0.45)");
-  g.fillStyle = rod; g.fill();
-  g.strokeStyle = "rgba(8,5,2,0.65)"; g.lineWidth = 1; g.stroke();
-  g.beginPath(); g.moveTo(xl + bh / 2, yBar - bh / 2 + 2); g.lineTo(xr - bh / 2, yBar - bh / 2 + 2);
-  g.strokeStyle = glint(g, l, R, 0.7); g.lineWidth = 1.2; g.stroke();
-  for (const x of [xl, xr]) {
-    const r = bh * 0.62, ox = clamp((l.x - x) / 200, -1, 1) * r * 0.4, oy = clamp((l.y - yBar) / 200, -1, 1) * r * 0.4;
-    const kn = g.createRadialGradient(x + ox, yBar + oy, 0.5, x, yBar, r);
-    const L = clamp(lum(l, x, yBar, R), 0, 1);
-    kn.addColorStop(0, rgb(mixRGB(BAR[1], [255, 228, 180], L))); kn.addColorStop(1, rgb(mixRGB(BAR[1], BAR[0], L * 0.6)));
-    g.beginPath(); g.arc(x, yBar, r, 0, Math.PI * 2); g.fillStyle = kn; g.fill();
-    g.strokeStyle = "rgba(8,5,2,0.6)"; g.stroke();
-  }
-
-  // the kollopes: a peg on the bar for each string, which tightens it
-  for (let i = 0; i < n; i++) {
-    const x = top[i], kw = narrow ? 6 : 8, kh = bh + 6;
-    roundRect(g, x - kw / 2, yBar - kh / 2, kw, kh, 2.5);
-    g.fillStyle = litFill(g, l, R, LEATHER); g.fill();
-    g.strokeStyle = "rgba(10,6,3,0.55)"; g.lineWidth = 0.8; g.stroke();
-    g.beginPath();
-    for (const dy of [-kh * 0.2, kh * 0.12]) { g.moveTo(x - kw / 2 + 1, yBar + dy); g.lineTo(x + kw / 2 - 1, yBar + dy + 1.5); }
-    g.strokeStyle = "rgba(30,18,8,0.45)"; g.stroke();
-  }
-}
-
-/** What a string is doing this frame: how far it swings (px) and how much it glows (0 to 1). */
-export interface StringState { amp: number; glow: number }
-
-/** The strings, over the painted body, and the key that plucks each. */
-export function paintStrings(g: CanvasRenderingContext2D, G: Geom, l: Lamp, R: number, state: (i: number) => StringState, labels: (string | undefined)[] | null, face: string) {
-  const { n, top, bot, yBar, yBridge, yTail, shell, narrow } = G;
-  const ddx = shell.cx - l.x, ddy = shell.cy - l.y, dl = Math.hypot(ddx, ddy) || 1;
-  const ox = (ddx / dl) * 3.5, oy = (ddy / dl) * 2 + 1.5;
-  const yHide = shell.cy - shell.ry * 0.8, y0 = yBar + (narrow ? 9 : 10);
-  for (let i = 0; i < n; i++) {
-    const { amp, glow } = state(i);
-    const xb = stringX(G, i, yBridge), mx = (top[i] + xb) / 2, my = (y0 + yBridge) / 2;
-    const L = clamp(lum(l, top[i], my, R), 0, 1);
-    const w = (narrow ? 0.8 : 0.95) + 1.1 * (1 - i / Math.max(1, n - 1));   // the low strings are a little thicker
-    // its shadow on the hide
-    const xh = stringX(G, i, yHide);
-    g.beginPath(); g.moveTo(xh + ox, yHide + oy); g.lineTo(xb + ox + amp * 0.3, yBridge + oy); g.lineTo(bot[i] + ox, yTail + oy);
-    g.strokeStyle = "rgba(12,7,3,0.3)"; g.lineWidth = w + 0.6; g.stroke();
-    const path = () => { g.beginPath(); g.moveTo(top[i], y0); g.quadraticCurveTo(mx + amp * 2, my, xb, yBridge); g.lineTo(bot[i], yTail); };
-    if (glow > 0.04) { path(); g.strokeStyle = rgb(HONEY, 0.2 * glow); g.lineWidth = w + 2 + 6 * glow; g.stroke(); }
-    path();
-    g.strokeStyle = rgb(mixRGB(GUT, HONEY, glow), clamp(0.3 + 0.62 * L + 0.4 * glow, 0, 1));
-    g.lineWidth = w + 0.5 * glow; g.stroke();
-  }
-  if (labels) {
-    g.textAlign = "center"; g.textBaseline = "alphabetic";
-    g.font = `600 ${narrow ? 10 : 11}px ${face}`;
-    for (let i = 0; i < n; i++) {
-      const lab = labels[i];
-      if (!lab) continue;
-      const { glow } = state(i);
-      g.fillStyle = glow > 0.05 ? rgb(HONEY, 0.6 + 0.4 * glow) : "rgba(191,176,154,0.62)";
-      g.fillText(lab, top[i], 17);
-    }
-  }
 }
 
 // ── the roll ─────────────────────────────────────────────────────────────────────────────────────────────────────────
