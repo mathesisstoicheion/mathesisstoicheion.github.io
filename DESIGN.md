@@ -67,17 +67,24 @@ Light text is never pure white.
 - One column on phones, with a 16px gutter. Pictures sit above the text on phones.
 
 ## Everything on a page is stone
-The owner (2026-10-16): "All pages and content must match the theme", "Except for photos and text and buttons". So every panel,
-card, table, list, chart, form field, frame, empty-state box and the footer is cut from the wall; photos, text and buttons keep
-their own look. The torch's light lies on the wall behind everything, so a see-through stone panel is lit as the torch passes.
+The owner (2026-10-16): "All pages and content must match the theme", "Except for photos and text and buttons"; then
+(2026-10-17): "Make every page and page element match the theme", choosing stone buttons too. So every panel, card, table,
+list, chart, map, form field, button, chip, tick box, frame, empty-state box and the footer is cut from the wall; only photos
+and the text keep their own look. No outlined boxes: nothing is drawn round with a thin line. The torch's light lies on the wall behind everything, so a see-through stone panel is lit as the torch passes.
 The pieces (all in `web/src/styles/tokens.css`; a module uses only these names):
 | Thing | Token |
 |---|---|
 | A panel sunk into the wall (most boxes, lists, tables, figures, forms, empty states) | `--field`, `--field-edge` |
 | A slab set on the wall (a card that is a link, a featured item, a summary of numbers, a tip); lit when hovered or chosen | `--slab`, `--slab-edge`, `--slab-lit` |
-| A fine line cut just inside a big panel's edge | `--moulding` with `--moulding-in` (a moulded link card gets its focus ring back) |
+| An inner panel cut just inside a big panel's edge (upper and left edges in shadow, the others lit; an inset outline) | `--moulding` with `--moulding-in` (a moulded link card gets its focus ring back); on a pseudo-element, `--panel-cut` (`--panel-cut-lit` under the hand) |
+| The main button: a gilded plate, lit from above, sinking when pressed | `.btn`: `--inlay`, `--inlay-edge`, `--inlay-drop`, `--inlay-press` |
+| Any other button, a chip, a tag: a small slab (chosen: lit, with a gilded foot); a tag or badge is a small channel | `.btn.ghost`, `.chip`: `--slab`…, `--chosen-foot`; `.tag`: `--channel`, `--channel-edge` |
+| A row of choices: a channel sunk in the stone, the chosen one standing up in it (as in Settings) | `.segmented` |
+| A tick box or a choice: a small hollow; checked, a gilded tick or stone is set in it. A drop-down has a gilded chevron | global input styles, `--select-arrow` |
+| A small map: cut in the stone, the land its face, the sea sunk and darker, the coast the cut's lit edge | `--map-land-wash`, `--map-sea-wash`, `--map-coast` |
+| Architecture: a column is a round shaft with flutes and a capital; a gable is solid stone round a sunk tympanum; a triglyph is a grooved block | `--shaft`, `--flutes`, `--capital`, `--capital-shadow`, `--stylobate`, `--block-light`, `--tympanum`, `--lip-hi` |
 | A line between rows, above something, at the left | `--cut-under`, `--cut-over`, `--cut-left` (shadows, so a row's own background stays free) |
-| A slim gilded inlay at a slab's left or top (gold, green for right, ochre, blue, the legend's colour) | `--inlay-left`, `--inlay-left-ok`, `--inlay-left-ochre`, `--inlay-left-blue`, `--inlay-left-legend`, `--inlay-top` |
+| A slim gilded inlay at a slab's left or top, laid in a cut (gold, green for right, ochre, blue, the legend's colour) | `--inlay-left`, `--inlay-left-ok`, `--inlay-left-ochre`, `--inlay-left-blue`, `--inlay-left-legend`, `--inlay-top`, `--inlay-top-blue` |
 | A bar or meter: a channel cut in the stone, filled with gilding | `--channel`, `--channel-edge`, `--inlay`, `--inlay-side`, `--inlay-dim`, `--inlay-edge` |
 | A field to type in: a hollow cut in the stone (the global style; focus adds a gold line) | `--hollow`, `--hollow-edge`, `--hollow-focus` |
 | A frame round a photo or map | `--frame` |
@@ -146,10 +153,15 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
   letters to jump by. The list is cut open like a carving: a fine line is cut across the top with a glint at the chisel's point,
   the panel sinks beneath it, then the letters and the groups are cut in from left to right; closing runs it back, faster. On a
   phone the letters are a strip down the right-hand edge: press and slide (the owner, 2026-10-16).
-- **The library** has no button and no separate block: one slim scroller of letters runs down the left of the list, on a
+- **The library** has no button and no separate block: one slim scroller of letters runs down the right of the list, on a
   computer and a phone, and stays beside it as the page scrolls (the owner, 2026-10-16: "the A to Z should just be the side
-  scroller. On the left side"). Press and slide on a phone, with the letter shown beside the finger. It is hidden when the list
-  is ordered by period, or holds fewer than 20 authors.
+  scroller"; 2026-10-17: "give the A to Z scroll smooth animation and match its theme better. Also, move it to the right
+  side"). Press and slide on a phone, with the letter shown beside the finger. It is hidden when the list is ordered by period,
+  or holds fewer than 20 authors.
+- Both A to Z rails are a channel cut in the stone with carved letters; a lit slab with a gilded edge marks the letter you are
+  reading under, and slides (by transform) as you scroll. A tap jumps to the last stretch and glides the rest (lib/header.ts,
+  `glideTo`: about half a second; a quarter while a finger slides), so it reads as smooth without the browser drawing the
+  whole list on the way; any wheel, touch or key stops the glide.
 - **The settings panel**: every control is cut in the same stone (slabs, with the chosen one lit and gilded at its foot).
 
 ## The screens

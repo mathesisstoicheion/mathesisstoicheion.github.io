@@ -32,10 +32,12 @@
 .featured {
   position: relative; display: grid; gap: 10px; padding: clamp(24px, 4vw, 40px); text-decoration: none; overflow: hidden;
   background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius);
-  /* a panel cut into the wall: the cut's dark edge, a margin of stone, then a thin line of torchlight */
-  box-shadow: inset 0 0 0 1px var(--cut-d), inset 0 0 0 10px var(--surface), inset 0 0 0 11px var(--line-2);
+  /* a slab set on the wall, with a panel cut just inside its edge (the moulding, below) */
+  box-shadow: var(--slab-edge); outline: var(--moulding); outline-offset: var(--moulding-in);
   animation: lift 0.7s var(--ease) both;
 }
+/* the moulding uses the outline, so the link card gives the focus ring back */
+.featured:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .featured[data-pic], .featured:has(.featuredIcon) { grid-template-columns: minmax(0, 1fr) minmax(200px, 38%); align-items: center; gap: 18px clamp(20px, 3vw, 40px); }
 .featuredText { display: grid; gap: 10px; align-content: center; }
 .featuredPic {
@@ -45,7 +47,7 @@
 }
 .featured:hover .featuredPic { transform: scale(1.02); }
 .featuredPic[data-whole] { object-fit: contain; background: color-mix(in srgb, var(--inv-fg) 7%, var(--inv-bg)); padding: 10px; }
-.featuredIcon { justify-self: center; display: grid; place-items: center; width: 160px; height: 160px; border-radius: var(--radius-round); color: var(--accent); box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 55%, transparent), inset 0 0 0 10px color-mix(in srgb, var(--inv-fg) 6%, transparent); }
+.featuredIcon { justify-self: center; display: grid; place-items: center; width: 160px; height: 160px; border-radius: var(--radius-round); color: var(--accent); background: var(--boss); box-shadow: var(--boss-edge); }
 .featuredIcon svg { width: 78px; height: 78px; }
 @media (max-width: 760px) {
   .featured[data-pic], .featured:has(.featuredIcon) { grid-template-columns: minmax(0, 1fr); }
@@ -60,34 +62,37 @@
 .featuredGo { font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
 .featured:hover .featuredGo { text-decoration: underline; }
 
-/* the colonnade: each panel stands between two fluted columns, on a shared stylobate */
+/* the colonnade: each panel stands between two fluted columns, on a shared stylobate. Each column is a round shaft of
+   stone, lit from the front by the torch and darker at its sides, cut with fine flutes and crowned with a capital. */
 .colonnade {
-  list-style: none; margin: 0; padding: 0 7px 14px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0;
-  /* one fluted column, used for every column: 13 px with five grooves at 0, 3, 6, 9 and 12 px,
-     so it looks the same from either side and the two ends of the colonnade match */
-  --column: repeating-linear-gradient(90deg, color-mix(in srgb, var(--ink) 16%, var(--surface)) 0 1px, var(--surface) 1px 3px);
-  border-bottom: 10px solid var(--bg-deep); box-shadow: 0 1px 0 var(--line-1); position: relative;
-  /* the last column, at the right end; the first stands at the left end (the first panel's ::before), mirror images */
-  background: var(--column) right top / 13px 100% no-repeat;
+  list-style: none; margin: 0; padding: 0 7px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0;
+  position: relative;
+  /* the last column, at the right end (the first stands at the left end, the first panel's ::before), and the stylobate:
+     a step of stone 10 px deep, its front edge caught by the torch */
+  background:
+    var(--flutes) right top / 13px calc(100% - 10px) no-repeat, var(--shaft) right top / 13px calc(100% - 10px) no-repeat,
+    var(--stylobate) left bottom / 100% 10px no-repeat;
 }
-/* the step below the stylobate: stone, its edge caught by the torch */
-.colonnade::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -18px; height: 6px; background: var(--bg-2); border-top: 1px solid var(--line-1); }
+/* the right-hand column's capital */
+.colonnade::before { content: ""; position: absolute; right: calc(var(--space-1) * -0.75); top: 0; width: 19px; height: 14px; background: var(--capital) center top / 100% 8px no-repeat, var(--capital-shadow) center 8px / 13px 6px no-repeat; }
+/* the step below the stylobate */
+.colonnade::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -8px; height: 6px; background: var(--block-light), var(--stone-2); box-shadow: inset 0 1px 0 var(--lip), var(--lintel-shadow); }
 .panel { display: grid; padding: 0 14px; position: relative; animation: rise 0.6s var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
-/* a fluted column on the left of every panel */
+/* a fluted column on the left of every panel, and its capital (a block a little wider than the shaft, its shadow under it) */
 .panel::before {
-  content: ""; position: absolute; left: -7px; top: 0; bottom: 0; width: 13px; z-index: 1;
-  background: var(--column);
+  content: ""; position: absolute; left: -10px; top: 0; bottom: 0; width: 19px; z-index: 1;
+  background: var(--capital) center top / 100% 8px no-repeat, var(--capital-shadow) center 8px / 13px 6px no-repeat,
+    var(--flutes) center / 13px 100% no-repeat, var(--shaft) center / 13px 100% no-repeat;
 }
 @keyframes rise { from { transform: translateY(16px); opacity: 0; } }
 .panelIn {
   display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px; min-height: 240px;
   background: var(--field); box-shadow: var(--field-edge);
 }
-/* each category's sign, in a black-glaze roundel hung over the panel's top edge like a medallion */
+/* each category's sign, on a round boss of stone ringed with gold, hung over the panel's top edge like a medallion */
 .roundel {
   position: relative; width: 56px; height: 56px; margin-top: -50px; display: grid; place-items: center; border-radius: var(--radius-round);
-  background: var(--inv-bg); color: var(--accent-on-ink);
-  box-shadow: 0 0 0 4px var(--bg), 0 0 0 5px color-mix(in srgb, var(--accent) 55%, transparent);
+  background: var(--boss); color: var(--accent-on-ink); box-shadow: var(--boss-edge);
   transition: transform 0.4s var(--ease);
 }
 .roundel svg { width: 30px; height: 30px; }
@@ -159,14 +164,14 @@
 .dyk :global(.label) { color: var(--accent); }
 .dyk p { margin: 0; }
 .dyk a { color: inherit; }
-/* a small amphora in the margin of the box */
-.dyk::before { content: ""; position: absolute; left: 20px; top: 20px; width: 22px; height: 30px; background: var(--accent);
+/* a small amphora in the margin of the box, laid in gold and cut into the stone */
+.dyk::before { content: ""; position: absolute; left: 20px; top: 20px; width: 22px; height: 30px; background: var(--gilt); filter: var(--gilt-cut);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat; }
 
 .timeline { list-style: none; margin: 8px 0; padding: 0 0 0 24px; display: grid; gap: 14px; box-shadow: var(--cut-left); font-size: 1rem; line-height: 1.5; }
 .timeline li { position: relative; display: grid; gap: 2px; }
-.timeline li::before { content: ""; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--accent); box-shadow: 0 0 0 3px var(--bg); }
+.timeline li::before { content: ""; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--gem-shine), var(--inlay); box-shadow: var(--inlay-edge); }
 .when { font-family: var(--f-label); letter-spacing: 0.05em; color: var(--accent); font-size: 0.9rem; }
 
 .figure { margin: 8px 0; display: grid; gap: 8px; }
@@ -197,8 +202,8 @@
 .certKey p { margin: 0; display: grid; gap: 4px; justify-items: start; }
 
 /* ---------------------------------------------------------------- the reader's own notes on an entry */
-.noteBtn { justify-self: end; margin-top: -12px; font-size: 0.82rem; color: var(--ink-2); border-color: var(--rule); transition: color 0.2s, border-color 0.2s; }
-.noteBtn:hover, .noteBtn:focus-visible { color: var(--ink); border-color: var(--rule-2); }
+.noteBtn { justify-self: end; margin-top: -12px; font-size: 0.82rem; color: var(--ink-2); }
+.noteBtn:hover, .noteBtn:focus-visible { color: var(--ink); background: var(--slab-lit); }
 .entryMain > .noteBtn { justify-self: end; }
 .sectionNote { margin-top: -6px; padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: 1rem; animation: noteIn 0.35s var(--ease) backwards; }
 @keyframes noteIn { from { opacity: 0; transform: translateY(-4px); } }
@@ -213,7 +218,7 @@
 /* phones: the contents and the "on the map" links are finger-sized rows (Phase 10) */
 @media (max-width: 760px) {
   .contents a { display: flex; align-items: center; min-height: var(--tap); }
-  .onMap a { display: inline-flex; align-items: center; min-height: var(--tap); }
+  .onMap a { display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--tap); }
 }
 
 /* a numbered source pointer, in running text */

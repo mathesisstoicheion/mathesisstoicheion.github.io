@@ -24,9 +24,10 @@
 .input::-webkit-search-cancel-button { display: none; }
 .kbdBtn {
   flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-right: 10px; padding: 0 10px;
-  font-family: var(--f-greek); font-size: 1rem; color: var(--ink); background: transparent; border: 1.5px solid var(--rule); border-radius: var(--radius);
+  font-family: var(--f-greek); font-size: 1rem; color: var(--ink); background: var(--slab); border: 1.5px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
 }
-.kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
+.kbdBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.kbdBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .close { display: none; }
 .body { display: grid; align-content: start; }
 .list { margin: 0; padding: 4px 6px 8px; max-height: 56vh; overflow: auto; }
@@ -82,15 +83,17 @@
 .link:hover { color: var(--accent); }
 .chips { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; gap: 8px; }
 .chip {
-  padding: 6px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg);
-  color: var(--ink); font-size: 0.95rem; cursor: pointer; transition: border-color 0.2s, background-color 0.2s;
+  padding: 6px 12px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge);
+  color: var(--ink); font-size: 0.95rem; cursor: pointer; transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .chip[lang="grc"] { font-family: var(--f-greek); font-size: 1.05rem; }
-.chip:hover, .chip:focus-visible { border-color: var(--accent); }
+.chip:hover, .chip:focus-visible { background: var(--slab-lit); }
+.chip:active { background: var(--field); box-shadow: var(--field-edge); }
 .recent { display: inline-flex; align-items: center; }
 .recent .chip { border-radius: var(--radius); border-right: 0; }
-.chipX { align-self: stretch; padding: 0 10px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink-2); cursor: pointer; }
-.chipX:hover { color: var(--accent); border-color: var(--accent); }
+.chipX { align-self: stretch; padding: 0 10px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink-2); cursor: pointer; }
+.chipX:hover { color: var(--accent); background: var(--slab-lit); }
+.chipX:active { background: var(--field); box-shadow: var(--field-edge); }
 .visits { list-style: none; margin: 0; padding: 0 6px; display: grid; }
 .visits button { width: 100%; padding: 8px 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: 0.98rem; cursor: pointer; }
 .visits button:hover, .visits button:focus-visible { background: var(--bg-2); }

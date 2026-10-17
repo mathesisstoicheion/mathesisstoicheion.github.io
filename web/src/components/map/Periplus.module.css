@@ -39,8 +39,8 @@
 
 /* zoom: one slim column, clear of the sea's middle */
 .controls { position: absolute; right: 12px; top: 12px; display: grid; gap: 8px; justify-items: end; z-index: 3; }
-.zoomPair { display: grid; border-radius: var(--radius); overflow: hidden; box-shadow: 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent), 0 6px 16px -8px var(--shadow); }
-.zoomPair button + button { border-top: 1px solid color-mix(in srgb, var(--rule) 70%, transparent); }
+.zoomPair { display: grid; border-radius: var(--radius); overflow: hidden; box-shadow: var(--slab-edge); }
+.zoomPair button + button { box-shadow: var(--cut-over); }
 .controls button {
   width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; cursor: pointer;
   background: color-mix(in srgb, var(--surface) 88%, transparent); color: var(--ink);
@@ -49,7 +49,7 @@
 .controls button:hover { background: var(--surface); color: var(--accent); }
 .controls button:active svg { scale: 0.88; }
 .controls svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: scale 0.15s; }
-.homeBtn { border-radius: var(--radius); box-shadow: 0 0 0 1px color-mix(in srgb, var(--rule) 70%, transparent), 0 6px 16px -8px var(--shadow); }
+.homeBtn { border-radius: var(--radius); box-shadow: var(--slab-edge); }
 
 /* a compass at the bottom left, a scale bar at the bottom right: small pills like the zoom buttons */
 .compass, .scale {

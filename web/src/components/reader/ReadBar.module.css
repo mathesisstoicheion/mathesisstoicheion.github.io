@@ -76,7 +76,8 @@
 .drawerHead { display: flex; justify-content: space-between; align-items: start; gap: 12px; }
 .drawerHead h2 { font-size: 1.6rem; }
 .drawerHead p { margin-top: 4px; }
-.x { flex: none; width: var(--tap); height: var(--tap); font-size: 26px; line-height: 1; background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); }
+.x { flex: none; width: var(--tap); height: var(--tap); font-size: 26px; line-height: 1; background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); border: 1px solid transparent; border-radius: var(--radius); }
+.x:active { background: var(--field); box-shadow: var(--field-edge); }
 .parts { list-style: none; margin: 0; padding: 0; display: grid; }
 .parts button {
   width: 100%; min-height: var(--tap); padding: 8px 12px; text-align: left; background: transparent; color: var(--ink);
@@ -98,7 +99,7 @@
 }
 .sizes { display: grid; gap: 12px; }
 .sizeRow { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-.stepper { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--radius); }
+.stepper { display: inline-flex; align-items: center; border: 1px solid transparent; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .stepper button { width: var(--tap); height: var(--tap); background: transparent; border: 0; color: var(--ink); font-size: 1.3rem; }
 .stepper button:disabled { opacity: 0.3; }
 .stepper output { min-width: 60px; text-align: center; font-variant-numeric: tabular-nums; }

@@ -35,13 +35,14 @@
 /* ---------------------------------------------------------------- order and filters */
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
 .selects { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
-.selects select { font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius); padding: var(--space-2) 10px; width: 10.5rem; }
-.selects select[data-set] { border-color: var(--sel-edge); box-shadow: inset 0 0 0 1px var(--sel-edge); }
+.selects select { font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--hollow); border: 1px solid transparent; box-shadow: var(--hollow-edge); border-radius: var(--radius); padding: var(--space-2) 10px; width: 10.5rem; }
+.selects select[data-set] { box-shadow: var(--hollow-focus), var(--hollow-edge); }
 @media (pointer: coarse) { .selects select { min-height: var(--tap); } }
 .moreBtn {
   display: none; width: 100%; justify-content: center; align-items: center; min-height: var(--tap);
-  font: inherit; font-size: 0.95rem; color: inherit; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
+  font: inherit; font-size: 0.95rem; color: inherit; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
 }
+.moreBtn:active { background: var(--field); box-shadow: var(--field-edge); }
 .moreBtn::after { content: "▾"; margin-left: var(--space-2); color: var(--ink-2); transition: transform 0.2s var(--ease); }
 .moreBtn[aria-expanded="true"]::after { transform: rotate(180deg); }
 /* wide screens: the controls stand in the page as they are; phones fold them away (below) */
@@ -78,7 +79,9 @@
 /* the list, with the rail of letters (AZList.tsx) in a column of its own down its left: the rail is sticky within this box, so it
    stays beside the list as the page scrolls and ends with it; the text never goes under it */
 .listWrap { display: grid; grid-template-columns: minmax(0, 1fr); }
-.listWrap[data-rail] { grid-template-columns: var(--space-6) minmax(0, 1fr); column-gap: var(--space-5); }
+/* the rail of letters stands at the right of the list (the owner, 2026-10-17: "move it to the right side") */
+.listWrap[data-rail] { grid-template-columns: minmax(0, 1fr) var(--space-6); column-gap: var(--space-5); }
+.listWrap[data-rail] > nav { order: 1; }
 .list { display: grid; min-width: 0; }
 .groupHead:focus { outline: none; }
 .groupHead:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
@@ -86,11 +89,11 @@
 .group { scroll-margin-top: 0; }
 .groupHead {
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
-  border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) backwards;
+  box-shadow: var(--cut-under); animation: rise 0.5s var(--ease) backwards;
 }
 .groupHead[data-period] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
-.author { border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
+.author { box-shadow: var(--cut-under); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }
 @keyframes picked { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 /* risings hold their first frame only until they start (backwards), and none holds its last: a finished one would
@@ -142,8 +145,8 @@
 .go { color: var(--accent); opacity: 0; translate: -4px 0; transition: opacity 0.2s, translate 0.2s var(--ease); }
 .row:hover .go, .row:focus-visible .go { opacity: 1; translate: 0 0; }
 
-.badge { font-family: var(--f-label); letter-spacing: 0.05em; padding: 1px var(--space-2); border-radius: var(--radius); border: 1px solid var(--blue); color: var(--blue); white-space: nowrap; }
-.off { border-color: var(--rule); color: var(--ink-2); }
+.badge { font-family: var(--f-label); letter-spacing: 0.05em; padding: 1px var(--space-2); border-radius: var(--radius); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--blue); white-space: nowrap; }
+.off { color: var(--ink-2); }
 .genre { font-size: 0.82rem; color: var(--ink-2); }
 
 @media (max-width: 1100px) { .rowMeta .genre { display: none; } }
@@ -207,7 +210,7 @@
 .meter[data-level="1"] .bars i:nth-child(1) { background: var(--ok); }
 .meter[data-level="3"] .bars i { background: var(--accent); }
 .len { white-space: nowrap; }
-.best { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); border: 1px solid currentColor; border-radius: var(--radius); padding: 0 var(--space-2); white-space: nowrap; }
+.best { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--accent); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); padding: 0 var(--space-2); white-space: nowrap; }
 .reading { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
 .reading :global(.chip) { text-decoration: none; }
 .reading small { color: var(--ink-2); }
@@ -246,10 +249,10 @@
 .mineBtn {
   text-decoration: none;
   display: inline-flex; align-items: center; gap: 10px; padding: 9px var(--space-4) 9px var(--space-3); text-align: left; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius);
-  transition: transform var(--dur-quick) var(--ease), border-color var(--dur-quick), box-shadow var(--dur-quick) var(--ease);
+  background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
+  transition: transform var(--dur-quick) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur-quick) var(--ease);
 }
-.mineBtn:hover, .mineBtn:focus-visible { transform: translateY(-2px); border-color: var(--accent); box-shadow: 0 8px 18px -12px var(--shadow); }
+.mineBtn:hover, .mineBtn:focus-visible { transform: translateY(-2px); background: var(--slab-lit); box-shadow: var(--slab-edge), 0 8px 18px -12px var(--shadow); }
 .mineBtn svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s var(--ease); }
 .mineBtn:hover svg { transform: translateY(-1px) rotate(-4deg); }
 .mineBtn span { display: grid; line-height: 1.25; }

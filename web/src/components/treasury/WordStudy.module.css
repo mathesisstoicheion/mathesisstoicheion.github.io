@@ -32,9 +32,10 @@
 .sec > h3 { margin-top: 6px; }
 @keyframes rise { from { transform: translateY(12px); opacity: 0; } }
 .secHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 16px; }
-.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
-.seg button { border: 0; background: transparent; padding: 6px 12px; font-size: var(--step--1); }
-.seg button[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
+.seg { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border: 0; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.seg button { border: 0; border-radius: var(--radius); background: transparent; padding: 6px 12px; font-size: var(--step--1); }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--slab); }
+.seg button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 
 .core { padding: 14px 18px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); display: grid; gap: 6px; }
 .coreDef { font-size: 1.25rem; line-height: 1.4; }

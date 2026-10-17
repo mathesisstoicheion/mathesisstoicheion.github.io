@@ -6,9 +6,9 @@
 /* the track: one bar per question, coloured as it is answered */
 .track { display: flex; gap: 5px; list-style: none; margin: 0; padding: 0; }
 .track li { flex: 1; height: 5px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); transition: background-color 0.4s; }
-.track li[data-state="right"] { background: var(--ok); }
-.track li[data-state="wrong"] { background: var(--accent); }
-.track li[data-state="now"] { background: var(--ink-2); animation: grow 0.5s var(--ease); transform-origin: left; }
+.track li[data-state="right"] { background: var(--ok); box-shadow: var(--inlay-edge); }
+.track li[data-state="wrong"] { background: var(--accent); box-shadow: var(--inlay-edge); }
+.track li[data-state="now"] { background: var(--inlay); box-shadow: var(--inlay-edge); animation: grow 0.5s var(--ease); transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0.2); } }
 
 .card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: clamp(18px, 3vw, 28px); background: var(--field); box-shadow: var(--field-edge); animation: cardIn 0.45s var(--ease); }
@@ -20,12 +20,13 @@
 .gr { font-family: var(--f-greek); font-size: 1.15em; }
 
 .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
-.options button { min-height: var(--tap); padding: 12px 16px; text-align: left; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); font-size: 1.05rem; transition: transform 0.15s, background-color 0.25s, opacity 0.25s; }
-.options button:hover:not(:disabled) { transform: translateY(-2px); border-color: var(--ink-2); }
+.options button { min-height: var(--tap); padding: 12px 16px; text-align: left; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); font-size: 1.05rem; transition: transform 0.15s, background-color 0.25s, opacity 0.25s; }
+.options button:hover:not(:disabled) { transform: translateY(-2px); background: var(--slab-lit); }
+.options button:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .options button:disabled { cursor: default; }
 .optGr { font-family: var(--f-greek); font-size: 1.35rem !important; }
-.right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; border-color: var(--ok) !important; animation: pop 0.35s var(--ease); }
-.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; border-color: var(--accent) !important; animation: shake 0.35s; }
+.right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; animation: pop 0.35s var(--ease); }
+.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake 0.35s; }
 .faded { opacity: 0.55; }
 @keyframes pop { 50% { transform: scale(1.03); } }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
@@ -82,16 +83,16 @@
 .warmHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
 
 /* the lesson list: each lesson's standing */
-.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-round); border: 1.5px solid var(--accent); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
-.markPassed { background: var(--accent); color: var(--accent-ink); }
-.markDue { border-style: dashed; animation: breathe 2.4s ease-in-out infinite; }
+.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-round); border: 1.5px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
+.markPassed { background: var(--inlay); box-shadow: var(--inlay-edge); color: var(--accent-ink); }
+.markDue { animation: breathe 2.4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.08); } }
 
 /* on a phone the questions start on the first screen: the page's introduction gives way */
 @media (max-width: 600px) { .pageIntro { display: none; } }
 
 /* a checkpoint in the lesson list: a band across the path, its numeral in a ring */
-.cpRow { background: linear-gradient(90deg, color-mix(in srgb, var(--accent) 9%, transparent), transparent 70%); }
+.cpRow { background: var(--slab); box-shadow: var(--slab-edge); }
 .cpRow .cpItem { box-shadow: var(--cut-over), var(--cut-under); }
 .cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--field); box-shadow: var(--field-edge); color: var(--accent); font: 1.05rem var(--f-display); }
 

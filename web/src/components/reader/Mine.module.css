@@ -13,11 +13,12 @@
 .head { display: flex; justify-content: space-between; gap: 12px; align-items: start; }
 .title { font-size: clamp(1.7rem, 4vw, 2.3rem); margin-top: 10px; }
 .title::first-letter { color: var(--accent); }
-.x { width: 36px; height: 36px; flex: none; font-size: 24px; line-height: 1; background: transparent; color: inherit; border: 1px solid var(--rule); border-radius: var(--radius); }
+.x { width: 36px; height: 36px; flex: none; font-size: 24px; line-height: 1; background: var(--slab); box-shadow: var(--slab-edge); color: inherit; border: 1px solid transparent; border-radius: var(--radius); }
+.x:active { background: var(--field); box-shadow: var(--field-edge); }
 .seal {
   display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
   font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent);
-  border: 1px solid currentColor; border-radius: var(--radius);
+  border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius);
   animation: press 0.7s var(--ease) 0.2s backwards;
 }
 .seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }

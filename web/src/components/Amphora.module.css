@@ -1,5 +1,5 @@
 /* The vase and its studio (Stone and torch): the studio is a full-screen opaque ground, its tools a sunk panel, its notes a slab;
-   the buttons, the segmented choices and the colour swatches keep their own look. */
+   the colour swatches keep their own look. */
 .slot { min-width: 0; }
 .figure { margin: 0; }
 .stage { position: relative; height: clamp(400px, 50vw, 600px); }
@@ -23,7 +23,8 @@
 .paintBtn svg { margin-left: -4px; }
 .paintBtn:hover svg { animation: wiggle 0.6s var(--ease); }
 @keyframes wiggle { 30% { rotate: -14deg; } 60% { rotate: 8deg; } }
-.tiltBtn { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); font: inherit; font-style: normal; }
+.tiltBtn { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: inherit; font-style: normal; }
+.tiltBtn:active { background: var(--field); box-shadow: var(--field-edge); }
 /* phones: a smaller vase, so the first screen shows more than the hero */
 @media (max-width: 760px) {
   .stage { height: 250px; }
@@ -69,14 +70,14 @@
 .hint { margin: 0; font-size: 0.9rem; color: var(--ink-2); line-height: 1.45; }
 .note { margin: 0; padding: 10px 12px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); font-size: 0.9rem; }
 
-.seg { display: flex; flex-wrap: wrap; gap: 0; border: 1px solid var(--rule); border-radius: var(--radius); padding: 3px; }
+.seg { display: flex; flex-wrap: wrap; gap: var(--space-1); border: 0; border-radius: var(--radius); padding: var(--space-1); background: var(--field); box-shadow: var(--field-edge); }
 .seg button {
   flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 0 12px;
   border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); font: 500 0.92rem var(--f-label); cursor: pointer;
-  transition: background 0.2s var(--ease), color 0.2s var(--ease);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); }
-.seg button:not([aria-pressed="true"]):hover { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.seg button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.seg button:not([aria-pressed="true"]):hover { background: var(--slab); }
 .dot { display: inline-block; border-radius: var(--radius-round); background: currentColor; }
 @media (pointer: coarse) { .seg button { min-height: var(--tap); } }
 
@@ -117,11 +118,12 @@
 
 .row { display: flex; flex-wrap: wrap; gap: 8px; }
 .plain {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 1px solid var(--rule); border-radius: var(--radius);
-  background: transparent; color: var(--ink); font: 500 0.92rem var(--f-label); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius);
+  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: 500 0.92rem var(--f-label); cursor: pointer;
 }
 .plain:disabled { opacity: 0.4; cursor: default; }
-.plain:not(:disabled):hover { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+.plain:not(:disabled):hover { background: var(--slab-lit); }
+.plain:not(:disabled):active { background: var(--field); box-shadow: var(--field-edge); }
 @media (pointer: coarse) { .plain { min-height: var(--tap); } }
 
 .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 12px; }

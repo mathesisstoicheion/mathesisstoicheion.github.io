@@ -3,15 +3,15 @@
 .presets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 10px; }
 .preset {
   display: grid; gap: 4px; align-content: start; width: 100%; height: 100%; text-align: left; padding: 12px 14px; cursor: pointer;
-  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--ink); font: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s var(--ease);
+  border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: inherit;
+  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform 0.2s var(--ease);
 }
-.preset:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 22px -16px var(--shadow); }
-.preset[aria-pressed="true"] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.preset:hover { background: var(--slab-lit); transform: translateY(-2px); box-shadow: var(--slab-edge), 0 10px 22px -16px var(--shadow); }
+.preset:active { background: var(--field); box-shadow: var(--field-edge); }
+.preset[aria-pressed="true"] { background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .preset b { font: 600 1rem var(--f-body); }
 .preset small { color: var(--ink-2); font-size: 0.82rem; line-height: 1.4; }
 .eg { font-family: var(--f-greek); font-size: 1.05rem; color: var(--accent); }
-.own { border-style: dashed; }
 /* once a construction is chosen, the list folds to its names, so the results come up the page */
 .presets[data-compact] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 6px; }
 .presets[data-compact] .preset { padding: 6px 10px; }
@@ -46,7 +46,7 @@
 @keyframes rise { from { opacity: 0; transform: translateY(4px); } }
 @media (prefers-reduced-motion: reduce) { .list li { animation: none; } }
 .where { display: flex; align-items: center; gap: 10px; }
-.how { font: 0.74rem var(--f-label); color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1px 8px; }
-.how[data-hand] { color: var(--ink); border-color: color-mix(in srgb, var(--accent) 50%, var(--rule)); }
+.how { font: 0.74rem var(--f-label); color: var(--ink-2); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); padding: 1px 8px; }
+.how[data-hand] { color: var(--ink); }
 .sentence { margin: 4px 0 0; font-family: var(--f-greek); font-size: 1.06rem; line-height: 1.6; color: var(--ink-2); }
 .sentence mark { background: none; color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--accent); }

@@ -229,8 +229,8 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
   }), [authors]);
   const narrowed = shown.works !== total.works;
 
-  // The rail of letters down the left of the list (AZList.tsx). The owner asked for it on 2026-10-16: "the A to Z should just be
-  // the side scroller. On the left side." It has the letters of the order in use (authors, or titles), those with nothing under
+  // The rail of letters down the right of the list (AZList.tsx). The owner asked for it on 2026-10-16: "the A to Z should just be
+  // the side scroller. On the left side.", then on 2026-10-17 to "move it to the right side". It has the letters of the order in use (authors, or titles), those with nothing under
   // them dimmed. Sorted by period there are no letters, so there is no rail; nor is there one for a short list (a search that
   // finds only a few authors), which it would leave standing taller than the list itself.
   const present = useMemo(() => new Set(groups.map((g) => g.key)), [groups]);
@@ -238,7 +238,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
   const railKeys = useMemo(() => (present.has("#") ? [...LETTERS, "#"] : LETTERS), [present]);
   const jump = (key: string, instant: boolean) => {
     const el = document.getElementById(`lib-${key}`);
-    if (el) scrollBelowHeader(el, 12, !instant && !prefersReducedMotion(useSettings.getState().motion));
+    if (el) scrollBelowHeader(el, 12, prefersReducedMotion(useSettings.getState().motion) ? false : instant ? "glide-quick" : "glide");
     return el ?? undefined;
   };
 
@@ -398,9 +398,10 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
 
       {idx && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
 
-      {/* the rail of letters down the left of the list, sticky beside it (none when sorted by period); the list leaves room for it */}
+      {/* the rail of letters down the right of the list, sticky beside it (none when sorted by period); the list leaves room for it */}
       <div className={styles.listWrap} data-rail={railOn ? "" : undefined}>
-      {railOn && <AZRail variant="side" keys={railKeys} has={(k) => present.has(k)} jump={jump} noun={sort === "title" ? "Titles" : "Authors"} />}
+      {railOn && <AZRail variant="side" keys={railKeys} has={(k) => present.has(k)} jump={jump} noun={sort === "title" ? "Titles" : "Authors"}
+        part={(k) => document.getElementById(`lib-${k}`)} parts={`${sort}|${groups.length}`} />}
       {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
       <div className={styles.list} onKeyDown={(e) => {
         const t = e.target as HTMLElement;

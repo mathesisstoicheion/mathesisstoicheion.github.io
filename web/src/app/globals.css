@@ -38,11 +38,12 @@
 @media (max-width: 760px) { html:has([data-readbar]) { --readbar-h: 54px; } }
 
 /* ---------------------------------------------------------------- maps
-   The small maps (the reader's Places, My Library's places, the Explore card): dark warm land and a deep, muted
-   sea, so land and water tell apart at a glance; names in ivory with a halo of the land.
+   The small maps (the reader's Places, My Library's places, the Explore card) are cut in the stone, like a relief map
+   on a wall (the owner, 2026-10-17: every page element in stone): the land is the face of the stone, the sea is sunk
+   into it, darker, and the coast is the cut's edge catching the torch; names in ivory with a halo of the land.
    The Periplus lies on NASA's satellite picture, dimmed for the night (--map-dim multiplies it). */
 :root {
-  --map-land: #3b3026; --map-sea: #15283a; --map-coast: #7fa3b5; --map-wave: rgba(140, 185, 210, 0.10);
+  --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(240, 206, 156, 0.34); --map-wave: rgba(240, 206, 156, 0.05);
   --map-name: #f2ddbb; --map-halo: #3b3026; --map-accent-sea: #f08a5d;
   --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
   --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
@@ -137,7 +138,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 /* pull down to refresh (PullToRefresh.tsx): a ring slides down from under the header, turning as it comes */
 .pull {
   position: fixed; z-index: 29; left: 50%; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); width: 40px; height: 40px; margin-left: -20px;
-  display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round); background: var(--surface); box-shadow: 0 10px 24px -14px var(--shadow);
+  display: grid; place-items: center; border: 0; border-radius: var(--radius-round); background: var(--boss); box-shadow: var(--boss-edge);
   transform: translateY(calc(var(--pull, 0px) - 46px)); opacity: var(--turn, 0); pointer-events: none; transition: transform 0.15s var(--ease), opacity 0.15s;
 }
 html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
@@ -160,43 +161,49 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 @keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ------------------------------------------------------------- buttons */
-/* The main button is a honey plate with dark capitals; .ghost is a cut outline; both settle, never jump. */
+/* The main button is a gilded plate with dark capitals, lit from above; .ghost is a slab of the stone itself. Both settle
+   under the hand and sink a little when pressed, never jump (the owner, 2026-10-17: every page element in stone). */
 .btn {
   display: inline-flex; align-items: center; gap: 0.7em;
-  padding: 0.95em 1.35em 0.9em; border: 1px solid var(--accent); background: var(--accent); color: var(--accent-ink);
+  padding: 0.95em 1.35em 0.9em; border: 1px solid transparent; background: var(--inlay); color: var(--accent-ink);
+  box-shadow: var(--inlay-edge), var(--inlay-drop);
   border-radius: var(--radius); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none;
-  transition: background-color var(--dur) ease, border-color var(--dur) ease, color var(--dur) ease;
+  transition: filter var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.btn:hover { background: var(--accent-hi); border-color: var(--accent-hi); }
-.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule-2); }
-.btn.ghost:hover { border-color: var(--accent); color: var(--accent-hi); }
+.btn:hover { filter: brightness(1.08); }
+.btn:active { box-shadow: var(--inlay-press); filter: none; }
+.btn.ghost { background: var(--slab); color: var(--ink); box-shadow: var(--slab-edge); }
+.btn.ghost:hover { background: var(--slab-lit); color: var(--accent-hi); filter: none; }
+.btn.ghost:active { background: var(--field); box-shadow: var(--field-edge); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
 .btn.small { padding: 0.8em 1.1em 0.75em; letter-spacing: 0.18em; gap: var(--space-2); }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
 .btn .arr { transition: transform var(--dur) var(--ease); }
 .btn:hover .arr { transform: translateX(3px); }
-.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
 @media (max-width: 760px) { .btn { letter-spacing: 0.16em; padding-inline: 1.1em; } }
 
-/* a chip: a small plate cut into the stone; pressed, it is lit from within */
+/* a chip: a small slab set on the stone; pressed, it is lit, with a gilded line along its foot (as in Settings) */
 .chip {
   display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-3);
-  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent;
-  transition: border-color var(--dur) ease, color var(--dur) ease, background-color var(--dur) ease;
+  border: 1px solid transparent; border-radius: var(--radius); font-size: var(--step--1); background: var(--slab); box-shadow: var(--slab-edge);
+  text-decoration: none; /* a chip that is a link is still a slab, not underlined text */
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.chip:hover { border-color: var(--rule-2); }
-.chip[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); border-color: var(--sel-edge); }
+.chip:hover { background: var(--slab-lit); }
+.chip:active { background: var(--field); box-shadow: var(--field-edge); }
+.chip[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 4 px beyond it (a 44 px target) */
 @media (pointer: coarse) {
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -4px 0; }
 }
-/* a row of joined buttons, one of which is chosen (role="radiogroup" with role="radio" buttons) */
-.segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; background: var(--bg-deep); }
-.segmented > button { border: 0; background: transparent; color: var(--ink-2); padding: var(--space-2) 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) ease, color var(--dur) ease; }
-.segmented > button + button { border-left: 1px solid var(--rule); }
-.segmented > button:hover:not([aria-checked="true"]) { background: var(--surface); color: var(--ink); }
-.segmented > button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); box-shadow: inset 0 -2px 0 var(--sel-edge); }
+/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): a channel sunk into the stone,
+   the chosen one standing up in it, lit, with a gilded foot (the same as Settings) */
+.segmented { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: var(--space-2) 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
+.segmented > button:hover:not([aria-checked="true"]) { background: var(--slab); color: var(--ink); }
+.segmented > button[aria-checked="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
@@ -207,6 +214,33 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 }
 :where(input, textarea, select):focus-visible { outline: none; box-shadow: var(--hollow-focus), var(--hollow-edge); }
 :where(select) option { background-color: var(--stone-2); color: var(--ink); }
+/* a drop-down keeps the hollow, with a small gilded chevron at its right end in place of the browser's own arrow
+   (stronger than :where so that a module's own background shorthand does not wipe it) */
+select:not([multiple]):not([size]) {
+  appearance: none; padding-right: var(--space-6);
+  background-image: var(--select-arrow); background-repeat: no-repeat; background-position: right 0.8em center; background-size: 10px 6px;
+}
+/* ticks and choices: small hollows cut in the stone; checked, a gilded tick or a gilded stone is set in them */
+:where(input[type="checkbox"], input[type="radio"]) {
+  appearance: none; width: 18px; height: 18px; margin: 0; flex: none; display: inline-grid; place-content: center; vertical-align: -3px;
+  background: var(--hollow); box-shadow: var(--hollow-edge); border: 0; border-radius: var(--radius); cursor: pointer;
+}
+:where(input[type="radio"]) { border-radius: var(--radius-round); }
+:where(input[type="checkbox"])::before {
+  content: ""; width: 0.62em; height: 0.62em; background: var(--inlay);
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0); transition: transform var(--dur-quick) var(--ease);
+}
+:where(input[type="radio"])::before {
+  content: ""; width: 0.5em; height: 0.5em; border-radius: var(--radius-round); background: var(--inlay); box-shadow: var(--inlay-edge);
+  transform: scale(0); transition: transform var(--dur-quick) var(--ease);
+}
+:where(input[type="checkbox"], input[type="radio"]):checked::before { transform: none; }
+:where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:where(input[type="checkbox"], input[type="radio"]):disabled { opacity: 0.5; cursor: default; }
+/* a "more" disclosure keeps its small triangle, in gilt like the site's own (the Editions page), not the browser's grey */
+:where(summary)::marker { color: var(--accent); }
+:where(summary)::-webkit-details-marker { color: var(--accent); }
 
 /* a short message on a page of its own (sign in first; nothing chosen yet): a tablet sunk into the wall */
 .notice {
@@ -252,7 +286,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 
 /* certainty labels */
 .tag { display: inline-flex; align-items: center; gap: 6px; font: 500 0.66rem / 1.3 var(--f-label);
-  letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 9px 2px; border-radius: var(--radius); border: 1px solid currentColor; }
+  letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 9px 2px; border: 1px solid transparent; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
 .tag.legend { color: var(--legend); }

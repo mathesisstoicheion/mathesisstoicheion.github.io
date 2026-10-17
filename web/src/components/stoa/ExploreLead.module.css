@@ -1,5 +1,5 @@
-/* The Explore door's lead: three picture cards (ExploreLead.tsx) (Stone and torch): slabs set on the wall; the map and the photograph keep
-   their own look; the bars are gilded inlay laid in channels. */
+/* The Explore door's lead: three picture cards (ExploreLead.tsx) (Stone and torch): slabs set on the wall; the map is cut in the
+   stone, the photograph keeps its own look; the bars are gilded inlay laid in channels. */
 .lead { display: grid; gap: 10px; }
 .lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 @media (max-width: 900px) { .lead ul { grid-template-columns: 1fr 1fr; } .lead li:first-child { grid-column: 1 / -1; } }
@@ -18,8 +18,10 @@
 .pic { height: auto; object-fit: cover; transition: transform 1.2s var(--ease); }
 .card:hover .pic { transform: scale(1.04); }
 
-.land { fill: var(--map-land); }
-.sea { fill: var(--map-sea); stroke: var(--map-coast); stroke-width: 1.4; stroke-linejoin: round; }
+/* the map is cut in the stone (globals.css, maps): the grain shows through the land and, darker, through the sunk sea */
+.map { background: var(--stone-3) var(--tex, none) center / 420px 420px; }
+.land { fill: var(--map-land-wash); }
+.sea { fill: var(--map-sea-wash); stroke: var(--map-coast); stroke-width: 1.4; stroke-linejoin: round; }
 .town circle { fill: var(--map-name); stroke: var(--map-halo); stroke-width: 2.5; }
 .town text {
   font-family: var(--f-body); font-size: 25px; font-weight: 700; fill: var(--map-name);

@@ -74,7 +74,8 @@ test("the library's rail of letters stands beside its list and follows the order
   const rail = page.getByRole("navigation", { name: "Authors by first letter" });
   await expect(rail).toBeVisible();
   const list = page.locator("#lib-A");
-  expect((await rail.boundingBox())!.x).toBeLessThan((await list.boundingBox())!.x);   // to the left of the list
+  const l = (await list.boundingBox())!;
+  expect((await rail.boundingBox())!.x).toBeGreaterThanOrEqual(l.x + l.width);        // to the right of the list (the owner, 2026-10-17)
   await rail.getByRole("button", { name: "Authors beginning with S" }).click();
   await expect(page.locator("#lib-S")).toBeInViewport();
   await expect(rail).toBeInViewport();                                                 // and still beside it
@@ -116,14 +117,14 @@ test.describe("on a phone", () => {
     await expect(page.locator("#az-works")).toBeHidden();
   });
 
-  test("the library's rail stays on the left and does not cover the list", async ({ page }) => {
+  test("the library's rail stays on the right and does not cover the list", async ({ page }) => {
     await page.goto("/library");
     const rail = page.getByRole("navigation", { name: "Authors by first letter" });
     await expect(rail).toBeVisible();
     await page.locator("#lib-C").scrollIntoViewIfNeeded();
     const r = (await rail.boundingBox())!, g = (await page.locator("#lib-C h2").boundingBox())!;
-    expect(r.x).toBeLessThan(40);
-    expect(r.x + r.width).toBeLessThanOrEqual(g.x);          // the list's text starts to the right of the rail
+    expect(r.x + r.width).toBeGreaterThan(335);              // at the right-hand edge
+    expect(g.x + g.width).toBeLessThanOrEqual(r.x);          // the list ends to the left of the rail
     await expect(rail).toBeInViewport();
   });
 });
