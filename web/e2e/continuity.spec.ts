@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { openMore } from "./reader-menus";
 
 // The reader reads texts from GitHub, so these need a connection (until the offline part).
 test.describe.configure({ timeout: 90_000 });
@@ -55,11 +56,10 @@ test("markers beside the scroll bar show notes and bookmarks, preview them and j
   await note.hover();
   await expect(page.getByRole("tooltip")).toContainText("Agamemnon refuses the ransom.");
   // the legend switches a kind off
-  await page.getByRole("button", { name: "Markers" }).click();
+  await openMore(page);
   await page.getByRole("group", { name: "Markers beside the scroll bar" }).getByLabel("Bookmarks").uncheck();
   await expect(markers.getByRole("listitem", { name: /^Bookmark at/ })).toHaveCount(0);
   await page.getByRole("group", { name: "Markers beside the scroll bar" }).getByLabel("Bookmarks").check();
-  await page.getByRole("button", { name: "Markers" }).click();
   // jump: the note's passage comes to the top
   await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight }));
   await note.click();
@@ -75,7 +75,8 @@ test("the floating reader follows the reader around the site, snaps, minimises a
   // the sticky bar while it still moves makes the test browser scroll the page first
   await expect.poll(() => page.locator('[data-key="1.40"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(260);
   await expect(page.locator("html")).toHaveAttribute("data-hdr", "hidden");
-  await expect.poll(() => page.getByRole("button", { name: /Float the reader/ }).evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(60);
+  await expect.poll(() => page.getByRole("button", { name: "More", exact: true }).evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(60);
+  await openMore(page);
   await page.getByRole("button", { name: /Float the reader/ }).click();
   // back to the page before the reader, with the book in a window
   await expect(page).toHaveURL(/\/treasury$/);
@@ -120,6 +121,8 @@ test("a passage dragged from the reader lands in a note with its citation", asyn
   const box = page.getByLabel("Your note", { exact: true });
   // both on screen: the passage, and the note being written
   await page.locator('[data-key="1.1"]').first().evaluate((el) => el.scrollIntoView({ block: "start" }));
+  // (scrolling up brings the site's header back, so leave room under it and the reader's bar for the grip)
+  await page.evaluate(() => scrollBy(0, -110));
   // drag the grip beside 1.1 onto the note, as a person would
   await page.locator('[data-key="1.1"]').first().hover();
   const from = (await page.locator('[data-drag="1.1"]').boundingBox())!, to = (await box.boundingBox())!;

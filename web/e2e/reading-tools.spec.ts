@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { aid } from "./reader-menus";
 
 // The reader's Places and Manuscript panels. Texts come from GitHub and the photographs from the
 // libraries' image servers, so these tests need a connection.
@@ -12,7 +13,7 @@ const open = async (page: Page, q: string, first: string) => {
 
 test("Places lists the places the page names, marks their words, and goes to a passage", async ({ page }) => {
   await open(page, "w=tlg0016.tlg001&at=1.1.1", "1.1.1");
-  await page.getByRole("button", { name: "Places", exact: true }).click();
+  await aid(page, "Places");
   const panel = page.getByRole("complementary", { name: "Places on this page" });
   const items = panel.locator("ol li");
   await expect(items.first()).toContainText("Ἄργος", { timeout: 30_000 });
@@ -35,7 +36,7 @@ test("Places lists the places the page names, marks their words, and goes to a p
 test("Manuscript takes the passage back to capitals without spaces, and opens the Venetus A at the line", async ({ page }) => {
   await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 0 })); });
   await open(page, "w=tlg0012.tlg001&at=1.1", "1.1");
-  await page.getByRole("button", { name: "Manuscript", exact: true }).click();
+  await aid(page, "Manuscript");
   const panel = page.getByRole("complementary", { name: "The manuscript" });
   const text = panel.locator('[data-stage]');
   await expect(text).toContainText("μῆνιν ἄειδε θεὰ");
@@ -56,7 +57,7 @@ test("Manuscript takes the passage back to capitals without spaces, and opens th
 
 test("Manuscript opens a play in the Medicean manuscript at the leaf the catalogue gives", async ({ page }) => {
   await open(page, "w=tlg0085.tlg002&at=1", "1");
-  await page.getByRole("button", { name: "Manuscript", exact: true }).click();
+  await aid(page, "Manuscript");
   const panel = page.getByRole("complementary", { name: "The manuscript" });
   await expect(panel.getByText("f. 119r")).toBeVisible({ timeout: 30_000 });
   await expect(panel).toContainText("Plut. 32.9");
@@ -70,11 +71,11 @@ test("opening and closing a side panel keeps the passage being read at the top (
   await page.waitForTimeout(1500);
   const top = () => row.evaluate((e) => Math.round(e.getBoundingClientRect().top));
   const before = await top();
-  await page.getByRole("button", { name: "Manuscript", exact: true }).click();
+  await aid(page, "Manuscript");
   const panel = page.getByRole("complementary", { name: "The manuscript" });
   await expect(panel).toContainText("Iliad 1.200");
   expect(Math.abs((await top()) - before)).toBeLessThan(4);
-  await page.getByRole("button", { name: "Manuscript", exact: true }).click();
+  await aid(page, "Manuscript");
   await expect(panel).toBeHidden();
   expect(Math.abs((await top()) - before)).toBeLessThan(4);
 });

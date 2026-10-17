@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { aid } from "./reader-menus";
 
 // These tests read texts from GitHub, so they need a connection.
 test.describe.configure({ timeout: 60_000 });
@@ -83,11 +84,11 @@ test("the Scroll Case works out a download's size", async ({ page }) => {
 
 test("reading aids: transliteration, colour by case and the page's vocabulary", async ({ page }) => {
   await openIliad(page);
-  await page.getByRole("button", { name: "Transliteration" }).click();
+  await aid(page, "Transliteration");
   await expect(page.locator('[data-u="1.1"]')).toContainText("mēnin aeide thea Pēlēiadeō Achilēos");
-  await page.getByRole("button", { name: "Colour by case" }).click();
+  await aid(page, "Colour by case");
   await expect(page.locator('[data-u="1.1"] [data-w="μῆνιν"]')).toHaveAttribute("data-case", "accusative");
-  await page.getByRole("button", { name: "Vocabulary" }).click();
+  await aid(page, "Vocabulary");
   const vocab = page.getByRole("complementary", { name: "Vocabulary for this page" });
   await expect(vocab).toContainText("core #1");
   await expect(vocab).toContainText("the");
@@ -98,12 +99,12 @@ test("colour by case and the vocabulary list work where GLAUx cites the text by 
   // asked the whole book about every word on the page and froze the browser
   await page.goto("/read?w=tlg0086.tlg025");
   await expect(page.locator('[data-u="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  await page.getByRole("button", { name: "Colour by case" }).click();
+  await aid(page, "Colour by case");
   await expect(page.locator('[data-u="1.1"] [data-w="πάντες"]').first()).toHaveAttribute("data-case", "nominative", { timeout: 15_000 });
   expect(await page.locator("[data-w][data-case]").count()).toBeGreaterThan(1000);
-  await page.getByRole("button", { name: "Vocabulary" }).first().click();
+  await aid(page, "Vocabulary");
   await expect(page.getByRole("complementary", { name: "Vocabulary for this page" }).getByRole("listitem").first()).toContainText("ὁ");
-  await page.getByRole("button", { name: "Colour by case" }).click();   // leave the setting as it was
+  await aid(page, "Colour by case");   // leave the setting as it was
 });
 
 test("a link to a work that is not in the library, or to a passage the text does not have, says so", async ({ page }) => {

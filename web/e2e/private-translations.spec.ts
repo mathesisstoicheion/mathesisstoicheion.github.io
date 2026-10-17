@@ -1,6 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
+import { openAids, openChange } from "./reader-menus";
 
 // The moderator's private translations, in Mine (/treasury/translations). A pretend account and a pretend database: nothing is
 // sent to, or written in, the real one. The translations here are made-up placeholders: no real translation may
@@ -384,12 +385,14 @@ test("a private translation opens in the reader, with the reading aids and its t
   await expect(text.getByText("Placeholder heading one")).toBeVisible();
   await expect(page.getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
   // the two Englishes, as the translation menu's choices
+  await openChange(page);
   const tr = page.getByRole("combobox", { name: "Translation" });
   await expect(tr.locator("option")).toHaveText(["None", "Our English", "Published English"]);
   await tr.selectOption({ label: "Published English" });
   await expect(text.getByText("Published placeholder one.")).toBeVisible();
   await expect(text.getByText("Placeholder sentence one.")).toHaveCount(0);
   // the forum and the manuscripts are not offered; the notes are a step away
+  await openAids(page);
   await expect(page.getByRole("button", { name: "Talk about it" })).toHaveCount(0);
   await expect(page.getByRole("button", { name: "Manuscript" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Notes and comparison" }).first()).toHaveAttribute("href", "/treasury/translations?id=placeholder-one");
@@ -457,6 +460,7 @@ test("a text typed in is checked, saved in the private collection and opened in 
   expect(db.saved[0].id).toBe("placeholder-import");
   expect((db.saved[0].doc as { status: string; passages: unknown[] }).status).toBe("imported");
   await expect(page.locator("article").getByText("Placeholder two.")).toBeVisible();
+  await openChange(page);
   await expect(page.getByRole("combobox", { name: "Translation" }).locator("option")).toHaveText(["None", "English"]);
 });
 

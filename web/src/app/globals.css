@@ -411,6 +411,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
 html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
+html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { aid } from "./reader-menus";
 
 // Phase 11, stage 3: learning and reading as one loop
 const openIliad = async (page: Page) => {
@@ -47,7 +48,7 @@ test("Words I know marks the words learned in the daily practice", async ({ page
     } }, version: 0 }));
   });
   await openIliad(page);
-  await page.getByRole("group", { name: "Reading aids" }).getByRole("button", { name: "Words I know" }).first().click();
+  await aid(page, "Words I know");
   await expect(page.locator('[data-u="1.1"] [data-w="θεὰ"]')).toHaveAttribute("data-known", "");
   await expect(page.locator('[data-u="1.1"] [data-w="μῆνιν"]')).not.toHaveAttribute("data-known", "");
   await expect(page.getByText(/the 1 you have reviewed successfully/)).toBeVisible();
@@ -61,7 +62,7 @@ test("Talk about it lists the Town Hall's questions on this page, and says how t
     { id: 992, title: "Test question about book five", reply_count: 0, answered_post_id: null, last_activity_at: new Date().toISOString(), quote: quote("5.1", "5.1") },
   ] }));
   await openIliad(page);
-  await page.getByRole("group", { name: "This passage" }).getByRole("button", { name: "Talk about it" }).first().click();
+  await aid(page, "Talk about it");
   const panel = page.getByRole("complementary", { name: "Talk about this passage" });
   await expect(panel.getByRole("link", { name: "Test question about the first lines" })).toHaveAttribute("href", "/town-hall/thread?id=991");
   await expect(panel.getByText("2 replies · answered")).toBeVisible();
