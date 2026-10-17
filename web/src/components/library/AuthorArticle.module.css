@@ -15,6 +15,7 @@
 .lead p:first-child { font-size: 1.2rem; }
 .lead p:first-child::first-letter { float: left; font-family: var(--f-display); font-size: 3.7em; line-height: 0.82; padding: 0.06em 0.1em 0 0; color: var(--accent); }
 .key { display: grid; gap: 10px; padding: 18px 20px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: 0.92rem; line-height: 1.5; position: sticky; top: calc(var(--hdr-vis, 0px) + 16px); }
+:global(html[data-hdr="hidden"]) .key { --hdr-vis: 0px; }
 .key h3 { margin: 0; }
 .key p { margin: 0; }
 .key ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
@@ -45,8 +46,8 @@
 
 /* plays once, when the road scrolls into view; at rest (and with reduced motion) the road is fully drawn */
 .road[data-play] .stop::before { animation: stretch 0.7s var(--ease) both; animation-delay: calc(var(--i) * 0.28s); }
-.road[data-play] .pin { animation: pinPop 0.45s var(--ease) both; animation-delay: calc(var(--i) * 0.28s); }
-.road[data-play] .gap, .road[data-play] .when, .road[data-play] .kindName, .road[data-play] .what { animation: textIn 0.5s var(--ease) both; animation-delay: calc(var(--i) * 0.28s + 0.25s); }
+.road[data-play] .pin { animation: pinPop 0.45s var(--ease) backwards; animation-delay: calc(var(--i) * 0.28s); }
+.road[data-play] .gap, .road[data-play] .when, .road[data-play] .kindName, .road[data-play] .what { animation: textIn 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 0.28s + 0.25s); }
 @keyframes stretch { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 @keyframes pinPop { from { transform: scale(0); } 70% { transform: scale(1.18); } to { transform: scale(1); } }
 @keyframes textIn { from { opacity: 0; transform: translateY(6px); } }

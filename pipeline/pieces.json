@@ -1,0 +1,318 @@
+[
+ {
+  "id": "seated-muse",
+  "src": "../pipeline/pieces-src/seated-muse.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "herodotos-bust",
+  "src": "../pipeline/pieces-src/herodotos-bust.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "demosthenes-head",
+  "src": "../pipeline/pieces-src/demosthenes-head.jpg",
+  "form": "round",
+  "material": "marble",
+  "cut": 0.873
+ },
+ {
+  "id": "togatus",
+  "src": "../pipeline/pieces-src/togatus.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "apollo-bronze",
+  "src": "../pipeline/pieces-src/apollo-bronze.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "philosopher-head",
+  "src": "../pipeline/pieces-src/philosopher-head.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "decree-fragment",
+  "src": "../pipeline/pieces-src/decree-fragment.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "girl-with-doves",
+  "src": "../pipeline/pieces-src/girl-with-doves.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "boxer-statuette",
+  "src": "../pipeline/pieces-src/boxer-statuette.jpg",
+  "form": "round",
+  "material": "marble",
+  "trim": [
+   0.8,
+   0.09
+  ]
+ },
+ {
+  "id": "nike-relief",
+  "src": "../pipeline/pieces-src/nike-relief.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "bronze-herm",
+  "src": "../pipeline/pieces-src/bronze-herm.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "hermes-bronze",
+  "src": "../pipeline/pieces-src/hermes-bronze.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "diskos-thrower",
+  "src": "../pipeline/pieces-src/diskos-thrower.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "muse-head",
+  "src": "../pipeline/pieces-src/muse-head.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "harp-player",
+  "src": "../pipeline/pieces-src/harp-player.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "tribute-list",
+  "src": "../pipeline/pieces-src/tribute-list.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "athletic-prizes",
+  "src": "../pipeline/pieces-src/athletic-prizes.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "arsinoe-base",
+  "src": "../pipeline/pieces-src/arsinoe-base.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "strategos-head",
+  "src": "../pipeline/pieces-src/strategos-head.jpg",
+  "form": "round",
+  "material": "marble",
+  "cut": 0.935
+ },
+ {
+  "id": "seated-man",
+  "src": "../pipeline/pieces-src/seated-man.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "hero-relief",
+  "src": "../pipeline/pieces-src/hero-relief.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "hermes-seated",
+  "src": "../pipeline/pieces-src/hermes-seated.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "hermes-marble",
+  "src": "../pipeline/pieces-src/hermes-marble.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "eukleia-stele",
+  "src": "../pipeline/pieces-src/eukleia-stele.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "chrysippos-head",
+  "src": "../pipeline/pieces-src/chrysippos-head.jpg",
+  "form": "round",
+  "material": "marble",
+  "cut": 0.963
+ },
+ {
+  "id": "banquet-relief",
+  "src": "../pipeline/pieces-src/banquet-relief.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "portrait-bust",
+  "src": "../pipeline/pieces-src/portrait-bust.jpg",
+  "form": "round",
+  "material": "marble",
+  "cut": 0.878
+ },
+ {
+  "id": "herakles-bronze",
+  "src": "../pipeline/pieces-src/herakles-bronze.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "eirene",
+  "src": "../pipeline/pieces-src/eirene.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "kouros",
+  "src": "../pipeline/pieces-src/kouros.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "funerary-lekythos",
+  "src": "../pipeline/pieces-src/funerary-lekythos.jpg",
+  "form": "lathe",
+  "material": "marble",
+  "cut": 0.989
+ },
+ {
+  "id": "hand-with-scroll",
+  "src": "../pipeline/pieces-src/hand-with-scroll.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "neptune-bronze",
+  "src": "../pipeline/pieces-src/neptune-bronze.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "diadoumenos-terracotta",
+  "src": "../pipeline/pieces-src/diadoumenos-terracotta.jpg",
+  "form": "round",
+  "material": "terracotta"
+ },
+ {
+  "id": "family-stele",
+  "src": "../pipeline/pieces-src/family-stele.jpg",
+  "form": "slab",
+  "material": "marble",
+  "add": [
+   [
+    0.147,
+    0.064,
+    0.42,
+    0.893
+   ]
+  ]
+ },
+ {
+  "id": "woman-stele",
+  "src": "../pipeline/pieces-src/woman-stele.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "teacher-and-pupil",
+  "src": "../pipeline/pieces-src/teacher-and-pupil.jpg",
+  "form": "round",
+  "material": "terracotta"
+ },
+ {
+  "id": "elderly-man",
+  "src": "../pipeline/pieces-src/elderly-man.jpg",
+  "form": "round",
+  "material": "marble",
+  "cut": 0.862
+ },
+ {
+  "id": "boy-orator",
+  "src": "../pipeline/pieces-src/boy-orator.jpg",
+  "form": "round",
+  "material": "bronze",
+  "dark": true
+ },
+ {
+  "id": "apollo-head",
+  "src": "../pipeline/pieces-src/apollo-head.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "athena-torso",
+  "src": "../pipeline/pieces-src/athena-torso.jpg",
+  "form": "round",
+  "material": "marble"
+ },
+ {
+  "id": "athena-votive",
+  "src": "../pipeline/pieces-src/athena-votive.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "bilingual-plaque",
+  "src": "../pipeline/pieces-src/bilingual-plaque.jpg",
+  "form": "slab",
+  "material": "limestone"
+ },
+ {
+  "id": "red-base",
+  "src": "../pipeline/pieces-src/red-base.jpg",
+  "form": "slab",
+  "material": "terracotta"
+ },
+ {
+  "id": "stele-youth-head",
+  "src": "../pipeline/pieces-src/stele-youth-head.jpg",
+  "form": "slab",
+  "material": "marble"
+ },
+ {
+  "id": "great-eleusinian-relief",
+  "src": "public/images/great-eleusinian-relief.jpg",
+  "form": "relief",
+  "mask": "none",
+  "material": "marble"
+ },
+ {
+  "id": "parthenon-frieze-cast",
+  "src": "public/images/parthenon-frieze-cast.jpg",
+  "form": "relief",
+  "mask": "none",
+  "material": "plaster"
+ },
+ {
+  "id": "stele-woman-and-servant",
+  "src": "public/images/stele-woman-and-servant.jpg",
+  "form": "slab",
+  "material": "marble"
+ }
+]

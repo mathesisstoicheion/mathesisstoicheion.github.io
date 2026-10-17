@@ -16,7 +16,7 @@
 .greek {
   display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: end;
   padding: 10px 12px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge);
-  animation: open 0.28s var(--ease) both;
+  animation: open 0.28s var(--ease) backwards;
 }
 .greek label { display: grid; gap: 4px; grid-column: 1 / -1; }
 .greek input { font: inherit; font-family: ui-monospace, Consolas, monospace; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); }
@@ -27,7 +27,7 @@
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .tag {
   display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border-radius: var(--radius);
-  background: var(--bg-2); font-size: 0.86rem; animation: pop 0.25s var(--ease) both;
+  background: var(--bg-2); font-size: 0.86rem; animation: pop 0.25s var(--ease) backwards;
 }
 .tag button { border: 0; background: transparent; color: var(--ink-2); width: 20px; height: 20px; border-radius: var(--radius-round); line-height: 1; }
 .tag button:hover { background: var(--rule); color: var(--ink); }

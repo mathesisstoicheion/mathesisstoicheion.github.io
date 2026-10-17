@@ -15,10 +15,10 @@
 .track { position: relative; height: 100%; }
 .track i { position: absolute; top: 50%; }
 .grid { width: 2px; translate: -1px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--cut-line-v); }
-.road { height: 2px; translate: 0 -50%; background: color-mix(in srgb, var(--ink) 18%, transparent); transform-origin: left; animation: road 1.4s var(--ease) both; animation-delay: calc(var(--i) * 25ms); }
+.road { height: 2px; translate: 0 -50%; background: color-mix(in srgb, var(--ink) 18%, transparent); transform-origin: left; animation: road 1.4s var(--ease) backwards; animation-delay: calc(var(--i) * 25ms); }
 @keyframes road { from { transform: scaleX(0); } }
 .mark { width: 9px; height: 9px; translate: -50% -50%; }
-.track .mark { animation: mark 0.5s var(--ease) both; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
+.track .mark { animation: mark 0.5s var(--ease) backwards; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
 @keyframes mark { from { opacity: 0; scale: 0.2; } }
 .writing { background: var(--ink); border-radius: var(--radius-round); }
 .copy { background: var(--accent); }

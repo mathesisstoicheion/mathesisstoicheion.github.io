@@ -5,8 +5,9 @@
   display: grid; justify-items: center; align-content: center; gap: 1px; width: 52px; height: 52px; padding: 0;
   background: var(--inv-bg); color: var(--inv-fg); --accent: var(--accent-on-ink);
   border: 1px solid var(--inv-edge); border-radius: var(--radius-round); box-shadow: 0 14px 30px -14px var(--shadow), 0 0 0 3px color-mix(in srgb, var(--accent) 40%, transparent);
-  cursor: pointer; animation: bttIn 0.3s var(--ease) both; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease);
+  cursor: pointer; animation: bttIn 0.3s var(--ease) backwards; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease);
 }
+:global(html[data-hdr="hidden"]) .btt { --tabbar-vis: 0px; --readbar-vis: 0px; }
 .btt:hover { transform: translateY(-3px); }
 .btt:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .btt svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }

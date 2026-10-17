@@ -24,6 +24,7 @@ import { DownloadButton, HERE, Seal, StatusTag, docDate, savedDate } from "./par
 import Rich from "./Rich";
 import TranslationReader from "./TranslationReader";
 import styles from "./PrivateTranslations.module.css";
+import PagePiece, { PieceHold } from "@/components/art/PagePiece";
 
 export default function PrivateTranslations() {
   const start = useAccount((s) => s.start);
@@ -31,7 +32,7 @@ export default function PrivateTranslations() {
   const { ready, session, profile } = useAccount();
   const id = useSearchParams().get("id");
 
-  if (!ready || (session && !profile)) return <Waiting />;
+  if (!ready || (session && !profile)) return <><PieceHold /><Waiting /></>;
   if (!session) {
     const back = `${HERE}${id ? `?id=${encodeURIComponent(id)}` : ""}`;
     return (
@@ -70,7 +71,9 @@ function Shelf() {
       <header className={styles.deskHead}>
         <p className={styles.crumbs}><Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span> Private translations</p>
         <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /></div>
+        <PagePiece className="piece-desk" />
         <h1 className={styles.deskTitle}>Private translations</h1>
+        <PagePiece className="piece-phone" />
         <p className={styles.lead}>
           Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
           the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.

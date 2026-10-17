@@ -22,10 +22,15 @@ export function ResumeTracker() {
   useEffect(() => {
     // record the visit once the page has settled (a quick redirect is not a visit)
     const t = setTimeout(() => recordVisit(href, document.title.replace(/ · Mathesis Stoicheion$/, "")), 800);
-    // remember how far down the page is, as it scrolls
-    let pending = 0;
-    const onScroll = () => { cancelAnimationFrame(pending); pending = requestAnimationFrame(() => saveScroll(href, scrollY)); };
+    // remember how far down the page is: noted as it scrolls, and kept once the page rests (and when it is left), so
+    // scrolling never waits on the browser's storage
+    let pending = 0, timer = 0, y = -1;
+    const keep = () => { clearTimeout(timer); timer = 0; if (y >= 0) { saveScroll(href, y); y = -1; } };
+    const onScroll = () => { cancelAnimationFrame(pending); pending = requestAnimationFrame(() => { y = scrollY; clearTimeout(timer); timer = window.setTimeout(keep, 300); }); };
+    const onHide = () => { if (document.visibilityState === "hidden") keep(); };
     addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("pagehide", keep);
+    document.addEventListener("visibilitychange", onHide);
     // arriving from "Continue where you left off": go back down to where the page was left
     let restore: ReturnType<typeof setInterval> | undefined;
     try {
@@ -37,7 +42,10 @@ export function ResumeTracker() {
         if (y) restore = setInterval(() => { if (document.documentElement.scrollHeight >= y + innerHeight || ++tries > 20) { scrollTo({ top: y }); clearInterval(restore); } }, 150);
       }
     } catch { /* storage unavailable */ }
-    return () => { clearTimeout(t); removeEventListener("scroll", onScroll); cancelAnimationFrame(pending); clearInterval(restore); };
+    return () => {
+      clearTimeout(t); removeEventListener("scroll", onScroll); cancelAnimationFrame(pending); keep(); clearInterval(restore);
+      removeEventListener("pagehide", keep); document.removeEventListener("visibilitychange", onHide);
+    };
   }, [href]);
   return null;
 }

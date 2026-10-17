@@ -23,7 +23,7 @@ export interface PartOptions {
   place?: boolean;
 }
 
-interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; tried: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number }
+interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; tried: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number; drew: boolean }
 
 const parts = new Set<Part>();
 let io: IntersectionObserver | null = null;
@@ -34,6 +34,7 @@ function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: n
   const H = innerHeight, still = torchStill();
   for (const p of parts) {
     const a = p.art;
+    if (p.drew) { a.pace?.(dt); p.drew = false; }
     // every piece is measured at once, in view or not, so the page does not jump when one comes into view (a hidden
     // one is tried again only once it is in view)
     if (!p.ok && (p.vis || !p.tried)) { p.tried = true; p.ok = a.layout() !== false; p.dirty = true; }
@@ -57,7 +58,7 @@ function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: n
       const u = local[i], v = p.last![i];
       if (Math.abs(u.x - v.x) > 0.3 || Math.abs(u.y - v.y) > 0.3 || Math.abs(u.I - v.I) > 0.006) { changed = true; break; }
     }
-    if (changed) { p.revealing = a.draw(now, local); p.last = local; p.dirty = false; }
+    if (changed) { p.revealing = a.draw(now, local); p.last = local; p.dirty = false; p.drew = true; }
   }
 }
 
@@ -75,9 +76,12 @@ function add(p: Part) {
   parts.add(p); io.observe(p.el);
 }
 function remove(p: Part) {
-  parts.delete(p); io?.unobserve(p.el);
+  parts.delete(p); io?.unobserve(p.el); p.art.dispose?.();
   if (!parts.size) { io?.disconnect(); io = null; stopFrame?.(); stopFrame = null; removeEventListener("resize", onResize); }
 }
+
+/** Draws the art on this canvas again on the next frame (something about it changed, such as a lamp set before it). */
+export function redrawArt(cv: HTMLElement) { for (const p of parts) if (p.el === cv) p.dirty = true; }
 
 /** Lays every piece out again now (after fonts load), or only the one on this canvas (when the page around it changes). */
 export function relayoutArt(cv?: HTMLElement) { for (const p of parts) if (!cv || p.el === cv) p.ok = false; }
@@ -93,7 +97,7 @@ export function useTorchlit(ref: RefObject<HTMLCanvasElement | null>, make: (cv:
     let p: Part | null = null, gone = false;
     Promise.resolve(make(cv)).then((art) => {
       if (gone || !art) return;
-      p = { art, el: cv, o, vis: false, ok: false, tried: false, last: null, revealing: false, dirty: true, sp: -1 };
+      p = { art, el: cv, o, vis: false, ok: false, tried: false, last: null, revealing: false, dirty: true, sp: -1, drew: false };
       add(p);
     });
     return () => { gone = true; if (p) remove(p); };

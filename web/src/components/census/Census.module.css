@@ -19,7 +19,7 @@
 }
 .tally > div {
   padding: 14px 18px 12px; display: grid; gap: 2px; box-shadow: var(--cut-left);
-  animation: tally-in 0.7s var(--ease) both; animation-delay: calc(var(--i, 0) * 110ms);
+  animation: tally-in 0.7s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 110ms);
 }
 .tally > div:first-child { box-shadow: none; }
 .tally dt { font-family: var(--f-label); font-size: 0.86rem; letter-spacing: 0.08em; color: var(--ink-2); order: 2; }
@@ -80,7 +80,7 @@
 .empty { color: var(--ink-2); font-style: italic; padding: 14px 0; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
-.rows li { will-change: transform; }
+/* no will-change on the rows: the browser lifts a row onto a layer of its own only while it moves (Census.tsx) */
 .row {
   width: 100%; display: grid; grid-template-columns: 2.1em minmax(8em, 40%) 1fr; gap: 12px; align-items: center;
   padding: 6px 6px 6px 0; border: 0; box-shadow: var(--cut-under);
@@ -106,7 +106,7 @@
   position: relative; height: 11px; width: var(--w); flex: none; max-width: calc(100% - 4.2em); background: var(--inlay-side); border-radius: var(--radius);
   box-shadow: var(--inlay-edge); transform-origin: left;
   transition: width 0.65s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.2s;
-  animation: bar-grow 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation: bar-grow 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
 }
 @keyframes bar-grow { from { transform: scaleX(0); } }
 .count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 0.92rem; white-space: nowrap; display: grid; line-height: 1.1; }
@@ -123,13 +123,14 @@
 @keyframes thread { from { stroke-dashoffset: 1; } }
 
 .side { position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: auto; overscroll-behavior: contain; }
+:global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
 .hint { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; }
 .hint p { margin: 0; }
 
 /* ------------------------------------------------ one item */
 .panel {
   position: relative; padding: 20px 20px 22px; background: var(--field); border-radius: var(--radius);
-  box-shadow: var(--field-edge); display: grid; gap: 12px; animation: panel-in 0.45s var(--ease) both;
+  box-shadow: var(--field-edge); display: grid; gap: 12px; animation: panel-in 0.45s var(--ease) backwards;
 }
 @keyframes panel-in { from { opacity: 0; transform: translateX(14px); } }
 .panel p { margin: 0; }
@@ -153,7 +154,7 @@
 .notch { fill: var(--ink-2); }
 .mark {
   fill: var(--ink); transform-box: fill-box; transform-origin: bottom;
-  animation: mark-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: calc(min(var(--i, 0), 120) * 6ms);
+  animation: mark-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(min(var(--i, 0), 120) * 6ms);
 }
 .mark[data-on] { fill: var(--accent); }
 @keyframes mark-rise { from { transform: scaleY(0); } }
@@ -166,7 +167,7 @@
 .facts { margin-top: 36px; display: grid; gap: 10px; }
 .facts h2 { font-size: var(--step-3); margin: 0; }
 .facts ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 18px; }
-.facts li { animation: sherd-in 0.6s var(--ease) both; animation-delay: calc(var(--i, 0) * 90ms); }
+.facts li { animation: sherd-in 0.6s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
 .facts li:nth-child(odd) button { border-radius: 38% 12% 30% 16% / 16% 34% 12% 30%; rotate: -0.6deg; }
 .facts li:nth-child(even) button { border-radius: 14% 36% 18% 32% / 30% 14% 34% 12%; rotate: 0.5deg; }
 .facts button {

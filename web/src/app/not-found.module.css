@@ -34,3 +34,5 @@
 .ways a:hover { background-color: var(--slab-lit); }
 .ways b { font-weight: 600; }
 .ways .muted { font-size: 0.88rem; }
+/* the head that has outlived its stele (data/pieces.ts, LOST_PAGE), under the ways on */
+.text .lost { float: none; width: min(300px, 100%); margin: var(--space-4) 0 0; }

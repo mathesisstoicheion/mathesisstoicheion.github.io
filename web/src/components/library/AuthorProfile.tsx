@@ -5,6 +5,8 @@
  * from the catalogue; "Where to begin" is the work with the most familiar vocabulary (see
  * lib/difficulty.ts, vocabulary only); the entries are the Painted Stoa's, which cite this author.
  * "Why they matter" is left to those entries: no author blurbs are written here.
+ * An author with six or more works also has an "A to Z" button (AZList.tsx; asked for by the owner on 2026-10-16) that
+ * swaps the list of works for the same works in alphabetical order, with a row of letters to jump by.
  */
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -17,6 +19,8 @@ import { AREAS } from "@/config/areas";
 import { loadArticle, type AuthorArticle } from "@/wiki/author-articles";
 import { WorkItem } from "./Library";
 import AuthorArticleView from "./AuthorArticleView";
+import { AZButton, AZPanel, type AZItem } from "./AZList";
+import PagePiece, { PieceHold } from "@/components/art/PagePiece";
 import lib from "./Library.module.css";
 import { BEST_KNOWN } from "@/data/best-known";
 import styles from "./AuthorProfile.module.css";
@@ -25,6 +29,8 @@ export type { RelatedEntry } from "@/wiki/related";
 import type { RelatedEntry } from "@/wiki/related";
 
 const num = (n: number) => n.toLocaleString("en-GB");
+/** How many works an author needs before the page offers them "A to Z". */
+const AZ_FROM = 6;
 
 /** The page's own loading and "no such author" states; the page itself is AuthorView, which the static /author/[id] pages build at deploy time. */
 export default function AuthorProfile({ related }: { related: Record<string, RelatedEntry[]> }) {
@@ -38,7 +44,7 @@ export default function AuthorProfile({ related }: { related: Record<string, Rel
 
   const author = idx && id ? idx.author.get(id) : undefined;
   if (failed) return <div className="wrap"><p className={styles.msg} role="alert">The catalogue could not be opened. Check your connection and try again.</p></div>;
-  if (!idx) return <div className="wrap"><p className={styles.msg}>Opening the catalogue…</p></div>;
+  if (!idx) return <div className="wrap"><PieceHold /><p className={styles.msg}>Opening the catalogue…</p></div>;
   if (!author) {
     return (
       <div className="wrap">
@@ -96,12 +102,21 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
     return () => { live = false; };
   }, [author.id, article]);
   const written = article !== undefined ? article : fetched?.id === author.id ? fetched.a : null;
+
+  // "A to Z": the same works, in alphabetical order by their English titles (only worth a button for a longer list)
+  const [az, setAz] = useState(false);
+  const longList = author.works.length >= AZ_FROM;
+  const azItems = useMemo<AZItem[]>(() => author.works.map((w) => ({
+    id: w.id, title: w.title, node: <WorkItem w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} />,
+  })), [author, meta, diff, landing]);
   return (
     <div className={`wrap ${styles.page}`}>
       <p className={styles.crumb}><Link href={AREAS.library.href}>← {AREAS.library.name} · {AREAS.library.english}</Link></p>
       <header className={styles.head}>
         <div className="area-kicker"><span className="label">Author</span></div>
+        <PagePiece className="piece-desk" />
         <h1 className={`page-title ${styles.name}`}>{author.name}</h1>
+        <PagePiece className="piece-phone" />
         {author.orig && <p className={styles.note}><i lang="la">{author.orig}</i> <span className="muted">· the collection&apos;s own Latin name; the English is this site&apos;s translation</span></p>}
         {wd?.desc && <p className={styles.note}>{wd.desc.charAt(0).toUpperCase() + wd.desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}
         <dl className={styles.facts}>
@@ -128,11 +143,20 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
         </section>
       )}
 
-      <section className={styles.sec} aria-labelledby="works-title">
-        <h2 id="works-title">What {author.name} wrote</h2>
-        <ul className={lib.works}>
-          {author.works.map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} />)}
-        </ul>
+      <section className={`${styles.sec} ${styles.worksSec}`} aria-labelledby="works-title">
+        <div className={styles.secHead}>
+          <h2 id="works-title">What {author.name} wrote</h2>
+          {longList && <AZButton open={az} onToggle={() => setAz(!az)} controls="az-works" />}
+        </div>
+        {longList && <AZPanel id="az-works" open={az} items={azItems} kind={["work", "works"]} layout="rows" />}
+        {/* while "A to Z" is open the list steps aside (it shrinks and fades), and comes back when it is closed */}
+        <div className={styles.swap} data-away={az ? "" : undefined} inert={az}>
+          <div className={styles.swapIn}>
+            <ul className={lib.works}>
+              {author.works.map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} />)}
+            </ul>
+          </div>
+        </div>
       </section>
 
       {entries.length > 0 && (

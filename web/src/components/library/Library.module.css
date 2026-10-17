@@ -6,6 +6,17 @@
 .topText h1 span { display: block; font-size: 0.5em; color: var(--ink-2); margin-top: 10px; }
 .topText p { max-width: 46ch; font-size: 1.18rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
 @media (max-width: 860px) { .top { grid-template-columns: minmax(0, 1fr); } }
+/* the page's piece (components/art/PagePiece.tsx): standing above the search on a computer, beside the words on a phone */
+.topSide { display: grid; gap: var(--space-4); min-width: 0; }
+.topSide > .pieceWide {
+  float: none; width: auto; margin: 0; display: grid; grid-template-columns: minmax(0, 1fr) clamp(130px, 12vw, 170px);
+  gap: var(--space-4); align-items: end;
+}
+/* its caption stands to the left of the niche, in the room above the search, so the page's name is not pushed down */
+.topSide > .pieceWide > :global(.piece-niche) { grid-column: 2; grid-row: 1; }
+.topSide > .pieceWide > figcaption { grid-column: 1; grid-row: 1; justify-self: end; max-width: 30ch; margin: 0; text-align: right; }
+.pieceNarrow { display: none; }
+@media (max-width: 860px) { .topSide > .pieceWide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
 .stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(30px, 5vw, 60px); }
 .error { color: var(--accent); padding-block: 40px; }
 
@@ -59,37 +70,31 @@
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .level { outline: var(--moulding); outline-offset: var(--moulding-in); }
 
-/* ---------------------------------------------------------------- the jump bar stays in reach while scrolling */
-.jumpBar {
-  position: sticky; z-index: 4; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); transition: top 0.35s var(--ease);
-  display: flex; flex-wrap: wrap; gap: var(--space-1); padding: var(--space-2) 0; margin-top: var(--space-1);
-  background: var(--bg); box-shadow: var(--cut-under); /* sticky: stays opaque */
-}
-.jumpBar button {
-  min-width: 32px; height: 32px; padding: 0 6px; display: grid; place-items: center;
-  font-family: var(--f-label); font-size: 0.9rem; letter-spacing: 0.04em; color: inherit;
-  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); transition: background-color 0.2s, color 0.2s;
-}
-.jumpBar[data-periods] button { padding: 0 var(--space-3); }
-.jumpBar button:hover:not(:disabled) { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
-.jumpBar button:disabled { opacity: 0.3; cursor: default; }
-
 .count { font-size: 0.9rem; color: var(--ink-2); }
 .count button, .nothing button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
 .nothing { padding: 32px 0; color: var(--ink-2); }
 
 /* ---------------------------------------------------------------- the list */
-.list { display: grid; }
+/* the list, with the rail of letters (AZList.tsx) in a column of its own down its left: the rail is sticky within this box, so it
+   stays beside the list as the page scrolls and ends with it; the text never goes under it */
+.listWrap { display: grid; grid-template-columns: minmax(0, 1fr); }
+.listWrap[data-rail] { grid-template-columns: var(--space-6) minmax(0, 1fr); column-gap: var(--space-5); }
+.list { display: grid; min-width: 0; }
+.groupHead:focus { outline: none; }
+.groupHead:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+@media (max-width: 760px) { .listWrap[data-rail] { column-gap: var(--space-3); } }
 .group { scroll-margin-top: 0; }
 .groupHead {
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
-  border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) both;
+  border-bottom: 1px solid var(--rule); animation: rise 0.5s var(--ease) backwards;
 }
 .groupHead[data-period] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
 .author { border-bottom: 1px solid color-mix(in srgb, var(--rule) 45%, transparent); }
 .author[data-selected] { animation: picked 2.4s var(--ease) both; }
 @keyframes picked { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
+/* risings hold their first frame only until they start (backwards), and none holds its last: a finished one would
+   keep its element a layer of its own for the graphics */
 @keyframes rise { from { opacity: 0; translate: 0 6px; } }
 .authorHead { margin: 0; font: inherit; }
 .toggle {
@@ -111,7 +116,7 @@
 .author[data-open] .worksPanel { grid-template-rows: 1fr; }
 .worksPanel > div { overflow: hidden; min-height: 0; padding-inline: 10px; }
 .author[data-open] .worksPanel > div { padding-bottom: 14px; }
-.author[data-open] .rows { animation: rise 0.35s var(--ease) both; }
+.author[data-open] .rows { animation: rise 0.35s var(--ease) backwards; }
 .aboutAuthor { display: inline-block; margin-top: var(--space-2); font-size: 0.92rem; color: var(--accent); text-underline-offset: 3px; }
 .sub { margin: 10px 0 2px; font-family: var(--f-label); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-2); }
 .sub small { font-size: inherit; opacity: 0.7; margin-left: var(--space-1); }
@@ -154,13 +159,11 @@
   .selects { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
   /* the order and every filter behind one button (Library.tsx) */
   .filters { display: none; }
-  .filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) both; }
+  .filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) backwards; }
   .selects select { width: 100%; min-width: 0; font-size: 1rem; }
   .genres { display: grid; gap: 6px; }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding-inline: var(--gutter, 20px); scroll-padding-inline: var(--gutter, 20px); }
   .chipRow :global(.chip) { flex: none; }
-  .jumpBar { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
-  .jumpBar button { flex: none; min-width: 40px; height: 40px; }
   .row { grid-template-columns: minmax(0, 1fr); min-height: var(--tap); padding-block: 9px; }
   .rowMeta { flex-wrap: wrap; gap: 6px 10px; }
   .go { display: none; }
@@ -219,7 +222,7 @@
 .shelf ul { list-style: none; margin: 0; padding: 0 0 6px; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr);
   gap: var(--space-3); overflow-x: auto; scrollbar-width: thin;
   position: relative; /* holds the cards' visually hidden labels inside the row: without it they widen the whole page on phones */ }
-.shelf li { animation: rise 0.5s var(--ease) both; animation-delay: calc(var(--i) * 40ms); }
+.shelf li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 40ms); }
 .spine {
   display: grid; align-content: start; gap: var(--space-1); height: 100%; min-height: 168px; padding: var(--space-4) var(--space-4) 14px; text-decoration: none;
   background: var(--slab); color: var(--inv-fg); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius);

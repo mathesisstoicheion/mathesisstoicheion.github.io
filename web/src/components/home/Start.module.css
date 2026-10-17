@@ -27,11 +27,11 @@
 .tab[aria-selected="true"]::after { transform: none; }
 .tab:focus-visible { outline-offset: -2px; }
 .setup { padding: 14px 18px 18px; }
-.setupIn { display: grid; gap: var(--space-3); animation: fade 0.6s var(--ease) both; }
+.setupIn { display: grid; gap: var(--space-3); animation: fade 0.6s var(--ease) backwards; }
 .setupText { margin: 0; font-size: 1.06rem; color: var(--ink-2); }
 .setupText b { font-weight: 500; color: var(--ink); }
 .setupIn ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 0.95rem; color: var(--ink-2); }
-.setupIn li { position: relative; padding-left: 20px; animation: fade 0.6s var(--ease) both; animation-delay: calc(0.1s + var(--i) * 0.12s); }
+.setupIn li { position: relative; padding-left: 20px; animation: fade 0.6s var(--ease) backwards; animation-delay: calc(0.1s + var(--i) * 0.12s); }
 .setupIn li::before { content: ""; position: absolute; left: 3px; top: 0.6em; width: 5px; height: 5px; background: var(--accent); transform: rotate(45deg); opacity: 0.75; }
 .setupGo { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); margin-top: var(--space-1); }
 .setupGo small { flex: 1 1 200px; font-size: 0.82rem; line-height: 1.4; color: var(--ink-3); }
@@ -46,7 +46,7 @@
 .desk { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: var(--space-3); }
 @media (max-width: 960px) { .desk { grid-template-columns: 1fr 1fr; } .dmain { grid-column: 1 / -1; } }
 @media (max-width: 600px) { .desk { grid-template-columns: minmax(0, 1fr); } }
-.dcard { display: flex; flex-direction: column; gap: var(--space-2); min-height: 210px; padding: 20px 22px; animation: fade 0.8s var(--ease) both; }
+.dcard { display: flex; flex-direction: column; gap: var(--space-2); min-height: 210px; padding: 20px 22px; animation: fade 0.8s var(--ease) backwards; }
 .dcard:nth-child(2) { animation-delay: 0.1s; }
 .dcard:nth-child(3) { animation-delay: 0.2s; }
 .dcard > :global(.label) { color: var(--ink-3); }

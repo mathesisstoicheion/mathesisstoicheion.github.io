@@ -5,7 +5,9 @@
    ===================================================================== */
 
 :root {
-  /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts) */
+  /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts). How much
+     shows, here and for the phone bars below, is set to 0 on each element that uses it while the header is tucked
+     away (html[data-hdr="hidden"] .x), never here: a change here would restyle every element of the page. */
   --hdr-h: 68px;
   --hdr-vis: var(--hdr-h);
   /* phones: the bar along the bottom (TabBar.tsx), its height including the home-bar area, and how much of it
@@ -34,7 +36,6 @@
   }
 }
 @media (max-width: 760px) { html:has([data-readbar]) { --readbar-h: 54px; } }
-html[data-hdr="hidden"] { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 /* ---------------------------------------------------------------- maps
    The small maps (the reader's Places, My Library's places, the Explore card): dark warm land and a deep, muted
@@ -68,7 +69,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* the wall: the stone's colour, and its still texture (lib/stone.ts) */
+/* the wall: the stone's colour, and its still texture (lib/stone.ts, drawn by scripts/make-stone.mjs) */
+:root { --tex: url("/images/stone.webp"); }
 html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420px; }
 
 /* the torch's pools of light on the wall (components/Torch.tsx): moved by transform only, with normal blending */
@@ -138,6 +140,7 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round); background: var(--surface); box-shadow: 0 10px 24px -14px var(--shadow);
   transform: translateY(calc(var(--pull, 0px) - 46px)); opacity: var(--turn, 0); pointer-events: none; transition: transform 0.15s var(--ease), opacity 0.15s;
 }
+html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .pull[data-waiting] { opacity: 1; }
 .pull-ring { width: 20px; height: 20px; border: 2.5px solid var(--accent); border-right-color: transparent; border-radius: var(--radius-round); transform: rotate(calc(var(--turn, 0) * 320deg)); }
 .pull[data-ready] .pull-ring { border-color: var(--ok); border-right-color: transparent; }
@@ -210,6 +213,38 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   max-width: 640px; margin-block: var(--space-7); padding: var(--space-6); display: grid; gap: var(--space-3);
   background: var(--field); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in); color: var(--ink-2);
 }
+/* a page's own sculpture in its niche (components/art/PagePiece.tsx): at the head of a page it stands at the right of the
+   title and the words run round it; a header that holds one is laid out as plain flow, since a grid would give the niche
+   a row of its own. The niche is a button: clicking it sets a lamp before the piece. */
+.piece { margin: 0; }
+.piece-niche {
+  display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
+  background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.piece-niche canvas { display: block; width: 100%; height: 100%; }
+.piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
+.piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.piece figcaption b { color: var(--ink); font-weight: 600; }
+.piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+.piece-why { font-style: italic; }
+.piece-head { float: right; width: min(clamp(170px, 19vw, 250px), 310px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-4) var(--space-6); }
+.piece-head.piece-wide { width: clamp(220px, 27vw, 340px); }
+/* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
+.page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
+:is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
+.piece-foot { width: min(260px, 62vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
+.piece-foot.piece-wide { width: min(380px, 86vw); }
+/* a page's title is given its whole width on a phone: the piece there stands under it, beside the words that follow
+   (a header holds both, "piece-desk" before the title and "piece-phone" after it; the one not shown loads nothing) */
+.piece-phone { display: none; }
+@media (max-width: 760px) {
+  .piece-desk { display: none; }
+  .piece-phone { display: block; }
+  .piece-head { width: min(36vw, 62vw / var(--piece-ratio)); margin-left: var(--space-4); }
+  .piece-head.piece-wide { width: 46vw; }
+  .piece figcaption { font-size: var(--step--2); }
+}
+
 /* stone surfaces, for markup that has no module of its own: a panel sunk into the wall, and a slab set on it */
 .field { background: var(--field); box-shadow: var(--field-edge); }
 .slab { background: var(--slab); box-shadow: var(--slab-edge); }
@@ -235,6 +270,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .win { margin: 0; min-width: 0; }
 .frame { position: relative; background: var(--stone-0); overflow: hidden; }
 .frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+/* a relief drawn like a page's piece: the whole window is the button that sets a lamp before it */
+.frame > .piece-niche { position: absolute; inset: 0; width: 100%; height: 100%; aspect-ratio: auto; }
 .frame::after {
   content: ""; position: absolute; inset: 0; pointer-events: none;
   box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 0 0 2px rgba(255, 222, 180, 0.05), inset 0 18px 30px -18px rgba(0, 0, 0, 0.8);
@@ -243,13 +280,10 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 .win figcaption b { font-weight: 500; color: var(--ink-2); }
 /* letters carved in the stone (components/art/Carving.tsx) */
 .carve { display: block; width: 100%; touch-action: pan-y; }
-/* a heading whose letters settle into line as it rises into view (components/art/Settle.tsx writes --sp, 0 to 1) */
+/* a heading whose letters settle into line as it rises into view: components/art/Settle.tsx moves each letter (--d,
+   --dy and --rz on each say when it settles and how far out of place it starts) */
 .sk .sw { display: inline-block; white-space: nowrap; }
-.sk .k {
-  display: inline-block; --p: clamp(0, calc((var(--sp, 1) - var(--d, 0)) / 0.7), 1);
-  transform: translate3d(0, calc((1 - var(--p)) * var(--dy, 0px)), 0) rotate(calc((1 - var(--p)) * var(--rz, 0deg)));
-  opacity: calc(0.34 + 0.66 * var(--p));
-}
+.sk .k { display: inline-block; }
 
 /* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
 .rv.in { animation: lift var(--dur-slow) var(--ease) both; }
@@ -291,6 +325,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
+html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
 /* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */

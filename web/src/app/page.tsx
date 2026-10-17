@@ -129,8 +129,9 @@ export default function Home() {
           <Settle as="h2" id="passage-title" className="label" text="Passage of the day" />
           <span className={styles.secR}><span className="label faint">{AREAS.reader.name} · {AREAS.reader.english}</span><HomeFold id="passage" title="Passage of the day" className={styles.foldBtn} /></span>
         </div>
-        <div className={styles.podGrid} data-fold-hide="">
-          <div className="rv">
+        <div className={styles.podGrid}>
+          {/* folded on a phone, the passage is put away but its relief stays on the wall */}
+          <div className="rv" data-fold-hide="">
             <p className={styles.lede}>A different famous passage each day, read live from the original files. Every word can be looked up.</p>
             <PassageOfTheDay />
           </div>

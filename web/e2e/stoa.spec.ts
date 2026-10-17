@@ -11,7 +11,8 @@ test("the Painted Stoa lists its entries and searches them", async ({ page }) =>
 test("an entry shows its picture with a credit, its quotations, and links into the reader", async ({ page }) => {
   await page.goto("/stoa/pericles");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Pericles");
-  const lead = page.locator("figure").first();
+  // the entry's own picture (the page's lit sculpture, a figure of its own, stands beside the title)
+  const lead = page.locator("figure:not(.piece)").first();
   await expect(lead.locator("img")).toHaveAttribute("src", "/images/pericles-bust.jpg");
   await expect(lead).toContainText("CC BY 2.5");
   await expect(page.getByText("ἐγίγνετό τε λόγῳ μὲν δημοκρατία")).toBeVisible();

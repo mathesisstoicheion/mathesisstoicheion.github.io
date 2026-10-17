@@ -28,16 +28,16 @@ export default function Header() {
     const el = ref.current, root = document.documentElement;
     if (!el) return;
     let h = el.offsetHeight, lastY = scrollY, hidden = false, frame = 0;
+    // only data-hdr changes as the header slides (lib/header.ts): what sits below it follows that by itself
     const set = (hide: boolean) => {
       if (hide === hidden) return;
       hidden = hide;
       root.dataset.hdr = hide ? "hidden" : "shown";
-      root.style.setProperty("--hdr-vis", hide ? "0px" : `${h}px`);
     };
     const ro = new ResizeObserver(() => {
+      if (el.offsetHeight === h && root.style.getPropertyValue("--hdr-h")) return;
       h = el.offsetHeight;
       root.style.setProperty("--hdr-h", `${h}px`);
-      if (!hidden) root.style.setProperty("--hdr-vis", `${h}px`);
     });
     ro.observe(el);
     const check = () => {

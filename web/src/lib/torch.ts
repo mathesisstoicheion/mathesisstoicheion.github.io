@@ -9,10 +9,14 @@
  * One animation loop drives it all. Art that the torch lights (carved letters, re-lit reliefs, the emblem) registers
  * with onFrame() and is handed the lights of each frame, in viewport pixels; it redraws only when they move relative
  * to it. Pages can say where the torch wanders when nobody holds it (setDrift).
+ *
+ * Each frame first lets every piece measure the page, then makes every change to it (the pools of light, and whatever
+ * the pieces hand back), so the page is laid out at most once a frame however many pieces it holds.
  */
 
 export interface Light { x: number; y: number; /** 0 to 1 */ I: number }
-type FrameFn = (now: number, dt: number, lights: readonly Light[]) => void;
+/** A frame's work: it may read the page, and it hands back what it changes on the page, run once all have read. */
+type FrameFn = (now: number, dt: number, lights: readonly Light[]) => void | (() => void);
 /** Where the torch drifts: the centre (as fractions of the window) and how far it wanders either way. */
 export type Drift = [ax: number, ay: number, sx: number, sy: number];
 
@@ -35,8 +39,11 @@ let glow: HTMLElement | null = null;
 const pool: HTMLElement[] = [];
 const subs = new Set<FrameFn>();
 let raf = 0, last = 0, started = false;
+const writes: (() => void)[] = [];
+const glowSets: [HTMLElement, number, number, number][] = [];
 
-/** Art lit by the torch: called every frame with this frame's lights. Returns the function that stops it. */
+/** Art lit by the torch: called every frame with this frame's lights. It reads the page and returns what it changes on
+ *  it (see FrameFn). Returns the function that stops it. */
 export function onFrame(fn: FrameFn) { subs.add(fn); return () => { subs.delete(fn); }; }
 /** This frame's lights, in viewport pixels. */
 export const lights = (): readonly Light[] => LS;
@@ -64,7 +71,8 @@ function middleSpot(): [number, number] {
 
 function setRadius() {
   T.R = clamp(Math.min(innerWidth, innerHeight) * 0.36, 170, 330);
-  document.documentElement.style.setProperty("--glow-d", `${Math.round(T.R * 3.6)}px`);
+  // on the pools' own box: on <html> it would restyle every element of the page
+  (glow?.parentElement ?? document.documentElement).style.setProperty("--glow-d", `${Math.round(T.R * 3.6)}px`);
 }
 
 function fingers() {
@@ -87,7 +95,7 @@ function updateFingers(dt: number) {
     const L = FL[i];
     L.x += (L.tx - L.x) * k; L.y += (L.ty - L.y) * k;
     L.a += ((L.on ? 1 : 0) - L.a) * (1 - Math.exp(-dt * (L.on ? 4 : 1.6)));
-    if (!L.on && L.a < 0.01) { if (L.g) { setGlow(L.g, 0, 0, 0); pool.push(L.g); } FL.splice(i, 1); }
+    if (!L.on && L.a < 0.01) { if (L.g) { glowSets.push([L.g, 0, 0, 0]); pool.push(L.g); } FL.splice(i, 1); }
   }
   return fs.length;
 }
@@ -131,9 +139,14 @@ function updateTorch(dt: number, t: number) {
 
 function setGlow(g: HTMLElement, o: number, x: number, y: number) {
   const el = g as HTMLElement & { __o?: string; __t?: string };
-  const os = o.toFixed(3);
+  // in steps of a hundredth: finer steps change no pixel on the screen (the brightest pool adds a fifth of its colour,
+  // so a hundredth of that is less than one step of brightness), yet each one would make the graphics draw the whole
+  // screen again: the flicker alone did that sixty times a second
+  const os = o.toFixed(2);
   if (el.__o !== os) { el.style.opacity = os; el.__o = os; }
-  if (o > 0) { const ts = `translate3d(${x.toFixed(1)}px,${y.toFixed(1)}px,0)`; if (el.__t !== ts) { el.style.transform = ts; el.__t = ts; } }
+  // and on a grid of two pixels: across a pool six hundred pixels or more wide, a two-pixel step changes no pixel by as
+  // much as one step of brightness, and the torch drifting by itself redraws the screen half as often
+  if (o > 0) { const ts = `translate3d(${Math.round(x / 2) * 2}px,${Math.round(y / 2) * 2}px,0)`; if (el.__t !== ts) { el.style.transform = ts; el.__t = ts; } }
 }
 
 function frame(ms: number) {
@@ -146,23 +159,27 @@ function frame(ms: number) {
     // reduced motion: one still light, drawn once; fingers carry none
     const [ax, ay] = driftAnchor();
     const I = quiet ? quietLevel * 0.7 : 0.7;
-    setGlow(glow, I, innerWidth * ax, innerHeight * ay);
-    for (const L of FL) if (L.g) setGlow(L.g, 0, 0, 0);
+    glowSets.push([glow, I, innerWidth * ax, innerHeight * ay]);
+    for (const L of FL) if (L.g) glowSets.push([L.g, 0, 0, 0]);
     LS.push({ x: innerWidth * ax, y: innerHeight * ay, I });
   } else {
     updateTorch(dt, now);
     const base = quiet ? quietLevel : 1;
     const I = T.a * T.f * base;
     if (I > 0.01) LS.push({ x: T.x, y: T.y, I });
-    setGlow(glow, I > 0.01 ? I * 0.92 : 0, T.x, T.y);
+    glowSets.push([glow, I > 0.01 ? I * 0.92 : 0, T.x, T.y]);
     for (const L of FL) {
       if (!L.g) L.g = pool.pop() ?? null;
       const If = L.a * T.f * base;
       if (If > 0.01) LS.push({ x: L.x, y: L.y, I: If });
-      if (L.g) setGlow(L.g, If > 0.01 ? If * 0.8 : 0, L.x, L.y);
+      if (L.g) glowSets.push([L.g, If > 0.01 ? If * 0.8 : 0, L.x, L.y]);
     }
   }
-  for (const fn of subs) fn(now, dt, LS);
+  // every piece reads the page first; then the page is changed, all at once
+  for (const fn of subs) { const w = fn(now, dt, LS); if (w) writes.push(w); }
+  for (const [g, o, x, y] of glowSets) setGlow(g, o, x, y);
+  for (const w of writes) w();
+  glowSets.length = 0; writes.length = 0;
 }
 
 /**

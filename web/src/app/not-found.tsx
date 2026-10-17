@@ -6,6 +6,8 @@ import NotFoundSearch from "@/components/NotFoundSearch";
 import Carving from "@/components/art/Carving";
 import { AREAS } from "@/config/areas";
 import styles from "./not-found.module.css";
+import PagePiece from "@/components/art/PagePiece";
+import { LOST_PAGE } from "@/data/pieces";
 
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 
@@ -47,6 +49,7 @@ export default function NotFound() {
           <p className="muted">
             Followed a link on this site that led here? <ReportBugLink>Tell us about the broken link</ReportBugLink>.
           </p>
+          <PagePiece spec={LOST_PAGE} className={styles.lost} />
         </div>
       </div>
     </Page>

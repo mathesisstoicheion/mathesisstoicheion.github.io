@@ -82,9 +82,11 @@ test("the library sorts by title and by period, and jumps to a letter", async ({
   await page.goto("/library");
   await page.getByRole("radio", { name: "Title A–Z" }).click();
   await expect(page.locator("#lib-I").getByRole("link", { name: /^Iliad.*Homer/ })).toBeAttached();
-  await page.getByRole("navigation", { name: "Jump to a letter" }).getByRole("button", { name: "O", exact: true }).click();
+  // the rail of letters down the left of the list (AZList.tsx) follows the order in use
+  await page.getByRole("navigation", { name: "Titles by first letter" }).getByRole("button", { name: "Titles beginning with O" }).click();
   await expect(page.locator("#lib-O")).toBeInViewport();
   await page.getByRole("radio", { name: "By period" }).click();
+  await expect(page.getByRole("navigation", { name: /by first letter/ })).toHaveCount(0);   // periods have no letters, so no rail
   await expect(page.getByRole("heading", { level: 2, name: /^Archaic/ })).toBeVisible();
 });
 

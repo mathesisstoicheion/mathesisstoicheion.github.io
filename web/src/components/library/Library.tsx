@@ -14,8 +14,10 @@ import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import MineButtons from "./MineButtons";
+import { AZRail } from "./AZList";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import PagePiece from "@/components/art/PagePiece";
 
 /**
  * Where to begin. The site's own guidance, following the brief; the reasons are the ones
@@ -32,6 +34,8 @@ type Tr = "all" | "with" | "greek";
 const SORTS: [Sort, string][] = [["author", "Author A–Z"], ["title", "Title A–Z"], ["period", "By period"]];
 const TRS: [Tr, string][] = [["all", "All"], ["with", "With translation"], ["greek", "Greek only"]];
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+/** How many authors (or titles) a list needs before the rail of letters stands beside it. */
+const RAIL_FROM = 20;
 const UNDATED = "Not dated";
 
 const readHref = (w: CatWork) => `/read?w=${w.id}`;
@@ -213,7 +217,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
   }, [rows, query, names]);
   const goAuthor = (id: string) => {
     const el = document.getElementById(`author-${id}`);
-    if (el) scrollBelowHeader(el, (barRef.current?.offsetHeight ?? 0) + 12, !prefersReducedMotion(useSettings.getState().motion));
+    if (el) scrollBelowHeader(el, 12, !prefersReducedMotion(useSettings.getState().motion));
     el?.querySelector("button")?.focus({ preventScroll: true });
   };
 
@@ -225,12 +229,17 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
   }), [authors]);
   const narrowed = shown.works !== total.works;
 
-  // the jump bar: every letter (or period), those with nothing to show greyed out
-  const jumps = sort === "period" ? groups.map((g) => ({ key: g.key, short: g.short, on: true })) : LETTERS.map((l) => ({ key: l, short: l, on: groups.some((g) => g.key === l) }));
-  const barRef = useRef<HTMLElement>(null);
-  const jump = (key: string) => {
+  // The rail of letters down the left of the list (AZList.tsx). The owner asked for it on 2026-10-16: "the A to Z should just be
+  // the side scroller. On the left side." It has the letters of the order in use (authors, or titles), those with nothing under
+  // them dimmed. Sorted by period there are no letters, so there is no rail; nor is there one for a short list (a search that
+  // finds only a few authors), which it would leave standing taller than the list itself.
+  const present = useMemo(() => new Set(groups.map((g) => g.key)), [groups]);
+  const railOn = sort !== "period" && groups.reduce((n, g) => n + (g.rows?.length ?? g.titles?.length ?? 0), 0) >= RAIL_FROM;
+  const railKeys = useMemo(() => (present.has("#") ? [...LETTERS, "#"] : LETTERS), [present]);
+  const jump = (key: string, instant: boolean) => {
     const el = document.getElementById(`lib-${key}`);
-    if (el) scrollBelowHeader(el, (barRef.current?.offsetHeight ?? 0) + 12, !prefersReducedMotion(useSettings.getState().motion));
+    if (el) scrollBelowHeader(el, 12, !instant && !prefersReducedMotion(useSettings.getState().motion));
+    return el ?? undefined;
   };
 
   // arriving with ?a=tlg0012 (from the reader or an author page): bring that author into view and mark them
@@ -243,7 +252,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
     if (!idx || !selected) return;
     requestAnimationFrame(() => {
       const el = document.getElementById(`author-${selected}`);
-      if (el) scrollBelowHeader(el, (barRef.current?.offsetHeight ?? 0) + 12);
+      if (el) scrollBelowHeader(el, 12);
     });
   }, [idx, selected]);
 
@@ -258,11 +267,15 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
       <MineButtons />
       {/* the search comes first, beside the page's name: straight to the point */}
       <div className={styles.top}>
-        {hero && <div className={styles.topText}>{hero}</div>}
-        <div className={styles.searchBox}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-            placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+        {/* the Mouseion's own piece: above the search on a computer, beside the words on a phone */}
+        {hero && <div className={styles.topText}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
+        <div className={styles.topSide}>
+          <PagePiece className={styles.pieceWide} />
+          <div className={styles.searchBox}>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+            <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
+              placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+          </div>
         </div>
       </div>
 
@@ -363,10 +376,6 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
         </div>
       )}
 
-      <nav ref={barRef} className={styles.jumpBar} aria-label={sort === "period" ? "Jump to a period" : "Jump to a letter"} data-periods={sort === "period" ? "" : undefined}>
-        {jumps.map((j) => <button key={j.key} type="button" disabled={!j.on} onClick={() => jump(j.key)}>{j.short}</button>)}
-      </nav>
-
       <p className={styles.count} aria-live="polite">
         {!idx ? "Opening the catalogue…"
           : narrowed ? <>{n(shown.works)} of {n(total.works)} works, by {n(shown.authors)} author{shown.authors === 1 ? "" : "s"} · <button type="button" onClick={clearAll}>Show everything</button></>
@@ -389,6 +398,9 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
 
       {idx && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
 
+      {/* the rail of letters down the left of the list, sticky beside it (none when sorted by period); the list leaves room for it */}
+      <div className={styles.listWrap} data-rail={railOn ? "" : undefined}>
+      {railOn && <AZRail variant="side" keys={railKeys} has={(k) => present.has(k)} jump={jump} noun={sort === "title" ? "Titles" : "Authors"} />}
       {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
       <div className={styles.list} onKeyDown={(e) => {
         const t = e.target as HTMLElement;
@@ -403,7 +415,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
       }}>
         {groups.map((g) => (
           <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
-            <h2 id={`lib-h-${g.key}`} className={styles.groupHead} data-period={sort === "period" ? "" : undefined}>{g.label}</h2>
+            <h2 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" ? "" : undefined}>{g.label}</h2>
             {g.rows?.map((r) => (
               <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
                 aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
@@ -416,6 +428,7 @@ export default function Library({ hero, stelai }: { hero?: ReactNode; stelai?: R
             )}
           </section>
         ))}
+      </div>
       </div>
     </div>
   );

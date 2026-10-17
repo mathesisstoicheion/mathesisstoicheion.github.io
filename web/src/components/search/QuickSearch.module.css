@@ -32,7 +32,7 @@
 .list { margin: 0; padding: 4px 6px 8px; max-height: 56vh; overflow: auto; }
 .group + .group { margin-top: 4px; padding-top: 6px; box-shadow: var(--cut-over); }
 .groupTitle { margin: 0; padding: 8px 12px 4px; font-family: var(--f-label); font-size: 0.78rem; font-weight: 500; letter-spacing: 0.08em; color: var(--accent); }
-.opt { display: flex; gap: 12px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; animation: opt-in 0.18s var(--ease) both; }
+.opt { display: flex; gap: 12px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; animation: opt-in 0.18s var(--ease) backwards; }
 @keyframes opt-in { from { opacity: 0; transform: translateY(3px); } }
 .opt[aria-selected="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .opt[aria-selected="true"] .kind { color: var(--accent); }

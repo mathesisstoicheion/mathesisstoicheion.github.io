@@ -108,7 +108,7 @@
 .connPanel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: min(380px, calc(100vw - 24px));
   display: grid; gap: 12px; padding: 16px 18px; background: var(--surface) var(--tex, none) center / 420px; border-radius: var(--radius);
-  box-shadow: var(--slab-edge), 0 24px 48px -24px var(--shadow); animation: drop 0.3s var(--ease) both; font-size: 0.95rem;
+  box-shadow: var(--slab-edge), 0 24px 48px -24px var(--shadow); animation: drop 0.3s var(--ease) backwards; font-size: 0.95rem;
 }
 @keyframes drop { from { opacity: 0; transform: translateY(-6px); } }
 /* phones: the light sits mid-row, so its panel hangs from the whole header instead, inside the screen */

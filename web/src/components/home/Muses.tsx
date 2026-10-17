@@ -31,7 +31,7 @@ function MuseNiche({ g, e, art, i }: { g: string; e: string; art: string; i: num
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2, reach = Math.max(95, r.width * 1.3);
       if (ls.some((l) => l.I >= 0.25 && Math.hypot(l.x - cx, l.y - cy) < reach)) until = now + 2.4;
       const on = now < until;
-      if (on !== lit) { lit = on; el.classList.toggle(styles.lit, on); }
+      if (on !== lit) { lit = on; return () => el.classList.toggle(styles.lit, on); }
     });
   }, []);
   return (

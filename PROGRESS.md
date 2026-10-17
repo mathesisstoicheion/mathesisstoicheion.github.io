@@ -41,6 +41,61 @@ live; it goes live only when the owner says "Publish"):
 Published 2026-10-16 at the owner's word ("Just make the changes. Push to live"), without a separate preview round; the owner
 will report any bugs or design flaws they find on the live site.
 
+### Evening round: a sculpture on every page, A to Z, and no lag (2026-10-16; published 2026-10-17)
+The owner asked (18:36 to 19:46): a dedicated lit sculpture on every page; refined textures, shadows, light and animation; click a
+sculpture to light it fully and click again to give it back to the torch; the settings panel's controls in one stone style; an
+"A to Z" on the author pages and the library (19:36: in the library, just a slim scroller of letters down the left); and "The
+site is not allowed to be laggy". Built (DESIGN.md: "A sculpture on every page", "Never laggy", "A to Z"):
+- **Pieces**: one Met Open Access (CC0) sculpture for each page (`web/src/data/pieces.ts`; listed with credits on the credits
+  page). `pipeline/pieces.py` cuts each out of its photo (rembg), removes the museum's modern mounts (per-piece "cut", "trim" and
+  "add" settings in `pipeline/pieces.json`) and makes its height map; the photos are in `pipeline/pieces-src/` (fetched by a
+  GitHub Actions workflow on the redesign branch, since this container cannot reach the Met; the workflow and the candidate
+  pictures it fetched for choosing, `.github/workflows/fetch-pictures.yml` and `pieces-candidates/`, were removed before
+  publishing and are in git history at 25ebcf5), the lit files in
+  `web/public/images/pieces/lit/`. `lib/art/piece.ts` draws them in WebGL2; `components/art/PagePiece.tsx` places them.
+- **Home**: the three reliefs are drawn the same way; click one for the lamp.
+- **A to Z**: `components/library/AZList.tsx` (button, panel, rail) and `az.ts` (grouping, tested in `az.test.ts`,
+  `e2e/az.spec.ts`).
+- **Smoothness**: each piece steps down by itself if its frames keep coming slow; shadow traces take fewer steps when they are
+  short (half the drawing time, the same picture); the A to Z list opens and closes by uncovering (clip-paths), not by growing,
+  so the page is not laid out again on every frame, and it is built ahead while the page is idle.
+- **Fixes found while checking**: a piece at the foot of the page drew blank after moving between two pages that both had one
+  (a canvas whose WebGL light had been put out was reused: each piece now gets a fresh canvas); the foot piece no longer flashes
+  up while a page is still loading (`PieceHold`).
+- **Frame rates** (Playwright with software graphics, no graphics chip: the slowest case; the live site measured the same way):
+  pages with a sculpture run at about 85% of the live site's rate (computer 14 against 16.5 fps, phone 38 against 45); the home
+  page, the library and the author pages match it or better (library on a computer 18.7 against 9.0). The A to Z opening went
+  from 6.6 to 38.5 fps on a computer, and closing from 15 to 54.5. Real devices draw with their graphics chip and run far
+  faster; these numbers are for comparing versions.
+- **Found for the performance phase** (the owner, 19:44: after this round, a performance test, improvements, and an A/B test
+  in fps): on long pages every scroll recalculates styles and repaints the whole page (about 40 ms a jump in software, on the live
+  site too); on phones the torch reads the page's height every frame, which forces the page to be laid out early.
+
+### Speed work (2026-10-16 to 17; published 2026-10-17)
+The owner (19:44): "a performance test on the website and a refining and improvement of efficiency and performance, without
+sacrificing quality. Then A. B. test and give me results in fps and tell me what changed"; and "The site is not allowed to be
+laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rules learned are in DESIGN.md, "Never laggy".
+- **What changed**: the header slides by flipping only `data-hdr` on `<html>`; every rule that uses `--hdr-vis`, `--tabbar-vis`
+  or `--readbar-vis` zeroes it on its own element under `html[data-hdr="hidden"]` (a change on `<html>` restyled all ~10,000
+  elements of the library, about 0.1 s each time). The torch's frame lets every piece measure first and write after
+  (`FrameFn` may return a write). The stone is a picture (`public/images/stone.webp`, from `scripts/make-stone.mjs`,
+  pixel-identical). Settling headings move only the letters that moved, with flat transforms. Finished from-only animations
+  use `backwards`, not `both`, so they let go of their layers (layers: library 167 → 16, home 189 → 49, author 89 → 14,
+  Census 69 → 19, Academy 36 → 12). The torch's pools step in hundredths of brightness and on a 2 px grid. While a finger slides
+  on the A to Z, letters light at once and the bubble has no glide. The offline helper registers when the browser is idle after
+  load; the scroll position is saved at rest.
+- **A/B** (Playwright, software graphics, so only for comparing; old = the evening round, dfbd358; each case at least twice):
+  phone (390 x 844 at 2x, CPU 4x slower): A to Z finger slide 18.1 → 32.1 fps, home page scroll 27.9 → 34.5, library scroll
+  54 → 59, sculpture scroll 50 → 53.5; opening the library stuck 5.5 → 4.2 s, the home page 5.0 → 4.1 s. Computer (1440 x 900):
+  frame rates are capped near 15 to 20 fps by software drawing; time stuck while scrolling the library 0.17 → 0 s, the header
+  sliding 0.24 → 0 s, A to Z closing 13 → 19 fps. The page's own work per second: library scroll 329 → 198 ms, home 203 → 141.
+- **Checked**: 22 still screenshots of 11 pages pixel-identical with the old version; settling headings caught mid-motion match;
+  unit tests 467 pass; browser tests 543 pass and the other 41 failed the same way on the old version (the floating-reader test
+  now waits for the visit to be remembered, instead of a fixed 1.2 s).
+- **Still slowest** (in software): tapping a sculpture's lamp on a phone (about 17 fps, unchanged; its light is WebGL); the
+  phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
+Both published together on 2026-10-17, when the owner chose "Publish" on the results.
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:

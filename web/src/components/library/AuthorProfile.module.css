@@ -12,6 +12,17 @@
 .msg { padding-block: 40px; color: var(--ink-2); }
 .sec { display: grid; gap: 6px; }
 .sec h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+/* the works: the heading with the "A to Z" button beside it, the A to Z list, and the list it replaces while it is open */
+.worksSec { gap: 0; }
+.secHead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-bottom: var(--space-2); }
+/* (the list fades, and steps aside all at once as the A to Z list takes its room; it comes back once that has closed: AZList.module.css) */
+.swap {
+  display: grid; grid-template-rows: 1fr;
+  transition: grid-template-rows 0s var(--ease) calc(var(--dur-quick) * 2.2), visibility 0s var(--ease) calc(var(--dur-quick) * 2.2);
+}
+.swapIn { min-height: 0; overflow: clip; transition: opacity var(--dur) var(--ease) calc(var(--dur-quick) * 2.2); }
+.swap[data-away] { grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 0s var(--ease) var(--dur-quick), visibility 0s var(--ease) var(--dur-quick); }
+.swap[data-away] .swapIn { opacity: 0; transition: opacity var(--dur-quick) var(--ease); }
 .cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 12px; }
 .card {
   display: grid; gap: 8px; align-content: start; padding: 20px; text-decoration: none;

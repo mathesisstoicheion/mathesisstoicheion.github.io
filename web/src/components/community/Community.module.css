@@ -24,7 +24,7 @@
 /* ------------------------------------------------ cards and forms */
 .card {
   padding: clamp(20px, 3vw, 32px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
-  display: grid; gap: 14px; animation: rise 0.5s var(--ease) both;
+  display: grid; gap: 14px; animation: rise 0.5s var(--ease) backwards;
 }
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
@@ -71,7 +71,7 @@
 .cat {
   text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1px solid var(--rule-2); border-radius: var(--radius);
   background: var(--surface); color: var(--ink); cursor: pointer; position: relative; overflow: hidden; font: inherit;
-  animation: rise 0.45s var(--ease) both; animation-delay: calc(var(--i, 0) * 40ms);
+  animation: rise 0.45s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 40ms);
   transition: transform 0.2s var(--ease), color 0.3s;
 }
 .cat::before { content: ""; position: absolute; inset: 0; background: var(--sel-bg); transform: scaleY(0); transform-origin: bottom; transition: transform 0.4s cubic-bezier(0.6, 0, 0.2, 1); }
@@ -102,7 +102,7 @@
 .threads li {
   display: grid; grid-template-columns: 56px 1fr 96px; gap: 14px; align-items: center; padding: 12px 4px;
   box-shadow: var(--cut-under);
-  animation: rise 0.4s var(--ease) both; animation-delay: calc(min(var(--i, 0), 20) * 25ms);
+  animation: rise 0.4s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 20) * 25ms);
 }
 .threads li:last-child { box-shadow: none; }
 .threadScore, .threadReplies { display: grid; justify-items: center; text-align: center; line-height: 1.1; }
@@ -205,7 +205,7 @@
 .proposeBox { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
 .resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); box-shadow: var(--channel-edge); }   /* the two colours stay: they say For and Against */
-.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow 1s var(--ease) both; transform-origin: left; }
+.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow 1s var(--ease) backwards; transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0); } }
 .result p { margin: 0; font-size: 0.9rem; }
 .resultSmall .resultBar { height: 6px; max-width: 320px; }
@@ -237,7 +237,7 @@
 .sideAgainst { border-color: var(--accent); }
 .side h2 { margin: 0; font-size: var(--step-2); }
 .side h2 small { font-size: 0.9rem; color: var(--ink-2); }
-.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) both; }
+.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) backwards; }
 
 @media (max-width: 760px) {
   .threads li { grid-template-columns: 44px 1fr; }

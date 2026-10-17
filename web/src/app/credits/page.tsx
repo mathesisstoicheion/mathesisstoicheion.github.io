@@ -3,9 +3,11 @@ import Page from "@/components/Page";
 import { COLLECTIONS, repoUrl } from "@/config/sources";
 import { LSJ_CREDIT } from "@/lib/lookup/lsj";
 import { IMAGES } from "@/wiki/images";
+import { PIECE_CREDITS, USED_PIECES } from "@/data/pieces";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
+import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = { title: "Credits, licences & privacy", description: PAGE_DESCRIPTIONS.credits };
 
@@ -25,14 +27,17 @@ export default function CreditsPage() {
   return (
     <Page>
       <article className={`wrap ${styles.prose}`}>
-        <span className="label">Credits, licences &amp; privacy</span>
-        <h1>Credits, licences &amp; privacy</h1>
-
-        <h2>Texts and translations</h2>
-        <p>
-          All Greek texts and English translations come from the collections below and are shown exactly as published.
-          We never edit them. If we find an error, we report it to the collection rather than changing our copy.
-        </p>
+        <div className="page-head">
+          <span className="label">Credits, licences &amp; privacy</span>
+          <PagePiece className="piece-desk" />
+          <h1>Credits, licences &amp; privacy</h1>
+          <PagePiece className="piece-phone" />
+          <h2>Texts and translations</h2>
+          <p>
+            All Greek texts and English translations come from the collections below and are shown exactly as published.
+            We never edit them. If we find an error, we report it to the collection rather than changing our copy.
+          </p>
+        </div>
         <ul>
           {COLLECTIONS.map((c) => (
             <li key={c.id}>
@@ -99,6 +104,20 @@ export default function CreditsPage() {
               </li>
             );
           })}
+        </ul>
+
+        <h2>The sculpture on each page</h2>
+        <p>
+          Each page has its own piece of ancient sculpture standing in a niche. All are from The Metropolitan Museum of Art&apos;s Open Access
+          programme (CC0); their titles and dates are copied from the museum&apos;s records by <code>web/scripts/fetch-images.ts</code>, and
+          each photograph was cut out and shaped for the torch by <code>pipeline/pieces.py</code>.
+        </p>
+        <ul>
+          {USED_PIECES.map((id) => [id, PIECE_CREDITS[id]] as const).filter(([, im]) => im).map(([id, im]) => (
+            <li key={id}>
+              <b>{im.title}</b>{im.date && <>, {im.date}</>}. {im.place}. <a href={im.source} rel="noopener">{im.sourceName}</a>, <a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
+            </li>
+          ))}
         </ul>
 
         <h2>Manuscripts</h2>

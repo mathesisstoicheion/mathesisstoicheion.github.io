@@ -1,0 +1,290 @@
+{
+ "seated-muse": {
+  "w": 563,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "herodotos-bust": {
+  "w": 663,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "demosthenes-head": {
+  "w": 950,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "togatus": {
+  "w": 450,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "apollo-bronze": {
+  "w": 432,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "philosopher-head": {
+  "w": 802,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "decree-fragment": {
+  "w": 910,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "girl-with-doves": {
+  "w": 576,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "boxer-statuette": {
+  "w": 471,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "nike-relief": {
+  "w": 862,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "bronze-herm": {
+  "w": 354,
+  "h": 700,
+  "form": "round",
+  "material": "bronze"
+ },
+ "hermes-bronze": {
+  "w": 389,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "diskos-thrower": {
+  "w": 435,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "muse-head": {
+  "w": 920,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "harp-player": {
+  "w": 794,
+  "h": 1189,
+  "form": "round",
+  "material": "marble"
+ },
+ "tribute-list": {
+  "w": 623,
+  "h": 603,
+  "form": "slab",
+  "material": "marble"
+ },
+ "athletic-prizes": {
+  "w": 1200,
+  "h": 588,
+  "form": "slab",
+  "material": "marble"
+ },
+ "arsinoe-base": {
+  "w": 1200,
+  "h": 415,
+  "form": "slab",
+  "material": "marble"
+ },
+ "strategos-head": {
+  "w": 644,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "seated-man": {
+  "w": 924,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "hero-relief": {
+  "w": 1200,
+  "h": 1072,
+  "form": "slab",
+  "material": "marble"
+ },
+ "hermes-seated": {
+  "w": 883,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "hermes-marble": {
+  "w": 516,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "eukleia-stele": {
+  "w": 610,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "chrysippos-head": {
+  "w": 798,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "banquet-relief": {
+  "w": 673,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "portrait-bust": {
+  "w": 987,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "herakles-bronze": {
+  "w": 545,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "eirene": {
+  "w": 472,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "kouros": {
+  "w": 317,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "funerary-lekythos": {
+  "w": 373,
+  "h": 1200,
+  "form": "lathe",
+  "material": "marble"
+ },
+ "hand-with-scroll": {
+  "w": 1200,
+  "h": 745,
+  "form": "round",
+  "material": "marble"
+ },
+ "neptune-bronze": {
+  "w": 614,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "diadoumenos-terracotta": {
+  "w": 823,
+  "h": 1200,
+  "form": "round",
+  "material": "terracotta"
+ },
+ "family-stele": {
+  "w": 781,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "woman-stele": {
+  "w": 688,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "teacher-and-pupil": {
+  "w": 717,
+  "h": 1200,
+  "form": "round",
+  "material": "terracotta"
+ },
+ "elderly-man": {
+  "w": 768,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "boy-orator": {
+  "w": 415,
+  "h": 1200,
+  "form": "round",
+  "material": "bronze"
+ },
+ "apollo-head": {
+  "w": 746,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "athena-torso": {
+  "w": 632,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
+ },
+ "athena-votive": {
+  "w": 968,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ },
+ "bilingual-plaque": {
+  "w": 536,
+  "h": 491,
+  "form": "slab",
+  "material": "limestone"
+ },
+ "red-base": {
+  "w": 1196,
+  "h": 944,
+  "form": "slab",
+  "material": "terracotta"
+ },
+ "stele-youth-head": {
+  "w": 1191,
+  "h": 846,
+  "form": "slab",
+  "material": "marble"
+ },
+ "great-eleusinian-relief": {
+  "w": 825,
+  "h": 1200,
+  "form": "relief",
+  "material": "marble"
+ },
+ "parthenon-frieze-cast": {
+  "w": 1200,
+  "h": 835,
+  "form": "relief",
+  "material": "plaster"
+ },
+ "stele-woman-and-servant": {
+  "w": 493,
+  "h": 1200,
+  "form": "slab",
+  "material": "marble"
+ }
+}

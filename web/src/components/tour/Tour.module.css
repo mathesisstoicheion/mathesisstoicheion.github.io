@@ -34,8 +34,10 @@
   left: 12px; right: 12px; top: auto; width: auto; max-width: 520px; margin-inline: auto;
   bottom: calc(12px + max(var(--tabbar-vis, 0px) + var(--readbar-vis, 0px), env(safe-area-inset-bottom, 0px)));
 }
+:global(html[data-hdr="hidden"]) .docked { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 .dockTop { bottom: auto; top: calc(var(--hdr-vis, 0px) + 10px); }
+:global(html[data-hdr="hidden"]) .dockTop { --hdr-vis: 0px; }
 
 .head { display: flex; align-items: center; gap: 10px; }
 .dots { display: flex; gap: 5px; margin-left: auto; }
@@ -51,5 +53,5 @@
 .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: flex-end; }
 .acts .close { margin: 0 0 0 auto; }
 .hint { font-size: 0.86rem !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }
-.tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: var(--radius-round); background: var(--accent); color: var(--accent-ink); font-size: 0.75em; vertical-align: 0.15em; animation: stamp 0.5s var(--ease) 0.15s both; }
+.tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: var(--radius-round); background: var(--accent); color: var(--accent-ink); font-size: 0.75em; vertical-align: 0.15em; animation: stamp 0.5s var(--ease) 0.15s backwards; }
 @keyframes stamp { from { transform: scale(0.2) rotate(-30deg); opacity: 0; } }
