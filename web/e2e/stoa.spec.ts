@@ -43,15 +43,18 @@ test("Quick search finds wiki entries", async ({ page }) => {
   await expect(page).toHaveURL(/\/stoa\/symposium$/);
 });
 
-test("the home page shows three entries from the Painted Stoa, one of them from the dark side", async ({ page }) => {
+test("the home page tells why Stoics are called Stoics and leads into the Painted Stoa", async ({ page }) => {
+  // its three entry cards moved off the home page (the owner, 2026-10-17: a calmer home page)
   await page.goto("/");
-  const cards = page.locator('section[aria-labelledby="stoa-title"] a[href^="/stoa/"]');
-  await expect(cards).toHaveCount(3);
-  await expect(page.locator('section[aria-labelledby="stoa-title"]')).toContainText("The dark side");
+  const stoa = page.locator('section[aria-labelledby="stoa-title"]');
+  await expect(stoa).toContainText("Diogenes Laertius");
+  await expect(stoa.getByRole("link", { name: /Walk into the Painted Stoa/ })).toHaveAttribute("href", "/stoa");
 });
 
 test("the credits page lists every picture with its licence", async ({ page }) => {
   await page.goto("/credits");
   await expect(page.getByRole("heading", { name: "Pictures" })).toBeVisible();
+  // the long list is folded
+  await page.getByText("Every picture and its licence").click();
   await expect(page.getByText("Symposium scene from the Tomb of the Diver at Paestum")).toBeVisible();
 });

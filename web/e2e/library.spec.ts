@@ -81,6 +81,7 @@ test("a search that names one author puts that author first, opened, as the best
   await page.goto("/library");
   const search = page.getByRole("searchbox", { name: "Search the library" });
   const chips = page.getByRole("group", { name: "Kind of writing" }).getByRole("button");
+  await expect(chips.first()).toBeVisible();
   const all = await chips.count();
   await search.fill("plato");
   const sections = page.locator("section[id^=lib-]");
@@ -180,5 +181,6 @@ test("the reading paths, once on the home page, wait in the library under \"Not 
   await expect(begin.getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
   await begin.getByText("Not sure where to begin?").click();
   await expect(begin.getByRole("heading", { level: 3 })).toHaveCount(6);
-  await expect(begin.getByRole("link", { name: "Lysias, On the Murder of Eratosthenes" })).toHaveAttribute("href", "/read?w=tlg0540.tlg001");
+  // the first level starts with it, and so does the first path
+  await expect(begin.getByRole("link", { name: "Lysias, On the Murder of Eratosthenes" }).first()).toHaveAttribute("href", "/read?w=tlg0540.tlg001");
 });

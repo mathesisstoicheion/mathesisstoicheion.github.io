@@ -6,7 +6,8 @@ test("the Wiki front offers the reference pages as the colonnade's last panel", 
   await expect(ref.getByRole("link", { name: /Authors/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Eras of Greek/ })).toBeVisible();
   await expect(ref.getByRole("link", { name: /Editions & translations/ })).toBeVisible();
-  await expect(ref.getByRole("link")).toHaveCount(5);
+  await expect(ref.getByRole("link", { name: /The lyre/ })).toBeVisible();
+  await expect(ref.getByRole("link")).toHaveCount(6);
   // it is a panel of the colonnade, like the categories
   await expect(page.locator("ol > li#reference")).toBeAttached();
 });
@@ -37,7 +38,7 @@ test("the Explore door leads with the map, the Census and Archaeology, drawn fro
   await expect(page.locator("#people")).toBeAttached();
   await search.fill("melos");
   await expect(page.locator("#people")).toHaveCount(0);
-  await expect(page.getByRole("link", { name: /Melos/ }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: /The Melian Dialogue/ }).first()).toBeVisible();
   await expect(lead).toHaveCount(1);
 });
 

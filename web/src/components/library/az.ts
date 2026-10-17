@@ -70,13 +70,16 @@ export function nameMatch(names: readonly (string | undefined)[], folded: string
   return best;
 }
 
-/** The one item that is plainly closer than all the rest (the lowest non-negative tier, held by it alone), or null when two are level or none match. */
+/** The one item that is plainly closer than all the rest (the lowest non-negative tier, held by it alone), or null when
+ *  two are level or none match. A name that begins several others' too ("Anonymous", before "Anonymous of ...") names
+ *  no one in particular, so it leads nothing either. */
 export function bestMatch<T>(items: readonly T[], tier: (x: T) => number): T | null {
-  let best: T | null = null, low = Infinity, level = false;
+  let best: T | null = null, low = Infinity, level = false, starts = 0;
   for (const x of items) {
     const t = tier(x);
     if (t < 0) continue;
+    if (t <= 1) starts++;
     if (t < low) { best = x; low = t; level = false; } else if (t === low) level = true;
   }
-  return level ? null : best;
+  return level || starts > 3 ? null : best;
 }

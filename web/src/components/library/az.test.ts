@@ -56,5 +56,8 @@ describe("the best match for a search", () => {
     expect(bestMatch(["Marcus Aurelius", "Marcus Argentarius"], () => 1)).toBeNull();
     expect(bestMatch(["Cato"], (x) => tiers[x])).toBeNull();
     expect(bestMatch([], () => 0)).toBeNull();
+    // "Anonymous" alone, but also the start of many others' names: no one in particular
+    expect(bestMatch(["Anonymous", "Anonymous of Byzantium", "Anonymous Seguerianus", "Anonymous on Rhetoric", "Anonymi Comment"], (x) => (x === "Anonymous" ? 0 : 1))).toBeNull();
+    expect(bestMatch(["Homer", "Homeric Hymns"], (x) => (x === "Homer" ? 0 : 1))).toBe("Homer");
   });
 });
