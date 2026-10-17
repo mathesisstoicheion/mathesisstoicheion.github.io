@@ -20,7 +20,7 @@
 .edge {
   position: absolute; left: 0; top: 0; width: 100%; aspect-ratio: 4 / 3; height: auto; pointer-events: none; overflow: visible;
 }
-.edge polygon { fill: none; stroke: var(--line-2); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.edge polygon { fill: none; stroke: var(--lip-hi); stroke-width: 1; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
 .carve { width: 86%; }
 .caption { font-size: 0.88rem; color: var(--ink-2); text-align: center; }
 

@@ -6,24 +6,26 @@
   .bar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: block; height: var(--tabbar-h);
     padding: 0 max(4px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(4px, env(safe-area-inset-left, 0px));
-    background: color-mix(in srgb, var(--bg) 90%, transparent);
-    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    box-shadow: inset 0 1px 0 var(--cut-d), inset 0 2px 0 var(--cut-l);
+    /* a sill of the wall's own stone along the foot of the screen, the header's lintel turned over (Header.module.css):
+       solid, lit along its upper edge with a fine fillet cut under it, and its shadow cast up on the wall */
+    background: var(--sill), var(--bg) var(--tex, none) 0 0 / 420px 420px;
+    box-shadow: var(--sill-shadow);
     transition: transform 0.45s var(--ease);
   }
-  /* reading on: it tucks away with the header, and comes back on any scroll up */
-  :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + 2px)); }
+  .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--sill-head); pointer-events: none; }
+  /* reading on: it tucks away with the header, its shadow too, and comes back on any scroll up */
+  :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + 12px)); }
 }
 
 .tabs { position: relative; display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); height: 100%; }
 
 .tab {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
-  min-height: 0; padding: 6px 2px 5px; text-decoration: none; color: var(--ink-2);
+  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px;
+  min-height: 0; padding: 6px 2px 9px; text-decoration: none; color: var(--ink-2);
   -webkit-tap-highlight-color: transparent; transition: color var(--dur) ease;
 }
 .tab svg {
-  width: 25px; height: 25px; overflow: visible;
+  width: 25px; height: 25px; overflow: visible; filter: var(--gilt-cut);
   fill: currentColor; fill-opacity: 0; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
   transition: transform var(--dur) var(--ease), fill-opacity var(--dur) ease, color var(--dur) ease;
 }
@@ -35,15 +37,13 @@
 .tab[aria-current="page"] { color: var(--accent); }
 .tab[aria-current="page"] svg { color: var(--accent); fill-opacity: 0.16; }
 
-/* a small honey lozenge on the bar's upper edge, gliding to the current place */
+/* ... on a slab standing on the sill, lit, with a gilded line along its foot (the chosen one of a set, as in Settings),
+   which slides to the place you go to */
 .ind {
-  position: absolute; top: 3px; left: 0; width: 20%; height: 6px; pointer-events: none;
+  position: absolute; top: 8px; bottom: 5px; left: 0; width: 20%; pointer-events: none;
   transform: translateX(calc(var(--i, 0) * 100%)); transition: transform 0.6s var(--ease), opacity var(--dur) ease;
 }
-.ind::before {
-  content: ""; display: block; width: 5px; height: 5px; margin: 0 auto;
-  background: var(--accent); transform: rotate(45deg);
-}
+.ind::before { content: ""; position: absolute; inset: 0 var(--space-2); background: var(--slab-lit); box-shadow: var(--chosen-foot), var(--slab-edge); }
 .tabs[data-none] .ind { opacity: 0; }
 
 /* the smallest phones: the labels need every pixel of their fifth of the width */
@@ -59,15 +59,15 @@
 }
 @keyframes offline-in { from { transform: translateY(100%); opacity: 0; } }
 
-/* Search, in the middle: the lens in a medallion, like the roundel painted inside a cup */
+/* Search, in the middle: the lens on a round boss carved standing out of the stone, ringed with gold; it rises a little
+   above the sill, its word in line with the others */
 .searchTab { border: 0; background: transparent; font: inherit; cursor: pointer; }
 .lens {
-  display: grid; place-items: center; width: 40px; height: 40px; margin-top: -8px; border-radius: var(--radius-round);
-  background: var(--sel-bg); color: var(--sel-fg); box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1px var(--rule-2);
-  transition: transform var(--dur) var(--ease), box-shadow var(--dur) ease;
+  display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--radius-round);
+  background: var(--boss); color: var(--accent); box-shadow: var(--boss-edge);
+  transition: transform var(--dur) var(--ease);
 }
-.lens svg { width: 22px; height: 22px; }
+.lens svg { width: 21px; height: 21px; }
 .searchTab:active .lens { transform: scale(0.94); }
-.searchTab[aria-expanded="true"] .lens, .searchTab[aria-current="page"] .lens { box-shadow: 0 0 0 3px var(--bg), inset 0 0 0 1px var(--accent); }
-.searchTab[aria-current="page"] svg { color: var(--sel-fg); fill-opacity: 0; }
+.searchTab[aria-current="page"] svg { color: var(--accent); fill-opacity: 0; }
 .searchTab .label { color: var(--ink-2); }

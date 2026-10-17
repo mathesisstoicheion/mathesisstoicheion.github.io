@@ -1,5 +1,5 @@
-/* "Manuscripts & transmission" and "Textual variants" (Transmission.tsx) (Stone and torch): the chart is a sunk field with its grid lines cut
-   in the stone, the marks keep their shapes and colours; the authors' accounts are slabs. */
+/* "Manuscripts & transmission" and "Textual variants" (Transmission.tsx) (Stone and torch): the chart is a sunk field with its grid lines and
+   roads cut in the stone and its marks set in as inlays (keeping their shapes and colours); the authors' accounts are slabs. */
 .page { display: grid; gap: clamp(28px, 4vw, 44px); padding-bottom: 64px; }
 
 /* ------------------------------------------------ the roads of the texts */
@@ -15,15 +15,28 @@
 .track { position: relative; height: 100%; }
 .track i { position: absolute; top: 50%; }
 .grid { width: 2px; translate: -1px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--cut-line-v); }
-.road { height: 2px; translate: 0 -50%; background: color-mix(in srgb, var(--ink) 18%, transparent); transform-origin: left; animation: road 1.4s var(--ease) backwards; animation-delay: calc(var(--i) * 25ms); }
+/* each author's road: a fine groove cut across the stone, its upper wall in shadow and its lower lip catching the torch */
+.road { height: 2px; translate: 0 -50%; background: linear-gradient(var(--groove) 0 1px, var(--lip-hi) 1px 2px); transform-origin: left; animation: road 1.4s var(--ease) backwards; animation-delay: calc(var(--i) * 25ms); }
 @keyframes road { from { transform: scaleX(0); } }
 .mark { width: 9px; height: 9px; translate: -50% -50%; }
 .track .mark { animation: mark 0.5s var(--ease) backwards; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
 @keyframes mark { from { opacity: 0; scale: 0.2; } }
-.writing { background: var(--ink); border-radius: var(--radius-round); }
-.copy { background: var(--accent); }
-.print { background: var(--blue); rotate: 45deg; width: 8px; height: 8px; }
-.reception { border: 2px solid var(--ochre); border-radius: var(--radius-round); }
+/* the marks: inlays set into the stone, light on their upper edge, shadow at their foot and a fine dark joint round
+   them (the slab edge's ring; its long shadow is too wide to show on a mark this small). The author's own life in
+   bone, the copies in gilt, print in bronze patina, the later readers as rings of gilt round a dark hollow. */
+.writing { background: linear-gradient(180deg, var(--ink) 35%, color-mix(in srgb, var(--ink) 72%, var(--ink-3))); border-radius: var(--radius-round); box-shadow: var(--inlay-edge), var(--slab-edge); }
+.copy { background: var(--inlay); box-shadow: var(--inlay-edge), var(--slab-edge); }
+/* turned 45°, so its light runs from the top corner (135deg) */
+.print {
+  background: linear-gradient(135deg, color-mix(in srgb, var(--blue) 70%, var(--ink)), var(--blue) 50%, color-mix(in srgb, var(--blue) 62%, var(--bg-deep)));
+  box-shadow: var(--inlay-edge), var(--slab-edge); rotate: 45deg; width: 8px; height: 8px;
+}
+.reception {
+  border: 2px solid transparent; border-radius: var(--radius-round); box-shadow: var(--channel-edge);
+  background:
+    linear-gradient(var(--bg-deep), var(--bg-deep)) padding-box,
+    linear-gradient(180deg, color-mix(in srgb, var(--ochre) 55%, var(--accent-hi)), var(--ochre) 50%, color-mix(in srgb, var(--ochre) 60%, var(--bg-deep))) border-box;
+}
 .key { position: static !important; display: inline-block; translate: none; flex: none; align-self: center; }
 /* the site's "Reduce animation" setting stops the animations (globals.css) */
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.9rem; }

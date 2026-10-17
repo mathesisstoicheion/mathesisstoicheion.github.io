@@ -96,6 +96,49 @@ laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rul
   phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
 Both published together on 2026-10-17, when the owner chose "Publish" on the results.
 
+### The header and the phone's bars in stone (2026-10-17; published 2026-10-17)
+The owner (01:38, with a phone screenshot of the Academy): "The text and buttons at the top are ugly and they overlap. Match the
+theme, and do the same for the buttons at the bottom". On phones 360 px wide or narrower the name's last letter ran under the first
+button (45 px into them at 320). Before and after: https://claude.ai/artifact/8LkEgsDKXaixZFuzLUUQZ6. Details in DESIGN.md
+("The header and the phone's bars").
+- **What changed**: the header is a solid stone lintel and the phone bar a stone sill (no more blur of what scrolls beneath);
+  the name is ΜΑΘΗΣΙΣ / ΣΤΟΙΧΕΙΩΝ in gilded capitals in a stoichedon grid, sized from the screen width so it always leaves the
+  buttons room (at least 11 px from 320 to 430); the header's buttons are one slab with cut dividers, the connection light a
+  gem in a gold bezel; the bar's current place is a lit slab with a gilded foot that slides, Search a gold-ringed boss; the
+  reader's phone bar and Back to top match (Daylight gives a limestone course).
+- **A/B** (3 runs each, phone slowed 4x): Academy, bars sliding 54.9 → 59.2 fps (stuck frames 14 → 0); Academy scroll
+  54.6 → 57.3; home and reader unchanged; computer unchanged (capped by software drawing).
+- **Checked**: 48 browser tests of the header, bars, phone pages, phone reader, A to Z and home page: 47 pass; the passage-actions
+  word test fails the same way on the live version (missing word list). The home desk test now waits for the lesson visit to be
+  remembered instead of a fixed 1.2 s.
+
+### Every page in stone, and the library A to Z on the right (2026-10-17; published 2026-10-17)
+The owner (02:44, with phone screenshots of the Explore map, the Stoa's topic cards, Mine's temple and the library A to Z): "Make
+every page and page element match the theme and give the A to Z scroll smooth animation and match its theme better. Also, move
+it to the right side". Asked whether buttons should change too, they chose "Stone buttons" (02:59). Details in DESIGN.md
+("Everything on a page is stone", and the A to Z bullets under Motion).
+- **What changed**: every page was photographed on a phone and looked over. Outlined boxes are gone. The main buttons are gilded
+  plates that sink when pressed; every other button, chip and tag is a stone slab or a small channel; rows of choices are a
+  channel with the chosen one standing in it; tick boxes are small hollows with a gilded tick; drop-downs have a gilded chevron.
+  Carved: Mine's temple (a solid gable round a sunk tympanum, a frieze of grooved triglyphs, metopes sunk in the wall), the
+  Stoa's colonnade (round fluted shafts with capitals, on a step), the small maps (land cut in the stone, the sea sunk), the
+  Kerameikos section (grooves, lips, a sunk pit, a gilded pot) and the manuscripts chart (grooved roads, inlaid marks).
+- **The A to Z**: on the right of the list, a channel cut in the stone with carved letters; a lit slab with a gilded edge slides
+  to the letter you are reading under; a tap glides there (`glideTo` in `lib/header.ts`), a finger slide goes straight to each
+  letter.
+- **A/B** (3 runs each, phone slowed 4x): phone scrolling of the Stoa, Mine, the alphabet and the library list unchanged
+  (56 to 60 fps either way); the A to Z finger slide 38.8 against 38.9 (first measured at 24.8 with a glide on every letter and
+  the mark moving; both fixed); a tap on M 41.6 against 40.2, but its first frame, as the page arrives at the letter, takes
+  about 0.27 s against 0.17 s (the old version raced through the whole list instead of arriving at once). Computer numbers
+  unchanged within the test machine's limits (software drawing).
+- **Checked**: all 584 browser tests: 543 pass; of the 41 that fail, 40 fail the same way on the live version (missing word lists and
+  pictures on the test machine) and the Census swipe passes when rerun alone. The 304 accessibility checks pass wherever they pass
+  live. `npm run check:tokens` passes (4,397 values against the 4,487 baseline). A recheck of phone scrolling (5 more runs):
+  Mine 54.8 against 55.1 fps, the Stoa 53.2 against 55.0.
+- **Mine's gable** keeps a thin gilded line along its top edge (the live gable was a gold line; the stone one alone read too dim).
+
+Both published together on 2026-10-17 at 11:15 UTC, when the owner wrote "Publish recent changes". The lyre (its own branch) was not part of it.
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:

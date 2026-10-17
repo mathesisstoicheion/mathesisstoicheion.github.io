@@ -1,7 +1,7 @@
 /* Echoes: where a word or phrase recurs. Marks are stamped along a strip that stands for the whole book. */
 .panel { gap: 16px; }
 .quote { font-family: var(--f-greek); font-size: 1.55rem; line-height: 1.25; margin-top: 4px; }
-.back { justify-self: start; border-color: var(--accent); color: var(--accent); }
+.back { justify-self: start; color: var(--accent); }
 
 .controls { display: grid; gap: 10px; justify-items: start; }
 .scopes { display: flex; flex-wrap: wrap; gap: 6px; }

@@ -101,7 +101,7 @@
 /* ---------------------------------------------------------------- start with the letters */
 .learnGrid { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: clamp(var(--space-5), 4vw, var(--space-7)); align-items: start; }
 .path { list-style: none; margin: var(--space-2) 0 0; padding: 0; counter-reset: step; }
-.path li { position: relative; counter-increment: step; display: grid; grid-template-columns: 44px 1fr; column-gap: 14px; padding: var(--space-4) 0; border-top: 1px solid var(--line-1); }
+.path li { position: relative; counter-increment: step; display: grid; grid-template-columns: 44px 1fr; column-gap: 14px; padding: var(--space-4) 0; box-shadow: var(--cut-over); }
 .path li::before { content: counter(step, upper-roman); grid-row: span 2; font-family: var(--f-display); font-size: 1.5rem; line-height: 1.1; color: var(--accent); }
 .path b { font-weight: 500; font-size: 1.12rem; }
 .path a { text-decoration: none; }
@@ -139,7 +139,7 @@
 .pathCard h3 { font: 400 1.45rem / 1.15 var(--f-display); margin: 0; }
 .pathBlurb { color: var(--ink-2); font-size: 0.95rem; margin: 0; }
 .pathCard ol { list-style: none; margin: 6px 0 0; padding: 0; counter-reset: step; }
-.pathCard ol li { position: relative; counter-increment: step; display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; padding: var(--space-3) 0; border-top: 1px solid var(--line-1); }
+.pathCard ol li { position: relative; counter-increment: step; display: grid; grid-template-columns: 28px 1fr; column-gap: 10px; padding: var(--space-3) 0; box-shadow: var(--cut-over); }
 .pathCard ol li::before { content: counter(step); grid-row: span 2; font-family: var(--f-display); font-size: 1.2rem; line-height: 1.2; color: var(--accent); }
 .pathCard ol a { text-decoration: none; }
 .pathCard ol a::after { content: ""; position: absolute; inset: 0; }  /* the whole row is the target */
@@ -161,8 +161,8 @@
 /* ---------------------------------------------------------------- the five rooms */
 .rgrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(10px, 1.4vw, 20px); }
 .room { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 30px 18px 28px; text-decoration: none; color: var(--ink); }
-.room::before { content: ""; position: absolute; inset: 9px; pointer-events: none; box-shadow: inset 0 0 0 1px var(--line-1), 0 0 0 1px rgba(0, 0, 0, 0.35); transition: box-shadow 0.5s; }
-.room:hover::before, .room:focus-visible::before { box-shadow: inset 0 0 0 1px var(--line-2), 0 0 0 1px rgba(0, 0, 0, 0.35); }
+.room::before { content: ""; position: absolute; inset: 9px; pointer-events: none; box-shadow: var(--panel-cut); transition: box-shadow 0.5s; }
+.room:hover::before, .room:focus-visible::before { box-shadow: var(--panel-cut-lit); }
 .roomCarve { display: block; margin: 2px auto 20px; }
 .gk { font: 400 1.42rem / 1.15 var(--f-greek); color: var(--accent); }
 .roomWord { margin: 9px 0 var(--space-3); color: var(--accent-2); }
@@ -195,7 +195,7 @@
 .cardIcon svg { width: 48px; height: 48px; }
 .cardLink { text-decoration: none; }
 .cardLink::before { content: ""; position: absolute; inset: 9px; pointer-events: none; box-shadow: inset 0 0 0 1px transparent; transition: box-shadow 0.5s; }
-.cardLink:hover::before, .cardLink:focus-visible::before { box-shadow: inset 0 0 0 1px var(--line-2); }
+.cardLink:hover::before, .cardLink:focus-visible::before { box-shadow: var(--panel-cut-lit); }
 .cardGo { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin-top: auto; }
 @media (max-width: 980px) { .cards { grid-template-columns: minmax(0, 1fr); } }
 
@@ -204,12 +204,12 @@
 .forumList { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); padding: clamp(20px, 3vw, 32px); }
 .forumH { font: 400 1.35rem / 1.2 var(--f-display); margin: 0; }
 .forumRows { list-style: none; margin: 0; padding: 0; width: 100%; }
-.forumRows li { border-top: 1px solid var(--line-1); }
+.forumRows li { box-shadow: var(--cut-over); }
 .forumRows a { display: grid; gap: 2px; padding: var(--space-3) 0; text-decoration: none; }
 .forumRows a b { font-weight: 500; font-size: 1.08rem; line-height: 1.3; }
 .forumRows a:hover b { color: var(--accent); }
 .forumRows small { color: var(--ink-3); font-size: 0.88rem; }
-.forumSkel { height: 68px; border-top: 1px solid var(--line-1); position: relative; overflow: hidden; }
+.forumSkel { height: 68px; box-shadow: var(--cut-over); position: relative; overflow: hidden; }
 .forumSkel::after { content: ""; position: absolute; inset: var(--space-4) 0 auto 0; height: 14px; width: 62%; background: rgba(239, 229, 210, 0.06); }
 .forumEmpty { color: var(--ink-2); max-width: 46ch; }
 .forumMotion { display: flex; flex-direction: column; gap: var(--space-3); padding: clamp(20px, 3vw, 32px); text-decoration: none; justify-content: center; color: var(--ink); }

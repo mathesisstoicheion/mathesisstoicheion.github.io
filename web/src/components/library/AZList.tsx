@@ -3,13 +3,15 @@
  * "A to Z": a row of letters to jump by, and (on author pages) a button that opens the list under them. The owner asked for
  * it on 2026-10-16: "on author pages, there should be a dedicated button for expanding their works into a list from a to z,
  * with a row from a to z that you can click on each letter to take you to the works in alphabetical order. And on phone it
- * should be on the right side and is touch interactive". For the library they then asked for just the side scroller, on the
- * left of the list itself (no button, nothing separate).
+ * should be on the right side and is touch interactive". For the library they then asked for just the side scroller, beside
+ * the list itself (no button, nothing separate): first on the left, then (2026-10-17) on the right, carved in the stone, with
+ * smooth scrolling.
  *
  * There are three parts, so that a page can use what it needs:
- *  - `AZRail`, the letters. Tap or click one and the page goes to that part of the list; letters with nothing under them are
- *    dimmed and do nothing. On a phone, press a finger on it and slide up and down: the page follows letter by letter, and
- *    a bubble beside the finger says which letter it is on. It comes in two forms: "side", a slim rail down the side of a
+ *  - `AZRail`, the letters. Tap or click one and the page glides to that part of the list (lib/header.ts, glideTo); letters
+ *    with nothing under them are dimmed and do nothing. On a phone, press a finger on it and slide up and down: the page
+ *    keeps up with it letter by letter (going straight to each one: gliding there as well made the slide stutter), and a bubble beside the finger says which letter it is on. As the list scrolls, a lit
+ *    slab with a gilded edge slides along the letters to the one you are reading under. It comes in two forms: "side", a slim rail down the side of a
  *    list that stays beside it as the page scrolls (the library, at every width), and "row", a row above the list on a
  *    computer that becomes a strip down the right-hand edge of a phone (the author's page, shown only while its list is open
  *    and on the screen, like the index of a phone's contacts).
@@ -51,19 +53,45 @@ const key = (k: string) => (k === AZ_OTHER ? "other" : k);
 
 /**
  * The letters. `keys` are the letters to show, in order; `has` says which of them have anything under them; `jump` takes the
- * page to a letter's part of the list (smoothly, or at once while a finger slides) and gives back that part's element.
+ * page to a letter's part of the list (gliding, or at once while a finger slides) and gives back that part's element.
  * `noun` is what the list holds, capitalised and in the plural ("Authors"): the labels read "Authors by first letter".
  * `show` (the row's form on a phone) says whether the strip is on the screen at all. `navRef` lets the page see the rail.
+ * `part` finds a letter's part of the list, so the rail can mark the one being read; `parts` changes whenever those parts
+ * are made afresh (another order), so it looks for them again.
  */
-export function AZRail({ keys, has, jump, noun, variant = "row", show = true, navRef }: {
+export function AZRail({ keys, has, jump, noun, variant = "row", show = true, navRef, part, parts = "" }: {
   keys: readonly string[]; has: (k: string) => boolean; jump: (k: string, instant: boolean) => HTMLElement | undefined;
   noun: string; variant?: "row" | "side"; show?: boolean; navRef?: RefObject<HTMLElement | null>;
+  part?: (k: string) => HTMLElement | null | undefined; parts?: string;
 }) {
   const [finger, setFinger] = useState<{ k: string; y: number } | null>(null);
+  const [sliding, setSliding] = useState(false);   // a finger is on the strip (the bubble shows only over a letter with something under it)
   const own = useRef<HTMLElement>(null);
   const nav = navRef ?? own;
   const slide = useRef<{ from: string | null; last: string | null; moved: boolean } | null>(null);
   const touchedAt = useRef(0);
+
+  // the letter of the part being read: the part that crosses a line a quarter of the way down the screen
+  const [at, setAt] = useState(-1);
+  const present = keys.filter(has).join("|");
+  const partRef = useRef(part);
+  useEffect(() => { partRef.current = part; });
+  useEffect(() => {
+    const find = partRef.current;
+    if (!find || typeof IntersectionObserver === "undefined") return;
+    const els = present.split("|").map((k) => [k, find(k)] as const).filter((e): e is readonly [string, HTMLElement] => !!e[1]);
+    const crossing = new Set<string>();
+    const io = new IntersectionObserver((es) => {
+      for (const e of es) {
+        const k = (e.target as HTMLElement).dataset.azPart ?? "";
+        if (e.isIntersecting) crossing.add(k); else crossing.delete(k);
+      }
+      const k = keys.find((x) => crossing.has(x));
+      setAt(k === undefined ? -1 : keys.indexOf(k));
+    }, { rootMargin: "-25% 0px -74% 0px" });
+    for (const [k, el] of els) { el.dataset.azPart = k; io.observe(el); }
+    return () => io.disconnect();
+  }, [present, parts, keys]);
 
   const choose = (k: string, e: MouseEvent) => {
     if (!has(k) || e.timeStamp - touchedAt.current < 600) return;   // (a finger has just dealt with this touch)
@@ -88,6 +116,7 @@ export function AZRail({ keys, has, jump, noun, variant = "row", show = true, na
     try { e.currentTarget.setPointerCapture(e.pointerId); } catch { /* a pointer that has already gone */ }
     const at = letterAt(e.clientY);
     slide.current = { from: at && has(at.k) ? at.k : null, last: at?.k ?? null, moved: false };
+    setSliding(true);
     setFinger(at && has(at.k) ? at : null);
   };
   const touchMove = (e: PointerEvent<HTMLElement>) => {
@@ -104,6 +133,7 @@ export function AZRail({ keys, has, jump, noun, variant = "row", show = true, na
     if (!s) return;
     slide.current = null;
     touchedAt.current = e.timeStamp;
+    setSliding(false);
     setFinger(null);
     // a plain tap (the finger did not slide to another letter) goes to its letter smoothly
     if (e.type === "pointerup" && !s.moved && s.from) jump(s.from, false);
@@ -111,10 +141,12 @@ export function AZRail({ keys, has, jump, noun, variant = "row", show = true, na
 
   return (
     <nav ref={nav} className={variant === "side" ? `${styles.letters} ${styles.side}` : styles.letters} aria-label={`${noun} by first letter`} data-show={show ? "" : undefined}
-      data-slide={finger ? "" : undefined}
+      data-slide={sliding ? "" : undefined} style={{ "--n": keys.length, "--at": Math.max(at, 0) } as CSSProperties}
       onPointerDown={touchOn} onPointerMove={touchMove} onPointerUp={touchOff} onPointerCancel={touchOff}>
+      {part && <i className={styles.mark} data-on={at >= 0 ? "" : undefined} aria-hidden="true" />}
       {keys.map((k, i) => (
         <button key={k} type="button" data-k={k} className={styles.letter} style={{ "--i": i } as CSSProperties} data-hot={finger?.k === k ? "" : undefined}
+          data-at={i === at ? "" : undefined}
           aria-label={k === AZ_OTHER ? `${noun} that do not begin with a letter of the Latin alphabet` : `${noun} beginning with ${k}`}
           aria-disabled={has(k) ? undefined : true} tabIndex={has(k) ? undefined : -1} onClick={(e) => choose(k, e)}>{k}</button>
       ))}
@@ -176,16 +208,17 @@ export function AZPanel({ id, open, items, kind = ["item", "items"], layout = "n
     if (!el) return undefined;
     const bar = nav.current;
     const stuck = !!bar && getComputedStyle(bar).position === "sticky";
-    scrollBelowHeader(el, (stuck && bar ? bar.offsetHeight : 0) + 12, !instant && scrollBehavior() === "smooth");
+    scrollBelowHeader(el, (stuck && bar ? bar.offsetHeight : 0) + 12, !instant && scrollBehavior() === "smooth" ? "glide" : false);
     return el;
   };
+  const part = (k: string) => (list.current ? ([...list.current.children] as HTMLElement[]).find((c) => c.dataset.az === k) : undefined);
 
   return (
     <div id={id} className={styles.panel} data-open={shown ? "" : undefined} data-seen={ready || shown ? "" : undefined} data-layout={layout} inert={!open} role="region" aria-label={`${noun} from A to Z`}>
       <div className={styles.sink}>
         <div className={styles.well}>
           <div className={styles.body}>
-            {built && <AZRail keys={letters} has={(k) => have.has(k)} jump={jump} noun={noun} navRef={nav} show={shown && onScreen} />}
+            {built && <AZRail keys={letters} has={(k) => have.has(k)} jump={jump} noun={noun} navRef={nav} show={shown && onScreen} part={part} parts={String(groups.length)} />}
             {built && <div ref={list} className={styles.list}>
               {groups.map((g, gi) => (
                 <section key={g.key} id={`${id}-${key(g.key)}`} data-az={g.key} className={styles.group} style={{ "--g": gi } as CSSProperties} aria-labelledby={`${id}-h-${key(g.key)}`}>

@@ -1,59 +1,64 @@
 /* ================================================================ the Treasury */
-/* Stone and torch: panels are sunk into the wall or set on it as slabs, rows are divided by cut lines. The frieze, the shelf of
-   spines and every button keep their own look. */
+/* Stone and torch: panels are sunk into the wall or set on it as slabs, rows are divided by cut lines. The façade is carved
+   (the owner, 2026-10-17: every page element in stone): a gable of solid stone over a Doric frieze, its triglyphs standing
+   proud and its metopes sunk between them. */
 .treasury { display: grid; gap: clamp(28px, 4vw, 44px); padding-block: var(--after-head) var(--space-5); }
 .error { color: var(--accent); }
 .small { font-size: 0.88rem; color: var(--ink-2); }
 
 /* ------------------------------------------------ façade: pediment, Doric frieze, architrave */
 .facade { position: relative; display: grid; }
-.pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; }
-.pediment path { fill: none; stroke: var(--ink); stroke-width: 3; vector-effect: non-scaling-stroke; stroke-linejoin: miter;
-  stroke-dasharray: 3200; stroke-dashoffset: 3200; animation: build 1.3s cubic-bezier(0.6, 0, 0.2, 1) 0.1s forwards; }
-.pediment .tympanum { stroke: var(--accent); stroke-width: 1.5; animation-delay: 0.45s; }
-@keyframes build { to { stroke-dashoffset: 0; } }
+/* the gable: a raking cornice of lit stone round a tympanum sunk into it; it rises into place, it is not drawn */
+.pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; animation: rise 0.7s var(--ease) 0.1s backwards; }
+.pediment .cornice { fill: url(#ped-stone); }
+.pediment .tympanum { fill: var(--tympanum); }
+/* the raking cornice's top edge is gilded, a thin gold line laid along the stone (as the live gable was a line of gold) */
+.pediment .lit { fill: none; stroke: var(--accent); stroke-opacity: 0.85; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
+.pediment .cut { fill: none; stroke: var(--cut-deep); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
+.pediment stop:first-child { stop-color: var(--stone-4); }
+.pediment stop:last-child { stop-color: var(--stone-2); }
 
-/* A Doric frieze: triglyphs (grooved blocks) alternating with metopes (panels), a triglyph at each end. */
+/* A Doric frieze: triglyphs (grooved blocks standing proud) alternating with metopes (panels sunk between them), a
+   triglyph at each end. */
 .frieze {
   --tri: 18px;
-  --groove: color-mix(in srgb, var(--ink) 45%, var(--surface));
-  /* a triglyph as the Greeks cut it, the same from either side: a half-groove at each edge, two whole grooves between */
-  --triglyph: linear-gradient(90deg, var(--groove) 0 8.33%, var(--inv-bg) 8.33% 25%, var(--groove) 25% 41.67%, var(--inv-bg) 41.67% 58.33%,
-    var(--groove) 58.33% 75%, var(--inv-bg) 75% 91.67%, var(--groove) 91.67% 100%);   /* in proportion, so it scales with --tri */
+  /* a triglyph as the Greeks cut it, the same from either side: a half-groove at each edge, two whole grooves between;
+     each groove is a shadowed channel with its right-hand side catching the light */
+  --triglyph: linear-gradient(90deg, var(--cut-deep) 0 6.33%, var(--lip-hi) 6.33% 8.33%, transparent 8.33% 25%, var(--cut-deep) 25% 39.67%, var(--lip-hi) 39.67% 41.67%,
+    transparent 41.67% 58.33%, var(--cut-deep) 58.33% 73%, var(--lip-hi) 73% 75%, transparent 75% 91.67%, var(--cut-deep) 91.67% 100%);   /* in proportion, so it scales with --tri */
   list-style: none; margin: 0; padding: 0 var(--tri) 0 0;
   display: grid; grid-template-columns: repeat(9, 1fr);
-  border-top: 3px solid var(--inv-bg); border-bottom: 3px solid var(--inv-bg);
-  background: var(--inv-bg) var(--triglyph) right / var(--tri) 100% no-repeat; --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
+  border-top: 3px solid var(--stone-4); border-bottom: 3px solid var(--stone-0); box-shadow: var(--lintel-shadow);
+  background: var(--block-light), var(--triglyph), var(--stone-4); background-size: var(--tri) 100%; background-position: right top; background-repeat: no-repeat;
+  --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
 }
 .frieze li { position: relative; display: grid; padding-left: var(--tri); animation: rise 0.7s var(--ease) backwards; animation-delay: calc(0.5s + var(--i) * 70ms); }
-.frieze li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--tri); background: var(--inv-bg) var(--triglyph); }
+.frieze li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--tri); background: var(--block-light), var(--triglyph), var(--stone-4); }
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
 
 .metope {
   position: relative; display: grid; align-content: center; justify-items: center; gap: 2px; text-align: center;
   min-height: 132px; padding: 18px 10px 14px; margin: 0;
-  background: var(--surface); color: var(--ink); border: 0; border-radius: 0;
+  background: var(--bg-deep) var(--tex, none) 0 0 / 420px 420px; box-shadow: var(--field-edge); color: var(--ink); border: 0; border-radius: 0;
   transition: background-color 0.3s, color 0.3s;
 }
-.metope:hover { background: var(--white-slip); }
-.metope[aria-current="page"] { background: var(--accent); color: var(--accent-ink); }
-.metope[aria-current="page"] .metopeHint { color: inherit; opacity: 0.85; }
-.count { font-family: var(--f-display); font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.metope:hover { background-color: var(--stone-2); }
+.metope[aria-current="page"] { background-color: var(--stone-3); box-shadow: var(--field-edge), var(--chosen-foot); }
+.metope[aria-current="page"] .count { color: var(--accent); }
+.count { font-family: var(--f-display); font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; font-variant-numeric: lining-nums tabular-nums; text-shadow: var(--carved-text); }
 .metope[data-empty] .count { opacity: 0.35; }
 .metopeLabel { font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.06em; margin-top: 6px; }
 .metopeHint { font-size: 0.8rem; color: var(--ink-2); line-height: 1.25; }
-/* a thin inner frame, like the raised border of a carved panel */
-.metope::after { content: ""; position: absolute; inset: 6px; border: 1px solid var(--rule); pointer-events: none; transition: inset 0.3s var(--ease); }
-.metope:hover::after { inset: var(--space-1); }
-.metope[aria-current="page"]::after { border-color: color-mix(in srgb, var(--accent-ink) 45%, transparent); }
+/* a panel cut within the panel, as round a carved metope: its upper and left edges in shadow, the others lit */
+.metope::after { content: ""; position: absolute; inset: 6px; box-shadow: var(--panel-cut); pointer-events: none; }
 
 @media (max-width: 1100px) {
   .frieze { grid-template-columns: repeat(3, 1fr); }
-  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--inv-bg); }
+  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
 }
 @media (max-width: 520px) {
   .frieze { grid-template-columns: repeat(3, 1fr); --tri: 10px; }
-  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--inv-bg); }
+  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
   .metope { min-height: 104px; }
 }
 
@@ -101,9 +106,10 @@
 .tagRow { display: flex; flex-wrap: wrap; gap: 6px var(--space-2); align-items: center; flex-basis: 100%; }
 .tagRow small { opacity: 0.65; font-variant-numeric: tabular-nums; }
 .add { border-style: dashed !important; }
-.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
-.seg button { border: 0; background: transparent; padding: 6px var(--space-3); font-size: var(--step--1); }
-.seg button[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
+.seg { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.seg button { border: 0; border-radius: var(--radius); background: transparent; padding: 6px var(--space-3); font-size: var(--step--1); color: var(--ink-2); }
+.seg button:hover:not([aria-pressed="true"]) { background: var(--slab); color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .check { display: inline-flex; gap: var(--space-2); align-items: center; font-size: 0.95rem; }
 .inlineForm { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 .inlineForm input { padding: 6px 10px; }
@@ -127,7 +133,7 @@
 .rows li:has(.swatch) { grid-template-columns: auto auto 1fr auto; }
 .when { font-size: 0.85rem; color: var(--ink-2); white-space: nowrap; }
 .x { width: 28px; height: 28px; border-radius: var(--radius-round); border: 1px solid transparent; background: transparent; color: var(--ink-2); font-size: 1.2rem; line-height: 1; }
-.x:hover { border-color: var(--rule); color: var(--accent); }
+.x:hover { background: var(--slab); box-shadow: var(--slab-edge); color: var(--accent); }
 .confirm { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 
 .swatch { display: inline-block; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--rule); }
@@ -148,10 +154,10 @@
 .continue { display: grid; gap: 14px; }
 .shelf { list-style: none; margin: 0; padding: 0 0 var(--space-3); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: var(--space-3); overflow-x: auto;
   /* the shelf is a dark ledge cut into the wall, its lip caught by the torch */
-  border-bottom: 8px solid var(--bg-deep); box-shadow: 0 1px 0 var(--line-1); }
+  border-bottom: 8px solid var(--bg-deep); box-shadow: var(--ledge-lip); }
 .shelf li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 60ms); display: grid; }
 .spine { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 18px; min-height: 120px; text-decoration: none;
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); border-top: 4px solid var(--accent);
+  background: var(--slab-lit); box-shadow: var(--slab-edge), var(--inlay-top); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); border-top: 4px solid transparent;
   transition: transform 0.3s var(--ease); }
 .spine:hover { transform: translateY(-5px); }
 .spine .byline { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
@@ -183,7 +189,7 @@
 .leafCite a:hover { color: var(--accent); }
 .leafCite a::before { content: "— "; }
 .leafFoot { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; padding-top: var(--space-2); box-shadow: var(--cut-over); }
-.colTag { font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.04em; padding: 1px var(--space-2); border-radius: var(--radius); background: var(--bg-2); margin-right: auto; }
+.colTag { font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.04em; padding: 1px var(--space-2); border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); margin-right: auto; }
 .colTag + .colTag { margin-left: 0; }
 .leafFoot .colTag ~ .colTag { margin-right: 0; }
 .more { justify-self: start; border: 0; background: transparent; padding: 0; color: var(--accent); font-size: 0.9rem; text-decoration: underline; }
@@ -237,8 +243,6 @@
 .keepActs { display: flex; flex-wrap: wrap; gap: 10px; }
 /* phones: the two buttons as one even pair of bars */
 @media (max-width: 760px) { .keepActs { display: grid; grid-template-columns: minmax(0, 1fr); } .keepActs > :global(.btn) { justify-content: center; } }
-.keep :global(.btn) { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
-.keep :global(.btn.ghost) { background: transparent; color: var(--inv-fg); border-color: color-mix(in srgb, var(--inv-fg) 60%, transparent); }
 .keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); animation: rise 0.3s var(--ease) backwards; }
 .keepResult[data-ok="false"] { box-shadow: var(--slab-edge), var(--inlay-left); }
 .keepResult :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
@@ -247,9 +251,9 @@
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
 .places { display: grid; gap: var(--space-4); }
 .places h2 { margin: 0; }
-.miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: 0 0 0 1px var(--groove), 0 0 0 2px var(--lip); background: var(--bg-deep); }
-.mmLand { fill: var(--map-land); }
-.mmSea { fill: var(--map-sea); fill-rule: evenodd; }
+.miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--stone-3) var(--tex, none) center / 420px 420px; }
+.mmLand { fill: var(--map-land-wash); }
+.mmSea { fill: var(--map-sea-wash); fill-rule: evenodd; stroke: var(--map-coast); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .mmPlace { animation: mmIn 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 60ms); }
 .mmPlace circle { fill: var(--accent); stroke: var(--map-halo); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .mmPlace text { font-family: var(--f-greek); fill: var(--map-name); paint-order: stroke; stroke: var(--map-halo); stroke-linejoin: round; }
@@ -271,7 +275,7 @@
 .offline b { font-size: 1.1rem; }
 .offline > span:last-child { color: var(--ink-2); }
 
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+/* the bigger panels carry a moulding, an inner panel cut just inside the edge, as round a carved stele */
 .private, .keep { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* the moulding uses the outline, so the link card gives the focus ring back */
 .private:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

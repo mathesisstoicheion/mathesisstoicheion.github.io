@@ -65,8 +65,11 @@ export default function Treasury() {
     <div className={`wrap ${styles.treasury}`}>
       <nav className={styles.facade} aria-label="Sections of the Treasury">
         <svg className={styles.pediment} viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M4 86 L500 6 L996 86" />
-          <path className={styles.tympanum} d="M60 80 L500 18 L940 80" />
+          <defs><linearGradient id="ped-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" /><stop offset="1" /></linearGradient></defs>
+          <path className={styles.cornice} d="M0 90 L500 4 L1000 90 Z" />
+          <path className={styles.tympanum} d="M64 84 L500 19 L936 84 Z" />
+          <path className={styles.cut} d="M64 84 L500 19 L936 84" />
+          <path className={styles.lit} d="M0 90 L500 4 L1000 90" />
         </svg>
         <ol className={styles.frieze}>
           {METOPES.map((m, i) => (

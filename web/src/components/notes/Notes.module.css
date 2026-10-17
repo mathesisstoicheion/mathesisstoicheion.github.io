@@ -7,11 +7,12 @@
 
 .tools { display: flex; flex-wrap: wrap; gap: 4px; }
 .tools button {
-  min-width: 34px; height: 30px; padding: 0 9px; border: 1px solid var(--rule); border-radius: var(--radius);
-  background: transparent; color: var(--ink); font-size: 0.92rem;
+  min-width: 34px; height: 30px; padding: 0 9px; border: 1px solid transparent; border-radius: var(--radius);
+  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font-size: 0.92rem;
 }
-.tools button:hover { background: var(--bg-2); }
-.tools button[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); border-color: var(--sel-edge); }
+.tools button:hover { background: var(--slab-lit); }
+.tools button:active { background: var(--field); box-shadow: var(--field-edge); }
+.tools button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 
 .greek {
   display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: end;

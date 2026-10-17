@@ -49,15 +49,15 @@
     "font-family": 3,
     "font-size": 17,
     "spacing": 38,
-    "shadow": 5,
+    "shadow": 3,
     "z-index": 7,
-    "motion": 17
+    "motion": 9
   },
   "src/app/home.module.css": {
-    "colour": 15,
+    "colour": 13,
     "font-size": 34,
     "spacing": 84,
-    "shadow": 12,
+    "shadow": 9,
     "z-index": 1,
     "motion": 15
   },
@@ -83,10 +83,10 @@
   "src/components/Amphora.module.css": {
     "colour": 8,
     "font-size": 11,
-    "spacing": 37,
+    "spacing": 36,
     "shadow": 4,
     "z-index": 4,
-    "motion": 14
+    "motion": 12
   },
   "src/components/Amphora.tsx": {
     "colour": 1,
@@ -101,8 +101,8 @@
   },
   "src/components/Header.module.css": {
     "colour": 8,
-    "font-size": 12,
-    "spacing": 42,
+    "font-size": 7,
+    "spacing": 40,
     "shadow": 1,
     "z-index": 2,
     "motion": 11
@@ -141,17 +141,16 @@
   "src/components/TabBar.module.css": {
     "font-size": 3,
     "spacing": 10,
-    "shadow": 3,
     "z-index": 1,
-    "motion": 7
+    "motion": 6
   },
   "src/components/academy/Academy.module.css": {
     "font-family": 2,
     "font-size": 93,
-    "spacing": 246,
-    "shadow": 2,
+    "spacing": 244,
+    "shadow": 1,
     "z-index": 2,
-    "motion": 55
+    "motion": 54
   },
   "src/components/academy/Timeline.tsx": {
     "motion": 5
@@ -169,9 +168,8 @@
     "colour": 3,
     "font-size": 41,
     "spacing": 147,
-    "shadow": 2,
     "z-index": 1,
-    "motion": 33
+    "motion": 29
   },
   "src/components/amphora/paint.ts": {
     "colour": 11
@@ -181,30 +179,28 @@
     "spacing": 85,
     "radius": 16,
     "shadow": 4,
-    "z-index": 2,
-    "motion": 27
+    "z-index": 1,
+    "motion": 23
   },
   "src/components/community/Community.module.css": {
     "font-size": 44,
     "spacing": 160,
-    "motion": 28
+    "motion": 22
   },
   "src/components/guide/Guide.module.css": {
-    "colour": 9,
+    "colour": 5,
     "font-size": 27,
     "spacing": 75,
-    "shadow": 1,
     "z-index": 1,
-    "motion": 56
+    "motion": 55
   },
   "src/components/guide/Pictures.tsx": {
     "motion": 3
   },
   "src/components/home/Start.module.css": {
-    "colour": 3,
+    "colour": 1,
     "font-size": 10,
     "spacing": 23,
-    "shadow": 3,
     "motion": 9
   },
   "src/components/library/AuthorArticle.module.css": {
@@ -222,15 +218,14 @@
     "colour": 1,
     "font-size": 38,
     "spacing": 71,
-    "shadow": 4,
+    "shadow": 3,
     "motion": 16
   },
   "src/components/library/Stelai.module.css": {
-    "colour": 8,
+    "colour": 6,
     "font-size": 6,
     "spacing": 16,
-    "shadow": 5,
-    "motion": 1
+    "shadow": 3
   },
   "src/components/library/WorkLanding.tsx": {
     "font-size": 1,
@@ -239,7 +234,6 @@
   "src/components/map/Periplus.module.css": {
     "font-size": 14,
     "spacing": 53,
-    "shadow": 2,
     "z-index": 5,
     "motion": 12
   },
@@ -253,7 +247,7 @@
     "font-size": 12,
     "spacing": 28,
     "z-index": 1,
-    "motion": 5
+    "motion": 3
   },
   "src/components/notes/Notes.module.css": {
     "font-family": 1,
@@ -340,7 +334,7 @@
     "spacing": 177,
     "shadow": 6,
     "z-index": 5,
-    "motion": 30
+    "motion": 28
   },
   "src/components/reader/Sentence.module.css": {
     "font-size": 10,
@@ -350,13 +344,13 @@
   "src/components/search/Constructions.module.css": {
     "font-size": 12,
     "spacing": 30,
-    "shadow": 2,
-    "motion": 4
+    "shadow": 1,
+    "motion": 2
   },
   "src/components/search/QuickSearch.module.css": {
     "font-size": 15,
     "spacing": 49,
-    "motion": 5
+    "motion": 3
   },
   "src/components/search/Research.module.css": {
     "font-size": 14,
@@ -368,7 +362,7 @@
   "src/components/search/Search.module.css": {
     "font-size": 23,
     "spacing": 74,
-    "motion": 16
+    "motion": 15
   },
   "src/components/stoa/ExploreLead.module.css": {
     "font-size": 7,
@@ -385,9 +379,9 @@
   "src/components/stoa/Stoa.module.css": {
     "font-size": 37,
     "spacing": 118,
-    "shadow": 5,
+    "shadow": 1,
     "z-index": 2,
-    "motion": 17
+    "motion": 15
   },
   "src/components/stoa/Transmission.module.css": {
     "font-size": 6,
@@ -421,9 +415,8 @@
     "colour": 4,
     "font-size": 37,
     "spacing": 77,
-    "shadow": 2,
     "z-index": 2,
-    "motion": 27
+    "motion": 24
   },
   "src/components/treasury/WordStudy.module.css": {
     "font-size": 28,

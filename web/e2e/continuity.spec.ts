@@ -135,7 +135,8 @@ test("the home page's desk offers to continue where you left off", async ({ page
   await openIliad(page, "1.100");
   await page.waitForTimeout(1200);
   await page.goto("/academy/lesson/case");
-  await page.waitForTimeout(1200);
+  // the visit is remembered once the page settles (lib/resume.ts): wait for that, however busy the test browser is
+  await expect.poll(() => page.evaluate(() => localStorage.getItem("mathesis:resume") ?? "")).toContain('"/academy/lesson/case"');
   await page.goto("/");
   const card = page.getByRole("region", { name: "Your desk" });
   await expect(card.getByRole("link", { name: /Lesson 3: Who does what/ })).toBeVisible();

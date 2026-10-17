@@ -23,10 +23,11 @@
   transition: box-shadow 0.3s var(--ease);
 }
 .kbdBtn {
-  font-family: var(--f-greek); font-size: 1.05rem; padding: 0 14px; background: transparent; color: var(--ink);
-  border: 1.5px solid var(--rule); border-radius: var(--radius);
+  font-family: var(--f-greek); font-size: 1.05rem; padding: 0 14px; background: var(--slab); color: var(--ink);
+  border: 1.5px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
 }
-.kbdBtn[aria-pressed="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); border-color: var(--sel-edge); }
+.kbdBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.kbdBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .hint { font-size: 0.95rem; color: var(--ink-2); max-width: 80ch; }
 .readAs { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: 0.95rem; }
 .readAs select, .field select {
@@ -39,10 +40,11 @@
 .kbdRow { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .kbd button {
   min-width: 42px; height: 42px; font-family: var(--f-greek); font-size: 1.25rem; color: var(--ink);
-  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); transition: transform 0.12s, background-color 0.15s;
+  background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
+  transition: transform 0.12s, background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
-.kbd button:hover { background: var(--bg-2); }
-.kbd button:active { transform: translateY(1px) scale(0.97); }
+.kbd button:hover { background: var(--slab-lit); }
+.kbd button:active { transform: translateY(1px) scale(0.97); background: var(--field); box-shadow: var(--field-edge); }
 .kbd .kbdSpace { min-width: 240px; font-family: var(--f-label); font-size: 0.9rem; }
 @keyframes rise { from { opacity: 0; transform: translateY(-6px); } }
 .kbdDocked { justify-items: stretch; gap: 7px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); border: 0; box-shadow: var(--cut-over); border-radius: 0; background: var(--bg-2); animation: none; }   /* fixed to the foot of the sheet: it stays opaque */
@@ -93,10 +95,10 @@
 .summary { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; }
 .count { font-size: 1.1rem; }
 .count b { font-family: var(--f-display); font-size: 1.4em; font-weight: 400; color: var(--accent); }
-.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.seg button { background: transparent; border: 0; padding: 6px 12px; font-size: 0.88rem; }
-.seg button + button { border-left: 1px solid var(--rule); }
-.seg button[aria-checked="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
+.seg { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border: 0; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
+.seg button { background: transparent; border: 0; border-radius: var(--radius); padding: 6px 12px; font-size: 0.88rem; }
+.seg button:hover:not([aria-checked="true"]) { background: var(--slab); }
+.seg button[aria-checked="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .lemmas { display: grid; gap: 8px; }
 
 .groups { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
