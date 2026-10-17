@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import Page from "@/components/Page";
-import NameCarving from "@/components/art/NameCarving";
+import RefHead from "@/components/stoa/RefHead";
 import Lyre from "@/components/lyre/Lyre";
 import { AREAS } from "@/config/areas";
 import { MELODIES } from "@/data/melodies";
@@ -14,14 +13,11 @@ export const metadata: Metadata = { title: `The lyre · ${AREAS.wiki.name}`, des
 export default function LyrePage() {
   return (
     <Page>
-      <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 20 }}>
-        <nav className="label"><Link href={AREAS.wiki.href} transitionTypes={["page-turn"]}>{AREAS.wiki.name}</Link> › The lyre</nav>
-        <NameCarving greek="λύρα" />
-        <h1 className="page-title">The lyre <span lang="grc">λύρα</span></h1>
-        <p className="muted" style={{ maxWidth: "62ch", fontSize: "1.1rem" }}>
-          Play the lyre with your keyboard, your fingers or a MIDI keyboard, and play along with the melodies that survive
-          from ancient Greece, written in the Greeks&apos; own musical notation.
-        </p>
+      <RefHead title="The lyre" greek="λύρα">
+        Play the lyre with your keyboard, your fingers or a MIDI keyboard, and play along with the melodies that survive
+        from ancient Greece, written in the Greeks&apos; own musical notation.
+      </RefHead>
+      <div className="wrap" style={{ paddingBottom: "clamp(32px, 5vw, 56px)" }}>
         <Lyre melodies={MELODIES} first={seikilos as MelodyNotes} />
       </div>
     </Page>
