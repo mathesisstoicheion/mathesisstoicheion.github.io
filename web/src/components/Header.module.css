@@ -1,21 +1,29 @@
 .top {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
-  background: color-mix(in srgb, var(--bg) 90%, transparent);
-  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  /* a lintel of the wall's own stone across the top: solid, so the page never shows through it (nor is what scrolls
+     beneath it blurred afresh on every frame), with a fine fillet along its foot and its shadow on the wall */
+  background: var(--lintel), var(--bg) var(--tex, none) 0 0 / 420px 420px;
+  box-shadow: var(--lintel-shadow);
   transition: transform 0.45s var(--ease);
 }
-/* the header's lower edge is a line cut into the stone */
-.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: -2px; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); pointer-events: none; }
-/* reading on: the header tucks itself away, and comes back on any scroll up */
-:global(html[data-hdr="hidden"]) .top { transform: translateY(calc(-100% - env(safe-area-inset-top, 0px) - 2px)); }
+.top::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 6px; background: var(--lintel-foot); pointer-events: none; }
+/* reading on: the header tucks itself away, its shadow too, and comes back on any scroll up */
+:global(html[data-hdr="hidden"]) .top { transform: translateY(calc(-100% - env(safe-area-inset-top, 0px) - 12px)); }
 .row { display: flex; align-items: center; gap: 24px; min-height: 76px; }
 
 .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; line-height: 1.1; flex: none; }
-/* the mark: the emblem's tablet, figure and stylus, drawn flat in honey */
+/* the mark: the emblem's tablet, figure and stylus, cut in the stone and laid with gold (EmblemMark.tsx) */
 .logo { display: block; flex: none; width: 46px; height: 38px; }
-.brandName { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
-.brandGr { font-family: var(--f-greek); font-size: 1.22rem; color: var(--ink); }
-.brandEn { font: 500 0.66rem / 1.2 var(--f-label); letter-spacing: 0.32em; text-transform: uppercase; color: var(--ink-3); }
+.brandName { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); min-width: 0; --cell: 16px; }
+/* the name cut beside it and laid with the same gold: capitals in a grid, each in its own square, as Greek was carved
+   (stoichedon); ΜΑΘΗΣΙΣ stands over the middle of ΣΤΟΙΧΕΙΩΝ */
+.brandGr {
+  display: grid; justify-items: center; row-gap: calc(var(--cell) * 0.16); width: calc(var(--cell) * var(--cols, 9));
+  font: 500 calc(var(--cell) * 1.1) / 1 var(--f-carved); color: transparent; filter: var(--gilt-cut);
+}
+.word { display: flex; }
+.word > span { width: var(--cell); text-align: center; background: var(--gilt); -webkit-background-clip: text; background-clip: text; }
+.brandEn { font: 500 calc(var(--cell) * 0.56) / 1.2 var(--f-label); letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
 
 .areasWrap { position: relative; display: flex; flex: 1; min-width: 0; }
 .areas { display: flex; gap: 4px; flex: 1; min-width: 0; overflow-x: auto; scrollbar-width: none; overscroll-behavior-x: contain; }
@@ -29,7 +37,7 @@
 }
 .areasMore {
   display: none; position: absolute; right: 0; top: 50%; translate: 0 -50%; width: 30px; height: 30px; padding: 0;
-  place-items: center; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--surface); color: var(--accent);
+  place-items: center; border: 0; border-radius: var(--radius); background: var(--surface); box-shadow: var(--slab-edge); color: var(--accent);
 }
 .areasMore svg { width: 16px; height: 16px; }
 .areasWrap[data-more-right] .areasMore { display: grid; }
@@ -50,15 +58,20 @@
 }
 .areas a[aria-current="page"]::after { transform: rotate(45deg) scale(1); }
 
-.tools { display: flex; gap: 8px; flex: none; }
+/* the buttons: one slab set on the lintel, its places parted by lines cut across it; the one under the hand is lit,
+   a pressed one sinks, and the page you are on is lit with a gilded line along its foot */
+.tools { display: flex; flex: none; background: var(--slab); box-shadow: var(--slab-edge); }
+.tools > * + *::before { content: ""; position: absolute; left: 0; top: 10px; bottom: 10px; width: 2px; background: var(--cut-line-v); pointer-events: none; }
 .tbtn {
-  display: inline-flex; align-items: center; gap: 8px; min-height: 38px; min-width: 38px; justify-content: center;
-  padding: 7px 11px; border: 1px solid var(--rule); border-radius: var(--radius);
+  position: relative; display: inline-flex; align-items: center; gap: 8px; min-height: 40px; min-width: 42px; justify-content: center;
+  padding: 7px 12px; border: 0; border-radius: var(--radius);
   background: transparent; color: var(--ink-2); font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none;
-  transition: border-color var(--dur) ease, color var(--dur) ease;
+  -webkit-tap-highlight-color: transparent; transition: background-color var(--dur) ease, color var(--dur) ease;
 }
-.tbtn:hover { border-color: var(--rule-2); color: var(--accent); }
-.tbtn svg { width: 16px; height: 16px; }
+.tbtn:focus-visible { outline-offset: -3px; }
+@media (hover: hover) { .tbtn:hover { background: var(--slab-lit); color: var(--accent); } }
+.tbtn:active { background: var(--field); box-shadow: var(--field-edge); color: var(--accent); transition: none; }
+.tbtn svg { width: 16px; height: 16px; filter: var(--gilt-cut); }
 
 /* Room for the header's row: the five doors need about 560 px, the brand 200, the buttons 230 as icons or 470 with words.
    So: words on the buttons only on very wide screens; icons on wide ones; below that the menu takes a row of its own. */
@@ -71,36 +84,39 @@
   .tools { margin-left: auto; }
 }
 .phoneOnly { display: none; }
-.tbtn[aria-current="page"] { border-color: var(--accent); color: var(--accent); }
+.tbtn[aria-current="page"], .tbtn[aria-expanded="true"] { background: var(--slab-lit); color: var(--accent); box-shadow: var(--chosen-foot); }
 /* phones (the width at which the bottom bar takes over the menu, TabBar.module.css): one row with the site's name
    and four finger-sized buttons; the quick theme switch steps aside (it is in Settings) */
 @media (max-width: 760px) {
-  .row { flex-wrap: nowrap; gap: 8px; min-height: 60px; padding-block: 8px; }
+  .row { flex-wrap: nowrap; gap: var(--space-2); min-height: 60px; padding-block: 8px; }
   .areasWrap { display: none; }
   .txt, .theme, .notPhone { display: none; }
-  .tools { gap: 8px; margin-left: auto; }
+  .tools { margin-left: auto; }
   .phoneOnly { display: inline-flex; align-items: center; }
-  .tbtn { width: var(--tap); height: var(--tap); min-height: 0; justify-content: center; padding: 0; }
+  .tbtn { width: var(--tap); height: var(--tap); min-width: 0; min-height: 0; justify-content: center; padding: 0; }
   .tbtn svg { width: 19px; height: 19px; }
   .tools .light { padding-inline: 0; }
   .brand { flex: 0 1 auto; min-width: 0; min-height: var(--tap); gap: 9px; }
-  .logo { width: 42px; height: 35px; }
-  .brandGr { font-size: 1.14rem; white-space: nowrap; }
-  .brandEn { font-size: 0.6rem; letter-spacing: 0.26em; }
-}
-/* most phones: the Greek name on two lines, like a wordmark, beside the four buttons (the Latin name is its label) */
-@media (max-width: 479px) {
-  .brandGr { font-size: 1.14rem; line-height: 1.02; white-space: normal; max-width: 6.2em; }
+  .logo { width: 38px; height: 31px; }
+  /* the name takes what the four buttons leave it, so the two never meet (the Latin name is the link's label) */
+  .brandName { --cell: clamp(9.5px, calc((100vw - 266px) / 9), 15px); }
   .brandEn { display: none; }
+}
+/* the smallest phones: a smaller mark and narrower buttons, so the name still has room */
+@media (max-width: 359px) {
+  .brand { gap: 6px; }
+  .logo { width: 32px; height: 27px; }
+  .tbtn { width: 40px; }
+  .brandName { --cell: clamp(8px, calc((100vw - 244px) / 9), 9.5px); }
 }
 
 /* ------------------------------------------------------------ connection light */
 .conn { position: relative; }
 .light { padding-inline: 11px; }
-.dot { width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--ok); flex: none; position: relative; }
-[data-status="offline"] .dot { background: var(--danger); }
-[data-status="syncing"] .dot { background: var(--ochre); }
-/* a slow ripple while syncing; a single ring when the state changes */
+/* the light: a small polished stone in a gold bezel, green while online, ochre while syncing, red when offline */
+.dot { width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--gem-shine), var(--ok); box-shadow: var(--bezel); flex: none; position: relative; }
+[data-status="offline"] .dot { background: var(--gem-shine), var(--danger); }
+[data-status="syncing"] .dot { background: var(--gem-shine), var(--ochre); }
 /* a slow, soft ripple while syncing, like a flame breathing; one ring when the connection is lost */
 [data-status="syncing"] .dot::after { content: ""; position: absolute; inset: -4px; border-radius: var(--radius-round); border: 1px solid var(--ochre); animation: ripple 2.4s ease-out infinite; }
 [data-status="offline"] .dot::after { content: ""; position: absolute; inset: -4px; border-radius: var(--radius-round); border: 1px solid var(--danger); animation: ripple 2.4s ease-out 1; }

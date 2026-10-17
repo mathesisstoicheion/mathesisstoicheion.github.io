@@ -6,13 +6,14 @@
     position: fixed; left: 0; right: 0; bottom: var(--tabbar-h); z-index: 34;
     display: grid; grid-template-columns: var(--tap) minmax(0, 1fr) auto auto var(--tap); align-items: center; gap: 4px;
     height: 54px; padding: 0 max(8px, env(safe-area-inset-right, 0px)) 0 max(8px, env(safe-area-inset-left, 0px));
-    background: color-mix(in srgb, var(--surface) 94%, transparent);
-    -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
-    box-shadow: var(--cut-over);
+    /* a course of the same stone as the site's sill below it (TabBar.module.css), its edge lit, its shadow on the page */
+    background: var(--sill), var(--bg) var(--tex, none) 0 0 / 420px 420px;
+    box-shadow: var(--sill-shadow);
     transition: transform 0.35s var(--ease);
   }
-  /* it tucks away with the site's bar below it: its own height, and the bar's */
-  :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + var(--tabbar-h) + 2px)); }
+  .bar::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 5px; background: var(--sill-head); pointer-events: none; }
+  /* it tucks away with the site's bar below it: its own height, the bar's, and its shadow */
+  :global(html[data-hdr="hidden"]) .bar { transform: translateY(calc(100% + var(--tabbar-h) + 12px)); }
 
   /* a channel cut across the top, filled with gilt as far as you have read */
   .progress {
@@ -36,18 +37,21 @@
   .sheet.dragging { transition: none; }
 }
 
+/* the bar's buttons are slabs set on it (the arrows are cut in it); a pressed one sinks, and an open one is lit with a
+   gilded line along its foot, as the chosen one of a set is (Settings) */
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: var(--tap); height: var(--tap); padding: 0 10px;
-  background: transparent; color: var(--ink); border: 1px solid transparent; border-radius: var(--radius); -webkit-tap-highlight-color: transparent;
-  transition: background-color 0.2s, transform 0.2s var(--ease);
+  background: transparent; color: var(--ink); border: 0; border-radius: var(--radius); -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s, color 0.2s;
 }
-.btn:active:not(:disabled) { transform: scale(0.94); background: var(--bg-2); }
+.contents, .word { background: var(--slab); box-shadow: var(--slab-edge); }
+.btn:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); transition: none; }
 .btn:disabled { opacity: 0.3; }
 .btn svg { width: 22px; height: 22px; flex: none; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-.btn[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
-.contents { justify-content: flex-start; min-width: 0; border-color: var(--rule); }
+.btn[aria-expanded="true"] { background: var(--slab-lit); color: var(--accent); box-shadow: var(--chosen-foot), var(--slab-edge); }
+.contents { justify-content: flex-start; min-width: 0; }
 .where { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: var(--f-display); font-size: 1.05rem; }
-.word { font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.04em; border-color: var(--rule); }
+.word { font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.04em; }
 .aa { font-family: var(--f-display); font-size: 1.2rem; line-height: 1; }
 .aa small { font-size: 0.72em; }
 

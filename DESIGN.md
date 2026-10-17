@@ -84,6 +84,19 @@ The pieces (all in `web/src/styles/tokens.css`; a module uses only these names):
 | The foot of every page: a plinth with the site's name carved along it | `--plinth-edge` |
 | The page that has not survived (404): a broken piece of stone carved ΥΔ, 404 in Greek numerals | `--broken-edge` |
 - Pop-overs, menus, dialogs and sticky bars stay opaque (the page would show through them); only their edges are stone.
+- **The header and the phone's bars** (the owner, 2026-10-17: "The text and buttons at the top are ugly and they overlap.
+  Match the theme, and do the same for the buttons at the bottom"). The header is a lintel of the wall's own stone across
+  the top (`--lintel`, `--lintel-foot`, `--lintel-shadow`), solid, with a fine fillet along its foot and its shadow on the
+  wall; the phone's bar is the same stone turned over, a sill along the foot (`--sill`, `--sill-head`, `--sill-shadow`), and
+  the reader's phone bar is one more course of it. Neither blurs what scrolls beneath it.
+  - The site's name beside the logo is cut in capitals in a grid, each letter in its own square (stoichedon), ΜΑΘΗΣΙΣ over
+    the middle of ΣΤΟΙΧΕΙΩΝ, and laid with gold like the logo (`--gilt`, `--gilt-cut`). On a phone the letters take the
+    room the buttons leave, so the two never meet; on a computer the Latin name is under them.
+  - The header's buttons are one slab, its places parted by lines cut across it; the connection light is a small polished
+    stone in a gold bezel (`--bezel`, `--gem-shine`).
+  - On the phone's bar the place you are in stands on a lit slab with a gilded foot, which slides to the place you go to;
+    Search, in the middle, is a round boss ringed with gold (`--boss`, `--boss-edge`) rising a little above the sill, and
+    so is Back to top. The reader's bar has its buttons as slabs, an open one lit with a gilded foot.
 - A page inside an area carves its own Greek name above its title (`components/art/NameCarving.tsx`): ΛΕΞΕΙΣ, ΑΝΑΜΝΗΣΙΣ, a
   lesson's or an entry's Greek name. The Oracle, which has no Greek name of its own, carves ΓΝΩΘΙΣΑΥΤΟΝ, "Know thyself", one of the
   maxims written in the fore-temple at Delphi (Pausanias 10.24.1, tr. Jones and Ormerod), with its source under it.

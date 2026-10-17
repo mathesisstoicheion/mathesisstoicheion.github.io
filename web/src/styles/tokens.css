@@ -158,6 +158,24 @@
   --inlay-side: linear-gradient(90deg, #a8743a, var(--honey) 62%, var(--honey-hi));
   --inlay-dim: linear-gradient(180deg, rgba(239, 194, 122, 0.55), rgba(168, 116, 58, 0.45));
   --inlay-edge: inset 0 1px 0 rgba(255, 244, 220, 0.55), inset 0 -1px 0 rgba(60, 34, 10, 0.6);
+  /* the lintel across the top of the screen (the site header) and the sill along its foot (the phone's bar): solid stone,
+     so the page never shows through, each darker where it meets the edge of the screen and lit where it meets the wall;
+     a fine fillet cut along that edge, and a soft shadow cast on the wall */
+  --lintel: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.08) 60%, rgba(255, 226, 186, 0.035));
+  --sill: linear-gradient(180deg, rgba(255, 226, 186, 0.04), rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.34));
+  --lintel-foot: linear-gradient(transparent 0 1px, var(--groove) 1px 2px, var(--lip) 2px 3px, transparent 3px 5px, var(--lip) 5px 6px);
+  --sill-head: linear-gradient(var(--lip) 0 1px, transparent 1px 3px, var(--groove) 3px 4px, var(--lip) 4px 5px, transparent 5px);
+  --lintel-shadow: 0 14px 20px -16px rgba(0, 0, 0, 0.95);
+  --sill-shadow: 0 -14px 20px -16px rgba(0, 0, 0, 0.95);
+  /* gilded letters and signs cut into the stone: the shadow of the cut's upper wall, and light on its lower lip */
+  --gilt: linear-gradient(180deg, #f6d9a0 12%, #e2ae63 46%, #b07a3c 88%);
+  --gilt-cut: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.8)) drop-shadow(0 1px 0 rgba(255, 226, 186, 0.1));
+  /* a small polished stone set in a gold bezel (the connection light), and the shine on it */
+  --bezel: 0 0 0 1px rgba(0, 0, 0, 0.7), 0 0 0 2.5px #a8743a, 0 0 0 3.5px rgba(0, 0, 0, 0.6);
+  --gem-shine: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 45%);
+  /* a round boss carved standing out of the stone, ringed with gold (the phone bar's Search) */
+  --boss: radial-gradient(circle at 50% 26%, rgba(255, 226, 186, 0.16), rgba(255, 226, 186, 0) 64%), var(--stone-3);
+  --boss-edge: inset 0 1px 0 rgba(255, 226, 186, 0.16), inset 0 -3px 5px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.7), 0 0 0 2.5px #a8743a, 0 0 0 3.5px rgba(0, 0, 0, 0.55), 0 8px 12px -6px rgba(0, 0, 0, 0.9);
 
   --ok: var(--sage);
   --warn: var(--amber);
@@ -256,5 +274,10 @@
   --sel-fg: var(--limestone-2);
   --sel-edge: var(--day-ink);
   --accent-on-sel: #f0b48f;
+  /* the reader's bar on a phone is a course of limestone here, with no dark mottling */
+  --tex: none;
+  --sill: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(42, 34, 26, 0.03) 40%, rgba(42, 34, 26, 0.1));
+  --sill-head: linear-gradient(var(--lip) 0 1px, transparent 1px 3px, var(--groove) 3px 4px, var(--lip) 4px 5px, transparent 5px);
+  --sill-shadow: 0 -12px 18px -16px rgba(40, 24, 10, 0.35);
   color-scheme: light;
 }

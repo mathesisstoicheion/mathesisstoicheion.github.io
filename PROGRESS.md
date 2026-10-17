@@ -96,6 +96,22 @@ laggy". Results page: https://claude.ai/artifact/1PF9rFxFA27eKqDCBrg3rb. The rul
   phone A to Z slide (each letter brings a new stretch of the long list to be drawn); opening the home page on a phone.
 Both published together on 2026-10-17, when the owner chose "Publish" on the results.
 
+### The header and the phone's bars in stone (2026-10-17; on the branch, not yet published)
+The owner (01:38, with a phone screenshot of the Academy): "The text and buttons at the top are ugly and they overlap. Match the
+theme, and do the same for the buttons at the bottom". On phones 360 px wide or narrower the name's last letter ran under the first
+button (45 px into them at 320). Before and after: https://claude.ai/artifact/8LkEgsDKXaixZFuzLUUQZ6. Details in DESIGN.md
+("The header and the phone's bars").
+- **What changed**: the header is a solid stone lintel and the phone bar a stone sill (no more blur of what scrolls beneath);
+  the name is ΜΑΘΗΣΙΣ / ΣΤΟΙΧΕΙΩΝ in gilded capitals in a stoichedon grid, sized from the screen width so it always leaves the
+  buttons room (at least 11 px from 320 to 430); the header's buttons are one slab with cut dividers, the connection light a
+  gem in a gold bezel; the bar's current place is a lit slab with a gilded foot that slides, Search a gold-ringed boss; the
+  reader's phone bar and Back to top match (Daylight gives a limestone course).
+- **A/B** (3 runs each, phone slowed 4x): Academy, bars sliding 54.9 → 59.2 fps (stuck frames 14 → 0); Academy scroll
+  54.6 → 57.3; home and reader unchanged; computer unchanged (capped by software drawing).
+- **Checked**: 48 browser tests of the header, bars, phone pages, phone reader, A to Z and home page: 47 pass; the passage-actions
+  word test fails the same way on the live version (missing word list). The home desk test now waits for the lesson visit to be
+  remembered instead of a fixed 1.2 s.
+
 ## Reader bug search (2026-10-15; committed, not yet published)
 The owner: some texts don't load in the reader on their phone (Android, Chrome), On the Soul takes forever, "fix every text that has an
 English translation but the translation isn't offered", "and fix loading times". Found and fixed:

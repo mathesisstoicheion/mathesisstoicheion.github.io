@@ -3,14 +3,19 @@
 import Link from "next/link";
 import EmblemMark from "@/components/EmblemMark";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AREAS, MENU, SITE, TABS, doorWord, menuWord } from "@/config/areas";
+import { carvedCaps } from "@/lib/art/common";
 import { scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
 import ConnectionLight from "./ConnectionLight";
 import AccountButton from "./AccountButton";
 import styles from "./Header.module.css";
+
+// the site's name as it would be cut in stone: capitals, each in its own square of a grid (stoichedon), a word to a row
+const NAME = SITE.greek.split(" ").map(carvedCaps);
+const COLS = Math.max(...NAME.map((w) => w.length));
 
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
@@ -98,7 +103,9 @@ export default function Header() {
         <Link className={styles.brand} href="/" transitionTypes={["page-turn"]} aria-label={`${SITE.latin}, home`}>
           <EmblemMark className={styles.logo} />
           <span className={styles.brandName}>
-            <span className={styles.brandGr} lang="grc">{SITE.greek}</span>
+            <span className={styles.brandGr} lang="grc" style={{ "--cols": COLS } as CSSProperties}>
+              {NAME.map((w) => <span key={w} className={styles.word}>{[...w].map((c, i) => <span key={i}>{c}</span>)}</span>)}
+            </span>
             <span className={styles.brandEn}>{SITE.latin}</span>
           </span>
         </Link>
