@@ -12,14 +12,14 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
   const n = LESSONS.indexOf(lesson) + 1;
   return (
     <Page>
-      <div className="wrap" style={{ paddingBlock: "clamp(28px, 5vw, 48px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, maxWidth: 820 }}>
+      <div className="wrap tool-page" style={{ paddingBlock: "clamp(28px, 5vw, 48px)" }}>
+        <div className="tool-main">
         <div className="page-head">
           <nav className="label">
             <Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> ›{" "}
             <Link href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>Lesson {n}</Link> › {mode === "practice" ? "Practice" : "Test"}
           </nav>
           <NameCarving greek={mode === "practice" ? "ἄσκησις" : "δοκιμασία"} />
-          <PagePiece className="piece-desk" />
           <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4.5vw, 2.8rem)" }}>
             {mode === "practice" ? "Practise" : "Test yourself"}: {lesson.title}
             <span lang="grc" style={{ display: "block", fontSize: "0.55em", marginTop: 6 }}>{mode === "practice" ? "ἄσκησις" : "δοκιμασία"}</span>
@@ -33,6 +33,8 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
         </div>
         <div className={`meander ${styles.pageIntro}`} aria-hidden="true" style={{ marginBlock: 6 }} />
         <Workout lesson={lesson} mode={mode} />
+        </div>
+        <PagePiece className="piece-desk" />
       </div>
     </Page>
   );

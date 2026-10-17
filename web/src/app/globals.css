@@ -306,6 +306,15 @@ select:not([multiple]):not([size]) {
 :is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
 .piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
 .piece-foot.piece-wide { width: min(520px, 100%); }
+/* a page that is a tool (a round of questions, the day's cards): on a computer its piece stands in its big window beside the
+   tool rather than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
+.tool-page { display: grid; grid-template-columns: minmax(0, 1fr); }
+.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; }
+@media (min-width: 761px) {
+  .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
+  .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
+}
+:where(.tool-page) > :where(.piece-head) { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
 /* a page's title is given its whole width on a phone: the piece there stands under it, in a window of its own across
    the screen, and the words follow (a header holds both, "piece-desk" before the title and "piece-phone" after it; the
    one not shown loads nothing) */
