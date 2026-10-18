@@ -1,12 +1,10 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Page from "@/components/Page";
+import PageHead from "@/components/PageHead";
 import GuideView from "@/components/academy/GuideView";
 import { GUIDES, guideById } from "@/data/guides";
-import { AREAS } from "@/config/areas";
-import NameCarving from "@/components/art/NameCarving";
-import PagePiece from "@/components/art/PagePiece";
+import { AREAS, trail } from "@/config/areas";
 
 export function generateStaticParams() {
   return GUIDES.map((g) => ({ id: g.id }));
@@ -25,15 +23,9 @@ export default async function GuidePage({ params }: PageProps<"/academy/guide/[i
   const n = GUIDES.indexOf(guide) + 1;
   return (
     <Page>
-      <div className="wrap" style={{ paddingBlock: "clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
-        <div className="page-head">
-          <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Guide {n} of {GUIDES.length}</nav>
-          <PagePiece className="piece-phone" />
-          <NameCarving greek={guide.greek} />
-          <PagePiece className="piece-desk" />
-          <h1 className="page-title">{guide.title} <span lang="grc" style={{ display: "block", fontSize: "0.5em", marginTop: 8 }}>{guide.greek}</span></h1>
-          <p className="muted" style={{ fontSize: "1.1rem" }}>{guide.summary} · about {guide.minutes} minutes</p>
-        </div>
+      <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
+        <PageHead bare path={trail("study", `Guide ${n} of ${GUIDES.length}`)} title={guide.title} greek={guide.greek}
+          purpose={<>{guide.summary} · about {guide.minutes} minutes</>} />
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
         <GuideView guide={guide} />
       </div>

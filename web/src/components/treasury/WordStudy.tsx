@@ -28,7 +28,8 @@ import BarChart from "./BarChart";
 import { wordHref } from "./data";
 import { useLoad } from "@/lib/use-load";
 import styles from "./WordStudy.module.css";
-import PagePiece from "@/components/art/PagePiece";
+import PageHead from "@/components/PageHead";
+import { trail } from "@/config/areas";
 
 export default function WordStudy() {
   const params = useSearchParams();
@@ -90,19 +91,16 @@ function Head({ lemma, entry, meta, lexState, alike }: { lemma: string; entry: L
     return top.pos;
   }, [entry, meta]);
   return (
-    <header className={styles.head}>
-      <PagePiece className="piece-phone" />
-      <PagePiece className="piece-desk" />
-      <h1 lang="grc" className={styles.lemma}>{lemma}</h1>
-      <p className={styles.headMeta}>
+    <PageHead bare path={trail("treasury", "Word study")} carve={lemma} title={<span lang="grc">{lemma}</span>}
+      purpose={<span className={styles.headMeta}>
         <span className={styles.translit}>{transliterate(lemma)}</span>
         {pos && <span>{pos}</span>}
         {entry && meta && <span>{entry.n.toLocaleString("en-GB")} times in {entry.w.length.toLocaleString("en-GB")} of GLAUx&apos;s {meta.works.length.toLocaleString("en-GB")} works</span>}
         {lexState === "loading" && <span className="muted">counting…</span>}
-      </p>
+      </span>}>
       {alike.length > 0 && <p className={styles.alike}>Spelled alike without accents: {alike.slice(0, 6).map((a, i) => <span key={a}>{i > 0 && ", "}<Link href={wordHref(a)} lang="grc">{a}</Link></span>)}</p>}
       <div className="meander draw" aria-hidden="true" />
-    </header>
+    </PageHead>
   );
 }
 

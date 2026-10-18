@@ -1,18 +1,6 @@
 /* The Mouseion (design B, Stone and torch): its name beside the search, then the order and filters, the wall of
    stelai, then every author with their works. */
 .lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding-block: 0 var(--space-7); }
-.top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 18px clamp(var(--space-5), 5vw, var(--space-8)); align-items: center; margin: clamp(18px, 3vw, 34px) 0 6px; }
-.topText h1 { font: 400 clamp(2.5rem, 5.2vw, 4.4rem) / 1 var(--f-display); margin: 0 0 var(--space-4); }
-.topText h1 span { display: block; font-size: 0.5em; color: var(--ink-2); margin-top: 10px; }
-.topText p { max-width: 46ch; font-size: 1.18rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
-@media (max-width: 860px) { .top { grid-template-columns: minmax(0, 1fr); } }
-/* the page's piece (components/art/PagePiece.tsx): at the right of the name on a computer, under it on a phone */
-.topSide { display: grid; justify-items: end; min-width: 0; }
-.topSide > .pieceWide { float: none; margin: 0; }
-.pieceNarrow { display: none; }
-@media (max-width: 860px) { .topSide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
-/* on a phone the piece has a window of its own across the screen, under the page's name (it comes first in the markup) */
-@media (max-width: 760px) { .pieceNarrow { display: none; } }
 /* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
 .stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
 .error { color: var(--accent); padding-block: 40px; }
@@ -236,3 +224,6 @@
 }
 .mineBtn:hover, .mineBtn:focus-visible { background: var(--slab-lit); color: var(--ink); }
 .mineBtn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the works an author's page suggests beginning with (components/library/AuthorProfile.tsx) */
+.start { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }

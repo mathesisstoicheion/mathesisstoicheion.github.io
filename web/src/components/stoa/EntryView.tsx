@@ -15,8 +15,8 @@ import { EntryMarkers, SectionNote } from "./EntryNotes";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
-import NameCarving from "@/components/art/NameCarving";
-import PagePiece from "@/components/art/PagePiece";
+import PageHead from "@/components/PageHead";
+import { trail } from "@/config/areas";
 
 const PLACE_NAME = new Map((mapData as { places: { id: string; grc: string; en: string }[] }).places.map((p) => [p.id, p]));
 
@@ -50,19 +50,13 @@ export default function EntryView({ e }: { e: Entry }) {
   return (
     <article className={styles.entry} data-entry={e.slug}>
       <EntryMarkers slug={e.slug} heads={heads} />
-      <header className={`wrap ${styles.entryHead}`}>
-        <p className={styles.crumbs}><Link href="/stoa" transitionTypes={["page-turn"]}>The Painted Stoa</Link> › <Link href={cat.href ?? `/stoa#${cat.id}`} transitionTypes={["page-turn"]}>{cat.title}</Link></p>
-        <PagePiece className="piece-phone" />
-        <NameCarving greek={e.greek} />
-        <PagePiece className="piece-desk" />
-        <h1 className={styles.title}>{e.title}{e.greek && <span className={styles.titleGr} lang="grc">{e.greek}</span>}</h1>
-        <p className={styles.kicker}>{e.kicker}</p>
-        {/* the opening stands in the header's left column, beside the niche (after the phone's niche, under the title) */}
+      <PageHead path={trail("wiki", { label: cat.title, href: cat.href ?? `/stoa#${cat.id}` }, e.title)} title={e.title} greek={e.greek} purpose={e.kicker}>
+        {/* the opening follows the purpose line, beside the niche on a computer (after the statue on a phone) */}
         <div className={styles.hookBlock}>
           <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>
           <SectionNote slug={e.slug} section="top" title={e.title} />
         </div>
-      </header>
+      </PageHead>
       {e.image ? <div className="wrap"><Figure id={e.image} lead /></div> : <div className="wrap"><div className={`${styles.band} rays draw`} aria-hidden="true" /></div>}
 
       <div className={`wrap ${styles.entryGrid}`}>

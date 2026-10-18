@@ -30,16 +30,23 @@ const never = () => () => {};
 /** false while the page is built and first shown, true once it runs in the browser */
 const useMounted = () => useSyncExternalStore(never, () => true, () => false);
 
-/** The niche's shape and how the piece stands in it, from the piece's own proportions. */
+/**
+ * The niche's shape and how the piece stands in it, from the piece's own proportions. Every niche is round-headed
+ * (PAGE-RULES.md, rule 1, the owner's choice, 2026-10-18); a broad slab or block gets a wider window, a little taller than
+ * it is wide, and stands on its sill.
+ */
 function lookOf(s: PieceShape): { look: PieceLook; ratio: number; wide: boolean } {
   const a = s.h / s.w;
   const flat = s.form === "slab" || s.form === "relief";
   if (a < 0.82 || (flat && a < 1.05)) {
-    // a broad slab or block: a plain window, a little taller than the piece
-    return { look: { niche: "rect", margin: [0.1, 0.07, 0.07, 0.07], material: s.material, detail: 1.15 }, ratio: Math.min(0.9, Math.max(0.42, a * 1.18 + 0.04)), wide: true };
+    return { look: { niche: "arch", margin: [0.2, 0.08, 0.035, 0.08], material: s.material, detail: 1.15 }, ratio: Math.min(1.25, Math.max(1.05, a + 0.45)), wide: true };
   }
   return { look: { niche: "arch", material: s.material, ...(flat ? { detail: 1.15 } : {}) }, ratio: Math.min(1.95, Math.max(1.18, a * 0.99 + 0.08)), wide: false };
 }
+
+/** Where the still picture stands: the margins round the piece in its niche (lib/art/piece.ts, figBox; its default there). */
+const stillBox = ([t, r, b, l] = [0.2, 0.12, 0.035, 0.12]) =>
+  ({ "--mt": `${t * 100}%`, "--mr": `${r * 100}%`, "--mb": `${b * 100}%`, "--ml": `${l * 100}%` }) as React.CSSProperties;
 
 /** Resolves once the element is near the screen, so a piece far down the page fetches nothing until it is wanted. */
 function near(el: Element) {
@@ -114,6 +121,11 @@ export default function PagePiece({ place = "head", spec: given, className, stea
     <figure className={`piece piece-${place}${L.wide ? " piece-wide" : ""}${className ? ` ${className}` : ""}`} data-niche={L.look.niche} style={{ "--piece-ratio": L.ratio } as React.CSSProperties}>
       <button type="button" className="piece-niche" aria-pressed={lit} onClick={toggle}
         aria-label={lit ? "Take the lamp away, back to your torch" : "Set a lamp before the sculpture"}>
+        {/* a faint still picture of the piece, there from the first moment, standing where the lit piece will stand; it
+            fades as the light comes up on the piece (PAGE-RULES.md, rule 7) */}
+        {/* eslint-disable-next-line @next/next/no-img-element -- a small self-hosted picture; no image service */}
+        <img className="piece-still" src={`/images/pieces/lit/${spec!.piece}-s.webp`} alt="" aria-hidden="true" loading="lazy" decoding="async"
+          fetchPriority={place === "head" ? "high" : "auto"} style={stillBox(L.look.margin)} />
         <canvas key={spec!.piece} ref={cv} role="img" aria-label={credit!.alt} />
         <LampHint lit={lit} />
       </button>

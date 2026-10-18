@@ -15,12 +15,13 @@ import { loadCatalog, hasTranslation, type CatalogIndex, type CatAuthor } from "
 import { centuries, DATE_NOTE, loadWorksMeta, type WorkMeta } from "@/lib/works-meta";
 import { commonShare, loadDifficulty } from "@/lib/difficulty";
 import { lifeSpan, loadAuthorsMeta, type AuthorMeta } from "@/lib/authors-meta";
-import { AREAS } from "@/config/areas";
+import { AREAS, trail } from "@/config/areas";
 import { loadArticle, type AuthorArticle } from "@/wiki/author-articles";
 import { WorkItem } from "./Library";
 import AuthorArticleView from "./AuthorArticleView";
-import { AZButton, AZPanel, type AZItem } from "./AZList";
-import PagePiece, { PieceHold } from "@/components/art/PagePiece";
+import { AZPanel, type AZItem } from "./AZList";
+import { PieceHold } from "@/components/art/PagePiece";
+import PageHead from "@/components/PageHead";
 import lib from "./Library.module.css";
 import { BEST_KNOWN } from "@/data/best-known";
 import styles from "./AuthorProfile.module.css";
@@ -122,17 +123,18 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
   // "A to Z": the same works, in alphabetical order by their English titles (only worth a button for a longer list)
   const [az, setAz] = useState(false);
   const longList = author.works.length >= AZ_FROM;
+  // "Where to begin": the suggested first works (only for an author with more than three), then the rest as catalogued
+  const first = useMemo(() => author.works.length > 3 ? [famous, ...begin.map((b) => b.w)].filter((w): w is NonNullable<typeof w> => !!w) : [], [author, famous, begin]);
+  const starts = useMemo(() => new Set(first.map((w) => w.id)), [first]);
+  const ordered = useMemo(() => [...first, ...author.works.filter((w) => !starts.has(w.id))], [author, first, starts]);
+  const byTitle = useMemo(() => [...author.works].sort((x, y) => x.title.localeCompare(y.title, "en")), [author]);
   const azItems = useMemo<AZItem[]>(() => author.works.map((w) => ({
     id: w.id, title: w.title, node: <WorkItem w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} />,
   })), [author, meta, diff, landing, facts.usual]);
   return (
     <div className={`wrap ${styles.page}`}>
-      <p className={styles.crumb}><Link href={AREAS.library.href}>← {AREAS.library.name} · {AREAS.library.english}</Link></p>
-      <header className={styles.head}>
-        <PagePiece className="piece-phone" />
-        <div className="area-kicker"><span className="label">Author</span></div>
-        <PagePiece className="piece-desk" />
-        <h1 className={`page-title ${styles.name}`}>{author.name}</h1>
+      <PageHead bare path={trail("library", author.name)} title={author.name}
+        purpose={<>{author.works.length} work{author.works.length === 1 ? "" : "s"} in the library, {facts.english} with an English translation.</>}>
         {author.orig && <p className={styles.note}><i lang="la">{author.orig}</i> <span className="muted">· the collection&apos;s own Latin name; the English is this site&apos;s translation</span></p>}
         {wd?.desc && <p className={styles.note}>{wd.desc.charAt(0).toUpperCase() + wd.desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}
         <dl className={styles.facts}>
@@ -140,34 +142,31 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
           {facts.when && facts.when !== lived && <div><dt>Wrote in</dt><dd title={DATE_NOTE}>{facts.when}</dd></div>}
           {facts.genres.length > 0 && <div><dt>Kinds of writing</dt><dd>{facts.genres.map(([g, n]) => `${g}${n > 1 ? ` (${n})` : ""}`).join(", ")}</dd></div>}
           {facts.dialects.length > 0 && <div><dt>Dialect</dt><dd>{facts.dialects.join(", ")}</dd></div>}
-          <div><dt>In the library</dt><dd>{author.works.length} work{author.works.length === 1 ? "" : "s"}, {facts.english} with an English translation{facts.words > 0 ? `; ${num(facts.words)} words analysed` : ""}</dd></div>
+          {facts.words > 0 && <div><dt>Analysed</dt><dd>{num(facts.words)} words</dd></div>}
         </dl>
         {!facts.when && !lived && <p className={styles.note}>GLAUx, the source of the dates and kinds of writing, does not analyse this author&apos;s texts, so none are shown. Nothing is guessed.</p>}
-      </header>
+      </PageHead>
       <div><div className="meander draw" aria-hidden="true" /></div>
 
-      {(begin.length > 0 || famous) && author.works.length > 3 && (
-        <section className={styles.sec} aria-labelledby="begin-title">
-          <h2 id="begin-title">Where to begin</h2>
-          <p className="muted">{famous ? `First the work ${author.name} is best known for; then the` : "The"} works here with a translation and the most familiar vocabulary: the fewest rare words to look up. That is vocabulary only; grammar, dialect and ideas may still be demanding.</p>
-          <ul className={lib.works}>
-            {famous && <WorkItem key={famous.id} w={famous} meta={meta[famous.id]} common={commonShare(diff[famous.id])} about={landing} usual={facts.usual} />}
-            {begin.map(({ w, p }) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={p} about={landing} usual={facts.usual} />)}
-          </ul>
-        </section>
-      )}
-
+      {/* every work in one list (PAGE-RULES.md, rule 5): "Where to begin" puts the suggested first works at the top, marked
+          "Start here"; "A to Z" orders them by their English titles. The switch stands on the list it orders. */}
       <section className={`${styles.sec} ${styles.worksSec}`} aria-labelledby="works-title">
         <div className={styles.secHead}>
-          <h2 id="works-title">What {author.name} wrote</h2>
-          {longList && <AZButton open={az} onToggle={() => setAz(!az)} controls="az-works" />}
+          <h2 id="works-title">{author.works.length === 1 ? "The work" : `The ${author.works.length} works`}</h2>
+          {author.works.length > 1 && (
+            <div className="segmented" role="radiogroup" aria-label="Order of the works">
+              <button type="button" role="radio" aria-checked={!az} onClick={() => setAz(false)}>Where to begin</button>
+              <button type="button" role="radio" aria-checked={az} onClick={() => setAz(true)}>A to Z</button>
+            </div>
+          )}
         </div>
+        {starts.size > 0 && !az && <p className="muted">{famous ? `First the work ${author.name} is best known for; then the` : "The"} works here with a translation and the most familiar vocabulary: the fewest rare words to look up. That is vocabulary only; grammar, dialect and ideas may still be demanding.</p>}
         {longList && <AZPanel id="az-works" open={az} items={azItems} kind={["work", "works"]} layout="rows" />}
         {/* while "A to Z" is open the list steps aside (it shrinks and fades), and comes back when it is closed */}
-        <div className={styles.swap} data-away={az ? "" : undefined} inert={az}>
+        <div className={styles.swap} data-away={az && longList ? "" : undefined} inert={az && longList}>
           <div className={styles.swapIn}>
             <ul className={lib.works}>
-              {author.works.map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} />)}
+              {(az ? byTitle : ordered).map((w) => <WorkItem key={w.id} w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} start={!az && starts.has(w.id)} />)}
             </ul>
           </div>
         </div>

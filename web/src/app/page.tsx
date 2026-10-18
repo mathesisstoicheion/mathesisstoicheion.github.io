@@ -62,8 +62,8 @@ export default function Home() {
       <section className={styles.hero} aria-labelledby="hero-title">
         <Wall className={styles.wall} />
         <div className={`wrap ${styles.heroIn}`}>
-          {/* the first thing a visitor sees: a piece standing in a niche cut into the wall (beside the words on a computer,
-              above them on a phone) */}
+          {/* a piece standing in a niche cut into the wall: at the top right on a computer, after the words and the two ways
+              in on a phone, where it ends the first screen */}
           <PagePiece className={`piece-rise ${styles.heroPiece}`} steady />
           <div className={styles.heroText} data-quiet="">
             <p className={`label ${styles.kick}`}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</p>

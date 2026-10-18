@@ -68,9 +68,10 @@
 @media (max-width: 1100px) { .wallCap { display: none; } }
 @media (max-width: 760px) {
   .hero { min-height: calc(100svh - 68px); justify-content: flex-end; }
-  /* on a phone the piece opens the page, standing in the wall above the words */
+  /* on a phone the words and the two ways in come first, and the first screen ends with the piece in its niche
+     (PAGE-RULES.md, rules 2 and 6) */
   .heroIn { padding-block: var(--space-6) 30px; flex-direction: column; align-items: stretch; gap: var(--space-5); }
-  .heroIn > .heroPiece { order: 0; width: min(62vw, 40svh / var(--piece-ratio)); margin: 0 auto; }
+  .heroIn > .heroPiece { order: 1; width: min(62vw, 40svh / var(--piece-ratio)); margin: 0 auto; }
   .heroText::before { inset: -70px -40px -40px -40px; }
   .title { margin: 14px 0 18px; }
   .heroLede { font-size: var(--step-1); margin-bottom: var(--space-5); }

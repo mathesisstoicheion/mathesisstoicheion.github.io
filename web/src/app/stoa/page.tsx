@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
+import FindJump from "@/components/FindJump";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
@@ -31,7 +32,7 @@ const REFERENCE: RefCard[] = [
 export default function StoaPage() {
   return (
     <Page>
-      <AreaHeader id="wiki" />
+      <AreaHeader id="wiki" action={<FindJump target="stoa-search" label="Search the Painted Stoa">Search every entry: Melos, plague…</FindJump>} />
       <StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} lead={<ExploreLead />} foot={<ExploreCredit />} />
     </Page>
   );

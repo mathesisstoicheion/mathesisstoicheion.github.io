@@ -6,9 +6,9 @@ import Page from "@/components/Page";
 import Library from "@/components/library/Library";
 import MineButtons from "@/components/library/MineButtons";
 import Stelai, { type Stele } from "@/components/library/Stelai";
-import Carving from "@/components/art/Carving";
-import PagePiece from "@/components/art/PagePiece";
-import { AREAS } from "@/config/areas";
+import PageHead from "@/components/PageHead";
+import FindJump from "@/components/FindJump";
+import { AREAS, trail } from "@/config/areas";
 import { hasTranslation, greekEditions, type Catalog } from "@/lib/catalog";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 import { MEDALLIONS } from "@/data/medallions";
@@ -56,22 +56,15 @@ const Paths = () => (
 export default function LibraryPage() {
   return (
     <Page>
-      {/* the page's name with, for the moderator alone, their private collection in the corner beside it; then, on a
-          phone, the Mouseion's piece, above its carved name */}
-      <div className={`wrap enter ${styles.head}`}>
-        <div className={styles.kickRow}>
-          <span className={`label ${styles.kick}`}>{AREAS.library.door} · {AREAS.library.english}</span>
-          <MineButtons />
-        </div>
-        <PagePiece className="piece-phone" />
-        <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.2} className={`carve ${styles.carve}`} />
-      </div>
+      {/* the page's head (PAGE-RULES.md): its main action is the library's search, which stands on the list it searches
+          and is brought into view from here; for the moderator alone, their private collection follows */}
+      <PageHead path={trail("library")} size="large" carve="ΜΟΥΣΕΙΟΝ" title={AREAS.library.name} greek={AREAS.library.greek}
+        purpose={<>{AREAS.library.origin} This one holds {WORKS.length.toLocaleString("en-GB")} Greek works, from Homer to the Byzantine scholars, {WORKS.filter(hasTranslation).length.toLocaleString("en-GB")} of them with an English translation beside the Greek.</>}
+        action={<FindJump target="library-search" label="Search the library">An author or a title: Plato, Odyssey…</FindJump>}>
+        <MineButtons />
+      </PageHead>
       <Suspense fallback={null}>
         <Library
-          hero={<>
-            <h1>{AREAS.library.name}<span lang="grc">{AREAS.library.greek}</span></h1>
-            <p>{AREAS.library.origin} This one holds {WORKS.length.toLocaleString("en-GB")} Greek works, from Homer to the Byzantine scholars, {WORKS.filter(hasTranslation).length.toLocaleString("en-GB")} of them with an English translation beside the Greek.</p>
-          </>}
           stelai={<Stelai groups={GROUPS} />}
           paths={<Paths />}
         />

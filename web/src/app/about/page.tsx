@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
+import PageHead from "@/components/PageHead";
 import { AREAS, SITE, doorWord, menuWord, type AreaId } from "@/config/areas";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
-import NameCarving from "@/components/art/NameCarving";
-import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = { title: "About the names", description: PAGE_DESCRIPTIONS.about };
 
@@ -29,18 +28,10 @@ export default function AboutPage() {
   return (
     <Page>
       <article className={`wrap ${styles.prose}`}>
-        <div className="page-head">
-          <span className="label">About</span>
-          <PagePiece className="piece-phone" />
-          <NameCarving greek={SITE.greek} />
-          <PagePiece className="piece-desk" />
-          <h1>{SITE.latin} <span lang="grc" className={styles.gr}>{SITE.greek}</span></h1>
-          <p className={styles.lead}>
-            <i>Mathēsis</i> means learning; <i>stoicheia</i> are the letters of the alphabet, and also the basic elements
+        <PageHead bare path={[{ label: "About" }, { label: "The names" }]} title={SITE.latin} greek={SITE.greek}
+          purpose={<><i>Mathēsis</i> means learning; <i>stoicheia</i> are the letters of the alphabet, and also the basic elements
             of anything, as in the title of Euclid&apos;s <i>Elements</i>. Together, <i>learning the letters</i>: where every
-            reader of Greek begins.
-          </p>
-        </div>
+            reader of Greek begins.</>} />
         <div className="meander" aria-hidden="true" />
         <h2>Why each area has a Greek name</h2>
         <p>Every part of the site is named after a place or thing from the Greek world, always with a plain English subtitle.</p>

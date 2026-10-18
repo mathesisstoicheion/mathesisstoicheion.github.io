@@ -73,11 +73,10 @@ export default function Search() {
   const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
   return (
     <>
-      <AreaHeader id="search" carve={CARVE}>
+      <AreaHeader id="search" carve={CARVE} action={
         <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
           <OracleBox draft={draft} />
-        </Suspense>
-      </AreaHeader>
+        </Suspense>} />
       <Suspense fallback={null}>
         <Oracle draft={draft} setDraft={setDraft} />
       </Suspense>

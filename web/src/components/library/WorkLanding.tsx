@@ -9,12 +9,11 @@ import Link from "next/link";
 import { greekEditions, translations, versionOf, type CatAuthor, type CatText, type CatWork } from "@/lib/catalog";
 import { centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { commonShare } from "@/lib/difficulty";
-import { AREAS } from "@/config/areas";
+import { AREAS, trail } from "@/config/areas";
 import type { RelatedEntry } from "@/wiki/related";
 import styles from "./AuthorProfile.module.css";
 import lib from "./Library.module.css";
-import NameCarving from "@/components/art/NameCarving";
-import PagePiece from "@/components/art/PagePiece";
+import PageHead from "@/components/PageHead";
 
 const num = (n: number) => n.toLocaleString("en-GB");
 
@@ -42,30 +41,21 @@ export default function WorkLanding({ work, author, meta, diff, related }: {
   const when = meta && meta.from !== null && meta.to !== null ? centuries(meta.from, meta.to) : null;
   return (
     <div className={`wrap ${styles.page}`}>
-      <p className={styles.crumb}>
-        <Link href={AREAS.library.href} transitionTypes={["page-turn"]}>{AREAS.library.name}</Link> › <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>
-      </p>
-      <header className={styles.head}>
-        <div className="area-kicker"><span className="label">Work</span></div>
-        <PagePiece className="piece-phone" />
-        <NameCarving greek={label} />
-        <PagePiece className="piece-desk" />
-        <h1 className={`page-title ${styles.name}`}>{work.title}</h1>
-        {label && label !== work.title && <p lang="grc" className={styles.note} style={{ fontFamily: "var(--f-greek)", fontSize: "1.4rem" }}>{label}</p>}
-        {work.orig && <p className={styles.note}><OrigTitle work={work} full /></p>}
-        <p className={styles.note}>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.</p>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
-          <Link className={`btn ${styles.readBtn}`} href={`/read?w=${work.id}`} transitionTypes={["page-turn"]}>
-            {/* "Read it" in capitals, and what it opens in a smaller line under it, so the label does not break in the middle on a phone */}
-            <span className={styles.readWords}>
-              <span>{english.length ? "Read it" : "Read the Greek"}</span>
-              {english.length > 0 && <> <small>with the English beside the Greek</small></>}
-            </span>
-            <span className="arr" aria-hidden="true">→</span>
-          </Link>
-          <Link className="btn ghost" href={`/author/${author.id}`} transitionTypes={["page-turn"]}>More by {author.name}</Link>
-        </div>
-        {/* on a phone the piece stands after the title, the author and the buttons: the first screen shows the way in to the text */}
+      <PageHead bare path={trail("library", { label: author.name, href: `/author/${author.id}` }, work.title)} carve={label} title={work.title}
+        greek={label && label !== work.title ? label : null}
+        purpose={<>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.{work.orig && <> <OrigTitle work={work} full /></>}</>}
+        action={
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
+        <Link className={`btn ${styles.readBtn}`} href={`/read?w=${work.id}`} transitionTypes={["page-turn"]}>
+          {/* "Read it" in capitals, and what it opens in a smaller line under it, so the label does not break in the middle on a phone */}
+          <span className={styles.readWords}>
+            <span>{english.length ? "Read it" : "Read the Greek"}</span>
+            {english.length > 0 && <> <small>with the English beside the Greek</small></>}
+          </span>
+          <span className="arr" aria-hidden="true">→</span>
+        </Link>
+        <Link className="btn ghost" href={`/author/${author.id}`} transitionTypes={["page-turn"]}>More by {author.name}</Link>
+      </div>}>
         <dl className={styles.facts}>
           {meta?.genre && <div><dt>Kind of writing</dt><dd>{meta.genre}</dd></div>}
           {meta?.dialect && <div><dt>Dialect</dt><dd>{meta.dialect}</dd></div>}
@@ -75,7 +65,7 @@ export default function WorkLanding({ work, author, meta, diff, related }: {
           <div><dt>In the library</dt><dd>{greek.length} Greek {greek.length === 1 ? "text" : "texts"}, {english.length} English {english.length === 1 ? "translation" : "translations"}</dd></div>
         </dl>
         {!meta && <p className={styles.note}>GLAUx, the source of the date, kind of writing and dialect, does not analyse this text, so none are shown. Nothing is guessed.</p>}
-      </header>
+      </PageHead>
       <div><div className="meander draw" aria-hidden="true" /></div>
 
       <section className={styles.sec} aria-labelledby="texts-title">

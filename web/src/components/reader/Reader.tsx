@@ -22,7 +22,7 @@ import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior, isDaylight } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
-import { AREAS, SITE } from "@/config/areas";
+import { AREAS, SITE, trail } from "@/config/areas";
 import { Blocks } from "./Blocks";
 import WordPanel, { type WordContext } from "./WordPanel";
 import { norm } from "@/lib/lookup/words";
@@ -37,6 +37,7 @@ import PanelGuard from "@/components/PanelGuard";
 import type { EchoMarks, EchoQuery, EchoTarget } from "./EchoesPanel";
 import MetreBar from "./MetreBar";
 import ReaderCover from "./ReaderCover";
+import PageHead from "@/components/PageHead";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
 import { useFloat } from "@/lib/float";
 import { useAcademy, knownLemmas } from "@/lib/academy";
@@ -1275,15 +1276,17 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // ------------------------------------------------------------ render
   if (isPrivate && mine.state !== "ready") return <MineStatus s={mine} work={workId} retry={() => setRetry((r) => r + 1)} onOpenMine={onOpenMine} />;
   if (!workId || (idx && !work)) {
+    // the reader with no book: the normal page head, with one clear next step (PAGE-RULES.md, rule 6)
     return (
-      <div className={`wrap ${styles.message}`}>
-        <h1>{workId ? "This work is not in the library" : "No work chosen"}</h1>
-        <p className="muted">{workId ? <>There is no work <code>{workId}</code> in the catalogue: the link may be mistyped. </> : null}Choose something to read in {AREAS.library.name}.</p>
-        <div className={styles.statusActions}>
-          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open {AREAS.library.name}</Link>
+      <PageHead path={trail("reader")} title={workId ? "This work is not in the library" : AREAS.reader.name}
+        piece={{ piece: "hand-with-scroll" }}
+        purpose={workId
+          ? <>There is no work <code>{workId}</code> in the catalogue: the link may be mistyped. Choose something to read in {AREAS.library.name}.</>
+          : <>{AREAS.reader.origin} Choose a text in {AREAS.library.name}, and it opens here.</>}
+        action={<div className={styles.statusActions}>
+          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Choose a text <span className="arr" aria-hidden="true">→</span></Link>
           {moderator && <button type="button" className="btn ghost" onClick={onOpenMine}>Private collection</button>}
-        </div>
-      </div>
+        </div>} />
     );
   }
 
