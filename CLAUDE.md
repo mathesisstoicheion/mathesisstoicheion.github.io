@@ -1,10 +1,8 @@
 # CLAUDE.md — Mathesis Stoicheion (this folder)
 
-**This is a brand-new site.** The `CLAUDE.md` one folder up (`Documents/CLAUDE.md`) describes porting an *old* app
-("Μάθησις — Ancient Greek Reader"). **Ignore it completely.** The owner scrapped that old site on 2026-10-18; its
-removal is clean-up D in `PROGRESS.md`. Copy no code, structure or data from the old app.
-One exception: the old site's author articles may be used as *drafts* (`pipeline/drafts/old-site-author-articles.json`).
-Nothing from them goes on a live page until each claim is checked against a real source and the source is recorded.
+**Author drafts:** `pipeline/drafts/old-site-author-articles.json` (on this computer only, not in git) holds articles
+from an earlier site. Nothing from them goes on a live page until each claim is checked against a real source and the
+source is recorded.
 
 ## Start of every session
 1. Read `SPEC.md` (what the site is, and what is frozen or cut), `CONTEXT.md` (the site's own words) and the top of
