@@ -51,6 +51,10 @@ const PAGES: { href: string; title: string; about: string }[] = [
   { href: "/stoa/authors", title: "Authors", about: "every author, by period and kind of writing" },
   { href: "/stoa/eras", title: "Eras of Greek", about: "periods, centuries" },
   { href: "/stoa/editions", title: "Editions and translations", about: "printed sources, publishers" },
+  { href: "/stoa/manuscripts", title: "Manuscripts and transmission", about: "papyrus, copies, how the texts reached us" },
+  { href: "/stoa/variants", title: "Textual variants", about: "readings, where the copies disagree" },
+  { href: "/stoa/lyre", title: "The lyre", about: "play music, kithara, harp, ancient songs, Seikilos" },
+  { href: "/search", title: "Research tools", about: "concordance, statistics, grammar, constructions, word counts" },
   { href: "/about", title: "About the names", about: "about this site" },
   { href: "/credits", title: "Credits, licences and privacy", about: "sources, privacy" },
 ];
