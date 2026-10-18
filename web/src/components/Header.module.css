@@ -12,8 +12,8 @@
 .row { display: flex; align-items: center; gap: 24px; min-height: 76px; }
 
 .brand { display: flex; align-items: center; gap: 14px; text-decoration: none; line-height: 1.1; flex: none; }
-/* the mark: the emblem's tablet, figure and stylus, cut in the stone and laid with gold (EmblemMark.tsx) */
-.logo { display: block; flex: none; width: 46px; height: 38px; }
+/* the mark: Athena's owl, cut in the stone and laid with gold (EmblemMark.tsx) */
+.logo { display: block; flex: none; width: 46px; height: 46px; filter: var(--gilt-cut); }
 .brandName { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); min-width: 0; --cell: 16px; }
 /* the name cut beside it and laid with the same gold: capitals in a grid, each in its own square, as Greek was carved
    (stoichedon); ΜΑΘΗΣΙΣ stands over the middle of ΣΤΟΙΧΕΙΩΝ */
@@ -97,7 +97,7 @@
   .tbtn svg { width: 19px; height: 19px; }
   .tools .light { padding-inline: 0; }
   .brand { flex: 0 1 auto; min-width: 0; min-height: var(--tap); gap: 9px; }
-  .logo { width: 38px; height: 31px; }
+  .logo { width: 38px; height: 38px; }
   /* the name takes what the four buttons leave it, so the two never meet (the Latin name is the link's label) */
   .brandName { --cell: clamp(9.5px, calc((100vw - 266px) / 9), 15px); }
   .brandEn { display: none; }
@@ -105,7 +105,7 @@
 /* the smallest phones: a smaller mark and narrower buttons, so the name still has room */
 @media (max-width: 359px) {
   .brand { gap: 6px; }
-  .logo { width: 32px; height: 27px; }
+  .logo { width: 32px; height: 32px; }
   .tbtn { width: 40px; }
   .brandName { --cell: clamp(8px, calc((100vw - 244px) / 9), 9.5px); }
 }
