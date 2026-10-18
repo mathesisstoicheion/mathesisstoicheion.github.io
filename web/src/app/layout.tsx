@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { GFS_Didot, EB_Garamond, Noto_Serif_Display, Gentium_Book_Plus, Noto_Sans, Alegreya_Sans } from "next/font/google";
+import { GFS_Didot, EB_Garamond, Noto_Serif_Display, Gentium_Book_Plus, Noto_Sans, Noto_Sans_Mono, Alegreya_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Torch from "@/components/Torch";
 import Footer from "@/components/Footer";
@@ -30,6 +30,9 @@ import "./globals.css";
 // loaded only by the pages that carve.
 const didot = GFS_Didot({ weight: "400", subsets: ["greek", "greek-ext", "latin"], variable: "--font-didot", display: "swap" });
 const garamond = EB_Garamond({ weight: ["400", "500", "600"], subsets: ["latin"], style: ["normal", "italic"], variable: "--font-garamond", display: "swap" });
+// design A, Gold and lamplight (the owner, 2026-10-18): small, wide-spaced labels in a monospaced face; the tall, thin
+// titles are a condensed cut of Noto Serif Display, served from /fonts/display (globals.css, "Lamplight Display")
+const mono = Noto_Sans_Mono({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-mono", display: "swap" });
 const carved = Noto_Serif_Display({ weight: "500", subsets: ["greek", "latin"], variable: "--font-carved", display: "swap", preload: false });
 // The typefaces a reader can choose in Settings (all with full polytonic Greek): never preloaded, so a browser
 // downloads one only if it is chosen.
@@ -61,7 +64,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${didot.variable} ${garamond.variable} ${carved.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${didot.variable} ${garamond.variable} ${carved.variable} ${mono.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
       <head>
         {/* the stone's colour from the very first byte, before the stylesheet arrives, so no page ever flashes white
             (:where gives way to every rule of the stylesheet's own) */}
