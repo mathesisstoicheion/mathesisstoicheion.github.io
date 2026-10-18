@@ -24,11 +24,15 @@ export interface PathWord {
   src: "DCC" | "LSJ";
   /** the form in plain English */
   form_note: string;
-  /** a word met earlier that this one is a relative of, so it is not counted as new */
-  kin?: string;
 }
 
 export interface PathPart { words: PathWord[]; en: string }
+
+/** One piece of a passage sentence, at most eight words, taught like a lesson; `at` is the word where its grammar comes up. */
+export interface PathPiece { words: PathWord[]; learn: { title: string; text: string[]; at?: number } }
+
+/** A sentence of the passage around a line: its pieces, then the published English and what it means. */
+export interface PathSentence { pieces: PathPiece[]; en: string; meaning: string[] }
 
 export interface PathLink { href: string; label: string; note?: string }
 
@@ -53,6 +57,8 @@ export interface PathStep {
   meaning: string[];
   /** the one new piece of grammar */
   learn: { title: string; text: string[] };
+  /** the rest of the passage, sentence by sentence, for "Continue" */
+  passage?: { intro: string; sentences: PathSentence[] };
   /** places, people and passages to go further, all on the site */
   links: PathLink[];
 }
@@ -89,7 +95,7 @@ export const PATH: PathStep[] = [
       title: "Greek can leave the verb out",
       text: [
         "There is no verb here at all. Greek often leaves out a verb that is easy to supply, and the reader fills it in: *[do] nothing too much*.",
-        "«μηδέν» is built from «μηδέ» *not even* and «ἕν» *one*: *not even one thing*. Its «μη-» is the *don't* kind of *not*, used in commands and wishes. On step 3 you will meet its partner, «οὐδέν», with the other kind of *not*.",
+        "«μηδέν» is built from «μηδέ» *not even* and «ἕν» *one*: *not even one thing*. Its «μη-» is the *don't* kind of *not*, used in commands and wishes.",
       ],
     },
     links: [
@@ -97,6 +103,171 @@ export const PATH: PathStep[] = [
       { href: "/stoa/delphi", label: "Delphi and the oracle", note: "the Pythia, the tripod and the riddling answers" },
       { href: read("tlg0059.tlg022", "343"), label: "Read Protagoras 343 in the reader", note: "the whole passage, with every word explained" },
     ],
+    passage: {
+      intro: "You have read the saying. Now read the sentence of Plato's *Protagoras* it comes from, and the two short sentences after it, a piece at a time.",
+      sentences: [
+        {
+          pieces: [
+            {
+              words: [
+                { form: "οὗτοι", lemma: "οὗτος", here: "these (men)", dict: "this, these", src: "DCC", form_note: "the 'he' form (masculine), plural: these men, the seven wise men just named" },
+                { form: "καὶ", lemma: "καί", here: "also", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form; here it means also" },
+                { form: "κοινῇ", lemma: "κοινῇ", here: "together", dict: "in common, together (from κοινός, common)", src: "LSJ", form_note: "a word that never changes its form" },
+                { form: "συνελθόντες", lemma: "συνέρχομαι", here: "having come together", dict: "go together, come together, assemble, meet", src: "LSJ", form_note: "a verb used as a describing word, in the 'he' form, plural, to match οὗτοι" },
+              ],
+              learn: {
+                title: "A verb that describes",
+                at: 3,
+                text: [
+                  "«συνελθόντες» is a verb, *come together*, but its ending «-όντες» makes it a describing word: *having come together*. It describes «οὗτοι», *these men*, and matches it: both are the 'he' form, plural.",
+                  "Grammars call this a participle. English does the same with *-ing*: *these men, meeting together, …*",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἀπαρχὴν", lemma: "ἀπαρχή", here: "the first-fruits", dict: "beginning of a sacrifice, primal offering, first-fruits", src: "LSJ", form_note: "a 'she' word (feminine); the -ην ending marks the thing given" },
+                { form: "τῆς", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form of the, 'she' form, to match σοφίας" },
+                { form: "σοφίας", lemma: "σοφία", here: "of (their) wisdom", dict: "cleverness, skill, sound judgement, wisdom", src: "LSJ", form_note: "a 'she' word (feminine), in the 'of' form" },
+                { form: "ἀνέθεσαν", lemma: "ἀνατίθημι", here: "they dedicated", dict: "set up as an offering, dedicate; lay upon", src: "LSJ", form_note: "they did it, in the past" },
+                { form: "τῷ", lemma: "ὁ", here: "to the", dict: "the", src: "DCC", form_note: "the 'to' form of the, 'he' form, to match Ἀπόλλωνι" },
+                { form: "Ἀπόλλωνι", lemma: "Ἀπόλλων", here: "to Apollo", dict: "Apollo", src: "LSJ", form_note: "the 'to' form" },
+              ],
+              learn: {
+                title: "Endings tell each word's job",
+                text: [
+                  "Three nouns, three endings, three jobs. «ἀπαρχ-ήν»: the thing they gave. «σοφί-ας»: *of* wisdom. «Ἀπόλλων-ι»: *to* Apollo.",
+                  "*The* changes with them: «τῆς» goes with *of*, «τῷ» with *to*. In English the order of the words tells you who does what; in Greek the endings do.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "εἰς", lemma: "εἰς", here: "into", dict: "into, to, towards", src: "DCC", form_note: "a little place word that never changes its form" },
+                { form: "τὸν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match νεών" },
+                { form: "νεὼν", lemma: "ναός", here: "temple", dict: "temple", src: "DCC", form_note: "a 'he' word (masculine), after εἰς; νεών is the Attic spelling of ναόν" },
+                { form: "τὸν", lemma: "ὁ", here: "the (one)", dict: "the", src: "DCC", form_note: "the again: the temple, the one at Delphi" },
+                { form: "ἐν", lemma: "ἐν", here: "in, at", dict: "in, among", src: "DCC", form_note: "a little place word that never changes its form" },
+                { form: "Δελφοῖς", after: ",", lemma: "Δελφοί", here: "Delphi", dict: "Delphi", src: "LSJ", form_note: "a plural name, in the form that follows ἐν" },
+              ],
+              learn: {
+                title: "Little place words: εἰς and ἐν",
+                text: [
+                  "«εἰς» means *into* and «ἐν» means *in* or *at*. They never change, but the word after each one takes a set ending: after «εἰς», «τὸν νεών»; after «ἐν», «Δελφοῖς».",
+                  "Grammars call them prepositions. Say «τὸν ἐν Δελφοῖς» as one phrase: *the one at Delphi*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "γράψαντες", lemma: "γράφω", here: "writing, having written", dict: "write", src: "DCC", form_note: "a verb used as a describing word, like συνελθόντες, describing the seven men" },
+                { form: "ταῦτα", lemma: "οὗτος", here: "these (things)", dict: "this, these", src: "DCC", form_note: "the 'it' form (neuter), plural: these things; the -α ending marks what they wrote" },
+                { form: "ἃ", lemma: "ὅς", here: "which", dict: "who, which, that", src: "DCC", form_note: "the 'it' form (neuter), plural, to match ταῦτα" },
+                { form: "δὴ", lemma: "δή", here: "indeed", dict: "surely, really, now, in fact, indeed", src: "DCC", form_note: "a word that never changes and never comes first; it adds weight" },
+                { form: "πάντες", lemma: "πᾶς", here: "all (people)", dict: "every, all", src: "DCC", form_note: "the 'he' form (masculine), plural: everyone" },
+                { form: "ὑμνοῦσιν", after: ",", lemma: "ὑμνέω", here: "sing of, celebrate", dict: "sing of, celebrate in a hymn", src: "LSJ", form_note: "they do it, now; our word hymn comes from it" },
+              ],
+              learn: {
+                title: "ἅ: which",
+                at: 2,
+                text: [
+                  "«ἅ» means *which*. It joins a second statement onto a word: *these things, which everyone indeed sings of*. It matches the word it points back to: «ταῦτα» is the 'it' form, plural, so «ἅ» is too.",
+                  "Do not mix it up with «ἀ-» at the front of a word, which means *not*: «ἅ» stands alone, with a rough breathing (*ha*).",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "γνῶθι", lemma: "γιγνώσκω", here: "know!", dict: "come to know, learn; judge, think", src: "DCC", form_note: "a command, to one person" },
+                { form: "σαυτόν", lemma: "σεαυτοῦ", here: "yourself", dict: "of thyself (also written σαυτοῦ)", src: "LSJ", form_note: "the thing being known: the -ον ending marks it" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "μηδὲν", lemma: "μηδείς", here: "nothing", dict: "no one, nothing", src: "DCC", form_note: "the 'it' form (neuter): nothing" },
+                { form: "ἄγαν", after: ".", lemma: "ἄγαν", here: "too much", dict: "very much, too much", src: "LSJ", form_note: "a word that never changes its form" },
+              ],
+              learn: {
+                title: "A command",
+                at: 0,
+                text: [
+                  "«γνῶθι» is a command, said to one person: *know!* The ending «-θι» is one of the endings Greek uses for telling someone to do something. There is no word for *you*: the ending already says who is meant.",
+                  "And here are the two sayings, side by side, as they were carved.",
+                ],
+              },
+            },
+          ],
+          en: "they assembled together and dedicated these as the first-fruits of their lore to Apollo in his Delphic temple, inscribing there those maxims which are on every tongue—Know thyself and Nothing overmuch.",
+          meaning: [
+            "The seven wise men met and gave the best of their wisdom to Apollo, the way the first fruits of a harvest were given to a god: they had the two sayings written up in his temple at Delphi, where everyone could read them.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "τοῦ", lemma: "τίς", here: "of what?", dict: "who? what? which?", src: "DCC", form_note: "the 'of' form of what?, going with ἕνεκα" },
+                { form: "δὴ", lemma: "δή", here: "now, then", dict: "surely, really, now, in fact, indeed", src: "DCC", form_note: "a word that never changes and never comes first" },
+                { form: "ἕνεκα", lemma: "ἕνεκα", here: "for the sake of", dict: "on account of, for the sake of", src: "DCC", form_note: "a word that never changes; it comes after its 'of' word: τοῦ ἕνεκα, for the sake of what, why" },
+                { form: "ταῦτα", lemma: "οὗτος", here: "these things", dict: "this, these", src: "DCC", form_note: "the 'it' form (neuter), plural" },
+                { form: "λέγω", after: ";", lemma: "λέγω", here: "I say", dict: "say, speak (of), recount", src: "DCC", form_note: "I do it, now" },
+              ],
+              learn: {
+                title: "The Greek question mark",
+                at: 4,
+                text: [
+                  "The mark after «λέγω» looks like our semicolon, but in Greek it is the question mark: «;». So this is a question: *for the sake of what, then, do I say these things?*",
+                  "Socrates asks it himself, to make his point clear.",
+                ],
+              },
+            },
+          ],
+          en: "To what intent do I say this?",
+          meaning: ["Socrates stops to say why he has told the story of the seven wise men. The answer comes next."],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ὅτι", lemma: "ὅτι", here: "(to show) that", dict: "because, that", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "οὗτος", lemma: "οὗτος", here: "this", dict: "this, these", src: "DCC", form_note: "the 'he' form (masculine), to match τρόπος" },
+                { form: "ὁ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form (masculine)" },
+                { form: "τρόπος", lemma: "τρόπος", here: "way, style", dict: "way, manner, fashion; way of life, habit, custom", src: "DCC", form_note: "a 'he' word (masculine), the subject" },
+                { form: "ἦν", lemma: "εἰμί", here: "was", dict: "be, exist", src: "DCC", form_note: "he, she or it was" },
+                { form: "τῶν", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form of the, plural" },
+                { form: "παλαιῶν", lemma: "παλαιός", here: "of old (times)", dict: "old, ancient", src: "DCC", form_note: "a describing word in the 'of' form, plural: of the old ones" },
+              ],
+              learn: {
+                title: "ἦν: was",
+                at: 4,
+                text: [
+                  "«ἦν» means *was*: *he, she or it was*. It is the past of «ἐστί», *is*.",
+                  "Read the piece as Greek puts it: *that this the way was of the old ones*. Then put it into English: *that this was the way of the ancients*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τῆς", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form of the, 'she' form, to match φιλοσοφίας" },
+                { form: "φιλοσοφίας", after: ",", lemma: "φιλοσοφία", here: "of philosophy", dict: "love of knowledge, pursuit of it, study", src: "LSJ", form_note: "a 'she' word (feminine), in the 'of' form; built from φίλος, loving, and σοφία, wisdom" },
+                { form: "βραχυλογία", lemma: "βραχυλογία", here: "brevity in speech", dict: "brevity in speech or writing", src: "LSJ", form_note: "a 'she' word (feminine); built from βραχύς, short, and λόγος, speech" },
+                { form: "τις", lemma: "τις", here: "a kind of", dict: "someone, something; some, any", src: "DCC", form_note: "it leans on the word before it, and is said with it" },
+                { form: "Λακωνική", lemma: "Λακωνικός", here: "Spartan, laconic", dict: "Laconian, of Laconia (the land of Sparta)", src: "LSJ", form_note: "the 'she' form (feminine), to match βραχυλογία" },
+              ],
+              learn: {
+                title: "τις: a kind of",
+                at: 3,
+                text: [
+                  "«τις» means *some* or *a kind of*. Put after a word, it softens it: «βραχυλογία τις», *a kind of brevity*. It leans on the word before it and is said together with it.",
+                  "Our word *laconic*, short and to the point, comes from «Λακωνικός»: the Spartans of Laconia were famous for saying a lot in few words.",
+                ],
+              },
+            },
+          ],
+          en: "To show how the ancient philosophy had this style of laconic brevity",
+          meaning: [
+            "This is Socrates' point: the old wise men put their philosophy into short, pointed sayings, the way the Spartans spoke. *Nothing in excess* is one of them: two words that say a great deal.",
+          ],
+        },
+      ],
+    },
   },
   {
     id: "know-yourself",
@@ -155,7 +326,7 @@ export const PATH: PathStep[] = [
       {
         words: [
           { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
-          { form: "οὐδὲν", lemma: "οὐδείς", kin: "μηδείς", here: "nothing", dict: "no one, nothing", src: "DCC", form_note: "the partner of μηδέν (step 1); its οὐ- is the not of plain fact: here, nothing in fact stays" },
+          { form: "οὐδὲν", lemma: "οὐδείς", here: "nothing", dict: "no one, nothing", src: "DCC", form_note: "the partner of μηδέν (step 1); its οὐ- is the not of plain fact: here, nothing in fact stays" },
           { form: "μένει", lemma: "μένω", here: "stays", dict: "stay, remain, endure, await", src: "DCC", form_note: "he, she or it does it, now" },
         ],
         en: "and nothing remains still",
@@ -553,16 +724,6 @@ export const pathStep = (id: string) => PATH.find((s) => s.id === id);
 export function firstMet(lemma: string, before: number): number | null {
   for (let i = 0; i < before; i++) if (PATH[i].parts.some((p) => p.words.some((w) => w.lemma === lemma))) return i + 1;
   return null;
-}
-
-/** The dictionary forms a step brings in for the first time (a relative of a word met earlier is not new). */
-export function newWords(i: number): string[] {
-  const out: string[] = [];
-  for (const w of PATH[i].parts.flatMap((p) => p.words)) {
-    if (firstMet(w.lemma, i) || (w.kin && firstMet(w.kin, i)) || out.includes(w.lemma)) continue;
-    out.push(w.lemma);
-  }
-  return out;
 }
 
 /** The line as printed: the words with their punctuation. */

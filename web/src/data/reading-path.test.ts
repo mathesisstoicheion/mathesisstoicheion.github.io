@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PATH, partText, firstMet, newWords } from "./reading-path";
+import { PATH, partText, type PathPart, type PathStep } from "./reading-path";
 import { indexCatalog, greekEditions, translations, rawUrl, type Catalog, type CatText } from "@/lib/catalog";
 import { parseTei } from "@/lib/tei/parse";
 import { findRef } from "@/lib/tei/refs";
@@ -21,6 +21,9 @@ const unitText = (doc: ReturnType<typeof parseTei>, ref: string) => {
   const u = doc.units[findRef(doc, ref)];
   return u.blocks.map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" ");
 };
+
+/** each passage sentence as one line: all its pieces' words, with the sentence's English */
+const passageLines = (s: PathStep): PathPart[] => (s.passage?.sentences ?? []).map((st) => ({ words: st.pieces.flatMap((p) => p.words), en: st.en }));
 
 describe("the reading path", () => {
   it("has twelve steps with unique ids, every word explained", () => {
@@ -50,19 +53,21 @@ describe("the reading path", () => {
     }
   });
 
-  // the rules agreed with Noa: at most four new words and eight words a step, and a word's "kin" really met before
-  it("keeps to the beginners' rules", () => {
-    PATH.forEach((s, i) => {
-      expect(newWords(i).length, `${s.id}: ${newWords(i).join(", ")}`).toBeLessThanOrEqual(4);
+  // the rules agreed with Noa: at most eight words a line or passage piece, and every piece has its grammar
+  it("keeps every line and passage piece to eight words", () => {
+    for (const s of PATH) {
       expect(s.parts.flatMap((p) => p.words).length, s.id).toBeLessThanOrEqual(8);
-      for (const w of s.parts.flatMap((p) => p.words)) if (w.kin) expect(firstMet(w.kin, i), `${s.id}: ${w.form}`).toBeTruthy();
-    });
-  });
-
-  it("builds on itself: the last step is mostly words met before", () => {
-    const last = PATH.length - 1;
-    const words = PATH[last].parts.flatMap((p) => p.words);
-    expect(words.filter((w) => firstMet(w.lemma, last)).length).toBe(words.length - 1);
+      for (const st of s.passage?.sentences ?? []) {
+        expect(st.en.trim(), s.id).not.toBe("");
+        expect(st.meaning.length, s.id).toBeGreaterThan(0);
+        for (const p of st.pieces) {
+          expect(p.words.length, `${s.id}: ${partText({ ...p, en: "" })}`).toBeLessThanOrEqual(8);
+          expect(p.learn.text.length, s.id).toBeGreaterThan(0);
+          if (p.learn.at !== undefined) expect(p.learn.at, s.id).toBeLessThan(p.words.length);
+          for (const w of p.words) for (const k of ["form", "lemma", "here", "dict", "form_note"] as const) expect(w[k].trim(), `${s.id} ${w.form} ${k}`).not.toBe("");
+        }
+      }
+    }
   });
 
   // The Greek and English are checked against the source files: the local corpus when it is there
@@ -76,8 +81,9 @@ describe("the reading path", () => {
       expect(findRef(doc, s.ref), `${s.id}: ${s.ref}`).toBeGreaterThanOrEqual(0);
       const greek = squash(unitText(doc, s.ref));
       expect(greek, s.id).toContain(squash(s.parts.map(partText).join(" ")));
+      for (const st of passageLines(s)) expect(greek, s.id).toContain(squash(st.words.map((w) => w.form + (w.after ?? "")).join(" ")));
       const en = squash(parseTei(await text(tr)).units.flatMap((u) => u.blocks).map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" "));
-      for (const p of s.parts) expect(en, `${s.id}: ${p.en}`).toContain(squash(p.en));
+      for (const p of [...s.parts, ...passageLines(s)]) expect(en, `${s.id}: ${p.en}`).toContain(squash(p.en));
     }
   }, 180_000);
 
@@ -93,12 +99,14 @@ describe("the reading path", () => {
       const key = doc.units[findRef(doc, s.ref)].ref.join(".");
       const keys = new Set(doc.units.map((u) => u.ref.join(".")));
       const unit = norm(unitText(doc, s.ref));
-      const before: string[] = (unit.slice(0, unit.indexOf(norm(s.parts.map(partText).join(" ")))).match(/[\p{L}\p{M}ʼ]+/gu) ?? []);
-      for (const word of s.parts.flatMap((p) => p.words)) {
-        const occ = before.filter((b) => b === norm(word.form)).length;
-        before.push(norm(word.form));
-        const a = analyse(pack, word.form, key, occ, keys, doc.levels.length);
-        if (a) expect(a.lemma, `${s.id}: ${word.form}`).toBe(word.lemma);
+      for (const line of [...[{ words: s.parts.flatMap((p) => p.words), en: "" }], ...passageLines(s)]) {
+        const before: string[] = (unit.slice(0, unit.indexOf(norm(partText(line)))).match(/[\p{L}\p{M}ʼ]+/gu) ?? []);
+        for (const word of line.words) {
+          const occ = before.filter((b) => b === norm(word.form)).length;
+          before.push(norm(word.form));
+          const a = analyse(pack, word.form, key, occ, keys, doc.levels.length);
+          if (a) expect(a.lemma, `${s.id}: ${word.form}`).toBe(word.lemma);
+        }
       }
     }
   }, 180_000);
