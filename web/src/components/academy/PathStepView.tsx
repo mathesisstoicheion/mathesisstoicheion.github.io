@@ -6,6 +6,7 @@
  */
 import Link from "next/link";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { PATH, firstMet, partText, type PathStep, type PathWord } from "@/data/reading-path";
 import { useAcademy } from "@/lib/academy";
 import WordPanel from "@/components/reader/WordPanel";
@@ -13,6 +14,19 @@ import Rich from "./Rich";
 import { pathKey } from "./ReadingPath";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
+
+// the letters, for when one is forgotten: loaded only when the learner opens them
+const AlphabetGlance = dynamic(() => import("./AlphabetGlance"));
+
+function Letters() {
+  const [open, setOpen] = useState(false);
+  return (
+    <details onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
+      <summary className="label" style={{ cursor: "pointer" }}>Forgot how a letter is read? The alphabet</summary>
+      {open && <div style={{ marginTop: 12 }}><AlphabetGlance /></div>}
+    </details>
+  );
+}
 
 function WordCard({ w, n, onEntry }: { w: PathWord; n: number; onEntry: () => void }) {
   const met = firstMet(w.lemma, n - 1);
@@ -71,6 +85,8 @@ export default function PathStepView({ step }: { step: PathStep }) {
         <span className="label">Where you are</span>
         {step.where.map((t, i) => <p key={i} className={styles.lp}><Rich text={t} /></p>)}
       </section>
+
+      <Letters />
 
       <section className={styles.words} aria-labelledby="path-words">
         <span className="label" id="path-words">1 · The words</span>
