@@ -28,6 +28,7 @@ describe("the reading path", () => {
     expect(new Set(PATH.map((s) => s.id)).size).toBe(PATH.length);
     for (const s of PATH) {
       expect(idx.work.get(s.work), s.id).toBeTruthy();
+      expect(s.meaning.length, s.id).toBeGreaterThan(0);
       for (const p of s.parts) {
         expect(p.en.trim(), s.id).not.toBe("");
         for (const w of p.words) for (const k of ["form", "lemma", "here", "dict", "form_note"] as const) expect(w[k].trim(), `${s.id} ${w.form} ${k}`).not.toBe("");

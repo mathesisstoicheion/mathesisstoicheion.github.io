@@ -64,6 +64,12 @@ function Reveal({ step }: { step: PathStep }) {
         ))}
       </div>
       {all && <p className={styles.small}>Translation by {step.translator}, as the library gives it.</p>}
+      {all && (
+        <aside className={styles.tipBox} aria-live="polite">
+          <span className="label">What it means</span>
+          {step.meaning.map((t, i) => <p key={i}><Rich text={t} /></p>)}
+        </aside>
+      )}
     </div>
   );
 }

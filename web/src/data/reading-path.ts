@@ -49,6 +49,8 @@ export interface PathStep {
   where: string[];
   /** the line, in parts revealed one at a time */
   parts: PathPart[];
+  /** what the line means, in plain words, shown once its English is revealed */
+  meaning: string[];
   /** the one new piece of grammar */
   learn: { title: string; text: string[] };
   /** places, people and passages to go further, all on the site */
@@ -78,6 +80,11 @@ export const PATH: PathStep[] = [
       ],
       en: "Nothing overmuch",
     }],
+    meaning: [
+      "Literally *nothing too much*; in plainer English, *nothing in excess*. It is advice for every part of life, for what you do, what you feel and what you want: keep to balance and restraint, neither too much nor too little, even of good things.",
+      "Aristotle later built this idea into his ethics. In the *Nicomachean Ethics* (Book 2) he describes each virtue as a middle point between two faults, one of excess and one of too little: courage, for example, lies between cowardice and rashness.",
+      "In Plato's *Charmides*, Critias claims it was carved later than *Know yourself*, by people who mistook *Know yourself* for a piece of advice rather than the god's greeting.",
+    ],
     learn: {
       title: "Greek can leave the verb out",
       text: [
@@ -109,6 +116,10 @@ export const PATH: PathStep[] = [
       ],
       en: "Know thyself",
     }],
+    meaning: [
+      "Literally *know yourself*: know what you are, and where your limits lie. In Plato's *Charmides*, Critias reads it as the god's greeting to everyone who enters the temple, meaning *Be temperate!*: keep a sound mind, as a human being and not a god.",
+      "In the *Phaedrus*, Socrates says he has no time to explain the old myths, because he is not yet able, as the Delphic inscription has it, to know himself.",
+    ],
     learn: {
       title: "A command",
       text: [
@@ -150,6 +161,10 @@ export const PATH: PathStep[] = [
         en: "and nothing remains still",
       },
     ],
+    meaning: [
+      "Nothing in the world stays the same: everything is always changing, like a river whose water is never the same water twice.",
+      "Socrates brings it up for fun while explaining names: he suggests that whoever named the gods Rhea and Cronus, names of streams, had the same thought as Heraclitus.",
+    ],
     learn: {
       title: "The ending -ει: it does",
       text: [
@@ -182,6 +197,9 @@ export const PATH: PathStep[] = [
       ],
       en: "Life is short,",
     }],
+    meaning: [
+      "A human life is too short for everything there is to learn. For Hippocrates, the doctor, this is the first thing to know about medicine: you will not live long enough to master it.",
+    ],
     learn: {
       title: "The: ὁ",
       text: [
@@ -215,6 +233,9 @@ export const PATH: PathStep[] = [
       ],
       en: "and Art long",
     }],
+    meaning: [
+      "The skill takes longer to learn than a lifetime allows. The sentence goes on, in Adams's translation: *the crisis fleeting; experience perilous, and decision difficult*. The doctor must act fast, on knowledge that is never complete.",
+    ],
     learn: {
       title: "Words that match",
       text: [
@@ -249,6 +270,10 @@ export const PATH: PathStep[] = [
       ],
       en: "Man is the measure of all things",
     }],
+    meaning: [
+      "There is no standard outside us: people decide what is real and true, each by how things seem to them.",
+      "That is how Socrates reads it in Plato's *Theaetetus*: things are for me as they seem to me, and for you as they seem to you. Socrates goes on to test the idea and does not accept it.",
+    ],
     learn: {
       title: "The ending -ων: of",
       text: [
@@ -291,6 +316,10 @@ export const PATH: PathStep[] = [
         en: "do not think I do either.",
       },
     ],
+    meaning: [
+      "Socrates claims only one kind of wisdom: when he does not know something, he does not fool himself that he does.",
+      "The man he questioned thought he knew and did not. Socrates says he seems to be wiser than him in just this small thing, and that this is what the oracle's answer meant.",
+    ],
     learn: {
       title: "The endings for I",
       text: [
@@ -329,6 +358,9 @@ export const PATH: PathStep[] = [
       ],
       en: "the unexamined life is not worth living",
     }],
+    meaning: [
+      "A life in which you never question how you live, and why, is not worth living. For Socrates, talking about virtue and examining himself and others every day was the best thing a person could do, so he would not give it up to save his life.",
+    ],
     learn: {
       title: "The ending -ῳ: for",
       text: [
@@ -363,6 +395,10 @@ export const PATH: PathStep[] = [
       ],
       en: "man is by nature a political animal",
     }],
+    meaning: [
+      "Human beings are made by nature to live together in communities. Aristotle adds that someone who by nature has no city is either less than human or more than human.",
+      "His reason is speech: only humans can talk about what is good and bad, right and wrong, and sharing that is what makes a household and a city.",
+    ],
     learn: {
       title: "The 'by' form: φύσει",
       text: [
@@ -395,6 +431,9 @@ export const PATH: PathStep[] = [
       ],
       en: "all things are full of gods",
     }],
+    meaning: [
+      "The divine is not far away: it is in everything around us. In the *Laws*, the argument is that the souls that move the sun, the moon and the stars are gods, so the whole world is full of them.",
+    ],
     learn: {
       title: "εἶναι, to be",
       text: [
@@ -430,6 +469,9 @@ export const PATH: PathStep[] = [
       ],
       en: "say many fine things,",
     }],
+    meaning: [
+      "The prophets and oracle-givers say beautiful things, but do not understand them: the words come from the god, not from their own knowledge. Socrates finds the poets are the same: they write by inspiration, not by wisdom.",
+    ],
     learn: {
       title: "The ending -ουσι: they",
       text: [
@@ -465,6 +507,9 @@ export const PATH: PathStep[] = [
       ],
       en: "All men naturally desire knowledge.",
     }],
+    meaning: [
+      "Wanting to know is part of being human: we do not learn only because it is useful. Aristotle's proof is that we enjoy our senses, and sight above all, even when they are no use to us.",
+    ],
     learn: {
       title: "τὸ εἰδέναι: knowing, as a noun",
       text: [
