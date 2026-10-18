@@ -1,7 +1,5 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
-import AreaHeader from "@/components/AreaHeader";
-import FindJump from "@/components/FindJump";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
@@ -14,8 +12,8 @@ import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
 export const metadata: Metadata = { title: `${AREAS.wiki.name} · ${AREAS.wiki.english}`, description: PAGE_DESCRIPTIONS.stoa };
 
-// The map, the Census and Archaeology lead the page (ExploreLead); the search and the colonnade follow, and the reference
-// pages are the colonnade's last panel. Counts for the reference pages, taken from the catalogue when the site is built.
+// The head with its search, the featured entry and the rooms (StoaIndex); the map, the Census and Archaeology follow
+// (ExploreLead), and the reference pages are the last room. Counts for the reference pages, taken from the catalogue when the site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
 const TEXTS = CATALOG.authors.flatMap((a) => a.works.flatMap((w) => w.texts)).length;
 const n = (x: number) => x.toLocaleString("en-GB");
@@ -32,7 +30,6 @@ const REFERENCE: RefCard[] = [
 export default function StoaPage() {
   return (
     <Page>
-      <AreaHeader id="wiki" action={<FindJump target="stoa-search" label="Search the Painted Stoa">Search every entry: Melos, plague…</FindJump>} />
       <StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} lead={<ExploreLead />} foot={<ExploreCredit />} />
     </Page>
   );

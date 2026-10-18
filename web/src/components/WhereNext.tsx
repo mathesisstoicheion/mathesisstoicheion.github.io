@@ -4,9 +4,9 @@ import Link from "next/link";
  * The short "where next" line at the foot of a page (GOLD-AND-LAMPLIGHT-PLAN.md, page-flow defaults): two or three
  * related pages, so a page never simply stops.
  */
-export default function WhereNext({ links }: { links: { href: string; label: string; note?: string }[] }) {
+export default function WhereNext({ links, bare }: { links: { href: string; label: string; note?: string }[]; bare?: boolean }) {
   return (
-    <nav className="wrap where-next" aria-label="Where next">
+    <nav className={`${bare ? "" : "wrap "}where-next`} aria-label="Where next">
       <span className="label">Where next</span>
       <ul>
         {links.map((l) => (

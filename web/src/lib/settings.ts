@@ -50,7 +50,7 @@ interface SettingsStore extends Settings {
 }
 
 /** localStorage can be missing or throw (private windows, blocked site data); never let that break the page. */
-const safeStorage: StateStorage = {
+export const safeStorage: StateStorage = {
   getItem: (k) => { try { return localStorage.getItem(k); } catch { return null; } },
   setItem: (k, v) => { try { localStorage.setItem(k, v); } catch { /* ignore */ } },
   removeItem: (k) => { try { localStorage.removeItem(k); } catch { /* ignore */ } },

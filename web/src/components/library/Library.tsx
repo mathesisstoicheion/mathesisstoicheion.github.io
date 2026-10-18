@@ -13,6 +13,10 @@ import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import { AZRail } from "./AZList";
+import PageHead from "@/components/PageHead";
+import { Room } from "@/components/art/PageArt";
+import { AREAS, trail } from "@/config/areas";
+import { scrollBehavior } from "@/lib/settings";
 import { bestMatch, nameMatch } from "./az";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
@@ -110,7 +114,7 @@ interface Group { key: string; label: string; short: string; rows?: Row[]; title
  * The library (design B, Stone and torch): the page's opening words (`hero`) beside the search, the order and the
  * filters, then the wall of stelai (`stelai`, hidden while searching), then the catalogue.
  */
-export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?: ReactNode }) {
+export default function Library({ stelai, paths, purpose, headExtra }: { stelai?: ReactNode; paths?: ReactNode; purpose?: ReactNode; headExtra?: ReactNode }) {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -294,12 +298,50 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
 
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
 
+  // browse by kind: a kind's window chooses it and brings the list into view
+  const pickKind = (f: string) => {
+    setFamily(f);
+    const el = document.getElementById("library-list");
+    if (el) requestAnimationFrame(() => scrollBelowHeader(el, 12, scrollBehavior() === "smooth" ? "glide" : false));
+  };
+
   return (
+    <>
+    {/* design A's list page (GOLD-AND-LAMPLIGHT-PLAN.md, page flow 6): the search first, under the head; then browse by
+        kind, as gilded windows; then every work, A to Z */}
+    <PageHead path={trail("library")} size="large" title={AREAS.library.name} greek={AREAS.library.greek} purpose={purpose}
+      action={
+        <div className={`search-field ${styles.headSearch}`} role="search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q}
+            onChange={(e) => { setQ(e.target.value); }} placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+        </div>
+      }>
+      {headExtra}
+    </PageHead>
     <div className={`wrap ${styles.lib}`}>
-      {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
-      {stelai && <div className={styles.stelai}>{stelai}</div>}
+      {!filtering && !family && (
+        <section aria-labelledby="kinds-h">
+          <h2 id="kinds-h" className="label rooms-h">Browse by kind</h2>
+          <ul className="rooms">
+            {FAMILIES.map(([f]) => (
+              <li key={f}>
+                <Room title={f}>
+                  <button type="button" className="room-open" onClick={() => pickKind(f)}>
+                    <span className="room-n">{idx ? `${n(familyCounts.c.get(f) ?? 0)} works` : "…"}</span>
+                    <span className="visually-hidden">Show the {f} works</span>
+                  </button>
+                </Room>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* where to begin: a few famous books, each a stele drawn in gold lines, the site's suggestions and the reading paths */}
       <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
-        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
+        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Famous books, our suggestions by how hard the Greek is, and six reading paths</span></summary>
+        {stelai && <div className={styles.stelai}>{stelai}</div>}
         <div className={styles.levels}>
           {START.map((s) => (
             <div key={s.level} className={styles.level}>
@@ -320,12 +362,7 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
       {/* every work: the search, the order and the filters stand on the list they sort and narrow (the owner, 2026-10-17:
           the search "separated from the A to Z list ... isn't intuitive") */}
       <section id="library-list" className={styles.find} aria-labelledby="library-list-h">
-        <h2 id="library-list-h" className={styles.findH}>Every work in the library</h2>
-        <div className={styles.searchBox}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-            placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
-        </div>
+        <h2 id="library-list-h" className={styles.findH}>{query.trim() ? "Found in the library" : "Every work, A to Z"}</h2>
 
         {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
         <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
@@ -438,6 +475,7 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
         </div>
       </section>
     </div>
+    </>
   );
 }
 

@@ -9,6 +9,7 @@
  *
  * The reader has none: it is for reading, with its own still lamplit cover.
  */
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useSyncExternalStore, type ReactNode } from "react";
 import { pieceFor } from "@/data/pieces";
@@ -98,5 +99,21 @@ export function ArtWindow({ label, children, className, tall }: { label?: string
         </div>
       )}
     </aside>
+  );
+}
+
+/**
+ * A room of a door page, or a kind of book on a list page, as a gilded window onto the engraving (the owner, 2026-10-18:
+ * "the rooms as gilded windows"; one window style for the whole site). Its name, Greek name and a line on what is in it
+ * stand on the window's plate, with anything else (a few entries, a count) under them.
+ */
+export function Room({ href, title, greek, blurb, children, className }: { href?: string; title: string; greek?: string; blurb?: ReactNode; children?: ReactNode; className?: string }) {
+  return (
+    <ArtWindow className={`room${className ? ` ${className}` : ""}`}>
+      {greek && <p className="room-gr" lang="grc">{greek}</p>}
+      <h2 className="room-t">{href ? <Link href={href} transitionTypes={["page-turn"]}>{title}</Link> : title}</h2>
+      {blurb && <p className="room-b">{blurb}</p>}
+      {children}
+    </ArtWindow>
   );
 }

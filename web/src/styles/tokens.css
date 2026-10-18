@@ -249,7 +249,7 @@
   --art-frame: var(--gold);
   /* the page laid over the art: a little see-through (the owner, 2026-10-18: "just a tiny bit") */
   --veil: rgba(11, 8, 6, 0.9);
-  --plate: rgba(5, 4, 3, 0.66);   /* the dark plate under words inside a window */
+  --plate: rgba(5, 4, 3, 0.84);   /* the dark plate under words inside a window */
 
   /* type roles */
   --f-greek: var(--face-gentium);

@@ -37,7 +37,7 @@ export function PieceHold() {
 const never = () => () => {};
 const useMounted = () => useSyncExternalStore(never, () => true, () => false);
 
-export default function PagePiece({ place = "head", spec: given, className }: { place?: "head" | "foot"; spec?: { piece: string; why?: string } | null; className?: string; steady?: boolean }) {
+export default function PagePiece({ place = "head", spec: given, className, after }: { place?: "head" | "foot"; spec?: { piece: string; why?: string } | null; className?: string; steady?: boolean; after?: React.ReactNode }) {
   const path = usePathname() ?? "/";
   const spec = given !== undefined ? given : pieceFor(path);
   const id = spec && ENGRAVED[spec.piece] ? spec.piece : null;
@@ -70,6 +70,7 @@ export default function PagePiece({ place = "head", spec: given, className }: { 
         {spec?.why && <span className="piece-why">{spec.why} </span>}
         <a href={credit.source} rel="noopener">The Met</a>
       </figcaption>
+      {after && <div className="piece-after">{after}</div>}
     </figure>
   );
 }

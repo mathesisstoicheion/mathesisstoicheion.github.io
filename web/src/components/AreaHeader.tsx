@@ -12,12 +12,12 @@ const LARGE: AreaId[] = ["study", "library", "search", "wiki", "treasury", "foru
  * of its own may carve a line that belongs to it instead, with its source (`carve`). `action` is the page's one main thing
  * (on a phone it comes before the statue); `children` follow.
  */
-export default function AreaHeader({ id, carve, action, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; children?: ReactNode }) {
+export default function AreaHeader({ id, carve, action, piece, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; piece?: { piece: string; why?: string } | null; children?: ReactNode }) {
   const a = AREAS[id];
   return (
     <>
       <PageHead path={trail(id)} size={LARGE.includes(id) ? "large" : "short"} carve={a.greek ?? carve?.text ?? null}
-        title={a.name} greek={a.greek} purpose={<>{a.origin} {a.fit}</>} action={action}
+        title={a.name} greek={a.greek} purpose={<>{a.origin} {a.fit}</>} action={action} piece={piece}
         className="area-head">
         {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
         {children}

@@ -1,9 +1,9 @@
 "use client";
 /**
- * The Painted Stoa's front: a colonnade of painted panels, one per category, each listing its
- * entries (and one more, "Reference", listing the library's own reference pages), with a search across every entry
- * directly on top of it, whose results stand in the colonnade's place while a search is typed, and a featured entry that
- * changes each day, below it.
+ * The Painted Stoa's front, a door page in design A (GOLD-AND-LAMPLIGHT-PLAN.md, page flow 7 and 8): its head, with the
+ * search across every entry under it (its results stand in place of the rest while a search is typed); then one
+ * featured entry, which changes each day; then the rooms, one gilded window per category listing its entries, and one
+ * more, "Reference", for the library's own reference pages.
  * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
  * search also looks through, are fetched only when a search begins, so the page itself stays light.
  */
@@ -15,6 +15,8 @@ import { inline, plain } from "@/wiki/markup";
 import { CATEGORIES, type CategoryId } from "@/wiki/types";
 import type { EntryCard } from "@/wiki/cards";
 import { IMAGES, srcSet } from "@/wiki/images";
+import AreaHeader from "@/components/AreaHeader";
+import { Room } from "@/components/art/PageArt";
 import styles from "./Stoa.module.css";
 
 const text = (s: string) => plain(inline(s));
@@ -56,49 +58,23 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
   const featured = entries.length ? [...entries].sort((a, b) => a.slug.localeCompare(b.slug))[day % entries.length] : null;
   const pic = featured?.image ? IMAGES[featured.image] : undefined;
 
+  const search = (
+    <div className={styles.searchRow} role="search" ref={searchRow}>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+      <input id="stoa-search" enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
+    </div>
+  );
+
   return (
+    <>
+    <AreaHeader id="wiki" action={search} />
     <div className={`wrap ${styles.index}`}>
       <Suspense fallback={null}><QueryFromUrl onQuery={fromUrl} /></Suspense>
-      {lead}
-
-      <div className={styles.searchRow} role="search" ref={searchRow}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input id="stoa-search" enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
-      </div>
       {n && (
         <section className={styles.found} aria-live="polite">
           <p className="label">{found.length} {found.length === 1 ? "entry" : "entries"}</p>
           <ul>{found.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}><b>{e.title}</b> <span>{e.kicker}</span></Link></li>)}</ul>
         </section>
-      )}
-
-      {!n && (
-        <ol className={styles.colonnade}>
-          {CATEGORIES.map((c, i) => {
-            const es = entriesIn(c.id);
-            return (
-              <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
-                <div className={styles.panelIn}>
-                  <h2>{c.href ? <Link href={c.href} transitionTypes={["page-turn"]}>{c.title}</Link> : c.title}</h2>
-                  <p className={styles.blurb}>{c.blurb}</p>
-                  {es.length > 0
-                    ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
-                    : <p className={styles.soonLine}>Entries in preparation.</p>}
-                </div>
-              </li>
-            );
-          })}
-          {reference.length > 0 && (
-            // the library's own reference pages (Authors, Eras, Editions…) are one more panel of the colonnade
-            <li id="reference" className={styles.panel} style={{ "--i": CATEGORIES.length } as React.CSSProperties}>
-              <nav className={styles.panelIn} aria-labelledby="ref-h">
-                <h2 id="ref-h">Reference</h2>
-                <p className={styles.blurb}>Who wrote the texts, when, and how they reached us.</p>
-                <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} title={r.blurb} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
-              </nav>
-            </li>
-          )}
-        </ol>
       )}
 
       {featured && !n && (
@@ -116,7 +92,37 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
         </Link>
       )}
 
+      {!n && (
+        <section aria-labelledby="rooms-h">
+          <h2 id="rooms-h" className="label rooms-h">The rooms</h2>
+          <ol className="rooms">
+            {CATEGORIES.map((c) => {
+              const es = entriesIn(c.id);
+              return (
+                <li key={c.id} id={c.id}>
+                  <Room href={c.href} title={c.title} blurb={c.blurb}>
+                    {es.length > 0
+                      ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
+                      : <p className="room-n">Entries in preparation</p>}
+                  </Room>
+                </li>
+              );
+            })}
+            {reference.length > 0 && (
+              // the library's own reference pages (Authors, Eras, Editions…) are one more room
+              <li id="reference">
+                <Room title="Reference" blurb="Who wrote the texts, when, and how they reached us.">
+                  <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} title={r.blurb} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
+                </Room>
+              </li>
+            )}
+          </ol>
+        </section>
+      )}
+
+      {!n && lead}
       {foot}
     </div>
+    </>
   );
 }

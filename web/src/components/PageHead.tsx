@@ -16,8 +16,10 @@ import type { Step } from "@/config/areas";
  * the statue (rule 2); `children` follow the statue. The statue is held twice, once beside the title for a computer and
  * once after the action for a phone; only the one shown is ever loaded and drawn (components/art/PagePiece.tsx).
  */
-export default function PageHead({ path, title, greek, purpose, action, size = "short", piece, steady, bare, desk = true, className, children }: {
+export default function PageHead({ path, kicker, title, greek, purpose, action, size = "short", piece, pieceAction, steady, bare, desk = true, className, children }: {
   path: Step[];
+  /** a word or two over the title, naming the card ("At a glance") */
+  kicker?: ReactNode;
   /** the words cut into the wall: the Greek name, unless the page carves something else (left out if too long) */
   carve?: string | null;
   title: ReactNode;
@@ -28,6 +30,8 @@ export default function PageHead({ path, title, greek, purpose, action, size = "
   /** the statue, when the page's address does not choose it (data/pieces.ts); null for none */
   piece?: { piece: string; why?: string } | null;
   steady?: boolean;
+  /** a button under the page's engraving (an author's "Read his works") */
+  pieceAction?: ReactNode;
   /** inside a column that is already the page's width (no `wrap` of its own) */
   bare?: boolean;
   /** false on a page that is a tool (a round of questions): on a computer its statue stands beside the tool instead */
@@ -45,14 +49,15 @@ export default function PageHead({ path, title, greek, purpose, action, size = "
           </span>
         ))}
       </p>
-      {desk && <PagePiece className="piece-desk" spec={piece} steady={steady} />}
+      {kicker && <p className="ph-kicker label">{kicker}</p>}
+      {desk && <PagePiece className="piece-desk" spec={piece} steady={steady} after={pieceAction} />}
       <h1 className="ph-title">
         {title}
         {greek && <span className="ph-greek" lang="grc">{greek}</span>}
       </h1>
       {purpose && <p className="ph-purpose">{purpose}</p>}
       {action && <div className="ph-action">{action}</div>}
-      <PagePiece className="piece-phone" spec={piece} steady={steady} />
+      <PagePiece className="piece-phone" spec={piece} steady={steady} after={pieceAction} />
       {children}
     </header>
   );

@@ -512,7 +512,8 @@ html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bot
 .ph-purpose { max-width: 60ch; font-size: 1.15rem; line-height: 1.5; color: var(--ink-2); font-style: normal; }
 .ph-short .ph-purpose { font-size: 1.06rem; }
 .ph .ph-action { margin-top: var(--space-4); }
-.ph-action:has(> .search-field, > form) { max-width: 40rem; }
+.ph-action:has(> .search-field, > form, > [role="search"]) { max-width: 40rem; }
+.rooms-h { color: var(--accent-2); margin: 0 0 var(--space-4); }
 @media (max-width: 760px) {
   .ph { padding-top: 28px; }
   .ph-short { padding-top: 22px; }
@@ -620,3 +621,32 @@ html[data-look="light"] .torch { display: none; }
 .where-next a::after { content: " →"; color: var(--gold); }
 .where-next a:hover { color: var(--gold-hi); }
 .where-next small { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+
+/* ---------------------------------------------------------------- rooms: gilded windows (components/art/PageArt.tsx, Room) */
+.rooms { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: clamp(var(--space-4), 2vw, var(--space-5)); list-style: none; margin: 0; padding: 0; }
+.rooms > li { display: grid; }
+.art-pane.room { margin: 0; min-height: clamp(260px, 26vw, 340px); }
+.room .art-plate { margin: var(--space-2); max-width: none; width: calc(100% - 2 * var(--space-2)); display: grid; gap: var(--space-1); }
+.room .room-gr { font: 400 1rem / 1.2 var(--f-greek); color: var(--gold); }
+.room .room-t { font: 300 1.7rem / 1.1 var(--f-display); margin: 0; }
+.room .room-t a { color: var(--ink); text-decoration: none; }
+.room .room-t a::after { content: ""; position: absolute; inset: 0; z-index: 0; }   /* the whole window opens the room */
+.room .room-t a:hover, .room:focus-within .room-t a { color: var(--gold-hi); }
+.room .room-b { font-size: 0.95rem; line-height: 1.45; color: var(--ink-2); }
+.room ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; gap: 2px; position: relative; z-index: 1; }
+.room li a { font-size: 0.98rem; color: var(--ink-2); text-decoration: none; }
+.room li a::before { content: "— "; color: var(--gold); }
+.room li a:hover { color: var(--gold-hi); }
+.room .room-n { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+.room:hover { box-shadow: inset 0 0 0 1px var(--gold-hi); }
+
+/* a search under a page's head card (GOLD-AND-LAMPLIGHT-PLAN.md, page flow 8): a field with the lens in it */
+.search-field { position: relative; }
+.search-field svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--gold); stroke-width: 1.8; stroke-linecap: round; pointer-events: none; }
+.search-field input { width: 100%; font: inherit; font-size: 1.1rem; padding: 14px 16px 14px 48px; }
+/* a whole room window opens its room: the button covers the window, its count stays on the plate */
+.room .room-open { all: unset; cursor: pointer; display: block; }
+.room .room-open::after { content: ""; position: absolute; inset: 0; z-index: 0; }
+.room .room-open:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.room.room-on { box-shadow: inset 0 0 0 2px var(--gold-hi); }
+.ph-kicker { color: var(--gold); margin: var(--space-3) 0 0; }

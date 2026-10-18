@@ -7,6 +7,8 @@ import LessonPath from "@/components/academy/LessonPath";
 import ReadingPath from "@/components/academy/ReadingPath";
 import { AREAS } from "@/config/areas";
 import { GUIDES } from "@/data/guides";
+import { Room } from "@/components/art/PageArt";
+import WhereNext from "@/components/WhereNext";
 import styles from "@/components/academy/Academy.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
@@ -39,17 +41,12 @@ export default function AcademyPage() {
           <ReadingPath />
         </section>
 
-        <section style={{ display: "grid", gap: 18 }} aria-labelledby="tools-title">
-          <h2 id="tools-title">Practice and reference</h2>
-          <div className={styles.tools}>
-            {TOOLS.map((t) => (
-              <Link key={t.href} href={t.href} transitionTypes={["page-turn"]} className={`slab-card ${styles.card}`}>
-                <span className={styles.cardGr} lang="grc">{t.gr}</span>
-                <h3>{t.title}</h3>
-                <p className="muted">{t.text}</p>
-              </Link>
-            ))}
-          </div>
+        {/* the Academy's rooms, as gilded windows onto its engraving (GOLD-AND-LAMPLIGHT-PLAN.md, page flow 7) */}
+        <section aria-labelledby="tools-title">
+          <h2 id="tools-title" className="label rooms-h">The rooms: practice and reference</h2>
+          <ul className="rooms">
+            {TOOLS.map((t) => <li key={t.href}><Room href={t.href} title={t.title} greek={t.gr} blurb={t.text} /></li>)}
+          </ul>
         </section>
 
         <section style={{ display: "grid", gap: 18 }} aria-labelledby="lessons-title">
@@ -81,6 +78,10 @@ export default function AcademyPage() {
           </div>
         </section>
       </div>
+      <WhereNext links={[
+        { href: "/library", label: "The library", note: "read what you learn" },
+        { href: "/treasury", label: "Mine", note: "your notes and words" },
+      ]} />
     </Page>
   );
 }
