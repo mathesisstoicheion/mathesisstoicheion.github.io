@@ -48,7 +48,7 @@ function units(step: PathStep): Unit[] {
       words: p.words, learn: p.learn,
       end: last ? {
         whole: s.pieces.length > 1 ? s.pieces.map((q) => partText({ words: q.words, en: "" })).join(" ") : undefined,
-        parts: [{ gr: s.pieces.map((q) => partText({ words: q.words, en: "" })).join(" "), en: s.en }], translator: step.translator, meaning: s.meaning,
+        parts: [{ gr: s.pieces.map((q) => partText({ words: q.words, en: "" })).join(" "), en: s.en }], translator: step.passage!.translator ?? step.translator, meaning: s.meaning,
       } : undefined,
     });
   }));
@@ -332,7 +332,7 @@ export default function PathStepView({ step }: { step: PathStep }) {
       <figure ref={box} className={styles.real} style={{ scrollMarginTop: 90 }}>
         <figcaption className={styles.realHead}>
           <span className="label">{unit.label}</span>
-          <Link className="chip" href={`/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>
+          <Link className="chip" href={u > 0 && step.passage?.work ? `/read?w=${step.passage.work}&at=${step.passage.ref}` : `/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>
         </figcaption>
         {atEnd ? (
           <div style={{ display: "grid", gap: 14 }}>

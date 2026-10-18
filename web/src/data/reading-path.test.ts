@@ -25,6 +25,12 @@ const unitText = (doc: ReturnType<typeof parseTei>, ref: string) => {
 /** each passage sentence as one line: all its pieces' words, with the sentence's English */
 const passageLines = (s: PathStep): PathPart[] => (s.passage?.sentences ?? []).map((st) => ({ words: st.pieces.flatMap((p) => p.words), en: st.en }));
 
+/** where each step's lines are: the line itself, and its passage (in another work or section if it names one) */
+const placesOf = (s: PathStep) => [
+  { work: s.work, ref: s.ref, lines: s.parts },
+  ...(s.passage ? [{ work: s.passage.work ?? s.work, ref: s.passage.ref ?? s.ref, lines: passageLines(s) }] : []),
+];
+
 describe("the reading path", () => {
   it("has twelve steps with unique ids, every word explained", () => {
     expect(PATH).toHaveLength(12);
@@ -73,33 +79,34 @@ describe("the reading path", () => {
   // The Greek and English are checked against the source files: the local corpus when it is there
   // (python pipeline/fetch_corpus.py), else GitHub; run with NETWORK=1 or with the corpus downloaded.
   it.skipIf(!process.env.NETWORK && !existsSync(CORPUS))("copies every line from the library's texts", async () => {
-    for (const s of PATH) {
-      const w = idx.work.get(s.work)!;
+    for (const s of PATH) for (const pl of placesOf(s)) {
+      const w = idx.work.get(pl.work)!;
+      expect(w, `${s.id}: ${pl.work}`).toBeTruthy();
       const ed = greekEditions(w).find((t) => t.col === "perseus") ?? greekEditions(w)[0];
-      const tr = translations(w)[0];
       const doc = parseTei(await text(ed));
-      expect(findRef(doc, s.ref), `${s.id}: ${s.ref}`).toBeGreaterThanOrEqual(0);
-      const greek = squash(unitText(doc, s.ref));
-      expect(greek, s.id).toContain(squash(s.parts.map(partText).join(" ")));
-      for (const st of passageLines(s)) expect(greek, s.id).toContain(squash(st.words.map((w) => w.form + (w.after ?? "")).join(" ")));
-      const en = squash(parseTei(await text(tr)).units.flatMap((u) => u.blocks).map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" "));
-      for (const p of [...s.parts, ...passageLines(s)]) expect(en, `${s.id}: ${p.en}`).toContain(squash(p.en));
+      expect(findRef(doc, pl.ref), `${s.id}: ${pl.ref}`).toBeGreaterThanOrEqual(0);
+      const greek = squash(unitText(doc, pl.ref));
+      const en = squash(parseTei(await text(translations(w)[0])).units.flatMap((u) => u.blocks).map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" "));
+      for (const line of pl.lines) {
+        expect(greek, `${s.id}: ${pl.ref}`).toContain(squash(partText(line)));
+        expect(en, `${s.id}: ${line.en}`).toContain(squash(line.en));
+      }
     }
-  }, 180_000);
+  }, 300_000);
 
   // Dictionary forms as GLAUx analyses them at this place (packs cached by scripts/path-words.ts).
   it.skipIf(!existsSync(CORPUS) || !existsSync(join(PACKS, "words")))("gives GLAUx's dictionary form for each word", async () => {
-    for (const s of PATH) {
-      const f = join(PACKS, "words", `${s.work}.json`);
+    for (const s of PATH) for (const pl of placesOf(s)) {
+      const f = join(PACKS, "words", `${pl.work}.json`);
       if (!existsSync(f)) continue;
       const pack = JSON.parse(readFileSync(f, "utf8")) as WordPack;
-      const w = idx.work.get(s.work)!;
+      const w = idx.work.get(pl.work)!;
       const ed = greekEditions(w).find((t) => t.col === "perseus") ?? greekEditions(w)[0];
       const doc = parseTei(await text(ed));
-      const key = doc.units[findRef(doc, s.ref)].ref.join(".");
+      const key = doc.units[findRef(doc, pl.ref)].ref.join(".");
       const keys = new Set(doc.units.map((u) => u.ref.join(".")));
-      const unit = norm(unitText(doc, s.ref));
-      for (const line of [...[{ words: s.parts.flatMap((p) => p.words), en: "" }], ...passageLines(s)]) {
+      const unit = norm(unitText(doc, pl.ref));
+      for (const line of pl.lines) {
         const before: string[] = (unit.slice(0, unit.indexOf(norm(partText(line)))).match(/[\p{L}\p{M}ʼ]+/gu) ?? []);
         for (const word of line.words) {
           const occ = before.filter((b) => b === norm(word.form)).length;
@@ -109,5 +116,5 @@ describe("the reading path", () => {
         }
       }
     }
-  }, 180_000);
+  }, 300_000);
 });
