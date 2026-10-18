@@ -39,10 +39,10 @@ All done on 2026-10-18, not yet published. Before the next site publish, republi
 5. Keep `pipeline/drafts/old-site-author-articles.json` (unchecked, known errors) out of the public repository.
 6. Move the Supabase address and key into build settings, so copies of the project don't write to the owner's database.
 
-**D. The old website, scrapped (owner, 2026-10-18)**. Done 2026-10-18 except D1, which is the owner's: `Documents/Mathesis`,
+**D. The old website, scrapped (owner, 2026-10-18)**. All done 2026-10-18. D1: the owner deleted the Vercel project and the GitHub repository; both old addresses return 404. `Documents/Mathesis`,
 `Documents/docs-mathesis` and `Documents/CLAUDE.md` went to the Recycle Bin with her OK; CLAUDE.md lost the old-app
 paragraph; the owner keeps the two text collections and their zips (about 1.35 GB, not 290 MB; nothing in the project
-uses them). Still online: the GitHub repository `ladygagastani/Mathesis` (public, serves ladygagastani.github.io/Mathesis).
+uses them).
 1. The owner deletes or archives its GitHub repository herself (it serves `ladygagastani.github.io/Mathesis`, still
    online on 2026-10-18). Show her where: the repository's Settings, at the bottom.
 2. Remove `Documents/Mathesis`, `Documents/docs-mathesis` and the old-app `Documents/CLAUDE.md`, with the owner's OK
