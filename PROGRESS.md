@@ -18,7 +18,7 @@ old website, which the owner has scrapped (D).
 
 **A. Snapshot.** Commit the document changes of 17 and 18 October as one snapshot.
 
-**B. Folder clean-up**
+**B. Folder clean-up** (done 2026-10-18)
 1. Move `PLAN.md`, `Handoff.md` and `greek-reader-website-prompt.md` into `_archive/`. Their still-valid decisions are
    in `SPEC.md` and this file.
 2. Move `author-article-preview/`, `design-study/`, `flow-preview/`, `map-preview/` and `tutorial-shots/` into
