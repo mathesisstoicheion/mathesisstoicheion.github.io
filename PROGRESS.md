@@ -1,5 +1,25 @@
 # PROGRESS.md — project memory
 
+## Gold and lamplight (2026-10-18; branch `claude/gold-and-lamplight-redesign-7v9ffm`, not live)
+The owner moved the site from B "Stone and torch" to design A "Gold and lamplight", plus a warm-paper light look. The agreed plan is
+in the project files at `redesign/GOLD-AND-LAMPLIGHT-PLAN.md`; before and after: https://claude.ai/artifact/2n2UaBhwUM8wzRzyGn2Yyd.
+- **The art behind the page**: each page's object is engraved in gold lines on Pompeian red (`pipeline/engrave.py` makes
+  `public/images/pieces/engraved/<id>.webp`, an alpha mask coloured by CSS, so one file serves both looks). It starts in its window
+  by the title and, as you scroll, grows into the background and turns slowly with the scroll direction (`lib/art/stage.ts`;
+  transform and clip only). Panels are 90% opaque over it; gilded windows (`components/art/PageArt.tsx`: `ArtWindow`, `Room`)
+  look through to it and always hold real, sourced content. Not on the reader.
+- **Frame and mark**: a plain black header and phone bar with gold hairlines; the square ΣΤΟΙΧΕΙΑ mark (`EmblemMark.tsx`,
+  `public/logo/stoicheia.svg`, icons by `scripts/make-logo.mjs`) replaced the owl; a lamp button in the header switches to paper.
+- **Page flows**: home is A's opening (wall and Muses gone); the Stoa and the Academy are doors (search, featured, rooms as
+  windows); the library is a list (search in the head, browse by kind, A to Z; the stelai moved into "Not sure where to begin?");
+  author pages are entries (At a glance with "Read his works", In his words from `loadOpening` in `lib/passage.ts`, the story, the
+  works opening with "Start with", Back to top); Mine has a search, latest first, shelves and Arrange (`lib/treasury-layout.ts`);
+  the reader opens on a still lamplit cover (`ReaderCover.tsx`). A "where next" line ends the main pages (`WhereNext.tsx`).
+- **Speed** (phone 390x844 at 2x, processor slowed 4x, headless): home 10.6 to 59.6 fps, library 12.4 to 51, Stoa 19.1 to 59,
+  Homer 31.2 to 56.1.
+- **Still to do**: the library's Socrates spelled from the Apology (only if smooth), the stelai in gold lines, the Town Hall's
+  rooms, and the old stone components (`Carving`, `ReliefWindow`, `Torch`) once nothing uses them.
+
 ## Learn by reading (2026-10-18; branch `claude/project-thread-dqvb37`, not live)
 The owner's one big project after the grilling of 2026-10-18: a guided path that teaches Greek by reading real lines. Ten steps
 (`web/src/data/reading-path.ts`), from γνῶθι σαυτόν to the first sentence of Aristotle's *Metaphysics*, each reusing earlier words;
