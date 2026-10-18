@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, NAV, SITE, TABS, doorWord } from "@/config/areas";
+import { AREAS, FORUM_OPEN, NAV, SITE, TABS, doorWord } from "@/config/areas";
 import { useSettings, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
@@ -130,10 +130,12 @@ export default function Header() {
         <div className={styles.tools}>
           <ConnectionLight />
           {/* phones: the bottom bar has Search, so the header offers the Talk door (the forum) here instead */}
+          {FORUM_OPEN && (
           <Link className={`${styles.tbtn} ${styles.phoneOnly}`} href={AREAS.forum.href} transitionTypes={["page-turn"]}
             aria-label={`${doorWord("forum")}: ${AREAS.forum.name}`} aria-current={isActive(pathname, AREAS.forum.href) ? "page" : undefined}>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M4.5 4.5h10a1.5 1.5 0 0 1 1.5 1.5v5.5a1.5 1.5 0 0 1-1.5 1.5H9.5L6 16v-3H4.5A1.5 1.5 0 0 1 3 11.5V6a1.5 1.5 0 0 1 1.5-1.5z" /><path d="M18.5 9h1a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 1-1.5 1.5H19v3l-3.5-3h-4a1.5 1.5 0 0 1-1.5-1.5V15" /></svg>
           </Link>
+          )}
           <button className={`${styles.tbtn} ${styles.notPhone}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog"
             aria-label={`${AREAS.search.name}: ${AREAS.search.english}`} title="Search (or press / on any page)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>

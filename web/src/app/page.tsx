@@ -13,7 +13,7 @@ import start from "@/components/home/Start.module.css";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import HomeFold from "@/components/HomeFold";
 import GuideInvite from "@/components/guide/GuideInvite";
-import { AREAS, SITE } from "@/config/areas";
+import { AREAS, FORUM_OPEN, SITE } from "@/config/areas";
 import StoaCards, { type StoaCard } from "@/components/StoaCards";
 import { ENTRIES, categoryOf } from "@/wiki/index";
 import { inline, plain } from "@/wiki/markup";
@@ -86,8 +86,8 @@ export default function Home() {
         <div className="wrap">
           <div className={`${styles.secHead} rv`}>
             <div><span className="label">What&apos;s inside</span>
-              <h2 id="doors-title" className={styles.h2}>Five doors</h2></div>
-            <p className="muted">The same five on every page: across the top, or along the bottom of a phone.</p>
+              <h2 id="doors-title" className={styles.h2}>{FORUM_OPEN ? "Five" : "Four"} doors</h2></div>
+            <p className="muted">The same {FORUM_OPEN ? "five" : "four"} on every page: across the top, or along the bottom of a phone.</p>
           </div>
           <Doors works={WORKS.length} lessons={LESSONS.length} />
         </div>
@@ -179,16 +179,18 @@ export default function Home() {
       </section>
 
       {/* ---------------------------------------------------------------- forum */}
-      <section className={styles.block} aria-labelledby="forum-title" data-fold="forum">
-        <div className="wrap">
-          <div className={`${styles.secHead} rv`}>
-            <div><span className="label">{AREAS.forum.name} · {AREAS.forum.english}</span>
-              <div className={styles.foldRow}><h2 id="forum-title" className={styles.h2}>What people are asking</h2><HomeFold id="forum" title="What people are asking" className={styles.foldBtn} /></div></div>
-            <p className="muted" data-fold-hide="">Questions from beginners, help with a passage, and a debate each week. Reading is open to everyone; a free account lets you join in.</p>
+      {FORUM_OPEN && (
+        <section className={styles.block} aria-labelledby="forum-title" data-fold="forum">
+          <div className="wrap">
+            <div className={`${styles.secHead} rv`}>
+              <div><span className="label">{AREAS.forum.name} · {AREAS.forum.english}</span>
+                <div className={styles.foldRow}><h2 id="forum-title" className={styles.h2}>What people are asking</h2><HomeFold id="forum" title="What people are asking" className={styles.foldBtn} /></div></div>
+              <p className="muted" data-fold-hide="">Questions from beginners, help with a passage, and a debate each week. Reading is open to everyone; a free account lets you join in.</p>
+            </div>
+            <div className="rv" data-fold-hide=""><ForumActivity styles={styles} /></div>
           </div>
-          <div className="rv" data-fold-hide=""><ForumActivity styles={styles} /></div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* ---------------------------------------------------------------- offline */}
       <section className={styles.block} aria-labelledby="offline-title" data-fold="offline">

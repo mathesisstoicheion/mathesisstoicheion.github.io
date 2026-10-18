@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 test("home page shows the site name, the passage and the offline block", async ({ page }) => {
   await page.goto("/");
@@ -20,7 +21,7 @@ test("moving between areas does not reload the page", async ({ page }) => {
 test("the menu is the five doors, in plain words with their Greek names, and Read is current in the reader", async ({ page }) => {
   await page.goto("/read?w=tlg0012.tlg001");
   const doors = page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link");
-  expect(await doors.evaluateAll((as) => as.map((a) => a.querySelector("b")?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk", "Mine"]);
+  expect(await doors.evaluateAll((as) => as.map((a) => a.querySelector("b")?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk", "Mine"] : ["Learn", "Read", "Explore", "Mine"]);
   await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("link", { name: "Learn: The Academy" })).toBeVisible();
 });

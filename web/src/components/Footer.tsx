@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { SITE } from "@/config/areas";
+import { FORUM_OPEN, SITE } from "@/config/areas";
 import ReportBugLink from "./ReportBugLink";
 
 export default function Footer() {
@@ -15,8 +15,10 @@ export default function Footer() {
           <Link href="/guide" transitionTypes={["page-turn"]}>How to use the site</Link>
           <Link href="/about" transitionTypes={["page-turn"]}>About the names</Link>
           <Link href="/credits" transitionTypes={["page-turn"]}>Credits, licences &amp; privacy</Link>
-          <ReportBugLink />
-          <Link href="/town-hall?c=ideas">Suggest an idea</Link>
+          {FORUM_OPEN && <>
+            <ReportBugLink />
+            <Link href="/town-hall?c=ideas">Suggest an idea</Link>
+          </>}
         </nav>
         <p className="muted site-footer-src">
           Greek texts and translations from the Perseus Digital Library and the First Thousand Years of Greek project,

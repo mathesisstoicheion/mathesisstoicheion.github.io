@@ -3,7 +3,7 @@ import Link from "next/link";
 import Page from "@/components/Page";
 import ReportBugLink from "@/components/ReportBugLink";
 import NotFoundSearch from "@/components/NotFoundSearch";
-import { AREAS } from "@/config/areas";
+import { AREAS, FORUM_OPEN } from "@/config/areas";
 import styles from "./not-found.module.css";
 
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
@@ -45,9 +45,11 @@ export default function NotFound() {
               </Link>
             ))}
           </nav>
-          <p className="muted">
-            Followed a link on this site that led here? <ReportBugLink>Tell us about the broken link</ReportBugLink>.
-          </p>
+          {FORUM_OPEN && (
+            <p className="muted">
+              Followed a link on this site that led here? <ReportBugLink>Tell us about the broken link</ReportBugLink>.
+            </p>
+          )}
         </div>
       </div>
     </Page>

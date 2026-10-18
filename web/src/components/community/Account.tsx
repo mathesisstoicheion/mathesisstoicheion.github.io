@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { isBanned, isModerator, problem, supabase, useAccount } from "@/lib/community/client";
 import { updateProfile } from "@/lib/community/data";
 import { useHidden, useHiddenPeople } from "@/lib/community/hidden";
+import { FORUM_OPEN } from "@/config/areas";
 import styles from "./Community.module.css";
 
 type Mode = "in" | "join" | "forgot";
@@ -33,11 +34,11 @@ export default function Account() {
       <div className={`wrap ${styles.narrow}`}>
         {next && <p className={styles.note}>You are signed in. <Link href={next}>Go back to where you were →</Link></p>}
         {profile ? <ProfileCard key={profile.id} email={session.user.email ?? ""} onSaved={refreshProfile} /> : <p className="muted">Loading your profile…</p>}
-        <HiddenPeople />
+        {FORUM_OPEN && <HiddenPeople />}
       </div>
     );
   }
-  return <div className={`wrap ${styles.narrow}`}><SignIn next={next} /><HiddenPeople /></div>;
+  return <div className={`wrap ${styles.narrow}`}><SignIn next={next} />{FORUM_OPEN && <HiddenPeople />}</div>;
 }
 
 // ------------------------------------------------------------ signing in and joining
@@ -107,7 +108,7 @@ function SignIn({ next }: { next: string | null }) {
               autoComplete={mode === "join" ? "new-password" : "current-password"} />
           </label>
         )}
-        {mode === "join" && (
+        {mode === "join" && FORUM_OPEN && (
           <label className={styles.check}>
             <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} required />
             <span>I will keep the <Link href="/town-hall#rules" target="_blank">rules of the Town Hall</Link>: argue the idea, not the person.</span>
@@ -121,7 +122,8 @@ function SignIn({ next }: { next: string | null }) {
         {mode === "forgot" && <button type="button" className={styles.linkBtn} onClick={() => setMode("in")}>Back to signing in</button>}
       </form>
       <p className={styles.fine}>
-        An account is needed only to write in the Town Hall and the Pnyx, and to keep your Treasury in step between devices.
+        {FORUM_OPEN ? "An account is needed only to write in the Town Hall and the Pnyx, and to keep your Treasury in step between devices."
+          : "An account is needed only to keep your Treasury in step between devices."}
         Accounts are kept by Supabase, in the European Union; see <Link href="/credits#privacy">Privacy</Link>.
       </p>
     </section>
@@ -161,7 +163,7 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
   const changed = name.trim() !== profile.display_name || bio !== profile.bio;
   return (
     <section className={styles.card}>
-      <p className="label">{isModerator(profile) ? "Moderator of the Town Hall" : "Member of the Town Hall"}</p>
+      <p className="label">{!FORUM_OPEN ? "Your account" : isModerator(profile) ? "Moderator of the Town Hall" : "Member of the Town Hall"}</p>
       <h2>{profile.display_name}</h2>
       <p className={styles.fine}>Signed in as {email} (never shown to anyone). Member since {new Date(profile.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.</p>
       {isBanned(profile) && <p className={styles.error}>The moderator has paused your writing until {new Date(profile.banned_until!).toLocaleString("en-GB")}{profile.ban_reason ? `: ${profile.ban_reason}` : "."}</p>}
@@ -177,13 +179,13 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
         {msg && <p className={styles.ok} role="status">{msg}</p>}
         <div className={styles.row}>
           <button type="submit" className="btn" disabled={!changed}>Save</button>
-          <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}>Your page</Link>
+          {FORUM_OPEN && <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}>Your page</Link>}
           <button type="button" className="btn ghost" onClick={() => supabase().auth.signOut()}>Sign out</button>
         </div>
       </form>
       <details className={styles.danger}>
         <summary>Delete my account</summary>
-        <p>This removes your account, your profile, everything you wrote in the Town Hall and the Pnyx, your votes and your stored Treasury.
+        <p>This removes your account, your profile, {FORUM_OPEN ? "everything you wrote in the Town Hall and the Pnyx, your votes" : "everything you wrote in the forum"} and your stored Treasury.
           It cannot be undone. Your notes and marks in this browser stay here.</p>
         <DeleteAccount />
       </details>

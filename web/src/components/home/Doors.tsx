@@ -20,7 +20,7 @@ export default function Doors({ works, lessons }: { works: number; lessons: numb
   const pics = NAV.map((id) => IMAGES[DOOR[id]!.pic]);
   return (
     <>
-      <ul className={styles.doors}>
+      <ul className={styles.doors} data-n={NAV.length} style={{ "--doors": NAV.length } as React.CSSProperties}>
         {NAV.map((id, i) => {
           const a = AREAS[id], im = pics[i];
           return (

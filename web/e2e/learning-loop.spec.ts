@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 // Phase 11, stage 3: learning and reading as one loop
 const openIliad = async (page: Page) => {
@@ -29,9 +30,11 @@ test("a lesson ends with its real passage, to read for real", async ({ page }) =
   await expect(real).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.1");
   await expect(real).toContainText("μῆνιν ἄειδε θεὰ");
   // and a way to ask about it: the first two lessons go to Beginners' questions, the rest to Grammar help
-  await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
-  await page.goto("/academy/lesson/participles");
-  await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=grammar");
+  if (FORUM_OPEN) {
+    await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
+    await page.goto("/academy/lesson/participles");
+    await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=grammar");
+  }
 });
 
 test("Words I know marks the words learned in the daily practice", async ({ page }) => {
@@ -52,6 +55,7 @@ test("Words I know marks the words learned in the daily practice", async ({ page
 });
 
 test("Talk about it lists the Town Hall's questions on this page, and says how to ask one", async ({ page }) => {
+  test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
   // a stand-in for the forum's answer, so the test writes nothing to the real database
   const quote = (ref: string, at: string) => ({ work: "tlg0012.tlg001", ref, grc: "μῆνιν ἄειδε θεὰ", cite: `Homer, Iliad ${ref}`, href: `/read?w=tlg0012.tlg001&at=${at}` });
   await page.route(/\/rest\/v1\/threads\?.*quote-(%3E|>){2}work/, (route) => route.fulfill({ json: [

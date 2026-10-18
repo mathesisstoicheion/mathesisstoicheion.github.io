@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 test("the library opens with its search, and lists authors who open to show their works", async ({ page }) => {
   await page.goto("/library");
@@ -117,6 +118,7 @@ test("the map and the Town Hall put their search first", async ({ page }) => {
   const find = page.getByRole("searchbox", { name: "Find a place" });
   const map = page.getByRole("application");
   expect((await find.boundingBox())!.y).toBeLessThan((await map.boundingBox())!.y);
+  if (!FORUM_OPEN) return;
   await page.goto("/town-hall");
   const hall = page.getByRole("searchbox", { name: "Search the Town Hall" });
   const cats = page.getByRole("navigation", { name: "Categories" });

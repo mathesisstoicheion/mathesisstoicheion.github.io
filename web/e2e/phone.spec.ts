@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { FORUM_OPEN } from "../src/config/areas";
 
 // Phase 10, the phone edition: the bottom bar, the one-row header, search as a full-screen sheet.
 const PHONE = { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true };
@@ -17,7 +18,7 @@ test.describe("on a phone", () => {
     const labels = await links.evaluateAll((els) => els.map((e) => e.firstElementChild?.nextElementSibling?.firstChild?.textContent));
     expect(labels).toEqual(["Learn", "Read", "Search", "Explore", "Mine"]);
     // Talk, the forum, moves to the header, where the search button was
-    await expect(page.locator("header").getByRole("link", { name: "Talk: The Town Hall" })).toBeVisible();
+    await expect(page.locator("header").getByRole("link", { name: "Talk: The Town Hall" })).toHaveCount(FORUM_OPEN ? 1 : 0);
     await expect(page.locator("header").getByRole("button", { name: "The Oracle: Search" })).toBeHidden();
     // the bar is along the bottom edge of the screen
     const box = (await tabBar(page).boundingBox())!;

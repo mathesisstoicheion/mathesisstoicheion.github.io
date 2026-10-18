@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 // Phase 10, step 4: the other pages on a phone.
 test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
@@ -59,6 +60,7 @@ test("an offline phone says so above the bar", async ({ page, context }) => {
 });
 
 test("pull down to refresh the Town Hall", async ({ page }) => {
+  test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
   await page.goto("/town-hall");
   await expect(page.getByText(/Gathering the conversations|Latest activity/).first()).toBeVisible();
   await page.waitForTimeout(1500);

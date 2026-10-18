@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
+
+test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
 
 // The home page's "What people are asking": the database's answers are replaced here by made-up ones,
 // so nothing is written to (or needed from) the real forum.

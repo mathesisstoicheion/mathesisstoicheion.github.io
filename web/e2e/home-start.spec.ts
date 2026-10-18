@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 const settings = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings") || "{}").state ?? {});
 
@@ -8,7 +9,7 @@ test("a first visit is asked where it is starting, and the answer sets up the re
   await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeVisible();
   await expect(page.getByRole("heading", { name: "Your desk" })).toBeHidden();
   // the five doors, at a glance
-  await expect(page.getByRole("heading", { name: "Five doors" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: FORUM_OPEN ? "Five doors" : "Four doors" })).toBeVisible();
   // nothing is set until Begin: picking a card only opens the panel
   const none = page.getByRole("button", { name: /I know no Greek/ });
   await none.click();

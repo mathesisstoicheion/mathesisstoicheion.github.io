@@ -71,7 +71,7 @@ export const isBanned = (p: Profile | null) => !!p?.banned_until && new Date(p.b
 /** A readable message from a Supabase error (the database's own messages are written for readers). */
 export function problem(e: unknown): string {
   const m = (e as { message?: string } | null)?.message ?? String(e);
-  if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return "The Town Hall could not be reached. Check the connection light at the top of the page, then try again.";
+  if (/Failed to fetch|NetworkError|Load failed/i.test(m)) return "The site's accounts could not be reached. Check the connection light at the top of the page, then try again.";
   if (/JWT|not authenticated|permission denied|row-level security/i.test(m)) return "You need to be signed in (with a confirmed email address) to do that.";
   return m;
 }

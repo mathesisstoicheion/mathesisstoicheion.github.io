@@ -1,4 +1,10 @@
 /**
+ * The forum (the Town Hall and the Pnyx) is frozen and hidden (SPEC.md, owner 2026-10-18): its data is kept, nothing
+ * links to it, and its pages say it is closed. Accounts and sign-in keep working. Set to true to open it again.
+ */
+export const FORUM_OPEN = false;
+
+/**
  * Every area of the site and its name from Greek culture.
  * Change names here only; the rest of the site reads from this file.
  *
@@ -94,7 +100,7 @@ export const AREAS: Record<AreaId, Area> = {
  * The five doors of the site, in order (Phase 11, owner's decision 2026-10-08): the header's menu on wide screens.
  * Each shows its plain word (`door`) with the area's Greek name beneath. Home is the site's name in the header.
  */
-export const NAV: AreaId[] = ["study", "library", "wiki", "forum", "treasury"];
+export const NAV: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] as AreaId[]).filter((id) => shown(id));
 
 /**
  * The bar along the bottom of the screen on phones, left to right: the five doors with Search in the middle
@@ -108,6 +114,11 @@ export const TABS: { id: AreaId; also?: string[] }[] = [
   { id: "wiki" },
   { id: "treasury" },
 ];
+
+/** Whether an area is offered anywhere on the site: everything but the forum's two while it is closed (FORUM_OPEN). */
+export function shown(id: AreaId): boolean {
+  return FORUM_OPEN || (id !== "forum" && id !== "debates");
+}
 
 /** A door's plain word, or the area's English name for places that are not doors. */
 export const doorWord = (id: AreaId) => AREAS[id].door ?? AREAS[id].english;

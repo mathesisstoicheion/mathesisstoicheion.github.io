@@ -23,7 +23,7 @@ import { coreEntry } from "@/lib/lookup/core";
 import { loadPlaces, shortName, typeLabel, type Place } from "@/lib/map";
 import { LIMITS, useSettings } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
-import { AREAS } from "@/config/areas";
+import { AREAS, FORUM_OPEN, shown } from "@/config/areas";
 import GreekKeyboard from "./GreekKeyboard";
 import styles from "./QuickSearch.module.css";
 
@@ -41,7 +41,7 @@ interface Option { id: string; group: GroupId; kind: string; label: React.ReactN
 /** Pages of the site a search can open by name. */
 const PAGES: { href: string; title: string; about: string }[] = [
   ...(["home", "library", "search", "study", "wiki", "archaeology", "census", "map", "forum", "debates", "treasury", "downloads"] as const)
-    .map((id) => ({ href: AREAS[id].href, title: `${AREAS[id].name}`, about: AREAS[id].english })),
+    .filter(shown).map((id) => ({ href: AREAS[id].href, title: `${AREAS[id].name}`, about: AREAS[id].english })),
   { href: "/academy/alphabet", title: "The alphabet", about: "letters, how to write them, how they sounded" },
   { href: "/academy/today", title: "Today's session", about: "a few minutes a day" },
   { href: "/academy/review", title: "Daily review", about: "flashcards, saved words" },
@@ -210,7 +210,7 @@ function Box({ onClose }: { onClose: () => void }) {
     if (/[a-z]/i.test(t) && !hasDigit) {
       out.push({ id: "english", group: "everywhere", kind: "Search the translations", href: `/search?m=english&q=${e}`, label: <>for <b>{t}</b></> });
       out.push({ id: "wiki", group: "everywhere", kind: "Search the Painted Stoa", href: `/stoa?q=${e}`, label: <>for <b>{t}</b></> });
-      out.push({ id: "forum", group: "everywhere", kind: "Search the Town Hall", href: `/town-hall?q=${e}`, label: <>for <b>{t}</b></> });
+      if (FORUM_OPEN) out.push({ id: "forum", group: "everywhere", kind: "Search the Town Hall", href: `/town-hall?q=${e}`, label: <>for <b>{t}</b></> });
     }
     out.push({ id: "library", group: "everywhere", kind: "Search my library", href: `/search?m=library&q=${e}`, label: <>for <b>{t}</b></> });
     return out;

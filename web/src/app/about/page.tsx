@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
-import { AREAS, SITE, type AreaId } from "@/config/areas";
+import { AREAS, SITE, shown, type AreaId } from "@/config/areas";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
 export const metadata: Metadata = { title: "About the names", description: PAGE_DESCRIPTIONS.about };
 
-const ORDER: AreaId[] = ["home", "library", "reader", "search", "study", "wiki", "archaeology", "census", "map", "forum", "debates", "treasury", "downloads"];
+const ORDER: AreaId[] = ["home", "library", "reader", "search", "study", "wiki", "archaeology", "census", "map", "forum", "debates", "treasury", "downloads"].filter((id) => shown(id as AreaId)) as AreaId[];
 
 export default function AboutPage() {
   return (

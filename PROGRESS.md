@@ -51,7 +51,7 @@ uses them).
 4. Ask the owner whether `Documents/canonical-greekLit-master`, `Documents/OpenGreekAndLatin-First1KGreek-…` and
    their two zip files (about 290 MB) are still needed.
 
-**E. The forum, frozen.** Hide it everywhere: the menus, the reader's "Talk about it" panel, "Ask in the Town Hall"
+**E. The forum, frozen.** Done 2026-10-18, not yet published: one switch, `FORUM_OPEN` in `web/src/config/areas.ts`, hides it; `/town-hall` pages say "Closed for now"; `web/e2e/forum-hidden.spec.ts` checks every page. Hide it everywhere: the menus, the reader's "Talk about it" panel, "Ask in the Town Hall"
 at the end of lessons, the Bug reports and Suggestions boards, and the home page's forum activity. **Sign-in keeps
 working**: the owner signs in to open her private texts. Build, run all tests, and show the owner before publishing.
 
@@ -87,7 +87,6 @@ working**: the owner signs in to open her private texts. Build, run all tests, a
 - GLAUx analyses cover 1,186 of 1,837 works; the rest have no word analysis.
 - Faults in the source files, not the site: Perseus New Testament (1 John 5.7, John 8.11), Andocides' English, tlg0541.tlg042, the Marcus Aurelius header.
 - Sign-up and reset emails may land in spam. Matters only if accounts stay.
-- The home page asked Supabase for forum activity on every visit. Check it is gone now the forum is hidden.
 - Local Windows builds need `--webpack`.
 
 ## Decisions that still hold
