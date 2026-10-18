@@ -20,7 +20,7 @@ export default function AreaHeader({ id, carve, crumb, children }: { id: AreaId;
         {crumb}
         <PagePiece className="piece-phone" />
         <div className="area-kicker"><span className="label">{a.english}</span></div>
-        {cut && <Carving text={cut} kind="title" delay={0.6} className="carve area-carve" />}
+        {cut && <Carving text={cut} kind="title" delay={0.15} className="carve area-carve" />}
         {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
         <PagePiece className="piece-desk" />
         <h1>

@@ -64,7 +64,7 @@ export default function LibraryPage() {
           <MineButtons />
         </div>
         <PagePiece className="piece-phone" />
-        <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.6} className={`carve ${styles.carve}`} />
+        <Carving text="ΜΟΥΣΕΙΟΝ" kind="title" delay={0.2} className={`carve ${styles.carve}`} />
       </div>
       <Suspense fallback={null}>
         <Library

@@ -282,6 +282,16 @@ select:not([multiple]):not([size]) {
 }
 .piece[data-niche="arch"] .piece-niche::before { border-radius: var(--radius-arch); }
 .piece > .piece-niche[data-ready]::before { opacity: 0; }
+/* the note in the window's corner that it can be lit (components/art/LampHint.tsx): faint, brighter while the pointer is on
+   the piece; it never moves */
+.lamp-hint {
+  position: absolute; right: 8px; bottom: 7px; z-index: 1; padding: 3px 9px; pointer-events: none;
+  font: 500 0.6rem / 1.2 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
+  background: rgba(12, 10, 8, 0.62); border-radius: var(--radius); opacity: 0.55; transition: opacity var(--dur) var(--ease);
+}
+.piece-niche:hover .lamp-hint, .piece-niche:focus-visible .lamp-hint { opacity: 1; }
+.lamp-tap { display: none; }
+@media (hover: none) { .lamp-click { display: none; } .lamp-tap { display: inline; } }
 .piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
 .piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
@@ -293,9 +303,8 @@ select:not([multiple]):not([size]) {
 /* a broad window in a narrow column of text (the credits, the about page) leaves the title room beside it */
 @media (min-width: 761px) { .page-head > .piece-head.piece-wide { width: min(clamp(300px, 38vw, 520px), 45%); } }
 /* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and
-   the name and function of the page"; and: "The stone sculptures should be the first thing that you see"): its niche
-   comes first and the light comes up on its piece; then its Greek name is cut into the wall, letter by letter, while its
-   name and what it is for rise into place one after another. Only opacity and a small rise move, and
+   the name and function of the page"): its name, its Greek name cut in the wall and what it is for rise into place one
+   after another, and last its niche, where the light then comes up on the piece. Only opacity and a small rise move, and
    nothing holds its last frame. (:where keeps these weaker than any animation of an element's own.) */
 @keyframes enter { from { opacity: 0; transform: translateY(12px); } }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter var(--dur-enter) var(--ease) backwards; }
@@ -303,7 +312,7 @@ select:not([multiple]):not([size]) {
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(3)) { animation-delay: calc(2 * var(--enter-step)); }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(4)) { animation-delay: calc(3 * var(--enter-step)); }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(n + 5)) { animation-delay: calc(4 * var(--enter-step)); }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(.piece-head) { animation-duration: calc(1.5 * var(--dur-enter)); animation-delay: 0s; }
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(.piece-head) { animation-duration: calc(1.5 * var(--dur-enter)); animation-delay: calc(3.5 * var(--enter-step)); }
 /* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
 .page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
 :is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
@@ -317,9 +326,8 @@ select:not([multiple]):not([size]) {
   .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
   .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
 }
-/* a page's piece standing outside a header (the home page's): it rises first, like a header's */
-.piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) backwards; }
-:where(.tool-page) > :where(.piece-head) { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) backwards; }
+/* a page's piece standing outside a header (the home page's) rises into place like a header's */
+:where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
 /* on a phone the piece opens the page, in a window of its own across the screen, and the carved name, the title and the
    words follow (a header holds both, "piece-desk" before the title and "piece-phone" at the top; the one not shown loads
    nothing) */
@@ -347,13 +355,11 @@ select:not([multiple]):not([size]) {
 .tag.legend { color: var(--legend); }
 
 /* --------------------------------------------------------- page turn */
-/* Going from page to page: the old page sinks into the dark as the new one comes up out of it, the two overlapping so
-   there is never a blank moment or a jump (only opacity and a few pixels' rise move, which the browser does on the
-   graphics chip, so it stays smooth on a phone). */
-::view-transition-old(.page-turn) { animation: 380ms cubic-bezier(0.4, 0, 1, 1) both turn-out; }
-::view-transition-new(.page-turn) { animation: 760ms var(--ease) 140ms both turn-in; }
-@keyframes turn-out { to { opacity: 0; transform: translateY(-4px); } }
-@keyframes turn-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+/* Route changes: the old page fades into the dark and the new one comes up out of it, calmly. */
+::view-transition-old(.page-turn) { animation: 240ms ease-in both turn-out; }
+::view-transition-new(.page-turn) { animation: 620ms var(--ease) 60ms both turn-in; }
+@keyframes turn-out { to { opacity: 0; } }
+@keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 
 /* ---------------------------------------------------------------- torchlit art (lib/art) */

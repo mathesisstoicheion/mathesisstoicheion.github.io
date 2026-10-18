@@ -97,9 +97,6 @@ export interface CarvedOptions {
 
 interface Cell { spr: HTMLCanvasElement; dx: number; dy: number; cx: number; cy: number; q: number; q2: number; ord: number }
 
-/** how far across a letter the chisel has gone, for a letter that is `a` of the way cut */
-const cutTo = (a: number) => clamp(a * 1.15, 0, 1);
-
 export class Carved implements Art {
   cv: HTMLCanvasElement; o: Required<Omit<CarvedOptions, "quiet" | "cols" | "boxRows" | "align">> & Pick<CarvedOptions, "quiet" | "cols" | "boxRows" | "align">;
   x: CanvasRenderingContext2D; cells: Cell[] = []; s = 8; t0: number | null; cache: HTMLCanvasElement | null = null;
@@ -146,17 +143,11 @@ export class Carved implements Art {
   }
   draw(now: number, ls: LocalLight[]) {
     const x = this.x, s = this.s, cv = this.cv;
-    // a letter being cut shows only as far as the chisel has gone, left to right (the owner, 2026-10-17: "the animation
-    // of stone inscriptions being carved in the stone"); `row` is which lighting of the letter to stamp
-    const stamp = (c: Cell, row: number, a: number) => {
-      const w = a >= 1 ? s : Math.max(1, Math.round(s * cutTo(a)));
-      x.drawImage(c.spr, 0, row * s, w, s, c.dx, c.dy, w, s);
-    };
     x.setTransform(1, 0, 0, 1, 0, 0); x.globalAlpha = 1; x.clearRect(0, 0, cv.width, cv.height);
     let revealing = false;
     if (this.cache) x.drawImage(this.cache, 0, 0);
     else {
-      for (const c of this.cells) { const a = this.rev(c, now); if (a < 1) revealing = true; if (a <= 0) continue; x.globalAlpha = Math.min(1, a * 1.8) * c.q; stamp(c, 0, a); }
+      for (const c of this.cells) { const a = this.rev(c, now); if (a < 1) revealing = true; if (a <= 0) continue; x.globalAlpha = a * c.q; x.drawImage(c.spr, 0, 0, s, s, c.dx, c.dy, s, s); }
       // once every letter is cut, the unlit wall is kept as one picture
       if (!revealing && this.t0 !== null) {
         const cc = canvas(cv.width, cv.height), y = cc.getContext("2d")!;
@@ -179,19 +170,13 @@ export class Carved implements Art {
           const d = Math.sqrt(d2), dir = day ? 1 : d / (d + R * 0.25);
           let fi = (Math.atan2(dy, dx) / (Math.PI * 2)) * NA; fi = (fi + NA) % NA;
           const k0 = fi | 0, fr = fi - k0, k1 = (k0 + 1) % NA;
-          x.globalAlpha = L * dir * (1 - fr); stamp(c, k0 + 1, a);
-          if (fr > 0.02) { x.globalAlpha = L * dir * fr; stamp(c, k1 + 1, a); }
-          if (dir < 0.97) { x.globalAlpha = L * (1 - dir); stamp(c, NA + 1, a); }
+          x.globalAlpha = L * dir * (1 - fr); x.drawImage(c.spr, 0, (k0 + 1) * s, s, s, c.dx, c.dy, s, s);
+          if (fr > 0.02) { x.globalAlpha = L * dir * fr; x.drawImage(c.spr, 0, (k1 + 1) * s, s, s, c.dx, c.dy, s, s); }
+          if (dir < 0.97) { x.globalAlpha = L * (1 - dir); x.drawImage(c.spr, 0, (NA + 1) * s, s, s, c.dx, c.dy, s, s); }
         }
       }
-      // a letter that has just been cut catches the light once, softly, from above, and brightest at the fresh edge
-      // where the chisel is
-      if (a < 1 && !day) {
-        const row = ((NA * 3) / 4 + 1) * s;
-        x.globalAlpha = Math.sin(a * Math.PI) * 0.5 * c.q2; stamp(c, (NA * 3) / 4 + 1, a);
-        const e = Math.round(s * cutTo(a)), ew = Math.max(2, Math.round(s * 0.09));
-        if (e > 0 && e < s) { x.globalAlpha = Math.sin(a * Math.PI) * 0.9 * c.q2; x.drawImage(c.spr, Math.max(0, e - ew), row, ew, s, c.dx + Math.max(0, e - ew), c.dy, ew, s); }
-      }
+      // a letter that has just been cut catches the light once, softly, from above
+      if (a < 1 && !day) { x.globalAlpha = Math.sin(a * Math.PI) * 0.5 * c.q2; x.drawImage(c.spr, 0, ((NA * 3) / 4 + 1) * s, s, s, c.dx, c.dy, s, s); }
     }
     x.globalAlpha = 1;
     return revealing;

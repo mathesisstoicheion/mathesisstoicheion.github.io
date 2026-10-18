@@ -12,6 +12,7 @@
  * form, a private page) get theirs from the layout instead, at the foot of the page (`place="foot"`): it appears only
  * when no piece has been placed at the head.
  */
+import LampHint from "./LampHint";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { preload } from "react-dom";
@@ -112,9 +113,9 @@ export default function PagePiece({ place = "head", spec: given, className, stea
   return (
     <figure className={`piece piece-${place}${L.wide ? " piece-wide" : ""}${className ? ` ${className}` : ""}`} data-niche={L.look.niche} style={{ "--piece-ratio": L.ratio } as React.CSSProperties}>
       <button type="button" className="piece-niche" aria-pressed={lit} onClick={toggle}
-        title={lit ? "Click to give it back to your torch" : "Click to light it"}
         aria-label={lit ? "Take the lamp away, back to your torch" : "Set a lamp before the sculpture"}>
         <canvas key={spec!.piece} ref={cv} role="img" aria-label={credit!.alt} />
+        <LampHint lit={lit} />
       </button>
       <figcaption>
         <b>{credit!.title}</b>{credit!.date && <>, {credit!.date}</>}.{" "}

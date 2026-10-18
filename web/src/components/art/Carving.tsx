@@ -19,14 +19,14 @@ const KINDS: Record<Kind, (text: string, cols?: number) => CarvedOptions> = {
   // a line of verse across the page, in two rows on a phone
   line: (text) => ({ text, cols: (w) => (w < 760 ? 8 : 16), cell: (w, c) => Math.min(78, Math.floor(w / c)), reveal: 2.2, dur: 0.8, rad: 0.8 }),
   // a page's name, large, on one row (smaller on a phone, so the page's first screen is not all name)
-  title: (text) => ({ text, cols: text.length, cell: (w, c) => Math.min(innerWidth < 760 ? 56 : 118, Math.floor(w / c)), reveal: 1.6, dur: 1.1, rad: 1 }),
+  title: (text) => ({ text, cols: text.length, cell: (w, c) => Math.min(innerWidth < 760 ? 56 : 118, Math.floor(w / c)), reveal: 1.2, dur: 0.9, rad: 1 }),
   // a book's Greek title on the reader's cover: one row if it is short, otherwise a block of rows as even as can be
   // (ΑΠΟΛΟΓΙΑΣ over ΩΚΡΑΤΟΥΣ, not fourteen letters over three)
   cover: (text) => ({ text, cols: (w) => even(text.length, w < 760 ? 9 : 14),
     cell: (w, c) => Math.min(w < 760 ? 40 : 64, Math.floor(w / c)), align: "start", reveal: 1.4, dur: 0.9, rad: 0.9 }),
   // the name of a page inside an area (a lesson, an entry, a table): smaller than an area's, at the start of the line
   name: (text) => ({ text, cols: (w) => even(text.length, w < 760 ? 11 : 18),
-    cell: (w, c) => Math.min(innerWidth < 760 ? 30 : 54, Math.floor(w / c)), align: "start", reveal: 1.3, dur: 1, rad: 0.9 }),
+    cell: (w, c) => Math.min(innerWidth < 760 ? 30 : 54, Math.floor(w / c)), align: "start", reveal: 1, dur: 0.8, rad: 0.9 }),
   // a few large letters on a broken piece of stone (the page that has not survived)
   fragment: (text) => ({ text, cols: text.length, cell: (w, c) => Math.min(innerWidth < 760 ? 92 : 128, Math.floor((w * 0.8) / c)), reveal: 1.2, dur: 1, rad: 1.1 }),
   // the site's name along the foot of every page
