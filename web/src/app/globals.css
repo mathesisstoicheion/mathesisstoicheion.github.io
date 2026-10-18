@@ -289,14 +289,14 @@ select:not([multiple]):not([size]) {
   object-fit: contain; object-position: center bottom; opacity: 0.8; pointer-events: none; transition: opacity var(--dur-fade) var(--ease);
 }
 .piece-niche[data-ready] > .piece-still { opacity: 0; }
-/* the note in the window's corner that it can be lit (components/art/LampHint.tsx): faint, brighter while the pointer is on
-   the piece; it never moves */
+/* the note that a piece can be lit (components/art/LampHint.tsx): a small line under its niche, never over the piece (the
+   owner, 2026-10-18); faint, brighter while the pointer is on the piece. It never moves. */
 .lamp-hint {
-  position: absolute; right: 8px; bottom: 7px; z-index: 1; padding: 3px 9px; pointer-events: none;
+  display: block; margin-top: 6px; pointer-events: none; text-align: right;
   font: 500 0.6rem / 1.2 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
-  background: rgba(12, 10, 8, 0.62); border-radius: var(--radius); opacity: 0.55; transition: opacity var(--dur) var(--ease);
+  opacity: 0.6; transition: opacity var(--dur) var(--ease);
 }
-.piece-niche:hover .lamp-hint, .piece-niche:focus-visible .lamp-hint { opacity: 1; }
+:is(.piece-niche, .frame):is(:hover, :focus-within) + .lamp-hint { opacity: 1; }
 .lamp-tap { display: none; }
 @media (hover: none) { .lamp-click { display: none; } .lamp-tap { display: inline; } }
 .piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }

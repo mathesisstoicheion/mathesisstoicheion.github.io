@@ -7,6 +7,7 @@
  */
 import { useEffect, type RefObject } from "react";
 import { onFrame, torchStill } from "@/lib/torch";
+import { PHONE } from "./common";
 import { clamp, smooth, type Art, type LocalLight } from "./common";
 import { clearSprites } from "./carve";
 
@@ -27,13 +28,17 @@ export interface PartOptions {
 
 interface Part { art: Art; el: HTMLElement; o: PartOptions; vis: boolean; ok: boolean; tried: boolean; last: LocalLight[] | null; revealing: boolean; dirty: boolean; sp: number; drew: boolean }
 
+// the one still light, and the phone's torch standing mid-screen, a little brighter than the mouse's torch (the owner,
+// 2026-10-18: "make it brighter")
+const STILL_I = 1.35, PHONE_GAIN = 1.3;
+
 const parts = new Set<Part>();
 let io: IntersectionObserver | null = null;
 let stopFrame: (() => void) | null = null;
 let resizeTimer = 0;
 
 function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: number }[]) {
-  const H = innerHeight, still = torchStill();
+  const H = innerHeight, still = torchStill(), touch = PHONE();
   for (const p of parts) {
     const a = p.art;
     if (p.drew) { a.pace?.(dt); p.drew = false; }
@@ -45,14 +50,14 @@ function tick(now: number, dt: number, ls: readonly { x: number; y: number; I: n
     // near the screen but not on it (the observer looks a little beyond): nothing to see, so nothing to draw yet
     if (r.bottom <= 0 || r.top >= H) continue;
     let local: LocalLight[];
-    if (still || p.o.day?.() || p.o.steady?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: 1 }]; }
+    if (still || p.o.day?.() || p.o.steady?.()) { const s = p.o.still ? p.o.still(r.width, r.height) : { x: r.width * 0.15, y: -r.height * 0.35 }; local = [{ x: s.x, y: s.y, I: STILL_I }]; }
     else {
       // brighter near the middle of the screen (a piece taller than the screen: near its top)
       let raw = 1;
       if (p.o.place !== false) { const off = r.height <= H * 0.84 ? r.top + r.height / 2 - H / 2 : r.top - H * 0.08; raw = 1 - smooth(clamp(Math.abs(off) / (H * 0.6), 0, 1)); }
       p.sp = p.sp < 0 ? raw : p.sp + (raw - p.sp) * (1 - Math.exp(-dt * 3.2));
       if (Math.abs(raw - p.sp) < 0.002) p.sp = raw;
-      const g = (p.o.gain ?? 1) * (0.6 + 0.4 * p.sp);
+      const g = (p.o.gain ?? 1) * (0.6 + 0.4 * p.sp) * (touch ? PHONE_GAIN : 1);
       local = ls.map((l) => ({ x: l.x - r.left, y: l.y - r.top, I: l.I * g }));
     }
     // cut in when it comes into view

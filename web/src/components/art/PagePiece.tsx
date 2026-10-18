@@ -48,6 +48,13 @@ function lookOf(s: PieceShape): { look: PieceLook; ratio: number; wide: boolean 
 const stillBox = ([t, r, b, l] = [0.2, 0.12, 0.035, 0.12]) =>
   ({ "--mt": `${t * 100}%`, "--mr": `${r * 100}%`, "--mb": `${b * 100}%`, "--ml": `${l * 100}%` }) as React.CSSProperties;
 
+/**
+ * Where the one still light stands (a phone's steady lamp, reduced motion, the Daylight page): high on the left, in front
+ * of the niche's mouth, so it reaches over the lip onto the piece. (Set outside the niche, above and to the left, the lip
+ * cast the whole piece into shadow: the owner, 2026-10-18, "The static torch isn't working on phone".)
+ */
+const STILL = (w: number, h: number) => ({ x: w * 0.3, y: h * 0.12 });
+
 /** Resolves once the element is near the screen, so a piece far down the page fetches nothing until it is wanted. */
 function near(el: Element) {
   return new Promise<void>((res) => {
@@ -100,7 +107,7 @@ export default function PagePiece({ place = "head", spec: given, className, stea
     art.current = p;
     requestAnimationFrame(() => c.parentElement?.setAttribute("data-ready", ""));
     return p;
-  }, { still: (w, h) => ({ x: -w * 0.3, y: -h * 0.2 }), steady: steady ? PHONE : undefined }, shown ? spec!.piece : "");
+  }, { still: STILL, steady: steady ? PHONE : undefined }, shown ? spec!.piece : "");
 
   if (!shown || !L) return null;
   // the piece at the head of the page is the first thing seen, so it is the first thing fetched: the page asks for its two
@@ -127,8 +134,9 @@ export default function PagePiece({ place = "head", spec: given, className, stea
         <img className="piece-still" src={`/images/pieces/lit/${spec!.piece}-s.webp`} alt="" aria-hidden="true" loading="lazy" decoding="async"
           fetchPriority={place === "head" ? "high" : "auto"} style={stillBox(L.look.margin)} />
         <canvas key={spec!.piece} ref={cv} role="img" aria-label={credit!.alt} />
-        <LampHint lit={lit} />
       </button>
+      {/* under the niche, never over the piece (the owner, 2026-10-18) */}
+      <LampHint lit={lit} />
       <figcaption>
         <b>{credit!.title}</b>{credit!.date && <>, {credit!.date}</>}.{" "}
         {spec!.why && <span className="piece-why">{spec!.why} </span>}

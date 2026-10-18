@@ -75,7 +75,6 @@ export default function ReliefWindow({ pic, alt, caption, className, frameClassN
         <button type="button" className="piece-niche" aria-pressed={lit} onClick={toggle}
           aria-label={lit ? "Take the lamp away, back to your torch" : "Set a lamp before the relief"}>
           <canvas key={id} ref={cv} role="img" aria-label={alt} />
-          <LampHint lit={lit} />
         </button>
       ) : <canvas key={id} ref={cv} role="img" aria-label={`${alt} It is lit by your torch.`} />}
     </div>
@@ -84,6 +83,8 @@ export default function ReliefWindow({ pic, alt, caption, className, frameClassN
   return (
     <figure className={className ? `win ${className}` : "win"}>
       {frame}
+      {/* under the window, never over the relief (the owner, 2026-10-18) */}
+      {shape && <LampHint lit={lit} />}
       <figcaption>{caption}</figcaption>
     </figure>
   );
