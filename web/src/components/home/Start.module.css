@@ -6,7 +6,7 @@
 
 /* a panel set into the wall: dark stone, its edge cut in (it keeps its dark, nearly solid fill: it lies over the carved wall) */
 .ask, .dcard {
-  background: rgba(20, 16, 13, 0.86); border: 1px solid transparent;
+  background: var(--panel-solid); border: 1px solid transparent;
   box-shadow: var(--field-edge);
 }
 

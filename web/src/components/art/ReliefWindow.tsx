@@ -14,6 +14,7 @@ import { Relief, type ReliefOptions } from "@/lib/art/relief";
 import { Piece, loadPiece, type PieceLook } from "@/lib/art/piece";
 import { redrawArt, useTorchlit } from "@/lib/art/part";
 import { PIECE_SHAPES } from "@/data/pieces";
+import { useLight } from "@/lib/settings";
 
 /** How each re-lit medallion is cut and lit (the settings tried in the design samples). */
 const KINDS: Record<string, ReliefOptions> = {
@@ -41,7 +42,8 @@ interface Props {
   day?: boolean;
 }
 
-export default function ReliefWindow({ pic, alt, caption, className, frameClassName, kind, delay, day }: Props) {
+export default function ReliefWindow({ pic, alt, caption, className, frameClassName, kind, delay, day: dayPage }: Props) {
+  const day = useLight() || !!dayPage;
   const cv = useRef<HTMLCanvasElement>(null);
   const art = useRef<Piece | null>(null);
   const [lit, setLit] = useState(false);

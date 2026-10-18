@@ -195,7 +195,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [colsFor, setColsFor] = useState<{ work: string; c: Columns } | null>(null);
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
-  const daylight = useSettings((s) => isDaylight(s.theme));
+  const daylight = useSettings((s) => isDaylight(s.theme) || s.look === "light");
   const cases = useSettings((s) => s.cases);
   const known = useSettings((s) => s.known);
   const deck = useAcademy((s) => s.deck);
@@ -1809,7 +1809,7 @@ export function ReaderBooks() {
   const nav = useNav();
   const split = !!nav.params.get("w2");
   // the reader's page: Night (the stone) or Daylight, the one light surface on the site (styles/tokens.css)
-  const daylight = useSettings((s) => isDaylight(s.theme));
+  const daylight = useSettings((s) => isDaylight(s.theme) || s.look === "light");
   const [picking, setPicking] = useState(false);
   // the private collection's window, opened from either book: a book chosen there opens in that pane
   const [mineFor, setMineFor] = useState<1 | 2 | null>(null);
