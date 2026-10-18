@@ -112,7 +112,7 @@ describe("the reading path", () => {
           const occ = before.filter((b) => b === norm(word.form)).length;
           before.push(norm(word.form));
           const a = analyse(pack, word.form, key, occ, keys, doc.levels.length);
-          if (a) expect(a.lemma, `${s.id}: ${word.form}`).toBe(word.lemma);
+          if (a) expect(a.lemma, `${s.id}: ${word.form}`).toBe(word.glaux ?? word.lemma);
         }
       }
     }
