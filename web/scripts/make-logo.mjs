@@ -1,9 +1,9 @@
-// Makes the pictures of the site's logo, Athena's owl (public/logo/owl.svg, the owner's choice of 2026-10-18), set on
-// the site's dark stone. Not part of the site; run it again after changing the drawing, and commit the pictures:
+// Makes the pictures of the site's logo, design A's square ΣΤΟΙΧΕΙΑ mark (public/logo/stoicheia.svg, the owner's choice
+// of 2026-10-18), in gold on the lamplit black. Not part of the site; run it again after changing the drawing, and commit the pictures:
 //   public/favicon.ico                    the tab icon, at 16, 32 and 48 pixels (heavier lines, so it holds when small)
 //   public/apple-touch-icon.png           the icon an iPhone shows on its home screen
 //   public/icons/icon-192.png, icon-512.png, maskable-512.png   the install icons (app/manifest.ts)
-// The header and footer show owl.svg itself (components/EmblemMark.tsx).
+// The header and footer draw the same mark inline (components/EmblemMark.tsx).
 //   node scripts/make-logo.mjs      (CHROMIUM=<path> picks the browser it draws in)
 import { chromium } from "@playwright/test";
 import { fileURLToPath } from "node:url";
@@ -11,18 +11,17 @@ import { dirname, join } from "node:path";
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 
 const here = dirname(fileURLToPath(import.meta.url)), pub = join(here, "..", "public");
-const owl = readFileSync(join(pub, "logo", "owl.svg"), "utf8");
-// the small sizes: thicker lines and dots, so the owl does not fade to a smudge in a browser tab
-const bold = owl.replace('stroke-width="2.2"', 'stroke-width="3.3"').replace(/r="\.95"/g, 'r="1.3"');
+const mark = readFileSync(join(pub, "logo", "stoicheia.svg"), "utf8").replace(/#f2e0c6/g, "#d9b56a");
+// the small sizes: thicker lines and dot, so the letters do not fade to a smudge in a browser tab
+const bold = mark.replace('stroke-width="1.5"', 'stroke-width="2.6"').replace('r="1.1"', 'r="1.7"');
 const uri = (svg) => `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
 
-// one square picture: the owl at `markW` of the width on the wall's stone, lit a little from above as by the torch
-async function draw(page, px, { markW, radius = 0, svg = owl }) {
+// one square picture: the mark at `markW` of the width on the black, lit a little from above as by the lamp
+async function draw(page, px, { markW, radius = 0, svg = mark }) {
   await page.setViewportSize({ width: px, height: px });
   await page.setContent(`<body style="margin:0;background:transparent"><div style="width:${px}px;height:${px}px;border-radius:${radius}px;
-    display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 18%,#2e251d,#1a1410 70%)">
-    <img src="${uri(svg)}" style="width:${Math.round(px * markW)}px;height:${Math.round(px * markW)}px;
-    filter:drop-shadow(0 ${-Math.max(1, px / 64)}px 0 rgba(0,0,0,.8)) drop-shadow(0 ${Math.max(1, px / 64)}px 0 rgba(255,226,186,.1))"></div></body>`);
+    display:grid;place-items:center;background:radial-gradient(120% 90% at 50% 18%,#241a10,#070504 70%)">
+    <img src="${uri(svg)}" style="width:${Math.round(px * markW)}px;height:${Math.round(px * markW)}px;"></div></body>`);
   await page.locator("img").evaluate((i) => i.decode());
   return page.screenshot({ omitBackground: true, type: "png" });
 }
@@ -56,4 +55,4 @@ function ico(sizes) {
 mkdirSync(join(pub, "icons"), { recursive: true });
 writeFileSync(join(pub, "favicon.ico"), ico(tab));
 for (const [name, buf] of Object.entries(files)) writeFileSync(join(pub, name), buf);
-console.log(`made the owl's icons: favicon.ico and ${Object.keys(files).join(", ")}`);
+console.log(`made the mark's icons: favicon.ico and ${Object.keys(files).join(", ")}`);

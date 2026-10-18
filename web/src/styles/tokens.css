@@ -234,6 +234,23 @@
   --sel-edge: var(--honey);
   --accent-on-sel: var(--honey-hi);
 
+  /* the main button: a cream plate with oxblood capitals (design A's "Start with the letters"); the second one is outlined */
+  --btn-bg: var(--bone);
+  --btn-ink: #5a1a10;
+  --btn-edge: rgba(242, 224, 198, 0.24);
+  --oxblood: #5a1a10;
+
+  /* the engravings (components/art/PageArt.tsx): gold lines on Pompeian red, its ground finely hatched; the lamp's pool */
+  --art-ground: var(--red);
+  --art-hatch: rgba(0, 0, 0, 0.22);
+  --art-ink: var(--gold);
+  --art-ink-lit: var(--gold-hi);
+  --art-lamp: rgba(255, 190, 110, 0.2);
+  --art-frame: var(--gold);
+  /* the page laid over the art: a little see-through (the owner, 2026-10-18: "just a tiny bit") */
+  --veil: rgba(11, 8, 6, 0.9);
+  --plate: rgba(5, 4, 3, 0.66);   /* the dark plate under words inside a window */
+
   /* type roles */
   --f-greek: var(--face-gentium);
   --f-display: var(--face-display);
@@ -245,6 +262,10 @@
   --gutter: clamp(16px, 4vw, 48px);
   --maxw: 1240px;
   --tap: 44px;
+
+  /* design A's frame: the header and the phone's bar */
+  --hdr-bg: #070504;
+  --hdr-line: rgba(232, 189, 112, 0.3);
 
   color-scheme: dark;
 }
@@ -306,7 +327,21 @@
   --sel-fg: var(--day-ink);
   --sel-edge: var(--sienna);
   --accent-on-sel: var(--sienna-deep);
-  /* the reader's bar on a phone is plain paper */
+  /* the main button: oxblood with paper capitals; the engravings in oxblood lines on pale gold */
+  --btn-bg: var(--oxblood);
+  --gold: #8a5a12;
+  --btn-ink: var(--limestone-2);
+  --btn-edge: rgba(90, 26, 16, 0.4);
+  --art-ground: #e6cf9e;
+  --art-hatch: rgba(90, 26, 16, 0.1);
+  --art-ink: var(--oxblood);
+  --art-ink-lit: #8a2a14;
+  --art-lamp: rgba(255, 244, 214, 0.35);
+  --art-frame: var(--oxblood);
+  --veil: rgba(236, 224, 201, 0.9);
+  --plate: rgba(243, 233, 214, 0.82);
   --tex: none;
+  --hdr-bg: var(--limestone-2);
+  --hdr-line: rgba(90, 26, 16, 0.3);
   color-scheme: light;
 }

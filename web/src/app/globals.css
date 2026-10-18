@@ -1,8 +1,19 @@
 /* =====================================================================
-   Mathesis Stoicheion: "Stone and torch" (DESIGN.md).
+   Mathesis Stoicheion: "Gold and lamplight" (design A; the owner's choice, 2026-10-18; the plan is
+   /mnt/project-files/redesign/GOLD-AND-LAMPLIGHT-PLAN.md, the rules DESIGN.md).
    Colours, type sizes, spacing and motion are named in styles/tokens.css; this file uses those names.
-   The site is dark only; the reader's Daylight page redefines the same names inside the reader.
+   The site opens dark, in lamplight; the light look (Settings, or the lamp in the header) is warm paper.
    ===================================================================== */
+
+/* the titles' face: Noto Serif Display, extra condensed, every weight from 100 to 900 (tall, narrow, thin capitals) */
+@font-face { font-family: "Lamplight Display"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-normal-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lamplight Display"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-normal-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Lamplight Display"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-normal-greek.woff2") format("woff2"); unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+@font-face { font-family: "Lamplight Display"; font-style: normal; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-normal-greek-ext.woff2") format("woff2"); unicode-range: U+1F00-1FFF; }
+@font-face { font-family: "Lamplight Display"; font-style: italic; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-italic-latin.woff2") format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: "Lamplight Display"; font-style: italic; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-italic-latin-ext.woff2") format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: "Lamplight Display"; font-style: italic; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-italic-greek.woff2") format("woff2"); unicode-range: U+0370-0377, U+037A-037F, U+0384-038A, U+038C, U+038E-03A1, U+03A3-03FF; }
+@font-face { font-family: "Lamplight Display"; font-style: italic; font-weight: 100 900; font-display: swap; src: url("/fonts/display/display-italic-greek-ext.woff2") format("woff2"); unicode-range: U+1F00-1FFF; }
 
 :root {
   /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts). How much
@@ -70,9 +81,8 @@ body {
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* the wall: the stone's colour, and its still texture (lib/stone.ts, drawn by scripts/make-stone.mjs) */
-:root { --tex: url("/images/stone.webp"); }
-html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420px; }
+/* the room: plain lamplit dark (or warm paper), no texture */
+html { background: var(--bg); }
 
 /* the torch's pools of light on the wall (components/Torch.tsx): moved by transform only, with normal blending */
 .torch .glow {
@@ -87,7 +97,7 @@ body::before {
   content: ""; position: fixed; z-index: var(--z-over-header); top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
   background: var(--bg); pointer-events: none;
 }
-h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 300; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
 p { margin: 0; }
@@ -178,18 +188,18 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 @keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ------------------------------------------------------------- buttons */
-/* The main button is a gilded plate with dark capitals, lit from above; .ghost is a slab of the stone itself. Both settle
-   under the hand and sink a little when pressed, never jump (the owner, 2026-10-17: every page element in stone). */
+/* The main button is a cream plate with oxblood capitals; .ghost is outlined in a fine line (design A). Both settle under the
+   hand, never jump. */
 .btn {
   display: inline-flex; align-items: center; gap: 0.7em;
-  padding: 0.95em 1.35em 0.9em; border: 1px solid transparent; background: var(--inlay); color: var(--accent-ink);
-  box-shadow: var(--inlay-edge), var(--inlay-drop);
+  padding: 0.95em 1.35em 0.9em; border: 1px solid transparent; background: var(--btn-bg); color: var(--btn-ink);
+  box-shadow: none;
   border-radius: var(--radius); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none;
   transition: filter var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .btn:hover { filter: brightness(1.08); }
-.btn:active { box-shadow: var(--inlay-press); filter: none; }
-.btn.ghost { background: var(--slab); color: var(--ink); box-shadow: var(--slab-edge); }
+.btn:active { filter: brightness(0.94); }
+.btn.ghost { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--btn-edge); }
 .btn.ghost:hover { background: var(--slab-lit); color: var(--accent-hi); filter: none; }
 .btn.ghost:active { background: var(--field); box-shadow: var(--field-edge); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
@@ -264,43 +274,57 @@ select:not([multiple]):not([size]) {
   max-width: 640px; margin-block: var(--space-7); padding: var(--space-6); display: grid; gap: var(--space-3);
   background: var(--field); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in); color: var(--ink-2);
 }
-/* a page's own sculpture in its niche (components/art/PagePiece.tsx): at the head of a page it stands at the right of the
-   title and the words run round it; a header that holds one is laid out as plain flow, since a grid would give the niche
-   a row of its own. The niche is a button: clicking it sets a lamp before the piece. */
+/* ---------------------------------------------------------------- the art behind the page
+   Every page but the reader has its own engraving: a real object in gold lines on Pompeian red (components/art/PageArt.tsx,
+   lib/art/stage.ts). It starts in a window by the page's title, grows into the background as the page scrolls and turns
+   slowly; the page lies over it a touch see-through, and framed windows look through to it. */
+.eng-view { position: fixed; inset: 0; pointer-events: none; overflow: hidden; contain: strict; }
+.eng-base { z-index: 0; }
+.eng-ground { position: absolute; inset: 0; background: repeating-linear-gradient(-45deg, var(--art-hatch) 0 1px, transparent 1px 7px), var(--art-ground); }
+.eng-lines {
+  position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 50% 50%; will-change: transform;
+  background: var(--art-ink); -webkit-mask: no-repeat center / contain; mask: no-repeat center / contain;
+  transition: background-color var(--dur-slow) var(--ease);
+}
+html[data-art-lit] .eng-lines { background-color: var(--art-ink-lit); }
+/* the lamp's pool: follows the pointer on a computer, stands mid-screen on a phone; lit fully, it floods the view */
+.eng-lamp {
+  position: absolute; left: 0; top: 0; width: 680px; height: 680px; margin: -340px 0 0 -340px; border-radius: var(--radius-round);
+  background: radial-gradient(closest-side, var(--art-lamp), transparent); will-change: transform;
+}
+.eng-view::after {
+  content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-slow) var(--ease);
+  background: radial-gradient(ellipse at 50% 45%, var(--art-lamp), transparent 75%);
+}
+html[data-art-lit] .eng-view::after { opacity: 1; }
+/* the page over the art: its panels a touch see-through; the header and the phone's bars stay solid */
+html[data-art] main, html[data-art] .site-footer { position: relative; z-index: 1; background: var(--veil); }
+/* a window onto the art: a fine gold frame; whatever is fixed inside it (the art) shows only within it */
+.art-window { position: relative; display: block; overflow: hidden; clip-path: inset(0); box-shadow: inset 0 0 0 1px var(--art-frame); background: var(--art-ground); }
+.art-window.art-round { clip-path: circle(50% at 50% 50%); }
+.art-window.art-round::after { content: ""; position: absolute; inset: 0; border-radius: var(--radius-round); box-shadow: inset 0 0 0 1px var(--art-frame); pointer-events: none; }
+.art-pane { min-height: clamp(150px, 22vw, 230px); display: flex; align-items: flex-end; margin-block: var(--space-6); }
+.art-pane.art-tall { min-height: clamp(220px, 34vw, 380px); }
+.art-plate {
+  position: relative; z-index: 1; margin: var(--space-3); padding: var(--space-3) var(--space-4); max-width: min(40rem, calc(100% - 2 * var(--space-3)));
+  background: var(--plate); box-shadow: inset 1px 0 0 var(--art-frame);
+}
+.art-plate .art-label { color: var(--accent); margin-bottom: var(--space-1); }
+.art-plate [lang="grc"] { font-size: 1.4rem; line-height: 1.3; color: var(--ink); }
+.art-plate small, .art-plate .src { display: block; margin-top: var(--space-1); font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
+
+/* the page's own window at its head (components/art/PagePiece.tsx) */
 .piece { margin: 0; }
 .piece-niche {
   display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
-  background: transparent; cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.piece-niche { position: relative; }
-.piece-niche canvas { position: relative; display: block; width: 100%; height: 100%; }
-/* before its piece has come the niche is already cut in the wall, a dark hollow of the same shape, so nothing on the page
-   is ever missing; it gives way to the drawn niche as the light comes up on the piece (PagePiece.tsx sets data-ready) */
-.piece > .piece-niche::before {
-  content: ""; position: absolute; inset: 0; background: var(--field); box-shadow: var(--field-edge);
-  transition: opacity var(--dur-fade) var(--ease);
-}
-.piece[data-niche="arch"] .piece-niche::before { border-radius: var(--radius-arch); }
-.piece > .piece-niche[data-ready]::before { opacity: 0; }
-/* the piece's still picture (PagePiece.tsx), in the box the lit piece will stand in: inside the niche's margins (as shares
-   of its height and width, --mt --mr --mb --ml), as large as fits, standing on the sill */
-.piece-still {
-  position: absolute; left: var(--ml); top: var(--mt); width: calc(100% - var(--ml) - var(--mr)); height: calc(100% - var(--mt) - var(--mb));
-  object-fit: contain; object-position: center bottom; opacity: 0.8; pointer-events: none; transition: opacity var(--dur-fade) var(--ease);
-}
-.piece-niche[data-ready] > .piece-still { opacity: 0; }
-/* the note in the window's corner that it can be lit (components/art/LampHint.tsx): faint, brighter while the pointer is on
-   the piece; it never moves */
-.lamp-hint {
-  position: absolute; right: 8px; bottom: 7px; z-index: 1; padding: 3px 9px; pointer-events: none;
-  font: 500 0.6rem / 1.2 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
-  background: rgba(12, 10, 8, 0.62); border-radius: var(--radius); opacity: 0.55; transition: opacity var(--dur) var(--ease);
-}
-.piece-niche:hover .lamp-hint, .piece-niche:focus-visible .lamp-hint { opacity: 1; }
+.piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
+/* the note that it can be lit: under the window, never over the art (the owner, 2026-10-18) */
+.lamp-note { margin-top: var(--space-2); font: 500 0.62rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
 .lamp-tap { display: none; }
 @media (hover: none) { .lamp-click { display: none; } .lamp-tap { display: inline; } }
-.piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
-.piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.piece figcaption { margin-top: var(--space-1); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
 .piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .piece-why { font-style: italic; }
@@ -453,7 +477,7 @@ html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bot
 
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: 0.92rem; }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-3); font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
-.site-footer-mark { width: 40px; height: 40px; flex: none; filter: var(--gilt-cut); }
+.site-footer-mark { width: 40px; height: 40px; flex: none; color: var(--gold); }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; }
@@ -474,15 +498,15 @@ html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bot
    doors and the Town Hall, shorter for every page inside them: shorter in its words and spacing, never in its statue. */
 .ph { padding-block: clamp(40px, 6vw, 72px) var(--space-5); }
 .ph-short { padding-block: clamp(28px, 4.4vw, 52px) var(--space-4); }
-.ph-path { color: var(--accent-2); display: flex; flex-wrap: wrap; align-items: center; min-height: 1.6em; }
+.ph-path { color: var(--gold); display: flex; flex-wrap: wrap; align-items: center; min-height: 1.6em; }
 .ph-path a { color: inherit; text-decoration: none; }
 .ph-path a:hover, .ph-path a:focus-visible { color: var(--accent); }
 .ph-sep { color: var(--ink-3); white-space: pre; }
 .ph-large .ph-carve { margin-top: 18px; }
-.ph .ph-title { color: var(--ink); line-height: 1.02; margin-top: var(--space-4); }
-.ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5rem); }
-.ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin-top: var(--space-3); }
-.ph-greek { display: block; font-family: var(--f-greek); font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
+.ph .ph-title { color: var(--ink); line-height: 0.98; margin-top: var(--space-4); font-weight: 200; letter-spacing: -0.01em; }
+.ph-large .ph-title { font-size: clamp(3.4rem, 7.6vw, 6.6rem); }
+.ph-short .ph-title { font-size: clamp(2.8rem, 5.6vw, 4.8rem); margin-top: var(--space-3); }
+.ph-greek { display: block; font-family: var(--f-greek); font-weight: 400; font-size: 0.34em; color: var(--gold); margin-top: 12px; letter-spacing: 0.02em; }
 .ph-short .ph-greek { font-size: 0.5em; }
 .ph-purpose { max-width: 60ch; font-size: 1.15rem; line-height: 1.5; color: var(--ink-2); font-style: normal; }
 .ph-short .ph-purpose { font-size: 1.06rem; }
@@ -491,8 +515,8 @@ html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bot
 @media (max-width: 760px) {
   .ph { padding-top: 28px; }
   .ph-short { padding-top: 22px; }
-  .ph-large .ph-title { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
-  .ph-short .ph-title { font-size: clamp(1.95rem, 9vw, 2.4rem); }
+  .ph-large .ph-title { font-size: clamp(3rem, 15vw, 3.8rem); margin-top: var(--space-3); }
+  .ph-short .ph-title { font-size: clamp(2.6rem, 13vw, 3.3rem); }
   .ph-greek { margin-top: 6px; }
   .ph-purpose, .ph-short .ph-purpose { font-size: 1.02rem; }
 }

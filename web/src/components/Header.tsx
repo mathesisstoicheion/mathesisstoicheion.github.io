@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { AREAS, MENU, SITE, TABS, doorWord, menuWord } from "@/config/areas";
 import { carvedCaps } from "@/lib/art/common";
-import { scrollBehavior } from "@/lib/settings";
+import { scrollBehavior, useSettings } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
 import ConnectionLight from "./ConnectionLight";
@@ -25,6 +25,8 @@ export default function Header() {
   const pathname = usePathname();
   const openSettings = useUI((s) => s.openSettings);
   const setSearchOpen = useUI((s) => s.setSearchOpen);
+  const look = useSettings((s) => s.look);
+  const setLook = useSettings((s) => s.set);
   const ref = useRef<HTMLElement>(null);
   const showRef = useRef<() => void>(null);
 
@@ -144,6 +146,11 @@ export default function Header() {
             <span className={styles.txt}>Search</span>
           </button>
           <AccountButton />
+          <button className={`${styles.tbtn} ${styles.lamp}`} type="button" onClick={() => setLook({ look: look === "light" ? "dark" : "light" })}
+            aria-pressed={look === "light"} aria-label={look === "light" ? "Back to lamplight" : "Warm paper (the light look)"}
+            title={look === "light" ? "Back to lamplight" : "Warm paper (the light look)"}>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" aria-hidden="true"><path d="M3.5 15.2c0-1.7 3-3 7.2-3h5.6l3.4-1.6-1.4 3.4c-.6 1.8-3.4 3-7.6 3s-7.2-.5-7.2-1.8z" /><path d="M3.6 14.4 2 12.6" /><path d="M8.5 17v2.2h5.5V17" /><path className={styles.flame} d="M19.6 8.8c-1.4-.8-1.5-2.5-.1-4.3.2 1.1 1.3 1.6 1.2 2.8-.1.8-.5 1.3-1.1 1.5z" fill="currentColor" stroke="none" /></svg>
+          </button>
           <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>
             <span className={styles.txt}>Settings</span>

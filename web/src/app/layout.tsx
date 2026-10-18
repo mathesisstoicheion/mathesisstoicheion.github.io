@@ -1,9 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { GFS_Didot, EB_Garamond, Noto_Serif_Display, Gentium_Book_Plus, Noto_Sans, Noto_Sans_Mono, Alegreya_Sans } from "next/font/google";
 import Header from "@/components/Header";
-import Torch from "@/components/Torch";
 import Footer from "@/components/Footer";
-import PagePiece from "@/components/art/PagePiece";
+import PageArt from "@/components/art/PageArt";
 import TabBar from "@/components/TabBar";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
 import Toast from "@/components/Toast";
@@ -57,7 +56,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  // the site is dark only: the browser's bar is the stone of the wall
+  // the browser's bar is the black frame (the light look changes it: lib/settings.ts)
   themeColor: THEME_COLOUR,
   colorScheme: "dark",
 };
@@ -76,10 +75,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <a className="skip" href="#main">Skip to content</a>
         <SettingsApplier />
-        <Torch />
+        <PageArt />
         <Header />
         {children}
-        <PagePiece place="foot" />
         <Footer />
         <TabBar />
         <SettingsPanel />

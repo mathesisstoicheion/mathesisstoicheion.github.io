@@ -11,7 +11,7 @@ import styles from "./SettingsPanel.module.css";
 
 // the site is dark only; the reader's page can be Night (the stone) or Daylight (pale limestone), against eye strain
 const PAGES: [ThemePref, string][] = [["dark", "Night"], ["light", "Daylight"]];
-const LOOKS: [Look, string][] = [["dark", "Dark stone"], ["light", "Light limestone"]];
+const LOOKS: [Look, string][] = [["dark", "Lamplight"], ["light", "Paper"]];
 const MOTIONS: [MotionPref, string][] = [["auto", "Automatic"], ["reduce", "Reduced"], ["full", "Full"]];
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */

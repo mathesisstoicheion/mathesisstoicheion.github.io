@@ -1,9 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import Carving from "@/components/art/Carving";
 import PagePiece from "@/components/art/PagePiece";
 import type { Step } from "@/config/areas";
-import { carvedCaps } from "@/lib/art/common";
 
 /**
  * The one head every page opens with (PAGE-RULES.md, rule 1, agreed with the owner on 2026-10-18), in this order: the
@@ -18,7 +16,7 @@ import { carvedCaps } from "@/lib/art/common";
  * the statue (rule 2); `children` follow the statue. The statue is held twice, once beside the title for a computer and
  * once after the action for a phone; only the one shown is ever loaded and drawn (components/art/PagePiece.tsx).
  */
-export default function PageHead({ path, carve, title, greek, purpose, action, size = "short", piece, steady, bare, desk = true, className, children }: {
+export default function PageHead({ path, title, greek, purpose, action, size = "short", piece, steady, bare, desk = true, className, children }: {
   path: Step[];
   /** the words cut into the wall: the Greek name, unless the page carves something else (left out if too long) */
   carve?: string | null;
@@ -37,8 +35,6 @@ export default function PageHead({ path, carve, title, greek, purpose, action, s
   className?: string;
   children?: ReactNode;
 }) {
-  const cut = carve === undefined ? greek : carve;
-  const n = cut ? carvedCaps(cut).length : 0;
   return (
     <header className={`${bare ? "" : "wrap "}page-head ph ph-${size}${className ? ` ${className}` : ""}`}>
       <p className="ph-path label">
@@ -49,7 +45,6 @@ export default function PageHead({ path, carve, title, greek, purpose, action, s
           </span>
         ))}
       </p>
-      {cut && n >= 2 && n <= 42 && <Carving text={cut} kind={size === "large" ? "title" : "name"} delay={0.15} className={`carve ph-carve${size === "large" ? " area-carve" : " page-carve"}`} />}
       {desk && <PagePiece className="piece-desk" spec={piece} steady={steady} />}
       <h1 className="ph-title">
         {title}

@@ -4,8 +4,8 @@ import { persist, createJSONStorage, type StateStorage } from "zustand/middlewar
 /** The reader's page: Night (the stone, as everywhere on the site) or Daylight ("light"), a light page against eye
  *  strain. The site itself is dark only (DESIGN.md); "auto" and "dark" both mean Night. */
 export type ThemePref = "auto" | "light" | "dark";
-/** The whole site: dark stone by torchlight (the design's own), or light limestone by daylight (the owner, 2026-10-18:
- *  "give it a light mode"). */
+/** The whole site: dark, in lamplight (design A, Gold and lamplight, the default), or warm paper (the owner, 2026-10-18:
+ *  "We're just going with gold and lamplight, then doing a light mode for it, too"). */
 export type Look = "dark" | "light";
 export type MotionPref = "auto" | "reduce" | "full";
 export type Columns = "both" | "greek" | "trans";
@@ -79,8 +79,8 @@ export const useSettings = create<SettingsStore>()(
 );
 
 /** The colour of the browser's own bar on phones (and of an installed app's title bar): the stone of the wall. */
-export const THEME_COLOUR = "#241d17";
-export const THEME_COLOUR_LIGHT = "#e8e0cf";
+export const THEME_COLOUR = "#070504";
+export const THEME_COLOUR_LIGHT = "#ece0c9";
 
 /** True when the reader's page is Daylight. */
 export const isDaylight = (theme: ThemePref) => theme === "light";
