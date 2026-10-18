@@ -57,3 +57,6 @@ this site later as a reading aid. Until then nothing of it is built here.
 - Uncertain parsings and scansions are marked, never guessed.
 - No adverts, no trackers.
 - Code is MIT; content is CC BY-SA 4.0 (`LICENSE`). Nothing non-commercial or "academic use only" is published.
+  One exception (owner, 2026-10-18): the Venetus A line index (CC BY-NC 4.0), which places each Iliad line on the
+  manuscript's photographs. It is kept out of the site's repository, served from the packs, and labelled
+  non-commercial in `NOTICE`.

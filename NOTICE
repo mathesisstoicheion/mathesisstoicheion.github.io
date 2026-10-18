@@ -58,9 +58,11 @@ MANUSCRIPTS
 
 Photographs are shown from the libraries' own image servers; none is copied into this repository.
 
-- EXCEPTION, NON-COMMERCIAL: the index of Iliad lines on the pages of the Venetus A
-  (web/public/data/manuscripts/venetus-a-iliad.json), from the Homer Multitext project, release
-  2024c. CC BY-NC 4.0. This file is not covered by LICENSE and may not be used commercially.
+- EXCEPTION, NON-COMMERCIAL: the index of Iliad lines on the pages of the Venetus A, from the
+  Homer Multitext project, release 2024c. CC BY-NC 4.0: it may not be used commercially. It is not
+  in this repository and not covered by LICENSE. pipeline/build_manuscripts.py builds it into
+  web/public/data/noncommercial/ (ignored by git), and the site serves it from the separate packs
+  repository (mathesisstoicheion/packs, folder noncommercial/), whose README labels it the same way.
 - Biblioteca Medicea Laurenziana, Plut. 32.9 (Teca digitale) and Bibliothèque nationale de France,
   grec 1807 (Gallica): photographs for non-commercial use, linked, not copied.
 

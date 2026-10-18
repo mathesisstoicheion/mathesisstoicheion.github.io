@@ -1,10 +1,13 @@
 import { describe, expect, it } from "vitest";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { WITNESSES, type LineIndex, type PageList } from "./manuscripts";
 
 const catalog = JSON.parse(readFileSync("public/data/catalog.json", "utf8")) as { authors: { works: { id: string }[] }[] };
 const works = new Set(catalog.authors.flatMap((a) => a.works.map((w) => w.id)));
 const read = <T,>(path: string) => JSON.parse(readFileSync(`public${path}`, "utf8")) as T;
+// the Venetus A index is non-commercial, so it is not in git: a fresh copy has it only after build_manuscripts.py
+const VENETUS = "/data/noncommercial/venetus-a-iliad.json";
+const hasVenetus = existsSync(`public${VENETUS}`);
 
 describe("the manuscripts the reader shows", () => {
   for (const w of WITNESSES) {
@@ -13,14 +16,15 @@ describe("the manuscripts the reader shows", () => {
       expect(w.terms.url).toMatch(/^https:\/\//);
       for (const [id, inW] of Object.entries(w.works)) {
         expect(works.has(id), id).toBe(true);
+        if (inW.lines && !hasVenetus) continue;
         const folios = new Set((inW.lines ? read<LineIndex>(inW.lines).pages : read<PageList>(`/data/manuscripts/${w.id}.json`).pages).map((p) => p[0]));
         for (const f of [inW.from, ...Object.values(inW.books ?? {})]) expect(folios.has(f), `${id} ${f}`).toBe(true);
       }
     });
   }
 
-  it("the Venetus A's index places (nearly) every line of the Iliad, each inside its photograph", () => {
-    const ix = read<LineIndex>("/data/manuscripts/venetus-a-iliad.json");
+  it.skipIf(!hasVenetus)("the Venetus A's index places (nearly) every line of the Iliad, each inside its photograph", () => {
+    const ix = read<LineIndex>(VENETUS);
     const refs = Object.keys(ix.lines);
     expect(refs.length).toBeGreaterThan(15500);
     expect(new Set(refs.map((r) => r.split(".")[0])).size).toBe(24);

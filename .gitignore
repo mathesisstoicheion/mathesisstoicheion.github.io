@@ -9,6 +9,8 @@ web/public/data/lsj/
 web/public/data/search/
 web/public/data/lexicon/
 web/public/data/syntax/
+# non-commercial data (CC BY-NC), kept out of this CC BY-SA repository; published with the packs (see NOTICE)
+web/public/data/noncommercial/
 
 # Python caches
 __pycache__/
