@@ -76,6 +76,8 @@ const PAGES: [string, PageSpec][] = [
   ["/treasury/word", { piece: "red-base" }],
   ["/treasury", { piece: "athena-votive" }],
   ["/admin/translations", { piece: "athena-torso" }],
+  // the home page: the first thing a visitor sees (the owner, 2026-10-17: "The stone sculptures should be the first thing that you see")
+  ["/", { piece: "athena-head" }],
 ];
 /** The page that has not survived (the 404 page): a head that has outlived the rest of its stele. */
 export const LOST_PAGE: PageSpec = { piece: "stele-youth-head", why: "The head is all that survives of its grave stele." };
@@ -85,7 +87,7 @@ export const USED_PIECES = [...new Set([...PAGES.map(([, s]) => s.piece), LOST_P
 
 const RX = PAGES.map(([p, spec]) => [new RegExp("^" + p.replace(/\[[a-z]+\]/g, "[^/]+") + "$"), spec] as const);
 
-/** The piece for this page's address (none for the home page and the reader, which have their own). */
+/** The piece for this page's address (none for the reader, which has its own). */
 export function pieceFor(path: string): PageSpec | null {
   const p = path.replace(/\/+$/, "") || "/";
   for (const [rx, spec] of RX) if (rx.test(p)) return PIECE_SHAPES[spec.piece] ? spec : null;

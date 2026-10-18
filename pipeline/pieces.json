@@ -314,5 +314,11 @@
   "src": "public/images/stele-woman-and-servant.jpg",
   "form": "slab",
   "material": "marble"
+ },
+ {
+  "id": "athena-head",
+  "src": "../pipeline/pieces-src/athena-head.jpg",
+  "form": "round",
+  "material": "marble"
  }
 ]

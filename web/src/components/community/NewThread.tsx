@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 import TagInput from "@/components/notes/TagInput";
-import PagePiece from "@/components/art/PagePiece";
 import { problem, useAccount } from "@/lib/community/client";
 import { categories, SITE_BOARDS, startThread, type Quote } from "@/lib/community/data";
 import { pageFrom } from "@/lib/community/bug";
@@ -19,6 +18,8 @@ import { useLoad } from "@/lib/use-load";
 import { canWrite, Composer, QuoteBlock, SignInPrompt } from "./parts";
 import BugForm from "./BugForm";
 import styles from "./Community.module.css";
+import PageHead from "@/components/PageHead";
+import { trail } from "@/config/areas";
 
 
 export default function NewThread() {
@@ -46,12 +47,7 @@ export default function NewThread() {
   if (!canWrite(account)) return (
     <>
       <div className={`wrap ${styles.signedOutHead}`}>
-        <div className="page-head">
-          <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / A new thread</p>
-          <PagePiece className="piece-desk" />
-          <h2 className="page-title">{heading}</h2>
-          <PagePiece className="piece-phone" />
-        </div>
+        <PageHead bare path={trail("forum", "A new thread")} title={heading} />
       </div>
       <div className={`wrap ${styles.narrow}`}>
         {quote && <QuoteBlock quote={quote} />}

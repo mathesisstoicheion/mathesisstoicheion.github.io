@@ -16,6 +16,8 @@ export interface Area {
   english: string;     // plain English subtitle
   door?: string;       // its one plain word in the menu and the phone bar, for the five doors (Learn, Read…)
   menu?: string;       // its plain word in the header's menu, for a place there that is not one of the doors
+  short?: string;      // its name in a page's path, where shorter than `name` ("The Stoa")
+  parent?: AreaId;     // the door it stands inside, for places that are not doors themselves
   href: string;
   origin: string;
   fit: string;
@@ -34,12 +36,12 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "It holds the texts.", phase: 2,
   },
   reader: {
-    id: "reader", name: "The Scroll", english: "Reader", href: "/read",
+    id: "reader", parent: "library", name: "The Scroll", english: "Reader", href: "/read",
     origin: "Greek books were written on rolls of papyrus, unrolled with one hand and rolled up with the other as you read.",
     fit: "This is where you read.", phase: 2,
   },
   search: {
-    id: "search", name: "The Oracle", english: "Search", menu: "Research", href: "/search",
+    id: "search", name: "The Oracle", english: "Search", href: "/search",
     origin: "At Delphi, Apollo's priestess, the Pythia, answered the questions of cities and individuals.",
     fit: "Ask a question, get an answer, and a clearer one than Delphi was remembered for.", phase: 4,
   },
@@ -49,22 +51,22 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "This is where you learn.", phase: 3,
   },
   wiki: {
-    id: "wiki", name: "The Painted Stoa", greek: "Στοὰ Ποικίλη", english: "Wiki", door: "Explore", href: "/stoa",
+    id: "wiki", name: "The Painted Stoa", short: "The Stoa", greek: "Στοὰ Ποικίλη", english: "Wiki", door: "Explore", href: "/stoa",
     origin: "A colonnade on the Athenian Agora hung with great paintings of battles and myths. Zeno taught there, and his followers were named Stoics after it.",
     fit: "Stories, pictures and argument in one place.", phase: 7,
   },
   archaeology: {
-    id: "archaeology", name: "The Kerameikos", greek: "Κεραμεικός", english: "Archaeology", href: "/stoa/kerameikos",
+    id: "archaeology", parent: "wiki", name: "The Kerameikos", greek: "Κεραμεικός", english: "Archaeology", href: "/stoa/kerameikos",
     origin: "Athens' potters' quarter and its main cemetery, one of the city's most important excavations.",
     fit: "Pots and graves are much of what archaeology has to work with.", phase: 7,
   },
   census: {
-    id: "census", name: "The Census", english: "Most Mentioned", href: "/stoa/census",
+    id: "census", parent: "wiki", name: "The Census", english: "Most Mentioned", href: "/stoa/census",
     origin: "A counting.",
     fit: "Every word, person, god and place in the texts, counted.", phase: 7,
   },
   map: {
-    id: "map", name: "The Periplus", greek: "Περίπλους", english: "Map", href: "/stoa/periplus",
+    id: "map", parent: "wiki", name: "The Periplus", greek: "Περίπλους", english: "Map", href: "/stoa/periplus",
     origin: "Ancient sailing guides that listed coasts, harbours and distances, such as the Periplus of the Erythraean Sea.",
     fit: "A guide to the places of the Greek world.", phase: 7,
   },
@@ -75,7 +77,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "Questions, answers and conversation.", phase: 8,
   },
   debates: {
-    id: "debates", name: "The Pnyx", greek: "Πνύξ", english: "Debates", href: "/town-hall/pnyx",
+    id: "debates", parent: "forum", name: "The Pnyx", greek: "Πνύξ", english: "Debates", href: "/town-hall/pnyx",
     origin: "The hill in Athens where the citizen Assembly met to argue and vote.",
     fit: "Argue a motion, then vote on it.", phase: 8,
   },
@@ -85,7 +87,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "Your notes, saved words and favourite passages.", phase: 5,
   },
   downloads: {
-    id: "downloads", name: "The Scroll Case", english: "Downloads", href: "/downloads",
+    id: "downloads", parent: "library", name: "The Scroll Case", english: "Downloads", href: "/downloads",
     origin: "Book rolls were stored and carried in cylindrical cases.",
     fit: "Pack the library to read offline.", phase: 2,
   },
@@ -120,6 +122,26 @@ export const TABS: { id: AreaId; also?: string[] }[] = [
 export const doorWord = (id: AreaId) => AREAS[id].door ?? AREAS[id].english;
 /** A place's word in the header's menu. */
 export const menuWord = (id: AreaId) => AREAS[id].menu ?? doorWord(id);
+
+/** One step of a page's path (PAGE-RULES.md, rule 4): its words, and where it leads (none for the page itself). */
+export interface Step { label: string; href?: string }
+
+/**
+ * The path shown above a page's title (PAGE-RULES.md, rule 4, the owner's choice, 2026-10-18): the menu's own word
+ * (LEARN, READ, SEARCH, EXPLORE, TALK, MINE), then the door and the places inside it down to the page, e.g.
+ * EXPLORE › THE STOA › AUTHORS. A door's own page shows its word alone. `more` adds the page's own steps after the area's.
+ */
+export function trail(id: AreaId, ...more: (Step | string)[]): Step[] {
+  const chain: AreaId[] = [];
+  for (let a: AreaId | undefined = id; a; a = AREAS[a].parent) chain.unshift(a);
+  const door = chain[0];
+  const steps: Step[] = [{ label: AREAS[door].door ?? AREAS[door].english, href: AREAS[door].href }];
+  const rest = more.map((m) => (typeof m === "string" ? { label: m } : m));
+  // the door itself (The Mouseion), then each place inside it (The Scroll Case); a door's own page stops at its word
+  if (chain.length > 1 || rest.length) for (const a of chain) steps.push({ label: AREAS[a].short ?? AREAS[a].name, href: AREAS[a].href });
+  steps.push(...rest);
+  return steps;
+}
 
 export const SITE = {
   greek: "Μάθησις Στοιχείων",

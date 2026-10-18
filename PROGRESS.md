@@ -882,6 +882,32 @@ The owner asked for bigger sculpture windows on every page, a home page that is 
 - **Phone sharpness limit (the owner is being asked whether to keep this balance)**: on phones the big sculpture windows are drawn with at most 220,000 pixels (`web/src/lib/art/piece.ts`, `layout()`). At full sharpness, scrolling past one fell from 49 to 25 frames a second in the slowed-phone speed test; with the limit it is about 33. Pictures look a little softer on phones in return.
 - **Still to do**: build and look at every changed page on a phone and a computer, old against new; measure frame rates; run the whole browser test suite (about 40 tests fail on the live site too, for missing word packs and pictures on the test machine); show the owner before and after, ask whether to refine, then ask for "Publish".
 
+## The sculpture first (2026-10-17, not live yet)
+The owner: "The stone sculptures should be the first thing that you see, and the first thing that loads. Met by the
+Animation of stone inscriptions being carved in the stone … with smooth animations when going between pages", and (19:19)
+circled the top of each phone page for the sculpture and the corner beside "Read · Library" for the private buttons.
+- On a phone every page's piece now stands at the top of its header, above the carved name and title.
+- The home page has its own piece, a marble head of Athena (Met 12.157), in a niche cut into the lettered wall; on a phone
+  it keeps one steady lamp (`PagePiece steady`), as relighting it and the wall together halved scrolling speed.
+- The library's Private collection and Import buttons are a small plaque beside the page's name.
+- Head pieces' pictures are preloaded first; the niche rises first, then the Greek name is cut in letter by letter
+  (a left-to-right chisel sweep, lib/art/carve.ts); every page change plays the page turn, overlapping old and new.
+- Before/after and speed: https://claude.ai/artifact/FuRCu4XbQiFqahtt4cVcQc
+
+## The page rules (2026-10-18, not live yet)
+Built on branch claude/project-thread-6gazvz on top of the sculpture round (Athena at the top right of the home page, the name
+section gone, the light-it note by each statue, the Muses' emblems). Follows /mnt/project-files/redesign/PAGE-RULES.md:
+- One page head for every page, `components/PageHead.tsx` (path, carved Greek, bone title, gold Greek, upright purpose line,
+  statue in an arch on the right; large for the doors and the Town Hall, short inside). AreaHeader and RefHead wrap it.
+- Paths from `trail()` in config/areas.ts (areas now have `parent` and `short`); the Oracle's menu word is Search.
+- On phones the page's main action (`action`) comes before the statue; the library and Stoa use `FindJump`, a search-shaped
+  button that brings the list's own search into view.
+- Every niche is an arch (PagePiece lookOf). A faint still picture (`lit/<id>-s.webp`, made by pipeline/stills.py) shows at once.
+- `.slab-card` is the one square link card; Census facts and the 404's ways use it; the Stoa panels lost their icons.
+- Author pages: one works list with a Where to begin / A to Z switch, first three marked Start here.
+- The empty reader has the normal head with a Choose a text button.
+Shown at https://claude.ai/artifact/HP8PaivuePQ4QG6VxG5faD. Waiting for "Publish".
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|

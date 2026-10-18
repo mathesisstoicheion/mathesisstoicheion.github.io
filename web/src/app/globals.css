@@ -282,6 +282,23 @@ select:not([multiple]):not([size]) {
 }
 .piece[data-niche="arch"] .piece-niche::before { border-radius: var(--radius-arch); }
 .piece > .piece-niche[data-ready]::before { opacity: 0; }
+/* the piece's still picture (PagePiece.tsx), in the box the lit piece will stand in: inside the niche's margins (as shares
+   of its height and width, --mt --mr --mb --ml), as large as fits, standing on the sill */
+.piece-still {
+  position: absolute; left: var(--ml); top: var(--mt); width: calc(100% - var(--ml) - var(--mr)); height: calc(100% - var(--mt) - var(--mb));
+  object-fit: contain; object-position: center bottom; opacity: 0.8; pointer-events: none; transition: opacity var(--dur-fade) var(--ease);
+}
+.piece-niche[data-ready] > .piece-still { opacity: 0; }
+/* the note in the window's corner that it can be lit (components/art/LampHint.tsx): faint, brighter while the pointer is on
+   the piece; it never moves */
+.lamp-hint {
+  position: absolute; right: 8px; bottom: 7px; z-index: 1; padding: 3px 9px; pointer-events: none;
+  font: 500 0.6rem / 1.2 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
+  background: rgba(12, 10, 8, 0.62); border-radius: var(--radius); opacity: 0.55; transition: opacity var(--dur) var(--ease);
+}
+.piece-niche:hover .lamp-hint, .piece-niche:focus-visible .lamp-hint { opacity: 1; }
+.lamp-tap { display: none; }
+@media (hover: none) { .lamp-click { display: none; } .lamp-tap { display: inline; } }
 .piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
 .piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
@@ -316,15 +333,17 @@ select:not([multiple]):not([size]) {
   .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
   .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
 }
-:where(.tool-page) > :where(.piece-head) { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
-/* a page's title is given its whole width on a phone: the piece there stands under it, in a window of its own across
-   the screen, and the words follow (a header holds both, "piece-desk" before the title and "piece-phone" after it; the
-   one not shown loads nothing) */
+/* a page's piece standing outside a header (the home page's) rises into place like a header's */
+:where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
+/* on a phone the piece stands in a window of its own across the screen, after the title, the purpose and the page's main
+   action (a header holds both, "piece-desk" before the title and "piece-phone" after the action; the one not shown loads
+   nothing) */
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
   .piece-phone { display: block; }
-  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto var(--space-5); }
+  /* full size: on a phone it follows the title, the purpose and the page's main action (PAGE-RULES.md, rule 2) */
+  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto; }
   .piece-head.piece-wide { width: 100%; }
   .piece-head figcaption { text-align: center; }
   .piece figcaption { font-size: var(--step--2); }
@@ -333,6 +352,17 @@ select:not([multiple]):not([size]) {
 /* stone surfaces, for markup that has no module of its own: a panel sunk into the wall, and a slab set on it */
 .field { background: var(--field); box-shadow: var(--field-edge); }
 .slab { background: var(--slab); box-shadow: var(--slab-edge); }
+/* Every ordinary link card is the same square carved slab (PAGE-RULES.md, rule 3): square corners, a thin edge, no icons.
+   (The Library's stelai, the Treasury's temple and the Stoa's colonnade keep their own shapes.) */
+.slab-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-3); }
+.slab-card {
+  display: grid; gap: 4px; align-content: start; padding: var(--space-4) var(--space-5); border-radius: 0;
+  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); text-decoration: none;
+  transition: background-color var(--dur) ease;
+}
+a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { background-color: var(--slab-lit); }
+.slab-card :where(b, h3, strong) { color: var(--ink); font-weight: 600; }
+.slab-card :where(.muted, p, small) { color: var(--ink-2); font-size: var(--step--1); margin: 0; }
 :where(input, textarea)::placeholder { color: var(--ink-3); }
 
 /* certainty labels */
@@ -433,27 +463,49 @@ html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bot
   .site-footer-links a { display: inline-flex; align-items: center; min-height: var(--tap); }  /* a finger-sized target */
 }
 
-/* area header, shared by every area page */
-.area-head { padding-block: clamp(40px, 6vw, 72px) 0; }
-.area-kicker { display: flex; align-items: center; gap: var(--space-3); }
-.area-carve { margin-top: 18px; }
-/* the source of a line carved in place of an area's name */
-.area-carve-cap { margin-top: var(--space-2); max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
-/* a page's own Greek name, cut above its title (components/art/NameCarving.tsx) */
+/* an area's head (components/AreaHeader.tsx): the source of a line carved in place of its name, and the band under it */
+.area-carve-cap { max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
+/* a page's own Greek name, cut above its title */
 .page-carve { margin-top: var(--space-2); }
-.area-kicker .label { color: var(--accent-2); }
-.area-head h1 { font-size: clamp(2.8rem, 6vw, 5rem); margin-top: var(--space-4); }
-.area-greek { display: block; font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
-.area-origin { max-width: 60ch; margin-top: 18px; font-size: 1.15rem; color: var(--ink-2); }
-.area-head .meander { margin-top: clamp(32px, 5vw, var(--space-7)); }
-/* phones: an area's title and its story take a third of the first screen, not half */
+.area-meander { margin-top: var(--space-2); }
+
+/* The one page head (components/PageHead.tsx; PAGE-RULES.md, rule 1): the path, the carved Greek name, the title in bone,
+   the Greek name in gold, one upright line saying what the page is for, the statue in its arch at the right. Large for the
+   doors and the Town Hall, shorter for every page inside them: shorter in its words and spacing, never in its statue. */
+.ph { padding-block: clamp(40px, 6vw, 72px) var(--space-5); }
+.ph-short { padding-block: clamp(28px, 4.4vw, 52px) var(--space-4); }
+.ph-path { color: var(--accent-2); display: flex; flex-wrap: wrap; align-items: center; min-height: 1.6em; }
+.ph-path a { color: inherit; text-decoration: none; }
+.ph-path a:hover, .ph-path a:focus-visible { color: var(--accent); }
+.ph-sep { color: var(--ink-3); white-space: pre; }
+.ph-large .ph-carve { margin-top: 18px; }
+.ph .ph-title { color: var(--ink); line-height: 1.02; margin-top: var(--space-4); }
+.ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5rem); }
+.ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin-top: var(--space-3); }
+.ph-greek { display: block; font-family: var(--f-greek); font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
+.ph-short .ph-greek { font-size: 0.5em; }
+.ph-purpose { max-width: 60ch; font-size: 1.15rem; line-height: 1.5; color: var(--ink-2); font-style: normal; }
+.ph-short .ph-purpose { font-size: 1.06rem; }
+.ph .ph-action { margin-top: var(--space-4); }
+.ph-action:has(> .search-field, > form) { max-width: 40rem; }
 @media (max-width: 760px) {
-  .area-head { padding-top: 28px; }
-  .area-head h1 { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
-  .area-greek { margin-top: 6px; }
-  .area-origin { font-size: 1.02rem; line-height: 1.5; margin-top: var(--space-3); }
-  .area-head .meander { margin-top: var(--space-5); }
+  .ph { padding-top: 28px; }
+  .ph-short { padding-top: 22px; }
+  .ph-large .ph-title { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
+  .ph-short .ph-title { font-size: clamp(1.95rem, 9vw, 2.4rem); }
+  .ph-greek { margin-top: 6px; }
+  .ph-purpose, .ph-short .ph-purpose { font-size: 1.02rem; }
 }
+
+/* a page's search offered in its head (components/FindJump.tsx): cut into the stone like the box it opens */
+.find-jump {
+  display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 34rem; min-height: var(--tap); text-align: left;
+  font: inherit; font-size: 1.06rem; color: var(--ink-3); background: rgba(8, 6, 5, 0.66); border: 0; border-radius: var(--radius);
+  padding: 13px var(--space-4); cursor: text;
+  box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 3px 6px -2px var(--cut-deep), inset 0 -1px 0 var(--cut-l);
+}
+.find-jump svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; }
+.find-jump:hover, .find-jump:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--accent), inset 0 3px 6px -2px var(--cut-deep); }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
 .page-title { font-size: clamp(2.4rem, 5vw, 4rem); }

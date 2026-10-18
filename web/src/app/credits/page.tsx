@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
+import PageHead from "@/components/PageHead";
 import { COLLECTIONS, repoUrl } from "@/config/sources";
 import { LSJ_CREDIT } from "@/lib/lookup/lsj";
 import { IMAGES } from "@/wiki/images";
@@ -7,7 +8,6 @@ import { PIECE_CREDITS, USED_PIECES } from "@/data/pieces";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
-import PagePiece from "@/components/art/PagePiece";
 
 export const metadata: Metadata = { title: "Credits, licences & privacy", description: PAGE_DESCRIPTIONS.credits };
 
@@ -52,21 +52,18 @@ export default function CreditsPage() {
   return (
     <Page>
       <article className={`wrap ${styles.prose}`}>
-        <div className="page-head">
-          <span className="label">About</span>
-          <PagePiece className="piece-desk" />
-          <h1>Credits, licences &amp; privacy</h1>
-          <PagePiece className="piece-phone" />
+        <PageHead bare path={[{ label: "About" }, { label: "Credits" }]} title="Credits, licences & privacy"
+          purpose="Where every text, picture and piece of data on the site comes from, under what licence, and what the site keeps about you.">
           {/* the page is long (the pictures alone are two lists of dozens): a line of jumps, in the order of the page */}
           <nav className={styles.jump} aria-label="On this page">
             {SECTIONS.map(([id, name]) => <a key={id} href={`#${id}`}>{name}</a>)}
           </nav>
-          <h2 id="texts">Texts and translations</h2>
-          <p>
-            All Greek texts and English translations come from the collections below and are shown exactly as published.
-            We never edit them. If we find an error, we report it to the collection rather than changing our copy.
-          </p>
-        </div>
+        </PageHead>
+        <h2 id="texts">Texts and translations</h2>
+        <p>
+          All Greek texts and English translations come from the collections below and are shown exactly as published.
+          We never edit them. If we find an error, we report it to the collection rather than changing our copy.
+        </p>
         <ul>
           {COLLECTIONS.map((c) => (
             <li key={c.id}>

@@ -1,14 +1,12 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 import Page from "@/components/Page";
+import PageHead from "@/components/PageHead";
 import Workout from "@/components/academy/Workout";
 import { CHECKPOINTS, CHECKPOINT_GREEK, checkpointById } from "@/data/checkpoints";
 import { LESSONS, lessonById } from "@/data/lessons";
-import { AREAS } from "@/config/areas";
+import { AREAS, trail } from "@/config/areas";
 import styles from "@/components/academy/Workout.module.css";
-import NameCarving from "@/components/art/NameCarving";
-import PagePiece from "@/components/art/PagePiece";
 
 export function generateStaticParams() {
   return CHECKPOINTS.map((c) => ({ id: c.id }));
@@ -28,21 +26,10 @@ export default async function CheckpointPage({ params }: PageProps<"/academy/che
   const first = LESSONS.indexOf(lessons[0]) + 1, last = LESSONS.indexOf(lessons.at(-1)!) + 1;
   return (
     <Page>
-      <div className="wrap" style={{ paddingBlock: "clamp(28px, 5vw, 48px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, maxWidth: 820 }}>
-        <div className="page-head">
-          <nav className="label"><Link href={AREAS.study.href} transitionTypes={["page-turn"]}>{AREAS.study.name}</Link> › Checkpoint {c.numeral}</nav>
-          <NameCarving greek={CHECKPOINT_GREEK} />
-          <PagePiece className="piece-desk" />
-          <h1 className="page-title" style={{ fontSize: "clamp(1.9rem, 4.5vw, 2.8rem)" }}>
-            Checkpoint {c.numeral}: {c.title}
-            <span lang="grc" style={{ display: "block", fontSize: "0.55em", marginTop: 6 }}>{CHECKPOINT_GREEK}</span>
-          </h1>
-          <PagePiece className="piece-phone" />
-          <p className={`muted ${styles.pageIntro}`} style={{ fontSize: "1.05rem", maxWidth: "62ch" }}>
-            Fifteen questions over lessons {first} to {last}, mixed together, one try each. Testing the lessons side by side is what
-            makes them hold: pass it, and the whole stretch comes back for short refreshes like a single lesson.
-          </p>
-        </div>
+      <div className="wrap" style={{ paddingBlock: "0 clamp(28px, 5vw, 48px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, maxWidth: 820 }}>
+        <PageHead bare path={trail("study", `Checkpoint ${c.numeral}`)} title={<>Checkpoint {c.numeral}: {c.title}</>} greek={CHECKPOINT_GREEK}
+          purpose={<>Fifteen questions over lessons {first} to {last}, mixed together, one try each. Testing the lessons side by side is what
+            makes them hold: pass it, and the whole stretch comes back for short refreshes like a single lesson.</>} />
         <div className={`meander ${styles.pageIntro}`} aria-hidden="true" style={{ marginBlock: 6 }} />
         <Workout lesson={lessons.at(-1)!} mode="test" checkpoint={c} />
       </div>

@@ -16,10 +16,8 @@ for (const e of ENTRIES) for (const p of e.places ?? []) (entriesByPlace[p] ??= 
 export default function StoaPeriplusPage() {
   return (
     <Page>
-      <AreaHeader id="map">
-        {/* the map's search and layer chips stand here (components/map/Periplus.tsx), in the header's empty left column */}
-        <div id="map-tools" />
-      </AreaHeader>
+      {/* the map's search and layer chips stand in the head (components/map/Periplus.tsx), its main action */}
+      <AreaHeader id="map" action={<div id="map-tools" />} />
       <Suspense>
         <Periplus entriesByPlace={entriesByPlace} />
       </Suspense>

@@ -7,6 +7,7 @@
  * pipeline/relit_images.py, web/public/images/relit/). Each credit is the caption, given by the page. Until the picture
  * has loaded, and if the browser cannot draw it, the window is dark stone and the caption still names what it shows.
  */
+import LampHint from "./LampHint";
 import { useRef, useState, type ReactNode } from "react";
 import { loadImage } from "@/lib/art/common";
 import { Relief, type ReliefOptions } from "@/lib/art/relief";
@@ -72,9 +73,9 @@ export default function ReliefWindow({ pic, alt, caption, className, frameClassN
     <div className={frameClassName ?? "frame"}>
       {shape ? (
         <button type="button" className="piece-niche" aria-pressed={lit} onClick={toggle}
-          title={lit ? "Click to give it back to your torch" : "Click to light it"}
           aria-label={lit ? "Take the lamp away, back to your torch" : "Set a lamp before the relief"}>
           <canvas key={id} ref={cv} role="img" aria-label={alt} />
+          <LampHint lit={lit} />
         </button>
       ) : <canvas key={id} ref={cv} role="img" aria-label={`${alt} It is lit by your torch.`} />}
     </div>

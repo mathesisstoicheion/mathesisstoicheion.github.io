@@ -23,9 +23,9 @@ const TOOLS = [
 export default function AcademyPage() {
   return (
     <Page>
-      <AreaHeader id="study" />
+      {/* the next step (the day's session, or the next lesson) is the page's main action: on a phone it comes before the statue */}
+      <AreaHeader id="study" action={<AcademyProgress />} />
       <div className="wrap" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 40, paddingBlock: "var(--after-head) 40px" }}>
-        <AcademyProgress />
 
         <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
           <div>
@@ -43,7 +43,7 @@ export default function AcademyPage() {
           <h2 id="tools-title">Practice and reference</h2>
           <div className={styles.tools}>
             {TOOLS.map((t) => (
-              <Link key={t.href} href={t.href} transitionTypes={["page-turn"]} className={styles.card}>
+              <Link key={t.href} href={t.href} transitionTypes={["page-turn"]} className={`slab-card ${styles.card}`}>
                 <span className={styles.cardGr} lang="grc">{t.gr}</span>
                 <h3>{t.title}</h3>
                 <p className="muted">{t.text}</p>
@@ -71,7 +71,7 @@ export default function AcademyPage() {
           </div>
           <div className={`${styles.hub} snap-row`}>
             {GUIDES.map((g, i) => (
-              <Link key={g.id} href={`/academy/guide/${g.id}`} transitionTypes={["page-turn"]} className={styles.card}>
+              <Link key={g.id} href={`/academy/guide/${g.id}`} transitionTypes={["page-turn"]} className={`slab-card ${styles.card}`}>
                 <span className={styles.guideNo}>Guide {i + 1}</span>
                 <span className={styles.cardGr} lang="grc">{g.greek}</span>
                 <h3>{g.title}</h3>

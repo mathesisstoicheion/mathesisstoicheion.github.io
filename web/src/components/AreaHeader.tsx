@@ -1,36 +1,28 @@
 import type { ReactNode } from "react";
-import Carving from "@/components/art/Carving";
-import PagePiece from "@/components/art/PagePiece";
-import { AREAS, type AreaId } from "@/config/areas";
+import PageHead from "@/components/PageHead";
+import { AREAS, trail, type AreaId } from "@/config/areas";
+
+// the five doors and the Town Hall have the large head; every place inside them the shorter one (PAGE-RULES.md, rule 1)
+const LARGE: AreaId[] = ["study", "library", "search", "wiki", "treasury", "forum"];
 
 /**
- * The header every area opens with (design B, Stone and torch): its plain name, its Greek name carved across the wall
- * and lit by the torch (where it has one), its name in full, and what the name means and why it fits. An area with no
- * Greek name of its own may carve a line that belongs to it instead, with its source (`carve`). The area's own piece of
- * sculpture stands in its niche at the right (components/art/PagePiece.tsx); on a phone it stands after the title and the line saying
- * what the page is for, so those come first. A page that is part of another area may put a `crumb` (a line of links back to it)
- * above the header; `children` follow the line saying what the page is for.
+ * The head every area opens with (PageHead, PAGE-RULES.md): the path from the menu's word down to it, its Greek name
+ * carved across the wall and lit by the torch (where it has one), its name in full with the Greek in gold, and what the
+ * name means and why it fits, with the area's own piece of sculpture in its arch at the right. An area with no Greek name
+ * of its own may carve a line that belongs to it instead, with its source (`carve`). `action` is the page's one main thing
+ * (on a phone it comes before the statue); `children` follow.
  */
-export default function AreaHeader({ id, carve, crumb, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; crumb?: ReactNode; children?: ReactNode }) {
+export default function AreaHeader({ id, carve, action, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; children?: ReactNode }) {
   const a = AREAS[id];
-  const cut = a.greek ?? carve?.text;
   return (
-    <header className="area-head">
-      <div className="wrap">
-        {crumb}
-        <div className="area-kicker"><span className="label">{a.english}</span></div>
-        {cut && <Carving text={cut} kind="title" delay={0.15} className="carve area-carve" />}
+    <>
+      <PageHead path={trail(id)} size={LARGE.includes(id) ? "large" : "short"} carve={a.greek ?? carve?.text ?? null}
+        title={a.name} greek={a.greek} purpose={<>{a.origin} {a.fit}</>} action={action}
+        className="area-head">
         {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
-        <PagePiece className="piece-desk" />
-        <h1>
-          {a.name}
-          {a.greek && <span className="area-greek" lang="grc">{a.greek}</span>}
-        </h1>
-        <p className="area-origin">{a.origin} {a.fit}</p>
-        <PagePiece className="piece-phone" />
         {children}
-      </div>
-      <div className="wrap"><div className="meander" aria-hidden="true" /></div>
-    </header>
+      </PageHead>
+      <div className="wrap"><div className="meander area-meander" aria-hidden="true" /></div>
+    </>
   );
 }

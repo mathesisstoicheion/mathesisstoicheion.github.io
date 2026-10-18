@@ -10,8 +10,8 @@ import { Suspense, useEffect, useState } from "react";
 import { isBanned, isModerator, problem, supabase, useAccount } from "@/lib/community/client";
 import { updateProfile } from "@/lib/community/data";
 import { useHidden, useHiddenPeople } from "@/lib/community/hidden";
-import PagePiece from "@/components/art/PagePiece";
 import styles from "./Community.module.css";
+import PageHead from "@/components/PageHead";
 
 type Mode = "in" | "join" | "forgot";
 
@@ -26,12 +26,8 @@ export default function Account() {
   return (
     <>
       <div className={`wrap ${styles.signedOutHead}`}>
-        <div className="page-head">
-          <p className="label">Account</p>
-          <PagePiece className="piece-desk" />
-          <h1 className="page-title">{title}</h1>
-          <PagePiece className="piece-phone" />
-        </div>
+        <PageHead bare path={[{ label: "Mine", href: "/treasury" }, { label: "Account" }]} title={title}
+          purpose="Your membership of the Town Hall: sign in or join to write there, and choose the name others see." />
       </div>
       <Suspense>
         <AccountBox />

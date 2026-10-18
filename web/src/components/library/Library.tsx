@@ -12,12 +12,10 @@ import { BEST_KNOWN } from "@/data/best-known";
 import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
-import MineButtons from "./MineButtons";
 import { AZRail } from "./AZList";
 import { bestMatch, nameMatch } from "./az";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
-import PagePiece from "@/components/art/PagePiece";
 
 /**
  * Where to begin. The site's own guidance, following the brief; the reasons are the ones
@@ -75,8 +73,10 @@ export function marked(text: string, query: string): ReactNode {
  * then names a kind or a date only where the work differs from it, and leaves out the file's size, because the same words
  * on every row (37 times, for Plato) hide the few that are different.
  */
-export function WorkItem({ w, author, meta, common, about = false, usual }: {
+export function WorkItem({ w, author, meta, common, about = false, usual, start = false }: {
   w: CatWork; author?: CatAuthor; meta?: WorkMeta; common: number | null; about?: boolean; usual?: { genre: string | null; when: string | null };
+  /** one of the few works suggested to begin with (an author's "Where to begin", PAGE-RULES.md rule 5) */
+  start?: boolean;
 }) {
   const grc = greekEditions(w)[0];
   const tr = hasTranslation(w);
@@ -90,6 +90,7 @@ export function WorkItem({ w, author, meta, common, about = false, usual }: {
         {w.orig && w.orig !== grc?.label && <OrigTitle work={w} className={styles.orig} />}
       </Link>
       <span className={styles.meta}>
+        {start && <span className={styles.start}>Start here</span>}
         {kind && <span className={styles.genre}>{kind}</span>}
         {tr ? <span className={styles.badge}>English</span> : <span className={`${styles.badge} ${styles.off}`}>Greek only</span>}
         {common !== null && <span title={`${common}% of this text's running words are among the 516 core words, the commonest in Greek`}>{common}% common words</span>}
@@ -109,7 +110,7 @@ interface Group { key: string; label: string; short: string; rows?: Row[]; title
  * The library (design B, Stone and torch): the page's opening words (`hero`) beside the search, the order and the
  * filters, then the wall of stelai (`stelai`, hidden while searching), then the catalogue.
  */
-export default function Library({ hero, stelai, paths }: { hero?: ReactNode; stelai?: ReactNode; paths?: ReactNode }) {
+export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?: ReactNode }) {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -295,14 +296,6 @@ export default function Library({ hero, stelai, paths }: { hero?: ReactNode; ste
 
   return (
     <div className={`wrap ${styles.lib}`}>
-      {/* the moderator alone: their private collection, and importing a text into it */}
-      <MineButtons />
-      {/* the page's name, and the Mouseion's own piece: at the right on a computer, under the name on a phone */}
-      <div className={styles.top}>
-        {hero && <div className={`enter ${styles.topText}`}><PagePiece className={styles.pieceNarrow} />{hero}</div>}
-        <div className={`enter ${styles.topSide}`}><PagePiece className={styles.pieceWide} /></div>
-      </div>
-
       {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
       {stelai && <div className={styles.stelai}>{stelai}</div>}
       <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>

@@ -15,7 +15,6 @@ import { inline, plain } from "@/wiki/markup";
 import { CATEGORIES, type CategoryId } from "@/wiki/types";
 import type { EntryCard } from "@/wiki/cards";
 import { IMAGES, srcSet } from "@/wiki/images";
-import CategoryIcon from "./CategoryIcon";
 import styles from "./Stoa.module.css";
 
 const text = (s: string) => plain(inline(s));
@@ -64,7 +63,7 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
 
       <div className={styles.searchRow} role="search" ref={searchRow}>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
+        <input id="stoa-search" enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
       </div>
       {n && (
         <section className={styles.found} aria-live="polite">
@@ -80,7 +79,6 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             return (
               <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
                 <div className={styles.panelIn}>
-                  <span className={styles.roundel}><CategoryIcon id={c.id} /></span>
                   <h2>{c.href ? <Link href={c.href} transitionTypes={["page-turn"]}>{c.title}</Link> : c.title}</h2>
                   <p className={styles.blurb}>{c.blurb}</p>
                   {es.length > 0
@@ -94,7 +92,6 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             // the library's own reference pages (Authors, Eras, Editions…) are one more panel of the colonnade
             <li id="reference" className={styles.panel} style={{ "--i": CATEGORIES.length } as React.CSSProperties}>
               <nav className={styles.panelIn} aria-labelledby="ref-h">
-                <span className={styles.roundel}><CategoryIcon id="reference" /></span>
                 <h2 id="ref-h">Reference</h2>
                 <p className={styles.blurb}>Who wrote the texts, when, and how they reached us.</p>
                 <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} title={r.blurb} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
@@ -115,7 +112,7 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
           {pic
             // eslint-disable-next-line @next/next/no-img-element -- self-hosted, sized files; no image service
             ? <img className={styles.featuredPic} data-whole={pic.height > pic.width * 0.9 ? "" : undefined} src={`/images/${pic.file}`} srcSet={srcSet(pic)} sizes="(max-width: 760px) 100vw, 420px" alt={pic.alt} title={`${pic.title} · ${pic.sourceName} · ${pic.licence}`} width={pic.width} height={pic.height} loading="lazy" decoding="async" />
-            : <span className={styles.featuredIcon}><CategoryIcon id={featured.category} /></span>}
+            : null}
         </Link>
       )}
 

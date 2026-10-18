@@ -24,7 +24,9 @@ import { DownloadButton, HERE, Seal, StatusTag, docDate, savedDate } from "./par
 import Rich from "./Rich";
 import TranslationReader from "./TranslationReader";
 import styles from "./PrivateTranslations.module.css";
-import PagePiece, { PieceHold } from "@/components/art/PagePiece";
+import { PieceHold } from "@/components/art/PagePiece";
+import PageHead from "@/components/PageHead";
+import { trail } from "@/config/areas";
 
 export default function PrivateTranslations() {
   const start = useAccount((s) => s.start);
@@ -68,18 +70,12 @@ function Shelf() {
 
   return (
     <div className={`wrap ${styles.page}`}>
-      <header className={styles.deskHead}>
-        <p className={styles.crumbs}><Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span> Private translations</p>
+      <PageHead bare path={trail("treasury", "Private translations")} title="Private translations"
+        purpose={<>Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
+          the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.</>}>
         <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /></div>
-        <PagePiece className="piece-desk" />
-        <h1 className={styles.deskTitle}>Private translations</h1>
-        <PagePiece className="piece-phone" />
-        <p className={styles.lead}>
-          Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
-          the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.
-        </p>
-        <div className="meander draw" aria-hidden="true" />
-      </header>
+      </PageHead>
+      <div className="meander draw" aria-hidden="true" />
 
       <section className={styles.shelfSec} aria-labelledby="shelf-h" aria-busy={list.busy}>
         <div className={styles.secHead}>

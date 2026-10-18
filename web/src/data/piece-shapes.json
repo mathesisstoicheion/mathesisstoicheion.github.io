@@ -286,5 +286,11 @@
   "h": 1200,
   "form": "slab",
   "material": "marble"
+ },
+ "athena-head": {
+  "w": 751,
+  "h": 1200,
+  "form": "round",
+  "material": "marble"
  }
 }

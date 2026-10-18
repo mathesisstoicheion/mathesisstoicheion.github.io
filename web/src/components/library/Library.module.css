@@ -1,18 +1,6 @@
 /* The Mouseion (design B, Stone and torch): its name beside the search, then the order and filters, the wall of
    stelai, then every author with their works. */
 .lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding-block: 0 var(--space-7); }
-.top { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr); gap: 18px clamp(var(--space-5), 5vw, var(--space-8)); align-items: center; margin: clamp(18px, 3vw, 34px) 0 6px; }
-.topText h1 { font: 400 clamp(2.5rem, 5.2vw, 4.4rem) / 1 var(--f-display); margin: 0 0 var(--space-4); }
-.topText h1 span { display: block; font-size: 0.5em; color: var(--ink-2); margin-top: 10px; }
-.topText p { max-width: 46ch; font-size: 1.18rem; line-height: 1.5; color: var(--ink-2); margin: 0; }
-@media (max-width: 860px) { .top { grid-template-columns: minmax(0, 1fr); } }
-/* the page's piece (components/art/PagePiece.tsx): at the right of the name on a computer, under it on a phone */
-.topSide { display: grid; justify-items: end; min-width: 0; }
-.topSide > .pieceWide { float: none; margin: 0; }
-.pieceNarrow { display: none; }
-@media (max-width: 860px) { .topSide { display: none; } .pieceNarrow { display: block; } .topText { display: flow-root; } }
-/* on a phone the piece has a window of its own across the screen, under the page's name (it comes first in the markup) */
-@media (max-width: 760px) { .topText { display: flex; flex-direction: column; } .topText > h1 { order: -1; } }
 /* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
 .stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
 .error { color: var(--accent); padding-block: 40px; }
@@ -221,25 +209,21 @@
 .aka { font-weight: 400; font-size: 0.9rem; color: var(--ink-2); margin-left: 6px; }
 .latin { grid-area: latin; font-style: italic; font-size: 0.9rem; color: var(--ink-2); }
 
-/* ------------------------------------------------ the moderator's private collection (MineButtons.tsx), above the search */
-.mine { display: flex; flex-wrap: wrap; align-items: center; gap: 10px var(--space-4); padding: var(--space-3) 14px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
-@keyframes mineIn { from { opacity: 0; transform: translateY(8px); } }
-.mineSeal { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--accent); }
+/* ------------------------------------------------ the moderator's private collection (MineButtons.tsx): a small stone
+   plaque at the right of the page's name (app/library/page.tsx), with a lock and two buttons */
+.mine { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
+@keyframes mineIn { from { opacity: 0; transform: translateY(6px); } }
+.mineSeal { display: inline-grid; place-items: center; width: 22px; color: var(--accent); }
 .mineSeal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-.mineBtns { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .mineBtn {
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 10px; padding: 9px var(--space-4) 9px var(--space-3); text-align: left; color: var(--ink);
-  background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: transform var(--dur-quick) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur-quick) var(--ease);
+  text-decoration: none; display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  min-width: var(--tap); min-height: var(--tap); padding: 5px 8px; color: var(--ink-2);
+  font: 500 0.6rem / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius);
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.mineBtn:hover, .mineBtn:focus-visible { transform: translateY(-2px); background: var(--slab-lit); box-shadow: var(--slab-edge), 0 8px 18px -12px var(--shadow); }
-.mineBtn svg { width: 22px; height: 22px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.3s var(--ease); }
-.mineBtn:hover svg { transform: translateY(-1px) rotate(-4deg); }
-.mineBtn span { display: grid; line-height: 1.25; }
-.mineBtn b { font-weight: 600; }
-.mineBtn small { color: var(--ink-2); font-size: 0.82rem; }
-@media (max-width: 640px) {
-  .mineBtns { margin-left: 0; width: 100%; }
-  .mineBtn { flex: 1 1 100%; }
-}
+.mineBtn:hover, .mineBtn:focus-visible { background: var(--slab-lit); color: var(--ink); }
+.mineBtn svg { width: 18px; height: 18px; flex: none; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+
+/* the works an author's page suggests beginning with (components/library/AuthorProfile.tsx) */
+.start { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }

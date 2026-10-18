@@ -6,10 +6,10 @@ import PassageOfTheDay from "@/components/PassageOfTheDay";
 import StartChoice from "@/components/home/StartChoice";
 import Desk from "@/components/home/Desk";
 import Wall from "@/components/home/Wall";
-import NameEmblem from "@/components/home/NameEmblem";
 import Muses from "@/components/home/Muses";
 import Settle from "@/components/art/Settle";
 import Carving from "@/components/art/Carving";
+import PagePiece from "@/components/art/PagePiece";
 import ReliefWindow from "@/components/art/ReliefWindow";
 import VisitorMark from "@/components/home/VisitorMark";
 import start from "@/components/home/Start.module.css";
@@ -62,6 +62,9 @@ export default function Home() {
       <section className={styles.hero} aria-labelledby="hero-title">
         <Wall className={styles.wall} />
         <div className={`wrap ${styles.heroIn}`}>
+          {/* a piece standing in a niche cut into the wall: at the top right on a computer, after the words and the two ways
+              in on a phone, where it ends the first screen */}
+          <PagePiece className={`piece-rise ${styles.heroPiece}`} steady />
           <div className={styles.heroText} data-quiet="">
             <p className={`label ${styles.kick}`}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</p>
             <CutTitle />
@@ -81,33 +84,6 @@ export default function Home() {
           </div>
         </div>
         <p className={styles.wallCap} data-quiet="">Cut into the wall: the opening of Plato’s <i>Apology</i>, as Greek was written in Plato’s time: in capitals, with no spaces or accents. Carry the torch over it to read; on a phone, scroll it through the light.</p>
-      </section>
-
-      {/* ---------------------------------------------------------------- the name */}
-      <section className={`wrap ${styles.sec} ${styles.name}`} aria-labelledby="name-title">
-        <div className={styles.secH}><Settle className="label" text="The name" /></div>
-        <div className={styles.nameG}>
-          <div className={styles.emb}><NameEmblem /></div>
-          <div className={styles.nameT}>
-            <Settle as="h2" id="name-title" className={`${styles.h2} rv`} lang="grc" text="Μάθησις στοιχείων" />
-            <p className={`${styles.nameSub} rv`}>Learning the elements</p>
-            <p className="rv"><span lang="grc">Μάθησις</span> is learning. A <span lang="grc">στοιχεῖον</span> was three things, and all three are on this tablet.</p>
-            <ol className={styles.nameL}>
-              <li className="rv"><b>A letter,</b> “a simple sound of speech”. Greek children learned their letters on wax tablets like this one.</li>
-              <li className="rv"><b>A shadow,</b> the shadow of a sundial’s pointer, whose length in feet told the time. Here the stylus is the pointer.</li>
-              <li className="rv"><b>An element.</b> Euclid’s geometry is the <span lang="grc">Στοιχεῖα</span>, the <i>Elements</i>; its first proposition is drawn in the wax.</li>
-            </ol>
-            <details className={`${styles.more} rv`}>
-              <summary>The Greek behind each meaning, and the sources</summary>
-              <div className={styles.moreIn}>
-                <p><span lang="grc">Μάθησις</span> is “the act of learning, getting of knowledge”. A <span lang="grc">στοιχεῖον</span> is strictly “a simple sound of speech, as the first component of the syllable”, and so a letter of the alphabet.</p>
-                <p>In a sundial it is “the shadow of the gnomon, the length of which in feet indicated the time of day.” In Aristophanes’ <i>Assemblywomen</i>, Praxagora tells her husband that his only care will be to go to dinner <span lang="grc">ὅταν ᾖ δεκάπουν τὸ στοιχεῖον</span>, “when the shadow is ten feet long” (line 652).</p>
-                <p>Euclid’s first proposition reads <span lang="grc">ἐπὶ τῆς δοθείσης εὐθείας πεπερασμένης τρίγωνον ἰσόπλευρον συστήσασθαι</span>, “On a given finite straight line to construct an equilateral triangle” (Elements 1.1). On the tablet, the given line is the stylus’s shadow.</p>
-                <p className={styles.cap}>The definitions are quoted from Liddell, Scott and Jones, <i>A Greek-English Lexicon</i> (LSJ), under <span lang="grc">μάθησις</span> and <span lang="grc">στοιχεῖον</span>; the letter sense cites Plato, Cratylus 424d. Euclid’s Greek is Heiberg’s text (Teubner, 1883–88), translated by T. L. Heath; Aristophanes is Hall and Geldart’s text (Oxford, 1907); both via the Perseus Digital Library. The tablet, stylus and compass are drawn for this page. Move your torch over the tablet, or on a phone scroll it through the middle of the screen: the light casts its own shadows.</p>
-              </div>
-            </details>
-          </div>
-        </div>
       </section>
 
       {/* ---------------------------------------------------------------- passage of the day, beside a relief */}
@@ -148,7 +124,7 @@ export default function Home() {
         <p className={`${styles.muG} rv`} lang="grc">Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν</p>
         <p className={`${styles.muE} rv`}>“From the Heliconian Muses let us begin to sing.” <span>Hesiod, Theogony 1</span></p>
         <Muses />
-        <p className={`${styles.cap} ${styles.musesCap} rv`}>Hesiod names nine Muses, “nine daughters begotten by great Zeus” (Theogony 76–79). Which art belongs to which Muse was settled later, and ancient writers do not always agree. Translation by H. G. Evelyn-White (1914), via the Perseus Digital Library. Pass the torch over a niche and her name catches the light.</p>
+        <p className={`${styles.cap} ${styles.musesCap} rv`}>Hesiod names nine Muses, “nine daughters begotten by great Zeus” (Theogony 76–79). Which art belongs to which Muse was settled later, and ancient writers do not always agree. The emblems in the niches are the ones later Roman art gave them. Translation by H. G. Evelyn-White (1914), via the Perseus Digital Library. Pass the torch over a niche and her name catches the light.</p>
       </section>
 
       {/* ---------------------------------------------------------------- find something to read */}
