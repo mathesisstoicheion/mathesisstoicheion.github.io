@@ -32,9 +32,7 @@ export default function LettersStepView() {
 
       <aside className={styles.tipBox}>
         <span className="label">2 · Three things to know</span>
-        <p><Rich text="A vowel that starts a word carries a small mark, a breathing. The rough breathing, as in «ὁ», is an *h*: «ὁ» is *ho*. The smooth breathing, as in «Ἀθῆναι», is no sound at all. (Modern Greek drops the *h*.)" /></p>
-        <p><Rich text="The marks «ά», «ὰ» and «ᾶ» are accents. For now, read past them." /></p>
-        <p><Rich text="«ου» together sounds like the *oo* of *food*, and «σ» is written «ς» at the end of a word." /></p>
+        {LETTERS_STEP.notes.map((t, i) => <p key={i}><Rich text={t} /></p>)}
       </aside>
 
       <figure className={styles.real}>

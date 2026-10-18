@@ -486,6 +486,12 @@ export const LETTERS_STEP = {
   carve: "ΓΡΑΜΜΑΤΑ",
   title: "The letters",
   who: "Before the first line: sounding out names you already know",
+  /** three things to know about reading the letters */
+  notes: [
+    "A vowel that starts a word carries a small mark, a breathing. The rough breathing, as in «ὁ», is an *h*: «ὁ» is *ho*. The smooth breathing, as in «Ἀθῆναι», is no sound at all. (Modern Greek drops the *h*.)",
+    "The marks «ά», «ὰ» and «ᾶ» are accents. For now, read past them.",
+    "«ου» together sounds like the *oo* of *food*, and «σ» is written «ς» at the end of a word.",
+  ],
   names: [
     { gr: "Σωκράτης", en: "Socrates" },
     { gr: "Πλάτων", en: "Plato" },
