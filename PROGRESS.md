@@ -883,6 +883,20 @@ circled the top of each phone page for the sculpture and the corner beside "Read
   (a left-to-right chisel sweep, lib/art/carve.ts); every page change plays the page turn, overlapping old and new.
 - Before/after and speed: https://claude.ai/artifact/FuRCu4XbQiFqahtt4cVcQc
 
+## The page rules (2026-10-18, not live yet)
+Built on branch claude/project-thread-6gazvz on top of the sculpture round (Athena at the top right of the home page, the name
+section gone, the light-it note by each statue, the Muses' emblems). Follows /mnt/project-files/redesign/PAGE-RULES.md:
+- One page head for every page, `components/PageHead.tsx` (path, carved Greek, bone title, gold Greek, upright purpose line,
+  statue in an arch on the right; large for the doors and the Town Hall, short inside). AreaHeader and RefHead wrap it.
+- Paths from `trail()` in config/areas.ts (areas now have `parent` and `short`); the Oracle's menu word is Search.
+- On phones the page's main action (`action`) comes before the statue; the library and Stoa use `FindJump`, a search-shaped
+  button that brings the list's own search into view.
+- Every niche is an arch (PagePiece lookOf). A faint still picture (`lit/<id>-s.webp`, made by pipeline/stills.py) shows at once.
+- `.slab-card` is the one square link card; Census facts and the 404's ways use it; the Stoa panels lost their icons.
+- Author pages: one works list with a Where to begin / A to Z switch, first three marked Start here.
+- The empty reader has the normal head with a Choose a text button.
+Shown at https://claude.ai/artifact/HP8PaivuePQ4QG6VxG5faD. Waiting for "Publish".
+
 ## Decisions log
 | Date | Decision | Reason |
 |---|---|---|
