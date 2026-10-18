@@ -16,7 +16,7 @@
 .searchBox svg { position: absolute; left: var(--space-4); top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 /* the search is cut into the stone: a dark hollow with a lit lower lip */
 .searchBox input {
-  width: 100%; font: inherit; font-size: 1.12rem; color: var(--ink); background: rgba(8, 6, 5, 0.66);
+  width: 100%; font: inherit; font-size: 1.12rem; color: var(--ink); background: var(--well);
   border: 0; border-radius: var(--radius); padding: 15px var(--space-4) 15px 48px;
   box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 3px 6px -2px var(--cut-deep), inset 0 -1px 0 var(--cut-l);
   transition: box-shadow var(--dur);

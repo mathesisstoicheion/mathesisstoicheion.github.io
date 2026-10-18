@@ -278,7 +278,7 @@ export class Piece implements Art {
     const cover = look.fit === "cover";
     this.o = {
       material: "marble", niche: cover ? "rect" : "arch", fit: "contain", margin: [0.2, 0.12, 0.035, 0.12], fx: 0.5, fy: 0.5,
-      stand: cover ? 0 : 0.07, depth: cover ? 0.045 : 0.2, hollow: cover ? 0.05 : 0.2, detail: cover ? 1.0 : 1.6, amb: 0.13, gain: 1, ...look,
+      stand: cover ? 0 : 0.07, depth: cover ? 0.045 : 0.2, hollow: cover ? 0.05 : 0.2, detail: cover ? 1.0 : 1.6, amb: 0.19, gain: 1, ...look,
     };
     cv.addEventListener("webglcontextlost", this.onLost);
     cv.addEventListener("webglcontextrestored", this.onRestored);
@@ -421,7 +421,7 @@ export class Piece implements Art {
     gl.uniform1f(this.U.uAmb, ((this.day ? 0.55 : o.amb) + 0.1 * lamp) * (0.25 + 0.75 * rv));
     gl.uniform1f(this.U.uFall, f * f);
     // under the lamp the niche's stone stays a step darker than the piece, so the piece stands out from it
-    gl.uniform1f(this.U.uWallLum, 0.4 - 0.09 * lamp);
+    gl.uniform1f(this.U.uWallLum, this.day ? 0.66 : 0.4 - 0.09 * lamp);   // a limestone niche by day
     gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     return moving;

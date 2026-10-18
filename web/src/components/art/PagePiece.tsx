@@ -20,6 +20,7 @@ import { Piece, loadPiece, type PieceLook } from "@/lib/art/piece";
 import { redrawArt, useTorchlit } from "@/lib/art/part";
 import { PHONE } from "@/lib/art/common";
 import { PIECE_CREDITS, PIECE_SHAPES, pieceFor, type PieceShape } from "@/data/pieces";
+import { useLight } from "@/lib/settings";
 
 // how many pieces stand at the head of the page now (the one at the foot waits for none)
 let heads = 0;
@@ -88,6 +89,8 @@ export default function PagePiece({ place = "head", spec: given, className, stea
   const [litFor, setLitFor] = useState<string | null>(null);
   const lit = !!spec && litFor === spec.piece;
   const mounted = useMounted();
+  // while the site is light the piece stands in daylight: one still, even light, and pale stone round it
+  const day = useLight();
   const others = useHeads();
 
   useEffect(() => { if (place !== "head" || !spec) return; bump(1); return () => bump(-1); }, [place, spec]);
@@ -104,10 +107,11 @@ export default function PagePiece({ place = "head", spec: given, className, stea
     const f = await loadPiece(spec.piece);
     if (!f) return null;
     const p = new Piece(c, f.alb, f.map, L.look);
+    p.setDay(day);
     art.current = p;
     requestAnimationFrame(() => c.parentElement?.setAttribute("data-ready", ""));
     return p;
-  }, { still: STILL, steady: steady ? PHONE : undefined }, shown ? spec!.piece : "");
+  }, { still: STILL, steady: steady ? PHONE : undefined, day: () => day }, shown ? spec!.piece + (day ? "day" : "") : "");
 
   if (!shown || !L) return null;
   // the piece at the head of the page is the first thing seen, so it is the first thing fetched: the page asks for its two
@@ -133,7 +137,7 @@ export default function PagePiece({ place = "head", spec: given, className, stea
         {/* eslint-disable-next-line @next/next/no-img-element -- a small self-hosted picture; no image service */}
         <img className="piece-still" src={`/images/pieces/lit/${spec!.piece}-s.webp`} alt="" aria-hidden="true" loading="lazy" decoding="async"
           fetchPriority={place === "head" ? "high" : "auto"} style={stillBox(L.look.margin)} />
-        <canvas key={spec!.piece} ref={cv} role="img" aria-label={credit!.alt} />
+        <canvas key={spec!.piece + (day ? "day" : "")} ref={cv} role="img" aria-label={credit!.alt} />
       </button>
       {/* under the niche, never over the piece (the owner, 2026-10-18) */}
       <LampHint lit={lit} />

@@ -10,6 +10,7 @@ import { carvedCaps } from "@/lib/art/common";
 import { Carved } from "@/lib/art/carve";
 import { carvingFontReady, relayoutArt, useTorchlit } from "@/lib/art/part";
 import { APOLOGY_OPENING } from "@/data/apology-wall";
+import { useLight } from "@/lib/settings";
 
 const TEXT = carvedCaps(APOLOGY_OPENING);
 
@@ -17,13 +18,15 @@ export default function Wall({ className }: { className?: string }) {
   const cv = useRef<HTMLCanvasElement>(null);
   const quiet = () => Array.from(cv.current?.parentElement?.querySelectorAll<HTMLElement>("[data-quiet]") ?? []).filter((el) => el.offsetParent !== null);
 
+  const day = useLight();
   useTorchlit(cv, async (c) => {
     await carvingFontReady();
     return new Carved(c, {
+      pal: day ? "day" : "night",
       text: TEXT, fill: true, cell: (w) => (w < 760 ? 29 : w < 1100 ? 38 : 44), order: "diag", reveal: 2.6, dur: 1.4, rad: 0.66,
       quiet: (base) => quiet().map((el) => { const r = el.getBoundingClientRect(); return { left: r.left - base.left, right: r.right - base.left, top: r.top - base.top, bottom: r.bottom - base.top }; }),
     });
-  }, { delay: 0.15 });
+  }, { delay: 0.15, day: () => day }, day ? "day" : "");
 
   // when the words over the wall change size (a choice opens, the desk fills in), the quiet places move with them
   useEffect(() => {

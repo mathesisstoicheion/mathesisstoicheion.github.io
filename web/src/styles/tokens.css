@@ -1,6 +1,7 @@
 /* =====================================================================
    Mathesis Stoicheion: design tokens for "Stone and torch" (DESIGN.md).
-   A wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry.
+   A wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry. (Lifted a step lighter on
+   2026-10-18, the owner: "the whole site is too dark".)
    The site is dark only; the one light surface is the reader's Daylight page ([data-page="day"], below).
 
    Two layers:
@@ -13,15 +14,15 @@
 :root {
   /* ---------------------------------------------------------- primitives */
   /* stone, darkest to lightest */
-  --stone-0: #0b0907;
-  --stone-1: #14100d;
-  --stone-2: #1b1612;
-  --stone-3: #251f19;
-  --stone-4: #332a21;
+  --stone-0: #16120e;
+  --stone-1: #241d17;
+  --stone-2: #2d251e;
+  --stone-3: #393027;
+  --stone-4: #4a3d30;
   /* ivory text, and its quieter lines (never pure white) */
   --ivory-1: #efe5d2;
-  --ivory-2: #bfb09a;
-  --ivory-3: #93856f;
+  --ivory-2: #cfc1aa;
+  --ivory-3: #ab9c84;
   /* torchlight */
   --honey: #efc27a;
   --honey-hi: #f9dfae;
@@ -124,6 +125,9 @@
 
   /* stone surfaces: every panel on the site is cut into the wall or set on it, never an outlined box. Both are
      see-through, so the torch's light on the wall (behind everything) falls across them as it moves. */
+  --pool: 12, 10, 8;               /* the shade pooled behind words that sit on a carved wall (used as rgba(var(--pool), a)) */
+  --well: rgba(8, 6, 5, 0.66);     /* a search box sunk deep into the stone */
+  --panel-solid: rgba(20, 16, 13, 0.86);   /* a nearly solid panel laid over the carved wall */
   --field: rgba(6, 4, 2, 0.34);    /* a panel sunk into the wall: shadow under its upper edge, a lit lower lip */
   --field-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.52), inset 0 16px 24px -16px rgba(0, 0, 0, 0.8), inset 0 -1px 0 0 rgba(255, 222, 180, 0.065);
   --slab: rgba(64, 52, 39, 0.24);  /* a slab set proud of the wall: a lit top edge, a shadowed foot */
@@ -211,7 +215,7 @@
   --ok: var(--sage);
   --warn: var(--amber);
   --danger: var(--ember);
-  --glow-torch: rgba(255, 172, 98, 0.2);
+  --glow-torch: rgba(255, 176, 104, 0.26);
 
   /* inside panels painted in the ink colour, and selected things (pressed chips, chosen tabs, main buttons):
      in stone and torch both are dark, raised panels, so nothing large turns bright */
@@ -241,8 +245,9 @@
   color-scheme: dark;
 }
 
-/* The reader's Daylight page: the same names, redefined inside it, so every reading tool turns light with the page. */
-[data-page="day"] {
+/* The reader's Daylight page: the same names, redefined inside it, so every reading tool turns light with the page. The
+   whole site's light look (Settings, the owner's request of 2026-10-18) is the same limestone. */
+[data-page="day"], html[data-look="light"] {
   --bg: var(--limestone);
   --bg-deep: var(--limestone-3);
   --bg-2: var(--limestone-3);
@@ -262,6 +267,9 @@
   --rule-2: rgba(42, 34, 26, 0.32);
   --shadow: rgba(40, 24, 10, 0.3);
   /* in daylight the same cuts and slabs, in pale limestone */
+  --pool: 232, 224, 207;
+  --well: rgba(255, 255, 255, 0.55);
+  --panel-solid: rgba(241, 234, 220, 0.9);
   --field: rgba(120, 96, 64, 0.07);
   --field-edge: inset 0 0 0 1px rgba(42, 34, 26, 0.16), inset 0 10px 16px -12px rgba(42, 34, 26, 0.22), inset 0 -1px 0 0 rgba(255, 255, 255, 0.55);
   --slab: rgba(255, 255, 255, 0.32);
