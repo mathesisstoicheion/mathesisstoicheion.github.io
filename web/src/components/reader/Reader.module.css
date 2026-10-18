@@ -663,3 +663,25 @@ p.translit { margin: -0.3em 0 0.8em; }
 .privateTag svg, .mineChip svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .mineChip { display: inline-flex; align-items: center; gap: 6px; }
 .mineProblems { margin: 0; padding-left: 1.2em; color: var(--ink-2); }
+
+/* ---------------------------------------------------------------- the cover (ReaderCover.tsx; design A): still and lamplit */
+.rcover {
+  --atm: 1;
+  position: relative; display: grid; place-items: center; text-align: center;
+  min-height: calc(100svh - var(--hdr-h, 70px) - 120px); padding: clamp(36px, 7vh, 80px) 0 clamp(80px, 12vh, 120px);
+  margin-bottom: var(--space-4);
+}
+/* the shaft of light: a still beam from above, and a pool where it falls; it fades as the cover scrolls away */
+.rcover::before {
+  content: ""; position: absolute; inset: -20px -50vw 0; pointer-events: none; opacity: var(--atm);
+  background:
+    radial-gradient(40% 32% at 50% 46%, var(--cover-pool), transparent 70%),
+    conic-gradient(from 168deg at 50% -12%, transparent 0deg, var(--cover-shaft) 10deg, var(--cover-shaft) 14deg, transparent 24deg);
+}
+.rcoverIn { position: relative; max-width: 900px; opacity: calc(0.35 + 0.65 * var(--atm)); }
+.rcoverBy { color: var(--gold); }
+.rcoverT { margin: 14px 0 10px; font: 300 clamp(3rem, 9vw, 7rem) / 1 var(--f-display); color: var(--ink); }
+.rcoverT [lang="grc"] { display: block; font: 400 clamp(2.6rem, 7.4vw, 5.8rem) / 1.08 var(--f-greek); color: var(--gold-hi); }
+.rcoverEn { display: block; font: 300 clamp(1.4rem, 3vw, 2.3rem) / 1.2 var(--f-display); color: var(--ink-2); margin-top: var(--space-3); }
+.rcoverBegin { position: absolute; left: 50%; bottom: clamp(18px, 4vh, 40px); translate: -50% 0; color: var(--ink-3); opacity: var(--atm); padding-bottom: 42px; white-space: nowrap; }
+.rcoverBegin::after { content: ""; position: absolute; left: 50%; bottom: 0; width: 1px; height: 34px; background: linear-gradient(var(--gold), transparent); }

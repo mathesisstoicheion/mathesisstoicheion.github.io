@@ -345,3 +345,5 @@
   --hdr-line: rgba(90, 26, 16, 0.3);
   color-scheme: light;
 }
+:root { --cover-shaft: rgba(255, 196, 120, 0.07); --cover-pool: rgba(255, 170, 80, 0.12); }
+[data-page="day"], html[data-look="light"] { --cover-shaft: rgba(140, 80, 20, 0.05); --cover-pool: rgba(255, 244, 214, 0.6); }
