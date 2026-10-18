@@ -1,58 +1,68 @@
 /* =====================================================================
-   Mathesis Stoicheion: design tokens for "Stone and torch" (DESIGN.md).
-   A wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry. (Lifted a step lighter on
-   2026-10-18, the owner: "the whole site is too dark".)
-   The site is dark only; the one light surface is the reader's Daylight page ([data-page="day"], below).
+   Mathesis Stoicheion: design tokens for "Gold and lamplight" (design A; the owner chose it over Stone and torch on
+   2026-10-18: "We're just going with gold and lamplight, then doing a light mode for it, too").
+   A dark room where a single lamp, or the glint of old gold, lets you see the Greeks: near-black rooms, amber lamplight,
+   Pompeian red and gold on the home page's doorway, thin 1px lines instead of shadows, square corners.
+   The light look (html[data-look="light"], chosen in Settings) and the reader's Daylight page are warm paper (below).
 
    Two layers:
-   - primitives: the raw stone, ivory and torchlight colours, the spacing steps and the type sizes;
+   - primitives: the raw colours, the spacing steps and the type sizes;
    - semantic tokens, which the site's styles use (--bg, --ink, --accent, --rule …). Components use only these,
-     so a restyle changes this file.
+     so a restyle changes this file. (Some names, --slab, --groove, --lintel…, are older than design A: they now
+     name flat panels and fine lines.)
    Every value the site paints with is named here; scripts/check-tokens.mjs stops new hardcoded values creeping in.
    ===================================================================== */
 
 :root {
   /* ---------------------------------------------------------- primitives */
-  /* stone, darkest to lightest */
-  --stone-0: #16120e;
-  --stone-1: #241d17;
-  --stone-2: #2d251e;
-  --stone-3: #393027;
-  --stone-4: #4a3d30;
-  /* ivory text, and its quieter lines (never pure white) */
-  --ivory-1: #efe5d2;
-  --ivory-2: #cfc1aa;
-  --ivory-3: #ab9c84;
-  /* torchlight */
-  --honey: #efc27a;
-  --honey-hi: #f9dfae;
-  --amber: #f0a24c;
-  --ember: #c8622c;
-  /* the second accent, a faded red ochre, and its lighter form for small text */
+  /* the rooms, darkest to lightest: the black frame, the lamp room, its raised surfaces */
+  --stone-0: #070504;
+  --stone-1: #0b0806;
+  --stone-2: #140f0a;
+  --stone-3: #1d150d;
+  --stone-4: #2a1f14;
+  /* parchment text in the lamp room, and its quieter lines (never pure white) */
+  --ivory-1: #ecca97;
+  --ivory-2: #b89a74;
+  --ivory-3: #8f7556;
+  /* lamplight */
+  --honey: #ffad45;
+  --honey-hi: #ffd59a;
+  --amber: #ffad45;
+  --ember: #d0642a;
+  /* the doorway's gold, bone and Pompeian red (the home page, and the gold of the engravings) */
+  --gold: #e8bd70;
+  --gold-hi: #f6dca6;
+  --bone: #f2e0c6;
+  --bone-2: #c39f83;
+  --red: #5c1910;
+  --red-deep: #1b0907;
+  --red-chip: #6d2216;
+  /* the second accent: the doorway's gold, for small text */
   --ochre-red: #a65d40;
-  --ochre-red-text: #d4917a;
-  /* a dull bronze patina: the one cool colour, for what must read apart from the torchlight (well-established facts,
-     the second of two compared editions, a sentence's structure). Never bright. */
+  --ochre-red-text: var(--gold);
+  /* a dull bronze patina: the one cool colour, for what must read apart from the lamplight. Never bright. */
   --patina: #92b0a6;
   /* a muted sage, for "done" and "right" */
   --sage: #9fc39a;
-  /* the dark ink set on honey (a main button) */
-  --on-honey: #1b130b;
-  /* the reader's Daylight page: pale limestone, dark ink, a burnt-sienna accent */
-  --limestone: #e8e0cf;
-  --limestone-2: #f1eadc;
-  --limestone-3: #ddd2bd;
-  --day-ink: #2a221a;
-  --day-ink-2: #5a4c3c;
-  --day-ink-3: #6e5f4c;
-  --sienna: #8a3e1e;
-  --sienna-deep: #6b2c12;
-  /* lines: torchlight thinned on stone, and the two edges of a cut (its shadowed side and its lit lip) */
-  --line-1: rgba(239, 194, 122, 0.14);
-  --line-2: rgba(239, 194, 122, 0.32);
+  /* the dark ink set on lamplight (a main button) */
+  --on-honey: #0b0806;
+  /* warm paper, never white: the light look and the reader's Daylight page */
+  --limestone: #ece0c9;
+  --limestone-2: #f3e9d6;
+  --limestone-3: #e1cfae;
+  --day-ink: #2a1c10;
+  --day-ink-2: #5e4a33;
+  --day-ink-3: #6d5539;
+  --sienna: #a8550f;
+  --sienna-deep: #5e2f08;
+  /* lines: lamplight thinned to a hair */
+  --line-1: rgba(255, 173, 69, 0.1);
+  --line-2: rgba(255, 173, 69, 0.28);
   --cut-dark: rgba(0, 0, 0, 0.62);
-  --cut-light: rgba(255, 226, 186, 0.075);
+  --cut-light: rgba(255, 173, 69, 0.06);
   --black-62: rgba(0, 0, 0, 0.62);
+  --none-shadow: 0 0 0 0 transparent;   /* an empty place in a list of shadows */
 
   /* spacing: the steps of DESIGN.md (4, 8, 12, 16, 24, 36, 56 and 80 px) */
   --space-1: 4px;
@@ -64,19 +74,22 @@
   --space-7: 56px;
   --space-8: 80px;
 
-  /* type sizes */
-  --step--2: 0.74rem;                         /* wide-spaced capital labels */
+  /* type sizes (the titles' face is tall and narrow, so they run a step larger than before) */
+  --step--2: 0.7rem;                          /* small, wide-spaced capital labels (monospaced) */
   --step--1: 0.875rem;                        /* captions, credits, small print */
   --step-0: 1.125rem;                         /* reading text (EB Garamond is small on its body) */
   --step-1: 1.32rem;                          /* a lede */
-  --step-2: 1.6rem;                           /* h3 */
-  --step-3: clamp(2rem, 3.8vw, 3.1rem);       /* h2 */
-  --step-4: clamp(2.6rem, 5.3vw, 5.1rem);     /* a page's title */
+  --step-2: 1.8rem;                           /* h3 */
+  --step-3: clamp(2.3rem, 4.4vw, 3.6rem);     /* h2 */
+  --step-4: clamp(3rem, 6.6vw, 6.2rem);       /* a page's title */
 
-  /* typefaces (the next/font variables are set in app/layout.tsx) */
+  /* typefaces (the next/font variables are set in app/layout.tsx; "Lamplight Display" in globals.css) */
   --face-didot: var(--font-didot), "GFS Didot", "EB Garamond", Georgia, serif;
   --face-garamond: var(--font-garamond), "EB Garamond", Georgia, serif;
-  --face-carved: var(--font-carved), "Noto Serif Display", var(--font-didot), serif;
+  --face-carved: "Lamplight Display", var(--font-carved), "Noto Serif Display", serif;
+  --face-display: "Lamplight Display", var(--font-carved), "Noto Serif Display", Georgia, serif;
+  --face-gentium: var(--font-gentium), "Gentium Book Plus", var(--font-garamond), Georgia, serif;
+  --face-mono: var(--font-mono), "Noto Sans Mono", ui-monospace, monospace;
 
   /* motion: everything eases and settles; nothing bounces (DESIGN.md, "All movement is calm") */
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
@@ -87,23 +100,23 @@
   --dur-slow: 1.2s;
   --dur-enter: 0.9s;    /* a page's name and its piece rising into place as it opens */
   --enter-step: 0.1s;   /* ...each line a step after the one before */
-  --dur-fade: 1.6s;     /* a niche giving way to its piece as the light comes up */
+  --dur-fade: 1.6s;     /* a window giving way to its picture as it comes */
 
-  /* shape: thin rules and cut lines, no rounded cards */
+  /* shape: thin lines, square corners, no rounded cards */
   --radius: 0px;
   --radius-round: 50%;
-  --radius-arch: 999px 999px 0 0;   /* a niche with a round head */
+  --radius-arch: 999px 999px 0 0;   /* a window with a round head */
 
   /* layers: just above the header */
   --z-over-header: 31;
   --z-bar: 5;           /* a sticky bar under the header (the reader's, the tables' search): over what scrolls beneath it */
 
   /* ---------------------------------------------------------- semantic tokens */
-  --bg: var(--stone-1);            /* the wall */
-  --bg-deep: var(--stone-0);       /* deep recesses: a window cut into the wall, an inset field */
-  --bg-2: var(--stone-3);          /* hover, and bands across the wall */
-  --surface: var(--stone-2);       /* a panel set into the wall */
-  --surface-2: var(--stone-3);     /* a raised panel, a pressed chip */
+  --bg: var(--stone-1);            /* the lamp room */
+  --bg-deep: var(--stone-0);       /* the black frame, and deep recesses */
+  --bg-2: var(--stone-3);          /* hover, and bands across the room */
+  --surface: var(--stone-2);       /* a raised surface */
+  --surface-2: var(--stone-3);     /* a pressed chip */
   --ink: var(--ivory-1);
   --ink-2: var(--ivory-2);
   --ink-3: var(--ivory-3);
@@ -115,126 +128,117 @@
   --white-slip: var(--stone-3);
   --blue: var(--patina);           /* certainty: well established; a second, cooler mark in the reader */
   --ochre: var(--amber);           /* certainty: debated; finds in the reader */
-  --legend: var(--ochre-red-text); /* certainty: legend */
-  --rule: rgba(239, 194, 122, 0.2);
+  --legend: #d4917a;               /* certainty: legend */
+  --rule: rgba(255, 173, 69, 0.16);
   --rule-2: var(--line-2);
-  --cut-d: var(--cut-dark);
-  --cut-l: var(--cut-light);
-  --cut-deep: rgba(0, 0, 0, 0.7);  /* the shadowed side of a deep cut: an inset field, a stele's outline */
+  --cut-d: var(--rule);
+  --cut-l: transparent;
+  --cut-deep: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.6);
 
-  /* stone surfaces: every panel on the site is cut into the wall or set on it, never an outlined box. Both are
-     see-through, so the torch's light on the wall (behind everything) falls across them as it moves. */
-  --pool: 12, 10, 8;               /* the shade pooled behind words that sit on a carved wall (used as rgba(var(--pool), a)) */
-  --well: rgba(8, 6, 5, 0.66);     /* a search box sunk deep into the stone */
-  --panel-solid: rgba(20, 16, 13, 0.86);   /* a nearly solid panel laid over the carved wall */
-  --field: rgba(6, 4, 2, 0.34);    /* a panel sunk into the wall: shadow under its upper edge, a lit lower lip */
-  --field-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.52), inset 0 16px 24px -16px rgba(0, 0, 0, 0.8), inset 0 -1px 0 0 rgba(255, 222, 180, 0.065);
-  --slab: rgba(64, 52, 39, 0.24);  /* a slab set proud of the wall: a lit top edge, a shadowed foot */
-  --slab-edge: inset 0 1px 0 0 rgba(255, 226, 186, 0.11), inset 0 -1px 0 0 rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(0, 0, 0, 0.46), 0 18px 26px -20px rgba(0, 0, 0, 0.9);
-  --slab-lit: rgba(76, 61, 45, 0.34);   /* a slab under the hand, or the chosen one */
-  /* a moulding: an inner panel cut just inside a bigger panel's edge, as on a carved stele: its upper and left edges in
-     shadow, its lower and right edges catching the light (an inset outline with a negative offset; no gold line) */
-  --moulding: 2px inset rgba(84, 68, 51, 0.75);
-  --moulding-in: -10px;
-  /* the plinth along the foot of every page: its lit top edge in a cut, and a little light caught on its face */
-  --plinth-edge: inset 0 1px 0 0 var(--lip), inset 0 2px 0 0 var(--groove), inset 0 22px 30px -24px var(--lip), 0 -1px 0 0 var(--groove);
-  /* a broken piece of stone: light caught on its upper edge, shadow gathered at its foot */
-  --broken-edge: inset 0 24px 40px -30px var(--lip), inset 0 -26px 36px -24px var(--cut-deep);
-  /* a field to type in, cut into the stone: a dark hollow with a lit lower lip */
-  --hollow: rgba(0, 0, 0, 0.36);
-  --hollow-edge: inset 0 0 0 1px rgba(0, 0, 0, 0.7), inset 0 3px 6px -2px rgba(0, 0, 0, 0.7), inset 0 -1px 0 rgba(255, 226, 186, 0.08);
+  /* surfaces: every panel is a thin lamplit line round the dark, never a raised, shadowed box */
+  --pool: 11, 8, 6;                /* the dark pooled behind words that sit over art (used as rgba(var(--pool), a)) */
+  --well: var(--stone-2);          /* a search box */
+  --panel-solid: rgba(11, 8, 6, 0.9);   /* a nearly solid panel laid over art */
+  --field: rgba(255, 173, 69, 0.025);   /* a panel set in the page */
+  --field-edge: inset 0 0 0 1px var(--rule);
+  --slab: transparent;             /* a panel or a button standing on the page: a fine line round it */
+  --slab-edge: inset 0 0 0 1px var(--rule);
+  --slab-lit: rgba(255, 173, 69, 0.06);   /* one under the hand, or the chosen one */
+  --moulding: 1px solid rgba(255, 173, 69, 0.08);
+  --moulding-in: -8px;
+  --plinth-edge: inset 0 1px 0 0 var(--rule);   /* the foot of every page: a fine line along its top */
+  --broken-edge: var(--none-shadow);
+  /* a field to type in */
+  --hollow: var(--stone-2);
+  --hollow-edge: inset 0 0 0 1px var(--rule);
   --hollow-focus: inset 0 0 0 1px var(--accent);
-  /* a line cut across the stone: its shadowed side, then its lit lip just under it */
-  --groove: rgba(0, 0, 0, 0.5);
-  --lip: rgba(255, 226, 186, 0.085);
+  /* a line across the page: one hair of lamplight */
+  --groove: var(--rule);
+  --lip: transparent;
   --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
   --cut-line-v: linear-gradient(90deg, var(--groove) 0 1px, var(--lip) 1px 2px);
-  /* the same cuts as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
-  --cut-under: inset 0 -1px 0 var(--lip), inset 0 -2px 0 var(--groove);
-  --cut-over: inset 0 1px 0 var(--groove), inset 0 2px 0 var(--lip);
-  --cut-left: inset 1px 0 0 var(--groove), inset 2px 0 0 var(--lip);
-  --panel-cut: inset 1px 1px 0 var(--groove), inset -1px -1px 0 var(--lip);   /* a panel cut within a panel: upper and left edges in shadow */
-  --panel-cut-lit: inset 1px 1px 0 var(--groove), inset -1px -1px 0 var(--lip-hi);   /* the same, with the torch on it */
-  --ledge-lip: 0 1px 0 var(--lip);   /* the lit front edge of a ledge or step */
-  /* a slim gilded inlay along a call-out's edge (a tip, a note, a right answer) */
-  /* a frame cut round a picture or a map: a groove, then its lit lip */
-  --frame: 0 0 0 1px var(--groove), 0 0 0 2px var(--lip);
-  --inlay-left: inset 1px 0 0 var(--honey-hi), inset 2px 0 0 var(--honey), inset 3px 0 0 rgba(0, 0, 0, 0.5);   /* gold laid in a cut: lit, gilt, then the cut's shadow */
-  --inlay-left-ok: inset 2px 0 0 var(--ok);
-  --inlay-left-ochre: inset 2px 0 0 var(--ochre);
-  --inlay-left-blue: inset 2px 0 0 var(--blue);
-  --inlay-left-legend: inset 2px 0 0 var(--legend);
-  --inlay-top: inset 0 1px 0 var(--honey-hi), inset 0 2px 0 var(--honey), inset 0 3px 0 rgba(0, 0, 0, 0.5);
-  --inlay-top-blue: inset 0 2px 0 var(--blue);
-  --chosen-foot: inset 0 -2px 0 var(--sel-edge);   /* the chosen one of a set of choices: a gilded line along its foot */
-  /* a channel cut for a bar or a meter, and the gilded inlay laid in it */
-  --channel: rgba(0, 0, 0, 0.4);
-  --channel-edge: inset 0 1px 3px rgba(0, 0, 0, 0.85), inset 0 0 0 1px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(255, 226, 186, 0.07);
-  --inlay: linear-gradient(180deg, var(--honey-hi), var(--honey) 38%, #a8743a);
-  --inlay-side: linear-gradient(90deg, #a8743a, var(--honey) 62%, var(--honey-hi));
-  --inlay-dim: linear-gradient(180deg, rgba(239, 194, 122, 0.55), rgba(168, 116, 58, 0.45));
-  --inlay-edge: inset 0 1px 0 rgba(255, 244, 220, 0.55), inset 0 -1px 0 rgba(60, 34, 10, 0.6);
-  --inlay-drop: 0 10px 18px -12px rgba(0, 0, 0, 0.9);              /* a gilded plate's shadow on the wall */
-  --inlay-press: inset 0 2px 5px rgba(60, 34, 10, 0.6);             /* a gilded plate pressed in */
-  /* the lintel across the top of the screen (the site header) and the sill along its foot (the phone's bar): solid stone,
-     so the page never shows through, each darker where it meets the edge of the screen and lit where it meets the wall;
-     a fine fillet cut along that edge, and a soft shadow cast on the wall */
-  --lintel: linear-gradient(180deg, rgba(0, 0, 0, 0.34), rgba(0, 0, 0, 0.08) 60%, rgba(255, 226, 186, 0.035));
-  --sill: linear-gradient(180deg, rgba(255, 226, 186, 0.04), rgba(0, 0, 0, 0.08) 40%, rgba(0, 0, 0, 0.34));
-  --lintel-foot: linear-gradient(transparent 0 1px, var(--groove) 1px 2px, var(--lip) 2px 3px, transparent 3px 5px, var(--lip) 5px 6px);
-  --sill-head: linear-gradient(var(--lip) 0 1px, transparent 1px 3px, var(--groove) 3px 4px, var(--lip) 4px 5px, transparent 5px);
-  --lintel-shadow: 0 14px 20px -16px rgba(0, 0, 0, 0.95);
-  --sill-shadow: 0 -14px 20px -16px rgba(0, 0, 0, 0.95);
-  /* gilded letters and signs cut into the stone: the shadow of the cut's upper wall, and light on its lower lip */
-  --gilt: linear-gradient(180deg, #f6d9a0 12%, #e2ae63 46%, #b07a3c 88%);
-  --gilt-cut: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.8)) drop-shadow(0 1px 0 rgba(255, 226, 186, 0.1));
-  /* letters cut into the stone (not gilded): the shadow of the cut's upper wall, and light on its lower lip */
-  /* a block of stone standing proud (a triglyph, a column's capital): light caught along its top, shadow at its foot */
-  --block-light: linear-gradient(180deg, rgba(255, 226, 186, 0.09), rgba(255, 226, 186, 0) 22%, rgba(0, 0, 0, 0) 70%, rgba(0, 0, 0, 0.38));
-  --lip-hi: rgba(255, 226, 186, 0.17);   /* an edge facing the torch */
-  --tympanum: var(--stone-1);            /* the sunk triangle of a gable */
-  /* the small maps' land and sea, see-through, so the stone's grain shows through them (globals.css, maps) */
-  --map-land-wash: rgba(70, 57, 44, 0.55);
-  --map-sea-wash: rgba(4, 4, 4, 0.72);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23efc27a' stroke-width='1.5'/%3E%3C/svg%3E");
-  /* a column: a round shaft, lit from the front and dark at its sides, cut with fine flutes; its capital a block above it */
-  --shaft: linear-gradient(90deg, var(--stone-0), var(--stone-4) 34%, #4a3d30 46%, var(--stone-3) 68%, var(--stone-0));
-  --flutes: repeating-linear-gradient(90deg, rgba(0, 0, 0, 0.34) 0 1px, rgba(255, 226, 186, 0.07) 1px 2px, rgba(0, 0, 0, 0) 2px 3px);
-  --capital: linear-gradient(180deg, var(--lip-hi) 0 1px, var(--stone-4) 1px 6px, var(--stone-0) 6px 8px);
-  --capital-shadow: linear-gradient(180deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0));
-  --stylobate: linear-gradient(180deg, var(--lip-hi) 0 1px, var(--stone-3) 1px, var(--stone-2));
-  --carved-text: 0 -1px 0 rgba(0, 0, 0, 0.85), 0 1px 0 rgba(255, 226, 186, 0.09);
-  /* a small polished stone set in a gold bezel (the connection light), and the shine on it */
-  --bezel: 0 0 0 1px rgba(0, 0, 0, 0.7), 0 0 0 2.5px #a8743a, 0 0 0 3.5px rgba(0, 0, 0, 0.6);
-  --gem-shine: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0) 45%);
-  /* a round boss carved standing out of the stone, ringed with gold (the phone bar's Search) */
-  --boss: radial-gradient(circle at 50% 26%, rgba(255, 226, 186, 0.16), rgba(255, 226, 186, 0) 64%), var(--stone-3);
-  --boss-edge: inset 0 1px 0 rgba(255, 226, 186, 0.16), inset 0 -3px 5px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(0, 0, 0, 0.7), 0 0 0 2.5px #a8743a, 0 0 0 3.5px rgba(0, 0, 0, 0.55), 0 8px 12px -6px rgba(0, 0, 0, 0.9);
+  /* the same lines as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
+  --cut-under: inset 0 -1px 0 var(--groove);
+  --cut-over: inset 0 1px 0 var(--groove);
+  --cut-left: inset 1px 0 0 var(--groove);
+  --panel-cut: inset 0 0 0 1px var(--groove);   /* a panel within a panel */
+  --panel-cut-lit: inset 0 0 0 1px var(--rule-2);   /* the same, under the hand */
+  --ledge-lip: var(--none-shadow);
+  /* a frame round a picture or a map */
+  --frame: 0 0 0 1px var(--rule);
+  /* a slim line of lamplight along a call-out's edge (a tip, a note, a right answer) */
+  --inlay-left: inset 1px 0 0 var(--accent);
+  --inlay-left-ok: inset 1px 0 0 var(--ok);
+  --inlay-left-ochre: inset 1px 0 0 var(--ochre);
+  --inlay-left-blue: inset 1px 0 0 var(--blue);
+  --inlay-left-legend: inset 1px 0 0 var(--legend);
+  --inlay-top: inset 0 1px 0 var(--accent);
+  --inlay-top-blue: inset 0 1px 0 var(--blue);
+  --chosen-foot: inset 0 -1px 0 var(--sel-edge);   /* the chosen one of a set of choices: a line of lamplight along its foot */
+  /* a channel for a bar or a meter, and the lamplight that fills it */
+  --channel: rgba(255, 173, 69, 0.08);
+  --channel-edge: inset 0 0 0 1px var(--rule);
+  --inlay: linear-gradient(var(--honey), var(--honey));
+  --inlay-side: linear-gradient(var(--honey), var(--honey));
+  --inlay-dim: linear-gradient(rgba(255, 173, 69, 0.5), rgba(255, 173, 69, 0.5));
+  --inlay-edge: var(--none-shadow);
+  --inlay-drop: var(--none-shadow);
+  --inlay-press: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  /* the bar across the top of the screen (the site header) and along its foot (the phone's bar): the black frame, solid,
+     so the page never shows through, with a fine line where it meets the room */
+  --lintel: linear-gradient(var(--stone-0), var(--stone-0));
+  --sill: linear-gradient(var(--stone-0), var(--stone-0));
+  --lintel-foot: linear-gradient(var(--rule) 0 1px, transparent 1px);
+  --sill-head: linear-gradient(var(--rule) 0 1px, transparent 1px);
+  --lintel-shadow: var(--none-shadow);
+  --sill-shadow: var(--none-shadow);
+  /* gold letters and signs */
+  --gilt: linear-gradient(var(--gold), var(--gold));
+  --gilt-cut: drop-shadow(0 0 0 transparent);
+  --block-light: linear-gradient(transparent, transparent);
+  --lip-hi: rgba(255, 173, 69, 0.22);   /* an edge under the lamp */
+  --tympanum: var(--stone-1);
+  /* the small maps' land and sea */
+  --map-land-wash: rgba(70, 50, 30, 0.5);
+  --map-sea-wash: rgba(4, 3, 2, 0.75);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ffad45' stroke-width='1.5'/%3E%3C/svg%3E");
+  /* a column, drawn in fine lines */
+  --shaft: linear-gradient(90deg, var(--stone-0), var(--stone-3) 40%, var(--stone-4) 50%, var(--stone-3) 60%, var(--stone-0));
+  --flutes: repeating-linear-gradient(90deg, rgba(255, 173, 69, 0.08) 0 1px, transparent 1px 4px);
+  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--stone-3) 1px 6px, var(--stone-0) 6px 8px);
+  --capital-shadow: linear-gradient(transparent, transparent);
+  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--stone-2) 1px);
+  --carved-text: none;
+  /* the connection light, in a fine gold ring */
+  --bezel: 0 0 0 1px var(--stone-0), 0 0 0 2px var(--gold);
+  --gem-shine: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 45%);
+  /* the phone bar's Search: a round button ringed in gold */
+  --boss: var(--stone-2);
+  --boss-edge: 0 0 0 1px var(--gold);
 
   --ok: var(--sage);
   --warn: var(--amber);
   --danger: var(--ember);
-  --glow-torch: rgba(255, 176, 104, 0.26);
+  --glow-torch: rgba(255, 173, 69, 0.16);
 
-  /* inside panels painted in the ink colour, and selected things (pressed chips, chosen tabs, main buttons):
-     in stone and torch both are dark, raised panels, so nothing large turns bright */
+  /* selected things (pressed chips, chosen tabs): a dark chip, its words in lamplight */
   --accent-on-ink: var(--honey);
   --accent-ink-on-ink: var(--on-honey);
   --ink-2-on-ink: var(--ivory-2);
   --inv-bg: var(--stone-3);
   --inv-fg: var(--ivory-1);
   --inv-edge: var(--line-2);
-  --sel-bg: #3a2b1b;
+  --sel-bg: #241a0f;
   --sel-fg: var(--honey-hi);
   --sel-edge: var(--honey);
   --accent-on-sel: var(--honey-hi);
 
   /* type roles */
-  --f-greek: var(--face-didot);
-  --f-display: var(--face-didot);
+  --f-greek: var(--face-gentium);
+  --f-display: var(--face-display);
   --f-body: var(--face-garamond);
-  --f-label: var(--face-garamond);
+  --f-label: var(--face-mono);
   --f-carved: var(--face-carved);
 
   /* layout */
@@ -245,8 +249,7 @@
   color-scheme: dark;
 }
 
-/* The reader's Daylight page: the same names, redefined inside it, so every reading tool turns light with the page. The
-   whole site's light look (Settings, the owner's request of 2026-10-18) is the same limestone. */
+/* ---------------------------------------------------------- warm paper: the light look and the reader's Daylight page */
 [data-page="day"], html[data-look="light"] {
   --bg: var(--limestone);
   --bg-deep: var(--limestone-3);
@@ -259,71 +262,51 @@
   --accent: var(--sienna);
   --accent-hi: var(--sienna-deep);
   --accent-ink: var(--limestone-2);
-  --accent-2: var(--sienna);
+  --accent-2: #8a3e1e;
   --blue: #2f5a52;
   --ochre: #7a4c0e;
-  --legend: var(--sienna);
-  --rule: rgba(42, 34, 26, 0.18);
-  --rule-2: rgba(42, 34, 26, 0.32);
+  --legend: #8a3e1e;
+  --rule: rgba(42, 28, 16, 0.18);
+  --rule-2: rgba(42, 28, 16, 0.32);
   --shadow: rgba(40, 24, 10, 0.3);
-  /* in daylight the same cuts and slabs, in pale limestone */
-  --pool: 232, 224, 207;
-  --well: rgba(255, 255, 255, 0.55);
-  --panel-solid: rgba(241, 234, 220, 0.9);
-  --field: rgba(120, 96, 64, 0.07);
-  --field-edge: inset 0 0 0 1px rgba(42, 34, 26, 0.16), inset 0 10px 16px -12px rgba(42, 34, 26, 0.22), inset 0 -1px 0 0 rgba(255, 255, 255, 0.55);
-  --slab: rgba(255, 255, 255, 0.32);
-  --slab-edge: inset 0 1px 0 0 rgba(255, 255, 255, 0.7), inset 0 -1px 0 0 rgba(42, 34, 26, 0.14), 0 0 0 1px rgba(42, 34, 26, 0.14), 0 12px 20px -18px rgba(40, 24, 10, 0.4);
-  --slab-lit: rgba(255, 255, 255, 0.5);
-  --moulding: 2px inset rgba(214, 200, 176, 0.9);
-  --hollow: rgba(255, 255, 255, 0.45);
-  --hollow-edge: inset 0 0 0 1px rgba(42, 34, 26, 0.22), inset 0 2px 4px -2px rgba(42, 34, 26, 0.3), inset 0 -1px 0 rgba(255, 255, 255, 0.7);
-  --hollow-focus: inset 0 0 0 1px var(--accent);
-  --groove: rgba(42, 34, 26, 0.2);
-  --lip: rgba(255, 255, 255, 0.6);
-  /* restated, so they take the day's groove and lip (a custom property keeps the values it was made with) */
-  --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
-  --cut-line-v: linear-gradient(90deg, var(--groove) 0 1px, var(--lip) 1px 2px);
-  /* the same cuts as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
-  --cut-under: inset 0 -1px 0 var(--lip), inset 0 -2px 0 var(--groove);
-  --cut-over: inset 0 1px 0 var(--groove), inset 0 2px 0 var(--lip);
-  --cut-left: inset 1px 0 0 var(--groove), inset 2px 0 0 var(--lip);
-  --panel-cut: inset 1px 1px 0 var(--groove), inset -1px -1px 0 var(--lip);   /* a panel cut within a panel: upper and left edges in shadow */
-  --panel-cut-lit: inset 1px 1px 0 var(--groove), inset -1px -1px 0 var(--lip-hi);   /* the same, with the torch on it */
-  --ledge-lip: 0 1px 0 var(--lip);   /* the lit front edge of a ledge or step */
-  /* a slim gilded inlay along a call-out's edge (a tip, a note, a right answer) */
-  /* a frame cut round a picture or a map: a groove, then its lit lip */
-  --frame: 0 0 0 1px var(--groove), 0 0 0 2px var(--lip);
-  --inlay-left: inset 2px 0 0 var(--accent);
-  --inlay-left-ok: inset 2px 0 0 var(--ok);
-  --inlay-left-ochre: inset 2px 0 0 var(--ochre);
-  --inlay-left-blue: inset 2px 0 0 var(--blue);
-  --inlay-left-legend: inset 2px 0 0 var(--legend);
-  --inlay-top: inset 0 2px 0 var(--accent);
-  --inlay-top-blue: inset 0 2px 0 var(--blue);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238a3e1e' stroke-width='1.5'/%3E%3C/svg%3E");
-  --chosen-foot: inset 0 -2px 0 var(--sel-edge);
-  --channel: rgba(42, 34, 26, 0.1);
-  --channel-edge: inset 0 1px 2px rgba(42, 34, 26, 0.3), 0 1px 0 rgba(255, 255, 255, 0.6);
-  --inlay: linear-gradient(180deg, #a5552c, var(--sienna) 50%, var(--sienna-deep));
-  --inlay-side: linear-gradient(90deg, var(--sienna-deep), var(--sienna) 50%, #a5552c);
-  --inlay-dim: linear-gradient(180deg, rgba(138, 62, 30, 0.45), rgba(107, 44, 18, 0.4));
-  --inlay-edge: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -1px 0 rgba(40, 16, 4, 0.4);
-  --inlay-drop: 0 8px 14px -10px rgba(40, 24, 10, 0.4);
-  --inlay-press: inset 0 2px 4px rgba(40, 16, 4, 0.45);
+  --pool: 236, 224, 201;
+  --well: var(--limestone-2);
+  --panel-solid: rgba(243, 233, 214, 0.92);
+  --field: rgba(42, 28, 16, 0.03);
+  --slab-lit: rgba(168, 85, 15, 0.08);
+  --moulding: 1px solid rgba(42, 28, 16, 0.1);
+  --hollow: var(--limestone-2);
+  --lip-hi: rgba(42, 28, 16, 0.3);
+  --channel: rgba(42, 28, 16, 0.08);
+  --inlay: linear-gradient(var(--sienna), var(--sienna));
+  --inlay-side: linear-gradient(var(--sienna), var(--sienna));
+  --inlay-dim: linear-gradient(rgba(168, 85, 15, 0.45), rgba(168, 85, 15, 0.45));
+  --inlay-press: inset 0 0 0 1px rgba(40, 16, 4, 0.35);
+  --lintel: linear-gradient(var(--limestone-2), var(--limestone-2));
+  --sill: linear-gradient(var(--limestone-2), var(--limestone-2));
+  --gilt: linear-gradient(var(--sienna), var(--sienna));
+  --boss: var(--limestone-2);
+  --boss-edge: 0 0 0 1px var(--sienna);
+  --bezel: 0 0 0 1px var(--limestone-2), 0 0 0 2px var(--sienna);
+  --flutes: repeating-linear-gradient(90deg, rgba(42, 28, 16, 0.1) 0 1px, transparent 1px 4px);
+  --shaft: linear-gradient(90deg, var(--limestone-3), var(--limestone-2) 50%, var(--limestone-3));
+  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--limestone-3) 1px 6px, var(--limestone) 6px 8px);
+  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--limestone-3) 1px);
+  --tympanum: var(--limestone);
+  --map-land-wash: rgba(160, 130, 90, 0.35);
+  --map-sea-wash: rgba(225, 207, 174, 0.7);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23a8550f' stroke-width='1.5'/%3E%3C/svg%3E");
   --ok: #2f5f35;
+  --glow-torch: rgba(255, 190, 120, 0.2);
   --accent-on-ink: var(--honey);
   --inv-bg: var(--day-ink);
   --inv-fg: var(--limestone-2);
   --inv-edge: var(--day-ink);
-  --sel-bg: var(--day-ink);
-  --sel-fg: var(--limestone-2);
-  --sel-edge: var(--day-ink);
-  --accent-on-sel: #f0b48f;
-  /* the reader's bar on a phone is a course of limestone here, with no dark mottling */
+  --sel-bg: var(--limestone-3);
+  --sel-fg: var(--day-ink);
+  --sel-edge: var(--sienna);
+  --accent-on-sel: var(--sienna-deep);
+  /* the reader's bar on a phone is plain paper */
   --tex: none;
-  --sill: linear-gradient(180deg, rgba(255, 255, 255, 0.4), rgba(42, 34, 26, 0.03) 40%, rgba(42, 34, 26, 0.1));
-  --sill-head: linear-gradient(var(--lip) 0 1px, transparent 1px 3px, var(--groove) 3px 4px, var(--lip) 4px 5px, transparent 5px);
-  --sill-shadow: 0 -12px 18px -16px rgba(40, 24, 10, 0.35);
   color-scheme: light;
 }
