@@ -5,12 +5,10 @@ import LetterTiles from "@/components/LetterTiles";
 import PassageOfTheDay from "@/components/PassageOfTheDay";
 import StartChoice from "@/components/home/StartChoice";
 import Desk from "@/components/home/Desk";
-import Wall from "@/components/home/Wall";
-import Muses from "@/components/home/Muses";
 import Settle from "@/components/art/Settle";
-import Carving from "@/components/art/Carving";
 import PagePiece from "@/components/art/PagePiece";
-import ReliefWindow from "@/components/art/ReliefWindow";
+import { ArtWindow } from "@/components/art/PageArt";
+import WhereNext from "@/components/WhereNext";
 import VisitorMark from "@/components/home/VisitorMark";
 import start from "@/components/home/Start.module.css";
 import GuideInvite from "@/components/guide/GuideInvite";
@@ -19,6 +17,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { greekEditions, hasTranslation, type Catalog } from "@/lib/catalog";
 import { STARTS } from "@/data/starts";
+import { PIECE_CREDITS, pieceFor } from "@/data/pieces";
 import HomeFinder, { type Start } from "@/components/HomeFinder";
 import styles from "./home.module.css";
 
@@ -31,6 +30,10 @@ const START_CARDS: Start[] = STARTS.map((id) => {
   const w = a.works.find((x) => x.id === id)!;
   return { id, title: w.title, author: a.name, grc: greekEditions(w)[0]?.label ?? null };
 });
+
+// The home page's engraving, for the window that says what it is.
+const PIECE = pieceFor("/");
+const CREDIT = PIECE ? PIECE_CREDITS[PIECE.piece] : undefined;
 
 // The opening words, cut in letter by letter as the page opens (home.module.css, .c).
 const TITLE: { text: string; em?: boolean }[][] = [[{ text: "Read the Greeks" }], [{ text: "in " }, { text: "their own", em: true }, { text: " words" }]];
@@ -48,45 +51,47 @@ function CutTitle() {
 
 
 /**
- * The home page has one job: to welcome a visitor and send them into the Greek, to learn it or to read it (the owner,
- * 2026-10-17: "more digestible and less cluttered"). Each part of it has one thing to show, with room round it, and
- * the big lit windows of sculpture carry it; everything else has a page of its own (the forum, reading offline, the
- * reading paths, now in the library, and the rooms, which the header and the bar already show).
+ * The home page in design A, Gold and lamplight (the owner's choices of 2026-10-18, GOLD-AND-LAMPLIGHT-PLAN.md): A's
+ * opening (the headline, two ways in and "Where are you starting?" beside the page's engraving), then windows onto the
+ * engraving as it grows behind the page, each with something real in it, between the passage of the day, the letters,
+ * the library's search and the Painted Stoa. The carved-letter wall and the nine Muses are gone (the owner's choice).
  */
 export default function Home() {
   return (
     <Page>
       <VisitorMark />
 
-      {/* ---------------------------------------------------------------- the wall: the opening of the Apology, cut in the stone */}
+      {/* ---------------------------------------------------------------- the opening */}
       <section className={styles.hero} aria-labelledby="hero-title">
-        <Wall className={styles.wall} />
         <div className={`wrap ${styles.heroIn}`}>
-          {/* a piece standing in a niche cut into the wall: at the top right on a computer, after the words and the two ways
-              in on a phone, where it ends the first screen */}
           <PagePiece className={`piece-rise ${styles.heroPiece}`} steady />
-          <div className={styles.heroText} data-quiet="">
+          <div className={styles.heroText}>
             <p className={`label ${styles.kick}`}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</p>
             <CutTitle />
             <p className={styles.heroLede}>{SITE.tagline}</p>
-            {/* a first visit: two ways in, and the question of where to start one tap away; a returning visitor: their desk */}
+            {/* a first visit: two ways in, and where are you starting; a returning visitor: their desk */}
             <div className={start.firstOnly}>
               <div className={styles.btns}>
                 <Link className="btn" href="/academy/alphabet" transitionTypes={["page-turn"]}>Start with the letters</Link>
                 <Link className="btn ghost" href="/library" transitionTypes={["page-turn"]}>Open the library</Link>
               </div>
-              <details className={styles.ask}>
-                <summary>New here? <span>Tell us where you are starting</span></summary>
-                <div className={styles.askIn}><StartChoice /></div>
-              </details>
+              <div className={styles.askIn}><StartChoice /></div>
             </div>
             <div className={`${start.backOnly} ${styles.deskCell}`}><Desk /></div>
           </div>
         </div>
-        <p className={styles.wallCap} data-quiet="">Cut into the wall: the opening of Plato’s <i>Apology</i>, as Greek was written in Plato’s time: in capitals, with no spaces or accents. Carry the torch over it to read; on a phone, scroll it through the light.</p>
       </section>
 
-      {/* ---------------------------------------------------------------- passage of the day, beside a relief */}
+      {/* ---------------------------------------------------------------- a window: Hesiod's first line */}
+      <div className="wrap">
+        <ArtWindow label="Hesiod, Theogony 1" className={styles.band}>
+          <p lang="grc">Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν</p>
+          <p className={styles.plateEn}>“From the Heliconian Muses let us begin to sing.”</p>
+          <small>Translated by H. G. Evelyn-White (1914)</small>
+        </ArtWindow>
+      </div>
+
+      {/* ---------------------------------------------------------------- passage of the day, beside a window on the engraving */}
       <section className={`wrap ${styles.sec}`} aria-labelledby="passage-title">
         <div className={styles.secH}><span className="label">{AREAS.reader.name} · {AREAS.reader.english}</span></div>
         <div className={styles.podGrid}>
@@ -95,9 +100,13 @@ export default function Home() {
             <p className={styles.lede}>A different famous passage each day, read live from the original files. Every word can be looked up.</p>
             <PassageOfTheDay />
           </div>
-          <ReliefWindow pic="great-eleusinian-relief" className={`${styles.tall} rv`}
-            alt="A marble relief: two tall women in long robes, Demeter and Persephone, stand on either side of a naked boy, Triptolemus."
-            caption={<><b>Demeter, Triptolemus and Persephone.</b> Fragments of a Roman copy of the Great Eleusinian Relief, c. 27 BC–AD 14. The Metropolitan Museum of Art, New York (14.130.9). CC0.</>} />
+          {CREDIT && (
+            <ArtWindow label="The picture" tall className={styles.side}>
+              <p className={styles.plateEn}><b>{CREDIT.title}</b>{CREDIT.date && <>, {CREDIT.date}</>}.</p>
+              <p className={styles.plateNote}>Drawn here in gold lines from The Met’s photograph. Click or tap it at the top of the page to light it fully.</p>
+              <small><a href={CREDIT.source} rel="noopener">The Metropolitan Museum of Art, Open Access</a></small>
+            </ArtWindow>
+          )}
         </div>
       </section>
 
@@ -117,16 +126,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ---------------------------------------------------------------- the Muses */}
-      <section className={`wrap ${styles.sec}`} aria-labelledby="muses-title">
-        <div className={styles.secH}><Settle as="h2" id="muses-title" className="label" text="Begin with the Muses" /></div>
-        <Carving text="Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν" kind="line" delay={0.1} />
-        <p className={`${styles.muG} rv`} lang="grc">Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν</p>
-        <p className={`${styles.muE} rv`}>“From the Heliconian Muses let us begin to sing.” <span>Hesiod, Theogony 1</span></p>
-        <Muses />
-        <p className={`${styles.cap} ${styles.musesCap} rv`}>Hesiod names nine Muses, “nine daughters begotten by great Zeus” (Theogony 76–79). Which art belongs to which Muse was settled later, and ancient writers do not always agree. The emblems in the niches are the ones later Roman art gave them. Translation by H. G. Evelyn-White (1914), via the Perseus Digital Library. Pass the torch over a niche and her name catches the light.</p>
-      </section>
-
       {/* ---------------------------------------------------------------- find something to read */}
       <section className={`wrap ${styles.sec}`} aria-labelledby="find-title">
         <div className={styles.secH}><span className="label">{AREAS.library.name} · {AREAS.library.english}</span></div>
@@ -135,14 +134,7 @@ export default function Home() {
         <div className="rv"><HomeFinder starts={START_CARDS} total={WORKS.length} suggest={8} /></div>
       </section>
 
-      {/* ---------------------------------------------------------------- a band of frieze */}
-      <div className={`wrap ${styles.sec}`}>
-        <ReliefWindow pic="parthenon-frieze-cast" className={styles.band} frameClassName="frame rv"
-          alt="A white plaster relief of two figures seated side by side on stools, their faces broken away."
-          caption={<><b>Two seated figures from the Parthenon frieze.</b> Plaster cast in the Acropolis Museum of part of block IV of the Parthenon’s east frieze; the marble original is in the British Museum. Original 5th century BC; modern cast. Photograph by Deiadameian, CC BY-SA 4.0.</>} />
-      </div>
-
-      {/* ---------------------------------------------------------------- the Painted Stoa, beside a grave stele */}
+      {/* ---------------------------------------------------------------- the Painted Stoa, beside a window with the two sayings of Delphi */}
       <section className={`wrap ${styles.sec}`} aria-labelledby="stoa-title">
         <div className={styles.secH}><Settle className="label" text="From the Painted Stoa" /></div>
         <div className={styles.stoaG}>
@@ -153,25 +145,31 @@ export default function Home() {
             <p className={`${styles.stoaMore} rv`}>The site&apos;s own Painted Stoa holds history, daily life, the strange and the brutal, told from the sources. Every entry says how sure we can be.</p>
             <Link className="btn ghost rv" href="/stoa" transitionTypes={["page-turn"]}>Walk into the Painted Stoa <span className="arr" aria-hidden="true">→</span></Link>
           </div>
-          <ReliefWindow pic="stele-woman-and-servant" className={`${styles.stele} rv`}
-            alt="A tall marble gravestone topped with a small pediment: a young woman in a long draped dress looks down at a servant girl, carved at half her size, who holds up an open box to her."
-            caption={<><b>Grave stele of a young woman and servant,</b> from Attica, c. 400–390 BC. The Metropolitan Museum of Art, New York (36.11.1). CC0.</>} />
+          <ArtWindow label="Written in Apollo’s temple at Delphi" tall className={styles.side}>
+            <p lang="grc">γνῶθι σαυτόν · μηδὲν ἄγαν</p>
+            <p className={styles.plateEn}>“Know yourself” and “Nothing in excess”, which Socrates says the seven wise men wrote there together.</p>
+            <small>Plato, Protagoras 343b</small>
+          </ArtWindow>
         </div>
       </section>
 
       <GuideInvite />
+
+      <WhereNext links={[
+        { href: "/academy", label: "The Academy", note: "the lessons" },
+        { href: "/library", label: "The library", note: "every work" },
+        { href: "/stoa", label: "The Painted Stoa", note: "the Greek world" },
+      ]} />
 
       {/* ---------------------------------------------------------------- sources, put away until wanted */}
       <section className={`wrap ${styles.sec} ${styles.credits}`} aria-labelledby="sources-title">
         <details className={styles.more}>
           <summary><h2 id="sources-title" className="label">Sources for this page</h2></summary>
           <ul>
-            <li><b>The wall.</b> Plato, Apology, from its first words: Platonis Opera, ed. John Burnet, Oxford, via the Perseus Digital Library. Accents and spaces left out.</li>
-            <li><b>The name.</b> Liddell, Scott and Jones, <i>A Greek-English Lexicon</i>, under <span lang="grc">μάθησις</span> and <span lang="grc">στοιχεῖον</span>. Euclid, Elements 1.1, Heiberg’s text, translated by T. L. Heath; Aristophanes, Assemblywomen 652, Hall and Geldart’s text; both via the Perseus Digital Library. The tablet, stylus and compass are drawn for this page.</li>
-            <li><b>The Muses.</b> Hesiod, Theogony 1 and 76–79, translated by H. G. Evelyn-White (1914), via the Perseus Digital Library.</li>
-            <li><b>Great Eleusinian Relief,</b> fragments of a Roman copy, c. 27 BC–AD 14. The Metropolitan Museum of Art, New York (14.130.9). CC0.</li>
-            <li><b>Parthenon east frieze, block IV,</b> plaster cast, Acropolis Museum, Athens; original 5th century BC, British Museum. Photograph by Deiadameian, CC BY-SA 4.0.</li>
-            <li><b>Grave stele of a young woman and servant,</b> Attica, c. 400–390 BC. The Metropolitan Museum of Art, New York (36.11.1). CC0.</li>
+            <li><b>Hesiod,</b> Theogony 1, translated by H. G. Evelyn-White (1914), via the Perseus Digital Library.</li>
+            <li><b>The two sayings of Delphi.</b> Plato, Protagoras 343b, Burnet’s text, translated by W. R. M. Lamb (1924), via the Perseus Digital Library.</li>
+            <li><b>Why Stoics are called Stoics.</b> Diogenes Laertius, Lives of the Eminent Philosophers 7.5.</li>
+            {CREDIT && <li><b>The engraving.</b> {CREDIT.title}{CREDIT.date && <>, {CREDIT.date}</>}. The Metropolitan Museum of Art, New York, Open Access (CC0), drawn in gold lines for this site.</li>}
           </ul>
         </details>
       </section>

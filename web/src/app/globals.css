@@ -309,6 +309,7 @@ html[data-art] main, html[data-art] .site-footer { position: relative; z-index: 
   position: relative; z-index: 1; margin: var(--space-3); padding: var(--space-3) var(--space-4); max-width: min(40rem, calc(100% - 2 * var(--space-3)));
   background: var(--plate); box-shadow: inset 1px 0 0 var(--art-frame);
 }
+:where(.art-plate) p { margin: 0; }
 .art-plate .art-label { color: var(--accent); margin-bottom: var(--space-1); }
 .art-plate [lang="grc"] { font-size: 1.4rem; line-height: 1.3; color: var(--ink); }
 .art-plate small, .art-plate .src { display: block; margin-top: var(--space-1); font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
@@ -609,3 +610,13 @@ select { max-width: 100%; }
 
 /* the light look (Settings): daylight, so no torch glows on the wall */
 html[data-look="light"] .torch { display: none; }
+
+/* ---------------------------------------------------------------- where next (components/WhereNext.tsx) */
+.where-next { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-3) var(--space-6); margin-block: var(--space-8) var(--space-6); padding-top: var(--space-4); border-top: 1px solid var(--rule); }
+.where-next > .label { color: var(--accent-2); }
+.where-next ul { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); list-style: none; margin: 0; padding: 0; }
+.where-next li { display: flex; align-items: baseline; gap: var(--space-2); }
+.where-next a { font: 300 1.5rem / 1.2 var(--f-display); color: var(--ink); text-decoration: none; }
+.where-next a::after { content: " →"; color: var(--gold); }
+.where-next a:hover { color: var(--gold-hi); }
+.where-next small { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); }
