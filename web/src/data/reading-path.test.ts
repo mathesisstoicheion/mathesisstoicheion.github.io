@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PATH, partText, type PathPart, type PathStep } from "./reading-path";
+import { PATH, PRACTICE, partText, type PathPart, type PathStep } from "./reading-path";
 import { indexCatalog, greekEditions, translations, rawUrl, type Catalog, type CatText } from "@/lib/catalog";
 import { parseTei } from "@/lib/tei/parse";
 import { findRef } from "@/lib/tei/refs";
@@ -26,9 +26,18 @@ const unitText = (doc: ReturnType<typeof parseTei>, ref: string) => {
 const passageLines = (s: PathStep): PathPart[] => (s.passage?.sentences ?? []).map((st) => ({ words: st.pieces.flatMap((p) => p.words), en: st.en }));
 
 /** where each step's lines are: the line itself, and its passage (in another work or section if it names one) */
-const placesOf = (s: PathStep) => [
-  { work: s.work, ref: s.ref, lines: s.parts },
-  ...(s.passage ? [{ work: s.passage.work ?? s.work, ref: s.passage.ref ?? s.ref, lines: passageLines(s) }] : []),
+const placesOf = (s: PathStep) => {
+  const out = [{ work: s.work, ref: s.ref, lines: s.parts }];
+  const ss = s.passage?.sentences ?? [];
+  const refs = [...new Set(ss.map((st) => st.ref ?? s.passage!.ref ?? s.ref))];
+  for (const ref of refs) out.push({ work: s.passage!.work ?? s.work, ref, lines: passageLines(s).filter((_, i) => (ss[i].ref ?? s.passage!.ref ?? s.ref) === ref) });
+  return out;
+};
+
+/** every place checked against the library: each lesson's line and passage, and each practice line */
+const ALL = [
+  ...PATH.flatMap((s) => placesOf(s).map((pl) => ({ id: s.id, ...pl }))),
+  ...PRACTICE.flatMap((p) => p.lines.map((l) => ({ id: p.id, work: l.work, ref: l.ref, lines: [{ words: l.pieces.flatMap((q) => q.words), en: l.en }] }))),
 ];
 
 describe("the reading path", () => {
@@ -60,6 +69,31 @@ describe("the reading path", () => {
   });
 
   // the rules agreed with Noa: at most eight words a line or passage piece, and every piece has its grammar
+  it("has a practice lesson after every third lesson, with two or three lines", () => {
+    expect(PRACTICE.map((p) => PATH.findIndex((s) => s.id === p.after))).toEqual([2, 5, 8, 11]);
+    for (const p of PRACTICE) {
+      expect(p.lines.length, p.id).toBeGreaterThanOrEqual(2);
+      expect(p.lines.length, p.id).toBeLessThanOrEqual(3);
+      for (const l of p.lines) {
+        for (const k of ["work", "ref", "label", "translator", "who", "en"] as const) expect(l[k].trim(), `${p.id} ${k}`).not.toBe("");
+        expect(l.meaning.length, p.id).toBeGreaterThan(0);
+        for (const q of l.pieces) {
+          expect(q.words.length, p.id).toBeLessThanOrEqual(8);
+          if (q.learn.at !== undefined) expect(q.learn.at, p.id).toBeLessThan(q.words.length);
+          for (const w of q.words) for (const k of ["form", "lemma", "here", "dict", "form_note"] as const) expect(w[k].trim(), `${p.id} ${w.form} ${k}`).not.toBe("");
+        }
+      }
+    }
+  });
+
+  // Noa (2026-10-18): the passages grow as the path goes on
+  it("gives the later lessons longer passages", () => {
+    const pieces = PATH.map((s) => (s.passage?.sentences ?? []).reduce((n, st) => n + st.pieces.length, 0));
+    for (let i = 3; i < 6; i++) expect(pieces[i], PATH[i].id).toBeGreaterThanOrEqual(6);
+    for (let i = 6; i < 9; i++) expect(pieces[i], PATH[i].id).toBeGreaterThanOrEqual(9);
+    for (let i = 9; i < 12; i++) expect(pieces[i], PATH[i].id).toBeGreaterThanOrEqual(12);
+  });
+
   it("keeps every line and passage piece to eight words", () => {
     for (const s of PATH) {
       expect(s.parts.flatMap((p) => p.words).length, s.id).toBeLessThanOrEqual(8);
@@ -79,7 +113,7 @@ describe("the reading path", () => {
   // The Greek and English are checked against the source files: the local corpus when it is there
   // (python pipeline/fetch_corpus.py), else GitHub; run with NETWORK=1 or with the corpus downloaded.
   it.skipIf(!process.env.NETWORK && !existsSync(CORPUS))("copies every line from the library's texts", async () => {
-    for (const s of PATH) for (const pl of placesOf(s)) {
+    for (const pl of ALL) { const s = pl;
       const w = idx.work.get(pl.work)!;
       expect(w, `${s.id}: ${pl.work}`).toBeTruthy();
       const ed = greekEditions(w).find((t) => t.col === "perseus") ?? greekEditions(w)[0];
@@ -96,7 +130,7 @@ describe("the reading path", () => {
 
   // Dictionary forms as GLAUx analyses them at this place (packs cached by scripts/path-words.ts).
   it.skipIf(!existsSync(CORPUS) || !existsSync(join(PACKS, "words")))("gives GLAUx's dictionary form for each word", async () => {
-    for (const s of PATH) for (const pl of placesOf(s)) {
+    for (const pl of ALL) { const s = pl;
       const f = join(PACKS, "words", `${pl.work}.json`);
       if (!existsSync(f)) continue;
       const pack = JSON.parse(readFileSync(f, "utf8")) as WordPack;

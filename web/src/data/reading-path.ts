@@ -39,8 +39,20 @@ export interface PathPiece { words: PathWord[]; learn: { title: string; text: st
  */
 export interface PathPassage { intro: string; work?: string; ref?: string; label?: string; translator?: string; sentences: PathSentence[] }
 
-/** A sentence of the passage around a line: its pieces, then the published English and what it means. */
-export interface PathSentence { pieces: PathPiece[]; en: string; meaning: string[] }
+/**
+ * A sentence of the passage around a line: its pieces, then the published English and what it means.
+ * `ref` names its section when a longer passage runs on past the passage's own `ref`.
+ */
+export interface PathSentence { pieces: PathPiece[]; en: string; meaning: string[]; ref?: string }
+
+/** A real line read in a practice lesson: a sentence from anywhere in the library, with where it is from. */
+export interface PracticeLine extends PathSentence { work: string; ref: string; label: string; translator: string; who: string }
+
+/**
+ * A practice lesson, after every three lessons (Noa, 2026-10-18): a mixed check of the words of those three
+ * lessons, then two or three other real lines from the library that use them.
+ */
+export interface PathPractice { id: string; after: string; title: string; intro: string; lines: PracticeLine[] }
 
 export interface PathLink { href: string; label: string; note?: string }
 
@@ -637,7 +649,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0627.tlg012", "1.1"), label: "Read the Aphorisms in the reader" },
     ],
     passage: {
-      intro: "The saying is only the start of a sentence. Read the rest of it, a piece at a time: four more short parts, each naming something hard about medicine.",
+      intro: "The saying is only the start of a sentence. Read the rest of it, a piece at a time: four more short parts, each naming something hard about medicine. Then jump ahead to the fourth aphorism, where three of those describing words come back.",
       sentences: [
         {
           pieces: [
@@ -712,6 +724,71 @@ export const PATH: PathStep[] = [
             "«καιρός» is not just time but the right time, the moment for doing something. Adams translates it *the crisis*, and «κρίσις» *decision*.",
           ],
         },
+        {
+          ref: "1.4",
+          pieces: [
+            {
+              words: [
+                { form: "αἱ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'she' form, plural: more than one 'she' thing" },
+                { form: "λεπταὶ", lemma: "λεπτός", here: "thin, slender", dict: "peeled, husked, threshed out, fine, small, light", src: "LSJ", form_note: "a describing word, 'she' form, plural, to match δίαιται" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ἀκριβέες", lemma: "ἀκριβής", here: "strict", dict: "exact, accurate, precise", src: "DCC", form_note: "a describing word, 'she' form, plural; Ionic for Attic ἀκριβεῖς" },
+                { form: "δίαιται", after: ",", lemma: "δίαιτα", here: "diets", dict: "way of living, mode of life", src: "LSJ", form_note: "a 'she' word (feminine), plural, the subject. From it comes our word diet" },
+              ],
+              learn: {
+                title: "More than one: αἱ … -αι",
+                at: 4,
+                text: [
+                  "«ἡ», *the*, has a plural for more than one 'she' thing: «αἱ». Its nouns change too: «δίαιτα», *a diet*, becomes «δίαιται», *diets*.",
+                  "The describing words match them: «λεπταί» and «ἀκριβέες» are 'she' plurals as well, so all four words belong together: *the thin and strict diets*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "both", dict: "and, also, even", src: "DCC", form_note: "a word that never changes; here it begins a pair: καί … καί, both … and" },
+                { form: "ἐν", lemma: "ἐν", here: "in", dict: "in, among", src: "DCC", form_note: "a little word that never changes; the words after it are in the 'to' form" },
+                { form: "τοῖσι", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter), plural, in the 'to' form after ἐν; Ionic for Attic τοῖς" },
+                { form: "μακροῖσιν", lemma: "μακρός", here: "long, chronic", dict: "long, tall, large, long-lasting", src: "DCC", form_note: "a describing word, 'it' form, plural, in the 'to' form, to match πάθεσι; Ionic for Attic μακροῖς" },
+                { form: "αἰεὶ", lemma: "ἀεί", here: "always", dict: "always", src: "DCC", form_note: "a word that never changes its form; Ionic for Attic ἀεί" },
+                { form: "πάθεσι", after: ",", lemma: "πάθος", here: "illnesses", dict: "incident, accident, misfortune, experience; passion, emotion; state, condition", src: "DCC", form_note: "an 'it' word (neuter), plural, in the 'to' form after ἐν" },
+              ],
+              learn: {
+                title: "ἐν: in, with the 'to' form",
+                at: 5,
+                text: [
+                  "«ἐν» means *in*, and the words after it take the 'to' form. Here they are plural: «ἐν τοῖσι μακροῖσιν πάθεσι», *in the long illnesses*.",
+                  "«μακρός» is the word for *long* you met in «ἡ τέχνη μακρή». Said of illnesses, it means lasting a long time: Adams translates *chronic diseases*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and also", dict: "and, also, even", src: "DCC", form_note: "a word that never changes; the second half of καί … καί" },
+                { form: "ἐν", lemma: "ἐν", here: "in", dict: "in, among", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "τοῖσιν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form, plural, in the 'to' form after ἐν" },
+                { form: "ὀξέσιν", after: ",", lemma: "ὀξύς", here: "sharp, acute", dict: "sharp, keen, shrill, pungent", src: "DCC", form_note: "a describing word, 'it' form, plural, in the 'to' form; with τοῖσιν and no noun: the sharp (illnesses)" },
+                { form: "οὗ", lemma: "οὗ", here: "where", dict: "where", src: "LSJ", form_note: "a word that never changes its form" },
+                { form: "μὴ", lemma: "μή", here: "not", dict: "not", src: "DCC", form_note: "a word for not that never changes its form" },
+                { form: "ἐπιδέχεται", after: ",", lemma: "ἐπιδέχομαι", here: "it allows (it)", dict: "admit, allow of", src: "LSJ", form_note: "he, she or it does it, now: the illness allows it" },
+                { form: "σφαλεραί", after: ".", lemma: "σφαλερός", here: "dangerous", dict: "likely to make one stumble, slippery, perilous", src: "LSJ", form_note: "a describing word, 'she' form, plural, to match δίαιται at the start" },
+              ],
+              learn: {
+                title: "Matching across the sentence",
+                at: 7,
+                text: [
+                  "The last word, «σφαλεραί», *risky*, is a 'she' plural. It goes all the way back to the 'she' plural at the start, «αἱ … δίαιται»: *the thin and strict diets (are) risky*. Matching endings join words however far apart they stand.",
+                  "«ὀξύς», *sharp*, is the word you met in «ὁ καιρὸς ὀξύς». Said of illnesses, it means sudden and severe: *acute*, Adams says, from the Latin for *sharp*.",
+                ],
+              },
+            },
+          ],
+          en: "A slender restricted diet is always dangerous in chronic diseases, and also in acute diseases, where it is not requisite.",
+          meaning: [
+            "Keeping a patient on a very thin, strict diet is risky: always in long illnesses, and in sudden, severe ones too, unless the illness calls for it.",
+            "Three of the first aphorism's words come back here: long, sharp and risky. Adams turns the long and sharp illnesses into *chronic* and *acute*, the terms doctors still use.",
+          ],
+        },
       ],
     },
   },
@@ -751,7 +828,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0627.tlg012", "1.1"), label: "Read the Aphorisms in the reader" },
     ],
     passage: {
-      intro: "After its five short parts, the first aphorism ends with one longer sentence: what the doctor has to do. Read it a piece at a time.",
+      intro: "After its five short parts, the first aphorism ends with one longer sentence: what the doctor has to do. Read it a piece at a time, then the rule that closes the second aphorism, where «δεῖ» comes back twice.",
       sentences: [
         {
           pieces: [
@@ -828,6 +905,67 @@ export const PATH: PathStep[] = [
             "The Greek says only *one must*; Adams adds *the physician*, the reader the Aphorisms are written for. Doing the right thing yourself is not enough: the patient, the people around him and everything else must be made to work with you.",
           ],
         },
+        {
+          ref: "1.2",
+          pieces: [
+            {
+              words: [
+                { form: "ἐπιβλέπειν", lemma: "ἐπιβλέπω", here: "to look to, to take into account", dict: "look upon, look attentively, look well at, observe", src: "LSJ", form_note: "the 'to' form of the verb: to look to" },
+                { form: "οὖν", lemma: "οὖν", here: "then, so", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes; like δέ, it never comes first" },
+                { form: "δεῖ", lemma: "δέω", here: "one must", dict: "lack, miss, stand in need of", src: "DCC", form_note: "it does it, now; used on its own, it means it is needed, one must" },
+                { form: "καὶ", lemma: "καί", here: "both", dict: "and, also, even", src: "DCC", form_note: "a word that never changes; here it begins a list: καί … καί …, both … and …" },
+                { form: "χώρην", after: ",", lemma: "χώρα", here: "the country", dict: "land; place", src: "DCC", form_note: "a 'she' word (feminine); the -ην ending marks the thing looked to. Ionic for Attic χώραν" },
+              ],
+              learn: {
+                title: "οὖν: so, then",
+                at: 1,
+                text: [
+                  "«οὖν» draws a conclusion from what came before: *so*, *then*. Like «δέ», it never stands first: it sits second, here after «ἐπιβλέπειν».",
+                  "The order is turned round: the 'to' form comes before «δεῖ». *To look to, so, one must …*: Adams writes *One, then, ought to look to …*",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ὥρην", after: ",", lemma: "ὥρα", here: "the season", dict: "any period, part of the year, season", src: "LSJ", form_note: "a 'she' word; the -ην ending marks the thing looked to. Ionic for Attic ὥραν" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ἡλικίην", after: ",", lemma: "ἡλικία", here: "the age (of the patient)", dict: "time of life, age", src: "LSJ", form_note: "a 'she' word; the -ην ending marks the thing looked to. Ionic for Attic ἡλικίαν" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "νούσους", after: ",", lemma: "νόσος", here: "the diseases", dict: "disease, sickness", src: "DCC", form_note: "a 'she' word, plural, though it ends in -ος; the -ους ending marks the things looked to. Ionic for Attic νόσους" },
+              ],
+              learn: {
+                title: "Ionic -ην for Attic -αν",
+                text: [
+                  "You know that Ionic says «η» where Athenians said «α», as in «μακρή» for «μακρά». It happens in endings too: «χώρην», «ὥρην», «ἡλικίην» would be «χώραν», «ὥραν», «ἡλικίαν» in Athens.",
+                  "All four things to look to have the ending for the thing acted on: in English, *look to the country, the season, the age, and the diseases*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐν", lemma: "ἐν", here: "in", dict: "in, among", src: "DCC", form_note: "a little word that never changes; the word after it is in the 'to' form" },
+                { form: "ᾗσι", lemma: "ὅς", here: "which", dict: "who, which, that", src: "DCC", form_note: "the 'she' form, plural, in the 'to' form after ἐν: in which (diseases). Ionic for Attic αἷς" },
+                { form: "δεῖ", after: ",", lemma: "δέω", here: "it is needed, it is right", dict: "lack, miss, stand in need of", src: "DCC", form_note: "it does it, now: here, it is needed" },
+                { form: "ἢ", lemma: "ἤ", here: "or", dict: "or; than (after a comparative)", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "οὔ", after: ".", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, not; at the end of a sentence it takes an accent" },
+              ],
+              learn: {
+                title: "ᾗσι: which, a 'she' word",
+                at: 1,
+                text: [
+                  "«ᾗσι» means *which*, and like *the* it changes to match the word it points back to. It is a 'she' plural, so it points back to «νούσους», *the diseases*.",
+                  "That shows «νόσος» is a 'she' word, though it ends in «-ος» like the 'he' words. When an ending leaves you unsure, a word that matches it tells you.",
+                ],
+              },
+            },
+          ],
+          en: "One, then, ought to look to the country, the season, the age, and the diseases in which they are proper or not.",
+          meaning: [
+            "This closes the second aphorism. It is about the body being emptied, when the bowels run or the patient vomits of their own accord, or when a doctor empties it on purpose. It does good only when what comes out is what should.",
+            "So the doctor must weigh where the patient lives, the time of year, the patient's age and the illness, and judge whether emptying the body is right for them. Adams's *they* are those emptyings.",
+          ],
+        },
       ],
     },
   },
@@ -870,7 +1008,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0059.tlg006", "152"), label: "Read Theaetetus 152 in the reader", note: "Socrates tests the saying" },
     ],
     passage: {
-      intro: "You have read the first words of Protagoras' book. Now read how that sentence ends, and how Diogenes Laertius says another of his books began, a piece at a time.",
+      intro: "You have read the first words of Protagoras' book. Now read how that sentence ends, how Diogenes Laertius says another of his books began, and what that opening cost him, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -961,6 +1099,96 @@ export const PATH: PathStep[] = [
             "Protagoras says he cannot know whether the gods exist or not. He gives two reasons: the question is obscure, and human life is short.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "πολλὰ", lemma: "πολύς", here: "many", dict: "much, many", src: "DCC", form_note: "a describing word, 'it' form (neuter), plural: many (things)" },
+                { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed, in fact (confirming)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "τὰ", lemma: "ὁ", here: "the (things)", dict: "the", src: "DCC", form_note: "the 'it' form, plural, to match κωλύοντα" },
+                { form: "κωλύοντα", lemma: "κωλύω", here: "hindering, which hinder", dict: "hinder, check, prevent", src: "DCC", form_note: "a verb used as a describing word: hindering, 'it' form, plural; with τά, the things that hinder" },
+                { form: "εἰδέναι", after: ",", lemma: "οἶδα", here: "to know", dict: "to know", src: "DCC", form_note: "the 'to' form of the verb: to know" },
+                { form: "ἥ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'she' form, to match ἀδηλότης. It has an accent here because τʼ leans on it" },
+                { form: "τʼ", lemma: "τε", here: "both", dict: "and; τε…τε both…and", src: "DCC", form_note: "τε with its vowel dropped before the next word; it leans on the word before it" },
+                { form: "ἀδηλότης", lemma: "ἀδηλότης", here: "obscurity, uncertainty", dict: "uncertainty", src: "LSJ", form_note: "a 'she' word (feminine), the subject; made from ἀ-, not, and δῆλος, clear: unclearness" },
+              ],
+              learn: {
+                title: "γάρ: for",
+                at: 1,
+                text: [
+                  "«γάρ» gives the reason for what was just said: *for*. Like «δέ» it never stands first; it sits second, after «πολλά».",
+                  "There is no *are*: «πολλὰ τὰ κωλύοντα», *many (are) the things that hinder*. Hicks writes *For many are the obstacles that impede knowledge*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes; here it answers τε" },
+                { form: "βραχὺς", lemma: "βραχύς", here: "short", dict: "brief, short", src: "DCC", form_note: "a describing word, 'he' form, to match βίος" },
+                { form: "ὢν", lemma: "εἰμί", here: "being", dict: "be, exist", src: "DCC", form_note: "the verb be used as a describing word: being, 'he' form, to match βίος" },
+                { form: "ὁ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match βίος" },
+                { form: "βίος", lemma: "βίος", here: "life", dict: "life", src: "DCC", form_note: "a 'he' word (masculine)" },
+                { form: "τοῦ", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form of the, to match ἀνθρώπου" },
+                { form: "ἀνθρώπου", after: ".", lemma: "ἄνθρωπος", here: "of man, human", dict: "human being", src: "DCC", form_note: "a 'he' word, in the 'of' form: of a human being" },
+              ],
+              learn: {
+                title: "τε … καί: both … and",
+                at: 0,
+                text: [
+                  "«τε» after one thing and «καί» before the next mean *both … and*: «ἥ τʼ ἀδηλότης καὶ βραχὺς ὢν ὁ βίος», *both the obscurity and life being short*.",
+                  "«βραχὺς … ὁ βίος» are the words that open Hippocrates' *Aphorisms*, «ὁ βίος βραχύς». With «ὤν», *being*, between them: *human life, being short*. Hicks turns it into *the shortness of human life*.",
+                ],
+              },
+            },
+          ],
+          en: "For many are the obstacles that impede knowledge, both the obscurity of the question and the shortness of human life.",
+          meaning: [
+            "These are Protagoras' two reasons for not knowing about the gods: the question itself is unclear, and a human life is too short to settle it.",
+          ],
+        },
+        {
+          ref: "9.8.52",
+          pieces: [
+            {
+              words: [
+                { form: "διὰ", lemma: "διά", here: "because of", dict: "through, during, because of", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ταύτην", lemma: "οὗτος", here: "this", dict: "this, these", src: "DCC", form_note: "the 'she' form, to match ἀρχήν; the -ην ending follows διά" },
+                { form: "δὲ", lemma: "δέ", here: "and", dict: "and; but", src: "DCC", form_note: "a word that never changes; it sits second" },
+                { form: "τὴν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'she' form, to match ἀρχήν" },
+                { form: "ἀρχὴν", lemma: "ἀρχή", here: "beginning, opening", dict: "beginning, origin; rule, empire, realm; magistracy", src: "DCC", form_note: "a 'she' word (feminine); the -ην ending follows διά" },
+              ],
+              learn: {
+                title: "διά: because of",
+                at: 4,
+                text: [
+                  "«διά» means *through* when the 'of' form follows it. When the ending for the thing acted on follows it, as «-ην» here, it means *because of*: «διὰ ταύτην τὴν ἀρχήν», *because of this beginning*.",
+                  "Greek says *this the beginning*: «ταύτην τὴν ἀρχήν». *This* stands outside *the* and its noun.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τοῦ", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form, 'it' form (neuter), to match συγγράμματος" },
+                { form: "συγγράμματος", lemma: "σύγγραμμα", here: "book, written work", dict: "writing, written composition, book, work, treatise", src: "LSJ", form_note: "an 'it' word (neuter), in the 'of' form: of the book" },
+                { form: "ἐξεβλήθη", lemma: "ἐκβάλλω", here: "he was thrown out, expelled", dict: "throw, cast out of, throw out", src: "LSJ", form_note: "he had it done to him, in the past: he was thrown out" },
+                { form: "πρὸς", lemma: "πρός", here: "by", dict: "from the side of, in the presence of (+gen.)", src: "DCC", form_note: "a little word that never changes; with the 'of' form here it means by, at the hands of" },
+                { form: "Ἀθηναίων", after: "·", lemma: "Ἀθηναῖος", here: "the Athenians", dict: "Athenian", src: "LSJ", form_note: "a describing word used as a noun, plural, in the 'of' form: of the Athenians. The raised dot · is the Greek semicolon" },
+              ],
+              learn: {
+                title: "ἐξεβλήθη: he was thrown out",
+                at: 2,
+                text: [
+                  "«ἐξ-ε-βλή-θη» is «ἐκβάλλω», *I throw out*, with two marks: the «ε» in it marks the past, and the ending «-θη» says the thing was done *to* him: *he was thrown out*.",
+                  "Who did it goes after «πρός» in the 'of' form: «πρὸς Ἀθηναίων», *by the Athenians*. Hicks turns the sentence round: *the Athenians expelled him*.",
+                ],
+              },
+            },
+          ],
+          en: "For this introduction to his book the Athenians expelled him;",
+          meaning: [
+            "Diogenes, writing centuries later, says the Athenians drove Protagoras out because of this opening about the gods. He adds that they sent a herald to collect every copy of his books, and burnt them in the market-place.",
+          ],
+        },
       ],
     },
   },
@@ -1010,7 +1238,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0059.tlg002", "21"), label: "Read Apology 21 in the reader", note: "the oracle and the wise man" },
     ],
     passage: {
-      intro: "You have read Socrates' words about the man he questioned. Now read the sentence that comes straight after them, a piece at a time.",
+      intro: "You have read Socrates' words about the man he questioned. Now read the sentence that comes straight after them, and the two after that, a piece at a time: what Socrates did next, and what it cost him.",
       sentences: [
         {
           pieces: [
@@ -1073,6 +1301,164 @@ export const PATH: PathStep[] = [
             "The man Socrates questioned thought he knew something when he did not. Socrates does not think he knows what he does not know, and in that one small thing, he says, he is wiser.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ἐντεῦθεν", lemma: "ἐντεῦθεν", here: "from there, after him", dict: "hence, thence", src: "LSJ", form_note: "a word that never changes its form" },
+                { form: "ἐπʼ", lemma: "ἐπί", here: "to", dict: "at (+gen.); on (+dat.); on to, against (+acc.)", src: "DCC", form_note: "ἐπί with its vowel dropped before the next word" },
+                { form: "ἄλλον", lemma: "ἄλλος", here: "another (man)", dict: "other, another", src: "DCC", form_note: "the 'he' form; the -ον ending follows ἐπί, for the person gone to" },
+                { form: "ᾖα", lemma: "ἔρχομαι", here: "I went", dict: "come, go", src: "DCC", form_note: "I did it, in the past: I went. Some dictionaries list it under εἶμι, I go" },
+              ],
+              learn: {
+                title: "ἐπʼ ἄλλον: to another",
+                at: 2,
+                text: [
+                  "«ἐπί» followed by the ending for the thing acted on means *to*, *towards*: «ἐπʼ ἄλλον», *to another (man)*.",
+                  "«ᾖα» is *I went*: its ending «-α» is one of the endings for *I*, as in «οἶδα».",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τῶν", lemma: "ὁ", here: "of those", dict: "the", src: "DCC", form_note: "the 'of' form, 'he' form, plural: of those (men)" },
+                { form: "ἐκείνου", lemma: "ἐκεῖνος", here: "than that man", dict: "that person or thing", src: "DCC", form_note: "the 'of' form; after a comparing word it means than that man" },
+                { form: "δοκούντων", lemma: "δοκέω", here: "seeming, reputed", dict: "think, suppose, imagine; seem, seem good", src: "DCC", form_note: "a verb used as a describing word: seeming, 'he' form, plural, in the 'of' form, to match τῶν" },
+                { form: "σοφωτέρων", lemma: "σοφός", here: "wiser", dict: "wise, clever, skilled", src: "DCC", form_note: "the comparing form of σοφός, plural, in the 'of' form, to match δοκούντων" },
+                { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form of the verb: to be" },
+              ],
+              learn: {
+                title: "τῶν δοκούντων: those who seem",
+                at: 2,
+                text: [
+                  "«δοκούντων» is a verb, *seem*, made into a describing word, *seeming*. With *the* and no noun, «τῶν δοκούντων» means *of those seeming*: *of the men who seemed*.",
+                  "Put together: *to another of those who seemed to be wiser than that man*. Fowler has *reputed*: they had the name of being wise.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καί", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes; its accent comes from μοι, which leans on it" },
+                { form: "μοι", lemma: "ἐγώ", here: "to me", dict: "I, we", src: "DCC", form_note: "the 'to' form of ἐγώ, I: to me" },
+                { form: "ταὐτὰ", lemma: "αὐτός", here: "the same", dict: "the same (with article)", src: "DCC", form_note: "τὰ αὐτά, the same things, run together into one word" },
+                { form: "ταῦτα", lemma: "οὗτος", here: "these things", dict: "this, these", src: "DCC", form_note: "the 'it' form, plural: these things" },
+                { form: "ἔδοξε", after: ",", lemma: "δοκέω", here: "seemed", dict: "think, suppose, imagine; seem, seem good", src: "DCC", form_note: "he, she or it did it, in the past: it seemed" },
+              ],
+              learn: {
+                title: "ταὐτά: two words run together",
+                at: 2,
+                text: [
+                  "«ταὐτά» is «τὰ αὐτά» run together: the mark «ʼ» in the middle shows where. You know that «αὐτός» after *the* means *the same*: «ταὐτὰ ταῦτα», *these same things*.",
+                  "«μοι … ἔδοξε» is *it seemed to me*: the same verb as «δοκούντων», *seeming*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ἐνταῦθα", lemma: "ἐνταῦθα", here: "there", dict: "here, there", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "κἀκείνῳ", lemma: "ἐκεῖνος", here: "both to him", dict: "that person or thing", src: "DCC", form_note: "καὶ ἐκείνῳ run together: and to that man. The 'to' form" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ἄλλοις", lemma: "ἄλλος", here: "to others", dict: "other, another", src: "DCC", form_note: "the 'to' form, plural" },
+                { form: "πολλοῖς", lemma: "πολύς", here: "many", dict: "much, many", src: "DCC", form_note: "the 'to' form, plural, to match ἄλλοις" },
+                { form: "ἀπηχθόμην", after: ".", lemma: "ἀπεχθάνομαι", glaux: "ἀπάχθομαι", here: "I became hateful", dict: "to be hated, incur hatred, to be or become hateful to", src: "LSJ", form_note: "I had it happen to me, in the past: I became hated" },
+              ],
+              learn: {
+                title: "-μην: I, in the past",
+                at: 6,
+                text: [
+                  "You know «οἴομαι», *I think*, with the ending «-μαι» for *I*. Its partner for the past is «-μην»: «ἀπηχθόμην», *I became hateful*.",
+                  "To whom goes in the 'to' form: «κἀκείνῳ καὶ ἄλλοις πολλοῖς», *both to him and to many others*.",
+                ],
+              },
+            },
+          ],
+          en: "From him I went to another of those who were reputed to be wiser than he, and these same things seemed to me to be true; and there I became hateful both to him and to many others.",
+          meaning: [
+            "Socrates goes on testing the oracle. He questions another man with a name for wisdom, finds the same thing, and makes more enemies. This, he tells the jury, is how the ill will against him began.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "μετὰ", lemma: "μετά", here: "after", dict: "with (+gen.); after (+acc.)", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ταῦτʼ", lemma: "οὗτος", here: "this, these things", dict: "this, these; μετὰ ταῦτα after this", src: "DCC", form_note: "ταῦτα with its vowel dropped before the next word; the 'it' form, plural" },
+                { form: "οὖν", lemma: "οὖν", here: "then", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "ἤδη", lemma: "ἤδη", here: "now", dict: "already, now", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "ἐφεξῆς", lemma: "ἐφεξῆς", here: "one after another", dict: "in order, in a row, one after another", src: "LSJ", form_note: "a word that never changes its form" },
+                { form: "ᾖα", after: ",", lemma: "ἔρχομαι", here: "I went", dict: "come, go", src: "DCC", form_note: "I did it, in the past: I went" },
+              ],
+              learn: {
+                title: "μετὰ ταῦτα: after this",
+                at: 1,
+                text: [
+                  "«μετά» with the 'of' form means *with*. With the ending for the thing acted on, as in «ταῦτα», it means *after*: «μετὰ ταῦτα», *after these things*, *after this*.",
+                  "«οὖν», *then*, *so*, sits second, as «δέ» and «γάρ» do.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "αἰσθανόμενος", lemma: "αἰσθάνομαι", here: "perceiving", dict: "perceive, understand, hear, learn", src: "DCC", form_note: "a verb used as a describing word: perceiving, 'he' form, describing Socrates" },
+                { form: "μὲν", lemma: "μέν", here: "(untranslated)", dict: "on the one hand … on the other hand (often untranslated)", src: "DCC", form_note: "a little word that never changes; it looks ahead to a δέ" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "λυπούμενος", lemma: "λυπέω", here: "grieving", dict: "grieve, vex", src: "LSJ", form_note: "a verb used as a describing word: grieving, 'he' form, describing Socrates" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "δεδιὼς", lemma: "δείδω", here: "fearing", dict: "fear, to be alarmed, anxious", src: "LSJ", form_note: "a verb used as a describing word: fearing, 'he' form, describing Socrates" },
+                { form: "ὅτι", lemma: "ὅτι", here: "that", dict: "because, that", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ἀπηχθανόμην", after: ",", lemma: "ἀπεχθάνομαι", here: "I was hated", dict: "to be hated, incur hatred, to be or become hateful to", src: "LSJ", form_note: "I had it happen to me, in the past: I was hated" },
+              ],
+              learn: {
+                title: "How he felt: three -ing words",
+                at: 5,
+                text: [
+                  "«αἰσθανόμενος», «λυπούμενος» and «δεδιώς» are verbs made into describing words, like English words in *-ing*: *perceiving*, *grieving*, *fearing*. All three are in the 'he' form, describing the speaker, Socrates.",
+                  "What he perceived follows «ὅτι», *that*: «ὅτι ἀπηχθανόμην», *that I was hated*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ὅμως", lemma: "ὅμως", here: "nevertheless", dict: "nevertheless, all the same", src: "DCC", form_note: "a word that never changes its form" },
+                { form: "δὲ", lemma: "δέ", here: "but", dict: "and; but", src: "DCC", form_note: "a little word that never changes; it answers the μέν before it" },
+                { form: "ἀναγκαῖον", lemma: "ἀναγκαῖος", here: "necessary", dict: "by force, constraining", src: "LSJ", form_note: "a describing word, in the 'it' form: a necessary thing" },
+                { form: "ἐδόκει", lemma: "δοκέω", here: "it seemed", dict: "think, suppose, imagine; seem, seem good", src: "DCC", form_note: "he, she or it did it, in the past, over a stretch of time: it seemed" },
+                { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form of the verb: to be" },
+              ],
+              learn: {
+                title: "μέν … δέ: on one hand … but",
+                at: 1,
+                text: [
+                  "«μέν» in the last piece looked ahead; «δέ» here answers it. *On the one hand* Socrates felt hated, grieved and afraid; *but* all the same, «ὅμως δέ», he went on.",
+                  "«ἐδόκει» with no person named is *it seemed (to me)*: *it seemed to be necessary*. Fowler writes *I thought I must*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τὸ", lemma: "ὁ", here: "the (business)", dict: "the", src: "DCC", form_note: "the 'it' form; with τοῦ θεοῦ after it and no noun: the (thing) of the god" },
+                { form: "τοῦ", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form, to match θεοῦ" },
+                { form: "θεοῦ", lemma: "θεός", here: "god", dict: "god, goddess", src: "DCC", form_note: "a 'he' word, in the 'of' form: of the god" },
+                { form: "περὶ", lemma: "περί", here: "of (importance)", dict: "around, about; concerning (+gen.)", src: "DCC", form_note: "a little word that never changes; here the word after it is in the 'of' form" },
+                { form: "πλείστου", lemma: "πολύς", here: "most", dict: "much, many", src: "DCC", form_note: "the 'most' form of πολύς, in the 'of' form: of most (worth)" },
+                { form: "ποιεῖσθαι", lemma: "ποιέω", here: "to consider, to rank", dict: "make, produce, cause, do; (mid.) consider, reckon", src: "DCC", form_note: "the 'to' form of the verb, with endings that mean to consider, to reckon" },
+              ],
+              learn: {
+                title: "τὸ τοῦ θεοῦ: the god's business",
+                at: 2,
+                text: [
+                  "*The* with an 'of' word after it and no noun makes one: «τὸ τοῦ θεοῦ», *the (thing) of the god*, *the god's business*: finding out what the oracle meant.",
+                  "«περὶ πλείστου ποιεῖσθαι» is a set phrase, *to reckon of the most worth*: Fowler's *consider of the highest importance*.",
+                ],
+              },
+            },
+          ],
+          en: "After this then I went on from one to another, perceiving that I was hated, and grieving and fearing, but nevertheless I thought I must consider the god’s business of the highest importance.",
+          meaning: [
+            "Socrates saw that he was making enemies, and it grieved and frightened him, but the god's word came first. So he went on to everyone who seemed to know something: next the poets, and then the craftsmen.",
+          ],
+        },
       ],
     },
   },
@@ -1115,7 +1501,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0059.tlg002", "38"), label: "Read Apology 38 in the reader", note: "the penalty he proposes" },
     ],
     passage: {
-      intro: "You have read Socrates' most famous sentence. Now read how it ends, and the sentence after it, a piece at a time.",
+      intro: "You have read Socrates' most famous sentence. Now read how it ends, and what he says next as he proposes his own penalty, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -1201,6 +1587,107 @@ export const PATH: PathStep[] = [
             "Socrates insists that what he says is true, but he knows it is hard to make the jury believe it.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "besides, and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ἐγὼ", lemma: "ἐγώ", here: "I", dict: "I, we", src: "DCC", form_note: "I, said out loud for stress: I, for my part" },
+                { form: "ἅμα", lemma: "ἅμα", here: "at the same time", dict: "at the same time; (prep.) together with (+dat.)", src: "DCC", form_note: "a how-word that never changes its form" },
+                { form: "οὐκ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, spelled οὐκ before a vowel" },
+                { form: "εἴθισμαι", lemma: "ἐθίζω", here: "I am accustomed", dict: "accustom, to be, become accustomed, used to", src: "LSJ", form_note: "I do it, with the ending -μαι; the perfect: I have become used to it, and so I am used to it now" },
+              ],
+              learn: {
+                title: "The perfect: done, and still so",
+                at: 4,
+                text: [
+                  "«εἴθισμαι» is a perfect. A perfect tells of something that has happened and still holds now: *I have been made used to it*, so *I am used to it*.",
+                  "«ἐθίζω» is *I accustom*; the changed start, «εἴ-», is one mark of its perfect. With the ending «-μαι» it means *I have been accustomed*, *I am in the habit*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐμαυτὸν", lemma: "ἐμαυτοῦ", here: "myself", dict: "of me, of myself", src: "LSJ", form_note: "the one thought worthy: the -ον ending marks it" },
+                { form: "ἀξιοῦν", lemma: "ἀξιόω", here: "to think worthy", dict: "consider worthy; require, demand, ask, claim", src: "DCC", form_note: "the 'to' form of the verb: to think worthy" },
+                { form: "κακοῦ", lemma: "κακός", here: "of (anything) bad", dict: "bad, wicked, cowardly", src: "DCC", form_note: "a describing word in the 'of' form, 'it' form: of a bad thing" },
+                { form: "οὐδενός", after: ".", lemma: "οὐδείς", here: "nothing, any", dict: "no one, nothing", src: "DCC", form_note: "the 'of' form, 'it' form, to match κακοῦ: of nothing" },
+              ],
+              learn: {
+                title: "Worthy of: the 'of' form",
+                at: 2,
+                text: [
+                  "«ἀξιόω» is *I think (someone) worthy*. What they are worthy of goes in the 'of' form: «κακοῦ οὐδενός», *of nothing bad*.",
+                  "So «ἐμαυτὸν ἀξιοῦν κακοῦ οὐδενός» is *to think myself worthy of nothing bad*, that is, *to think I deserve anything bad*: the «οὐκ» earlier and «οὐδενός» here are two nots that stay a no.",
+                ],
+              },
+            },
+          ],
+          en: "Besides, I am not accustomed to think that I deserve anything bad.",
+          meaning: [
+            "The jury has found Socrates guilty, and now he must propose a penalty for himself. He begins by saying that it is not his habit to think he deserves anything bad.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "εἰ", lemma: "εἰ", here: "if", dict: "if (+indic. or opt.); εἴπερ if indeed", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "μὲν", lemma: "μέν", here: "(untranslated)", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed, in fact (confirming)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "ἦν", lemma: "εἰμί", here: "there were", dict: "be, exist", src: "DCC", form_note: "he, she or it was: the past of ἐστί, it is" },
+                { form: "μοι", lemma: "ἐγώ", here: "for me", dict: "I, we", src: "DCC", form_note: "the 'to' or 'for' form of ἐγώ, I: for me" },
+                { form: "χρήματα", after: ",", lemma: "χρῆμα", here: "money", dict: "thing, matter; (more commonly in pl.) goods or property, esp. money", src: "DCC", form_note: "an 'it' word (neuter), plural: things, goods, and so money" },
+              ],
+              learn: {
+                title: "If, but it is not so",
+                at: 3,
+                text: [
+                  "«εἰ … ἦν μοι χρήματα» is *if there were money for me*, that is, *if I had money*. The past tense «ἦν», *was*, after «εἰ», *if*, tells you that it is not so: Socrates has no money.",
+                  "Grammars call this an unreal condition. English does the same with its past: *if I had money* means *I have none*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐτιμησάμην", lemma: "τιμάω", here: "I would have proposed (a fine)", dict: "to honor", src: "DCC", form_note: "I did it, in the past, with the 'for myself' ending -άμην; in a law court it means to propose a penalty for oneself" },
+                { form: "ἂν", lemma: "ἄν", here: "would", dict: "[marks verbs as potential (with optative), or generalizing (with subjunctive)]", src: "DCC", form_note: "a little word that never changes; with a past verb it means would have" },
+                { form: "χρημάτων", lemma: "χρῆμα", here: "of money", dict: "thing, matter; (more commonly in pl.) goods or property, esp. money", src: "DCC", form_note: "the 'of' form, plural: a penalty of money, a fine" },
+                { form: "ὅσα", lemma: "ὅσος", here: "as much as", dict: "however much; as great as; (in pl.) as many as; ὅσον (adv.) as much as", src: "DCC", form_note: "the 'it' form, plural: as much (money) as" },
+                { form: "ἔμελλον", lemma: "μέλλω", here: "I was going to", dict: "(+infin.) think of doing, intend to, be about to", src: "DCC", form_note: "I was doing it, in the past: the ἐ- in front marks the past" },
+                { form: "ἐκτείσειν", after: ",", lemma: "ἐκτίνω", here: "to pay", dict: "pay off, pay in full", src: "LSJ", form_note: "the 'to' form, in the future: to be going to pay" },
+              ],
+              learn: {
+                title: "ἄν with a past: would have",
+                at: 1,
+                text: [
+                  "You have met «ἄν» turning a verb into *could* or *would*. With a past verb, as here, it means *would have*: «ἐτιμησάμην ἄν», *I would have proposed*.",
+                  "It is the other half of *if I had money*: if I had money, I would have proposed a fine, as much as I was going to pay.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "οὐδὲν", lemma: "οὐδείς", here: "not at all, in nothing", dict: "no one, nothing", src: "DCC", form_note: "the 'it' form: nothing; here, in nothing, not at all" },
+                { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed, in fact (confirming)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "ἂν", lemma: "ἄν", here: "would", dict: "[marks verbs as potential (with optative), or generalizing (with subjunctive)]", src: "DCC", form_note: "a little word that never changes; with a past verb it means would have" },
+                { form: "ἐβλάβην", after: "·", lemma: "βλάπτω", here: "I was harmed", dict: "disable, hinder; harm, damage", src: "LSJ", form_note: "I had it done to me, in the past: I was harmed. With ἄν: I would have been harmed" },
+              ],
+              learn: {
+                title: "-ην: I had it done to me",
+                at: 3,
+                text: [
+                  "«βλάπτω» is *I harm*. «ἐ-βλάβ-ην», with the past mark «ἐ-» and the ending «-ην», is *I was harmed*: the ending turns the action onto *me*.",
+                  "Grammars call this the aorist passive. So «οὐδὲν ἂν ἐβλάβην» is *I would have been harmed in nothing*, which the translation turns round: *that would have done me no harm*.",
+                ],
+              },
+            },
+          ],
+          en: "If I had money, I would have proposed a fine, as large as I could pay; for that would have done me no harm.",
+          meaning: [
+            "In an Athenian trial, after a guilty verdict, the accuser proposed one penalty and the accused another, and the jury chose between them. Socrates' accusers have asked for death. A fine, says Socrates, would cost him only money, and losing money does him no real harm.",
+          ],
+        },
       ],
     },
   },
@@ -1242,7 +1729,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0086.tlg035", "1.1253a"), label: "Read Politics 1.1253a in the reader", note: "the reason: only man has speech" },
     ],
     passage: {
-      intro: "You have read Aristotle's saying about man and the city. Now read the next part of his sentence, and a sentence a little further on, a piece at a time.",
+      intro: "You have read Aristotle's saying about man and the city. Now read the next part of his sentence, then a little further on, where he sets the speech of human beings against the voice of animals, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -1331,6 +1818,117 @@ export const PATH: PathStep[] = [
             "Aristotle says that of all the animals only man has speech. Voice can show pain and pleasure, he goes on, but speech shows what is helpful and harmful, and so what is right and wrong.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ἡ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'she' form, to match φωνή" },
+                { form: "μὲν", lemma: "μέν", here: "it is true", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes; it looks ahead to a δέ" },
+                { form: "οὖν", lemma: "οὖν", here: "then, now", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "φωνὴ", lemma: "φωνή", here: "voice", dict: "sound, voice", src: "DCC", form_note: "a 'she' word (feminine), the subject" },
+                { form: "τοῦ", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form, 'it' form, to match λυπηροῦ" },
+                { form: "λυπηροῦ", lemma: "λυπηρός", here: "painful (thing), pain", dict: "painful, distressing, causing pain", src: "LSJ", form_note: "a describing word in the 'of' form, 'it' form: of the painful" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ἡδέος", lemma: "ἡδύς", here: "pleasant (thing), pleasure", dict: "sweet, pleasant", src: "DCC", form_note: "a describing word in the 'of' form, 'it' form, sharing the τοῦ before λυπηροῦ" },
+              ],
+              learn: {
+                title: "The painful: a describing word as a noun",
+                at: 5,
+                text: [
+                  "«λυπηρός» means *painful*, «ἡδύς» *pleasant*. With *the* in front and no noun, each becomes a noun: «τοῦ λυπηροῦ καὶ ἡδέος», *of the painful and pleasant*, that is, *of pain and pleasure*.",
+                  "One «τοῦ» serves both words. The «μέν» here looks ahead: a «δέ» will come, setting *voice* against something else.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐστὶ", lemma: "εἰμί", here: "is", dict: "be, exist", src: "DCC", form_note: "he, she or it is, now" },
+                { form: "σημεῖον", after: ",", lemma: "σημεῖον", here: "a sign", dict: "sign, signal, mark", src: "DCC", form_note: "an 'it' word (neuter): a sign; what it is a sign of went before, in the 'of' form" },
+                { form: "διὸ", lemma: "διό", here: "therefore", dict: "wherefore, on which account", src: "LSJ", form_note: "a word that never changes; it is διʼ ὅ, because of which" },
+                { form: "καὶ", lemma: "καί", here: "also, as well", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means also" },
+                { form: "τοῖς", lemma: "ὁ", here: "to the", dict: "the", src: "DCC", form_note: "the 'to' form, plural, to match ζῴοις" },
+                { form: "ἄλλοις", lemma: "ἄλλος", here: "other", dict: "other, another", src: "DCC", form_note: "the 'to' form, plural, to match ζῴοις" },
+                { form: "ὑπάρχει", lemma: "ὑπάρχω", here: "belongs, is possessed by", dict: "exist, be, belong to; τὰ ὑπάρχοντα existing circumstances", src: "DCC", form_note: "he, she or it does it, now: it (the voice) belongs" },
+                { form: "ζῴοις", lemma: "ζῷον", here: "animals", dict: "living being, animal", src: "DCC", form_note: "an 'it' word (neuter), plural, in the 'to' form: to animals" },
+              ],
+              learn: {
+                title: "Belongs to: who has it",
+                at: 6,
+                text: [
+                  "«ὑπάρχει» means *it is there*, *it belongs*. The one it belongs to goes in the 'to' form: «τοῖς ἄλλοις ζῴοις», *to the other animals*. So *voice belongs to the other animals too*: they have it.",
+                  "Notice that «τοῖς ἄλλοις» and its noun «ζῴοις» are parted by the verb. Their matching endings, «-οις», show that they belong together.",
+                ],
+              },
+            },
+          ],
+          en: "The mere voice, it is true, can indicate pain and pleasure, and therefore is possessed by the other animals as well",
+          meaning: [
+            "Aristotle sets voice against speech. Any animal with a voice can cry out to show that it is hurt or pleased, so voice is not special to human beings.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ὁ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match λόγος" },
+                { form: "δὲ", lemma: "δέ", here: "but", dict: "and; but", src: "DCC", form_note: "a little word that never changes; it answers the μέν about voice" },
+                { form: "λόγος", lemma: "λόγος", here: "speech", dict: "word, speech, discourse; thought, reason, account", src: "DCC", form_note: "a 'he' word (masculine), the subject" },
+                { form: "ἐπὶ", lemma: "ἐπί", here: "for", dict: "at (+gen.); on (+dat.); on to, against (+acc.)", src: "DCC", form_note: "a little word that never changes; with the 'to' form after it, here it means for, with a view to" },
+                { form: "τῷ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'to' form, 'it' form, to go with δηλοῦν" },
+                { form: "δηλοῦν", lemma: "δηλόω", here: "showing, to show", dict: "show, declare, explain", src: "DCC", form_note: "the 'to' form of the verb: to show; with τῷ, the showing" },
+                { form: "ἐστι", lemma: "εἰμί", here: "is", dict: "be, exist", src: "DCC", form_note: "he, she or it is, now" },
+              ],
+              learn: {
+                title: "τῷ δηλοῦν: the 'to' form as a noun",
+                at: 5,
+                text: [
+                  "«δηλοῦν» is *to show*. Put *the* in front and it becomes a noun, *the showing*, and that *the* can take any form: here «τῷ», after «ἐπί».",
+                  "So «ἐπὶ τῷ δηλοῦν ἐστι» is *is for the showing*: speech exists *to show* something. The translation gives *is designed to indicate*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter), to go with συμφέρον" },
+                { form: "συμφέρον", lemma: "συμφέρω", here: "advantageous (thing), what helps", dict: "benefit, be useful or profitable to (+dat.); (impers.) συμφέρει it is of use, expedient (+infin.); τὸ συμφέρον use, profit, advantage", src: "DCC", form_note: "a verb used as a describing word, in the 'it' form: helping; with τό, what helps" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter), to go with βλαβερόν" },
+                { form: "βλαβερόν", after: ",", lemma: "βλαβερός", here: "harmful (thing)", dict: "harmful", src: "LSJ", form_note: "a describing word in the 'it' form: with τό, what harms" },
+              ],
+              learn: {
+                title: "τὸ συμφέρον: what helps",
+                at: 1,
+                text: [
+                  "«συμφέρον» is a verb, «συμφέρω», *I help, I am useful*, made into a describing word: *helping*. With «τό» it becomes a noun: *the helping thing*, *what is useful*.",
+                  "Next to it stands a plain describing word used the same way: «τὸ βλαβερόν», *the harmful*. Both are what speech shows.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ὥστε", lemma: "ὥστε", here: "and therefore", dict: "(introducing natural or actual result clause) so as, so that, (with the result) that", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "καὶ", lemma: "καί", here: "also", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means also" },
+                { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter), to go with δίκαιον" },
+                { form: "δίκαιον", lemma: "δίκαιος", here: "right (thing)", dict: "right, just", src: "DCC", form_note: "a describing word in the 'it' form: with τό, what is right" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter), to go with ἄδικον" },
+                { form: "ἄδικον", after: "·", lemma: "ἄδικος", here: "wrong (thing)", dict: "unjust", src: "DCC", form_note: "a describing word in the 'it' form: ἀ- (not) and δίκαιος (just): what is not just" },
+              ],
+              learn: {
+                title: "ὥστε: and so",
+                at: 0,
+                text: [
+                  "«ὥστε» points to what follows from what was just said: *so that*, *and so*. Speech shows what helps and what harms, *and so* also what is right and what is wrong.",
+                  "Look again at «ἄδικον»: the «ἀ-» you met at the start of this lesson, *not*, in front of the root of «δίκαιος», *just*.",
+                ],
+              },
+            },
+          ],
+          en: "but speech is designed to indicate the advantageous and the harmful, and therefore also the right and the wrong",
+          meaning: [
+            "Speech can do what a cry cannot: it can say that something is useful or harmful, and so that it is right or wrong. Aristotle goes on to say that sharing these ideas is what makes a household and a city.",
+          ],
+        },
       ],
     },
   },
@@ -1370,7 +1968,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0059.tlg034", "10.899"), label: "Read Laws 10.899 in the reader" },
     ],
     passage: {
-      intro: "You have read the four words. Now read the whole question from Plato's *Laws*, and the answer it gets, a piece at a time.",
+      intro: "You have read the four words. Now read the whole question from Plato's *Laws*, the answer it gets, and the terms the stranger then sets for anyone who still disbelieves, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -1441,6 +2039,216 @@ export const PATH: PathStep[] = [
             "Clinias of Crete, one of the two old men walking with the stranger, answers at once: no one could be so out of his mind. Once the argument is granted, the gods are everywhere.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "τῷ", lemma: "ὁ", here: "for the (man)", dict: "the", src: "DCC", form_note: "the 'to' or 'for' form, 'he' form, to match νομίζοντι" },
+                { form: "μὲν", lemma: "μέν", here: "(untranslated)", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "τοίνυν", lemma: "τοίνυν", here: "then", dict: "therefore, accordingly (inferential); further, moreover (transitional)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "μὴ", lemma: "μή", here: "not", dict: "not (marks the negative as subjective or conditional); εἰ μή if not, except", src: "DCC", form_note: "the not used with a describing verb that means any such person: whoever does not" },
+                { form: "νομίζοντι", lemma: "νομίζω", here: "believing in", dict: "think, believe that (+acc. and infin.); hold as a custom, be accustomed to (+infin.)", src: "DCC", form_note: "a verb used as a describing word, in the 'for' form, 'he' form: for the one believing" },
+                { form: "θεοὺς", lemma: "θεός", here: "gods", dict: "god, goddess", src: "DCC", form_note: "plural, with the -ους ending of the thing believed in" },
+              ],
+              learn: {
+                title: "The + a describing verb: the one who",
+                at: 4,
+                text: [
+                  "«νομίζοντι» is a verb used as a describing word: *believing*. With «τῷ» in front and no noun, it means *the one who believes*: «τῷ μὴ νομίζοντι θεούς», *for the one who does not believe in gods*.",
+                  "Its *not* is «μή», not «οὐ»: it means anyone at all who disbelieves, not one man in particular.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐν", lemma: "ἐν", here: "in", dict: "in, among (+dat.)", src: "DCC", form_note: "a little word that never changes; the word after it is in the 'to' form" },
+                { form: "τῷ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'to' form, 'he' form, to match χρόνῳ" },
+                { form: "πρόσθεν", lemma: "πρόσθεν", here: "before, up till now", dict: "before, outside, in front of", src: "LSJ", form_note: "a word that never changes; between τῷ and χρόνῳ it works as a describing word: the before time" },
+                { form: "χρόνῳ", after: ",", lemma: "χρόνος", here: "time", dict: "time", src: "DCC", form_note: "a 'he' word (masculine), in the 'to' form after ἐν" },
+              ],
+              learn: {
+                title: "A how-word as a describing word",
+                at: 2,
+                text: [
+                  "«πρόσθεν» means *before* and never changes. Set between *the* and its noun, it describes the noun: «ἐν τῷ πρόσθεν χρόνῳ», *in the before time*, that is, *up till now*.",
+                  "Anything that sits between *the* and its noun belongs to that noun.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ὦ", lemma: "ὦ", here: "O", dict: "oh! (unemphatic when with the vocative)", src: "DCC", form_note: "a word that never changes; it goes with the people spoken to" },
+                { form: "Μέγιλλέ", lemma: "Μέγιλλος", here: "Megillus", dict: "Megillus", src: "LSJ", form_note: "a name in the calling form: Μέγιλλος becomes Μέγιλλε. The second accent comes from τε after it" },
+                { form: "τε", lemma: "τε", here: "both", dict: "and; τε…τε both…and", src: "DCC", form_note: "a little word that never changes; it leans on the word before it" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "Κλεινία", after: ",", lemma: "Κλεινίας", here: "Clinias", dict: "Clinias", src: "LSJ", form_note: "a name in the calling form: Κλεινίας becomes Κλεινία" },
+              ],
+              learn: {
+                title: "τε … καί: both … and",
+                at: 2,
+                text: [
+                  "«τε» after one word and «καί» before the next join them closely: *both Megillus and Clinias*. English usually just says *and*.",
+                  "Both names are in the calling form: the stranger speaks to his two companions at once.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "εἰπόντες", lemma: "λέγω", here: "having stated", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "a verb used as a describing word, in the past, 'he' form, plural: having said, describing us" },
+                { form: "ὅρους", lemma: "ὅρος", here: "limits, conditions", dict: "boundary, landmark", src: "LSJ", form_note: "a 'he' word (masculine), plural, with the -ους ending of the thing said" },
+                { form: "ἀπαλλαττώμεθα", after: ".", lemma: "ἀπαλλάσσω", here: "let us be quit (of him)", dict: "set free, release, deliver", src: "DCC", form_note: "we do it for ourselves: the ending -ώμεθα, with its long ω, means let us" },
+              ],
+              learn: {
+                title: "Let us: the ending -ώμεθα",
+                at: 2,
+                text: [
+                  "«ἀπαλλαττ-ώμεθα» ends in «-ώμεθα»: *let us …*. The long «ω» of the ending marks a wish or a plan, not a plain statement. Grammars call it the subjunctive.",
+                  "«ἀπαλλάσσω» is *I set free*; with this ending, *let us set ourselves free*, *let us be quit of him*. «ἀπαλλάττ-» is the Attic spelling of «ἀπαλλάσσ-», as «κρείττων» is of «κρείσσων».",
+                ],
+              },
+            },
+          ],
+          en: "Let us, then, lay down limiting conditions for the man who up till now disbelieves in gods, O Megillus and Clinias, and so be quit of him.",
+          meaning: [
+            "The stranger has finished his argument. Now he sets terms for anyone who still does not believe in gods, so that the three of them can move on.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "τίνας", after: ";", lemma: "τίς", here: "what (conditions)?", dict: "who? what? which? (interrog. pron./adj.)", src: "DCC", form_note: "the asking word who? what?, plural, in the same form as ὅρους, the thing asked about" },
+              ],
+              learn: {
+                title: "τίς: the asking word",
+                text: [
+                  "«τίς» asks *who?* or *what?*. Clinias asks «τίνας;», *what (conditions)?*: it is plural and in the same form as «ὅρους», the word it asks about. The «;» is the Greek question mark.",
+                  "The same word with no accent on its first syllable, «τις», means *someone, a certain*. The accent on «ί» makes it a question.",
+                ],
+              },
+            },
+          ],
+          en: "What conditions?",
+          meaning: [
+            "Clinias, the Cretan, asks what the terms will be.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ἢ", lemma: "ἤ", here: "either", dict: "or; than (after a comparative); ἤ...ἤ either...or", src: "DCC", form_note: "a little word that never changes; here the first of ἢ … ἢ, either … or" },
+                { form: "διδάσκειν", lemma: "διδάσκω", here: "(he must) teach", dict: "teach", src: "DCC", form_note: "the 'to' form of the verb: to teach" },
+                { form: "ἡμᾶς", lemma: "ἐγώ", here: "us", dict: "I, we", src: "DCC", form_note: "we, in the form of the one taught: us" },
+                { form: "ὡς", lemma: "ὡς", here: "that", dict: "as, since; (introducing purpose clause) so that (+subj./opt.); (introducing indir. statement) that", src: "DCC", form_note: "a little word that never changes; after teach, it means that" },
+                { form: "οὐκ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, spelled οὐκ before a vowel" },
+                { form: "ὀρθῶς", lemma: "ὀρθός", here: "rightly", dict: "upright, straight, true, regular", src: "DCC", form_note: "a how-word made from ὀρθός, straight, right: the ending -ως makes it" },
+                { form: "λέγομεν", lemma: "λέγω", here: "we speak", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "we do it, now: the ending -ομεν means we" },
+              ],
+              learn: {
+                title: "The terms: two 'to' forms",
+                at: 1,
+                text: [
+                  "The stranger gives the terms as 'to' forms of verbs: «διδάσκειν», *to teach*, and later «πείθεσθαι», *to believe*. He means *(he must) teach* … *or (he must) believe*.",
+                  "«ὀρθ-ῶς» is a how-word made from «ὀρθός», *straight, right*, by the ending «-ως»: *rightly*. Many how-words are made this way, as English adds *-ly*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τιθέμενοι", lemma: "τίθημι", here: "in laying down", dict: "to put, place; establish, ordain, institute; put in a certain state", src: "DCC", form_note: "a verb used as a describing word, 'he' form, plural, describing we: laying down for ourselves" },
+                { form: "ψυχὴν", lemma: "ψυχή", here: "soul", dict: "breath, life, soul", src: "DCC", form_note: "a 'she' word (feminine), with the -ην ending: the one said to be first" },
+                { form: "γένεσιν", lemma: "γένεσις", here: "production, origin", dict: "origin, source, beginning", src: "LSJ", form_note: "a 'she' word (feminine), with the -ιν ending, matching ψυχήν" },
+                { form: "ἁπάντων", lemma: "ἅπας", here: "of all things", dict: "all together", src: "DCC", form_note: "the 'of' form, plural: of all things" },
+                { form: "εἶναι", lemma: "εἰμί", here: "is (to be)", dict: "be, exist", src: "DCC", form_note: "the 'to' form: to be" },
+                { form: "πρώτην", after: ",", lemma: "πρῶτος", here: "first", dict: "first, foremost, earliest; (adv.) τὸ πρῶτον in the first place", src: "DCC", form_note: "a describing word, 'she' form with the -ην ending, to match γένεσιν" },
+              ],
+              learn: {
+                title: "That soul is: the -ην ending and 'to be'",
+                at: 4,
+                text: [
+                  "After a word of saying or holding, Greek can give *what* is held with a 'to' form and the subject in the same ending as an object: «ψυχὴν … εἶναι», literally *soul to be*, that is, *that soul is*.",
+                  "So «ψυχὴν γένεσιν ἁπάντων εἶναι πρώτην» is *that soul is the first origin of all things*. «ψυχήν», «γένεσιν» and «πρώτην» are all in that object form, though «γένεσιν» shows it with «-ιν».",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "τἆλλα", lemma: "ἄλλος", here: "the other things", dict: "other, another", src: "DCC", form_note: "τὰ ἄλλα, the other things, run together into one word" },
+                { form: "ὁπόσα", lemma: "ὁπόσος", here: "all that, as many as", dict: "as many, as many as . ., as much as", src: "LSJ", form_note: "the 'it' form, plural: as many things as" },
+                { form: "τούτων", lemma: "οὗτος", here: "these (statements)", dict: "this, these; μετὰ ταῦτα after this", src: "DCC", form_note: "the 'of' form, plural: of these" },
+                { form: "συνεπόμενα", lemma: "συνέπομαι", here: "following on", dict: "follow along with, accompany", src: "LSJ", form_note: "a verb used as a describing word, 'it' form, plural: following along with" },
+                { form: "εἴπομεν", after: ",", lemma: "λέγω", here: "we said", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "we did it, in the past: the ending -ομεν means we" },
+              ],
+              learn: {
+                title: "Two words run together",
+                at: 1,
+                text: [
+                  "«τἆλλα» is «τὰ ἄλλα», *the other things*, run together into one word. The mark over the «α» shows where the two words have merged. Grammars call this crasis.",
+                  "«εἴπομεν», *we said*, is a past of *say*: Greek uses a different root for it than «λέγω».",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἢ", lemma: "ἤ", here: "or", dict: "or; than (after a comparative); ἤ...ἤ either...or", src: "DCC", form_note: "a little word that never changes; the second of ἢ … ἢ, either … or" },
+                { form: "μὴ", lemma: "μή", here: "not", dict: "not (marks the negative as subjective or conditional); εἰ μή if not, except", src: "DCC", form_note: "the not of an if: if he is not" },
+                { form: "δυνάμενον", lemma: "δύναμαι", here: "if he is (not) able", dict: "(+infin.) to be able (to), be strong enough (to)", src: "DCC", form_note: "a verb used as a describing word, 'he' form: being able, describing the disbeliever" },
+                { form: "βέλτιον", lemma: "ἀγαθός", here: "better", dict: "good, virtuous, brave, noble", src: "DCC", form_note: "the comparing form of ἀγαθός, good, in the 'it' form, used as a how-word: better" },
+                { form: "λέγειν", lemma: "λέγω", here: "to speak", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "the 'to' form of the verb: to speak" },
+                { form: "ἡμῶν", after: ",", lemma: "ἐγώ", here: "than us", dict: "I, we", src: "DCC", form_note: "the 'of' form of we; after a comparing word it means than us" },
+              ],
+              learn: {
+                title: "Better than us: the 'of' form",
+                at: 5,
+                text: [
+                  "After a comparing word like «βέλτιον», *better*, the one compared with can go in the 'of' form, with no word for *than*: «βέλτιον … ἡμῶν», *better than us*.",
+                  "«βέλτιον» is a comparing form of «ἀγαθός», *good*, though it looks nothing like it. A few common words do this, as English *good* has *better*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἡμῖν", lemma: "ἐγώ", here: "us", dict: "I, we", src: "DCC", form_note: "the 'to' form of we: to us" },
+                { form: "πείθεσθαι", lemma: "πείθω", here: "(he must) believe", dict: "persuade, win over; (mid. and pass.) obey, believe in, trust in (+dat.)", src: "DCC", form_note: "the 'to' form, with the ending -εσθαι that turns the action back on the doer: to let oneself be persuaded" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ζῆν", lemma: "ζάω", here: "to live", dict: "live", src: "DCC", form_note: "the 'to' form of the verb: to live" },
+                { form: "θεοὺς", lemma: "θεός", here: "gods", dict: "god, goddess", src: "DCC", form_note: "plural, with the -ους ending: the ones held to be" },
+                { form: "ἡγούμενον", lemma: "ἡγέομαι", here: "believing in, in veneration of", dict: "lead, be the leader; regard, believe, think", src: "DCC", form_note: "a verb used as a describing word, 'he' form: believing, describing the man" },
+              ],
+              learn: {
+                title: "πείθεσθαι: believe, with the 'to' form",
+                at: 1,
+                text: [
+                  "You have met «πείθομαι», *I let myself be persuaded*, *I believe*. Its 'to' form is «πείθεσθαι», *to believe*; the person believed goes in the 'to' form: «ἡμῖν», *us*.",
+                  "«θεοὺς ἡγούμενον» is *holding (that there are) gods*: «ἡγέομαι», *I lead*, also means *I hold, I believe*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "εἰς", lemma: "εἰς", here: "for", dict: "into, to, towards (+acc.)", src: "DCC", form_note: "a little word that never changes; of time, it means for" },
+                { form: "τὸν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match βίον" },
+                { form: "ἐπίλοιπον", lemma: "ἐπίλοιπος", here: "rest of, remaining", dict: "still left, remaining, future", src: "LSJ", form_note: "a describing word, 'he' form, between τόν and βίον" },
+                { form: "βίον", after: ".", lemma: "βίος", here: "life", dict: "life", src: "DCC", form_note: "a 'he' word (masculine), with the -ον ending after εἰς" },
+              ],
+              learn: {
+                title: "εἰς with time: for",
+                at: 0,
+                text: [
+                  "«εἰς» means *into*. Said of time it means *for*, *into the time of*: «εἰς τὸν ἐπίλοιπον βίον», *for the remaining life*, *for the rest of his life*.",
+                  "«ἐπίλοιπος», *still left*, sits between *the* and its noun, describing it.",
+                ],
+              },
+            },
+          ],
+          en: "That either he must teach us that we are wrong in laying down that soul is of all things the first production, together with all the consequential statements we made,—or, if he is unable to improve on our account, he must believe us, and for the rest of his life live in veneration of the gods.",
+          meaning: [
+            "The terms are fair ones: the disbeliever can either show that the argument is wrong, or, if he cannot do better, accept it and live believing in the gods.",
+            "The argument has been that soul comes before body and is the first cause of all things, so that the souls that move the heavens are gods.",
+          ],
+        },
       ],
     },
   },
@@ -1481,7 +2289,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0059.tlg002", "22"), label: "Read Apology 22 in the reader", note: "the poets and the craftsmen" },
     ],
     passage: {
-      intro: "You have read the first half of the line. Now read its other half, and the sentence that follows it, a piece at a time.",
+      intro: "You have read the first half of the line. Now read its other half, and go on with Socrates' story of the poets and the craftsmen, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -1549,6 +2357,222 @@ export const PATH: PathStep[] = [
             "Socrates finds the poets are in the same state as the prophets: they too say fine things without knowing what they mean.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "ἅμα", lemma: "ἅμα", here: "at the same time", dict: "at the same time; (prep.) together with (+dat.)", src: "DCC", form_note: "a how-word that never changes its form" },
+                { form: "ᾐσθόμην", lemma: "αἰσθάνομαι", here: "I perceived", dict: "perceive, understand, hear, learn", src: "DCC", form_note: "I did it, in the past: the αἰ- at the start has become ᾐ- to mark the past" },
+                { form: "αὐτῶν", lemma: "αὐτός", here: "(that) they", dict: "him- her- itself etc. (for emphasis); the same (with article); (pron.) him, her, it etc. (in oblique cases)", src: "DCC", form_note: "the 'of' form, plural: of them, the poets" },
+              ],
+              learn: {
+                title: "The past of a verb that starts with a vowel",
+                at: 2,
+                text: [
+                  "You have met «ἐ-» in front of a verb, marking the past. A verb that already starts with a vowel lengthens that vowel instead: «αἰσθάνομαι», *I perceive*, becomes «ᾐσθόμην», *I perceived*.",
+                  "The little «ι» written under the «η» is the «ι» of «αἰ-», still there. The ending «-όμην» is *I*, in the past.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "διὰ", lemma: "διά", here: "on account of", dict: "through, during, because of (+gen., acc.)", src: "DCC", form_note: "a little word that never changes; with the -ην ending after it, it means because of" },
+                { form: "τὴν", lemma: "ὁ", here: "the, their", dict: "the", src: "DCC", form_note: "the 'she' form, to match ποίησιν" },
+                { form: "ποίησιν", lemma: "ποίησις", here: "poetry", dict: "fabrication, creation, production, action, art of poetry, poetic composition, poem", src: "LSJ", form_note: "a 'she' word (feminine), with the -ιν ending after διά" },
+                { form: "οἰομένων", lemma: "οἴομαι", here: "thinking", dict: "think, suppose, imagine (+acc. and infin.)", src: "DCC", form_note: "a verb used as a describing word, in the 'of' form, plural, to match αὐτῶν: thinking" },
+              ],
+              learn: {
+                title: "Perceiving them thinking",
+                at: 3,
+                text: [
+                  "«αἰσθάνομαι», *I perceive*, puts the people perceived in the 'of' form: «αὐτῶν», *of them*. What they were doing follows as a describing verb in the same form: «οἰομένων», *thinking*.",
+                  "So «ᾐσθόμην αὐτῶν … οἰομένων» is *I perceived them thinking*, that is, *I perceived that they thought*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "as well, also", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means also" },
+                { form: "τἆλλα", lemma: "ἄλλος", here: "in other things", dict: "other, another", src: "DCC", form_note: "τὰ ἄλλα, the other things, run together into one word: in the other things" },
+                { form: "σοφωτάτων", lemma: "σοφός", here: "wisest", dict: "wise, clever, skilled", src: "DCC", form_note: "the 'most' form of σοφός, wise, in the 'of' form, plural, to match ἀνθρώπων" },
+                { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form: to be" },
+                { form: "ἀνθρώπων", lemma: "ἄνθρωπος", here: "of men", dict: "human being", src: "DCC", form_note: "a 'he' word (masculine), in the 'of' form, plural: of men" },
+              ],
+              learn: {
+                title: "Wisest: the ending -τατος",
+                at: 2,
+                text: [
+                  "You have met «σοφώτερος», *wiser*. Add «-τατος» instead and you have *wisest*: «σοφώτατος». Here it is in the 'of' form, «σοφωτάτων», to match «ἀνθρώπων».",
+                  "«τἆλλα» is «τὰ ἄλλα», *the other things*, run together into one word: they thought they were wisest *in other things* too, not only in poetry.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἃ", lemma: "ὅς", here: "in which", dict: "who, which, that", src: "DCC", form_note: "the 'it' form, plural: the things which" },
+                { form: "οὐκ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, spelled οὐκ before a vowel" },
+                { form: "ἦσαν", after: ".", lemma: "εἰμί", here: "they were", dict: "be, exist", src: "DCC", form_note: "they were: the past of εἰσί, they are" },
+              ],
+              learn: {
+                title: "ἦσαν: they were",
+                at: 2,
+                text: [
+                  "«ἦσαν» is the past of «εἰσί», *they are*: *they were*. Its ending «-σαν» is one you met in «ἐφάνησαν», *they appeared*.",
+                  "«ἃ οὐκ ἦσαν» is *which they were not*: they thought they were wise in things in which they were not.",
+                ],
+              },
+            },
+          ],
+          en: "And at the same time I perceived that they, on account of their poetry, thought that they were the wisest of men in other things as well, in which they were not.",
+          meaning: [
+            "Being good at poetry made the poets think they were wise about everything else too. That, for Socrates, is worse than not knowing: they do not know that they do not know.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ἀπῇα", lemma: "ἀπέρχομαι", here: "I went away", dict: "go away, depart from", src: "LSJ", form_note: "I went away: ἀπ-, away, and ᾖα, I went" },
+                { form: "οὖν", lemma: "οὖν", here: "so", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "καὶ", lemma: "καί", here: "also", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means also" },
+                { form: "ἐντεῦθεν", lemma: "ἐντεῦθεν", here: "from them, from there", dict: "hence, thence", src: "LSJ", form_note: "a where-word that never changes: from there" },
+              ],
+              learn: {
+                title: "ᾖα: I went",
+                at: 0,
+                text: [
+                  "«ᾖα» is *I went*. *Go* is irregular in Greek, as in English (*go*, *went*): the past does not look like the present.",
+                  "«ἀπ-ῇα», with «ἀπό», *away*, in front, is *I went away*. Many Greek verbs take a little word like this on the front to add a direction.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τῷ", lemma: "ὁ", here: "in the", dict: "the", src: "DCC", form_note: "the 'to' form, 'it' form, to match αὐτῷ" },
+                { form: "αὐτῷ", lemma: "αὐτός", here: "same (thing)", dict: "him- her- itself etc. (for emphasis); the same (with article); (pron.) him, her, it etc. (in oblique cases)", src: "DCC", form_note: "the 'to' form, 'it' form; right after τῷ it means the same" },
+                { form: "οἰόμενος", lemma: "οἴομαι", here: "thinking", dict: "think, suppose, imagine (+acc. and infin.)", src: "DCC", form_note: "a verb used as a describing word, 'he' form, describing Socrates: thinking" },
+                { form: "περιγεγονέναι", lemma: "περιγίγνομαι", here: "(that I) was superior", dict: "to be superior to, prevail over, overcome", src: "LSJ", form_note: "the 'to' form of the perfect: to have come out on top" },
+              ],
+              learn: {
+                title: "τῷ αὐτῷ: in the same thing",
+                at: 1,
+                text: [
+                  "«αὐτός» right after *the* means *the same*: «τῷ αὐτῷ», *the same thing*. Its 'to' form here says *in what*: *in the same thing*.",
+                  "«περιγεγονέναι» is the 'to' form of a perfect, *to have come out on top*: the doubled start «γε-γον-» marks the perfect.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ᾧπερ", lemma: "ὅς", here: "in which", dict: "who, which, that", src: "DCC", form_note: "ᾧ, in which, with -περ on the end: in the very thing in which" },
+                { form: "καὶ", lemma: "καί", here: "also", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means also" },
+                { form: "τῶν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'of' form, plural, to match πολιτικῶν" },
+                { form: "πολιτικῶν", after: ".", lemma: "πολιτικός", here: "public men", dict: "of, for, relating to citizens", src: "LSJ", form_note: "a describing word, 'he' form, in the 'of' form, plural: with τῶν, the public men" },
+              ],
+              learn: {
+                title: "Superior to: the 'of' form",
+                at: 3,
+                text: [
+                  "«περιγίγνομαι», *I come out on top*, puts the ones you beat in the 'of' form: «τῶν πολιτικῶν», *(over) the public men*.",
+                  "«-περ» on the end of «ᾧ» adds weight: «ᾧπερ», *in the very thing in which*. Socrates beat the poets in the same way he beat the politicians: he knew that he did not know.",
+                ],
+              },
+            },
+          ],
+          en: "So I went away from them also thinking that I was superior to them in the same thing in which I excelled the public men.",
+          meaning: [
+            "Socrates had first questioned the politicians, the public men, and found the same thing. His only advantage over both groups is that he does not think he knows what he does not know.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "τελευτῶν", lemma: "τελευτάω", here: "finally", dict: "finish; die", src: "DCC", form_note: "a verb used as a describing word, 'he' form: finishing, and so at last" },
+                { form: "οὖν", lemma: "οὖν", here: "then", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "ἐπὶ", lemma: "ἐπί", here: "to", dict: "at (+gen.); on (+dat.); on to, against (+acc.)", src: "DCC", form_note: "a little word that never changes; with the -ους ending after it, it means to" },
+                { form: "τοὺς", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, plural, to match χειροτέχνας" },
+                { form: "χειροτέχνας", lemma: "χειροτέχνης", here: "hand-workers", dict: "handicraftsman, artisan, expert", src: "LSJ", form_note: "a 'he' word (masculine), plural, with the ending that follows ἐπί: χείρ, hand, and τέχνη, craft" },
+                { form: "ᾖα", after: "·", lemma: "ἔρχομαι", here: "I went", dict: "come, go", src: "DCC", form_note: "I went: the irregular past of go" },
+              ],
+              learn: {
+                title: "Ending, meaning finally",
+                at: 0,
+                text: [
+                  "«τελευτάω» is *I finish*. Its describing form «τελευτῶν», *finishing*, is often used for *finally*, *at last*: *finishing, I went to the hand-workers*.",
+                  "«χειρο-τέχνας» is built of two words you can see: «χείρ», *hand*, and «τέχνη», *craft*, the word you met in *the art is long*.",
+                ],
+              },
+            },
+          ],
+          en: "Finally then I went to the hand-workers.",
+          meaning: [
+            "After the politicians and the poets, Socrates questions the craftsmen: the people who make things with their hands.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "ἐμαυτῷ", lemma: "ἐμαυτοῦ", here: "with myself", dict: "of me, of myself, oneself", src: "LSJ", form_note: "the 'to' form of myself" },
+                { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed, in fact (confirming)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "συνῄδη", lemma: "σύνοιδα", here: "I was conscious", dict: "share knowledge with, be privy to; with ἐμαυτῷ, be conscious of", src: "LSJ", form_note: "I knew, in the past: σύν, with, and ᾔδη, I knew: I knew along with" },
+                { form: "οὐδὲν", lemma: "οὐδείς", here: "nothing", dict: "no one, nothing", src: "DCC", form_note: "the 'it' form: nothing, the thing not known" },
+                { form: "ἐπισταμένῳ", lemma: "ἐπίσταμαι", here: "knowing", dict: "know, be able, capable, can", src: "LSJ", form_note: "a verb used as a describing word, in the 'to' form, to match ἐμαυτῷ: knowing" },
+                { form: "ὡς", lemma: "ὡς", here: "so to", dict: "as, since; (introducing purpose clause) so that (+subj./opt.); (introducing indir. statement) that", src: "DCC", form_note: "a little word that never changes; with ἔπος εἰπεῖν, so to speak" },
+                { form: "ἔπος", lemma: "ἔπος", here: "a word", dict: "word, speech, tale; prophecy", src: "DCC", form_note: "an 'it' word (neuter), the thing said" },
+                { form: "εἰπεῖν", after: ",", lemma: "λέγω", here: "speak, say", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "the 'to' form, in the past: to say" },
+              ],
+              learn: {
+                title: "I knew with myself",
+                at: 2,
+                text: [
+                  "«σύνοιδα ἐμαυτῷ» is *I know along with myself*, that is, *I am conscious*. What he is conscious of follows as a describing verb matching «ἐμαυτῷ»: «οὐδὲν ἐπισταμένῳ», *(myself) knowing nothing*.",
+                  "«ὡς ἔπος εἰπεῖν» is a set phrase, *so to say a word*: *so to speak*, *practically*. It softens «οὐδέν»: he knew *practically* nothing.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τούτους", lemma: "οὗτος", here: "they, these men", dict: "this, these; μετὰ ταῦτα after this", src: "DCC", form_note: "the 'he' form, plural, with the -ους ending of the ones found" },
+                { form: "δέ", lemma: "δέ", here: "but", dict: "and; but", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "γʼ", lemma: "γε", here: "at least", dict: "(enclitic) indeed; at least, at any rate", src: "DCC", form_note: "γε, with its vowel dropped before the next word; it stresses τούτους" },
+                { form: "ᾔδη", lemma: "οἶδα", here: "I knew", dict: "to know (pf. in pres. sense); to know how to (+infin.)", src: "DCC", form_note: "I knew: the past of οἶδα, I know" },
+              ],
+              learn: {
+                title: "ᾔδη: I knew",
+                at: 3,
+                text: [
+                  "«οἶδα» is *I know*; «ᾔδη» is *I knew*. You can see the two together in this sentence: in «συν-ῄδη», *I was conscious*, and here on its own.",
+                  "«τούτους», *these men*, comes first for weight, set against «ἐμαυτῷ», *myself*: *I* knew nothing, but *they*, I knew, …",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ὅτι", lemma: "ὅτι", here: "that", dict: "because, that; (with superl.) as...as possible", src: "DCC", form_note: "a little word that never changes; after knew, it means that" },
+                { form: "εὑρήσοιμι", lemma: "εὑρίσκω", here: "I should find", dict: "find (out), discover, devise", src: "DCC", form_note: "I would find: a future, with the -οιμι ending used for what someone thought would happen" },
+                { form: "πολλὰ", lemma: "πολύς", here: "many", dict: "much, many; ὡς ἐπὶ τὸ πολύ for the most part", src: "DCC", form_note: "the 'it' form, plural: many things" },
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "καλὰ", lemma: "καλός", here: "fine", dict: "beautiful, noble, honorable", src: "DCC", form_note: "the 'it' form, plural: fine things" },
+                { form: "ἐπισταμένους", after: ".", lemma: "ἐπίσταμαι", here: "knowing", dict: "know, be able, capable, can", src: "LSJ", form_note: "a verb used as a describing word, 'he' form, plural, to match τούτους: knowing" },
+              ],
+              learn: {
+                title: "Many fine things again",
+                at: 3,
+                text: [
+                  "«πολλὰ καὶ καλά», *many fine things*, are the words of the line you learned in this lesson. The prophets *say* many fine things; the craftsmen *know* many fine things.",
+                  "«εὑρήσοιμι» is a future, *I shall find*, with an ending, «-οιμι», that Greek uses after a past verb of knowing or saying: *I knew that I should find*.",
+                ],
+              },
+            },
+          ],
+          en: "For I was conscious that I knew practically nothing, but I knew I should find that they knew many fine things.",
+          meaning: [
+            "Socrates expects the craftsmen to know real things, and they do: they know their crafts, and in that they are wiser than he is. But he goes on to find that they too think they are wise in matters beyond their craft.",
+          ],
+        },
       ],
     },
   },
@@ -1590,7 +2614,7 @@ export const PATH: PathStep[] = [
       { href: read("tlg0086.tlg025", "1.1"), label: "Read on in the Metaphysics", note: "the senses, memory and experience" },
     ],
     passage: {
-      intro: "You have read the first sentence. Now read the next one, where Aristotle gives his proof, a piece at a time.",
+      intro: "You have read the first sentence. Now read on, where Aristotle gives his proof and begins to trace how knowing grows, a piece at a time.",
       sentences: [
         {
           pieces: [
@@ -1670,6 +2694,203 @@ export const PATH: PathStep[] = [
             "This is Aristotle's proof that we desire to know: we love our senses even when they are of no use to us, and sight above all. He goes on to say that sight is loved most because it makes us know most, and shows us many differences between things.",
           ],
         },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "οὐ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "a word for not that never changes its form" },
+                { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed, in fact (confirming)", src: "DCC", form_note: "a little word that never changes; it never comes first" },
+                { form: "μόνον", lemma: "μόνος", here: "only", dict: "alone, single", src: "DCC", form_note: "alone, used as a how-word that never changes: only" },
+                { form: "ἵνα", lemma: "ἵνα", here: "in order that", dict: "in order that (conj. +subj. or opt.); where (rel. adv. +indic.)", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "πράττωμεν", lemma: "πράσσω", here: "we may act", dict: "do, achieve, accomplish; do or fare in a certain way (+adv.)", src: "DCC", form_note: "we do it, with the long ω of the ending -ωμεν: we may do" },
+              ],
+              learn: {
+                title: "ἵνα: so that",
+                at: 4,
+                text: [
+                  "«ἵνα» means *so that*, *in order that*: it gives a purpose. The verb after it takes a long vowel in its ending: «πράττ-ωμεν», *we may act*, beside the plain «πράττ-ομεν», *we act*.",
+                  "Grammars call this form the subjunctive. «πράττω» is the Attic spelling of «πράσσω», *I do, I act*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἀλλὰ", lemma: "ἀλλά", here: "but", dict: "but", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "καὶ", lemma: "καί", here: "even", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes; here it means even" },
+                { form: "μηθὲν", lemma: "μηδείς", here: "no (action), nothing", dict: "no one, nothing", src: "DCC", form_note: "the 'it' form: nothing. μηθέν is another spelling of μηδέν" },
+                { form: "μέλλοντες", lemma: "μέλλω", here: "intending, about to", dict: "(+infin.) think of doing, intend to, be about to", src: "DCC", form_note: "a verb used as a describing word, 'he' form, plural, describing we: intending" },
+                { form: "πράττειν", lemma: "πράσσω", here: "to do", dict: "do, achieve, accomplish; do or fare in a certain way (+adv.)", src: "DCC", form_note: "the 'to' form of the verb: to do" },
+              ],
+              learn: {
+                title: "μέλλω: about to",
+                at: 3,
+                text: [
+                  "«μέλλω» with a 'to' form after it means *I am about to*, *I intend to*: «μέλλοντες πράττειν», *intending to do*.",
+                  "With «μηθέν», *nothing*, in front: *intending to do nothing*, that is, *when no action is contemplated*. Its *not* is «μή»-, not «οὐ»-, because it means any such time at all.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form, to go with ὁρᾶν" },
+                { form: "ὁρᾶν", lemma: "ὁράω", here: "seeing, sight", dict: "see, look (to)", src: "DCC", form_note: "the 'to' form of the verb: to see; with τό, seeing" },
+                { form: "αἱρούμεθα", lemma: "αἱρέω", here: "we prefer, we choose", dict: "take, grasp, take by force; (mid.) choose", src: "DCC", form_note: "we do it for ourselves, now: the ending -ούμεθα" },
+              ],
+              learn: {
+                title: "αἱροῦμαι: take for myself, choose",
+                at: 2,
+                text: [
+                  "«αἱρέω» is *I take*. With the endings that turn the action back on the doer, it means *I take for myself*, that is, *I choose*, *I prefer*: «αἱρούμεθα», *we choose*.",
+                  "What we choose is «τὸ ὁρᾶν», *seeing*: *the* with a 'to' form, as in the line «τοῦ εἰδέναι».",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἀντὶ", lemma: "ἀντί", here: "to, rather than", dict: "opposite (+gen.)", src: "DCC", form_note: "a little word that never changes; the words after it are in the 'of' form" },
+                { form: "πάντων", lemma: "πᾶς", here: "all", dict: "every, all; whole (with article)", src: "DCC", form_note: "the 'of' form, plural, to match ἄλλων" },
+                { form: "ὡς", lemma: "ὡς", here: "so to", dict: "as, since; (introducing purpose clause) so that (+subj./opt.); (introducing indir. statement) that", src: "DCC", form_note: "a little word that never changes; with εἰπεῖν, so to speak" },
+                { form: "εἰπεῖν", lemma: "λέγω", here: "speak", dict: "say, speak (of), recount; pick up, collect, count", src: "DCC", form_note: "the 'to' form, in the past: to say" },
+                { form: "τῶν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'of' form, plural, to match ἄλλων" },
+                { form: "ἄλλων", after: ".", lemma: "ἄλλος", here: "other (senses)", dict: "other, another", src: "DCC", form_note: "the 'of' form, plural: the others, the other senses" },
+              ],
+              learn: {
+                title: "ἀντί: instead of",
+                at: 0,
+                text: [
+                  "«ἀντί» is *over against*, *instead of*, with the 'of' form after it: «ἀντὶ πάντων τῶν ἄλλων», *instead of all the others*. With *choose*, it means *we prefer sight to all the others*.",
+                  "«ὡς εἰπεῖν», *so to say*, softens the «πάντων»: *generally speaking*. It is a shorter form of the phrase «ὡς ἔπος εἰπεῖν».",
+                ],
+              },
+            },
+          ],
+          en: "Not only with a view to action, but even when no action is contemplated, we prefer sight, generally speaking, to all the other senses.",
+          meaning: [
+            "We do not value sight only because it is useful. Even when we have nothing to do, we like to look, and we would rather keep our sight than any other sense.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "αἴτιον", lemma: "αἴτιος", here: "the reason (is)", dict: "responsible, guilty", src: "DCC", form_note: "a describing word in the 'it' form, used as a noun: the cause. The word is, ἐστί, is left out" },
+                { form: "δʼ", lemma: "δέ", here: "and", dict: "and; but", src: "DCC", form_note: "δέ, with its vowel dropped before ὅτι" },
+                { form: "ὅτι", lemma: "ὅτι", here: "that", dict: "because, that; (with superl.) as...as possible", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "μάλιστα", lemma: "μάλα", here: "best, most of all", dict: "very, very much", src: "DCC", form_note: "the 'most' form of μάλα, very: most of all" },
+                { form: "ποιεῖ", lemma: "ποιέω", here: "makes", dict: "make, produce, cause, do; (mid.) consider, reckon", src: "DCC", form_note: "he, she or it does it, now" },
+                { form: "γνωρίζειν", lemma: "γνωρίζω", here: "to know (things)", dict: "make known, point out, become known", src: "LSJ", form_note: "the 'to' form of the verb: to come to know" },
+                { form: "ἡμᾶς", lemma: "ἐγώ", here: "us", dict: "I, we", src: "DCC", form_note: "we, in the form of the one made to do it: us" },
+              ],
+              learn: {
+                title: "Makes us know",
+                at: 4,
+                text: [
+                  "«ποιέω» is *I make*. With a person and a 'to' form, it means *make someone do something*: «ποιεῖ γνωρίζειν ἡμᾶς», *makes us know*.",
+                  "The person made to do it, «ἡμᾶς», *us*, is in the object form, just as in English: it makes *us* know, not *we*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "αὕτη", lemma: "οὗτος", here: "this (sense), sight", dict: "this, these; μετὰ ταῦτα after this", src: "DCC", form_note: "the 'she' form of οὗτος: this one, the sense of sight" },
+                { form: "τῶν", lemma: "ὁ", here: "of the", dict: "the", src: "DCC", form_note: "the 'of' form, plural, to match αἰσθήσεων" },
+                { form: "αἰσθήσεων", lemma: "αἴσθησις", here: "senses", dict: "sense-perception, sensation, the senses", src: "LSJ", form_note: "a 'she' word (feminine), in the 'of' form, plural" },
+              ],
+              learn: {
+                title: "One of a group: the 'of' form",
+                at: 0,
+                text: [
+                  "«αὕτη» is *this one*, in the 'she' form because «αἴσθησις», *sense*, is a 'she' word. The group it belongs to goes in the 'of' form: «αὕτη τῶν αἰσθήσεων», *this one of the senses*.",
+                  "With «μάλιστα», *most of all*, before it: of all the senses, sight most makes us know.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even; καί...καί both...and", src: "DCC", form_note: "a little word that never changes its form" },
+                { form: "πολλὰς", lemma: "πολύς", here: "many", dict: "much, many; ὡς ἐπὶ τὸ πολύ for the most part", src: "DCC", form_note: "a describing word, 'she' form, plural, to match διαφοράς" },
+                { form: "δηλοῖ", lemma: "δηλόω", here: "reveals", dict: "show, declare, explain", src: "DCC", form_note: "he, she or it does it, now: it shows" },
+                { form: "διαφοράς", after: ".", lemma: "διαφορά", here: "distinctions, differences", dict: "difference, disagreement", src: "DCC", form_note: "a 'she' word (feminine), plural, the things shown" },
+              ],
+              learn: {
+                title: "A word and its describer, apart",
+                at: 3,
+                text: [
+                  "«πολλάς», *many*, and «διαφοράς», *differences*, belong together, though the verb stands between them. Their matching endings, «-άς», show it.",
+                  "Putting the describing word first, away from its noun, gives it weight: *many* are the differences sight shows.",
+                ],
+              },
+            },
+          ],
+          en: "The reason of this is that of all the senses sight best helps us to know things, and reveals many distinctions.",
+          meaning: [
+            "Here is why we love sight most: it teaches us the most. Seeing shows us how things differ from each other, and that is the start of knowing them.",
+          ],
+        },
+        {
+          pieces: [
+            {
+              words: [
+                { form: "φύσει", lemma: "φύσις", here: "by nature", dict: "nature; (of the mind) one’s nature or disposition; regular order of nature", src: "DCC", form_note: "the 'by' form of φύσις, nature" },
+                { form: "μὲν", lemma: "μέν", here: "(untranslated)", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes; it looks ahead to a δέ" },
+                { form: "οὖν", lemma: "οὖν", here: "now", dict: "therefore, accordingly; at any rate", src: "DCC", form_note: "a little word that never changes; with μέν, it moves the argument on" },
+                { form: "αἴσθησιν", lemma: "αἴσθησις", here: "the power of sensation", dict: "sense-perception, sensation, the senses", src: "LSJ", form_note: "a 'she' word (feminine), with the -ιν ending of the thing had" },
+                { form: "ἔχοντα", lemma: "ἔχω", here: "with, having", dict: "have, hold, keep", src: "DCC", form_note: "a verb used as a describing word, 'it' form, plural, to match ζῷα: having" },
+                { form: "γίγνεται", lemma: "γίγνομαι", here: "are born", dict: "become; be born; happen, be", src: "DCC", form_note: "he, she or it does it, now: comes into being, is born" },
+                { form: "τὰ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form, plural, to match ζῷα" },
+                { form: "ζῷα", after: ",", lemma: "ζῷον", here: "animals", dict: "living being, animal", src: "DCC", form_note: "an 'it' word (neuter), plural, the subject" },
+              ],
+              learn: {
+                title: "Many 'it' things, one 'it' verb",
+                at: 7,
+                text: [
+                  "«τὰ ζῷα», *the animals*, is plural, but its verb «γίγνεται» has the ending for *he, she, it*, not *they*. Greek does this with 'it' words in the plural: they are taken together as one thing.",
+                  "So read «γίγνεται τὰ ζῷα» as *the animals are born*. English needs the plural verb.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "ἐκ", lemma: "ἐκ", here: "from", dict: "from, out of (+gen.)", src: "DCC", form_note: "a little word that never changes; the word after it is in the 'of' form" },
+                { form: "δὲ", lemma: "δέ", here: "and", dict: "and; but", src: "DCC", form_note: "a little word that never changes; it answers the μέν before it" },
+                { form: "ταύτης", lemma: "οὗτος", here: "this", dict: "this, these; μετὰ ταῦτα after this", src: "DCC", form_note: "the 'of' form, 'she' form: from this, the power of sensation" },
+                { form: "τοῖς", lemma: "ὁ", here: "to some", dict: "the", src: "DCC", form_note: "the 'to' form, plural, standing alone: to the ones" },
+                { form: "μὲν", lemma: "μέν", here: "(untranslated)", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes; it looks ahead to the δέ after the next τοῖς" },
+                { form: "αὐτῶν", lemma: "αὐτός", here: "of them", dict: "him- her- itself etc. (for emphasis); the same (with article); (pron.) him, her, it etc. (in oblique cases)", src: "DCC", form_note: "the 'of' form, plural: of them, the animals" },
+              ],
+              learn: {
+                title: "τοῖς μὲν … τοῖς δέ: some … others",
+                at: 4,
+                text: [
+                  "*The* standing alone, with «μέν» and then «δέ», sets two groups side by side: «τοῖς μὲν … τοῖς δέ», *to some … to others*.",
+                  "It is the «μέν … δέ» pair you know, used on *the* itself. «τοῖς μὲν αὐτῶν» is *to some of them*.",
+                ],
+              },
+            },
+            {
+              words: [
+                { form: "οὐκ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, spelled οὐκ before a vowel" },
+                { form: "ἐγγίγνεται", lemma: "ἐγγίγνομαι", here: "arises in, is acquired", dict: "to be born in, to be bred in, spring up, appear in, among", src: "LSJ", form_note: "he, she or it does it, now: arises in. ἐν, in, and γίγνεται, comes to be" },
+                { form: "μνήμη", after: ",", lemma: "μνήμη", here: "memory", dict: "remembrance, memory, recollections", src: "LSJ", form_note: "a 'she' word (feminine), the subject" },
+                { form: "τοῖς", lemma: "ὁ", here: "to others", dict: "the", src: "DCC", form_note: "the 'to' form, plural, standing alone: to the others" },
+                { form: "δʼ", lemma: "δέ", here: "but", dict: "and; but", src: "DCC", form_note: "δέ, with its vowel dropped before the next word; it answers the μέν" },
+                { form: "ἐγγίγνεται", after: ".", lemma: "ἐγγίγνομαι", here: "it does arise", dict: "to be born in, to be bred in, spring up, appear in, among", src: "LSJ", form_note: "he, she or it does it, now: arises in" },
+              ],
+              learn: {
+                title: "ἐγ-γίγνεται: ἐν, spelled ἐγ",
+                at: 1,
+                text: [
+                  "«ἐγγίγνεται» is «ἐν», *in*, joined to «γίγνεται», *comes to be*: *comes to be in*, *arises in*. Before a «γ», the «ν» of «ἐν» is written «γ».",
+                  "Who memory arises in goes in the 'to' form: «τοῖς μέν», *in some*, «τοῖς δέ», *in others*. The translation turns it round: *some acquire the faculty of memory, whereas others do not*.",
+                ],
+              },
+            },
+          ],
+          en: "Now animals are by nature born with the power of sensation, and from this some acquire the faculty of memory, whereas others do not.",
+          meaning: [
+            "Aristotle begins to trace how knowing grows: all animals have senses, some also have memory, and, as he goes on to say, human beings add experience, art and reasoning.",
+          ],
+        },
       ],
     },
   },
@@ -1703,6 +2924,455 @@ export const pathStep = (id: string) => PATH.find((s) => s.id === id);
 export function firstMet(lemma: string, before: number): number | null {
   for (let i = 0; i < before; i++) if (PATH[i].parts.some((p) => p.words.some((w) => w.lemma === lemma))) return i + 1;
   return null;
+}
+
+/**
+ * How much help a lesson gives (Noa, 2026-10-18): one kind of help goes every three lessons.
+ * 0 lessons 1–3: everything. 1 lessons 4–6: no letters stage. 2 lessons 7–9: guess each meaning, build the
+ * sentence yourself. 3 lessons 10–12: no cards for words already met, and the English pieces put in order first.
+ */
+export const pathLevel = (index: number) => Math.min(3, Math.floor(index / 3));
+
+/** Progress keys in the academy store: a lesson's line (or a practice lesson) read, and its passage read to the end. */
+export const pathKey = (id: string) => `read:${id}`;
+export const passageKey = (id: string) => `passage:${id}`;
+
+/** The practice lessons, one after every three lessons. */
+export const PRACTICE: PathPractice[] = [
+{
+  id: "practice-1",
+  after: "everything-moves",
+  title: "Practice: lessons 1 to 3",
+  intro: "First a quick check of the words from the first three lessons. Then three more real lines, from three other works of Plato, made almost entirely of words you have already met.",
+  lines: [
+    {
+      work: "tlg0059.tlg006",
+      ref: "150",
+      label: "Plato, Theaetetus 150c",
+      translator: "Harold North Fowler (1921)",
+      who: "Plato's *Theaetetus*, where Socrates explains why he has no wisdom of his own.",
+      pieces: [
+        {
+          words: [
+            { form: "τὸ", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'it' form (neuter) of the, to match αἴτιον" },
+            { form: "δὲ", lemma: "δέ", here: "and", dict: "and; but", src: "DCC", form_note: "a word that never changes; it sits second in its sentence" },
+            { form: "αἴτιον", lemma: "αἴτιος", here: "reason", dict: "responsible, guilty", src: "DCC", form_note: "a describing word, responsible, in its 'it' form; with τό it means the cause, the reason" },
+            { form: "τούτου", lemma: "οὗτος", here: "of it", dict: "this, these", src: "DCC", form_note: "the 'of' form, 'it' form (neuter): of this" },
+            { form: "τόδε", after: "·", lemma: "ὅδε", here: "(is) this", dict: "this", src: "DCC", form_note: "the 'it' form (neuter): this, the thing about to be said" },
+          ],
+          learn: {
+            title: "The same words in another book",
+            at: 4,
+            text: [
+              "You have read these words before, in the *Phaedrus*: «τὸ δὲ αἴτιον, ὦ φίλε, τούτου τόδε». Here Socrates says the same thing, without *my friend*.",
+              "Again there is no word for *is*: *the reason of this, this*. Greek leaves out a verb that is easy to supply. Can you read it now without help?",
+            ],
+          },
+        },
+      ],
+      en: "the reason of it is this",
+      meaning: [
+        "Socrates says that, like a midwife, he helps other people bring their thoughts to birth, but has no wisdom of his own. The reason, he goes on, is that the god compels him to act as midwife but has never allowed him to bring forth.",
+      ],
+    },
+    {
+      work: "tlg0059.tlg005",
+      ref: "402",
+      label: "Plato, Cratylus 402c",
+      translator: "Harold North Fowler (1926)",
+      who: "Plato's *Cratylus*, a few lines after Heraclitus and his river: Socrates' friend Hermogenes answers him.",
+      pieces: [
+        {
+          words: [
+            { form: "φαίνῃ", lemma: "φαίνω", here: "you seem", dict: "bring to light, make appear; (pass.) come to light, be seen, appear, appear to be", src: "DCC", form_note: "you (one person) do it, now: you seem. The ending -ῃ here means you" },
+            { form: "τί", lemma: "τις", here: "something", dict: "someone, something, anyone, anything", src: "DCC", form_note: "the 'it' form: something. It takes an accent from μοι, which leans on it" },
+            { form: "μοι", lemma: "ἐγώ", here: "to me", dict: "I, we", src: "DCC", form_note: "the 'to' form of ἐγώ, I: to me" },
+            { form: "λέγειν", after: ",", lemma: "λέγω", here: "to say", dict: "say, speak (of), recount", src: "DCC", form_note: "the 'to' form of the verb: to say" },
+            { form: "ὦ", lemma: "ὦ", here: "O", dict: "oh! (unemphatic when with the vocative)", src: "DCC", form_note: "a word that never changes; it comes before the name of the person spoken to" },
+            { form: "Σώκρατες", after: "·", lemma: "Σωκράτης", here: "Socrates", dict: "Socrates", src: "LSJ", form_note: "the calling form of Σωκράτης: Socrates is the one spoken to" },
+          ],
+          learn: {
+            title: "Calling someone, again",
+            at: 5,
+            text: [
+              "«Σωκράτης» is Socrates' name. When someone speaks *to* him, the name takes its calling form: «ὦ Σώκρατες», *O Socrates*, just as «φίλος» became «ὦ φίλε» in the *Phaedrus*.",
+              "Literally Hermogenes says *you seem to me to say something*: something worth hearing.",
+            ],
+          },
+        },
+      ],
+      en: "I think there is something in what you say, Socrates",
+      meaning: [
+        "Socrates has just said that whoever gave Rhea and Cronus, the ancestors of the gods, names of streams had the same thought as Heraclitus: everything flows. Hermogenes is half convinced.",
+      ],
+    },
+    {
+      work: "tlg0059.tlg002",
+      ref: "21",
+      label: "Plato, Apology 21b",
+      translator: "Harold North Fowler (1914)",
+      who: "Plato's *Apology*, Socrates' speech at his trial in Athens in 399 BC.",
+      pieces: [
+        {
+          words: [
+            { form: "σκέψασθε", lemma: "σκοπέω", here: "consider, see", dict: "look at, watch; look into, consider, examine", src: "DCC", form_note: "a command to more than one person: consider! Socrates is speaking to the jury" },
+            { form: "δὴ", lemma: "δή", here: "now", dict: "surely, really, now, in fact, indeed", src: "DCC", form_note: "a little word that never changes its form" },
+            { form: "ὧν", lemma: "ὅς", here: "of (the things) which", dict: "who, which, that", src: "DCC", form_note: "the 'of' form, plural: of the things which" },
+            { form: "ἕνεκα", lemma: "ἕνεκα", here: "for the sake of", dict: "on account of, for the sake of", src: "DCC", form_note: "a word that never changes; it comes after the word in the 'of' form that goes with it" },
+            { form: "ταῦτα", lemma: "οὗτος", here: "these things", dict: "this, these", src: "DCC", form_note: "the 'it' form (neuter), plural: these things" },
+            { form: "λέγω", after: "·", lemma: "λέγω", here: "I say", dict: "say, speak (of), recount", src: "DCC", form_note: "I do it, now: the ending -ω means I" },
+          ],
+          learn: {
+            title: "ἕνεκα comes after",
+            at: 3,
+            text: [
+              "In the first lesson's passage Socrates asked «τοῦ δὴ ἕνεκα ταῦτα λέγω;», *why do I say this?* Here he uses almost the same words to his jury.",
+              "«ἕνεκα», *for the sake of*, comes after its word, which is in the 'of' form: «ὧν ἕνεκα», *for the sake of which things*, that is, *why*.",
+            ],
+          },
+        },
+      ],
+      en: "see why I say these things",
+      meaning: [
+        "Socrates has just told the jury that his friend Chaerephon asked the oracle at Delphi whether anyone was wiser than Socrates, and the priestess answered that no one was. Now he explains why he mentions it: it is where the prejudice against him began.",
+      ],
+    },
+  ],
+},
+{
+  id: "practice-2",
+  after: "measure-of-all-things",
+  title: "Practice: lessons 4 to 6",
+  intro: "First a quick check of the words from lessons 4 to 6. Then three real lines about long and short speeches, and about the gods, that use them again.",
+  lines: [
+    {
+      work: "tlg0059.tlg012",
+      ref: "267",
+      label: "Plato, Phaedrus 267b",
+      translator: "Harold North Fowler (1914)",
+      who: "Plato's *Phaedrus*, where Socrates runs through the famous teachers of speech-making.",
+      pieces: [
+        {
+          words: [
+            { form: "δεῖν", lemma: "δέω", here: "there must be need", dict: "lack, miss, stand in need of", src: "DCC", form_note: "the 'to' form of δεῖ, one must, there is need: Prodicus said there must be need" },
+            { form: "δὲ", lemma: "δέ", here: "and", dict: "and; but", src: "DCC", form_note: "a word that never changes; it sits second" },
+            { form: "οὔτε", lemma: "οὔτε", here: "neither", dict: "neither...nor", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "μακρῶν", lemma: "μακρός", here: "of long (speeches)", dict: "long, tall, large, long-lasting", src: "DCC", form_note: "a describing word in the 'of' form, plural: of long ones" },
+            { form: "οὔτε", lemma: "οὔτε", here: "nor", dict: "neither...nor", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "βραχέων", lemma: "βραχύς", here: "of short (speeches)", dict: "brief, short", src: "DCC", form_note: "a describing word in the 'of' form, plural: of short ones" },
+            { form: "ἀλλὰ", lemma: "ἀλλά", here: "but", dict: "but", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "μετρίων", after: ".", lemma: "μέτριος", here: "of moderate (speeches)", dict: "within measure, moderate, of average height, common, fair-sized", src: "LSJ", form_note: "a describing word in the 'of' form, plural. It comes from μέτρον, measure: within measure" },
+          ],
+          learn: {
+            title: "δεῖ with the 'of' form: there is need of",
+            at: 5,
+            text: [
+              "«δεῖ» means *one must*, as in the Hippocrates lesson. With a word in the 'of' form it means *there is need of*: speeches are needed, not long, not short, but measured.",
+              "«οὔτε … οὔτε» is *neither … nor*, as in Protagoras' sentence about the gods. And «μέτριος» comes from «μέτρον», *measure*, Protagoras' word: a speech *within measure*.",
+            ],
+          },
+        },
+      ],
+      en: "that discourses should be neither long nor short, but of reasonable length",
+      meaning: [
+        "Socrates tells how the teacher Prodicus once laughed at the other masters of speech and said that he alone had found the right art: speeches should be neither long nor short, but of reasonable length. It is *nothing in excess* again, said about speaking.",
+      ],
+    },
+    {
+      work: "tlg0004.tlg001",
+      ref: "1.5.88",
+      label: "Diogenes Laertius, Lives 1.5.88",
+      translator: "R. D. Hicks (1925)",
+      who: "Diogenes Laertius' *Lives of Eminent Philosophers*, in the life of Bias of Priene, one of the Seven Sages.",
+      pieces: [
+        {
+          words: [
+            { form: "περὶ", lemma: "περί", here: "about", dict: "around, about; concerning (+gen.)", src: "DCC", form_note: "a little place word that never changes its form; the word after it is in the 'of' form" },
+            { form: "θεῶν", lemma: "θεός", here: "the gods", dict: "god, goddess", src: "DCC", form_note: "plural, in the 'of' form, after περί" },
+            { form: "λέγε", after: ",", lemma: "λέγω", here: "say!", dict: "say, speak (of), recount", src: "DCC", form_note: "a command to one person: say!" },
+            { form: "ὡς", lemma: "ὡς", here: "that", dict: "as, since; (introducing indir. statement) that", src: "DCC", form_note: "a little word that never changes its form; here it means that" },
+            { form: "εἰσίν", after: ".", lemma: "εἰμί", here: "they exist", dict: "be, exist", src: "DCC", form_note: "they do it, now: they are" },
+          ],
+          learn: {
+            title: "A command: the ending -ε",
+            at: 2,
+            text: [
+              "«λέγω» is *I say*. «λέγε», with «-ε», is an order to one person: *say!* Diogenes is listing the sayings of Bias, and many of them are commands like this.",
+              "«περὶ θεῶν … ὡς εἰσίν» is word for word what Protagoras wrote: *about the gods … that they exist*. Protagoras said he could not know it; Bias says, say it.",
+            ],
+          },
+        },
+      ],
+      en: "Admit the existence of the gods.",
+      meaning: [
+        "Literally: *about the gods, say that they exist.* Bias was one of the Seven Sages, the wise men who, in the first lesson's passage, dedicated *know yourself* and *nothing in excess* at Delphi. Hicks turns his saying into plain English: *admit the existence of the gods*.",
+      ],
+    },
+    {
+      work: "tlg0059.tlg012",
+      ref: "241",
+      label: "Plato, Phaedrus 241e",
+      translator: "Harold North Fowler (1914)",
+      who: "Plato's *Phaedrus*, where Socrates breaks off a speech of his own.",
+      pieces: [
+        {
+          words: [
+            { form: "καὶ", lemma: "καί", here: "and", dict: "and, also, even", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "τί", lemma: "τίς", here: "what", dict: "who? what? which?", src: "DCC", form_note: "the 'it' form: what? It asks a question" },
+            { form: "δεῖ", lemma: "δέω", here: "need is there", dict: "lack, miss, stand in need of", src: "DCC", form_note: "it does it, now: there is need" },
+            { form: "μακροῦ", lemma: "μακρός", here: "of a long", dict: "long, tall, large, long-lasting", src: "DCC", form_note: "a describing word, 'he' form, in the 'of' form, to match λόγου" },
+            { form: "λόγου", after: ";", lemma: "λόγος", here: "speech", dict: "word, speech, discourse; thought, reason, account", src: "DCC", form_note: "a 'he' word (masculine), in the 'of' form, after δεῖ. The ; is the Greek question mark" },
+          ],
+          learn: {
+            title: "What need of a long speech?",
+            at: 4,
+            text: [
+              "The same «δεῖ» with the 'of' form as in Prodicus' line: «τί δεῖ μακροῦ λόγου;», *what need is there of a long speech?*",
+              "«μακροῦ» matches «λόγου»: both end in «-ου», the 'of' form of a 'he' word, so they belong together.",
+            ],
+          },
+        },
+      ],
+      en: "Why make a long speech?",
+      meaning: [
+        "Socrates has spoken against the lover, and now refuses to make a second speech praising the non-lover: in a word, the non-lover has all the good things the lover lacks. Why make a long speech? He has said enough about both.",
+      ],
+    },
+  ],
+},
+{
+  id: "practice-3",
+  after: "political-animal",
+  title: "Practice: lessons 7 to 9",
+  intro: "First a quick check of the words from lessons 7 to 9. Then three real lines about persuading, speaking and being wise, from Plato and Diogenes Laertius.",
+  lines: [
+    {
+      work: "tlg0059.tlg034",
+      ref: "2.663",
+      label: "Plato, Laws 2.663e",
+      translator: "R. G. Bury (1926)",
+      who: "Plato's *Laws*, where an Athenian stranger and two old men, Clinias of Crete and Megillus of Sparta, talk about the laws of a city.",
+      pieces: [
+        {
+          words: [
+            { form: "ἔοικε", lemma: "ἔοικα", here: "it seems", dict: "be like, look like (+dat.); seem; befit", src: "DCC", form_note: "he, she or it does it: it seems. Like ἔοικα it looks like a past form but means now" },
+            { form: "μὴν", lemma: "μήν", here: "yet", dict: "[emphasizes preceding particle]", src: "DCC", form_note: "a little word that never changes its form" },
+            { form: "οὐ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "a word for not that never changes its form" },
+            { form: "ῥᾴδιον", lemma: "ῥᾴδιος", here: "easy", dict: "easy", src: "DCC", form_note: "a describing word, in the 'it' form" },
+            { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form of the verb: to be" },
+            { form: "πείθειν", after: ".", lemma: "πείθω", here: "to persuade", dict: "persuade, win over; (mid. and pass.) obey, believe in, trust in (+dat.)", src: "DCC", form_note: "the 'to' form of the verb: to persuade" },
+          ],
+          learn: {
+            title: "I seem, it seems: ἔοικα, ἔοικε",
+            at: 0,
+            text: [
+              "Socrates said «ἔοικα», *I seem*. Change the ending «-α» to «-ε» and it is *it seems*: «ἔοικε».",
+              "The rest is Socrates' own words at his trial, «πείθειν δὲ οὐ ῥᾴδιον», *it is not easy to persuade*, with «εἶναι», *to be*, added: *it seems not to be easy to persuade*.",
+            ],
+          },
+        },
+      ],
+      en: "yet to persuade men of it seems no easy matter",
+      meaning: [
+        "The Athenian has said that a lawgiver could find no more useful story to tell the young than that the just life is also the pleasantest. Clinias answers that truth is a noble and lasting thing, but it is not easy to make people believe it.",
+      ],
+    },
+    {
+      work: "tlg0059.tlg012",
+      ref: "235",
+      label: "Plato, Phaedrus 235c",
+      translator: "Harold North Fowler (1914)",
+      who: "Plato's *Phaedrus*: Socrates claims he has heard better speeches about love than the one Phaedrus has just read him.",
+      pieces: [
+        {
+          words: [
+            { form: "νῦν", lemma: "νῦν", here: "now", dict: "now", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "μὲν", lemma: "μέν", here: "(on the one hand)", dict: "on the one hand...on the other hand (often untranslated); μέν (by itself) indeed", src: "DCC", form_note: "a little word that never changes its form; it looks ahead to a δέ" },
+            { form: "οὕτως", lemma: "οὕτως", here: "just like that", dict: "in this way", src: "DCC", form_note: "a how-word that never changes its form" },
+            { form: "οὐκ", lemma: "οὐ", here: "not", dict: "not (with indicative verbs)", src: "DCC", form_note: "οὐ, not, spelled οὐκ before a vowel" },
+            { form: "ἔχω", lemma: "ἔχω", here: "I am able", dict: "have, hold, keep", src: "DCC", form_note: "I do it, now: the ending -ω means I" },
+            { form: "εἰπεῖν", after: "·", lemma: "λέγω", here: "to say", dict: "say, speak (of), recount", src: "DCC", form_note: "the 'to' form of a verb that means say; it counts under λέγω in the dictionary" },
+          ],
+          learn: {
+            title: "I have, meaning I can",
+            at: 5,
+            text: [
+              "As in Protagoras' «οὐκ ἔχω εἰδέναι», *I am not able to know*, «ἔχω» with a 'to' form means *I can*: «οὐκ ἔχω εἰπεῖν», *I cannot say*.",
+              "«μέν» looks ahead, as in Socrates' «ἔχει μὲν οὕτως»: the next words are «δῆλον δὲ ὅτι …», *but it is clear that …* I have heard someone.",
+            ],
+          },
+        },
+      ],
+      en: "I cannot say, just at this moment",
+      meaning: [
+        "Phaedrus asks who these better speakers were. Socrates cannot say at once, but he is sure he has heard something, from the lovely Sappho, perhaps, or the wise Anacreon, or some prose writers.",
+      ],
+    },
+    {
+      work: "tlg0004.tlg001",
+      ref: "9.2.20",
+      label: "Diogenes Laertius, Lives 9.2.20",
+      translator: "R. D. Hicks (1925)",
+      who: "Diogenes Laertius' *Lives of Eminent Philosophers*, in the life of the poet and thinker Xenophanes.",
+      pieces: [
+        {
+          words: [
+            { form: "σοφὸν", lemma: "σοφός", here: "wise", dict: "wise, clever, skilled", src: "DCC", form_note: "a describing word, 'he' form, to match τὸν ἐπιγνωσόμενον: the one who recognises must be wise" },
+            { form: "γὰρ", lemma: "γάρ", here: "for", dict: "for (explanatory), indeed", src: "DCC", form_note: "a word that never changes and never comes first" },
+            { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form of the verb: to be" },
+            { form: "δεῖ", lemma: "δέω", here: "must", dict: "lack, miss, stand in need of", src: "DCC", form_note: "it does it, now; used on its own, it means one must" },
+            { form: "τὸν", lemma: "ὁ", here: "the (man)", dict: "the", src: "DCC", form_note: "the 'he' form, to match ἐπιγνωσόμενον" },
+            { form: "ἐπιγνωσόμενον", lemma: "ἐπιγιγνώσκω", here: "who will recognise", dict: "look upon, witness, observe, recognize, find out, discover", src: "LSJ", form_note: "a verb used as a describing word, 'he' form: the one who is going to recognise. It is γιγνώσκω, know, with ἐπι- in front" },
+            { form: "τὸν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match σοφόν" },
+            { form: "σοφόν", after: ".", lemma: "σοφός", here: "wise man", dict: "wise, clever, skilled", src: "DCC", form_note: "a describing word, 'he' form; with τόν it means the wise man" },
+          ],
+          learn: {
+            title: "One word, two jobs",
+            at: 7,
+            text: [
+              "«σοφόν» comes twice. First it describes: *(he must) be wise*. At the end, with «τόν» in front, it is a noun: «τὸν σοφόν», *the wise man*.",
+              "«ἐπιγνωσόμενον» hides a word you know: «γιγνώσκω», *know*, as in «γνῶθι σαυτόν». With «ἐπι-» in front it means *recognise*.",
+            ],
+          },
+        },
+      ],
+      en: "for it takes a wise man to recognize a wise man",
+      meaning: [
+        "The philosopher Empedocles once told Xenophanes that it is impossible to find a wise man. *Naturally*, Xenophanes replied: only a wise man could recognise one.",
+      ],
+    },
+  ],
+},
+{
+  id: "practice-4",
+  after: "desire-to-know",
+  title: "Practice: lessons 10 to 12",
+  intro: "First a quick check of the words from the last three lessons. Then three real lines from Plato's *Laws* and two works of Aristotle that use them again.",
+  lines: [
+    {
+      work: "tlg0059.tlg034",
+      ref: "9.861",
+      label: "Plato, Laws 9.861c",
+      translator: "R. G. Bury (1926)",
+      who: "Plato's *Laws*, where the Athenian stranger and Clinias of Crete are working out how a city should punish wrongdoing.",
+      pieces: [
+        {
+          words: [
+            { form: "καλῶς", lemma: "καλός", here: "well, finely", dict: "beautiful, noble, honorable", src: "DCC", form_note: "a how-word made from καλός, fine: finely, well" },
+            { form: "ἡμῖν", lemma: "ἐγώ", here: "to us", dict: "I, we", src: "DCC", form_note: "the 'to' form of we: to us" },
+            { form: "φαίνῃ", lemma: "φαίνω", here: "you seem", dict: "bring to light, make appear; (pass.) come to light, be seen, appear, appear to be", src: "DCC", form_note: "you (one person) do it, now: you seem" },
+            { form: "λέγειν", after: ",", lemma: "λέγω", here: "to speak", dict: "say, speak (of), recount", src: "DCC", form_note: "the 'to' form of the verb: to speak" },
+            { form: "ὦ", lemma: "ὦ", here: "O", dict: "oh! (unemphatic when with the vocative)", src: "DCC", form_note: "a word that never changes; it goes with the person spoken to" },
+            { form: "ξένε", after: "·", lemma: "ξένος", here: "stranger", dict: "guest-friend; foreigner, stranger", src: "DCC", form_note: "the calling form, singular: the -ε ending is used when speaking to someone" },
+          ],
+          learn: {
+            title: "The ending -ως: how a thing is done",
+            at: 0,
+            text: [
+              "«καλός» is *fine*, as in «πολλὰ καὶ καλά». Change its ending to «-ως» and it says *how* something is done: «καλῶς», *finely*, *well*. «οὕτως», *in this way*, has the same ending.",
+              "And you know the rest: «φαίνῃ … λέγειν», *you seem to speak*, and «ὦ ξένε», *O stranger*, as in Clinias' answer in the lesson *Full of gods*.",
+            ],
+          },
+        },
+      ],
+      en: "What you say, Stranger, appears to us to be excellent",
+      meaning: [
+        "Clinias agrees with the Athenian, and goes on: they must either stop saying that all wrongdoing is involuntary, or first make distinctions and show that it is true.",
+      ],
+    },
+    {
+      work: "tlg0086.tlg035",
+      ref: "3.1284a",
+      label: "Aristotle, Politics 3.1284a",
+      translator: "Harris Rackham (1944)",
+      who: "Aristotle's *Politics*, in the third book, on a man far better than all his fellow citizens.",
+      pieces: [
+        {
+          words: [
+            { form: "ὥσπερ", lemma: "ὥσπερ", here: "as, like", dict: "just as, as if", src: "DCC", form_note: "a word that never changes its form" },
+            { form: "γὰρ", lemma: "γάρ", here: "for, since", dict: "for (explanatory), indeed", src: "DCC", form_note: "a word that never changes and never comes first" },
+            { form: "θεὸν", lemma: "θεός", here: "a god", dict: "god, goddess", src: "DCC", form_note: "a 'he' word (masculine), with the -ον ending: what such a man will be like" },
+            { form: "ἐν", lemma: "ἐν", here: "among", dict: "in, among (+dat.)", src: "DCC", form_note: "a little place word that never changes; the word after it is in the 'to' form" },
+            { form: "ἀνθρώποις", lemma: "ἄνθρωπος", here: "men", dict: "human being", src: "DCC", form_note: "a 'he' word (masculine), plural, in the 'to' form, after ἐν" },
+          ],
+          learn: {
+            title: "ἐν with the 'to' form: in, among",
+            at: 4,
+            text: [
+              "«ἐν», *in*, takes the 'to' form after it. «ἀνθρώποις» is the 'to' form plural of «ἄνθρωπος», with the ending «-οις»: «ἐν ἀνθρώποις», *among men*.",
+              "You met «ἐν» in the first lesson's passage: «ἐν Δελφοῖς», *at Delphi*, with the same «-οις».",
+            ],
+          },
+        },
+        {
+          words: [
+            { form: "εἰκὸς", lemma: "ἔοικα", here: "(it is) likely, natural", dict: "be like, look like (+dat.); seem; befit", src: "DCC", form_note: "a form of ἔοικα used as a describing word, in the 'it' form: likely, fitting" },
+            { form: "εἶναι", lemma: "εἰμί", here: "to be", dict: "be, exist", src: "DCC", form_note: "the 'to' form of the verb: to be" },
+            { form: "τὸν", lemma: "ὁ", here: "the", dict: "the", src: "DCC", form_note: "the 'he' form, to match τοιοῦτον" },
+            { form: "τοιοῦτον", after: ".", lemma: "τοιοῦτος", here: "such (a man)", dict: "such, of such a sort", src: "DCC", form_note: "the 'he' form, with the -ον ending; with τόν and no noun it means such a man" },
+          ],
+          learn: {
+            title: "The + such = such a man",
+            at: 3,
+            text: [
+              "«τοιοῦτος» is *such*, as in Socrates' «τοιοῦτόν τι … πάθος», *such an experience*. Here there is no noun: «τὸν τοιοῦτον», *the such (man)*, a man like that.",
+              "«εἰκός» comes from «ἔοικα», *I seem*: what seems right, so *likely*, *natural*. *It is natural for such a man to be like a god among men.*",
+            ],
+          },
+        },
+      ],
+      en: "since such a man will naturally be as a god among men",
+      meaning: [
+        "If one man is so far above everyone else in goodness and political ability, says Aristotle, it is wrong to count him as just one part of the city and treat him as an equal: he would be like a god among men. In the lesson *An animal of the city* the man without a city was *either low in the scale of humanity or above it*; this is the man above.",
+      ],
+    },
+    {
+      work: "tlg0086.tlg025",
+      ref: "1.2",
+      label: "Aristotle, Metaphysics 1.982b",
+      translator: "Hugh Tredennick (1933)",
+      who: "Aristotle's *Metaphysics*, a page after its first sentence, on the knowledge he calls wisdom.",
+      pieces: [
+        {
+          words: [
+            { form: "μόνη", lemma: "μόνος", here: "alone", dict: "alone, single", src: "DCC", form_note: "a describing word in the 'she' form, to match αὕτη" },
+            { form: "γὰρ", lemma: "γάρ", here: "since", dict: "for (explanatory), indeed", src: "DCC", form_note: "a word that never changes and never comes first" },
+            { form: "αὕτη", lemma: "οὗτος", here: "it, this (science)", dict: "this, these", src: "DCC", form_note: "the 'she' form of οὗτος, this: this science, a 'she' word in Greek" },
+            { form: "αὑτῆς", lemma: "ἑαυτοῦ", here: "itself", dict: "him- her- itself (reflexive pron.)", src: "DCC", form_note: "the 'she' form, in the 'of' form, before ἕνεκεν" },
+            { form: "ἕνεκέν", lemma: "ἕνεκα", here: "for the sake of", dict: "on account of, for the sake of", src: "DCC", form_note: "another spelling of ἕνεκα. The extra accent on its last syllable comes from ἐστιν after it" },
+            { form: "ἐστιν", after: ".", lemma: "εἰμί", here: "exists", dict: "be, exist", src: "DCC", form_note: "he, she or it is, now" },
+          ],
+          learn: {
+            title: "For its own sake",
+            at: 4,
+            text: [
+              "In the first lines of the *Metaphysics* the senses are loved «διʼ αὑτάς», *for their own sake*. Here the same word, in the 'she' form «αὑτῆς», goes with «ἕνεκεν», *for the sake of*: *for the sake of itself*.",
+              "Watch «αὕτη», *this*, and «αὑτῆς», *itself*: they look alike, so read the endings and the accents. «ἕνεκεν» is «ἕνεκα» with another ending, and it still comes after its word.",
+            ],
+          },
+        },
+      ],
+      en: "since it alone exists for itself",
+      meaning: [
+        "Just as a free man is one who exists for himself and not for another, says Aristotle, so this is the only free kind of knowledge: we seek it for no use beyond itself. It is where the desire to know, from the first sentence, leads.",
+      ],
+    },
+  ],
+},
+];
+export const practice = (id: string) => PRACTICE.find((p) => p.id === id);
+
+/** Every word a lesson teaches: its line, then its passage if `withPassage`. */
+export const stepWords = (s: PathStep, withPassage = true): PathWord[] => [
+  ...s.parts.flatMap((p) => p.words),
+  ...(withPassage ? (s.passage?.sentences ?? []).flatMap((st) => st.pieces.flatMap((p) => p.words)) : []),
+];
+
+/** The dictionary forms met in lessons before lesson `index` (0-based), lines and passages. */
+export function knownBefore(index: number): Set<string> {
+  const k = new Set<string>();
+  for (let i = 0; i < index; i++) for (const w of stepWords(PATH[i])) k.add(w.lemma);
+  return k;
 }
 
 /** The line as printed: the words with their punctuation. */

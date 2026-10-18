@@ -5,11 +5,10 @@
  */
 import Link from "next/link";
 import { useState } from "react";
-import { LETTERS_STEP, PATH } from "@/data/reading-path";
+import { LETTERS_STEP, PATH, pathKey } from "@/data/reading-path";
 import { useAcademy } from "@/lib/academy";
 import AlphabetGlance from "./AlphabetGlance";
 import Rich from "./Rich";
-import { pathKey } from "./ReadingPath";
 import styles from "./Academy.module.css";
 
 export default function LettersStepView() {

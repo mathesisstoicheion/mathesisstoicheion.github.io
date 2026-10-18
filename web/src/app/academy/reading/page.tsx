@@ -23,9 +23,9 @@ export default function ReadingPathPage() {
           <h1 className="page-title">Learn by reading <span lang="grc" style={{ display: "block", fontSize: "0.5em", marginTop: 8 }}>ἀνάγνωσις</span></h1>
           <PagePiece className="piece-phone" />
           <p className="muted" style={{ fontSize: "1.1rem", maxWidth: "64ch" }}>
-            {PATH.length} real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>.
-            Each step teaches only the words and the one piece of grammar its line needs, and the later lines are made of words you
-            have already met. Try the Greek first; the English waits until you ask for it.
+            {PATH.length} real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>,
+            with a practice lesson after every three. Each lesson builds on the ones before: the help you have outgrown drops away,
+            and the passages grow longer. Try the Greek first; the English waits until you ask for it.
           </p>
         </div>
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
