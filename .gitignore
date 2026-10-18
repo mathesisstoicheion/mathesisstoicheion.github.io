@@ -17,3 +17,8 @@ __pycache__/
 
 # unchecked old-site author drafts, known errors: kept on this computer only
 pipeline/drafts/old-site-author-articles.json
+
+# screenshots from earlier previews, kept on this computer only
+_archive/author-article-preview/
+_archive/map-preview/
+_archive/tutorial-shots/
