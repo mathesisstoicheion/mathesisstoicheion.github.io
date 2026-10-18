@@ -32,8 +32,8 @@ export default function AcademyPage() {
             <span className="label">Start here</span>
             <h2 id="reading-title" style={{ marginTop: 8 }}><Link href="/academy/reading" transitionTypes={["page-turn"]}>Learn by reading</Link></h2>
             <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
-              Real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>. Each step
-              teaches the few words and the one piece of grammar its line needs; the English waits until you have tried the Greek.
+              Real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>. Each lesson
+              builds on the ones before, with a practice lesson after every three; the English waits until you have tried the Greek.
             </p>
           </div>
           <ReadingPath />
