@@ -32,6 +32,9 @@ const PAGES: [string, PageSpec][] = [
   ["/author/[id]", { piece: "hand-with-scroll" }],
   ["/work/[id]", { piece: "seated-man" }],
   ["/search", { piece: "apollo-bronze", why: "Delphi was Apollo’s oracle." }],
+  // the learn-by-reading path, its list and its steps
+  ["/academy/reading/[id]", { piece: "teacher-and-pupil" }],
+  ["/academy/reading", { piece: "teacher-and-pupil" }],
   ["/academy/lesson/[id]/practice", { piece: "boxer-statuette" }],
   ["/academy/lesson/[id]/test", { piece: "nike-relief", why: "Nike is Victory." }],
   ["/academy/lesson/[id]", { piece: "girl-with-doves" }],

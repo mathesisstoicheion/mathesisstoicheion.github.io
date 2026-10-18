@@ -1,5 +1,16 @@
 # PROGRESS.md — project memory
 
+## Learn by reading (2026-10-18; branch `claude/project-thread-dqvb37`, not live)
+The owner's one big project after the grilling of 2026-10-18: a guided path that teaches Greek by reading real lines. Ten steps
+(`web/src/data/reading-path.ts`), from γνῶθι σαυτόν to the first sentence of Aristotle's *Metaphysics*, each reusing earlier words;
+pages `/academy/reading` and `/academy/reading/<id>` (`components/academy/ReadingPath.tsx`, `PathStepView.tsx`), first on the Academy
+page; the 18 lessons stay below as review. Each step: where you are (facts from the passages and checked author articles), the line
+with a tap-for-meaning card per word (GLAUx lemma, DCC or LSJ meaning, nothing fetched), one grammar note, the published English
+hidden until tapped, part by part, links to the map, wiki, author pages and reader. Lines and English are checked against the source
+files by `reading-path.test.ts` (with the corpus downloaded, or NETWORK=1); lemmas against GLAUx; `scripts/path-words.ts` prints a
+line's words with GLAUx, DCC and LSJ. Progress is `completed["read:<id>"]` in the Academy store. The pages share the
+teacher-and-pupil piece with /town-hall/new (a dedicated one goes on the later list: the design is frozen).
+
 ## Site redesign (2026-10-15; built on branch `claude/site-redesign-77uoc2`; published 2026-10-16)
 The owner asked for a fresh-start redesign. On 2026-10-16, after comparing three complete designs, they chose **B, "Stone and torch"**
 (`docs/adr/0006-stone-and-torch.md`); the look is written down in `DESIGN.md`. Samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH

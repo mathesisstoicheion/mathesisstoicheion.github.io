@@ -3,6 +3,7 @@ import { readdirSync, statSync } from "node:fs";
 import { join } from "node:path";
 import { STATIC_PAGES, DEV_PAGES, ADMIN_PAGES, offlinePages } from "@/config/pages";
 import { LESSONS } from "@/data/lessons";
+import { PATH } from "@/data/reading-path";
 import { GUIDES } from "@/data/guides";
 import { CHECKPOINTS } from "@/data/checkpoints";
 import { ENTRIES } from "@/wiki/index";
@@ -28,6 +29,7 @@ describe("the offline copy", () => {
       // the moderator's pages need the database: never fetched into every visitor's offline copy
       if (ADMIN_PAGES.includes(p)) { expect(kept.has(p), p).toBe(false); continue; }
       if (p === "/academy/lesson/[id]") { for (const l of LESSONS) expect(kept.has(`/academy/lesson/${l.id}`), l.id).toBe(true); continue; }
+      if (p === "/academy/reading/[id]") { for (const s of PATH) expect(kept.has(`/academy/reading/${s.id}`), s.id).toBe(true); continue; }
       if (p === "/academy/guide/[id]") { for (const g of GUIDES) expect(kept.has(`/academy/guide/${g.id}`), g.id).toBe(true); continue; }
       if (p === "/stoa/[slug]") { for (const e of ENTRIES) expect(kept.has(`/stoa/${e.slug}`), e.slug).toBe(true); continue; }
       // a page for every author and every work, for search engines and link previews: made at build time, kept offline once visited, not in advance

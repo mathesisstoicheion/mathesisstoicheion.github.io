@@ -4,6 +4,7 @@ import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
 import AcademyProgress from "@/components/academy/AcademyProgress";
 import LessonPath from "@/components/academy/LessonPath";
+import ReadingPath from "@/components/academy/ReadingPath";
 import { AREAS } from "@/config/areas";
 import { GUIDES } from "@/data/guides";
 import styles from "@/components/academy/Academy.module.css";
@@ -26,6 +27,18 @@ export default function AcademyPage() {
       <div className="wrap" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 40, paddingBlock: "var(--after-head) 40px" }}>
         <AcademyProgress />
 
+        <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
+          <div>
+            <span className="label">Start here</span>
+            <h2 id="reading-title" style={{ marginTop: 8 }}><Link href="/academy/reading" transitionTypes={["page-turn"]}>Learn by reading</Link></h2>
+            <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
+              Real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>. Each step
+              teaches the few words and the one piece of grammar its line needs; the English waits until you have tried the Greek.
+            </p>
+          </div>
+          <ReadingPath />
+        </section>
+
         <section style={{ display: "grid", gap: 18 }} aria-labelledby="tools-title">
           <h2 id="tools-title">Practice and reference</h2>
           <div className={styles.tools}>
@@ -41,10 +54,10 @@ export default function AcademyPage() {
 
         <section style={{ display: "grid", gap: 18 }} aria-labelledby="lessons-title">
           <div>
-            <span className="label">A path from nothing to Homer</span>
+            <span className="label">For review, alongside the reading</span>
             <h2 id="lessons-title" style={{ marginTop: 8 }}>Lessons</h2>
             <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
-              Read each lesson, practise it, then pass its short test. A passed lesson comes back for a quick refresh
+              The grammar in full, from the alphabet to Homer, for when you want more than the reading path gives. Read each lesson, practise it, then pass its short test. A passed lesson comes back for a quick refresh
               after three days, a week, then a month, so what you learn stays with you.
             </p>
           </div>
