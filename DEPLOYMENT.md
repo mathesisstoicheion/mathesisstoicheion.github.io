@@ -22,6 +22,10 @@ https://github.com/mathesisstoicheion/mathesisstoicheion.github.io (public), own
 - Every push to `main` runs `.github/workflows/deploy.yml` on GitHub: it installs, builds and publishes `web/out/`.
   Progress: the repository's **Actions** tab. A run takes about 3–4 minutes.
 - In the repository's Settings → Pages, **Source** is set to **GitHub Actions**.
+- Accounts need two repository variables (Settings → Secrets and variables → Actions → Variables):
+  `SUPABASE_URL` and `SUPABASE_PUBLISHABLE_KEY`, set on 2026-10-18. Without them the site builds with no
+  accounts. On a development computer the same two values go in `web/.env.local` as
+  `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` (see `web/src/config/supabase.ts`).
 
 ## To publish a change
 Commit, then `git push`. That's all.

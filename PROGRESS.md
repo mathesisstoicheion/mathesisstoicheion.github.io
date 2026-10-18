@@ -25,7 +25,8 @@ old website, which the owner has scrapped (D).
    `_archive/`, after checking nothing in `web/` or the tests links to them.
 3. Check `README.md` and `DEPLOYMENT.md` still match the folders; fix any line that points at a moved file.
 
-**C. Licences and privacy** (the site's repository `ladygagastani/ladygagastani.github.io` is public)
+**C. Licences and privacy** (the site's repository `mathesisstoicheion/mathesisstoicheion.github.io` is public).
+Done on 2026-10-18, not yet published: 1, 3, 4, 5, 6. Waiting on the owner: 2.
 1. **Coptic Mark** (`tlg0031.tlg002.1st1K-cop1`): its licence says "for academic use only", which is not open. Remove
    it from the catalogue so the site neither lists nor serves it.
 2. **Venetus A index**: CC BY-NC 4.0 (non-commercial only). Stop committing it to the public repository and list it

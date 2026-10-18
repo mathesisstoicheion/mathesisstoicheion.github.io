@@ -11,7 +11,7 @@
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/config/supabase";
+import { ACCOUNTS_ON, SUPABASE_PUBLISHABLE_KEY, SUPABASE_URL } from "@/config/supabase";
 import { AREAS } from "@/config/areas";
 import { ago } from "@/lib/community/ago";
 
@@ -23,6 +23,7 @@ interface MotionRow { id: number; motion: string; closes_at: string | null }
 type State = { kind: "loading" } | { kind: "ready"; threads: ThreadRow[]; motion: MotionRow | null } | { kind: "unavailable" };
 
 async function rest<T>(path: string, signal: AbortSignal): Promise<T> {
+  if (!ACCOUNTS_ON) throw new Error("accounts are off");
   const r = await fetch(`${SUPABASE_URL}/rest/v1/${path}`, { signal, headers: { apikey: SUPABASE_PUBLISHABLE_KEY } });
   if (!r.ok) throw new Error(String(r.status));
   return (await r.json()) as T;

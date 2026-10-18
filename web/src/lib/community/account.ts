@@ -10,9 +10,9 @@
  */
 import type { Session } from "@supabase/supabase-js";
 import { create } from "zustand";
-import { SUPABASE_URL } from "@/config/supabase";
+import { ACCOUNTS_ON, SUPABASE_URL } from "@/config/supabase";
 
-export const STORAGE_KEY = `sb-${new URL(SUPABASE_URL).hostname.split(".")[0]}-auth-token`;
+export const STORAGE_KEY = ACCOUNTS_ON ? `sb-${new URL(SUPABASE_URL).hostname.split(".")[0]}-auth-token` : "sb-none-auth-token";
 
 /** When this browser's Treasury last kept in step with the account (lib/community/sync.ts). */
 export const LAST_SYNCED = "mathesis:synced";
