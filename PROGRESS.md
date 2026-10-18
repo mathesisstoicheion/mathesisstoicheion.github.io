@@ -47,7 +47,7 @@ live; it goes live only when the owner says "Publish"):
   seal-stone in a gold rim. Shown in the gallery (large, header, phone icon, browser tab). The owner CHOSE gilded (2026-10-16),
   and it is built in: `scripts/make-logo.mjs` (`npm run logo -- gilt|cut|seal`) draws the header's and footer's mark
   (`public/logo/`), the tab icon (`public/favicon.ico`, 16, 32 and 48 px), the iPhone icon and the install icons
-  (`public/icons/`), so another choice is one command. The name beside the mark stays as text (the owner's rule: photos, text
+  (`public/icons/`), so another choice is one command. **Replaced 2026-10-18:** the owner found the tablet ugly; of four new directions (owl, oil lamp, alpha in laurel, seal) they chose Athena's owl, now `public/logo/owl.svg` (an SVG under 1 KB) in the header and footer, with `npm run logo` drawing the icons from it. The name beside the mark stays as text (the owner's rule: photos, text
   and buttons stay as they are). `lib/logo.ts`, `lib/app-icon.tsx`, `app/icon.svg` and the icon routes are gone.
 Published 2026-10-16 at the owner's word ("Just make the changes. Push to live"), without a separate preview round; the owner
 will report any bugs or design flaws they find on the live site.
