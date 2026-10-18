@@ -58,6 +58,21 @@ function units(step: PathStep): Unit[] {
 const STAGES = ["The letters", "The words", "Build the sentence", "Read it yourself"];
 const tap = <><span className={styles.hoverOnly}>Click</span><span className={styles.touchOnly}>Tap</span></>;
 const tapLc = <><span className={styles.hoverOnly}>click</span><span className={styles.touchOnly}>tap</span></>;
+/** letters a beginner reading English is likely to misread, and why */
+const TRICKY: Record<string, string> = {
+  η: "it looks like an English n, but it is a vowel, a long e.",
+  ν: "it looks like an English v, but it is an n.",
+  ρ: "it looks like an English p, but it is an r.",
+  χ: "it looks like an English x, but it is a different sound.",
+  ω: "it looks like an English w, but it is a vowel, a long o.",
+  υ: "it looks like an English u or v, but it is a vowel.",
+  γ: "it looks a little like an English y, but it is a g.",
+  θ: "one letter, though our letters spell it th.",
+  φ: "one letter, though our letters spell it ph.",
+  ψ: "one letter for two sounds, ps.",
+  ξ: "one letter for two sounds, ks.",
+  ζ: "one letter for two sounds.",
+};
 const bare = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/ς/g, "σ");
 
 /* 1 · the letters this line uses, and sounding out each word */
@@ -67,12 +82,14 @@ function LettersStage({ words, onNext }: { words: PathWord[]; onNext: () => void
   const [said, setSaid] = useState<Set<number>>(new Set());
   const forms = words.map((x) => x.form);
   const text = forms.join(" ");
-  const used = useMemo(() => {
-    const b = bare(text);
-    return LETTERS.map((L, i) => ({ L, i })).filter(({ L }) => b.includes(L.lower));
-  }, [text]);
   const notes = useMemo(() => {
     const nfd = text.normalize("NFD"), b = bare(text), n: string[] = [];
+    // the letters of this line a beginner could misread, each with a word of the line it is in
+    for (const L of LETTERS) {
+      const why = TRICKY[L.lower];
+      const inWord = forms.find((f) => bare(f).includes(L.lower));
+      if (why && inWord) n.push(`«${L.lower}», ${L.name}, as in «${inWord}»: ${why} Its sound: ${L.sounds[pron].say}.`);
+    }
     if (nfd.includes("̔")) n.push("A word that starts with a vowel carries a breathing mark on it. The rough breathing, «ʽ», is an *h*: " + forms.filter((f) => f.normalize("NFD").includes("̔")).map((f) => `«${f}» is *${transliterate(f)}*`).join(", ") + ".");
     if (nfd.includes("̓")) n.push("The smooth breathing, «ʼ», on a first vowel is no sound at all.");
     if (/[́̀͂]/.test(nfd)) n.push("The marks «ά», «ὰ» and «ᾶ» are accents. For now, read past them.");
@@ -84,9 +101,9 @@ function LettersStage({ words, onNext }: { words: PathWord[]; onNext: () => void
   const L = sel === null ? null : LETTERS[sel];
   return (
     <section style={{ display: "grid", gap: 14 }}>
-      <p className={styles.small}>These are the letters this line uses. {tap} one to hear how it sounds.</p>
-      <div className={styles.alphaGrid} role="listbox" aria-label="The letters of this line">
-        {used.map(({ L, i }) => (
+      <p className={styles.small}>The 24 letters. {tap} one to see how it sounds. Below, the letters of this line to watch out for.</p>
+      <div className={styles.alphaGrid} role="listbox" aria-label="The 24 letters">
+        {LETTERS.map((L, i) => (
           <button key={L.name} type="button" role="option" aria-selected={i === sel} onClick={() => setSel(i === sel ? null : i)}
             className={`${styles.tile} ${L.vowel ? styles.vowelTile : ""}`}>
             <span className={styles.tileGlyph} lang="grc">{L.upper}{L.lower}{L.final ?? ""}</span>
