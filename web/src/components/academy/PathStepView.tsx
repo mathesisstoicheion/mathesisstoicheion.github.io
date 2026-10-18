@@ -36,15 +36,12 @@ function Reveal({ step }: { step: PathStep }) {
   const all = open.size === step.parts.length;
   return (
     <div className={styles.reveal}>
-      <span className="label">Now try it</span>
-      <p className={styles.lp}>
-        Say to yourself what you think {step.parts.length > 1 ? "each part" : "it"} means. Then tap to see a published translation{step.parts.length > 1 ? ", one part at a time" : ""}.
-      </p>
+      <p className={styles.small}>When you have tried, check yourself against a published translation{step.parts.length > 1 ? ", one part at a time" : ""}.</p>
       <div className={styles.revealGrid} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 300px), 1fr))" }}>
         {step.parts.map((p, i) => (
           <button key={i} type="button" className={`${styles.revealCard} ${open.has(i) ? styles.revealed : ""}`}
             onClick={() => setOpen((s) => new Set(s).add(i))} aria-expanded={open.has(i)}>
-            <span lang="grc" className={styles.revealGr}>{partText(p)}</span>
+            <span className="label">{step.parts.length > 1 ? <>Part {i + 1}: <span lang="grc" style={{ textTransform: "none", letterSpacing: 0 }}>{partText(p)}</span></> : "The English"}</span>
             <span className={styles.revealAns}>
               <span className={styles.revealText} aria-hidden={!open.has(i)}>{p.en}</span>
               {!open.has(i) && <span className={styles.revealMark} aria-hidden="true">?</span>}
@@ -75,10 +72,31 @@ export default function PathStepView({ step }: { step: PathStep }) {
         {step.where.map((t, i) => <p key={i} className={styles.lp}><Rich text={t} /></p>)}
       </section>
 
+      <section className={styles.words} aria-labelledby="path-words">
+        <span className="label" id="path-words">1 · The words</span>
+        <ul>
+          {words.map((w, i) => {
+            const met = firstMet(w.lemma, n - 1);
+            return (
+              <li key={i}>
+                <span lang="grc" className={styles.inlineGr}>{w.form}</span> <b>{w.here}</b>{" "}
+                <span className="muted">· {w.form_note}. Dictionary: <span lang="grc">{w.lemma}</span>, “{w.dict}” ({w.src === "DCC" ? "DCC core list" : "LSJ"}).</span>
+                {met && <span className={styles.inDeck}>met on step {met}</span>}
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+
+      <aside className={styles.tipBox}>
+        <span className="label">2 · The grammar: {step.learn.title}</span>
+        {step.learn.text.map((t, i) => <p key={i}><Rich text={t} /></p>)}
+      </aside>
+
       <figure className={styles.real}>
         <figcaption className={styles.realHead}>
-          <b>{step.label}</b>
-          <Link className="chip" href={`/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>Open in the reader →</Link>
+          <span className="label">3 · Now read it</span>
+          <Link className="chip" href={`/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>{step.label} in the reader →</Link>
         </figcaption>
         <p lang="grc" className={`${styles.realGr} ${styles.revealGr}`} style={{ lineHeight: 1.6 }}>
           {step.parts.map((p, pi) => (
@@ -100,27 +118,12 @@ export default function PathStepView({ step }: { step: PathStep }) {
           ))}
         </p>
         <p className={styles.small}>
-          <span className={styles.hoverOnly}>Click</span><span className={styles.touchOnly}>Tap</span> each word to see what it means.
-          {known > 0 ? ` You have met ${known} of these ${words.length} words already.` : ""}
+          Read it in your head, using the words and the grammar above. Forgot a word? <span className={styles.hoverOnly}>Click</span><span className={styles.touchOnly}>Tap</span> it.
+          {known > 0 ? ` You have met ${known} of these ${words.length} words before.` : ""}
         </p>
         {picked !== null && <WordCard w={words[picked]} n={n} onEntry={() => setEntry(words[picked].form)} />}
+        <Reveal step={step} />
       </figure>
-
-      <aside className={styles.tipBox}>
-        <span className="label">New here: {step.learn.title}</span>
-        {step.learn.text.map((t, i) => <p key={i}><Rich text={t} /></p>)}
-      </aside>
-
-      <Reveal step={step} />
-
-      <nav className={styles.guideLinks} aria-label="Go further">
-        <span className="label">Go further</span>
-        {step.links.map((l) => (
-          <Link key={l.href} href={l.href} transitionTypes={["page-turn"]} className={styles.guideLink}>
-            <b>{l.label}</b>{l.note && <span className="muted">{l.note}</span>}<span aria-hidden="true" className={styles.guideArrow}>→</span>
-          </Link>
-        ))}
-      </nav>
 
       <footer className={styles.lessonEnd}>
         {done
@@ -130,6 +133,17 @@ export default function PathStepView({ step }: { step: PathStep }) {
           ? <Link className="btn ghost" href={`/academy/reading/${next.id}`} transitionTypes={["page-turn"]} onClick={() => complete(pathKey(step.id))}>Next: {next.title} →</Link>
           : <Link className="btn ghost" href={`/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]} onClick={() => complete(pathKey(step.id))}>Read on in the Metaphysics →</Link>}
       </footer>
+
+      <details>
+        <summary className="label" style={{ cursor: "pointer" }}>Extras, if you are curious: the places and people of this step</summary>
+        <nav className={styles.guideLinks} aria-label="Extras" style={{ marginTop: 12 }}>
+          {step.links.map((l) => (
+            <Link key={l.href} href={l.href} transitionTypes={["page-turn"]} className={styles.guideLink}>
+              <b>{l.label}</b>{l.note && <span className="muted">{l.note}</span>}<span aria-hidden="true" className={styles.guideArrow}>→</span>
+            </Link>
+          ))}
+        </nav>
+      </details>
 
       <WordPanel word={entry} ctx={null} onClose={() => setEntry(null)} />
     </article>
