@@ -11,7 +11,7 @@ import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD } fr
 
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
-  "/academy", "/academy/reading", "/academy/today", "/academy/alphabet", "/academy/review", "/academy/tables", "/academy/vocabulary", "/academy/practice",
+  "/academy", "/academy/reading", "/academy/reading/letters", "/academy/today", "/academy/alphabet", "/academy/review", "/academy/tables", "/academy/vocabulary", "/academy/practice",
   "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/manuscripts", "/stoa/variants", "/stoa/kerameikos", "/stoa/lyre", "/stoa/census", "/stoa/periplus",
   "/town-hall", "/town-hall/pnyx", "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation",
   "/town-hall/pnyx/debate", "/account",

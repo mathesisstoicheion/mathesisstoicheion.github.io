@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { existsSync, readFileSync } from "node:fs";
 import { join } from "node:path";
-import { PATH, partText, firstMet } from "./reading-path";
+import { PATH, partText, firstMet, newWords } from "./reading-path";
 import { indexCatalog, greekEditions, translations, rawUrl, type Catalog, type CatText } from "@/lib/catalog";
 import { parseTei } from "@/lib/tei/parse";
 import { findRef } from "@/lib/tei/refs";
@@ -23,8 +23,8 @@ const unitText = (doc: ReturnType<typeof parseTei>, ref: string) => {
 };
 
 describe("the reading path", () => {
-  it("has ten steps with unique ids, every word explained", () => {
-    expect(PATH).toHaveLength(10);
+  it("has twelve steps with unique ids, every word explained", () => {
+    expect(PATH).toHaveLength(12);
     expect(new Set(PATH.map((s) => s.id)).size).toBe(PATH.length);
     for (const s of PATH) {
       expect(idx.work.get(s.work), s.id).toBeTruthy();
@@ -47,6 +47,15 @@ describe("the reading path", () => {
       else if (path.startsWith("/stoa/")) expect(slugs.has(path.slice(6)), `${s.id}: ${l.href}`).toBe(true);
       else throw new Error(`unchecked link ${l.href}`);
     }
+  });
+
+  // the rules agreed with Noa: at most four new words and eight words a step, and a word's "kin" really met before
+  it("keeps to the beginners' rules", () => {
+    PATH.forEach((s, i) => {
+      expect(newWords(i).length, `${s.id}: ${newWords(i).join(", ")}`).toBeLessThanOrEqual(4);
+      expect(s.parts.flatMap((p) => p.words).length, s.id).toBeLessThanOrEqual(8);
+      for (const w of s.parts.flatMap((p) => p.words)) if (w.kin) expect(firstMet(w.kin, i), `${s.id}: ${w.form}`).toBeTruthy();
+    });
   });
 
   it("builds on itself: the last step is mostly words met before", () => {
