@@ -43,7 +43,7 @@ const Paths = () => (
   <ul className={styles.paths}>
     {PATHS.map((p) => (
       <li key={p.id} className={styles.path}>
-        <h3>{p.title}</h3>
+        <h4>{p.title}</h4>
         <p className="muted">{p.blurb}</p>
         <ol>
           {p.steps.map(([w, note]) => (

@@ -6,24 +6,22 @@ test("a first visit is asked where it is starting, and the answer sets up the re
   await page.goto("/");
   await expect(page.locator("html")).not.toHaveAttribute("data-visitor", "back");
   await expect(page.getByRole("heading", { name: "Your desk" })).toBeHidden();
-  // the question waits behind one quiet line under the two ways in
-  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeHidden();
-  await page.getByText("New here?").click();
-  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeVisible();
-  // the first answer is open to begin with; picking another only changes what the panel says
-  const none = page.getByRole("tab", { name: /I know no Greek/ }), some = page.getByRole("tab", { name: /I know a little/ });
+  // design A's question stands under the two ways in, its first answer open
+  await expect(page.getByText("Where are you starting?")).toBeVisible();
+  const none = page.getByRole("tab", { name: "No Greek" }), some = page.getByRole("tab", { name: "A little" });
+  const panel = page.locator("#ppanel");
   await expect(none).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByText("Latin letters shown under the Greek in the reader")).toBeVisible();
+  await expect(panel).toContainText("I know no Greek.");
   await some.click();
   await expect(some).toHaveAttribute("aria-selected", "true");
-  await expect(page.getByText("Latin letters shown under the Greek in the reader")).toBeHidden();
+  await expect(panel).toContainText("I know a little.");
   // the arrow keys move between the answers
   await page.keyboard.press("ArrowLeft");
   await expect(none).toHaveAttribute("aria-selected", "true");
   await expect(none).toBeFocused();
-  // nothing is set until the panel's button is pressed
+  // nothing is set until the answer's way in is followed
   expect((await settings(page)).translit ?? false).toBe(false);
-  await page.locator("#start-setup").getByRole("link", { name: /Meet the alphabet/ }).click();
+  await panel.getByRole("link", { name: /Meet the alphabet/ }).click();
   await expect(page).toHaveURL(/\/academy\/alphabet$/);
   expect((await settings(page)).translit).toBe(true);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:start") || "{}").choice)).toBe("none");
@@ -31,14 +29,13 @@ test("a first visit is asked where it is starting, and the answer sets up the re
   await page.goto("/");
   await expect(page.locator("html")).toHaveAttribute("data-visitor", "back");
   await expect(page.getByRole("heading", { name: "Your desk" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Where are you starting?" })).toBeHidden();
+  await expect(page.getByText("Where are you starting?")).toBeHidden();
 });
 
 test("I just want to read: the library, with reading aids off", async ({ page }) => {
   await page.goto("/");
-  await page.getByText("New here?").click();
-  await page.getByRole("tab", { name: /I just want to read/ }).click();
-  await page.locator("#start-setup").getByRole("link", { name: /Open the library/ }).click();
+  await page.getByRole("tab", { name: "Just reading" }).click();
+  await page.locator("#ppanel").getByRole("link", { name: /Open the library/ }).click();
   await expect(page).toHaveURL(/\/library$/);
   const s = await settings(page);
   expect([s.translit, s.columns]).toEqual([false, "both"]);
@@ -67,12 +64,10 @@ test.describe("on a phone", () => {
   test.use({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   test("the question is in the opening, after the title, and nothing is wider than the screen", async ({ page }) => {
     await page.goto("/");
-    const ask = page.getByText("New here?");
-    expect((await ask.boundingBox())!.y).toBeLessThan(844);
-    await ask.click();
-    const q = (await page.getByRole("heading", { name: "Where are you starting?" }).boundingBox())!.y;
+    const q = (await page.getByText("Where are you starting?").boundingBox())!.y;
     const title = (await page.locator("#hero-title").boundingBox())!.y;
     expect(q).toBeGreaterThan(title);
+    expect(q).toBeLessThan(844 * 1.5);
     expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
   });
 });

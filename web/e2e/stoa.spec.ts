@@ -44,11 +44,11 @@ test("Quick search finds wiki entries", async ({ page }) => {
 });
 
 test("the home page tells why Stoics are called Stoics and leads into the Painted Stoa", async ({ page }) => {
-  // its three entry cards moved off the home page (the owner, 2026-10-17: a calmer home page)
+  // design A: the story stands by itself; the way into the Stoa is its room among the five
   await page.goto("/");
-  const stoa = page.locator('section[aria-labelledby="stoa-title"]');
+  const stoa = page.getByRole("region", { name: "From the Painted Stoa" });
   await expect(stoa).toContainText("Diogenes Laertius");
-  await expect(stoa.getByRole("link", { name: /Walk into the Painted Stoa/ })).toHaveAttribute("href", "/stoa");
+  await expect(page.getByRole("region", { name: "The rooms of the site" }).getByRole("link", { name: /People, places and objects/ })).toHaveAttribute("href", "/stoa");
 });
 
 test("the credits page lists every picture with its licence", async ({ page }) => {

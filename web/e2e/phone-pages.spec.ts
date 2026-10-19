@@ -30,11 +30,11 @@ test("card rows scroll sideways without snapping, with the next card peeking in"
   expect(info.first).toBeLessThan(375 * 0.9);   // the next card shows at the edge
 });
 
-test("an offline phone says so above the bar", async ({ page, context }) => {
+test("an offline phone says so under the header", async ({ page, context }) => {
   await page.goto("/academy");
   await context.setOffline(true);
   await page.evaluate(() => dispatchEvent(new Event("offline")));
-  const sign = page.getByRole("navigation", { name: "Areas of the site" }).getByRole("status");
+  const sign = page.locator("header").getByRole("status");
   await expect(sign).toContainText("Offline");
   await context.setOffline(false);
   await page.evaluate(() => dispatchEvent(new Event("online")));

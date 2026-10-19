@@ -40,7 +40,7 @@ export default function Featured({ groups, between, after }: { groups: { name: s
   const aside = useLibQuery((x) => !!x.q.trim() || x.tr !== "all");
   if (aside) return null;
   return (
-    <>
+    <section aria-label="Famous books to begin with" style={{ display: "contents" }}>
       {groups.map((g, i) => (
         <Fragment key={g.name}>
           {i > 0 && between}
@@ -51,6 +51,6 @@ export default function Featured({ groups, between, after }: { groups: { name: s
           </div></div>
         </Fragment>
       ))}
-    </>
+    </section>
   );
 }

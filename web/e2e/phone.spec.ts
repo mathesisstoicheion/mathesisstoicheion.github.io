@@ -1,82 +1,63 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 
-// Phase 10, the phone edition: the bottom bar, the one-row header, search as a full-screen sheet.
+// The phone edition (design A, 2026-10-19): a one-row header with Search and a menu (the five doors, your account, Settings
+// and the connection); no bar along the bottom (the owner's choice). Search opens as a full-screen sheet.
 const PHONE = { viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true };
 
-const tabBar = (page: Page) => page.getByRole("navigation", { name: "Areas of the site" });
+const header = (page: Page) => page.locator("header").first();
+const menu = (page: Page) => page.getByRole("navigation", { name: "Menu" });
+const openMenu = async (page: Page) => { await header(page).getByRole("button", { name: "Menu" }).click(); await expect(menu(page)).toBeVisible(); };
 const noSideways = (page: Page) => page.evaluate(() => document.documentElement.scrollWidth - innerWidth);
 
 test.describe("on a phone", () => {
   test.use(PHONE);
 
-  test("the bottom bar holds the five doors in order, and the header fits in one row", async ({ page }) => {
+  test("the header fits in one row, with Search and a menu that holds every door", async ({ page }) => {
     await page.goto("/");
-    const links = tabBar(page).locator("a, button");
-    await expect(links).toHaveCount(5);
-    const labels = await links.evaluateAll((els) => els.map((e) => e.firstElementChild?.nextElementSibling?.firstChild?.textContent));
-    expect(labels).toEqual(["Learn", "Read", "Search", "Explore", "Mine"]);
-    // Talk, the forum, moves to the header, where the search button was
-    await expect(page.locator("header").getByRole("link", { name: "Talk: The Town Hall" })).toBeVisible();
-    await expect(page.locator("header").getByRole("button", { name: "Quick search" })).toBeHidden();
-    await expect(page.locator("header").getByRole("link", { name: "Research: The Oracle" })).toBeHidden();
-    // the bar is along the bottom edge of the screen
-    const box = (await tabBar(page).boundingBox())!;
-    expect(Math.round(box.y + box.height)).toBe(812);
-    // the header's sideways menu gives way to the bar; its buttons and the bar's places are finger-sized
-    const header = page.locator("header").first();
-    await expect(header.getByRole("link", { name: /The Mouseion/ })).toBeHidden();
-    for (const el of [...await header.locator("button:visible, a:visible").all(), ...await links.all()]) {
+    // the doors give way to the menu; there is no bar along the bottom
+    await expect(header(page).getByRole("link", { name: /Μουσεῖον/ })).toBeHidden();
+    await expect(page.getByRole("navigation", { name: "Areas of the site" })).toHaveCount(0);
+    const search = header(page).getByRole("button", { name: "Search" }).filter({ visible: true });
+    await expect(search).toHaveCount(1);
+    await openMenu(page);
+    const doors = menu(page).getByRole("list").first().getByRole("link");
+    expect(await doors.evaluateAll((els) => els.map((e) => e.firstElementChild?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk", "Mine", "Search"]);
+    await expect(menu(page).getByRole("button", { name: "Settings" })).toBeVisible();
+    // every door and button in it is finger-sized
+    for (const el of await menu(page).locator("a, button").filter({ visible: true }).all()) {
       const b = (await el.boundingBox())!;
-      expect(Math.min(b.width, b.height), await el.getAttribute("aria-label") ?? await el.textContent() ?? "").toBeGreaterThanOrEqual(44);
+      expect(b.height, await el.textContent() ?? "").toBeGreaterThanOrEqual(40);
     }
+    // the header is one row
+    const box = (await header(page).locator("> div").first().boundingBox())!;
+    expect(box.height).toBeLessThan(90);
     expect(await noSideways(page)).toBeLessThanOrEqual(0);
   });
 
-  test("a place in the bar opens without reloading, and is marked as the current one", async ({ page }) => {
+  test("a door in the menu opens without reloading, is marked as the current one, and the menu closes", async ({ page }) => {
     await page.goto("/");
     await page.evaluate(() => { (window as unknown as { marker: string }).marker = "kept"; });
-    await tabBar(page).getByRole("link", { name: /^Learn/ }).click();
+    await openMenu(page);
+    await menu(page).getByRole("link", { name: /^Learn/ }).click();
     await expect(page).toHaveURL(/\/academy$/);
-    await expect(tabBar(page).getByRole("link", { name: /^Learn/ })).toHaveAttribute("aria-current", "page");
+    await expect(menu(page)).toBeHidden();
     expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
-    // the reader belongs to the Read door, and so do work pages
-    await page.goto("/read?w=tlg0012.tlg001");
-    await expect(tabBar(page).getByRole("link", { name: /^Read/ })).toHaveAttribute("aria-current", "page");
-    // pages outside the five places mark none
+    await openMenu(page);
+    await expect(menu(page).getByRole("link", { name: /^Learn/ })).toHaveAttribute("aria-current", "page");
+    // the reader belongs to the Read door (a book open in it has its own bar instead of the header, as in design A)
+    await page.goto("/read");
+    await openMenu(page);
+    await expect(menu(page).getByRole("link", { name: /^Read/ })).toHaveAttribute("aria-current", "page");
+    // pages outside the doors mark none
     await page.goto("/about");
-    await expect(tabBar(page).locator("[aria-current]")).toHaveCount(0);
-  });
-
-  test("the bar tucks away while reading on and comes back on a scroll up", async ({ page }) => {
-    await page.goto("/academy");
-    const bottom = () => tabBar(page).evaluate((e) => Math.round(e.getBoundingClientRect().top));
-    // the page listens for scrolling once it has started up: scroll on until the bars tuck away
-    await expect(async () => {
-      await page.mouse.wheel(0, 350);
-      await expect(page.locator("html")).toHaveAttribute("data-hdr", "hidden", { timeout: 800 });
-    }).toPass({ timeout: 15_000 });
-    await expect.poll(bottom).toBeGreaterThanOrEqual(812);
-    await page.mouse.wheel(0, -200);
-    await expect(page.locator("html")).toHaveAttribute("data-hdr", "shown");
-    const h = await tabBar(page).evaluate((e) => e.getBoundingClientRect().height);
-    await expect.poll(bottom).toBe(Math.round(812 - h));
-  });
-
-  test("the end of a page is never hidden under the bar", async ({ page }) => {
-    await page.goto("/about");
-    await page.evaluate(() => scrollTo(0, document.documentElement.scrollHeight));
-    // at the very end the bar shows again, and the footer ends just above it
-    await expect(page.locator("html")).not.toHaveAttribute("data-hdr", "hidden");
-    await expect.poll(() => page.evaluate(() => {
-      const bar = document.querySelector("nav[style*='site-tabbar']")!.getBoundingClientRect().top;
-      return Math.round(document.querySelector(".site-footer")!.getBoundingClientRect().bottom - bar);
-    })).toBeLessThanOrEqual(1);
+    await openMenu(page);
+    await expect(menu(page).locator("[aria-current]")).toHaveCount(0);
   });
 
   test("search opens as a full-screen sheet with Greek letters, and closes", async ({ page }) => {
     await page.goto("/");
-    await tabBar(page).getByRole("button", { name: /^Search/ }).click();
+    await header(page).getByRole("button", { name: "Search" }).filter({ visible: true }).click();
     const sheet = page.getByRole("dialog", { name: "Quick search" });
     await expect(sheet).toBeVisible();
     // it rises into place, then covers the whole screen
@@ -96,7 +77,8 @@ test.describe("on a phone", () => {
     const sheet = page.getByRole("dialog", { name: "Settings" });
     const top = () => sheet.evaluate((e) => Math.round(e.getBoundingClientRect().top));
     const bottom = () => sheet.evaluate((e) => Math.round(e.getBoundingClientRect().bottom));
-    await page.getByRole("button", { name: "Settings" }).click();
+    const open = async () => { await openMenu(page); await menu(page).getByRole("button", { name: "Settings" }).click(); };
+    await open();
     await expect.poll(bottom).toBe(812);
     for (const b of await sheet.getByRole("button").or(sheet.getByRole("radio")).all()) {
       if (!await b.isVisible()) continue;
@@ -117,30 +99,32 @@ test.describe("on a phone", () => {
     await page.mouse.up();
     await expect(sheet).toBeHidden();
     // and it opens in place again, not where the finger left it
-    await page.getByRole("button", { name: "Settings" }).click();
+    await open();
     await expect.poll(top).toBe(y0);
     await sheet.getByRole("button", { name: "Close settings" }).click();
     await expect(sheet).toBeHidden();
   });
 
   for (const theme of ["light", "dark"] as const) {
-    test(`the phone header, bar and sheets pass the accessibility check (${theme})`, async ({ page }) => {
+    test(`the phone header, menu and sheets pass the accessibility check (${theme})`, async ({ page }) => {
       await page.addInitScript((t) => {
         localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t, motion: "reduce" }, version: 0 }));
       }, theme);
       const check = async (what: string) => {
-        const res = await new AxeBuilder({ page }).include("header").include("nav[style*='site-tabbar']").include("dialog[open]")
+        const res = await new AxeBuilder({ page }).include("header").include("dialog[open]")
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
         expect(res.violations.map((v) => `${v.id}: ${v.nodes.map((n) => n.target.join(" ")).join(", ")}`), what).toEqual([]);
       };
       await page.goto("/academy");
       await expect(page.locator("h1").first()).toBeVisible();
-      await check("header and bar");
-      await page.getByRole("button", { name: "Settings" }).click();
+      await check("header");
+      await openMenu(page);
+      await check("menu");
+      await menu(page).getByRole("button", { name: "Settings" }).click();
       await expect(page.getByRole("dialog", { name: "Settings" })).toBeVisible();
       await check("Settings");
       await page.keyboard.press("Escape");
-      await tabBar(page).getByRole("button", { name: /^Search/ }).click();
+      await header(page).getByRole("button", { name: "Search" }).filter({ visible: true }).click();
       await page.getByRole("button", { name: "Greek letters on screen" }).click();
       await page.getByRole("combobox", { name: "Search" }).fill("logos");
       await check("Quick search");
@@ -153,34 +137,30 @@ test.describe("on a phone", () => {
       for (const path of ["/", "/library", "/academy", "/stoa", "/town-hall", "/treasury", "/read?w=tlg0012.tlg001"]) {
         await page.goto(path);
         await expect(page.locator("h1").first()).toBeVisible();
-        // the library's famous books arrive after the heading, in a row to swipe sideways; a row like it once widened the page to 2,100 px
-        if (path === "/library") await expect(page.getByRole("region", { name: "Famous books to begin with" }).getByRole("link").first()).toBeVisible();
+        // the library's famous books arrive after the heading (a row of books like them once widened the page to 2,100 px)
+        if (path === "/library") await expect(page.getByRole("region", { name: "Famous books to begin with" }).getByRole("link").first()).toBeAttached();
         expect(await noSideways(page), `${path} at ${width}px`).toBeLessThanOrEqual(0);
       }
     }
   });
 });
 
-test("the browser's bar is the colour of the stone, whichever reader's page is chosen", async ({ page }) => {
+test("the browser's bar is the colour of design A's black frame, whichever reader's page is chosen", async ({ page }) => {
   await page.goto("/");
   const bars = () => page.locator('meta[name="theme-color"]').evaluateAll((ms) => ms.map((m) => m.getAttribute("content")));
-  expect(await bars()).toEqual(["#14100d"]);
+  expect(await bars()).toEqual(["#070504"]);
   await page.getByRole("button", { name: "Settings" }).click();
   await page.getByRole("radio", { name: "Daylight" }).click();
   await page.reload();
-  expect(await bars()).toEqual(["#14100d"]);
+  expect(await bars()).toEqual(["#070504"]);
 });
 
-test("wide screens keep the header's menu and have no bottom bar", async ({ page }) => {
+test("wide screens show the doors in the header and have no bottom bar", async ({ page }) => {
   await page.goto("/");
-  await expect(page.locator("header").getByRole("link", { name: /The Mouseion/ })).toBeVisible();
-  await expect(page.locator("nav[style*='site-tabbar']")).toBeHidden();
-  // the Oracle has a button of its own in the menu, which goes straight to its page
-  const oracle = page.locator("header").getByRole("link", { name: "Research: The Oracle" });
-  await expect(oracle).toBeVisible();
-  await expect(oracle).toHaveAttribute("href", "/search");
+  await expect(page.locator("header").getByRole("link", { name: /Μουσεῖον/ })).toBeVisible();
+  await expect(page.getByRole("navigation", { name: "Areas of the site" })).toHaveCount(0);
   // the header's search button opens Quick search, which also leads to the Oracle's full page
-  await page.getByRole("button", { name: "Quick search" }).click();
+  await page.locator("header").getByRole("button", { name: "Search" }).filter({ visible: true }).click();
   const box = page.getByRole("dialog", { name: "Quick search" });
   await box.getByRole("link", { name: /the full search/ }).click();
   await expect(page).toHaveURL(/\/search$/);

@@ -18,7 +18,7 @@ export default function NotFound() {
   return (
     <Page>
       <div className={`wrap ${styles.page}`}>
-        <PageHead bare path={[{ label: "Not found" }]} inscription="ΥΔ" title="This page has not survived" greek="ἀπόλωλε" piece={LOST_PAGE}
+        <PageHead bare path={[{ label: "Not found" }]} inscription="ΥΔ" inscriptionSays="ΥΔ, 404 in Greek numerals" title="This page has not survived" greek="ἀπόλωλε" piece={LOST_PAGE}
           purpose={<>The address may be mistyped, or the page may have moved. You are in good company: Aeschylus wrote an estimated
             70 to 90 plays, and <Link href="/author/tlg0085" transitionTypes={["page-turn"]}>seven survive</Link>.</>}
           action={<NotFoundSearch />}>

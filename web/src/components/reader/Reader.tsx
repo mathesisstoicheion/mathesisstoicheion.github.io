@@ -1567,6 +1567,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       )}
       {single ? (
         <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} day={daylight}
+          orig={work?.orig && work.orig !== grcText?.label ? <OrigTitle work={work} full /> : null}
           editions={work && grcText ? (
     <div className={styles.edLine}>
       <span className={styles.ed}><span className={styles.edKind}>Greek</span> {describe(grcText, work.texts)}</span>

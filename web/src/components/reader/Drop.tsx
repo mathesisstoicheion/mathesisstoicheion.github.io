@@ -34,6 +34,8 @@ export default function Drop({ id, open, onOpen, label, chevron = true, ariaLabe
     if (!open) return;
     const outside = (e: PointerEvent) => {
       const t = e.target as Node;
+      // a Guide tour's card stands outside the panel while pointing inside it: pressing Next leaves the panel open
+      if ((t as Element).closest?.("[data-tour-card]")) return;
       if (!panel.current?.contains(t) && !btn.current?.contains(t)) set.current(false);
     };
     const key = (e: KeyboardEvent) => {

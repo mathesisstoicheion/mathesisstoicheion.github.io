@@ -108,7 +108,7 @@ export default function Vocabulary() {
             {groups.map((g) => <option key={g} value={g}>{g}</option>)}
           </select>
         </div>
-        <div className={styles.scrollX}>
+        <div className={styles.scrollX} tabIndex={0} role="region" aria-label="The commonest words">
           <table className={styles.coreTable}>
             <thead><tr><th>#</th><th>Word</th><th>Meaning</th><th>Kind</th><th /></tr></thead>
             <tbody>

@@ -2,7 +2,7 @@
    like the levels above them; in the library's block, one or two to a row */
 .paths { list-style: none; margin: 0; padding: var(--space-1) var(--space-4) var(--space-4); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-3); }
 .path { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.path h3 { font-size: var(--step-1); color: var(--accent); margin: 0; }
+.path h4 { font-size: var(--step-1); color: var(--accent); margin: 0; }
 .path :global(.muted) { font-size: var(--step--1); margin: 0; }
 .path ol { list-style: none; margin: var(--space-1) 0 0; padding: 0; counter-reset: step; }
 .path ol li { position: relative; counter-increment: step; display: grid; grid-template-columns: var(--space-5) 1fr; column-gap: var(--space-2); padding: var(--space-2) 0; box-shadow: var(--cut-over); }

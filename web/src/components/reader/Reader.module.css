@@ -721,6 +721,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   text-shadow: 0 0 50px rgba(255, 140, 50, calc(0.38 * var(--atm, 1)));
 }
 .enT { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-style: italic; font-size: clamp(1.4rem, 3vw, 2.3rem); color: var(--ink-2); margin: 0; }
+.origT { margin: 6px 0 0; font-size: 0.9rem; color: var(--ink-2); }
 .eds { position: relative; margin-top: 16px; display: flex; justify-content: center; }
 .eds .edLine { justify-content: center; font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
 .eds .edKind { font-size: inherit; margin-right: 0; }
@@ -758,6 +759,8 @@ p.translit { margin: -0.3em 0 0.8em; }
   .single .tr { grid-column: auto; margin-top: 0; padding: 0 0 0 12px; box-shadow: var(--cut-left); }
   .single.cols-trans .tr { padding-left: 0; box-shadow: none; }
 }
+/* design A's lamp on the passage: the lit passage at full strength, the rest dimmed, on purpose below the 4.5:1 contrast rule
+   (Aa, "Lamp on the passage: Off", gives every line full contrast) */
 .lampOn .row { opacity: 0.42; transition: opacity 0.5s ease; }
 .page[data-page="day"] .lampOn .row { opacity: 0.6; }
 .lampOn .row[data-lit] { opacity: 1; }

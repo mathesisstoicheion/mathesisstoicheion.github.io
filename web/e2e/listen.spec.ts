@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { openAids } from "./reader-menus";
 
 // Listen: the English translation read aloud. The device's voice is replaced by a stand-in that "speaks" each
 // piece of text at once, word by word, so the test runs the same everywhere. Needs a connection (texts from GitHub).
@@ -38,7 +39,7 @@ test("Listen reads the English translation aloud, marking the passage and the wo
   await fakeVoice(page);
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  await page.getByRole("button", { name: "Listen", exact: true }).click();
+  await (await openAids(page)).getByRole("button", { name: "Listen", exact: true }).click();   // Listen waits in Tools
   const bar = page.getByRole("region", { name: "Listen to the translation" });
   await expect(bar).toBeVisible();
   await expect(bar).toContainText("The Greek is not read aloud");
@@ -65,19 +66,18 @@ test("Listen reads the English translation aloud, marking the passage and the wo
   await expect(page.locator("article [data-listening]")).toHaveCount(0);
 });
 
-test("on a phone, Listen is in the reading aids and its player sits above the bars", async ({ page }) => {
+test("on a phone, Listen is in Tools and its player sits within the screen", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await fakeVoice(page);
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  await page.getByRole("toolbar", { name: "Reading" }).getByRole("button", { name: "Aids" }).click();
-  await page.getByRole("dialog", { name: "Reading aids" }).getByRole("button", { name: "Listen", exact: true }).click();
+  const tools = await openAids(page);
+  await tools.getByRole("button", { name: "Listen", exact: true }).click();
   const bar = page.getByRole("region", { name: "Listen to the translation" });
   await expect(bar).toBeVisible();
-  await expect(page.getByRole("dialog", { name: "Reading aids" })).toBeHidden();
+  await expect(tools).toBeHidden();
   // (it rises into place over 0.4 s: measure once it has settled)
-  const rb = (await page.getByRole("toolbar", { name: "Reading" }).boundingBox())!;
-  await expect.poll(async () => { const x = (await bar.boundingBox())!; return x.y + x.height; }).toBeLessThanOrEqual(rb.y + 1);
+  await expect.poll(async () => { const x = (await bar.boundingBox())!; return x.y + x.height; }).toBeLessThanOrEqual(812 + 1);
   const b = (await bar.boundingBox())!;
   expect(b.x).toBeGreaterThanOrEqual(0);
   expect(b.x + b.width).toBeLessThanOrEqual(375);

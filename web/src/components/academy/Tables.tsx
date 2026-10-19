@@ -55,7 +55,7 @@ export function ParadigmTable({ p, query = "", marked = false }: { p: Paradigm; 
     <section className={`${styles.table} ${p.cols.length > 3 ? styles.tableWide : ""} ${marked ? styles.marked : ""}`} aria-labelledby={`t-${p.id}`}>
       <h2 id={`t-${p.id}`} tabIndex={-1}>{p.title}</h2>
       {p.note && <p className="muted">{p.note}</p>}
-      <div ref={scroller} className={styles.scrollX}>
+      <div ref={scroller} className={styles.scrollX} tabIndex={0} role="region" aria-labelledby={`t-${p.id}`}>
         <table>
           <thead><tr><th />{p.cols.map((c) => <th key={c}>{c}</th>)}</tr></thead>
           <tbody>

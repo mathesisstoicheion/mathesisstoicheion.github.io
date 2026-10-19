@@ -1,32 +1,34 @@
 import { test, expect } from "@playwright/test";
 
-test("home page shows the site name, the passage and the library search", async ({ page }) => {
+test("home page shows the site name, the passage and the rooms", async ({ page }) => {
   await page.goto("/");
+  // the title is set in lines for design A's rising entrance; it is read out as one sentence
   await expect(page.locator("h1").first()).toHaveAccessibleName("Read the Greeks in their own words");
-  await expect(page.locator("h1").first()).toHaveText("Read the Greeks in their own words");
-  await expect(page.getByText("ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ", { exact: true })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Passage of the day" })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "Find something to read" })).toBeVisible();
+  await expect(page.getByText("ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ", { exact: false }).first()).toBeVisible();
+  await expect(page.getByRole("region", { name: "Passage of the day" })).toBeVisible();
+  await expect(page.getByRole("region", { name: "The rooms of the site" })).toBeVisible();
 });
 
 test("moving between areas does not reload the page", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => { (window as unknown as { marker: string }).marker = "kept"; });
-  await page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link", { name: /The Academy/ }).click();
+  await page.locator("header").first().getByRole("link", { name: /The Academy/ }).click();
   await expect(page).toHaveURL(/\/academy$/);
   await expect(page.getByRole("heading", { level: 1 })).toContainText("The Academy");
   expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
 });
 
-test("the menu is the five doors, in plain words with their Greek names, then Research (the Oracle); Read is current in the reader", async ({ page }) => {
-  await page.goto("/read?w=tlg0012.tlg001");
-  const doors = page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link");
-  expect(await doors.evaluateAll((as) => as.map((a) => a.querySelector("b")?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk", "Mine", "Research"]);
+test("the header is design A's four doors around the mark, in plain words with their Greek names, then Mine; Read is current in the library", async ({ page }) => {
+  await page.goto("/read");
+  const header = page.locator("header").first();
+  const doors = header.locator("a:has(> span[lang='grc'])");
+  expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk"]);
   await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
-  await expect(page.getByRole("link", { name: "Learn: The Academy" })).toBeVisible();
+  await expect(header.getByRole("link", { name: /^Learn.*: The Academy$/ })).toBeVisible();
+  await expect(header.getByRole("link", { name: "Mine: bookmarks and notes" })).toBeVisible();
 });
 
-test("the reader's page chosen in Settings (Night or Daylight) is remembered after a reload", async ({ page }) => {
+test("the reader's page chosen in Settings (Lamplight or Daylight) is remembered after a reload", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
   await page.getByRole("button", { name: "Settings" }).click();
@@ -35,7 +37,7 @@ test("the reader's page chosen in Settings (Night or Daylight) is remembered aft
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
   await page.getByRole("button", { name: "Settings" }).click();
-  await page.getByRole("radio", { name: "Night" }).click();
+  await page.getByRole("radio", { name: "Lamplight" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
 });
 

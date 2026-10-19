@@ -58,6 +58,22 @@
 .ppanel { padding: 4px 16px 16px; font-size: 1rem; min-height: 3.4em; }
 .ppanel b { font-weight: 500; color: var(--a-accent2); }
 .ppanel a { color: var(--a-accent2); text-underline-offset: 3px; }
+/* a returning visitor's desk (HomeDesk) stands where the question was, in the same panel; which one shows is set before the first paint */
+:global(html[data-visitor="back"]) .first-only, :global(html:not([data-visitor="back"])) .back-only { display: none; }
+.desk h2 { margin: 0; font-weight: 400; }
+.drows { padding: 6px 16px 14px; }
+.drow { display: grid; grid-template-columns: 9.5em 1fr; gap: 4px 14px; padding: 9px 0; border-top: 1px solid var(--a-line); font-size: .98rem; line-height: 1.45; }
+.drow:first-child { border-top: 0; }
+.drow > .mono { color: var(--a-ink2); padding-top: .3em; font-size: .66rem; }
+.drow b { font-weight: 500; color: var(--a-accent2); }
+.drow a { color: var(--a-accent2); text-underline-offset: 3px; }
+.drow small { display: block; color: var(--a-ink2); font-size: .8rem; }
+.drow ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: .88rem; }
+.drow ul small { display: inline; }
+.dalso { margin: 0; padding: 0 16px 14px; font-size: .86rem; color: var(--a-ink2); }
+.dalso a { color: var(--a-ink); }
+.dalso button { border: 0; background: none; padding: 0; color: var(--a-ink2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+@media (max-width: 520px) { .drow { grid-template-columns: 1fr; } }
 .sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-top: 1px solid var(--a-line); padding-top: 14px; margin-bottom: 26px; color: var(--a-ink2); }
 .pod-g { font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.38; margin: 0 0 18px; max-width: 30ch; }
 .pod-e { font-size: 1.15rem; max-width: 58ch; opacity: .84; margin: 0 0 22px; }

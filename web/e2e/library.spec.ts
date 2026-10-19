@@ -1,4 +1,10 @@
-import { test, expect } from "@playwright/test";
+import { test, expect, type Page } from "@playwright/test";
+
+/** The order and every filter wait behind one button over the list (design A's library): open it. */
+async function openFilters(page: Page) {
+  const b = page.getByRole("button", { name: /^Order and filters/ });
+  if ((await b.getAttribute("aria-expanded")) !== "true") await b.click();
+}
 
 test("the library opens with its search, and lists authors who open to show their works", async ({ page }) => {
   await page.goto("/library");
@@ -28,12 +34,12 @@ test("the library opens with its search, and lists authors who open to show thei
 test("the search and the filters are kept in the address, so Back and shared links return to the same list", async ({ page }) => {
   await page.goto("/library");
   await page.getByRole("searchbox", { name: "Search the library" }).fill("odyssey");
-  await page.getByRole("radio", { name: "With translation" }).click();
+  await page.getByRole("group", { name: "Show" }).getByRole("button", { name: "With English" }).click();
   await expect(page).toHaveURL(/[?&]q=odyssey/);
   await expect(page).toHaveURL(/[?&]tr=with/);
   await page.goto("/library?q=medea&tr=greek");
   await expect(page.getByRole("searchbox", { name: "Search the library" })).toHaveValue("medea");
-  await expect(page.getByRole("radio", { name: "Greek only" })).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("group", { name: "Show" }).getByRole("button", { name: "Greek only" })).toHaveAttribute("aria-pressed", "true");
 });
 
 test("arrow keys move between the authors, and the best-known work comes first", async ({ page }) => {
@@ -80,6 +86,7 @@ test("a search marks what matched, and offers the authors it names first", async
 test("a search that names one author puts that author first, opened, as the best match; the rest stay A to Z", async ({ page }) => {
   await page.goto("/library");
   const search = page.getByRole("searchbox", { name: "Search the library" });
+  await openFilters(page);
   const chips = page.getByRole("group", { name: "Kind of writing" }).getByRole("button");
   await expect(chips.first()).toBeVisible();
   const all = await chips.count();
@@ -98,6 +105,7 @@ test("a search that names one author puts that author first, opened, as the best
 
 test("the library sorts by title and by period, and jumps to a letter", async ({ page }) => {
   await page.goto("/library");
+  await openFilters(page);
   await page.getByRole("radio", { name: "Title A–Z" }).click();
   await expect(page.locator("#lib-I").getByRole("link", { name: /^Iliad.*Homer/ })).toBeAttached();
   // the rail of letters down the left of the list (AZList.tsx) follows the order in use
@@ -110,10 +118,11 @@ test("the library sorts by title and by period, and jumps to a letter", async ({
 
 test("the genre chips count and filter, and a long list of works folds", async ({ page }) => {
   await page.goto("/library");
+  await openFilters(page);
   await page.getByRole("button", { name: /^Drama \d+/ }).click();
   await expect(page.locator("#author-tlg0011")).toBeVisible();      // Sophocles
   await expect(page.locator("#author-tlg0012")).toHaveCount(0);     // Homer wrote no drama
-  await expect(page.getByText(/of 1,\d{3} works/)).toBeVisible();
+  await expect(page.getByText(/of 1,\d{3} works/).first()).toBeVisible();
   // while a filter narrows the list, the authors stand open
   await expect(page.locator("#author-tlg0011").getByRole("link", { name: /^Antigone/ })).toBeVisible();
   await page.getByRole("button", { name: "Show everything" }).click();
@@ -161,18 +170,22 @@ test("authors are found by their other names and their Greek name, and Latin lab
   await expect(lives).toContainText("Vitae Homeri");
 });
 
-test("the library opens with a row of famous books, then the search and filters standing on the list", async ({ page }) => {
+test("the library opens with its search and the famous books, then the order and filters standing on the list", async ({ page }) => {
   await page.goto("/library");
+  const search = page.getByRole("searchbox", { name: "Search the library" });
+  await expect(search).toBeVisible();
   const famous = page.getByRole("region", { name: "Famous books to begin with" });
-  await expect(famous.getByRole("link", { name: /Iliad/ })).toHaveAttribute("href", "/read?w=tlg0012.tlg001");
-  // the search, the order and the filters come straight before the list they narrow
+  await expect(famous.getByRole("link", { name: /Iliad/ }).first()).toHaveAttribute("href", "/read?w=tlg0012.tlg001");
+  // the order and the filters come straight before the list they narrow
   const list = page.getByRole("region", { name: "Every work in the library" });
-  await expect(list.getByRole("searchbox", { name: "Search the library" })).toBeVisible();
+  await openFilters(page);
   await expect(list.getByRole("radiogroup", { name: "Order" })).toBeVisible();
   await expect(list.locator("#lib-A")).toBeAttached();
-  // arriving with a search brings the list, and its search, into view
+  // while a search is on, the famous books stand aside, so the list comes up right under the search
   await page.goto("/library?q=medea");
-  await expect(list.getByRole("searchbox", { name: "Search the library" })).toBeInViewport();
+  await expect(famous).toHaveCount(0);
+  await expect(search).toHaveValue("medea");
+  await expect(list).toBeInViewport();
 });
 
 test("the reading paths, once on the home page, wait in the library under \"Not sure where to begin?\"", async ({ page }) => {
@@ -180,7 +193,7 @@ test("the reading paths, once on the home page, wait in the library under \"Not 
   const begin = page.locator("details", { hasText: "Not sure where to begin?" });
   await expect(begin.getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
   await begin.getByText("Not sure where to begin?").click();
-  await expect(begin.getByRole("heading", { level: 3 })).toHaveCount(6);
+  await expect(begin.getByRole("heading", { level: 4 })).toHaveCount(6);
   // the first level starts with it, and so does the first path
   await expect(begin.getByRole("link", { name: "Lysias, On the Murder of Eratosthenes" }).first()).toHaveAttribute("href", "/read?w=tlg0540.tlg001");
 });

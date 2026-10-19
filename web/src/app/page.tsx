@@ -4,6 +4,8 @@ import Win from "@/components/a/Win";
 import FlyLetters from "@/components/a/FlyLetters";
 import SettleText from "@/components/a/SettleText";
 import PathTabs from "@/components/a/PathTabs";
+import HomeDesk from "@/components/a/HomeDesk";
+import GuideInvite from "@/components/guide/GuideInvite";
 import HomePassage from "@/components/a/HomePassage";
 import Glide from "@/components/a/Glide";
 import { A_ART, passagePicture } from "@/components/a/pictures";
@@ -47,7 +49,7 @@ export default function Home() {
           <div className={`${s.wrap} ${s["h-hero"]}`}>
             <div className={s.blk}>
               <span className={s.mono} style={{ color: "var(--a-accent)" }}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</span>
-              <h1 className={s["c-title"]} aria-label="Read the Greeks in their own words">
+              <h1 id="hero-title" className={s["c-title"]} aria-label="Read the Greeks in their own words">
                 <span className={s.ln} aria-hidden="true"><span>Read the</span></span>
                 <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: ".1s" }}>Greeks in</span></span>
                 <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: ".2s" }}><em>their own</em> words</span></span>
@@ -57,7 +59,9 @@ export default function Home() {
                 <Link className={`${s.btn} ${s.solid}`} href="/academy/alphabet" transitionTypes={["page-turn"]}>Start with the letters</Link>
                 <Link className={`${s.btn} ${s.ghost}`} href="/library" transitionTypes={["page-turn"]}>Open the library</Link>
               </div>
-              <PathTabs />
+              {/* a first visit: where are you starting?; a returning visitor: their desk (lib/visitor.ts) */}
+              <div className={s["first-only"]}><PathTabs /></div>
+              <div className={s["back-only"]}><HomeDesk /></div>
             </div>
             <Win className={`${s.win} ${s.tall}`} kind="coin" src={A_ART.coin.src} label={A_ART.coin.label} caption={A_ART.coin.cap} capClass={s.wcap} />
           </div>
@@ -101,6 +105,7 @@ export default function Home() {
           </div>
         </div>
       </div>
+      <GuideInvite />
     </Page>
   );
 }

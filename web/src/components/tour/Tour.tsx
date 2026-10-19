@@ -114,6 +114,13 @@ export default function Tour() {
       // a short way glides; a long way (far down a long list) jumps, rather than scrolling for seconds
       const far = Math.abs(target.getBoundingClientRect().top - innerHeight / 2) > innerHeight * 2;
       target.scrollIntoView({ block: "center", inline: "nearest", behavior: reduced() || far ? "auto" : "smooth" });
+      // the page may still be settling as the step begins (the reader opening at its cover scrolls to the top): if that
+      // undid the glide, go to the control again
+      setTimeout(() => {
+        if (!live || !target.isConnected) return;
+        const r = target.getBoundingClientRect();
+        if (r.top < 0 || r.bottom > innerHeight) target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
+      }, 900);
     })();
     return () => { live = false; };
   }, [tour, step, done]);

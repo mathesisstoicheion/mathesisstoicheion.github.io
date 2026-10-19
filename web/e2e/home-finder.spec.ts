@@ -1,27 +1,6 @@
 import { test, expect } from "@playwright/test";
 
-test("the home page suggests eight starting points, and searches all works by several words", async ({ page }) => {
-  await page.goto("/");
-  const finder = page.locator("section[aria-labelledby=find-title]");
-  await expect(finder.getByRole("heading", { level: 3, name: "Suggested starting points" })).toBeVisible();
-  await expect(finder.locator("ul li")).toHaveCount(8);
-  // the switch for translated or Greek-only texts waits until there is a search
-  await expect(finder.getByRole("radio", { name: "Greek only" })).toHaveCount(0);
-  const box = finder.getByRole("searchbox", { name: "Search the library" });
-  await box.fill("homer odyssey");
-  await expect(finder.getByRole("heading", { level: 3, name: /works? for/ })).toBeVisible();
-  await expect(finder.locator("ul li a").first()).toContainText("Odyssey");
-  // a name lists that author's works, the well-known ones first
-  await box.fill("plato");
-  await expect(finder.locator("ul li a").first()).toContainText("Plato");
-  // Greek only shows works with no English beside them
-  await finder.getByRole("radio", { name: "Greek only" }).click();
-  await expect(finder.getByText("Greek only").first()).toBeVisible();
-  await expect(finder.getByText("English", { exact: true })).toHaveCount(0);
-  // the way on to the Library keeps the search
-  await expect(finder.getByRole("link", { name: /in the Library|Browse the whole Library/ })).toHaveAttribute("href", /\/library\?q=plato/);
-});
-
+// The home page (design A, 2026-10-19) has no search of its own: the library's, at the top of its page, finds the works.
 test("the Library opens with the search it was handed", async ({ page }) => {
   await page.goto("/library?q=odyssey");
   await expect(page.getByRole("searchbox", { name: "Search the library" })).toHaveValue("odyssey");

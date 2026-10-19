@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { openChange } from "./reader-menus";
+import { openAids, openChange } from "./reader-menus";
 
 // Comparing two editions in the reader: Aeschylus' Agamemnon, Smyth (1926) against Sidgwick (1902).
 // Needs a connection (the texts come from GitHub).
@@ -52,15 +52,12 @@ test("choose an edition to compare with, and the readings that differ are marked
   await expect(page).not.toHaveURL(/cmp=/);
 });
 
-test("on a phone, the differences are reached from the reading aids", async ({ page }) => {
+test("on a phone, the differences are reached from the reader's bar", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${AGAM}&cmp=1st1K-grc1&at=80`);
   await expect(page.getByRole("region", { name: "Comparing two editions" })).toContainText("in the whole text", { timeout: 60_000 });
-  // the reading bar tucks away while reading on: a little scroll back brings it again
-  const aids = page.getByRole("toolbar", { name: "Reading" }).getByRole("button", { name: "Aids" });
-  await expect(async () => { await page.mouse.wheel(0, -120); await expect(aids).toBeInViewport({ timeout: 1000 }); }).toPass();
-  await aids.click();
-  await page.getByRole("dialog", { name: "Reading aids" }).getByRole("button", { name: "Next difference →" }).click();
+  // on a phone they wait under Tools, with this passage's other aids (design A's bar has no room for them)
+  await (await openAids(page)).getByRole("button", { name: "Next difference →" }).click();
   await expect.poll(() => page.locator('[data-key="87"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(400);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });

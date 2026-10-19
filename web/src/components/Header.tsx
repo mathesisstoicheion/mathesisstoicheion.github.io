@@ -11,6 +11,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, TABS, doorWord, type AreaId } from "@/config/areas";
 import { useUI } from "@/lib/ui";
+import { status, useConnection } from "@/lib/connection";
 import { barsHeld } from "@/lib/header";
 import Mark from "@/components/a/Mark";
 import ConnectionLight from "./ConnectionLight";
@@ -99,6 +100,7 @@ export default function Header() {
       <Link key={id} className={styles.navI} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
         <span className={styles.mono}>{doorWord(id)}</span>
         {a.greek && <span lang="grc">{a.greek}</span>}
+        <span className="visually-hidden">: {a.name}</span>
       </Link>
     );
   };
@@ -118,6 +120,8 @@ export default function Header() {
           </button>
         </div>
       </div>
+      {/* narrower screens keep the connection light in the menu: while offline, a line under the header says so */}
+      <OfflineSign />
       <div className={styles.utils}>
         <ConnectionLight />
         <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
@@ -156,4 +160,10 @@ export default function Header() {
       )}
     </header>
   );
+}
+
+/** While offline, on screens where the connection light waits in the menu, a line under the header says what still works. */
+function OfflineSign() {
+  const offline = status(useConnection()) === "offline";
+  return offline ? <p className={styles.offline} role="status">Offline · your downloaded texts, library and study still work</p> : null;
 }

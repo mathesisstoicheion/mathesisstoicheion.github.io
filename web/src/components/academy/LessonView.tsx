@@ -166,7 +166,7 @@ export function SectionView({ s, onWord }: { s: Section; onWord: (w: string, ctx
     case "grid": return (
       <div className={styles.gridBox}>
         <span className="label">{s.title}</span>
-        <div className={styles.gridScroll}>
+        <div className={styles.gridScroll} tabIndex={0} role="region" aria-label={s.title}>
           <table className={styles.gridTable}>
             <thead><tr>{s.head.map((h, i) => <th key={i} scope="col">{h}</th>)}</tr></thead>
             <tbody>

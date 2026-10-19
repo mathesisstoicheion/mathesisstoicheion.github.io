@@ -79,6 +79,7 @@ test("the library's rail of letters stands beside its list and follows the order
   await rail.getByRole("button", { name: "Authors beginning with S" }).click();
   await expect(page.locator("#lib-S")).toBeInViewport();
   await expect(rail).toBeInViewport();                                                 // and still beside it
+  await page.getByRole("button", { name: /^Order and filters/ }).click();   // the order waits behind one button over the list
   await page.getByRole("radio", { name: "Title A–Z" }).click();
   await expect(page.getByRole("navigation", { name: "Titles by first letter" })).toBeVisible();
   await page.getByRole("radio", { name: "By period" }).click();

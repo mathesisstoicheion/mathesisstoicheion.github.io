@@ -114,7 +114,9 @@ test("today's session: full screen, pages turned by Next or a swipe, and a last 
 test("the vibration switch in Settings stops the buzzes", async ({ page }) => {
   await recordBuzz(page);
   await page.goto("/academy/review");
-  await page.getByRole("button", { name: "Settings" }).click();
+  // on a phone, Settings are in the header's menu
+  await page.locator("header").getByRole("button", { name: "Menu" }).click();
+  await page.getByRole("navigation", { name: "Menu" }).getByRole("button", { name: "Settings" }).click();
   const sheet = page.getByRole("dialog", { name: "Settings" });
   await sheet.getByRole("radiogroup", { name: "Short vibrations" }).getByRole("radio", { name: "Off" }).click();
   await sheet.getByRole("button", { name: "Close settings" }).click();

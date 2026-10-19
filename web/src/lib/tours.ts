@@ -58,10 +58,10 @@ export const TOURS: Record<string, Tour> = {
     start: "/library",
     steps: [
       { at: [t("#library-search")], title: "The Mouseion: search the library", text: "Type an author or a title. Titles can be typed in Greek too, and accents and capitals don't matter: «iliad», «ιλιας» or Ἰλιάς all find the Iliad." },
-      // on a phone, open "Order and filters" so the next steps can point inside it
-      { click: [t('button[aria-controls="library-filters"][aria-expanded="false"]')], at: [t('[role=radiogroup][aria-label="Translation"]')], title: "With or without English", text: "Show every work, only the ones with an English translation beside the Greek, or only Greek." },
+      { at: [t('[role=group][aria-label="Show"]')], title: "With or without English", text: "Show every work, only the ones with an English translation beside the Greek, or only Greek." },
       { at: [t("details summary", "Not sure where to begin")], title: "Not sure where to begin?", text: "Our suggestions, from the easiest Greek to the hardest. Beside each work, a small meter shows how hard its words are: one bar for easy words, three for many rare ones." },
-      { at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
+      // open "Order and filters" so the step can point inside it
+      { click: [t('button[aria-controls="library-filters"][aria-expanded="false"]')], at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
       { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Click an author to see their works, those with English first. Click a title and it opens in the Scroll, the reader, with the Greek and the English side by side.", phoneText: "Tap an author to see their works, those with English first. Tap a title and it opens in the Scroll, the reader, with the Greek and the English side by side." },
     ],
   },
@@ -73,8 +73,8 @@ export const TOURS: Record<string, Tour> = {
     steps: [
       { at: [t('section[data-key="1.1"]')], title: "The Scroll: Greek beside English", text: "Each row is one passage: the Greek on the left, the translation of the same lines on the right. The number at the start is its reference, here Iliad book 1, line 1.", phoneText: "Each row is one passage: the Greek, then the translation of the same lines. The number at the start is its reference, here Iliad book 1, line 1." },
       { at: [t('[role=radiogroup][aria-label="Columns"]')], title: "One column or two", text: "Read the Greek and the English together, or only one of them. The choice is kept for this book." },
-      { at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them here; the site remembers your choice." },
-      { at: [t("#reader-goto"), t("button[aria-controls]", "Tools")], title: "Go to a passage", text: "Tools holds the page you are on and a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go." },
+      { click: [t('button[aria-controls$="-change"][aria-expanded="false"]')], at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them here; the site remembers your choice." },
+      { esc: true, at: [t("#reader-goto"), t("button[aria-controls]", "Tools")], title: "Go to a passage", text: "Tools holds the page you are on and a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go." },
       { at: [t('button[aria-label="Next page"]'), t("button", "Continue to")], title: "Turn the page", text: "Long works come a book or a chapter at a time. The arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next." },
     ],
   },
@@ -104,15 +104,15 @@ export const TOURS: Record<string, Tour> = {
     title: "Reading aids",
     start: "/read?w=tlg0012.tlg001&at=1.1",
     steps: [
-      { at: [t('[role=group][aria-label="Reading aids"]'), t('button[aria-controls="read-aids"]')], title: "Reading aids", text: "Help for when the Greek is hard, in three groups: the Greek itself, this passage, and this work. Each one switches on and off.", phoneText: "Help for when the Greek is hard, under Aids, in three groups: the Greek itself, this passage, and this work. Each one switches on and off." },
-      // on a phone, open the Aids sheet so the next steps can point inside it
-      { click: [t('button[aria-controls="read-aids"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
+      { at: [t('[role=group][aria-label="Reading aids"]'), t('button[aria-controls$="-aids"]')], title: "Reading aids", text: "Help for when the Greek is hard, under Tools, in three groups: the Greek itself, this passage, and this work. Each one switches on and off." },
+      // open Tools so the next steps can point inside it (it stays open while the tour steps through)
+      { click: [t('button[aria-controls$="-aids"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
       { at: [t("button[aria-pressed]", "Colour by case")], title: "Colour by case", text: "A Greek word's ending shows its job in the sentence (its case): who acts, who or what is acted on, whose it is. This colours each word by its case, so you can see who does what to whom." },
       { at: [t("button[aria-pressed]", "Words I know")], title: "Words I know", text: "Marks the words you have learned in the daily practice, so you can see how much of the page you can already read. The more you practise, the more of it lights up." },
       { at: [t("button[aria-pressed]", "Try it first")], title: "Try it first", text: "Hides each translation until you ask for it, so you read the Greek yourself first. A good way to learn." },
       { at: [t("button[aria-pressed]", "Vocabulary")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
-      { at: [t('button[title^="Find a word or phrase"]'), t("#read-aids button", "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
-      { at: [t('button[title^="Hear the English translation"]'), t("#read-aids button", "Listen")], title: "Listen", text: "Hear the English read aloud, passage by passage, with each passage marked as it is read." },
+      { at: [t('button[title^="Find a word or phrase"]'), t('[id$="-aids"] button', "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
+      { at: [t('button[title^="Hear the English translation"]'), t('[id$="-aids"] button', "Listen")], title: "Listen", text: "Hear the English read aloud, passage by passage, with each passage marked as it is read." },
       { at: [t("button[aria-pressed]", "Places")], with: [t("button[aria-pressed]", "Manuscript")], title: "Places and manuscripts", text: "Places puts the places on the page on a map. Manuscript shows the passage as it would have been written by hand, in capitals without spaces, and for some works on a real medieval manuscript page." },
     ],
   },
@@ -129,7 +129,7 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header a[href="/treasury"]')], title: "Mine: the Treasury", text: "Everything you keep goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "Mine: the Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 

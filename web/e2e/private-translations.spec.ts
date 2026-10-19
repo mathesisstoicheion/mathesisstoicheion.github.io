@@ -73,7 +73,7 @@ async function pretend(page: Page, o: { role?: "member" | "moderator" | null; th
 
   await page.addInitScript(([k, s, theme, pub]) => {
     if (s && !localStorage.getItem(k)) localStorage.setItem(k, s);
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce" }, version: 0 }));
+    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce", lamp: false }, version: 0 }));
     if (pub && !localStorage.getItem("mathesis:translations-published")) localStorage.setItem("mathesis:translations-published", "1");
   }, [KEY, role ? JSON.stringify(session) : "", o.theme ?? "light", o.pub ? "1" : ""] as const);
 
@@ -143,7 +143,7 @@ test("Mine shows the moderator the way in, with how many there are; the shelf li
   await expect(way).toContainText("2 translations");
   await way.click();
   await expect(page).toHaveURL(/\/treasury\/translations$/);
-  await expect(page.getByRole("navigation", { name: "Areas of the site" }).getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
+  await expect(page.locator("header").getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { level: 1, name: "Private translations" })).toBeVisible();
   await expect(page.getByText("Private · only you can see this")).toBeVisible();
   await expect(page.getByText("2 translations")).toBeVisible();
@@ -383,7 +383,7 @@ test("a private translation opens in the reader, with the reading aids and its t
   await expect(text.getByText("1a10")).toBeVisible();
   await expect(text.getByText("Placeholder sentence one.")).toBeVisible();
   await expect(text.getByText("Placeholder heading one")).toBeVisible();
-  await expect(page.getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
+  await expect((await openAids(page)).getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
   // the two Englishes, as the translation menu's choices
   await openChange(page);
   const tr = page.getByRole("combobox", { name: "Translation" });
@@ -431,7 +431,8 @@ test("the private collection button lists the shelf, and a book chosen there ope
   await dialog.getByRole("button", { name: /Placeholder Work One/ }).click();
   await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-one$/);
   await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
-  // from inside a book, too, with the book being read marked
+  // from inside a book, too (under Change, beside the edition's name), with the book being read marked
+  await openChange(page);
   await page.getByRole("button", { name: "Private collection" }).first().click();
   await expect(dialog.getByRole("button", { name: /Placeholder Work One/ })).toContainText("Reading now");
   await dialog.getByRole("button", { name: /Placeholder Work Three/ }).click();
@@ -499,6 +500,7 @@ for (const theme of ["light", "dark"] as const) {
     await page.goto("/read?w=mine:placeholder-one");
     await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
     await check();
+    await openChange(page);
     await page.getByRole("button", { name: "Private collection" }).first().click();
     await expect(page.getByRole("dialog", { name: "Private collection" }).getByRole("button", { name: /Placeholder Work Three/ })).toBeVisible();
     await check();

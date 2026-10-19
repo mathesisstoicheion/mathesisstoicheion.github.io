@@ -62,16 +62,16 @@ test("a first visit is invited to the Guide once; either answer is remembered", 
   await expect(invite).toBeHidden();
 });
 
-test("on a phone, the reading-aids tour opens the Aids sheet and keeps it open as it steps through", async ({ browser }) => {
+test("on a phone, the reading-aids tour opens Tools and keeps it open as it steps through", async ({ browser }) => {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   await page.goto("/read?w=tlg0012.tlg001&at=1.1&tour=aids");
   await expect(card(page)).toContainText("Step 1 of", { timeout: 30_000 });
   await card(page).getByRole("button", { name: "Next" }).click();
   await expect(card(page)).toContainText("Transliteration");
-  await expect(page.locator("#read-aids")).toBeVisible();
+  await expect(page.locator('[id$="-aids"]').first()).toBeVisible();
   await card(page).getByRole("button", { name: "Next" }).click();
   await expect(card(page)).toContainText("Colour by case");
-  await expect(page.locator("#read-aids")).toBeVisible();
+  await expect(page.locator('[id$="-aids"]').first()).toBeVisible();
   await ctx.close();
 });

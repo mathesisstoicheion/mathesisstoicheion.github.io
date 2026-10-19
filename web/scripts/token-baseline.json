@@ -1,26 +1,30 @@
 {
   "src/app/academy/alphabet/page.tsx": {
-    "font-size": 1,
     "spacing": 3
   },
   "src/app/academy/checkpoint/[id]/page.tsx": {
-    "font-size": 3,
-    "spacing": 5
+    "spacing": 4
   },
   "src/app/academy/guide/[id]/page.tsx": {
-    "font-size": 2,
-    "spacing": 5
+    "spacing": 4
   },
   "src/app/academy/lesson/[id]/page.tsx": {
-    "font-size": 2,
-    "spacing": 5
+    "spacing": 4
   },
   "src/app/academy/page.tsx": {
-    "spacing": 8
+    "spacing": 11
   },
   "src/app/academy/practice/page.tsx": {
-    "font-size": 1,
     "spacing": 2
+  },
+  "src/app/academy/reading/[id]/page.tsx": {
+    "spacing": 4
+  },
+  "src/app/academy/reading/letters/page.tsx": {
+    "spacing": 4
+  },
+  "src/app/academy/reading/page.tsx": {
+    "spacing": 4
   },
   "src/app/academy/review/page.tsx": {
     "spacing": 2
@@ -29,14 +33,12 @@
     "spacing": 3
   },
   "src/app/academy/tables/page.tsx": {
-    "font-size": 1,
     "spacing": 3
   },
   "src/app/academy/today/page.tsx": {
     "spacing": 2
   },
   "src/app/academy/vocabulary/page.tsx": {
-    "font-size": 1,
     "spacing": 3
   },
   "src/app/error.tsx": {
@@ -45,36 +47,33 @@
     "spacing": 5
   },
   "src/app/globals.css": {
-    "colour": 20,
+    "colour": 17,
     "font-family": 3,
-    "font-size": 17,
-    "spacing": 38,
-    "shadow": 3,
-    "z-index": 6,
-    "motion": 9
-  },
-  "src/app/home.module.css": {
-    "colour": 9,
-    "font-size": 13,
-    "spacing": 43,
+    "font-size": 26,
+    "spacing": 40,
     "shadow": 4,
-    "z-index": 1,
-    "motion": 11
+    "z-index": 5,
+    "motion": 12
   },
-  "src/app/library/library.module.css": {
-    "spacing": 3
+  "src/app/library/page.tsx": {
+    "spacing": 1
   },
   "src/app/manifest.ts": {
     "colour": 2
   },
   "src/app/not-found.module.css": {
-    "font-size": 3,
-    "spacing": 9,
-    "motion": 1
+    "spacing": 2
+  },
+  "src/app/page.tsx": {
+    "spacing": 1,
+    "motion": 2
   },
   "src/app/prose.module.css": {
     "font-size": 6,
     "spacing": 11
+  },
+  "src/app/stoa/lyre/page.tsx": {
+    "spacing": 2
   },
   "src/app/stoa/periplus/page.tsx": {
     "font-size": 1,
@@ -100,35 +99,26 @@
     "motion": 3
   },
   "src/components/Header.module.css": {
-    "colour": 8,
-    "font-size": 7,
-    "spacing": 40,
-    "shadow": 1,
-    "z-index": 2,
+    "colour": 4,
+    "font-size": 9,
+    "spacing": 46,
+    "shadow": 2,
+    "z-index": 3,
     "motion": 11
-  },
-  "src/components/HomeFinder.module.css": {
-    "font-size": 6,
-    "spacing": 21,
-    "motion": 2
-  },
-  "src/components/LetterTiles.module.css": {
-    "font-size": 4,
-    "spacing": 4,
-    "motion": 2
   },
   "src/components/OfflineActions.module.css": {
     "font-size": 6,
     "spacing": 17,
     "motion": 2
   },
+  "src/components/OfflineSign.module.css": {
+    "font-size": 1,
+    "spacing": 3,
+    "z-index": 1
+  },
   "src/components/PanelGuard.tsx": {
     "font-size": 1,
     "spacing": 3
-  },
-  "src/components/PassageOfTheDay.module.css": {
-    "font-size": 4,
-    "spacing": 7
   },
   "src/components/SettingsPanel.module.css": {
     "colour": 3,
@@ -138,10 +128,16 @@
     "z-index": 1,
     "motion": 8
   },
-  "src/components/TabBar.module.css": {
-    "font-size": 3,
-    "spacing": 10,
-    "z-index": 1,
+  "src/components/a/Mark.module.css": {
+    "font-size": 4,
+    "spacing": 3
+  },
+  "src/components/a/a.module.css": {
+    "colour": 6,
+    "font-size": 29,
+    "spacing": 108,
+    "shadow": 1,
+    "z-index": 4,
     "motion": 6
   },
   "src/components/academy/Academy.module.css": {
@@ -152,6 +148,19 @@
     "z-index": 2,
     "motion": 49
   },
+  "src/components/academy/LettersStepView.tsx": {
+    "spacing": 2
+  },
+  "src/components/academy/PathStepView.tsx": {
+    "font-size": 2,
+    "spacing": 23
+  },
+  "src/components/academy/PracticeView.tsx": {
+    "spacing": 2
+  },
+  "src/components/academy/ReadingPath.tsx": {
+    "spacing": 10
+  },
   "src/components/academy/Timeline.tsx": {
     "motion": 5
   },
@@ -161,8 +170,7 @@
     "motion": 18
   },
   "src/components/academy/WorkoutPage.tsx": {
-    "font-size": 3,
-    "spacing": 4
+    "spacing": 3
   },
   "src/components/admin/PrivateTranslations.module.css": {
     "colour": 3,
@@ -176,11 +184,10 @@
   },
   "src/components/census/Census.module.css": {
     "font-size": 29,
-    "spacing": 84,
-    "radius": 16,
-    "shadow": 4,
+    "spacing": 80,
+    "shadow": 2,
     "z-index": 1,
-    "motion": 23
+    "motion": 21
   },
   "src/components/community/Community.module.css": {
     "font-size": 44,
@@ -197,12 +204,6 @@
   "src/components/guide/Pictures.tsx": {
     "motion": 3
   },
-  "src/components/home/Start.module.css": {
-    "colour": 1,
-    "font-size": 10,
-    "spacing": 23,
-    "motion": 9
-  },
   "src/components/library/AuthorArticle.module.css": {
     "font-size": 17,
     "spacing": 54,
@@ -214,21 +215,37 @@
     "motion": 1
   },
   "src/components/library/Library.module.css": {
-    "colour": 1,
-    "font-size": 33,
-    "spacing": 65,
-    "shadow": 3,
-    "motion": 13
+    "font-size": 29,
+    "spacing": 55,
+    "motion": 12
   },
-  "src/components/library/Stelai.module.css": {
-    "colour": 6,
-    "font-size": 2,
-    "spacing": 2,
-    "shadow": 3
+  "src/components/library/Library.tsx": {
+    "spacing": 1
   },
   "src/components/library/WorkLanding.tsx": {
-    "font-size": 1,
     "spacing": 1
+  },
+  "src/components/lyre/Lyre.module.css": {
+    "colour": 14,
+    "font-size": 2,
+    "spacing": 8,
+    "radius": 2,
+    "shadow": 4,
+    "motion": 12
+  },
+  "src/components/lyre/Lyre.tsx": {
+    "motion": 1
+  },
+  "src/components/lyre/Sheet.tsx": {
+    "colour": 1,
+    "motion": 1
+  },
+  "src/components/lyre/draw.ts": {
+    "colour": 15,
+    "font-size": 1
+  },
+  "src/components/lyre/instruments.ts": {
+    "colour": 27
   },
   "src/components/map/Periplus.module.css": {
     "font-size": 14,
@@ -276,14 +293,14 @@
     "spacing": 31,
     "shadow": 3,
     "z-index": 4,
-    "motion": 14
+    "motion": 12
   },
   "src/components/reader/Listen.module.css": {
     "font-size": 7,
     "spacing": 12,
     "shadow": 2,
     "z-index": 1,
-    "motion": 6
+    "motion": 5
   },
   "src/components/reader/Manuscript.module.css": {
     "colour": 13,
@@ -316,24 +333,13 @@
     "z-index": 4,
     "motion": 7
   },
-  "src/components/reader/ReadBar.module.css": {
-    "colour": 3,
-    "font-size": 9,
-    "spacing": 28,
-    "shadow": 2,
-    "z-index": 3,
-    "motion": 16
-  },
-  "src/components/reader/ReadBar.tsx": {
-    "font-size": 2
-  },
   "src/components/reader/Reader.module.css": {
-    "colour": 14,
-    "font-size": 77,
-    "spacing": 162,
-    "shadow": 6,
-    "z-index": 5,
-    "motion": 24
+    "colour": 16,
+    "font-size": 92,
+    "spacing": 204,
+    "shadow": 8,
+    "z-index": 8,
+    "motion": 28
   },
   "src/components/reader/Sentence.module.css": {
     "font-size": 10,
@@ -380,7 +386,7 @@
     "spacing": 111,
     "shadow": 1,
     "z-index": 2,
-    "motion": 14
+    "motion": 13
   },
   "src/components/stoa/Transmission.module.css": {
     "font-size": 6,
@@ -412,8 +418,8 @@
   },
   "src/components/treasury/Treasury.module.css": {
     "colour": 4,
-    "font-size": 36,
-    "spacing": 76,
+    "font-size": 37,
+    "spacing": 77,
     "z-index": 2,
     "motion": 24
   },
@@ -425,16 +431,6 @@
   },
   "src/lib/amphora.ts": {
     "colour": 29
-  },
-  "src/lib/art/carve.ts": {
-    "colour": 3
-  },
-  "src/lib/art/part.ts": {
-    "font-family": 1,
-    "font-size": 2
-  },
-  "src/lib/art/relief.ts": {
-    "colour": 7
   },
   "src/lib/notebook-export.ts": {
     "colour": 4,
@@ -448,9 +444,6 @@
   "src/lib/share-image.ts": {
     "colour": 12,
     "font-size": 9
-  },
-  "src/lib/stone.ts": {
-    "colour": 2
   },
   "src/lib/treasury-io.ts": {
     "colour": 12,

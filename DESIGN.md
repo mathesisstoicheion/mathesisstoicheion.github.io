@@ -1,18 +1,87 @@
 # Design
 
-The look of the redesigned site. The owner compared three complete designs on 2026-10-16 and chose **B, "Stone and torch"**
-(thread "Site redesign"; `docs/adr/0006-stone-and-torch.md`). The earlier direction, A ("Gold and lamplight"), is kept for
-reference at the end of this file and in `docs/adr/0001`–`0005`.
-The working samples: https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH (version 15 is the current one; it opens on B, with A
-and C a tab away). Their source files are in the project files, under `redesign/prototype/` (B in `abc/b-sources/`, the
-emblem in `emblem/`).
+The look of the site: **design A, "Gold and lamplight"**, rebuilt on 2026-10-19 straight from the sample the owner chose
+(`redesign/design-a/design-a.html` in the project files, round 11; shown in https://claude.ai/artifact/DKDa9aW9GVkicDQnh2GmnH).
+The owner, 2026-10-19: "Just take the template of the original gold and lamplight design and don't make any changes to
+speed or anything." A first Gold and lamplight release earlier that day broke on phones (see "Before anything goes live");
+Stone and torch (design B), live from 2026-10-16 until then, is kept for reference at the end of this file.
 
 ## Character
+- **In design A's own words:** "a dark room where a single lamp, or the glint of old gold, lets you see the Greeks".
+- **Is:** beautiful, mysterious, insightful. **Is not:** bright, busy, flashy, or like a template.
+- Pages are black, and pictures appear through framed openings: windows onto real objects, engraved in gold lines on
+  Pompeian red. The black frame (header and footer) is the same everywhere.
+
+## What is A's, and what is the site's own (the owner's answers, 2026-10-19)
+1. **A only.** The home page, the library and the reader are A's own screens with the site's real content
+   (components/a/, lib/a/lamplight.js, components/a/a.module.css). Every other page keeps its own layout, dressed in A's
+   colours, type, buttons and engraved windows (components/a/PageWin.tsx). The page flows of 2026-10-18 and the art
+   growing behind pages were dropped.
+2. **No Muses.** The home page is A's without the nine Muses and their lamps.
+3. **The coin's rays turn by themselves,** slowly, as in A.
+4. **No settling.** The wheel is slow and smooth on the home page and in the library, as in A, but the page stops exactly
+   where you stop ("no snapping", 2026-10-16).
+5. **No bottom bar on phones.** The header's search button and menu take you everywhere, as in A. The reader has A's own bar
+   at the top. On a phone that is offline, a small sign at the foot says what still works.
+6. **Weak devices start a level down** (lib/settings.ts, deviceLevel): very little memory starts on Performance, two
+   gigabytes or two processor cores on Balanced; everyone else on Full beauty. Anyone can change it in Settings.
+- The header scrolls away with the page, as in A. A light mode comes after the dark design is approved.
+
+## The three animation levels (the owner, 2026-10-19)
+"One with the full beauty and intricate design and animation. One with a few visual sacrifices for better performance,
+and a full performance mode, for older computers and older phones. Main focus is the beauty." The switch is in Settings and
+remembered.
+- **Full beauty:** design A exactly. Nothing in it is trimmed for speed.
+- **Balanced:** drawn at the screen's own sharpness rather than 1.5 times it, at half the frame rate while nothing moves, with
+  fewer floating letters and dust motes.
+- **Performance:** everything drawn once and holding still (A's own "reduce motion" path): a window, the floating letters and
+  the library's Socrates are drawn again only at a new size or a change of colours, the reader's cover only fades, headings
+  stand settled, and pages open without animation.
+
+## Type and colour
+- Display: Noto Serif Display (narrow, light). Reading text and Greek: Literata; Settings also offers Gentium Book Plus or
+  Noto Sans for the Greek and Alegreya Sans for the English. Labels: Noto Sans Mono in spaced capitals. The ΣΤΟΙΧΕΙΑ mark:
+  Noto Sans Display. All are served by the site itself (next/font).
+- Colours are design A's, named in `web/src/styles/tokens.css`: the black frame #070504 and page #050403; parchment text
+  #ecca97 (quieter #b89a74, #8f7556); lamplight amber #ffad45 (bright #ffd59a); the doorway's gold #e8bd70 (bright #f6dca6),
+  bone #f2e0c6 and Pompeian red #5c1910. The reader's Daylight page is the one light surface.
+- Thin 1px lines instead of shadows; square corners. Greek capitals in labels and inscriptions carry no accents.
+- Contrast (4.5:1 for text): the Daylight page's sienna is #8c460a, a shade deeper than A's #a8550f, which read 4.0:1 in
+  small labels. A's dimming of the lines away from the reader's lamp stays as A drew it, below the rule on purpose; Aa,
+  "Lamp on the passage: Off", gives every line full contrast (the accessibility tests read the page with it off).
+
+## Before anything goes live: the checks (since 2026-10-19)
+The first Gold and lamplight release gave every window its own full-screen copy of the engraving, with a turning flare
+twice the screen's size. On the library that was about 35 screen-sized layers, some 700 MB of graphics memory at a phone's
+3x sharpness (the Stoa about 990 MB), and phones stopped drawing parts of the page while scrolling: blank tan panels,
+half-drawn art, a black screen. The frame-rate tests had said 51 to 60 fps: they ran in a test browser that never runs out of
+memory, at 2x. So, for every change to the look, before the owner sees it:
+1. **Graphics memory per page,** on a phone at 3x (`node web/scripts/check-layers.mjs <url>`). Pages stay near design A's own
+   80 to 170 MB; none holds a full-screen layer per window. After the rebuild: 45 to 140 MB on every page measured.
+2. **Screenshots mid-scroll under a phone's memory limit** (`node web/scripts/check-midscroll.mjs <url> <out> 128`): every
+   part drawn, nothing blank.
+3. **Smoothness per animation level** (Full, Balanced, Performance), on a phone with the processor slowed, side by side
+   with design A where A drew the screen.
+4. **Built from A's own code, compared side by side with A's screenshots,** not re-imagined.
+5. No element holds a layer it does not need: an entrance animation whose last frame is the element's own look ends with
+   `backwards`, not `both`; no lasting `will-change`.
+
+## Avoid
+- Flashy motion: sparks, flashes, bounces and springy overshoot ("It's horrible", 2026-10-16).
+- Snapping or gliding the page into place after scrolling.
+- Effects that follow the pointer uninvited; show them on press and hold (the library's reading glass).
+- Anything invented for decoration: every picture is a real, licensed object with its credit shown.
+
+## Stone and torch (design B, live 2026-10-16 to 2026-10-19; replaced by A)
+Kept for reference. The owner compared three designs on 2026-10-16 and chose B (`docs/adr/0006-stone-and-torch.md`); on
+2026-10-19 the site moved to A. Its sources are in the project files under `redesign/prototype/abc/b-sources/`.
+
+### Character
 - **Is:** beautiful, mysterious, insightful.
 - **Is not:** bright, busy, flashy, or like a template (no default blue, no cards everywhere, no stock icons as decoration).
 - **In one sentence:** a wall of warm, dark stone in a sanctuary at night, read by the light of a torch you carry.
 
-## Principles
+### Principles
 1. **Darkness is the frame.** The site is dark only. The one light surface is the reader's "Daylight" page, a reading aid against eye strain.
 2. **Every page has something to touch, except the reader.** The home page, the library and every other page carry art that the torch lights. The reader is for reading: once you scroll into the text nothing moves.
 3. **Greek is carved as Plato's Athens wrote it.** Capitals set in a strict grid (the stoichedon style), with no accents or spaces, for carved Greek. Reading Greek is set in full polytonic type.
@@ -21,7 +90,7 @@ emblem in `emblem/`).
 6. **All movement is calm.** Things ease and settle. Nothing bounces, sparks or flashes. The owner: "Remember when I say movement it has to be calm" (2026-10-16). A quick, springy, flashy trial the same day was rejected: "Get rid of the flashy animations. It's horrible. I liked the way it was before."
 7. **On a phone, scrolling is the torch.** Nothing needs touching: the light stands in the middle of the screen, so carvings and reliefs light up as they reach the middle and dim as they scroll away (the owner, 2026-10-16: lighting by touch "is a bit distracting"; earlier that day each finger carried its own light). Things a finger works directly, such as the vase, still answer every finger at once.
 
-## Type
+### Type
 | Role | Family | Notes |
 |---|---|---|
 | Headings and Greek | GFS Didot | Polytonic Greek. |
@@ -33,7 +102,7 @@ emblem in `emblem/`).
 - Greek text is stored precomposed (Unicode NFC). Greek apostrophes are ’ (U+2019).
 - Greek capitals in labels are written without accents (ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ); where a label must keep its accents it is set in lower case.
 
-## Colour
+### Colour
 | Role | Value |
 |---|---|
 | Stone, darkest to lightest | #0b0907, #14100d, #1b1612, #251f19, #332a21 |
@@ -45,14 +114,14 @@ emblem in `emblem/`).
 
 Light text is never pure white.
 
-## Texture and light
+### Texture and light
 - The stone has a still (never moving) mottled, pitted texture. There is no film grain.
 - The pointer is a torch. It eases along behind the hand, and drifts by itself when the hand leaves the page. On a phone the torch stands in the middle of the screen (a little higher at the top of a page and lower at its foot, so the first and last things are lit too) and fingers carry no light. Nothing blocks scrolling.
 - Carved letters are V-shaped grooves lit from the side the flame is on (each letter is prepared lit from 16 directions; the page blends the two nearest).
 - Real sculpture is lit in its own colour, its carving read from a height map, and the torch casts its real shadows (see "A sculpture on every page"). The books' medallions are re-lit greyscale copies, bright parts treated as raised.
 - With "reduce motion" switched on, everything is drawn once and holds still.
 
-## Motion
+### Motion
 - **Scrolling (Home and Library):**
   - The wheel is a little slowed (0.8 of the browser's distance per notch) and smooth: the page eases towards where the wheel sends it and keeps up with the hand (about 0.11 s). The owner wanted the slow scroll kept, "just not THAT slow" (2026-10-16).
   - **No snapping.** The page stops exactly where the wheel or the finger leaves it; nothing pulls it to a section. The owner: "no snapping. it's annoying" (2026-10-16). Until then the page glided to a nearby section after it stopped.
@@ -61,12 +130,12 @@ Light text is never pure white.
 - **The reader** opens on a torch-lit cover (ΑΠΟΛΟΓΙΑ·ΣΩΚΡΑΤΟΥΣ carved in stone, with the Socrates portrait as a medallion). The cover fades as you scroll into the text; after that nothing moves, and scrolling is completely normal.
 - Nothing loops fast, flashes or throws sparks.
 
-## Space and shape
+### Space and shape
 - Spacing steps of 4, 8, 12, 16, 24, 36, 56 and 80 px. Sections breathe; lists are compact.
 - Thin rules and cut lines instead of drop shadows. No rounded cards.
 - One column on phones, with a 16px gutter. Pictures sit above the text on phones.
 
-## Everything on a page is stone
+### Everything on a page is stone
 The owner (2026-10-16): "All pages and content must match the theme", "Except for photos and text and buttons"; then
 (2026-10-17): "Make every page and page element match the theme", choosing stone buttons too. So every panel, card, table,
 list, chart, map, form field, button, chip, tick box, frame, empty-state box and the footer is cut from the wall; only photos
@@ -109,7 +178,7 @@ The pieces (all in `web/src/styles/tokens.css`; a module uses only these names):
   maxims written in the fore-temple at Delphi (Pausanias 10.24.1, tr. Jones and Ormerod), with its source under it.
 - On the Daylight page the same names give limestone and burnt sienna.
 
-## A sculpture on every page
+### A sculpture on every page
 The owner (2026-10-16): a dedicated lit sculpture on every page, lit by the mouse on a computer and by the light in the middle of
 the screen on a phone. Every page but Home (which has its three reliefs) and the reader has one.
 - **The pieces** are photographs from the Metropolitan Museum's Open Access collection (CC0), one chosen for each page
@@ -127,7 +196,7 @@ the screen on a phone. Every page but Home (which has its three reliefs) and the
 - **The lamp**: clicking a piece (tapping it, on a phone) sets a steady lamp before it, high on one side, so it can be seen
   clearly; clicking again gives it back to the torch (the owner, 2026-10-16). The home page's reliefs do the same.
 
-## Never laggy
+### Never laggy
 The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature has its frame rate measured before it is shown.
 - A piece is drawn only while it is on screen and only when a light moves; a torch too far off to reach it draws nothing.
 - Its shadows are traced in steps of about 2.5 px (at most 32; 16 on a phone), so a short shadow costs little.
@@ -148,7 +217,7 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
 - The torch's pool of light changes in steps too small to see (its brightness in hundredths, its place on a two-pixel grid),
   so its flicker and drift no longer redraw the whole screen on every frame.
 
-## A to Z
+### A to Z
 - **Author pages** with six or more works have an "A to Z" button. It opens the works in alphabetical order, under a row of
   letters to jump by. The list is cut open like a carving: a fine line is cut across the top with a glint at the chisel's point,
   the panel sinks beneath it, then the letters and the groups are cut in from left to right; closing runs it back, faster. On a
@@ -165,7 +234,7 @@ The owner (2026-10-16): "The site is not allowed to be laggy." Every new feature
   37 to 25 fps on a slowed phone).
 - **The settings panel**: every control is cut in the same stone (slabs, with the chosen one lit and gilded at its foot).
 
-## The screens
+### The screens
 **Home.** (Shortened on 2026-10-17: see "Calmer pages" below for the new, shorter order. The older order was:)
 1. The hero: a wall of the opening of Plato's *Apology*, carved in the stoichedon grid (Burnet's text with accents and breathings removed, iota subscript carved as a full Ι), cut in diagonally when the page opens and read by carrying the torch over it.
 2. "The name" (see Signature details).
@@ -181,7 +250,7 @@ The vase to paint yourself, which stood on the old home page, moved to the Keram
 
 **Reader.** Greek and English side by side on a computer, one above the other on a phone. Controls: Both / Greek / English; Aa (Night or Daylight, the Greek typeface, the text size); Tools. Dotted words open a word panel.
 
-## Calmer pages, and pages that open calmly (2026-10-17)
+### Calmer pages, and pages that open calmly (2026-10-17)
 The owner (2026-10-17): bigger windows with a statue on each page, a less cluttered home page, a clearer flow on every page, and
 a page that opens beautifully with nothing white while it loads. Not live until the owner says "Publish".
 - **Home, in a shorter order:** the hero; the name (sources folded); the passage of the day; the letters; the Muses; "Find
@@ -206,7 +275,7 @@ a page that opens beautifully with nothing white while it loads. Not live until 
   At full sharpness, scrolling past one fell from 49 to 25 fps in the slowed-phone test (now about 33). The owner is being asked
   whether to keep this balance of sharpness and smoothness.
 
-## Signature details
+### Signature details
 1. **The name, and its emblem.** Μάθησις στοιχείων, *Learning the elements*. The owner asked what object goes with the name, liked all three suggestions and asked for them together (2026-10-16). The emblem is one still life:
    - a **wax tablet**, on which Greek children learned their letters, for στοιχεῖον as a letter: "a simple sound of speech, as the first component of the syllable" (LSJ, citing Plato, Cratylus 424d);
    - the **stylus** standing upright in the wax like a sundial's pointer, for στοιχεῖον as "the shadow of the gnomon, the length of which in feet indicated the time of day" (LSJ); Aristophanes, Assemblywomen 652: ὅταν ᾖ δεκάπουν τὸ στοιχεῖον, "when the shadow is ten feet long";
@@ -217,7 +286,7 @@ a page that opens beautifully with nothing white while it loads. Not live until 
 4. **The Muses' niches.** Hesiod: "Μουσάων Ἑλικωνιάδων ἀρχώμεθ’ ἀείδειν", "From the Heliconian Muses let us begin to sing" (Theogony 1, tr. Evelyn-White), above the nine Muses he names (Theogony 76–79), each in her own lit niche. The arts given to each Muse are later tradition, and the page says so.
 5. **Every book has its medallion.** The author's face or the thing the text is best known for, a licensed image re-lit in a round medallion on its stele, credited beside it.
 
-## Avoid
+### Avoid
 - Light mode anywhere but the reader's Daylight page.
 - Moving or interactive art inside the reader's text.
 - Stock photos, invented quotations, uncredited images, or images without a clear licence.
@@ -229,12 +298,3 @@ a page that opens beautifully with nothing white while it loads. Not live until 
 - Snapping or gliding the page into place after scrolling ("no snapping. it's annoying", 2026-10-16).
 - Effects that follow the pointer uninvited, such as a magnifying glass on hover. Show them on press and hold.
 - Reading colours from styles inside an animation frame. Draw only what is on screen, and only when a light moves.
-
-## Earlier direction A, "Gold and lamplight" (not chosen; kept for reference)
-Pompeian red and gold on the home page, amber lamplight elsewhere. Each home window opened as a round iris onto its own
-real object engraved in gold lines (an Athenian coin, the Parthenon frieze, Socrates, a cup by Douris, an amphora by the
-Berlin Painter, the Antikythera mechanism, an ostrakon of Themistocles, the Mask of Agamemnon, Crates and Hipparchia).
-The library's Socrates was spelled out of the whole Apology, gathered as you scrolled, then fell apart into a papyrus roll
-of capitals; a reading glass appeared on press and hold. Nine Muses' oil lamps could be fanned. Its decisions are in
-`docs/adr/0001`–`0005`, and its sources in `redesign/prototype/round3/` to `round9/`. A third design, C ("Clay and glaze",
-black glaze and terracotta, a turning prize amphora), is in `redesign/prototype/abc/`.
