@@ -94,7 +94,7 @@ function inspect() {
   for (const run of runs) {
     const h = host(run.el); if (!h || h.cs.overflowX !== "visible" || inScroller(run.el, h.e, true)) continue;
     const b = h.e.getBoundingClientRect(), r = run.r, tol = 2;
-    if (b.width < 20) continue;
+    if (b.width < 8) continue;
     const over = Math.max(b.left - r.left, r.right - b.right);
     if (over > tol && !(r.left >= b.right || r.right <= b.left)) found.push({ kind: "spill", what: `text "${run.t}" runs ${Math.round(over)}px out of ${path(h.e)}`, at: [Math.round(r.left), Math.round(r.top + scrollY)] });
   }
@@ -106,7 +106,7 @@ function inspect() {
     if (pinned(el) || !vis(el)) continue;
     const r = el.getBoundingClientRect(); if (r.width < 12 || r.height < 12 || !onScreen(r) || clippedAway(el, r)) continue;
     const h = host(el); if (!h || h.cs.overflowX !== "visible" || inScroller(el, h.e)) continue;
-    const b = h.e.getBoundingClientRect(); if (b.width < 20) continue;
+    const b = h.e.getBoundingClientRect(); if (b.width < 8) continue;
     const over = Math.max(b.left - r.left, r.right - b.right);
     if (over > 2) found.push({ kind: "spill", what: `${path(el)} runs ${Math.round(over)}px out of ${path(h.e)}`, at: [Math.round(r.left), Math.round(r.top + scrollY)] });
   }
