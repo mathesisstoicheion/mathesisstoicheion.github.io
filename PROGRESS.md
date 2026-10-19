@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Overlaps fixed; things play once on view and stay (2026-10-19, on the branch, waiting for "Publish")
+## Overlaps fixed; things play once on view and stay (2026-10-19, LIVE 17:32 UTC after the owner's "Publish"; they also said "I like the Museion", so the library stays as it is)
 The owner, 13:35 UTC, with two phone screenshots: "fix these kinds of overlaps. And when scrolling, the animations should play
 automatically when they come into view. And should stay expanded, even if you scroll back up." The engraved windows, the settling
 titles and the library's Socrates (and his roll) now play by themselves, once, when they come into view, and never go back
