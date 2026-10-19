@@ -17,8 +17,13 @@ in the project files at `redesign/GOLD-AND-LAMPLIGHT-PLAN.md`; before and after:
   the reader opens on a still lamplit cover (`ReaderCover.tsx`). A "where next" line ends the main pages (`WhereNext.tsx`).
 - **Speed** (phone 390x844 at 2x, processor slowed 4x, headless): home 10.6 to 59.6 fps, library 12.4 to 51, Stoa 19.1 to 59,
   Homer 31.2 to 56.1.
-- **Still to do**: the library's Socrates spelled from the Apology (only if smooth), the stelai in gold lines, the Town Hall's
-  rooms, and the old stone components (`Carving`, `ReliefWindow`, `Torch`) once nothing uses them.
+- **Second round (2026-10-19, owner: "Do it")**: the library's Socrates spelled from the Apology, gathering as his window comes
+  into view and falling into a papyrus roll (`library/SocratesRoll.tsx`; face and roll drawn once, moved by the compositor, only
+  the letters in flight redrawn: 55.8 fps with him, 59.9 without); the famous-book stelai in gold lines
+  (`pipeline/engrave_medallions.py`, `images/medallions/engraved/`); the Town Hall's rooms as gilded windows (Town Hall 25.8 to
+  59.3 fps).
+- **Still to do**: remove the old stone components (`Carving`, `ReliefWindow`, `Torch`) once nothing uses them (error page,
+  lyre, home emblem still do).
 
 ## Learn by reading (2026-10-18; branch `claude/project-thread-dqvb37`, not live)
 The owner's one big project after the grilling of 2026-10-18: a guided path that teaches Greek by reading real lines. Ten steps
