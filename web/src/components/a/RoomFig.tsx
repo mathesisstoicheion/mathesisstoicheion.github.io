@@ -21,7 +21,7 @@ export default function RoomFig({ fig }: { fig: FigureId }) {
     const io = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
       io.disconnect();
-      emblem(c, src, { mode: "gather", cols: 34, text: f.text, height: () => el.clientHeight - 16, tokenEl: el })
+      emblem(c, src, { mode: "gather", cols: 30, text: f.text, height: () => el.clientHeight - 16, tokenEl: el })
         .then((x) => { if (gone) x?.stop(); else r = x; });
     }, { threshold: 0.4 });
     io.observe(el);
