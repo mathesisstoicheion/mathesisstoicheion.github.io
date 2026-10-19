@@ -1,5 +1,16 @@
 # PROGRESS.md — project memory
 
+## Gold and lamplight, rebuilt from design A's own template (2026-10-19; LIVE about 13:30 UTC)
+Built on branch `claude/project-thread-azaaq7` from design A as drawn (/mnt/project-files/redesign/design-a/design-a.html); the
+owner replied "Publish" after seeing the screenshots (https://claude.ai/artifact/5HQeKYP9GFhtpRrMC7y2BP). Home, library and reader
+are A as drawn (home without the Muses); every other page keeps its layout in A's colours, type, buttons and engraved round
+windows. Three animation levels in Settings (Full beauty, the default; Balanced; Performance), remembered; a weak device starts a
+level down. No phone tab bar (search and a menu in the header). Put back from before: a returning visitor's desk on home (without
+"Welcome back"), the Guide's invitation and tours, the offline line, the Latin title on the reader's cover. Why the first Gold build
+broke on phones (a full-screen copy of the engraving inside every window, ~700 MB of graphics memory on the library) and the checks
+that now come before showing the owner: DESIGN.md, "Before anything goes live" (web/scripts/check-layers.mjs, check-midscroll.mjs).
+Next: a light mode for it, once the owner has seen the dark one live.
+
 ## Stone and torch restored (2026-10-19, about 10:10 UTC)
 The owner found the live Gold and lamplight site buggy and unusable and asked for Stone and torch back while design A is rebuilt
 straight from its original template ("take the template of the original gold and lamplight design and don't make any changes to
