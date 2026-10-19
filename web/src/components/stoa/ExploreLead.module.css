@@ -50,3 +50,8 @@
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: 1rem; }
 /* the small print at the foot of the page (ExploreCredit) */
 .credit { margin: 0; font-size: 0.75rem; color: var(--ink-2); }
+/* in a door's left column on a computer (components/a/Door.tsx), two to a row as on a tablet */
+@media (min-width: 1100px) {
+  :global([data-door-col]) .lead ul { grid-template-columns: 1fr 1fr; }
+  :global([data-door-col]) .lead li:first-child { grid-column: 1 / -1; }
+}

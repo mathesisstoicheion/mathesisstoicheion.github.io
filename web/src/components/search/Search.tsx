@@ -8,7 +8,8 @@ import { addRecentSearch } from "@/lib/recent-searches";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import AreaHeader from "@/components/AreaHeader";
+import Door, { DoorBlock } from "@/components/a/Door";
+import { A_ART } from "@/components/a/pictures";
 import { fold, loadCatalog, describe, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, familyOf, periodOf, FAMILIES, PERIODS, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { detectScript, queryWords, toPattern, type Script } from "@/lib/search/input";
@@ -72,15 +73,17 @@ const CARVE = {
 export default function Search() {
   const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
   return (
-    <>
-      <AreaHeader id="search" carve={CARVE} action={
-        <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
-          <OracleBox draft={draft} />
-        </Suspense>} />
-      <Suspense fallback={null}>
-        <Oracle draft={draft} setDraft={setDraft} />
-      </Suspense>
-    </>
+    // a door of the site, built as the library is (components/a/Door.tsx): Apollo, spelled out of his Hymn, becomes his lyre
+    <Door id="search" fig="search" art={A_ART.amphora} carve={CARVE} action={
+      <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
+        <OracleBox draft={draft} />
+      </Suspense>}>
+      <DoorBlock>
+        <Suspense fallback={null}>
+          <Oracle draft={draft} setDraft={setDraft} />
+        </Suspense>
+      </DoorBlock>
+    </Door>
   );
 }
 

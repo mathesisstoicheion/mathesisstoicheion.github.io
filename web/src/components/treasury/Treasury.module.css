@@ -293,3 +293,9 @@
 .private, .keep { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* the moulding uses the outline, so the link card gives the focus ring back */
 .private:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* in the Treasury door's left column on a computer (components/a/Door.tsx): the nine panels three by three, as on a tablet */
+@media (min-width: 1100px) {
+  :global([data-door-col]) .frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  :global([data-door-col]) .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
+}

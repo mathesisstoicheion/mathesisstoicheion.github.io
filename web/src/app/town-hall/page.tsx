@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import Page from "@/components/Page";
-import AreaHeader from "@/components/AreaHeader";
+import Door, { DoorBlock } from "@/components/a/Door";
+import { A_ART } from "@/components/a/pictures";
 import TownHall from "@/components/community/TownHall";
 import { AREAS } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -11,10 +12,13 @@ export const metadata: Metadata = { title: `${AREAS.forum.name} · ${AREAS.forum
 export default function TownHallPage() {
   return (
     <Page>
-      <AreaHeader id="forum" />
-      <Suspense>
-        <TownHall />
-      </Suspense>
+      <Door id="forum" fig="talk" art={A_ART.ostraka}>
+        <DoorBlock>
+          <Suspense>
+            <TownHall />
+          </Suspense>
+        </DoorBlock>
+      </Door>
     </Page>
   );
 }

@@ -72,7 +72,8 @@ function wrapText(s,n){const out=[];let line="";
     while(line.length>n){out.push(line.slice(0,n));line=line.slice(n)}}
   if(line)out.push(line.padEnd(n));return out}
 const dprCap=()=>lite||reduce?1:1.5;
-const IRIS_MS=2600,SETTLE_MS=1400;   // a window's iris opening in full; a heading's letters finding their places
+const IRIS_MS=2600,SETTLE_MS=1400,FIG_HOLD=5;   // a window's iris opening in full; a heading's letters finding their places;
+// how long a figure at the foot of a page holds its face, in seconds from when its letters start to gather, before they become its object
 
 /* Scene: the coin, engraved in gold on Pompeian red, laid out in viewport space */
 function CoinScene(img){
@@ -232,7 +233,7 @@ function FigScene(img,tx,target,img2){
       for(let k=0;k<N;k++){gi.data[k*4]=R0;gi.data[k*4+1]=G0;gi.data[k*4+2]=B0;gi.data[k*4+3]=G[k]*255}gx.putImageData(gi,0,0)}
     // further down the page the face falls apart, and some of its letters rearrange into the area's object (TARGETS):
     // the text in capitals, as Greek was written then, and the object's own shape in letters around it
-    const TG=TARGETS[target]||TARGETS.roll,{C2,R2}=TG.size(an?an.w*.98:vw*(wide?.46:.94),boxW,boxH,cw,ch,img2);
+    const TG=TARGETS[target]||TARGETS.roll,{C2,R2}=TG.size(an?an.w*.98:vw*(wide?(TG===TARGETS.roll?.46:.42):.94),boxW,boxH,cw,ch,img2);   // the other objects keep clear of the blocks at the left
     const rx=cx-C2*cw/2,ry=cy-R2*ch/2,CAPS_=capsOf(tx),slots=[],rest=[],G2=new Float32Array(C2*R2),occ=new Uint8Array(C2*R2);
     const at=(gx,l)=>gx>=0&&gx<C2&&l>=0&&l<R2&&!occ[l*C2+gx];
     const slot=(arr,gx,l,g,c)=>{occ[l*C2+gx]=1;arr.push({x:rx+(gx+.5)*cw,y:ry+l*ch+ch*.86,g,c});G2[l*C2+gx]=g};
@@ -318,7 +319,7 @@ function FigScene(img,tx,target,img2){
     b.globalCompositeOperation="destination-in";const sg=b.createLinearGradient((c0-.24)*bw,0,(c0+.24)*bw,0);sg.addColorStop(0,"rgba(0,0,0,0)");sg.addColorStop(.5,"rgba(0,0,0,1)");sg.addColorStop(1,"rgba(0,0,0,0)");
     b.fillStyle=sg;b.fillRect(0,0,bw,bh);x.globalCompositeOperation="lighter";x.globalAlpha=.3*k;x.imageSmoothingEnabled=true;x.drawImage(src.band,X,Y,W,H);x.globalCompositeOperation="source-over";x.globalAlpha=1}
   return {draw(x,vw,vh,view,t,prog,mode,ptr,an,st){
-    const L=layout(vw,vh,an),scrub=mode==="scrub",still=reduce||!!(st&&st.still);   // still: Performance, or a figure resting behind an inner page
+    const L=layout(vw,vh,an),scrub=mode==="scrub",still=reduce||!!(st&&st.still);   // still: in Performance, drawn once as it ends
     let off=still?0:(scrub?prog*120+t*.1:t/2.8);
     // on the Stage his face gathers by itself as the library opens, and the face becomes the roll once the list comes up
     // over it; neither goes back when you scroll up again (the owner, 2026-10-19: animations play once and stay)
@@ -407,7 +408,8 @@ function sceneFor(src,kind,fig){const key=kind==="fig"?[src,fig.text,fig.target,
     if(sc)scenes.set(key,sc);else scenes.delete(key);Engine.kick();return sc});
   scenes.set(key,p);return null}
 const wins=new Set();     // {el,cv,cap,src,kind}
-let stage=null;           // {cv,src,span,text,target,img2,rest}
+let stage=null;           // {cv,src,span,text,target,img2}
+const figWins=new Set();  // {el,cv,src,text,target,img2}: a figure in a window of its own, at the foot of a page
 let flyCv=null,fireCv=null;
 const flames=[];
 
@@ -428,7 +430,7 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     document.addEventListener("visibilitychange",()=>this.kick())},
   /** a page has opened: its windows already in view open by themselves, slowly */
   opened(){this.introT0=performance.now();readTokens();this.kick()},
-  any(){return wins.size>0||!!stage||!!flyCv||!!fireCv||flames.length>0||Settle.items.length>0},
+  any(){return wins.size>0||figWins.size>0||!!stage||!!flyCv||!!fireCv||flames.length>0||Settle.items.length>0},
   kick(){if(!this.raf&&this.live&&!document.hidden&&this.any())this.raf=requestAnimationFrame(t=>this.frame(t))},
   frame(t){this.raf=0;if(!this.any()||document.hidden){this.lt=0;return}
     const el=(t-this.t0)/1000,dt=this.lt?Math.min(.05,(t-this.lt)/1000):1/60,vw=innerWidth,vh=innerHeight;
@@ -437,19 +439,32 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame(vh);
     if(stage){const sc=sceneFor(stage.src,"fig",stage);if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),now=performance.now();
       if(stage.g0==null)stage.g0=Math.max(now,this.introT0+300);
-      if(stage.m0==null&&!stage.rest&&prog>=(reduce?.7:.56))stage.m0=now;
-      // a figure resting behind an inner page has already gathered, and holds still: it is drawn again only at a new size
-      const still=reduce||!!stage.rest,sm0=k=>k*k*(3-2*k),st=stage.rest?{asm:9,m:0,still:true}:{asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
-      const key=still?`${vw}x${vh}|${st.m}|${gen}`:"";
-      if(!still||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
+      if(stage.m0==null&&prog>=(reduce?.7:.56))stage.m0=now;
+      const sm0=k=>k*k*(3-2*k),st={asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
+      const key=reduce?`${vw}x${vh}|${st.m}|${gen}`:"";
+      if(!reduce||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
         sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS,undefined,st)}}}
     if(wins.size)this.iris(el,vw,vh);
+    if(figWins.size)this.figs(el,vw,vh);
     if(flyCv)this.letters(el,vw,vh);
     if(fireCv)Fire.frame(fireCv,el,dt,vw,vh);
     if(flames.length)drawFlames(el,dt,vh);
     if(!reduce)this.raf=requestAnimationFrame(tt=>this.frame(tt));
   },
   fitCanvas(cv,w,h){const dpr=Math.min(dprCap(),devicePixelRatio||1);const W=Math.round(w*dpr),H=Math.round(h*dpr);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}return dpr},
+  // A figure in a window of its own, at the foot of a page inside an area (components/a/FootFigure.tsx): once enough of it
+  // is in view its letters gather into the face, a light reads across the face a while, then they become the area's object,
+  // and it stays so (the owner, 2026-10-19: animations play once on view and stay). In Performance it is the object, still.
+  figs(el,vw,vh){const now=performance.now(),sm=k=>k*k*(3-2*k);
+    for(const w of figWins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
+      const sc=sceneFor(w.src,"fig",w);if(!sc)continue;
+      if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.5,vh*.35))w.t0=Math.max(now,this.introT0+300)}
+      const t=w.t0==null?0:(now-w.t0)/1000,st=reduce?{asm:9,m:1,still:true}:{asm:clamp(t,0,9),m:sm(clamp((t-FIG_HOLD)/1.6,0,1))};
+      const key=reduce?`${Math.round(r.width)}x${Math.round(r.height)}|${gen}`:"";if(reduce&&w.drawn===key)continue;w.drawn=key;
+      const dpr=this.fitCanvas(w.cv,r.width,r.height),x=w.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
+      // the lamp and the reading glass follow only a pointer over the window; otherwise the lamp drifts by itself
+      const pts=PTS.filter(p=>p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom).map(p=>({...p,x:p.x-r.left,y:p.y-r.top}));
+      sc.draw(x,r.width,r.height,{x:0,y:0,w:r.width,h:r.height},el,0,"scrub",pts,{cx:r.width/2,cy:r.height/2,w:r.width,h:r.height},st)}},
   // The windows open as a round iris centred on their picture: the coin, or another real object for each window.
   // Each plays by itself once enough of it is in view (the owner, 2026-10-19: "the animations should play automatically
   // when they come into view ... and should stay expanded, even if you scroll back up"): it opens onto the middle of the
@@ -662,8 +677,14 @@ export function opened(){Engine.start();Engine.opened()}
 export function addWindow(el,{src,kind="pic"}){Engine.start();const w={el,cv:el.querySelector("canvas"),cap:el.querySelector("[data-wcap]"),src,kind};wins.add(w);Engine.kick();return()=>{wins.delete(w)}}
 /** a figure pinned behind the page: the library's Socrates, or another area's (data/figures.ts). `span` is how far the page
  * scrolls while it gathers and becomes its object; `text` is its text's address (the Apology if none), `target` the object,
- * `img2` the object's picture where it has one; `rest`: it has already gathered and holds still, behind an inner page */
-export function addStage(cv,{src,span,text,target="roll",img2,rest=false}){Engine.start();stage={cv,src,span,text,target,img2,rest};Engine.kick();return()=>{if(stage&&stage.cv===cv)stage=null}}
+ * `img2` the object's picture where it has one
+ * @param {HTMLCanvasElement} cv
+ * @param {{src: string, span: () => number, text?: string, target?: string, img2?: string}} o */
+export function addStage(cv,{src,span,text,target="roll",img2}){Engine.start();stage={cv,src,span,text,target,img2};Engine.kick();return()=>{if(stage&&stage.cv===cv)stage=null}}
+/** a figure in a window of its own (`el` holds its canvas), which plays once when it comes into view; as addStage
+ * @param {HTMLElement} el
+ * @param {{src: string, text?: string, target?: string, img2?: string}} o */
+export function addFigure(el,{src,text,target="roll",img2}){Engine.start();const w={el,cv:el.querySelector("canvas"),src,text,target,img2};figWins.add(w);Engine.kick();return()=>{figWins.delete(w)}}
 export function addLetters(cv){Engine.start();flyCv=cv;Engine.flyPts=null;Engine.kick();return()=>{if(flyCv===cv)flyCv=null}}
 export function addFire(cv){Engine.start();fireCv=cv;Fire.pts=[];Engine.kick();return()=>{if(fireCv===cv)fireCv=null}}
 /** one Muse's lamp: its canvas, and the element that lights up (with `litClass`) when its flame is fanned */
