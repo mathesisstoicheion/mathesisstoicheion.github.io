@@ -26,15 +26,19 @@ const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room")};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
-/* ---------- the Apology (Burnet's Oxford text, via Perseus): the library's Socrates and the Socrates emblems ---------- */
-let APO="",APO_CAPS=null,SOC_CHARS=null,apoP=null;
+/* ---------- the texts the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
+   Socrates and the Socrates emblems, and one for each other figure (data/figures.ts; scripts/make-figure-texts.py) ---------- */
+const APO_URL="/data/a/apology.txt";
 const GL="αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΘΛΞΠΣΦΨΩ";
 const RAMP=" ··˙ιιτνυοσρκεαγδζλβξθφψωΦΘΨΩ";
 const CAPS="ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
-function loadApology(){return apoP||(apoP=fetch("/data/a/apology.txt").then(r=>r.ok?r.text():"").catch(()=>"").then(t=>{APO=t.trim();
-  SOC_CHARS=[...new Set(APO+GL+CAPS)].filter(c=>c!==" ");return APO}))}
+const TXT=new Map();   // address -> {raw, chars, caps, p}
+function loadText(url){let t=TXT.get(url);if(!t){t={raw:"",chars:[],caps:null,p:null};TXT.set(url,t);
+    t.p=fetch(url).then(r=>r.ok?r.text():"").catch(()=>"").then(s=>{t.raw=s.trim();t.chars=[...new Set(t.raw+GL+CAPS)].filter(c=>c!==" ");return t})}
+  return t.p}
 // the speech as Greek was written in Plato's time: capitals, with no spaces or accents
-const apoCaps=()=>APO_CAPS||(APO_CAPS=APO.normalize("NFD").replace(/[̀-̈́͆-ͯ]/g,"").toUpperCase().replace(/[^Α-Ω]/g,""));
+const toCaps=s=>s.normalize("NFD").replace(/[̀-̈́͆-ͯ]/g,"").toUpperCase().replace(/[^Α-Ω]/g,"");
+const capsOf=t=>t.caps||(t.caps=toCaps(t.raw));
 
 /* ---------- pointer (viewport coordinates) ---------- */
 /* The pointer, and fingers. With a mouse there is one pointer. On a phone every finger counts, all the time, even while
@@ -137,11 +141,78 @@ function Atlas(chars,styles,px){
   return {cv,idx,cw,ch,OS,base:.7}
 }
 
-/* Scene: Socrates spelled out of Plato's Apology, in a dark room lit by one lamp.
-   Every letter is the speech in reading order; only their brightness draws the face.
+/* The objects a figure's letters become further down its page. Each gives its size in letter cells (`size`, from the room
+   it has, the face's box and one cell's width and height) and lays itself out (`build`): `text(x, line, brightness)` puts
+   the next letter of the text there, `put(x, line, brightness, letter?)` a letter of the object's own shape. A cell holds
+   one letter; the text is laid first, so it is never covered. */
+const TARGETS={
+  // the library's (design A): a papyrus roll, the speech in capitals in columns between two rolled ends, as a book was in Plato's time
+  roll:{size(maxW,boxW,boxH,cw,ch){const C2=Math.max(30,Math.floor(Math.min(maxW,boxW*1.18)/cw));return{C2,R2:Math.max(14,Math.round(C2*cw*.56/ch))}},
+    build({C2,R2,text,put}){const rl=Math.max(3,Math.round(C2*.075)),top=1,bot=R2-2,t0=rl+2,t1=C2-rl-2;
+      const ncol=t1-t0>=40?3:2,gapc=Math.max(2,Math.round((t1-t0)*.07)),cc=Math.floor((t1-t0-gapc*(ncol-1))/ncol);
+      for(let c=0;c<ncol;c++)for(let l=top+2;l<=bot-2;l++)for(let i=0;i<cc;i++)text(t0+c*(cc+gapc)+i,l,.48+.14*rnd());
+      for(const l of[top,bot])for(let gx=rl;gx<C2-rl;gx++)put(gx,l,.3);   // the sheet's top and bottom edges
+      for(const side of[0,1])for(let l=0;l<R2;l++)for(let i=0;i<rl;i++){const u=(i+.5)/rl,sh=Math.pow(Math.sin(Math.PI*u),.7)*(side?.82+.18*u:1-.18*u);   // the rolled ends, shaded like cylinders
+        put(side?C2-rl+i:i,l,(.14+.78*sh)*(l===0||l===R2-1?.55:1))}}},
+  // Learn: a pupil's writing tablet, two wooden leaves tied together, with the text written in rows on the wax
+  tablet:{size(maxW,boxW,boxH,cw,ch){const C2=Math.max(36,Math.floor(Math.min(maxW,boxW*1.18)/cw));return{C2,R2:Math.max(16,Math.round(C2*cw*.5/ch))}},
+    build({C2,R2,text,put}){const hinge=2,lw=Math.floor((C2-hinge)/2),fx=Math.max(2,Math.round(lw*.07)),leaves=[0,C2-lw];
+      for(const x0 of leaves)for(let l=2;l<=R2-3;l+=2)for(let i=x0+fx+1;i<x0+lw-fx-1;i++)text(i,l,.5+.12*rnd());   // the lines on the wax
+      for(const x0 of leaves)for(let l=0;l<R2;l++)for(let i=x0;i<x0+lw;i++){const side=i<x0+fx?(i-x0+.5)/fx:i>=x0+lw-fx?(x0+lw-i-.5)/fx:-1;
+        if(side>=0)put(i,l,.4+.36*Math.sin(Math.PI*side*.5+.3));else if(l===0||l===R2-1)put(i,l,.62);else put(i,l,.05)}   // the wooden frame, and the dark wax
+      for(const l of[Math.round(R2*.32),Math.round(R2*.68)])for(let i=lw;i<C2-lw;i++)put(i,l,.85,"Ο")}},   // the cords that tie the leaves
+  // Explore: a stoa's colonnade, its columns on three steps under the beams, the text along the frieze and the painted panels behind
+  colonnade:{size(maxW,boxW,boxH,cw,ch){const C2=Math.max(40,Math.floor(Math.min(maxW,boxW*1.18)/cw));return{C2,R2:Math.max(18,Math.round(C2*cw*.62/ch))}},
+    build({C2,R2,text,put}){const n=C2>=64?7:5,cwid=Math.max(3,Math.round(C2*.055)),x0=3,x1=C2-4,span=(x1-x0-cwid)/(n-1),cols=[];for(let k=0;k<n;k++)cols.push(Math.round(x0+k*span));
+      const inCol=i=>cols.some(c=>i>=c-1&&i<c+cwid+1),top=0,arch=1,frieze=2,cor=3,cap=4,base=R2-3;
+      for(let i=x0;i<=x1;i++)text(i,frieze,.62);   // the frieze: the text in one line
+      for(let l=cap+2;l<base-1;l++)for(let i=x0+1;i<x1;i++)if(!inCol(i))text(i,l,.28+.08*rnd());   // the panels on the back wall, between the columns
+      for(let i=x0-2;i<=x1+2;i++){put(i,top,.78);put(i,arch,.58);put(i,cor,.7)}   // the cornice and the beams
+      for(const c of cols){for(let i=c-1;i<c+cwid+1;i++)put(i,cap,.84);   // each column's capital, then its shaft, shaded like a cylinder
+        for(let l=cap+1;l<base;l++)for(let i=c;i<c+cwid;i++){const u=(i-c+.5)/cwid;put(i,l,.14+.8*Math.pow(Math.sin(Math.PI*u),.6)*(.8+.2*u))}}
+      for(let st=0;st<3;st++)for(let i=x0-1-st;i<=x1+1+st;i++)put(i,base+st,.74-.12*st)}},   // the three steps
+  // Talk: an allotment machine (kleroterion), a stone slab cut with rows of slots for the citizens' bronze name tickets, some in
+  // place, with the tube beside it into which the black and white balls were dropped
+  kleroterion:{size(maxW,boxW,boxH,cw,ch){return{C2:Math.floor(Math.min(maxW,boxW*.8)/cw),R2:Math.floor(boxH*.9/ch)}},
+    build({C2,R2,text,put}){const tube=4,x0=tube+3,x1=C2-1,y0=0,y1=R2-1,sw=3,ncol=C2-x0>=34?5:4,gap=Math.max(2,Math.floor((x1-x0-3-ncol*sw)/(ncol+1)));
+      const slot=(i,l)=>{if(l<y0+4||l>y1-4||(l-y0)%2)return -1;const j=i-(x0+2+gap);if(j<0||j%(sw+gap)>=sw)return -1;const c=Math.floor(j/(sw+gap));return c<ncol?c:-1};
+      for(let l=y0+2;l<=y1-2;l++)for(let i=x0+2;i<=x1-2;i++)if(slot(i,l)<0)text(i,l,.3+.1*rnd());   // the stone's face
+      for(let l=y0+4;l<=y1-4;l+=2)for(let c=0;c<ncol;c++)if((c*5+l*3)%7<3)for(let k=0;k<sw;k++)put(x0+2+gap+c*(sw+gap)+k,l,.95);   // tickets in their slots
+      for(let l=y0;l<=y1;l++)for(const i of[x0,x0+1,x1-1,x1])put(i,l,i===x0||i===x1?.74:.5);for(let i=x0;i<=x1;i++)for(const l of[y0,y0+1,y1-1,y1])put(i,l,l===y0||l===y1?.74:.5);   // its edges
+      for(let l=y0+5;l<y1-3;l++)for(let i=0;i<tube;i++)put(i,l,.16+.76*Math.pow(Math.sin(Math.PI*(i+.5)/tube),.7));   // the tube
+      for(let r=0;r<4;r++)for(let i=-r;i<tube+r;i++)put(i+0,y0+4-r,.82-.1*r)}},   // its funnel
+  // Search: Apollo's lyre: a tortoise-shell sound box, two arms rising from it like horns to the crossbar, and seven strings
+  lyre:{size(maxW,boxW,boxH,cw,ch){return{C2:Math.floor(Math.min(maxW,boxW*1.04)/cw),R2:Math.floor(boxH*.92/ch)}},
+    build({C2,R2,text,put}){const X=u=>Math.round((u+1)/2*C2-.5),V=l=>(l+.5)/R2,U=i=>(i+.5)/C2*2-1;   // across from -1 to 1, and down from 0 to 1
+      // the shell: a low dome, its plates in a pattern, written over
+      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const u=U(i),v=V(l),e=(u/.62)**2+((v-.82)/.14)**2;if(e>=1)continue;
+        const pl=.78+.22*Math.cos(u*15+(v<.82?0:1.6))*Math.cos((v-.82)*48);text(i,l,(.2+.6*(1-e))*pl)}
+      const arm=v=>{const k=clamp((.72-v)/.62,0,1);return .38+.16*Math.sin(Math.PI*k*.78)-.08*k*k+(k>.93?(k-.93)*1.6:0)};   // out, then in, then a little out at the tip
+      for(let l=Math.round(.08*R2);l<R2;l++){const v=V(l);if(v>.73)break;const x=arm(v);for(const sg of[-1,1]){put(X(sg*x),l,.86);put(X(sg*(x+.04)),l,.62);put(X(sg*(x+.08)),l,.3)}}
+      const yb=Math.round(.16*R2);for(let i=X(-arm(V(yb))-.06);i<=X(arm(V(yb))+.06);i++){put(i,yb,.88);put(i,yb+1,.52)}   // the crossbar
+      const yr=Math.round(.7*R2);for(let i=X(-.22);i<=X(.22);i++)put(i,yr,.84);   // the bridge
+      for(let k=0;k<7;k++){const ut=-.27+k*.09,ub=-.18+k*.06;for(let l=yb+2;l<yr;l++){const f=(l-yb-2)/Math.max(1,yr-yb-2);put(X(ut+(ub-ut)*f),l,.46,"Ι")}}}},   // the strings
+  // any object with a picture of its own: the picture itself, every lit cell a letter of the text
+  // Mine: an Athenian silver coin, the picture in letters inside its rim
+  coin:{size(...a){return TARGETS.pic.size(...a)},
+    build(o){TARGETS.pic.build(o);const{C2,R2,put}=o,cx=C2/2,cy=R2/2;
+      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const e=Math.hypot((i+.5-cx)/(C2/2),(l+.5-cy)/(R2/2));if(e>.9&&e<1.02)put(i,l,.5+.3*Math.cos((i+l)*.9))}}},
+  pic:{size(maxW,boxW,boxH,cw,ch,img){const asp=img?img.height/img.width:1;let W=Math.min(maxW,boxW*1.16),H=W*asp;if(H>boxH*.95){H=boxH*.95;W=H/asp}return{C2:Math.floor(W/cw),R2:Math.floor(H/ch)}},
+    build({C2,R2,text,img}){if(!img)return;const d=sample(img,C2,R2),N=C2*R2,G=new Float32Array(N),B=new Float32Array(N),rad=Math.max(2,Math.round(C2/24));
+      for(let k=0;k<N;k++)G[k]=(.3*d[k*4]+.59*d[k*4+1]+.11*d[k*4+2])/255;
+      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){let s2=0,c=0;for(let v=Math.max(0,l-rad);v<=Math.min(R2-1,l+rad);v++)for(let u=Math.max(0,i-rad);u<=Math.min(C2-1,i+rad);u++){s2+=G[v*C2+u];c++}B[l*C2+i]=s2/c}
+      const lit=[...G].filter(v=>v>.05).sort((a,b)=>a-b),lo=lit[Math.floor(lit.length*.03)]||0,hi=lit[Math.floor(lit.length*.985)]||1;
+      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const k=l*C2+i;if(G[k]<=.05)continue;const v=clamp((G[k]+.25*(G[k]-B[k])-lo)/(hi-lo),0,1);text(i,l,.05+.95*Math.pow(v,1.35))}}},
+};
+
+/* Scene: a face spelled out of a Greek text, in a dark room lit by one lamp: design A's Socrates, spelled out of Plato's
+   Apology (the library), and the other areas' figures (data/figures.ts), each out of its own text.
+   Every letter is the text in reading order; only their brightness draws the face.
    With a pointer, the lamp is also a reading glass that enlarges the letters under it.
-   On the Stage the still face is kept in a picture of its own and redrawn only when the text or the gathering moves. */
-function SocScene(img){
+   On the Stage the still face is kept in a picture of its own and redrawn only when the text or the gathering moves.
+   Further down the page the face falls apart and its letters become the area's object (TARGETS below): the library's
+   papyrus roll, as A drew it, or another. `tx` is the text (loadText), `target` the object's name, `img2` its picture. */
+function FigScene(img,tx,target,img2){
   let lay=null,cache=null,ck="",cT=0;
   function layout(vw,vh,an){const key=[vw,vh,an?[an.cx|0,an.cy|0,an.w|0,an.h|0]:0,T.amber].join();if(lay&&lay.key===key)return lay;
     const asp=img.width/img.height,wide=vw>=1100;let boxH=an?an.h*.98:vh*.9,boxW=boxH*asp;const maxW=an?an.w*.98:vw*(wide?.44:.92);if(boxW>maxW){boxW=maxW;boxH=boxW/asp}
@@ -156,27 +227,26 @@ function SocScene(img){
     const lit=[...G].filter(v=>v>.12).sort((a,b)=>a-b),lo=lit[Math.floor(lit.length*.04)]||.1,hi=lit[Math.floor(lit.length*.98)]||1;
     for(let k=0;k<N;k++){const v=clamp((G[k]-lo)/(hi-lo),0,1);G[k]=Math.pow(v,1.25);
       // each loose letter wanders slowly round a resting place of its own until the scroll calls it home
-      fly.push({at:((k/cols|0)/rows)*.8+rnd()*.5,sx:rnd()*vw,sy:rnd()*vh,sub:rnd()<.38,w1:.03+rnd()*.07,w2:.025+rnd()*.06,ph:rnd()*6.3,amp:30+rnd()*70,c:SOC_CHARS[(rnd()*SOC_CHARS.length)|0]})}
+      fly.push({at:((k/cols|0)/rows)*.8+rnd()*.5,sx:rnd()*vw,sy:rnd()*vh,sub:rnd()<.38,w1:.03+rnd()*.07,w2:.025+rnd()*.06,ph:rnd()*6.3,amp:30+rnd()*70,c:tx.chars[(rnd()*tx.chars.length)|0]})}
     const glow=document.createElement("canvas");glow.width=cols;glow.height=rows;{const gx=glow.getContext("2d"),gi=gx.createImageData(cols,rows),[R0,G0,B0]=[255,150,60];
       for(let k=0;k<N;k++){gi.data[k*4]=R0;gi.data[k*4+1]=G0;gi.data[k*4+2]=B0;gi.data[k*4+3]=G[k]*255}gx.putImageData(gi,0,0)}
-    // further down the page the face falls apart, and some of its letters rearrange into a papyrus roll: the speech in
-    // capitals, in columns, between two rolled ends, as a book was in Plato's time
-    const rW=Math.min(an?an.w*.98:vw*(wide?.46:.94),boxW*1.18),C2=Math.max(30,Math.floor(rW/cw)),R2=Math.max(14,Math.round(C2*cw*.56/ch));
-    const rx=cx-C2*cw/2,ry=cy-R2*ch/2,rl=Math.max(3,Math.round(C2*.075)),top=1,bot=R2-2,t0=rl+2,t1=C2-rl-2;
-    const ncol=t1-t0>=40?3:2,gapc=Math.max(2,Math.round((t1-t0)*.07)),cc=Math.floor((t1-t0-gapc*(ncol-1))/ncol);
-    const CAPS_=apoCaps(),slots=[],G2=new Float32Array(C2*R2),put=(gx,l,g,c)=>{slots.push({x:rx+(gx+.5)*cw,y:ry+l*ch+ch*.86,g,c:c||CAPS[(gx*7+l*13)%24]});G2[l*C2+gx]=g};
-    let ci=0;for(let c=0;c<ncol;c++)for(let l=top+2;l<=bot-2;l++)for(let i=0;i<cc;i++)put(t0+c*(cc+gapc)+i,l,.48+.14*rnd(),CAPS_[ci++%CAPS_.length]);
-    const nText=slots.length;
-    for(const l of[top,bot])for(let gx=rl;gx<C2-rl;gx++)put(gx,l,.3,null);   // the sheet's top and bottom edges
-    for(const side of[0,1])for(let l=0;l<R2;l++)for(let i=0;i<rl;i++){const u=(i+.5)/rl,sh=Math.pow(Math.sin(Math.PI*u),.7)*(side?.82+.18*u:1-.18*u);   // the rolled ends, shaded like cylinders
-      put(side?C2-rl+i:i,l,(.14+.78*sh)*(l===0||l===R2-1?.55:1),null)}
+    // further down the page the face falls apart, and some of its letters rearrange into the area's object (TARGETS):
+    // the text in capitals, as Greek was written then, and the object's own shape in letters around it
+    const TG=TARGETS[target]||TARGETS.roll,{C2,R2}=TG.size(an?an.w*.98:vw*(wide?.46:.94),boxW,boxH,cw,ch,img2);
+    const rx=cx-C2*cw/2,ry=cy-R2*ch/2,CAPS_=capsOf(tx),slots=[],rest=[],G2=new Float32Array(C2*R2),occ=new Uint8Array(C2*R2);
+    const at=(gx,l)=>gx>=0&&gx<C2&&l>=0&&l<R2&&!occ[l*C2+gx];
+    const slot=(arr,gx,l,g,c)=>{occ[l*C2+gx]=1;arr.push({x:rx+(gx+.5)*cw,y:ry+l*ch+ch*.86,g,c});G2[l*C2+gx]=g};
+    let ci=0;
+    // the text first, in reading order (the light reads it in that order), then the object's own parts
+    TG.build({C2,R2,img:img2,text:(gx,l,g)=>{if(at(gx,l))slot(slots,gx,l,g,CAPS_[ci++%CAPS_.length])},put:(gx,l,g,c)=>{if(at(gx,l))slot(rest,gx,l,g,c||CAPS[(gx*7+l*13)%24])}});
+    const nText=slots.length;for(const r of rest)slots.push(r);
     for(let s2=0;s2<slots.length;s2++){const k=Math.floor((s2+.5)*N/slots.length);fly[k].sl=s2}
     fly.forEach((fl,k)=>{fl.d=.3*((k/cols|0)/rows)+.6*rnd();fl.fx=(rnd()-.5)*70;fl.fy=50+rnd()*120;if(fl.sl===undefined)fl.sl=-1});   // the crown lets go first
     const glow2=document.createElement("canvas");glow2.width=C2;glow2.height=R2;{const gx=glow2.getContext("2d"),gi=gx.createImageData(C2,R2);
       for(let k=0;k<C2*R2;k++){gi.data[k*4]=255;gi.data[k*4+1]=150;gi.data[k*4+2]=60;gi.data[k*4+3]=G2[k]*255}gx.putImageData(gi,0,0)}
     const roll={C2,R2,rx,ry,slots,nText,glow:glow2,soft:softGlow(glow2)};
-    const fpx=cw*1.24,A=Atlas(SOC_CHARS,[{w:400,s:.84,c:T.amber},{w:400,s:1.04,c:T.amber},{w:700,s:1.2,c:T.amberHi}],fpx);
-    ck="";return lay={key,cols,rows,cw,ch,bx,by,cx,cy,boxW,boxH,G,fly,A,glow,soft:softGlow(glow),roll,gw:A.cw/A.OS,gh:A.ch/A.OS,lines:wrapText(APO,cols)}}
+    const fpx=cw*1.24,A=Atlas(tx.chars,[{w:400,s:.84,c:T.amber},{w:400,s:1.04,c:T.amber},{w:700,s:1.2,c:T.amberHi}],fpx);
+    ck="";return lay={key,cols,rows,cw,ch,bx,by,cx,cy,boxW,boxH,G,fly,A,glow,soft:softGlow(glow),roll,gw:A.cw/A.OS,gh:A.ch/A.OS,lines:wrapText(tx.raw,cols)}}
   function softGlow(src){const c=document.createElement("canvas");c.width=src.width*4;c.height=src.height*4;const g=c.getContext("2d");g.imageSmoothingEnabled=true;g.filter="blur(6px)";g.drawImage(src,0,0,c.width,c.height);return c}
   // the roll, standing still (and, with a lens, enlarged under the reading glass)
   function paintRoll(x,L,lens){const A=L.A,R=L.roll,M=lens?lens.m:1;
@@ -248,11 +318,11 @@ function SocScene(img){
     b.globalCompositeOperation="destination-in";const sg=b.createLinearGradient((c0-.24)*bw,0,(c0+.24)*bw,0);sg.addColorStop(0,"rgba(0,0,0,0)");sg.addColorStop(.5,"rgba(0,0,0,1)");sg.addColorStop(1,"rgba(0,0,0,0)");
     b.fillStyle=sg;b.fillRect(0,0,bw,bh);x.globalCompositeOperation="lighter";x.globalAlpha=.3*k;x.imageSmoothingEnabled=true;x.drawImage(src.band,X,Y,W,H);x.globalCompositeOperation="source-over";x.globalAlpha=1}
   return {draw(x,vw,vh,view,t,prog,mode,ptr,an,st){
-    const L=layout(vw,vh,an),scrub=mode==="scrub";
-    let off=reduce?0:(scrub?prog*120+t*.1:t/2.8);
+    const L=layout(vw,vh,an),scrub=mode==="scrub",still=reduce||!!(st&&st.still);   // still: Performance, or a figure resting behind an inner page
+    let off=still?0:(scrub?prog*120+t*.1:t/2.8);
     // on the Stage his face gathers by itself as the library opens, and the face becomes the roll once the list comes up
     // over it; neither goes back when you scroll up again (the owner, 2026-10-19: animations play once and stay)
-    const asm=reduce?9:scrub?st.asm:t;
+    const asm=still?9:scrub?st.asm:t;
     const m=scrub?st.m:0;
     if(scrub){off=Math.round(off*4)/4;   // the speech rises in quarter lines, so the still face need not be redrawn every frame
       const dpr=Math.min(dprCap(),devicePixelRatio||1),k2=[L.key,off,asm>2.2?"d":asm.toFixed(3)].join(),now=performance.now();
@@ -262,13 +332,13 @@ function SocScene(img){
       else{const k3=m>=1?L.key+"roll":k2;
         if(ck!==k3&&(now-cT>30||!ck)){const c=cache.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.fillStyle=T.room;c.fillRect(0,0,vw,vh);if(m>=1)paintRoll(c,L,null);else paint(c,L,{x:0,y:0,w:vw,h:vh},t,off,asm,null,"still");ck=k3;cT=now}
         x.drawImage(cache,0,0,vw,vh);
-        if(m>=1){if(!reduce){idleRoll(x,L,t);band(x,L,t,L.roll.glow,L.roll.rx,L.roll.ry,L.roll.C2*L.cw,L.roll.R2*L.ch,1)}}
-        else{if(!reduce&&asm<2.2)paint(x,L,{x:0,y:0,w:vw,h:vh},t,off,asm,null,"move");
-          if(!reduce)idle(x,L,t,off,asm,vw,vh)}}}
+        if(m>=1){if(!still){idleRoll(x,L,t);band(x,L,t,L.roll.glow,L.roll.rx,L.roll.ry,L.roll.C2*L.cw,L.roll.R2*L.ch,1)}}
+        else{if(!still&&asm<2.2)paint(x,L,{x:0,y:0,w:vw,h:vh},t,off,asm,null,"move");
+          if(!still)idle(x,L,t,off,asm,vw,vh)}}}
     else{x.fillStyle=T.room;x.fillRect(view.x,view.y,view.w,view.h);paint(x,L,view,t,off,asm,null)}
     // the lamp: a warm glow under the pointer, or under each finger (and drifting by itself when nothing touches)
-    const lamps=ptr.length&&!reduce?ptr:[{x:L.cx+L.boxW*.32*Math.sin(reduce?0:t*.33+prog*4),y:L.cy+L.boxH*.26*Math.cos(reduce?0:t*.27+prog*3),w:1}];
-    const fk=reduce?1:.82+.1*Math.sin(t*9.7)+.08*Math.sin(t*23.3+1.1),R=Math.max(L.boxW,L.boxH)*.5*(lamps.length>1?.75:1);
+    const lamps=ptr.length&&!still?ptr:[{x:L.cx+L.boxW*.32*Math.sin(still?0:t*.33+prog*4),y:L.cy+L.boxH*.26*Math.cos(still?0:t*.27+prog*3),w:1}];
+    const fk=still?1:.82+.1*Math.sin(t*9.7)+.08*Math.sin(t*23.3+1.1),R=Math.max(L.boxW,L.boxH)*.5*(lamps.length>1?.75:1);
     x.globalCompositeOperation="lighter";
     for(const lp of lamps){const a=.17*fk*lp.w/Math.sqrt(lamps.length),gr=x.createRadialGradient(lp.x,lp.y,0,lp.x,lp.y,R);gr.addColorStop(0,`rgba(255,150,60,${a.toFixed(3)})`);gr.addColorStop(.5,`rgba(255,120,40,${(a*.3).toFixed(3)})`);gr.addColorStop(1,"rgba(255,120,40,0)");
       x.fillStyle=gr;x.fillRect(Math.max(view.x,lp.x-R),Math.max(view.y,lp.y-R),2*R,2*R)}
@@ -276,7 +346,7 @@ function SocScene(img){
     const hp=ptr.find(pp=>pp.held),lx=hp?hp.x:-9999,ly=hp?hp.y:-9999;
     // the reading glass: only while you press and hold on his face, and only once it has gathered
     const onRoll=m>=1,RL=L.roll,inBox=onRoll?lx>RL.rx-20&&lx<RL.rx+RL.C2*L.cw+20&&ly>RL.ry-20&&ly<RL.ry+RL.R2*L.ch+20:lx>L.bx-20&&lx<L.bx+L.boxW+20&&ly>L.by-20&&ly<L.by+L.boxH+20;
-    if(hp&&!reduce&&asm>1.9&&(m<=0||m>=1)&&inBox){
+    if(hp&&!still&&asm>1.9&&(m<=0||m>=1)&&inBox){
       const r=clamp(L.boxW*.15,46,82);x.save();x.beginPath();x.arc(lx,ly,r,0,Math.PI*2);x.clip();
       x.fillStyle=T.room;x.globalAlpha=.94;x.fillRect(lx-r,ly-r,2*r,2*r);x.globalAlpha=1;
       if(onRoll)paintRoll(x,L,{x:lx,y:ly,r,m:2.3});else paint(x,L,view,t,off,9,{x:lx,y:ly,r,m:2.3});x.restore();
@@ -330,13 +400,14 @@ const Settle={items:[],
 
 /* ---------- the engine: draws every visible window, the stage, the floating letters and the sparks ---------- */
 const scenes=new Map();   // picture address -> scene (or a promise of one)
-function sceneFor(src,kind){let s=scenes.get(src);if(s)return s instanceof Promise?null:s;
-  const p=(kind==="soc"?Promise.all([loadImg(src),loadApology()]).then(([im])=>im):loadImg(src)).then(im=>{
-    const sc=!im?null:kind==="coin"?CoinScene(im):kind==="soc"?(APO?SocScene(im):null):PicScene(im,{});
-    if(sc)scenes.set(src,sc);else scenes.delete(src);Engine.kick();return sc});
-  scenes.set(src,p);return null}
+// a figure (kind "fig") is its face, its text and its object together: `fig` = {text, target, img2}
+function sceneFor(src,kind,fig){const key=kind==="fig"?[src,fig.text,fig.target,fig.img2||""].join("|"):src;let s=scenes.get(key);if(s)return s instanceof Promise?null:s;
+  const p=(kind==="fig"?Promise.all([loadImg(src),loadText(fig.text||APO_URL),fig.img2?loadImg(fig.img2):null]).then(([im,tx,im2])=>im&&tx.raw?FigScene(im,tx,fig.target,im2):null)
+    :loadImg(src).then(im=>!im?null:kind==="coin"?CoinScene(im):PicScene(im,{}))).then(sc=>{
+    if(sc)scenes.set(key,sc);else scenes.delete(key);Engine.kick();return sc});
+  scenes.set(key,p);return null}
 const wins=new Set();     // {el,cv,cap,src,kind}
-let stage=null;           // {cv,src,span}
+let stage=null;           // {cv,src,span,text,target,img2,rest}
 let flyCv=null,fireCv=null;
 const flames=[];
 
@@ -364,12 +435,13 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     // Balanced: at half the frame rate while nothing moves (the slow ripple, the drifting lamp), at full rate while it does
     if(lite&&!reduce&&t-busyT>400&&FING.size===0&&t-this.lastDraw<31){this.raf=requestAnimationFrame(tt=>this.frame(tt));return}
     this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame(vh);
-    if(stage){const sc=sceneFor(stage.src,"soc");if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),now=performance.now();
+    if(stage){const sc=sceneFor(stage.src,"fig",stage);if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),now=performance.now();
       if(stage.g0==null)stage.g0=Math.max(now,this.introT0+300);
-      if(stage.m0==null&&prog>=(reduce?.7:.56))stage.m0=now;
-      const sm0=k=>k*k*(3-2*k),st={asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
-      const key=reduce?`${vw}x${vh}|${st.m}|${gen}`:"";
-      if(!reduce||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
+      if(stage.m0==null&&!stage.rest&&prog>=(reduce?.7:.56))stage.m0=now;
+      // a figure resting behind an inner page has already gathered, and holds still: it is drawn again only at a new size
+      const still=reduce||!!stage.rest,sm0=k=>k*k*(3-2*k),st=stage.rest?{asm:9,m:0,still:true}:{asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
+      const key=still?`${vw}x${vh}|${st.m}|${gen}`:"";
+      if(!still||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
         sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS,undefined,st)}}}
     if(wins.size)this.iris(el,vw,vh);
     if(flyCv)this.letters(el,vw,vh);
@@ -521,7 +593,7 @@ function Letters(cv,img,o){
       // and let the face sit in an oval, fading out at its edge instead of stopping at the picture's frame
       Ls=S2.map((v,q)=>{if(Ls[q]<=.12)return 0;const u=(q%cols)/cols-.5,w=(q/cols|0)/rows-.5,e=(u*u+w*w)/.25,m=1-clamp((e-.62)/.38,0,1);return Math.pow(clamp((v-lo)/(hi-lo),0,1),1.2)*m*m})}
     else Ls=Ls.map(v=>Math.pow(clamp((v-.1)/.9,0,1),1.2));
-    const U=o.text?apoCaps():null;let n=0;
+    const U=o.text?o.caps:null;let n=0;
     for(let j=0;j<rows;j++)for(let i=0;i<cols;i++){const L=Ls[j*cols+i];
       // the speech runs on, letter after letter, through the face only, so what you can see reads in order
       const tch=U?(L<.05?" ":U[(n++)%U.length]):RAMP[Math.min(RAMP.length-1,Math.round(L*(RAMP.length-1)))];
@@ -588,8 +660,10 @@ export function begin(){Engine.start()}
 export function opened(){Engine.start();Engine.opened()}
 /** a window onto an engraving: kind "coin" (Athena's head, with its rays) or "pic" (any other picture) */
 export function addWindow(el,{src,kind="pic"}){Engine.start();const w={el,cv:el.querySelector("canvas"),cap:el.querySelector("[data-wcap]"),src,kind};wins.add(w);Engine.kick();return()=>{wins.delete(w)}}
-/** the library's Socrates, pinned behind the page; `span` is how far the page scrolls while he gathers and becomes the roll */
-export function addStage(cv,{src,span}){Engine.start();stage={cv,src,span};Engine.kick();return()=>{if(stage&&stage.cv===cv)stage=null}}
+/** a figure pinned behind the page: the library's Socrates, or another area's (data/figures.ts). `span` is how far the page
+ * scrolls while it gathers and becomes its object; `text` is its text's address (the Apology if none), `target` the object,
+ * `img2` the object's picture where it has one; `rest`: it has already gathered and holds still, behind an inner page */
+export function addStage(cv,{src,span,text,target="roll",img2,rest=false}){Engine.start();stage={cv,src,span,text,target,img2,rest};Engine.kick();return()=>{if(stage&&stage.cv===cv)stage=null}}
 export function addLetters(cv){Engine.start();flyCv=cv;Engine.flyPts=null;Engine.kick();return()=>{if(flyCv===cv)flyCv=null}}
 export function addFire(cv){Engine.start();fireCv=cv;Fire.pts=[];Engine.kick();return()=>{if(fireCv===cv)fireCv=null}}
 /** one Muse's lamp: its canvas, and the element that lights up (with `litClass`) when its flame is fanned */
@@ -601,8 +675,10 @@ export function track(el){Engine.start();const it={el,v:-1};Settle.items.push(it
  * @param {boolean} on
  * @param {{settles?: boolean, points?: () => number[]}} [o] */
 export function glide(on,{settles=false,points}={}){Glide.on_=on;Glide.settles=settles;Glide.pts=points||(()=>[]);if(!on)Glide.stop()}
-/** a book's emblem, its picture drawn in letters; `text` spells it out of the Apology instead (Socrates) */
-export async function emblem(cv,src,o){Engine.start();const [img]=await Promise.all([loadImg(src),o.text?loadApology():null]);if(!img||!cv.isConnected)return null;
+/** a book's emblem, its picture drawn in letters; `text` spells it out of a text instead: true for the Apology (Socrates),
+ * or a text's address (a figure's, data/figures.ts) */
+export async function emblem(cv,src,o){Engine.start();const [img,tx]=await Promise.all([loadImg(src),o.text?loadText(typeof o.text==="string"?o.text:APO_URL):null]);if(!img||!cv.isConnected)return null;
+  if(tx){if(!tx.raw)return null;o={...o,caps:capsOf(tx)}}
   if(document.fonts)await document.fonts.ready;const r=Letters(cv,img,o);r.start();return r}
 export function cover(cv,host,title,isDay){Engine.start();const c=Cover(cv,host,title,isDay);c.start();return c}
 export function refresh(){readTokens();Engine.kick()}
