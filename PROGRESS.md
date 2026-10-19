@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Gold and lamplight (2026-10-18; branch `claude/gold-and-lamplight-redesign-7v9ffm`, not live)
+## Gold and lamplight (2026-10-18; LIVE 2026-10-19 07:17 UTC, main e019272)
 The owner moved the site from B "Stone and torch" to design A "Gold and lamplight", plus a warm-paper light look. The agreed plan is
 in the project files at `redesign/GOLD-AND-LAMPLIGHT-PLAN.md`; before and after: https://claude.ai/artifact/2n2UaBhwUM8wzRzyGn2Yyd.
 - **The art behind the page**: each page's object is engraved in gold lines on Pompeian red (`pipeline/engrave.py` makes
