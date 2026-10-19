@@ -8,7 +8,6 @@ import { useRef } from "react";
 import { carvedCaps } from "@/lib/art/common";
 import { Carved, type CarvedOptions } from "@/lib/art/carve";
 import { carvingFontReady, useTorchlit } from "@/lib/art/part";
-import { useLight } from "@/lib/settings";
 
 type Kind = "room" | "line" | "title" | "cover" | "name" | "plinth" | "fragment";
 /** rows as even as can be, with no more than `most` letters in any row */
@@ -40,9 +39,7 @@ interface Props {
   day?: boolean;
 }
 
-export default function Carving({ text, kind, cols, delay, gain, className, day: dayPage }: Props) {
-  // daylight on the reader's Daylight page, or everywhere while the site is light
-  const day = useLight() || !!dayPage;
+export default function Carving({ text, kind, cols, delay, gain, className, day }: Props) {
   const cv = useRef<HTMLCanvasElement>(null);
   const caps = carvedCaps(text);
   useTorchlit(cv, async (c) => { await carvingFontReady(); return new Carved(c, { ...KINDS[kind](caps, cols), pal: day ? "day" : "night" }); },

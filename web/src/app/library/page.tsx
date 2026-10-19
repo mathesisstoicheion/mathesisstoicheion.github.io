@@ -6,7 +6,9 @@ import Page from "@/components/Page";
 import Library from "@/components/library/Library";
 import MineButtons from "@/components/library/MineButtons";
 import Stelai, { type Stele } from "@/components/library/Stelai";
-import { AREAS } from "@/config/areas";
+import PageHead from "@/components/PageHead";
+import FindJump from "@/components/FindJump";
+import { AREAS, trail } from "@/config/areas";
 import { hasTranslation, greekEditions, type Catalog } from "@/lib/catalog";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 import { MEDALLIONS } from "@/data/medallions";
@@ -54,12 +56,17 @@ const Paths = () => (
 export default function LibraryPage() {
   return (
     <Page>
+      {/* the page's head (PAGE-RULES.md): its main action is the library's search, which stands on the list it searches
+          and is brought into view from here; for the moderator alone, their private collection follows */}
+      <PageHead path={trail("library")} size="large" carve="ΜΟΥΣΕΙΟΝ" title={AREAS.library.name} greek={AREAS.library.greek}
+        purpose={<>{AREAS.library.origin} This one holds {WORKS.length.toLocaleString("en-GB")} Greek works, from Homer to the Byzantine scholars, {WORKS.filter(hasTranslation).length.toLocaleString("en-GB")} of them with an English translation beside the Greek.</>}
+        action={<FindJump target="library-search" label="Search the library">An author or a title: Plato, Odyssey…</FindJump>}>
+        <MineButtons />
+      </PageHead>
       <Suspense fallback={null}>
         <Library
           stelai={<Stelai groups={GROUPS} />}
           paths={<Paths />}
-          purpose={<>{AREAS.library.origin} This one holds {WORKS.length.toLocaleString("en-GB")} Greek works, from Homer to the Byzantine scholars, {WORKS.filter(hasTranslation).length.toLocaleString("en-GB")} of them with an English translation beside the Greek.</>}
-          headExtra={<MineButtons />}
         />
       </Suspense>
     </Page>

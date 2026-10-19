@@ -1,42 +1,46 @@
 "use client";
 /**
- * The reader's cover (design A, Gold and lamplight; the owner's choice of 2026-10-18): each book opens on a still,
- * lamplit cover, its author, its Greek title large, its English title under it, in a shaft of warm light from above,
- * with "Scroll to begin reading" at its foot. Nothing drifts or moves on it; as you scroll into the text the cover's
- * light fades away (one style value, set only while the cover is on screen). On paper, the light is a soft shadow.
+ * The reader's cover (design B, Stone and torch; DESIGN.md, Screens: Reader): the book's Greek title cut into the
+ * stone in capitals, as it would have been carved, and, for a book that has one, its medallion (data/medallions.ts).
+ * The torch lights the cover; as you scroll down into the text the torchlight fades away, and from then on nothing on
+ * the page moves. On the Daylight page the cover is pale limestone in an even daylight, and there is no torch.
  */
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useRef } from "react";
+import Carving from "@/components/art/Carving";
+import ReliefWindow from "@/components/art/ReliefWindow";
+import { carvedCaps } from "@/lib/art/common";
+import { medallionOf } from "@/data/medallions";
+import { setQuiet } from "@/lib/torch";
 import styles from "./Reader.module.css";
 
-export default function ReaderCover({ author, title, greek, children }: { author?: string; title: string; greek?: string | null; children?: ReactNode }) {
+export default function ReaderCover({ workId, greek, day }: { workId: string; greek?: string | null; day: boolean }) {
   const box = useRef<HTMLDivElement>(null);
+  const med = medallionOf(workId);
+  // a title too long to carve well (or with no Greek letters in it) is left to the heading below
+  const carve = greek && carvedCaps(greek).length >= 2 && carvedCaps(greek).length <= 42 ? greek : null;
+
+  // the torch lights the cover and fades as the cover scrolls away
   useEffect(() => {
-    const el = box.current;
+    const el = box.current?.closest("header") ?? box.current;
     if (!el) return;
-    let raf = 0, last = -1;
+    let raf = 0;
     const update = () => {
       raf = 0;
-      const r = el.getBoundingClientRect();
-      if (r.bottom < 0) return;
-      const v = Math.round(Math.max(0, Math.min(1, r.bottom / Math.max(1, r.height))) * 50) / 50;
-      if (v !== last) { last = v; el.style.setProperty("--atm", String(v)); }
+      if (day) { setQuiet(true, 0); return; }
+      const r = el.getBoundingClientRect(), h = Math.max(1, r.height);
+      setQuiet(true, Math.max(0, Math.min(1, r.bottom / h)) * 0.85);
     };
-    const on = () => { if (!raf) raf = requestAnimationFrame(update); };
+    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
     update();
-    addEventListener("scroll", on, { passive: true });
-    addEventListener("resize", on, { passive: true });
-    return () => { removeEventListener("scroll", on); removeEventListener("resize", on); if (raf) cancelAnimationFrame(raf); };
-  }, []);
+    addEventListener("scroll", onScroll, { passive: true });
+    addEventListener("resize", onScroll, { passive: true });
+    return () => { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); if (raf) cancelAnimationFrame(raf); setQuiet(true, 0); };
+  }, [day]);
+
   return (
-    <div ref={box} className={styles.rcover}>
-      <div className={styles.rcoverIn}>
-        {author && <p className={`label ${styles.rcoverBy}`}>{author}</p>}
-        <h1 className={styles.rcoverT}>
-          {greek && greek !== title ? <><span lang="grc">{greek}</span><span className={styles.rcoverEn}>{title}</span></> : title}
-        </h1>
-        {children}
-      </div>
-      <span className={`label ${styles.rcoverBegin}`} aria-hidden="true">Scroll to begin reading</span>
+    <div ref={box} className={styles.coverBox}>
+      {carve && <Carving text={carve} kind="cover" delay={0.1} day={day} className={`carve ${styles.coverCarve}`} />}
+      {med && <ReliefWindow pic={med.pic} kind="medallion" alt={med.alt} day={day} delay={0.3} frameClassName={styles.coverMedal} />}
     </div>
   );
 }

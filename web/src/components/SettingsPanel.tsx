@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettings, LIMITS, applySettings, type ThemePref, type MotionPref, type GreekFace, type TextFace, type Look } from "@/lib/settings";
+import { useSettings, LIMITS, applySettings, type ThemePref, type MotionPref, type GreekFace, type TextFace } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
@@ -11,7 +11,6 @@ import styles from "./SettingsPanel.module.css";
 
 // the site is dark only; the reader's page can be Night (the stone) or Daylight (pale limestone), against eye strain
 const PAGES: [ThemePref, string][] = [["dark", "Night"], ["light", "Daylight"]];
-const LOOKS: [Look, string][] = [["dark", "Lamplight"], ["light", "Paper"]];
 const MOTIONS: [MotionPref, string][] = [["auto", "Automatic"], ["reduce", "Reduced"], ["full", "Full"]];
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
@@ -112,11 +111,6 @@ export default function SettingsPanel() {
           <h2 id="settings-title">Settings</h2>
           <button type="button" className={styles.x} onClick={close} aria-label="Close settings">×</button>
         </div>
-
-        <section className={styles.group}>
-          <h3 className="label">The site</h3>
-          <Segmented label="The site's look" value={s.look} options={LOOKS} onChange={(look) => s.set({ look })} />
-        </section>
 
         <section className={styles.group}>
           <h3 className="label">Reading</h3>

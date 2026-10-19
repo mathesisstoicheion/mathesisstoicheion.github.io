@@ -195,7 +195,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [colsFor, setColsFor] = useState<{ work: string; c: Columns } | null>(null);
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
-  const daylight = useSettings((s) => isDaylight(s.theme) || s.look === "light");
+  const daylight = useSettings((s) => isDaylight(s.theme));
   const cases = useSettings((s) => s.cases);
   const known = useSettings((s) => s.known);
   const deck = useAcademy((s) => s.deck);
@@ -1412,19 +1412,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                   <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span></>
               ) : author && <><span aria-hidden="true">›</span><Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link></>}
             </nav>
-            {/* the cover: a still, lamplit page with the book's titles, which fades as you scroll into the text (one book open at a time) */}
-            {work && !split ? (
-              <ReaderCover author={author?.name} title={work.title} greek={grcText?.label}>
-                {work.orig && work.orig !== grcText?.label && <p className={styles.titleOrig}><OrigTitle work={work} full /></p>}
-              </ReaderCover>
-            ) : (
-              <>
-                <h1 className={styles.title}>{work?.title ?? " "}
-                  {grcText?.label && grcText.label !== work?.title && <span className={styles.titleGr} lang="grc">{grcText.label}</span>}
-                </h1>
-                {work?.orig && work.orig !== grcText?.label && <p className={styles.titleOrig}><OrigTitle work={work} full /></p>}
-              </>
-            )}
+            {/* the cover: the Greek title carved in the stone, and the book's medallion, lit by the torch (one book open at a time) */}
+            {work && !split && <ReaderCover workId={work.id} greek={grcText?.label} day={daylight} />}
+            <h1 className={styles.title}>{work?.title ?? " "}
+              {grcText?.label && grcText.label !== work?.title && <span className={styles.titleGr} lang="grc">{grcText.label}</span>}
+            </h1>
+            {work?.orig && work.orig !== grcText?.label && <p className={styles.titleOrig}><OrigTitle work={work} full /></p>}
           </>
         )}
         {floating && split && <p className={styles.floatTitle}>{work?.title}</p>}
@@ -1816,7 +1809,7 @@ export function ReaderBooks() {
   const nav = useNav();
   const split = !!nav.params.get("w2");
   // the reader's page: Night (the stone) or Daylight, the one light surface on the site (styles/tokens.css)
-  const daylight = useSettings((s) => isDaylight(s.theme) || s.look === "light");
+  const daylight = useSettings((s) => isDaylight(s.theme));
   const [picking, setPicking] = useState(false);
   // the private collection's window, opened from either book: a book chosen there opens in that pane
   const [mineFor, setMineFor] = useState<1 | 2 | null>(null);

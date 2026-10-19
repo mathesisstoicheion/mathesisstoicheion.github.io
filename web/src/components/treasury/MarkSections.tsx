@@ -71,15 +71,14 @@ export function ContinueReading({ t, limit }: { t: TreasuryState; limit?: number
 
 const KIND_LABEL: Record<Mark["kind"], string> = { note: "Note", favourite: "In your anthology", bookmark: "Bookmark", highlight: "Highlight", xref: "Cross-reference" };
 
-/** The latest of everything kept, newest first; with `query`, everything kept that matches it (the Treasury's search). */
-export function RecentSection({ t, query = "" }: { t: TreasuryState; query?: string }) {
+export function RecentSection({ t }: { t: TreasuryState }) {
   const stoa = useStoaTitles(Object.values(t.pageNotes).some((n) => n.kind === "stoa"));
   const latest = useMemo(() => {
-    const items: { t: number; key: string; hay: string; node: React.ReactNode }[] = [];
+    const items: { t: number; key: string; node: React.ReactNode }[] = [];
     for (const m of t.marks) {
       const w = workName(t.idx, m.work);
       items.push({
-        t: m.updated, key: m.id, hay: [m.text, m.quote, w.title, w.author, ...(m.tags ?? [])].join(" "), node: (
+        t: m.updated, key: m.id, node: (
           <>
             <span className="label">{KIND_LABEL[m.kind]} · {ago(m.updated)}</span>
             <p><Link href={readHref(m)} transitionTypes={["page-turn"]}>{w.author ? `${w.author}, ` : ""}{w.title} {rangeText(m)}</Link></p>
@@ -89,7 +88,7 @@ export function RecentSection({ t, query = "" }: { t: TreasuryState; query?: str
       });
     }
     for (const c of Object.values(t.deck)) if (c.source === "saved") items.push({
-      t: c.added, key: `w:${c.id}`, hay: `${c.lemma} ${c.gloss}`, node: (
+      t: c.added, key: `w:${c.id}`, node: (
         <>
           <span className="label">Saved word · {ago(c.added)}</span>
           <p><Link href={wordHref(c.lemma)} className={styles.lemma} lang="grc" transitionTypes={["page-turn"]}>{c.lemma}</Link> <span className="muted">{c.gloss}</span></p>
@@ -97,7 +96,7 @@ export function RecentSection({ t, query = "" }: { t: TreasuryState; query?: str
       ),
     });
     for (const n of Object.values(t.pageNotes)) items.push({
-      t: n.updated, key: n.id, hay: `${n.target} ${n.text}`, node: (
+      t: n.updated, key: n.id, node: (
         <>
           <span className="label">{n.kind === "author" ? "Note on an author" : n.kind === "stoa" ? "Note in the Painted Stoa" : "Note on a word"} · {ago(n.updated)}</span>
           <p>{n.kind === "author"
@@ -109,16 +108,8 @@ export function RecentSection({ t, query = "" }: { t: TreasuryState; query?: str
         </>
       ),
     });
-    const q = fold(query).trim();
-    return items.filter((x) => !q || fold(x.hay).includes(q)).sort((a, b) => b.t - a.t).slice(0, q ? 60 : 9);
-  }, [t.marks, t.deck, t.pageNotes, t.idx, stoa, query]);
-
-  if (query.trim()) return (
-    <div aria-live="polite">
-      <h2>{latest.length ? `Found ${latest.length === 60 ? "60 or more" : latest.length}` : "Nothing kept matches that"}</h2>
-      {latest.length > 0 && <ol className={styles.cards}>{latest.map((x, i) => <li key={x.key} className={styles.card} style={{ "--i": i } as React.CSSProperties}>{x.node}</li>)}</ol>}
-    </div>
-  );
+    return items.sort((a, b) => b.t - a.t).slice(0, 9);
+  }, [t.marks, t.deck, t.pageNotes, t.idx, stoa]);
 
   return (
     <>

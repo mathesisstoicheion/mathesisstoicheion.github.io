@@ -286,18 +286,3 @@
 .private, .keep { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* the moulding uses the outline, so the link card gives the focus ring back */
 .private:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
-/* ------------------------------------------------ design A: Arrange (lib/treasury-layout.ts) */
-.arrangeBar { display: flex; justify-content: flex-end; margin-bottom: calc(var(--space-5) * -1); }
-.arrange { display: grid; gap: var(--space-4); padding: var(--space-5); background: var(--surface); box-shadow: inset 0 0 0 1px var(--gold); }
-.arrange ol, .ownList { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
-.arrange ol li, .ownList li { display: flex; align-items: center; gap: var(--space-2); padding: var(--space-2) 0; border-bottom: 1px solid var(--rule); }
-.arrange ol li > span, .ownList li > span { flex: 1; }
-.arrange li[data-hidden] > span { color: var(--ink-3); text-decoration: line-through; }
-.ownList small { color: var(--ink-3); margin-left: var(--space-2); }
-.ownForm { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
-.ownForm > .label { flex-basis: 100%; }
-.ownForm input { flex: 1 1 12rem; }
-.pick { display: grid; gap: var(--space-2); max-width: 28rem; }
-.back { all: unset; cursor: pointer; font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: var(--space-4); display: inline-block; }
-.back:hover { color: var(--gold-hi); }

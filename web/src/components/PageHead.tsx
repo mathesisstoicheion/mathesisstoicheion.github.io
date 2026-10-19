@@ -1,7 +1,9 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
+import Carving from "@/components/art/Carving";
 import PagePiece from "@/components/art/PagePiece";
 import type { Step } from "@/config/areas";
+import { carvedCaps } from "@/lib/art/common";
 
 /**
  * The one head every page opens with (PAGE-RULES.md, rule 1, agreed with the owner on 2026-10-18), in this order: the
@@ -16,10 +18,8 @@ import type { Step } from "@/config/areas";
  * the statue (rule 2); `children` follow the statue. The statue is held twice, once beside the title for a computer and
  * once after the action for a phone; only the one shown is ever loaded and drawn (components/art/PagePiece.tsx).
  */
-export default function PageHead({ path, kicker, title, greek, purpose, action, size = "short", piece, pieceAction, steady, bare, desk = true, className, children }: {
+export default function PageHead({ path, carve, title, greek, purpose, action, size = "short", piece, steady, bare, desk = true, className, children }: {
   path: Step[];
-  /** a word or two over the title, naming the card ("At a glance") */
-  kicker?: ReactNode;
   /** the words cut into the wall: the Greek name, unless the page carves something else (left out if too long) */
   carve?: string | null;
   title: ReactNode;
@@ -30,8 +30,6 @@ export default function PageHead({ path, kicker, title, greek, purpose, action, 
   /** the statue, when the page's address does not choose it (data/pieces.ts); null for none */
   piece?: { piece: string; why?: string } | null;
   steady?: boolean;
-  /** a button under the page's engraving (an author's "Read his works") */
-  pieceAction?: ReactNode;
   /** inside a column that is already the page's width (no `wrap` of its own) */
   bare?: boolean;
   /** false on a page that is a tool (a round of questions): on a computer its statue stands beside the tool instead */
@@ -39,6 +37,8 @@ export default function PageHead({ path, kicker, title, greek, purpose, action, 
   className?: string;
   children?: ReactNode;
 }) {
+  const cut = carve === undefined ? greek : carve;
+  const n = cut ? carvedCaps(cut).length : 0;
   return (
     <header className={`${bare ? "" : "wrap "}page-head ph ph-${size}${className ? ` ${className}` : ""}`}>
       <p className="ph-path label">
@@ -49,15 +49,15 @@ export default function PageHead({ path, kicker, title, greek, purpose, action, 
           </span>
         ))}
       </p>
-      {kicker && <p className="ph-kicker label">{kicker}</p>}
-      {desk && <PagePiece className="piece-desk" spec={piece} steady={steady} after={pieceAction} />}
+      {cut && n >= 2 && n <= 42 && <Carving text={cut} kind={size === "large" ? "title" : "name"} delay={0.15} className={`carve ph-carve${size === "large" ? " area-carve" : " page-carve"}`} />}
+      {desk && <PagePiece className="piece-desk" spec={piece} steady={steady} />}
       <h1 className="ph-title">
         {title}
         {greek && <span className="ph-greek" lang="grc">{greek}</span>}
       </h1>
       {purpose && <p className="ph-purpose">{purpose}</p>}
       {action && <div className="ph-action">{action}</div>}
-      <PagePiece className="piece-phone" spec={piece} steady={steady} after={pieceAction} />
+      <PagePiece className="piece-phone" spec={piece} steady={steady} />
       {children}
     </header>
   );
