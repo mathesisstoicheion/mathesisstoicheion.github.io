@@ -10,18 +10,20 @@
    a few visual sacrifices for better performance, and a full performance mode"): Full beauty is the sample exactly;
    Balanced draws at the sample's own sharpness only while something moves and otherwise at half the frame rate, with
    fewer floating letters and dust motes; Performance is the sample's own "reduce motion" path (everything drawn once,
-   holding still), which the sample already had.
+   holding still), which the sample already had, made to keep its word: what holds still is not drawn again as the page
+   scrolls (a window, the floating letters and the library's Socrates only when their size or the colours change; the
+   reader's cover only fades), and everything is drawn at the screen's own sharpness, as in Balanced.
  - The wheel's settling at the nearest section can be switched off (the owner, 2026-10-16: "no snapping").
  It is plain JavaScript, as the sample was, and runs in the browser only (components/a/ import it there). */
 /* eslint-disable */
-let reduce=false,lite=false;
+let reduce=false,lite=false,gen=0;   // gen: counts changes of colour, so Performance knows to draw again
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 
 /* ---------- colours and faces, read once per page, never per frame ---------- */
 let T={},F={};
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function readTokens(){T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room")};
+function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room")};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
 /* ---------- the Apology (Burnet's Oxford text, via Perseus): the library's Socrates and the Socrates emblems ---------- */
@@ -65,7 +67,7 @@ function wrapText(s,n){const out=[];let line="";
   for(const w of s.split(" ")){if(!line)line=w;else if(line.length+1+w.length<=n)line+=" "+w;else{out.push(line.padEnd(n));line=w}
     while(line.length>n){out.push(line.slice(0,n));line=line.slice(n)}}
   if(line)out.push(line.padEnd(n));return out}
-const dprCap=()=>lite?1:1.5;
+const dprCap=()=>lite||reduce?1:1.5;
 
 /* Scene: the coin, engraved in gold on Pompeian red, laid out in viewport space */
 function CoinScene(img){
@@ -263,7 +265,7 @@ function SocScene(img){
           if(!reduce)idle(x,L,t,off,asm,vw,vh)}}}
     else{x.fillStyle=T.room;x.fillRect(view.x,view.y,view.w,view.h);paint(x,L,view,t,off,asm,null)}
     // the lamp: a warm glow under the pointer, or under each finger (and drifting by itself when nothing touches)
-    const lamps=ptr.length?ptr:[{x:L.cx+L.boxW*.32*Math.sin(t*.33+prog*4),y:L.cy+L.boxH*.26*Math.cos(t*.27+prog*3),w:1}];
+    const lamps=ptr.length&&!reduce?ptr:[{x:L.cx+L.boxW*.32*Math.sin(reduce?0:t*.33+prog*4),y:L.cy+L.boxH*.26*Math.cos(reduce?0:t*.27+prog*3),w:1}];
     const fk=reduce?1:.82+.1*Math.sin(t*9.7)+.08*Math.sin(t*23.3+1.1),R=Math.max(L.boxW,L.boxH)*.5*(lamps.length>1?.75:1);
     x.globalCompositeOperation="lighter";
     for(const lp of lamps){const a=.17*fk*lp.w/Math.sqrt(lamps.length),gr=x.createRadialGradient(lp.x,lp.y,0,lp.x,lp.y,R);gr.addColorStop(0,`rgba(255,150,60,${a.toFixed(3)})`);gr.addColorStop(.5,`rgba(255,120,40,${(a*.3).toFixed(3)})`);gr.addColorStop(1,"rgba(255,120,40,0)");
@@ -320,7 +322,7 @@ const Settle={items:[],
     const it={el,v:-1};this.items.push(it);Engine.kick();
     return()=>{this.items=this.items.filter(x=>x!==it);delete el.dataset.settle;el.innerHTML=before}},
   frame(vh){for(const it of this.items){const r=it.el.getBoundingClientRect();if(r.width<1)continue;if(r.bottom<-40||r.top>vh+40)continue;
-    const v=Math.round(clamp((vh*.94-r.top)/(vh*.4),0,1)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
+    const v=reduce?1:Math.round(clamp((vh*.94-r.top)/(vh*.4),0,1)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
 };
 
 /* ---------- the engine: draws every visible window, the stage, the floating letters and the sparks ---------- */
@@ -359,8 +361,9 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     // Balanced: at half the frame rate while nothing moves (the slow ripple, the drifting lamp), at full rate while it does
     if(lite&&!reduce&&t-busyT>400&&FING.size===0&&t-this.lastDraw<31){this.raf=requestAnimationFrame(tt=>this.frame(tt));return}
     this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame(vh);
-    if(stage){const sc=sceneFor(stage.src,"soc");if(sc){const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
-      sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,clamp(scrollY/Math.max(1,stage.span()),0,1),"scrub",PTS)}}
+    if(stage){const sc=sceneFor(stage.src,"soc");if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),key=reduce?`${vw}x${vh}|${prog>.7}|${gen}`:"";
+      if(!reduce||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
+        sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS)}}}
     if(wins.size)this.iris(el,vw,vh);
     if(flyCv)this.letters(el,vw,vh);
     if(fireCv)Fire.frame(fireCv,el,dt,vw,vh);
@@ -374,6 +377,7 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
   iris(el,vw,vh){const intro=reduce?1:clamp((performance.now()-this.introT0)/1000-.4,0,3.4)/3.4;
     for(const w of wins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
       const sc=sceneFor(w.src,w.kind);if(!sc)continue;
+      const key=reduce?`${Math.round(r.width)}x${Math.round(r.height)}|${gen}`:"";if(reduce&&w.drawn===key)continue;w.drawn=key;
       const cv=w.cv;const dpr=this.fitCanvas(cv,r.width,r.height);const x=cv.getContext("2d");
       x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,r.width,r.height);
       // it is fully open once the window's middle is a little above the screen's; a window near the foot of the page,
@@ -381,7 +385,7 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
       const mid=r.top+r.height/2,left=Math.max(0,document.documentElement.scrollHeight-vh-scrollY),end=Math.max(vh*.44,mid-left),span=vh*.96-end;
       const sm0=k=>k*k*(3-2*k);let p=reduce||span<40?1:clamp((vh*.96-mid)/span,0,1);
       if(!reduce&&mid+scrollY<vh*.8)p=.62*sm0(intro)+.38*clamp(scrollY/(vh*.45),0,1);
-      const an={cx:r.width/2,cy:r.height/2-(mid-vh/2)/vh*r.height*.08,w:r.width,h:r.height};
+      const an={cx:r.width/2,cy:r.height/2-(reduce?0:(mid-vh/2)/vh*r.height*.08),w:r.width,h:r.height};
       const S=Math.min(an.w*1.2,an.h*1.05),Rc=S*.43,Rmax=Math.hypot(r.width/2,r.height/2+Math.abs(an.cy-r.height/2))+2;
       const sm=k=>k*k*(3-2*k),a=sm(clamp(p/.42,0,1)),b=sm(clamp((p-.68)/.32,0,1));
       const R=b>0?Rc+(Rmax-Rc)*b:Rc*a;
@@ -400,13 +404,15 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
   // the flying letters behind the home page: few, faint and slow; they move at three speeds as you scroll, and step aside
   // from the pointer, catching a little of its light as they pass
   flyPts:null,
-  letters(t,vw,vh){const cv=flyCv;const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
-    const n=lite?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[(rnd()*GL.length)|0],ox:0,oy:0,p:rnd()*6,lit:0})}}
+  flyKey:"",
+  letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
+    const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
+    const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[(rnd()*GL.length)|0],ox:0,oy:0,p:rnd()*6,lit:0})}}
     x.fillStyle=T.gold;x.textBaseline="middle";x.textAlign="center";
     const SP=[.12,.3,.6],SZ=[10,14,21],AL=[.06,.1,.15],R=130;
     for(let z=0;z<3;z++){x.font=`${SZ[z]}px ${F.gentium}`;
-      for(const d of this.flyPts){if(d.z!==z)continue;let px=d.u*vw,py=((d.v*vh-scrollY*SP[z])%(vh*3)+vh*3)%(vh*3)-vh*.5;
-        if(py<-30||py>vh+30)continue;px+=Math.sin(t*.16+d.p)*6*(z+1);py+=Math.cos(t*.11+d.p)*3*(z+1);
+      for(const d of this.flyPts){if(d.z!==z)continue;let px=d.u*vw,py=((d.v*vh-(reduce?0:scrollY*SP[z]))%(vh*3)+vh*3)%(vh*3)-vh*.5;
+        if(py<-30||py>vh+30)continue;if(!reduce){px+=Math.sin(t*.16+d.p)*6*(z+1);py+=Math.cos(t*.11+d.p)*3*(z+1)}
         if(!reduce)for(const pp of PTS){const dx=px+d.ox-pp.x,dy=py+d.oy-pp.y,dd=Math.hypot(dx,dy);
           if(dd<R){const q=(1-dd/R)*pp.w;d.ox+=dx/(dd||1)*q*(.6+z*.5);d.oy+=dy/(dd||1)*q*(.6+z*.5);d.lit=Math.max(d.lit,q)}}
         d.ox*=.95;d.oy*=.95;d.lit*=.96;
@@ -520,11 +526,11 @@ function Letters(cv,img,o){
 /* ---------- the reader's opening: a lamp-lit room with dust in a shaft of light ----------
    It lasts only until you scroll into the text: the room fades and then stops moving, so reading is calm. */
 function Cover(cv,host,title,isDay){
-  let raf=0,motes=null,glyphs=null,t0=0,gone=false;
+  let raf=0,motes=null,glyphs=null,t0=0,gone=false,pend=0,shown=false;
   function draw(t){if(!cv.isConnected)return false;const w=host.clientWidth,h=host.clientHeight;
     const fade=clamp(1-scrollY/(h*.6),0,1);host.style.setProperty("--atm",fade.toFixed(3));
     const dpr=Math.min(dprCap(),devicePixelRatio||1);if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)){cv.width=Math.round(w*dpr);cv.height=Math.round(h*dpr)}
-    const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);
+    const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,w,h);shown=fade>0;
     if(fade<=0)return false;if(isDay())return true;
     const nm=lite?60:110;if(!motes||motes.length!==nm){motes=[];for(let k=0;k<nm;k++)motes.push({u:Math.random(),v:Math.random(),z:Math.random(),p:Math.random()*6.3});
       glyphs=[...(title||"")].filter(c=>c.trim()).map((c,i)=>({c,u:Math.random(),v:Math.random(),p:i*.7,s:60+Math.random()*120}))}
@@ -550,9 +556,13 @@ function Cover(cv,host,title,isDay){
     x.globalAlpha=1;x.globalCompositeOperation="source-over";return true}
   const loop=t=>{if(gone){raf=0;return}raf=draw((t-t0)/1000)?requestAnimationFrame(loop):0};
   const start=()=>{cancelAnimationFrame(raf);raf=0;t0=performance.now();if(reduce){draw(0);return}raf=requestAnimationFrame(loop)};
-  const wake=()=>{if(!raf&&!gone&&!reduce){t0=t0||performance.now();raf=requestAnimationFrame(loop)}else if(reduce)draw(0)};
+  // Performance: the room holds still, so scrolling only fades it (once a frame); it is drawn again only at a new size,
+  // or when it comes back into view after being cleared
+  const still=()=>{pend=0;if(gone||!cv.isConnected)return;const w=host.clientWidth,h=host.clientHeight,dpr=Math.min(dprCap(),devicePixelRatio||1),fade=clamp(1-scrollY/(h*.6),0,1);
+    host.style.setProperty("--atm",fade.toFixed(3));if(cv.width!==Math.round(w*dpr)||cv.height!==Math.round(h*dpr)||(fade>0&&!shown))draw(0)};
+  const wake=()=>{if(!raf&&!gone&&!reduce){t0=t0||performance.now();raf=requestAnimationFrame(loop)}else if(reduce&&!pend)pend=requestAnimationFrame(still)};
   addEventListener("scroll",wake,{passive:true});
-  return {start,wake,stop(){gone=true;cancelAnimationFrame(raf);removeEventListener("scroll",wake)}};
+  return {start,wake,stop(){gone=true;cancelAnimationFrame(raf);cancelAnimationFrame(pend);removeEventListener("scroll",wake)}};
 }
 
 /* ---------- what the site's pages call ---------- */

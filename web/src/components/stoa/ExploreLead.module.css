@@ -31,7 +31,7 @@
 }
 /* the towns appear one after another, the most named first */
 /* (the site's "Reduce animation" setting stops these, globals.css) */
-.town { animation: town 0.6s var(--ease) both; animation-delay: calc(0.25s + var(--i) * 90ms); transform-box: fill-box; transform-origin: center; }
+.town { animation: town 0.6s var(--ease) backwards; animation-delay: calc(0.25s + var(--i) * 90ms); transform-box: fill-box; transform-origin: center; }
 @keyframes town { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
 
 .bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; background: var(--field); box-shadow: var(--field-edge); }
