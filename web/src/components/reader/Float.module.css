@@ -66,11 +66,10 @@
 
 /* minimised: a tab with the book and passage */
 .tab {
-  position: fixed; z-index: 48; right: 16px; bottom: calc(16px + max(var(--tabbar-vis), env(safe-area-inset-bottom, 0px))); display: flex; align-items: center; gap: 2px; max-width: min(420px, calc(100vw - 32px));
+  position: fixed; z-index: 48; right: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 2px; max-width: min(420px, calc(100vw - 32px));
   padding: 4px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); box-shadow: 0 18px 40px -18px var(--shadow);
-  animation: tabIn 0.35s var(--ease) backwards; transition: bottom 0.35s var(--ease);
+  animation: tabIn 0.35s var(--ease) backwards;
 }
-:global(html[data-hdr="hidden"]) .tab { --tabbar-vis: 0px; }
 .tab[data-snap="left"], .tab[data-snap="tl"], .tab[data-snap="bl"] { right: auto; left: 16px; }
 @keyframes tabIn { from { transform: translateY(20px) scale(0.9); opacity: 0; } }
 .tabMain { display: flex; align-items: center; gap: 10px; min-width: 0; padding: 6px 12px 6px 8px; border: 0; background: transparent; color: inherit; border-radius: var(--radius); text-align: left; }
@@ -85,8 +84,7 @@
 .tabBtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 @media (max-width: 640px) {
-  /* on a phone the window becomes a sheet across the bottom of the screen, above the phone bar */
-  .win { transform: none !important; left: 0; right: 0; top: auto; bottom: var(--tabbar-vis); transition: bottom 0.35s var(--ease); width: 100% !important; height: min(62vh, 560px) !important; border-radius: var(--radius); }
-  :global(html[data-hdr="hidden"]) .win { --tabbar-vis: 0px; }
+  /* on a phone the window becomes a sheet across the bottom of the screen */
+  .win { transform: none !important; left: 0; right: 0; top: auto; bottom: 0; width: 100% !important; height: min(62vh, 560px) !important; border-radius: var(--radius); }
   .edge { display: none; }
 }

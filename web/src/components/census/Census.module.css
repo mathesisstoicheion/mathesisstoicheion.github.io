@@ -128,7 +128,7 @@
 .threads path[data-on] { stroke: var(--accent); stroke-width: 2.4; opacity: 1; }
 @keyframes thread { from { stroke-dashoffset: 1; } }
 
-.side { scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: auto; overscroll-behavior: contain; }
+.side { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: auto; overscroll-behavior: contain; }
 :global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
 .hint { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; }
 .hint p { margin: 0; }

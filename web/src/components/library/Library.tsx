@@ -14,7 +14,10 @@ import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import { AZRail } from "./AZList";
 import { bestMatch, nameMatch } from "./az";
+import { useLibQuery, type Tr } from "./libQuery";
+import SettleText from "@/components/a/SettleText";
 import styles from "./Library.module.css";
+import A from "@/components/a/a.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
 /**
@@ -28,9 +31,7 @@ const START = [
 ];
 
 type Sort = "author" | "title" | "period";
-type Tr = "all" | "with" | "greek";
 const SORTS: [Sort, string][] = [["author", "Author A–Z"], ["title", "Title A–Z"], ["period", "By period"]];
-const TRS: [Tr, string][] = [["all", "All"], ["with", "With translation"], ["greek", "Greek only"]];
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** How many authors (or titles) a list needs before the rail of letters stands beside it. */
 const RAIL_FROM = 20;
@@ -107,19 +108,27 @@ interface Row { a: CatAuthor; works: CatWork[]; from: number | null; to: number 
 interface Group { key: string; label: string; short: string; rows?: Row[]; titles?: { w: CatWork; a: CatAuthor }[] }
 
 /**
- * The library (design B, Stone and torch): the page's opening words (`hero`) beside the search, the order and the
- * filters, then the wall of stelai (`stelai`, hidden while searching), then the catalogue.
+ * Every work in the library (design A's list, under its famous books): the order and the filters, then every author with
+ * their works. The search and its English filter stand at the top of the page, under its title (components/a/LibSearch.tsx);
+ * they reach this list through useLibQuery.
  */
-export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?: ReactNode }) {
+export default function Library({ paths }: { paths?: ReactNode }) {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
   // the search, the order and the filters start from the address and are written back to it (replacing, not adding,
   // a history entry), so Back returns to the same list and a filtered list can be shared as a link
   const pick = <T extends string>(k: string, ok: readonly T[], d: T): T => { const v = params.get(k) as T | null; return v && ok.includes(v) ? v : d; };
-  const [q, setQ] = useState(params.get("q") ?? "");
+  const { q, tr, setQ, setTr } = useLibQuery();
+  // the search and its filter start from the address too (they are kept outside this list, so they are set here once)
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    setQ(params.get("q") ?? "");
+    setTr(pick("tr", ["all", "with", "greek"] as const satisfies readonly Tr[], "all"));
+    setReady(true);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [sort, setSort] = useState<Sort>(pick("sort", ["author", "title", "period"] as const, "author"));
-  const [tr, setTr] = useState<Tr>(pick("tr", ["all", "with", "greek"] as const, "all"));
   const [family, setFamily] = useState(params.get("genre") ?? "");
   const [period, setPeriod] = useState(params.get("period") ?? "");
   const [dialect, setDialect] = useState(params.get("dialect") ?? "");
@@ -138,11 +147,12 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
   const [more, setMore] = useState(false);                        // phones: the extra filters shown
   const query = useDeferredValue(q);
   useEffect(() => {
+    if (!ready) return;
     const u = new URL(location.href);
     const set = (k: string, v: string, d = "") => { if (v && v !== d) u.searchParams.set(k, v); else u.searchParams.delete(k); };
     set("q", query.trim()); set("sort", sort, "author"); set("tr", tr, "all"); set("genre", family); set("period", period); set("dialect", dialect); set("vocab", vocab);
     if (u.href !== location.href) history.replaceState(history.state, "", u);
-  }, [query, sort, tr, family, period, dialect, vocab]);
+  }, [ready, query, sort, tr, family, period, dialect, vocab]);
   useEffect(() => { loadCatalog().then(setIdx, (e: Error) => setError(e.message)); loadWorksMeta().then(setMeta); loadDifficulty().then(setDiff); loadAuthorsMeta().then(setWho); loadAuthorNames().then(setNames); }, []);
   // "where to begin" stays as the reader left it (the box itself holds whether it is open)
   const beginRef = useRef<HTMLDetailsElement>(null);
@@ -295,39 +305,35 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
 
   return (
-    <div className={`wrap ${styles.lib}`}>
-      {/* where to begin: a few famous books, each a carved stele, and the site's suggestions */}
-      {stelai && <div className={styles.stelai}>{stelai}</div>}
-      <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
-        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
-        <div className={styles.levels}>
-          {START.map((s) => (
-            <div key={s.level} className={styles.level}>
-              <h2>{s.level}</h2>
-              <p className="muted">{s.why}</p>
-              <ul>
-                {s.works.map(([id, label]) => (
-                  <li key={id}><Link href={`/read?w=${id}`} transitionTypes={["page-turn"]}>{label} <span aria-hidden="true">→</span></Link></li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-        {/* the reading paths (data/paths.ts), short routes through the library in a sensible order; once on the home page */}
-        {paths && <><h2 className={`label ${styles.pathsH}`}>Where to read next: six paths, each in a sensible order</h2>{paths}</>}
-      </details>
-
-      {/* every work: the search, the order and the filters stand on the list they sort and narrow (the owner, 2026-10-17:
-          the search "separated from the A to Z list ... isn't intuitive") */}
+    <div className={A.wrap} style={{ paddingBottom: 60 }}><div className={`${A.blk} ${styles.lib}`}>
+      {/* every work: the order and the filters stand on the list they sort and narrow (the owner, 2026-10-17: the search
+          "separated from the A to Z list ... isn't intuitive"); the search itself is at the top of the page, and while it is
+          used the famous books stand aside, so this list comes up right under it */}
       <section id="library-list" className={styles.find} aria-labelledby="library-list-h">
-        <h2 id="library-list-h" className={styles.findH}>Every work in the library</h2>
-        <div className={styles.searchBox}>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-          <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)}
-            placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" />
+        <div className={A["grp-h"]}>
+          <SettleText as="h2" id="library-list-h" className={A.mono} text="Every work in the library" />
+          <span className={A.mono}>{idx ? (narrowed ? `${n(shown.works)} of ${n(total.works)} works` : `${n(total.works)} works`) : ""}</span>
         </div>
+        <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
+          <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
+          <div className={styles.levels}>
+            {START.map((x) => (
+              <div key={x.level} className={styles.level}>
+                <h3>{x.level}</h3>
+                <p className="muted">{x.why}</p>
+                <ul>
+                  {x.works.map(([id, label]) => (
+                    <li key={id}><Link href={`/read?w=${id}`} transitionTypes={["page-turn"]}>{label} <span aria-hidden="true">→</span></Link></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+          {/* the reading paths (data/paths.ts), short routes through the library in a sensible order */}
+          {paths && <><h3 className={`label ${styles.pathsH}`}>Where to read next: six paths, each in a sensible order</h3>{paths}</>}
+        </details>
 
-        {/* phones: the order and every filter wait behind one button, so the list starts high on the screen */}
+        {/* the order and every filter wait behind one button, so the list starts high on the screen */}
         <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
           Order and filters{active ? ` (${active} on)` : ""}
         </button>
@@ -335,9 +341,6 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
         <div className={styles.controls}>
           <div className="segmented" role="radiogroup" aria-label="Order">
             {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
-          </div>
-          <div className="segmented" role="radiogroup" aria-label="Translation">
-            {TRS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
           </div>
           <div className={styles.selects} role="group" aria-label="More filters">
             <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
@@ -437,7 +440,7 @@ export default function Library({ stelai, paths }: { stelai?: ReactNode; paths?:
         </div>
         </div>
       </section>
-    </div>
+    </div></div>
   );
 }
 

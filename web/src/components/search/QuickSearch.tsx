@@ -233,8 +233,8 @@ function Box({ onClose }: { onClose: () => void }) {
       case "face-sans": s.set({ greekFace: "sans" }); break;
       case "text-sans": s.set({ textFace: "sans" }); break;
       case "text-serif": s.set({ textFace: "serif" }); break;
-      case "motion-reduce": s.set({ motion: "reduce" }); break;
-      case "motion-auto": s.set({ motion: "auto" }); break;
+      case "motion-reduce": s.set({ level: "performance" }); break;
+      case "motion-auto": s.set({ level: "full" }); break;
       case "settings": onClose(); useUI.getState().openSettings(); return;
     }
     useUI.getState().showToast(`${ACTIONS.find((a) => a.id === id)!.label}: done.`);

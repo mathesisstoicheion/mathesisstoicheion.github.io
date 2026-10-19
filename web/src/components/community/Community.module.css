@@ -130,7 +130,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .tagRow { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .quoteMark { font-style: italic; }
 
-.rules { margin-top: 20px; padding: 22px 26px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); scroll-margin-top: calc(var(--hdr-h) + 16px); }
+.rules { margin-top: 20px; padding: 22px 26px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 .rules h2 { margin: 0 0 10px; font-size: var(--step-2); }
 .rules ol { margin: 0 0 12px; padding-left: 1.3em; display: grid; gap: 6px; }
 
@@ -172,7 +172,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .replies h2, .replyBox h2 { font-size: var(--step-1); margin: 0 0 8px; }
 .replyList, .subReplies, .argList { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .subReplies { margin: 10px 0 0 22px; padding-left: 16px; box-shadow: var(--cut-left); }
-.reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-h) + 16px); }
+.reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 .reply:target { animation: flash 1.6s var(--ease); }
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
 .isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); }

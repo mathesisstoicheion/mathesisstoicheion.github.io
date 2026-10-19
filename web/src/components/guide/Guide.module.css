@@ -174,12 +174,11 @@
 
 /* the first visit's invitation, in a corner of the home page */
 .invite {
-  position: fixed; z-index: 65; left: 16px; bottom: calc(16px + max(var(--tabbar-vis, 0px), env(safe-area-inset-bottom, 0px)));
+  position: fixed; z-index: 65; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   width: min(340px, calc(100vw - 32px)); padding: 14px 16px; display: grid; gap: 10px;
   background: var(--surface); box-shadow: var(--slab-edge), var(--inlay-top); border-radius: var(--radius);
   animation: inviteIn 0.6s var(--ease) backwards;
 }
-:global(html[data-hdr="hidden"]) .invite { --tabbar-vis: 0px; }
 .invite p { margin: 0; line-height: 1.5; }
 .invite div { display: flex; flex-wrap: wrap; gap: 8px; }
 @keyframes inviteIn { from { opacity: 0; transform: translateY(16px); } }

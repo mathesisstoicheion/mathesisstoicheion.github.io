@@ -5,6 +5,10 @@ import { persist, createJSONStorage, type StateStorage } from "zustand/middlewar
  *  strain. The site itself is dark only (DESIGN.md); "auto" and "dark" both mean Night. */
 export type ThemePref = "auto" | "light" | "dark";
 export type MotionPref = "auto" | "reduce" | "full";
+/** How much the art moves (the owner, 2026-10-19: "Just do 3 levels of animation. One with the full beauty and intricate
+ *  design and animation. One with a few visual sacrifices for better performance, and a full performance mode, for older
+ *  computers and older phones. Main focus is the beauty"). Performance also stills every other animation on the site. */
+export type AnimLevel = "full" | "balanced" | "performance";
 export type Columns = "both" | "greek" | "trans";
 export type Pronunciation = "attic" | "erasmian" | "modern";
 /** The typeface of Greek text, and of English reading text. Headings keep the site's own (GFS Didot). */
@@ -16,7 +20,8 @@ export const MARKER_KINDS: MarkerKind[] = ["note", "bookmark", "highlight", "fav
 
 export interface Settings {
   theme: ThemePref;
-  motion: MotionPref;
+  level: AnimLevel;
+  motion: MotionPref;   // follows `level`: "reduce" for Performance, otherwise "auto" (the device's own setting decides)
   greekSize: number;   // rem
   leading: number;     // unitless line height for reading text
   columns: Columns;    // reader: Greek and translation, or one of them
@@ -26,6 +31,7 @@ export interface Settings {
   metre: boolean;      // reader aid: show the scansion of verse
   tryFirst: boolean;   // reader aid: each translation stays hidden until tapped, so the Greek is read first
   fitLines: boolean;   // reader aid: verse lines shrink to fit the width instead of wrapping
+  lamp: boolean;       // reader (design A): the passage being read is lit, the others stand a little in the dark
   vibrate: boolean;    // phones: a short vibration on a save, a bookmark, a right answer (lib/haptics.ts)
   pron: Pronunciation; // pronunciation system shown in the Academy
   markers: MarkerKind[];   // reader: which kinds of marker to show beside the scroll bar
@@ -33,7 +39,7 @@ export interface Settings {
   textFace: TextFace;
 }
 
-export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
+export const DEFAULTS: Settings = { theme: "auto", level: "full", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, lamp: true, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
 export const LIMITS = {
   greekSize: { min: 1, max: 2, step: 0.0625 },
   leading: { min: 1.4, max: 2.2, step: 0.1 },
@@ -60,6 +66,7 @@ export const useSettings = create<SettingsStore>()(
       ...DEFAULTS,
       set: (patch) => set((s) => ({
         ...patch,
+        ...(patch.level ? { motion: patch.level === "performance" ? "reduce" as const : "auto" as const } : {}),
         greekSize: clamp(patch.greekSize ?? s.greekSize, LIMITS.greekSize),
         leading: clamp(patch.leading ?? s.leading, LIMITS.leading),
       })),
@@ -68,14 +75,19 @@ export const useSettings = create<SettingsStore>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
-      partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace, textFace }),
+      partialize: ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace }) => ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace }),
+      // settings saved before the three levels: "reduce motion" becomes Performance
+      merge: (saved, current) => {
+        const p = (saved ?? {}) as Partial<Settings>;
+        return { ...current, ...p, level: p.level ?? (p.motion === "reduce" ? "performance" : "full") };
+      },
       skipHydration: true,
     },
   ),
 );
 
-/** The colour of the browser's own bar on phones (and of an installed app's title bar): the stone of the wall. */
-export const THEME_COLOUR = "#14100d";
+/** The colour of the browser's own bar on phones (and of an installed app's title bar): design A's black frame. */
+export const THEME_COLOUR = "#070504";
 
 /** True when the reader's page is Daylight. */
 export const isDaylight = (theme: ThemePref) => theme === "light";
@@ -86,6 +98,7 @@ export function applySettings(s: Settings) {
   // the reader's page (Night or Daylight); only the reader reads it (styles/tokens.css, [data-page="day"])
   if (isDaylight(s.theme)) el.setAttribute("data-reader-page", "day"); else el.removeAttribute("data-reader-page");
   if (s.motion === "auto") el.removeAttribute("data-motion"); else el.setAttribute("data-motion", s.motion);
+  el.setAttribute("data-level", s.level);
   el.style.setProperty("--greek-size", `${s.greekSize}rem`);
   el.style.setProperty("--reading-leading", String(s.leading));
   if (s.greekFace === "didot") el.removeAttribute("data-greek-face"); else el.setAttribute("data-greek-face", s.greekFace);
@@ -109,6 +122,7 @@ export const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion(useSet
 export const BOOT_SCRIPT = `(function(){try{var s=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}").state||{};var e=document.documentElement;
 if(s.theme==="light")e.setAttribute("data-reader-page","day");
 if(s.motion==="reduce"||s.motion==="full")e.setAttribute("data-motion",s.motion);
+e.setAttribute("data-level",s.level==="balanced"||s.level==="performance"?s.level:(s.motion==="reduce"?"performance":"full"));
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));
 if(s.greekFace==="gentium"||s.greekFace==="sans")e.setAttribute("data-greek-face",s.greekFace);

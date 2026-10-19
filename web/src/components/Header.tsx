@@ -1,39 +1,48 @@
 "use client";
-
+/**
+ * The site's header, as design A drew it: on a computer, Learn and Read, the ΣΤΟΙΧΕΙΑ mark in the middle, Explore and Talk,
+ * each door's word with its Greek name beneath and a line of lamplight drawn under the one you are in; at the far right,
+ * small square buttons for Search, Mine, your account and Settings. On a phone, the mark at the left and two buttons at
+ * the right, Search and the menu. It stands on the black frame at the top of the page and scrolls away with it, as in A;
+ * reading on still tucks the phone's bottom bars away, and any scroll up brings them back (lib/header.ts).
+ */
 import Link from "next/link";
-import EmblemMark from "@/components/EmblemMark";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
-import { AREAS, MENU, SITE, TABS, doorWord, menuWord } from "@/config/areas";
-import { carvedCaps } from "@/lib/art/common";
-import { scrollBehavior } from "@/lib/settings";
+import { useEffect, useRef, useState } from "react";
+import { AREAS, TABS, doorWord, type AreaId } from "@/config/areas";
 import { useUI } from "@/lib/ui";
 import { barsHeld } from "@/lib/header";
+import Mark from "@/components/a/Mark";
 import ConnectionLight from "./ConnectionLight";
 import AccountButton from "./AccountButton";
 import styles from "./Header.module.css";
 
-// the site's name as it would be cut in stone: capitals, each in its own square of a grid (stoichedon), a word to a row
-const NAME = SITE.greek.split(" ").map(carvedCaps);
-const COLS = Math.max(...NAME.map((w) => w.length));
-
 function isActive(pathname: string, href: string) {
   return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
 }
+/** a door is also current in the places that belong to it (the reader, work and author pages belong to Read) */
+const current = (pathname: string, id: AreaId) => [AREAS[id].href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
+
+const LEFT: AreaId[] = ["study", "library"];
+const RIGHT: AreaId[] = ["wiki", "forum"];
+const MENU_DOORS: AreaId[] = ["study", "library", "wiki", "forum", "treasury", "search"];
+
+const SearchIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>;
 
 export default function Header() {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "/";
   const openSettings = useUI((s) => s.openSettings);
   const setSearchOpen = useUI((s) => s.setSearchOpen);
   const ref = useRef<HTMLElement>(null);
   const showRef = useRef<() => void>(null);
+  const [menu, setMenu] = useState(false);
 
-  // Slide away while scrolling down, come back on any scroll up (see lib/header.ts).
+  // Reading on tucks the phone bars away, any scroll up brings them back (see lib/header.ts).
   useEffect(() => {
     const el = ref.current, root = document.documentElement;
     if (!el) return;
     let h = el.offsetHeight, lastY = scrollY, hidden = false, frame = 0;
-    // only data-hdr changes as the header slides (lib/header.ts): what sits below it follows that by itself
+    // only data-hdr changes (lib/header.ts): the bars follow it by themselves
     const set = (hide: boolean) => {
       if (hide === hidden) return;
       hidden = hide;
@@ -70,86 +79,79 @@ export default function Header() {
     return () => { ro.disconnect(); cancelAnimationFrame(frame); removeEventListener("scroll", check); removeEventListener("mathesis:bars", onBars); el.removeEventListener("focusin", show); };
   }, []);
 
-  // a new page starts with the header showing
-  useEffect(() => { showRef.current?.(); }, [pathname]);
+  // a new page starts with the header showing, and the menu closed
+  useEffect(() => { showRef.current?.(); setMenu(false); }, [pathname]);
+  // the menu closes on Escape or a click outside it
+  useEffect(() => {
+    if (!menu) return;
+    const key = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
+    const click = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setMenu(false); };
+    addEventListener("keydown", key);
+    addEventListener("click", click);
+    return () => { removeEventListener("keydown", key); removeEventListener("click", click); };
+  }, [menu]);
 
-  // On narrow screens the menu scrolls sideways: show which side has more, and keep the current area in view.
-  const navRef = useRef<HTMLElement>(null);
-  const [more, setMore] = useState({ left: false, right: false });
-  useEffect(() => {
-    const n = navRef.current;
-    if (!n) return;
-    const update = () => {
-      const left = n.scrollLeft > 2, right = n.scrollLeft + n.clientWidth < n.scrollWidth - 2;
-      setMore((m) => (m.left === left && m.right === right ? m : { left, right }));
-    };
-    update();
-    n.addEventListener("scroll", update, { passive: true });
-    const ro = new ResizeObserver(update);
-    ro.observe(n);
-    return () => { n.removeEventListener("scroll", update); ro.disconnect(); };
-  }, []);
-  useEffect(() => {
-    const n = navRef.current, a = n?.querySelector<HTMLElement>('[aria-current="page"]');
-    if (!n || !a || n.scrollWidth <= n.clientWidth) return;
-    const x = a.getBoundingClientRect().left - n.getBoundingClientRect().left + n.scrollLeft;
-    n.scrollTo({ left: x - (n.clientWidth - a.offsetWidth) / 2 });
-  }, [pathname]);
-  const scrollMenu = () => navRef.current?.scrollBy({ left: navRef.current.clientWidth * 0.6, behavior: scrollBehavior() });
+  const door = (id: AreaId) => {
+    const a = AREAS[id];
+    return (
+      <Link key={id} className={styles.navI} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
+        <span className={styles.mono}>{doorWord(id)}</span>
+        {a.greek && <span lang="grc">{a.greek}</span>}
+      </Link>
+    );
+  };
 
   return (
-    <header ref={ref} className={styles.top} style={{ viewTransitionName: "site-header" }}>
-      <div className={`wrap ${styles.row}`}>
-        <Link className={styles.brand} href="/" transitionTypes={["page-turn"]} aria-label={`${SITE.latin}, home`}>
-          <EmblemMark className={styles.logo} />
-          <span className={styles.brandName}>
-            <span className={styles.brandGr} lang="grc" style={{ "--cols": COLS } as CSSProperties}>
-              {NAME.map((w) => <span key={w} className={styles.word}>{[...w].map((c, i) => <span key={i}>{c}</span>)}</span>)}
-            </span>
-            <span className={styles.brandEn}>{SITE.latin}</span>
-          </span>
-        </Link>
-
-        <div className={styles.areasWrap} data-more-left={more.left || undefined} data-more-right={more.right || undefined}>
-        <nav ref={navRef} className={styles.areas} aria-label="Areas of the site">
-          {MENU.map((id) => {
-            const a = AREAS[id];
-            // the Read door is also current in the reader and on work and author pages (TABS' `also`)
-            const active = [a.href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
-            return (
-              <Link key={id} href={a.href} transitionTypes={["page-turn"]} aria-current={active ? "page" : undefined}
-                aria-label={`${menuWord(id)}: ${a.name}`}>
-                <b>{menuWord(id)}</b>
-                {a.greek ? <small className={styles.gr} lang="grc">{a.greek}</small> : <small>{a.name}</small>}
-              </Link>
-            );
-          })}
-        </nav>
-        {/* a pointer and touch hint only: keyboard users reach every area by Tab, which scrolls it into view */}
-        <button type="button" className={styles.areasMore} onClick={scrollMenu} tabIndex={-1} aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2"><path d="m9 6 6 6-6 6" /></svg>
-        </button>
-        </div>
-
-        <div className={styles.tools}>
-          <ConnectionLight />
-          {/* phones: the bottom bar has Search, so the header offers the Talk door (the forum) here instead */}
-          <Link className={`${styles.tbtn} ${styles.phoneOnly}`} href={AREAS.forum.href} transitionTypes={["page-turn"]}
-            aria-label={`${doorWord("forum")}: ${AREAS.forum.name}`} aria-current={isActive(pathname, AREAS.forum.href) ? "page" : undefined}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true"><path d="M4.5 4.5h10a1.5 1.5 0 0 1 1.5 1.5v5.5a1.5 1.5 0 0 1-1.5 1.5H9.5L6 16v-3H4.5A1.5 1.5 0 0 1 3 11.5V6a1.5 1.5 0 0 1 1.5-1.5z" /><path d="M18.5 9h1a1.5 1.5 0 0 1 1.5 1.5V16a1.5 1.5 0 0 1-1.5 1.5H19v3l-3.5-3h-4a1.5 1.5 0 0 1-1.5-1.5V15" /></svg>
-          </Link>
-          <button className={`${styles.tbtn} ${styles.notPhone}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog"
-            aria-label="Quick search" title="Quick search (or press / on any page)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
-            <span className={styles.txt}>Search</span>
+    <header ref={ref} className={styles.site} data-site-header="" style={{ viewTransitionName: "site-header" }}>
+      <div className={styles.wrap}>
+        {LEFT.map(door)}
+        <Mark className={styles.mark} />
+        {RIGHT.map(door)}
+        <div className={styles.phoneMenu}>
+          <button className={styles.ic} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search">
+            <SearchIcon />
           </button>
-          <AccountButton />
-          <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" /><circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" /></svg>
-            <span className={styles.txt}>Settings</span>
+          <button className={styles.ic} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">{menu ? <path d="M3 3l10 10M13 3 3 13" /> : <path d="M2 5h12M2 11h12" />}</svg>
           </button>
         </div>
       </div>
+      <div className={styles.utils}>
+        <ConnectionLight />
+        <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
+          <SearchIcon />
+        </button>
+        <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="Mine: bookmarks and notes" title="Mine: bookmarks and notes"
+          aria-current={current(pathname, "treasury") ? "page" : undefined}>
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
+        </Link>
+        <AccountButton />
+        <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings" title="Settings">
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>
+        </button>
+      </div>
+      {menu && (
+        <nav id="site-menu" className={styles.menu} aria-label="Menu">
+          <ul className={styles.menuDoors}>
+            {MENU_DOORS.map((id) => (
+              <li key={id}>
+                <Link href={AREAS[id].href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
+                  <span className={styles.mono}>{doorWord(id)}</span>
+                  <span className={styles.menuName}>{AREAS[id].name}{AREAS[id].greek && <> · <span lang="grc">{AREAS[id].greek}</span></>}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className={styles.menuTools}>
+            <AccountButton />
+            <button className={styles.tbtn} type="button" onClick={() => { setMenu(false); openSettings(); }} aria-label="Settings">
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>
+              <span className={styles.txt}>Settings</span>
+            </button>
+            <ConnectionLight />
+          </div>
+        </nav>
+      )}
     </header>
   );
 }

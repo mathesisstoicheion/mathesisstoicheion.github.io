@@ -1,46 +1,69 @@
 "use client";
 /**
- * The reader's cover (design B, Stone and torch; DESIGN.md, Screens: Reader): the book's Greek title cut into the
- * stone in capitals, as it would have been carved, and, for a book that has one, its medallion (data/medallions.ts).
- * The torch lights the cover; as you scroll down into the text the torchlight fades away, and from then on nothing on
- * the page moves. On the Daylight page the cover is pale limestone in an even daylight, and there is no torch.
+ * The reader's cover, as design A drew it: the book opens in lamplight, with dust drifting in a shaft of light and the
+ * great letters of its title far back in the dark (lib/a/lamplight.js, Cover); for a book that has a picture
+ * (data/medallions.ts), its emblem gathers out of letters above the title (Socrates is spelled out of the Apology itself).
+ * Then the author, in Greek and English, the Greek title, the English one, and the editions. Scroll into the text and the
+ * room goes still, so you can read. On the Daylight page there is no lamp and no dust.
  */
-import { useEffect, useRef } from "react";
-import Carving from "@/components/art/Carving";
-import ReliefWindow from "@/components/art/ReliefWindow";
-import { carvedCaps } from "@/lib/art/common";
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import { cover, emblem } from "@/lib/a/lamplight";
 import { medallionOf } from "@/data/medallions";
-import { setQuiet } from "@/lib/torch";
+import { loadAuthorNames } from "@/lib/authors-meta";
 import styles from "./Reader.module.css";
 
-export default function ReaderCover({ workId, greek, day }: { workId: string; greek?: string | null; day: boolean }) {
-  const box = useRef<HTMLDivElement>(null);
-  const med = medallionOf(workId);
-  // a title too long to carve well (or with no Greek letters in it) is left to the heading below
-  const carve = greek && carvedCaps(greek).length >= 2 && carvedCaps(greek).length <= 42 ? greek : null;
+/** what the cover's caption says of Socrates' emblem (design A's own words) */
+const SOCRATES = "Socrates, Roman marble portrait, Louvre. Public domain. Spelled out of the Apology as Greek was written in Plato’s time: in capitals, with no spaces or accents.";
 
-  // the torch lights the cover and fades as the cover scrolls away
+export default function ReaderCover({ workId, title, greek, author, authorId, day, editions }: {
+  workId: string; title: string; greek?: string | null; author?: string; authorId?: string; day: boolean; editions: ReactNode;
+}) {
+  const host = useRef<HTMLElement>(null), atm = useRef<HTMLCanvasElement>(null), em = useRef<HTMLCanvasElement>(null);
+  const med = medallionOf(workId);
+  const isSoc = med?.pic === "socrates-louvre";
+  const [authorGr, setAuthorGr] = useState<string | null>(null);
+  useEffect(() => { if (authorId) loadAuthorNames().then((n) => setAuthorGr(n[authorId]?.grc ?? null)); }, [authorId]);
+  // a Greek title the cover can set large: one written in Greek letters
+  const big = greek && /[Ͱ-Ͽἀ-῿]/.test(greek) ? greek : null;
+
+  // the lamp and the dust (they fade as the cover scrolls away, and stop once it has gone)
+  const dayRef = useRef(day);
+  useEffect(() => { dayRef.current = day; }, [day]);
   useEffect(() => {
-    const el = box.current?.closest("header") ?? box.current;
-    if (!el) return;
-    let raf = 0;
-    const update = () => {
-      raf = 0;
-      if (day) { setQuiet(true, 0); return; }
-      const r = el.getBoundingClientRect(), h = Math.max(1, r.height);
-      setQuiet(true, Math.max(0, Math.min(1, r.bottom / h)) * 0.85);
-    };
-    const onScroll = () => { if (!raf) raf = requestAnimationFrame(update); };
-    update();
-    addEventListener("scroll", onScroll, { passive: true });
-    addEventListener("resize", onScroll, { passive: true });
-    return () => { removeEventListener("scroll", onScroll); removeEventListener("resize", onScroll); if (raf) cancelAnimationFrame(raf); setQuiet(true, 0); };
-  }, [day]);
+    const h = host.current, cv = atm.current;
+    if (!h || !cv) return;
+    const c = cover(cv, h, big ?? title, () => dayRef.current);
+    return () => c.stop();
+  }, [big, title]);
+
+  // the emblem gathers out of letters, in the page's ink (redrawn when the page turns to Daylight or back)
+  const art = useRef<{ stop(): void; redraw(): void } | null>(null);
+  useEffect(() => {
+    const cv = em.current;
+    if (!cv || !med) return;
+    let gone = false;
+    emblem(cv, `/images/a/em-${med.pic}.png`, { mode: "gather", cols: 50, text: isSoc, width: () => (innerWidth < 640 ? 140 : 200), tokenEl: host.current })
+      .then((r) => { if (gone) r?.stop(); else art.current = r; });
+    return () => { gone = true; art.current?.stop(); art.current = null; };
+  }, [med, isSoc]);
+  useEffect(() => { art.current?.redraw(); }, [day]);
 
   return (
-    <div ref={box} className={styles.coverBox}>
-      {carve && <Carving text={carve} kind="cover" delay={0.1} day={day} className={`carve ${styles.coverCarve}`} />}
-      {med && <ReliefWindow pic={med.pic} kind="medallion" alt={med.alt} day={day} delay={0.3} frameClassName={styles.coverMedal} />}
-    </div>
+    <header ref={host} className={styles.rcover}>
+      <canvas ref={atm} className={styles.atm} aria-hidden="true" />
+      <div className={styles.inner}>
+        {med && (
+          <figure className={styles.emblem}>
+            <canvas ref={em} role="img" aria-label={isSoc ? "Socrates, drawn in Greek letters from the Apology" : med.alt} />
+            <figcaption className={styles.emCap}>{isSoc ? SOCRATES : med.why}</figcaption>
+          </figure>
+        )}
+        {author && <span className={`label ${styles.kick}`}>{authorGr && <><span lang="grc">{authorGr}</span> · </>}{author}</span>}
+        <h1 className={styles.coverTitle} lang={big ? "grc" : undefined}>{big ?? title}</h1>
+        {big && big !== title && <p className={styles.enT}>{title}</p>}
+        <div className={styles.eds}>{editions}</div>
+      </div>
+      <span className={styles.begin} aria-hidden="true">Scroll to begin reading</span>
+    </header>
   );
 }

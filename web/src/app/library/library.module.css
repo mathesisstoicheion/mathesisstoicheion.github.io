@@ -1,18 +1,9 @@
-/* The library's opening (design B, Stone and torch): its name carved across the wall above the search. */
-.head { padding-top: clamp(30px, 5vw, 64px); }
-.kick { color: var(--accent-2); }
-.kickRow { display: flex; align-items: center; gap: var(--space-3); min-height: var(--tap); }
-.carve { margin-top: 22px; }
-
-/* the reading paths, in "Not sure where to begin?" (components/library/Library.tsx): slabs like the levels above them */
-.paths { list-style: none; margin: 0; padding: var(--space-1) var(--space-4) var(--space-4); display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-3); }
-.path {
-  display: grid; align-content: start; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-radius: var(--radius);
-  background: var(--slab); box-shadow: var(--slab-edge); outline: var(--moulding); outline-offset: var(--moulding-in);
-  --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg);
-}
+/* the reading paths, in "Not sure where to begin?" (components/library/Library.tsx): panels with a fine line round them,
+   like the levels above them; in the library's block, one or two to a row */
+.paths { list-style: none; margin: 0; padding: var(--space-1) var(--space-4) var(--space-4); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); gap: var(--space-3); }
+.path { display: grid; align-content: start; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .path h3 { font-size: var(--step-1); color: var(--accent); margin: 0; }
-.path :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 75%, var(--inv-bg)); font-size: var(--step--1); margin: 0; }
+.path :global(.muted) { font-size: var(--step--1); margin: 0; }
 .path ol { list-style: none; margin: var(--space-1) 0 0; padding: 0; counter-reset: step; }
 .path ol li { position: relative; counter-increment: step; display: grid; grid-template-columns: var(--space-5) 1fr; column-gap: var(--space-2); padding: var(--space-2) 0; box-shadow: var(--cut-over); }
 .path ol li::before { content: counter(step); grid-row: span 2; font-family: var(--f-display); font-size: var(--step-0); line-height: 1.25; color: var(--accent); }
@@ -21,5 +12,3 @@
 .path ol a:hover b { text-decoration: underline; text-decoration-color: var(--accent); }
 .path ol b { font-weight: 600; }
 .path ol span { color: var(--ink-2); font-size: var(--step--1); }
-@media (max-width: 1100px) { .paths { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-@media (max-width: 700px) { .paths { grid-template-columns: minmax(0, 1fr); } }

@@ -1,22 +1,16 @@
 /* =====================================================================
-   Mathesis Stoicheion: "Stone and torch" (DESIGN.md).
-   Colours, type sizes, spacing and motion are named in styles/tokens.css; this file uses those names.
-   The site is dark only; the reader's Daylight page redefines the same names inside the reader.
+   Mathesis Stoicheion: "Gold and lamplight", taken from design A itself (DESIGN.md; redesign/design-a/design-a.html).
+   Colours, type sizes, spacing and motion are named in styles/tokens.css; this file uses those names. The home page, the
+   library and the reader are drawn with design A's own stylesheet (components/a/a.module.css); every other page keeps its
+   own layout, dressed here in design A's type, lines, buttons and fields.
+   The site is dark; the reader's Daylight page redefines the same names inside the reader.
    ===================================================================== */
 
 :root {
-  /* the site header: its height, and how much of it shows now (it slides away on scroll; lib/header.ts). How much
-     shows, here and for the phone bars below, is set to 0 on each element that uses it while the header is tucked
-     away (html[data-hdr="hidden"] .x), never here: a change here would restyle every element of the page. */
+  /* the site header: its height, and how much of it covers the top of the window. As in design A it scrolls away with
+     the page, so it never covers anything and bars that stick to the top stick to the very top. */
   --hdr-h: 68px;
-  --hdr-vis: var(--hdr-h);
-  /* phones: the bar along the bottom (TabBar.tsx), its height including the home-bar area, and how much of it
-     shows now (it tucks away with the header). 0 on wider screens, which have no such bar. */
-  --tabbar-h: 0px;
-  --tabbar-vis: var(--tabbar-h);
-  /* phones, in the reader: its own bar just above that one (ReadBar.tsx), and how much of it shows */
-  --readbar-h: 0px;
-  --readbar-vis: var(--readbar-h);
+  --hdr-vis: 0px;
   /* the space between an area page's header band and its first content, the same on every area page */
   --after-head: clamp(24px, 4vw, 32px);
   /* reader settings (changed from the Settings panel) */
@@ -25,17 +19,15 @@
 }
 
 /* ------------------------------------------------------------- phones */
-/* Phones are up to 760 px wide: the bottom bar replaces the header's menu, and headings take less of the first screen. */
+/* Phones are up to 760 px wide: they have the header's search and menu, as in design A, and headings take less of the first screen. */
 @media (max-width: 760px) {
   :root {
-    --tabbar-h: calc(58px + env(safe-area-inset-bottom, 0px));
     --step-1: 1.2rem;
     --step-2: 1.4rem;
     --step-3: clamp(1.7rem, 7.4vw, 2.1rem);
     --step-4: clamp(2.4rem, 11.5vw, 3.2rem);
   }
 }
-@media (max-width: 760px) { html:has([data-readbar]) { --readbar-h: 54px; } }
 
 /* ---------------------------------------------------------------- maps
    The small maps (the reader's Places, My Library's places, the Explore card) are cut in the stone, like a relief map
@@ -63,31 +55,32 @@ html { -webkit-text-size-adjust: 100%; }
 main { overflow-x: clip; }
 body {
   margin: 0;
-  padding-bottom: calc(var(--tabbar-h) + var(--readbar-h));  /* the end of every page clears the phone bars */
-  background: transparent;   /* the wall is <html>'s, so the torch's light (z-index -1) falls on it, behind everything */
+  background: transparent;   /* the page's black is <html>'s */
   color: var(--ink);
-  font: 400 var(--step-0) / 1.62 var(--f-body);
+  font: 400 var(--step-0) / 1.6 var(--f-body);
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* the wall: the stone's colour, and its still texture (lib/stone.ts, drawn by scripts/make-stone.mjs) */
-:root { --tex: url("/images/stone.webp"); }
-html { background: var(--bg) var(--tex, none) repeat; background-size: 420px 420px; }
+/* the page: design A's black (html,body{background:var(--black)}) */
+html { background: var(--bg); }
+/* the doorway (the home page) reads in EB Garamond, the lamp room in Literata (styles/tokens.css) */
+main[data-screen] { font-family: var(--f-body); }
 
-/* the torch's pools of light on the wall (components/Torch.tsx): moved by transform only, with normal blending */
-.torch .glow {
-  position: fixed; left: 0; top: 0; z-index: -1; pointer-events: none; border-radius: var(--radius-round); opacity: 0;
-  width: var(--glow-d, 1180px); height: var(--glow-d, 1180px); margin: calc(var(--glow-d, 1180px) / -2) 0 0 calc(var(--glow-d, 1180px) / -2);
-  background: radial-gradient(closest-side, var(--glow-torch), rgba(238, 132, 58, 0.09) 34%, rgba(205, 96, 36, 0.03) 66%, rgba(200, 90, 30, 0));
-  will-change: transform, opacity; transform: translate3d(-9999px, -9999px, 0);
-}
+/* design A's faint scan lines, still, over the library and the other lamp-room pages; none on the home page or in the
+   reader (A's --scan-op). Plain transparency, never a blend mode (A's DESIGN.md: Avoid). */
+.scan { position: fixed; inset: 0; pointer-events: none; z-index: 41; opacity: 0.32; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 3px); }
+html:has(main[data-screen="home"]) .scan, html:has(main[data-screen="reader"]) .scan, html:has([data-page="day"]) .scan { display: none; }
+/* design A's reader with one book open: its own bar along the top is the way home and back to the library, so the site's
+   header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
+html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing
    through the status bar while the header is tucked away */
 body::before {
   content: ""; position: fixed; z-index: var(--z-over-header); top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
-  background: var(--bg); pointer-events: none;
+  background: var(--frame); pointer-events: none;
 }
-h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.08; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+/* titles: design A's tall, narrow, thin capitals (Noto Serif Display at 62.5% width, weight 300) */
+h1, h2, h3, h4 { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; line-height: 1.02; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
 p { margin: 0; }
@@ -95,7 +88,7 @@ a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; }
 img { max-width: 100%; }
 /* anything linked to by #id lands clear of the site header, whose height changes with the screen */
-[id] { scroll-margin-top: calc(var(--hdr-h) + var(--space-4)); }
+[id] { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 /* a long placeholder or value that does not fit ends in "…" instead of being cut mid-letter */
 input { text-overflow: ellipsis; }
 /* phones: a menu under 16 px makes iPhones zoom the page when it is tapped; and every menu is finger-sized */
@@ -116,7 +109,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   /* a phone on its side puts the notch at one edge: keep text clear of it */
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
-.label { font-family: var(--f-label); font-weight: 500; font-size: var(--step--2); line-height: 1.3; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); }
+/* small labels: design A's .mono */
+.label { font-family: var(--f-label); font-weight: 400; font-size: var(--step--2); line-height: 1.35; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 .muted { color: var(--ink-2); }
 .faint { color: var(--ink-3); }
 .skip { position: absolute; left: -9999px; top: var(--space-2); z-index: 100; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: var(--space-3) var(--space-4); }
@@ -166,70 +160,62 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 @keyframes pull-spin { to { transform: rotate(360deg); } }
 
 /* ------------------------------------------------------------- ornament */
-/* Lines cut into the stone, not painted bands: each is a groove, its upper edge in shadow and its lower lip catching
-   the light (DESIGN.md: "Thin rules and cut lines instead of drop shadows"). The old pottery bands keep their class
-   names, so every page that drew a meander now draws a cut. */
-.meander, .tongues, .rays, .cut {
-  display: block; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px);
-}
+/* Thin 1px lines instead of shadows (design A). The old pottery bands keep their class names, so every page that drew a
+   meander now draws a line. */
+.meander, .tongues, .rays, .cut { display: block; height: 1px; background: var(--rule); }
 .tongues { width: 36px; flex: none; }
 .rays { width: 56px; }
 .draw { animation: draw 1.8s var(--ease-cut) both; }
 @keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ------------------------------------------------------------- buttons */
-/* The main button is a gilded plate with dark capitals, lit from above; .ghost is a slab of the stone itself. Both settle
-   under the hand and sink a little when pressed, never jump (the owner, 2026-10-17: every page element in stone). */
+/* Design A's buttons: tall narrow capitals; the main one solid (lamplight with dark ink in the lamp room, a cream plate
+   with red ink in the doorway), the second outlined in a fine line. Under the hand they rise two pixels. */
 .btn {
-  display: inline-flex; align-items: center; gap: 0.7em;
-  padding: 0.95em 1.35em 0.9em; border: 1px solid transparent; background: var(--inlay); color: var(--accent-ink);
-  box-shadow: var(--inlay-edge), var(--inlay-drop);
-  border-radius: var(--radius); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.22em; text-transform: uppercase; text-decoration: none;
-  transition: filter var(--dur) var(--ease), box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px;
+  border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
+  font-family: var(--f-display); font-stretch: 75%; font-weight: 400; font-size: 1.02rem; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+  transition: transform 0.25s, border-color 0.25s, background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.btn:hover { filter: brightness(1.08); }
-.btn:active { box-shadow: var(--inlay-press); filter: none; }
-.btn.ghost { background: var(--slab); color: var(--ink); box-shadow: var(--slab-edge); }
-.btn.ghost:hover { background: var(--slab-lit); color: var(--accent-hi); filter: none; }
-.btn.ghost:active { background: var(--field); box-shadow: var(--field-edge); }
+.btn:hover { transform: translateY(-2px); }
+.btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
+.btn.ghost:hover { border-color: var(--ink); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 0.8em 1.1em 0.75em; letter-spacing: 0.18em; gap: var(--space-2); }
+.btn.small { padding: 8px 12px; gap: var(--space-2); font-size: 0.92rem; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
 .btn .arr { transition: transform var(--dur) var(--ease); }
 .btn:hover .arr { transform: translateX(3px); }
-.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; filter: none; }
-@media (max-width: 760px) { .btn { letter-spacing: 0.16em; padding-inline: 1.1em; } }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
 
-/* a chip: a small slab set on the stone; pressed, it is lit, with a gilded line along its foot (as in Settings) */
+/* a chip: design A's reader-tool chip, a fine line round it; pressed, it fills with the dark chip colour and its line lights */
 .chip {
-  display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px var(--space-3);
-  border: 1px solid transparent; border-radius: var(--radius); font-size: var(--step--1); background: var(--slab); box-shadow: var(--slab-edge);
-  text-decoration: none; /* a chip that is a link is still a slab, not underlined text */
-  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px 10px;
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.88rem; background: transparent;
+  text-decoration: none;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.chip:hover { background: var(--slab-lit); }
-.chip:active { background: var(--field); box-shadow: var(--field-edge); }
-.chip[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.chip:hover { border-color: var(--rule-2); }
+.chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--ink); border-color: var(--accent); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 4 px beyond it (a 44 px target) */
 @media (pointer: coarse) {
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -4px 0; }
 }
-/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): a channel sunk into the stone,
-   the chosen one standing up in it, lit, with a gilded foot (the same as Settings) */
-.segmented { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: var(--space-2) 14px; font-size: 0.92rem; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease); }
-.segmented > button:hover:not([aria-checked="true"]) { background: var(--slab); color: var(--ink); }
-.segmented > button[aria-checked="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): design A's .seg, small capitals
+   in a fine frame, the chosen one filled with the dark chip colour */
+.segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 7px 11px; font: 400 0.7rem / 1.3 var(--f-label); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button:hover:not([aria-checked="true"]) { color: var(--ink); }
+.segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
-/* fields: cut into the stone, a dark hollow with a lit lower lip (the library's search, everywhere) */
+/* fields: design A's search box, the raised surface in a fine line */
 :where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type]), textarea, select) {
-  background-color: var(--hollow); color: var(--ink); border: 1px solid transparent; border-radius: var(--radius); box-shadow: var(--hollow-edge);
+  background-color: var(--hollow); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: none;
 }
-:where(input, textarea, select):focus-visible { outline: none; box-shadow: var(--hollow-focus), var(--hollow-edge); }
+:where(input, textarea, select):focus-visible { outline: none; border-color: var(--accent); }
 :where(select) option { background-color: var(--stone-2); color: var(--ink); }
 /* a drop-down keeps the hollow, with a small gilded chevron at its right end in place of the browser's own arrow
    (stronger than :where so that a module's own background shorthand does not wipe it) */
@@ -240,7 +226,7 @@ select:not([multiple]):not([size]) {
 /* ticks and choices: small hollows cut in the stone; checked, a gilded tick or a gilded stone is set in them */
 :where(input[type="checkbox"], input[type="radio"]) {
   appearance: none; width: 18px; height: 18px; margin: 0; flex: none; display: inline-grid; place-content: center; vertical-align: -3px;
-  background: var(--hollow); box-shadow: var(--hollow-edge); border: 0; border-radius: var(--radius); cursor: pointer;
+  background: var(--hollow); border: 1px solid var(--rule-2); border-radius: var(--radius); cursor: pointer;
 }
 :where(input[type="radio"]) { border-radius: var(--radius-round); }
 :where(input[type="checkbox"])::before {
@@ -366,8 +352,8 @@ a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { backgrou
 :where(input, textarea)::placeholder { color: var(--ink-3); }
 
 /* certainty labels */
-.tag { display: inline-flex; align-items: center; gap: 6px; font: 500 0.66rem / 1.3 var(--f-label);
-  letter-spacing: 0.2em; text-transform: uppercase; padding: 3px 9px 2px; border: 1px solid transparent; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); }
+.tag { display: inline-flex; align-items: center; gap: 6px; font: 400 0.66rem / 1.3 var(--f-label);
+  letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px 2px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
 .tag.legend { color: var(--legend); }
@@ -424,9 +410,6 @@ html[data-motion="reduce"] ::view-transition-new(*) { animation: none !important
 ::view-transition-group(site-header) { animation: none; z-index: 100; }
 ::view-transition-old(site-header) { display: none; }
 ::view-transition-new(site-header) { animation: none; }
-::view-transition-group(site-tabbar) { animation: none; z-index: 100; }
-::view-transition-old(site-tabbar) { display: none; }
-::view-transition-new(site-tabbar) { animation: none; }
 
 /* ------------------------------------------------------------- shell */
 /* at least a screen tall: content drawn in the browser arrives a moment after the page, and the
@@ -434,26 +417,23 @@ html[data-motion="reduce"] ::view-transition-new(*) { animation: none !important
 main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(100svh - var(--hdr-h)); outline: none; }
 
 .toast {
-  position: fixed; left: 50%; bottom: calc(20px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px))); z-index: 70;
+  position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 70;
   transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
   background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: 0.95rem;
   box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
-html[data-hdr="hidden"] .toast { --tabbar-vis: 0px; --readbar-vis: 0px; }
-html[data-reading][data-scrolled] .toast { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
 .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
-/* the foot of the wall: a plinth set proud of it, its top edge lit, with the site's name cut along it */
+/* the foot of every page: the black frame, a fine line along its top */
 .site-footer {
-  margin-top: clamp(48px, 8vw, 96px); background: var(--slab);
-  box-shadow: var(--plinth-edge);
+  margin-top: clamp(48px, 8vw, 96px); background: var(--frame); color: var(--frame-ink);
+  border-top: 1px solid var(--rule);
 }
 .site-footer-carve { grid-column: 1 / -1; margin-bottom: var(--space-2); }
 
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: 0.92rem; }
-.site-footer-name { display: flex; align-items: center; gap: var(--space-3); font: 400 1.3rem / 1.2 var(--f-greek); margin-bottom: 6px; }
-.site-footer-mark { width: 40px; height: 40px; flex: none; filter: var(--gilt-cut); }
+.site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 1.3rem / 1.2 var(--face-gentium); margin-bottom: 6px; }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; }

@@ -13,7 +13,7 @@ export default function ReadPage() {
   // the reader needs the catalogue before it can ask GitHub for the text: fetch it alongside the page's code
   preload("/data/catalog.json", { as: "fetch", crossOrigin: "anonymous" });
   return (
-    <Page>
+    <Page screen="reader">
       <Suspense fallback={null}>
         <Reader />
       </Suspense>

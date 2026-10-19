@@ -188,7 +188,7 @@
 /* a passage: its place and heading over the Greek column, then its rows on a ruled band, then its notes */
 .passage { margin-top: clamp(32px, 5vw, 52px); outline: none; animation: rise 0.7s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 4) * 90ms + 0.1s); }
 /* reached by a link: clear of the site header and the bar that follows the page */
-.reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-h) + 76px); }
+.reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-vis) + 76px); }
 .passageHead { display: grid; gap: 4px; margin-bottom: 12px; padding-left: calc(var(--ref-w) + var(--col-gap) + var(--band-pad)); }
 /* the locator and the margin are in the text face, not small capitals, so a line number keeps its small letter ("1097a15") */
 .locator { font-size: 0.95rem; letter-spacing: 0.02em; color: var(--accent); font-variant-numeric: lining-nums; }
@@ -316,7 +316,7 @@
   .lines { margin-inline: calc(-1 * var(--gutter)); border-inline: 0; }
   .passageHead, .apparatus { padding-left: 0; }
   .bar { position: static; }
-  .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-h) + 16px); }
+  .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 }
 .statusTag[data-status="imported"] { color: var(--accent); }
 

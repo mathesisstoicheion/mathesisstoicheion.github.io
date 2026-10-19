@@ -49,13 +49,13 @@ export const ACTIONS: Action[] = [
   { id: "theme-light", label: "Reader's page: Daylight", words: ["light", "light mode", "day", "daylight", "papyrus", "theme"] },
   { id: "bigger", label: "Bigger Greek text", words: ["bigger", "larger", "zoom in", "text size", "font size", "size"] },
   { id: "smaller", label: "Smaller Greek text", words: ["smaller", "zoom out", "text size", "font size", "size"] },
-  { id: "face-didot", label: "Greek typeface: Didot", words: ["didot", "typeface", "font"] },
+  { id: "face-didot", label: "Greek typeface: Literata", words: ["literata", "didot", "typeface", "font"] },
   { id: "face-gentium", label: "Greek typeface: Gentium", words: ["gentium", "typeface", "font"] },
   { id: "face-sans", label: "Greek typeface: Sans", words: ["sans", "sans serif", "typeface", "font"] },
   { id: "text-sans", label: "English typeface: Sans", words: ["sans", "sans serif", "english font", "typeface", "font"] },
   { id: "text-serif", label: "English typeface: Serif", words: ["serif", "english font", "typeface", "font"] },
-  { id: "motion-reduce", label: "Reduce animation", words: ["reduce motion", "animation", "motion", "still"] },
-  { id: "motion-auto", label: "Animation follows my device", words: ["animation", "motion"] },
+  { id: "motion-reduce", label: "Animation: Performance (still art, for older devices)", words: ["reduce motion", "animation", "motion", "still", "performance", "slow", "lag"] },
+  { id: "motion-auto", label: "Animation: Full beauty", words: ["animation", "motion", "full", "beauty"] },
   { id: "settings", label: "Open Settings", words: ["settings", "preferences", "options", "line spacing", "vibration", "offline"] },
 ];
 

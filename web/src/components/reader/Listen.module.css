@@ -1,18 +1,13 @@
-/* Listen: a small player along the bottom of the reader, above the phone's bars. */
+/* Listen: a small player along the bottom of the reader. */
 .bar {
   position: fixed; z-index: 45; left: 50%; translate: -50% 0;
-  bottom: calc(14px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px)));
+  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
   width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 10px;
   padding: 10px 10px 8px 12px; border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: var(--slab-edge), 0 18px 40px -18px var(--shadow);
   --accent: var(--accent-on-ink);
   animation: rise 0.4s var(--ease) backwards;
-  transition: bottom 0.35s var(--ease);
 }
-/* in the reader on a phone, away from the top of the page, the reader's bar stands alone at the foot of the screen in the
-   site's bar's place (ReadBar.module.css): only the home bar's room is left of the site's bar */
-:global(html[data-reading][data-scrolled]) .bar { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
-:global(html[data-hdr="hidden"]) .bar { --tabbar-vis: 0px; --readbar-vis: 0px; }
 @keyframes rise { from { translate: -50% 24px; opacity: 0; } }
 
 /* how far through the page: a thin line along the top that grows as passages are read */

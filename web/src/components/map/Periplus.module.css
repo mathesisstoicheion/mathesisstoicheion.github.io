@@ -7,7 +7,7 @@
 @media (max-width: 980px) { .layout { grid-template-columns: minmax(0, 1fr); } }
 
 .mapCol { display: grid; gap: 12px; min-width: 0; }
-.stage { scroll-margin-top: calc(var(--hdr-h) + var(--space-3)); }
+.stage { scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
   border-radius: var(--radius); box-shadow: var(--frame);

@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { GFS_Didot, EB_Garamond, Noto_Serif_Display, Gentium_Book_Plus, Noto_Sans, Alegreya_Sans } from "next/font/google";
+import { EB_Garamond, Noto_Serif_Display, Noto_Sans_Display, Noto_Sans_Mono, Literata, Gentium_Book_Plus, Noto_Sans, Alegreya_Sans } from "next/font/google";
 import Header from "@/components/Header";
-import Torch from "@/components/Torch";
 import Footer from "@/components/Footer";
-import PagePiece from "@/components/art/PagePiece";
-import TabBar from "@/components/TabBar";
+import OfflineSign from "@/components/OfflineSign";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
+import LamplightLevel from "@/components/a/LamplightLevel";
 import Toast from "@/components/Toast";
 import NavWait from "@/components/NavWait";
 import Reveal from "@/components/Reveal";
@@ -23,17 +22,17 @@ import "./globals.css";
 
 // next/font downloads these at build time and serves them from this site,
 // so visitors' browsers never contact Google (no-trackers decision).
-// Every alphabet range of each font is always available (the browser fetches one when a page uses
-// its letters); `subsets` only names the files preloaded with every page, so it lists just what the
-// first screen needs: Greek text and headings are GFS Didot, English and the wide-spaced capital labels are EB Garamond
-// (DESIGN.md: Type). Letters carved on canvas (the home page's wall, the library's ΜΟΥΣΕΙΟΝ) are Noto Serif Display,
-// loaded only by the pages that carve.
-const didot = GFS_Didot({ weight: "400", subsets: ["greek", "greek-ext", "latin"], variable: "--font-didot", display: "swap" });
-const garamond = EB_Garamond({ weight: ["400", "500", "600"], subsets: ["latin"], style: ["normal", "italic"], variable: "--font-garamond", display: "swap" });
-const carved = Noto_Serif_Display({ weight: "500", subsets: ["greek", "latin"], variable: "--font-carved", display: "swap", preload: false });
-// The typefaces a reader can choose in Settings (all with full polytonic Greek): never preloaded, so a browser
-// downloads one only if it is chosen.
+// Design A's typefaces (its DESIGN.md, Type): titles in Noto Serif Display, condensed (its width axis, used at 62.5%) and
+// thin; reading text in Literata (EB Garamond on the home page); labels in Noto Sans Mono; the ΣΤΟΙΧΕΙΑ mark in Noto Sans
+// Display; Gentium Book Plus for any Greek letter the others lack. Every alphabet range of each font is always available
+// (the browser fetches one when a page uses its letters); `subsets` only names the files preloaded with every page.
+const display = Noto_Serif_Display({ subsets: ["latin"], style: ["normal", "italic"], axes: ["wdth"], variable: "--font-display", display: "swap" });
+const literata = Literata({ subsets: ["latin", "greek-ext"], style: ["normal", "italic"], variable: "--font-literata", display: "swap" });
+const garamond = EB_Garamond({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-garamond", display: "swap" });
+const mono = Noto_Sans_Mono({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-mono", display: "swap" });
+const mark = Noto_Sans_Display({ subsets: ["greek"], axes: ["wdth"], variable: "--font-mark", display: "swap" });
 const gentium = Gentium_Book_Plus({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["greek-ext"], variable: "--font-gentium", display: "swap", preload: false });
+// The sans-serif faces a reader can choose in Settings: never preloaded, so a browser downloads one only if it is chosen.
 const notoSans = Noto_Sans({ subsets: ["greek-ext"], variable: "--font-noto-sans", display: "swap", preload: false });
 const alegreyaSans = Alegreya_Sans({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["latin"], variable: "--font-alegreya-sans", display: "swap", preload: false });
 
@@ -54,16 +53,16 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  // the site is dark only: the browser's bar is the stone of the wall
+  // the site is dark: the browser's bar is design A's black frame
   themeColor: THEME_COLOUR,
   colorScheme: "dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${didot.variable} ${garamond.variable} ${carved.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${display.variable} ${literata.variable} ${garamond.variable} ${mono.variable} ${mark.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
       <head>
-        {/* the stone's colour from the very first byte, before the stylesheet arrives, so no page ever flashes white
+        {/* the black frame from the very first byte, before the stylesheet arrives, so no page ever flashes white
             (:where gives way to every rule of the stylesheet's own) */}
         <style dangerouslySetInnerHTML={{ __html: `:where(html){background-color:${THEME_COLOUR}}` }} />
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
@@ -73,12 +72,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <a className="skip" href="#main">Skip to content</a>
         <SettingsApplier />
-        <Torch />
+        <LamplightLevel />
+        {/* design A's faint scan lines, still, over the page (globals.css, .scan) */}
+        <div className="scan" aria-hidden="true" />
         <Header />
         {children}
-        <PagePiece place="foot" />
         <Footer />
-        <TabBar />
+        <OfflineSign />
         <SettingsPanel />
         <Toast />
         <Reveal />

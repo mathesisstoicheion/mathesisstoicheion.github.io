@@ -1,30 +1,27 @@
-/* Back to top: a round button, bottom right, above the phone's bars (the same offsets as the toast). */
+/* Back to top: a round button, bottom right (the same offset as the toast). */
 .btt {
   position: fixed; right: 16px; z-index: 30;
-  bottom: calc(20px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px)));
+  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
   display: grid; justify-items: center; align-content: center; gap: 1px; width: 52px; height: 52px; padding: 0;
-  /* a round boss of stone ringed with gold, like Search on the phone's bar (TabBar.module.css) */
+  /* a round boss of stone ringed with gold */
   background: var(--boss); color: var(--inv-fg); --accent: var(--accent-on-ink);
   border: 0; border-radius: var(--radius-round); box-shadow: var(--boss-edge), 0 14px 30px -14px var(--shadow);
   cursor: pointer; animation: bttIn 0.3s var(--ease) backwards; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease), opacity var(--dur) var(--ease);
 }
-:global(html[data-hdr="hidden"]) .btt { --tabbar-vis: 0px; --readbar-vis: 0px; }
-/* in the reader the tab bar stays away while its read bar comes back alone (TabBar.module.css) */
-:global(html[data-reading][data-scrolled]) .btt { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
 .btt:hover { transform: translateY(-3px); }
 .btt:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .btt svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .btt span { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
 @keyframes bttIn { from { opacity: 0; transform: translateY(12px) scale(0.9); } }
 
-/* on a phone it would sit over the last words of the lines whenever the bars are tucked away (the header and the tab bar
-   go together), so it is shown only with them; scrolling up brings both back. In a pane's own box it stays. */
+/* on a phone it would sit over the last words of the lines whenever the header is tucked away, so it is shown only with
+   the header; scrolling up brings both back. In a pane's own box it stays. */
 @media (max-width: 760px) {
   :global(html[data-hdr="hidden"]) :not(.inPane) > .btt { opacity: 0; pointer-events: none; }
 }
 
 /* a minimised floating reader sits in the same corner: this one goes above it */
-:global(html:has([data-float-tab])) .btt { bottom: calc(84px + max(var(--tabbar-vis) + var(--readbar-vis), env(safe-area-inset-bottom, 0px))); }
+:global(html:has([data-float-tab])) .btt { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 
 /* inside a pane that scrolls in its own box: a zero-height strip stuck to the pane's bottom edge */
 .inPane { position: sticky; bottom: 14px; height: 0; overflow: visible; display: flex; justify-content: flex-end; padding-right: 14px; z-index: 30; pointer-events: none; }

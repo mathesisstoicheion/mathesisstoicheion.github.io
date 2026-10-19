@@ -1,0 +1,172 @@
+/* =====================================================================
+   Design A's own stylesheet (redesign/design-a/design-a.html in the project files, round 11), for the three pages it drew:
+   the home page, the library and the reader. The owner, 2026-10-19: "Just take the template of the original gold and
+   lamplight design and don't make any changes to speed or anything." So the rules are A's, as written, with only these
+   changes: its body[data-screen] and body[data-ver] become a class on the page (.home, .library, .reader); its role
+   colours are named --a-… so they never mix with the site's own; its typefaces are the site's (styles/tokens.css, the same
+   families); and the parts the owner left out (the nine Muses, 2026-10-19) are gone. A's switcher was not part of the design.
+   ===================================================================== */
+
+/* the lamp room (A's :root roles) */
+.screen {
+  --a-field: var(--room); --a-bg: var(--black); --a-surface: var(--room-2); --a-ink: var(--parch); --a-ink2: var(--parch-2);
+  --a-accent: var(--amber); --a-accent2: var(--amber-hi); --a-line: rgba(255, 173, 69, .16); --a-img: var(--amber); --a-img2: var(--amber-hi);
+  --a-chip: var(--room-chip); --a-chip-ink: var(--parch); --a-solid: var(--amber); --a-solid-ink: var(--room);
+  --a-f-greek: var(--face-text); --a-f-text: var(--face-text);
+  --a-read: 1.3rem;
+  position: relative; color: var(--a-ink); font: 400 1rem/1.6 var(--a-f-text);
+  min-height: auto;
+}
+/* the doorway: Pompeian red and gold (A's body[data-screen="home"]) */
+.home {
+  --a-field: var(--red); --a-bg: var(--black); --a-surface: var(--red-surface); --a-ink: var(--bone); --a-ink2: var(--bone-2);
+  --a-accent: var(--gold); --a-accent2: var(--gold-hi); --a-line: rgba(232, 189, 112, .22); --a-img: var(--gold); --a-img2: var(--gold-hi);
+  --a-chip: var(--red-chip); --a-chip-ink: var(--bone); --a-solid: var(--bone); --a-solid-ink: var(--red);
+  --a-f-greek: var(--face-garamond); --a-f-text: var(--face-garamond);
+}
+/* A's element rules, kept as weak as A wrote them (:where), so every class below wins over them as it did there */
+:where(.screen) [lang="grc"] { font-family: var(--a-f-greek); }
+:where(.screen) a { color: inherit; }
+:where(.screen) :is(button, input) { font: inherit; color: inherit; }
+.screen :focus-visible { outline: 2px solid var(--a-accent); outline-offset: 3px; }
+.mono { font-family: var(--face-mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
+.wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+
+.btns { display: flex; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; font-family: var(--face-display); font-stretch: 75%; font-size: 1.02rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--a-solid); cursor: pointer; transition: transform .25s, border-color .25s; }
+.solid { background: var(--a-solid); color: var(--a-solid-ink); }
+.ghost { background: transparent; color: var(--a-ink); border-color: var(--a-line); }
+.btn:hover { transform: translateY(-2px); }
+.ghost:hover { border-color: var(--a-ink); }
+.lede { max-width: 44ch; opacity: .86; margin: 0 0 26px; }
+.cap { font-size: .78rem; line-height: 1.45; color: var(--a-ink2); margin-top: 10px; max-width: 60ch; }
+@keyframes rise { to { transform: none; } }
+
+/* ---------- HOME ---------- */
+.c-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(3rem, 7.4vw, 6.6rem); line-height: .9; margin: 14px 0 22px; letter-spacing: -.015em; }
+.c-title .ln { display: block; overflow: hidden; }
+.c-title .ln > span { display: block; transform: translateY(100%); animation: rise 1s cubic-bezier(.2, .7, .1, 1) forwards; }
+.c-title em { font-style: italic; color: var(--a-accent); }
+.paths { margin-top: 34px; border: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-field) 70%, #000 30%); max-width: 560px; }
+.paths-label { padding: 10px 14px 0; color: var(--a-ink2); }
+.ptabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
+.ptab { border: 0; background: transparent; padding: 9px 6px; cursor: pointer; font-family: var(--face-mono); font-size: .74rem; color: var(--a-ink2); position: relative; }
+.ptab[aria-selected="true"] { background: var(--a-chip); color: var(--a-chip-ink); }
+.ptab::before, .ptab::after { content: ":"; position: absolute; top: 8px; opacity: .4; }
+.ptab::before { left: 6px; }
+.ptab::after { right: 6px; }
+.ppanel { padding: 4px 16px 16px; font-size: 1rem; min-height: 3.4em; }
+.ppanel b { font-weight: 500; color: var(--a-accent2); }
+.ppanel a { color: var(--a-accent2); text-underline-offset: 3px; }
+.sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-top: 1px solid var(--a-line); padding-top: 14px; margin-bottom: 26px; color: var(--a-ink2); }
+.pod-g { font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.38; margin: 0 0 18px; max-width: 30ch; }
+.pod-e { font-size: 1.15rem; max-width: 58ch; opacity: .84; margin: 0 0 22px; }
+.rgrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--a-line); }
+.room { padding: 22px 18px 26px; border-right: 1px solid var(--a-line); text-decoration: none; display: flex; flex-direction: column; gap: 8px; min-width: 0; cursor: pointer; transition: background-color .3s; }
+.room:first-child { padding-left: 0; }
+.room:last-child { border-right: 0; }
+.room .gk { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1; color: var(--a-accent); }
+.room p { margin: 0; font-size: .98rem; opacity: .82; }
+.room:hover { background: var(--a-surface); }
+@media (max-width: 860px) { .rgrid { grid-template-columns: 1fr 1fr; } .room, .room:first-child { padding: 18px 12px; border-right: 0; border-bottom: 1px solid var(--a-line); } }
+
+/* ===== Round 2: static black pages with windows onto art ===== */
+.home, .library { background: transparent; }
+.flow { position: relative; z-index: 1; }
+.stage { display: none; }
+.blk { position: relative; }
+.win { position: relative; overflow: hidden; border: 1px solid var(--a-line); background: #000; min-width: 0; }
+.win canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
+.wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; color: var(--a-accent); font-family: var(--face-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; text-shadow: 0 1px 6px #000; }
+.mini .wcap { right: 8px; left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .56rem; }
+.tall { aspect-ratio: 3 / 4; width: 100%; }
+.band { height: clamp(160px, 26vw, 300px); margin-block: clamp(36px, 6vw, 80px); border-left: 0; border-right: 0; }
+.sq { aspect-ratio: 1 / 1; width: 100%; }
+.mini { height: 140px; margin: -22px -18px 14px; border-width: 0 0 1px; }
+.room:first-child .mini { margin-left: 0; }
+.wide { aspect-ratio: 16 / 7; width: 100%; }
+
+/* headings that settle as their section glides into place (lib/a/lamplight.js, Settle) */
+.st-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.st-w { white-space: nowrap; }
+.st-l { display: inline-block; --k: clamp(0, calc(var(--sp, 1) * 1.8 - var(--i) * .8), 1); opacity: calc(.06 + .94 * var(--k));
+  transform: translate(calc((1 - var(--k)) * var(--dx)), calc((1 - var(--k)) * var(--dy))) rotate(calc((1 - var(--k)) * var(--r))); }
+
+/* home layout */
+.h-hero { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .8fr); gap: clamp(24px, 5vw, 80px); align-items: end; padding-block: clamp(28px, 5vw, 64px) 0; }
+.h-hero .c-title { font-size: clamp(3rem, 7.6vw, 7rem); }
+.pod { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, .7fr); gap: clamp(24px, 5vw, 72px); align-items: center; padding-block: clamp(24px, 4vw, 48px); }
+.pod .sec-h { grid-column: 1 / -1; margin-bottom: 0; }
+.rooms { padding-block: clamp(24px, 5vw, 60px); }
+.stoa { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 72px); align-items: center; padding-block: clamp(24px, 5vw, 60px) 80px; }
+.stoa h3 { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(2.2rem, 4vw, 3.4rem); line-height: 1; margin: 0 0 16px; }
+.stoa p { margin: 0 0 12px; max-width: 58ch; opacity: .86; }
+@media (max-width: 860px) { .h-hero, .pod, .stoa { grid-template-columns: 1fr; } .h-hero .tall { aspect-ratio: 4 / 3; } }
+
+/* version 2, the home page: the floating letters behind it, and windows that open as a round iris onto their pictures
+   (drawn in the canvas: lib/a/lamplight.js, Engine.iris) */
+.dust { position: fixed; inset: 0; z-index: 0; pointer-events: none; width: 100%; height: 100%; display: block; }
+.home .win { background: transparent; border-color: transparent; }
+.home .win .wcap { opacity: 0; }
+
+@media (prefers-reduced-motion: reduce) { .c-title .ln > span { animation: none; transform: none; } }
+:global(html[data-motion="reduce"]) .c-title .ln > span { animation: none; transform: none; }
+
+/* the passage of the day is read live from the library's files (components/a/HomePassage.tsx): its lines keep their breaks,
+   without the reader's line numbers; a passage longer than design A's one sentence is set a step smaller */
+.podText > div > div { display: block; }
+.podText > div > div > span[aria-hidden="true"]:first-child { display: none; }
+.podText p { margin: 0; }
+.podLong { font-size: clamp(1.3rem, 2.2vw, 1.85rem); max-width: 40ch; }
+.pod .cap { margin-top: 18px; }
+
+/* ---------- LIBRARY (A's #library: B's lamp room, with Socrates) ---------- */
+.lib-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-block: clamp(16px, 3vw, 36px) clamp(24px, 4vw, 48px); }
+.lib-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-style: italic; font-size: clamp(3rem, 7vw, 6rem); line-height: .92; margin: 14px 0 16px; color: var(--a-accent2); }
+.lib-title .gr-t { display: block; font-style: normal; font-family: var(--face-gentium); font-size: .42em; color: var(--a-ink2); margin-top: 12px; letter-spacing: .02em; }
+.search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--a-line); background: var(--room-2); padding: 0 14px; max-width: 560px; margin-top: 22px; }
+.search input { flex: 1; min-width: 0; background: transparent; border: 0; padding: 14px 0; font-size: 1.05rem; outline: none; }
+.search input::placeholder { color: var(--a-ink2); }
+.search:focus-within { border-color: var(--a-accent); }
+.lfilters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+.seg { display: inline-flex; border: 1px solid var(--a-line); }
+.seg button { border: 0; background: transparent; padding: 7px 11px; cursor: pointer; font-family: var(--face-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--a-ink2); }
+.seg button[aria-pressed="true"] { background: var(--a-chip); color: var(--a-chip-ink); }
+.books { margin-bottom: 40px; }
+.book { display: grid; grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.3fr) auto; gap: clamp(14px, 2.4vw, 32px); align-items: center; padding-block: 16px; border-bottom: 1px solid var(--a-line); cursor: pointer; text-decoration: none; transition: background-color .35s; }
+.book:hover, .book:focus-visible { background: color-mix(in srgb, var(--amber) 5%, transparent); }
+.book canvas { width: 92px; display: block; }
+.book .who { color: var(--a-ink2); margin-bottom: 4px; }
+.book .tt { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.8vw, 2.4rem); line-height: 1; }
+.book .gt { font-size: 1.05rem; color: var(--a-ink2); margin-top: 4px; display: block; }
+.book .why { font-size: .9rem; color: var(--a-ink); opacity: .7; margin: 0; }
+.book .tag { color: var(--a-accent); white-space: nowrap; }
+@media (max-width: 860px) { .lib-hero { grid-template-columns: 1fr; } .book { grid-template-columns: 72px minmax(0, 1fr); } .book canvas { width: 72px; } .book .why, .book .tag { grid-column: 2; } }
+.lib-hero .tall { aspect-ratio: 4 / 5; }
+.grp-h { display: flex; justify-content: space-between; gap: 12px; color: var(--a-ink2); padding-top: 14px; border-top: 1px solid var(--a-line); margin-top: 10px; }
+.grp-h h2 { font-weight: 400; font-stretch: normal; line-height: inherit; margin: 0; text-wrap: wrap; }
+@media (max-width: 860px) { .lib-hero .win { order: -1; } }
+
+/* A's version 3 for the library: one stage pinned behind the page; black blocks slide over it; the gaps are the windows */
+.library .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; }
+.library .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
+.library .flow { margin-top: -100vh; }
+.library .win { background: transparent; border-color: transparent; }
+.library .blk { background: var(--black); padding: clamp(18px, 2.6vw, 32px); }
+.library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
+.library .books .book { padding-inline: 4px; }
+.library .win .wcap { opacity: .8; }
+/* Socrates stands beside the shelves on wide screens, so nothing covers him */
+.stcap { display: none; color: var(--a-accent); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; margin: 22px 0 0; opacity: .8; }
+@media (min-width: 1100px) {
+  .library .wrap { max-width: none; margin: 0; padding-left: max(24px, calc((100vw - 1240px) / 2 + 16px)); padding-right: 24px; }
+  .library .blk { width: min(640px, 50vw); }
+  .library .lib-hero { display: block; }
+  .library .lib-hero .win { display: none; }
+  .library .win.band { display: none; }
+  .library .book { grid-template-columns: 92px minmax(0, 1fr); }
+  .library .book .why, .library .book .tag { grid-column: 2; }
+  .library .stcap { display: block; }
+  .library .flow > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
+}
+@media (max-width: 1099px) { .library .blk { background: rgba(5, 4, 3, .74); } }

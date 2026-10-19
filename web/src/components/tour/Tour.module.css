@@ -29,14 +29,11 @@
 .card h2 { font-family: var(--f-display); font-size: 1.3rem; font-weight: 400; margin: 6px 0 6px; outline: none; }
 .card p { margin: 0 0 12px; line-height: 1.5; font-size: 0.98rem; }
 .card p:global(.label) { margin: 0; }
-/* phones, and the closing card: along the bottom, above the bars */
+/* phones, and the closing card: along the bottom of the screen */
 .docked {
   left: 12px; right: 12px; top: auto; width: auto; max-width: 520px; margin-inline: auto;
-  bottom: calc(12px + max(var(--tabbar-vis, 0px) + var(--readbar-vis, 0px), env(safe-area-inset-bottom, 0px)));
+  bottom: calc(12px + env(safe-area-inset-bottom, 0px));
 }
-/* the reader on a phone, away from the top of the page: its bar stands alone in the site's bar's place (ReadBar.module.css) */
-:global(html[data-reading][data-scrolled]) .docked { --tabbar-vis: env(safe-area-inset-bottom, 0px); }
-:global(html[data-hdr="hidden"]) .docked { --tabbar-vis: 0px; --readbar-vis: 0px; }
 
 .dockTop { bottom: auto; top: calc(var(--hdr-vis, 0px) + 10px); }
 :global(html[data-hdr="hidden"]) .dockTop { --hdr-vis: 0px; }

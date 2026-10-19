@@ -1,27 +1,11 @@
-/* The Mouseion (design B, Stone and torch): its name beside the search, then the order and filters, the wall of
-   stelai, then every author with their works. */
-.lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); padding-block: 0 var(--space-7); }
-/* the wall of stelai, its caption under it, then "Not sure where to begin?": close together, so the page does not read as loose pieces */
-.stelai { margin: clamp(20px, 4vw, 40px) 0 clamp(var(--space-2), 2vw, var(--space-4)); }
+/* Every work in the Mouseion (design A's list, in one of its black blocks: app/library/page.tsx): where to begin, the order
+   and filters, then every author with their works. Lines, not panels; titles in A's tall, narrow capitals. */
+.lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 .error { color: var(--accent); padding-block: 40px; }
 
 /* ---------------------------------------------------------------- every work: the search, the order and filters, and the list */
-.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); margin-top: clamp(var(--space-4), 3vw, var(--space-6)); padding-top: var(--space-5); position: relative; scroll-margin-top: var(--space-4); }
-.find::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 2px; background: linear-gradient(var(--cut-d) 0 1px, var(--cut-l) 1px 2px); }
-.findH { font: 400 var(--step-3) / 1.06 var(--f-display); margin: 0; }
+.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); position: relative; scroll-margin-top: var(--space-4); }
 .pathsH { padding: var(--space-3) var(--space-4) 0; color: var(--accent-2); }
-
-/* ---------------------------------------------------------------- search */
-.searchBox { position: relative; }
-.searchBox svg { position: absolute; left: var(--space-4); top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
-/* the search is cut into the stone: a dark hollow with a lit lower lip */
-.searchBox input {
-  width: 100%; font: inherit; font-size: 1.12rem; color: var(--ink); background: rgba(8, 6, 5, 0.66);
-  border: 0; border-radius: var(--radius); padding: 15px var(--space-4) 15px 48px;
-  box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 3px 6px -2px var(--cut-deep), inset 0 -1px 0 var(--cut-l);
-  transition: box-shadow var(--dur);
-}
-.searchBox input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--accent), inset 0 3px 6px -2px var(--cut-deep); }
 
 /* ---------------------------------------------------------------- order and filters */
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
@@ -29,15 +13,17 @@
 .selects select { font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--hollow); border: 1px solid transparent; box-shadow: var(--hollow-edge); border-radius: var(--radius); padding: var(--space-2) 10px; width: 10.5rem; }
 .selects select[data-set] { box-shadow: var(--hollow-focus), var(--hollow-edge); }
 @media (pointer: coarse) { .selects select { min-height: var(--tap); } }
+/* the order and every filter wait behind one button, as quiet as design A's own controls (the owner, 2026-10-17: less clutter) */
 .moreBtn {
-  display: none; width: 100%; justify-content: center; align-items: center; min-height: var(--tap);
-  font: inherit; font-size: 0.95rem; color: inherit; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
+  display: inline-flex; justify-self: start; align-items: center; min-height: 34px; padding: 7px 12px;
+  font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2);
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
 }
-.moreBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.moreBtn:hover, .moreBtn[aria-expanded="true"] { color: var(--ink); border-color: var(--ink-2); }
 .moreBtn::after { content: "▾"; margin-left: var(--space-2); color: var(--ink-2); transition: transform 0.2s var(--ease); }
 .moreBtn[aria-expanded="true"]::after { transform: rotate(180deg); }
-/* wide screens: the controls stand in the page as they are; phones fold them away (below) */
-.filters { display: contents; }
+.filters { display: none; }
+.filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) backwards; }
 .genres { display: flex; gap: var(--space-2) 14px; align-items: baseline; }
 .chipRow { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .chipRow :global(.chip) small { font-variant-numeric: tabular-nums; opacity: 0.7; font-size: 0.85em; }
@@ -53,14 +39,12 @@
 .begin summary :global(.muted) { font-weight: 400; font-size: 0.92rem; text-wrap: pretty; }
 .beginIcon { color: var(--accent); }
 .levels { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; padding: var(--space-1) 18px 18px; }
-.level { display: grid; align-content: start; gap: var(--space-2); padding: 18px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); }
-.level h2 { font-size: 1.5rem; color: var(--accent); }
+.level { display: grid; align-content: start; gap: var(--space-2); padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); color: var(--ink); border-radius: var(--radius); }
+.level h3 { font-size: 1.6rem; color: var(--accent); }
 .level :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 75%, var(--inv-bg)); font-size: 0.95rem; }
 .level ul { list-style: none; margin: 6px 0 0; padding: 0; display: grid; gap: 6px; }
 .level a { text-decoration: none; font-weight: 600; }
 .level a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.level { outline: var(--moulding); outline-offset: var(--moulding-in); }
 
 .count { font-size: 0.9rem; color: var(--ink-2); }
 .count button, .nothing button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; cursor: pointer; }
@@ -99,10 +83,10 @@
 .toggle:hover { background: var(--bg-2); }
 .toggle:hover .name { color: var(--accent); }
 .toggle:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-.name { grid-area: name; font-weight: 700; font-size: 1.12rem; transition: color 0.15s; }
+.name { grid-area: name; font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.45rem, 2.2vw, 1.8rem); line-height: 1.05; transition: color 0.15s; }
 .desc { grid-area: desc; color: var(--ink-2); font-size: 0.95rem; }
 .desc::first-letter { text-transform: uppercase; }
-.facts { grid-area: facts; display: flex; flex-wrap: wrap; gap: 0 14px; font-size: 0.84rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.facts { grid-area: facts; display: flex; flex-wrap: wrap; gap: 0 14px; margin-top: 4px; font-family: var(--f-label); font-size: 0.66rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .chev { grid-area: chev; width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; color: var(--ink-2); transition: transform 0.35s var(--ease); }
 .author[data-open] .chev { transform: rotate(180deg); color: var(--accent); }
 /* the works slide open beneath the name */
@@ -135,7 +119,8 @@
 .go { color: var(--accent); opacity: 0; translate: -4px 0; transition: opacity 0.2s, translate 0.2s var(--ease); }
 .row:hover .go, .row:focus-visible .go { opacity: 1; translate: 0 0; }
 
-.badge { font-family: var(--f-label); letter-spacing: 0.05em; padding: 1px var(--space-2); border-radius: var(--radius); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--blue); white-space: nowrap; }
+/* design A's tag: "Greek + English" in small amber capitals */
+.badge { font-family: var(--f-label); font-size: 0.62rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); white-space: nowrap; }
 .off { color: var(--ink-2); }
 .genre { font-size: 0.82rem; color: var(--ink-2); }
 
@@ -148,11 +133,8 @@
 @media (max-width: 760px) {
   .controls > :global(.segmented) { display: flex; width: 100%; }
   .controls > :global(.segmented) > button { flex: 1 1 0; padding-inline: 6px; }
-  .moreBtn { display: flex; }
+  .moreBtn { justify-self: stretch; justify-content: center; min-height: var(--tap); }
   .selects { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
-  /* the order and every filter behind one button (Library.tsx) */
-  .filters { display: none; }
-  .filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) backwards; }
   .selects select { width: 100%; min-width: 0; font-size: 1rem; }
   .genres { display: grid; gap: 6px; }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter, 20px)); padding-inline: var(--gutter, 20px); scroll-padding-inline: var(--gutter, 20px); }

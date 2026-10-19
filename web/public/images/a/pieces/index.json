@@ -1,0 +1,277 @@
+{
+ "seated-muse": {
+  "w": 320,
+  "h": 682,
+  "kind": "piece"
+ },
+ "herodotos-bust": {
+  "w": 320,
+  "h": 579,
+  "kind": "piece"
+ },
+ "demosthenes-head": {
+  "w": 320,
+  "h": 404,
+  "kind": "piece"
+ },
+ "togatus": {
+  "w": 320,
+  "h": 853,
+  "kind": "piece"
+ },
+ "apollo-bronze": {
+  "w": 320,
+  "h": 889,
+  "kind": "piece"
+ },
+ "philosopher-head": {
+  "w": 320,
+  "h": 479,
+  "kind": "piece"
+ },
+ "decree-fragment": {
+  "w": 320,
+  "h": 422,
+  "kind": "piece"
+ },
+ "girl-with-doves": {
+  "w": 320,
+  "h": 667,
+  "kind": "piece"
+ },
+ "boxer-statuette": {
+  "w": 320,
+  "h": 815,
+  "kind": "piece"
+ },
+ "nike-relief": {
+  "w": 320,
+  "h": 445,
+  "kind": "piece"
+ },
+ "bronze-herm": {
+  "w": 320,
+  "h": 633,
+  "kind": "piece"
+ },
+ "hermes-bronze": {
+  "w": 320,
+  "h": 987,
+  "kind": "piece"
+ },
+ "diskos-thrower": {
+  "w": 320,
+  "h": 883,
+  "kind": "piece"
+ },
+ "muse-head": {
+  "w": 320,
+  "h": 417,
+  "kind": "piece"
+ },
+ "harp-player": {
+  "w": 320,
+  "h": 479,
+  "kind": "piece"
+ },
+ "tribute-list": {
+  "w": 320,
+  "h": 310,
+  "kind": "piece"
+ },
+ "athletic-prizes": {
+  "w": 320,
+  "h": 157,
+  "kind": "piece"
+ },
+ "arsinoe-base": {
+  "w": 320,
+  "h": 111,
+  "kind": "piece"
+ },
+ "strategos-head": {
+  "w": 320,
+  "h": 596,
+  "kind": "piece"
+ },
+ "seated-man": {
+  "w": 320,
+  "h": 416,
+  "kind": "piece"
+ },
+ "hero-relief": {
+  "w": 320,
+  "h": 286,
+  "kind": "piece"
+ },
+ "hermes-seated": {
+  "w": 320,
+  "h": 435,
+  "kind": "piece"
+ },
+ "hermes-marble": {
+  "w": 320,
+  "h": 744,
+  "kind": "piece"
+ },
+ "eukleia-stele": {
+  "w": 320,
+  "h": 630,
+  "kind": "piece"
+ },
+ "chrysippos-head": {
+  "w": 320,
+  "h": 481,
+  "kind": "piece"
+ },
+ "banquet-relief": {
+  "w": 320,
+  "h": 571,
+  "kind": "piece"
+ },
+ "portrait-bust": {
+  "w": 320,
+  "h": 389,
+  "kind": "piece"
+ },
+ "herakles-bronze": {
+  "w": 320,
+  "h": 705,
+  "kind": "piece"
+ },
+ "eirene": {
+  "w": 320,
+  "h": 814,
+  "kind": "piece"
+ },
+ "kouros": {
+  "w": 320,
+  "h": 1211,
+  "kind": "piece"
+ },
+ "funerary-lekythos": {
+  "w": 320,
+  "h": 1029,
+  "kind": "piece"
+ },
+ "hand-with-scroll": {
+  "w": 320,
+  "h": 199,
+  "kind": "piece"
+ },
+ "neptune-bronze": {
+  "w": 320,
+  "h": 625,
+  "kind": "piece"
+ },
+ "diadoumenos-terracotta": {
+  "w": 320,
+  "h": 467,
+  "kind": "piece"
+ },
+ "family-stele": {
+  "w": 320,
+  "h": 492,
+  "kind": "piece"
+ },
+ "woman-stele": {
+  "w": 320,
+  "h": 558,
+  "kind": "piece"
+ },
+ "teacher-and-pupil": {
+  "w": 320,
+  "h": 536,
+  "kind": "piece"
+ },
+ "elderly-man": {
+  "w": 320,
+  "h": 500,
+  "kind": "piece"
+ },
+ "boy-orator": {
+  "w": 320,
+  "h": 925,
+  "kind": "piece"
+ },
+ "apollo-head": {
+  "w": 320,
+  "h": 515,
+  "kind": "piece"
+ },
+ "athena-torso": {
+  "w": 320,
+  "h": 608,
+  "kind": "piece"
+ },
+ "athena-votive": {
+  "w": 320,
+  "h": 397,
+  "kind": "piece"
+ },
+ "bilingual-plaque": {
+  "w": 320,
+  "h": 293,
+  "kind": "piece"
+ },
+ "red-base": {
+  "w": 320,
+  "h": 253,
+  "kind": "piece"
+ },
+ "stele-youth-head": {
+  "w": 320,
+  "h": 227,
+  "kind": "piece"
+ },
+ "stele-woman-and-servant": {
+  "w": 320,
+  "h": 779,
+  "kind": "piece"
+ },
+ "athena-head": {
+  "w": 320,
+  "h": 511,
+  "kind": "piece"
+ },
+ "great-eleusinian-relief": {
+  "w": 360,
+  "h": 523,
+  "kind": "relief"
+ },
+ "parthenon-frieze-cast": {
+  "w": 360,
+  "h": 250,
+  "kind": "relief"
+ },
+ "mask-of-agamemnon": {
+  "w": 360,
+  "h": 360,
+  "kind": "relief"
+ },
+ "melian-relief": {
+  "w": 360,
+  "h": 413,
+  "kind": "relief"
+ },
+ "pericles-bust": {
+  "w": 360,
+  "h": 540,
+  "kind": "relief"
+ },
+ "socrates-louvre": {
+  "w": 360,
+  "h": 480,
+  "kind": "relief"
+ },
+ "asklepios-epidaurus": {
+  "w": 360,
+  "h": 571,
+  "kind": "relief"
+ },
+ "gerome-diogenes": {
+  "w": 360,
+  "h": 264,
+  "kind": "relief"
+ }
+}

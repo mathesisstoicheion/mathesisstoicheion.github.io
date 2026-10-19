@@ -37,6 +37,7 @@ import PanelGuard from "@/components/PanelGuard";
 import type { EchoMarks, EchoQuery, EchoTarget } from "./EchoesPanel";
 import MetreBar from "./MetreBar";
 import ReaderCover from "./ReaderCover";
+import SiteMark from "@/components/a/Mark";
 import PageHead from "@/components/PageHead";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
 import { useFloat } from "@/lib/float";
@@ -54,14 +55,15 @@ import { playLine as playLineRhythm } from "@/lib/metre/beat";
 import { loadWordPack } from "@/lib/lookup/words";
 import { caseOf } from "@/lib/lookup/postag";
 import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
-import { headerVisible, scrollBelowHeader, setBars } from "@/lib/header";
-import ReadBar, { PHONE } from "./ReadBar";
+import { headerVisible, scrollBelowHeader } from "@/lib/header";
 import Drop from "./Drop";
 import { buzz } from "@/lib/haptics";
 import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
 // and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
+/** a phone's width (the look-up opens as a sheet there, and a tap on the page closes it) */
+const PHONE = "(max-width: 760px)";
 const FindPanel = dynamic(() => import("./FindPanel"), { ssr: false });
 const ComparePanel = dynamic(() => import("./ComparePanel"), { ssr: false });
 const SentencePanel = dynamic(() => import("./SentencePanel"), { ssr: false });
@@ -78,8 +80,8 @@ const MineDialog = dynamic(() => import("./MineDialog"), { ssr: false });
 import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };
-/** The small panel open now, if any: from the bar (Aids, Your marks, More) or the edition's line under the title (Change). */
-type Dropped = "aids" | "marks" | "more" | "change";
+/** The small panel open now, if any: from the bar (Aa, Tools, Your marks, More) or the edition's line under the title (Change). */
+type Dropped = "aa" | "aids" | "marks" | "more" | "change";
 
 type Src = From | "private";
 /** A book's texts as loaded and parsed, or why they could not be. */
@@ -184,6 +186,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const params = nav.params;
   const floating = nav.floating;
   const contained = split || floating;   // the pane scrolls inside its own box, not the page
+  // one book on the reader's page: design A's reader, its bar along the top of the window and the book's cover beneath it
+  const single = !contained;
   const P = (k: string) => params.get(pane === 1 ? k : `${k}2`);
   const rootRef = useRef<HTMLDivElement>(null);
   const root = () => rootRef.current ?? document;
@@ -202,6 +206,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
   const fitLines = useSettings((s) => s.fitLines);
+  const lamp = useSettings((s) => s.lamp);
   const [vocabOpen, setVocabOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [talkOpen, setTalkOpen] = useState(false);
@@ -488,7 +493,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   /** The passage at the top of this pane now: the first showing more than a sliver below the sticky bar. */
   const topKey = () => {
     const bar = root().querySelector<HTMLElement>(`.${styles.bar}`);
-    // (on phones the page's sticky bar gives way to ReadBar at the bottom, and is not drawn)
     const edge = bar?.offsetHeight ? bar.getBoundingClientRect().bottom : contained ? rootRef.current!.getBoundingClientRect().top : headerVisible();
     // a row's empty padding below its last line does not count as showing
     return [...root().querySelectorAll<HTMLElement>("article [data-key]")]
@@ -590,10 +594,38 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     };
   }, [contained, hasRows]);
 
+  // design A's lamp on the passage: the passage whose middle is nearest a point a little above the middle of the window is
+  // lit, the others stand a little in the dark (Reader.module.css, .lampOn); a tap on a passage lights it. Only the
+  // passages on screen are measured, once a frame while the page moves. Off in Aa, or with two books open.
+  useEffect(() => {
+    const el = textRef.current;
+    if (!el || !single || !lamp) return;
+    let lit: HTMLElement | null = null, frame = 0;
+    const light = (r: HTMLElement | null | undefined) => { if (!r || r === lit) return; lit?.removeAttribute("data-lit"); r.setAttribute("data-lit", ""); lit = r; };
+    const shown = new Set<HTMLElement>();
+    const nearest = () => {
+      frame = 0;
+      const mid = innerHeight * 0.45;
+      let best: HTMLElement | null = null, bd = Infinity;
+      for (const r of shown) { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; best = r; } }
+      light(best);
+    };
+    const later = () => { if (!frame) frame = requestAnimationFrame(nearest); };
+    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) shown.add(e.target as HTMLElement); else shown.delete(e.target as HTMLElement); later(); });
+    const all = el.querySelectorAll<HTMLElement>("[data-key]");
+    all.forEach((r) => io.observe(r));
+    light(all[0]);
+    const tap = (e: PointerEvent) => light((e.target as HTMLElement).closest<HTMLElement>("[data-key]"));
+    addEventListener("scroll", later, { passive: true });
+    el.addEventListener("pointerdown", tap);
+    return () => { io.disconnect(); cancelAnimationFrame(frame); removeEventListener("scroll", later); el.removeEventListener("pointerdown", tap); lit?.removeAttribute("data-lit"); };
+  }, [single, lamp, rows]);
+
   // "Fit lines": verse lines stay whole, and the Greek shrinks until the longest line on the page fits
   // (never below half its size; past that, lines wrap again).
   const fitOn = useSettings((s) => s.fitLines);
   const greekSize = useSettings((s) => s.greekSize);
+  const greekFace = useSettings((s) => s.greekFace);
   useEffect(() => {
     const el = textRef.current;
     if (!el || !fitOn) return;
@@ -672,7 +704,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       if (e.key === "/") { e.preventDefault(); openFindNow(); return; }
       if (e.key === "ArrowRight") { e.preventDefault(); goChunkRef.current(chunk + 1); }
       else if (e.key === "ArrowLeft") { e.preventDefault(); goChunkRef.current(chunk - 1); }
-      else if (e.key === "g") { e.preventDefault(); gotoRef.current?.focus(); }
+      else if (e.key === "g") { e.preventDefault(); if (!contained) setDrop("aids"); requestAnimationFrame(() => gotoRef.current?.focus()); }
       else if (e.key === "?") setHelp((h) => !h);
       else if (e.key === "Escape") { setWord(null); setHelp(false); }
     };
@@ -1147,7 +1179,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     // or brings them back (a look-up open is closed first)
     if (!contained && matchMedia(PHONE).matches && !el.closest("a, button, input, select, textarea, label, summary, [role='button']")
       && !getSelection()?.toString()) {
-      if (word) closeWord(); else setBars();
+      if (word) closeWord();
     }
   };
 
@@ -1274,10 +1306,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   }, [canSync, sync, pane, order]);
 
   // ------------------------------------------------------------ render
-  if (isPrivate && mine.state !== "ready") return <MineStatus s={mine} work={workId} retry={() => setRetry((r) => r + 1)} onOpenMine={onOpenMine} />;
+  // (until there is a book to show, the site's header stays on this page, so there is a way on: globals.css, data-nobook)
+  if (isPrivate && mine.state !== "ready") return <div data-nobook=""><MineStatus s={mine} work={workId} retry={() => setRetry((r) => r + 1)} onOpenMine={onOpenMine} /></div>;
   if (!workId || (idx && !work)) {
     // the reader with no book: the normal page head, with one clear next step (PAGE-RULES.md, rule 6)
     return (
+      <div data-nobook="">
       <PageHead path={trail("reader")} title={workId ? "This work is not in the library" : AREAS.reader.name}
         piece={{ piece: "hand-with-scroll" }}
         purpose={workId
@@ -1287,6 +1321,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Choose a text <span className="arr" aria-hidden="true">→</span></Link>
           {moderator && <button type="button" className="btn ghost" onClick={onOpenMine}>Private collection</button>}
         </div>} />
+      </div>
     );
   }
 
@@ -1352,6 +1387,33 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ))}
     </div>
   );
+  // design A's Aa: the page, the lamp on the passage, and the size and typeface of the Greek (the same settings as in Settings)
+  const aaPanel = (
+    <div className={styles.aa}>
+      <span className="label">Page</span>
+      <div className={styles.seg} role="radiogroup" aria-label="Page">
+        <button type="button" role="radio" aria-checked={!daylight} onClick={() => setSettings({ theme: "dark" })}>Lamplight</button>
+        <button type="button" role="radio" aria-checked={daylight} onClick={() => setSettings({ theme: "light" })}>Daylight</button>
+      </div>
+      <span className="label">Lamp on the passage</span>
+      <div className={styles.seg} role="radiogroup" aria-label="Lamp on the passage">
+        <button type="button" role="radio" aria-checked={lamp} onClick={() => setSettings({ lamp: true })}>On</button>
+        <button type="button" role="radio" aria-checked={!lamp} onClick={() => setSettings({ lamp: false })}>Off</button>
+      </div>
+      <span className="label">Text size</span>
+      <div className={styles.seg} role="group" aria-label="Text size">
+        <button type="button" onClick={() => setSettings({ greekSize: greekSize - 2 * LIMITS.greekSize.step })} disabled={greekSize <= LIMITS.greekSize.min}>Smaller</button>
+        <button type="button" onClick={() => setSettings({ greekSize: greekSize + 2 * LIMITS.greekSize.step })} disabled={greekSize >= LIMITS.greekSize.max}>Larger</button>
+      </div>
+      <span className="label">Greek typeface</span>
+      <div className={styles.seg} role="radiogroup" aria-label="Greek typeface">
+        {([["didot", "Literata"], ["gentium", "Gentium"], ["sans", "Sans"]] as const).map(([v, name]) => (
+          <button key={v} type="button" role="radio" aria-checked={greekFace === v} onClick={() => setSettings({ greekFace: v })}>{name}</button>
+        ))}
+      </div>
+      <p className="muted">Daylight is a warm paper page for long reading in bright rooms. The rest of the site stays dark.</p>
+    </div>
+  );
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
   // the edition, the translation, an edition to compare with, and a second book: in the panel that Change opens under
   // the title (in the floating window, folded away above the text)
@@ -1390,8 +1452,93 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     </>
   );
 
+  // the bar's controls: the page, Go to, and the panels; in design A's bar (one book) Find and Listen wait in Tools
+  const where = doc ? (
+    <>
+      <div className={styles.pager}>
+        <button type="button" onClick={() => goChunk(chunk - 1)} disabled={chunk === 0} aria-label="Previous page">←</button>
+        <select aria-label="Page" value={chunk} onChange={(e) => goChunk(+e.target.value)}>
+          {doc.chunks.map((c, i) => <option key={i} value={i}>{c.label}</option>)}
+        </select>
+        <button type="button" onClick={() => goChunk(chunk + 1)} disabled={chunk === doc.chunks.length - 1} aria-label="Next page">→</button>
+      </div>
+      <form className={styles.goto} onSubmit={(e) => { const ok = findRef(doc, goto) >= 0; submitGoto(e); if (ok && single) setDrop(null); }} role="search">
+        <input ref={gotoRef} id="reader-goto" value={goto} onChange={(e) => setGoto(e.target.value)} placeholder={`Go to ${doc.levels.join(".")}`} aria-label="Go to reference"
+          enterKeyHint="go" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false} />
+        <button type="submit">Go</button>
+      </form>
+    </>
+  ) : null;
+  const barRow = load.state === "ready" && doc && chunkInfo ? (
+    <>
+      {!single && where}
+      {!single && <button type="button" className={`${styles.floatBtn} ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg> Find
+      </button>}
+      {canDiff && (
+        <span className={styles.diffNav} role="group" aria-label="Differences between the editions">
+          <button type="button" className={styles.floatBtn} onClick={() => goDiff(-1)} disabled={!allDiffs.length} aria-label="Previous difference" title="Previous difference">←</button>
+          <span>{allDiffs.length.toLocaleString("en-GB")} {allDiffs.length === 1 ? "difference" : "differences"}</span>
+          <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length} aria-label="Next difference" title="Next difference">→</button>
+        </span>
+      )}
+      {/* wide screens: Listen sits here (on phones it is in the reading aids) */}
+      {!single && trText && !cmpText && (
+        <button type="button" className={`${styles.floatBtn} ${styles.listenBtn}`} aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /></svg> Listen
+        </button>
+      )}
+      <div className={styles.barEnd}>
+        {/* (the floating window keeps its aids folded above the text) */}
+        {single && (
+          <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Lamplight or Daylight), the lamp on the passage, the size and the typeface of the Greek"
+            className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aaPop}`} panelLabel="Page and text">
+            {aaPanel}
+          </Drop>
+        )}
+        {!floating && (
+          <Drop {...dropOf("aids")} label="Tools" chevron={!single} title="Reading aids: help with the Greek, this passage and this work (Find and Listen are here too)" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
+            {single && (
+              <div className={`${styles.aidGroup} ${styles.whereGroup}`} role="group" aria-label="Where">
+                <span className={styles.aidLabel} aria-hidden="true">Page and passage</span>
+                {where}
+              </div>
+            )}
+            {aids}
+          </Drop>
+        )}
+        <Drop {...dropOf("marks")} label={single ? `Marks ${allMarks.length}` : `Your marks (${allMarks.length})`} chevron={!single} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
+          <ul className={styles.marksList}>
+            {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
+            {sortedMarks.map((m) => (
+              <li key={m.id}>
+                <button type="button" data-closes-sheet="" onClick={() => nav.go(query({ at: m.start.u }))}>
+                  <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
+                  <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </Drop>
+        <Drop {...dropOf("more")} ariaLabel="More" title="Markers beside the scroll bar, the keys, and the floating reader" chevron={false}
+          label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
+          className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
+          <MarkersLegend inline counts={markerCounts} />
+          <div className={styles.moreActs}>
+            {!floating && pane === 1 && (
+              <button type="button" className={styles.floatBtn} data-closes-sheet="" onClick={() => floatAway("all")} title="Shrink the reader into a small window that follows you around the site, at the passage you are reading">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float {split ? "both books" : "the reader"}
+              </button>
+            )}
+            <button type="button" className={styles.helpBtn} data-closes-sheet="" onClick={() => setHelp((h) => !h)} aria-expanded={help}>Keys <kbd>?</kbd></button>
+          </div>
+        </Drop>
+      </div>
+    </>
+  ) : null;
+
   return (
-    <div ref={rootRef} className={`${styles.reader} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1402,6 +1549,39 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {pane === 2 && <button type="button" className="chip" onClick={closePane}>Close this book</button>}
         </div>
       )}
+      {/* one book: design A's bar along the top of the window (the site's own header stands aside on this page): the mark,
+          the way back, the book and the page, then the columns, the page's settings (Aa), the tools and your marks */}
+      {single && (
+        <div className={`${styles.bar} ${styles.rbar}`}>
+          <div className={`wrap ${styles.rbarIn}`}>
+            <SiteMark size="bar" className={styles.rmark} />
+            <Link className={styles.back} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library">←<span className={styles.bl}> Library</span></Link>
+            <div className={styles.rtitle}>
+              <b>{author && !isPrivate ? <Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link> : author?.name}{author ? " · " : ""}{work?.title ?? ""}</b>
+              {chunkInfo && <span className="label">{chunkInfo.label}</span>}
+              {isPrivate && <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span>}
+            </div>
+            {load.state === "ready" && doc && chunkInfo && <div className={styles.rtools}>{columnsSeg}{barRow}</div>}
+          </div>
+        </div>
+      )}
+      {single ? (
+        <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} day={daylight}
+          editions={work && grcText ? (
+    <div className={styles.edLine}>
+      <span className={styles.ed}><span className={styles.edKind}>Greek</span> {describe(grcText, work.texts)}</span>
+      {second && <>
+        <span className={styles.dot} aria-hidden="true">·</span>
+        <span className={styles.ed}><span className={styles.edKind}>{cmpText ? "Compared with" : "English"}</span> {describe(second, work.texts)}</span>
+      </>}
+      <span className={styles.dot} aria-hidden="true">·</span>
+      <Drop {...dropOf("change")} label="Change" chevron={false} className={styles.change} title="Choose the Greek text, the translation, an edition to compare with, or a second book"
+        panelClass={`${styles.pop} ${styles.changePop}`} panelLabel="Edition and translation">
+        {editionControls}
+      </Drop>
+    </div>
+          ) : null} />
+      ) : (
       <header className={`wrap ${styles.top}`}>
         {!floating && (
           <>
@@ -1412,8 +1592,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                   <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span></>
               ) : author && <><span aria-hidden="true">›</span><Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link></>}
             </nav>
-            {/* the cover: the Greek title carved in the stone, and the book's medallion, lit by the torch (one book open at a time) */}
-            {work && !split && <ReaderCover workId={work.id} greek={grcText?.label} day={daylight} />}
             <h1 className={styles.title}>{work?.title ?? " "}
               {grcText?.label && grcText.label !== work?.title && <span className={styles.titleGr} lang="grc">{grcText.label}</span>}
             </h1>
@@ -1442,11 +1620,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                 {editionControls}
               </Drop>
             </div>
-            {/* phones have the columns in the reading aids' sheet (ReadBar), unless two books share the page */}
-            <div className={contained ? undefined : styles.notPhone}>{columnsSeg}</div>
+            <div>{columnsSeg}</div>
           </div>
         ))}
       </header>
+      )}
 
       {load.state === "loading" && <div className={`wrap ${styles.status}`}><span className={`meander ${styles.loadingBand}`} aria-hidden="true" /><p>{load.step}</p></div>}
       {load.state === "error" && (
@@ -1462,70 +1640,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {load.state === "ready" && doc && chunkInfo && (
         <>
           {/* one slim row that stays at the top while reading: the page, go to, Find and Listen; the reading aids, your
-              marks and the rest behind a button each (Drop.tsx). On phones ReadBar along the bottom does this instead. */}
-          <div className={`wrap ${styles.bar} ${contained ? "" : styles.barAway}`}>
-            <div className={styles.pager}>
-              <button type="button" onClick={() => goChunk(chunk - 1)} disabled={chunk === 0} aria-label="Previous page">←</button>
-              <select aria-label="Page" value={chunk} onChange={(e) => goChunk(+e.target.value)}>
-                {doc.chunks.map((c, i) => <option key={i} value={i}>{c.label}</option>)}
-              </select>
-              <button type="button" onClick={() => goChunk(chunk + 1)} disabled={chunk === doc.chunks.length - 1} aria-label="Next page">→</button>
-            </div>
-            <form className={styles.goto} onSubmit={submitGoto} role="search">
-              <input ref={gotoRef} id="reader-goto" value={goto} onChange={(e) => setGoto(e.target.value)} placeholder={`Go to ${doc.levels.join(".")}`} aria-label="Go to reference" />
-              <button type="submit">Go</button>
-            </form>
-            <button type="button" className={`${styles.floatBtn} ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg> Find
-            </button>
-            {canDiff && (
-              <span className={styles.diffNav} role="group" aria-label="Differences between the editions">
-                <button type="button" className={styles.floatBtn} onClick={() => goDiff(-1)} disabled={!allDiffs.length} aria-label="Previous difference" title="Previous difference">←</button>
-                <span>{allDiffs.length.toLocaleString("en-GB")} {allDiffs.length === 1 ? "difference" : "differences"}</span>
-                <button type="button" className={styles.floatBtn} onClick={() => goDiff(1)} disabled={!allDiffs.length} aria-label="Next difference" title="Next difference">→</button>
-              </span>
-            )}
-            {/* wide screens: Listen sits here (on phones it is in the reading aids) */}
-            {trText && !cmpText && (
-              <button type="button" className={`${styles.floatBtn} ${styles.listenBtn}`} aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.5 6.5a7.5 7.5 0 0 1 0 11" /></svg> Listen
-              </button>
-            )}
-            <div className={styles.barEnd}>
-              {/* (the floating window keeps its aids folded above the text) */}
-              {!floating && (
-                <Drop {...dropOf("aids")} label="Aids" title="Reading aids: help with the Greek, this passage and this work" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
-                  {aids}
-                </Drop>
-              )}
-              <Drop {...dropOf("marks")} label={`Your marks (${allMarks.length})`} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
-                <ul className={styles.marksList}>
-                  {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
-                  {sortedMarks.map((m) => (
-                    <li key={m.id}>
-                      <button type="button" data-closes-sheet="" onClick={() => nav.go(query({ at: m.start.u }))}>
-                        <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
-                        <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
-                      </button>
-                    </li>
-                  ))}
-                </ul>
-              </Drop>
-              <Drop {...dropOf("more")} ariaLabel="More" title="Markers beside the scroll bar, the keys, and the floating reader" chevron={false}
-                label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
-                className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
-                <MarkersLegend inline counts={markerCounts} />
-                <div className={styles.moreActs}>
-                  {!floating && pane === 1 && (
-                    <button type="button" className={styles.floatBtn} data-closes-sheet="" onClick={() => floatAway("all")} title="Shrink the reader into a small window that follows you around the site, at the passage you are reading">
-                      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float {split ? "both books" : "the reader"}
-                    </button>
-                  )}
-                  <button type="button" className={styles.helpBtn} data-closes-sheet="" onClick={() => setHelp((h) => !h)} aria-expanded={help}>Keys <kbd>?</kbd></button>
-                </div>
-              </Drop>
-            </div>
-          </div>
+              marks and the rest behind a button each (Drop.tsx). One book alone has design A's bar at the top instead. */}
+          {!single && <div className={`wrap ${styles.bar}`}>{barRow}</div>}
 
           {cases && (
             <p className={`wrap ${styles.legend}`} aria-label="Case colours">
@@ -1616,7 +1732,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             </div>
           )}
 
-          <article ref={textRef} className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
+          <article ref={textRef} className={`wrap ${styles.text} ${single && lamp ? styles.lampOn : ""} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText} />)}
           </article>
@@ -1626,52 +1742,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {share && <ShareDialog data={share} onClose={() => setShare(null)} />}
 
           <div className={`wrap ${styles.bottom}`}>
-            <button type="button" className="btn ghost" onClick={() => goChunk(chunk - 1)} disabled={chunk === 0}>← {chunk > 0 ? doc.chunks[chunk - 1].label : ""}</button>
-            <button type="button" className="btn" onClick={() => goChunk(chunk + 1)} disabled={chunk === doc.chunks.length - 1}>{chunk < doc.chunks.length - 1 ? doc.chunks[chunk + 1].label : ""} →</button>
+            {single && <span className={styles.hint}>Tap a word to look it up</span>}
+            <span className={styles.bottomGo}>
+              <button type="button" className="btn ghost" onClick={() => goChunk(chunk - 1)} disabled={chunk === 0}>← {chunk > 0 ? doc.chunks[chunk - 1].label : ""}</button>
+              <button type="button" className={single ? "btn ghost" : "btn"} onClick={() => goChunk(chunk + 1)} disabled={chunk === doc.chunks.length - 1}>{single ? "Continue to " : ""}{chunk < doc.chunks.length - 1 ? doc.chunks[chunk + 1].label : ""} →</button>
+            </span>
           </div>
-
-          {!contained && (
-            <ReadBar title={work?.title ?? ""} author={author?.name} chunks={doc.chunks} chunk={chunk} go={goChunk}
-              goto={(close) => (
-                <form className={styles.gotoPhone} role="search" onSubmit={(e) => { const ok = findRef(doc, goto) >= 0; submitGoto(e); if (ok) close(); }}>
-                  <label className="label" htmlFor="reader-goto-phone">Go to a passage</label>
-                  <div>
-                    <input id="reader-goto-phone" value={goto} onChange={(e) => setGoto(e.target.value)} enterKeyHint="go"
-                      autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-                      placeholder={`${doc.levels.join(".")}, e.g. ${doc.units[Math.min(40, doc.units.length - 1)].ref.join(".")}`} />
-                    <button type="submit" className="btn">Go</button>
-                  </div>
-                </form>
-              )}
-              marks={(close) => (
-                <>
-                  <h3 className="label">Your marks ({allMarks.length})</h3>
-                  {!allMarks.length
-                    ? <p className="muted">Press and hold words in the Greek, or tap a passage number, to bookmark, highlight or write a note.</p>
-                    : (
-                      <ul className={styles.marksPhone}>
-                        {sortedMarks.map((m) => (
-                          <li key={m.id}>
-                            <button type="button" onClick={() => { close(); nav.go(query({ at: m.start.u })); }}>
-                              <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
-                              <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                </>
-              )}
-              aids={(
-                <>
-                  {aids}
-                  {columnsSeg}
-                  <button type="button" className={styles.floatBtn} onClick={() => floatAway("all")}>
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float the reader, and keep reading anywhere on the site
-                  </button>
-                </>
-              )} />
-          )}
 
           {from && isPrivate && (
             <p className={`wrap ${styles.source}`}>
@@ -1829,7 +1905,7 @@ export function ReaderBooks() {
     setPicking(false);
   };
   return (
-    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-page={daylight ? "day" : undefined}>
+    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-page={daylight ? "day" : undefined} data-split={split ? "" : undefined}>
       <ReaderPane pane={1} split={split} onOpenSecond={() => setPicking(true)} onOpenMine={() => setMineFor(1)} />
       {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} onOpenMine={() => setMineFor(2)} />}
       {picking && <WorkPicker onPick={open} onClose={() => setPicking(false)} />}

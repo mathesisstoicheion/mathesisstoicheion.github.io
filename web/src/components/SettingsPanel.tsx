@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettings, LIMITS, applySettings, type ThemePref, type MotionPref, type GreekFace, type TextFace } from "@/lib/settings";
+import { useSettings, LIMITS, applySettings, type ThemePref, type AnimLevel, type GreekFace, type TextFace } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
@@ -9,18 +9,24 @@ import OfflineActions from "./OfflineActions";
 import Link from "next/link";
 import styles from "./SettingsPanel.module.css";
 
-// the site is dark only; the reader's page can be Night (the stone) or Daylight (pale limestone), against eye strain
-const PAGES: [ThemePref, string][] = [["dark", "Night"], ["light", "Daylight"]];
-const MOTIONS: [MotionPref, string][] = [["auto", "Automatic"], ["reduce", "Reduced"], ["full", "Full"]];
+// the site is dark; the reader's page can be Lamplight or Daylight (warm paper), against eye strain (design A's names)
+const PAGES: [ThemePref, string][] = [["dark", "Lamplight"], ["light", "Daylight"]];
+// the three levels of animation (lib/settings.ts, AnimLevel)
+const LEVELS: [AnimLevel, string][] = [["full", "Full beauty"], ["balanced", "Balanced"], ["performance", "Performance"]];
+const LEVEL_HINT: Record<AnimLevel, string> = {
+  full: "Every picture and letter moves as designed.",
+  balanced: "The same art, drawn a little less sharply and less often while nothing moves. Kinder to a busy phone or laptop.",
+  performance: "The art is drawn once and holds still, and pages open without animation. For older computers and phones.",
+};
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
 const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
-  { v: "didot", name: "Didot", about: "The site's classic face", font: "var(--font-didot)" },
+  { v: "didot", name: "Literata", about: "The site's own face", font: "var(--font-literata)" },
   { v: "gentium", name: "Gentium", about: "A book face made for scholarly Greek", font: "var(--font-gentium)" },
   { v: "sans", name: "Sans", about: "Clean, without serifs", font: "var(--font-noto-sans)" },
 ];
 const TEXT_FACES: { v: TextFace; name: string; font: string }[] = [
-  { v: "serif", name: "Serif", font: "var(--font-garamond)" },
+  { v: "serif", name: "Serif", font: "var(--font-literata)" },
   { v: "sans", name: "Sans", font: "var(--font-alegreya-sans)" },
 ];
 
@@ -137,8 +143,8 @@ export default function SettingsPanel() {
 
         <section className={styles.group}>
           <h3 className="label">Animation</h3>
-          <Segmented label="Animation" value={s.motion} options={MOTIONS} onChange={(motion) => s.set({ motion })} />
-          <p className={styles.hint}>Automatic follows your device&apos;s &ldquo;reduce motion&rdquo; setting.</p>
+          <Segmented label="Animation" value={s.level} options={LEVELS} onChange={(level) => s.set({ level })} />
+          <p className={styles.hint}>{LEVEL_HINT[s.level]}</p>
         </section>
 
         <section className={styles.group}>

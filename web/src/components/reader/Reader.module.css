@@ -2,15 +2,9 @@
 .reader { padding-bottom: 40px; }
 /* the reader's page: on the Daylight page the books' area is painted light, edge to edge */
 .page { color: var(--ink); }
-.page[data-page="day"] { background-color: var(--bg); transition: background-color var(--dur-slow) ease, color var(--dur-slow) ease; }
+.page[data-page="day"] { min-height: 100svh; background-color: var(--bg); transition: background-color var(--dur-slow) ease, color var(--dur-slow) ease; }
 
 .top { position: relative; padding-block: clamp(var(--space-5), 4vw, 40px) var(--space-4); display: grid; gap: 14px; }
-/* the cover (ReaderCover.tsx): the Greek title carved across the stone, the book's medallion beside the title */
-.coverBox { display: contents; }
-.coverCarve { margin: var(--space-2) 0 var(--space-1); max-width: 900px; }
-.coverMedal { position: absolute; right: max(var(--gutter), env(safe-area-inset-right, 0px)); top: clamp(var(--space-5), 4vw, 40px); width: 150px; height: 150px; }
-.coverMedal canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
-@media (max-width: 860px) { .coverMedal { display: none; } }
 .crumbs { display: flex; flex-wrap: wrap; gap: var(--space-2); font-family: var(--f-label); font-size: 0.85rem; letter-spacing: 0.06em; color: var(--ink-2); }
 .crumbs a { text-decoration: none; padding-block: 5px; }  /* taller than the words, for a finger */
 .crumbs a:hover { color: var(--accent); }
@@ -34,7 +28,6 @@
 }
 .change:hover, .change[aria-expanded="true"] { color: var(--accent-hi); text-decoration-color: currentColor; }
 @media (pointer: coarse) { .change { min-height: var(--tap); padding-inline: var(--space-2); margin-inline: calc(-1 * var(--space-2)); } }
-@media (max-width: 760px) { .notPhone { display: none; } }
 
 /* The small panels (Drop.tsx): Aids, Your marks and More from the bar, Change from the edition's line. Stone set on the
    wall, opaque, its lit edge and its shadow; each fades in as it rises a few pixels into place. */
@@ -57,10 +50,14 @@
   font: inherit; font-size: 0.92rem; color: var(--ink);
   border-radius: var(--radius); padding: 7px 10px; max-width: min(360px, 90vw);
 }
-.seg { display: inline-flex; border: 0; padding: var(--space-1); gap: var(--space-1); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
-.seg button { background: transparent; border: 0; border-radius: var(--radius); padding: var(--space-2) var(--space-3); font-size: 0.9rem; }
-.seg button:hover:not([aria-checked="true"]):not(:disabled) { background: var(--slab); }
-.seg button[aria-checked="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+/* design A's .seg: mono capitals in a fine frame, the chosen one on the chip colour */
+.seg { display: inline-flex; border: 1px solid var(--rule); }
+.seg button {
+  border: 0; border-radius: 0; background: transparent; padding: 7px 11px; cursor: pointer;
+  font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2);
+}
+.seg button:hover:not([aria-checked="true"]):not(:disabled) { color: var(--ink); }
+.seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 .seg button:disabled { opacity: 0.4; cursor: default; }
 
 .status { padding-block: 60px; display: grid; gap: var(--space-4); justify-items: start; }
@@ -515,22 +512,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .floatTitle { font-family: var(--f-display); font-size: 1.15rem; }
 
 /* ------------------------------------------------------------ phones (Phase 10) */
-/* The page's sticky bar gives way to ReadBar along the bottom (the floating window and side-by-side keep it). */
-.gotoPhone { display: grid; gap: 6px; }
-.gotoPhone > div { display: flex; gap: var(--space-2); }
-.gotoPhone input {
-  flex: 1; min-width: 0; min-height: var(--tap); font: inherit; font-size: 1.05rem; color: var(--ink);
-  border-radius: var(--radius); padding: var(--space-2) var(--space-3);
-}
-.gotoPhone .btn { padding: 0 20px; min-height: var(--tap); }
-.marksPhone { list-style: none; margin: 0; padding: 0; display: grid; }
-.marksPhone button {
-  width: 100%; min-height: var(--tap); display: grid; gap: 2px; padding: var(--space-2) var(--space-1); text-align: left; background: transparent; color: var(--ink);
-  border: 0; box-shadow: var(--cut-under);
-}
-.marksPhone li:last-child button { box-shadow: none; }
 @media (max-width: 760px) {
-  .barAway { display: none; }
   /* two fingers on the text resize the Greek (Reader.tsx) instead of zooming the page */
   .reader:not(.floating):not(.pane) .text { touch-action: pan-x pan-y; }
   .seg button { min-height: var(--tap); padding-inline: var(--space-4); }
@@ -642,7 +624,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 /* Listen: a button beside "Float the reader" on wide screens, a chip in the aids sheet on phones */
 .listenBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
-@media (min-width: 761px) { .listenChip { display: none !important; } }
+@media (min-width: 761px) { .reader:not(.single) .listenChip { display: none !important; } }
 @media (max-width: 760px) { .listenBtn { display: none !important; } }
 
 /* Talk about this passage (TalkPanel.tsx): the Town Hall's threads on this page */
@@ -663,3 +645,126 @@ p.translit { margin: -0.3em 0 0.8em; }
 .privateTag svg, .mineChip svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .mineChip { display: inline-flex; align-items: center; gap: 6px; }
 .mineProblems { margin: 0; padding-left: 1.2em; color: var(--ink-2); }
+
+/* ============================================================ design A's reader (one book on its page)
+   The owner, 2026-10-19: the reader exactly as design A drew it (redesign/design-a/design-a.html, the READER section).
+   Its own bar along the top (the site's header stands aside: globals.css), the book opening in lamplight (ReaderCover.tsx),
+   the passages in rows with the one being read lit, and "Continue to …" at the foot. Two books side by side and the
+   floating window keep the reader's own layout above. */
+
+/* the bar: the mark, the way back, the book and its page, then the columns, Aa, Tools, your marks and More */
+.rbar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: block; padding: 0;
+  background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--rule); box-shadow: none; transition: none;
+}
+.withPanel .rbar { margin-right: 0; }
+.rbarIn { display: flex; align-items: center; gap: 10px; min-height: 58px; flex-wrap: wrap; padding-block: 8px; position: relative; }
+.single :global(.wrap) { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.rmark { color: var(--ink); }
+.back { padding: 6px 4px; color: var(--ink-2); text-decoration: none; font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.back:hover { color: var(--accent); }
+.rtitle { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: baseline; overflow: hidden; white-space: nowrap; }
+.rtitle b { font-family: var(--f-display); font-stretch: 75%; font-weight: 450; letter-spacing: 0.06em; text-transform: uppercase; font-size: 1rem; overflow: hidden; text-overflow: ellipsis; }
+.rtitle b a { color: inherit; text-decoration: none; }
+.rtitle b a:hover { color: var(--accent); }
+.rtitle :global(.label) { font-size: 0.72rem; }
+.rtitle .privateTag { align-self: center; }
+/* the controls flow in the bar itself, as A's do: on a phone, what does not fit goes on to a second line */
+.rtools, .rbar .barEnd { display: contents; }
+.rbar .dropBtn {
+  height: auto; padding: 6px 12px; gap: 6px; border: 1px solid var(--rule); border-radius: 0; background: transparent; box-shadow: none; color: var(--ink);
+  font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase;
+}
+.rbar .dropBtn:hover { background: transparent; border-color: var(--ink-2); }
+.rbar .dropBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--ink); box-shadow: none; }
+.rbar .moreDrop { padding-block: 4px; }
+.rbar .moreDrop svg { width: 16px; height: 16px; }
+.rbar .seg button { min-height: 0; padding-inline: 11px; }
+@media (pointer: coarse) { .rbar .seg button, .rbar .dropBtn { min-height: 32px; } }
+@media (max-width: 640px) { .rtitle :global(.label), .bl { display: none; } .rtitle b { font-size: 0.9rem; } }
+/* its panels (A's .pop): under the bar at the right */
+.rbar .pop {
+  right: max(16px, env(safe-area-inset-right, 0px)); top: 100%; margin-top: 6px; max-width: none; width: min(370px, calc(100vw - 32px));
+  padding: 16px; border: 1px solid var(--rule); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.55); z-index: 25;
+}
+.rbar .aidsPop { width: min(30rem, calc(100vw - 32px)); }
+.rbar .marksPop { width: min(24rem, calc(100vw - 32px)); padding: 8px; }
+.rbar .morePop { width: min(19rem, calc(100vw - 32px)); }
+.aaPop { gap: 0; }
+.aa { display: grid; justify-items: start; }
+.aa > :global(.label) { margin: 14px 0 8px; }
+.aa > :global(.label):first-child { margin-top: 0; }
+.aa > :global(.muted) { font-size: 0.78rem; margin: 14px 0 0; }
+.rbar .aidLabel { font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.whereGroup { padding-bottom: var(--space-4); box-shadow: var(--cut-under); }
+.whereGroup .goto { flex: 1; min-width: 12rem; }
+.whereGroup .goto input { flex: 1; min-width: 0; width: auto; }
+/* the look-up panel opens under the bar */
+@media (min-width: 901px) { .single .panel { top: calc(var(--bar-h, 59px) + env(safe-area-inset-top, 0px)); } }
+
+/* the cover: lamplight and drifting dust, until you scroll into the text (A's .rcover) */
+.rcover {
+  --a-img: var(--amber);
+  position: relative; min-height: calc(100svh - 70px); display: grid; place-items: center; text-align: center;
+  padding: clamp(36px, 7vh, 80px) 16px clamp(70px, 12vh, 120px); margin-bottom: clamp(10px, 3vw, 30px);
+}
+.atm { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: var(--atm, 1); pointer-events: none; }
+.inner { position: relative; z-index: 1; max-width: 900px; opacity: calc(0.35 + 0.65 * var(--atm, 1)); }
+.emblem { margin: 0 auto 18px; width: 200px; text-align: center; }
+.emblem canvas { width: 200px; display: block; margin-inline: auto; }
+.emCap { font-size: 0.7rem; line-height: 1.45; margin-top: 6px; color: var(--ink-2); }
+.kick { color: var(--accent); font-size: 0.72rem; }
+.coverTitle {
+  font-family: var(--f-greek); font-weight: 400; font-stretch: normal; font-style: normal; letter-spacing: 0; text-transform: none;
+  font-size: clamp(3rem, 9vw, 7rem); line-height: 1; margin: 14px 0 10px; color: var(--ink);
+  text-shadow: 0 0 50px rgba(255, 140, 50, calc(0.38 * var(--atm, 1)));
+}
+.enT { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-style: italic; font-size: clamp(1.4rem, 3vw, 2.3rem); color: var(--ink-2); margin: 0; }
+.eds { position: relative; margin-top: 16px; display: flex; justify-content: center; }
+.eds .edLine { justify-content: center; font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+.eds .edKind { font-size: inherit; margin-right: 0; }
+.eds .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; text-transform: none; letter-spacing: normal; font-family: var(--f-body); font-size: 1rem; }
+.begin {
+  position: absolute; left: 50%; bottom: clamp(18px, 4vh, 40px); transform: translateX(-50%); padding-bottom: 42px; white-space: nowrap;
+  font-family: var(--f-label); font-size: 0.66rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); opacity: var(--atm, 1);
+}
+.begin::after {
+  content: ""; position: absolute; left: 50%; bottom: 0; width: 1px; height: 34px; background: linear-gradient(var(--accent), transparent);
+  transform-origin: top; animation: drip 2.6s cubic-bezier(0.6, 0, 0.3, 1) infinite;
+}
+@keyframes drip { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
+.page[data-page="day"] .rcover { --a-img: #7a3d0a; }
+.page[data-page="day"] .atm { display: none; }
+.page[data-page="day"] .coverTitle { text-shadow: none; }
+@media (max-width: 640px) { .emblem, .emblem canvas { width: 140px; } .emCap { display: none; } }
+@media (prefers-reduced-motion: reduce) { .begin::after { animation: none; } }
+
+/* the text: rows on the black page, the passage number in mono at the left, the one being read lit (A's .row) */
+.single .text { background: none; box-shadow: none; padding-block: 0; margin-top: 0; }
+.single .row { grid-template-columns: 4.2rem minmax(0, 1.1fr) minmax(0, 1fr); column-gap: clamp(18px, 3vw, 44px); padding-block: 22px; }
+.single .ref button { font-size: 0.74rem; letter-spacing: 0.08em; padding-top: 0.45em; }
+.single .tr { box-shadow: none; padding-left: 0; font-size: calc(var(--greek-size) * 0.8); line-height: 1.66; }
+.single.cols-greek .row { grid-template-columns: 4.2rem minmax(0, 44rem); }
+.single.cols-trans .row { grid-template-columns: 4.2rem minmax(0, 40rem); }
+.single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
+@media (max-width: 900px) and (min-width: 761px) {
+  .single .tr { grid-column: auto; margin-top: 0; padding-top: 0; }
+}
+@media (max-width: 760px) {
+  .single .row, .single.cols-greek .row, .single.cols-trans .row { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+  .single .ref { flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
+  .single .ref button { padding-top: 0; }
+  .single .tr { grid-column: auto; margin-top: 0; padding: 0 0 0 12px; box-shadow: var(--cut-left); }
+  .single.cols-trans .tr { padding-left: 0; box-shadow: none; }
+}
+.lampOn .row { opacity: 0.42; transition: opacity 0.5s ease; }
+.page[data-page="day"] .lampOn .row { opacity: 0.6; }
+.lampOn .row[data-lit] { opacity: 1; }
+
+/* the foot of the page (A's .rnext) */
+.bottomGo { display: contents; }
+.single .bottom { align-items: center; flex-wrap: wrap; gap: 16px; padding-block: 30px 40px; box-shadow: var(--cut-over); color: var(--ink-2); }
+.single .bottomGo { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
+.single .bottom button:disabled { display: none; }
+.hint { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }

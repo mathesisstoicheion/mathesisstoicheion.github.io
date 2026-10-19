@@ -9,7 +9,7 @@
  */
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { MARKER_KINDS, useSettings, type MarkerKind } from "@/lib/settings";
-import { bottomBarsHeight, headerHeight } from "@/lib/header";
+import { headerHeight } from "@/lib/header";
 import styles from "./Markers.module.css";
 
 export interface MarkerItem { key: string; kind: MarkerKind; label: string; preview?: string; colour?: string }
@@ -41,8 +41,7 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
       const scroller = contained ? root : document.documentElement;
       // page mode: the track starts below the site header (which slides away on scroll; see lib/header.ts)
       const offset = contained ? 0 : headerHeight();
-      // phones: the bars along the bottom cover the end of the screen
-      const viewH = contained ? root.clientHeight : innerHeight - offset - bottomBarsHeight();
+      const viewH = contained ? root.clientHeight : innerHeight - offset;
       const total = scroller.scrollHeight - (contained ? 0 : offset);
       const base = contained ? root.getBoundingClientRect().top - root.scrollTop : -scrollY + offset;
       const out: Placed[] = [];

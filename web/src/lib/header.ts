@@ -1,23 +1,18 @@
 /**
- * The site header slides away while you scroll down and comes back when you scroll up.
- * Header.tsx keeps --hdr-h on <html> (the header's full height: it is taller on phones, where the menu wraps) and
- * sets data-hdr="hidden" on <html> while it is tucked away; the phone bar (TabBar) tucks away with it.
- * Anything sticky sits below --hdr-vis (how much of the header is showing), and anything fixed along the bottom of
- * the screen above --tabbar-vis and --readbar-vis. On <html> they are the full heights; each rule that uses them sets
- * them to 0 on its own element while the header is tucked away (html[data-hdr="hidden"] .x { --hdr-vis: 0px }).
- * Changing them on <html> instead would restyle every element of the page each time the header slides: a pause of a
- * tenth of a second or more.
+ * The site header stands at the top of the page and scrolls away with it (design A). Header.tsx keeps --hdr-h on <html>
+ * (the header's height) and sets data-hdr="hidden" on <html> while it is tucked away. Anything sticky sits below --hdr-vis
+ * (how much of the header covers the window: none). A rule that needs it to be 0 sets it on its own element
+ * (html[data-hdr="hidden"] .x { --hdr-vis: 0px }); changing it on <html> instead would restyle every element of the page
+ * each time: a pause of a tenth of a second or more.
  */
 const px = (name: string) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
 
-/** The header's full height in pixels. */
-export const headerHeight = () => px("--hdr-h");
+/** How much of the window's top the header can cover, in pixels: none, now that it scrolls away with the page as in
+ *  design A (--hdr-vis, app/globals.css). */
+export const headerHeight = () => px("--hdr-vis");
 
 /** How many pixels of the header are showing at the top of the window now. */
 export const headerVisible = () => (document.documentElement.dataset.hdr === "hidden" ? 0 : headerHeight());
-
-/** Phones: the full height of what is fixed along the bottom of the screen (the bar, and the reader's bar). */
-export const bottomBarsHeight = () => px("--tabbar-h") + px("--readbar-h");
 
 /**
  * Hide the header and the bars along the bottom (a clean page for reading), or bring them back.
