@@ -1,0 +1,22 @@
+/* The library's Socrates spelled from the Apology: a tall window, with its words beside it (below it on a phone). */
+.band { display: grid; gap: var(--space-3); align-items: center; margin: var(--space-5) 0; }
+@media (min-width: 860px) { .band { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: var(--space-5); } }
+.win { --soc-bg: #080605; height: clamp(420px, 72vh, 640px); background: var(--soc-bg); }
+.cv { position: absolute; inset: 0; width: 100%; height: 100%; display: block; color: var(--gold-hi); font-family: var(--f-greek); }
+.words { display: grid; gap: var(--space-2); max-width: 34rem; }
+.words p { margin: 0; }
+.h { font: 300 clamp(1.7rem, 4vw, 2.3rem) / 1.1 var(--f-display); margin: 0; }
+.gr { font: 400 1.15rem / 1.3 var(--f-greek); color: var(--gold); }
+.go { color: var(--gold-hi); text-decoration: none; font-weight: 600; }
+.go:hover { text-decoration: underline; }
+.src { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-3); }
+html[data-look="light"] .win { --soc-bg: #f3e9d6; }
+html[data-look="light"] .cv { color: var(--oxblood); }
+html[data-look="light"] .go { color: var(--gold); }
+/* the soft curtains of the window's own colour that uncover the face as it gathers (below) and cover it as it lets go
+   (above); twice the window's height, moved only by transform */
+.curtain { position: absolute; left: 0; right: 0; top: 0; height: 200%; pointer-events: none; will-change: transform; }
+.below { background: linear-gradient(to bottom, transparent, var(--soc-bg) 8%); }
+.above { background: linear-gradient(to bottom, var(--soc-bg) 92%, transparent); transform: translateY(-200%); }
+.cv { will-change: transform, opacity; }
+.roll { opacity: 0; }

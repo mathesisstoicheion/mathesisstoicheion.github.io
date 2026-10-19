@@ -75,20 +75,6 @@
 .pnyxCard span:last-child { font-size: 0.92rem; color: var(--ink-2); }
 .pnyxCard [lang="grc"] { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
 .pnyxMore { justify-self: end; font-family: var(--f-label); font-size: 0.95rem; color: var(--accent); text-underline-offset: 3px; margin-top: -4px; }
-.cats { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
-.cat {
-  text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1px solid transparent; border-radius: var(--radius);
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); cursor: pointer; position: relative; overflow: hidden; font: inherit;
-  animation: rise 0.45s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 40ms);
-  transition: transform 0.2s var(--ease), color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
-}
-.cat > * { position: relative; }
-.cat b { font-family: var(--f-display); font-weight: 400; font-size: 1.12rem; }
-.cat span { font-size: 0.84rem; color: var(--ink-2); }
-.cat:hover { transform: translateY(-2px); }
-.cat:active { background: var(--field); box-shadow: var(--field-edge); }
-.cat[aria-pressed="true"] { color: var(--ink); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
-.cat:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .toolbar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; }
 /* the search bar, in the toolbar directly above the list (the same bar as the Library's) */
@@ -284,3 +270,9 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .card, .rules, .featured, .motionHero, .proposeBox { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* the moulding uses the outline, so the two link cards give the focus ring back */
 .featured:focus-visible, .motionHero:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+/* the Town Hall's rooms are gilded windows (TownHall.tsx); a little shorter than a door page's, since the list follows */
+.hall :global(.art-pane).room { min-height: clamp(200px, 20vw, 260px); }
+.allRooms { all: unset; cursor: pointer; color: var(--gold); font: 500 var(--step--1) / 1.4 var(--f-label); letter-spacing: 0.08em; text-transform: uppercase; padding-block: var(--space-2); }
+.allRooms:hover { color: var(--gold-hi); }
+.allRooms:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }

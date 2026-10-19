@@ -15,6 +15,7 @@ import { ago, categories, debates, SITE_BOARDS, threads, type Category, type Deb
 import { useHidden } from "@/lib/community/hidden";
 import { useLoad, useReloadable, type Load } from "@/lib/use-load";
 import { SignInPrompt, StatusTag } from "./parts";
+import { Room } from "@/components/art/PageArt";
 import PullToRefresh from "@/components/PullToRefresh";
 import { AREAS } from "@/config/areas";
 import styles from "./Community.module.css";
@@ -62,16 +63,28 @@ export default function TownHall() {
   return (
     <div className={`wrap ${styles.hall}`}>
       <PullToRefresh onPull={listR.reload} busy={listR.busy} />
-      <nav className={styles.cats} aria-label="Categories">
-        <button type="button" className={styles.cat} aria-pressed={!c} onClick={() => go({ c: null, state: null })}>
-          <b>Everything</b><span>All the conversations</span>
-        </button>
-        {cats.state === "done" && cats.value.map((x: Category, i) => (
-          <button key={x.id} type="button" className={styles.cat} aria-pressed={c === x.id} onClick={() => go({ c: x.id, state: null })} style={{ "--i": i } as React.CSSProperties}>
-            <b>{x.title}</b><span>{x.blurb}</span>
-          </button>
-        ))}
-      </nav>
+      {/* the rooms, as gilded windows onto the engraving (GOLD-AND-LAMPLIGHT-PLAN.md, doors: "rooms as gilded windows");
+          once one is open, a way back to all of them */}
+      {!c ? (
+        cats.state === "done" && cats.value.length > 0 && (
+          <nav aria-labelledby="rooms-h">
+            <h2 id="rooms-h" className="label rooms-h">The rooms</h2>
+            <ul className="rooms">
+              {cats.value.map((x: Category) => (
+                <li key={x.id}>
+                  <Room title={x.title} blurb={x.blurb} className={styles.room}>
+                    <button type="button" className="room-open" onClick={() => go({ c: x.id, state: null })}>
+                      <span className="visually-hidden">Open the room {x.title}</span>
+                    </button>
+                  </Room>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        )
+      ) : (
+        <button type="button" className={styles.allRooms} onClick={() => go({ c: null, state: null })}>← All the rooms</button>
+      )}
 
       <SignInPrompt what="start a thread or reply" />
 

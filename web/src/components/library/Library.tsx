@@ -18,6 +18,7 @@ import { Room } from "@/components/art/PageArt";
 import { AREAS, trail } from "@/config/areas";
 import { scrollBehavior } from "@/lib/settings";
 import { bestMatch, nameMatch } from "./az";
+import SocratesRoll from "./SocratesRoll";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
@@ -337,6 +338,9 @@ export default function Library({ stelai, paths, purpose, headExtra }: { stelai?
           </ul>
         </section>
       )}
+
+      {/* Socrates spelled from the Apology, falling into a papyrus roll as you scroll (design A) */}
+      {!filtering && !family && <SocratesRoll />}
 
       {/* where to begin: a few famous books, each a stele drawn in gold lines, the site's suggestions and the reading paths */}
       <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
