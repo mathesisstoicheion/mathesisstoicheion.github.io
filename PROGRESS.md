@@ -1,5 +1,20 @@
 # PROGRESS.md — project memory
 
+## A letter figure for every area (2026-10-19, LIVE ~21:20 UTC after the owner's "Great. Publish")
+The owner, 17:31 and 17:44 UTC: "build a whole version of the website that mixes elements of gold and torch (A) and ... the
+Museion"; "each page has its own distinct design, but with an overall, unifying design. I like the red with the gilded art pieces,
+but I like the transparency and the texts that morph into Socrates' face, that turns into a scroll." Each area now has its own
+figure, as the library has Socrates (`web/src/data/figures.ts`): the letters of a real Greek text from Perseus gather into a face
+and then become the area's object (Learn: a philosopher from Plato's cave, a writing tablet; Explore: Chrysippus from Diogenes
+Laertius 7.179–187, the colonnade; Talk: Pericles from the Funeral Oration, the allotment machine; Mine: Athena from Thucydides
+2.13, an Athenian silver coin; Search: Apollo from the Homeric Hymn, his lyre). The five doors are built as the library is
+(`components/a/Door.tsx`, `FigStage.tsx`): the figure pinned at the right, black blocks and one red gilded window at the left on
+a computer, two windows onto the figure on a phone. Every inner page ends with its area's figure (`FootFigure.tsx`): at its foot,
+not behind the text, since letters behind words were the defect the overlap round fixed (the owner was told). The home page's
+five rooms show the five faces (`RoomFig.tsx`), and page titles use the library's italic bright gold. The library is unchanged.
+Checks: overlap sweep of 45 pages at six sizes found nothing new; graphics memory 46–94 MB on a phone; mid-scroll at 128 MB fine.
+Screenshots: https://claude.ai/artifact/LR3sgdXe33DReh1kiyVWYH
+
 ## Overlaps fixed; things play once on view and stay (2026-10-19, LIVE 17:32 UTC after the owner's "Publish"; they also said "I like the Museion", so the library stays as it is)
 The owner, 13:35 UTC, with two phone screenshots: "fix these kinds of overlaps. And when scrolling, the animations should play
 automatically when they come into view. And should stay expanded, even if you scroll back up." The engraved windows, the settling
