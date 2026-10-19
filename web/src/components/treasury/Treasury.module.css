@@ -27,7 +27,7 @@
   --triglyph: linear-gradient(90deg, var(--cut-deep) 0 6.33%, var(--lip-hi) 6.33% 8.33%, transparent 8.33% 25%, var(--cut-deep) 25% 39.67%, var(--lip-hi) 39.67% 41.67%,
     transparent 41.67% 58.33%, var(--cut-deep) 58.33% 73%, var(--lip-hi) 73% 75%, transparent 75% 91.67%, var(--cut-deep) 91.67% 100%);   /* in proportion, so it scales with --tri */
   list-style: none; margin: 0; padding: 0 var(--tri) 0 0;
-  display: grid; grid-template-columns: repeat(9, 1fr);
+  display: grid; grid-template-columns: repeat(9, minmax(0, 1fr));
   border-top: 3px solid var(--stone-4); border-bottom: 3px solid var(--stone-0); box-shadow: var(--lintel-shadow);
   background: var(--block-light), var(--triglyph), var(--stone-4); background-size: var(--tri) 100%; background-position: right top; background-repeat: no-repeat;
   --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
@@ -53,13 +53,15 @@
 .metope::after { content: ""; position: absolute; inset: 6px; box-shadow: var(--panel-cut); pointer-events: none; }
 
 @media (max-width: 1100px) {
-  .frieze { grid-template-columns: repeat(3, 1fr); }
+  .frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
 }
 @media (max-width: 520px) {
-  .frieze { grid-template-columns: repeat(3, 1fr); --tri: 10px; }
+  .frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); --tri: 10px; }
   .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
-  .metope { min-height: 104px; }
+  .metope { min-height: 104px; padding-inline: 6px; }
+  /* the labels in A's narrow capitals fit a third of a phone's width */
+  .metopeLabel { font-size: 0.8rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
 }
 
 /* ------------------------------------------------ the moderator's private translations (PrivateShelf.tsx), under the frieze */
