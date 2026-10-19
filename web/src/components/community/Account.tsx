@@ -16,7 +16,7 @@ import PageHead from "@/components/PageHead";
 type Mode = "in" | "join" | "forgot";
 
 /**
- * The page: its head (as the pages inside an area have one: a small label, the title, and the page's sculpture in its niche,
+ * The page: its head (as the pages inside an area have one: a small label, the title, and the page's sculpture in its window,
  * beside the title on a computer and after it on a phone), then the box. The title is "Sign in", or the member's name once signed
  * in. The head is drawn without waiting for the address (only the box below it reads that), so it is in the page as it is built.
  */

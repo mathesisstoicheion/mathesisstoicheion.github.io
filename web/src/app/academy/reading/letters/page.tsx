@@ -15,7 +15,7 @@ export default function LettersStepPage() {
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
         <PageHead bare path={trail("study", { label: "Learn by reading", href: "/academy/reading" }, `Step 0 of ${PATH.length}`)}
-          carve={LETTERS_STEP.carve} title={LETTERS_STEP.title} greek={null} purpose={LETTERS_STEP.who} />
+          inscription={LETTERS_STEP.carve} title={LETTERS_STEP.title} greek={null} purpose={LETTERS_STEP.who} />
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
         <LettersStepView />
       </div>

@@ -11,19 +11,19 @@ import { LOST_PAGE } from "@/data/pieces";
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 
 /**
- * An address that leads nowhere: a broken piece of stone set in the wall, with 404 cut into it in Greek numerals and
- * lit by the torch, and the ways on (search, the main areas, a report). Also served as 404.html on the static site.
+ * An address that leads nowhere: 404 in Greek numerals over the title, a broken piece of sculpture in its window, and
+ * the ways on (search, the main areas, a report). Also served as 404.html on the static site.
  */
 export default function NotFound() {
   return (
     <Page>
       <div className={`wrap ${styles.page}`}>
-        <PageHead bare path={[{ label: "Not found" }]} carve="ΥΔ" title="This page has not survived" greek="ἀπόλωλε" piece={LOST_PAGE}
+        <PageHead bare path={[{ label: "Not found" }]} inscription="ΥΔ" title="This page has not survived" greek="ἀπόλωλε" piece={LOST_PAGE}
           purpose={<>The address may be mistyped, or the page may have moved. You are in good company: Aeschylus wrote an estimated
             70 to 90 plays, and <Link href="/author/tlg0085" transitionTypes={["page-turn"]}>seven survive</Link>.</>}
           action={<NotFoundSearch />}>
           <p className={styles.caption}>
-            The letters cut in the wall are 404 in <a href="https://en.wikipedia.org/wiki/Greek_numerals" rel="noopener">Greek numerals</a>: Υ is 400, Δ is 4.
+            The letters over the title are 404 in <a href="https://en.wikipedia.org/wiki/Greek_numerals" rel="noopener">Greek numerals</a>: Υ is 400, Δ is 4.
           </p>
           <nav className={`slab-cards ${styles.ways}`} aria-label="Ways on">
             {(["home", "library", "study", "wiki"] as const).map((id) => (

@@ -3,7 +3,7 @@ import Page from "@/components/Page";
 import DailySession from "@/components/academy/DailySession";
 import { AREAS } from "@/config/areas";
 import { NOINDEX } from "@/lib/seo";
-import PagePiece from "@/components/art/PagePiece";
+import PageWin from "@/components/a/PageWin";
 
 export const metadata: Metadata = { title: `Today's session · ${AREAS.study.name}`, ...NOINDEX };
 
@@ -14,9 +14,9 @@ export default function TodayPage() {
         <div className="tool-main">
           <DailySession />
           {/* on a phone the session has the screen to itself, and its piece stands after it */}
-          <PagePiece className="piece-phone" />
+          <PageWin className="piece-phone" />
         </div>
-        <PagePiece className="piece-desk" />
+        <PageWin className="piece-desk" />
       </div>
     </Page>
   );

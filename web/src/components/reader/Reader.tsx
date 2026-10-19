@@ -710,7 +710,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     };
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);
-  }, [chunk, split, pane, floating]);
+  }, [chunk, split, pane, floating, contained]);
 
   // ------------------------------------------------------------ your marks
   const order = useMemo(() => new Map(doc?.units.map((u, i) => [u.ref.join("."), i]) ?? []), [doc]);

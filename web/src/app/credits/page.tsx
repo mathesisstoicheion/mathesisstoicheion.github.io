@@ -5,6 +5,8 @@ import { COLLECTIONS, repoUrl } from "@/config/sources";
 import { LSJ_CREDIT } from "@/lib/lookup/lsj";
 import { IMAGES } from "@/wiki/images";
 import { PIECE_CREDITS, USED_PIECES } from "@/data/pieces";
+import { MEDALLIONS } from "@/data/medallions";
+import { A_ART } from "@/components/a/pictures";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -140,7 +142,19 @@ export default function CreditsPage() {
         </ul>
 
         <h2 id="pictures">Pictures</h2>
-        <p>The amphora on the home page and all ornament are drawn by this site&apos;s own code. Photographs of real objects arrive with the wiki, each with its source, creator and licence listed here.</p>
+        <p>
+          The pictures in the windows of the home page, the library and the reader&apos;s covers are photographs of real objects, redrawn
+          as gold engravings (or, for the books&apos; emblems, in letters) by this site&apos;s own code. Each is credited where it is shown,
+          and all are listed below. All ornament is drawn by this site&apos;s own code. Photographs of real objects also arrive with the
+          wiki, each with its source, creator and licence listed here.
+        </p>
+        <details className={styles.fold}>
+          <summary>The pictures in the windows and the books&apos; emblems</summary>
+          <ul>
+            {Object.values(A_ART).map((p) => <li key={p.src}>{p.credit.charAt(0).toUpperCase() + p.credit.slice(1)}.</li>)}
+            {MEDALLIONS.map((m) => <li key={m.id}>{m.why}</li>)}
+          </ul>
+        </details>
         <p>
           Every picture in the Painted Stoa comes from a collection that states its licence, and the licence is copied from that record
           by the script that fetched it (<code>web/scripts/fetch-images.ts</code>). Pictures from The Metropolitan Museum of Art are from its
@@ -165,9 +179,10 @@ export default function CreditsPage() {
 
         <h2 id="sculpture">The sculpture on each page</h2>
         <p>
-          Each page has its own piece of ancient sculpture standing in a niche. All are from The Metropolitan Museum of Art&apos;s Open Access
-          programme (CC0); their titles and dates are copied from the museum&apos;s records by <code>web/scripts/fetch-images.ts</code>, and
-          each photograph was cut out and shaped for the torch by <code>pipeline/pieces.py</code>.
+          Each page has its own piece of ancient sculpture, engraved in gold lines in its window. All are from The Metropolitan Museum of
+          Art&apos;s Open Access programme (CC0); their titles and dates are copied from the museum&apos;s records by
+          <code>web/scripts/fetch-images.ts</code>, each photograph was cut out by <code>pipeline/pieces.py</code>, and its engraving is
+          made by <code>web/scripts/prepare-engravings.py</code>.
         </p>
         <details className={styles.fold}>
           <summary>Every piece of sculpture and its licence</summary>

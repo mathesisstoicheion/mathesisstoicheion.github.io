@@ -20,7 +20,6 @@ import { loadArticle, type AuthorArticle } from "@/wiki/author-articles";
 import { WorkItem } from "./Library";
 import AuthorArticleView from "./AuthorArticleView";
 import { AZPanel, type AZItem } from "./AZList";
-import { PieceHold } from "@/components/art/PagePiece";
 import PageHead from "@/components/PageHead";
 import lib from "./Library.module.css";
 import { BEST_KNOWN } from "@/data/best-known";
@@ -56,7 +55,7 @@ export default function AuthorProfile({ related }: { related: Record<string, Rel
 
   const author = idx && id ? idx.author.get(id) : undefined;
   if (failed) return <div className="wrap"><p className={styles.msg} role="alert">The catalogue could not be opened. Check your connection and try again.</p></div>;
-  if (!idx) return <div className="wrap"><PieceHold /><p className={styles.msg}>Opening the catalogue…</p></div>;
+  if (!idx) return <div className="wrap"><p className={styles.msg}>Opening the catalogue…</p></div>;
   if (!author) {
     return (
       <div className="wrap">

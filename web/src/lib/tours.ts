@@ -74,9 +74,8 @@ export const TOURS: Record<string, Tour> = {
       { at: [t('section[data-key="1.1"]')], title: "The Scroll: Greek beside English", text: "Each row is one passage: the Greek on the left, the translation of the same lines on the right. The number at the start is its reference, here Iliad book 1, line 1.", phoneText: "Each row is one passage: the Greek, then the translation of the same lines. The number at the start is its reference, here Iliad book 1, line 1." },
       { at: [t('[role=radiogroup][aria-label="Columns"]')], title: "One column or two", text: "Read the Greek and the English together, or only one of them. The choice is kept for this book." },
       { at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them here; the site remembers your choice." },
-      { at: [t("#reader-goto")], only: "wide", title: "Go to a passage", text: "Type a reference, like 6.237 for book 6, line 237, and press Go." },
-      { at: [t('[data-readbar] button[aria-haspopup="dialog"]')], only: "phone", title: "Contents", text: "The button with the book's name opens the contents: every book of the work, a box to go to any passage, and your marks." },
-      { at: [t('button[aria-label="Next page"]'), t('[data-readbar] button[aria-label^="Next"]')], title: "Turn the page", text: "Long works come a book or a chapter at a time. The arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. These arrows turn the pages." },
+      { at: [t("#reader-goto"), t("button[aria-controls]", "Tools")], title: "Go to a passage", text: "Tools holds the page you are on and a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go." },
+      { at: [t('button[aria-label="Next page"]'), t("button", "Continue to")], title: "Turn the page", text: "Long works come a book or a chapter at a time. The arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next." },
     ],
   },
 
@@ -130,7 +129,7 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header nav[aria-label="Areas of the site"] a[href="/treasury"]'), t('nav[style*="site-tabbar"] a[href="/treasury"]')], title: "Mine: the Treasury", text: "Everything you keep goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      { esc: true, at: [t('header a[href="/treasury"]')], title: "Mine: the Treasury", text: "Everything you keep goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 
@@ -175,8 +174,8 @@ export const TOURS: Record<string, Tour> = {
     title: "Make it yours",
     start: "/",
     steps: [
-      { at: [t('button[aria-label="The Oracle: Search"]'), t('nav[style*="site-tabbar"] button[aria-haspopup="dialog"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
-      { at: [t('button[aria-label="Settings"]')], title: "Settings", text: "Light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and less animation if you prefer. Offline reading is here too." },
+      { at: [t('header button[aria-label="Search"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
+      { at: [t('header button[aria-label="Settings"]'), t('header button[aria-label="Menu"]')], title: "Settings", text: "Light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too.", phoneText: "In the menu: light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too." },
       { at: [t('button[aria-label^="Connection:"]')], title: "The connection light", text: "Green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "Green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
       { at: [t('header a[href="/account"]')], title: "Your account", text: "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Town Hall." },
     ],

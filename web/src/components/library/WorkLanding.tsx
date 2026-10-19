@@ -41,7 +41,7 @@ export default function WorkLanding({ work, author, meta, diff, related }: {
   const when = meta && meta.from !== null && meta.to !== null ? centuries(meta.from, meta.to) : null;
   return (
     <div className={`wrap ${styles.page}`}>
-      <PageHead bare path={trail("library", { label: author.name, href: `/author/${author.id}` }, work.title)} carve={label} title={work.title}
+      <PageHead bare path={trail("library", { label: author.name, href: `/author/${author.id}` }, work.title)} title={work.title}
         greek={label && label !== work.title ? label : null}
         purpose={<>By <Link href={`/author/${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link>.{work.orig && <> <OrigTitle work={work} full /></>}</>}
         action={

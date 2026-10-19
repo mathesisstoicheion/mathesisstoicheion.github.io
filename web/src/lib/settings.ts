@@ -60,17 +60,33 @@ const safeStorage: StateStorage = {
 
 const clamp = (v: number, { min, max }: { min: number; max: number }) => Math.min(max, Math.max(min, v));
 
+/**
+ * The level a first visit starts at, before anything is chosen in Settings (the owner, 2026-10-19: "Step down if weak"):
+ * Full beauty, unless the device is clearly weak. A browser that says how much memory it has (Chrome, Android) and says
+ * 1 GB or less starts on Performance; 2 GB, or only one or two processor cores, starts on Balanced. Keep the same test in
+ * BOOT_SCRIPT below.
+ */
+export function deviceLevel(): AnimLevel {
+  if (typeof navigator === "undefined") return "full";
+  const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory, cores = navigator.hardwareConcurrency;
+  if (mem && mem < 2) return "performance";
+  if ((mem && mem <= 2) || (cores && cores <= 2)) return "balanced";
+  return "full";
+}
+/** the defaults on this device: its level, and the motion that follows the level */
+const firstSettings = (): Settings => { const level = deviceLevel(); return { ...DEFAULTS, level, motion: level === "performance" ? "reduce" : "auto" }; };
+
 export const useSettings = create<SettingsStore>()(
   persist(
     (set) => ({
-      ...DEFAULTS,
+      ...firstSettings(),
       set: (patch) => set((s) => ({
         ...patch,
         ...(patch.level ? { motion: patch.level === "performance" ? "reduce" as const : "auto" as const } : {}),
         greekSize: clamp(patch.greekSize ?? s.greekSize, LIMITS.greekSize),
         leading: clamp(patch.leading ?? s.leading, LIMITS.leading),
       })),
-      reset: () => set(DEFAULTS),
+      reset: () => set(firstSettings()),
     }),
     {
       name: STORAGE_KEY,
@@ -79,7 +95,7 @@ export const useSettings = create<SettingsStore>()(
       // settings saved before the three levels: "reduce motion" becomes Performance
       merge: (saved, current) => {
         const p = (saved ?? {}) as Partial<Settings>;
-        return { ...current, ...p, level: p.level ?? (p.motion === "reduce" ? "performance" : "full") };
+        return { ...current, ...p, level: p.level ?? (p.motion === "reduce" ? "performance" : deviceLevel()) };
       },
       skipHydration: true,
     },
@@ -120,9 +136,11 @@ export const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion(useSet
  * Must mirror applySettings().
  */
 export const BOOT_SCRIPT = `(function(){try{var s=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}").state||{};var e=document.documentElement;
+var m=navigator.deviceMemory,c=navigator.hardwareConcurrency,d=m&&m<2?"performance":(m&&m<=2)||(c&&c<=2)?"balanced":"full";
+if(!s.level&&!s.motion&&d==="performance")s.motion="reduce";
 if(s.theme==="light")e.setAttribute("data-reader-page","day");
 if(s.motion==="reduce"||s.motion==="full")e.setAttribute("data-motion",s.motion);
-e.setAttribute("data-level",s.level==="balanced"||s.level==="performance"?s.level:(s.motion==="reduce"?"performance":"full"));
+e.setAttribute("data-level",s.level==="full"||s.level==="balanced"||s.level==="performance"?s.level:(s.motion==="reduce"?"performance":d));
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));
 if(s.greekFace==="gentium"||s.greekFace==="sans")e.setAttribute("data-greek-face",s.greekFace);

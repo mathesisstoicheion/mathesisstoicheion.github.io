@@ -29,7 +29,7 @@ export default async function PathStepPage({ params }: PageProps<"/academy/readi
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
         <PageHead bare path={trail("study", { label: "Learn by reading", href: "/academy/reading" }, step ? `Step ${n} of ${PATH.length}` : "Practice")}
-          carve={step ? step.carve : "ΜΕΛΕΤΗ"} title={step ? step.title : p!.title} greek={step ? null : "μελέτη"} purpose={step ? step.who : undefined} />
+          inscription={step ? step.carve : null} title={step ? step.title : p!.title} greek={step ? null : "μελέτη"} purpose={step ? step.who : undefined} />
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
         {step ? <PathStepView step={step} /> : <PracticeView practice={p!} />}
       </div>

@@ -14,7 +14,6 @@ import { isModerator, useAccount } from "@/lib/community/account";
 import { mineHref } from "@/lib/mine";
 import type { Tab } from "@/components/reader/MineDialog";
 import styles from "@/components/reader/Mine.module.css";
-import { PieceHold } from "@/components/art/PagePiece";
 import PageHead from "@/components/PageHead";
 import { trail } from "@/config/areas";
 
@@ -32,7 +31,7 @@ export default function PrivateCollection() {
   const tab: Tab = useSearchParams().get("tab") === "import" ? "import" : "shelf";
   const href = (t: Tab) => `${PRIVATE_COLLECTION}${t === "import" ? "?tab=import" : ""}`;
 
-  if (!ready || (session && !profile)) return <><PieceHold /><Waiting /></>;
+  if (!ready || (session && !profile)) return <Waiting />;
   if (!session) {
     return (
       <div className={`wrap ${styles.pageStatus}`}>

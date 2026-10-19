@@ -3,8 +3,8 @@
  * The site's header, as design A drew it: on a computer, Learn and Read, the ΣΤΟΙΧΕΙΑ mark in the middle, Explore and Talk,
  * each door's word with its Greek name beneath and a line of lamplight drawn under the one you are in; at the far right,
  * small square buttons for Search, Mine, your account and Settings. On a phone, the mark at the left and two buttons at
- * the right, Search and the menu. It stands on the black frame at the top of the page and scrolls away with it, as in A;
- * reading on still tucks the phone's bottom bars away, and any scroll up brings them back (lib/header.ts).
+ * the right, Search and the menu. It stands on the black frame at the top of the page and scrolls away with it, as in A.
+ * While you read on, what floats over the page (Back to top) steps aside, and any scroll up brings it back (lib/header.ts).
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -80,7 +80,9 @@ export default function Header() {
   }, []);
 
   // a new page starts with the header showing, and the menu closed
-  useEffect(() => { showRef.current?.(); setMenu(false); }, [pathname]);
+  const [menuAt, setMenuAt] = useState(pathname);
+  if (menuAt !== pathname) { setMenuAt(pathname); setMenu(false); }
+  useEffect(() => { showRef.current?.(); }, [pathname]);
   // the menu closes on Escape or a click outside it
   useEffect(() => {
     if (!menu) return;

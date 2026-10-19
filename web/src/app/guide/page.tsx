@@ -96,7 +96,7 @@ export default function GuidePage() {
   return (
     <Page>
       <div className={`wrap ${styles.page}`}>
-        <PageHead bare path={[{ label: "About" }, { label: "The guide" }]} carve="ὁδηγός" title="How to use the site"
+        <PageHead bare path={[{ label: "About" }, { label: "The guide" }]} title="How to use the site"
           purpose={<>Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.</>}
           action={<div className={styles.fork}>

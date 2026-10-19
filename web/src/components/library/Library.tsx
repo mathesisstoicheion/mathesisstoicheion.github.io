@@ -125,6 +125,8 @@ export default function Library({ paths }: { paths?: ReactNode }) {
   useEffect(() => {
     setQ(params.get("q") ?? "");
     setTr(pick("tr", ["all", "with", "greek"] as const satisfies readonly Tr[], "all"));
+    // once, after the first render: the list is not written back to the address until its search is restored
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setReady(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

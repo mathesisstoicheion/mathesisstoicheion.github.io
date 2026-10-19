@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
-import PagePiece from "@/components/art/PagePiece";
+import PageWin from "@/components/a/PageWin";
 import PageHead from "@/components/PageHead";
 import PracticeClient from "@/components/academy/PracticeClient";
 import { AREAS, trail } from "@/config/areas";
@@ -17,7 +17,7 @@ export default function PracticePage() {
           purpose="Short drills. Endings come from the checked tables; the sentences are real, and their answers come from hand-checked analyses." />
         <PracticeClient />
         </div>
-        <PagePiece className="piece-desk" />
+        <PageWin className="piece-desk" />
       </div>
     </Page>
   );

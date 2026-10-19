@@ -5,7 +5,7 @@
  * are read out whole to a screen reader. The page sets the letters out itself, the same way every time; lib/a/lamplight.js
  * only moves them.
  */
-import { createElement, useEffect, useRef } from "react";
+import { useEffect, useRef, type ElementType } from "react";
 import { track } from "@/lib/a/lamplight";
 import s from "./a.module.css";
 
@@ -36,7 +36,11 @@ export default function SettleText({ text, as = "span", words = false, className
     if (words) return letter(w, `w${k}`);
     return <span key={`w${k}`} className={s["st-w"]}>{[...w].map((c, j) => letter(c, `${k}-${j}`))}</span>;
   });
-  return createElement(as, { ref, className, id, lang },
-    <span className={s["st-sr"]}>{text}</span>,
-    <span aria-hidden="true">{out}</span>);
+  const Tag = as as ElementType;
+  return (
+    <Tag ref={ref} className={className} id={id} lang={lang}>
+      <span className={s["st-sr"]}>{text}</span>
+      <span aria-hidden="true">{out}</span>
+    </Tag>
+  );
 }

@@ -1,7 +1,7 @@
 /**
  * Every page's own piece of ancient sculpture (DESIGN.md: "A piece on every page"; the owner, 2026-10-16: "Every page
- * needs its own dedicated piece"). Each stands in a niche cut into the wall and is lit by the torch
- * (components/art/PagePiece.tsx, lib/art/piece.ts). All are from The Metropolitan Museum of Art's Open Access collection
+ * needs its own dedicated piece"). Each is engraved in gold lines in design A's window (components/a/PageWin.tsx,
+ * lib/a/lamplight.js). All are from The Metropolitan Museum of Art's Open Access collection
  * (CC0); their credits are in data/piece-images.json (fetched by scripts/fetch-images.ts from the Met's own records),
  * their sizes and shapes in data/piece-shapes.json (written by pipeline/pieces.py).
  *
@@ -10,12 +10,12 @@
  */
 import credits from "./piece-images.json";
 import shapes from "./piece-shapes.json";
-import type { Material } from "@/lib/art/piece";
 
 export interface PieceCredit {
   file: string; width: number; height: number; alt: string; title: string; date: string; place: string; creator: string;
   licence: string; licenceUrl: string; source: string; sourceName: string;
 }
+export type Material = "marble" | "limestone" | "plaster" | "bronze" | "terracotta" | "gold";
 export interface PieceShape { w: number; h: number; form: "round" | "slab" | "relief" | "lathe" | "coin"; material: Material }
 
 export const PIECE_CREDITS = credits as Record<string, PieceCredit>;

@@ -24,7 +24,6 @@ import { DownloadButton, HERE, Seal, StatusTag, docDate, savedDate } from "./par
 import Rich from "./Rich";
 import TranslationReader from "./TranslationReader";
 import styles from "./PrivateTranslations.module.css";
-import { PieceHold } from "@/components/art/PagePiece";
 import PageHead from "@/components/PageHead";
 import { trail } from "@/config/areas";
 
@@ -34,7 +33,7 @@ export default function PrivateTranslations() {
   const { ready, session, profile } = useAccount();
   const id = useSearchParams().get("id");
 
-  if (!ready || (session && !profile)) return <><PieceHold /><Waiting /></>;
+  if (!ready || (session && !profile)) return <Waiting />;
   if (!session) {
     const back = `${HERE}${id ? `?id=${encodeURIComponent(id)}` : ""}`;
     return (

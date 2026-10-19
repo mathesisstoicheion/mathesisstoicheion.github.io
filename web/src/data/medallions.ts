@@ -1,8 +1,7 @@
 /**
- * Books with a medallion: a picture of the author, or of the thing the book is best known for, set in a round medallion
- * and re-lit by the torch (design B, Stone and torch). They stand as stelai on the library's wall (components/library/
- * Stelai.tsx) and on the reader's cover. The pictures are greyscale crops in web/public/images/relit/ made by
- * pipeline/relit_images.py from the originals in data/images.json, whose credits `why` repeats.
+ * Books with an emblem: a picture of the author, or of the thing the book is best known for, drawn in letters (design A:
+ * the library's famous books, components/a/Featured.tsx, and the reader's cover). The pictures are in
+ * web/public/images/a/em-*.png, from the originals in data/images.json, whose credits `why` repeats.
  */
 export interface Medallion { group: string; id: string; pic: string; alt: string; why: string }
 

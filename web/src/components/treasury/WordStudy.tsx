@@ -91,7 +91,7 @@ function Head({ lemma, entry, meta, lexState, alike }: { lemma: string; entry: L
     return top.pos;
   }, [entry, meta]);
   return (
-    <PageHead bare path={trail("treasury", "Word study")} carve={lemma} title={<span lang="grc">{lemma}</span>}
+    <PageHead bare path={trail("treasury", "Word study")} title={<span lang="grc">{lemma}</span>}
       purpose={<span className={styles.headMeta}>
         <span className={styles.translit}>{transliterate(lemma)}</span>
         {pos && <span>{pos}</span>}

@@ -15,8 +15,7 @@
  *
  * Nothing here waits on React while you play: the strings are rendered in a worker before the first touch (sound.ts),
  * every frame reads one mutable record, and the words, the caption and the score are lit by touching the elements
- * themselves. The instrument is painted once and lit again from that painting only when the torch's light on it moves
- * (draw.ts).
+ * themselves. The instrument is painted once, lit by a lamp held above it (draw.ts).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Melody, MelodyNote, MelodyNotes } from "@/data/melodies/types";
@@ -27,7 +26,7 @@ import {
   freeStrings, keyLetters, keysOf, LAYOUTS, noteName, stringKeys, stringsFor, type KeyLetters,
   type LyreString, type Tuning,
 } from "@/lib/lyre/tuning";
-import { lights, torchRadius, torchStill } from "@/lib/torch";
+import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import { geometry, glints, lightBody, paintRoll, paintStrings, plate, stringX, type Flare, type Geom, type Lamp, type NoteLook, type Plate, type Trail } from "./draw";
 import { designFor, type Design } from "./instruments";
 import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
@@ -458,7 +457,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const st = S.current;
     const body = document.createElement("canvas"), bodyG = body.getContext("2d")!;
     const face = getComputedStyle(document.documentElement).getPropertyValue("--f-greek").trim() || "serif";
-    let bodyKey = "", W = 0, LH = 0, dpr = 1, rect = lyre.getBoundingClientRect();
+    let bodyKey = "", W = 0, LH = 0, dpr = 1;
 
     let later = 0;
     const layout = () => {
@@ -490,13 +489,10 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       st.RH = RH;
       setRollH(RH);
       layout();
-      rect = lyre.getBoundingClientRect();
     };
     measure();
     const ro = new ResizeObserver(measure);
     ro.observe(stage);
-    const onScroll = () => { rect = lyre.getBoundingClientRect(); };
-    addEventListener("scroll", onScroll, { passive: true });
     const io = new IntersectionObserver(([e]) => { st.visible = e.isIntersecting; st.dirty = true; });
     io.observe(stage);
 
@@ -561,12 +557,10 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       if (st.laidOut !== st.design) layout();
       const G = st.G;
       if (!st.visible || !G) return;
-      // the torch's light on the lyre (the strongest, if fingers carry lights too)
-      let L = null as { x: number; y: number; I: number } | null;
-      for (const l of lights()) if (!L || l.I > L.I) L = l;
-      const lamp: Lamp = L ? { x: L.x - rect.left, y: L.y - rect.top, I: L.I } : { x: G.cx, y: -G.H * 0.4, I: 0.7 };
-      const key = `${Math.round(lamp.x / 6)},${Math.round(lamp.y / 6)},${Math.round(lamp.I * 30)}`;
-      const R = Math.max(260, torchRadius() * 1.7);
+      // the lamp above the lyre
+      const lamp: Lamp = { x: G.cx, y: -G.H * 0.4, I: 0.7 };
+      const key = `${Math.round(lamp.x / 6)},${Math.round(lamp.y / 6)}`;
+      const R = 442;
       const relit = key !== bodyKey;
       if (relit && st.plate) { lightBody(bodyG, st.plate, lamp, R); bodyKey = key; }
       // let go of what has faded
@@ -575,7 +569,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       const moving = st.playing || st.vib.size > 0 || st.trails.length > 0 || st.flares.length > 0;
       if (!moving && !st.dirty && !relit) return;
       st.dirty = false;
-      const still = torchStill();
+      const still = prefersReducedMotion(useSettings.getState().motion);
       const vib = (i: number) => {
         const v = st.vib.get(i);
         if (!v) return { amp: 0, glow: 0 };
@@ -598,7 +592,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     };
     raf = requestAnimationFrame(frame);
     return () => {
-      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect();
       if (typeof cancelIdleCallback === "function") cancelIdleCallback(later); else clearTimeout(later);
     };
   }, [laneOf, reached]);

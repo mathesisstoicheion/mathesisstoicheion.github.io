@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
-import PagePiece from "@/components/art/PagePiece";
+import PageWin from "@/components/a/PageWin";
 import PageHead from "@/components/PageHead";
 import Review from "@/components/academy/Review";
 import { AREAS, trail } from "@/config/areas";
@@ -16,7 +16,7 @@ export default function ReviewPage() {
         <PageHead bare desk={false} path={trail("study", "Daily review")} title="Daily review" greek="ἀνάμνησις" />
         <Review />
         </div>
-        <PagePiece className="piece-desk" />
+        <PageWin className="piece-desk" />
       </div>
     </Page>
   );

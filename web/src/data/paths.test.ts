@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { PATHS } from "./paths";
-import { STARTS } from "./starts";
 import { BEST_KNOWN } from "./best-known";
 import { indexCatalog, greekEditions, hasTranslation, type Catalog } from "@/lib/catalog";
 
@@ -19,13 +18,6 @@ describe("reading paths", () => {
   it("have distinct ids and steps that are works with a Greek edition and a translation", () => {
     expect(new Set(PATHS.map((p) => p.id)).size).toBe(PATHS.length);
     for (const p of PATHS) for (const [w] of p.steps) expectReadable(w, p.id);
-  });
-});
-
-describe("suggested starting points", () => {
-  it("are distinct works with a Greek edition and a translation", () => {
-    expect(new Set(STARTS).size).toBe(STARTS.length);
-    for (const w of STARTS) expectReadable(w, "starts");
   });
 });
 

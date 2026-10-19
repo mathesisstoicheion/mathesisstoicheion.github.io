@@ -59,7 +59,7 @@ const nearText = (d: NearDraft, tab: Tab, near: string | null) => (d.of === near
 
 /** The Oracle's carving: a line of the Delphic fore-temple, in place of a Greek name of its own, with its source set small beneath. */
 const CARVE = {
-  text: "Γνῶθι σαυτόν",
+  text: "ΓΝΩΘΙ ΣΑΥΤΟΝ",
   caption: <small className={styles.cap}><span lang="grc">Γνῶθι σαυτόν</span>, “Know thyself”: one of the maxims written in the fore-temple at Delphi
     (Pausanias, <i>Description of Greece</i> 10.24.1, translated by W. H. S. Jones and H. A. Ormerod).</small>,
 };
