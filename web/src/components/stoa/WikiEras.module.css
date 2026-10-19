@@ -66,6 +66,7 @@
   .value { writing-mode: vertical-rl; rotate: 180deg; padding-bottom: 0; padding-top: var(--space-1); }
   .tick { visibility: hidden; }
   .col:nth-child(3n + 1) .tick { visibility: visible; }
+  .col:nth-last-child(-n + 2) .tick { justify-self: end; }   /* the last century named ends at the chart's edge, not past it */
   .bands a { writing-mode: vertical-rl; text-align: start; font-size: var(--step--2); letter-spacing: 0.04em; padding: var(--space-2) 0 0; overflow: visible; text-overflow: clip; min-width: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }

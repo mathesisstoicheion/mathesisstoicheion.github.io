@@ -33,6 +33,8 @@
 .wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
 .btns { display: flex; flex-wrap: wrap; }
+/* phones: the two buttons stack, with a little room between them rather than touching */
+@media (max-width: 560px) { .btns { gap: 10px; } }
 .btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; font-family: var(--face-display); font-stretch: 75%; font-size: 1.02rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--a-solid); cursor: pointer; transition: transform .25s, border-color .25s; }
 .solid { background: var(--a-solid); color: var(--a-solid-ink); }
 .ghost { background: transparent; color: var(--a-ink); border-color: var(--a-line); }
@@ -55,6 +57,8 @@
 .ptab::before, .ptab::after { content: ":"; position: absolute; top: 8px; opacity: .4; }
 .ptab::before { left: 6px; }
 .ptab::after { right: 6px; }
+/* a narrow phone: each tab as wide as its words, so A's little colons never touch "Just reading" */
+@media (max-width: 420px) { .ptabs { grid-template-columns: repeat(3, auto); gap: 2px; } .ptab { padding-inline: 15px; white-space: nowrap; } }
 .ppanel { padding: 4px 16px 16px; font-size: 1rem; min-height: 3.4em; }
 .ppanel b { font-weight: 500; color: var(--a-accent2); }
 .ppanel a { color: var(--a-accent2); text-underline-offset: 3px; }
@@ -93,18 +97,25 @@
 .blk { position: relative; }
 .win { position: relative; overflow: hidden; border: 1px solid var(--a-line); background: #000; min-width: 0; }
 .win canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
-.wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; color: var(--a-accent); font-family: var(--face-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; text-shadow: 0 1px 6px #000; }
-.mini .wcap { right: 8px; left: 8px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: .56rem; }
+/* a caption sits on a small dark plate, like a museum label, so the engraving's lines never run through its words */
+.wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; max-width: calc(100% - 20px); padding: 3px 7px 2px; background: rgba(7, 5, 4, .8); box-shadow: 0 0 0 1px rgba(255, 173, 69, .12);
+  color: var(--a-accent); font-family: var(--face-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
+.mini .wcap { left: 8px; max-width: calc(100% - 16px); line-height: 1.4; text-wrap: balance; font-size: .56rem; }
 .tall { aspect-ratio: 3 / 4; width: 100%; }
 .band { height: clamp(160px, 26vw, 300px); margin-block: clamp(36px, 6vw, 80px); border-left: 0; border-right: 0; }
 .sq { aspect-ratio: 1 / 1; width: 100%; }
 .mini { height: 140px; margin: -22px -18px 14px; border-width: 0 0 1px; }
 .room:first-child .mini { margin-left: 0; }
+/* phones: two rooms to a row, so each window keeps inside its own room (design A's let them run into each other) */
+@media (max-width: 860px) { .mini, .room:first-child .mini { margin: -18px -6px 14px; } }
 .wide { aspect-ratio: 16 / 7; width: 100%; }
 
-/* headings that settle as their section glides into place (lib/a/lamplight.js, Settle) */
+/* headings that settle by themselves as they come into view, once (lib/a/lamplight.js, Settle) */
 .st-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 .st-w { white-space: nowrap; }
+/* where the animations run (the level is set before the first paint), a heading waits unsettled until the engine sees it */
+@media (prefers-reduced-motion: no-preference) { :global(html[data-level]:not([data-level="performance"]):not([data-motion="reduce"])) [data-st] { --sp: 0; } }
+:global(html[data-motion="full"]:not([data-level="performance"])) [data-st] { --sp: 0; }
 .st-l { display: inline-block; --k: clamp(0, calc(var(--sp, 1) * 1.8 - var(--i) * .8), 1); opacity: calc(.06 + .94 * var(--k));
   transform: translate(calc((1 - var(--k)) * var(--dx)), calc((1 - var(--k)) * var(--dy))) rotate(calc((1 - var(--k)) * var(--r))); }
 
@@ -168,10 +179,12 @@
 .library .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .library .flow { margin-top: -100vh; }
 .library .win { background: transparent; border-color: transparent; }
+/* solid black at every width: on narrower screens the blocks stand right over Socrates and his roll (A let him show
+   through at .74 there), and his letters must never run behind their words; he shows in the gaps between them */
 .library .blk { background: var(--black); padding: clamp(18px, 2.6vw, 32px); }
 .library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
 .library .books .book { padding-inline: 4px; }
-.library .win .wcap { opacity: .8; }
+.library .win .wcap { background: rgba(5, 4, 3, .92); }
 /* Socrates stands beside the shelves on wide screens, so nothing covers him */
 .stcap { display: none; color: var(--a-accent); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; margin: 22px 0 0; opacity: .8; }
 @media (min-width: 1100px) {
@@ -185,4 +198,3 @@
   .library .stcap { display: block; }
   .library .flow > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
 }
-@media (max-width: 1099px) { .library .blk { background: rgba(5, 4, 3, .74); } }

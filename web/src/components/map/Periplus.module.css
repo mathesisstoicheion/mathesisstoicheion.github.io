@@ -10,7 +10,7 @@
 .stage { scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
-  border-radius: var(--radius); box-shadow: var(--frame);
+  border-radius: var(--radius); box-shadow: var(--frame-line);
   background: var(--map-edge); animation: unroll 0.9s var(--ease) both;
 }
 .stage:active { cursor: grabbing; }

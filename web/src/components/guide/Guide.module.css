@@ -122,7 +122,9 @@
 
 /* search: concordance lines slide in and line up on the word */
 .sConc { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 1.05em; }
-.sConc li { display: grid; grid-template-columns: 5.2em auto 1fr; gap: 10px; align-items: baseline; white-space: nowrap; overflow: hidden; animation: fromRight 0.55s var(--ease) backwards; }
+.sConc li { display: grid; grid-template-columns: 5.2em auto 1fr; gap: 10px; align-items: baseline; white-space: nowrap; overflow: hidden; animation: fromRight 0.55s var(--ease) backwards;
+  /* a concordance line runs on past the edge: it fades out there rather than being cut through a letter */
+  mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent); }
 .sConc li:nth-child(2) { animation-delay: 0.25s; }
 .sConc li:nth-child(3) { animation-delay: 0.5s; }
 .sConc li:nth-child(4) { animation-delay: 0.75s; }

@@ -1,7 +1,7 @@
 "use client";
 /**
- * A heading whose letters settle as its section arrives (design A, "Settle"): each letter (or, with `words`, each word)
- * starts a little out of place and finds its place at the pace of the scroll, so a slow scroll plays it slowly. The words
+ * A heading whose letters settle as it comes into view (design A, "Settle"): each letter (or, with `words`, each word)
+ * starts a little out of place and finds its place, by itself, once; then it stays settled. The words
  * are read out whole to a screen reader. The page sets the letters out itself, the same way every time; lib/a/lamplight.js
  * only moves them.
  */
@@ -38,7 +38,7 @@ export default function SettleText({ text, as = "span", words = false, className
   });
   const Tag = as as ElementType;
   return (
-    <Tag ref={ref} className={className} id={id} lang={lang}>
+    <Tag ref={ref} className={className} id={id} lang={lang} data-st="">
       <span className={s["st-sr"]}>{text}</span>
       <span aria-hidden="true">{out}</span>
     </Tag>

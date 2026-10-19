@@ -14,6 +14,7 @@
 .axisTrack { position: relative; flex: 1 1 0; min-width: 0; }
 .axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); white-space: nowrap; }
 .axisTrack span:first-child { translate: 0 0; }   /* the first year starts at the track's edge, clear of the names */
+.axisTrack span:last-child { translate: -100% 0; }   /* and the last ends at its far edge, inside the chart's frame */
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .rows li { height: 22px; align-items: center; }
 .rows .track { flex: 1 1 0; min-width: 0; }

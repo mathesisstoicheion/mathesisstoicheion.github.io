@@ -188,7 +188,7 @@
 .figure { margin: 8px 0; display: grid; gap: 8px; }
 .figure img { width: 100%; height: auto; border-radius: var(--radius); }
 /* the pictures sit in a cut frame (the pictures themselves are untouched) */
-.featuredPic, .lead img, .figure img { background: var(--bg-deep); box-shadow: var(--frame); }
+.featuredPic, .lead img, .figure img { background: var(--bg-deep); box-shadow: var(--frame-line); }
 
 .readIt ul, .related ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
 .readIt a, .related a { display: grid; gap: 4px; height: 100%; padding: 16px 18px; text-decoration: none; background: var(--slab); box-shadow: var(--slab-edge); font-size: 0.98rem; line-height: 1.45; transition: background-color var(--dur) ease; }

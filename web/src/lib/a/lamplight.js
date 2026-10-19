@@ -68,6 +68,7 @@ function wrapText(s,n){const out=[];let line="";
     while(line.length>n){out.push(line.slice(0,n));line=line.slice(n)}}
   if(line)out.push(line.padEnd(n));return out}
 const dprCap=()=>lite||reduce?1:1.5;
+const IRIS_MS=2600,SETTLE_MS=1400;   // a window's iris opening in full; a heading's letters finding their places
 
 /* Scene: the coin, engraved in gold on Pompeian red, laid out in viewport space */
 function CoinScene(img){
@@ -246,12 +247,13 @@ function SocScene(img){
     const b=src.band.getContext("2d"),c0=u*1.4-.2;b.globalCompositeOperation="source-over";b.clearRect(0,0,bw,bh);b.drawImage(src,0,0);
     b.globalCompositeOperation="destination-in";const sg=b.createLinearGradient((c0-.24)*bw,0,(c0+.24)*bw,0);sg.addColorStop(0,"rgba(0,0,0,0)");sg.addColorStop(.5,"rgba(0,0,0,1)");sg.addColorStop(1,"rgba(0,0,0,0)");
     b.fillStyle=sg;b.fillRect(0,0,bw,bh);x.globalCompositeOperation="lighter";x.globalAlpha=.3*k;x.imageSmoothingEnabled=true;x.drawImage(src.band,X,Y,W,H);x.globalCompositeOperation="source-over";x.globalAlpha=1}
-  return {draw(x,vw,vh,view,t,prog,mode,ptr,an){
+  return {draw(x,vw,vh,view,t,prog,mode,ptr,an,st){
     const L=layout(vw,vh,an),scrub=mode==="scrub";
     let off=reduce?0:(scrub?prog*120+t*.1:t/2.8);
-    // on the Stage his face gathers only as you scroll
-    const asm=scrub?(reduce?9:prog*4.9):(reduce?9:t);   // gathered by the middle of the page
-    const sm=k=>k*k*(3-2*k),m=scrub?(reduce?(prog>.7?1:0):sm(clamp((prog-.56)/.26,0,1))):0;   // then the face becomes the roll
+    // on the Stage his face gathers by itself as the library opens, and the face becomes the roll once the list comes up
+    // over it; neither goes back when you scroll up again (the owner, 2026-10-19: animations play once and stay)
+    const asm=reduce?9:scrub?st.asm:t;
+    const m=scrub?st.m:0;
     if(scrub){off=Math.round(off*4)/4;   // the speech rises in quarter lines, so the still face need not be redrawn every frame
       const dpr=Math.min(dprCap(),devicePixelRatio||1),k2=[L.key,off,asm>2.2?"d":asm.toFixed(3)].join(),now=performance.now();
       if(!cache){cache=document.createElement("canvas")}
@@ -309,8 +311,8 @@ const Glide={y:0,target:null,anim:null,raf:0,lt:0,tm:0,held:false,going:false,on
     if(best!==null){const dist=Math.abs(best-y);this.anim={from:y,to:best,t0:performance.now(),d:800+dist*1.6};this.run()}}
 };
 
-/* Headings settle as their section glides into place: their letters drift in from small offsets and find their places.
-   Each heading's progress follows the scroll, so a slow glide plays it slowly. */
+/* Headings settle as they come into view: their letters drift in from small offsets and find their places, by themselves
+   (the owner, 2026-10-19: animations play once on view and stay), and stay settled. */
 const Settle={items:[],
   add(el,words){if(reduce||el.dataset.settle)return()=>{};el.dataset.settle="1";const text=el.textContent;
     const parts=words?text.split(/(\s+)/):text.split(/(\s+)/).map(w=>/^\s+$/.test(w)?w:[...w]);let n=0;const total=words?parts.filter(w=>!/^\s+$/.test(w)).length:text.replace(/\s/g,"").length;
@@ -321,8 +323,9 @@ const Settle={items:[],
     el.innerHTML=`<span class="st-sr">${esc(text)}</span><span aria-hidden="true">${parts.map(w=>typeof w==="string"?(/^\s+$/.test(w)?w:sp(esc(w))):`<span class="st-w">${w.map(c=>sp(esc(c))).join("")}</span>`).join("")}</span>`;
     const it={el,v:-1};this.items.push(it);Engine.kick();
     return()=>{this.items=this.items.filter(x=>x!==it);delete el.dataset.settle;el.innerHTML=before}},
-  frame(vh){for(const it of this.items){const r=it.el.getBoundingClientRect();if(r.width<1)continue;if(r.bottom<-40||r.top>vh+40)continue;
-    const v=reduce?1:Math.round(clamp((vh*.94-r.top)/(vh*.4),0,1)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
+  frame(vh){const now=performance.now();for(const it of this.items){if(it.v>=1)continue;const r=it.el.getBoundingClientRect();if(r.width<1)continue;
+    if(it.t0==null){if(!reduce&&(r.bottom<0||r.top>vh*.92))continue;it.t0=Math.max(now,Engine.introT0+250)}
+    const k=clamp((now-it.t0)/SETTLE_MS,0,1),v=reduce?1:Math.round(k*(2-k)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
 };
 
 /* ---------- the engine: draws every visible window, the stage, the floating letters and the sparks ---------- */
@@ -361,9 +364,13 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     // Balanced: at half the frame rate while nothing moves (the slow ripple, the drifting lamp), at full rate while it does
     if(lite&&!reduce&&t-busyT>400&&FING.size===0&&t-this.lastDraw<31){this.raf=requestAnimationFrame(tt=>this.frame(tt));return}
     this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame(vh);
-    if(stage){const sc=sceneFor(stage.src,"soc");if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),key=reduce?`${vw}x${vh}|${prog>.7}|${gen}`:"";
+    if(stage){const sc=sceneFor(stage.src,"soc");if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),now=performance.now();
+      if(stage.g0==null)stage.g0=Math.max(now,this.introT0+300);
+      if(stage.m0==null&&prog>=(reduce?.7:.56))stage.m0=now;
+      const sm0=k=>k*k*(3-2*k),st={asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
+      const key=reduce?`${vw}x${vh}|${st.m}|${gen}`:"";
       if(!reduce||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
-        sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS)}}}
+        sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS,undefined,st)}}}
     if(wins.size)this.iris(el,vw,vh);
     if(flyCv)this.letters(el,vw,vh);
     if(fireCv)Fire.frame(fireCv,el,dt,vw,vh);
@@ -372,19 +379,18 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
   },
   fitCanvas(cv,w,h){const dpr=Math.min(dprCap(),devicePixelRatio||1);const W=Math.round(w*dpr),H=Math.round(h*dpr);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}return dpr},
   // The windows open as a round iris centred on their picture: the coin, or another real object for each window.
-  // It follows the scroll: it opens onto the middle of the picture alone, holds there with a thin gold rim, and then widens
-  // to the whole window, while the engraving is cut. Windows in view when the page opens do the first part by themselves, slowly.
-  iris(el,vw,vh){const intro=reduce?1:clamp((performance.now()-this.introT0)/1000-.4,0,3.4)/3.4;
+  // Each plays by itself once enough of it is in view (the owner, 2026-10-19: "the animations should play automatically
+  // when they come into view ... and should stay expanded, even if you scroll back up"): it opens onto the middle of the
+  // picture alone, holds there a moment with a thin gold rim, then widens to the whole window, and its caption comes up
+  // last. Once open, it stays open. Windows in view when the page opens wait a moment for the page to arrive.
+  iris(el,vw,vh){const now=performance.now();
     for(const w of wins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
       const sc=sceneFor(w.src,w.kind);if(!sc)continue;
+      if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.4,vh*.3))w.t0=Math.max(now,this.introT0+400)}
       const key=reduce?`${Math.round(r.width)}x${Math.round(r.height)}|${gen}`:"";if(reduce&&w.drawn===key)continue;w.drawn=key;
       const cv=w.cv;const dpr=this.fitCanvas(cv,r.width,r.height);const x=cv.getContext("2d");
       x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,r.width,r.height);
-      // it is fully open once the window's middle is a little above the screen's; a window near the foot of the page,
-      // which can never rise that far, opens fully by the time the page ends
-      const mid=r.top+r.height/2,left=Math.max(0,document.documentElement.scrollHeight-vh-scrollY),end=Math.max(vh*.44,mid-left),span=vh*.96-end;
-      const sm0=k=>k*k*(3-2*k);let p=reduce||span<40?1:clamp((vh*.96-mid)/span,0,1);
-      if(!reduce&&mid+scrollY<vh*.8)p=.62*sm0(intro)+.38*clamp(scrollY/(vh*.45),0,1);
+      const mid=r.top+r.height/2,p=reduce?1:w.t0==null?0:clamp((now-w.t0)/IRIS_MS,0,1);
       const an={cx:r.width/2,cy:r.height/2-(reduce?0:(mid-vh/2)/vh*r.height*.08),w:r.width,h:r.height};
       const S=Math.min(an.w*1.2,an.h*1.05),Rc=S*.43,Rmax=Math.hypot(r.width/2,r.height/2+Math.abs(an.cy-r.height/2))+2;
       const sm=k=>k*k*(3-2*k),a=sm(clamp(p/.42,0,1)),b=sm(clamp((p-.68)/.32,0,1));
@@ -402,10 +408,18 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
       // the window's frame line comes in once it is fully open
       if(b>.6){x.strokeStyle=T.gold;x.globalAlpha=.22*(b-.6)/.4;x.lineWidth=1;x.strokeRect(.5,.5,r.width-1,r.height-1);x.globalAlpha=1}}},
   // the flying letters behind the home page: few, faint and slow; they move at three speeds as you scroll, and step aside
-  // from the pointer, catching a little of its light as they pass
+  // from the pointer, catching a little of its light as they pass. They fade out near the page's words, so none is ever
+  // drawn over a line of text (the owner, 2026-10-19: no overlaps); the lines are measured every two seconds.
   flyPts:null,
   flyKey:"",
-  letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
+  clear:null,clearT:0,clearW:0,
+  measureClear(root){const rows=new Map(),rg=document.createRange(),sy=scrollY,tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    for(let n;(n=tw.nextNode());){if(!n.textContent.trim())continue;rg.selectNodeContents(n);
+      for(const r of rg.getClientRects()){if(r.width<3||r.height<3)continue;const b={l:r.left,r:r.right,t:r.top+sy,b:r.bottom+sy};
+        for(let k=Math.floor((b.t-40)/64);k<=Math.floor((b.b+40)/64);k++){let a=rows.get(k);if(!a)rows.set(k,a=[]);a.push(b)}}}
+    return rows},
+  letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}|${Math.round(scrollY/24)}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
+    const now=performance.now();if(!this.clear||now-this.clearT>2000||this.clearW!==vw){this.clear=cv.parentElement?this.measureClear(cv.parentElement):new Map();this.clearT=now;this.clearW=vw}
     const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
     const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[(rnd()*GL.length)|0],ox:0,oy:0,p:rnd()*6,lit:0})}}
     x.fillStyle=T.gold;x.textBaseline="middle";x.textAlign="center";
@@ -416,7 +430,10 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
         if(!reduce)for(const pp of PTS){const dx=px+d.ox-pp.x,dy=py+d.oy-pp.y,dd=Math.hypot(dx,dy);
           if(dd<R){const q=(1-dd/R)*pp.w;d.ox+=dx/(dd||1)*q*(.6+z*.5);d.oy+=dy/(dd||1)*q*(.6+z*.5);d.lit=Math.max(d.lit,q)}}
         d.ox*=.95;d.oy*=.95;d.lit*=.96;
-        x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit);x.fillText(d.c,px+d.ox,py+d.oy)}}
+        const lx=px+d.ox,ly=py+d.oy,dy0=ly+scrollY,pad=8+SZ[z]*.6;let fade=1;
+        for(const b of this.clear.get(Math.floor(dy0/64))||[]){const ex=Math.max(b.l-lx,0,lx-b.r),ey=Math.max(b.t-dy0,0,dy0-b.b),dd=Math.hypot(ex,ey);if(dd<pad){fade=Math.min(fade,dd/pad);if(!fade)break}}
+        if(fade<.05)continue;
+        x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit)*fade;x.fillText(d.c,lx,ly)}}
     x.globalAlpha=1},
 };
 

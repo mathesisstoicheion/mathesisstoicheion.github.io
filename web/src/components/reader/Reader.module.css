@@ -303,7 +303,7 @@
 .pickWords button:hover { background: var(--slab-lit); }
 .picked { background: color-mix(in srgb, var(--accent) 22%, transparent) !important; color: var(--accent); }
 .shareOpts { display: flex; flex-wrap: wrap; gap: var(--space-3) 20px; align-items: center; }
-.previewBox { max-height: 55vh; overflow: auto; box-shadow: var(--frame); border-radius: var(--radius); background: var(--bg-deep); display: grid; place-items: center; min-height: 120px; }
+.previewBox { max-height: 55vh; overflow: auto; box-shadow: var(--frame-line); border-radius: var(--radius); background: var(--bg-deep); display: grid; place-items: center; min-height: 120px; }
 .previewBox img { width: 100%; height: auto; display: block; }
 
 /* ------------------------------------------------------------ two books side by side */

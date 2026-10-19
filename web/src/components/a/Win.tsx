@@ -1,8 +1,9 @@
 "use client";
 /**
  * One of design A's windows onto art: a framed opening in the black page, with a real object engraved in gold lines on
- * Pompeian red inside it (lib/a/lamplight.js draws it). On the home page and the other pages it opens as a round iris as
- * you reach it, first onto the middle of its picture alone, then onto the whole window, and its caption comes up last.
+ * Pompeian red inside it (lib/a/lamplight.js draws it). On the home page and the other pages it opens by itself as a round
+ * iris once it comes into view, first onto the middle of its picture alone, then onto the whole window, and its caption
+ * comes up last; then it stays open.
  * The lines bend away from the pointer, or from every finger on a phone.
  */
 import { useEffect, useRef } from "react";

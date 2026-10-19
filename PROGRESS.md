@@ -1,5 +1,17 @@
 # PROGRESS.md — project memory
 
+## Overlaps fixed; things play once on view and stay (2026-10-19, on the branch, waiting for "Publish")
+The owner, 13:35 UTC, with two phone screenshots: "fix these kinds of overlaps. And when scrolling, the animations should play
+automatically when they come into view. And should stay expanded, even if you scroll back up." The engraved windows, the settling
+titles and the library's Socrates (and his roll) now play by themselves, once, when they come into view, and never go back
+(lib/a/lamplight.js; design A had them follow the scroll position, so a stopped page showed half-open windows and scrambled
+titles). A token name clash (`--frame` was both the frame's colour and a 1px line) left the header see-through, so floating letters
+showed in it; the line is now `--frame-line`. Small windows stay inside their rooms on phones, captions sit on dark plates and
+wrap, floating letters fade near words, the Settings sheet has a solid edge and one typeface per row on phones, and the library's
+blocks are solid black at every width. A new check, `web/scripts/check-overlaps.mjs` (DESIGN.md, check 6), sweeps 45 pages at six
+screen sizes; what it found was fixed (start tabs, search tabs, Treasury labels, a lesson tile, the Guide's sample search, two
+chart labels). Screenshots: see the thread "Rebuild from the original Gold and lamplight".
+
 ## Gold and lamplight, rebuilt from design A's own template (2026-10-19; LIVE about 13:30 UTC)
 Built on branch `claude/project-thread-azaaq7` from design A as drawn (/mnt/project-files/redesign/design-a/design-a.html); the
 owner replied "Publish" after seeing the screenshots (https://claude.ai/artifact/5HQeKYP9GFhtpRrMC7y2BP). Home, library and reader

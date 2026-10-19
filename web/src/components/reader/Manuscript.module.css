@@ -38,7 +38,7 @@
 .msName { font-size: 1.15rem; margin: 0; }
 .msMeta { margin: 0; font-family: var(--f-label); font-size: 0.85rem; color: var(--ink-2); }
 .msAbout { margin: 0; font-size: 0.92rem; line-height: 1.55; }
-.viewerWrap { position: relative; border-radius: var(--radius); overflow: hidden; background: #1B1410; box-shadow: var(--frame); }
+.viewerWrap { position: relative; border-radius: var(--radius); overflow: hidden; background: #1B1410; box-shadow: var(--frame-line); }
 .viewer { height: min(520px, 58vh); }
 /* phones: one finger scrolls the panel past the photograph (the viewer would take every touch); two move and zoom it */
 @media (pointer: coarse) { .viewer, .viewer * { touch-action: pan-y !important; } }

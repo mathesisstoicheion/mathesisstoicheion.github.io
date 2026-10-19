@@ -77,7 +77,7 @@ export default function LibraryPage() {
               </p>
               <LibSearch />
               <MineButtons />
-              <p className={`${s.stcap} ${s.mono}`}>Scroll, and the letters gather into Socrates, spelled out of Plato’s Apology. Scroll on, and they become a papyrus roll. Press and hold to read.</p>
+              <p className={`${s.stcap} ${s.mono}`}>The letters gather into Socrates, spelled out of Plato’s Apology. Scroll on, and they become a papyrus roll. Press and hold to read.</p>
             </div>
             <div className={`${s.win} ${s.tall}`} role="img" aria-label="The head of Socrates, spelled out letter by letter from the Greek of Plato's Apology; press and hold on his face to read it">
               <span className={s.wcap}>Socrates · spelled out of the Apology · press and hold to read</span>

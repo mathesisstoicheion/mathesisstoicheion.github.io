@@ -82,7 +82,8 @@
 /* phones: the five kinds of search in two even rows (three, then two), and the four examples as a two-by-two grid */
 @media (max-width: 760px) {
   .tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .tabs button { grid-column: span 2; text-align: center; padding-inline: var(--space-2); }
+  /* a third of a phone's width holds "Translations" whole: the label a little smaller on the narrowest phones */
+  .tabs button { grid-column: span 2; text-align: center; padding-inline: 4px; font-size: clamp(0.72rem, 3.3vw, 0.95rem); letter-spacing: 0.02em; }
   .tabs button:nth-child(n + 4) { grid-column: span 3; }
   .examples { display: grid; grid-template-columns: 1fr 1fr; }
   .examples .chip, .examples button { justify-content: center; }

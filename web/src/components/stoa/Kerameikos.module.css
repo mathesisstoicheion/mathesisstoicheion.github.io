@@ -129,7 +129,7 @@
 }
 .card:hover { background-color: var(--slab-lit); }
 .card:hover b { color: var(--accent); }
-.thumb { width: 104px; height: 104px; overflow: hidden; border-radius: var(--radius); background: var(--bg-deep); box-shadow: var(--frame); display: grid; place-items: center; }
+.thumb { width: 104px; height: 104px; overflow: hidden; border-radius: var(--radius); background: var(--bg-deep); box-shadow: var(--frame-line); display: grid; place-items: center; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .thumb img.tallImg { object-fit: contain; padding: 4px; }
 .noImg { width: 60%; height: 60%; background: var(--ink-2); opacity: 0.35;

@@ -221,6 +221,8 @@ a.card:hover { background-color: var(--slab-lit); }
 .revealCard:hover { transform: translateY(-2px); }
 .revealCard:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .revealGr { font-family: var(--f-greek); font-size: 1.8rem; }
+/* two tiles side by side on a phone: a long word (φιλοσοφία) is set a little smaller so it stays inside its tile */
+@media (max-width: 560px) { .revealGr { font-size: clamp(1.3rem, 6.4vw, 1.8rem); overflow-wrap: anywhere; } }
 .revealAns { display: grid; font-size: 0.95rem; color: var(--ink-2); }
 .revealAns > * { grid-area: 1 / 1; }
 /* closed: only a faint ? shows, while the answer, unseen, holds the tile at its full height so nothing moves when it opens */

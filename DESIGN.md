@@ -26,6 +26,11 @@ Stone and torch (design B), live from 2026-10-16 until then, is kept for referen
 6. **Weak devices start a level down** (lib/settings.ts, deviceLevel): very little memory starts on Performance, two
    gigabytes or two processor cores on Balanced; everyone else on Full beauty. Anyone can change it in Settings.
 - The header scrolls away with the page, as in A. A light mode comes after the dark design is approved.
+- **Things play once, on view, and stay** (the owner, 2026-10-19: "when scrolling, the animations should play automatically
+  when they come into view. And should stay expanded, even if you scroll back up"). A window opens by itself once it is
+  well in view, a heading's letters settle by themselves, the library's Socrates gathers by itself and turns into the roll
+  once you have scrolled half way down his stage; none of them goes back when you scroll up. In design A these followed the
+  scroll position, so a page left mid-scroll showed half-open windows and scrambled titles.
 
 ## The three animation levels (the owner, 2026-10-19)
 "One with the full beauty and intricate design and animation. One with a few visual sacrifices for better performance,
@@ -65,6 +70,10 @@ memory, at 2x. So, for every change to the look, before the owner sees it:
 4. **Built from A's own code, compared side by side with A's screenshots,** not re-imagined.
 5. No element holds a layer it does not need: an entrance animation whose last frame is the element's own look ends with
    `backwards`, not `both`; no lasting `will-change`.
+6. **Nothing overlaps** (the owner, 2026-10-19: "fix these kinds of overlaps"):
+   `node web/scripts/check-overlaps.mjs <url> <out.json>` opens every page at three phone widths, a tablet and two computer
+   widths, scrolls through it a screenful at a time and lists text running out of its card, text drawn over text, and pages
+   that scroll sideways. Look at each finding in a screenshot; the list should be empty or every entry explained.
 
 ## Avoid
 - Flashy motion: sparks, flashes, bounces and springy overshoot ("It's horrible", 2026-10-16).

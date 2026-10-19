@@ -181,7 +181,7 @@
   --panel-cut-lit: inset 0 0 0 1px var(--rule-2);   /* the same, under the hand */
   --ledge-lip: var(--none-shadow);
   /* a frame round a picture or a map */
-  --frame: 0 0 0 1px var(--rule);
+  --frame-line: 0 0 0 1px var(--rule);
   /* a slim line of lamplight along a call-out's edge (a tip, a note, a right answer) */
   --inlay-left: inset 1px 0 0 var(--accent);
   --inlay-left-ok: inset 1px 0 0 var(--ok);
