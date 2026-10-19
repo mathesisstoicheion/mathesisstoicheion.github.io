@@ -1,6 +1,8 @@
 import Link from "next/link";
 import Page from "@/components/Page";
 import Win from "@/components/a/Win";
+import RoomFig from "@/components/a/RoomFig";
+import { FIGURES } from "@/data/figures";
 import FlyLetters from "@/components/a/FlyLetters";
 import SettleText from "@/components/a/SettleText";
 import PathTabs from "@/components/a/PathTabs";
@@ -21,13 +23,13 @@ const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog
 const WORKS = CATALOG.authors.flatMap((a) => a.works);
 const n = (x: number) => x.toLocaleString("en-GB");
 
-/** the five rooms of the site, each with a small window onto an object (design A) */
+/** the five rooms of the site, each with a small window onto the figure its door shows (data/figures.ts) */
 const ROOMS = [
-  { id: "study", gk: "Ἀκαδήμεια", art: A_ART.douris, text: "Lessons from the first letters to reading real texts." },
-  { id: "library", gk: "Μουσεῖον", art: A_ART.amphora, text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
-  { id: "wiki", gk: "Στοὰ Ποικίλη", art: A_ART.antikythera, text: "People, places and objects of the ancient world." },
-  { id: "forum", gk: "Ἀγορά", art: A_ART.ostraka, text: "The forum: ask, answer, and read together." },
-  { id: "treasury", gk: "Θησαυρός", art: A_ART.mask, text: "Your bookmarks, notes, highlights and words." },
+  { id: "study", gk: "Ἀκαδήμεια", fig: "learn", text: "Lessons from the first letters to reading real texts." },
+  { id: "library", gk: "Μουσεῖον", fig: "read", text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
+  { id: "wiki", gk: "Στοὰ Ποικίλη", fig: "explore", text: "People, places and objects of the ancient world." },
+  { id: "forum", gk: "Ἀγορά", fig: "talk", text: "The forum: ask, answer, and read together." },
+  { id: "treasury", gk: "Θησαυρός", fig: "mine", text: "Your bookmarks, notes, highlights and words." },
 ] as const;
 
 // every picture the page can show, credited at its foot (the passage's window changes with the passage)
@@ -77,7 +79,7 @@ export default function Home() {
                 const a = AREAS[r.id];
                 return (
                   <Link key={r.id} className={s.room} href={a.href} transitionTypes={["page-turn"]}>
-                    <Win className={`${s.win} ${s.mini}`} src={r.art.src} label={r.art.label} caption={r.art.cap} capClass={s.wcap} />
+                    <RoomFig fig={r.fig} />
                     <SettleText className={s.gk} lang="grc" text={r.gk} />
                     <span className={s.mono}>{a.door}</span>
                     <p>{r.text}</p>
@@ -99,7 +101,8 @@ export default function Home() {
 
           <div className={s.wrap} style={{ paddingBottom: 40 }}>
             <p className={s.cap} style={{ maxWidth: "86ch" }}>
-              The pictures in the windows, all redrawn as gold engravings: {[A_ART.coin, A_ART.frieze, A_ART.douris, A_ART.amphora, A_ART.antikythera, A_ART.ostraka, A_ART.mask, A_ART.crates].map((p) => p.credit).join(". ")}.
+              The pictures in the windows, all redrawn as gold engravings: {[A_ART.coin, A_ART.frieze, A_ART.crates].map((p) => p.credit).join(". ")}.
+              {" "}The five rooms’ faces are drawn in the letters of their doors’ Greek texts, named at each door: {ROOMS.map((r) => FIGURES[r.fig].faceCredit).join("; ")}.
               {" "}Beside the passage of the day, a picture that belongs to its text: <PassageCredits works={PASSAGE_CREDITS} />.
             </p>
           </div>

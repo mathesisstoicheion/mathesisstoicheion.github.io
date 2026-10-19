@@ -33,7 +33,7 @@ export default function FootFigure() {
         {/* its label, as a museum's beside the object: the area, what it shows, its sources, and the way back to the door */}
         <div className={s["ff-text"]}>
           <span className={s.mono} style={{ color: "var(--a-accent)" }}>{a.door ?? a.english} · {a.name}</span>
-          <p className={s["ff-title"]}>{who}, spelled out of {f.from}, becomes {f.object}</p>
+          <p className={s["ff-title"]}>{who} becomes {f.object}</p>
           <p className={s.cap}>{figureCredit(f)}</p>
           <Link className={s["ff-go"]} href={a.href} transitionTypes={["page-turn"]}>Back to {a.name.replace(/^The /, "the ")} <span aria-hidden="true">→</span></Link>
         </div>

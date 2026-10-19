@@ -250,3 +250,8 @@
 .figwin { width: 100%; aspect-ratio: 1 / 1; max-height: 78vh; }
 .foot-fig .wcap { background: rgba(5, 4, 3, .92); }
 @media (max-width: 760px) { .ff-grid { grid-template-columns: 1fr; } .figwin { aspect-ratio: 4 / 5; } }
+
+/* ---------- the home page's five rooms (components/a/RoomFig.tsx): each small window shows the figure of its room's door,
+   its face in gold letters of its own text on Pompeian red; the room's name beneath says whose ---------- */
+.home .roomfig { display: grid; place-items: center; height: 176px; background: var(--a-field); border-color: transparent; }
+.roomfig canvas { position: relative; inset: auto; }

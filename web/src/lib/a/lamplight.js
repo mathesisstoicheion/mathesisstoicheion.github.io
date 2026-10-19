@@ -175,10 +175,10 @@ const TARGETS={
   // Talk: an allotment machine (kleroterion), a stone slab cut with rows of slots for the citizens' bronze name tickets, some in
   // place, with the tube beside it into which the black and white balls were dropped
   kleroterion:{size(maxW,boxW,boxH,cw,ch){return{C2:Math.floor(Math.min(maxW,boxW*.8)/cw),R2:Math.floor(boxH*.9/ch)}},
-    build({C2,R2,text,put}){const tube=4,x0=tube+3,x1=C2-1,y0=0,y1=R2-1,sw=3,ncol=C2-x0>=34?5:4,gap=Math.max(2,Math.floor((x1-x0-3-ncol*sw)/(ncol+1)));
+    build({C2,R2,text,put}){const tube=4,x0=tube+3,x1=C2-1,y0=0,y1=R2-1,sw=4,ncol=C2-x0>=38?5:4,gap=Math.max(2,Math.floor((x1-x0-3-ncol*sw)/(ncol+1)));
       const slot=(i,l)=>{if(l<y0+4||l>y1-4||(l-y0)%2)return -1;const j=i-(x0+2+gap);if(j<0||j%(sw+gap)>=sw)return -1;const c=Math.floor(j/(sw+gap));return c<ncol?c:-1};
-      for(let l=y0+2;l<=y1-2;l++)for(let i=x0+2;i<=x1-2;i++)if(slot(i,l)<0)text(i,l,.3+.1*rnd());   // the stone's face
-      for(let l=y0+4;l<=y1-4;l+=2)for(let c=0;c<ncol;c++)if((c*5+l*3)%7<3)for(let k=0;k<sw;k++)put(x0+2+gap+c*(sw+gap)+k,l,.95);   // tickets in their slots
+      for(let l=y0+2;l<=y1-2;l++)for(let i=x0+2;i<=x1-2;i++)if(slot(i,l)<0)text(i,l,.2+.08*rnd());   // the stone's face, a little dimmer than the tickets' bronze
+      for(let l=y0+4;l<=y1-4;l+=2)for(let c=0;c<ncol;c++)if((c*5+l*3)%7<4)for(let k=0;k<sw;k++)put(x0+2+gap+c*(sw+gap)+k,l,k===0||k===sw-1?.78:1);   // tickets in their slots; the empty slots stay dark
       for(let l=y0;l<=y1;l++)for(const i of[x0,x0+1,x1-1,x1])put(i,l,i===x0||i===x1?.74:.5);for(let i=x0;i<=x1;i++)for(const l of[y0,y0+1,y1-1,y1])put(i,l,l===y0||l===y1?.74:.5);   // its edges
       for(let l=y0+5;l<y1-3;l++)for(let i=0;i<tube;i++)put(i,l,.16+.76*Math.pow(Math.sin(Math.PI*(i+.5)/tube),.7));   // the tube
       for(let r=0;r<4;r++)for(let i=-r;i<tube+r;i++)put(i+0,y0+4-r,.82-.1*r)}},   // its funnel
@@ -597,7 +597,7 @@ function flame(x,W,H,t,seed,lean,I){
    more ink than small letters, so a small face drawn from them stays clear. */
 function Letters(cv,img,o){
   let raf=0,cells=[],g,cw,ch,t0,last=0,hot=0;
-  function build(){const asp=img.height/img.width,w=o.width();const dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(w*asp*dpr);cv.style.width=w+"px";cv.style.height=(w*asp)+"px";
+  function build(){const asp=img.height/img.width,w=o.height?o.height()/asp:o.width();const dpr=Math.min(2,devicePixelRatio||1);cv.width=Math.round(w*dpr);cv.height=Math.round(w*asp*dpr);cv.style.width=w+"px";cv.style.height=(w*asp)+"px";
     const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);g={x,w,h:w*asp};cw=g.w/o.cols;ch=cw*(o.text?1.22:1.45);
     const cols=Math.floor(g.w/cw),rows=Math.floor(g.h/ch);const d=sample(img,cols,rows);cells=[];
     let Ls=new Float32Array(cols*rows);for(let q=0;q<cols*rows;q++){const k=q*4;Ls[q]=(.3*d[k]+.59*d[k+1]+.11*d[k+2])/255}
