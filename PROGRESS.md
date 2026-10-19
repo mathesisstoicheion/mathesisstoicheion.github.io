@@ -22,6 +22,11 @@ in the project files at `redesign/GOLD-AND-LAMPLIGHT-PLAN.md`; before and after:
   the letters in flight redrawn: 55.8 fps with him, 59.9 without); the famous-book stelai in gold lines
   (`pipeline/engrave_medallions.py`, `images/medallions/engraved/`); the Town Hall's rooms as gilded windows (Town Hall 25.8 to
   59.3 fps).
+- **Art round (2026-10-19, LIVE 09:49 UTC, main 1ea8d8b)**: the engraving no longer turns and tap-to-light is gone. A design-A
+  flare (gold rays `public/images/flare.svg` over a warm halo, `.eng-flare`) sits round each piece and turns slowly with scroll.
+  Near a finger or the mouse the lines bend away (`lib/art/bend.ts`: a small canvas patch that repaints the ground, halo and rays
+  under bent lines; it rests while the page scrolls). Slowed phone: scrolling as live; bending 55 to 58 fps against about 60.
+  Pictures: https://claude.ai/artifact/DkYXqZCju6NzPBAncBpxj3.
 - **Still to do**: remove the old stone components (`Carving`, `ReliefWindow`, `Torch`) once nothing uses them (error page,
   lyre, home emblem still do).
 
