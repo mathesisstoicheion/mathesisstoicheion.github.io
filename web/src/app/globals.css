@@ -286,17 +286,21 @@ select:not([multiple]):not([size]) {
   background: var(--art-ink); -webkit-mask: no-repeat center / contain; mask: no-repeat center / contain;
   transition: background-color var(--dur-slow) var(--ease);
 }
-html[data-art-lit] .eng-lines { background-color: var(--art-ink-lit); }
-/* the lamp's pool: follows the pointer on a computer, stands mid-screen on a phone; lit fully, it floods the view */
+/* the flare round the object, as design A drew it round its coin: bunches of fine gold rays and a ring of short ones
+   (public/images/flare.svg), over a warm halo. The object stands still and the flare turns slowly as the page scrolls (the
+   owner, 2026-10-19: "add the flare around the piece itself. That's what has to spin as you scroll"). The stage makes it a
+   square round the object's box. */
+.eng-flare { position: absolute; left: 0; top: 0; width: 0; height: 0; transform-origin: 50% 50%; will-change: transform; pointer-events: none; }
+.eng-flare::before, .eng-flare::after { content: ""; position: absolute; inset: 0; }
+.eng-flare::before { inset: 12%; border-radius: var(--radius-round); background: radial-gradient(closest-side, var(--art-flare), color-mix(in srgb, var(--art-flare) 35%, transparent) 60%, transparent); }
+.eng-flare::after { background: var(--art-ink-lit); opacity: 0.5; -webkit-mask: url(/images/flare.svg) center / 100% 100% no-repeat; mask: url(/images/flare.svg) center / 100% 100% no-repeat; }
+/* the bend's patch near a finger or the pointer (lib/art/bend.ts); shown only while it draws */
+.eng-bend { position: absolute; left: 0; top: 0; display: none; will-change: transform; pointer-events: none; }
+/* the lamp's pool: follows the pointer on a computer, stands mid-screen on a phone */
 .eng-lamp {
   position: absolute; left: 0; top: 0; width: 680px; height: 680px; margin: -340px 0 0 -340px; border-radius: var(--radius-round);
   background: radial-gradient(closest-side, var(--art-lamp), transparent); will-change: transform;
 }
-.eng-view::after {
-  content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity var(--dur-slow) var(--ease);
-  background: radial-gradient(ellipse at 50% 45%, var(--art-lamp), transparent 75%);
-}
-html[data-art-lit] .eng-view::after { opacity: 1; }
 /* the page over the art: its panels a touch see-through; the header and the phone's bars stay solid */
 html[data-art] main, html[data-art] .site-footer { position: relative; z-index: 1; background: var(--veil); }
 /* a window onto the art: a fine gold frame; whatever is fixed inside it (the art) shows only within it */
@@ -318,13 +322,7 @@ html[data-art] main, html[data-art] .site-footer { position: relative; z-index: 
 .piece { margin: 0; }
 .piece-niche {
   display: block; width: 100%; aspect-ratio: 1 / var(--piece-ratio); padding: 0; border: 0; border-radius: 0;
-  cursor: pointer; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
 }
-.piece-niche:focus-visible { outline: 1px solid var(--accent); outline-offset: var(--space-1); }
-/* the note that it can be lit: under the window, never over the art (the owner, 2026-10-18) */
-.lamp-note { margin-top: var(--space-2); font: 500 0.62rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); }
-.lamp-tap { display: none; }
-@media (hover: none) { .lamp-click { display: none; } .lamp-tap { display: inline; } }
 .piece figcaption { margin-top: var(--space-1); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
 .piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }

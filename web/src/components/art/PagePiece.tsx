@@ -16,7 +16,7 @@ import { useEffect, useRef, useSyncExternalStore } from "react";
 import { PIECE_CREDITS, pieceFor } from "@/data/pieces";
 import engraved from "@/data/engraved.json";
 import { stage } from "@/lib/art/stage";
-import { ArtView, setArtLit, useArtLit, usePageArt } from "./PageArt";
+import { ArtView, usePageArt } from "./PageArt";
 
 const ENGRAVED = engraved as Record<string, { w: number; h: number }>;
 
@@ -42,8 +42,7 @@ export default function PagePiece({ place = "head", spec: given, className, afte
   const spec = given !== undefined ? given : pieceFor(path);
   const id = spec && ENGRAVED[spec.piece] ? spec.piece : null;
   const credit = id ? PIECE_CREDITS[id] : undefined;
-  const win = useRef<HTMLButtonElement>(null);
-  const lit = useArtLit();
+  const win = useRef<HTMLDivElement>(null);
   const mounted = useMounted();
   usePageArt(place === "head" ? (id ? { piece: id, why: spec?.why } : null) : undefined);
 
@@ -57,14 +56,9 @@ export default function PagePiece({ place = "head", spec: given, className, afte
   return (
     <figure className={`piece piece-head art-slot${w.ratio < 0.95 ? " piece-wide" : ""}${className ? ` ${className}` : ""}`}
       style={{ "--piece-ratio": w.ratio } as React.CSSProperties}>
-      <button ref={win} type="button" className={`piece-niche art-window${w.round ? " art-round" : ""}`} aria-pressed={lit}
-        onClick={() => setArtLit(!lit)} aria-label={lit ? "Give the engraving back to the lamp" : "Light the engraving fully"}>
+      <div ref={win} className={`piece-niche art-window${w.round ? " art-round" : ""}`}>
         {mounted && <ArtView piece={id} />}
-      </button>
-      <p className="lamp-note" aria-hidden="true">
-        <span className="lamp-click">{lit ? "Click to dim it" : "Click to light it"}</span>
-        <span className="lamp-tap">{lit ? "Tap to dim it" : "Tap to light it"}</span>
-      </p>
+      </div>
       <figcaption>
         <b>{credit.title}</b>{credit.date && <>, {credit.date}</>}.{" "}
         {spec?.why && <span className="piece-why">{spec.why} </span>}

@@ -103,7 +103,7 @@ export default function Home() {
           {CREDIT && (
             <ArtWindow label="The picture" tall className={styles.side}>
               <p className={styles.plateEn}><b>{CREDIT.title}</b>{CREDIT.date && <>, {CREDIT.date}</>}.</p>
-              <p className={styles.plateNote}>Drawn here in gold lines from The Met’s photograph. Click or tap it at the top of the page to light it fully.</p>
+              <p className={styles.plateNote}>Drawn here in gold lines from The Met’s photograph.</p>
               <small><a href={CREDIT.source} rel="noopener">The Metropolitan Museum of Art, Open Access</a></small>
             </ArtWindow>
           )}

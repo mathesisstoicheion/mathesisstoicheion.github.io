@@ -246,6 +246,7 @@
   --art-ink: var(--gold);
   --art-ink-lit: var(--gold-hi);
   --art-lamp: rgba(255, 190, 110, 0.2);
+  --art-flare: rgba(255, 196, 112, 0.34);   /* the warm flare round the engraved object */
   --art-frame: var(--gold);
   /* the page laid over the art: a little see-through (the owner, 2026-10-18: "just a tiny bit") */
   --veil: rgba(11, 8, 6, 0.9);
@@ -337,6 +338,7 @@
   --art-ink: var(--oxblood);
   --art-ink-lit: #8a2a14;
   --art-lamp: rgba(255, 244, 214, 0.35);
+  --art-flare: rgba(255, 246, 222, 0.75);
   --art-frame: var(--oxblood);
   --veil: rgba(236, 224, 201, 0.9);
   --plate: rgba(243, 233, 214, 0.82);

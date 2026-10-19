@@ -5,7 +5,7 @@
  * - `ArtView`, one view of the engraving: its hatched red ground, its gold lines and the lamp's pool of light;
  * - `ArtWindow`, a framed window in the page that looks through to the engraving, always with something real in it
  *   (a line of Greek and its source, a note on the picture), never empty (the owner, 2026-10-18);
- * - the page's choice of engraving (`usePageArt`) and whether it is lit fully (`useArtLit`).
+ * - the page's choice of engraving (`usePageArt`).
  *
  * The reader has none: it is for reading, with its own still lamplit cover.
  */
@@ -18,10 +18,9 @@ import { stage } from "@/lib/art/stage";
 
 const ENGRAVED = engraved as Record<string, { w: number; h: number }>;
 
-// ------------------------------------------------------------------ the page's engraving, and whether it is lit
+// ------------------------------------------------------------------ the page's engraving, and 
 type Spec = { piece: string; why?: string } | null;
 let chosen: { spec: Spec; n: number } | null = null;   // what the page's head asked for (null: nothing asked)
-let lit = false;
 const subs = new Set<() => void>();
 const emit = () => subs.forEach((f) => f());
 const sub = (f: () => void) => { subs.add(f); return () => { subs.delete(f); }; };
@@ -43,12 +42,6 @@ export function usePageArt(spec: Spec | undefined) {
 }
 const useChosen = () => useSyncExternalStore(sub, () => chosen, () => null);
 
-export function setArtLit(on: boolean) {
-  lit = on;
-  document.documentElement.toggleAttribute("data-art-lit", on);
-  emit();
-}
-export const useArtLit = () => useSyncExternalStore(sub, () => lit, () => false);
 
 // ------------------------------------------------------------------ views
 /** One view of the engraving. `base`: the one behind the whole page. */
@@ -58,7 +51,9 @@ export function ArtView({ piece, base }: { piece: string; base?: boolean }) {
   return (
     <div ref={el} className={`eng-view${base ? " eng-base" : ""}`} aria-hidden="true">
       <div className="eng-ground" />
+      <div className="eng-flare" />
       <div className="eng-lines" style={{ maskImage: `url(/images/pieces/engraved/${piece}.webp)`, WebkitMaskImage: `url(/images/pieces/engraved/${piece}.webp)` }} />
+      <canvas className="eng-bend" />
       <div className="eng-lamp" />
     </div>
   );
@@ -80,7 +75,6 @@ export default function PageArt() {
   useEffect(() => {
     stage.setMeta(piece ? ENGRAVED[piece] : null);
     document.documentElement.toggleAttribute("data-art", !!piece);
-    if (lit) setArtLit(false);   // a new page's engraving starts in the lamplight
   }, [piece]);
   if (!piece) return null;
   return <ArtView key={piece} piece={piece} base />;
