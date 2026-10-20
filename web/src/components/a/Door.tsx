@@ -2,10 +2,11 @@
  * A door of the site (Learn, Explore, Talk, Mine, Search), built as the library is (the owner, 2026-10-19: "mixes elements
  * of gold and torch (A) and ... the Museion"; "each page has its own distinct design, but with an overall, unifying
  * design"): the area's figure on a stage pinned behind the page (FigStage.tsx), where the letters of a real Greek text
- * gather into a face and then become the area's object; over it, black blocks with the door's name, its main action and
- * its parts; and one of design A's red windows onto a gilded object of the area. On a computer the blocks stand at the
- * left, so nothing covers the figure, as in the library; on a phone the figure shows through a window above the name, and
- * its object through a second one below.
+ * gather into a face beside the door's name and, as you scroll, become the area's object, grown large behind the page
+ * until you scroll back to the top (the owner, 2026-10-20); over it, dark blocks with the door's name, its main action
+ * and its parts, across the page's whole width (the owner, 2026-10-20: "Everything is stuck to the left, and doesn't fill
+ * out the page"); and one of design A's red windows onto a gilded object of the area. On a phone the face comes first,
+ * above the name.
  */
 import type { ReactNode } from "react";
 import FigStage from "./FigStage";
@@ -46,20 +47,14 @@ export default function Door({ id, fig, art, action, carve, children }: {
             <p className={s.lede}>{a.origin} {a.fit}</p>
             {action && <div className={s["door-action"]}>{action}</div>}
             {carve && <p className={s.cap}>{carve.caption}</p>}
-            <p className={`${s.stcap} ${s.mono}`}>The letters gather into {f.who}, spelled out of {f.from}. Scroll on, and they become {f.object}. Press and hold to read.</p>
+            <p className={`${s.stcap} ${s.mono}`}>The letters gather into {f.who}, spelled out of {f.from}. Scroll on, and they become {f.object} behind the page; back at the top, {f.who} again. Press and hold to read.</p>
           </header>
-          <div className={`${s.win} ${s.tall} ${s.gap}`} role="img" aria-label={`${cap(f.who)}, spelled out letter by letter from the Greek of ${f.from}; press and hold to read`}>
+          <div className={`${s.win} ${s.tall} ${s.gap}`} data-face-anchor="" role="img" aria-label={`${cap(f.who)}, spelled out letter by letter from the Greek of ${f.from}; scroll on, and the letters become ${f.object} behind the page. Press and hold to read`}>
             <span className={s.wcap}>{cap(f.who)} · spelled out of {f.from} · press and hold to read</span>
           </div>
         </div>
-        {/* on a phone or a tablet, a second window, onto the object the letters become */}
-        <div className={`${s.wrap} ${s["turn-wrap"]}`}>
-          <div className={`${s.win} ${s.gap} ${s.turn}`} data-door-turn="" role="img" aria-label={`${cap(f.object)}, spelled out in the letters of ${f.from}`}>
-            <span className={s.wcap}>{cap(f.object)} · in the letters of {f.from}</span>
-          </div>
-        </div>
         {redWin("art-desk")}
-        <div className={s["door-body"]} data-door-turn="">{children}</div>
+        <div className={s["door-body"]}>{children}</div>
         {redWin("art-phone")}
         <div className={`${s.wrap} ${s["door-credit"]}`}>
           <div className={s.blk}><p className={s.cap}>{figureCredit(f)} The red window: {art.credit}.</p></div>
@@ -69,12 +64,11 @@ export default function Door({ id, fig, art, action, carve, children }: {
   );
 }
 
-/** One of a door's black blocks. On a computer it stands at the left, beside the figure; the parts of the site written for the
- * whole page's width lay themselves out for its column there (data-door-col). */
+/** One of a door's dark blocks, across the page's width, with the figure's object showing in the gaps between them. */
 export function DoorBlock({ id, label, children }: { id?: string; label?: string; children: ReactNode }) {
   return (
     <div className={s.wrap}>
-      <section className={s.blk} id={id} aria-label={label} data-door-col="">{children}</section>
+      <section className={s.blk} id={id} aria-label={label}>{children}</section>
     </div>
   );
 }

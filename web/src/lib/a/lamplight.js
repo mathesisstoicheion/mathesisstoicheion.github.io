@@ -14,6 +14,10 @@
    scrolls (a window, the floating letters and the library's Socrates only when their size or the colours change; the
    reader's cover only fades), and everything is drawn at the screen's own sharpness, as in Balanced.
  - The wheel's settling at the nearest section can be switched off (the owner, 2026-10-16: "no snapping").
+ - Speed (the owner, 2026-10-20: "fix the performance on beauty mode. I think that it's a bit too heavy. Should feel smooth
+   on 120hz"): what holds still is drawn once and kept in a picture of its own, and only what moves is drawn each frame:
+   each window's engraving (engrave), a figure's face and its object (FigScene); the floating letters are stamped from
+   small pictures, and nothing measures the page every frame.
  It is plain JavaScript, as the sample was, and runs in the browser only (components/a/ import it there). */
 /* eslint-disable */
 let reduce=false,lite=false,gen=0;   // gen: counts changes of colour, so Performance knows to draw again
@@ -23,7 +27,7 @@ let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 /* ---------- colours and faces, read once per page, never per frame ---------- */
 let T={},F={};
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room")};
+function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room"),bg:cssv("--bg")||"#050403"};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
 /* ---------- the texts the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
@@ -72,74 +76,91 @@ function wrapText(s,n){const out=[];let line="";
     while(line.length>n){out.push(line.slice(0,n));line=line.slice(n)}}
   if(line)out.push(line.padEnd(n));return out}
 const dprCap=()=>lite||reduce?1:1.5;
-const IRIS_MS=2600,SETTLE_MS=1400,FIG_HOLD=5;   // a window's iris opening in full; a heading's letters finding their places;
-// how long a figure at the foot of a page holds its face, in seconds from when its letters start to gather, before they become its object
+const IRIS_MS=2600,SETTLE_MS=1400;   // a window's iris opening in full; a heading's letters finding their places
+let DIM=.66;   // a figure's object behind the page is dimmed to this, so the page's words stay clear over it (set by each stage)
 
-/* Scene: the coin, engraved in gold on Pompeian red, laid out in viewport space */
+/* The gold lines of an engraving (the coin's, and every other window's): one band of gold for each row of the picture, as
+   thick as the picture is light there. The sample drew every band afresh every frame; here they are drawn once into a
+   picture of their own (kept on the window, `hold`) and laid on the red at the window's parallax, and only the rows near a
+   pointer or a finger are drawn afresh, bending away from it (the owner, 2026-10-20: "Should feel smooth on 120hz"). The
+   sample's ripple, a third of a pixel high, is gone with it.
+   E = {bx, by, bw, bh, gap, step, R, push, th}: the picture's box with its top as at rest, the rows' spacing, the step
+   along a row, how near a pointer bends the lines and how far, and th(k, v): a band's thickness, in rows, at the k-th
+   step of the row at v (0 at the top, 1 at the bottom). dy is the parallax now; reveal (0 to 1) how far the window has
+   opened, each row drawn only so far from the left. */
+function band(g,E,k,dy,i0,i1,ptr){const yc=E.gap/2+k*E.gap,y=E.by+yc+dy,v=yc/E.bh,tp=[],bt=[];
+  for(let i=i0;i<=i1;i++){const xx=E.bx+i*E.step;let yy=y;
+    if(ptr)for(const pp of ptr){const dx=xx-pp.x,ddy=y-pp.y,dd=Math.hypot(dx,ddy);if(dd<E.R){const q=Math.pow(1-dd/E.R,2)*pp.w;yy+=ddy/(dd||1)*q*E.push}}
+    const th=E.th(i,v)*E.gap;tp.push(xx,yy-th/2);bt.push(xx,yy+th/2)}
+  if(tp.length<4)return;g.moveTo(tp[0],tp[1]);for(let i=2;i<tp.length;i+=2)g.lineTo(tp[i],tp[i+1]);for(let i=bt.length-2;i>=0;i-=2)g.lineTo(bt[i],bt[i+1]);g.closePath()}
+function engrave(x,hold,E,dy,reveal,ptr,dpr){
+  const n=Math.max(0,Math.ceil((E.bh-E.gap/2)/E.gap)),im=Math.floor(E.bw/E.step+1e-9),pad=E.gap+E.push,ox=E.bx-4,oy=E.by-pad,W=E.bw+8,H=E.bh+2*pad;
+  const key=[Math.round(W*dpr),Math.round(H*dpr),E.gap.toFixed(3),E.bx.toFixed(1),gen].join();
+  let c=hold.lines;
+  if(!c||hold.linesKey!==key){c=hold.lines||(hold.lines=document.createElement("canvas"));c.width=Math.max(1,Math.round(W*dpr));c.height=Math.max(1,Math.round(H*dpr));
+    const g=c.getContext("2d");g.setTransform(dpr,0,0,dpr,-ox*dpr,-oy*dpr);g.fillStyle=T.gold;g.beginPath();
+    for(let k=0;k<n;k++)band(g,E,k,0,0,im,null);g.fill();hold.linesKey=key}
+  x.save();
+  if(reveal<1){const xr=v=>E.bx+E.bw*clamp(reveal*1.25-v*.25,0,1),t0=E.by+dy;x.beginPath();x.moveTo(E.bx-6,t0-pad);x.lineTo(xr(0),t0-pad);
+    for(let i=0;i<=8;i++)x.lineTo(xr(i/8),t0+E.bh*i/8);x.lineTo(xr(1),t0+E.bh+pad);x.lineTo(E.bx-6,t0+E.bh+pad);x.closePath();x.clip()}
+  // where a pointer is near, a hole in the cached lines (whole rows, so no band is cut across), and those rows bent within it
+  let hole=null;
+  for(const pp of ptr){const l=pp.x-E.R,r=pp.x+E.R,t=pp.y-E.R,b=pp.y+E.R;if(r<E.bx||l>E.bx+E.bw||b<E.by+dy||t>E.by+dy+E.bh)continue;
+    hole=hole?{l:Math.min(hole.l,l),r:Math.max(hole.r,r),t:Math.min(hole.t,t),b:Math.max(hole.b,b)}:{l,r,t,b}}
+  const k0=hole?Math.max(0,Math.floor((hole.t-E.by-dy)/E.gap)):0,k1=hole?Math.min(n-1,Math.ceil((hole.b-E.by-dy)/E.gap)):-1;
+  if(hole&&k1>=k0){const ht=E.by+dy+k0*E.gap,hb=E.by+dy+(k1+1)*E.gap,i0=Math.max(0,Math.floor((hole.l-E.bx)/E.step)),i1=Math.min(im,Math.ceil((hole.r-E.bx)/E.step));
+    const hl=E.bx+i0*E.step,hr=E.bx+i1*E.step;
+    x.save();x.beginPath();x.rect(ox-2,oy+dy-2,W+4,H+4);x.rect(hl,ht,hr-hl,hb-ht);x.clip("evenodd");x.drawImage(c,ox,oy+dy,W,H);x.restore();
+    x.fillStyle=T.gold;x.beginPath();for(let k=k0;k<=k1;k++)band(x,E,k,dy,i0,i1,ptr);x.fill()}
+  else x.drawImage(c,ox,oy+dy,W,H);
+  x.restore()}
+// the red ground of a window, engraved in fine diagonal hatching
+function ground(x,w,h){x.fillStyle=T.red;x.fillRect(0,0,w,h);x.strokeStyle="rgba(0,0,0,.22)";x.lineWidth=.6;x.beginPath();
+  for(let k=0;k<w+h+7;k+=7){x.moveTo(k,0);x.lineTo(k-h,h)}x.stroke()}
+
+/* Scene: the coin, engraved in gold on Pompeian red, its rays turning slowly behind it */
 function CoinScene(img){
   const sw=180,sh=Math.round(sw*img.height/img.width);const d=sample(img,sw,sh);
-  const lum=new Float32Array(sw*sh),mask=new Float32Array(sw*sh);for(let i=0;i<sw*sh;i++){lum[i]=d[i*4]/255;mask[i]=d[i*4+3]/255}
+  const TH=new Float32Array(sw*sh);for(let i=0;i<sw*sh;i++)TH[i]=d[i*4+3]/255<.5?0:(.08+.92*Math.pow(d[i*4]/255,1.15))*.92;
   const rays=[];for(let b=0;b<16;b++){const a=b/16*Math.PI*2+rnd()*.2;const n=6+(rnd()*9|0);for(let k=0;k<n;k++)rays.push({a:a+(k-n/2)*.011,r0:.36+rnd()*.06,r1:.62+rnd()*.5})}
   for(let k=0;k<180;k++)rays.push({a:k/180*Math.PI*2,r0:.4,r1:.48+rnd()*.06});
-  const at=(u,v)=>{const i=clamp(u*sw|0,0,sw-1),j=clamp(v*sh|0,0,sh-1);return j*sw+i};
-  return {draw(x,vw,vh,view,t,prog,mode,ptr,an){
-    const red=T.red,gold=T.gold,hi=T.goldHi;
-    x.fillStyle=red;x.fillRect(view.x,view.y,view.w,view.h);
-    // engraved ground: fine diagonal hatching
-    x.strokeStyle="rgba(0,0,0,.22)";x.lineWidth=.6;x.beginPath();
-    const hs=7,start=Math.floor((view.x+view.y)/hs)*hs;for(let k=start;k<view.x+view.y+view.w+view.h+hs;k+=hs){x.moveTo(k-view.y,view.y);x.lineTo(k-view.y-view.h,view.y+view.h)}x.stroke();
-    const scale=mode==="scrub"?.8+.4*prog:1;   // ("iris": the phone windows, see Engine.iris)
-    const cx=an?an.cx:vw*(vw>860?.62:.5),cy=an?an.cy:vh*.5,S=(an?Math.min(an.w*1.2,an.h*1.05):Math.min(vw,vh)*.8)*scale;
-    const rot=(reduce?0:t*.03)+(mode==="scrub"?prog*1.6:0);
-    x.strokeStyle=hi;x.lineWidth=.7;x.globalAlpha=.5;x.beginPath();
+  return {draw(x,w,h,t,prog,ptr,an,hold,dpr){
+    ground(x,w,h);
+    const cx=an.cx,cy=an.cy,S=Math.min(an.w*1.2,an.h*1.05),rot=reduce?0:t*.03;
+    x.strokeStyle=T.goldHi;x.lineWidth=.7;x.globalAlpha=.5;x.beginPath();
     for(const r of rays){const a=r.a+rot;x.moveTo(cx+Math.cos(a)*S*r.r0,cy+Math.sin(a)*S*r.r0);x.lineTo(cx+Math.cos(a)*S*r.r1*.62,cy+Math.sin(a)*S*r.r1*.62)}
     x.stroke();x.globalAlpha=1;
-    const bw=S*.72,bh=bw*sh/sw,bx=cx-bw/2,by=cy-bh/2,gap=Math.max(3.4,bw/96),step=2.4,R=Math.max(90,bw*.2);
-    const reveal=mode==="scrub"?clamp(prog*2.4,0,1):mode==="iris"?(reduce?1:clamp(prog/.42,0,1)):(reduce?1:clamp(t/1.8,0,1));
-    x.fillStyle=gold;
-    const y0=Math.max(by+gap/2,view.y-gap),y1=Math.min(by+bh,view.y+view.h+gap);
-    const xa=Math.max(bx,view.x-4),xb=Math.min(bx+bw,view.x+view.w+4);if(xb<=xa)return;
-    for(let y=by+gap/2;y<y1;y+=gap){if(y<y0)continue;const v=(y-by)/bh,top=[],bot=[];const xEnd=Math.min(xb,bx+bw*clamp(reveal*1.25-v*.25,0,1));
-      for(let xx=xa;xx<=xEnd;xx+=step){const k=at((xx-bx)/bw,v);let yy=y;
-        if(!reduce){yy+=Math.sin(xx*.02+t*.8)*.35;for(const pp of ptr){const dx=xx-pp.x,dy=y-pp.y,dd=Math.hypot(dx,dy);if(dd<R){const q=Math.pow(1-dd/R,2)*pp.w;yy+=dy/(dd||1)*q*12}}}
-        const th=mask[k]<.5?0:(.08+.92*Math.pow(lum[k],1.15))*gap*.92;top.push(xx,yy-th/2);bot.push(xx,yy+th/2)}
-      if(top.length<4)continue;x.beginPath();x.moveTo(top[0],top[1]);for(let i=2;i<top.length;i+=2)x.lineTo(top[i],top[i+1]);for(let i=bot.length-2;i>=0;i-=2)x.lineTo(bot[i],bot[i+1]);x.closePath();x.fill()}
+    const bw=S*.72,bh=bw*sh/sw,bx=cx-bw/2,by=h/2-bh/2,gap=Math.max(3.4,bw/96),step=2.4;
+    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,bw*.2),push:12,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},cy-h/2,reduce?1:clamp(prog/.42,0,1),ptr,dpr)
   }};
 }
 
 /* Scene: any other picture, engraved in the same gold lines on Pompeian red, shown whole inside its window. */
-function PicScene(img,o){
+function PicScene(img){
   const sw=Math.min(img.width,320),sh=Math.round(sw*img.height/img.width);const d=sample(img,sw,sh);
-  const lum=new Float32Array(sw*sh),mask=new Float32Array(sw*sh);for(let i=0;i<sw*sh;i++){lum[i]=d[i*4]/255;mask[i]=d[i*4+3]/255}
-  const at=(u,v)=>{const i=clamp(u*sw|0,0,sw-1),j=clamp(v*sh|0,0,sh-1);return j*sw+i},asp=sw/sh;
-  return {draw(x,vw,vh,view,t,prog,mode,ptr,an){
-    x.fillStyle=T.red;x.fillRect(view.x,view.y,view.w,view.h);
-    x.strokeStyle="rgba(0,0,0,.22)";x.lineWidth=.6;x.beginPath();
-    const hs=7,start=Math.floor((view.x+view.y)/hs)*hs;for(let k=start;k<view.x+view.y+view.w+view.h+hs;k+=hs){x.moveTo(k-view.y,view.y);x.lineTo(k-view.y-view.h,view.y+view.h)}x.stroke();
+  const TH=new Float32Array(sw*sh);for(let i=0;i<sw*sh;i++){const m=d[i*4+3]/255;TH[i]=m<.04?0:(.05+.8*Math.pow(d[i*4]/255,1.35))*Math.min(1,m*1.3)}
+  const asp=sw/sh;
+  return {draw(x,w,h,t,prog,ptr,an,hold,dpr){
+    ground(x,w,h);
     const bh=Math.min(an.h*.9,an.w*.9/asp),bw=bh*asp;   // the whole object, with a margin of red around it
-    const bx=an.cx-bw/2,by=an.cy-bh/2,gap=clamp(Math.min(an.w,an.h)/58,3.1,5.2),step=2.2,R=Math.max(90,Math.min(bw,bh)*.3);
-    const reveal=mode==="iris"?(reduce?1:clamp(prog/.42,0,1)):1;
-    x.fillStyle=T.gold;
-    const y1=Math.min(by+bh,view.y+view.h+gap),xa=Math.max(bx,view.x-4),xb=Math.min(bx+bw,view.x+view.w+4);if(xb<=xa)return;
-    for(let y=Math.max(by,view.y-gap)+gap/2;y<y1;y+=gap){const v=(y-by)/bh,top=[],bot=[];const xEnd=Math.min(xb,xa+(xb-xa)*clamp(reveal*1.25-v*.25,0,1));
-      for(let xx=xa;xx<=xEnd;xx+=step){const k=at((xx-bx)/bw,v);let yy=y;
-        if(!reduce){yy+=Math.sin(xx*.02+t*.8)*.35;for(const pp of ptr){const dx=xx-pp.x,dy=y-pp.y,dd=Math.hypot(dx,dy);if(dd<R){const q=Math.pow(1-dd/R,2)*pp.w;yy+=dy/(dd||1)*q*10}}}
-        const m=mask[k],th=m<.04?0:(.05+.8*Math.pow(lum[k],1.35))*gap*Math.min(1,m*1.3);top.push(xx,yy-th/2);bot.push(xx,yy+th/2)}
-      if(top.length<4)continue;x.beginPath();x.moveTo(top[0],top[1]);for(let i=2;i<top.length;i+=2)x.lineTo(top[i],top[i+1]);for(let i=bot.length-2;i>=0;i-=2)x.lineTo(bot[i],bot[i+1]);x.closePath();x.fill()}
+    const bx=an.cx-bw/2,by=h/2-bh/2,gap=clamp(Math.min(an.w,an.h)/58,3.1,5.2),step=2.2;
+    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,Math.min(bw,bh)*.3),push:10,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},an.cy-h/2,reduce?1:clamp(prog/.42,0,1),ptr,dpr)
   }};
 }
 
-/* Glyph atlas: each letter is drawn once, large, in each style; scenes then stamp the letters with drawImage,
-   which costs far less than drawing text thousands of times a frame. Drawn large so the lens can enlarge them crisply. */
+/* Glyph atlas: each letter is drawn once, large, in each style; scenes then stamp the letters with drawImage, which costs
+   far less than drawing text thousands of times a frame. Drawn large so the lens can enlarge them crisply, and the
+   objects grow behind the page. A letter's place in it is found by number (ci: letter -> number; sx, sy: where the n-th
+   letter of style s, at s * nc + n, is), not by name, so the frames that stamp thousands look nothing up. */
 function Atlas(chars,styles,px){
-  const OS=Math.min(2,devicePixelRatio||1)*2.4,F0=px*OS,cw=Math.ceil(F0*1.3),ch=Math.ceil(F0*1.7);
-  const total=chars.length*styles.length,per=Math.ceil(Math.sqrt(total*ch/cw));
+  const OS=Math.min(2,devicePixelRatio||1)*2.4,F0=px*OS,cw=Math.ceil(F0*1.3),ch=Math.ceil(F0*1.7),nc=chars.length;
+  const total=nc*styles.length,per=Math.ceil(Math.sqrt(total*ch/cw));
   const cv=document.createElement("canvas");cv.width=per*cw;cv.height=Math.ceil(total/per)*ch;
   const x=cv.getContext("2d");x.textAlign="center";x.textBaseline="alphabetic";
-  const idx=styles.map(()=>new Map());let n=0;
+  const ci=new Map(chars.map((c,i)=>[c,i])),sx=new Float32Array(total),sy=new Float32Array(total);
   styles.forEach((s,si)=>{x.font=`${s.w} ${(F0*s.s).toFixed(1)}px ${F.gentium}`;x.fillStyle=s.c;
-    for(const c of chars){const sx=(n%per)*cw,sy=(n/per|0)*ch;x.fillText(c,sx+cw/2,sy+ch*.7);idx[si].set(c,[sx,sy]);n++}});
-  return {cv,idx,cw,ch,OS,base:.7}
+    chars.forEach((c,i)=>{const n=si*nc+i,X=(n%per)*cw,Y=(n/per|0)*ch;x.fillText(c,X+cw/2,Y+ch*.7);sx[n]=X;sy[n]=Y})});
+  return {cv,ci,sx,sy,nc,cw,ch,OS,base:.7}
 }
 
 /* The objects a figure's letters become further down its page. Each gives its size in letter cells (`size`, from the room
@@ -208,16 +229,25 @@ const TARGETS={
 
 /* Scene: a face spelled out of a Greek text, in a dark room lit by one lamp: design A's Socrates, spelled out of Plato's
    Apology (the library), and the other areas' figures (data/figures.ts), each out of its own text.
-   Every letter is the text in reading order; only their brightness draws the face.
-   With a pointer, the lamp is also a reading glass that enlarges the letters under it.
-   On the Stage the still face is kept in a picture of its own and redrawn only when the text or the gathering moves.
-   Further down the page the face falls apart and its letters become the area's object (TARGETS below): the library's
-   papyrus roll, as A drew it, or another. `tx` is the text (loadText), `target` the object's name, `img2` its picture. */
+   Every letter is the text in reading order; only their brightness draws the face. With a pointer, the lamp is also a
+   reading glass that enlarges the letters under it.
+   The face stands in its opening near the top of the page (an element marked data-face-anchor) and moves with the page.
+   Scroll on, and its letters fly out and become the area's object (TARGETS above: the library's papyrus roll, as A drew
+   it, or another), grown large behind the whole page and dimmed, so the page's words stay clear over it. It stays there
+   until you scroll back to the top, and then the letters fly back into the face (the owner, 2026-10-20: "The figures should
+   grow into the background, as you scroll, then stay there, until you scroll back to the top, then it animates into the
+   face again"). `tx` is the text (loadText), `target` the object's name, `img2` its picture.
+   For speed (the owner, 2026-10-20: "Should feel smooth on 120hz"), what holds still is kept in pictures of its own and
+   only laid down each frame: the face (each letter stamped into it once, as it arrives) and the object. The speech rising
+   slowly through the face is drawn into a second picture a few rows a frame, and swapped in when it is done. Only the
+   letters in flight are drawn one by one. */
 function FigScene(img,tx,target,img2){
-  let lay=null,cache=null,ck="",cT=0;
-  function layout(vw,vh,an){const key=[vw,vh,an?[an.cx|0,an.cy|0,an.w|0,an.h|0]:0,T.amber].join();if(lay&&lay.key===key)return lay;
-    const asp=img.width/img.height,wide=vw>=1100;let boxH=an?an.h*.98:vh*.9,boxW=boxH*asp;const maxW=an?an.w*.98:vw*(wide?.44:.92);if(boxW>maxW){boxW=maxW;boxH=boxW/asp}
-    const cx=an?an.cx:vw*(wide?.745:.5),cy=an?an.cy:vh/2,bx=cx-boxW/2,by=cy-boxH/2;   // on a wide screen the face has the right of the page to itself
+  let lay=null,gath=null,job=null,front=null,objK="";
+  const faceC=[document.createElement("canvas"),document.createElement("canvas")],objC=document.createElement("canvas");
+  // the face's own space has its centre at 0, 0; the object's too (it is placed and scaled when drawn)
+  function layout(fw,fh){const key=[fw|0,fh|0,T.amber].join();if(lay&&lay.key===key)return lay;
+    const asp=img.width/img.height;let boxH=fh*.98,boxW=boxH*asp;const maxW=fw*.98;if(boxW>maxW){boxW=maxW;boxH=boxW/asp}
+    const bx=-boxW/2,by=-boxH/2;
     const cols=clamp(Math.round(boxW/6.2),44,96),cw=boxW/cols,ch=cw*1.26,rows=Math.floor(boxH/ch);
     const d=sample(img,cols,rows),N=cols*rows,G=new Float32Array(N),fly=[];
     for(let k=0;k<N;k++)G[k]=(.3*d[k*4]+.59*d[k*4+1]+.11*d[k*4+2])/255;
@@ -227,19 +257,18 @@ function FigScene(img,tx,target,img2){
     for(let k=0;k<N;k++)G[k]=G[k]<.1?G[k]:clamp(G[k]+1.1*(G[k]-Bl[k]),0,1);
     const lit=[...G].filter(v=>v>.12).sort((a,b)=>a-b),lo=lit[Math.floor(lit.length*.04)]||.1,hi=lit[Math.floor(lit.length*.98)]||1;
     for(let k=0;k<N;k++){const v=clamp((G[k]-lo)/(hi-lo),0,1);G[k]=Math.pow(v,1.25);
-      // each loose letter wanders slowly round a resting place of its own until the scroll calls it home
-      fly.push({at:((k/cols|0)/rows)*.8+rnd()*.5,sx:rnd()*vw,sy:rnd()*vh,sub:rnd()<.38,w1:.03+rnd()*.07,w2:.025+rnd()*.06,ph:rnd()*6.3,amp:30+rnd()*70,c:tx.chars[(rnd()*tx.chars.length)|0]})}
+      // each loose letter wanders slowly round a resting place of its own (u, v: across and down the window) until it is called home
+      fly.push({at:((k/cols|0)/rows)*.8+rnd()*.5,u:rnd(),v:rnd(),sub:rnd()<.38,w1:.03+rnd()*.07,w2:.025+rnd()*.06,ph:rnd()*6.3,amp:30+rnd()*70,c:tx.chars[(rnd()*tx.chars.length)|0]})}
     const glow=document.createElement("canvas");glow.width=cols;glow.height=rows;{const gx=glow.getContext("2d"),gi=gx.createImageData(cols,rows),[R0,G0,B0]=[255,150,60];
       for(let k=0;k<N;k++){gi.data[k*4]=R0;gi.data[k*4+1]=G0;gi.data[k*4+2]=B0;gi.data[k*4+3]=G[k]*255}gx.putImageData(gi,0,0)}
-    // further down the page the face falls apart, and some of its letters rearrange into the area's object (TARGETS):
-    // the text in capitals, as Greek was written then, and the object's own shape in letters around it
-    const TG=TARGETS[target]||TARGETS.roll,{C2,R2}=TG.size(an?an.w*.98:vw*(wide?(TG===TARGETS.roll?.46:.42):.94),boxW,boxH,cw,ch,img2);   // the other objects keep clear of the blocks at the left
-    const rx=cx-C2*cw/2,ry=cy-R2*ch/2,CAPS_=capsOf(tx),slots=[],rest=[],G2=new Float32Array(C2*R2),occ=new Uint8Array(C2*R2);
+    // the object: the text in capitals, as Greek was written then, and the object's own shape in letters around it
+    const TG=TARGETS[target]||TARGETS.roll,{C2,R2}=TG.size(fw*.98,boxW,boxH,cw,ch,img2);
+    const rx=-C2*cw/2,ry=-R2*ch/2,CAPS_=capsOf(tx),slots=[],rest=[],G2=new Float32Array(C2*R2),occ=new Uint8Array(C2*R2);
     const at=(gx,l)=>gx>=0&&gx<C2&&l>=0&&l<R2&&!occ[l*C2+gx];
     const slot=(arr,gx,l,g,c)=>{occ[l*C2+gx]=1;arr.push({x:rx+(gx+.5)*cw,y:ry+l*ch+ch*.86,g,c});G2[l*C2+gx]=g};
-    let ci=0;
+    let ci0=0;
     // the text first, in reading order (the light reads it in that order), then the object's own parts
-    TG.build({C2,R2,img:img2,text:(gx,l,g)=>{if(at(gx,l))slot(slots,gx,l,g,CAPS_[ci++%CAPS_.length])},put:(gx,l,g,c)=>{if(at(gx,l))slot(rest,gx,l,g,c||CAPS[(gx*7+l*13)%24])}});
+    TG.build({C2,R2,img:img2,text:(gx,l,g)=>{if(at(gx,l))slot(slots,gx,l,g,CAPS_[ci0++%CAPS_.length])},put:(gx,l,g,c)=>{if(at(gx,l))slot(rest,gx,l,g,c||CAPS[(gx*7+l*13)%24])}});
     const nText=slots.length;for(const r of rest)slots.push(r);
     for(let s2=0;s2<slots.length;s2++){const k=Math.floor((s2+.5)*N/slots.length);fly[k].sl=s2}
     fly.forEach((fl,k)=>{fl.d=.3*((k/cols|0)/rows)+.6*rnd();fl.fx=(rnd()-.5)*70;fl.fy=50+rnd()*120;if(fl.sl===undefined)fl.sl=-1});   // the crown lets go first
@@ -247,110 +276,142 @@ function FigScene(img,tx,target,img2){
       for(let k=0;k<C2*R2;k++){gi.data[k*4]=255;gi.data[k*4+1]=150;gi.data[k*4+2]=60;gi.data[k*4+3]=G2[k]*255}gx.putImageData(gi,0,0)}
     const roll={C2,R2,rx,ry,slots,nText,glow:glow2,soft:softGlow(glow2)};
     const fpx=cw*1.24,A=Atlas(tx.chars,[{w:400,s:.84,c:T.amber},{w:400,s:1.04,c:T.amber},{w:700,s:1.2,c:T.amberHi}],fpx);
-    ck="";return lay={key,cols,rows,cw,ch,bx,by,cx,cy,boxW,boxH,G,fly,A,glow,soft:softGlow(glow),roll,gw:A.cw/A.OS,gh:A.ch/A.OS,lines:wrapText(tx.raw,cols)}}
+    const num=c=>{const v=A.ci.get(c);return v===undefined?-1:v};
+    for(const fl of fly)fl.ci=num(fl.c);for(const sl of slots)sl.ci=num(sl.c);
+    const lineC=wrapText(tx.raw,cols).map(l=>{const a=new Int16Array(cols);for(let i=0;i<cols;i++){const c=l[i];a[i]=c===undefined||c===" "?-1:num(c)}return a});
+    gath=null;job=null;front=null;objK="";
+    return lay={key,cols,rows,cw,ch,bx,by,boxW,boxH,G,fly,A,glow,soft:softGlow(glow),roll,gw:A.cw/A.OS,gh:A.ch/A.OS,lineC,pad:ch*1.6}}
   function softGlow(src){const c=document.createElement("canvas");c.width=src.width*4;c.height=src.height*4;const g=c.getContext("2d");g.imageSmoothingEnabled=true;g.filter="blur(6px)";g.drawImage(src,0,0,c.width,c.height);return c}
-  // the roll, standing still (and, with a lens, enlarged under the reading glass)
-  function paintRoll(x,L,lens){const A=L.A,R=L.roll,M=lens?lens.m:1;
-    if(!lens){x.globalAlpha=.09;x.imageSmoothingEnabled=true;x.drawImage(R.soft,R.rx,R.ry,R.C2*L.cw,R.R2*L.ch)}
-    for(const sl of R.slots){let px=sl.x,py=sl.y,sc=1;
-      if(lens){const dx=px-lens.x,dy=py-lens.y;if(dx*dx+dy*dy>(lens.r/M)**2)continue;px=lens.x+dx*M;py=lens.y+dy*M;sc=M}
-      const c=sl.c,p=A.idx[sl.g<.3?0:sl.g<.6?1:2].get(c);if(!p)continue;
-      const w=L.gw*sc,h=L.gh*sc;x.globalAlpha=Math.min(1,lens?.3+.8*sl.g:.03+1.1*sl.g);x.drawImage(A.cv,p[0],p[1],A.cw,A.ch,px-w/2,py-h*A.base,w,h)}
+  // a letter's place in the atlas: its style (by brightness) and its number
+  const sty=(A,g)=>g<.3?0:g<.6?A.nc:2*A.nc;
+  // a picture of the face, `pad` round its box, ready to be drawn into in the face's own space
+  function prep(c,L,dpr){const W=L.boxW+2*L.pad,H=L.rows*L.ch+2*L.pad,w=Math.max(1,Math.round(W*dpr)),h=Math.max(1,Math.round(H*dpr));
+    if(c.width!==w||c.height!==h){c.width=w;c.height=h}const g=c.getContext("2d");g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,w,h);
+    g.setTransform(dpr,0,0,dpr,(L.pad-L.bx)*dpr,(L.pad-L.by)*dpr);g.imageSmoothingEnabled=true;return g}
+  const blitFace=(x,c,L,fcx,fcy)=>x.drawImage(c,fcx+L.bx-L.pad,fcy+L.by-L.pad,L.boxW+2*L.pad,L.rows*L.ch+2*L.pad);
+  // the face at rest, rows j0 to j1: off = how far the speech has risen (in lines); the last row shows only its risen part
+  function paintRows(g,L,off,j0,j1){const A=L.A,o0=Math.floor(off),fr=off-o0,n=L.lineC.length,C=L.cols,G=L.G,gw=L.gw,gh=L.gh,drop=L.ch*.86;
+    for(let j=j0;j<=j1;j++){const gy=j-fr,ty=L.by+gy*L.ch+drop,line=L.lineC[(o0+j)%n],r0=clamp(Math.floor(gy),0,L.rows-1),r1=clamp(r0+1,0,L.rows-1),f=gy-Math.floor(gy),edge=j===0?1-fr:(j===L.rows?fr:1);
+      if(edge<=0)continue;const a0=r0*C,a1=r1*C;
+      for(let i=0;i<C;i++){const s=line[i];if(s<0)continue;const gv=G[a0+i]*(1-f)+G[a1+i]*f,a=(.03+1.1*gv)*edge;if(a<.012)continue;
+        const q=sty(A,gv)+s;g.globalAlpha=a>1?1:a;g.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,L.bx+(i+.5)*L.cw-gw/2,ty-gh*A.base,gw,gh)}}
+    g.globalAlpha=1}
+  // the still face at `off`: the one ready, while the next is drawn into the other picture, a fifth of its rows a frame
+  function stillFace(L,off,dpr){const lk=L.key+"|"+dpr+"|"+gen;
+    if(front&&front.lk===lk&&front.off===off)return faceC[0];
+    const ready=!!front&&front.lk===lk;
+    if(!job||job.lk!==lk||job.off!==off)job={lk,off,j:0,g:prep(faceC[1],L,dpr)};
+    const per=ready?Math.ceil((L.rows+1)/5):L.rows+1;paintRows(job.g,L,off,job.j,Math.min(L.rows,job.j+per-1));job.j+=per;
+    if(job.j>L.rows){faceC.reverse();front={lk,off};job=null;return faceC[0]}
+    return ready?faceC[0]:null}
+  // the letters gathering into the face (asm: seconds since they began): each one that has found its place is stamped once
+  // into the still face; only those still on their way are drawn each frame
+  function gatherFrame(x,L,t,asm,fcx,fcy,vw,vh,dpr){const lk=L.key+"|"+dpr+"|"+gen;
+    if(!gath||gath.lk!==lk){gath={lk,done:new Uint8Array(L.cols*L.rows),n:0,g:prep(faceC[0],L,dpr)};front=null;job=null}
+    const A=L.A,C=L.cols,G=L.G,gw=L.gw,gh=L.gh,drop=L.ch*.86,done=gath.done,g=gath.g,n=L.lineC.length,q0=reduce?0:t;
+    for(let j=0;j<L.rows;j++){const line=L.lineC[j%n];
+      for(let i=0;i<C;i++){const k0=j*C+i;if(done[k0])continue;const s=line[i];
+        if(s>=0&&asm-L.fly[k0].at<.6)continue;done[k0]=1;gath.n++;if(s<0)continue;
+        const gv=G[k0],a=.03+1.1*gv;if(a<.012)continue;const q=sty(A,gv)+s;
+        g.globalAlpha=a>1?1:a;g.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,L.bx+(i+.5)*L.cw-gw/2,L.by+j*L.ch+drop-gh*A.base,gw,gh)}}
+    g.globalAlpha=1;blitFace(x,faceC[0],L,fcx,fcy);
+    for(let j=0;j<L.rows;j++){const line=L.lineC[j%n];
+      for(let i=0;i<C;i++){const k0=j*C+i;if(done[k0])continue;const fl=L.fly[k0],k=clamp((asm-fl.at)/.6,0,1);let s=line[i],a=.03+1.1*G[k0];
+        let px=fcx+L.bx+(i+.5)*L.cw,py=fcy+L.by+j*L.ch+drop;
+        if(fl.sub){const e=1-Math.pow(1-k,3),ox=fl.u*vw+Math.sin(q0*fl.w1+fl.ph)*fl.amp,oy=fl.v*vh+Math.cos(q0*fl.w2+fl.ph*1.3)*fl.amp*.7;
+          px=ox+(px-ox)*e;py=oy+(py-oy)*e;if(k<.9)s=fl.ci;a=Math.max(a,.26)*(.45+.55*k)}
+        else{if(k<.6)continue;a*=(k-.6)/.4}
+        if(a<.012||s<0||px<-gw||px>vw+gw||py<-gh||py>vh+gh)continue;
+        const q=sty(A,G[k0])+s;x.globalAlpha=a>1?1:a;x.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,px-gw/2,py-gh*A.base,gw,gh)}}
+    x.globalAlpha=1;
+    if(gath.n>=C*L.rows){front={lk,off:0};gath=null}}
+  // the object at rest, grown S times, in a picture of its own; returns where it lies round the object's centre
+  function stillObj(L,S,dpr){const R=L.roll,pad=L.pad,W=(R.C2*L.cw+2*pad)*S,H=(R.R2*L.ch+2*pad)*S,key=[L.key,S,dpr,gen].join("|");
+    if(objK!==key){objC.width=Math.max(1,Math.round(W*dpr));objC.height=Math.max(1,Math.round(H*dpr));const g=objC.getContext("2d");
+      g.setTransform(dpr*S,0,0,dpr*S,(pad-R.rx)*S*dpr,(pad-R.ry)*S*dpr);g.imageSmoothingEnabled=true;paintRoll(g,L);objK=key}
+    return {x:(R.rx-pad)*S,y:(R.ry-pad)*S,W,H}}
+  function paintRoll(g,L){const A=L.A,R=L.roll,gw=L.gw,gh=L.gh;g.globalAlpha=.09;g.drawImage(R.soft,R.rx,R.ry,R.C2*L.cw,R.R2*L.ch);
+    for(const sl of R.slots){if(sl.ci<0)continue;const q=sty(A,sl.g)+sl.ci,a=.03+1.1*sl.g;g.globalAlpha=a>1?1:a;g.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,sl.x-gw/2,sl.y-gh*A.base,gw,gh)}
+    g.globalAlpha=1}
+  // the reading glass, in the face's own space: the letters under it enlarged
+  function paintLens(x,L,off,lens){const A=L.A,o0=Math.floor(off),fr=off-o0,n=L.lineC.length,C=L.cols,G=L.G,M=lens.m,drop=L.ch*.86,gw=L.gw*M,gh=L.gh*M,r2=(lens.r/M)**2;
+    const j0=Math.floor((lens.y-lens.r/M-L.by)/L.ch+fr)-1,j1=Math.ceil((lens.y+lens.r/M-L.by)/L.ch+fr)+1;
+    for(let j=Math.max(0,j0);j<=Math.min(L.rows,j1);j++){const gy=j-fr,ty=L.by+gy*L.ch,line=L.lineC[(o0+j)%n],r0=clamp(Math.floor(gy),0,L.rows-1),r1=clamp(r0+1,0,L.rows-1),f=gy-Math.floor(gy),edge=j===0?1-fr:(j===L.rows?fr:1);
+      for(let i=0;i<C;i++){const s=line[i];if(s<0)continue;const dx=L.bx+(i+.5)*L.cw-lens.x,dy=ty+drop-lens.y;if(dx*dx+dy*dy>r2)continue;
+        const gv=G[r0*C+i]*(1-f)+G[r1*C+i]*f,a=(.3+.7*gv)*edge;if(a<.012)continue;const q=sty(A,gv)+s;
+        x.globalAlpha=a>1?1:a;x.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,lens.x+dx*M-gw/2,lens.y+dy*M-gh*A.base,gw,gh)}}
     x.globalAlpha=1}
-  // between the two: each letter falls a little, then glides to its place on the roll; the rest fall and fade into the dark
-  function paintMorph(x,L,t,off,m){const A=L.A,R=L.roll,o0=Math.floor(off),fr=off-o0,n=L.lines.length,C=L.cols,gw=L.gw,gh=L.gh,drop=L.ch*.86;
-    x.imageSmoothingEnabled=true;x.globalAlpha=.09*(1-m);x.drawImage(L.soft,L.bx,L.by,L.boxW,L.rows*L.ch);x.globalAlpha=.09*m;x.drawImage(R.soft,R.rx,R.ry,R.C2*L.cw,R.R2*L.ch);
-    for(let j=0;j<L.rows;j++){const line=L.lines[(o0+j)%n],ty=L.by+(j-fr)*L.ch+drop,g0r=j*C;
-      for(let i=0;i<C;i++){const fl=L.fly[g0r+i],k=clamp((m*1.55-fl.d)/.55,0,1),g0=L.G[g0r+i],a0=.03+1.1*g0;let s=line[i];
-        const x0=L.bx+(i+.5)*L.cw;let px=x0,py=ty,a=a0,g=g0;
-        if(fl.sl<0){if(a0<.1){a=a0*(1-clamp(m*5,0,1));if(a<.012||s===" ")continue}
-          else{if(k>=1||s===" ")continue;const e=k*k;px+=fl.fx*.7*e;py+=fl.fy*1.5*e;a=a0*Math.pow(1-k,1.6)}}
-        else{const sl=R.slots[fl.sl],e=k<.5?2*k*k:1-2*(1-k)*(1-k),cx=x0+fl.fx,cy=ty+fl.fy,u=1-e;
-          px=u*u*x0+2*u*e*cx+e*e*sl.x;py=u*u*ty+2*u*e*cy+e*e*sl.y;g=g0+(sl.g-g0)*e;a=Math.max(.16,a0+(.03+1.1*sl.g-a0)*e);
-          if(s===" "||k>.85)s=k>.85?sl.c:fl.c}
-        if(a<.012)continue;const p=A.idx[g<.3?0:g<.6?1:2].get(s);if(!p)continue;
-        x.globalAlpha=a>1?1:a;x.drawImage(A.cv,p[0],p[1],A.cw,A.ch,px-gw/2,py-gh*A.base,gw,gh)}}
+  // between the two: each letter falls a little, then glides to its place in the object, growing as it goes; the rest fall
+  // and fade into the dark. m runs from 0 (the face) to 1 (the object), and back
+  function paintMorph(x,L,off,m,fcx,fcy,ocx,ocy,S,vw,vh){const A=L.A,R=L.roll,o0=Math.floor(off),fr=off-o0,n=L.lineC.length,C=L.cols,G=L.G,gw=L.gw,gh=L.gh,drop=L.ch*.86,m5=clamp(m*5,0,1),dS=S-1;
+    x.globalAlpha=.09*(1-m);x.drawImage(L.soft,fcx+L.bx,fcy+L.by,L.boxW,L.rows*L.ch);x.globalAlpha=.09*m*DIM;x.drawImage(R.soft,ocx+R.rx*S,ocy+R.ry*S,R.C2*L.cw*S,R.R2*L.ch*S);
+    for(let j=0;j<L.rows;j++){const line=L.lineC[(o0+j)%n],ty=fcy+L.by+(j-fr)*L.ch+drop,r=j*C;
+      for(let i=0;i<C;i++){const fl=L.fly[r+i],k=clamp((m*1.55-fl.d)/.55,0,1),g0=G[r+i],a0=.03+1.1*g0,x0=fcx+L.bx+(i+.5)*L.cw;
+        let s=line[i],px=x0,py=ty,a=a0,g=g0,sc=1;
+        if(fl.sl<0){if(s<0)continue;if(a0<.1){a=a0*(1-m5);if(a<.012)continue}
+          else{if(k>=1)continue;const e=k*k;px+=fl.fx*.7*e;py+=fl.fy*1.5*e;a=a0*Math.pow(1-k,1.6)}}
+        else{const sl=R.slots[fl.sl],e=k<.5?2*k*k:1-2*(1-k)*(1-k),u=1-e,tx=ocx+sl.x*S,tY=ocy+sl.y*S,cx=x0+fl.fx,cy=ty+fl.fy;
+          px=u*u*x0+2*u*e*cx+e*e*tx;py=u*u*ty+2*u*e*cy+e*e*tY;g=g0+(sl.g-g0)*e;sc=1+dS*e;
+          // dark letters brighten a little in flight, so the ones the object needs are seen going to it; they land as the object shows them
+          a=Math.max(.64*e*(1-e),a0+(Math.min(1,.03+1.1*sl.g)*DIM-a0)*e);
+          if(s<0||k>.85)s=k>.85?sl.ci:fl.ci}
+        if(a<.012||s<0)continue;const w=gw*sc,h=gh*sc;if(px<-w||px>vw+w||py<-h||py>vh+h)continue;
+        const q=sty(A,g)+s;x.globalAlpha=a>1?1:a;x.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,px-w/2,py-h*A.base,w,h)}}
     x.globalAlpha=1}
-  // once the roll has formed, the same slow light reads its columns
-  function idleRoll(x,L,t){const A=L.A,R=L.roll,p2=A.idx[2],i0=Math.floor(t*9)%R.nText;
-    for(let k=Math.max(0,i0-44);k<=i0;k++){const sl=R.slots[k],p=p2.get(sl.c);if(!p)continue;const a=Math.exp(-(i0-k)/14),sc=1+.26*a,w=L.gw*sc,h=L.gh*sc;
-      x.globalAlpha=Math.min(1,.25+.75*a);x.drawImage(A.cv,p[0],p[1],A.cw,A.ch,sl.x-w/2,sl.y-h*A.base,w,h)}
+  // once the object has formed, the same slow light reads its text (in the object's own space)
+  function idleRoll(x,L,t){const A=L.A,R=L.roll;if(!R.nText)return;const i0=Math.floor(t*9)%R.nText;
+    for(let k=Math.max(0,i0-44);k<=i0;k++){const sl=R.slots[k];if(sl.ci<0)continue;const q=2*A.nc+sl.ci,a=Math.exp(-(i0-k)/14),sc=1+.26*a,w=L.gw*sc,h=L.gh*sc;
+      x.globalAlpha=Math.min(1,.25+.75*a)*DIM;x.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,sl.x-w/2,sl.y-h*A.base,w,h)}
     const sl=R.slots[i0],g=x.createRadialGradient(sl.x,sl.y-L.ch*.4,0,sl.x,sl.y-L.ch*.4,L.ch*3.2);g.addColorStop(0,"rgba(255,190,110,.42)");g.addColorStop(1,"rgba(255,150,60,0)");
-    x.globalAlpha=1;x.globalCompositeOperation="lighter";x.fillStyle=g;x.fillRect(sl.x-L.ch*3.2,sl.y-L.ch*3.6,L.ch*6.4,L.ch*6.4);x.globalCompositeOperation="source-over"}
-  // stamp the letters of the face: off = how far the speech has risen (in lines), asm = how far the letters have gathered
-  // part: "still" leaves out the letters still on their way, "move" draws only those (they are redrawn every frame)
-  function paint(x,L,view,t,off,asm,lens,part){
-    const A=L.A,o0=Math.floor(off),fr=off-o0,n=L.lines.length,C=L.cols,gw=L.gw,gh=L.gh,drop=L.ch*.86,done=asm>2.2;
-    if(!lens&&asm>.9){x.globalAlpha=.09*clamp((asm-.9)/.9,0,1);x.imageSmoothingEnabled=true;x.drawImage(L.soft,L.bx,L.by,L.boxW,L.rows*L.ch);x.globalAlpha=1}
-    const M=lens?lens.m:1,j0=lens?Math.floor((lens.y-lens.r/M-L.by)/L.ch+fr)-1:0,j1=lens?Math.ceil((lens.y+lens.r/M-L.by)/L.ch+fr)+1:L.rows;
-    for(let j=Math.max(0,j0);j<=Math.min(L.rows,j1);j++){const gy=j-fr,ty=L.by+gy*L.ch,line=L.lines[(o0+j)%n];
-      if(done&&!lens){if(ty>view.y+view.h)break;if(ty+L.ch<view.y)continue}
-      const r0=clamp(Math.floor(gy),0,L.rows-1),r1=clamp(r0+1,0,L.rows-1),f=gy-Math.floor(gy),edge=j===0?1-fr:(j===L.rows?fr:1);
-      for(let i=0;i<C;i++){let s=line[i];if(s===" ")continue;
-        let px=L.bx+(i+.5)*L.cw,py=ty+drop,sc=1;const fl=L.fly[clamp(j,0,L.rows-1)*C+i];
-        if(part){const moving=!lens&&fl.sub&&asm-fl.at<.6;if((part==="move")!==moving)continue}
-        if(lens){const dx=px-lens.x,dy=py-lens.y;if(dx*dx+dy*dy>(lens.r/M)**2)continue;px=lens.x+dx*M;py=lens.y+dy*M;sc=M}
-        const g=L.G[r0*C+i]*(1-f)+L.G[r1*C+i]*f;let a,k=1;
-        if(lens)a=(.3+.7*g)*edge;
-        else{k=clamp((asm-fl.at)/.6,0,1);a=(.03+1.1*g)*edge;
-          if(k<1){if(fl.sub){const e=1-Math.pow(1-k,3),q=reduce?0:t,ox=fl.sx+Math.sin(q*fl.w1+fl.ph)*fl.amp,oy=fl.sy+Math.cos(q*fl.w2+fl.ph*1.3)*fl.amp*.7;
-              px=ox+(px-ox)*e;py=oy+(py-oy)*e;if(k<.9)s=fl.c;a=Math.max(a,.26)*(.45+.55*k)}
-            else{if(k<.6)continue;a*=(k-.6)/.4}}}
-        if(a<.012)continue;
-        if(px<view.x-gw*sc||px>view.x+view.w+gw*sc||py<view.y-gh*.3||py>view.y+view.h+gh*sc)continue;
-        const p=L.A.idx[g<.3?0:g<.6?1:2].get(s);if(!p)continue;
-        const w=gw*sc,h=gh*sc;x.globalAlpha=a>1?1:a;x.drawImage(A.cv,p[0],p[1],A.cw,A.ch,px-w/2,py-h*A.base,w,h)}}
-    x.globalAlpha=1}
-  // what moves while nobody scrolls, once he has gathered: a light that reads the speech slowly across his face
-  function idle(x,L,t,off,asm,vw,vh){const A=L.A,gw=L.gw,gh=L.gh,p1=A.idx[1],p2=A.idx[2];
-    if(asm>2.2){const C=L.cols,o0=Math.floor(off),fr=off-o0,n=L.lines.length,span=Math.max(1,L.rows-14),cp=t*9,j=7+Math.floor(cp/C)%span,i0=Math.floor(cp%C);
-      const line=L.lines[(o0+j)%n],py=L.by+(j-fr)*L.ch+L.ch*.86;
-      for(let k=Math.max(0,i0-44);k<=i0;k++){const s=line[k];if(!s||s===" ")continue;const p=p2.get(s);if(!p)continue;
-        const a=Math.exp(-(i0-k)/14),sc=1+.26*a,w=gw*sc,h=gh*sc,px=L.bx+(k+.5)*L.cw;x.globalAlpha=Math.min(1,.25+.75*a);
-        x.drawImage(A.cv,p[0],p[1],A.cw,A.ch,px-w/2,py-h*A.base,w,h)}
-      const cx=L.bx+(i0+.5)*L.cw,g=x.createRadialGradient(cx,py-L.ch*.4,0,cx,py-L.ch*.4,L.ch*3.2);g.addColorStop(0,"rgba(255,190,110,.42)");g.addColorStop(1,"rgba(255,150,60,0)");
-      x.globalAlpha=1;x.globalCompositeOperation="lighter";x.fillStyle=g;x.fillRect(cx-L.ch*3.2,py-L.ch*3.6,L.ch*6.4,L.ch*6.4);x.globalCompositeOperation="source-over"}
-    // now and then a slow band of light passes across his face, as if someone carried a lamp by; it lights the face only, not the dark around it
-    if(asm>1.2)band(x,L,t,L.glow,L.bx,L.by,L.boxW,L.rows*L.ch,clamp((asm-1.2)/1,0,1));
-    x.globalAlpha=1}
-  function band(x,L,t,src,X,Y,W,H,amt){const u=(t*.085)%1.6-.3,k=Math.sin(Math.PI*clamp((u+.3)/1.6,0,1))*amt;if(k<=.04)return;
+    x.globalAlpha=DIM;x.globalCompositeOperation="lighter";x.fillStyle=g;x.fillRect(sl.x-L.ch*3.2,sl.y-L.ch*3.6,L.ch*6.4,L.ch*6.4);x.globalCompositeOperation="source-over";x.globalAlpha=1}
+  // what moves on the face while nobody scrolls, once it has gathered: a light that reads the speech slowly across it (face space)
+  function idleFace(x,L,t,off){const A=L.A,gw=L.gw,gh=L.gh,C=L.cols,o0=Math.floor(off),fr=off-o0,n=L.lineC.length,span=Math.max(1,L.rows-14),cp=t*9,j=7+Math.floor(cp/C)%span,i0=Math.floor(cp%C);
+    const line=L.lineC[(o0+j)%n],py=L.by+(j-fr)*L.ch+L.ch*.86;
+    for(let k=Math.max(0,i0-44);k<=i0;k++){const s=line[k];if(s===undefined||s<0)continue;const q=2*A.nc+s;
+      const a=Math.exp(-(i0-k)/14),sc=1+.26*a,w=gw*sc,h=gh*sc,px=L.bx+(k+.5)*L.cw;x.globalAlpha=Math.min(1,.25+.75*a);
+      x.drawImage(A.cv,A.sx[q],A.sy[q],A.cw,A.ch,px-w/2,py-h*A.base,w,h)}
+    const cx=L.bx+(i0+.5)*L.cw,g=x.createRadialGradient(cx,py-L.ch*.4,0,cx,py-L.ch*.4,L.ch*3.2);g.addColorStop(0,"rgba(255,190,110,.42)");g.addColorStop(1,"rgba(255,150,60,0)");
+    x.globalAlpha=1;x.globalCompositeOperation="lighter";x.fillStyle=g;x.fillRect(cx-L.ch*3.2,py-L.ch*3.6,L.ch*6.4,L.ch*6.4);x.globalCompositeOperation="source-over"}
+  // now and then a slow band of light passes across the face or the object, as if someone carried a lamp by; it lights the letters only
+  function band(x,t,src,X,Y,W,H,amt){const u=(t*.085)%1.6-.3,k=Math.sin(Math.PI*clamp((u+.3)/1.6,0,1))*amt;if(k<=.04)return;
     const bw=src.width,bh=src.height;if(!src.band){src.band=document.createElement("canvas");src.band.width=bw;src.band.height=bh}
     const b=src.band.getContext("2d"),c0=u*1.4-.2;b.globalCompositeOperation="source-over";b.clearRect(0,0,bw,bh);b.drawImage(src,0,0);
     b.globalCompositeOperation="destination-in";const sg=b.createLinearGradient((c0-.24)*bw,0,(c0+.24)*bw,0);sg.addColorStop(0,"rgba(0,0,0,0)");sg.addColorStop(.5,"rgba(0,0,0,1)");sg.addColorStop(1,"rgba(0,0,0,0)");
     b.fillStyle=sg;b.fillRect(0,0,bw,bh);x.globalCompositeOperation="lighter";x.globalAlpha=.3*k;x.imageSmoothingEnabled=true;x.drawImage(src.band,X,Y,W,H);x.globalCompositeOperation="source-over";x.globalAlpha=1}
-  return {draw(x,vw,vh,view,t,prog,mode,ptr,an,st){
-    const L=layout(vw,vh,an),scrub=mode==="scrub",still=reduce||!!(st&&st.still);   // still: in Performance, drawn once as it ends
-    let off=still?0:(scrub?prog*120+t*.1:t/2.8);
-    // on the Stage his face gathers by itself as the library opens, and the face becomes the roll once the list comes up
-    // over it; neither goes back when you scroll up again (the owner, 2026-10-19: animations play once and stay)
-    const asm=still?9:scrub?st.asm:t;
-    const m=scrub?st.m:0;
-    if(scrub){off=Math.round(off*4)/4;   // the speech rises in quarter lines, so the still face need not be redrawn every frame
-      const dpr=Math.min(dprCap(),devicePixelRatio||1),k2=[L.key,off,asm>2.2?"d":asm.toFixed(3)].join(),now=performance.now();
-      if(!cache){cache=document.createElement("canvas")}
-      if(cache.width!==Math.round(vw*dpr)||cache.height!==Math.round(vh*dpr)){cache.width=Math.round(vw*dpr);cache.height=Math.round(vh*dpr);ck=""}
-      if(m>0&&m<1){x.fillStyle=T.room;x.fillRect(0,0,vw,vh);paintMorph(x,L,t,off,m)}
-      else{const k3=m>=1?L.key+"roll":k2;
-        if(ck!==k3&&(now-cT>30||!ck)){const c=cache.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);c.fillStyle=T.room;c.fillRect(0,0,vw,vh);if(m>=1)paintRoll(c,L,null);else paint(c,L,{x:0,y:0,w:vw,h:vh},t,off,asm,null,"still");ck=k3;cT=now}
-        x.drawImage(cache,0,0,vw,vh);
-        if(m>=1){if(!still){idleRoll(x,L,t);band(x,L,t,L.roll.glow,L.roll.rx,L.roll.ry,L.roll.C2*L.cw,L.roll.R2*L.ch,1)}}
-        else{if(!still&&asm<2.2)paint(x,L,{x:0,y:0,w:vw,h:vh},t,off,asm,null,"move");
-          if(!still)idle(x,L,t,off,asm,vw,vh)}}}
-    else{x.fillStyle=T.room;x.fillRect(view.x,view.y,view.w,view.h);paint(x,L,view,t,off,asm,null)}
-    // the lamp: a warm glow under the pointer, or under each finger (and drifting by itself when nothing touches)
-    const lamps=ptr.length&&!still?ptr:[{x:L.cx+L.boxW*.32*Math.sin(still?0:t*.33+prog*4),y:L.cy+L.boxH*.26*Math.cos(still?0:t*.27+prog*3),w:1}];
-    const fk=still?1:.82+.1*Math.sin(t*9.7)+.08*Math.sin(t*23.3+1.1),R=Math.max(L.boxW,L.boxH)*.5*(lamps.length>1?.75:1);
+  /* st: {face: its opening now, in the window's coordinates ({x, y, w, h}); asm: seconds since its letters began to gather
+     (9 once gathered); m: 0 the face, 1 the object; off: how far the speech has risen; still: Performance, drawn once as it
+     ends; dpr: the canvas's sharpness; veil: draws the veils behind the page's words, or null; dim: how bright the object
+     is behind the page, smax: how much larger than the face's box it may grow}. x is set to the window's
+     coordinates. */
+  return {draw(x,vw,vh,t,st,ptr){
+    const f=st.face,L=layout(f.w,f.h),R=L.roll,still=st.still,m=st.m,dpr=st.dpr,off=still?0:st.off,asm=still?9:st.asm;
+    const fcx=f.x+f.w/2,fcy=f.y+f.h/2,ocx=vw/2,ocy=vh*.5+Math.min(28,vh*.03);   // the object a little below the middle (the header is above)
+    // how much it grows: to fill most of the window
+    const S=Math.round(clamp(Math.min(vw*.9/(R.C2*L.cw),vh*.8/(R.R2*L.ch)),.8,st.smax)*50)/50;DIM=st.dim;
+    x.imageSmoothingEnabled=true;
+    if(m<=0){const gathering=!still&&asm<2.2&&!(front&&front.lk===L.key+"|"+dpr+"|"+gen);
+      if(asm>.9){x.globalAlpha=.09*clamp((asm-.9)/.9,0,1);x.drawImage(L.soft,fcx+L.bx,fcy+L.by,L.boxW,L.rows*L.ch);x.globalAlpha=1}
+      if(gathering)gatherFrame(x,L,t,asm,fcx,fcy,vw,vh,dpr);
+      else{const c=stillFace(L,off,dpr);if(c)blitFace(x,c,L,fcx,fcy)}
+      if(!still){x.save();x.translate(fcx,fcy);if(asm>2.2)idleFace(x,L,t,off);if(asm>1.2)band(x,t,L.glow,L.bx,L.by,L.boxW,L.rows*L.ch,clamp(asm-1.2,0,1));x.restore()}}
+    else if(m<1){if(asm>=2.2)stillFace(L,off,dpr);   // keeps the face's next picture coming, so it is ready when the letters fly back
+      paintMorph(x,L,off,m,fcx,fcy,ocx,ocy,S,vw,vh)}
+    else{const o=stillObj(L,S,dpr);x.globalAlpha=DIM;x.drawImage(objC,ocx+o.x,ocy+o.y,o.W,o.H);x.globalAlpha=1;
+      if(!still){x.save();x.translate(ocx,ocy);x.scale(S,S);idleRoll(x,L,t);band(x,t,R.glow,R.rx,R.ry,R.C2*L.cw,R.R2*L.ch,DIM);x.restore()}}
+    // the lamp: a warm glow under the pointer, or under each finger (and drifting by itself when nothing touches); dimmer over the object
+    const oW=R.C2*L.cw*S,oH=R.R2*L.ch*S,lcx=fcx+(ocx-fcx)*m,lcy=fcy+(ocy-fcy)*m,dw=(L.boxW*(1-m)+oW*m)*.32,dh=(L.boxH*(1-m)+oH*m)*.26;
+    const lamps=ptr.length&&!still?ptr:[{x:lcx+dw*Math.sin(still?0:t*.33),y:lcy+dh*Math.cos(still?0:t*.27),w:1}];
+    const fk=still?1:.82+.1*Math.sin(t*9.7)+.08*Math.sin(t*23.3+1.1),R0=Math.max(L.boxW*(1-m)+oW*m,L.boxH*(1-m)+oH*m)*.5*(lamps.length>1?.75:1),dimL=1-(1-DIM)*m;
     x.globalCompositeOperation="lighter";
-    for(const lp of lamps){const a=.17*fk*lp.w/Math.sqrt(lamps.length),gr=x.createRadialGradient(lp.x,lp.y,0,lp.x,lp.y,R);gr.addColorStop(0,`rgba(255,150,60,${a.toFixed(3)})`);gr.addColorStop(.5,`rgba(255,120,40,${(a*.3).toFixed(3)})`);gr.addColorStop(1,"rgba(255,120,40,0)");
-      x.fillStyle=gr;x.fillRect(Math.max(view.x,lp.x-R),Math.max(view.y,lp.y-R),2*R,2*R)}
+    for(const lp of lamps){const a=.17*fk*lp.w*dimL/Math.sqrt(lamps.length),gr=x.createRadialGradient(lp.x,lp.y,0,lp.x,lp.y,R0);gr.addColorStop(0,`rgba(255,150,60,${a.toFixed(3)})`);gr.addColorStop(.5,`rgba(255,120,40,${(a*.3).toFixed(3)})`);gr.addColorStop(1,"rgba(255,120,40,0)");
+      x.fillStyle=gr;x.fillRect(lp.x-R0,lp.y-R0,2*R0,2*R0)}
     x.globalCompositeOperation="source-over";
-    const hp=ptr.find(pp=>pp.held),lx=hp?hp.x:-9999,ly=hp?hp.y:-9999;
-    // the reading glass: only while you press and hold on his face, and only once it has gathered
-    const onRoll=m>=1,RL=L.roll,inBox=onRoll?lx>RL.rx-20&&lx<RL.rx+RL.C2*L.cw+20&&ly>RL.ry-20&&ly<RL.ry+RL.R2*L.ch+20:lx>L.bx-20&&lx<L.bx+L.boxW+20&&ly>L.by-20&&ly<L.by+L.boxH+20;
-    if(hp&&!still&&asm>1.9&&(m<=0||m>=1)&&inBox){
-      const r=clamp(L.boxW*.15,46,82);x.save();x.beginPath();x.arc(lx,ly,r,0,Math.PI*2);x.clip();
-      x.fillStyle=T.room;x.globalAlpha=.94;x.fillRect(lx-r,ly-r,2*r,2*r);x.globalAlpha=1;
-      if(onRoll)paintRoll(x,L,{x:lx,y:ly,r,m:2.3});else paint(x,L,view,t,off,9,{x:lx,y:ly,r,m:2.3});x.restore();
+    if(st.veil)st.veil();   // on the pages inside an area, the veils behind the page's words
+    // the reading glass: only while you press and hold on the face, once it has gathered
+    const hp=ptr.find(pp=>pp.held);
+    if(hp&&!still&&m<=0&&asm>1.9&&hp.x>fcx+L.bx-20&&hp.x<fcx-L.bx+20&&hp.y>fcy+L.by-20&&hp.y<fcy-L.by+20){const lx=hp.x,ly=hp.y,r=clamp(L.boxW*.15,46,82);
+      x.save();x.beginPath();x.arc(lx,ly,r,0,Math.PI*2);x.clip();x.fillStyle=T.room;x.globalAlpha=.94;x.fillRect(lx-r,ly-r,2*r,2*r);x.globalAlpha=1;
+      x.translate(fcx,fcy);paintLens(x,L,off,{x:lx-fcx,y:ly-fcy,r,m:2.3});x.restore();
       x.strokeStyle=T.amber;x.globalAlpha=.45;x.lineWidth=1;x.beginPath();x.arc(lx,ly,r,0,Math.PI*2);x.stroke();x.globalAlpha=1}
   }};
 }
@@ -383,8 +444,14 @@ const Glide={y:0,target:null,anim:null,raf:0,lt:0,tm:0,held:false,going:false,on
 };
 
 /* Headings settle as they come into view: their letters drift in from small offsets and find their places, by themselves
-   (the owner, 2026-10-19: animations play once on view and stay), and stay settled. */
-const Settle={items:[],
+   (the owner, 2026-10-19: animations play once on view and stay), and stay settled. The browser says when one comes into
+   view (an IntersectionObserver), so no frame has to measure the page to find out. */
+const Settle={items:[],io:null,of:new WeakMap(),
+  watch(it){if(reduce){it.t0=0;return}
+    if(!this.io)this.io=new IntersectionObserver(es=>{for(const e of es){if(!e.isIntersecting)continue;const it=this.of.get(e.target);this.io.unobserve(e.target);
+      if(it&&it.t0==null){it.t0=Math.max(performance.now(),Engine.introT0+250);Engine.kick()}}},{rootMargin:"0px 0px -8% 0px"});
+    this.of.set(it.el,it);this.io.observe(it.el)},
+  drop(it){this.items=this.items.filter(x=>x!==it);if(this.io)this.io.unobserve(it.el)},
   add(el,words){if(reduce||el.dataset.settle)return()=>{};el.dataset.settle="1";const text=el.textContent;
     const parts=words?text.split(/(\s+)/):text.split(/(\s+)/).map(w=>/^\s+$/.test(w)?w:[...w]);let n=0;const total=words?parts.filter(w=>!/^\s+$/.test(w)).length:text.replace(/\s/g,"").length;
     const sp=c=>{const i=n++/Math.max(1,total-1),dx=((rnd()-.5)*(words?.5:.9)).toFixed(2),dy=((rnd()-.2)*(words?.7:1.1)).toFixed(2),r=((rnd()-.5)*(words?4:18)).toFixed(1);
@@ -392,24 +459,55 @@ const Settle={items:[],
     const esc=c=>c.replace(/&/g,"&amp;").replace(/</g,"&lt;");
     const before=el.innerHTML;
     el.innerHTML=`<span class="st-sr">${esc(text)}</span><span aria-hidden="true">${parts.map(w=>typeof w==="string"?(/^\s+$/.test(w)?w:sp(esc(w))):`<span class="st-w">${w.map(c=>sp(esc(c))).join("")}</span>`).join("")}</span>`;
-    const it={el,v:-1};this.items.push(it);Engine.kick();
-    return()=>{this.items=this.items.filter(x=>x!==it);delete el.dataset.settle;el.innerHTML=before}},
-  frame(vh){const now=performance.now();for(const it of this.items){if(it.v>=1)continue;const r=it.el.getBoundingClientRect();if(r.width<1)continue;
-    if(it.t0==null){if(!reduce&&(r.bottom<0||r.top>vh*.92))continue;it.t0=Math.max(now,Engine.introT0+250)}
+    const it={el,v:-1};this.items.push(it);this.watch(it);Engine.kick();
+    return()=>{this.drop(it);delete el.dataset.settle;el.innerHTML=before}},
+  frame(){const now=performance.now();for(const it of this.items){if(it.v>=1||it.t0==null)continue;
     const k=clamp((now-it.t0)/SETTLE_MS,0,1),v=reduce?1:Math.round(k*(2-k)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
+};
+
+/* The veils. On the pages inside an area the figure's object lies behind the page's own words, so every line of words has a
+   soft dark cloud behind it, drawn over the object: no letter of the object is ever seen through a word (the owner,
+   2026-10-19: no overlaps), and the object shows wherever there are no words. The lines are measured as the floating
+   letters' are, when the page opens, as it settles and when it changes, never every frame; the lines inside a part of the
+   page that stays put as it scrolls (a sticky side panel) are measured from that part, and follow it. */
+const Veil={root:null,rows:null,st:[],dirty:true,t:0,mo:null,ro:null,tm:[],idle:0,
+  attach(root){this.detach();this.root=root;this.rows=null;this.dirty=true;
+    const mark=()=>{this.dirty=true};this.mo=new MutationObserver(mark);this.mo.observe(root,{childList:true,subtree:true,characterData:true});
+    if(typeof ResizeObserver!=="undefined"){this.ro=new ResizeObserver(mark);this.ro.observe(root)}
+    this.tm=[400,1200,3000].map(ms=>setTimeout(mark,ms))},
+  detach(){if(this.mo)this.mo.disconnect();if(this.ro)this.ro.disconnect();for(const t of this.tm)clearTimeout(t);this.mo=this.ro=null;this.tm=[];this.root=null;this.rows=null},
+  measure(){const root=this.root;if(!root||!root.isConnected)return;const rows=new Map(),st=new Map(),near=new Map(),rg=document.createRange(),sy=scrollY;
+    // the nearest part of the page that stays put as it scrolls, if any, for each element with words in it
+    const pinned=el=>{const chain=[];let e=el,res=null;while(e&&e!==root){if(near.has(e)){res=near.get(e);break}chain.push(e);const p=getComputedStyle(e).position;if(p==="sticky"||p==="fixed"){res=e;break}e=e.parentElement}for(const c of chain)near.set(c,res);return res};
+    const tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    for(let n;(n=tw.nextNode());){if(!n.textContent.trim())continue;const el=n.parentElement;if(!el)continue;rg.selectNodeContents(n);const rs=rg.getClientRects();if(!rs.length)continue;
+      const s=pinned(el);let o=null;if(s){o=st.get(s);if(!o){const r=s.getBoundingClientRect();o={el:s,x:r.left,y:r.top,list:[]};st.set(s,o)}}
+      for(const r of rs){if(r.width<2||r.height<2)continue;
+        if(o)o.list.push(r.left-o.x,r.top-o.y,r.right-o.x,r.bottom-o.y);
+        else{const b=[r.left,r.top+sy,r.right,r.bottom+sy];for(let k=Math.floor(b[1]/128);k<=Math.floor(b[3]/128);k++){let a=rows.get(k);if(!a)rows.set(k,a=[]);a.push(b)}}}}
+    this.rows=rows;this.st=[...st.values()];this.dirty=false;this.t=performance.now()},
+  // measured again a quarter of a second at most after the page changes, when the browser has a moment
+  tick(){if(!this.dirty||this.idle||performance.now()-this.t<250)return;if(!this.rows){this.measure();return}
+    const run=()=>{this.idle=0;this.measure();Engine.kick()};this.idle=typeof requestIdleCallback!=="undefined"?requestIdleCallback(run,{timeout:400}):setTimeout(run,60)},
+  draw(x,vh){if(!this.rows)return;const sy=scrollY,seen=new Set(),L=[];
+    for(let k=Math.floor((sy-40)/128);k<=Math.floor((sy+vh+40)/128);k++)for(const b of this.rows.get(k)||[]){if(seen.has(b))continue;seen.add(b);L.push(b[0],b[1]-sy,b[2],b[3]-sy)}
+    for(const o of this.st){if(!o.el.isConnected)continue;const r=o.el.getBoundingClientRect(),a=o.list;for(let i=0;i<a.length;i+=4){const t=a[i+1]+r.top,b=a[i+3]+r.top;if(b<-40||t>vh+40)continue;L.push(a[i]+r.left,t,a[i+2]+r.left,b)}}
+    if(!L.length)return;x.fillStyle=T.bg;const rr=!!x.roundRect;
+    for(const [pad,al] of [[26,.32],[15,.62],[6,.9]]){x.globalAlpha=al;x.beginPath();
+      for(let i=0;i<L.length;i+=4){const X=L[i]-pad,Y=L[i+1]-pad*.75,W=L[i+2]-L[i]+2*pad,H=L[i+3]-L[i+1]+1.5*pad;if(rr)x.roundRect(X,Y,W,H,pad);else x.rect(X,Y,W,H)}x.fill()}
+    x.globalAlpha=1}
 };
 
 /* ---------- the engine: draws every visible window, the stage, the floating letters and the sparks ---------- */
 const scenes=new Map();   // picture address -> scene (or a promise of one)
 // a figure (kind "fig") is its face, its text and its object together: `fig` = {text, target, img2}
 function sceneFor(src,kind,fig){const key=kind==="fig"?[src,fig.text,fig.target,fig.img2||""].join("|"):src;let s=scenes.get(key);if(s)return s instanceof Promise?null:s;
-  const p=(kind==="fig"?Promise.all([loadImg(src),loadText(fig.text||APO_URL),fig.img2?loadImg(fig.img2):null]).then(([im,tx,im2])=>im&&tx.raw?FigScene(im,tx,fig.target,im2):null)
-    :loadImg(src).then(im=>!im?null:kind==="coin"?CoinScene(im):PicScene(im,{}))).then(sc=>{
+  const p=(kind==="fig"?Promise.all([loadImg(src),loadText(fig.text||APO_URL),fig.img2?loadImg(fig.img2):null,document.fonts?document.fonts.ready:null]).then(([im,tx,im2])=>im&&tx.raw?FigScene(im,tx,fig.target,im2):null)
+    :loadImg(src).then(im=>!im?null:kind==="coin"?CoinScene(im):PicScene(im))).then(sc=>{
     if(sc)scenes.set(key,sc);else scenes.delete(key);Engine.kick();return sc});
   scenes.set(key,p);return null}
 const wins=new Set();     // {el,cv,cap,src,kind}
-let stage=null;           // {cv,src,span,text,target,img2}
-const figWins=new Set();  // {el,cv,src,text,target,img2}: a figure in a window of its own, at the foot of a page
+let stage=null;           // {cv,src,text,target,img2}: the figure behind the page
 let flyCv=null,fireCv=null;
 const flames=[];
 
@@ -427,65 +525,77 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     addEventListener("keydown",()=>{Glide.anim=null},{passive:true});
     addEventListener("mousedown",()=>{Glide.held=true;Glide.anim=null},{passive:true});addEventListener("mouseup",()=>{Glide.held=false;Glide.idle()},{passive:true});
     addEventListener("resize",()=>this.kick());
-    document.addEventListener("visibilitychange",()=>this.kick())},
+    document.addEventListener("visibilitychange",()=>this.kick());
+    // the floating letters are stamped from pictures drawn in the site's own typeface: draw them again once it has come
+    if(document.fonts)document.fonts.ready.then(()=>{this.flyAK="";this.kick()})},
   /** a page has opened: its windows already in view open by themselves, slowly */
-  opened(){this.introT0=performance.now();readTokens();this.kick()},
-  any(){return wins.size>0||figWins.size>0||!!stage||!!flyCv||!!fireCv||flames.length>0||Settle.items.length>0},
+  opened(){this.introT0=performance.now();readTokens();this.reclear();this.kick()},
+  any(){return wins.size>0||!!stage||!!flyCv||!!fireCv||flames.length>0||Settle.items.length>0},
   kick(){if(!this.raf&&this.live&&!document.hidden&&this.any())this.raf=requestAnimationFrame(t=>this.frame(t))},
   frame(t){this.raf=0;if(!this.any()||document.hidden){this.lt=0;return}
     const el=(t-this.t0)/1000,dt=this.lt?Math.min(.05,(t-this.lt)/1000):1/60,vw=innerWidth,vh=innerHeight;
-    // Balanced: at half the frame rate while nothing moves (the slow ripple, the drifting lamp), at full rate while it does
+    // Balanced: at half the frame rate while nothing moves (the drifting lamp), at full rate while it does
     if(lite&&!reduce&&t-busyT>400&&FING.size===0&&t-this.lastDraw<31){this.raf=requestAnimationFrame(tt=>this.frame(tt));return}
-    this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame(vh);
-    if(stage){const sc=sceneFor(stage.src,"fig",stage);if(sc){const prog=clamp(scrollY/Math.max(1,stage.span()),0,1),now=performance.now();
-      if(stage.g0==null)stage.g0=Math.max(now,this.introT0+300);
-      if(stage.m0==null&&prog>=(reduce?.7:.56))stage.m0=now;
-      const sm0=k=>k*k*(3-2*k),st={asm:clamp((now-stage.g0)/1000,0,9),m:stage.m0==null?0:reduce?1:sm0(clamp((now-stage.m0)/1600,0,1))};
-      const key=reduce?`${vw}x${vh}|${st.m}|${gen}`:"";
-      if(!reduce||stage.drawn!==key){stage.drawn=key;const dpr=this.fitCanvas(stage.cv,vw,vh);const x=stage.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
-        sc.draw(x,vw,vh,{x:0,y:0,w:vw,h:vh},el,prog,"scrub",PTS,undefined,st)}}}
+    this.lastDraw=t;this.lt=t;tickPoints(dt);Settle.frame();
+    if(stage)this.stageFrame(el,dt,vw,vh);
     if(wins.size)this.iris(el,vw,vh);
-    if(figWins.size)this.figs(el,vw,vh);
     if(flyCv)this.letters(el,vw,vh);
     if(fireCv)Fire.frame(fireCv,el,dt,vw,vh);
     if(flames.length)drawFlames(el,dt,vh);
     if(!reduce)this.raf=requestAnimationFrame(tt=>this.frame(tt));
   },
   fitCanvas(cv,w,h){const dpr=Math.min(dprCap(),devicePixelRatio||1);const W=Math.round(w*dpr),H=Math.round(h*dpr);if(cv.width!==W||cv.height!==H){cv.width=W;cv.height=H}return dpr},
-  // A figure in a window of its own, at the foot of a page inside an area (components/a/FootFigure.tsx): once enough of it
-  // is in view its letters gather into the face, a light reads across the face a while, then they become the area's object,
-  // and it stays so (the owner, 2026-10-19: animations play once on view and stay). In Performance it is the object, still.
-  figs(el,vw,vh){const now=performance.now(),sm=k=>k*k*(3-2*k);
-    for(const w of figWins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
-      const sc=sceneFor(w.src,"fig",w);if(!sc)continue;
-      if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.5,vh*.35))w.t0=Math.max(now,this.introT0+300)}
-      const t=w.t0==null?0:(now-w.t0)/1000,st=reduce?{asm:9,m:1,still:true}:{asm:clamp(t,0,9),m:sm(clamp((t-FIG_HOLD)/1.6,0,1))};
-      const key=reduce?`${Math.round(r.width)}x${Math.round(r.height)}|${gen}`:"";if(reduce&&w.drawn===key)continue;w.drawn=key;
-      const dpr=this.fitCanvas(w.cv,r.width,r.height),x=w.cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);
-      // the lamp and the reading glass follow only a pointer over the window; otherwise the lamp drifts by itself
-      const pts=PTS.filter(p=>p.x>=r.left&&p.x<=r.right&&p.y>=r.top&&p.y<=r.bottom).map(p=>({...p,x:p.x-r.left,y:p.y-r.top}));
-      sc.draw(x,r.width,r.height,{x:0,y:0,w:r.width,h:r.height},el,0,"scrub",pts,{cx:r.width/2,cy:r.height/2,w:r.width,h:r.height},st)}},
+  /* The figure behind the page (FigScene): its face in the opening the page marks for it ([data-face-anchor]; the first one
+     shown), gathering by itself as the page opens. Once you have scrolled a little way (a fifth of the window, at most
+     240 pixels), its letters become its object, grown large behind the page; back at the top (within 24 pixels of it),
+     they become the face again (the owner, 2026-10-20). Each change plays through at its own pace, wherever the scroll is;
+     neither starts before the face has gathered. A page opened part way down shows the object at once. In Performance
+     it is drawn once in each state, and the face again only when the page moves it. */
+  faceAt(){const s=stage,now=performance.now();let r=s.el&&s.el.isConnected?s.el.getBoundingClientRect():null;
+    if(!r||r.height<2||now-s.elT>500){s.elT=now;s.el=null;r=null;for(const e of document.querySelectorAll("[data-face-anchor]")){const q=e.getBoundingClientRect();if(q.height>=2){s.el=e;r=q;break}}}
+    return r?{x:r.left,y:r.top,w:r.width,h:r.height}:null},
+  stageFrame(el,dt,vw,vh){const s=stage,sc=sceneFor(s.src,"fig",s);if(!sc)return;
+    const now=performance.now(),sy=scrollY,T1=Math.min(vh*.2,240);
+    // a page with no opening for the face shows only the object
+    const f0=s.mv==null||s.mv<1||s.fw==null?this.faceAt():null,noFace=s.mv==null||s.mv<1||s.fw==null?!f0:s.noFace;s.noFace=noFace;
+    if(s.mv==null){s.mv=s.want=sy>T1||noFace?1:0;s.g0=s.mv?now-9e3:Math.max(now,this.introT0+300);s.sp=0}
+    if(sy>T1||noFace)s.want=1;else if(sy<=24)s.want=0;
+    const asm=reduce?9:clamp((now-s.g0)/1000,0,9);
+    if(reduce)s.mv=s.want;else if(s.want>s.mv){if(asm>=2.2)s.mv=Math.min(1,s.mv+dt/2)}else if(s.want<s.mv)s.mv=Math.max(0,s.mv-dt/1.8);
+    if(!reduce&&s.mv===0&&asm>=2.2)s.sp+=dt*.1;   // the speech rises slowly through the face (only while it is a face)
+    const m=s.mv*s.mv*(3-2*s.mv),cr=s.cv.getBoundingClientRect(),face=f0||{x:0,y:0,w:s.fw||Math.min(vw*.8,420),h:s.fh||Math.min(vh*.7,525)};
+    s.fw=face.w;s.fh=face.h;   // (the object keeps the size the face last had, so it is not laid out again)
+    if(s.veil){Veil.tick();if(!reduce&&!Veil.rows)return}
+    const key=reduce?[vw,vh,cr.width,cr.height,cr.top|0,m,gen,m<1?[face.x|0,face.y|0,face.w|0,face.h|0].join():"",s.veil?Veil.t+"|"+Math.round(scrollY):""].join("|"):"";
+    if(reduce&&s.drawn===key)return;s.drawn=key;
+    const dpr=this.fitCanvas(s.cv,cr.width,cr.height),x=s.cv.getContext("2d");x.setTransform(1,0,0,1,0,0);x.clearRect(0,0,s.cv.width,s.cv.height);
+    x.setTransform(dpr,0,0,dpr,-cr.left*dpr,-cr.top*dpr);   // drawn in the window's coordinates, wherever the canvas is
+    sc.draw(x,vw,vh,el,{asm,m,off:Math.floor(s.sp*4)/4,face,still:reduce,dpr,veil:s.veil?()=>Veil.draw(x,vh):null,dim:s.dim,smax:s.smax},PTS)},
   // The windows open as a round iris centred on their picture: the coin, or another real object for each window.
   // Each plays by itself once enough of it is in view (the owner, 2026-10-19: "the animations should play automatically
   // when they come into view ... and should stay expanded, even if you scroll back up"): it opens onto the middle of the
   // picture alone, holds there a moment with a thin gold rim, then widens to the whole window, and its caption comes up
   // last. Once open, it stays open. Windows in view when the page opens wait a moment for the page to arrive.
+  // A window is drawn again only when something in it changes: its iris, its place on the screen (the picture inside
+  // drifts a little as the page scrolls), a pointer near it, or the coin's turning rays.
   iris(el,vw,vh){const now=performance.now();
     for(const w of wins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
       const sc=sceneFor(w.src,w.kind);if(!sc)continue;
       if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.4,vh*.3))w.t0=Math.max(now,this.introT0+400)}
-      const key=reduce?`${Math.round(r.width)}x${Math.round(r.height)}|${gen}`:"";if(reduce&&w.drawn===key)continue;w.drawn=key;
+      const p=reduce?1:w.t0==null?0:clamp((now-w.t0)/IRIS_MS,0,1),mid=r.top+r.height/2,shift=reduce?0:(mid-vh/2)/vh*r.height*.08;
+      const ptr=reduce?[]:PTS.filter(pp=>pp.x>r.left-140&&pp.x<r.right+140&&pp.y>r.top-140&&pp.y<r.bottom+140).map(pp=>({x:pp.x-r.left,y:pp.y-r.top,w:pp.w}));
+      const live=p<1||ptr.length>0||(w.kind==="coin"&&!reduce),key=[Math.round(r.width),Math.round(r.height),gen,Math.round(shift*8)].join();
+      if(!live&&w.drawn===key)continue;w.drawn=live?"":key;
       const cv=w.cv;const dpr=this.fitCanvas(cv,r.width,r.height);const x=cv.getContext("2d");
       x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,r.width,r.height);
-      const mid=r.top+r.height/2,p=reduce?1:w.t0==null?0:clamp((now-w.t0)/IRIS_MS,0,1);
-      const an={cx:r.width/2,cy:r.height/2-(reduce?0:(mid-vh/2)/vh*r.height*.08),w:r.width,h:r.height};
+      const an={cx:r.width/2,cy:r.height/2-shift,w:r.width,h:r.height};
       const S=Math.min(an.w*1.2,an.h*1.05),Rc=S*.43,Rmax=Math.hypot(r.width/2,r.height/2+Math.abs(an.cy-r.height/2))+2;
       const sm=k=>k*k*(3-2*k),a=sm(clamp(p/.42,0,1)),b=sm(clamp((p-.68)/.32,0,1));
       const R=b>0?Rc+(Rmax-Rc)*b:Rc*a;
       const cap=w.cap;if(cap){const o=clamp((b-.65)/.35,0,1).toFixed(2);if(cap.style.opacity!==o)cap.style.opacity=o}
       if(R<1)continue;
       x.save();x.beginPath();x.arc(an.cx,an.cy,R,0,Math.PI*2);x.clip();
-      sc.draw(x,r.width,r.height,{x:0,y:0,w:r.width,h:r.height},el,p,"iris",PTS.map(pp=>({x:pp.x-r.left,y:pp.y-r.top,w:pp.w})),an);
+      sc.draw(x,r.width,r.height,el,p,ptr,an,w,dpr);
       x.restore();
       // the rim: a thin gold edge while the iris frames the coin, fading as it widens
       const rim=(1-b)*Math.min(1,a*1.4);if(rim>.01){
@@ -496,31 +606,37 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
       if(b>.6){x.strokeStyle=T.gold;x.globalAlpha=.22*(b-.6)/.4;x.lineWidth=1;x.strokeRect(.5,.5,r.width-1,r.height-1);x.globalAlpha=1}}},
   // the flying letters behind the home page: few, faint and slow; they move at three speeds as you scroll, and step aside
   // from the pointer, catching a little of its light as they pass. They fade out near the page's words, so none is ever
-  // drawn over a line of text (the owner, 2026-10-19: no overlaps); the lines are measured every two seconds.
+  // drawn over a line of text (the owner, 2026-10-19: no overlaps). The lines are measured when the page opens, a few times
+  // as it settles, and whenever its size changes, not on a clock; the letters are stamped from small pictures of themselves.
   flyPts:null,
-  flyKey:"",
-  clear:null,clearT:0,clearW:0,
+  flyKey:"",flyAK:"",flyA:null,
+  clear:null,clearW:0,clearDirty:true,clearTm:[],
+  reclear(){this.clearDirty=true;for(const t of this.clearTm)clearTimeout(t);this.clearTm=[400,1200,3000].map(ms=>setTimeout(()=>{this.clearDirty=true;this.kick()},ms))},
   measureClear(root){const rows=new Map(),rg=document.createRange(),sy=scrollY,tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
     for(let n;(n=tw.nextNode());){if(!n.textContent.trim())continue;rg.selectNodeContents(n);
       for(const r of rg.getClientRects()){if(r.width<3||r.height<3)continue;const b={l:r.left,r:r.right,t:r.top+sy,b:r.bottom+sy};
         for(let k=Math.floor((b.t-40)/64);k<=Math.floor((b.b+40)/64);k++){let a=rows.get(k);if(!a)rows.set(k,a=[]);a.push(b)}}}
     return rows},
+  // the three sizes of floating letter, each letter drawn once in gold at the canvas's sharpness
+  flyAtlas(dpr){const SZ=[10,14,21],c=document.createElement("canvas"),cell=SZ.map(s=>Math.ceil(s*1.3*dpr)),W=cell.reduce((a,b)=>a+b,0),H=Math.ceil(21*1.3*dpr);
+    c.width=W;c.height=H*GL.length;const x=c.getContext("2d");x.fillStyle=T.gold;x.textBaseline="middle";x.textAlign="center";const pos=[];let X=0;
+    SZ.forEach((s,z)=>{x.font=`${(s*dpr).toFixed(1)}px ${F.gentium}`;pos.push(X);for(let k=0;k<GL.length;k++)x.fillText(GL[k],X+cell[z]/2,k*H+H/2);X+=cell[z]});
+    return {c,cell,pos,H,dpr}},
   letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}|${Math.round(scrollY/24)}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
-    const now=performance.now();if(!this.clear||now-this.clearT>2000||this.clearW!==vw){this.clear=cv.parentElement?this.measureClear(cv.parentElement):new Map();this.clearT=now;this.clearW=vw}
+    if(!this.clear||this.clearDirty||this.clearW!==vw){this.clear=cv.parentElement?this.measureClear(cv.parentElement):new Map();this.clearDirty=false;this.clearW=vw}
     const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
-    const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[(rnd()*GL.length)|0],ox:0,oy:0,p:rnd()*6,lit:0})}}
-    x.fillStyle=T.gold;x.textBaseline="middle";x.textAlign="center";
+    const ak=dpr+"|"+gen;if(this.flyAK!==ak){this.flyA=this.flyAtlas(dpr);this.flyAK=ak}const FA=this.flyA;
+    const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3,gi=(rnd()*GL.length)|0;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[gi],gi,ox:0,oy:0,p:rnd()*6.3,lit:0})}this.flyPts.sort((a,b)=>a.z-b.z)}
     const SP=[.12,.3,.6],SZ=[10,14,21],AL=[.06,.1,.15],R=130;
-    for(let z=0;z<3;z++){x.font=`${SZ[z]}px ${F.gentium}`;
-      for(const d of this.flyPts){if(d.z!==z)continue;let px=d.u*vw,py=((d.v*vh-(reduce?0:scrollY*SP[z]))%(vh*3)+vh*3)%(vh*3)-vh*.5;
-        if(py<-30||py>vh+30)continue;if(!reduce){px+=Math.sin(t*.16+d.p)*6*(z+1);py+=Math.cos(t*.11+d.p)*3*(z+1)}
-        if(!reduce)for(const pp of PTS){const dx=px+d.ox-pp.x,dy=py+d.oy-pp.y,dd=Math.hypot(dx,dy);
-          if(dd<R){const q=(1-dd/R)*pp.w;d.ox+=dx/(dd||1)*q*(.6+z*.5);d.oy+=dy/(dd||1)*q*(.6+z*.5);d.lit=Math.max(d.lit,q)}}
-        d.ox*=.95;d.oy*=.95;d.lit*=.96;
-        const lx=px+d.ox,ly=py+d.oy,dy0=ly+scrollY,pad=8+SZ[z]*.6;let fade=1;
-        for(const b of this.clear.get(Math.floor(dy0/64))||[]){const ex=Math.max(b.l-lx,0,lx-b.r),ey=Math.max(b.t-dy0,0,dy0-b.b),dd=Math.hypot(ex,ey);if(dd<pad){fade=Math.min(fade,dd/pad);if(!fade)break}}
-        if(fade<.05)continue;
-        x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit)*fade;x.fillText(d.c,lx,ly)}}
+    for(const d of this.flyPts){const z=d.z;let px=d.u*vw,py=((d.v*vh-(reduce?0:scrollY*SP[z]))%(vh*3)+vh*3)%(vh*3)-vh*.5;
+      if(py<-30||py>vh+30)continue;if(!reduce){px+=Math.sin(t*.16+d.p)*6*(z+1);py+=Math.cos(t*.11+d.p)*3*(z+1)}
+      if(!reduce)for(const pp of PTS){const dx=px+d.ox-pp.x,dy=py+d.oy-pp.y,dd=Math.hypot(dx,dy);
+        if(dd<R){const q=(1-dd/R)*pp.w;d.ox+=dx/(dd||1)*q*(.6+z*.5);d.oy+=dy/(dd||1)*q*(.6+z*.5);d.lit=Math.max(d.lit,q)}}
+      d.ox*=.95;d.oy*=.95;d.lit*=.96;
+      const lx=px+d.ox,ly=py+d.oy,dy0=ly+scrollY,pad=8+SZ[z]*.6;let fade=1;
+      for(const b of this.clear.get(Math.floor(dy0/64))||[]){const ex=Math.max(b.l-lx,0,lx-b.r),ey=Math.max(b.t-dy0,0,dy0-b.b),dd=Math.hypot(ex,ey);if(dd<pad){fade=Math.min(fade,dd/pad);if(!fade)break}}
+      if(fade<.05)continue;
+      const cw=FA.cell[z]/dpr,ch=FA.H/dpr;x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit)*fade;x.drawImage(FA.c,FA.pos[z],d.gi*FA.H,FA.cell[z],FA.H,lx-cw/2,ly-ch/2,cw,ch)}
     x.globalAlpha=1},
 };
 
@@ -675,23 +791,24 @@ export function begin(){Engine.start()}
 export function opened(){Engine.start();Engine.opened()}
 /** a window onto an engraving: kind "coin" (Athena's head, with its rays) or "pic" (any other picture) */
 export function addWindow(el,{src,kind="pic"}){Engine.start();const w={el,cv:el.querySelector("canvas"),cap:el.querySelector("[data-wcap]"),src,kind};wins.add(w);Engine.kick();return()=>{wins.delete(w)}}
-/** a figure pinned behind the page: the library's Socrates, or another area's (data/figures.ts). `span` is how far the page
- * scrolls while it gathers and becomes its object; `text` is its text's address (the Apology if none), `target` the object,
- * `img2` the object's picture where it has one
+/** a figure behind the page: the library's Socrates, or another area's (data/figures.ts). Its face stands in the page's
+ * opening marked data-face-anchor and becomes its object, grown behind the page, once you scroll; `text` is its text's
+ * address (the Apology if none), `target` the object, `img2` the object's picture where it has one
  * @param {HTMLCanvasElement} cv
- * @param {{src: string, span: () => number, text?: string, target?: string, img2?: string}} o */
-export function addStage(cv,{src,span,text,target="roll",img2}){Engine.start();stage={cv,src,span,text,target,img2};Engine.kick();return()=>{if(stage&&stage.cv===cv)stage=null}}
-/** a figure in a window of its own (`el` holds its canvas), which plays once when it comes into view; as addStage
- * @param {HTMLElement} el
- * @param {{src: string, text?: string, target?: string, img2?: string}} o */
-export function addFigure(el,{src,text,target="roll",img2}){Engine.start();const w={el,cv:el.querySelector("canvas"),src,text,target,img2};figWins.add(w);Engine.kick();return()=>{figWins.delete(w)}}
-export function addLetters(cv){Engine.start();flyCv=cv;Engine.flyPts=null;Engine.kick();return()=>{if(flyCv===cv)flyCv=null}}
+ * `dim` is how bright the object is behind the page (0 to 1), `smax` how many times larger than the face's box it may grow
+ * @param {{src: string, text?: string, target?: string, img2?: string, veil?: boolean, dim?: number, smax?: number}} o */
+export function addStage(cv,{src,text,target="roll",img2,veil=false,dim=.66,smax=3}){Engine.start();stage={cv,src,text,target,img2,veil,dim,smax};
+  if(veil)Veil.attach(cv.closest("main")||document.body);Engine.kick();
+  return()=>{if(stage&&stage.cv===cv){stage=null;if(veil)Veil.detach()}}}
+export function addLetters(cv){Engine.start();flyCv=cv;Engine.flyPts=null;Engine.reclear();
+  const ro=typeof ResizeObserver!=="undefined"&&cv.parentElement?new ResizeObserver(()=>{Engine.clearDirty=true;Engine.kick()}):null;if(ro)ro.observe(cv.parentElement);
+  Engine.kick();return()=>{if(ro)ro.disconnect();if(flyCv===cv)flyCv=null}}
 export function addFire(cv){Engine.start();fireCv=cv;Fire.pts=[];Engine.kick();return()=>{if(fireCv===cv)fireCv=null}}
 /** one Muse's lamp: its canvas, and the element that lights up (with `litClass`) when its flame is fanned */
 export function addFlame(li,cv,i,litClass){Engine.start();const f={li,cv,fan:0,lean:0,seed:i*1.73+.4,I:.3,lit:false,litClass};flames.push(f);Engine.kick();return()=>{const k=flames.indexOf(f);if(k>=0)flames.splice(k,1)}}
 export function settle(el,words){Engine.start();return Settle.add(el,words)}
 /** a heading whose letters the page has already set out (components/a/SettleText.tsx): only its --sp follows the scroll */
-export function track(el){Engine.start();const it={el,v:-1};Settle.items.push(it);Engine.kick();return()=>{Settle.items=Settle.items.filter(x=>x!==it)}}
+export function track(el){Engine.start();const it={el,v:-1};Settle.items.push(it);Settle.watch(it);Engine.kick();return()=>{Settle.drop(it)}}
 /** the slow wheel; `points` are the places it may settle at, when settling is on
  * @param {boolean} on
  * @param {{settles?: boolean, points?: () => number[]}} [o] */

@@ -57,9 +57,10 @@ const Paths = () => (
 
 /**
  * The library, as design A drew it (the owner, 2026-10-19: "Just take the template of the original gold and lamplight
- * design"): one stage pinned behind the page, where the letters of Plato's Apology gather into Socrates as you scroll and
- * then become a papyrus roll; over it, black blocks with the page's name and search, the famous books, and then every
- * work in the library. On wide screens the blocks stand at the left, so nothing covers him.
+ * design"): one stage pinned behind the page, where the letters of Plato's Apology gather into Socrates beside the page's
+ * name and, as you scroll, become a papyrus roll grown large behind the page, until you scroll back to the top (the owner,
+ * 2026-10-20); over it, dark blocks across the page's width with the page's name and search, the famous books, and then
+ * every work in the library.
  */
 export default function LibraryPage() {
   return (
@@ -77,9 +78,9 @@ export default function LibraryPage() {
               </p>
               <LibSearch />
               <MineButtons />
-              <p className={`${s.stcap} ${s.mono}`}>The letters gather into Socrates, spelled out of Plato’s Apology. Scroll on, and they become a papyrus roll. Press and hold to read.</p>
+              <p className={`${s.stcap} ${s.mono}`}>The letters gather into Socrates, spelled out of Plato’s Apology. Scroll on, and they become a papyrus roll behind the page; back at the top, Socrates again. Press and hold to read.</p>
             </div>
-            <div className={`${s.win} ${s.tall}`} role="img" aria-label="The head of Socrates, spelled out letter by letter from the Greek of Plato's Apology; press and hold on his face to read it">
+            <div className={`${s.win} ${s.tall}`} data-face-anchor="" role="img" aria-label="The head of Socrates, spelled out letter by letter from the Greek of Plato's Apology; scroll on, and the letters become a papyrus roll behind the page. Press and hold on his face to read it">
               <span className={s.wcap}>Socrates · spelled out of the Apology · press and hold to read</span>
             </div>
           </div>

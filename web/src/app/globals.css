@@ -264,6 +264,12 @@ select:not([multiple]):not([size]) {
 /* a big window, like the home page's reliefs (the owner, 2026-10-17: "I liked the bigger windows") */
 .piece-head { float: right; width: min(clamp(240px, 27vw, 380px), 500px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-5) var(--space-7); }
 .piece-head.piece-wide { width: clamp(300px, 38vw, 520px); }
+/* on a page inside an area, the opening where the area's figure gathers into its face (components/a/PageWin.tsx): empty, the
+   figure drawn into it from behind the page (components/a/AreaStage.tsx); its caption on one line beneath, like a window's */
+.piece-head.face-gap { width: clamp(260px, 30vw, 420px); }
+.face-frame { width: 100%; aspect-ratio: 4 / 5; max-height: calc(100svh - 170px); min-height: 300px; }
+.face-gap figcaption { font-family: var(--face-mono); font-size: 0.62rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+@media (max-width: 760px) { .piece-head.face-gap { width: min(82vw, 52svh * 0.8); } }
 /* a broad window in a narrow column of text (the credits, the about page) leaves the title room beside it */
 @media (min-width: 761px) { .page-head > .piece-head.piece-wide { width: min(clamp(300px, 38vw, 520px), 45%); } }
 /* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and

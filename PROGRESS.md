@@ -1,5 +1,24 @@
 # PROGRESS.md — project memory
 
+## Pages fill the screen; figures grow behind them (2026-10-20, round 2; waiting for the owner's "Publish")
+The owner, 06:49 UTC: "I don't like the way the content is displayed on each page. Everything is stuck to the left, and doesn't
+fill out the page. Also, The figures should grow into the background, as you scroll, then stay there, until you scroll back to
+the top, then it animates into the face again. And fix the performance on beauty mode. I think that it's a bit too heavy.
+Should feel smooth on 120hz". This replaces the figures at the foot of inner pages (`FootFigure.tsx`, removed).
+- **One figure stage per page** (`lib/a/lamplight.js`, `addStage`): the face gathers in the opening the page marks with
+  `data-face-anchor`; once you scroll a fifth of the window (at most 240 px) its letters become the area's object, large and
+  dimmed behind the whole page, and stay; back at the top they become the face again. Doors and the library dim it to .66,
+  inner pages to .4 and a smaller size, so busy pages stay calm. A page opened part way down shows the object at once.
+- **Words stay readable**: the stage measures every line of text under `main` and darkens a soft band behind each, drawn on
+  the same canvas (`Veil`), so text never sits on bright letters, whatever the page's layout.
+- **Layout**: the doors' and library's blocks span the page (1240 px), the face to the right of the opening block (above it on
+  a phone); inner pages show the face in the page head (`PageWin.tsx`), the object behind, and their red gilded window at the
+  foot with a museum label (`FootPiece.tsx`; `AreaStage.tsx` places the stage).
+- **Speed**: window engravings are drawn once and cached (only the lines near a pointer are redrawn); the face is redrawn a
+  fifth at a time; letters are stamped from an atlas by number; the object is cached; scroll checks use an
+  IntersectionObserver instead of reading positions each frame. Script time per frame in the test browser fell from about
+  6–16 ms to 1–3 ms (a 120 Hz frame has 8.3 ms); the test browser draws without a graphics card, so 120 Hz itself is untested.
+
 ## A letter figure for every area (2026-10-19, LIVE ~21:20 UTC after the owner's "Great. Publish")
 The owner, 17:31 and 17:44 UTC: "build a whole version of the website that mixes elements of gold and torch (A) and ... the
 Museion"; "each page has its own distinct design, but with an overall, unifying design. I like the red with the gilded art pieces,

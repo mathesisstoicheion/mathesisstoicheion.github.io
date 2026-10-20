@@ -174,39 +174,38 @@
 .grp-h h2 { font-weight: 400; font-stretch: normal; line-height: inherit; margin: 0; text-wrap: wrap; }
 @media (max-width: 860px) { .lib-hero .win { order: -1; } }
 
-/* A's version 3 for the library: one stage pinned behind the page; black blocks slide over it; the gaps are the windows */
-.library .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; }
+/* A's version 3 for the library: one stage pinned behind the page; dark blocks slide over it; the gaps are the windows.
+   The owner, 2026-10-20: the blocks go across the page's whole width ("Everything is stuck to the left, and doesn't fill out
+   the page"), Socrates gathers in the opening beside the library's name, and his roll, grown large behind the page, shows
+   in the gaps and faintly through the blocks. Every line of words has a soft veil behind it on the stage as well
+   (lib/a/lamplight.js, Veil), so no letter of the roll is ever seen through a word. */
+.library .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; background: var(--room); }
 .library .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .library .flow { margin-top: -100vh; }
 .library .win { background: transparent; border-color: transparent; }
-/* solid black at every width: on narrower screens the blocks stand right over Socrates and his roll (A let him show
-   through at .74 there), and his letters must never run behind their words; he shows in the gaps between them */
-.library .blk { background: var(--black); padding: clamp(18px, 2.6vw, 32px); }
+.library .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
 .library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
 .library .books .book { padding-inline: 4px; }
 .library .win .wcap { background: rgba(5, 4, 3, .92); }
-/* Socrates stands beside the shelves on wide screens, so nothing covers him */
+/* the face's opening: as tall as the window allows, beside the name on a computer, above it on a phone */
+:is(.lib-hero, .door-hero) .tall { max-height: calc(100svh - 150px); min-height: 340px; }
+/* on a computer the opening's own caption gives way to this line, under the name */
 .stcap { display: none; color: var(--a-accent); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; margin: 22px 0 0; opacity: .8; }
 @media (min-width: 1100px) {
-  .library .wrap { max-width: none; margin: 0; padding-left: max(24px, calc((100vw - 1240px) / 2 + 16px)); padding-right: 24px; }
-  .library .blk { width: min(640px, 50vw); }
-  .library .lib-hero { display: block; }
-  .library .lib-hero .win { display: none; }
-  .library .win.band { display: none; }
-  .library .book { grid-template-columns: 92px minmax(0, 1fr); }
-  .library .book .why, .library .book .tag { grid-column: 2; }
   .library .stcap { display: block; }
+  .library .lib-hero .wcap { display: none; }
   .library .flow > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
 }
 
-/* ---------- THE DOORS (components/a/Door.tsx): the library's stage and black blocks, each door with its own figure ----------
+/* ---------- THE DOORS (components/a/Door.tsx): the library's stage and dark blocks, each door with its own figure ----------
    The owner, 2026-10-19: "mixes elements of gold and torch (A) and ... the Museion"; the library itself keeps its own rules
-   above. The figure is on a stage pinned behind the page; black blocks slide over it; the gaps are the windows. */
+   above. The figure is on a stage pinned behind the page; dark blocks slide over it, across the page's width; the gaps are
+   the windows. */
 .door { background: transparent; }
-.door .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; }
+.door .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; background: var(--room); }
 .door .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .door .flow { margin-top: -100vh; }
-.door .blk { background: var(--black); padding: clamp(18px, 2.6vw, 32px); }
+.door .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
 .door-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-block: clamp(40px, 8vw, 120px) clamp(24px, 4vw, 48px); }
 .door-hero .tall { aspect-ratio: 4 / 5; }
 .door-carve { margin: 18px 0 0; font-family: var(--face-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 300; line-height: 1.2; letter-spacing: .16em; color: var(--a-accent); }
@@ -215,9 +214,6 @@
 /* the windows onto the figure: openings in the black page, no frame; their labels on small dark plates */
 .door .gap { background: transparent; border-color: transparent; }
 .door .gap .wcap { background: rgba(5, 4, 3, .92); }
-/* on a phone or a tablet the object shows through a second window, below the door's name */
-.turn { height: clamp(260px, 72vw, 460px); }
-.turn-wrap { padding-bottom: clamp(24px, 4vw, 48px); }
 /* the door's red window onto a gilded object of the area, framed as A's windows are */
 .door .art { border: 1px solid var(--a-line); margin-block: 0 clamp(24px, 4vw, 48px); }
 .art-desk { display: none; }
@@ -228,11 +224,8 @@
 .door .blk :global(.wrap) { max-width: none; padding-left: 0; padding-right: 0; }
 @media (max-width: 860px) { .door-hero { grid-template-columns: 1fr; } .door-hero .win { order: -1; } }
 @media (min-width: 1100px) {
-  .door .wrap { max-width: none; margin: 0; padding-left: max(24px, calc((100vw - 1240px) / 2 + 16px)); padding-right: 24px; }
-  .door .blk, .door .art-desk .art { width: min(640px, 50vw); }
-  .door-hero { display: block; }
-  .door-hero .win, .turn-wrap { display: none; }
   .door .stcap { display: block; }
+  .door-hero .wcap { display: none; }
   .art-desk { display: block; padding-top: clamp(40px, 12vh, 140px); }
   .art-phone { display: none; }
   .door .art-desk .art { margin-bottom: 0; }
@@ -240,16 +233,18 @@
   .door-body > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
 }
 
-/* ---------- the area's figure at the foot of a page inside it (components/a/FootFigure.tsx): a window in the black page onto
-   the lamp room, where the area's text gathers into its face and then becomes its object, once, as it comes into view ---------- */
-.foot-fig { margin-top: clamp(48px, 8vw, 96px); }
-.ff-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: clamp(24px, 5vw, 72px); align-items: center; }
-.ff-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.04; margin: 12px 0 14px; color: var(--a-ink); text-wrap: balance; }
-.ff-text .cap { max-width: 60ch; }
-.ff-go { display: inline-block; margin-top: 16px; color: var(--a-accent2); text-underline-offset: 3px; }
-.figwin { width: 100%; aspect-ratio: 1 / 1; max-height: 78vh; }
-.foot-fig .wcap { background: rgba(5, 4, 3, .92); }
-@media (max-width: 760px) { .ff-grid { grid-template-columns: 1fr; } .figwin { aspect-ratio: 4 / 5; } }
+/* ---------- the pages inside an area: the area's figure fixed behind the whole page (components/a/AreaStage.tsx), its face in
+   the page's head, and at the foot the page's own gilded piece with a label as in a museum (components/a/FootPiece.tsx) ---------- */
+.area-stage { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.area-stage canvas { width: 100%; height: 100%; display: block; }
+.foot-piece { margin-top: clamp(48px, 8vw, 96px); }
+.fp-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(24px, 5vw, 72px); align-items: center; }
+.fp-one { grid-template-columns: minmax(0, 1fr); }
+.fp-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.04; margin: 12px 0 14px; color: var(--a-ink); text-wrap: balance; }
+.fp-text .cap { max-width: 60ch; }
+.fp-go { display: inline-block; margin-top: 16px; color: var(--a-accent2); text-underline-offset: 3px; }
+.fp-grid :global(.piece-foot) { float: none; margin: 0; }
+@media (max-width: 760px) { .fp-grid { grid-template-columns: 1fr; } .fp-grid :global(.piece-foot) { margin: 0 auto; } }
 
 /* ---------- the home page's five rooms (components/a/RoomFig.tsx): each small window shows the figure of its room's door,
    its face in gold letters of its own text on Pompeian red; the room's name beneath says whose ---------- */
