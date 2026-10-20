@@ -2,7 +2,7 @@
 
 A free website for learning to read Ancient Greek and exploring the Greek world. It has no adverts and no trackers.
 
-- **What the site is:** `SPEC.md`, with the site's own words in `CONTEXT.md`.
+- **What the site is:** `SPEC.md`, with the site's own words in `GLOSSARY.md`.
 - **State:** `PROGRESS.md` records what is done, the decisions that still hold, known problems and next steps. Read it first.
 - **Licences:** `LICENSE` (MIT for code, CC BY-SA 4.0 for content).
 - **Instructions for AI sessions:** `CLAUDE.md`.

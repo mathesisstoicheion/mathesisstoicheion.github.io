@@ -5,7 +5,7 @@ from an earlier site. Nothing from them goes on a live page until each claim is 
 source is recorded.
 
 ## Start of every session
-1. Read `SPEC.md` (what the site is, and what is frozen or cut), `CONTEXT.md` (the site's own words) and the top of
+1. Read `SPEC.md` (what the site is, and what is frozen or cut), `GLOSSARY.md` (the site's own words) and the top of
    `PROGRESS.md` (where things stand). Where older files in `_archive/` (`PLAN.md`, `Handoff.md`, the brief) disagree with
    `SPEC.md`, `SPEC.md` wins.
 2. Check the site still builds and runs.

@@ -1,4 +1,4 @@
-# CONTEXT.md — the site's own words
+# GLOSSARY.md — the site's own words
 
 Use these names in code, docs and messages to the owner. One word for one thing. Area names live in
 `web/src/config/areas.ts`; change them only there.
