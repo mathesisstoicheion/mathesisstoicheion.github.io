@@ -253,7 +253,7 @@ select:not([multiple]):not([size]) {
    draws the iris, its gold rim and its frame line). At the head of a page it stands at the right of the title and the
    words run round it; a header that holds one is laid out as plain flow, since a grid would give the window a row of its own. */
 .piece { margin: 0; }
-.awin-frame { position: relative; width: 100%; aspect-ratio: 1 / var(--piece-ratio); overflow: hidden; }
+.awin-frame { position: relative; width: 100%; aspect-ratio: 1 / var(--piece-ratio); overflow: hidden; background: var(--win-wait); }
 .awin-frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
 .piece figcaption b { color: var(--ink); font-weight: 600; }
@@ -290,6 +290,9 @@ select:not([multiple]):not([size]) {
 }
 /* a page's piece standing outside a header (the home page's) rises into place like a header's */
 :where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease-enter) calc(3.5 * var(--enter-step)) backwards; }
+/* Performance, the lightest of the three animation levels: pages simply appear */
+html[data-level="performance"] :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > *,
+html[data-level="performance"] :where(.tool-page) > .piece-head, html[data-level="performance"] .piece-rise { animation: none; }
 /* on a phone the piece stands in a window of its own across the screen, after the title, the purpose and the page's main
    action (a header holds both, "piece-desk" before the title and "piece-phone" after the action; the one not shown loads
    nothing) */

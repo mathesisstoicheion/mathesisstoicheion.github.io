@@ -37,6 +37,9 @@
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+/* a card (the sign-in form, say) is there to read and fill in from the first frame; it only rises into place */
+@keyframes settle-in { from { transform: translateY(10px); } }
+:global(html[data-level="performance"]) .card { animation: none; }
 .tabs { display: flex; gap: 4px; box-shadow: var(--cut-under); }
 .tabs button { font: inherit; font-family: var(--f-display); font-size: 1.25rem; padding: 6px 16px 8px; border: 0; background: none; color: var(--ink-2); cursor: pointer; position: relative; }
 .tabs button[aria-selected="true"] { color: var(--ink); }

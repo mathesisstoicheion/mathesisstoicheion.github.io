@@ -56,6 +56,9 @@
   --red-surface: #26100c;   /* a raised surface in the doorway */
   --red-surface-2: #36150f; /* a band across it, a hover, a pressed chip */
   --bone-3: #9c7d66;        /* the quietest words (small print) */
+  /* a window onto art before its picture opens: dim Pompeian red with fine engraved hatching, never a black box */
+  --win-wait: repeating-linear-gradient(135deg, color-mix(in srgb, var(--gold) 7%, transparent) 0 1px, transparent 1px 6px),
+    color-mix(in srgb, var(--red) 55%, var(--black));
   --room-chip: #1a130b;     /* a pressed chip in the lamp room */
   /* the second accent: the doorway's gold, for small text */
   --ochre-red: #a65d40;
