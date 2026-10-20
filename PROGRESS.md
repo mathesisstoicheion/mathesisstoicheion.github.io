@@ -12,6 +12,13 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 - **Site:** works offline once visited, installs as an app, light and dark, phone edition, accessibility tested. 422 unit tests passed on 2026-10-09; 449 of 451 browser tests passed (the other two timed out under load).
 - **Built but now frozen:** Town Hall, Pnyx, accounts (see below).
 
+## Open work: next publish
+Do these in order.
+1. Republish the data packs: `python pipeline/publish_packs.py --push`.
+2. Show the owner the site running on this computer. Check that the forum is hidden and Coptic Mark is gone.
+3. Push `main` only when the owner says so.
+4. Check the live site: in `web/`, run `node scripts/live-check.mjs`.
+
 ## Open work: the clean-up first (owner's go for all of it, 2026-10-18)
 Do these in order, one at a time, committing before and after each. Never delete: move into `_archive/`, except the
 old website, which the owner has scrapped (D).

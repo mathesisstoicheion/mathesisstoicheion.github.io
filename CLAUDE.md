@@ -19,6 +19,24 @@ source is recorded.
 - **The translation tool** is a separate project (`Documents/greek-translation-tool`). Build none of it here.
 - Use the strongest model for planning and judgment, a lighter one for moving files and editing text.
 
+## How we work
+- **Home.** The work lives in this folder on the owner's computer, in Claude Code. Nobody uses the online copy in the
+  claude.ai Project. The GitHub branch `claude/project-thread-wj81cr` is out of date. Never merge it.
+- **Skills.** Use Matt Pocock's skills only.
+  - A new idea goes through `/grill-with-docs`.
+  - Once decisions are made, run `/to-spec`, then `/to-tickets`.
+  - To build, use `/tdd` on one ticket at a time, and wait for the owner's go before the next.
+  - For a bug, use `/diagnosing-bugs`. Build a check that catches the bug before fixing it.
+  - About every five tickets, run `/improve-codebase-architecture`.
+  - For a design question, use `/prototype`.
+  - When a message is confusing, use `/wait-what`.
+  - At the end of a session, run `/handoff`, then update the top of `PROGRESS.md`.
+- **Tickets.** Tickets live in `.scratch/`. `PROGRESS.md` stays the owner's plain-English summary of where things stand.
+- **Models.** Sonnet does routine edits, file moves and test runs. Opus does grilling, design, hard bugs and
+  architecture. The owner is on the Max x5 plan, so keep usage low. Keep outputs short, and never redo work that
+  passed.
+- **Publishing.** Never push unless the owner says so. A push to `main` republishes https://mathesisstoicheion.com/.
+
 ## Priorities the owner has stressed
 - **The reader's word look-up comes first.** Every feature serves reading real Greek.
 - **Visual beauty and purposeful animation**, never a generic template look.
