@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Gold and lamplight on every page (2026-10-20, round 3; waiting for the owner's "Publish")
+## Gold and lamplight on every page (2026-10-20, round 3; LIVE 15:35 UTC after the owner's "Publish" at 15:33 UTC)
 The owner, 14:38 UTC: "Let's go with gold and lamp everything"; on the card they chose "Pure A, keep fixes": every page in
 design A's own look, only the Museion keeps its letter figure, and this morning's full-width pages and lighter drawing stay.
 - The doors (`components/a/Door.tsx`) have a tall red gilded window beside the name instead of a letter face (wide above the
@@ -8,7 +8,7 @@ design A's own look, only the Museion keeps its letter figure, and this morning'
   (`PageWin.tsx`). The home page's five rooms show their red windows again (as on 2026-10-19 afternoon).
 - Removed: the five other letter figures and everything that drew them (`data/figures.ts`, `FigStage`, `AreaStage`,
   `FootPiece`, `RoomFig`, their texts and pictures, `make-figure-texts.py`, `prepare-figures.py`, the engine's tablet,
-  colonnade, allotment machine, lyre and coin shapes). All are in git history (commit 69169fb and after).
+  colonnade, allotment machine, lyre and coin shapes). All are in git history before commit 13a432d.
 - Kept: the library's Socrates and roll, the italic gold page titles, the full-width pages, the lighter engine.
 - Checks: typecheck clean, lint has only the 16 known errors; overlap sweep (45 pages x 6 sizes) shows only the findings that
   were there before (author pages, Eras of Greek on phones, library list at 412 px and tablet, Pnyx spinner); layer memory at
