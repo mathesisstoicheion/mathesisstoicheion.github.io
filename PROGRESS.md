@@ -10,6 +10,10 @@ design A's own look, only the Museion keeps its letter figure, and this morning'
   `FootPiece`, `RoomFig`, their texts and pictures, `make-figure-texts.py`, `prepare-figures.py`, the engine's tablet,
   colonnade, allotment machine, lyre and coin shapes). All are in git history (commit 69169fb and after).
 - Kept: the library's Socrates and roll, the italic gold page titles, the full-width pages, the lighter engine.
+- Checks: typecheck clean, lint has only the 16 known errors; overlap sweep (45 pages x 6 sizes) shows only the findings that
+  were there before (author pages, Eras of Greek on phones, library list at 412 px and tablet, Pnyx spinner); layer memory at
+  3x 45-92 MB (round 2: 86-137); mid-scroll shots all drawn; script per frame 0.4-3.1 ms (round 2: 1.7-4.3).
+  Screenshots: https://claude.ai/artifact/Pk14vi322xqLYMtxUGuGeq
 
 ## Pages fill the screen; figures grow behind them (2026-10-20, round 2; LIVE after the owner's "Publish" at 14:10 UTC)
 The owner, 06:49 UTC: "I don't like the way the content is displayed on each page. Everything is stuck to the left, and doesn't
