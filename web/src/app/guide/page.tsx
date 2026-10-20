@@ -2,19 +2,19 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
 import PageHead from "@/components/PageHead";
-import { AREAS, type AreaId } from "@/config/areas";
+import { AREAS, FORUM_OPEN, type AreaId } from "@/config/areas";
 import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/GuideChapters";
 import styles from "@/components/guide/Guide.module.css";
 import { GuideSeen } from "@/components/guide/GuideChapters";
 
 export const metadata: Metadata = {
   title: "How to use the site",
-  description: "The Guide: ten short chapters on finding, reading and searching the Greek texts, looking up words, keeping notes, learning Greek and joining in, each with a \"Show me\" tour of the real page.",
+  description: `The Guide: ${FORUM_OPEN ? "ten" : "nine"} short chapters on finding, reading and searching the Greek texts, looking up words, keeping notes${FORUM_OPEN ? ", learning Greek and joining in" : " and learning Greek"}, each with a "Show me" tour of the real page.`,
 };
 
 const place = (id: AreaId) => ({ name: AREAS[id].name, greek: AREAS[id].greek, english: AREAS[id].english });
 
-const CHAPTERS: Chapter[] = [
+const ALL_CHAPTERS: Chapter[] = [
   {
     id: "learn", title: "Learn Greek", place: place("study"),
     text: [
@@ -92,12 +92,15 @@ const CHAPTERS: Chapter[] = [
   },
 ];
 
+// the Talk chapter waits while the forum is closed (FORUM_OPEN)
+const CHAPTERS = ALL_CHAPTERS.filter((c) => FORUM_OPEN || c.id !== "talk");
+
 export default function GuidePage() {
   return (
     <Page>
       <div className={`wrap ${styles.page}`}>
         <PageHead bare path={[{ label: "About" }, { label: "The guide" }]} title="How to use the site"
-          purpose={<>Ten short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
+          purpose={<>{FORUM_OPEN ? "Ten" : "Nine"} short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.</>}
           action={<div className={styles.fork}>
             <Link className="btn" href="/academy?tour=learn">Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>

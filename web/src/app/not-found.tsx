@@ -4,7 +4,7 @@ import Page from "@/components/Page";
 import PageHead from "@/components/PageHead";
 import ReportBugLink from "@/components/ReportBugLink";
 import NotFoundSearch from "@/components/NotFoundSearch";
-import { AREAS, doorWord } from "@/config/areas";
+import { AREAS, FORUM_OPEN, doorWord } from "@/config/areas";
 import styles from "./not-found.module.css";
 import { LOST_PAGE } from "@/data/pieces";
 
@@ -32,9 +32,11 @@ export default function NotFound() {
               </Link>
             ))}
           </nav>
-          <p className="muted">
-            Followed a link on this site that led here? <ReportBugLink>Tell us about the broken link</ReportBugLink>.
-          </p>
+          {FORUM_OPEN && (
+            <p className="muted">
+              Followed a link on this site that led here? <ReportBugLink>Tell us about the broken link</ReportBugLink>.
+            </p>
+          )}
         </PageHead>
       </div>
     </Page>

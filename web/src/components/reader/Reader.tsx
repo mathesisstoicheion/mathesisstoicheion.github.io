@@ -22,7 +22,7 @@ import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from
 import { getPosition, savePosition } from "@/lib/position";
 import { useSettings, LIMITS, type Columns, scrollBehavior, isDaylight } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
-import { AREAS, SITE, trail } from "@/config/areas";
+import { AREAS, FORUM_OPEN, SITE, trail } from "@/config/areas";
 import { Blocks } from "./Blocks";
 import WordPanel, { type WordContext } from "./WordPanel";
 import { norm } from "@/lib/lookup/words";
@@ -1359,7 +1359,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         <span className={styles.aidLabel} aria-hidden="true">This passage</span>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-        {!isPrivate && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>}
+        {!isPrivate && FORUM_OPEN && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>}
         {canDiff && <>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>

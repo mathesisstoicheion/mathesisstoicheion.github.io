@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
+
+test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
 
 // A pretend signed-in member and pretend database answers: nothing is sent to, or written in, the real forum.
 const KEY = "sb-kxwppdhbvlamcmgckqpg-auth-token";

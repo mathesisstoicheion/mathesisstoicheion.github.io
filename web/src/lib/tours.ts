@@ -7,6 +7,8 @@
  * the screen is used, so a step can name the wide-screen control and its phone twin. A step whose control is
  * not on the page (no translation, signed out, nothing found) is skipped rather than shown pointing at nothing.
  */
+import { FORUM_OPEN } from "@/config/areas";
+
 export interface Target { sel: string; text?: string }
 export interface Step {
   /** where the light falls: the first target showing on screen */
@@ -177,10 +179,12 @@ export const TOURS: Record<string, Tour> = {
       { at: [t('header button[aria-label="Search"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
       { at: [t('header button[aria-label="Settings"]'), t('header button[aria-label="Menu"]')], title: "Settings", text: "Light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too.", phoneText: "In the menu: light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too." },
       { at: [t('button[aria-label^="Connection:"]')], title: "The connection light", text: "Green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "Green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
-      { at: [t('header a[href="/account"]')], title: "Your account", text: "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Town Hall." },
+      { at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Town Hall."
+        : "Optional. With an account your notes and progress follow you from device to device." },
     ],
   },
 };
 
 /** The Guide's chapters, in order, with the tour each one shows. */
-export const CHAPTER_ORDER = ["learn", "find", "read", "word", "aids", "keep", "explore", "search", "talk", "settings"] as const;
+export const CHAPTER_ORDER = (["learn", "find", "read", "word", "aids", "keep", "explore", "search", "talk", "settings"] as const)
+  .filter((id) => FORUM_OPEN || id !== "talk");

@@ -1,16 +1,17 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { CHAPTER_ORDER } from "../src/lib/tours";
 
 // The Guide (/guide) and its "Show me" tours: the light and card point at the real controls, step by step.
 test.describe.configure({ timeout: 120_000 });
 
 const card = (page: import("@playwright/test").Page) => page.locator("[data-tour-card]");
 
-test("the Guide lists ten chapters, Learn Greek first, each with Show me", async ({ page }) => {
+test("the Guide lists every chapter, Learn Greek first, each with Show me", async ({ page }) => {
   await page.goto("/guide");
   await expect(page.getByRole("heading", { level: 1, name: "How to use the site" })).toBeVisible();
   const chapters = page.locator("ol > li[id]").filter({ has: page.getByRole("link", { name: /^Show me/ }) });
-  await expect(chapters).toHaveCount(10);
+  await expect(chapters).toHaveCount(CHAPTER_ORDER.length);
   await expect(chapters.first()).toHaveAttribute("id", "learn");
   // (the page itself is checked by axe in both themes with every other page, in a11y.spec.ts)
 });
@@ -26,7 +27,7 @@ test("a tour goes on by itself when the reader does what it asks, and ends by na
   await card(page).getByRole("button", { name: "Next" }).click();
   await expect(card(page)).toContainText("Step 3 of 3");
   await card(page).getByRole("button", { name: "Done" }).click();
-  await expect(card(page)).toContainText("chapter 4 of 10");
+  await expect(card(page)).toContainText(`chapter 4 of ${CHAPTER_ORDER.length}`);
   await expect(card(page).getByRole("link", { name: /Next: Reading aids/ })).toBeVisible();
   // the Guide ticks the chapter
   await card(page).getByRole("link", { name: "The Guide" }).click();

@@ -1,5 +1,5 @@
 """
-Build web/public/data/manuscripts/venetus-a-iliad.json: for every line of the Iliad, the page of the Venetus A
+Build web/public/data/noncommercial/venetus-a-iliad.json (CC BY-NC 4.0, so not in git; published with the packs): for every line of the Iliad, the page of the Venetus A
 (Venice, Biblioteca Nazionale Marciana, Marc. gr. Z. 454 = 822) it is written on, and where on the photograph.
 
 Source: the Homer Multitext project's published archive (github.com/homermultitext/hmt-archive), its "hmtdse"
@@ -22,7 +22,7 @@ from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-OUT = ROOT / "web" / "public" / "data" / "manuscripts" / "venetus-a-iliad.json"
+OUT = ROOT / "web" / "public" / "data" / "noncommercial" / "venetus-a-iliad.json"
 UA = {"User-Agent": "MathesisStoicheion/0.1 (learning site; mathesis.stoicheion@gmail.com)"}
 REPO = "homermultitext/hmt-archive"
 IMAGES = "https://www.homermultitext.org/iipsrv?IIIF=/project/homer/pyramidal/deepzoom/hmt/{coll}/{ver}/{id}.tif"

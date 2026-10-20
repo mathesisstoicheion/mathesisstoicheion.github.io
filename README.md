@@ -2,9 +2,9 @@
 
 A free website for learning to read Ancient Greek and exploring the Greek world. It has no adverts and no trackers.
 
-- **Brief:** `greek-reader-website-prompt.md` describes what the site should be.
-- **Plan:** `PLAN.md` describes how it is built.
-- **State:** `PROGRESS.md` records what is done, the decisions log, known problems and next steps. Read it first.
+- **What the site is:** `SPEC.md`, with the site's own words in `GLOSSARY.md`.
+- **State:** `PROGRESS.md` records what is done, the decisions that still hold, known problems and next steps. Read it first.
+- **Licences:** `LICENSE` (MIT for code, CC BY-SA 4.0 for content) and `NOTICE` (outside sources and exceptions).
 - **Instructions for AI sessions:** `CLAUDE.md`.
 
 ## Folders
@@ -12,8 +12,9 @@ A free website for learning to read Ancient Greek and exploring the Greek world.
 | Folder | What it is |
 |---|---|
 | `web/` | The website (Next.js 16, React 19, TypeScript). |
-| `design-study/` | The Phase 0 prototype of three visual directions. Kept for reference; not used by the site. |
 | `pipeline/` | Python scripts that download the original collections and build the catalogue, word analyses, core vocabulary and LSJ dictionary from them. Downloads are cached in `pipeline/.cache/` (not committed). |
+| `docs/` | Notes for AI sessions: the issue tracker, triage labels and domain docs (`docs/agents/`). |
+| `_archive/` | Older documents (the first brief, `PLAN.md`, `Handoff.md`, the full progress log to 2026-10-17) and early prototypes. Not used by the site. |
 | `supabase/migrations/` | The database behind accounts, the Town Hall and the Pnyx (Supabase), as SQL files run once each, in order, in the Supabase SQL editor. See PROGRESS.md, Phase 8. |
 
 ## The live site

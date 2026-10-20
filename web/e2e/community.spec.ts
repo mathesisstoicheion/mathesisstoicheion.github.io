@@ -1,4 +1,7 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
+
+test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
 
 // The Town Hall and the Pnyx read from Supabase, so these need internet, like the reader's tests.
 

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
 import PageHead from "@/components/PageHead";
-import { AREAS, SITE, doorWord, menuWord, type AreaId } from "@/config/areas";
+import { AREAS, SITE, doorWord, menuWord, shown, type AreaId } from "@/config/areas";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
@@ -13,8 +13,9 @@ export const metadata: Metadata = { title: "About the names", description: PAGE_
  * belong to it: the Scroll opens from the Mouseion (the phone bar's `also` lists it there), the Kerameikos, the Census and
  * the Periplus are pages of the Painted Stoa (their addresses begin /stoa), the Pnyx is in the Town Hall (/town-hall/pnyx),
  * and the Scroll Case is kept with the Treasury (the Treasury links to it as the place for what is read offline).
+ * While the forum is closed (FORUM_OPEN) its group is left out.
  */
-const GROUPS: { heading: string; ids: AreaId[] }[] = [
+const GROUPS: { heading: string; ids: AreaId[] }[] = ([
   { heading: doorWord("home"), ids: ["home"] },
   { heading: doorWord("study"), ids: ["study"] },
   { heading: doorWord("library"), ids: ["library", "reader"] },
@@ -22,7 +23,7 @@ const GROUPS: { heading: string; ids: AreaId[] }[] = [
   { heading: doorWord("forum"), ids: ["forum", "debates"] },
   { heading: doorWord("treasury"), ids: ["treasury", "downloads"] },
   { heading: menuWord("search"), ids: ["search"] },
-];
+] as { heading: string; ids: AreaId[] }[]).map((g) => ({ ...g, ids: g.ids.filter(shown) })).filter((g) => g.ids.length > 0);
 
 export default function AboutPage() {
   return (
