@@ -28,14 +28,16 @@
 /* a Treasury with nothing in it: the nine wait quietly, their zeros as dots */
 .offerings[data-bare] .offer { color: var(--ink-2); }
 
-/* narrower: three to a row without their windows, each centred, as the old frieze was */
+/* narrower: three to a row, each centred with its window above it, as the home page's rooms keep theirs on a phone */
 @media (max-width: 860px) {
   .offer { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 16px 8px; min-height: 120px; }
   .ogrid li:not(:nth-child(3n + 1)) .offer { padding-left: 8px; }
-  .owin { display: none; }
+  .owin { grid-row: auto; width: 72px; height: 72px; margin-bottom: 10px; }
+  .offer { grid-template-rows: none; align-content: start; }
 }
 @media (max-width: 520px) {
   .offer { min-height: 104px; padding-inline: 4px; }
+  .owin { width: 56px; height: 56px; margin-bottom: 8px; }
   .offerLabel { font-size: 1.15rem; overflow-wrap: anywhere; }
   .offerHint { font-size: 0.8rem; }
 }

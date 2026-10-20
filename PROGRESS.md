@@ -1,5 +1,31 @@
 # PROGRESS.md — project memory
 
+## The home page's red everywhere; faster animation; the home page stripe (2026-10-20, round 4; NOT live yet)
+The owner, 16:47–16:51 UTC: "Everything on the website needs to follow the Gold and lamplight with the red colour scheme",
+"Every page must follow the design choices of the homepage", "All little submenus and buttons"; the Museion, Explore, Talk and
+Read were named, and the Treasury "seems inconsistent and and boring". 16:27: "They need to animate faster, try twice as fast,
+then 3 times as fast and give me a video preview". 16:40: "There's a stripe on the bottom of the homepage".
+- **Colours and type**: the semantic tokens in `styles/tokens.css` ARE the home page's doorway now (Pompeian red surfaces,
+  gold accents and lines, bone ink, EB Garamond); the separate `main[data-screen="home"]` block is gone and `a.module.css`
+  `.screen` carries the doorway roles on every page. Menus, panels, dialogs, chips and buttons all follow from the tokens
+  (chosen state = the home page's red chip; solid button = bone with red letters). The Daylight page keeps its own values; the
+  reader's typeface settings still override. The lamp room's amber, parchment, Literata and scan lines are gone.
+- **Floating letters on every page**: `components/Page.tsx` adds the home page's drifting letters behind every "room" page
+  (not the library or reader, which have their own).
+- **Windows**: frameless until their iris opens, as on the home page.
+- **The Treasury**: its nine sections are laid out as the home page's grid of rooms, each with a small red window onto a
+  gilded Met piece (credits at the foot), its count in tall gold numerals; the windows stay on a phone, smaller.
+- **Tempo**: `--tempo` in `tokens.css` (and `lib/tempo.ts`) divides every animation that plays out once. Video of 1x, 2x and 3x:
+  `/mnt/project-files/previews/animation-speed.mp4` (sent 16:58 UTC). It stays 1 until the owner picks.
+- **The stripe** (not reproduced here): most likely the floating-letters canvas a fraction of a pixel row short of the window
+  on the owner's PC, showing the page beneath; its drawing buffer now follows its own on-screen size and is cleared fully.
+- The Museion keeps Socrates (dropping him was not asked for plainly).
+- The Mouseion's Socrates opening, its famous books and the reader's cover emblem are red windows too: the stage's letters show
+  through a red field (`.lib-hero .win::before`, mix-blend lighten) and the emblems are drawn on red (`field` in `Letters`).
+- Checks: typecheck clean, lint only the 16 known errors; overlap sweep (45 pages x 6 sizes) shows only the known findings
+  (author pages at computer sizes, Eras of Greek on phones, library list on tablet); layer memory at 3x 56-109 MB; mid-scroll
+  shots all drawn.
+
 ## Gold and lamplight on every page (2026-10-20, round 3; LIVE 15:35 UTC after the owner's "Publish" at 15:33 UTC)
 The owner, 14:38 UTC: "Let's go with gold and lamp everything"; on the card they chose "Pure A, keep fixes": every page in
 design A's own look, only the Museion keeps its letter figure, and this morning's full-width pages and lighter drawing stay.

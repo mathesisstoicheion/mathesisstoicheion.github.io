@@ -579,7 +579,10 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     return {c,cell,pos,H,dpr}},
   letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}|${Math.round(scrollY/24)}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
     const sy=scrollY;if(!this.clear||this.clearDirty||this.clearW!==vw||sy<this.clearLo||sy>this.clearHi){this.clear=cv.parentElement?this.measureClear(cv.parentElement,sy-vh,sy+2*vh):new Map();this.clearDirty=false;this.clearW=vw;this.clearLo=sy-vh*.8;this.clearHi=sy+vh*.8}
-    const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
+    // its pixels match the canvas's own size on the screen exactly, fractions and all (the window's innerHeight is rounded):
+    // a canvas a row short is stretched to fill, and some graphics cards then showed a row of stray gold along the window's
+    // foot (the owner, 2026-10-20: "There's a stripe on the bottom of the homepage")
+    const cb=cv.getBoundingClientRect(),dpr=this.fitCanvas(cv,cb.width,cb.height);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,cb.width+1,cb.height+1);
     const ak=dpr+"|"+gen;if(this.flyAK!==ak){this.flyA=this.flyAtlas(dpr);this.flyAK=ak}const FA=this.flyA;
     const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3,gi=(rnd()*GL.length)|0;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[gi],gi,ox:0,oy:0,p:rnd()*6.3,lit:0})}this.flyPts.sort((a,b)=>a.z-b.z)}
     const SP=[.12,.3,.6],SZ=[10,14,21],AL=[.06,.1,.15],R=130;
@@ -684,13 +687,17 @@ function Letters(cv,img,o){
       // the speech runs on, letter after letter, through the face only, so what you can see reads in order
       const tch=U?(L<.05?" ":U[(n++)%U.length]):RAMP[Math.min(RAMP.length-1,Math.round(L*(RAMP.length-1)))];
       cells.push({i,j,L,t:tch,at:(j/rows)*.9+Math.random()*.6})}}
-  function draw(el){const x=g.x;x.clearRect(0,0,g.w,g.h);x.textBaseline="top";x.fillStyle=getComputedStyle(o.tokenEl||document.documentElement).getPropertyValue("--a-img").trim()||T.amber;
+  function draw(el){const x=g.x;x.clearRect(0,0,g.w,g.h);
+    // on a red field (the home page's windows) the letters are its gilding: pale gold, and stronger, since faint gold on red
+    // reads as rust rather than as gold
+    const fld=typeof o.field==="function"?o.field():o.field;if(fld){x.fillStyle=cssv("--red")||"#5c1910";x.fillRect(0,0,g.w,g.h)}
+    x.textBaseline="top";x.fillStyle=getComputedStyle(o.tokenEl||document.documentElement).getPropertyValue("--a-img").trim()||T.amber;
     const f0=o.text?`500 ${(cw*1.08).toFixed(1)}px ${F.gentium}`:`${(ch*.86).toFixed(1)}px ${F.mono},${F.gentium}`,f1=o.text?`700 ${(cw*1.16).toFixed(1)}px ${F.gentium}`:f0;
     for(const pass of o.text?[0,1]:[0]){x.font=pass?f1:f0;
       for(const c of cells){if(o.text&&(c.L>=.6)!==(pass===1))continue;let s=c.t;
         let early=0;   // before its moment, a letter turns over slowly (three times a second) and glows in, then settles
         if((o.mode==="row"||o.mode==="gather")&&!reduce&&s!==" "){if(el<c.at){const set=o.text?CAPS:GL;s=set[(c.i*7+c.j*13+Math.floor(el*3+c.at*5))%set.length];early=1}else if(!o.text&&Math.random()<.002+hot*.05&&c.L>.15)s=RAMP[clamp(RAMP.indexOf(c.t)+((Math.random()*3|0)-1),1,RAMP.length-1)]}
-        if(s===" ")continue;let a=o.text?.07+.93*c.L:.16+.84*c.L;if(early)a*=.3+.7*clamp(el/c.at,0,1);if(o.mode==="row")a*=.55+.45*hot;x.globalAlpha=Math.min(1,a);x.fillText(s,c.i*cw+(o.text?cw*.5:0),c.j*ch)}}
+        if(s===" ")continue;let a=o.text?.07+.93*c.L:.16+.84*c.L;if(early)a*=.3+.7*clamp(el/c.at,0,1);if(o.mode==="row")a*=.55+.45*hot;if(fld)a=Math.pow(a,.6);x.globalAlpha=Math.min(1,a);x.fillText(s,c.i*cw+(o.text?cw*.5:0),c.j*ch)}}
     x.globalAlpha=1}
   function frame(t){if(t-last<33){raf=requestAnimationFrame(frame);return}last=t;const el=(t-t0)*TEMPO/1000;const target=o.isHot&&o.isHot()?1:0;hot+=(target-hot)*.18;draw(el);
     if(el>1.6&&Math.abs(hot-target)<.01&&!target){raf=0;return}raf=requestAnimationFrame(frame)}

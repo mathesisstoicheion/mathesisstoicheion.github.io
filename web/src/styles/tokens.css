@@ -163,6 +163,7 @@
   --cut-l: transparent;
   --cut-deep: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.6);
+  --veil: rgba(5, 4, 3, 0.62);   /* the black page dimmed behind a window that opens over it (a dialog's backdrop) */
 
   /* surfaces: every panel is a thin gold line round a wash of Pompeian red (the home page's "Where are you starting?"),
      never a raised, shadowed box */
@@ -170,7 +171,7 @@
   --field-edge: inset 0 0 0 1px var(--rule);
   --slab: transparent;             /* a panel or a button standing on the page: a fine line round it */
   --slab-edge: inset 0 0 0 1px var(--rule);
-  --slab-lit: rgba(232, 189, 112, 0.07);   /* one under the hand, or the chosen one */
+  --slab-lit: rgba(109, 34, 22, 0.45);   /* one under the hand, or the chosen one: the home page's red chip, thinned */
   --moulding: 1px solid rgba(232, 189, 112, 0.1);
   --moulding-in: -8px;
   --plinth-edge: inset 0 1px 0 0 var(--rule);   /* the foot of every page: a fine line along its top */

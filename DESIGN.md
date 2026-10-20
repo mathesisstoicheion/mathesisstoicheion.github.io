@@ -37,7 +37,13 @@ Stone and torch (design B), live from 2026-10-16 until then, is kept for referen
   papyrus roll, large behind the page; back at the top they become the face again. Every line of text over it sits on a soft
   dark band drawn under the words, so text never sits on bright letters (the overlap rule below).
 - **Pages are as wide as the frame** (1240 px; the owner, 2026-10-20: "Everything is stuck to the left, and doesn't fill out
-  the page"). The doors (components/a/Door.tsx) have dark blocks across the page and a tall red window beside the name.
+  the page"). The doors (components/a/Door.tsx) have blocks across the page and a tall red window beside the name.
+- **Every page follows the home page** (the owner, 2026-10-20: "Every page must follow the design choices of the homepage",
+  "All little submenus and buttons"). Every page is the doorway: black, with the home page's floating letters behind it
+  (components/Page.tsx; the library and the reader draw their own), windows with no frame until their iris opens, gold
+  lines and accents, words in bone, panels washed in Pompeian red, chosen chips and hovers in the red chip colour, the main
+  button a bone plate with red capitals, reading text in EB Garamond. No scan lines (the home page never had them). The
+  Treasury's nine sections are laid out as the home page's grid of rooms, each with a small red window.
 
 ## The three animation levels (the owner, 2026-10-19)
 "One with the full beauty and intricate design and animation. One with a few visual sacrifices for better performance,
@@ -51,12 +57,13 @@ remembered.
   stand settled, and pages open without animation.
 
 ## Type and colour
-- Display: Noto Serif Display (narrow, light). Reading text and Greek: Literata; Settings also offers Gentium Book Plus or
-  Noto Sans for the Greek and Alegreya Sans for the English. Labels: Noto Sans Mono in spaced capitals. The ΣΤΟΙΧΕΙΑ mark:
+- Display: Noto Serif Display (narrow, light). Reading text and Greek: EB Garamond, the home page's (Literata until
+  2026-10-20); Settings also offers Gentium Book Plus or Noto Sans for the Greek and Alegreya Sans for the English. Labels: Noto Sans Mono in spaced capitals. The ΣΤΟΙΧΕΙΑ mark:
   Noto Sans Display. All are served by the site itself (next/font).
-- Colours are design A's, named in `web/src/styles/tokens.css`: the black frame #070504 and page #050403; parchment text
-  #ecca97 (quieter #b89a74, #8f7556); lamplight amber #ffad45 (bright #ffd59a); the doorway's gold #e8bd70 (bright #f6dca6),
-  bone #f2e0c6 and Pompeian red #5c1910. The reader's Daylight page is the one light surface.
+- Colours are design A's doorway, named in `web/src/styles/tokens.css`: the black frame #070504 and page #050403; words in
+  bone #f2e0c6 (quieter #c39f83, #9c7d66); gold #e8bd70 (bright #f6dca6) for accents and lines; Pompeian red #5c1910, its
+  raised surface #26100c and its chip #6d2216. The lamp room's parchment and amber are no longer used. The reader's Daylight
+  page is the one light surface.
 - Thin 1px lines instead of shadows; square corners. Greek capitals in labels and inscriptions carry no accents.
 - Contrast (4.5:1 for text): the Daylight page's sienna is #8c460a, a shade deeper than A's #a8550f, which read 4.0:1 in
   small labels. A's dimming of the lines away from the reader's lamp stays as A drew it, below the rule on purpose; Aa,

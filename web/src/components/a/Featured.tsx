@@ -21,7 +21,7 @@ function BookRow({ b }: { b: Book }) {
     if (!a || !c) return;
     let hot = false, art: { stop(): void; wake(): void } | null = null, gone = false;
     const on = () => { hot = true; art?.wake(); }, off = () => { hot = false; art?.wake(); };
-    emblem(c, `/images/a/em-${b.pic}.png`, { mode: "row", cols: 28, width: () => (innerWidth < 860 ? 72 : 92), isHot: () => hot, text: b.pic === "socrates-louvre" })
+    emblem(c, `/images/a/em-${b.pic}.png`, { mode: "row", cols: 28, width: () => (innerWidth < 860 ? 72 : 92), isHot: () => hot, text: b.pic === "socrates-louvre", field: true })
       .then((r) => { if (gone) r?.stop(); else art = r; });
     a.addEventListener("pointerenter", on); a.addEventListener("pointerleave", off); a.addEventListener("focus", on); a.addEventListener("blur", off);
     return () => { gone = true; art?.stop(); a.removeEventListener("pointerenter", on); a.removeEventListener("pointerleave", off); a.removeEventListener("focus", on); a.removeEventListener("blur", off); };

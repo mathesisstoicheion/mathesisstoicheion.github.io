@@ -3,7 +3,7 @@
 /* ---- the window */
 .scrim {
   position: fixed; inset: 0; z-index: 95; display: grid; place-items: center; padding: 16px;
-  background: color-mix(in srgb, var(--ink) 35%, transparent); animation: fade calc(0.2s / var(--tempo)) var(--ease) backwards;
+  background: var(--veil); animation: fade calc(0.2s / var(--tempo)) var(--ease) backwards;
 }
 @keyframes fade { from { opacity: 0; } }
 .picker {

@@ -43,7 +43,7 @@ export default function ReaderCover({ workId, title, greek, author, authorId, da
     const cv = em.current;
     if (!cv || !med) return;
     let gone = false;
-    emblem(cv, `/images/a/em-${med.pic}.png`, { mode: "gather", cols: 50, text: isSoc, width: () => (innerWidth < 640 ? 140 : 200), tokenEl: host.current })
+    emblem(cv, `/images/a/em-${med.pic}.png`, { mode: "gather", cols: 50, text: isSoc, width: () => (innerWidth < 640 ? 140 : 200), tokenEl: host.current, field: () => !dayRef.current })
       .then((r) => { if (gone) r?.stop(); else art.current = r; });
     return () => { gone = true; art.current?.stop(); art.current = null; };
   }, [med, isSoc]);

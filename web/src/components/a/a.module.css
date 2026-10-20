@@ -92,7 +92,7 @@
 /* a window is an opening in the black page: no frame until its iris has opened (the engine draws the frame line then),
    and its caption comes up last (the home page's windows, now everywhere) */
 .win { position: relative; overflow: hidden; border: 1px solid transparent; background: transparent; min-width: 0; }
-.win .wcap { opacity: 0; }
+.win .wcap[data-wcap] { opacity: 0; }
 .win canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 /* a caption sits on a small dark plate, like a museum label, so the engraving's lines never run through its words */
 .wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; max-width: calc(100% - 20px); padding: 3px 7px 2px; background: rgba(7, 5, 4, .8); box-shadow: 0 0 0 1px rgba(232, 189, 112, .16);
@@ -157,7 +157,7 @@
 .books { margin-bottom: 40px; }
 .book { display: grid; grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.3fr) auto; gap: clamp(14px, 2.4vw, 32px); align-items: center; padding-block: 16px; border-bottom: 1px solid var(--a-line); cursor: pointer; text-decoration: none; transition: background-color .35s; }
 .book:hover, .book:focus-visible { background: color-mix(in srgb, var(--a-field) 30%, transparent); }
-.book canvas { width: 92px; display: block; }
+.book canvas { width: 92px; display: block; }   /* a small red window, its picture laid on in gold letters as on the home page (lib/a/lamplight.js, field) */
 .book .who { color: var(--a-ink2); margin-bottom: 4px; }
 .book .tt { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.8vw, 2.4rem); line-height: 1; }
 .book .gt { font-size: 1.05rem; color: var(--a-ink2); margin-top: 4px; display: block; }
@@ -181,6 +181,12 @@
 .library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
 .library .books .book { padding-inline: 4px; }
 .library .win .wcap { background: rgba(5, 4, 3, .92); }
+/* the home page's red window in the library too (the owner, 2026-10-20: "Every page must follow the design choices of the
+   homepage"): the opening where Socrates gathers is Pompeian red, and the stage's letters show through as gold on red.
+   "lighten" keeps whichever is brighter, the red or the letter; it works because the flow is no layer of its own here, so
+   the red blends with the stage beneath it */
+.library .flow { z-index: auto; }
+.library .lib-hero .win::before { content: ""; position: absolute; inset: 0; background: var(--red); mix-blend-mode: lighten; pointer-events: none; }
 /* the face's opening: as tall as the window allows, beside the name on a computer, above it on a phone */
 :is(.lib-hero, .door-hero) .tall { max-height: calc(100svh - 150px); min-height: 340px; }
 /* on a computer the opening's own caption gives way to this line, under the name */
