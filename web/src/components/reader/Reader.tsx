@@ -1407,7 +1407,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       </div>
       <span className="label">Greek typeface</span>
       <div className={styles.seg} role="radiogroup" aria-label="Greek typeface">
-        {([["didot", "Literata"], ["gentium", "Gentium"], ["sans", "Sans"]] as const).map(([v, name]) => (
+        {([["didot", "Garamond"], ["gentium", "Gentium"], ["sans", "Sans"]] as const).map(([v, name]) => (
           <button key={v} type="button" role="radio" aria-checked={greekFace === v} onClick={() => setSettings({ greekFace: v })}>{name}</button>
         ))}
       </div>

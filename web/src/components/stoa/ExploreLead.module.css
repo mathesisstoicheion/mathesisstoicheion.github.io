@@ -21,7 +21,7 @@
 @media (max-width: 760px) { .map, .bars, .pic { aspect-ratio: 16 / 9; } }
 
 /* the map is cut in the stone (globals.css, maps): the grain shows through the land and, darker, through the sunk sea */
-.map { background: var(--stone-3) var(--tex, none) center / 420px 420px; }
+.map { background: var(--surface) var(--tex, none) center / 420px 420px; }
 .land { fill: var(--map-land-wash); }
 .sea { fill: var(--map-sea-wash); stroke: var(--map-coast); stroke-width: 1.4; stroke-linejoin: round; }
 .town circle { fill: var(--map-name); stroke: var(--map-halo); stroke-width: 2.5; }

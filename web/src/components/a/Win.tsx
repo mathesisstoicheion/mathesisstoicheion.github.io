@@ -9,13 +9,15 @@
 import { useEffect, useRef } from "react";
 import { addWindow } from "@/lib/a/lamplight";
 
-export default function Win({ className, src, kind = "pic", label, caption, capClass, children }:
-  { className: string; src: string; kind?: "coin" | "pic"; label: string; caption?: React.ReactNode; capClass: string; children?: React.ReactNode }) {
+export default function Win({ className, src, kind = "pic", label, caption, capClass, decorative, children }:
+  { className: string; src: string; kind?: "coin" | "pic"; label: string; caption?: React.ReactNode; capClass: string;
+    /** an ornament inside a button or a link whose own words say what it is: hidden from screen readers */
+    decorative?: boolean; children?: React.ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   useEffect(() => { const el = ref.current; if (!el) return; return addWindow(el, { src, kind }); }, [src, kind]);
   return (
-    <div ref={ref} className={className}>
-      <canvas role="img" aria-label={label} />
+    <div ref={ref} className={className} aria-hidden={decorative || undefined}>
+      <canvas role={decorative ? undefined : "img"} aria-label={decorative ? undefined : label} />
       {caption && <span className={capClass} data-wcap="">{caption}</span>}
       {children}
     </div>

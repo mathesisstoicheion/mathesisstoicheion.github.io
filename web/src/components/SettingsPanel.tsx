@@ -21,12 +21,12 @@ const LEVEL_HINT: Record<AnimLevel, string> = {
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
 const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
-  { v: "didot", name: "Literata", about: "The site's own face", font: "var(--font-literata)" },
+  { v: "didot", name: "Garamond", about: "The site's own face", font: "var(--font-garamond)" },
   { v: "gentium", name: "Gentium", about: "A book face made for scholarly Greek", font: "var(--font-gentium)" },
   { v: "sans", name: "Sans", about: "Clean, without serifs", font: "var(--font-noto-sans)" },
 ];
 const TEXT_FACES: { v: TextFace; name: string; font: string }[] = [
-  { v: "serif", name: "Serif", font: "var(--font-literata)" },
+  { v: "serif", name: "Serif", font: "var(--font-garamond)" },
   { v: "sans", name: "Sans", font: "var(--font-alegreya-sans)" },
 ];
 

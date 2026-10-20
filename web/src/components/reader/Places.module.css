@@ -3,7 +3,7 @@
 
 .map {
   position: relative; height: 0; padding-top: 75%; overflow: hidden; border-radius: var(--radius);
-  background: var(--stone-3) var(--tex, none) center / 420px 420px; box-shadow: var(--frame-line);
+  background: var(--surface) var(--tex, none) center / 420px 420px; box-shadow: var(--frame-line);
   animation: unroll calc(0.7s / var(--tempo)) var(--ease) both;
 }
 /* (the wipe ends a little outside the map, so that its frame is not clipped away once it has opened) */

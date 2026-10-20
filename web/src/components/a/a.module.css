@@ -7,22 +7,16 @@
    families); and the parts the owner left out (the nine Muses, 2026-10-19) are gone. A's switcher was not part of the design.
    ===================================================================== */
 
-/* the lamp room (A's :root roles) */
+/* the doorway: Pompeian red and gold (A's body[data-screen="home"]), now on every page (the owner, 2026-10-20: "Every page
+   must follow the design choices of the homepage"; A's lamp room, its :root roles, is no longer used) */
 .screen {
-  --a-field: var(--room); --a-bg: var(--black); --a-surface: var(--room-2); --a-ink: var(--parch); --a-ink2: var(--parch-2);
-  --a-accent: var(--amber); --a-accent2: var(--amber-hi); --a-line: rgba(255, 173, 69, .16); --a-img: var(--amber); --a-img2: var(--amber-hi);
-  --a-chip: var(--room-chip); --a-chip-ink: var(--parch); --a-solid: var(--amber); --a-solid-ink: var(--room);
-  --a-f-greek: var(--face-text); --a-f-text: var(--face-text);
-  --a-read: 1.3rem;
-  position: relative; color: var(--a-ink); font: 400 1rem/1.6 var(--a-f-text);
-  min-height: auto;
-}
-/* the doorway: Pompeian red and gold (A's body[data-screen="home"]) */
-.home {
   --a-field: var(--red); --a-bg: var(--black); --a-surface: var(--red-surface); --a-ink: var(--bone); --a-ink2: var(--bone-2);
   --a-accent: var(--gold); --a-accent2: var(--gold-hi); --a-line: rgba(232, 189, 112, .22); --a-img: var(--gold); --a-img2: var(--gold-hi);
   --a-chip: var(--red-chip); --a-chip-ink: var(--bone); --a-solid: var(--bone); --a-solid-ink: var(--red);
   --a-f-greek: var(--face-garamond); --a-f-text: var(--face-garamond);
+  --a-read: 1.3rem;
+  position: relative; color: var(--a-ink); font: 400 1rem/1.6 var(--a-f-text);
+  min-height: auto;
 }
 /* A's element rules, kept as weak as A wrote them (:where), so every class below wins over them as it did there */
 :where(.screen) [lang="grc"] { font-family: var(--a-f-greek); }
@@ -95,10 +89,13 @@
 .flow { position: relative; z-index: 1; }
 .stage { display: none; }
 .blk { position: relative; }
-.win { position: relative; overflow: hidden; border: 1px solid var(--a-line); background: #000; min-width: 0; }
+/* a window is an opening in the black page: no frame until its iris has opened (the engine draws the frame line then),
+   and its caption comes up last (the home page's windows, now everywhere) */
+.win { position: relative; overflow: hidden; border: 1px solid transparent; background: transparent; min-width: 0; }
+.win .wcap { opacity: 0; }
 .win canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 /* a caption sits on a small dark plate, like a museum label, so the engraving's lines never run through its words */
-.wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; max-width: calc(100% - 20px); padding: 3px 7px 2px; background: rgba(7, 5, 4, .8); box-shadow: 0 0 0 1px rgba(255, 173, 69, .12);
+.wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; max-width: calc(100% - 20px); padding: 3px 7px 2px; background: rgba(7, 5, 4, .8); box-shadow: 0 0 0 1px rgba(232, 189, 112, .16);
   color: var(--a-accent); font-family: var(--face-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
 .mini .wcap { left: 8px; max-width: calc(100% - 16px); line-height: 1.4; text-wrap: balance; font-size: .56rem; }
 .tall { aspect-ratio: 3 / 4; width: 100%; }
@@ -133,8 +130,6 @@
 /* version 2, the home page: the floating letters behind it, and windows that open as a round iris onto their pictures
    (drawn in the canvas: lib/a/lamplight.js, Engine.iris) */
 .dust { position: fixed; inset: 0; z-index: 0; pointer-events: none; width: 100%; height: 100%; display: block; }
-.home .win { background: transparent; border-color: transparent; }
-.home .win .wcap { opacity: 0; }
 
 @media (prefers-reduced-motion: reduce) { .c-title .ln > span { animation: none; transform: none; } }
 :global(html[data-motion="reduce"]) .c-title .ln > span { animation: none; transform: none; }
@@ -151,7 +146,7 @@
 .lib-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-block: clamp(16px, 3vw, 36px) clamp(24px, 4vw, 48px); }
 .lib-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-style: italic; font-size: clamp(3rem, 7vw, 6rem); line-height: .92; margin: 14px 0 16px; color: var(--a-accent2); }
 .lib-title .gr-t { display: block; font-style: normal; font-family: var(--face-gentium); font-size: .42em; color: var(--a-ink2); margin-top: 12px; letter-spacing: .02em; }
-.search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--a-line); background: var(--room-2); padding: 0 14px; max-width: 560px; margin-top: 22px; }
+.search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--a-line); background: var(--red-deep); padding: 0 14px; max-width: 560px; margin-top: 22px; }
 .search input { flex: 1; min-width: 0; background: transparent; border: 0; padding: 14px 0; font-size: 1.05rem; outline: none; }
 .search input::placeholder { color: var(--a-ink2); }
 .search:focus-within { border-color: var(--a-accent); }
@@ -161,7 +156,7 @@
 .seg button[aria-pressed="true"] { background: var(--a-chip); color: var(--a-chip-ink); }
 .books { margin-bottom: 40px; }
 .book { display: grid; grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.3fr) auto; gap: clamp(14px, 2.4vw, 32px); align-items: center; padding-block: 16px; border-bottom: 1px solid var(--a-line); cursor: pointer; text-decoration: none; transition: background-color .35s; }
-.book:hover, .book:focus-visible { background: color-mix(in srgb, var(--amber) 5%, transparent); }
+.book:hover, .book:focus-visible { background: color-mix(in srgb, var(--a-field) 30%, transparent); }
 .book canvas { width: 92px; display: block; }
 .book .who { color: var(--a-ink2); margin-bottom: 4px; }
 .book .tt { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.8vw, 2.4rem); line-height: 1; }
@@ -179,10 +174,9 @@
    the page"), Socrates gathers in the opening beside the library's name, and his roll, grown large behind the page, shows
    in the gaps and faintly through the blocks. Every line of words has a soft veil behind it on the stage as well
    (lib/a/lamplight.js, Veil), so no letter of the roll is ever seen through a word. */
-.library .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; background: var(--room); }
+.library .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; background: var(--a-bg); }
 .library .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
 .library .flow { margin-top: -100vh; }
-.library .win { background: transparent; border-color: transparent; }
 .library .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
 .library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
 .library .books .book { padding-inline: 4px; }
@@ -198,10 +192,10 @@
 }
 
 /* ---------- THE DOORS (components/a/Door.tsx), in design A's look (the owner, 2026-10-20: "Let's go with gold and lamp
-   everything"): the lamp room, dark blocks across the page's width, and beside the door's name one of A's tall red windows
+   everything", "Every page must follow the design choices of the homepage"): the home page's black with its floating
+   letters (components/Page.tsx), blocks across the page's width, and beside the door's name one of A's tall red windows
    onto a gilded object of the area ---------- */
-.door { background: var(--room); }
-.door .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
+.door .blk { padding: clamp(18px, 2.6vw, 32px); }
 .door-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-block: clamp(40px, 8vw, 120px) clamp(24px, 4vw, 48px); }
 .door-hero .tall { aspect-ratio: 4 / 5; }
 .door-carve { margin: 18px 0 0; font-family: var(--face-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 300; line-height: 1.2; letter-spacing: .16em; color: var(--a-accent); }

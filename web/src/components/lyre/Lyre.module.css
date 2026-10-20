@@ -43,7 +43,7 @@
 /* the score, in place of the roll: ivory notes cut into the same stone; it scrolls inside itself, never the page */
 .sheet {
   overflow-y: auto; overscroll-behavior: contain; padding: var(--space-3) var(--space-4) 0;
-  scrollbar-width: thin; scrollbar-color: var(--stone-4) transparent;
+  scrollbar-width: thin; scrollbar-color: var(--surface-2) transparent;
   box-shadow: inset 0 -1px 0 rgba(239, 194, 122, 0.35);
 }
 .score { position: relative; }

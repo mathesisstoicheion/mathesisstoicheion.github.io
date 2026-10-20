@@ -705,7 +705,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 /* the cover: lamplight and drifting dust, until you scroll into the text (A's .rcover) */
 .rcover {
-  --a-img: var(--amber);
+  --a-img: var(--gold);
   position: relative; min-height: calc(100svh - 70px); display: grid; place-items: center; text-align: center;
   padding: clamp(36px, 7vh, 80px) 16px clamp(70px, 12vh, 120px); margin-bottom: clamp(10px, 3vw, 30px);
 }

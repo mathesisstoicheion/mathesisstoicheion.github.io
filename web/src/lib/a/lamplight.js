@@ -24,10 +24,11 @@ let reduce=false,lite=false,gen=0;   // gen: counts changes of colour, so Perfor
 const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
 let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 
-/* ---------- colours and faces, read once per page, never per frame ---------- */
+/* ---------- colours and faces, read once per page, never per frame. The lamp room's names (amber, room) now hold the
+   doorway's gold and black, which every page uses (the owner, 2026-10-20) ---------- */
 let T={},F={};
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function readTokens(){gen++;TEMPO=parseFloat(cssv("--tempo"))||1;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room"),bg:cssv("--bg")||"#050403"};
+function readTokens(){gen++;TEMPO=parseFloat(cssv("--tempo"))||1;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--accent"),amberHi:cssv("--accent-hi"),room:cssv("--bg"),bg:cssv("--bg")||"#050403"};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
 /* ---------- the text the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
@@ -556,16 +557,18 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
         x.strokeStyle=T.goldHi;x.globalAlpha=.6*rim;x.lineWidth=1;x.beginPath();x.arc(an.cx,an.cy,R-.5,0,Math.PI*2);x.stroke();x.globalAlpha=1}
       // the window's frame line comes in once it is fully open
       if(b>.6){x.strokeStyle=T.gold;x.globalAlpha=.22*(b-.6)/.4;x.lineWidth=1;x.strokeRect(.5,.5,r.width-1,r.height-1);x.globalAlpha=1}}},
-  // the flying letters behind the home page: few, faint and slow; they move at three speeds as you scroll, and step aside
+  // the flying letters behind the home page and every other page but the library and the reader: few, faint and slow; they move at three speeds as you scroll, and step aside
   // from the pointer, catching a little of its light as they pass. They fade out near the page's words, so none is ever
   // drawn over a line of text (the owner, 2026-10-19: no overlaps). The lines are measured when the page opens, a few times
   // as it settles, and whenever its size changes, not on a clock; the letters are stamped from small pictures of themselves.
   flyPts:null,
   flyKey:"",flyAK:"",flyA:null,
-  clear:null,clearW:0,clearDirty:true,clearTm:[],
+  clear:null,clearW:0,clearLo:0,clearHi:0,clearDirty:true,clearTm:[],
   reclear(){this.clearDirty=true;for(const t of this.clearTm)clearTimeout(t);this.clearTm=[400,1200,3000].map(ms=>setTimeout(()=>{this.clearDirty=true;this.kick()},ms))},
-  measureClear(root){const rows=new Map(),rg=document.createRange(),sy=scrollY,tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
-    for(let n;(n=tw.nextNode());){if(!n.textContent.trim())continue;rg.selectNodeContents(n);
+  // only the words within a screen of the window are measured, so a long page costs no more than a short one; the band
+  // is measured again once the page has scrolled most of a screen from where it was
+  measureClear(root,lo,hi){const rows=new Map(),rg=document.createRange(),sy=scrollY,tw=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+    for(let n;(n=tw.nextNode());){if(!n.textContent.trim())continue;const pe=n.parentElement;if(pe){const q=pe.getBoundingClientRect();if(q.bottom+sy<lo||q.top+sy>hi)continue}rg.selectNodeContents(n);
       for(const r of rg.getClientRects()){if(r.width<3||r.height<3)continue;const b={l:r.left,r:r.right,t:r.top+sy,b:r.bottom+sy};
         for(let k=Math.floor((b.t-40)/64);k<=Math.floor((b.b+40)/64);k++){let a=rows.get(k);if(!a)rows.set(k,a=[]);a.push(b)}}}
     return rows},
@@ -575,7 +578,7 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     SZ.forEach((s,z)=>{x.font=`${(s*dpr).toFixed(1)}px ${F.gentium}`;pos.push(X);for(let k=0;k<GL.length;k++)x.fillText(GL[k],X+cell[z]/2,k*H+H/2);X+=cell[z]});
     return {c,cell,pos,H,dpr}},
   letters(t,vw,vh){const cv=flyCv;if(reduce){const key=`${vw}x${vh}|${gen}|${Math.round(scrollY/24)}`;if(this.flyKey===key)return;this.flyKey=key}else this.flyKey="";
-    if(!this.clear||this.clearDirty||this.clearW!==vw){this.clear=cv.parentElement?this.measureClear(cv.parentElement):new Map();this.clearDirty=false;this.clearW=vw}
+    const sy=scrollY;if(!this.clear||this.clearDirty||this.clearW!==vw||sy<this.clearLo||sy>this.clearHi){this.clear=cv.parentElement?this.measureClear(cv.parentElement,sy-vh,sy+2*vh):new Map();this.clearDirty=false;this.clearW=vw;this.clearLo=sy-vh*.8;this.clearHi=sy+vh*.8}
     const dpr=this.fitCanvas(cv,vw,vh);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,vw,vh);
     const ak=dpr+"|"+gen;if(this.flyAK!==ak){this.flyA=this.flyAtlas(dpr);this.flyAK=ak}const FA=this.flyA;
     const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3,gi=(rnd()*GL.length)|0;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[gi],gi,ox:0,oy:0,p:rnd()*6.3,lit:0})}this.flyPts.sort((a,b)=>a.z-b.z)}

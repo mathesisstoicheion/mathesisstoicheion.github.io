@@ -2,9 +2,12 @@
    Mathesis Stoicheion: design tokens for "Gold and lamplight", taken from design A itself (redesign/design-a/design-a.html
    in the project files). The owner, 2026-10-19: "Just take the template of the original gold and lamplight design".
    Design A's own words (its DESIGN.md): "a dark room where a single lamp, or the glint of old gold, lets you see the Greeks".
-   Each page lives in one of two rooms: the doorway (the home page: Pompeian red and gold) and the lamp room (the library,
-   the reader and every other page: near-black with amber lamplight). The black frame is the same everywhere. Thin 1px
-   lines instead of shadows, square corners. The one light surface is the reader's Daylight page ([data-page="day"]).
+   Design A drew two rooms: the doorway (the home page: Pompeian red, gold and bone) and the lamp room (near-black with
+   amber lamplight). Every page is now in the doorway (the owner, 2026-10-20: "Every page must follow the design choices of
+   the homepage", "All little submenus and buttons"): black pages, gold lines and accents, words in bone, raised surfaces
+   and chosen chips in Pompeian red, reading text in EB Garamond. Thin 1px lines instead of shadows, square corners. The
+   one light surface is the reader's Daylight page ([data-page="day"]). The lamp room's colours stay below as primitives
+   only for what still names them.
 
    Two layers:
    - primitives: design A's colours, the spacing steps and the type sizes;
@@ -51,6 +54,8 @@
   --red-deep: #1b0907;
   --red-chip: #6d2216;
   --red-surface: #26100c;   /* a raised surface in the doorway */
+  --red-surface-2: #36150f; /* a band across it, a hover, a pressed chip */
+  --bone-3: #9c7d66;        /* the quietest words (small print) */
   --room-chip: #1a130b;     /* a pressed chip in the lamp room */
   /* the second accent: the doorway's gold, for small text */
   --ochre-red: #a65d40;
@@ -71,10 +76,10 @@
   --sienna: #8c460a;   /* A's #a8550f, a shade deeper so that small text on the paper meets the 4.5:1 contrast rule */
   --sienna-deep: #5e2f08;
   /* lines: lamplight thinned to a hair */
-  --line-1: rgba(255, 173, 69, 0.1);
-  --line-2: rgba(255, 173, 69, 0.28);
+  --line-1: rgba(232, 189, 112, 0.1);
+  --line-2: rgba(232, 189, 112, 0.32);
   --cut-dark: rgba(0, 0, 0, 0.62);
-  --cut-light: rgba(255, 173, 69, 0.06);
+  --cut-light: rgba(232, 189, 112, 0.06);
   --black-62: rgba(0, 0, 0, 0.62);
   --none-shadow: 0 0 0 0 transparent;   /* an empty place in a list of shadows */
 
@@ -98,8 +103,8 @@
   --step-4: clamp(3rem, 6.6vw, 6.2rem);       /* a page's title */
 
   /* typefaces: design A's (its DESIGN.md, Type). The next/font variables are set in app/layout.tsx.
-     Display: Noto Serif Display, condensed (font-stretch 62.5%) and thin. Text: Literata in the lamp room, EB Garamond in
-     the doorway. Greek falls back to Gentium Book Plus. Labels: Noto Sans Mono. The mark: Noto Sans Display. */
+     Display: Noto Serif Display, condensed (font-stretch 62.5%) and thin. Text: EB Garamond, the doorway's (Literata was
+     the lamp room's). Greek falls back to Gentium Book Plus. Labels: Noto Sans Mono. The mark: Noto Sans Display. */
   --face-display: var(--font-display), "Noto Serif Display", "Noto Serif", Georgia, serif;
   --face-text: var(--font-literata), "Literata", var(--font-gentium), Georgia, serif;
   --face-garamond: var(--font-garamond), "EB Garamond", var(--font-gentium), Georgia, serif;
@@ -137,43 +142,44 @@
   /* ---------------------------------------------------------- semantic tokens */
   --bg: var(--stone-0);            /* the page: black (design A: "Pages are black, and pictures appear through framed openings") */
   --bg-deep: var(--stone-0);       /* the black frame, and deep recesses */
-  --bg-2: var(--stone-3);          /* hover, and bands across the room */
-  --surface: var(--stone-2);       /* a raised surface */
-  --surface-2: var(--stone-3);     /* a pressed chip */
-  --ink: var(--ivory-1);
-  --ink-2: var(--ivory-2);
-  --ink-3: var(--ivory-3);
-  --accent: var(--honey);
-  --accent-hi: var(--honey-hi);
-  --accent-ink: var(--on-honey);   /* text on an accent-coloured field */
-  --accent-2: var(--ochre-red-text);
+  --bg-2: var(--red-surface-2);    /* hover, and bands across the page */
+  --surface: var(--red-surface);   /* a raised surface: Pompeian red, darkened */
+  --surface-2: var(--red-surface-2);   /* a pressed chip */
+  --ink: var(--bone);
+  --ink-2: var(--bone-2);
+  --ink-3: var(--bone-3);
+  --accent: var(--gold);
+  --accent-hi: var(--gold-hi);
+  --accent-ink: var(--red);        /* text on an accent-coloured field */
+  --accent-2: var(--gold);
   --band: var(--line-2);
-  --white-slip: var(--stone-3);
+  --white-slip: var(--red-surface-2);
   --blue: var(--patina);           /* certainty: well established; a second, cooler mark in the reader */
-  --ochre: var(--amber);           /* certainty: debated; finds in the reader */
+  --ochre: var(--gold);            /* certainty: debated; finds in the reader */
   --legend: #d4917a;               /* certainty: legend */
-  --rule: rgba(255, 173, 69, 0.16);   /* design A's --line in the lamp room */
+  --rule: rgba(232, 189, 112, 0.22);   /* design A's --line in the doorway */
   --rule-2: var(--line-2);
   --cut-d: var(--rule);
   --cut-l: transparent;
   --cut-deep: rgba(0, 0, 0, 0.6);
   --shadow: rgba(0, 0, 0, 0.6);
 
-  /* surfaces: every panel is a thin lamplit line round the dark, never a raised, shadowed box */
-  --field: rgba(255, 173, 69, 0.025);   /* a panel set in the page */
+  /* surfaces: every panel is a thin gold line round a wash of Pompeian red (the home page's "Where are you starting?"),
+     never a raised, shadowed box */
+  --field: rgba(92, 25, 16, 0.4);   /* a panel set in the page */
   --field-edge: inset 0 0 0 1px var(--rule);
   --slab: transparent;             /* a panel or a button standing on the page: a fine line round it */
   --slab-edge: inset 0 0 0 1px var(--rule);
-  --slab-lit: rgba(255, 173, 69, 0.06);   /* one under the hand, or the chosen one */
-  --moulding: 1px solid rgba(255, 173, 69, 0.08);
+  --slab-lit: rgba(232, 189, 112, 0.07);   /* one under the hand, or the chosen one */
+  --moulding: 1px solid rgba(232, 189, 112, 0.1);
   --moulding-in: -8px;
   --plinth-edge: inset 0 1px 0 0 var(--rule);   /* the foot of every page: a fine line along its top */
   --broken-edge: var(--none-shadow);
   /* a field to type in */
-  --hollow: var(--stone-2);
+  --hollow: var(--red-deep);
   --hollow-edge: inset 0 0 0 1px var(--rule);
   --hollow-focus: inset 0 0 0 1px var(--accent);
-  /* a line across the page: one hair of lamplight */
+  /* a line across the page: one hair of gold */
   --groove: var(--rule);
   --lip: transparent;
   --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
@@ -197,11 +203,11 @@
   --inlay-top-blue: inset 0 1px 0 var(--blue);
   --chosen-foot: inset 0 -1px 0 var(--sel-edge);   /* the chosen one of a set of choices: a line of lamplight along its foot */
   /* a channel for a bar or a meter, and the lamplight that fills it */
-  --channel: rgba(255, 173, 69, 0.08);
+  --channel: rgba(232, 189, 112, 0.1);
   --channel-edge: inset 0 0 0 1px var(--rule);
-  --inlay: linear-gradient(var(--honey), var(--honey));
-  --inlay-side: linear-gradient(var(--honey), var(--honey));
-  --inlay-dim: linear-gradient(rgba(255, 173, 69, 0.5), rgba(255, 173, 69, 0.5));
+  --inlay: linear-gradient(var(--gold), var(--gold));
+  --inlay-side: linear-gradient(var(--gold), var(--gold));
+  --inlay-dim: linear-gradient(rgba(232, 189, 112, 0.5), rgba(232, 189, 112, 0.5));
   --inlay-edge: var(--none-shadow);
   --inlay-drop: var(--none-shadow);
   --inlay-press: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
@@ -217,53 +223,52 @@
   --gilt: linear-gradient(var(--gold), var(--gold));
   --gilt-cut: drop-shadow(0 0 0 transparent);
   --block-light: linear-gradient(transparent, transparent);
-  --lip-hi: rgba(255, 173, 69, 0.22);   /* an edge under the lamp */
-  --tympanum: var(--stone-1);
+  --lip-hi: rgba(232, 189, 112, 0.24);   /* an edge in the light */
+  --tympanum: var(--red-deep);
   /* the small maps' land and sea */
-  --map-land-wash: rgba(70, 50, 30, 0.5);
+  --map-land-wash: rgba(92, 42, 26, 0.5);
   --map-sea-wash: rgba(4, 3, 2, 0.75);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ffad45' stroke-width='1.5'/%3E%3C/svg%3E");
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23e8bd70' stroke-width='1.5'/%3E%3C/svg%3E");
   /* a column, drawn in fine lines */
-  --shaft: linear-gradient(90deg, var(--stone-0), var(--stone-3) 40%, var(--stone-4) 50%, var(--stone-3) 60%, var(--stone-0));
-  --flutes: repeating-linear-gradient(90deg, rgba(255, 173, 69, 0.08) 0 1px, transparent 1px 4px);
-  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--stone-3) 1px 6px, var(--stone-0) 6px 8px);
+  --shaft: linear-gradient(90deg, var(--stone-0), var(--red-surface) 40%, var(--red-surface-2) 50%, var(--red-surface) 60%, var(--stone-0));
+  --flutes: repeating-linear-gradient(90deg, rgba(232, 189, 112, 0.08) 0 1px, transparent 1px 4px);
+  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--red-surface) 1px 6px, var(--stone-0) 6px 8px);
   --capital-shadow: linear-gradient(transparent, transparent);
-  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--stone-2) 1px);
+  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--red-surface) 1px);
   --carved-text: none;
   /* the connection light, in a fine gold ring */
   --bezel: 0 0 0 1px var(--stone-0), 0 0 0 2px var(--gold);
   --gem-shine: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 45%);
   /* the phone bar's Search: a round button ringed in gold */
-  --boss: var(--stone-2);
+  --boss: var(--red-surface);
   --boss-edge: 0 0 0 1px var(--gold);
 
   --ok: var(--sage);
-  --warn: var(--amber);
+  --warn: var(--gold);
   --danger: var(--ember);
-  --glow-torch: rgba(255, 173, 69, 0.16);
+  --glow-torch: rgba(232, 189, 112, 0.16);
 
-  /* selected things (pressed chips, chosen tabs): a dark chip, its words in lamplight */
-  --accent-on-ink: var(--honey);
-  --accent-ink-on-ink: var(--on-honey);
-  --ink-2-on-ink: var(--ivory-2);
-  --inv-bg: var(--stone-3);
-  --inv-fg: var(--ivory-1);
+  /* selected things (pressed chips, chosen tabs): the home page's red chip, its words in bone (A's .ptab[aria-selected]) */
+  --accent-on-ink: var(--gold);
+  --accent-ink-on-ink: var(--red);
+  --ink-2-on-ink: var(--bone-2);
+  --inv-bg: var(--red-chip);
+  --inv-fg: var(--bone);
   --inv-edge: var(--line-2);
-  --sel-bg: #241a0f;
-  --sel-fg: var(--honey-hi);
-  --sel-edge: var(--honey);
-  --accent-on-sel: var(--honey-hi);
+  --sel-bg: var(--red-chip);
+  --sel-fg: var(--bone);
+  --sel-edge: var(--gold);
+  --accent-on-sel: var(--gold-hi);
 
-  /* the main button (design A's .btn.solid): lamplight with dark capitals in the lamp room; a cream plate with
-     Pompeian red capitals in the doorway (the home page's tokens, below) */
-  --btn-bg: var(--amber);
-  --btn-ink: var(--room);
+  /* the main button (design A's .btn.solid in the doorway): a bone plate with Pompeian red capitals */
+  --btn-bg: var(--bone);
+  --btn-ink: var(--red);
 
 
   /* type roles */
-  --f-greek: var(--face-text);
+  --f-greek: var(--face-garamond);
   --f-display: var(--face-display);
-  --f-body: var(--face-text);
+  --f-body: var(--face-garamond);
   --f-label: var(--face-mono);
   --f-carved: var(--face-carved);
 
@@ -336,19 +341,4 @@
   --btn-bg: var(--day-ink);
   --btn-ink: var(--limestone-2);
   color-scheme: light;
-}
-
-/* ---------------------------------------------------------- the doorway: the home page (design A's body[data-screen="home"]) */
-main[data-screen="home"] {
-  --ink: var(--bone);
-  --ink-2: var(--bone-2);
-  --ink-3: var(--bone-2);
-  --accent: var(--gold);
-  --accent-hi: var(--gold-hi);
-  --accent-2: var(--gold);
-  --rule: rgba(232, 189, 112, 0.22);
-  --f-body: var(--face-garamond);
-  --f-greek: var(--face-garamond);
-  --btn-bg: var(--bone);
-  --btn-ink: var(--red);
 }

@@ -1,8 +1,9 @@
 "use client";
 /**
  * The Treasury (My Library): everything the reader has saved, in one place.
- * The overview is a Doric frieze, as on the treasuries at Delphi: each metope holds one kind of
- * offering (notes, favourite passages, bookmarks…) with its count, and opens that section.
+ * The overview is the home page's grid of rooms (the owner, 2026-10-20: "Every page must follow the design choices of the
+ * homepage"; the Treasury "seems inconsistent and boring"): nine offerings in fine gold lines, each with a small red
+ * window onto an ancient object, its count in tall gold numerals, its name and what it holds; one opens that section.
  */
 import Link from "next/link";
 import { AREAS } from "@/config/areas";
@@ -20,8 +21,18 @@ import { loadSavedPlaces, useSavedPlaces } from "@/lib/map";
 import NotebooksSection from "./NotebooksSection";
 import PrivateShelf from "./PrivateShelf";
 import { useNotebooks } from "@/lib/notebooks";
+import Win from "@/components/a/Win";
+import SettleText from "@/components/a/SettleText";
+import a from "@/components/a/a.module.css";
+import { PIECE_CREDITS } from "@/data/pieces";
 
 export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
+
+/** each offering's small window: an ancient object from the Met's open collection (data/pieces.ts), chosen to suit it */
+const PIECES: Record<Exclude<SectionId, "recent">, string> = {
+  notes: "teacher-and-pupil", anthology: "muse-head", bookmarks: "hand-with-scroll", highlights: "nike-relief", xrefs: "bilingual-plaque",
+  words: "decree-fragment", authors: "herodotos-bust", places: "tribute-list", notebooks: "chrysippos-head",
+};
 
 export default function Treasury() {
   const params = useSearchParams();
@@ -42,7 +53,7 @@ export default function Treasury() {
     };
   }, [marks, deck, pageNotes]);
 
-  const METOPES: { id: SectionId; label: string; n: number | null; hint: string }[] = [
+  const OFFERINGS: { id: Exclude<SectionId, "recent">; label: string; n: number | null; hint: string }[] = [
     { id: "notes", label: "Notes", n: counts.notes, hint: "on passages" },
     { id: "anthology", label: "Anthology", n: counts.anthology, hint: "favourite passages" },
     { id: "bookmarks", label: "Bookmarks", n: counts.bookmarks, hint: "and where you stopped" },
@@ -73,25 +84,23 @@ export default function Treasury() {
         </div>
       )}
 
-      <nav className={styles.facade} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
-        <svg className={styles.pediment} viewBox="0 0 1000 90" preserveAspectRatio="none" aria-hidden="true">
-          <defs><linearGradient id="ped-stone" x1="0" y1="0" x2="0" y2="1"><stop offset="0" /><stop offset="1" /></linearGradient></defs>
-          <path className={styles.cornice} d="M0 90 L500 4 L1000 90 Z" />
-          <path className={styles.tympanum} d="M64 84 L500 19 L936 84 Z" />
-          <path className={styles.cut} d="M64 84 L500 19 L936 84" />
-          <path className={styles.lit} d="M0 90 L500 4 L1000 90" />
-        </svg>
-        <ol className={styles.frieze}>
-          {METOPES.map((m, i) => (
-            <li key={m.id} style={{ "--i": i } as React.CSSProperties}>
-              <button type="button" className={styles.metope} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
-                data-empty={m.n === 0 || m.n === null ? "" : undefined}>
-                <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
-                <span className={styles.metopeLabel}>{m.label}</span>
-                <span className={styles.metopeHint}>{m.hint}</span>
-              </button>
-            </li>
-          ))}
+      <nav className={styles.offerings} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
+        <div className={a["sec-h"]}><SettleText className={a.mono} text="Nine kinds of offering" /><SettleText className={a.mono} text="What you have kept" /></div>
+        <ol className={styles.ogrid}>
+          {OFFERINGS.map((m, i) => {
+            const piece = PIECE_CREDITS[PIECES[m.id]];
+            return (
+              <li key={m.id} style={{ "--i": i } as React.CSSProperties}>
+                <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
+                  data-empty={m.n === 0 || m.n === null ? "" : undefined}>
+                  <Win className={`${a.win} ${styles.owin}`} src={`/images/a/pieces/${PIECES[m.id]}.png`} label={`${piece.title}, engraved in gold lines`} capClass={a.wcap} decorative />
+                  <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
+                  <span className={styles.offerLabel}>{m.label}</span>
+                  <span className={styles.offerHint}>{m.hint}</span>
+                </button>
+              </li>
+            );
+          })}
         </ol>
       </nav>
 
@@ -120,6 +129,12 @@ export default function Treasury() {
         <b>Read without a connection</b>
         <span>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</span>
       </Link>
+
+      {/* the nine small windows, credited as the door's red window is */}
+      <p className={a.cap}>The small windows, from The Metropolitan Museum of Art, New York (open access, CC0): {OFFERINGS.map((m, i) => {
+        const c = PIECE_CREDITS[PIECES[m.id]];
+        return <span key={m.id}>{i ? "; " : ""}{m.label}, {c.title.charAt(0).toLowerCase() + c.title.slice(1)}, {c.date}</span>;
+      })}.</p>
     </div>
   );
 }

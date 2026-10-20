@@ -1,72 +1,43 @@
 /* ================================================================ the Treasury */
-/* Stone and torch: panels are sunk into the wall or set on it as slabs, rows are divided by cut lines. The façade is carved
-   (the owner, 2026-10-17: every page element in stone): a gable of solid stone over a Doric frieze, its triglyphs standing
-   proud and its metopes sunk between them. */
+/* In the home page's look: fine gold lines, panels washed in Pompeian red, tall gold numerals. */
 .treasury { display: grid; gap: clamp(28px, 4vw, 44px); padding-block: var(--after-head) var(--space-5); }
 .error { color: var(--accent); }
 .small { font-size: 0.88rem; color: var(--ink-2); }
 
-/* ------------------------------------------------ façade: pediment, Doric frieze, architrave */
-.facade { position: relative; display: grid; }
-/* the gable: a raking cornice of lit stone round a tympanum sunk into it; it rises into place, it is not drawn */
-.pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; animation: rise calc(0.7s / var(--tempo)) var(--ease) calc(0.1s / var(--tempo)) backwards; }
-.pediment .cornice { fill: url(#ped-stone); }
-.pediment .tympanum { fill: var(--tympanum); }
-/* the raking cornice's top edge is gilded, a thin gold line laid along the stone (as the live gable was a line of gold) */
-.pediment .lit { fill: none; stroke: var(--accent); stroke-opacity: 0.85; stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
-.pediment .cut { fill: none; stroke: var(--cut-deep); stroke-width: 2; vector-effect: non-scaling-stroke; stroke-linejoin: miter; }
-.pediment stop:first-child { stop-color: var(--stone-4); }
-.pediment stop:last-child { stop-color: var(--stone-2); }
-
-/* A Doric frieze: triglyphs (grooved blocks standing proud) alternating with metopes (panels sunk between them), a
-   triglyph at each end. */
-.frieze {
-  --tri: 18px;
-  /* a triglyph as the Greeks cut it, the same from either side: a half-groove at each edge, two whole grooves between;
-     each groove is a shadowed channel with its right-hand side catching the light */
-  --triglyph: linear-gradient(90deg, var(--cut-deep) 0 6.33%, var(--lip-hi) 6.33% 8.33%, transparent 8.33% 25%, var(--cut-deep) 25% 39.67%, var(--lip-hi) 39.67% 41.67%,
-    transparent 41.67% 58.33%, var(--cut-deep) 58.33% 73%, var(--lip-hi) 73% 75%, transparent 75% 91.67%, var(--cut-deep) 91.67% 100%);   /* in proportion, so it scales with --tri */
-  list-style: none; margin: 0; padding: 0 var(--tri) 0 0;
-  display: grid; grid-template-columns: repeat(9, minmax(0, 1fr));
-  border-top: 3px solid var(--stone-4); border-bottom: 3px solid var(--stone-0); box-shadow: var(--lintel-shadow);
-  background: var(--block-light), var(--triglyph), var(--stone-4); background-size: var(--tri) 100%; background-position: right top; background-repeat: no-repeat;
-  --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
-}
-.frieze li { position: relative; display: grid; padding-left: var(--tri); animation: rise calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.5s / var(--tempo)) + var(--i) * (70ms / var(--tempo))); }
-.frieze li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--tri); background: var(--block-light), var(--triglyph), var(--stone-4); }
+/* ------------------------------------------------ the nine offerings: the home page's grid of rooms (a.module.css .rgrid) */
+.offerings { display: grid; }
+.offerings > div:first-child { margin-bottom: 0; }   /* the home page's section head (.sec-h), its line over the grid */
+.ogrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.ogrid li { display: grid; border-bottom: 1px solid var(--rule); animation: rise calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.3s / var(--tempo)) + var(--i) * (60ms / var(--tempo))); }
+.ogrid li:not(:nth-child(3n)) { border-right: 1px solid var(--rule); }
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
-
-.metope {
-  position: relative; display: grid; align-content: start; justify-items: center; gap: 2px; text-align: center;   /* from the top, the number first, so the numbers of all the tiles stand on one line */
-  min-height: 132px; padding: 18px 10px 14px; margin: 0;
-  background: var(--bg-deep) var(--tex, none) 0 0 / 420px 420px; box-shadow: var(--field-edge); color: var(--ink); border: 0; border-radius: 0;
-  transition: background-color 0.3s, color 0.3s;
+/* one offering: its window at the left, then its count in tall gold numerals, its name and what it holds */
+.offer {
+  display: grid; grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 18px; align-items: start; text-align: left;
+  padding: 18px 18px 18px 0; margin: 0; border: 0; border-radius: 0; background: transparent; color: var(--ink);
+  transition: background-color 0.3s;
 }
-.metope:hover { background-color: var(--stone-2); }
-.metope[aria-current="page"] { background-color: var(--stone-3); box-shadow: var(--field-edge), var(--chosen-foot); }
-.metope[aria-current="page"] .count { color: var(--accent); }
-.count { font-family: var(--f-display); font-size: clamp(2rem, 3.4vw, 2.8rem); line-height: 1; font-variant-numeric: lining-nums tabular-nums; text-shadow: var(--carved-text); }
-.metope[data-empty] .count { opacity: 0.35; }
-.metopeLabel { font-family: var(--f-label); font-size: 0.95rem; letter-spacing: 0.06em; margin-top: 6px; }
-.metopeHint { font-size: 0.8rem; color: var(--ink-2); line-height: 1.25; }
-/* a panel cut within the panel, as round a carved metope: its upper and left edges in shadow, the others lit */
-.metope::after { content: ""; position: absolute; inset: 6px; box-shadow: var(--panel-cut); pointer-events: none; }
+.ogrid li:not(:nth-child(3n + 1)) .offer { padding-left: 18px; }
+.offer:hover { background-color: var(--surface); }
+.offer[aria-current="page"] { background-color: var(--surface); box-shadow: var(--chosen-foot); }
+.owin { grid-row: 1 / -1; width: 96px; height: 96px; }
+.count { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(2.2rem, 3.4vw, 3rem); line-height: 0.9; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
+.offer[data-empty] .count { opacity: 0.4; }
+.offerLabel { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.35rem, 1.9vw, 1.7rem); line-height: 1.05; margin-top: 6px; }
+.offerHint { font-size: 0.92rem; line-height: 1.3; color: var(--ink-2); }
+/* a Treasury with nothing in it: the nine wait quietly, their zeros as dots */
+.offerings[data-bare] .offer { color: var(--ink-2); }
 
-/* nine panels in a row on a computer: the labels a size smaller, so "Highlights" and "references" stay inside their panels */
-@media (min-width: 1101px) {
-  .metope { padding-inline: 6px; }
-  .metopeLabel { font-size: 0.84rem; letter-spacing: 0.03em; }
-}
-@media (max-width: 1100px) {
-  .frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
+/* narrower: three to a row without their windows, each centred, as the old frieze was */
+@media (max-width: 860px) {
+  .offer { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 16px 8px; min-height: 120px; }
+  .ogrid li:not(:nth-child(3n + 1)) .offer { padding-left: 8px; }
+  .owin { display: none; }
 }
 @media (max-width: 520px) {
-  .frieze { grid-template-columns: repeat(3, minmax(0, 1fr)); --tri: 10px; }
-  .frieze li:nth-child(n + 4) { border-top: 3px solid var(--stone-4); }
-  .metope { min-height: 104px; padding-inline: 6px; }
-  /* the labels in A's narrow capitals fit a third of a phone's width */
-  .metopeLabel { font-size: 0.8rem; letter-spacing: 0.02em; overflow-wrap: anywhere; }
+  .offer { min-height: 104px; padding-inline: 4px; }
+  .offerLabel { font-size: 1.15rem; overflow-wrap: anywhere; }
+  .offerHint { font-size: 0.8rem; }
 }
 
 /* ------------------------------------------------ the moderator's private translations (PrivateShelf.tsx), under the frieze */
@@ -102,8 +73,6 @@
 
 .welcome { display: grid; gap: var(--space-4); justify-items: start; max-width: 70ch; }
 .welcome p { margin: 0; }
-/* with nothing saved, the nine sections wait quietly: their zeros are dots, and the stone is dimmed */
-.facade[data-bare] .metope { color: var(--ink-2); }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
 .filters input[type="search"], .inlineForm input, .pick input {
@@ -265,7 +234,7 @@
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
 .places { display: grid; gap: var(--space-4); }
 .places h2 { margin: 0; }
-.miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--stone-3) var(--tex, none) center / 420px 420px; }
+.miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--surface) var(--tex, none) center / 420px 420px; }
 .mmLand { fill: var(--map-land-wash); }
 .mmSea { fill: var(--map-sea-wash); fill-rule: evenodd; stroke: var(--map-coast); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .mmPlace { animation: mmIn calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo))); }

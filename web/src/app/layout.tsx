@@ -73,8 +73,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <a className="skip" href="#main">Skip to content</a>
         <SettingsApplier />
         <LamplightLevel />
-        {/* design A's faint scan lines, still, over the page (globals.css, .scan) */}
-        <div className="scan" aria-hidden="true" />
         <Header />
         {children}
         <Footer />

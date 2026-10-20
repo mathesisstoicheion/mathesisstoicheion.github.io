@@ -66,10 +66,8 @@ html { background: var(--bg); }
 /* the doorway (the home page) reads in EB Garamond, the lamp room in Literata (styles/tokens.css) */
 main[data-screen] { font-family: var(--f-body); }
 
-/* design A's faint scan lines, still, over the library and the other lamp-room pages; none on the home page or in the
-   reader (A's --scan-op). Plain transparency, never a blend mode (A's DESIGN.md: Avoid). */
-.scan { position: fixed; inset: 0; pointer-events: none; z-index: 41; opacity: 0.32; background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, 0.2) 0 1px, transparent 1px 3px); }
-html:has(main[data-screen="home"]) .scan, html:has(main[data-screen="reader"]) .scan, html:has([data-page="day"]) .scan { display: none; }
+/* the home page's floating letters, behind every other page's words (components/Page.tsx; the home page has its own) */
+.page-dust { position: fixed; inset: 0; z-index: -1; pointer-events: none; width: 100%; height: 100%; display: block; }
 /* design A's reader with one book open: its own bar along the top is the way home and back to the library, so the site's
    header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
 html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
@@ -216,7 +214,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   background-color: var(--hollow); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: none;
 }
 :where(input, textarea, select):focus-visible { outline: none; border-color: var(--accent); }
-:where(select) option { background-color: var(--stone-2); color: var(--ink); }
+:where(select) option { background-color: var(--surface); color: var(--ink); }
 /* a drop-down keeps the hollow, with a small gilded chevron at its right end in place of the browser's own arrow
    (stronger than :where so that a module's own background shorthand does not wipe it) */
 select:not([multiple]):not([size]) {
@@ -412,7 +410,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   letter-spacing: .16em; color: var(--accent); }
 .ph-short .ph-inscr { font-size: clamp(1.1rem, 1.9vw, 1.6rem); margin-top: var(--space-3); }
 /* every page's title in the library's hand (the mix, 2026-10-19): A's narrow capitals in italic, in the lamp's bright gold */
-.ph .ph-title { color: var(--amber-hi); font-style: italic; line-height: 1.02; margin-top: var(--space-4); }
+.ph .ph-title { color: var(--accent-hi); font-style: italic; line-height: 1.02; margin-top: var(--space-4); }
 .ph .ph-title .ph-greek { font-style: normal; }
 .ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5rem); }
 .ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin-top: var(--space-3); }

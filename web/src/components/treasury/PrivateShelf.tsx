@@ -1,6 +1,6 @@
 "use client";
 /**
- * The moderator's private translations, in Mine (owner's request, 2026-10-14): a way in, under the frieze, shown to
+ * The moderator's private translations, in Mine (owner's request, 2026-10-14): a way in, under the offerings, shown to
  * the moderator alone, with how many translations are on the shelf. As for keeping the Treasury in step, Supabase is
  * contacted only when this browser is already signed in, and the private table only once the account is known to be
  * the moderator's. Anyone else sees nothing here, and the database would hand them nothing anyway.
@@ -36,7 +36,7 @@ export default function PrivateShelf() {
       {n !== "?" && (
         <span className={styles.privateCount}>
           <span className={styles.count}>{n ?? "…"}</span>{" "}
-          <span className={styles.metopeHint}>{n === 1 ? "translation" : "translations"}</span>
+          <span className={styles.offerHint}>{n === 1 ? "translation" : "translations"}</span>
         </span>
       )}
       <span className={styles.privateGo} aria-hidden="true">Open the shelf →</span>
