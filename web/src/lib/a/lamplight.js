@@ -377,7 +377,7 @@ const Glide={y:0,target:null,anim:null,raf:0,lt:0,tm:0,held:false,going:false,on
   on(){return this.on_&&!reduce},
   max(){return Math.max(0,document.documentElement.scrollHeight-innerHeight)},
   points(){const M=this.max();return [0,M,...this.pts()].map(v=>clamp(v,0,M))},
-  wheel(e){if(!this.on()||e.ctrlKey)return;if(e.target&&e.target.closest&&e.target.closest("[data-own-scroll]"))return;e.preventDefault();this.anim=null;
+  wheel(e){if(!this.on()||e.ctrlKey||document.documentElement.hasAttribute("data-scroll-lock"))return;if(e.target&&e.target.closest&&e.target.closest("[data-own-scroll],[data-overlay]"))return;e.preventDefault();this.anim=null;
     const d=e.deltaMode===1?e.deltaY*32:e.deltaMode===2?e.deltaY*innerHeight:e.deltaY;
     if(this.target===null)this.y=this.target=scrollY;
     this.target=clamp(this.target+d*.6,0,this.max());this.run()},

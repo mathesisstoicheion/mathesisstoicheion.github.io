@@ -2,7 +2,7 @@ import type { Page } from "@playwright/test";
 
 // The reader's bar (design A's, at the top on every screen) keeps most controls behind drop-downs (Reader.tsx, Drop.tsx):
 // "Change" beside the edition's name (the edition selects, Compare, a second book, the private collection), "Tools" (the
-// page and passage, the reading aids, Find and Listen) and "More" (⋯: Markers, Float, Keys). Each helper opens its menu
+// page and passage, the reading aids, Find and Listen) and "More" (⋯: scroll-bar signs, Float, Keys). Each helper opens its menu
 // unless it is already open and returns the menu's panel.
 async function open(page: Page, name: string) {
   const button = page.getByRole("button", { name, exact: true }).first();

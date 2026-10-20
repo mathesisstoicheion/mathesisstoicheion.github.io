@@ -26,6 +26,7 @@ import { useUI } from "@/lib/ui";
 import { AREAS, FORUM_OPEN, shown } from "@/config/areas";
 import GreekKeyboard from "./GreekKeyboard";
 import styles from "./QuickSearch.module.css";
+import { useScrollLock } from "@/lib/overlay";
 
 /** What the search needs of each wiki entry, lesson and guide; loaded only when the box opens. */
 type Item = { href: string; title: string; greek?: string; about: string; words?: string[]; kind: string };
@@ -35,6 +36,8 @@ const GROUP_TITLE: Record<GroupId, string> = {
   goto: "Go to", word: "The word", texts: "Texts and authors", academy: "Learn Greek", stoa: "Painted Stoa",
   places: "On the map", pages: "Pages", actions: "Do it", everywhere: "Search everywhere",
 };
+/** a row's own label is left out where it only repeats its group's title ("On the map" under "On the map") */
+const repeats = (kind: string, title: string) => { const n = (t: string) => t.toLowerCase().replace(/s$/, ""); return n(kind) === n(title); };
 
 interface Option { id: string; group: GroupId; kind: string; label: React.ReactNode; href?: string; run?: ActionId; greek?: boolean }
 
@@ -91,7 +94,8 @@ function Box({ onClose }: { onClose: () => void }) {
   const [word, setWord] = useState<{ q: string; head: string; def: string; rank: number | null } | null>(null);
   // the box is only ever drawn in the browser (it opens on a click or a key), so these can be read at once
   const [recent, setRecent] = useState<string[]>(() => recentSearches());
-  const [visits] = useState<Visit[]>(() => trail().slice(0, 3));
+  // only real places to go back to: never the home page, nor the page you are on
+  const [visits] = useState<Visit[]>(() => trail().filter((v) => v.href !== "/" && v.href !== location.pathname + location.search).slice(0, 3));
   const [kbd, setKbd] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
   const input = useRef<HTMLInputElement>(null);
@@ -107,6 +111,7 @@ function Box({ onClose }: { onClose: () => void }) {
     return () => { vv.removeEventListener("resize", fit); vv.removeEventListener("scroll", fit); };
   }, []);
 
+  useScrollLock(true);
   useEffect(() => {
     dialog.current?.showModal();
     loadCatalog().then(setIdx, () => undefined);
@@ -272,7 +277,7 @@ function Box({ onClose }: { onClose: () => void }) {
   });
 
   return (
-    <dialog ref={dialog} className={styles.dialog} aria-label="Quick search" onClose={onClose}
+    <dialog ref={dialog} className={styles.dialog} aria-label="Quick search" onClose={onClose} data-overlay=""
       onClick={(e) => { if (e.target === dialog.current) onClose(); }}>
       <div className={styles.inner}>
         <div className={styles.head}>
@@ -300,7 +305,7 @@ function Box({ onClose }: { onClose: () => void }) {
                 {g.opts.map(({ o, i }) => (
                   <div key={o.id} id={`qs-${i}`} role="option" aria-selected={i === cur} className={styles.opt} data-group={o.group}
                     onMouseEnter={() => setSel(i)} onClick={() => choose(o)}>
-                    <span className={styles.kind}>{o.kind}</span> <span className={styles.what}>{o.label}</span>
+                    {!repeats(o.kind, GROUP_TITLE[g.id]) && <><span className={styles.kind}>{o.kind}</span> </>}<span className={styles.what}>{o.label}</span>
                   </div>
                 ))}
               </div>

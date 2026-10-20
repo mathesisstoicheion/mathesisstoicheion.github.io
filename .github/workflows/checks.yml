@@ -31,3 +31,6 @@ jobs:
       - name: Words visible on first paint (slice 1)
         working-directory: web
         run: npm run check:first-paint
+      - name: Overlays hold the page, close on Escape, give focus back (slice 5)
+        working-directory: web
+        run: npm run check:overlays

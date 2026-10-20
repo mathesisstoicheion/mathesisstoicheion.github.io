@@ -51,16 +51,16 @@ test("markers beside the scroll bar show notes and bookmarks, preview them and j
   await act(page, "Note");
   await page.getByLabel("Your note", { exact: true }).fill("Agamemnon refuses the ransom.");
   await page.getByRole("button", { name: /^(Done|Saving…)$/ }).click();
-  const markers = page.getByRole("list", { name: "Markers on this page" });
+  const markers = page.getByRole("list", { name: "Scroll-bar signs on this page" });
   await expect(markers.getByRole("listitem", { name: /^Bookmark at 1\.5/ })).toBeVisible();
   const note = markers.getByRole("listitem", { name: /^Note at 1\.30/ });
   await note.hover();
   await expect(page.getByRole("tooltip")).toContainText("Agamemnon refuses the ransom.");
   // the legend switches a kind off
   await openMore(page);
-  await page.getByRole("group", { name: "Markers beside the scroll bar" }).getByLabel("Bookmarks").uncheck();
+  await page.getByRole("group", { name: "Scroll-bar signs" }).getByLabel("Bookmarks").uncheck();
   await expect(markers.getByRole("listitem", { name: /^Bookmark at/ })).toHaveCount(0);
-  await page.getByRole("group", { name: "Markers beside the scroll bar" }).getByLabel("Bookmarks").check();
+  await page.getByRole("group", { name: "Scroll-bar signs" }).getByLabel("Bookmarks").check();
   // jump: the note's passage comes to the top
   await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight }));
   await note.click();

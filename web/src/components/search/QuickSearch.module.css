@@ -3,7 +3,7 @@
   background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge);   /* a pop-over: it stays opaque */
   animation: drop calc(0.25s / var(--tempo)) var(--ease);
 }
-.dialog::backdrop { background: var(--veil); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.dialog::backdrop { background: var(--scrim); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
 @keyframes drop { from { opacity: 0; transform: translateY(-10px) scale(0.98); } }
 .inner { display: grid; }
 .head { position: relative; display: flex; align-items: stretch; }

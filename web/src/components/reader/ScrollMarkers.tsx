@@ -72,7 +72,7 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
   if (!visible.length) return null;
   return (
     <div className={styles.strip} style={{ top: contained ? 0 : "var(--hdr-vis)" }} aria-hidden={false}>
-      <div className={styles.track} style={{ height }} role="list" aria-label="Markers on this page">
+      <div className={styles.track} style={{ height }} role="list" aria-label="Scroll-bar signs on this page">
         {visible.map((p, i) => (
           <button key={p.id} type="button" role="listitem" className={styles.marker} data-kind={p.kind} data-colour={p.colour}
             style={{ top: p.top, "--i": i } as React.CSSProperties}
@@ -119,8 +119,8 @@ export function MarkersLegend({ counts, inline = false }: { counts: Partial<Reco
   ));
   if (inline) {
     return (
-      <div className={styles.legendInline} role="group" aria-label="Markers beside the scroll bar">
-        <p className="label"><span className={styles.legendIcon} aria-hidden="true" /> Markers</p>
+      <div className={styles.legendInline} role="group" aria-label="Scroll-bar signs">
+        <p className="label"><span className={styles.legendIcon} aria-hidden="true" /> Scroll-bar signs</p>
         <p className={styles.legendSub}>Beside the scroll bar, on this page</p>
         {kinds}
       </div>
@@ -131,10 +131,10 @@ export function MarkersLegend({ counts, inline = false }: { counts: Partial<Reco
       onKeyDown={(e) => { if (e.key === "Escape" && open) { e.stopPropagation(); setOpen(false); box.current?.querySelector("button")?.focus(); } }}>
       <button type="button" className={styles.legendBtn} aria-expanded={open} title="What the marks beside the scroll bar mean"
         onClick={() => { setToRight((box.current?.getBoundingClientRect().right ?? 999) < 290); setOpen(!open); }}>
-        <span className={styles.legendIcon} aria-hidden="true" /> Markers
+        <span className={styles.legendIcon} aria-hidden="true" /> Scroll-bar signs
       </button>
       {open && (
-        <div className={styles.legend} data-to-right={toRight || undefined} role="group" aria-label="Markers beside the scroll bar">
+        <div className={styles.legend} data-to-right={toRight || undefined} role="group" aria-label="Scroll-bar signs">
           <p className="label">Beside the scroll bar, on this page</p>
           {kinds}
         </div>

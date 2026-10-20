@@ -13,6 +13,7 @@ import { AREAS, FORUM_OPEN, TABS, doorWord, shown, type AreaId } from "@/config/
 import { useUI } from "@/lib/ui";
 import { status, useConnection } from "@/lib/connection";
 import { barsHeld } from "@/lib/header";
+import { guardOverlayWheel, useScrollLock } from "@/lib/overlay";
 import Mark from "@/components/a/Mark";
 import ConnectionLight from "./ConnectionLight";
 import AccountButton from "./AccountButton";
@@ -38,6 +39,8 @@ export default function Header() {
   const ref = useRef<HTMLElement>(null);
   const showRef = useRef<() => void>(null);
   const [menu, setMenu] = useState(false);
+  useScrollLock(menu);
+  useEffect(guardOverlayWheel, []);
 
   // Reading on tucks the phone bars away, any scroll up brings them back (see lib/header.ts).
   useEffect(() => {
@@ -141,7 +144,7 @@ export default function Header() {
         </button>
       </div>
       {menu && (
-        <nav id="site-menu" className={styles.menu} aria-label="Menu">
+        <nav id="site-menu" className={styles.menu} aria-label="Menu" data-overlay="">
           <ul className={styles.menuDoors}>
             {MENU_DOORS.map((id) => (
               <li key={id}>

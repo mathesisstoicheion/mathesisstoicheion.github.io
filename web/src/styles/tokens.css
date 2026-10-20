@@ -56,6 +56,8 @@
   --red-surface: #26100c;   /* a raised surface in the doorway */
   --red-surface-2: #36150f; /* a band across it, a hover, a pressed chip */
   --bone-3: #9c7d66;        /* the quietest words (small print) */
+  /* behind a modal (the search, the settings): a dark, neutral shade that keeps the page's colours true */
+  --scrim: rgba(0, 0, 0, 0.72);
   /* a window onto art before its picture opens: dim Pompeian red with fine engraved hatching, never a black box */
   --win-wait: repeating-linear-gradient(135deg, color-mix(in srgb, var(--gold) 7%, transparent) 0 1px, transparent 1px 6px),
     color-mix(in srgb, var(--red) 55%, var(--black));

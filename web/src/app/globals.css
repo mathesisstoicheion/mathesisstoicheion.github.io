@@ -357,6 +357,11 @@ html[data-motion="reduce"] ::view-transition-group(*),
 html[data-motion="reduce"] ::view-transition-old(*),
 html[data-motion="reduce"] ::view-transition-new(*) { animation: none !important; }
 
+/* while a modal is open the page behind it stays still (lib/overlay.ts); panels keep their own scrolling to themselves */
+html[data-scroll-lock] { overflow: hidden; }
+html[data-scroll-lock="gutter"] { scrollbar-gutter: stable; }
+[data-overlay] { overscroll-behavior: contain; }
+
 /* keep the header still while pages turn, and never swallow clicks */
 ::view-transition { pointer-events: none; }
 ::view-transition-group(site-header) { animation: none; z-index: 100; }

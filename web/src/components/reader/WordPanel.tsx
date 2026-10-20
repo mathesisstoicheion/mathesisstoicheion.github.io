@@ -286,7 +286,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const quick = (core.key === lsjKey && core.value?.def) || l?.value?.entries[0]?.s || "";
 
   return (
-    <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""}`} data-snap={snap} aria-label={`Look-up: ${word}`} tabIndex={-1}
+    <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""}`} data-snap={snap} data-overlay="" aria-label={`Look-up: ${word}`} tabIndex={-1}
       onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
       <div className={styles.panelHead} {...(sheet ? gestures.head : {})}>
         {sheet && <span className={styles.grab} aria-hidden="true" />}

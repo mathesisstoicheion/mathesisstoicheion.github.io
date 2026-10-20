@@ -1,16 +1,16 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettings, LIMITS, applySettings, type ThemePref, type AnimLevel, type GreekFace, type TextFace } from "@/lib/settings";
+import { useSettings, applySettings, type AnimLevel } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
 import OfflineActions from "./OfflineActions";
 import Link from "next/link";
 import styles from "./SettingsPanel.module.css";
+import { useScrollLock } from "@/lib/overlay";
+import ReadingControls, { Segmented } from "./ReadingControls";
 
-// the site is dark; the reader's page can be Lamplight or Daylight (warm paper), against eye strain (design A's names)
-const PAGES: [ThemePref, string][] = [["dark", "Lamplight"], ["light", "Daylight"]];
 // the three levels of animation (lib/settings.ts, AnimLevel)
 const LEVELS: [AnimLevel, string][] = [["full", "Full beauty"], ["balanced", "Balanced"], ["performance", "Performance"]];
 const LEVEL_HINT: Record<AnimLevel, string> = {
@@ -19,31 +19,6 @@ const LEVEL_HINT: Record<AnimLevel, string> = {
   performance: "The art is drawn once and holds still, and pages open without animation. For older computers and phones.",
 };
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
-/** Each choice shown in its own typeface (the font variables come from layout.tsx). */
-const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
-  { v: "didot", name: "Garamond", about: "The site's own face", font: "var(--font-garamond)" },
-  { v: "gentium", name: "Gentium", about: "A book face made for scholarly Greek", font: "var(--font-gentium)" },
-  { v: "sans", name: "Sans", about: "Clean, without serifs", font: "var(--font-noto-sans)" },
-];
-const TEXT_FACES: { v: TextFace; name: string; font: string }[] = [
-  { v: "serif", name: "Serif", font: "var(--font-garamond)" },
-  { v: "sans", name: "Sans", font: "var(--font-alegreya-sans)" },
-];
-
-function FacePicker<T extends string>({ label, value, options, sample, lang, onChange }:
-  { label: string; value: T; options: { v: T; name: string; about?: string; font: string }[]; sample: string; lang?: string; onChange: (v: T) => void }) {
-  return (
-    <div className={styles.faces} role="radiogroup" aria-label={label}>
-      {options.map((o) => (
-        <button key={o.v} type="button" role="radio" aria-checked={value === o.v} onClick={() => onChange(o.v)} className={styles.face}>
-          <span className={styles.faceSample} lang={lang} style={{ fontFamily: o.font }}>{sample}</span>
-          <span className={styles.faceName}>{o.name}</span>
-          {o.about && <span className={styles.faceAbout}>{o.about}</span>}
-        </button>
-      ))}
-    </div>
-  );
-}
 
 /**
  * Loads saved settings after hydration (so server and client first render match) and applies
@@ -60,39 +35,27 @@ export function SettingsApplier() {
   return null;
 }
 
-function Segmented<T extends string>({ label, value, options, onChange }:
-  { label: string; value: T; options: [T, string][]; onChange: (v: T) => void }) {
-  return (
-    <div className={styles.seg} role="radiogroup" aria-label={label}>
-      {options.map(([v, text]) => (
-        <button key={v} type="button" role="radio" aria-checked={value === v} onClick={() => onChange(v)}>{text}</button>
-      ))}
-    </div>
-  );
-}
-
-function Stepper({ label, value, display, onChange, step, min, max }:
-  { label: string; value: number; display: string; onChange: (v: number) => void; step: number; min: number; max: number }) {
-  return (
-    <div className={styles.stepper}>
-      <button type="button" onClick={() => onChange(value - step)} disabled={value <= min} aria-label={`Decrease ${label}`}>−</button>
-      <output aria-live="polite">{display}</output>
-      <button type="button" onClick={() => onChange(value + step)} disabled={value >= max} aria-label={`Increase ${label}`}>+</button>
-    </div>
-  );
-}
-
 export default function SettingsPanel() {
   const open = useUI((s) => s.settingsOpen);
   const close = useUI((s) => s.closeSettings);
   const s = useSettings();
   const ref = useRef<HTMLDialogElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
+  useScrollLock(open);
 
   useEffect(() => {
     const d = ref.current;
     if (!d) return;
-    if (open && !d.open) { reset(); d.showModal(); }
+    // the keyboard goes back to whatever opened the settings once they close (scripts/check-overlays.mjs)
+    if (open && !d.open) { opener.current = document.activeElement as HTMLElement | null; reset(); d.showModal(); }
     if (!open && d.open) d.close();
+    if (!open && opener.current) {
+      const o = opener.current;
+      opener.current = null;
+      // opened from the menu, which has closed meanwhile: the menu's own button
+      if (o !== document.body && o.isConnected && o.getClientRects().length) o.focus();
+      else document.querySelector<HTMLElement>('header button[aria-label="Menu"]')?.focus();
+    }
     // reset is the same function every time in effect
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
@@ -107,6 +70,7 @@ export default function SettingsPanel() {
     <dialog
       ref={ref}
       className={styles.sheet}
+      data-overlay=""
       aria-labelledby="settings-title"
       onClose={close}
       onClick={(e) => { if (e.target === ref.current) close(); }}
@@ -120,25 +84,7 @@ export default function SettingsPanel() {
 
         <section className={styles.group}>
           <h3 className="label">Reading</h3>
-          <span className={styles.subLabel}>The reader&apos;s page</span>
-          <Segmented label="The reader's page" value={s.theme === "light" ? "light" : "dark"} options={PAGES} onChange={(theme) => s.set({ theme })} />
-          <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
-            μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
-          </p>
-          <span className={styles.subLabel}>Greek typeface</span>
-          <FacePicker label="Greek typeface" value={s.greekFace} options={GREEK_FACES} sample="Ἀχιλλεύς" lang="grc" onChange={(greekFace) => s.set({ greekFace })} />
-          <span className={styles.subLabel}>English typeface</span>
-          <FacePicker label="English typeface" value={s.textFace} options={TEXT_FACES} sample="Sing, goddess" onChange={(textFace) => s.set({ textFace })} />
-          <div className={styles.row}>
-            <span>Greek text size</span>
-            <Stepper label="Greek text size" value={s.greekSize} display={`${Math.round(s.greekSize * 16)} px`}
-              onChange={(greekSize) => s.set({ greekSize })} {...LIMITS.greekSize} />
-          </div>
-          <div className={styles.row}>
-            <span>Line spacing</span>
-            <Stepper label="line spacing" value={s.leading} display={s.leading.toFixed(1)}
-              onChange={(leading) => s.set({ leading: Math.round(leading * 10) / 10 })} {...LIMITS.leading} />
-          </div>
+          <ReadingControls />
         </section>
 
         <section className={styles.group}>

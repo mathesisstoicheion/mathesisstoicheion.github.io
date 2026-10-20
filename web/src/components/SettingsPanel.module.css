@@ -16,7 +16,7 @@
   background: rgba(10, 6, 3, 0);
   transition: background-color 0.45s, overlay 0.45s allow-discrete, display 0.45s allow-discrete;
 }
-.sheet[open]::backdrop { background: rgba(10, 6, 3, 0.35); }
+.sheet[open]::backdrop { background: var(--scrim); }
 @starting-style { .sheet[open]::backdrop { background: rgba(10, 6, 3, 0); } }
 
 .inner { display: flex; flex-direction: column; gap: 28px; padding: 24px 26px calc(40px + env(safe-area-inset-bottom, 0px)); }

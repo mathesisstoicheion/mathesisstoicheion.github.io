@@ -58,6 +58,7 @@ import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
 import { headerVisible, scrollBelowHeader } from "@/lib/header";
 import Drop from "./Drop";
 import { buzz } from "@/lib/haptics";
+import ReadingControls from "@/components/ReadingControls";
 import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
@@ -625,7 +626,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // (never below half its size; past that, lines wrap again).
   const fitOn = useSettings((s) => s.fitLines);
   const greekSize = useSettings((s) => s.greekSize);
-  const greekFace = useSettings((s) => s.greekFace);
   useEffect(() => {
     const el = textRef.current;
     if (!el || !fitOn) return;
@@ -1387,30 +1387,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ))}
     </div>
   );
-  // design A's Aa: the page, the lamp on the passage, and the size and typeface of the Greek (the same settings as in Settings)
+  // design A's Aa: the page, the lamp, the typefaces and sizes: the very same controls as Settings > Reading (ReadingControls)
   const aaPanel = (
     <div className={styles.aa}>
-      <span className="label">Page</span>
-      <div className={styles.seg} role="radiogroup" aria-label="Page">
-        <button type="button" role="radio" aria-checked={!daylight} onClick={() => setSettings({ theme: "dark" })}>Lamplight</button>
-        <button type="button" role="radio" aria-checked={daylight} onClick={() => setSettings({ theme: "light" })}>Daylight</button>
-      </div>
-      <span className="label">Lamp on the passage</span>
-      <div className={styles.seg} role="radiogroup" aria-label="Lamp on the passage">
-        <button type="button" role="radio" aria-checked={lamp} onClick={() => setSettings({ lamp: true })}>On</button>
-        <button type="button" role="radio" aria-checked={!lamp} onClick={() => setSettings({ lamp: false })}>Off</button>
-      </div>
-      <span className="label">Text size</span>
-      <div className={styles.seg} role="group" aria-label="Text size">
-        <button type="button" onClick={() => setSettings({ greekSize: greekSize - 2 * LIMITS.greekSize.step })} disabled={greekSize <= LIMITS.greekSize.min}>Smaller</button>
-        <button type="button" onClick={() => setSettings({ greekSize: greekSize + 2 * LIMITS.greekSize.step })} disabled={greekSize >= LIMITS.greekSize.max}>Larger</button>
-      </div>
-      <span className="label">Greek typeface</span>
-      <div className={styles.seg} role="radiogroup" aria-label="Greek typeface">
-        {([["didot", "Garamond"], ["gentium", "Gentium"], ["sans", "Sans"]] as const).map(([v, name]) => (
-          <button key={v} type="button" role="radio" aria-checked={greekFace === v} onClick={() => setSettings({ greekFace: v })}>{name}</button>
-        ))}
-      </div>
+      <ReadingControls />
       <p className="muted">Daylight is a warm paper page for long reading in bright rooms. The rest of the site stays dark.</p>
     </div>
   );
@@ -1520,16 +1500,23 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             ))}
           </ul>
         </Drop>
-        <Drop {...dropOf("more")} ariaLabel="More" title="Markers beside the scroll bar, the keys, and the floating reader" chevron={false}
+        <Drop {...dropOf("more")} ariaLabel="More" title="Signs beside the scroll bar, the floating reader, and the keys" chevron={false}
           label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
           className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
           <MarkersLegend inline counts={markerCounts} />
-          <div className={styles.moreActs}>
-            {!floating && pane === 1 && (
+          {/* "Marks" (the toolbar) are what you made; the signs beside the scroll bar only show where they are (slice 5) */}
+          {!floating && pane === 1 && (
+          <div className={styles.moreActs} role="group" aria-label="View">
+            <p className="label">View</p>
+            {(
               <button type="button" className={styles.floatBtn} data-closes-sheet="" onClick={() => floatAway("all")} title="Shrink the reader into a small window that follows you around the site, at the passage you are reading">
                 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v14H4zM12 12h6v5h-6z" /></svg> Float {split ? "both books" : "the reader"}
               </button>
             )}
+          </div>
+          )}
+          <div className={styles.moreActs} role="group" aria-label="Help">
+            <p className="label">Help</p>
             <button type="button" className={styles.helpBtn} data-closes-sheet="" onClick={() => setHelp((h) => !h)} aria-expanded={help}>Keys <kbd>?</kbd></button>
           </div>
         </Drop>

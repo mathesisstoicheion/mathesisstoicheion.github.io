@@ -56,7 +56,7 @@ export default function Drop({ id, open, onOpen, label, chevron = true, ariaLabe
         {label}
         {chevron && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>}
       </button>
-      <div ref={panel} id={id} className={panelClass} hidden={!open} role={panelLabel ? "group" : undefined} aria-label={panelLabel}
+      <div ref={panel} id={id} className={panelClass} hidden={!open} data-overlay="" role={panelLabel ? "group" : undefined} aria-label={panelLabel}
         onClick={(e) => { if ((e.target as Element).closest?.("[data-closes-sheet]")) onOpen(false); }}>
         {children}
       </div>

@@ -12,7 +12,8 @@
     "tokens:inventory": "node scripts/token-inventory.mjs",
     "check:tokens": "node scripts/check-tokens.mjs",
     "logo": "node scripts/make-logo.mjs",
-    "check:first-paint": "node scripts/check-first-paint.mjs http://localhost:3100"
+    "check:first-paint": "node scripts/check-first-paint.mjs http://localhost:3100",
+    "check:overlays": "node scripts/check-overlays.mjs http://localhost:3100"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
