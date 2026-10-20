@@ -118,16 +118,20 @@
   --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
   --ease-out: cubic-bezier(0, 0, 0.58, 1);
   --ease-cut: cubic-bezier(0.3, 0.6, 0.2, 1);
-  /* tempo (the owner, 2026-10-20: "They need to animate faster"): every animation that plays out once (a window opening,
-     a heading settling, a page coming in, Socrates gathering) runs this many times as fast as its written time. Stylesheets
-     divide their times by it and the scripts read it (lib/tempo.ts, lib/a/lamplight.js); quick hover responses (under half
-     a second) and endless loops keep their own pace. */
-  --tempo: 1;
+  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);   /* a page's opening: quick away, then a long soft glide into place, so a
+                                                    short animation still reads as calm rather than as a jump */
+  /* tempo (the owner, 2026-10-20: "They need to animate faster"; 20:15 UTC: "I like the speed of 3x. Just redo the Animation
+     so it opens at that speed, whilst having a pretty opening animation"): every animation that plays out once (a window
+     opening, a heading settling, a page coming in, Socrates gathering) runs this many times as fast as its written time.
+     Stylesheets divide their times by it and the scripts read it (lib/tempo.ts, lib/a/lamplight.js); quick hover responses
+     (under half a second) and endless loops keep their own pace. */
+  --tempo: 3;
   --dur-quick: 0.25s;
   --dur: 0.4s;
   --dur-slow: calc(1.2s / var(--tempo));
   --dur-enter: calc(0.9s / var(--tempo));    /* a page's name and its piece rising into place as it opens */
-  --enter-step: calc(0.1s / var(--tempo));   /* ...each line a step after the one before */
+  --enter-step: calc(0.18s / var(--tempo));  /* ...each line a step after the one before (60 ms at 3x: enough apart to read
+                                                as one line after another, not as one block) */
   --dur-fade: calc(1.6s / var(--tempo));     /* a window giving way to its picture as it comes */
 
   /* shape: thin lines, square corners, no rounded cards */

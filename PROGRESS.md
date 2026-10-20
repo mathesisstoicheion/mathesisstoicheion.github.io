@@ -20,7 +20,13 @@ then 3 times as fast and give me a video preview". 16:40: "There's a stripe on t
 - **The Treasury**: its nine sections are laid out as the home page's grid of rooms, each with a small red window onto a
   gilded Met piece (credits at the foot), its count in tall gold numerals; the windows stay on a phone, smaller.
 - **Tempo**: `--tempo` in `tokens.css` (and `lib/tempo.ts`) divides every animation that plays out once. Video of 1x, 2x and 3x:
-  `/mnt/project-files/previews/animation-speed.mp4` (sent 16:58 UTC). It stays 1 until the owner picks.
+  `/mnt/project-files/previews/animation-speed.mp4` (sent 16:58 UTC). The owner, 20:15 UTC: "I like the speed of 3x. Just redo
+  the Animation so it opens at that speed, whilst having a pretty opening animation". `--tempo` is 3, and the openings were
+  re-shaped for it: windows open in one continuous breath (a quick bloom, then a long soft widening, no hold), the head of each
+  page brightens in turn from dim (never from black), headings settle on an eased curve, the floating letters fade in, the
+  engravings draw in on an eased curve, and the Mouseion's red window blooms in as Socrates' letters gather. A new easing,
+  `--ease-enter` (quick away, long soft glide), carries every page's opening. Round 4 ships with it (owner's choice, 20:19 UTC).
+  Built on `claude/project-thread-ska87k` (the clean-up); on "publish", that branch goes to main first, then this one.
 - **The stripe** (not reproduced here): most likely the floating-letters canvas a fraction of a pixel row short of the window
   on the owner's PC, showing the page beneath; its drawing buffer now follows its own on-screen size and is cleared fully.
 - The Museion keeps Socrates (dropping him was not asked for plainly).

@@ -268,8 +268,8 @@ select:not([multiple]):not([size]) {
    the name and function of the page"): its name, its Greek name and what it is for rise into place one after another,
    and last its window, which then opens onto its piece. Only opacity and a small rise move, and
    nothing holds its last frame. (:where keeps these weaker than any animation of an element's own.) */
-@keyframes enter { from { opacity: 0; transform: translateY(12px); } }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter var(--dur-enter) var(--ease) backwards; }
+@keyframes enter { from { opacity: .3; transform: translateY(10px); } }  /* starts dim, never black: at 3x a fade from nothing reads as a blank page */
+:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter var(--dur-enter) var(--ease-enter) backwards; }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(2)) { animation-delay: var(--enter-step); }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(3)) { animation-delay: calc(2 * var(--enter-step)); }
 :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(4)) { animation-delay: calc(3 * var(--enter-step)); }
@@ -289,7 +289,7 @@ select:not([multiple]):not([size]) {
   .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
 }
 /* a page's piece standing outside a header (the home page's) rises into place like a header's */
-:where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease) calc(3.5 * var(--enter-step)) backwards; }
+:where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease-enter) calc(3.5 * var(--enter-step)) backwards; }
 /* on a phone the piece stands in a window of its own across the screen, after the title, the purpose and the page's main
    action (a header holds both, "piece-desk" before the title and "piece-phone" after the action; the one not shown loads
    nothing) */
@@ -330,13 +330,13 @@ a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { backgrou
 /* --------------------------------------------------------- page turn */
 /* Route changes: the old page fades into the dark and the new one comes up out of it, calmly. */
 ::view-transition-old(.page-turn) { animation: calc(240ms / var(--tempo)) ease-in both turn-out; }
-::view-transition-new(.page-turn) { animation: calc(620ms / var(--tempo)) var(--ease) calc(60ms / var(--tempo)) both turn-in; }
+::view-transition-new(.page-turn) { animation: calc(620ms / var(--tempo)) var(--ease-enter) calc(60ms / var(--tempo)) both turn-in; }
 @keyframes turn-out { to { opacity: 0; } }
 @keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
 
 /* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
-.rv.in { animation: lift var(--dur-slow) var(--ease) both; }
+.rv.in { animation: lift var(--dur-slow) var(--ease-enter) both; }
 @keyframes lift { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {

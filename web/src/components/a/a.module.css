@@ -37,11 +37,22 @@
 .lede { max-width: 44ch; opacity: .86; margin: 0 0 26px; }
 .cap { font-size: .78rem; line-height: 1.45; color: var(--a-ink2); margin-top: 10px; max-width: 60ch; }
 @keyframes rise { to { transform: none; } }
+/* A page's opening (the owner, 2026-10-20, 20:15 UTC: "I like the speed of 3x. Just redo the Animation so it opens at that
+   speed, whilst having a pretty opening animation"): the words of the page's head come up one after another, rising a few
+   pixels and brightening from dim as a lamp does, while the window beside them opens; all of it is over in about half a
+   second, and every word can be read from the first frame. */
+@keyframes up { from { opacity: .3; transform: translateY(10px); } }
+:is(.h-hero, .door-hero, .lib-hero) > .blk > :not(.c-title) { animation: up var(--dur-enter) var(--ease-enter) backwards; animation-delay: calc(var(--n, 0) * var(--enter-step)); }
+:is(.h-hero, .door-hero, .lib-hero) > .blk > :nth-child(2) { --n: 1; }
+:is(.h-hero, .door-hero, .lib-hero) > .blk > :nth-child(3) { --n: 2; }
+:is(.h-hero, .door-hero, .lib-hero) > .blk > :nth-child(4) { --n: 3; }
+:is(.h-hero, .door-hero, .lib-hero) > .blk > :nth-child(n + 5) { --n: 4; }
+:global(html[data-level="performance"]) :is(.h-hero, .door-hero, .lib-hero) > .blk > * { animation: none; }
 
 /* ---------- HOME ---------- */
 .c-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(3rem, 7.4vw, 6.6rem); line-height: .9; margin: 14px 0 22px; letter-spacing: -.015em; }
 .c-title .ln { display: block; overflow: hidden; }
-.c-title .ln > span { display: block; transform: translateY(100%); animation: rise calc(1s / var(--tempo)) cubic-bezier(.2, .7, .1, 1) forwards; }
+.c-title .ln > span { display: block; transform: translateY(100%); animation: rise calc(1.1s / var(--tempo)) var(--ease-enter) forwards; }
 .c-title em { font-style: italic; color: var(--a-accent); }
 .paths { margin-top: 34px; border: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-field) 70%, #000 30%); max-width: 560px; }
 .paths-label { padding: 10px 14px 0; color: var(--a-ink2); }
@@ -187,6 +198,10 @@
    the red blends with the stage beneath it */
 .library .flow { z-index: auto; }
 .library .lib-hero .win::before { content: ""; position: absolute; inset: 0; background: var(--red); mix-blend-mode: lighten; pointer-events: none; }
+/* the red blooms in as Socrates' letters gather, so the window never opens as a flat red block */
+.library .lib-hero .win::before { animation: redin calc(1.5s / var(--tempo)) var(--ease-enter) calc(.45s / var(--tempo)) backwards; }
+@keyframes redin { from { opacity: 0; } }
+:global(html[data-level="performance"]) .library .lib-hero .win::before { animation: none; }
 /* the face's opening: as tall as the window allows, beside the name on a computer, above it on a phone */
 :is(.lib-hero, .door-hero) .tall { max-height: calc(100svh - 150px); min-height: 340px; }
 /* on a computer the opening's own caption gives way to this line, under the name */

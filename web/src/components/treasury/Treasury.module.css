@@ -8,7 +8,7 @@
 .offerings { display: grid; }
 .offerings > div:first-child { margin-bottom: 0; }   /* the home page's section head (.sec-h), its line over the grid */
 .ogrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.ogrid li { display: grid; border-bottom: 1px solid var(--rule); animation: rise calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.3s / var(--tempo)) + var(--i) * (60ms / var(--tempo))); }
+.ogrid li { display: grid; border-bottom: 1px solid var(--rule); animation: rise calc(0.7s / var(--tempo)) var(--ease-enter) backwards; animation-delay: calc((0.3s / var(--tempo)) + var(--i) * (60ms / var(--tempo))); }
 .ogrid li:not(:nth-child(3n)) { border-right: 1px solid var(--rule); }
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
 /* one offering: its window at the left, then its count in tall gold numerals, its name and what it holds */

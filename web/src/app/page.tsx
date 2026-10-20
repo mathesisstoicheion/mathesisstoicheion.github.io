@@ -53,8 +53,8 @@ export default function Home() {
               <span className={s.mono} style={{ color: "var(--a-accent)" }}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</span>
               <h1 id="hero-title" className={s["c-title"]} aria-label="Read the Greeks in their own words">
                 <span className={s.ln} aria-hidden="true"><span>Read the</span></span>
-                <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: cssTempo(".1s") }}>Greeks in</span></span>
-                <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: cssTempo(".2s") }}><em>their own</em> words</span></span>
+                <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: cssTempo(".15s") }}>Greeks in</span></span>
+                <span className={s.ln} aria-hidden="true"><span style={{ animationDelay: cssTempo(".3s") }}><em>their own</em> words</span></span>
               </h1>
               <p className={s.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
               <div className={s.btns}>

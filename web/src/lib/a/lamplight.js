@@ -133,7 +133,7 @@ function CoinScene(img){
     for(const r of rays){const a=r.a+rot;x.moveTo(cx+Math.cos(a)*S*r.r0,cy+Math.sin(a)*S*r.r0);x.lineTo(cx+Math.cos(a)*S*r.r1*.62,cy+Math.sin(a)*S*r.r1*.62)}
     x.stroke();x.globalAlpha=1;
     const bw=S*.72,bh=bw*sh/sw,bx=cx-bw/2,by=h/2-bh/2,gap=Math.max(3.4,bw/96),step=2.4;
-    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,bw*.2),push:12,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},cy-h/2,reduce?1:clamp(prog/.42,0,1),ptr,dpr)
+    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,bw*.2),push:12,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},cy-h/2,reduce?1:1-(1-clamp(prog/.5,0,1))**3,ptr,dpr)
   }};
 }
 
@@ -146,7 +146,7 @@ function PicScene(img){
     ground(x,w,h);
     const bh=Math.min(an.h*.9,an.w*.9/asp),bw=bh*asp;   // the whole object, with a margin of red around it
     const bx=an.cx-bw/2,by=h/2-bh/2,gap=clamp(Math.min(an.w,an.h)/58,3.1,5.2),step=2.2;
-    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,Math.min(bw,bh)*.3),push:10,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},an.cy-h/2,reduce?1:clamp(prog/.42,0,1),ptr,dpr)
+    engrave(x,hold,{bx,by,bw,bh,gap,step,R:Math.max(90,Math.min(bw,bh)*.3),push:10,th:(i,v)=>TH[clamp(v*sh|0,0,sh-1)*sw+clamp(i*step/bw*sw|0,0,sw-1)]},an.cy-h/2,reduce?1:1-(1-clamp(prog/.5,0,1))**3,ptr,dpr)
   }};
 }
 
@@ -415,7 +415,7 @@ const Settle={items:[],io:null,of:new WeakMap(),
     const it={el,v:-1};this.items.push(it);this.watch(it);Engine.kick();
     return()=>{this.drop(it);delete el.dataset.settle;el.innerHTML=before}},
   frame(){const now=performance.now();for(const it of this.items){if(it.v>=1||it.t0==null)continue;
-    const k=clamp((now-it.t0)*TEMPO/SETTLE_MS,0,1),v=reduce?1:Math.round(k*(2-k)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
+    const k=clamp((now-it.t0)*TEMPO/SETTLE_MS,0,1),v=reduce?1:Math.round((1-(1-k)**3)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
 };
 
 /* The veils. On the pages inside an area the figure's object lies behind the page's own words, so every line of words has a
@@ -526,9 +526,11 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     sc.draw(x,vw,vh,el,{asm,m,off:Math.floor(s.sp*4)/4,face,still:reduce,dpr,veil:s.veil?()=>Veil.draw(x,vh):null,dim:s.dim,smax:s.smax},PTS)},
   // The windows open as a round iris centred on their picture: the coin, or another real object for each window.
   // Each plays by itself once enough of it is in view (the owner, 2026-10-19: "the animations should play automatically
-  // when they come into view ... and should stay expanded, even if you scroll back up"): it opens onto the middle of the
-  // picture alone, holds there a moment with a thin gold rim, then widens to the whole window, and its caption comes up
-  // last. Once open, it stays open. Windows in view when the page opens wait a moment for the page to arrive.
+  // when they come into view ... and should stay expanded, even if you scroll back up"): it blooms onto the middle of the
+  // picture alone with a thin gold rim, slows there as if to show it, and without stopping widens to the whole window;
+  // its caption comes up last. At three times the speed (the owner, 2026-10-20: "I like the speed of 3x ... whilst having
+  // a pretty opening animation") a pause between the two would read as a stumble, so the two movements overlap into one
+  // breath. Once open, it stays open. Windows in view when the page opens wait a moment for the page to arrive.
   // A window is drawn again only when something in it changes: its iris, its place on the screen (the picture inside
   // drifts a little as the page scrolls), a pointer near it, or the coin's turning rays.
   iris(el,vw,vh){const now=performance.now();
@@ -543,9 +545,9 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
       x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,r.width,r.height);
       const an={cx:r.width/2,cy:r.height/2-shift,w:r.width,h:r.height};
       const S=Math.min(an.w*1.2,an.h*1.05),Rc=S*.43,Rmax=Math.hypot(r.width/2,r.height/2+Math.abs(an.cy-r.height/2))+2;
-      const sm=k=>k*k*(3-2*k),a=sm(clamp(p/.42,0,1)),b=sm(clamp((p-.68)/.32,0,1));
-      const R=b>0?Rc+(Rmax-Rc)*b:Rc*a;
-      const cap=w.cap;if(cap){const o=clamp((b-.65)/.35,0,1).toFixed(2);if(cap.style.opacity!==o)cap.style.opacity=o}
+      const out3=k=>1-(1-k)**3,io3=k=>k<.5?4*k*k*k:1-(-2*k+2)**3/2,a=out3(clamp(p/.48,0,1)),b=io3(clamp((p-.4)/.6,0,1));
+      const R=Rc*a+(Rmax-Rc)*b;
+      const cap=w.cap;if(cap){const o=clamp((b-.6)/.4,0,1).toFixed(2);if(cap.style.opacity!==o)cap.style.opacity=o}
       if(R<1)continue;
       x.save();x.beginPath();x.arc(an.cx,an.cy,R,0,Math.PI*2);x.clip();
       sc.draw(x,r.width,r.height,el,p,ptr,an,w,dpr);
@@ -585,6 +587,8 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     const cb=cv.getBoundingClientRect(),dpr=this.fitCanvas(cv,cb.width,cb.height);const x=cv.getContext("2d");x.setTransform(dpr,0,0,dpr,0,0);x.clearRect(0,0,cb.width+1,cb.height+1);
     const ak=dpr+"|"+gen;if(this.flyAK!==ak){this.flyA=this.flyAtlas(dpr);this.flyAK=ak}const FA=this.flyA;
     const n=lite||reduce?60:120;if(!this.flyPts||this.flyPts.length!==n){this.flyPts=[];for(let k=0;k<n;k++){const z=k%3,gi=(rnd()*GL.length)|0;this.flyPts.push({u:rnd(),v:rnd()*3,z,c:GL[gi],gi,ox:0,oy:0,p:rnd()*6.3,lit:0})}this.flyPts.sort((a,b)=>a.z-b.z)}
+    // as the page opens they come up out of the dark, after its words and its window have begun (a little over half a second at 3x)
+    const up=reduce?1:clamp(((performance.now()-this.introT0)*TEMPO-300)/1500,0,1),UP=up*up*(3-2*up);
     const SP=[.12,.3,.6],SZ=[10,14,21],AL=[.06,.1,.15],R=130;
     for(const d of this.flyPts){const z=d.z;let px=d.u*vw,py=((d.v*vh-(reduce?0:scrollY*SP[z]))%(vh*3)+vh*3)%(vh*3)-vh*.5;
       if(py<-30||py>vh+30)continue;if(!reduce){px+=Math.sin(t*.16+d.p)*6*(z+1);py+=Math.cos(t*.11+d.p)*3*(z+1)}
@@ -594,7 +598,7 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
       const lx=px+d.ox,ly=py+d.oy,dy0=ly+scrollY,pad=8+SZ[z]*.6;let fade=1;
       for(const b of this.clear.get(Math.floor(dy0/64))||[]){const ex=Math.max(b.l-lx,0,lx-b.r),ey=Math.max(b.t-dy0,0,dy0-b.b),dd=Math.hypot(ex,ey);if(dd<pad){fade=Math.min(fade,dd/pad);if(!fade)break}}
       if(fade<.05)continue;
-      const cw=FA.cell[z]/dpr,ch=FA.H/dpr;x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit)*fade;x.drawImage(FA.c,FA.pos[z],d.gi*FA.H,FA.cell[z],FA.H,lx-cw/2,ly-ch/2,cw,ch)}
+      const cw=FA.cell[z]/dpr,ch=FA.H/dpr;x.globalAlpha=Math.min(.5,AL[z]+.3*d.lit)*fade*UP;x.drawImage(FA.c,FA.pos[z],d.gi*FA.H,FA.cell[z],FA.H,lx-cw/2,ly-ch/2,cw,ch)}
     x.globalAlpha=1},
 };
 
