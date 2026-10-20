@@ -58,7 +58,7 @@ real database must be deleted afterwards.
 
 ### Issue tracker
 
-Issues are tracked in this repo's GitHub Issues (`gh` CLI). See `docs/agents/issue-tracker.md`.
+Issues are tracked as markdown files in `.scratch/` on this computer (nothing online). See `docs/agents/issue-tracker.md`.
 
 ### Triage labels
 
