@@ -18,6 +18,11 @@ Should feel smooth on 120hz". This replaces the figures at the foot of inner pag
   fifth at a time; letters are stamped from an atlas by number; the object is cached; scroll checks use an
   IntersectionObserver instead of reading positions each frame. Script time per frame in the test browser fell from about
   6–16 ms to 1–3 ms (a 120 Hz frame has 8.3 ms); the test browser draws without a graphics card, so 120 Hz itself is untested.
+  Measured side by side with the live version (script time per frame while scrolling): home 7.3 → 1.7 ms, the Museion
+  15.2 → 1.9, the Painted Stoa door 18.6 → 4.3; inner pages 2 → 3.5 ms, since they now carry the figure behind them.
+- Checks: overlap sweep (45 pages, six sizes) nothing new (three letters caught mid-settle, a spinner mid-turn); graphics
+  memory 86–137 MB at 3x; mid-scroll at 128 MB all drawn; Balanced and Performance checked. Screenshots:
+  https://claude.ai/artifact/6KzaDKWf95uyhb9DPi9xe1
 
 ## A letter figure for every area (2026-10-19, LIVE ~21:20 UTC after the owner's "Great. Publish")
 The owner, 17:31 and 17:44 UTC: "build a whole version of the website that mixes elements of gold and torch (A) and ... the
