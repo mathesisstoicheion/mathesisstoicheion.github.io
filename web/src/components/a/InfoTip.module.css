@@ -1,19 +1,21 @@
 /* The small ⓘ and the note it opens (components/a/InfoTip.tsx): a ring in A's amber line, the note on a solid dark card. */
-.info { position: relative; display: inline-block; vertical-align: middle; }
+.info { position: relative; display: inline-block; vertical-align: middle; line-height: 1; }
 .infoBtn {
   display: inline-grid; place-items: center; width: 22px; height: 22px; padding: 0; border-radius: 50%;
-  border: 1px solid color-mix(in srgb, var(--a-accent) 45%, transparent); background: transparent; color: var(--a-accent);
-  font: italic 600 .78rem/1 var(--face-serif, Georgia, serif); cursor: pointer; transition: background-color calc(.2s / var(--tempo, 1)), color calc(.2s / var(--tempo, 1));
+  border: 1px solid color-mix(in srgb, var(--a-accent, var(--accent)) 45%, transparent); background: transparent; color: var(--a-accent, var(--accent));
+  font: italic 600 .78rem/1 var(--face-text); cursor: pointer; transition: background-color calc(.2s / var(--tempo, 1)), color calc(.2s / var(--tempo, 1));
 }
+/* in a window's caption: a ring the caption's own height */
+.small .infoBtn { width: 16px; height: 16px; font-size: .62rem; margin: -2px 0 0 2px; }
 /* a finger-sized target round the small ring */
 .infoBtn::after { content: ""; position: absolute; inset: -11px; }
-.infoBtn:hover, .infoBtn[aria-expanded="true"] { background: var(--a-accent); color: var(--a-bg); }
+.infoBtn:hover, .info:has(:popover-open) .infoBtn { background: var(--a-accent, var(--accent)); color: var(--a-bg, var(--bg)); }
 .infoNote {
-  position: absolute; right: 0; top: calc(100% + 8px); z-index: 5; width: min(34rem, calc(100vw - 32px));
-  padding: 12px 14px; background: var(--a-bg); box-shadow: 0 0 0 1px color-mix(in srgb, var(--a-accent) 22%, transparent), 0 12px 32px rgba(0, 0, 0, .6);
-  font-size: .86rem; line-height: 1.5; color: var(--a-ink); text-wrap: pretty;
-  animation: note-in calc(.25s / var(--tempo, 1)) var(--ease, ease) backwards;
+  display: none;
+  position: fixed; inset: auto; margin: 0; width: min(34rem, calc(100vw - 32px)); border: 0;
+  padding: 12px 14px; background: var(--a-bg, #070504); box-shadow: 0 0 0 1px color-mix(in srgb, var(--a-accent, #ffad45) 22%, transparent), 0 12px 32px rgba(0, 0, 0, .6);
+  font: .86rem / 1.5 var(--face-text); color: var(--a-ink, #ecca97); text-align: left; text-transform: none; letter-spacing: normal; text-wrap: pretty;
 }
-.infoNote[hidden] { display: none; }
+.infoNote:popover-open { display: block; animation: note-in calc(.25s / var(--tempo, 1)) var(--ease, ease) backwards; }
 @keyframes note-in { from { transform: translateY(-4px); } }
-html[data-level="performance"] .infoNote, html[data-motion="reduce"] .infoNote { animation: none; }
+html[data-level="performance"] .infoNote:popover-open, html[data-motion="reduce"] .infoNote:popover-open { animation: none; }

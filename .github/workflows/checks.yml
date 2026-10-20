@@ -46,3 +46,6 @@ jobs:
       - name: The library reads clearly over its letters, every author with a line (slice 6)
         working-directory: web
         run: node scripts/check-library.mjs http://localhost:3100
+      - name: The home page is in order (slice 7)
+        working-directory: web
+        run: node scripts/check-home.mjs http://localhost:3100

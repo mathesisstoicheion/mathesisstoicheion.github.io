@@ -3,8 +3,8 @@
  * A page's window onto art, for the pages design A did not draw (the owner, 2026-10-19, "A only": every other page keeps
  * its layout, in A's colours, type, buttons and engraved windows). It is A's window: a framed opening in the black page onto
  * the page's own object, engraved in gold lines on Pompeian red (lib/a/lamplight.js), which opens as a round iris and whose
- * lines bend away from the pointer or a finger. data/pieces.ts says which object belongs to which page; the credit is
- * beneath it.
+ * lines bend away from the pointer or a finger. data/pieces.ts says which object belongs to which page. Its caption is A's
+ * one caption, a small label on the window, and its credit waits behind the label's ⓘ (review fix list, slice 7).
  *
  * At the head of a page it stands at the right of the title, the words flowing round it. A header holds it twice: before
  * the title for a computer (`className="piece-desk"`) and after the page's main action for a phone (`"piece-phone"`);
@@ -14,6 +14,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef } from "react";
 import { addWindow } from "@/lib/a/lamplight";
 import { PIECE_CREDITS, PIECE_SHAPES, pieceFor } from "@/data/pieces";
+import InfoTip from "./InfoTip";
+import a from "./a.module.css";
 
 export default function PageWin({ spec: given, className }: { spec?: { piece: string; why?: string } | null; className?: string }) {
   const path = (usePathname() ?? "/").replace(/\/+$/, "") || "/";
@@ -30,12 +32,17 @@ export default function PageWin({ spec: given, className }: { spec?: { piece: st
     <figure className={`piece piece-head awin${className ? ` ${className}` : ""}`} style={{ "--piece-ratio": ratio } as React.CSSProperties}>
       <div ref={ref} className="awin-frame">
         <canvas role="img" aria-label={`${credit.alt}, engraved in gold lines`} />
+        <span className={a.wcap} data-wcap="">
+          {credit.title}{credit.date && <> · {credit.date}</>}{" "}
+          <InfoTip small label={`About the picture: ${credit.title}`}>
+            <b>{credit.title}</b>{credit.date && <>, {credit.date}</>}.{" "}
+            {spec.why && <i>{spec.why} </i>}
+            {credit.place && <>{credit.place}. </>}{credit.creator && <>{credit.creator}. </>}
+            {credit.licence && <>{credit.licenceUrl ? <a href={credit.licenceUrl} rel="noopener">{credit.licence}</a> : credit.licence}. </>}
+            <a href={credit.source} rel="noopener">{credit.sourceName || "The source"}</a>
+          </InfoTip>
+        </span>
       </div>
-      <figcaption>
-        <b>{credit.title}</b>{credit.date && <>, {credit.date}</>}.{" "}
-        {spec.why && <span className="piece-why">{spec.why} </span>}
-        <a href={credit.source} rel="noopener">The Met</a>
-      </figcaption>
     </figure>
   );
 }

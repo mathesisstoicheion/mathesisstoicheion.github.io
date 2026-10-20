@@ -5,17 +5,16 @@ import FlyLetters from "@/components/a/FlyLetters";
 import SettleText from "@/components/a/SettleText";
 import PathTabs from "@/components/a/PathTabs";
 import HomeDesk from "@/components/a/HomeDesk";
-import GuideInvite from "@/components/guide/GuideInvite";
 import HomePassage from "@/components/a/HomePassage";
 import Glide from "@/components/a/Glide";
-import { A_ART, passagePicture } from "@/components/a/pictures";
-import { PASSAGES } from "@/data/passages";
+import { A_ART } from "@/components/a/pictures";
 import { AREAS, FORUM_OPEN, shown } from "@/config/areas";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { hasTranslation, type Catalog } from "@/lib/catalog";
 import s from "@/components/a/a.module.css";
 import { cssTempo } from "@/lib/tempo";
+import h from "@/components/a/Home.module.css";
 
 // The library's size, counted from the catalogue when the site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
@@ -32,8 +31,8 @@ const ALL_ROOMS = [
 ] as const;
 const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
 
-// every picture the page can show, credited at its foot (the passage's window changes with the passage)
-const PASSAGE_CREDITS = [...new Set(PASSAGES.map((p) => p.work))];
+/** a picture's credit, as its ⓘ gives it (every credit is also on the credits page) */
+const credit = (c: string) => `${c.charAt(0).toUpperCase()}${c.slice(1)}.`;
 
 /**
  * The home page: design A's doorway, as it was chosen (the owner, 2026-10-19: "Just take the template of the original gold
@@ -45,10 +44,10 @@ export default function Home() {
   return (
     <Page screen="home">
       <div className={`${s.screen} ${s.home}`}>
-        <FlyLetters className={s.dust} />
+        <FlyLetters className={s.dust} area="[data-letters-area]" />
         <Glide />
         <div className={s.flow}>
-          <div className={`${s.wrap} ${s["h-hero"]}`}>
+          <div className={`${s.wrap} ${s["h-hero"]}`} data-letters-area="">
             <div className={s.blk}>
               <span className={s.mono} style={{ color: "var(--a-accent)" }}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · Learning the letters</span>
               <h1 id="hero-title" className={s["c-title"]} aria-label="Read the Greeks in their own words">
@@ -65,25 +64,27 @@ export default function Home() {
               <div className={s["first-only"]}><PathTabs /></div>
               <div className={s["back-only"]}><HomeDesk /></div>
             </div>
-            <Win className={`${s.win} ${s.tall}`} kind="coin" src={A_ART.coin.src} label={A_ART.coin.label} caption={A_ART.coin.cap} capClass={s.wcap} />
+            <Win className={`${s.win} ${s.tall}`} kind="coin" src={A_ART.coin.src} label={A_ART.coin.label} caption={A_ART.coin.cap} credit={credit(A_ART.coin.credit)} capClass={s.wcap} />
           </div>
 
-          <Win className={`${s.win} ${s.band}`} src={A_ART.frieze.src} label={A_ART.frieze.label} caption={A_ART.frieze.cap} capClass={s.wcap} />
-
+          {/* one picture before the first words of the page's body (review fix list, slice 7): the frieze comes after the passage */}
           <HomePassage />
 
+          <Win className={`${s.win} ${s.band}`} src={A_ART.frieze.src} label={A_ART.frieze.label} caption={A_ART.frieze.cap} credit={credit(A_ART.frieze.credit)} capClass={s.wcap} />
+
           <section className={`${s.wrap} ${s.rooms}`} aria-label="The rooms of the site">
-            <div className={s["sec-h"]}><SettleText className={s.mono} text={FORUM_OPEN ? "Five rooms" : "Four rooms"} /><SettleText className={s.mono} text="Mathesis Stoicheion" /></div>
+            <div className={s["sec-h"]}><SettleText className={s.mono} text={FORUM_OPEN ? "Five rooms" : "Four rooms"} /></div>
             <div className={s.rgrid}>
               {ROOMS.map((r) => {
                 const a = AREAS[r.id];
                 return (
-                  <Link key={r.id} className={s.room} href={a.href} transitionTypes={["page-turn"]}>
-                    <Win className={`${s.win} ${s.mini}`} src={r.art.src} label={r.art.label} caption={r.art.cap} capClass={s.wcap} />
+                  // the whole card opens the room (its name is the link, stretched over the card), and the picture's ⓘ stays its own button
+                  <div key={r.id} className={`${s.room} ${h.room}`}>
+                    <Win className={`${s.win} ${s.mini}`} src={r.art.src} label={r.art.label} caption={r.art.cap} credit={credit(r.art.credit)} capClass={s.wcap} />
                     <SettleText className={s.gk} lang="grc" text={r.gk} />
-                    <span className={s.mono}>{a.name}</span>
+                    <Link className={`${s.mono} ${h.roomLink}`} href={a.href} transitionTypes={["page-turn"]}>{a.name}</Link>
                     <p>{r.text}</p>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
@@ -95,25 +96,16 @@ export default function Home() {
               <SettleText as="h3" text="Why Stoics are called Stoics" />
               <p>The Stoa Poikile, the “Painted Colonnade”, stood on the north side of the Athenian Agora, hung with famous paintings such as the Battle of Marathon. Around 300 BC Zeno of Citium began to teach there, walking up and down the colonnade.</p>
               <p>His followers were first called Zenonians, then Stoics, “the people of the Stoa” (Diogenes Laertius, Lives 7.5).</p>
+              <p><Link className={s.more} href={AREAS.wiki.href} transitionTypes={["page-turn"]}>Into the {AREAS.wiki.name}, named after it →</Link></p>
             </div>
-            <Win className={`${s.win} ${s.wide}`} src={A_ART.crates.src} label={A_ART.crates.label} caption={A_ART.crates.cap} capClass={s.wcap} />
+            <Win className={`${s.win} ${s.wide}`} src={A_ART.crates.src} label={A_ART.crates.label} caption={A_ART.crates.cap} credit={credit(A_ART.crates.credit)} capClass={s.wcap} />
           </section>
 
           <div className={s.wrap} style={{ paddingBottom: 40 }}>
-            <p className={s.cap} style={{ maxWidth: "86ch" }}>
-              The pictures in the windows, all redrawn as gold engravings: {[A_ART.coin, A_ART.frieze, A_ART.douris, A_ART.amphora, A_ART.antikythera, A_ART.ostraka, A_ART.mask, A_ART.crates].map((p) => p.credit).join(". ")}.
-              {" "}Beside the passage of the day, a picture that belongs to its text: <PassageCredits works={PASSAGE_CREDITS} />.
-            </p>
+            <p className={s.cap}>Every picture is credited by the ⓘ in its caption, and all together on the <Link href="/credits">credits page</Link>.</p>
           </div>
         </div>
       </div>
-      <GuideInvite />
     </Page>
   );
-}
-
-/** the credits of every picture the passage of the day can show, once each */
-function PassageCredits({ works }: { works: string[] }) {
-  const seen = [...new Set(works.map((w) => passagePicture(w).credit))];
-  return <>{seen.join("; ")}</>;
 }

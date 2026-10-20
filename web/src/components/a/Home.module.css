@@ -1,0 +1,21 @@
+/* The home page's own small additions (app/page.tsx; review fix list, slice 7). */
+/* a room's card: its name is the link, stretched over the whole card; the picture's caption, with its ⓘ, stays above it */
+.room { position: relative; }
+.roomLink { color: inherit; text-decoration: none; }
+.roomLink::after { content: ""; position: absolute; inset: 0; z-index: 1; }
+.roomLink:focus-visible { outline: none; }
+.room:has(.roomLink:focus-visible) { outline: 2px solid var(--a-accent); outline-offset: -2px; }
+.room [data-wcap] { z-index: 2; }
+/* the invitation to the Guide, at the foot of "Where are you starting?" */
+.pguide { margin: 0; padding: 10px 16px 14px; border-top: 1px solid var(--a-line); font-size: .92rem; color: var(--a-ink2); }
+.pguide a { color: var(--a-accent2); text-underline-offset: 3px; }
+/* the passage of the day: its title set as its text is (the reader centres a title; here the lines start at the left), and on
+   a computer the English beside the Greek, as in the reader */
+.pod [lang="grc"] :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; }
+.podCap { font-size: var(--step--1); line-height: 1.5; max-width: 62ch; }
+@media (min-width: 1100px) {
+  .pod { grid-template-columns: minmax(0, 2.4fr) minmax(0, .6fr); }
+  .podCols { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); column-gap: clamp(28px, 3vw, 52px); align-items: start; }
+  .podCols > :nth-child(n + 3) { grid-column: 1 / -1; justify-self: start; }
+  .podCols > :nth-child(2) { padding-top: .35em; }
+}

@@ -18,7 +18,7 @@ export const ALIASES = [
   ["forum", /\bTown[ -]Hall\b/g, "the forum is the Agora"],
   ["forum", /\b[Tt]he forum\b/g, "the forum is the Agora"],
   ["forum", /(?<![\w-])Forum\b/g, "the forum is the Agora"],
-  ["treasury", /\bMy Library\b/g, "your saved things are the Treasury"],
+  ["treasury", /\bMy [Ll]ibrary\b/g, "your saved things are the Treasury"],
   ["treasury", /(?:^|[>›·|"]\s*)Mine(?=\s*(?:$|[<›·|":]))/gm, "your saved things are the Treasury"],
   ["treasury", /θησαυρός(?=\s*(?:$|[<›·|"]))/gm, "the room's Greek name is capitalised: Θησαυρός"],
   ["reader", /\b[Tt]he Scroll\b(?! Case)/g, "the reader is \"the reader\""],

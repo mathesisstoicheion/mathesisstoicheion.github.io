@@ -11,7 +11,7 @@ import { loadAuthorsMeta, loadAuthorNames, type AuthorMeta, type AuthorNames } f
 import { BEST_KNOWN } from "@/data/best-known";
 import { entryLine } from "@/data/author-lines";
 import { undated } from "@/lib/bc-ad";
-import { recentPositions } from "@/lib/position";
+import { recentPositions, shownAt } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import { AZRail } from "./AZList";
@@ -356,7 +356,7 @@ export default function Library() {
             <span className="label">Reading now</span>
             {[...reading].slice(0, 4).map(([w, at]) => {
               const wk = idx.work.get(w), a = idx.authorOf.get(w);
-              return wk ? <Link key={w} className="chip" href={`/read?w=${w}&at=${encodeURIComponent(at)}`} transitionTypes={["page-turn"]}>{a ? `${a.name}, ` : ""}<i>{wk.title}</i> <small>at {at}</small></Link> : null;
+              return wk ? <Link key={w} className="chip" href={`/read?w=${w}&at=${encodeURIComponent(at)}`} transitionTypes={["page-turn"]}>{a ? `${a.name}, ` : ""}<i>{wk.title}</i>{shownAt(at) && <> <small>at {at}</small></>}</Link> : null;
             })}
           </div>
         )}

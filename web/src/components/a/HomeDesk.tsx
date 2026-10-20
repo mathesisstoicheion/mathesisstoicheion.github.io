@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { trail, clearTrail, pageKey, type Visit } from "@/lib/resume";
-import { recentPositions } from "@/lib/position";
+import { recentPositions, shownAt } from "@/lib/position";
 import { useAcademy, dueCards, type DeckCard } from "@/lib/academy";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
@@ -50,6 +50,9 @@ export default function HomeDesk() {
   const nextLesson = LESSONS.findIndex((l) => !completed[l.id]);
   const done = Object.keys(completed).filter((id) => LESSONS.some((l) => l.id === id)).length;
   const alsoRecent = (visits ?? []).slice(1).filter((v) => !v.href.startsWith("/read")).slice(0, 3);
+  // the lesson "Carry on" already opens is not offered again as the next lesson
+  const lastLesson = last ? /^\/academy\/lesson\/([^/?#]+)$/.exec(new URL(last.href, "http://x").pathname)?.[1] : undefined;
+  const lessonRow = !(nextLesson >= 0 && lastLesson === LESSONS[nextLesson].id);
 
   return (
     <section className={`${s.paths} ${s.desk}`} aria-labelledby="desk-title">
@@ -62,14 +65,14 @@ export default function HomeDesk() {
               <><Link href={resumeHref(last)} onClick={() => remember(last.href)} transitionTypes={["page-turn"]}><b>{lastD.what}</b></Link>
                 <small>{lastD.where ? `${lastD.where} · ` : ""}{ago(last.t)}</small></>
             ) : books[0] ? (
-              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b></Link> <small>at {books[0][1].at}</small></>
+              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b></Link>{shownAt(books[0][1].at) && <> <small>at {books[0][1].at}</small></>}</>
             ) : (
               <>{visits ? "Nothing open yet. " : "… "}<Link href="/library" transitionTypes={["page-turn"]}>Find something to read →</Link></>
             )}
             {otherBooks.length > 0 && (
               <ul aria-label="Also in progress">
                 {otherBooks.map(([w, p]) => (
-                  <li key={w}><Link href={bookHref(w, p.at)} transitionTypes={["page-turn"]}><i>{workName(w)}</i></Link> <small>at {p.at}</small></li>
+                  <li key={w}><Link href={bookHref(w, p.at)} transitionTypes={["page-turn"]}><i>{workName(w)}</i></Link>{shownAt(p.at) && <> <small>at {p.at}</small></>}</li>
                 ))}
               </ul>
             )}
@@ -84,7 +87,7 @@ export default function HomeDesk() {
             {ready && deckSize === 0 && <small>Save a word from the reader or a lesson, and it comes back here for practice.</small>}
           </div>
         </div>
-        <div className={s.drow}>
+        {lessonRow && <div className={s.drow}>
           <span className={s.mono}>{nextLesson >= 0 ? (done ? "Your next lesson" : "The first lesson") : "The lessons"}</span>
           <div>
             {nextLesson >= 0 ? (
@@ -95,7 +98,7 @@ export default function HomeDesk() {
               <><b>All {LESSONS.length} lessons done</b> <Link href="/academy" transitionTypes={["page-turn"]}>The Academy →</Link></>
             )}
           </div>
-        </div>
+        </div>}
       </div>
       {alsoRecent.length > 0 && (
         <p className={s.dalso}>

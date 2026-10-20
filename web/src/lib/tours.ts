@@ -131,7 +131,7 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "The Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "The Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 

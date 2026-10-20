@@ -41,7 +41,7 @@ test("Esc ends a tour, and the passage actions are put away before the Treasury 
   await card(page).getByRole("button", { name: "Next" }).click();
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeVisible();
   await card(page).getByRole("button", { name: "Next" }).click();
-  await expect(card(page)).toContainText("Mine: the Treasury");
+  await expect(card(page)).toContainText("goes to the Treasury");
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeHidden();
   const r = await new AxeBuilder({ page }).include("[data-tour-card]").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(r.violations.map((x) => x.id)).toEqual([]);
@@ -50,17 +50,13 @@ test("Esc ends a tour, and the passage actions are put away before the Treasury 
   await expect(page).not.toHaveURL(/tour=/);
 });
 
-test("a first visit is invited to the Guide once; either answer is remembered", async ({ page }) => {
+test("a first visit is invited to the Guide in the \"Where are you starting?\" panel, not by a card over it", async ({ page }) => {
   await page.goto("/?invite");
-  const invite = page.getByRole("complementary", { name: "New here?" });
-  await page.mouse.wheel(0, 300);
-  await expect(invite).toBeVisible({ timeout: 10_000 });
-  await invite.getByRole("button", { name: "No thanks" }).click();
-  await expect(invite).toBeHidden();
-  await page.goto("/?invite");
+  const panel = page.locator("div", { has: page.getByRole("tablist", { name: "Where are you starting?" }) }).last();
+  await expect(panel.getByRole("link", { name: /A short guide shows you round/ })).toHaveAttribute("href", "/guide");
   await page.mouse.wheel(0, 300);
   await page.waitForTimeout(5500);
-  await expect(invite).toBeHidden();
+  await expect(page.getByRole("complementary", { name: "New here?" })).toHaveCount(0);
 });
 
 test("on a phone, the reading-aids tour opens Tools and keeps it open as it steps through", async ({ browser }) => {

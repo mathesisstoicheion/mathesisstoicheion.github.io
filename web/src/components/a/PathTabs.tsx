@@ -3,13 +3,16 @@
  * Design A's "Where are you starting?", a first visit's question: three tabs, each with a line on where to begin and
  * the way there. Following that way sets the reading aids to suit and remembers the answer (lib/visitor.ts), so the
  * next visit finds the visitor's desk here instead (HomeDesk); nothing changes until then, and all of it can be
- * changed later in Settings.
+ * changed later in Settings. Under the three, the invitation to the Guide, which used to come up as a card over this panel
+ * (review fix list, slice 7).
  */
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useSettings, type Settings } from "@/lib/settings";
 import { markVisitor, saveStart, type StartChoice } from "@/lib/visitor";
+import { inviteSeen } from "@/components/guide/GuideInvite";
 import s from "./a.module.css";
+import h from "./Home.module.css";
 
 const PATHS: { id: StartChoice; tab: string; head: string; text: string; href: string; go: string; settings: Partial<Settings> }[] = [
   { id: "none", tab: "No Greek", head: "I know no Greek.", text: "Begin with the letters and their sounds. In the grammar course, a real line of Homer by the end of lesson 1.", href: "/academy/alphabet", go: "Meet the alphabet",
@@ -41,6 +44,7 @@ export default function PathTabs() {
       <div className={s.ppanel} role="tabpanel" id="ppanel" aria-labelledby={`ptab-${i}`}>
         <b>{p.head}</b> {p.text} <Link href={p.href} transitionTypes={["page-turn"]} onClick={begin}>{p.go} →</Link>
       </div>
+      <p className={h.pguide}>New here? <Link href="/guide" onClick={inviteSeen} transitionTypes={["page-turn"]}>A short guide shows you round, one thing at a time →</Link></p>
     </div>
   );
 }

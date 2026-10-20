@@ -8,7 +8,7 @@ import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import type { CatalogIndex } from "@/lib/catalog";
 import { recordVisit, saveScroll, savedScroll, pageKey, type Visit } from "@/lib/resume";
-import { getPosition } from "@/lib/position";
+import { getPosition, shownAt } from "@/lib/position";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { AREAS } from "@/config/areas";
 
@@ -56,7 +56,7 @@ export function describe(v: Visit, idx: CatalogIndex | null): { what: string; wh
   const q = u.searchParams;
   if (u.pathname === "/read") {
     const name = (w: string | null) => { if (!w) return null; const a = idx?.authorOf.get(w), wk = idx?.work.get(w); return wk ? `${a ? `${a.name}, ` : ""}${wk.title}` : w; };
-    const at = getPosition(q.get("w") ?? "")?.at ?? q.get("at");
+    const at = shownAt(getPosition(q.get("w") ?? "")?.at ?? q.get("at"));
     return { what: name(q.get("w")) ?? "The reader", where: [at ? `at ${at}` : null, q.get("w2") ? `with ${name(q.get("w2"))} beside it` : null].filter(Boolean).join(", ") || undefined };
   }
   const lesson = /^\/academy\/lesson\/(.+)$/.exec(u.pathname);
@@ -64,7 +64,10 @@ export function describe(v: Visit, idx: CatalogIndex | null): { what: string; wh
   if (u.pathname === "/search" && q.get("q")) return { what: `${AREAS.search.name}: “${q.get("q")}”`, where: "your search, with its filters" };
   if (u.pathname === "/treasury/word" && q.get("l")) return { what: `Word Study: ${q.get("l")}` };
   if (u.pathname === "/library" && q.get("a")) return { what: idx?.author.get(q.get("a")!)?.name ?? "The Mouseion", where: AREAS.library.name };
-  return { what: v.title || u.pathname };
+  // a room by its one name (an old visit may carry the title the page had then: "The Treasury · My Library")
+  const room = (Object.keys(AREAS) as (keyof typeof AREAS)[]).find((id) => AREAS[id].href === u.pathname);
+  if (room) return { what: AREAS[room].name };
+  return { what: (v.title || u.pathname).replace(/\s*·\s*(Mathesis Stoicheion|Μάθησις Στοιχείων)$/, "") };
 }
 
 /** Where to send the reader back to: the reader resumes at its own remembered passage. */

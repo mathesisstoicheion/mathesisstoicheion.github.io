@@ -13,6 +13,8 @@ export function savePosition(work: string, p: Omit<Position, "t">) {
     localStorage.setItem(KEY, JSON.stringify(a));
   } catch { /* storage unavailable: nothing to remember */ }
 }
+/** A position to show a reader ("1.10"), or null for one at the very start ("0"), where nothing has been read yet. */
+export const shownAt = (at: string | null | undefined): string | null => (at && !/^0*$/.test(at) ? at : null);
 /** Most recently read works, newest first (for "Continue reading"). */
 export const recentPositions = (n = 6) => Object.entries(all()).sort((a, b) => b[1].t - a[1].t).slice(0, n);
 /** Every remembered position (for export). */

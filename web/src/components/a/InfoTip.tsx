@@ -1,27 +1,37 @@
 "use client";
 /**
- * A small ⓘ that opens a note under it (review fix list, slice 6: picture credits and long captions wait behind it rather than
- * standing in small print). A button, so it works by touch and keyboard alike; Escape or a click elsewhere closes it.
+ * A small ⓘ that opens a note beside it (review fix list, slices 6 and 7: picture credits and long captions wait behind it
+ * rather than standing in small print). A button, so it works by touch and keyboard alike. The note is a popover, drawn
+ * above the whole page, so a window that clips its picture does not clip it; Escape, a click elsewhere or a scroll closes it.
  */
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import s from "./InfoTip.module.css";
 
-export default function InfoTip({ label, children, className = "" }: { label: string; children: ReactNode; className?: string }) {
-  const [open, setOpen] = useState(false);
-  const id = useId(), box = useRef<HTMLSpanElement>(null);
+export default function InfoTip({ label, children, className = "", small = false }: { label: string; children: ReactNode; className?: string; small?: boolean }) {
+  const id = useId().replace(/:/g, "");
+  const btn = useRef<HTMLButtonElement>(null), note = useRef<HTMLSpanElement>(null);
   useEffect(() => {
-    if (!open) return;
-    const key = (e: KeyboardEvent) => { if (e.key === "Escape") { setOpen(false); box.current?.querySelector("button")?.focus(); } };
-    const away = (e: PointerEvent) => { if (!box.current?.contains(e.target as Node)) setOpen(false); };
-    addEventListener("keydown", key); addEventListener("pointerdown", away);
-    return () => { removeEventListener("keydown", key); removeEventListener("pointerdown", away); };
-  }, [open]);
+    const n = note.current, b = btn.current;
+    if (!n || !b) return;
+    const shut = () => { try { n.hidePopover(); } catch { /* already shut */ } };
+    // the note opens under the ⓘ, or over it when there is no room below, and never past the screen's edges
+    const place = (e: Event) => {
+      if ((e as ToggleEvent).newState !== "open") { removeEventListener("scroll", shut); return; }
+      const r = b.getBoundingClientRect(), w = n.offsetWidth, h = n.offsetHeight;
+      const left = Math.min(Math.max(16, r.right - w), innerWidth - w - 16);
+      const top = r.bottom + 8 + h > innerHeight - 8 ? Math.max(8, r.top - 8 - h) : r.bottom + 8;
+      n.style.left = `${left}px`; n.style.top = `${top}px`;
+      addEventListener("scroll", shut, { passive: true, once: true });
+    };
+    n.addEventListener("toggle", place);
+    return () => { n.removeEventListener("toggle", place); removeEventListener("scroll", shut); };
+  }, []);
   return (
-    <span ref={box} className={`${s.info} ${className}`} data-open={open ? "" : undefined}>
-      <button type="button" className={s.infoBtn} aria-expanded={open} aria-controls={id} aria-label={label} title={label} onClick={() => setOpen(!open)}>
+    <span className={`${s.info} ${small ? s.small : ""} ${className}`}>
+      <button ref={btn} type="button" className={s.infoBtn} popoverTarget={id} aria-label={label} title={label}>
         <span aria-hidden="true">i</span>
       </button>
-      <span id={id} className={s.infoNote} hidden={!open}>{children}</span>
+      <span ref={note} id={id} popover="auto" className={s.infoNote}>{children}</span>
     </span>
   );
 }

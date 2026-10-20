@@ -35,7 +35,7 @@ const TABS: { id: Tab; label: string; hint: string }[] = [
   { id: "lemma", label: "Dictionary word", hint: "Every form of a word (λόγος finds λόγου, λόγοις…), as the GLAUx treebank analyses it. Add grammar to narrow it, or search by grammar alone." },
   { id: "english", label: "Translations", hint: "Words in the English translations." },
   { id: "syntax", label: "Constructions", hint: "Sentences found by how they are built: the genitive absolute, ἄν with the optative, everything that is the object of λέγω…, from GLAUx's sentence analyses." },
-  { id: "library", label: "My library", hint: "Your notes, bookmarks, highlights and saved words, on this device." },
+  { id: "library", label: "The Treasury", hint: "Your notes, bookmarks, highlights and saved words, on this device." },
 ];
 const SCRIPTS: { id: Script | "auto"; label: string }[] = [
   { id: "auto", label: "Work it out" }, { id: "greek", label: "Greek letters" }, { id: "translit", label: "Latin letters" }, { id: "beta", label: "Beta Code" },
