@@ -1,6 +1,6 @@
 # PROGRESS.md — project memory
 
-## Pages fill the screen; figures grow behind them (2026-10-20, round 2; waiting for the owner's "Publish")
+## Pages fill the screen; figures grow behind them (2026-10-20, round 2; LIVE after the owner's "Publish" at 14:10 UTC)
 The owner, 06:49 UTC: "I don't like the way the content is displayed on each page. Everything is stuck to the left, and doesn't
 fill out the page. Also, The figures should grow into the background, as you scroll, then stay there, until you scroll back to
 the top, then it animates into the face again. And fix the performance on beauty mode. I think that it's a bit too heavy.
