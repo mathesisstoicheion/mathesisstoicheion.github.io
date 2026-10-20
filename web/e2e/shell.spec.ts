@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { headerButton } from "./header";
 import { FORUM_OPEN } from "../src/config/areas";
 
 test("home page shows the site name, the passage and the rooms", async ({ page }) => {
@@ -32,12 +33,12 @@ test("the header is design A's four doors around the mark, in plain words with t
 test("the reader's page chosen in Settings (Lamplight or Daylight) is remembered after a reload", async ({ page }) => {
   await page.goto("/");
   await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
-  await page.getByRole("button", { name: "Settings" }).click();
+  await (await headerButton(page, "Settings")).click();
   await page.getByRole("radio", { name: "Daylight" }).click();
   await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
   await page.reload();
   await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
-  await page.getByRole("button", { name: "Settings" }).click();
+  await (await headerButton(page, "Settings")).click();
   await page.getByRole("radio", { name: "Lamplight" }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-reader-page", "day");
 });

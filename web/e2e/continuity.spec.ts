@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { headerButton } from "./header";
 import { openMore } from "./reader-menus";
 
 // The reader reads texts from GitHub, so these need a connection (until the offline part).
@@ -18,10 +19,10 @@ test("the site keeps working offline once visited, and the connection light says
     const pages = keys.find((k) => k.startsWith("pages-"));
     return !!navigator.serviceWorker.controller && !!pages && (await (await caches.open(pages)).keys()).length > 20;
   }), { timeout: 60_000 }).toBe(true);
-  await expect(page.getByRole("button", { name: "Connection: Online" })).toBeVisible();
+  await expect(await headerButton(page, "Connection: Online")).toBeVisible();
 
   await context.setOffline(true);
-  await expect(page.getByRole("button", { name: "Connection: Offline" })).toBeVisible();
+  await expect(await headerButton(page, "Connection: Offline")).toBeVisible();
   await page.goto("/treasury");
   await expect(page.getByRole("heading", { level: 1, name: /The Treasury/ })).toBeVisible();
   // moving between areas offline, through the site's own links
@@ -30,7 +31,7 @@ test("the site keeps working offline once visited, and the connection light says
   await page.goto("/academy/lesson/case");
   await expect(page.locator("h1").first()).toBeVisible();
 
-  await page.getByRole("button", { name: "Connection: Offline" }).click();
+  await (await headerButton(page, "Connection: Offline")).click();
   const panel = page.getByRole("dialog", { name: "Connection and offline reading" });
   await expect(panel).toContainText("Every page of the site is kept in this browser");
   await panel.getByRole("button", { name: "Reconnect" }).click();
@@ -39,7 +40,7 @@ test("the site keeps working offline once visited, and the connection light says
   await context.setOffline(false);
   await panel.getByRole("button", { name: "Reconnect" }).click();
   await expect(panel.getByRole("status")).toContainText("Connected", { timeout: 30_000 });
-  await expect(page.getByRole("button", { name: "Connection: Online" })).toBeVisible();
+  await expect(await headerButton(page, "Connection: Online")).toBeVisible();
 });
 
 test("markers beside the scroll bar show notes and bookmarks, preview them and jump to them", async ({ page }) => {

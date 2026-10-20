@@ -4,7 +4,7 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 
 On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
-## The home page's red everywhere; faster animation; the home page stripe (2026-10-20, round 4; NOT live yet)
+## The home page's red everywhere; animation at 3x; the home page stripe (2026-10-20, round 4; LIVE on the owner's "Publish", 21:03 UTC)
 The owner, 16:47–16:51 UTC: "Everything on the website needs to follow the Gold and lamplight with the red colour scheme",
 "Every page must follow the design choices of the homepage", "All little submenus and buttons"; the Museion, Explore, Talk and
 Read were named, and the Treasury "seems inconsistent and and boring". 16:27: "They need to animate faster, try twice as fast,
@@ -34,7 +34,10 @@ then 3 times as fast and give me a video preview". 16:40: "There's a stripe on t
   through a red field (`.lib-hero .win::before`, mix-blend lighten) and the emblems are drawn on red (`field` in `Letters`).
 - Checks: typecheck clean, lint only the 16 known errors; overlap sweep (45 pages x 6 sizes) shows only the known findings
   (author pages at computer sizes, Eras of Greek on phones, library list on tablet); layer memory at 3x 56-109 MB; mid-scroll
-  shots all drawn.
+  shots all drawn. Browser tests (with the packs and the public Supabase values at build time, as on the clean-up's run): every
+  remaining failure (22) is also on the clean-up's list of failures on main. Tests changed to follow the look: the header's
+  square buttons stand beside the doors only from 1440 px, so `e2e/header.ts` opens the menu for them where it must; the
+  Treasury test now looks for the Mine door in the site's banner, not the page's own path.
 
 ## Live since the clean-up began (online, 2026-10-16 to 2026-10-20)
 - **The look: Gold and lamplight, round 3** (live 2026-10-20 15:35 UTC). Design A's doorway on every page: black, Pompeian red and

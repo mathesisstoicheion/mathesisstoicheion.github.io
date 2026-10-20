@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { headerButton } from "./header";
 import AxeBuilder from "@axe-core/playwright";
 import { FORUM_OPEN } from "../src/config/areas";
 
@@ -150,7 +151,7 @@ test("the browser's bar is the colour of design A's black frame, whichever reade
   await page.goto("/");
   const bars = () => page.locator('meta[name="theme-color"]').evaluateAll((ms) => ms.map((m) => m.getAttribute("content")));
   expect(await bars()).toEqual(["#070504"]);
-  await page.getByRole("button", { name: "Settings" }).click();
+  await (await headerButton(page, "Settings")).click();
   await page.getByRole("radio", { name: "Daylight" }).click();
   await page.reload();
   expect(await bars()).toEqual(["#070504"]);

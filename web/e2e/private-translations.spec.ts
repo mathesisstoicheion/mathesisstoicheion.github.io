@@ -144,7 +144,8 @@ test("Mine shows the moderator the way in, with how many there are; the shelf li
   await expect(way).toContainText("2 translations");
   await way.click();
   await expect(page).toHaveURL(/\/treasury\/translations$/);
-  await expect(page.locator("header").getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
+  // the site's header (the banner), not the page's own head, whose path also starts with a link to Mine
+  await expect(page.getByRole("banner").getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { level: 1, name: "Private translations" })).toBeVisible();
   await expect(page.getByText("Private · only you can see this")).toBeVisible();
   await expect(page.getByText("2 translations")).toBeVisible();

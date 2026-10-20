@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { headerButton } from "./header";
 import AxeBuilder from "@axe-core/playwright";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { offlinePages } from "../src/config/pages";
@@ -54,8 +55,8 @@ for (const theme of ["light", "dark"] as const) {
 const ILIAD = "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1";
 const iliad = async (page: Page) => expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
 const STATES: [string, string, (page: Page) => Promise<void>][] = [
-  ["settings panel", "/", async (page) => { await page.getByRole("button", { name: "Settings" }).click(); }],
-  ["connection panel", "/", async (page) => { await page.getByRole("button", { name: /^Connection:/ }).click(); }],
+  ["settings panel", "/", async (page) => { await (await headerButton(page, "Settings")).click(); }],
+  ["connection panel", "/", async (page) => { await (await headerButton(page, /^Connection:/)).click(); }],
   ["quick search", "/", async (page) => { await page.keyboard.press("/"); await page.keyboard.type("λογος"); await page.waitForTimeout(800); }],
   ["word look-up", ILIAD, async (page) => { await iliad(page); await page.locator('[data-u="1.1"] [data-w="ἄειδε"]').click(); await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" })).toBeVisible(); }],
   ["passage toolbar and note", ILIAD, async (page) => { await iliad(page); await page.locator('[data-row="1.5"]').click(); await page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name: "Note", exact: true }).click(); }],

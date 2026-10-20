@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { headerButton } from "./header";
 
 // The universal search (Quick search), its recent searches, and the typeface choice in Settings.
 const open = async (page: Page) => {
@@ -66,7 +67,7 @@ test("finds a word's meaning, a place, a lesson, and does what is asked", async 
 
 test("the Greek and English typefaces can be chosen, and are remembered", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Settings" }).click();
+  await (await headerButton(page, "Settings")).click();
   const settings = page.getByRole("dialog", { name: "Settings" });
   await settings.getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Gentium/ }).click();
   await settings.getByRole("radiogroup", { name: "English typeface" }).getByRole("radio", { name: /Sans/ }).click();
