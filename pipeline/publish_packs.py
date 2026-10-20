@@ -27,6 +27,8 @@ DATA = ROOT / "web" / "public" / "data"
 STAGE = ROOT / "pipeline" / ".cache" / "packs-publish"
 REMOTE = "https://github.com/mathesisstoicheion/packs.git"
 KINDS = ["words", "lsj", "lexicon", "search", "syntax"]
+# CC BY-NC 4.0 data, kept out of the site's CC BY-SA repository (NOTICE): the Venetus A line index
+NONCOMMERCIAL = DATA / "noncommercial" / "venetus-a-iliad.json"
 PAGES_LIMIT = 1_000_000_000
 FILE_LIMIT = 100_000_000
 
@@ -44,7 +46,11 @@ Sources and licences:
 - Search index: built from the Perseus Digital Library (canonical-greekLit) and First1KGreek texts,
   CC BY-SA 4.0, and from GLAUx.
 
-These derived files are shared under CC BY-SA 4.0. Full credits: https://mathesisstoicheion.com/credits
+- noncommercial/venetus-a-iliad.json, the page and place of every Iliad line in the Venetus A: Homer Multitext
+  project, release 2024c, CC BY-NC 4.0 (https://creativecommons.org/licenses/by-nc/4.0/). NON-COMMERCIAL ONLY:
+  this one folder is not under CC BY-SA and may not be used commercially. https://www.homermultitext.org/
+
+All other files here are shared under CC BY-SA 4.0. Full credits: https://mathesisstoicheion.com/credits
 """
 
 
@@ -55,10 +61,12 @@ def run(*args: str, cwd: Path = STAGE) -> str:
 def main() -> None:
     push = "--push" in sys.argv
     missing = [k for k in KINDS if not (DATA / k / "_index.json").exists() and not (DATA / k / "texts.json").exists()]
+    if not NONCOMMERCIAL.exists():
+        missing.append("noncommercial (python pipeline/build_manuscripts.py)")
     if missing:
         raise SystemExit(f"not built yet: {missing} (see README.md, 'The large data files')")
 
-    files = [p for k in KINDS for p in (DATA / k).rglob("*") if p.is_file()]
+    files = [p for k in KINDS for p in (DATA / k).rglob("*") if p.is_file()] + [NONCOMMERCIAL]
     total = sum(p.stat().st_size for p in files)
     big = [p for p in files if p.stat().st_size >= FILE_LIMIT]
     print(f"{len(files):,} files, {total / 1e6:.0f} MB")
@@ -73,6 +81,7 @@ def main() -> None:
     STAGE.mkdir(parents=True)
     for k in KINDS:
         shutil.copytree(DATA / k, STAGE / k)
+    shutil.copytree(DATA / "noncommercial", STAGE / "noncommercial")
     (STAGE / ".nojekyll").write_text("")          # serve files whose names start with _ (_index.json)
     (STAGE / "README.md").write_text(README, encoding="utf-8")
     run("git", "init", "-q", "-b", "main")

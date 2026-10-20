@@ -16,7 +16,7 @@ import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
 import PageHead from "@/components/PageHead";
-import { trail } from "@/config/areas";
+import { FORUM_OPEN, trail } from "@/config/areas";
 
 const PLACE_NAME = new Map((mapData as { places: { id: string; grc: string; en: string }[] }).places.map((p) => [p.id, p]));
 
@@ -35,10 +35,12 @@ export default function EntryView({ e }: { e: Entry }) {
           {e.places!.map((id) => { const p = PLACE_NAME.get(id); return p && <Link key={id} href={`/stoa/periplus?p=${id}`} transitionTypes={["page-turn"]}>{ENGLISH_NAMES[id] ?? p.en.split("/")[0].replace(/ \(.*\)$/, "")} <span lang="grc">{p.grc}</span> →</Link>; })}
         </div>
       )}
-      <div className={styles.onMap}>
-        <p className="label">Argue it out</p>
-        <Link href={`/town-hall/pnyx?from=${e.slug}#propose`} transitionTypes={["page-turn"]}>Debate this in the Pnyx →</Link>
-      </div>
+      {FORUM_OPEN && (
+        <div className={styles.onMap}>
+          <p className="label">Argue it out</p>
+          <Link href={`/town-hall/pnyx?from=${e.slug}#propose`} transitionTypes={["page-turn"]}>Debate this in the Pnyx →</Link>
+        </div>
+      )}
       {certs.size > 0 && (
         <div className={styles.certKey}>
           <p className="label">How sure is this?</p>

@@ -9,6 +9,16 @@ web/public/data/lsj/
 web/public/data/search/
 web/public/data/lexicon/
 web/public/data/syntax/
+# non-commercial data (CC BY-NC), kept out of this CC BY-SA repository; published with the packs (see NOTICE)
+web/public/data/noncommercial/
 
 # Python caches
 __pycache__/
+
+# unchecked old-site author drafts, known errors: kept on this computer only
+pipeline/drafts/old-site-author-articles.json
+
+# screenshots from earlier previews, kept on this computer only
+_archive/author-article-preview/
+_archive/map-preview/
+_archive/tutorial-shots/

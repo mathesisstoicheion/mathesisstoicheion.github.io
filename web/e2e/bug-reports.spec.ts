@@ -1,4 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
+
+test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
 
 // Bug reports, suggestions and hiding a person. A pretend signed-in member and pretend database answers:
 // nothing is sent to, or written in, the real forum.

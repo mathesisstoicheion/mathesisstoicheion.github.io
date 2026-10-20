@@ -10,6 +10,7 @@ import { A_ART } from "@/components/a/pictures";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
+import { FORUM_OPEN } from "@/config/areas";
 
 export const metadata: Metadata = { title: "Credits, licences & privacy", description: PAGE_DESCRIPTIONS.credits };
 
@@ -98,17 +99,28 @@ export default function CreditsPage() {
           <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>
           <li>The reader&apos;s <b>Listen</b> button reads the English translation with a voice from your own device or browser; this site sends nothing. Most voices work on the device itself, but some browsers&apos; online voices (in Microsoft Edge, those whose names end in “Online (Natural)”) are made on the browser maker&apos;s servers, so the passage being read goes to them. The Greek is never read aloud.</li>
           <li>Downloading the library fetches the text files from GitHub. Links to Logeion and Perseus take you to those sites only when you click them.</li>
-          <li>
-            <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
-            Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
-            reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
-            password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
-            display name and what you write about yourself.
-          </li>
-          <li>What you write in the Town Hall and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
-            pebble in a debate cannot: only the totals are shown, once the debate closes. Reports are seen only by the moderator.</li>
-          <li>A bug report is a public thread like any other. The form fills in the page you were on and a short description of your browser
-            (its name and version, the system, and the window&apos;s size); you see both before sending and can change or remove them. Nothing else about your computer is sent.</li>
+          {FORUM_OPEN ? <>
+            <li>
+              <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
+              Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
+              reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+              password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
+              display name and what you write about yourself.
+            </li>
+            <li>What you write in the Town Hall and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
+              pebble in a debate cannot: only the totals are shown, once the debate closes. Reports are seen only by the moderator.</li>
+            <li>A bug report is a public thread like any other. The form fills in the page you were on and a short description of your browser
+              (its name and version, the system, and the window&apos;s size); you see both before sending and can change or remove them. Nothing else about your computer is sent.</li>
+          </> : <>
+            <li>
+              <b>Accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European Union
+              (Ireland). Your browser contacts Supabase on your account page and when you are signed in; the home page, reading, study
+              and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+              password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
+              display name and what you write about yourself.
+            </li>
+            <li>The forum (the Town Hall and the Pnyx) is closed for now. What was written there is kept, and is no longer shown.</li>
+          </>}
           <li>If you choose to keep your Treasury in step between devices, a copy of it is stored in your account, readable only by you.</li>
           <li>You can delete your account at any time from your account page: this removes your account, your profile, everything you
             wrote in the Town Hall and the Pnyx, your votes and your stored Treasury.</li>
@@ -201,7 +213,7 @@ export default function CreditsPage() {
           photograph is copied to this site. Which pages hold which work comes from each library&apos;s catalogue (<code>src/data/manuscripts.ts</code>).
         </p>
         <ul>
-          <li><b>Venetus A</b> (Venice, Biblioteca Nazionale Marciana, Marc. gr. Z. 454 = 822): photographs and the index of every Iliad line on its page, the <a href="https://www.homermultitext.org/" rel="noopener">Homer Multitext project</a>, Creative Commons Attribution-NonCommercial (the index: CC BY-NC 4.0, built by <code>pipeline/build_manuscripts.py</code>).</li>
+          <li><b>Venetus A</b> (Venice, Biblioteca Nazionale Marciana, Marc. gr. Z. 454 = 822): photographs and the index of every Iliad line on its page, the <a href="https://www.homermultitext.org/" rel="noopener">Homer Multitext project</a>, Creative Commons Attribution-NonCommercial (the index: CC BY-NC 4.0, built by <code>pipeline/build_manuscripts.py</code>; for non-commercial use only, so it is kept apart from this site&apos;s openly licensed files).</li>
           <li><b>The Medicean manuscript of Aeschylus and Sophocles</b> (Florence, Biblioteca Medicea Laurenziana, Plut. 32.9): photographs, Biblioteca Medicea Laurenziana, <a href="https://tecabml.contentdm.oclc.org/digital/collection/plutei" rel="noopener">Teca digitale</a>, for personal and non-commercial use; contents by folio from <a href="https://portail.biblissima.fr/" rel="noopener">Biblissima</a>.</li>
           <li><b>Plato, Paris grec 1807</b>: Source gallica.bnf.fr / Bibliothèque nationale de France (<a href="https://gallica.bnf.fr/edit/und/conditions-dutilisation-des-contenus-de-gallica" rel="noopener">free non-commercial reuse</a>); contents by folio from the BnF&apos;s Archives et manuscrits.</li>
         </ul>

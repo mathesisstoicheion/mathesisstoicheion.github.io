@@ -1,0 +1,86 @@
+Mathesis Stoicheion · Μάθησις Στοιχείων
+https://mathesisstoicheion.com/
+
+The code in this repository is MIT and the site's own writing is CC BY-SA 4.0 (see LICENSE).
+This file lists the material from other sources, its licence, and what this site changed in it.
+The site's Credits page (web/src/app/credits/page.tsx) gives the same list, with links.
+
+
+TEXTS AND TRANSLATIONS
+
+Shown exactly as published, never edited. The site's catalogue (web/public/data/catalog.json) is
+built from these collections, each pinned to one commit:
+
+- Perseus Digital Library, Tufts University: canonical-greekLit (PerseusDL/canonical-greekLit,
+  commit bcc5df0602f3b3fe6fefe1e1d575602a25ab1db6). CC BY-SA 4.0. doi:10.5281/zenodo.596309.
+  Perseus asks that any modifications be offered back to Perseus.
+- Open Greek and Latin, First Thousand Years of Greek (OpenGreekAndLatin/First1KGreek,
+  commit 8ee111eb44ecef4120c844e10749178d95d1f30c). CC BY-SA 4.0. doi:10.5281/zenodo.596723.
+- The editor and translator of each text, as named in that text file's header.
+
+Left out: the Coptic Gospel of Mark (urn:cts:greekLit:tlg0031.tlg002.1st1K-cop1), licensed
+"for academic use only". Texts left out for their licence are listed in pipeline/not_open.tsv.
+
+
+WORDS AND DICTIONARIES
+
+- GLAUx, by Alek Keersmaekers: word analyses, sentence structure, and each work's genre, dialect and
+  date. CC BY-SA 4.0; some source texts and hand annotations inside GLAUx carry other licences,
+  listed in GLAUx's metadata. Keersmaekers, A. (2021), "The GLAUx corpus: methodological issues in
+  designing a long-term, diverse, multi-layered corpus of Ancient Greek", Proceedings of the 2nd
+  International Workshop on Computational Approaches to Historical Language Change, 39-50.
+- Liddell-Scott-Jones Greek-English Lexicon (LSJ): Text provided under a CC BY-SA license by Perseus
+  Digital Library, http://www.perseus.tufts.edu, with funding from The National Endowment for the
+  Humanities. Data accessed from https://github.com/PerseusDL/lexica/.
+- Dickinson College Commentaries Greek Core Vocabulary, by Christopher Francese and collaborators.
+  CC BY-SA 3.0.
+- hypotactic.com scansions, by David Chamberlain. CC BY 4.0.
+- Wikidata (authors' dates, places, descriptions, names). CC0.
+- Princeton WordNet 3.0. WordNet 3.0 Copyright 2006 by Princeton University. All rights reserved.
+  Under the WordNet licence: https://wordnet.princeton.edu/license-and-commercial-use
+- Wiktionary, fetched live in the visitor's browser. CC BY-SA 4.0.
+
+
+MAPS
+
+- NASA Earth Observatory, Blue Marble: Next Generation, by Reto Stöckli. Public domain.
+- Ancient World Mapping Center, geodata (AWMC/geodata). ODbL 1.0.
+- Pleiades. CC BY 3.0.
+
+
+PICTURES
+
+Each picture in the Painted Stoa keeps its own licence, recorded with it in web/src/wiki/images.ts
+and shown on the Credits page.
+
+
+MANUSCRIPTS
+
+Photographs are shown from the libraries' own image servers; none is copied into this repository.
+
+- EXCEPTION, NON-COMMERCIAL: the index of Iliad lines on the pages of the Venetus A, from the
+  Homer Multitext project, release 2024c. CC BY-NC 4.0: it may not be used commercially. It is not
+  in this repository and not covered by LICENSE. pipeline/build_manuscripts.py builds it into
+  web/public/data/noncommercial/ (ignored by git), and the site serves it from the separate packs
+  repository (mathesisstoicheion/packs, folder noncommercial/), whose README labels it the same way.
+- Biblioteca Medicea Laurenziana, Plut. 32.9 (Teca digitale) and Bibliothèque nationale de France,
+  grec 1807 (Gallica): photographs for non-commercial use, linked, not copied.
+
+
+FONTS AND SOFTWARE
+
+- GFS Didot (Greek Font Society) and Alegreya, Alegreya Sans SC (Juan Pablo del Peral, Huerta
+  Tipográfica). SIL Open Font License 1.1.
+- three.js, Next.js, React, Zustand, supabase-js: MIT. saxes: ISC. OpenSeadragon: BSD 3-Clause.
+
+
+WHAT THIS SITE CHANGED
+
+As CC BY-SA asks, the changes made to the material above:
+- Texts are split into citable passages and lined up with their translations. Their words are not
+  changed.
+- LSJ entries keep their wording; Beta Code is turned into Greek letters, and a short gloss is taken
+  from each entry for the look-up.
+- Indexes, counts and search files are derived from the texts.
+- Works named only in Latin or Greek get an English title; most of these are this site's own
+  translations and are labelled so on the site.

@@ -38,6 +38,9 @@ jobs:
         env:
           # the large data packs come from the second Pages site (pipeline/publish_packs.py)
           NEXT_PUBLIC_PACKS: /packs
+          # accounts: the repository's variables (Settings → Secrets and variables → Actions → Variables)
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3

@@ -5,6 +5,7 @@ import type { Colour } from "@/lib/annotations";
 import { useQuickGloss, type WordContext } from "./WordPanel";
 import styles from "./Reader.module.css";
 import { scrollBehavior } from "@/lib/settings";
+import { FORUM_OPEN } from "@/config/areas";
 
 const PHONE = "(max-width: 760px)";
 
@@ -96,7 +97,7 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
       <button type="button" onClick={() => onAction("echoes")} title="Where these words recur, in this book and beyond">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h2M9 7v10M13 4v16M17 8v8M21 11v2" /></svg><span>Echoes</span>
       </button>
-      {ask && (
+      {ask && FORUM_OPEN && (
         <button type="button" onClick={() => onAction("ask")} title="Ask the Town Hall about this passage">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the forum</span>
         </button>

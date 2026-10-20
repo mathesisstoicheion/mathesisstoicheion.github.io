@@ -28,6 +28,11 @@ COLLECTIONS = [
 NS = {"ti": "http://chs.harvard.edu/xmlns/cts", "dc": "http://purl.org/dc/elements/1.1/"}
 OUT = Path(__file__).resolve().parent.parent / "web" / "public" / "data" / "catalog.json"
 UA = {"User-Agent": "mathesis-stoicheion-catalogue-builder"}
+NOT_OPEN = {
+    line.split("\t")[0]
+    for line in (Path(__file__).resolve().parent / "not_open.tsv").read_text(encoding="utf-8").splitlines()
+    if line.startswith("urn:")
+}
 
 
 def get(url: str, tries: int = 4) -> bytes:
@@ -97,7 +102,7 @@ def main() -> None:
                 for kind in ("edition", "translation", "commentary"):
                     for t in root.findall(f"ti:{kind}", NS):
                         urn = t.get("urn")
-                        if not urn:
+                        if not urn or urn in NOT_OPEN:
                             continue
                         file_path = f"data/{aid}/{wid}/{urn.split(':')[-1]}.xml"
                         blob = blobs.get(file_path)

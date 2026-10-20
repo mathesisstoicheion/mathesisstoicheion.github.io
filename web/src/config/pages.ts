@@ -8,6 +8,7 @@ import { GUIDES } from "@/data/guides";
 import { PATH } from "@/data/reading-path";
 import { ENTRIES } from "@/wiki/index";
 import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD } from "./admin";
+import { FORUM_OPEN } from "@/config/areas";
 
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
@@ -28,6 +29,8 @@ export const PRIVATE_PAGES = [
   "/account", "/treasury", "/treasury/word", "/read", "/search", "/library/author",
   "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation", "/town-hall/pnyx/debate",
   "/academy/today", "/academy/review",
+  // while the forum is closed its two front pages show only a notice: not for search engines either
+  ...(FORUM_OPEN ? [] : ["/town-hall", "/town-hall/pnyx"]),
 ];
 
 /** Pages that exist only while developing (the recording studio): never kept offline. */

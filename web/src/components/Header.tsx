@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, TABS, doorWord, type AreaId } from "@/config/areas";
+import { AREAS, FORUM_OPEN, TABS, doorWord, shown, type AreaId } from "@/config/areas";
 import { useUI } from "@/lib/ui";
 import { status, useConnection } from "@/lib/connection";
 import { barsHeld } from "@/lib/header";
@@ -25,8 +25,9 @@ function isActive(pathname: string, href: string) {
 const current = (pathname: string, id: AreaId) => [AREAS[id].href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
 
 const LEFT: AreaId[] = ["study", "library"];
-const RIGHT: AreaId[] = ["wiki", "forum"];
-const MENU_DOORS: AreaId[] = ["study", "library", "wiki", "forum", "treasury", "search"];
+// while the forum is closed (FORUM_OPEN), Mine takes Talk's place, so two doors still stand either side of the mark
+const RIGHT: AreaId[] = FORUM_OPEN ? ["wiki", "forum"] : ["wiki", "treasury"];
+const MENU_DOORS: AreaId[] = (["study", "library", "wiki", "forum", "treasury", "search"] as AreaId[]).filter(shown);
 
 const SearchIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>;
 

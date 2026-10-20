@@ -10,7 +10,7 @@ import HomePassage from "@/components/a/HomePassage";
 import Glide from "@/components/a/Glide";
 import { A_ART, passagePicture } from "@/components/a/pictures";
 import { PASSAGES } from "@/data/passages";
-import { AREAS } from "@/config/areas";
+import { AREAS, FORUM_OPEN, shown } from "@/config/areas";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { hasTranslation, type Catalog } from "@/lib/catalog";
@@ -22,14 +22,15 @@ const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog
 const WORKS = CATALOG.authors.flatMap((a) => a.works);
 const n = (x: number) => x.toLocaleString("en-GB");
 
-/** the five rooms of the site, each with a small window onto an object (design A) */
-const ROOMS = [
+/** the five rooms of the site, each with a small window onto an object (design A); four while the forum is closed (FORUM_OPEN) */
+const ALL_ROOMS = [
   { id: "study", gk: "Ἀκαδήμεια", art: A_ART.douris, text: "Lessons from the first letters to reading real texts." },
   { id: "library", gk: "Μουσεῖον", art: A_ART.amphora, text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
   { id: "wiki", gk: "Στοὰ Ποικίλη", art: A_ART.antikythera, text: "People, places and objects of the ancient world." },
   { id: "forum", gk: "Ἀγορά", art: A_ART.ostraka, text: "The forum: ask, answer, and read together." },
   { id: "treasury", gk: "Θησαυρός", art: A_ART.mask, text: "Your bookmarks, notes, highlights and words." },
 ] as const;
+const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
 
 // every picture the page can show, credited at its foot (the passage's window changes with the passage)
 const PASSAGE_CREDITS = [...new Set(PASSAGES.map((p) => p.work))];
@@ -72,7 +73,7 @@ export default function Home() {
           <HomePassage />
 
           <section className={`${s.wrap} ${s.rooms}`} aria-label="The rooms of the site">
-            <div className={s["sec-h"]}><SettleText className={s.mono} text="Five rooms" /><SettleText className={s.mono} text="Mathesis Stoicheion" /></div>
+            <div className={s["sec-h"]}><SettleText className={s.mono} text={FORUM_OPEN ? "Five rooms" : "Four rooms"} /><SettleText className={s.mono} text="Mathesis Stoicheion" /></div>
             <div className={s.rgrid}>
               {ROOMS.map((r) => {
                 const a = AREAS[r.id];

@@ -1,4 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 /** The order and every filter wait behind one button over the list (design A's library): open it. */
 async function openFilters(page: Page) {
@@ -146,6 +147,7 @@ test("the map and the Town Hall put their search first", async ({ page }) => {
   const find = page.getByRole("searchbox", { name: "Find a place" });
   const map = page.getByRole("application");
   expect((await find.boundingBox())!.y).toBeLessThan((await map.boundingBox())!.y);
+  if (!FORUM_OPEN) return;
   await page.goto("/town-hall");
   // the Town Hall's search stands in the toolbar, straight above the list it narrows
   const hall = page.getByRole("searchbox", { name: "Search the Town Hall" });

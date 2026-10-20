@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { FORUM_OPEN } from "../src/config/areas";
 
 test("home page shows the site name, the passage and the rooms", async ({ page }) => {
   await page.goto("/");
@@ -22,7 +23,7 @@ test("the header is design A's four doors around the mark, in plain words with t
   await page.goto("/read");
   const header = page.locator("header").first();
   const doors = header.locator("a:has(> span[lang='grc'])");
-  expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk"]);
+  expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk"] : ["Learn", "Read", "Explore", "Mine"]);
   await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
   await expect(header.getByRole("link", { name: /^Learn.*: The Academy$/ })).toBeVisible();
   await expect(header.getByRole("link", { name: "Mine: bookmarks and notes" })).toBeVisible();

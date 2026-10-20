@@ -30,6 +30,7 @@ import Rich from "./Rich";
 import { WarmUp, LessonSteps } from "./LessonSteps";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
+import { FORUM_OPEN } from "@/config/areas";
 
 /** An answer that is Greek and nothing else (a single letter, a word): set in the Greek face, larger. */
 const isGreek = (t: string) => /\p{Script=Greek}/u.test(t) && !/\p{Script=Latin}/u.test(t);
@@ -264,10 +265,12 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
         </footer>
       )}
       {/* talk where you learn (Phase 11): a question about the lesson goes to the Town Hall's board for it */}
-      <p className={styles.askLesson}>
-        Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Town Hall</Link>,
-        in {i < 2 ? "Beginners' questions" : "Grammar help"}: no question is too small.
-      </p>
+      {FORUM_OPEN && (
+        <p className={styles.askLesson}>
+          Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Town Hall</Link>,
+          in {i < 2 ? "Beginners' questions" : "Grammar help"}: no question is too small.
+        </p>
+      )}
       <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onClose={() => setWord(null)} />
     </article>
   );

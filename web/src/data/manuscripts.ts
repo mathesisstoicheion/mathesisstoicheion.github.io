@@ -12,8 +12,10 @@
  * Suppliants (179r).
  *
  * The pages of each manuscript (folio → the photograph's address on the library's image server) are
- * built by pipeline/build_manuscripts.py into public/data/manuscripts/<id>.json.
+ * built by pipeline/build_manuscripts.py into public/data/manuscripts/<id>.json. The Venetus A's line
+ * index is CC BY-NC 4.0, so it is kept out of git and served with the data packs (see NOTICE).
  */
+import { PACKS } from "@/config/packs";
 
 export interface WorkInWitness {
   /** the folio where the work begins */
@@ -59,7 +61,7 @@ export const WITNESSES: Witness[] = [
     credit: "Photographs and line index: the Homer Multitext project, with the Biblioteca Nazionale Marciana",
     terms: { label: "Homer Multitext project: Creative Commons Attribution-NonCommercial", url: "https://www.homermultitext.org/" },
     manifest: "https://github.com/homermultitext/hmt-archive/blob/master/iiif/venetusA.json",
-    works: { "tlg0012.tlg001": { from: "12r", lines: "/data/manuscripts/venetus-a-iliad.json" } },
+    works: { "tlg0012.tlg001": { from: "12r", lines: `${PACKS}/noncommercial/venetus-a-iliad.json` } },
   },
   {
     id: "laur-32-9",

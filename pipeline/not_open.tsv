@@ -1,0 +1,4 @@
+# Texts the collections hold under a licence that is not open. build_catalog.py leaves them out,
+# and web/src/lib/not-open.test.ts fails if one is in the catalogue. One URN per line, then its licence.
+urn	licence
+urn:cts:greekLit:tlg0031.tlg002.1st1K-cop1	"for academic use only" (Coptic Scriptorium, in the file's header)

@@ -1,5 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { FORUM_OPEN } from "../src/config/areas";
 
 // The phone edition (design A, 2026-10-19): a one-row header with Search and a menu (the five doors, your account, Settings
 // and the connection); no bar along the bottom (the owner's choice). Search opens as a full-screen sheet.
@@ -22,7 +23,7 @@ test.describe("on a phone", () => {
     await expect(search).toHaveCount(1);
     await openMenu(page);
     const doors = menu(page).getByRole("list").first().getByRole("link");
-    expect(await doors.evaluateAll((els) => els.map((e) => e.firstElementChild?.textContent))).toEqual(["Learn", "Read", "Explore", "Talk", "Mine", "Search"]);
+    expect(await doors.evaluateAll((els) => els.map((e) => e.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk", "Mine", "Search"] : ["Learn", "Read", "Explore", "Mine", "Search"]);
     await expect(menu(page).getByRole("button", { name: "Settings" })).toBeVisible();
     // every door and button in it is finger-sized
     for (const el of await menu(page).locator("a, button").filter({ visible: true }).all()) {
