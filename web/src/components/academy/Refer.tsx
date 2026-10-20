@@ -10,6 +10,7 @@ import { useId, useLayoutEffect, useRef, useState } from "react";
 import type { Section } from "@/data/lessons";
 import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
+import { cssTempo } from "@/lib/tempo";
 
 type Props = Extract<Section, { kind: "refer" }>;
 type Item = Props["items"][number];
@@ -63,7 +64,7 @@ function Sentence({ it }: { it: Item }) {
             <path d="M0 0L10 5L0 10z" className={styles.rfHead} />
           </marker>
         </defs>
-        {arcs.map((a, i) => <path key={a.key} d={a.d} pathLength={1} className={styles.rfArc} markerEnd={`url(#${head})`} style={{ animationDelay: `${0.3 + i * 0.6}s` }} />)}
+        {arcs.map((a, i) => <path key={a.key} d={a.d} pathLength={1} className={styles.rfArc} markerEnd={`url(#${head})`} style={{ animationDelay: cssTempo(`${0.3 + i * 0.6}s`) }} />)}
       </svg>
       {words.map((w, i) => (
         <span key={i}>

@@ -39,7 +39,7 @@
 /* tooling: each deposit's own texture, pecked and chiselled into the stone (a quiet stone tone, not ink) */
 .drawing pattern circle, .drawing pattern ellipse { fill: var(--ink-3); }
 .drawing pattern path { stroke: var(--ink-3); stroke-width: 1; fill: none; }
-.fill { opacity: 0.8; animation: kd-fade 0.9s ease backwards; animation-delay: calc(500ms + var(--i, 0) * 170ms); }
+.fill { opacity: 0.8; animation: kd-fade calc(0.9s / var(--tempo)) ease backwards; animation-delay: calc((500ms / var(--tempo)) + var(--i, 0) * (170ms / var(--tempo))); }
 .f4 { opacity: 0.55; }
 @keyframes kd-fade { from { opacity: 0; } }
 
@@ -47,20 +47,20 @@
    the lit lower lip of each (the same lines, drawn a little lower, under the grooves) comes up as the light catches it */
 .line, .frame, .pit { fill: none; stroke: var(--cut-deep); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
 .frame { stroke-width: 3.6; }
-.line, .frame { animation: kd-draw 1.3s cubic-bezier(0.6, 0, 0.2, 1) both; animation-delay: calc(var(--i, 0) * 170ms); }
+.line, .frame { animation: kd-draw calc(1.3s / var(--tempo)) cubic-bezier(0.6, 0, 0.2, 1) both; animation-delay: calc(var(--i, 0) * (170ms / var(--tempo))); }
 .lip { animation: kd-fade var(--dur-slow) var(--ease) var(--dur-slow) backwards; }
 .lip .line, .lip .frame { stroke: var(--lip-hi); stroke-width: 1.6; animation: none; }
 /* the looters' pit: a dark hollow cut down through the layers, a shadowed edge round it and a lit rim; its loose
    fill glints with gilded flecks */
-.pit { stroke: var(--lip-hi); stroke-width: 2; animation: kd-draw 1.1s cubic-bezier(0.6, 0, 0.2, 1) 1.7s both; }
+.pit { stroke: var(--lip-hi); stroke-width: 2; animation: kd-draw calc(1.1s / var(--tempo)) cubic-bezier(0.6, 0, 0.2, 1) calc(1.7s / var(--tempo)) both; }
 @keyframes kd-draw { from { stroke-dashoffset: 1; } }
-.pitBg { fill: var(--bg-deep); stroke: var(--cut-deep); stroke-width: 6; stroke-linejoin: round; animation: kd-fade 0.6s ease 2.2s backwards; }
-.pitFill { opacity: 0.9; animation: kd-fade 0.6s ease 2.3s backwards; }
+.pitBg { fill: var(--bg-deep); stroke: var(--cut-deep); stroke-width: 6; stroke-linejoin: round; animation: kd-fade calc(0.6s / var(--tempo)) ease calc(2.2s / var(--tempo)) backwards; }
+.pitFill { opacity: 0.9; animation: kd-fade calc(0.6s / var(--tempo)) ease calc(2.3s / var(--tempo)) backwards; }
 .drawing pattern#kd-loose path { stroke: var(--accent); }
 
 /* the wall: small blocks standing proud, dark joints round them and light caught along their tops; the grave: a
    shallower hollow with a lit rim, its jar a gilded inlay laid in it (a darker gilt at its edge); the sherds gilded chips */
-.objects { animation: kd-set 0.7s var(--ease) backwards; animation-delay: calc(700ms + var(--i, 0) * 170ms); }
+.objects { animation: kd-set calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((700ms / var(--tempo)) + var(--i, 0) * (170ms / var(--tempo))); }
 @keyframes kd-set { from { opacity: 0; transform: translateY(-6px); } }
 .stone { fill: color-mix(in srgb, var(--surface-2) 80%, var(--ink-3)); stroke: var(--cut-deep); stroke-width: 1.8; }
 .stoneLit { fill: none; stroke: var(--lip-hi); stroke-width: 1.6; stroke-linecap: round; }
@@ -121,7 +121,7 @@
 
 /* entries: finds laid out on a tray */
 .finds { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-.finds li { animation-delay: calc(var(--j, 0) * 70ms); }
+.finds li { animation-delay: calc(var(--j, 0) * (70ms / var(--tempo))); }
 .card {
   display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: center; height: 100%;
   padding: 12px; text-decoration: none; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);

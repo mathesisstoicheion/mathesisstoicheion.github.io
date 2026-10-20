@@ -20,7 +20,7 @@
 }
 .tally > div {
   padding: 14px 18px 12px; display: grid; gap: 2px; box-shadow: var(--cut-left);
-  animation: tally-in 0.7s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 110ms);
+  animation: tally-in calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i, 0) * (110ms / var(--tempo)));
 }
 .tally > div:nth-child(odd) { box-shadow: none; }
 .tally > div:nth-child(n + 3) { box-shadow: var(--cut-over); }
@@ -111,8 +111,8 @@
 .bar {
   position: relative; height: 11px; width: var(--w); flex: none; max-width: calc(100% - 4.2em); background: var(--inlay-side); border-radius: var(--radius);
   box-shadow: var(--inlay-edge); transform-origin: left;
-  transition: width 0.65s cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.2s;
-  animation: bar-grow 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+  transition: width calc(0.65s / var(--tempo)) cubic-bezier(0.2, 0.7, 0.2, 1), background-color 0.2s;
+  animation: bar-grow calc(0.8s / var(--tempo)) cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
 }
 @keyframes bar-grow { from { transform: scaleX(0); } }
 .count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 0.92rem; white-space: nowrap; display: grid; line-height: 1.1; }
@@ -124,7 +124,7 @@
 
 /* threads join the same item in the two columns */
 .threads { width: 48px; height: 100%; align-self: stretch; overflow: visible; }
-.threads path { fill: none; stroke: var(--ink-2); stroke-width: 1.1; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 0; animation: thread 0.9s cubic-bezier(0.6, 0, 0.2, 1) both; vector-effect: non-scaling-stroke; }
+.threads path { fill: none; stroke: var(--ink-2); stroke-width: 1.1; opacity: 0.55; stroke-dasharray: 1; stroke-dashoffset: 0; animation: thread calc(0.9s / var(--tempo)) cubic-bezier(0.6, 0, 0.2, 1) both; vector-effect: non-scaling-stroke; }
 .threads path[data-on] { stroke: var(--accent); stroke-width: 2.4; opacity: 1; }
 @keyframes thread { from { stroke-dashoffset: 1; } }
 
@@ -136,7 +136,7 @@
 /* ------------------------------------------------ one item */
 .panel {
   position: relative; padding: 20px 20px 22px; background: var(--field); border-radius: var(--radius);
-  box-shadow: var(--field-edge); display: grid; gap: 12px; animation: panel-in 0.45s var(--ease) backwards;
+  box-shadow: var(--field-edge); display: grid; gap: 12px; animation: panel-in calc(0.45s / var(--tempo)) var(--ease) backwards;
 }
 @keyframes panel-in { from { opacity: 0; transform: translateX(14px); } }
 .panel p { margin: 0; }
@@ -161,7 +161,7 @@
 .notch { fill: var(--ink-2); }
 .mark {
   fill: var(--ink); transform-box: fill-box; transform-origin: bottom;
-  animation: mark-rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(min(var(--i, 0), 120) * 6ms);
+  animation: mark-rise calc(0.55s / var(--tempo)) cubic-bezier(0.2, 0.7, 0.2, 1) backwards; animation-delay: calc(min(var(--i, 0), 120) * (6ms / var(--tempo)));
 }
 .mark[data-on] { fill: var(--accent); }
 @keyframes mark-rise { from { transform: scaleY(0); } }
@@ -174,7 +174,7 @@
 .facts { margin-top: 36px; display: grid; gap: 10px; }
 .facts h2 { font-size: var(--step-3); margin: 0; }
 .facts ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-3); }
-.facts li { animation: sherd-in 0.6s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
+.facts li { animation: sherd-in calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i, 0) * (90ms / var(--tempo))); }
 /* the one square carved slab every link card is (PAGE-RULES.md, rule 3), not a curved sherd */
 .facts button {
   width: 100%; height: 100%; text-align: left; display: grid; gap: 6px; align-content: start; padding: var(--space-4) var(--space-5); cursor: pointer;

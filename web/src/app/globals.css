@@ -165,7 +165,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .meander, .tongues, .rays, .cut { display: block; height: 1px; background: var(--rule); }
 .tongues { width: 36px; flex: none; }
 .rays { width: 56px; }
-.draw { animation: draw 1.8s var(--ease-cut) both; }
+.draw { animation: draw calc(1.8s / var(--tempo)) var(--ease-cut) both; }
 @keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
 
 /* ------------------------------------------------------------- buttons */
@@ -331,8 +331,8 @@ a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { backgrou
 
 /* --------------------------------------------------------- page turn */
 /* Route changes: the old page fades into the dark and the new one comes up out of it, calmly. */
-::view-transition-old(.page-turn) { animation: 240ms ease-in both turn-out; }
-::view-transition-new(.page-turn) { animation: 620ms var(--ease) 60ms both turn-in; }
+::view-transition-old(.page-turn) { animation: calc(240ms / var(--tempo)) ease-in both turn-out; }
+::view-transition-new(.page-turn) { animation: calc(620ms / var(--tempo)) var(--ease) calc(60ms / var(--tempo)) both turn-in; }
 @keyframes turn-out { to { opacity: 0; } }
 @keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 

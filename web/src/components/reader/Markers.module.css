@@ -7,7 +7,7 @@
 .marker {
   position: absolute; right: 0; width: 12px; height: 6px; margin-top: -3px; padding: 0; border: 0; border-radius: var(--radius);
   background: var(--accent); pointer-events: auto; cursor: pointer; opacity: 0.85;
-  transform-origin: right; transition: transform 0.15s var(--ease), opacity 0.15s; animation: slide 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 25ms);
+  transform-origin: right; transition: transform 0.15s var(--ease), opacity 0.15s; animation: slide calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (25ms / var(--tempo)));
 }
 /* a bigger target than the mark itself, grown inwards only (not past the edge of the screen) */
 .marker::before { content: ""; position: absolute; inset: -5px 0 -5px -8px; }
@@ -31,7 +31,7 @@
 .tip {
   position: absolute; right: 22px; width: max-content; max-width: min(320px, 70vw); display: grid; gap: 3px;
   padding: 8px 11px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); font-size: 0.88rem; line-height: 1.35;
-  box-shadow: 0 12px 28px -14px var(--shadow); pointer-events: none; animation: fade 0.15s backwards;
+  box-shadow: 0 12px 28px -14px var(--shadow); pointer-events: none; animation: fade calc(0.15s / var(--tempo)) backwards;
 }
 .tip :global(.label) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); font-size: 0.75rem; }
 .preview { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
@@ -44,7 +44,7 @@
 .legendIcon { width: 6px; height: 16px; background: linear-gradient(var(--accent) 0 3px, transparent 3px 6px, var(--ink) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); border-radius: var(--radius); }
 .legend {
   position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; width: 270px; display: grid; gap: 6px; padding: 12px 14px;
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow); animation: fade 0.18s backwards;
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow); animation: fade calc(0.18s / var(--tempo)) backwards;
 }
 .legend[data-to-right] { right: auto; left: 0; }
 .legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 8px; align-items: center; font-size: 0.93rem; }

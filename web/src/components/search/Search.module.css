@@ -36,7 +36,7 @@
 }
 .readAs b { font-size: 1.2em; color: var(--accent); font-weight: 400; }
 
-.kbd { display: grid; gap: 6px; justify-items: center; padding: 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise 0.3s var(--ease); }
+.kbd { display: grid; gap: 6px; justify-items: center; padding: 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise calc(0.3s / var(--tempo)) var(--ease); }
 .kbdRow { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .kbd button {
   min-width: 42px; height: 42px; font-family: var(--f-greek); font-size: 1.25rem; color: var(--ink);
@@ -56,7 +56,7 @@
 }
 
 /* ------------------------------------------------------------ references */
-.refs { display: grid; gap: 8px; padding: 16px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); animation: rise 0.35s var(--ease); }
+.refs { display: grid; gap: 8px; padding: 16px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); animation: rise calc(0.35s / var(--tempo)) var(--ease); }
 .refs .label { color: var(--accent); }
 .refs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
 .refs a { color: var(--inv-fg); text-decoration: none; font-size: 1.15rem; }
@@ -106,9 +106,9 @@
 .lemmas { display: grid; gap: 8px; }
 
 .groups { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
-.group { box-shadow: var(--cut-under); animation: rise 0.35s var(--ease) backwards; }
+.group { box-shadow: var(--cut-under); animation: rise calc(0.35s / var(--tempo)) var(--ease) backwards; }
 .group:last-child { box-shadow: none; }
-.group:nth-child(2) { animation-delay: 40ms; } .group:nth-child(3) { animation-delay: 80ms; } .group:nth-child(4) { animation-delay: 120ms; }
+.group:nth-child(2) { animation-delay: calc(40ms / var(--tempo)); } .group:nth-child(3) { animation-delay: calc(80ms / var(--tempo)); } .group:nth-child(4) { animation-delay: calc(120ms / var(--tempo)); }
 .groupHead {
   display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 14px; align-items: baseline; width: 100%;
   padding: 12px 4px; background: transparent; border: 0; text-align: left; color: inherit;

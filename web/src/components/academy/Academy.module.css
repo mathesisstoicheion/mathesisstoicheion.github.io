@@ -21,7 +21,7 @@
   stroke-dasharray: 1; stroke-dashoffset: 1; animation-name: write; animation-timing-function: cubic-bezier(0.45, 0, 0.3, 1); animation-fill-mode: forwards;
 }
 @keyframes write { to { stroke-dashoffset: 0; } }
-.num { opacity: 0; animation: appear 0.25s ease forwards; }
+.num { opacity: 0; animation: appear calc(0.25s / var(--tempo)) ease forwards; }
 .num circle { fill: var(--accent); }
 .num text { fill: var(--accent-ink); font: 700 5px var(--f-label); }
 @keyframes appear { to { opacity: 1; } }
@@ -139,7 +139,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .table thead th, .table tbody th { box-shadow: var(--cut-under); }
 .table tbody tr:last-child > * { box-shadow: none; }
 .table td { font-family: var(--f-greek); font-size: 1.3rem; padding: 8px 12px; box-shadow: var(--cut-under); white-space: nowrap; }
-.ending { color: var(--accent); display: inline-block; animation: slot 0.6s var(--ease) both; }
+.ending { color: var(--accent); display: inline-block; animation: slot calc(0.6s / var(--tempo)) var(--ease) both; }
 /* wide: the small tables stand two to a row; the big ones (more than three columns) take the whole row */
 @media (min-width: 1000px) {
   .tableGrid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
@@ -210,7 +210,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .options button:disabled { cursor: default; }
 .options [lang="grc"] { font-size: 1.4em; }   /* a single letter, such as ι, stays readable */
 .right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; }
-.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake 0.35s; }
+.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake calc(0.35s / var(--tempo)); }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 .good { color: var(--ok); font-weight: 600; }
 .bad { color: var(--accent); }
@@ -260,7 +260,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .reviewEmpty { display: grid; gap: 14px; justify-items: start; padding-block: 20px; }
 .reviewBig { font-family: var(--f-display); font-size: 1.8rem; }
 .flash { perspective: 1200px; width: min(520px, 100%); height: 280px; }
-.flashIn { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform 0.7s cubic-bezier(0.3, 1.2, 0.4, 1); }
+.flashIn { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform calc(0.7s / var(--tempo)) cubic-bezier(0.3, 1.2, 0.4, 1); }
 .flipped .flashIn { transform: rotateY(180deg); }
 .flashFront, .flashBack {
   position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; text-align: center;
@@ -312,7 +312,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .covBars { display: grid; gap: 10px; }
 .covRow { display: grid; grid-template-columns: minmax(180px, 1.2fr) 2fr 56px; gap: 14px; align-items: center; }
 .covBar { height: 14px; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); overflow: hidden; }
-.covBar i { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: inherit; transition: width 1s var(--ease); }
+.covBar i { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: inherit; transition: width calc(1s / var(--tempo)) var(--ease); }
 .covRow b { font-family: var(--f-display); font-size: 1.4rem; text-align: right; font-variant-numeric: tabular-nums; }
 @media (max-width: 640px) { .covRow { grid-template-columns: 1fr 56px; } .covBar { grid-column: 1 / -1; order: 3; } }
 .coreList { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
@@ -369,9 +369,9 @@ a.card:hover { background-color: var(--slab-lit); }
 .dots { flex: 1; display: flex; gap: 6px; list-style: none; margin: 0; padding: 0; }
 .dots li { flex: 1; height: 5px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); transition: background 0.4s; }
 .dots li[data-done], .dots li[aria-current] { background: var(--inlay); box-shadow: var(--inlay-edge); }
-.dots li[aria-current] { animation: dot-fill 0.6s var(--ease); transform-origin: left; }
+.dots li[aria-current] { animation: dot-fill calc(0.6s / var(--tempo)) var(--ease); transform-origin: left; }
 @keyframes dot-fill { from { transform: scaleX(0.2); } }
-.sessionPage { display: grid; gap: 18px; align-content: start; animation: page-in 0.45s var(--ease); }
+.sessionPage { display: grid; gap: 18px; align-content: start; animation: page-in calc(0.45s / var(--tempo)) var(--ease); }
 .sessionPage[data-dir="-1"] { animation-name: page-back; }
 @keyframes page-in { from { opacity: 0; transform: translateX(36px) rotateY(-8deg); } }
 @keyframes page-back { from { opacity: 0; transform: translateX(-36px) rotateY(8deg); } }
@@ -408,14 +408,14 @@ a.card:hover { background-color: var(--slab-lit); }
 .glanceTitle { margin: 0; font-size: var(--step-2); }
 .glanceTitle span { font-family: var(--f-greek); color: var(--ink-2); font-size: 0.8em; margin-left: 0.3em; }
 .glance .alphaGrid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
-.glance .tile { animation: glanceTile 0.55s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 28ms); }
+.glance .tile { animation: glanceTile calc(0.55s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i, 0) * (28ms / var(--tempo))); }
 @keyframes glanceTile { from { opacity: 0; transform: translateY(10px) scale(0.94); } }
 .glanceCard {
   min-height: 92px; display: grid; align-items: center; padding: 14px 18px; scroll-margin-bottom: 16px;
   border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left);
 }
 .glanceCard p { margin: 0; }
-.glanceIn { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; animation: glanceIn 0.35s var(--ease) backwards; }
+.glanceIn { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; animation: glanceIn calc(0.35s / var(--tempo)) var(--ease) backwards; }
 @keyframes glanceIn { from { opacity: 0; transform: translateX(-8px); } }
 .glanceBig { font-family: var(--f-greek); font-size: 3.2rem; line-height: 1; min-width: 2.2ch; text-align: center; color: var(--accent); }
 .glanceName { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; font-size: 1.1rem; margin-bottom: 4px !important; }
@@ -463,9 +463,9 @@ a.card:hover { background-color: var(--slab-lit); }
 .motWho { transform-box: view-box; }
 /* at rest (and with reduced motion): where each traveller ends up */
 .motFrom { transform: translateX(66px); }
-.motion[data-go] .motFrom { animation: motOut 1.6s var(--ease) 0.2s both; }
-.motion[data-go] .motIn { animation: motStay 1.2s var(--ease) 0.5s both; }
-.motion[data-go] .motTo { animation: motEnter 1.6s var(--ease) 0.8s both; }
+.motion[data-go] .motFrom { animation: motOut calc(1.6s / var(--tempo)) var(--ease) calc(0.2s / var(--tempo)) both; }
+.motion[data-go] .motIn { animation: motStay calc(1.2s / var(--tempo)) var(--ease) calc(0.5s / var(--tempo)) both; }
+.motion[data-go] .motTo { animation: motEnter calc(1.6s / var(--tempo)) var(--ease) calc(0.8s / var(--tempo)) both; }
 @keyframes motOut { 0%, 15% { transform: none; } 100% { transform: translateX(66px); } }
 @keyframes motStay { 0% { transform: translateY(-34px); opacity: 0; } 55% { transform: translateY(2px); opacity: 1; } 75% { transform: translateY(-3px); } 100% { transform: none; } }
 @keyframes motEnter { 0% { transform: translateX(-66px); } 100% { transform: none; } }
@@ -490,7 +490,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .shiftAdj { color: var(--accent); }
 .shiftEn { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
 .shiftTag { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.06em; padding: 1px 8px; border: 1px solid transparent; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); color: var(--accent); }
-.shiftSay { font-size: 1.08rem; animation: shiftSay 0.4s var(--ease) backwards; }
+.shiftSay { font-size: 1.08rem; animation: shiftSay calc(0.4s / var(--tempo)) var(--ease) backwards; }
 @keyframes shiftSay { from { opacity: 0; transform: translateY(4px); } }
 
 /* ------------------------------------------------ active, middle, passive (Voice.tsx) */
@@ -518,9 +518,9 @@ a.card:hover { background-color: var(--slab-lit); }
 .vEn { font-size: 1rem; }
 /* at rest (and with reduced motion): the arrows drawn, the rope on the ground */
 .vRope { transform: translateY(34px) scale(1.25, 0.6); opacity: 0.75; }
-.voice[data-go] .vArrow { animation: vDraw 0.8s var(--ease) 0.3s both; }
-.voice[data-go] .vRope { animation: vDrop 0.8s var(--ease) 1.1s both; }
-.voice[data-go] .vBack { animation-delay: 1.7s; }
+.voice[data-go] .vArrow { animation: vDraw calc(0.8s / var(--tempo)) var(--ease) calc(0.3s / var(--tempo)) both; }
+.voice[data-go] .vRope { animation: vDrop calc(0.8s / var(--tempo)) var(--ease) calc(1.1s / var(--tempo)) both; }
+.voice[data-go] .vBack { animation-delay: calc(1.7s / var(--tempo)); }
 @keyframes vDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 @keyframes vDrop { 0% { transform: none; opacity: 1; } 30% { transform: translateY(-3px) scale(1.2, 1.1); opacity: 1; } 100% { transform: translateY(34px) scale(1.25, 0.6); opacity: 0.75; } }
 /* ------------------------------------------------ when a participle happens (Timeline.tsx) */
@@ -540,7 +540,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .tlPtc text { fill: var(--bg); }
 .tlIntent rect { fill: none; stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 4; }
 .tlIntent text { fill: var(--accent); }
-.timeline[data-go] .tlBar { animation: tlGrow 0.7s var(--ease) both; }
+.timeline[data-go] .tlBar { animation: tlGrow calc(0.7s / var(--tempo)) var(--ease) both; }
 @keyframes tlGrow { from { transform: scaleX(0); opacity: 0; } 30% { opacity: 1; } to { transform: none; } }
 .tlGr { font-family: var(--f-greek); font-size: 1.3rem; line-height: 1.35; }
 .tlGr b { font-weight: 700; }
@@ -585,11 +585,11 @@ a.card:hover { background-color: var(--slab-lit); }
 .sgResult b { font-weight: 400; color: var(--accent); }
 .sgHow { font-size: 0.92rem; color: var(--ink-2); }
 /* at rest (and with reduced motion) the finished word; in view, the parts slide together and turn into it */
-.sigma[data-go] .sgParts { animation: sgParts 1.7s var(--ease) both; animation-delay: calc(var(--n) * 0.25s); }
-.sigma[data-go] .sgTile:first-child { animation: sgLeft 0.9s var(--ease) both; animation-delay: calc(var(--n) * 0.25s + 0.2s); }
-.sigma[data-go] .sgTile:last-child { animation: sgRight 0.9s var(--ease) both; animation-delay: calc(var(--n) * 0.25s + 0.2s); }
-.sigma[data-go] .sgSig { animation: sgGlow 0.9s var(--ease) both; animation-delay: calc(var(--n) * 0.25s + 0.5s); }
-.sigma[data-go] .sgResult { animation: sgResult 1.7s var(--ease) both; animation-delay: calc(var(--n) * 0.25s); }
+.sigma[data-go] .sgParts { animation: sgParts calc(1.7s / var(--tempo)) var(--ease) both; animation-delay: calc(var(--n) * (0.25s / var(--tempo))); }
+.sigma[data-go] .sgTile:first-child { animation: sgLeft calc(0.9s / var(--tempo)) var(--ease) both; animation-delay: calc(var(--n) * (0.25s / var(--tempo)) + (0.2s / var(--tempo))); }
+.sigma[data-go] .sgTile:last-child { animation: sgRight calc(0.9s / var(--tempo)) var(--ease) both; animation-delay: calc(var(--n) * (0.25s / var(--tempo)) + (0.2s / var(--tempo))); }
+.sigma[data-go] .sgSig { animation: sgGlow calc(0.9s / var(--tempo)) var(--ease) both; animation-delay: calc(var(--n) * (0.25s / var(--tempo)) + (0.5s / var(--tempo))); }
+.sigma[data-go] .sgResult { animation: sgResult calc(1.7s / var(--tempo)) var(--ease) both; animation-delay: calc(var(--n) * (0.25s / var(--tempo))); }
 @keyframes sgParts { 0%, 62% { opacity: 1; } 80%, 100% { opacity: 0; } }
 @keyframes sgLeft { from { transform: translateX(-0.7em); } to { transform: none; } }
 @keyframes sgRight { from { transform: translateX(0.7em); } to { transform: none; } }
@@ -607,7 +607,7 @@ a.card:hover { background-color: var(--slab-lit); }
 .rfHead { fill: var(--accent); }
 .rfPron { color: var(--accent); }
 .rfTarget { text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 2px; text-underline-offset: 5px; }
-.refer[data-go] .rfArc { animation: rfDraw 0.9s var(--ease) both; }
+.refer[data-go] .rfArc { animation: rfDraw calc(0.9s / var(--tempo)) var(--ease) both; }
 @keyframes rfDraw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */

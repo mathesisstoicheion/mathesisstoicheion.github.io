@@ -10,6 +10,7 @@ import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
+import { atTempo } from "@/lib/tempo";
 
 const MAX_WORDS = 90;
 
@@ -103,7 +104,7 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
     const h0 = box.getBoundingClientRect().height;
     flushSync(() => setStage(s));
     const h1 = box.getBoundingClientRect().height;
-    const timing = { duration: 620, easing: "cubic-bezier(0.3, 0.7, 0.2, 1)" };
+    const timing = { duration: atTempo(620), easing: "cubic-bezier(0.3, 0.7, 0.2, 1)" };
     const list: Animation[] = [];
     if (Math.abs(h1 - h0) > 1) list.push(box.animate([{ height: `${h0}px` }, { height: `${h1}px` }], timing));
     words().forEach((e, i) => {
@@ -114,7 +115,7 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
       const kf = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5
         ? [{ opacity: 0.45 }, { opacity: 1 }]
         : [{ transform: `translate(${dx}px, ${dy}px)`, opacity: 0.6 }, { transform: "none", opacity: 1 }];
-      list.push(e.animate(kf, { ...timing, delay: Math.min(i, 60) * 4, fill: "backwards" }));
+      list.push(e.animate(kf, { ...timing, delay: atTempo(Math.min(i, 60) * 4), fill: "backwards" }));
     });
     running.current = list;
     Promise.allSettled(list.map((x) => x.finished)).then(() => done());

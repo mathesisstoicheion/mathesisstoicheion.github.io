@@ -4,7 +4,7 @@
 .map {
   position: relative; height: 0; padding-top: 75%; overflow: hidden; border-radius: var(--radius);
   background: var(--stone-3) var(--tex, none) center / 420px 420px; box-shadow: var(--frame-line);
-  animation: unroll 0.7s var(--ease) both;
+  animation: unroll calc(0.7s / var(--tempo)) var(--ease) both;
 }
 /* (the wipe ends a little outside the map, so that its frame is not clipped away once it has opened) */
 @keyframes unroll { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(-3px -3px -3px -3px); } }
@@ -22,7 +22,7 @@
   display: grid; place-items: center; border-radius: var(--radius-round); border: 2px solid var(--map-land);
   background: var(--accent); color: var(--bg); font: 600 0.7rem/1 var(--f-label);
   box-shadow: 0 3px 8px -3px rgba(0, 0, 0, 0.6); cursor: pointer;
-  animation: drop 0.45s var(--ease) both; transition: scale 0.2s var(--ease), background 0.2s;
+  animation: drop calc(0.45s / var(--tempo)) var(--ease) both; transition: scale 0.2s var(--ease), background 0.2s;
 }
 .dot[data-auto] { background: var(--map-land); color: var(--accent); border-color: var(--accent); }
 .dot[data-active] { scale: 1.35; z-index: 2; }
@@ -38,7 +38,7 @@
 .label {
   position: absolute; z-index: 1; translate: 14px -50%; font: 0.8rem/1 var(--f-body); color: var(--map-name); white-space: nowrap;
   pointer-events: none; text-shadow: 0 0 2px var(--map-halo), 0 0 3px var(--map-halo), 0 0 4px var(--map-halo);
-  animation: fade 0.3s var(--ease) both;
+  animation: fade calc(0.3s / var(--tempo)) var(--ease) both;
 }
 .map[data-many] .label { translate: 8px -50%; }
 .label[data-flip] { translate: calc(-100% - 14px) -50%; }
@@ -46,7 +46,7 @@
 .tag {
   position: absolute; z-index: 3; translate: 16px -50%; padding: 4px 9px; border-radius: var(--radius);
   background: var(--inv-bg); color: var(--inv-fg); font-size: 0.85rem; white-space: nowrap; pointer-events: none;
-  box-shadow: 0 8px 18px -8px var(--shadow); animation: fade 0.2s var(--ease);
+  box-shadow: 0 8px 18px -8px var(--shadow); animation: fade calc(0.2s / var(--tempo)) var(--ease);
 }
 .tag[data-flip] { translate: calc(-100% - 16px) -50%; }
 .tag b { font-family: var(--f-greek); font-weight: 400; font-size: 1rem; }

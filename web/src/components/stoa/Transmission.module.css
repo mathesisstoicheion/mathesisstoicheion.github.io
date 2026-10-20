@@ -23,10 +23,10 @@
 .track i { position: absolute; top: 50%; }
 .grid { width: 2px; translate: -1px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--cut-line-v); }
 /* each author's road: a fine groove cut across the stone, its upper wall in shadow and its lower lip catching the torch */
-.road { height: 2px; translate: 0 -50%; background: linear-gradient(var(--groove) 0 1px, var(--lip-hi) 1px 2px); transform-origin: left; animation: road 1.4s var(--ease) backwards; animation-delay: calc(var(--i) * 25ms); }
+.road { height: 2px; translate: 0 -50%; background: linear-gradient(var(--groove) 0 1px, var(--lip-hi) 1px 2px); transform-origin: left; animation: road calc(1.4s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (25ms / var(--tempo))); }
 @keyframes road { from { transform: scaleX(0); } }
 .mark { width: 9px; height: 9px; translate: -50% -50%; }
-.track .mark { animation: mark 0.5s var(--ease) backwards; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
+.track .mark { animation: mark calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.2s / var(--tempo)) + var(--x) * (1.6s / var(--tempo)) + var(--i) * (12ms / var(--tempo))); }
 @keyframes mark { from { opacity: 0; scale: 0.2; } }
 /* the marks: inlays set into the stone, light on their upper edge, shadow at their foot and a fine dark joint round
    them (the slab edge's ring; its long shadow is too wide to show on a mark this small). The author's own life in

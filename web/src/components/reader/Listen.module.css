@@ -6,14 +6,14 @@
   padding: 10px 10px 8px 12px; border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: var(--slab-edge), 0 18px 40px -18px var(--shadow);
   --accent: var(--accent-on-ink);
-  animation: rise 0.4s var(--ease) backwards;
+  animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards;
 }
 @keyframes rise { from { translate: -50% 24px; opacity: 0; } }
 
 /* how far through the page: a thin line along the top that grows as passages are read */
 .progress {
   position: absolute; left: 0; right: 0; top: 0; height: 3px; background: var(--accent);
-  transform-origin: left; transition: transform 0.6s var(--ease);
+  transform-origin: left; transition: transform calc(0.6s / var(--tempo)) var(--ease);
 }
 
 .transport { display: flex; align-items: center; gap: 2px; }

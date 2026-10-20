@@ -9,10 +9,10 @@
 .track li { flex: 1; height: 5px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); transition: background-color 0.4s; }
 .track li[data-state="right"] { background: var(--ok); box-shadow: var(--inlay-edge); }
 .track li[data-state="wrong"] { background: var(--accent); box-shadow: var(--inlay-edge); }
-.track li[data-state="now"] { background: var(--inlay); box-shadow: var(--inlay-edge); animation: grow 0.5s var(--ease); transform-origin: left; }
+.track li[data-state="now"] { background: var(--inlay); box-shadow: var(--inlay-edge); animation: grow calc(0.5s / var(--tempo)) var(--ease); transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0.2); } }
 
-.card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: clamp(18px, 3vw, 28px); background: var(--field); box-shadow: var(--field-edge); animation: cardIn 0.45s var(--ease); }
+.card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 16px; padding: clamp(18px, 3vw, 28px); background: var(--field); box-shadow: var(--field-edge); animation: cardIn calc(0.45s / var(--tempo)) var(--ease); }
 /* (the warm-up's cards sit inside the warm-up box: no second moulding) */
 .warm .card { outline: 0; border-radius: var(--radius); padding: 16px 18px; }
 @keyframes cardIn { from { opacity: 0; transform: translateX(28px); } }
@@ -26,8 +26,8 @@
 .options button:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .options button:disabled { cursor: default; }
 .optGr { font-family: var(--f-greek); font-size: 1.35rem !important; }
-.right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; animation: pop 0.35s var(--ease); }
-.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake 0.35s; }
+.right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; animation: pop calc(0.35s / var(--tempo)) var(--ease); }
+.wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake calc(0.35s / var(--tempo)); }
 .faded { opacity: 0.55; }
 @keyframes pop { 50% { transform: scale(1.03); } }
 @keyframes shake { 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
@@ -40,7 +40,7 @@
 .dunno { background: none; border: 0; padding: 6px 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; font-size: 0.95rem; min-height: var(--tap); }
 .hint { font-size: 0.88rem; color: var(--ink-2); }
 
-.feedback { padding: 12px 16px; background: var(--slab); font-size: 1.05rem; line-height: 1.55; animation: rise 0.35s var(--ease); }
+.feedback { padding: 12px 16px; background: var(--slab); font-size: 1.05rem; line-height: 1.55; animation: rise calc(0.35s / var(--tempo)) var(--ease); }
 .fbGood { box-shadow: var(--slab-edge), var(--inlay-left-ok); }
 .fbGood b { color: var(--ok); }
 .fbBad { box-shadow: var(--slab-edge), var(--inlay-left); }
@@ -51,16 +51,16 @@
 .count { flex: none; font-family: var(--f-label); font-size: 0.85rem; color: var(--ink-2); }
 
 /* the end of a round */
-.end { display: grid; gap: 14px; justify-items: start; max-width: 680px; animation: rise 0.45s var(--ease); }
+.end { display: grid; gap: 14px; justify-items: start; max-width: 680px; animation: rise calc(0.45s / var(--tempo)) var(--ease); }
 .endBig { font-family: var(--f-display); font-size: clamp(1.8rem, 4vw, 2.6rem); line-height: 1.15; }
 .endRow { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; }
-.warmEnd { display: grid; gap: 10px; justify-items: start; padding: 14px 18px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise 0.35s var(--ease); }
+.warmEnd { display: grid; gap: 10px; justify-items: start; padding: 14px 18px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise calc(0.35s / var(--tempo)) var(--ease); }
 
 /* the seal a passed lesson earns: stamped onto the page, then its ring is drawn */
-.seal { width: clamp(150px, 30vw, 190px); height: auto; color: var(--accent); animation: stamp 0.7s cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: 50% 50%; }
+.seal { width: clamp(150px, 30vw, 190px); height: auto; color: var(--accent); animation: stamp calc(0.7s / var(--tempo)) cubic-bezier(0.2, 1.4, 0.4, 1) both; transform-origin: 50% 50%; }
 @keyframes stamp { 0% { opacity: 0; transform: scale(1.7) rotate(-24deg); } 60% { opacity: 1; } 100% { opacity: 1; transform: scale(1) rotate(-8deg); } }
 .sealRim { fill: color-mix(in srgb, var(--accent) 12%, var(--surface)); stroke: currentColor; stroke-width: 3; }
-.sealRing { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 0.012 0.012; animation: ring 1.1s 0.4s var(--ease) both; }
+.sealRing { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 0.012 0.012; animation: ring calc(1.1s / var(--tempo)) calc(0.4s / var(--tempo)) var(--ease) both; }
 @keyframes ring { from { stroke-dashoffset: 1; opacity: 0; } to { opacity: 1; } }
 .sealIn { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.6; }
 .sealLabel { fill: currentColor; font: 600 13px var(--f-label); letter-spacing: 0.16em; }

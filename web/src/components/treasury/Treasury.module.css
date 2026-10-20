@@ -9,7 +9,7 @@
 /* ------------------------------------------------ façade: pediment, Doric frieze, architrave */
 .facade { position: relative; display: grid; }
 /* the gable: a raking cornice of lit stone round a tympanum sunk into it; it rises into place, it is not drawn */
-.pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; animation: rise 0.7s var(--ease) 0.1s backwards; }
+.pediment { width: 100%; height: clamp(34px, 6vw, 70px); display: block; overflow: visible; animation: rise calc(0.7s / var(--tempo)) var(--ease) calc(0.1s / var(--tempo)) backwards; }
 .pediment .cornice { fill: url(#ped-stone); }
 .pediment .tympanum { fill: var(--tympanum); }
 /* the raking cornice's top edge is gilded, a thin gold line laid along the stone (as the live gable was a line of gold) */
@@ -32,7 +32,7 @@
   background: var(--block-light), var(--triglyph), var(--stone-4); background-size: var(--tri) 100%; background-position: right top; background-repeat: no-repeat;
   --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
 }
-.frieze li { position: relative; display: grid; padding-left: var(--tri); animation: rise 0.7s var(--ease) backwards; animation-delay: calc(0.5s + var(--i) * 70ms); }
+.frieze li { position: relative; display: grid; padding-left: var(--tri); animation: rise calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.5s / var(--tempo)) + var(--i) * (70ms / var(--tempo))); }
 .frieze li::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: var(--tri); background: var(--block-light), var(--triglyph), var(--stone-4); }
 @keyframes rise { from { transform: translateY(14px); opacity: 0; } }
 
@@ -75,7 +75,7 @@
   padding: 18px 22px var(--space-4); text-decoration: none; color: var(--ink); background: var(--slab);
   box-shadow: var(--slab-edge); border-radius: var(--radius);
   transition: background-color var(--dur-quick);
-  animation: rise 0.6s var(--ease) backwards; animation-delay: 0.6s;   /* it waits for the account too, so it comes about as the frieze finishes */
+  animation: rise calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(0.6s / var(--tempo));   /* it waits for the account too, so it comes about as the frieze finishes */
 }
 .private:hover, .private:focus-visible { background-color: var(--slab-lit); }
 .privateSeal, .privateTitle, .privateText { grid-column: 1; }   /* the count keeps the right-hand column, even when it is not shown */
@@ -92,7 +92,7 @@
 }
 
 /* ------------------------------------------------ section frame */
-.section { display: grid; gap: 22px; animation: rise 0.45s var(--ease) backwards; }
+.section { display: grid; gap: 22px; animation: rise calc(0.45s / var(--tempo)) var(--ease) backwards; }
 .section h2 { font-size: var(--step-2); }
 .section h2::first-letter { color: var(--accent); }
 .sectionHead { display: grid; gap: 6px; max-width: 72ch; }
@@ -163,7 +163,7 @@
 .shelf { list-style: none; margin: 0; padding: 0 0 var(--space-3); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: var(--space-3); overflow-x: auto;
   /* the shelf is a dark ledge cut into the wall, its lip caught by the torch */
   border-bottom: 8px solid var(--bg-deep); box-shadow: var(--ledge-lip); }
-.shelf li { animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 60ms); display: grid; }
+.shelf li { animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo))); display: grid; }
 .spine { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 18px; min-height: 120px; text-decoration: none;
   background: var(--slab-lit); box-shadow: var(--slab-edge), var(--inlay-top); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); border-top: 4px solid transparent;
   transition: transform 0.3s var(--ease); }
@@ -174,7 +174,7 @@
 
 /* ------------------------------------------------ latest */
 .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 18px; background: var(--field); box-shadow: var(--field-edge); animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); overflow-wrap: anywhere; }
+.card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 18px; background: var(--field); box-shadow: var(--field-edge); animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (50ms / var(--tempo))); overflow-wrap: anywhere; }
 .card a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
 
 /* ------------------------------------------------ anthology: leaves of a book of passages */
@@ -185,7 +185,7 @@
   break-inside: avoid; margin: 0 0 22px; display: grid; gap: 10px; padding: 26px var(--space-5) var(--space-4);
   background: var(--slab); position: relative;
   box-shadow: var(--slab-edge);
-  animation: leaf 0.6s var(--ease) backwards; animation-delay: calc(var(--i) * 60ms);
+  animation: leaf calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo)));
 }
 /* the red ruled line of a manuscript page */
 .leaf::before { content: ""; position: absolute; left: var(--space-3); top: 18px; bottom: 18px; width: 1px; background: color-mix(in srgb, var(--accent) 55%, transparent); }
@@ -203,7 +203,7 @@
 .more { justify-self: start; border: 0; background: transparent; padding: 0; color: var(--accent); font-size: 0.9rem; text-decoration: underline; }
 .menuWrap { position: relative; }
 .menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 200px; padding: var(--space-3) 14px;
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge); animation: rise 0.2s var(--ease) backwards; }   /* a pop-over: it stays opaque */
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge); animation: rise calc(0.2s / var(--tempo)) var(--ease) backwards; }   /* a pop-over: it stays opaque */
 .menu label { display: flex; gap: var(--space-2); align-items: center; font-size: 0.95rem; }
 
 /* ------------------------------------------------ cross-references */
@@ -217,7 +217,7 @@
 
 /* ------------------------------------------------ words */
 .words { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
-.words li { display: grid; animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 35ms); }
+.words li { display: grid; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (35ms / var(--tempo))); }
 .wordCard { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 18px 14px; text-decoration: none; background: var(--slab);
   box-shadow: var(--slab-edge); transition: background-color var(--dur-quick); }
 .wordCard:hover { background-color: var(--slab-lit); }
@@ -251,7 +251,7 @@
 .keepActs { display: flex; flex-wrap: wrap; gap: 10px; }
 /* phones: the two buttons as one even pair of bars */
 @media (max-width: 760px) { .keepActs { display: grid; grid-template-columns: minmax(0, 1fr); } .keepActs > :global(.btn) { justify-content: center; } }
-.keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); animation: rise 0.3s var(--ease) backwards; }
+.keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); animation: rise calc(0.3s / var(--tempo)) var(--ease) backwards; }
 .keepResult[data-ok="false"] { box-shadow: var(--slab-edge), var(--inlay-left); }
 .keepResult :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 @media (max-width: 760px) { .keep { grid-template-columns: minmax(0, 1fr); } }
@@ -268,7 +268,7 @@
 .miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--stone-3) var(--tex, none) center / 420px 420px; }
 .mmLand { fill: var(--map-land-wash); }
 .mmSea { fill: var(--map-sea-wash); fill-rule: evenodd; stroke: var(--map-coast); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.mmPlace { animation: mmIn 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 60ms); }
+.mmPlace { animation: mmIn calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo))); }
 .mmPlace circle { fill: var(--accent); stroke: var(--map-halo); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .mmPlace text { font-family: var(--f-greek); fill: var(--map-name); paint-order: stroke; stroke: var(--map-halo); stroke-linejoin: round; }
 @keyframes mmIn { from { opacity: 0; } }

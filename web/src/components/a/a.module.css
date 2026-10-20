@@ -47,7 +47,7 @@
 /* ---------- HOME ---------- */
 .c-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(3rem, 7.4vw, 6.6rem); line-height: .9; margin: 14px 0 22px; letter-spacing: -.015em; }
 .c-title .ln { display: block; overflow: hidden; }
-.c-title .ln > span { display: block; transform: translateY(100%); animation: rise 1s cubic-bezier(.2, .7, .1, 1) forwards; }
+.c-title .ln > span { display: block; transform: translateY(100%); animation: rise calc(1s / var(--tempo)) cubic-bezier(.2, .7, .1, 1) forwards; }
 .c-title em { font-style: italic; color: var(--a-accent); }
 .paths { margin-top: 34px; border: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-field) 70%, #000 30%); max-width: 560px; }
 .paths-label { padding: 10px 14px 0; color: var(--a-ink2); }

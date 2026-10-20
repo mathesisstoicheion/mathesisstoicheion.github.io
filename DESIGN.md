@@ -145,6 +145,11 @@ Light text is never pure white.
   - Each part is cut in (it fades in and rises a few pixels) the first time you reach it.
 - **The reader** opens on a torch-lit cover (ΑΠΟΛΟΓΙΑ·ΣΩΚΡΑΤΟΥΣ carved in stone, with the Socrates portrait as a medallion). The cover fades as you scroll into the text; after that nothing moves, and scrolling is completely normal.
 - Nothing loops fast, flashes or throws sparks.
+- **One tempo for everything that plays out once** (the owner, 2026-10-20: "They need to animate faster"): `--tempo` in
+  `styles/tokens.css`. Write each animation at its natural, calm time; stylesheets divide it by the tempo
+  (`calc(0.6s / var(--tempo))`), scripts use `lib/tempo.ts`, and the engine (`lib/a/lamplight.js`) reads it for the windows,
+  the headings and Socrates. Quick hover responses (under half a second), endless loops and the letter-writing lessons keep
+  their own pace.
 
 ### Space and shape
 - Spacing steps of 4, 8, 12, 16, 24, 36, 56 and 80 px. Sections breathe; lists are compact.

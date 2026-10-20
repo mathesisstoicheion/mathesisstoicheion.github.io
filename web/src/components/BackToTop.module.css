@@ -6,7 +6,7 @@
   /* a round boss of stone ringed with gold */
   background: var(--boss); color: var(--inv-fg); --accent: var(--accent-on-ink);
   border: 0; border-radius: var(--radius-round); box-shadow: var(--boss-edge), 0 14px 30px -14px var(--shadow);
-  cursor: pointer; animation: bttIn 0.3s var(--ease) backwards; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease), opacity var(--dur) var(--ease);
+  cursor: pointer; animation: bttIn calc(0.3s / var(--tempo)) var(--ease) backwards; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease), opacity var(--dur) var(--ease);
 }
 .btt:hover { transform: translateY(-3px); }
 .btt:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }

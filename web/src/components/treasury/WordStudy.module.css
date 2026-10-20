@@ -9,7 +9,7 @@
 
 /* ------------------------------------------------ head: the word, large, as on a dictionary page */
 .head { display: grid; gap: 10px; }
-.lemma { font-family: var(--f-greek); font-size: clamp(3.2rem, 9vw, 6.4rem); line-height: 1; letter-spacing: 0.01em; animation: ink 0.9s var(--ease) backwards; }
+.lemma { font-family: var(--f-greek); font-size: clamp(3.2rem, 9vw, 6.4rem); line-height: 1; letter-spacing: 0.01em; animation: ink calc(0.9s / var(--tempo)) var(--ease) backwards; }
 .lemma::first-letter { color: var(--accent); }
 @keyframes ink { from { opacity: 0; filter: blur(6px); transform: translateY(8px); } }
 .headMeta { display: flex; flex-wrap: wrap; gap: 4px 0; font-size: 1.05rem; color: var(--ink-2); }
@@ -26,7 +26,7 @@
 :global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
 @media (max-width: 960px) { .layout { grid-template-columns: minmax(0, 1fr); } .side { position: static; } }
 
-.sec { display: grid; gap: 12px; align-content: start; animation: rise 0.5s var(--ease) backwards; }
+.sec { display: grid; gap: 12px; align-content: start; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; }
 .sec h2, .sec h1 { font-size: var(--step-2); }
 .sec h2::first-letter, .sec h1::first-letter { color: var(--accent); }
 .sec > h3 { margin-top: 6px; }
@@ -52,7 +52,7 @@
 .grid thead th, .grid tbody th { box-shadow: var(--cut-under); }
 .grid td { font-family: var(--f-greek); font-size: 1.2rem; padding: 6px 10px; vertical-align: top; box-shadow: var(--cut-under); white-space: nowrap; }
 .grid tbody tr:last-child > * { box-shadow: none; }
-.grid tbody tr { animation: slot 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 45ms); }
+.grid tbody tr { animation: slot calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (45ms / var(--tempo))); }
 @keyframes slot { from { opacity: 0; transform: translateX(-6px); } }
 .grid td.none { color: var(--rule); font-family: var(--f-body); }
 .variant { display: block; font-size: 0.85em; color: var(--ink-2); }
@@ -79,7 +79,7 @@
 .barTrack { position: relative; height: 16px; display: flex; align-items: center; margin-right: 3.6em; }   /* room for the longest bar's value */
 /* one baseline on the left (square), a 4px rounded data-end on the right */
 .bar { display: block; height: 16px; width: var(--w); min-width: 2px; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius);
-  transform-origin: left; animation: grow 0.8s var(--ease) backwards; animation-delay: calc(0.1s + var(--i) * 60ms); }
+  transform-origin: left; animation: grow calc(0.8s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.1s / var(--tempo)) + var(--i) * (60ms / var(--tempo))); }
 @keyframes grow { from { transform: scaleX(0); } }
 .barValue { position: absolute; left: calc(var(--w) + 8px); font-family: var(--f-label); font-size: 0.85rem; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
 .tip { position: absolute; z-index: 5; left: 38%; bottom: calc(100% + 4px); max-width: min(360px, 80vw); padding: 7px 10px; font-size: 0.85rem; line-height: 1.35;
@@ -92,7 +92,7 @@
 
 /* ------------------------------------------------ examples */
 .examples { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; box-shadow: var(--cut-left); }
-.examples li { position: relative; display: grid; gap: 6px; padding: 4px 0 4px 22px; animation: rise 0.5s var(--ease) backwards; animation-delay: calc(var(--i) * 80ms); }
+.examples li { position: relative; display: grid; gap: 6px; padding: 4px 0 4px 22px; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (80ms / var(--tempo))); }
 .examples li::before { content: ""; position: absolute; left: -4px; top: 10px; width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--inlay); box-shadow: var(--inlay-edge); }
 .exWhere { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; }
 .exWhere a { text-decoration-color: var(--accent); text-underline-offset: 3px; }

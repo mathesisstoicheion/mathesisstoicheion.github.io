@@ -7,7 +7,7 @@
 .scopes { display: flex; flex-wrap: wrap; gap: 6px; }
 .progress { font-size: 0.88rem; }
 
-.summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; animation: rise-in 0.5s var(--ease) both; }
+.summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; animation: rise-in calc(0.5s / var(--tempo)) var(--ease) both; }
 .big { font-family: var(--f-display); font-size: 2.6rem; line-height: 1; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 @keyframes rise-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
@@ -19,7 +19,7 @@
 .tick { stroke: var(--ink-2); stroke-width: 1; opacity: 0.6; }
 .mark {
   transform-box: fill-box; transform-origin: 50% 100%;
-  animation: stamp 0.55s var(--ease) both;
+  animation: stamp calc(0.55s / var(--tempo)) var(--ease) both;
   transition: opacity 0.15s;
 }
 @keyframes stamp { from { transform: scaleY(0); opacity: 0; } 60% { opacity: 1; } to { transform: scaleY(1); opacity: 1; } }
@@ -28,7 +28,7 @@
 .m-near { fill: var(--ochre); opacity: 0.85; }
 .mSelf { fill: var(--accent); }
 .mHover { opacity: 0.55; }
-.here { fill: var(--accent); animation: drop 0.6s var(--ease) 0.3s both; }
+.here { fill: var(--accent); animation: drop calc(0.6s / var(--tempo)) var(--ease) calc(0.3s / var(--tempo)) both; }
 @keyframes drop { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
 .stripFoot { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--ink-2); }
 .hoverLabel { text-align: center; color: var(--ink); }
@@ -42,9 +42,9 @@
 
 /* ------------------------------------------------------------ the list */
 .list { list-style: none; margin: 0; padding: 0; display: grid; box-shadow: var(--cut-over); }
-.list li { animation: rise-in 0.45s var(--ease) both; }
-.list li:nth-child(2) { animation-delay: 40ms; } .list li:nth-child(3) { animation-delay: 80ms; } .list li:nth-child(4) { animation-delay: 120ms; }
-.list li:nth-child(5) { animation-delay: 160ms; } .list li:nth-child(6) { animation-delay: 200ms; } .list li:nth-child(n + 7) { animation-delay: 240ms; }
+.list li { animation: rise-in calc(0.45s / var(--tempo)) var(--ease) both; }
+.list li:nth-child(2) { animation-delay: calc(40ms / var(--tempo)); } .list li:nth-child(3) { animation-delay: calc(80ms / var(--tempo)); } .list li:nth-child(4) { animation-delay: calc(120ms / var(--tempo)); }
+.list li:nth-child(5) { animation-delay: calc(160ms / var(--tempo)); } .list li:nth-child(6) { animation-delay: calc(200ms / var(--tempo)); } .list li:nth-child(n + 7) { animation-delay: calc(240ms / var(--tempo)); }
 .list button {
   width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: baseline; text-align: left;
   padding: 9px 4px; background: transparent; border: 0; box-shadow: var(--cut-under);
@@ -69,7 +69,7 @@
 .wName { font-size: 0.92rem; }
 .wN { font-family: var(--f-label); font-size: 0.85rem; color: var(--accent); font-variant-numeric: tabular-nums; }
 .wBar { grid-column: 1 / -1; height: 4px; background: var(--channel); box-shadow: var(--channel-edge); }
-.wBar span { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); transform-origin: left; animation: grow 0.7s var(--ease) both; }
+.wBar span { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); transform-origin: left; animation: grow calc(0.7s / var(--tempo)) var(--ease) both; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
 
 .rules { font-size: 0.9rem; box-shadow: var(--cut-over); padding-top: 12px; }

@@ -32,7 +32,7 @@
 /* ------------------------------------------------ cards and forms */
 .card {
   padding: clamp(20px, 3vw, 32px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
-  display: grid; gap: 14px; animation: rise 0.5s var(--ease) backwards;
+  display: grid; gap: 14px; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards;
 }
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
@@ -79,7 +79,7 @@
 .cat {
   text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1px solid transparent; border-radius: var(--radius);
   background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); cursor: pointer; position: relative; overflow: hidden; font: inherit;
-  animation: rise 0.45s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 40ms);
+  animation: rise calc(0.45s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i, 0) * (40ms / var(--tempo)));
   transition: transform 0.2s var(--ease), color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .cat > * { position: relative; }
@@ -109,7 +109,7 @@
 .threads li {
   display: grid; grid-template-columns: 56px 1fr 96px; gap: 14px; align-items: center; padding: 12px 4px;
   box-shadow: var(--cut-under);
-  animation: rise 0.4s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 20) * 25ms);
+  animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 20) * (25ms / var(--tempo)));
 }
 .threads li:last-child { box-shadow: none; }
 .threadScore, .threadReplies { display: grid; justify-items: center; text-align: center; line-height: 1.1; }
@@ -164,7 +164,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .vote:hover:not(:disabled) { color: var(--accent); background: var(--slab-lit); }
 .vote[aria-pressed="true"] { color: var(--accent); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .vote:active:not(:disabled) { transform: scale(0.94); background: var(--field); box-shadow: var(--field-edge); }
-.vote[aria-pressed="true"] svg { animation: pop 0.35s var(--ease); }
+.vote[aria-pressed="true"] svg { animation: pop calc(0.35s / var(--tempo)) var(--ease); }
 .vote:disabled { cursor: default; }
 @keyframes pop { 50% { transform: translateY(-4px) scale(1.2); } }
 .answerNote { margin: 0; color: var(--ok); }
@@ -173,7 +173,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .replyList, .subReplies, .argList { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .subReplies { margin: 10px 0 0 22px; padding-left: 16px; box-shadow: var(--cut-left); }
 .reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
-.reply:target { animation: flash 1.6s var(--ease); }
+.reply:target { animation: flash calc(1.6s / var(--tempo)) var(--ease); }
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
 .isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); }
 .replyBody { min-width: 0; display: grid; gap: 8px; }
@@ -213,7 +213,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .proposeBox { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
 .resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); box-shadow: var(--channel-edge); }   /* the two colours stay: they say For and Against */
-.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow 1s var(--ease) backwards; transform-origin: left; }
+.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow calc(1s / var(--tempo)) var(--ease) backwards; transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0); } }
 .result p { margin: 0; font-size: 0.9rem; }
 .resultSmall .resultBar { height: 6px; max-width: 320px; }
@@ -234,7 +234,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .urnCol:first-child .urn path { fill: color-mix(in srgb, var(--blue) 14%, var(--surface)); }
 .urnCol:last-child .urn path { fill: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
 .urnMine path { stroke-width: 3; }
-.pebble { fill: var(--ink); animation: drop 0.85s cubic-bezier(0.5, 0, 0.75, 0) both; }
+.pebble { fill: var(--ink); animation: drop calc(0.85s / var(--tempo)) cubic-bezier(0.5, 0, 0.75, 0) both; }
 @keyframes drop { 0% { transform: translateY(-26px); } 80% { transform: translateY(66px); } 90% { transform: translateY(60px); } 100% { transform: translateY(66px); } }
 .pebbleIn { fill: var(--ink); }
 .urnCount { font-family: var(--f-display); font-size: 1.6rem; }
@@ -245,7 +245,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .sideAgainst { box-shadow: var(--inlay-top); }
 .side h2 { margin: 0; font-size: var(--step-2); }
 .side h2 small { font-size: 0.9rem; color: var(--ink-2); }
-.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) backwards; }
+.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards; }
 
 @media (max-width: 760px) {
   .threads li { grid-template-columns: 44px 1fr; }

@@ -24,6 +24,7 @@ import Method from "./Method";
 import { fmt, useLoad, type Links, type Shown } from "./shared";
 import { useSwipeNav } from "@/lib/use-swipe-nav";
 import styles from "./Census.module.css";
+import { atTempo } from "@/lib/tempo";
 
 export default function Census({ links }: { links: Links }) {
   const meta = useLoad("meta", loadCensusMeta);
@@ -287,9 +288,9 @@ function Ranking({ side, cat, label, words, rows, state, selected, onPick, regis
       const was = prev.current.get(k);
       if (was === undefined) {
         el.animate([{ opacity: 0, transform: "translateX(-14px)" }, { opacity: 1, transform: "none" }],
-          { duration: 420, delay: Math.min(fresh++ * 22, 440), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)", fill: "backwards" });
+          { duration: atTempo(420), delay: atTempo(Math.min(fresh++ * 22, 440)), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)", fill: "backwards" });
       } else if (Math.abs(was - y) > 1) {
-        el.animate([{ transform: `translateY(${was - y}px)` }, { transform: "none" }], { duration: 650, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+        el.animate([{ transform: `translateY(${was - y}px)` }, { transform: "none" }], { duration: atTempo(650), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
       }
     }
     prev.current = now;

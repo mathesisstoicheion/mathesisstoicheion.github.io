@@ -13,7 +13,7 @@
 .col::before { content: ""; grid-row: 2; grid-column: 1; width: 100%; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); }
 .bar {
   grid-row: 2; grid-column: 1; align-self: end; width: 100%; height: var(--h); min-height: 2px; background: var(--inlay); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: bottom;
-  animation: grow 0.8s var(--ease) backwards; animation-delay: calc(var(--i) * 30ms); transition: filter 0.2s;
+  animation: grow calc(0.8s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (30ms / var(--tempo))); transition: filter 0.2s;
 }
 .col[data-era="1"] .bar { background: var(--inlay-dim); }
 .col:hover .bar, .col:focus-within .bar { filter: brightness(1.25); }

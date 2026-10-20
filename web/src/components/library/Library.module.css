@@ -23,7 +23,7 @@
 .moreBtn::after { content: "▾"; margin-left: var(--space-2); color: var(--ink-2); transition: transform 0.2s var(--ease); }
 .moreBtn[aria-expanded="true"]::after { transform: rotate(180deg); }
 .filters { display: none; }
-.filters[data-open] { display: grid; gap: var(--space-3); animation: rise 0.3s var(--ease) backwards; }
+.filters[data-open] { display: grid; gap: var(--space-3); animation: rise calc(0.3s / var(--tempo)) var(--ease) backwards; }
 .genres { display: flex; gap: var(--space-2) 14px; align-items: baseline; }
 .chipRow { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .chipRow :global(.chip) small { font-variant-numeric: tabular-nums; opacity: 0.7; font-size: 0.85em; }
@@ -64,12 +64,12 @@
 .group { scroll-margin-top: 0; }
 .groupHead {
   font-size: 2.2rem; color: var(--accent); line-height: 1; padding: 28px 0 10px;
-  box-shadow: var(--cut-under); animation: rise 0.5s var(--ease) backwards;
+  box-shadow: var(--cut-under); animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards;
 }
 .groupHead[data-period], .groupHead[data-best] { font-size: 1.6rem; }
 /* an author: one row that opens to show their works (Phase 11) */
 .author { box-shadow: var(--cut-under); }
-.author[data-selected] { animation: picked 2.4s var(--ease) both; }
+.author[data-selected] { animation: picked calc(2.4s / var(--tempo)) var(--ease) both; }
 @keyframes picked { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 /* risings hold their first frame only until they start (backwards), and none holds its last: a finished one would
    keep its element a layer of its own for the graphics */
@@ -94,7 +94,7 @@
 .author[data-open] .worksPanel { grid-template-rows: 1fr; }
 .worksPanel > div { overflow: hidden; min-height: 0; padding-inline: 10px; }
 .author[data-open] .worksPanel > div { padding-bottom: 14px; }
-.author[data-open] .rows { animation: rise 0.35s var(--ease) backwards; }
+.author[data-open] .rows { animation: rise calc(0.35s / var(--tempo)) var(--ease) backwards; }
 .aboutAuthor { display: inline-block; margin-top: var(--space-2); font-size: 0.92rem; color: var(--accent); text-underline-offset: 3px; }
 .sub { margin: 10px 0 2px; font-family: var(--f-label); font-size: 0.8rem; font-weight: 500; letter-spacing: 0.08em; color: var(--ink-2); }
 .sub small { font-size: inherit; opacity: 0.7; margin-left: var(--space-1); }
@@ -193,7 +193,7 @@
 
 /* ------------------------------------------------ the moderator's private collection (MineButtons.tsx): a small stone
    plaque at the right of the page's name (app/library/page.tsx), with a lock and two buttons */
-.mine { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn 0.5s var(--ease) backwards; }
+.mine { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; padding: 4px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); animation: mineIn calc(0.5s / var(--tempo)) var(--ease) backwards; }
 @keyframes mineIn { from { opacity: 0; transform: translateY(6px); } }
 .mineSeal { display: inline-grid; place-items: center; width: 22px; color: var(--accent); }
 .mineSeal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }

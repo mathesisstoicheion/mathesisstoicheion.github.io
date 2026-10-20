@@ -11,7 +11,7 @@
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
   border-radius: var(--radius); box-shadow: var(--frame-line);
-  background: var(--map-edge); animation: unroll 0.9s var(--ease) both;
+  background: var(--map-edge); animation: unroll calc(0.9s / var(--tempo)) var(--ease) both;
 }
 .stage:active { cursor: grabbing; }
 /* touch screens: one finger moves the map, two zoom it (Periplus.tsx); phones keep some page in view, to scroll by */
@@ -33,7 +33,7 @@
   position: absolute; left: 0; top: 0; z-index: 4; margin: 0; pointer-events: none; white-space: nowrap;
   translate: 14px -130%; padding: 5px 10px; border-radius: var(--radius);
   background: var(--inv-bg); color: var(--inv-fg); --accent: var(--accent-on-ink); font-size: 0.9rem;
-  box-shadow: var(--slab-edge); animation: hint-in 0.15s var(--ease);
+  box-shadow: var(--slab-edge); animation: hint-in calc(0.15s / var(--tempo)) var(--ease);
 }
 .tip b { font-family: var(--f-greek); font-weight: 400; font-size: 1.05rem; }
 .tip small { font-family: var(--f-label); color: var(--accent); margin-left: 4px; }
@@ -94,7 +94,7 @@
 .found span, .top span { color: var(--ink-2); flex: 1; }
 .found small, .top small { font-family: var(--f-label); color: var(--accent); }
 
-.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: cardIn 0.4s var(--ease) backwards; }
+.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: cardIn calc(0.4s / var(--tempo)) var(--ease) backwards; }
 @keyframes cardIn { from { opacity: 0; transform: translateY(6px); } }
 .card p { margin: 0; }
 .placeName { margin: 0; display: grid; font: 400 2rem/1.1 var(--f-greek); }
@@ -109,7 +109,7 @@
 .works small { font-family: var(--f-label); color: var(--ink-2); grid-row: 1; grid-column: 2; }
 /* each work's share: gilded inlay laid in a channel cut across the row */
 .works li::before { content: ""; grid-column: 1 / -1; grid-row: 2; height: 5px; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); }
-.bar { grid-column: 1 / -1; grid-row: 2; height: 5px; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow 0.6s var(--ease) backwards; }
+.bar { grid-column: 1 / -1; grid-row: 2; height: 5px; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow calc(0.6s / var(--tempo)) var(--ease) backwards; }
 @keyframes grow { from { transform: scaleX(0); } }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .small { font-size: 0.88rem; color: var(--ink-2); }

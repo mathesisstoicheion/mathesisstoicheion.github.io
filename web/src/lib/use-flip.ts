@@ -7,6 +7,7 @@
  */
 import { useLayoutEffect, useRef } from "react";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import { atTempo } from "@/lib/tempo";
 
 export function useFlip<T extends HTMLElement>(change: unknown, enter: Keyframe, ms: number) {
   const motion = useSettings((s) => s.motion);
@@ -28,7 +29,7 @@ export function useFlip<T extends HTMLElement>(change: unknown, enter: Keyframe,
       const anim = r0
         ? [{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: "none" }]
         : [{ opacity: 0, ...enter }, { opacity: 1, transform: "none" }];
-      s.animate(anim, { duration: ms, easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+      s.animate(anim, { duration: atTempo(ms), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [change]);

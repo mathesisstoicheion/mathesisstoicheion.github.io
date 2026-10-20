@@ -128,7 +128,7 @@
 }
 :global(html[data-hdr="hidden"]) .row { --hdr-vis: 0px; }
 .row:last-child { box-shadow: none; }
-.flash { animation: flash 2.4s ease-out; }
+.flash { animation: flash calc(2.4s / var(--tempo)) ease-out; }
 @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 
 .ref { text-align: right; }
@@ -193,7 +193,7 @@
   width: min(400px, 100vw); overflow-y: auto; padding: 20px 22px 32px;
   background: var(--surface); box-shadow: var(--slab-edge), -24px 0 48px -32px var(--shadow);
   display: grid; align-content: start; gap: 18px; outline: none;
-  animation: slide-in 0.35s var(--ease);
+  animation: slide-in calc(0.35s / var(--tempo)) var(--ease);
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
 @keyframes slide-in { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
@@ -417,7 +417,7 @@ p.translit { margin: -0.3em 0 0.8em; }
    One animation per line sweeps its marks in from left to right (--mk runs 0 → 1; each mark
    appears as the sweep passes its syllable number --i), rather than one animation per mark. */
 @property --mk { syntax: "<number>"; inherits: true; initial-value: 1; }
-.metreOn .line { position: relative; animation: mark-sweep 0.9s var(--ease) both; }
+.metreOn .line { position: relative; animation: mark-sweep calc(0.9s / var(--tempo)) var(--ease) both; }
 @keyframes mark-sweep { from { --mk: 0; } to { --mk: 1; } }
 /* every row of a line, even a wrapped one, needs room above it for the marks */
 .metreOn .lt { display: block; position: relative; padding-top: 0.2em; line-height: max(2.6, var(--reading-leading)); }
@@ -470,7 +470,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .playing .lt { text-decoration: none; }
 
 /* the metre's legend and explanation */
-.metreBar { display: grid; gap: var(--space-2); padding-block: 10px var(--space-1); font-size: 0.9rem; max-width: 100ch; animation: rise 0.5s var(--ease) both; }
+.metreBar { display: grid; gap: var(--space-2); padding-block: 10px var(--space-1); font-size: 0.9rem; max-width: 100ch; animation: rise calc(0.5s / var(--tempo)) var(--ease) both; }
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .metreHead { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; }
 .metreName { font-family: var(--f-display); font-size: 1.15rem; color: var(--accent); }
@@ -529,7 +529,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     top: auto; max-height: none; height: var(--sheet-h);
     border-radius: var(--radius); box-shadow: var(--slab-edge), 0 -24px 48px -24px var(--shadow);
     transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
-    animation: sheet-up 0.35s var(--ease);
+    animation: sheet-up calc(0.35s / var(--tempo)) var(--ease);
   }
   .panel.wordSheet[data-snap="half"] { --sheet-h: 70dvh; }
   .panel.wordSheet[data-snap="full"] { --sheet-h: calc(100dvh - env(safe-area-inset-top, 0px) - 10px); }
@@ -550,7 +550,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   .wordSheet .panelBody {
     display: grid; align-content: start; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
     padding: var(--space-4) 20px calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); touch-action: pan-y;
-    animation: word-in 0.3s var(--ease);
+    animation: word-in calc(0.3s / var(--tempo)) var(--ease);
   }
   .wordSheet .panelBody[data-dir="-1"] { animation-name: word-in-back; }
   .wordSheet .lsj { max-height: none; overflow: visible; }
@@ -568,7 +568,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; border-radius: var(--radius);
     flex-wrap: wrap; justify-content: center; gap: 2px var(--space-1);
     padding: var(--space-2) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-2) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
-    animation: sheet-up 0.3s var(--ease);
+    animation: sheet-up calc(0.3s / var(--tempo)) var(--ease);
   }
   .reader:not(.floating) .toolbar button { flex: none; min-height: var(--tap); padding: 6px var(--space-3); flex-direction: column; gap: 2px; font-size: 0.78rem; }
   .reader:not(.floating) .toolbar svg { width: 20px; height: 20px; }
@@ -761,7 +761,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 /* design A's lamp on the passage: the lit passage at full strength, the rest dimmed, on purpose below the 4.5:1 contrast rule
    (Aa, "Lamp on the passage: Off", gives every line full contrast) */
-.lampOn .row { opacity: 0.42; transition: opacity 0.5s ease; }
+.lampOn .row { opacity: 0.42; transition: opacity calc(0.5s / var(--tempo)) ease; }
 .page[data-page="day"] .lampOn .row { opacity: 0.6; }
 .lampOn .row[data-lit] { opacity: 1; }
 

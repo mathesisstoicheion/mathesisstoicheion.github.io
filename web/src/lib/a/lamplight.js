@@ -27,7 +27,7 @@ let seed=11;const rnd=()=>(seed=(seed*16807)%2147483647)/2147483647;
 /* ---------- colours and faces, read once per page, never per frame ---------- */
 let T={},F={};
 const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room"),bg:cssv("--bg")||"#050403"};
+function readTokens(){gen++;TEMPO=parseFloat(cssv("--tempo"))||1;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room"),bg:cssv("--bg")||"#050403"};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
 /* ---------- the text the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
@@ -77,6 +77,7 @@ function wrapText(s,n){const out=[];let line="";
   if(line)out.push(line.padEnd(n));return out}
 const dprCap=()=>lite||reduce?1:1.5;
 const IRIS_MS=2600,SETTLE_MS=1400;   // a window's iris opening in full; a heading's letters finding their places
+let TEMPO=1;   // the site's tempo (--tempo in styles/tokens.css): what plays out once runs this many times as fast
 let DIM=.66;   // a figure's object behind the page is dimmed to this, so the page's words stay clear over it (set by each stage)
 
 /* The gold lines of an engraving (the coin's, and every other window's): one band of gold for each row of the picture, as
@@ -400,7 +401,7 @@ const Glide={y:0,target:null,anim:null,raf:0,lt:0,tm:0,held:false,going:false,on
 const Settle={items:[],io:null,of:new WeakMap(),
   watch(it){if(reduce){it.t0=0;return}
     if(!this.io)this.io=new IntersectionObserver(es=>{for(const e of es){if(!e.isIntersecting)continue;const it=this.of.get(e.target);this.io.unobserve(e.target);
-      if(it&&it.t0==null){it.t0=Math.max(performance.now(),Engine.introT0+250);Engine.kick()}}},{rootMargin:"0px 0px -8% 0px"});
+      if(it&&it.t0==null){it.t0=Math.max(performance.now(),Engine.introT0+250/TEMPO);Engine.kick()}}},{rootMargin:"0px 0px -8% 0px"});
     this.of.set(it.el,it);this.io.observe(it.el)},
   drop(it){this.items=this.items.filter(x=>x!==it);if(this.io)this.io.unobserve(it.el)},
   add(el,words){if(reduce||el.dataset.settle)return()=>{};el.dataset.settle="1";const text=el.textContent;
@@ -413,7 +414,7 @@ const Settle={items:[],io:null,of:new WeakMap(),
     const it={el,v:-1};this.items.push(it);this.watch(it);Engine.kick();
     return()=>{this.drop(it);delete el.dataset.settle;el.innerHTML=before}},
   frame(){const now=performance.now();for(const it of this.items){if(it.v>=1||it.t0==null)continue;
-    const k=clamp((now-it.t0)/SETTLE_MS,0,1),v=reduce?1:Math.round(k*(2-k)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
+    const k=clamp((now-it.t0)*TEMPO/SETTLE_MS,0,1),v=reduce?1:Math.round(k*(2-k)*200)/200;if(v!==it.v){it.v=v;it.el.style.setProperty("--sp",v)}}}
 };
 
 /* The veils. On the pages inside an area the figure's object lies behind the page's own words, so every line of words has a
@@ -509,10 +510,10 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
     const now=performance.now(),sy=scrollY,T1=Math.min(vh*.2,240);
     // a page with no opening for the face shows only the object
     const f0=s.mv==null||s.mv<1||s.fw==null?this.faceAt():null,noFace=s.mv==null||s.mv<1||s.fw==null?!f0:s.noFace;s.noFace=noFace;
-    if(s.mv==null){s.mv=s.want=sy>T1||noFace?1:0;s.g0=s.mv?now-9e3:Math.max(now,this.introT0+300);s.sp=0}
+    if(s.mv==null){s.mv=s.want=sy>T1||noFace?1:0;s.g0=s.mv?now-9e3:Math.max(now,this.introT0+300/TEMPO);s.sp=0}
     if(sy>T1||noFace)s.want=1;else if(sy<=24)s.want=0;
-    const asm=reduce?9:clamp((now-s.g0)/1000,0,9);
-    if(reduce)s.mv=s.want;else if(s.want>s.mv){if(asm>=2.2)s.mv=Math.min(1,s.mv+dt/2)}else if(s.want<s.mv)s.mv=Math.max(0,s.mv-dt/1.8);
+    const asm=reduce?9:clamp((now-s.g0)*TEMPO/1000,0,9);
+    if(reduce)s.mv=s.want;else if(s.want>s.mv){if(asm>=2.2)s.mv=Math.min(1,s.mv+dt*TEMPO/2)}else if(s.want<s.mv)s.mv=Math.max(0,s.mv-dt*TEMPO/1.8);
     if(!reduce&&s.mv===0&&asm>=2.2)s.sp+=dt*.1;   // the speech rises slowly through the face (only while it is a face)
     const m=s.mv*s.mv*(3-2*s.mv),cr=s.cv.getBoundingClientRect(),face=f0||{x:0,y:0,w:s.fw||Math.min(vw*.8,420),h:s.fh||Math.min(vh*.7,525)};
     s.fw=face.w;s.fh=face.h;   // (the object keeps the size the face last had, so it is not laid out again)
@@ -532,8 +533,8 @@ const Engine={raf:0,t0:0,lt:0,lastDraw:0,introT0:0,live:false,
   iris(el,vw,vh){const now=performance.now();
     for(const w of wins){const r=w.el.getBoundingClientRect();if(r.bottom<0||r.top>vh||r.width<2)continue;
       const sc=sceneFor(w.src,w.kind);if(!sc)continue;
-      if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.4,vh*.3))w.t0=Math.max(now,this.introT0+400)}
-      const p=reduce?1:w.t0==null?0:clamp((now-w.t0)/IRIS_MS,0,1),mid=r.top+r.height/2,shift=reduce?0:(mid-vh/2)/vh*r.height*.08;
+      if(w.t0==null){const seen=Math.min(r.bottom,vh)-Math.max(r.top,0);if(reduce||seen>=Math.min(r.height*.4,vh*.3))w.t0=Math.max(now,this.introT0+400/TEMPO)}
+      const p=reduce?1:w.t0==null?0:clamp((now-w.t0)*TEMPO/IRIS_MS,0,1),mid=r.top+r.height/2,shift=reduce?0:(mid-vh/2)/vh*r.height*.08;
       const ptr=reduce?[]:PTS.filter(pp=>pp.x>r.left-140&&pp.x<r.right+140&&pp.y>r.top-140&&pp.y<r.bottom+140).map(pp=>({x:pp.x-r.left,y:pp.y-r.top,w:pp.w}));
       const live=p<1||ptr.length>0||(w.kind==="coin"&&!reduce),key=[Math.round(r.width),Math.round(r.height),gen,Math.round(shift*8)].join();
       if(!live&&w.drawn===key)continue;w.drawn=live?"":key;
@@ -688,9 +689,9 @@ function Letters(cv,img,o){
         if((o.mode==="row"||o.mode==="gather")&&!reduce&&s!==" "){if(el<c.at){const set=o.text?CAPS:GL;s=set[(c.i*7+c.j*13+Math.floor(el*3+c.at*5))%set.length];early=1}else if(!o.text&&Math.random()<.002+hot*.05&&c.L>.15)s=RAMP[clamp(RAMP.indexOf(c.t)+((Math.random()*3|0)-1),1,RAMP.length-1)]}
         if(s===" ")continue;let a=o.text?.07+.93*c.L:.16+.84*c.L;if(early)a*=.3+.7*clamp(el/c.at,0,1);if(o.mode==="row")a*=.55+.45*hot;x.globalAlpha=Math.min(1,a);x.fillText(s,c.i*cw+(o.text?cw*.5:0),c.j*ch)}}
     x.globalAlpha=1}
-  function frame(t){if(t-last<33){raf=requestAnimationFrame(frame);return}last=t;const el=(t-t0)/1000;const target=o.isHot&&o.isHot()?1:0;hot+=(target-hot)*.18;draw(el);
+  function frame(t){if(t-last<33){raf=requestAnimationFrame(frame);return}last=t;const el=(t-t0)*TEMPO/1000;const target=o.isHot&&o.isHot()?1:0;hot+=(target-hot)*.18;draw(el);
     if(el>1.6&&Math.abs(hot-target)<.01&&!target){raf=0;return}raf=requestAnimationFrame(frame)}
-  return {start(){build();t0=performance.now();cancelAnimationFrame(raf);if(o.mode==="still"||reduce){draw(99);return}raf=requestAnimationFrame(frame)},
+  return {start(){build();TEMPO=parseFloat(cssv("--tempo"))||1;t0=performance.now();cancelAnimationFrame(raf);if(o.mode==="still"||reduce){draw(99);return}raf=requestAnimationFrame(frame)},
     stop(){cancelAnimationFrame(raf);raf=0},wake(){if(!raf&&!reduce&&o.mode==="row"){last=0;raf=requestAnimationFrame(frame)}},redraw(){if(g)draw(99)}};
 }
 
