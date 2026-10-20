@@ -2,7 +2,7 @@
 
 Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17.md`. Vision (owner, 2026-10-17): "Read real Ancient Greek from the first week, with every word explained on the line." The old file's last dated entry is 2026-10-10, when the site was published at https://mathesisstoicheion.com/.
 
-On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
+On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
 ## The home page's red everywhere; faster animation; the home page stripe (2026-10-20, round 4; NOT live yet)
 The owner, 16:47–16:51 UTC: "Everything on the website needs to follow the Gold and lamplight with the red colour scheme",
