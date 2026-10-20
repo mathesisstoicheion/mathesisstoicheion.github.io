@@ -6,12 +6,12 @@ import { A_ART } from "@/components/a/pictures";
 import AcademyProgress from "@/components/academy/AcademyProgress";
 import LessonPath from "@/components/academy/LessonPath";
 import ReadingPath from "@/components/academy/ReadingPath";
-import { AREAS } from "@/config/areas";
+import { areaTitle } from "@/config/areas";
 import { GUIDES } from "@/data/guides";
 import styles from "@/components/academy/Academy.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
-export const metadata: Metadata = { title: `${AREAS.study.name} · ${AREAS.study.english}`, description: PAGE_DESCRIPTIONS.academy };
+export const metadata: Metadata = { title: areaTitle("study"), description: PAGE_DESCRIPTIONS.academy };
 
 const TOOLS = [
   { href: "/academy/today", title: "Today's session", gr: "ἡμέρα", text: "A few minutes a day: your flashcards, one ending, one real sentence." },

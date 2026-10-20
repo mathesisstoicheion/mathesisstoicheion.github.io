@@ -50,7 +50,7 @@ export default function DebateView() {
 
   return (
     <article className={`wrap ${styles.debate}`}>
-      <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / <Link href="/town-hall/pnyx">The Pnyx</Link></p>
+      <p className={styles.crumbs}><Link href="/town-hall">The Agora</Link> / <Link href="/town-hall/pnyx">The Pnyx</Link></p>
       <header className={styles.motionHead}>
         <p className="label">{d.status === "proposed" ? "Proposed motion" : open ? "Before the Assembly" : "Decided"}</p>
         <h1>{d.motion}</h1>

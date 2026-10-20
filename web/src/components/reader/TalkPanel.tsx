@@ -1,7 +1,7 @@
 "use client";
 /**
- * "Talk about this passage" (Phase 11): the Town Hall threads that quote a passage on this page, without leaving the
- * reader. A thread quotes a passage when it is started with "Ask in the forum" (the passage actions); its quote records
+ * "Talk about this passage" (Phase 11): the Agora threads that quote a passage on this page, without leaving the
+ * reader. A thread quotes a passage when it is started with "Ask in the Agora" (the passage actions); its quote records
  * the work and the reference (lib/community/data.ts), so no list is kept apart from the forum itself.
  */
 import Link from "next/link";
@@ -31,9 +31,9 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
         <h2 className={styles.vocabTitle}>Talk about this passage</h2>
         <button type="button" className={styles.x} onClick={onClose} aria-label="Close talk about this passage">×</button>
       </div>
-      <p className={styles.fine}>Questions asked in the Town Hall about the passages on this page.</p>
-      {error && <p className="muted">The Town Hall could not be reached just now. Try again in a moment.</p>}
-      {!all && !error && <p className="muted">Looking in the Town Hall…</p>}
+      <p className={styles.fine}>Questions asked in the Agora about the passages on this page.</p>
+      {error && <p className="muted">The Agora could not be reached just now. Try again in a moment.</p>}
+      {!all && !error && <p className="muted">Looking in the Agora…</p>}
       {all && (here.length ? (
         <ul className={styles.talk}>
           {here.map((t) => (
@@ -51,8 +51,8 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
       ))}
       <div className={styles.talkAsk}>
         <b>Ask about a passage</b>
-        <p>Tap or click a passage number in the margin, or select some Greek words, then choose <i>Ask in the forum</i>. The passage goes with your question, and the question shows up here.</p>
-        <Link className="chip" href="/town-hall" transitionTypes={["page-turn"]}>The Town Hall →</Link>
+        <p>Tap or click a passage number in the margin, or select some Greek words, then choose <i>Ask in the Agora</i>. The passage goes with your question, and the question shows up here.</p>
+        <Link className="chip" href="/town-hall" transitionTypes={["page-turn"]}>The Agora →</Link>
       </div>
     </aside>
   );

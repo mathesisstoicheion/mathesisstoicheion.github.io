@@ -25,9 +25,10 @@ export default function Door({ id, art, action, carve, children }: {
     <div className={`${s.screen} ${s.door}`}>
       <div className={`${s.wrap} ${s["door-hero"]}`}>
         <header className={s.blk}>
-          <span className={s.mono} style={{ color: "var(--a-accent)" }}>{a.door ?? a.english} · {a.name}</span>
+          <span className={s.mono} style={{ color: "var(--a-accent)" }}>{a.door}</span>
           {carve && <p className={s["door-carve"]} lang="grc">{carve.text}</p>}
-          <h1 className={s["lib-title"]}>{a.name}{a.greek && <span className={s["gr-t"]} lang="grc">{a.greek}</span>}</h1>
+          {/* the Greek name large, the English name small beneath (review fixes, slice 2) */}
+          <h1 className={s["lib-title"]}>{a.greek ? <><span lang="grc">{a.greek}</span><span className={s["en-t"]}>{a.name}</span></> : a.name}</h1>
           <p className={s.lede}>{a.origin} {a.fit}</p>
           {action && <div className={s["door-action"]}>{action}</div>}
           {carve && <p className={s.cap}>{carve.caption}</p>}

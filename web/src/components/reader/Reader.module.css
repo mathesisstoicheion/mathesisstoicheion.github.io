@@ -1,4 +1,4 @@
-/* The Scroll: margin references and ruled lines, on the stone by night or on pale limestone by day (styles/tokens.css). */
+/* The reader: margin references and ruled lines, on the stone by night or on pale limestone by day (styles/tokens.css). */
 .reader { padding-bottom: 40px; }
 /* the reader's page: on the Daylight page the books' area is painted light, edge to edge */
 .page { color: var(--ink); }

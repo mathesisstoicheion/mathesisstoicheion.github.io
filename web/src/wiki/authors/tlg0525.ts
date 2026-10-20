@@ -6,7 +6,7 @@
  * the draft's dates "begins with Attica c. 155" and "completes the work c. 180" (replaced by the dates Pausanias'
  * own remarks allow); "Ionic turns of phrase" in his Greek; excavators at Delphi using him as a guidebook; Frazer's
  * commentary as "the basis of modern archaeological study"; the Suda's borrowings; Wikipedia's account of the
- * ending (that Anyte is told in a dream to present the book to the Greeks), which the Scroll's 10.38.13 does not
+ * ending (that Anyte is told in a dream to present the book to the Greeks), which the reader's 10.38.13 does not
  * bear out; Wikipedia's claim about Tartessos; and Habicht's book (only its publisher's page opened).
  */
 import type { AuthorArticle } from "../author-articles";
@@ -74,8 +74,8 @@ Frazer thought it a piece of good fortune that the book came down entire, an eye
     { year: 1876, kind: "reception", what: "Schliemann and Stamatakis dig the shaft graves at Mycenae, following Homer and Pausanias", src: [23] },
     { year: 1877, kind: "reception", what: "The Hermes with the infant Dionysus is found in the temple of Hera at Olympia, where Pausanias listed it", src: [24, 25] },
     { year: 1898, kind: "print", what: "J. G. Frazer's translation and commentary, in six volumes", src: [4, 2] },
-    { year: 1903, kind: "print", what: "Friedrich Spiro's Teubner text, the Greek in the Scroll", src: [29, 3] },
-    { year: 1918, kind: "print", what: "The first volume of W. H. S. Jones's Loeb translation, the English in the Scroll (four volumes of text, 1918–35)", src: [3, 29, 15] },
+    { year: 1903, kind: "print", what: "Friedrich Spiro's Teubner text, the Greek in the reader", src: [29, 3] },
+    { year: 1918, kind: "print", what: "The first volume of W. H. S. Jones's Loeb translation, the English in the reader (four volumes of text, 1918–35)", src: [3, 29, 15] },
     { year: 1973, kind: "print", what: "M. H. Rocha-Pereira's Teubner edition begins (1973–81)", src: [30, 31] },
     { year: 1982, kind: "print", what: "The Italian Fondazione Valla edition begins; ten volumes, completed in 2017", src: [11] },
   ],
@@ -88,7 +88,7 @@ Frazer thought it a piece of good fortune that the book came down entire, an eye
 
 **The manuscripts.** Eighteen manuscripts were known in the 1830s, all copied in the fifteenth or sixteenth century and full of gaps and errors.[^2] The Italian Valla edition counts fourteen that hold the whole work or nearly, all written by 1550 at the latest.[^11] Editors long relied most on a Paris manuscript, Parisinus graecus 1410, copied in 1491; today more trust is placed in two older ones, Marcianus graecus 413 in Venice and Laurentianus 56.11 in Florence.[^3,11] Jones, in 1918, reported that the manuscripts had been divided into three classes, and warned that the worst blemishes are gaps “where the manuscript tradition fails us entirely”, which only guesswork can fill.[^3]
 
-**Print.** The first printed edition came out at Venice in 1516, from the press of Aldus Manutius' heirs and Andrea Torresano, edited by the Cretan scholar Marcus Musurus.[^11,2,3] A Latin translation by Romolo Amaseo followed at Rome in 1547, and an Italian one by Alfonso Bonacciuoli at Mantua in 1593.[^11,2] The first English translation, by Thomas Taylor, appeared in London in 1794.[^2,3] Frazer translated from J. H. C. Schubart's Teubner text of 1853–54.[^4] Friedrich Spiro's Teubner edition of 1903, the Greek in the Scroll, is the text Jones translated for the Loeb.[^29,3] The modern Teubner edition is M. H. Rocha-Pereira's, in three volumes (1973, 1977, 1981), revised in 1989–90.[^30,31,32]`,
+**Print.** The first printed edition came out at Venice in 1516, from the press of Aldus Manutius' heirs and Andrea Torresano, edited by the Cretan scholar Marcus Musurus.[^11,2,3] A Latin translation by Romolo Amaseo followed at Rome in 1547, and an Italian one by Alfonso Bonacciuoli at Mantua in 1593.[^11,2] The first English translation, by Thomas Taylor, appeared in London in 1794.[^2,3] Frazer translated from J. H. C. Schubart's Teubner text of 1853–54.[^4] Friedrich Spiro's Teubner edition of 1903, the Greek in the reader, is the text Jones translated for the Loeb.[^29,3] The modern Teubner edition is M. H. Rocha-Pereira's, in three volumes (1973, 1977, 1981), revised in 1989–90.[^30,31,32]`,
 
   variants: `The gaps and slips of the single lost manuscript are why editors still disagree.[^2,3] A few places in the first chapters show the kinds of choice they face.
 
@@ -103,8 +103,8 @@ Frazer thought it a piece of good fortune that the book came down entire, an eye
 **A gap or not?** Earlier in the same book, Pausanias tells how the Gauls took Ancyra and Pessinus, «τὴν ὑπὸ τὸ ὄρος τὴν Ἄγδιστιν», “which lies under Mount Agdistis”.[^38,4] Schubart's text, the one Frazer worked from, marked a gap after the word for “mountain”; Frazer thought it not absolutely necessary to suppose one, and Spiro prints the words without a break.[^4,38]`,
 
   editions: [
-    { text: "F. Spiro, *Pausaniae Graeciae Descriptio*, 3 vols (Teubner, Leipzig, 1903).[^29,3]", note: "The Greek text in the Scroll is Perseus's copy of this edition; Jones's Loeb translation was made from it." },
-    { text: "W. H. S. Jones (with H. A. Ormerod for volume 2), *Pausanias: Description of Greece*, Loeb Classical Library 93, 188, 272, 297 and 298 (first volume London, Heinemann, and New York, Putnam, 1918; four volumes of text, 1918–35).[^29,15,3]", note: "The English in the Scroll. A fifth volume of maps, plans, illustrations and index was edited by R. E. Wycherley." },
+    { text: "F. Spiro, *Pausaniae Graeciae Descriptio*, 3 vols (Teubner, Leipzig, 1903).[^29,3]", note: "The Greek text in the reader is Perseus's copy of this edition; Jones's Loeb translation was made from it." },
+    { text: "W. H. S. Jones (with H. A. Ormerod for volume 2), *Pausanias: Description of Greece*, Loeb Classical Library 93, 188, 272, 297 and 298 (first volume London, Heinemann, and New York, Putnam, 1918; four volumes of text, 1918–35).[^29,15,3]", note: "The English in the reader. A fifth volume of maps, plans, illustrations and index was edited by R. E. Wycherley." },
     { text: "M. H. Rocha-Pereira, *Pausaniae Graeciae Descriptio*, 3 vols (Bibliotheca Teubneriana, Leipzig, 1973–81; revised 1989–90).[^30,31,32]", note: "The modern critical text." },
     { text: "J. G. Frazer, *Pausanias's Description of Greece*, translated with a commentary, 6 vols (London, Macmillan, 1898).[^4,2]", note: "Translation and a vast commentary on the sites, written after journeys in Greece in 1890 and 1895." },
     { text: "D. Musti and M. Torelli (directors), *Pausania: Guida della Grecia*, 10 vols (Fondazione Lorenzo Valla and Mondadori, 1982–2017).[^11]", note: "Greek text, Italian translation and commentary, each book by its own editors." },
@@ -117,40 +117,40 @@ Frazer thought it a piece of good fortune that the book came down entire, an eye
     { label: "Wikipedia, Description of Greece (the ten books; the islands left out; Habicht's words; the single lost manuscript, Buondelmonti and Niccoli, after Diller; eighteen manuscripts; the first edition of 1516; early translations; Frazer and Levi)", url: "https://en.wikipedia.org/wiki/Description_of_Greece" },
     { label: "W. H. S. Jones, Pausanias: Description of Greece, vol. 1 (Loeb Classical Library; London, Heinemann, and New York, Putnam, 1918): preface and introduction (life, date, style, the tour, the manuscripts, editions and translations), Internet Archive", url: "https://archive.org/details/pausaniasgreece01pausuoft" },
     { label: "J. G. Frazer, Pausanias's Description of Greece, vol. 1 (London, Macmillan, 1898): preface, introduction (date, birthplace, readers in antiquity, Polemo and the critics, Mycenae and Strabo) and critical notes, Internet Archive", url: "https://archive.org/details/pausaniassdescri01pausuoft" },
-    { label: "Pausanias, Description of Greece 5.1.2, in the Scroll (217 years since Corinth received its land)", cite: { work: "tlg0525.tlg001", ref: "5.1.2" } },
-    { label: "Pausanias, Description of Greece 7.20.6, in the Scroll (the Music Hall of Herodes)", cite: { work: "tlg0525.tlg001", ref: "7.20.6" } },
-    { label: "Pausanias, Description of Greece 8.9.7, in the Scroll (Antinous)", cite: { work: "tlg0525.tlg001", ref: "8.9.7" } },
-    { label: "Pausanias, Description of Greece 10.34.5, in the Scroll (the Costoboci)", cite: { work: "tlg0525.tlg001", ref: "10.34.5" } },
+    { label: "Pausanias, Description of Greece 5.1.2, in the reader (217 years since Corinth received its land)", cite: { work: "tlg0525.tlg001", ref: "5.1.2" } },
+    { label: "Pausanias, Description of Greece 7.20.6, in the reader (the Music Hall of Herodes)", cite: { work: "tlg0525.tlg001", ref: "7.20.6" } },
+    { label: "Pausanias, Description of Greece 8.9.7, in the reader (Antinous)", cite: { work: "tlg0525.tlg001", ref: "8.9.7" } },
+    { label: "Pausanias, Description of Greece 10.34.5, in the reader (the Costoboci)", cite: { work: "tlg0525.tlg001", ref: "10.34.5" } },
     { label: "Wikipedia, Costoboci (the invasion of 170 or 171)", url: "https://en.wikipedia.org/wiki/Costoboci" },
-    { label: "Pausanias, Description of Greece 8.43.6, in the Scroll (the second Antoninus against the Germans and Sarmatians)", cite: { work: "tlg0525.tlg001", ref: "8.43.6" } },
+    { label: "Pausanias, Description of Greece 8.43.6, in the reader (the second Antoninus against the Germans and Sarmatians)", cite: { work: "tlg0525.tlg001", ref: "8.43.6" } },
     { label: "Giovanni Mazzaferro, review of Pausania, Guida della Grecia, ed. D. Musti and M. Torelli (Fondazione Lorenzo Valla and Mondadori, 1982–2017), part one, Letteratura artistica (2019): Musti's introduction, the archetype, the manuscripts, the first edition, the ten volumes", url: "https://letteraturaartistica.blogspot.com/2019/01/pausanias-greece.html" },
-    { label: "Pausanias, Description of Greece 5.13.7, in the Scroll (Pelops and Tantalus “in my country”; Mount Sipylus)", cite: { work: "tlg0525.tlg001", ref: "5.13.7" } },
+    { label: "Pausanias, Description of Greece 5.13.7, in the reader (Pelops and Tantalus “in my country”; Mount Sipylus)", cite: { work: "tlg0525.tlg001", ref: "5.13.7" } },
     { label: "J. P. Sánchez Hernández, “La patria de Pausanias (Notas de lectura a Paus. V, 13, 7): Magnesia del Sípilo y Esmirna”, Cuadernos de Filología Clásica. Estudios griegos e indoeuropeos 17 (2007) 233–247: abstract (Habicht for Magnesia; the author for Smyrna)", url: "https://revistas.ucm.es/index.php/CFCG/article/view/CFCG0707110233A" },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entry περιήγησις (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
     { label: "University of Patras library, record of Pausanias, Description of Greece, tr. W. H. S. Jones and H. A. Ormerod, ed. R. E. Wycherley (Loeb Classical Library 93, 188, 272, 297–298): the books in each volume", url: "https://find.library.upatras.gr/Record/181560/TOC?lng=en" },
-    { label: "Pausanias, Description of Greece 1.39.3, in the Scroll (what deserves to be recorded)", cite: { work: "tlg0525.tlg001", ref: "1.39.3" } },
-    { label: "Pausanias, Description of Greece 3.11.1, in the Scroll (the rule repeated at Sparta)", cite: { work: "tlg0525.tlg001", ref: "3.11.1" } },
-    { label: "Pausanias, Description of Greece 1.26.4, in the Scroll (all things Greek)", cite: { work: "tlg0525.tlg001", ref: "1.26.4" } },
-    { label: "Pausanias, Description of Greece 10.4.1, in the Scroll (Panopeus)", cite: { work: "tlg0525.tlg001", ref: "10.4.1" } },
-    { label: "Pausanias, Description of Greece 8.8.3, in the Scroll (the legends as foolishness, then as riddles)", cite: { work: "tlg0525.tlg001", ref: "8.8.3" } },
-    { label: "Strabo, Geography 8.6.10, in the Scroll (not a trace of Mycenae)", cite: { work: "tlg0099.tlg001", ref: "8.6.10" } },
-    { label: "Pausanias, Description of Greece 2.16.5–2.16.7, in the Scroll (the wall, the lion gate and the graves at Mycenae)", cite: { work: "tlg0525.tlg001", ref: "2.16.5", to: "2.16.7" } },
+    { label: "Pausanias, Description of Greece 1.39.3, in the reader (what deserves to be recorded)", cite: { work: "tlg0525.tlg001", ref: "1.39.3" } },
+    { label: "Pausanias, Description of Greece 3.11.1, in the reader (the rule repeated at Sparta)", cite: { work: "tlg0525.tlg001", ref: "3.11.1" } },
+    { label: "Pausanias, Description of Greece 1.26.4, in the reader (all things Greek)", cite: { work: "tlg0525.tlg001", ref: "1.26.4" } },
+    { label: "Pausanias, Description of Greece 10.4.1, in the reader (Panopeus)", cite: { work: "tlg0525.tlg001", ref: "10.4.1" } },
+    { label: "Pausanias, Description of Greece 8.8.3, in the reader (the legends as foolishness, then as riddles)", cite: { work: "tlg0525.tlg001", ref: "8.8.3" } },
+    { label: "Strabo, Geography 8.6.10, in the reader (not a trace of Mycenae)", cite: { work: "tlg0099.tlg001", ref: "8.6.10" } },
+    { label: "Pausanias, Description of Greece 2.16.5–2.16.7, in the reader (the wall, the lion gate and the graves at Mycenae)", cite: { work: "tlg0525.tlg001", ref: "2.16.5", to: "2.16.7" } },
     { label: "Wikipedia, Grave Circle A, Mycenae (Schliemann and Stamatakis, 1876–77, following Homer and Pausanias; the date of the burials)", url: "https://en.wikipedia.org/wiki/Grave_Circle_A,_Mycenae" },
-    { label: "Pausanias, Description of Greece 5.17.3, in the Scroll (the Hermes of Praxiteles in the temple of Hera)", cite: { work: "tlg0525.tlg001", ref: "5.17.3" } },
+    { label: "Pausanias, Description of Greece 5.17.3, in the reader (the Hermes of Praxiteles in the temple of Hera)", cite: { work: "tlg0525.tlg001", ref: "5.17.3" } },
     { label: "Wikipedia, Hermes and the Infant Dionysus (found on 8 May 1877; the debate over Praxiteles)", url: "https://en.wikipedia.org/wiki/Hermes_and_the_Infant_Dionysus" },
-    { label: "Aelian, Historical Miscellany 12.61, in the Scroll (Greek only)", cite: { work: "tlg0545.tlg002", ref: "12.61" } },
+    { label: "Aelian, Historical Miscellany 12.61, in the reader (Greek only)", cite: { work: "tlg0545.tlg002", ref: "12.61" } },
     { label: "Wikipedia, Claudius Aelianus (about 175 to about 235)", url: "https://en.wikipedia.org/wiki/Claudius_Aelianus" },
-    { label: "Pausanias, Description of Greece 8.36.6, in the Scroll (the Megalopolitans and the North Wind)", cite: { work: "tlg0525.tlg001", ref: "8.36.6" } },
-    { label: "Perseus's copies of Pausanias shown in the Scroll: each file's header names its source (Spiro's Teubner text, Leipzig, 1903, 3 vols; the translation of W. H. S. Jones and H. A. Ormerod, Loeb Classical Library, Harvard University Press and Heinemann, 1918–1935, vols 1–4)", cite: { work: "tlg0525.tlg001", ref: "1.1.1" } },
+    { label: "Pausanias, Description of Greece 8.36.6, in the reader (the Megalopolitans and the North Wind)", cite: { work: "tlg0525.tlg001", ref: "8.36.6" } },
+    { label: "Perseus's copies of Pausanias shown in the reader: each file's header names its source (Spiro's Teubner text, Leipzig, 1903, 3 vols; the translation of W. H. S. Jones and H. A. Ormerod, Loeb Classical Library, Harvard University Press and Heinemann, 1918–1935, vols 1–4)", cite: { work: "tlg0525.tlg001", ref: "1.1.1" } },
     { label: "The Classical Review 29.1 (1979) 21–23, Peter Levi, “The Teubner Pausanias”, review of M. H. Rocha-Pereira, Pausanias, Graeciae descriptio, 2 vols (Leipzig, Teubner, 1973, 1977)", url: "https://www.cambridge.org/core/journals/classical-review/article/teubner-pausanias-m-h-rochapereira-pausanias-graeciae-descriptio-bibliotheca-scriptorum-graecorum-et-romanorum-teubneriana-2-vols-pp-xxv-358-338-leipzig-teubner-1973-1977-cloth/ECF2F34AAC8D4530ABDDEE24208C3528" },
     { label: "Biblioteca Nacional de Portugal, dictionary of Portuguese historians: Maria Helena da Rocha Pereira (her Teubner Pausanias of 1973, 1977 and 1981)", url: "https://dichp.bnportugal.gov.pt/historiadores_eng/historiadores_maria_pereira3_eng.htm" },
     { label: "The Classical Review 40.1 (1990) 150–151, Peter Levi, review of M. H. Rocha-Pereira, Pausaniae Graeciae Descriptio, vols 1 and 3, second revised edition (Leipzig, Teubner, 1989)", url: "https://www.cambridge.org/core/journals/classical-review/article/maria-helena-rochapereira-pausaniae-graeciae-descriptio-vol-1-lib-iiv-vol-3-lib-ixx-2-verbesserte-auflage-bibl-teubneriana-pp-xxvi-358-v-329-leipzig-teubner-1989-dm-59-68/2D90650B1EFFF2041D007700C94E2FCB" },
-    { label: "Pausanias, Description of Greece 1.1.1, in the Scroll (Ptolemy, son of Ptolemy, son of Lagus)", cite: { work: "tlg0525.tlg001", ref: "1.1.1" } },
-    { label: "Pausanias, Description of Greece 1.2.5, in the Scroll (the Apollo of Eubulides)", cite: { work: "tlg0525.tlg001", ref: "1.2.5" } },
-    { label: "Pausanias, Description of Greece 1.4.3, in the Scroll (the Lamian gulf)", cite: { work: "tlg0525.tlg001", ref: "1.4.3" } },
-    { label: "Pausanias, Description of Greece 1.10.4, in the Scroll (the words marked with a dagger)", cite: { work: "tlg0525.tlg001", ref: "1.10.4" } },
+    { label: "Pausanias, Description of Greece 1.1.1, in the reader (Ptolemy, son of Ptolemy, son of Lagus)", cite: { work: "tlg0525.tlg001", ref: "1.1.1" } },
+    { label: "Pausanias, Description of Greece 1.2.5, in the reader (the Apollo of Eubulides)", cite: { work: "tlg0525.tlg001", ref: "1.2.5" } },
+    { label: "Pausanias, Description of Greece 1.4.3, in the reader (the Lamian gulf)", cite: { work: "tlg0525.tlg001", ref: "1.4.3" } },
+    { label: "Pausanias, Description of Greece 1.10.4, in the reader (the words marked with a dagger)", cite: { work: "tlg0525.tlg001", ref: "1.10.4" } },
     { label: "Wikipedia, Dagger (mark) (the obelus, used to mark questionable or corrupt words)", url: "https://en.wikipedia.org/wiki/Dagger_(mark)" },
-    { label: "Pausanias, Description of Greece 1.4.5, in the Scroll (Pessinus under Mount Agdistis)", cite: { work: "tlg0525.tlg001", ref: "1.4.5" } },
+    { label: "Pausanias, Description of Greece 1.4.5, in the reader (Pessinus under Mount Agdistis)", cite: { work: "tlg0525.tlg001", ref: "1.4.5" } },
     { label: "ARCE Library, record of Pausanias, Guide to Greece, tr. Peter Levi (Penguin Classics, Harmondsworth and New York; copyright 1971)", url: "https://library.arce.org/portal/Record/14755" },
   ],
   outsideQuotes: [

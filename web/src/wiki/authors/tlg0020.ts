@@ -28,7 +28,7 @@ The *Works and Days* adds more. His father “left Aeolian Cyme”, on the coast
 
 The poem is addressed to his brother Perses, and it grows out of a family quarrel: “For we had already divided our inheritance, but you seized the greater share and carried it off, greatly swelling the glory of our bribe-swallowing lords”.[^6]
 
-{debated} How much of this is a real man's life? Some scholars think Perses was invented, a figure for the poet to lecture, and Gregory Nagy reads both “Hesiod” and “Perses” as names for poetic characters.[^1] Glenn Most treats Hesiod as a real person who tells us facts about his life, chosen to serve the poem: “the poet’s self-representation is always in the service of his self-legitimation”.[^7] In 1914 Hugh Evelyn-White, whose text and translation are the ones in the Scroll, even thought the *Theogony* was by a later poet, telling of his own call by the Muses who had once taught Hesiod.[^8]
+{debated} How much of this is a real man's life? Some scholars think Perses was invented, a figure for the poet to lecture, and Gregory Nagy reads both “Hesiod” and “Perses” as names for poetic characters.[^1] Glenn Most treats Hesiod as a real person who tells us facts about his life, chosen to serve the poem: “the poet’s self-representation is always in the service of his self-legitimation”.[^7] In 1914 Hugh Evelyn-White, whose text and translation are the ones in the reader, even thought the *Theogony* was by a later poet, telling of his own call by the Muses who had once taught Hesiod.[^8]
 
 {debated} His date is not secure either. Plutarch identified Amphidamas with a hero of the Lelantine War between Chalcis and Eretria, and modern estimates for that war fit the usual dates for Hesiod.[^1,9] Which came first, Homer or Hesiod? Most scholars today put Homer first.[^1] M. L. West argued that Hesiod was the older; Richard Janko holds that statistical study of their language puts Homer first beyond reasonable doubt; Most thought the question “probably undecidable”.[^7]
 
@@ -74,7 +74,7 @@ In Aristophanes' comedy *Frogs*, Aeschylus lists the poets who taught something 
     { year: 1310, approx: true, kind: "copy", what: "Vaticanus gr. 1825, an early manuscript of the *Theogony*, dated about 1310 by its watermarks", src: [34] },
     { year: 1480, approx: true, kind: "print", what: "The *Works and Days* first printed at Milan, edited by Bonus Accursius", src: [32, 35, 36] },
     { year: 1496, approx: true, kind: "print", what: "Aldus Manutius prints all three poems at Venice (dated February 1495 in the Venetian calendar)", src: [18, 8, 35] },
-    { year: 1914, kind: "print", what: "Evelyn-White's Loeb edition, the Greek and English in the Scroll", src: [40, 7] },
+    { year: 1914, kind: "print", what: "Evelyn-White's Loeb edition, the Greek and English in the reader", src: [40, 7] },
     { year: 1962, kind: "copy", what: "Volume 28 of the *Oxyrhynchus Papyri* nearly doubles the papyri of the lost Hesiodic poems", src: [15] },
     { year: 1966, kind: "print", what: "M. L. West's edition of the *Theogony* with commentary", src: [42, 14] },
     { year: 1967, kind: "print", what: "Merkelbach and West's *Fragmenta Hesiodea*", src: [15] },
@@ -90,18 +90,18 @@ In Aristophanes' comedy *Frogs*, Aeschylus lists the poets who taught something 
 
 **Print.** The *Works and Days* was first printed at Milan around 1480, in a book that also held the *Idylls* of Theocritus, edited by Bonus Accursius.[^32,35,36] (Evelyn-White, in 1914, still named as the first an edition by Demetrius Chalcondyles, which he placed, with question marks, at Milan in 1493.)[^8] Aldus Manutius printed all three poems at Venice in a book dated February 1495 by the Venetian calendar (1496 by ours).[^18,8,35] Among the modern editions are those of Alois Rzach (Leipzig, 1902 and 1913), whose grouping of the manuscripts Evelyn-White followed,[^8] and M. L. West's commentaries on the *Theogony* (1966) and the *Works and Days* (1978), whose text Most's Loeb follows.[^14]`,
 
-  variants: `**The hymn at the start of the *Works and Days*.** The poem as we read it opens with ten lines calling on the Muses to sing of Zeus ([*Works and Days* 1–10](cts:tlg0020.tlg002:1-10)).[^11,12] Praxiphanes knew a copy without them, Aristarchus marked them as spurious, and the Boeotians on Helicon left them out.[^28,5] The Scroll's text prints them.[^11]
+  variants: `**The hymn at the start of the *Works and Days*.** The poem as we read it opens with ten lines calling on the Muses to sing of Zeus ([*Works and Days* 1–10](cts:tlg0020.tlg002:1-10)).[^11,12] Praxiphanes knew a copy without them, Aristarchus marked them as spurious, and the Boeotians on Helicon left them out.[^28,5] The reader's text prints them.[^11]
 
 {debated} **Where does the *Theogony* end?** The poem as it stands closes by calling on the Muses to sing of women, and runs straight into the *Catalogue*.[^16,15] West treated the end of the *Theogony* as later than Hesiod, dating lines 965–1020 to the late sixth century, and Most's Loeb follows him in marking the end as not genuine; Janko answers that the language and other arguments strongly support Hesiod's authorship.[^15,7]
 
-**Lines some texts have and others lack.** Evelyn-White's text, the one in the Scroll, prints twenty extra lines after *Theogony* 929, numbered 929a–929t, in which “Hera was very angry and quarrelled with her mate” ([*Theogony* 929a–929t](cts:tlg0020.tlg001:929a-929t)). He explains that the first was restored by the scholar Peppmüller and that the other nineteen come from another version of the passage, quoted by Chrysippus as preserved by Galen.[^37,8] In the *Works and Days* he prints four lines found on papyrus, 169a–169d, which say of Cronos “for the father of men and gods released him from his bonds”.[^38,8]
+**Lines some texts have and others lack.** Evelyn-White's text, the one in the reader, prints twenty extra lines after *Theogony* 929, numbered 929a–929t, in which “Hera was very angry and quarrelled with her mate” ([*Theogony* 929a–929t](cts:tlg0020.tlg001:929a-929t)). He explains that the first was restored by the scholar Peppmüller and that the other nineteen come from another version of the passage, quoted by Chrysippus as preserved by Galen.[^37,8] In the *Works and Days* he prints four lines found on papyrus, 169a–169d, which say of Cronos “for the father of men and gods released him from his bonds”.[^38,8]
 
 **The manuscripts or the ancient quotation?** At *Theogony* 900 and *Works and Days* 288, West, followed by Most, prints the wording of an ancient quotation rather than that of the manuscripts; Janko calls these ancient misquotations and would keep the manuscripts' text. He also names at least a dozen places where lines that are missing from papyri or from part of the medieval tradition should, in his view, be marked as spurious.[^7]
 
 **The end of the *Works and Days*.** The poem now ends by blessing the man “who discerns the omens of birds and avoids transgression”: «ὄρνιθας κρίνων καὶ ὑπερβασίας ἀλεείνων».[^39] According to the ancient commentator Proclus, a poem on *Divination by Birds* once followed, until Apollonius of Rhodes rejected it.[^8] Even the “Days” have been doubted: Wilamowitz's edition of 1928 left them out.[^12]`,
 
   editions: [
-    { text: "H. G. Evelyn-White, *Hesiod, the Homeric Hymns and Homerica* (Loeb Classical Library, London and New York, 1914).[^40,8]", note: "The Greek text and English translation in the Scroll. A reviewer of its replacement called it “totally outdated”.[^7]" },
+    { text: "H. G. Evelyn-White, *Hesiod, the Homeric Hymns and Homerica* (Loeb Classical Library, London and New York, 1914).[^40,8]", note: "The Greek text and English translation in the reader. A reviewer of its replacement called it “totally outdated”.[^7]" },
     { text: "M. L. West, *Hesiod: Theogony* (Oxford, Clarendon Press, 1966).[^42]", note: "Greek text with a full commentary; the text Most's Loeb follows.[^14]" },
     { text: "M. L. West, *Hesiod: Works and Days*, edited with prolegomena and commentary (Oxford, Clarendon Press, 1978).[^43]", note: "The companion volume for the *Works and Days*.[^14]" },
     { text: "F. Solmsen, *Hesiodi Theogonia, Opera et Dies, Scutum*, with *Fragmenta selecta* edited by R. Merkelbach and M. L. West (Oxford Classical Texts, 1970; second edition 1983; third edition 1990).[^12,44]", note: "The standard Oxford text of the three poems." },
@@ -112,32 +112,32 @@ In Aristophanes' comedy *Frogs*, Aeschylus lists the poets who taught something 
 
   sources: [
     { label: "Wikipedia, Hesiod (dates, life, the persona debate, Plutarch on Amphidamas, Homer's priority, the works, Hesiod's Greek, reception)", url: "https://en.wikipedia.org/wiki/Hesiod" },
-    { label: "Herodotus, Histories 2.53.1–3, in the Scroll", cite: { work: "tlg0016.tlg001", ref: "2.53.1", to: "2.53.3" } },
-    { label: "Hesiod, Theogony 1–35, in the Scroll (the Muses on Helicon)", cite: { work: "tlg0020.tlg001", ref: "1", to: "35" } },
-    { label: "Hesiod, Works and Days 633–662, in the Scroll (Cyme, Ascra, Chalcis and the tripod)", cite: { work: "tlg0020.tlg002", ref: "633", to: "662" } },
-    { label: "Pausanias, Description of Greece 9.31.3–6, in the Scroll (the tripod, the lead tablet, the poems, the death)", cite: { work: "tlg0525.tlg001", ref: "9.31.3", to: "9.31.6" } },
-    { label: "Hesiod, Works and Days 35–41, in the Scroll (the inheritance; the half and the whole)", cite: { work: "tlg0020.tlg002", ref: "35", to: "41" } },
+    { label: "Herodotus, Histories 2.53.1–3, in the reader", cite: { work: "tlg0016.tlg001", ref: "2.53.1", to: "2.53.3" } },
+    { label: "Hesiod, Theogony 1–35, in the reader (the Muses on Helicon)", cite: { work: "tlg0020.tlg001", ref: "1", to: "35" } },
+    { label: "Hesiod, Works and Days 633–662, in the reader (Cyme, Ascra, Chalcis and the tripod)", cite: { work: "tlg0020.tlg002", ref: "633", to: "662" } },
+    { label: "Pausanias, Description of Greece 9.31.3–6, in the reader (the tripod, the lead tablet, the poems, the death)", cite: { work: "tlg0525.tlg001", ref: "9.31.3", to: "9.31.6" } },
+    { label: "Hesiod, Works and Days 35–41, in the reader (the inheritance; the half and the whole)", cite: { work: "tlg0020.tlg002", ref: "35", to: "41" } },
     { label: "Bryn Mawr Classical Review 2007.03.31, Richard Janko on G. W. Most, Hesiod: Theogony, Works and Days, Testimonia (Loeb Classical Library 57, 2006)", url: "https://bmcr.brynmawr.edu/2007/2007.03.31/" },
     { label: "H. G. Evelyn-White, Hesiod, the Homeric Hymns and Homerica (1914): introduction, bibliography and notes, Project Gutenberg ebook 348", url: "https://www.gutenberg.org/cache/epub/348/pg348.txt" },
-    { label: "Plutarch, The Dinner of the Seven Wise Men 10, in the Scroll (Amphidamas; Homer and Hesiod)", cite: { work: "tlg0007.tlg079", ref: "10" } },
-    { label: "Hesiod, Theogony 116–117, in the Scroll", cite: { work: "tlg0020.tlg001", ref: "116", to: "117" } },
-    { label: "Hesiod, Works and Days 1–12, in the Scroll (the hymn to Zeus; the two Strifes)", cite: { work: "tlg0020.tlg002", ref: "1", to: "12" } },
+    { label: "Plutarch, The Dinner of the Seven Wise Men 10, in the reader (Amphidamas; Homer and Hesiod)", cite: { work: "tlg0007.tlg079", ref: "10" } },
+    { label: "Hesiod, Theogony 116–117, in the reader", cite: { work: "tlg0020.tlg001", ref: "116", to: "117" } },
+    { label: "Hesiod, Works and Days 1–12, in the reader (the hymn to Zeus; the two Strifes)", cite: { work: "tlg0020.tlg002", ref: "1", to: "12" } },
     { label: "Wikipedia, Works and Days (contents; the ten-line hymn; editions, including Wilamowitz 1928 and Solmsen's Oxford text)", url: "https://en.wikipedia.org/wiki/Works_and_Days" },
-    { label: "Hesiod, Works and Days 174–175, in the Scroll", cite: { work: "tlg0020.tlg002", ref: "174", to: "175" } },
+    { label: "Hesiod, Works and Days 174–175, in the reader", cite: { work: "tlg0020.tlg002", ref: "174", to: "175" } },
     { label: "Bryn Mawr Classical Review 2019.10.06, Felice Stama on G. W. Most, Hesiod I–II (Loeb Classical Library 57 and 503, second edition, 2018), in Italian", url: "https://bmcr.brynmawr.edu/2019/2019.10.06/" },
     { label: "Wikipedia, Catalogue of Women (five books; the surviving lines; the date and authorship debate; papyri; editions)", url: "https://en.wikipedia.org/wiki/Catalogue_of_Women" },
-    { label: "Hesiod, Theogony 1019–1022, in the Scroll (the last lines)", cite: { work: "tlg0020.tlg001", ref: "1019", to: "1022" } },
-    { label: "Shield of Heracles 1–57, in the Scroll (the opening taken from the Catalogue)", cite: { work: "tlg0020.tlg003", ref: "1", to: "57" } },
+    { label: "Hesiod, Theogony 1019–1022, in the reader (the last lines)", cite: { work: "tlg0020.tlg001", ref: "1019", to: "1022" } },
+    { label: "Shield of Heracles 1–57, in the reader (the opening taken from the Catalogue)", cite: { work: "tlg0020.tlg003", ref: "1", to: "57" } },
     { label: "Wikipedia, Shield of Heracles (subject, date, the borrowed opening, Aristophanes of Byzantium, papyri, the Aldine of 1495)", url: "https://en.wikipedia.org/wiki/Shield_of_Heracles" },
-    { label: "Hesiod, Works and Days 285–292, in the Scroll", cite: { work: "tlg0020.tlg002", ref: "285", to: "292" } },
+    { label: "Hesiod, Works and Days 285–292, in the reader", cite: { work: "tlg0020.tlg002", ref: "285", to: "292" } },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entries νήπιος, ἀνόστεος and πολύπους (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Hesiod, Works and Days 520–526, in the Scroll (the Boneless One)", cite: { work: "tlg0020.tlg002", ref: "520", to: "526" } },
+    { label: "Hesiod, Works and Days 520–526, in the reader (the Boneless One)", cite: { work: "tlg0020.tlg002", ref: "520", to: "526" } },
     { label: "Quintilian, Institutio Oratoria 10.1.52, translated by H. E. Butler (Loeb, 1920–22), on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Quintilian/Institutio_Oratoria/10A*.html" },
     { label: "Wikipedia, Contest of Homer and Hesiod (date, Alcidamas, papyri, the verdict)", url: "https://en.wikipedia.org/wiki/Contest_of_Homer_and_Hesiod" },
-    { label: "The Contest of Homer and Hesiod, in the Scroll (Greek only)", cite: { work: "tlg1252.tlg002", ref: "1" } },
-    { label: "Thucydides, History 3.96.1, in the Scroll", cite: { work: "tlg0003.tlg001", ref: "3.96.1" } },
-    { label: "Pausanias, Description of Greece 9.38.3–4, in the Scroll (the bones and the tomb at Orchomenus)", cite: { work: "tlg0525.tlg001", ref: "9.38.3", to: "9.38.4" } },
-    { label: "Aristophanes, Frogs 1030–1036, in the Scroll (Greek only)", cite: { work: "tlg0019.tlg009", ref: "1030", to: "1036" } },
+    { label: "The Contest of Homer and Hesiod, in the reader (Greek only)", cite: { work: "tlg1252.tlg002", ref: "1" } },
+    { label: "Thucydides, History 3.96.1, in the reader", cite: { work: "tlg0003.tlg001", ref: "3.96.1" } },
+    { label: "Pausanias, Description of Greece 9.38.3–4, in the reader (the bones and the tomb at Orchomenus)", cite: { work: "tlg0525.tlg001", ref: "9.38.3", to: "9.38.4" } },
+    { label: "Aristophanes, Frogs 1030–1036, in the reader (Greek only)", cite: { work: "tlg0019.tlg009", ref: "1030", to: "1036" } },
     { label: "Living Poets (Durham University): scholion on Hesiod, Works and Days, prolegomena (p. 2 Pertusi), Greek and English: Aristarchus and Praxiphanes on the opening hymn (copy in the Internet Archive's Wayback Machine, February 2025)", url: "http://web.archive.org/web/20250218085307/https://livingpoets.dur.ac.uk/w/index.php/Scholion,_Hesiod_Works_and_Days_Prolegomena_Ac,_p._2_Pertusi" },
     { label: "Wikipedia, Praxiphanes (pupil of Theophrastus about 322 BC; a commentary on the Works and Days)", url: "https://en.wikipedia.org/wiki/Praxiphanes" },
     { label: "Wikipedia, Aristarchus of Samothrace (about 220–143 BC; the most influential scholar of Homer)", url: "https://en.wikipedia.org/wiki/Aristarchus_of_Samothrace" },
@@ -147,10 +147,10 @@ In Aristophanes' comedy *Frogs*, Aeschylus lists the poets who taught something 
     { label: "Wikipedia, Theogony (manuscripts: Vaticanus gr. 1825, about 1310)", url: "https://en.wikipedia.org/wiki/Theogony" },
     { label: "Wikipedia, List of editiones principes in Greek (Works and Days, Milan, about 1482, ed. Bonus Accursius; the Aldine Hesiod, 1495–96)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
     { label: "Dizionario Biografico degli Italiani (Treccani), Bonaccorso da Pisa: his Theocritus with Hesiod's Works and Days", url: "https://www.treccani.it/enciclopedia/bonaccorso-da-pisa_%28Dizionario-Biografico%29/" },
-    { label: "Hesiod, Theogony 924–930, with the extra lines 929a–929t, in the Scroll", cite: { work: "tlg0020.tlg001", ref: "924", to: "930" } },
-    { label: "Hesiod, Works and Days 169–169d, in the Scroll", cite: { work: "tlg0020.tlg002", ref: "169", to: "169d" } },
-    { label: "Hesiod, Works and Days 826–828, in the Scroll (the last lines)", cite: { work: "tlg0020.tlg002", ref: "826", to: "828" } },
-    { label: "Perseus's copies of Hesiod shown in the Scroll: each file's header names its source (Evelyn-White, Hesiod, the Homeric Hymns and Homerica, Loeb Classical Library, Heinemann and Macmillan, 1914)", cite: { work: "tlg0020.tlg002", ref: "1" } },
+    { label: "Hesiod, Theogony 924–930, with the extra lines 929a–929t, in the reader", cite: { work: "tlg0020.tlg001", ref: "924", to: "930" } },
+    { label: "Hesiod, Works and Days 169–169d, in the reader", cite: { work: "tlg0020.tlg002", ref: "169", to: "169d" } },
+    { label: "Hesiod, Works and Days 826–828, in the reader (the last lines)", cite: { work: "tlg0020.tlg002", ref: "826", to: "828" } },
+    { label: "Perseus's copies of Hesiod shown in the reader: each file's header names its source (Evelyn-White, Hesiod, the Homeric Hymns and Homerica, Loeb Classical Library, Heinemann and Macmillan, 1914)", cite: { work: "tlg0020.tlg002", ref: "1" } },
     { label: "Bryn Mawr Classical Review 2007.10.44, Matthew Fox on G. W. Most, Hesiod: The Shield, Catalogue of Women, Other Fragments (Loeb Classical Library 503, 2007)", url: "https://bmcr.brynmawr.edu/2007/2007.10.44/" },
     { label: "The Journal of Hellenic Studies 88 (1968) 144–150, G. S. Kirk and M. Robertson's review of Hesiod, Theogony, ed. M. L. West (Oxford, Clarendon Press, 1966): record on Cambridge Core", url: "https://www.cambridge.org/core/journals/journal-of-hellenic-studies/article/hesiod-theogony-ed-m-l-west-oxford-the-clarendon-press-1966-pp-xiii-459-4-10s/6CA2A1ACB3DE1031E727F57D89AA935F" },
     { label: "The Classical Review 29.2 (1979) 202–206, Malcolm Davies's review of M. L. West, Hesiod, Works and Days (Oxford, Clarendon Press, 1978): record on Cambridge Core", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/hesiod-m-l-west-hesiod-works-and-days-edited-with-prolegomena-and-commentary-pp-xiv-400-oxford-clarendon-press-1978-15/BF4C90348ECEC198037F481CFCC6500A" },

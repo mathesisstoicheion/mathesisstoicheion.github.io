@@ -27,7 +27,7 @@ const ALL_ROOMS = [
   { id: "study", gk: "Ἀκαδήμεια", art: A_ART.douris, text: "Lessons from the first letters to reading real texts." },
   { id: "library", gk: "Μουσεῖον", art: A_ART.amphora, text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
   { id: "wiki", gk: "Στοὰ Ποικίλη", art: A_ART.antikythera, text: "People, places and objects of the ancient world." },
-  { id: "forum", gk: "Ἀγορά", art: A_ART.ostraka, text: "The forum: ask, answer, and read together." },
+  { id: "forum", gk: "Ἀγορά", art: A_ART.ostraka, text: "Ask, answer, and read together." },
   { id: "treasury", gk: "Θησαυρός", art: A_ART.mask, text: "Your bookmarks, notes, highlights and words." },
 ] as const;
 const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
@@ -81,7 +81,7 @@ export default function Home() {
                   <Link key={r.id} className={s.room} href={a.href} transitionTypes={["page-turn"]}>
                     <Win className={`${s.win} ${s.mini}`} src={r.art.src} label={r.art.label} caption={r.art.cap} capClass={s.wcap} />
                     <SettleText className={s.gk} lang="grc" text={r.gk} />
-                    <span className={s.mono}>{a.door}</span>
+                    <span className={s.mono}>{a.name}</span>
                     <p>{r.text}</p>
                   </Link>
                 );

@@ -90,17 +90,17 @@ The Roman poets read him closely.[^1] Catullus sent a friend “haec expressa ti
 
 **Modern editions.** Rudolf Pfeiffer gathered the papyri then known in 1923, and his landmark two-volume Oxford edition followed: the fragments in 1949, the hymns and epigrams in 1953.[^32] Since then new papyri have kept coming: the Lille papyrus was published in 1976,[^9] the *Supplementum Hellenisticum* of Hugh Lloyd-Jones and Peter Parsons (1983) includes further pieces of the *Aetia*,[^35,9] and Annette Harder's *Aetia* (2012) gives the text, a translation and a commentary of more than a thousand pages.[^33]`,
 
-  variants: `**Two editors, two spellings.** The Scroll has two Greek texts of the hymns and epigrams, Wilamowitz's of 1897 and Mair's Loeb of 1921.[^36] They even number the epigrams differently: the “cyclic poem” epigram is 28 in Wilamowitz and 30 in Mair.[^15,37] In its third line Wilamowitz prints «μισέω καὶ περίφοιτον ἐρώμενον», Mair «μισῶ καὶ περίφοιτον ἐρώμενον»: the same word, “I hate”, with its two vowels kept apart or run together.[^15,37] In the Heraclitus epigram Wilamowitz writes the small iota beside the eta, «ἐν λέσχηι», where Mair writes it beneath: «ἐν λέσχῃ».[^21,37]
+  variants: `**Two editors, two spellings.** The reader has two Greek texts of the hymns and epigrams, Wilamowitz's of 1897 and Mair's Loeb of 1921.[^36] They even number the epigrams differently: the “cyclic poem” epigram is 28 in Wilamowitz and 30 in Mair.[^15,37] In its third line Wilamowitz prints «μισέω καὶ περίφοιτον ἐρώμενον», Mair «μισῶ καὶ περίφοιτον ἐρώμενον»: the same word, “I hate”, with its two vowels kept apart or run together.[^15,37] In the Heraclitus epigram Wilamowitz writes the small iota beside the eta, «ἐν λέσχηι», where Mair writes it beneath: «ἐν λέσχῃ».[^21,37]
 
 **Pelagonians or clay-born?** In the third line of the *Hymn to Zeus* both texts print «Πηλαγόνων ἐλατῆρα», “router of the Pelagonians” (Mair's translation), the giants Zeus drove off.[^19,4] The manuscripts have Πηλογόνων, which the ancient commentator explained as “the giants”, born from clay (πηλός); Salmasius and others corrected it from the *Etymologicum Magnum*, which quotes Callimachus' words with Πηλαγόνων.[^4]
 
-**Whose fragment 1?** Numbers for the fragments change from edition to edition. The prologue is fragment 1 in Pfeiffer, Massimilla and Harder alike, but a piece numbered 253 in the *Supplementum Hellenisticum* is 137m in Harder, and Harder prints an ancient prose retelling of *Acontius and Cydippe* as fragment 75b.[^12,9] The *Aetia* in the Scroll is Mair's of 1921, printed before the prologue was found: its “fragment 1” is a dinner-party scene, and the lines that follow it come from a papyrus, P.Ryl. 13, which Pfeiffer numbered fragment 26 in his edition of 1949.[^38,32]
+**Whose fragment 1?** Numbers for the fragments change from edition to edition. The prologue is fragment 1 in Pfeiffer, Massimilla and Harder alike, but a piece numbered 253 in the *Supplementum Hellenisticum* is 137m in Harder, and Harder prints an ancient prose retelling of *Acontius and Cydippe* as fragment 75b.[^12,9] The *Aetia* in the reader is Mair's of 1921, printed before the prologue was found: its “fragment 1” is a dinner-party scene, and the lines that follow it come from a papyrus, P.Ryl. 13, which Pfeiffer numbered fragment 26 in his edition of 1949.[^38,32]
 
 {debated} **When was the prologue written?** Pfeiffer held that Callimachus reissued the *Aetia* late in life, adding the prologue to an older poem, and many scholars follow him;[^8] Alan Cameron argued instead that the prologue was simply the first part of the next section, and Peter Knox that the lines once taken as the epilogue of the whole poem closed Books 1–2.[^9]`,
 
   editions: [
-    { text: "U. von Wilamowitz-Moellendorff, *Callimachi Hymni et Epigrammata* (Berlin: Weidmann, 1897).[^36]", note: "One of the two Greek texts of the hymns and epigrams in the Scroll." },
-    { text: "A. W. Mair, *Callimachus and Lycophron*, with G. R. Mair, *Aratus* (Loeb Classical Library; London: William Heinemann; New York: G. P. Putnam's Sons, 1921).[^4,36]", note: "The other Greek text in the Scroll, and the source of its *Aetia*, *Iambi* and *Hecale*; A. W. Mair translated Callimachus." },
+    { text: "U. von Wilamowitz-Moellendorff, *Callimachi Hymni et Epigrammata* (Berlin: Weidmann, 1897).[^36]", note: "One of the two Greek texts of the hymns and epigrams in the reader." },
+    { text: "A. W. Mair, *Callimachus and Lycophron*, with G. R. Mair, *Aratus* (Loeb Classical Library; London: William Heinemann; New York: G. P. Putnam's Sons, 1921).[^4,36]", note: "The other Greek text in the reader, and the source of its *Aetia*, *Iambi* and *Hecale*; A. W. Mair translated Callimachus." },
     { text: "R. Pfeiffer, *Callimachus*, vol. 1, *Fragmenta* (Oxford: Clarendon Press, 1949); vol. 2, *Hymni et Epigrammata* (1953).[^32]", note: "Pfeiffer's landmark edition, on which later numbering builds." },
     { text: "C. A. Trypanis, *Callimachus: Aetia, Iambi, Lyric Poems, Hecale, Minor Epic and Elegiac Poems, Fragments of Epigrams, Fragments of Uncertain Location* (Loeb Classical Library 421; Cambridge, Mass.: Harvard University Press, 1958).[^39]", note: "Greek text of the fragments with an English translation." },
     { text: "H. Lloyd-Jones and P. Parsons, *Supplementum Hellenisticum* (Berlin and New York: de Gruyter, 1983).[^35]", note: "A collection of Hellenistic poetic fragments, including pieces of the *Aetia* (cited as “SH”)." },
@@ -111,28 +111,28 @@ The Roman poets read him closely.[^1] Catullus sent a friend “haec expressa ti
 
   sources: [
     { label: "Wikipedia, Callimachus (life, the Suda, Cameron on the schoolmaster story, the works, the Pinakes after Casson, Callimacheanism, Roman reception, Gutzwiller's verdict)", url: "https://en.wikipedia.org/wiki/Callimachus" },
-    { label: "The Suda, entry κ 227, Callimachus (Adler's numbering), in the Scroll", cite: { work: "tlg9010.tlg001", ref: "3.Κ.227" } },
+    { label: "The Suda, entry κ 227, Callimachus (Adler's numbering), in the reader", cite: { work: "tlg9010.tlg001", ref: "3.Κ.227" } },
     { label: "Susan Stephens, “Callimachus of Cyrene”, in Callimachus, Aetia (Dickinson College Commentaries)", url: "https://dcc.dickinson.edu/callimachus-aetia/callimachus" },
     { label: "A. W. Mair, Callimachus and Lycophron (Loeb Classical Library; London: Heinemann; New York: Putnam, 1921), Internet Archive: the introduction (life, the Library, the quarrel, the manuscripts of the Hymns, bibliography), the translations and notes", url: "https://archive.org/details/callimachuslycop00calluoft" },
-    { label: "Strabo, Geography 17.3.22 (the famous men of Cyrene), in the Scroll", cite: { work: "tlg0099.tlg001", ref: "17.3.22" } },
+    { label: "Strabo, Geography 17.3.22 (the famous men of Cyrene), in the reader", cite: { work: "tlg0099.tlg001", ref: "17.3.22" } },
     { label: "Wikipedia, Pinakes", url: "https://en.wikipedia.org/wiki/Pinakes" },
     { label: "Wikipedia, Aetia (Callimachus) (contents, transmission, reception)", url: "https://en.wikipedia.org/wiki/Aetia_(Callimachus)" },
     { label: "Susan Stephens, “The Aetia” (preface: contents, date, papyri and scholia), Dickinson College Commentaries", url: "https://dcc.dickinson.edu/node/26468" },
     { label: "Susan Stephens, “The Organization of the Aetia”, Dickinson College Commentaries", url: "https://dcc.dickinson.edu/node/26469" },
     { label: "Wikipedia, Hecale (poem)", url: "https://en.wikipedia.org/wiki/Hecale_(poem)" },
-    { label: "Callimachus, Hecale fragment 2 (Mair's numbering), in the Scroll", cite: { work: "tlg0533.tlg009", ref: "2.1" } },
+    { label: "Callimachus, Hecale fragment 2 (Mair's numbering), in the reader", cite: { work: "tlg0533.tlg009", ref: "2.1" } },
     { label: "Susan Stephens, “Prologue: Against the Telchines”, Aetia fr. 1 with notes, Dickinson College Commentaries", url: "https://dcc.dickinson.edu/node/190" },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon, λεπταλέος (Perseus Digital Library; also in the site's copy)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057%3Aentry%3Dleptale%2Fos" },
-    { label: "Callimachus, Hymn to Artemis 242–243, in the Scroll", cite: { work: "tlg0533.tlg017", ref: "242", to: "243" } },
-    { label: "Callimachus, Epigram 28 (Wilamowitz's text), in the Scroll", cite: { work: "tlg0533.tlg003", ref: "28.1", to: "28.6" } },
-    { label: "Callimachus, Hymn to Apollo 105–113, in the Scroll", cite: { work: "tlg0533.tlg016", ref: "105", to: "113" } },
-    { label: "The scholion on the Hymn to Apollo 106, printed among the testimonia to the Hecale, in the Scroll", cite: { work: "tlg0533.tlg009", ref: "0.2" } },
-    { label: "Athenaeus, Deipnosophists 3.1 (3.72a), with C. D. Yonge's translation (1854), in the Scroll", cite: { work: "tlg0008.tlg001", ref: "3.1" } },
-    { label: "Callimachus, Hymn to Zeus 1–9, in the Scroll", cite: { work: "tlg0533.tlg015", ref: "1", to: "9" } },
-    { label: "Titus 1:12, with the World English Bible translation, in the Scroll", cite: { work: "tlg0031.tlg017", ref: "1.12" } },
-    { label: "Callimachus, Epigram 2 (Wilamowitz's text), in the Scroll", cite: { work: "tlg0533.tlg003", ref: "2.1", to: "2.6" } },
+    { label: "Callimachus, Hymn to Artemis 242–243, in the reader", cite: { work: "tlg0533.tlg017", ref: "242", to: "243" } },
+    { label: "Callimachus, Epigram 28 (Wilamowitz's text), in the reader", cite: { work: "tlg0533.tlg003", ref: "28.1", to: "28.6" } },
+    { label: "Callimachus, Hymn to Apollo 105–113, in the reader", cite: { work: "tlg0533.tlg016", ref: "105", to: "113" } },
+    { label: "The scholion on the Hymn to Apollo 106, printed among the testimonia to the Hecale, in the reader", cite: { work: "tlg0533.tlg009", ref: "0.2" } },
+    { label: "Athenaeus, Deipnosophists 3.1 (3.72a), with C. D. Yonge's translation (1854), in the reader", cite: { work: "tlg0008.tlg001", ref: "3.1" } },
+    { label: "Callimachus, Hymn to Zeus 1–9, in the reader", cite: { work: "tlg0533.tlg015", ref: "1", to: "9" } },
+    { label: "Titus 1:12, with the World English Bible translation, in the reader", cite: { work: "tlg0031.tlg017", ref: "1.12" } },
+    { label: "Callimachus, Epigram 2 (Wilamowitz's text), in the reader", cite: { work: "tlg0533.tlg003", ref: "2.1", to: "2.6" } },
     { label: "William Cory, Ionica, ed. A. C. Benson (London: George Allen, 1905), Internet Archive: “Heraclitus”, from the 1858 volume", url: "https://archive.org/details/ionicacory00coryiala" },
-    { label: "Testimonia to the Aetia (the epigram of “Apollonius”, Anthology 11.275; Martial 10.4), in the Scroll", cite: { work: "tlg0533.tlg006", ref: "0.1", to: "0.3" } },
+    { label: "Testimonia to the Aetia (the epigram of “Apollonius”, Anthology 11.275; Martial 10.4), in the reader", cite: { work: "tlg0533.tlg006", ref: "0.1", to: "0.3" } },
     { label: "Wikipedia, Apollonius of Rhodes (the quarrel with Callimachus)", url: "https://en.wikipedia.org/wiki/Apollonius_of_Rhodes" },
     { label: "Catullus, poems 65–66, Latin text, The Latin Library", url: "https://www.thelatinlibrary.com/catullus.shtml" },
     { label: "Propertius, book 4, Latin text (4.1.64), The Latin Library", url: "https://www.thelatinlibrary.com/prop4.html" },
@@ -143,11 +143,11 @@ The Roman poets read him closely.[^1] Catullus sent a friend “haec expressa ti
     { label: "Internet Archive, record of The Oxyrhynchus Papyri, part 17, ed. A. S. Hunt (1927)", url: "https://archive.org/details/oxyrhynchuspapyr0000arth" },
     { label: "Wikipedia, Rudolf Pfeiffer (his Callimachus papers and edition)", url: "https://en.wikipedia.org/wiki/Rudolf_Pfeiffer" },
     { label: "The Classical Review 63.2 (2013), Jeffrey Hunt's review of A. Harder, Callimachus: Aetia (Oxford University Press, 2012)", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/callimachus-a-harder-ed-trans-callimachus-aetia-volume-1-introduction-text-and-translation-volume-2-commentary-pp-xii-362-vi-1061-oxford-oxford-university-press-2012-cased-225-us350-isbn-9780198144915-vol-1-9780198144922-vol-2-9780199581016-set/7916B9937CB43567B1BAAC7B6535DCA3" },
-    { label: "Callimachus, Hecale fragment 1 (the Vienna tablet, Mair's numbering), in the Scroll", cite: { work: "tlg0533.tlg009", ref: "1.1" } },
+    { label: "Callimachus, Hecale fragment 1 (the Vienna tablet, Mair's numbering), in the reader", cite: { work: "tlg0533.tlg009", ref: "1.1" } },
     { label: "Open Library, record of Supplementum Hellenisticum, ed. H. Lloyd-Jones and P. Parsons (Berlin and New York: de Gruyter, 1983)", url: "https://openlibrary.org/works/OL19070307W" },
-    { label: "The Scroll's copies of the Hymns and Epigrams: each file's header names its source (Wilamowitz, Callimachi Hymni et Epigrammata, Berlin: Weidmann, 1897; Mair, Callimachus and Lycophron; Aratus, London: Heinemann; New York: Putnam, 1921)", cite: { work: "tlg0533.tlg015", ref: "1" } },
-    { label: "Callimachus, Epigrams 2 and 30 in Mair's text, in the Scroll", cite: { work: "tlg0533.tlg004", ref: "2.1", to: "30.6" } },
-    { label: "Callimachus, Aetia, Mair's fragment 1, with his note naming Papyrus Rylands 13, in the Scroll", cite: { work: "tlg0533.tlg006", ref: "1.1", to: "1.2" } },
+    { label: "The reader's copies of the Hymns and Epigrams: each file's header names its source (Wilamowitz, Callimachi Hymni et Epigrammata, Berlin: Weidmann, 1897; Mair, Callimachus and Lycophron; Aratus, London: Heinemann; New York: Putnam, 1921)", cite: { work: "tlg0533.tlg015", ref: "1" } },
+    { label: "Callimachus, Epigrams 2 and 30 in Mair's text, in the reader", cite: { work: "tlg0533.tlg004", ref: "2.1", to: "30.6" } },
+    { label: "Callimachus, Aetia, Mair's fragment 1, with his note naming Papyrus Rylands 13, in the reader", cite: { work: "tlg0533.tlg006", ref: "1.1", to: "1.2" } },
     { label: "Open Library, record of C. A. Trypanis, Callimachus: Aetia, Iambi, Lyric Poems, Hecale … (Loeb Classical Library 421; Harvard University Press, 1958; Heinemann)", url: "https://openlibrary.org/works/OL2410959W" },
     { label: "The Classical Review 44.1 (1994), Frederick Williams's review of A. S. Hollis, Callimachus: Hecale (Oxford: Clarendon Press, 1990)", url: "https://www.cambridge.org/core/journals/classical-review/article/hecale-a-s-hollis-ed-callimachus-hecale-edited-with-introduction-and-commentary-pp-xiii-401-oxford-clarendon-press-1990-48/AA2E4DF19513EC79D8768936DAC76D93" },
     { label: "The Classical Review 61.1 (2011), Giambattista D'Alessio's review of A. S. Hollis, Callimachus: Hecale, second edition (Oxford University Press, 2009)", url: "https://www.cambridge.org/core/journals/classical-review/article/as-hollis-ed-trans-callimachus-hecale-second-edition-with-introduction-text-translation-and-enlarged-commentary-pp-xiv-439-oxford-oxford-university-press-2009-cased-70-us155-isbn-9780199562466/BBEB40FFAF55FD0AA41AB1A7DC76BDCC" },

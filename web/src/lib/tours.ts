@@ -64,16 +64,16 @@ export const TOURS: Record<string, Tour> = {
       { at: [t("details summary", "Not sure where to begin")], title: "Not sure where to begin?", text: "Our suggestions, from the easiest Greek to the hardest. Beside each work, a small meter shows how hard its words are: one bar for easy words, three for many rare ones." },
       // open "Order and filters" so the step can point inside it
       { click: [t('button[aria-controls="library-filters"][aria-expanded="false"]')], at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
-      { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Click an author to see their works, those with English first. Click a title and it opens in the Scroll, the reader, with the Greek and the English side by side.", phoneText: "Tap an author to see their works, those with English first. Tap a title and it opens in the Scroll, the reader, with the Greek and the English side by side." },
+      { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Click an author to see their works, those with English first. Click a title and it opens in the reader, with the Greek and the English side by side.", phoneText: "Tap an author to see their works, those with English first. Tap a title and it opens in the reader, with the Greek and the English side by side." },
     ],
   },
 
   read: {
     id: "read",
-    title: "Read in the Scroll",
+    title: "Read a text",
     start: "/read?w=tlg0012.tlg001&at=1.1",
     steps: [
-      { at: [t('section[data-key="1.1"]')], title: "The Scroll: Greek beside English", text: "Each row is one passage: the Greek on the left, the translation of the same lines on the right. The number at the start is its reference, here Iliad book 1, line 1.", phoneText: "Each row is one passage: the Greek, then the translation of the same lines. The number at the start is its reference, here Iliad book 1, line 1." },
+      { at: [t('section[data-key="1.1"]')], title: "The reader: Greek beside English", text: "Each row is one passage: the Greek on the left, the translation of the same lines on the right. The number at the start is its reference, here Iliad book 1, line 1.", phoneText: "Each row is one passage: the Greek, then the translation of the same lines. The number at the start is its reference, here Iliad book 1, line 1." },
       { at: [t('[role=radiogroup][aria-label="Columns"]')], title: "One column or two", text: "Read the Greek and the English together, or only one of them. The choice is kept for this book." },
       { click: [t('button[aria-controls$="-change"][aria-expanded="false"]')], at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them here; the site remembers your choice." },
       { esc: true, at: [t("#reader-goto"), t("button[aria-controls]", "Tools")], title: "Go to a passage", text: "Tools holds the page you are on and a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go." },
@@ -131,7 +131,7 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "Mine: the Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "The Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to Mine, the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 
@@ -165,7 +165,7 @@ export const TOURS: Record<string, Tour> = {
     title: "Ask and argue",
     start: "/town-hall",
     steps: [
-      { at: [t('nav[aria-label="Categories"]')], title: "The Town Hall", text: "Ask a question about a passage, share what you are reading, report a bug or suggest an idea." },
+      { at: [t('nav[aria-label="Categories"]')], title: "The Agora", text: "Ask a question about a passage, share what you are reading, report a bug or suggest an idea." },
       { at: [t('main a[href^="/town-hall/new"]'), t("main p", "Sign in or join")], title: "Join in", text: "Anyone can read the conversations. To start one or reply, sign in or join; it is free." },
       { at: [t('main a[href="/town-hall/pnyx"]')], title: "The Pnyx", text: "Debates: someone proposes a motion, members argue for and against, and vote." },
     ],
@@ -179,7 +179,7 @@ export const TOURS: Record<string, Tour> = {
       { at: [t('header button[aria-label="Search"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
       { at: [t('header button[aria-label="Settings"]'), t('header button[aria-label="Menu"]')], title: "Settings", text: "Light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too.", phoneText: "In the menu: light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too." },
       { at: [t('button[aria-label^="Connection:"]')], title: "The connection light", text: "Green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "Green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
-      { at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Town Hall."
+      { at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Agora."
         : "Optional. With an account your notes and progress follow you from device to device." },
     ],
   },

@@ -34,3 +34,6 @@ jobs:
       - name: Overlays hold the page, close on Escape, give focus back (slice 5)
         working-directory: web
         run: npm run check:overlays
+      - name: One name per room (slice 2)
+        working-directory: web
+        run: node scripts/check-names.mjs

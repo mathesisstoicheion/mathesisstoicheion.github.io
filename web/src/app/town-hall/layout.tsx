@@ -18,7 +18,7 @@ export default function TownHallLayout({ children }: { children: React.ReactNode
         <p className="label">{AREAS.forum.name} · {AREAS.debates.name}</p>
         <h1 className="page-title">Closed for now</h1>
         <p className="muted" style={{ fontSize: "1.1rem" }}>
-          The forum and the debates are closed for the time being. Everything written there is kept.
+          The Agora and the Pnyx are closed for the time being. Everything written there is kept.
         </p>
         <p style={{ display: "flex", flexWrap: "wrap", gap: 12 }}>
           <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Read a text</Link>

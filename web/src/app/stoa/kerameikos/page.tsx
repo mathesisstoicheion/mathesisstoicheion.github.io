@@ -3,10 +3,10 @@ import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
 import Kerameikos from "@/components/stoa/Kerameikos";
 import Amphora from "@/components/Amphora";
-import { AREAS } from "@/config/areas";
+import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
-export const metadata: Metadata = { title: `${AREAS.archaeology.name} · ${AREAS.archaeology.english}`, description: PAGE_DESCRIPTIONS.kerameikos };
+export const metadata: Metadata = { title: areaTitle("archaeology"), description: PAGE_DESCRIPTIONS.kerameikos };
 
 export default function StoaKerameikosPage() {
   return (

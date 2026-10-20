@@ -4,10 +4,10 @@ import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
 import { A_ART } from "@/components/a/pictures";
 import Treasury from "@/components/treasury/Treasury";
-import { AREAS } from "@/config/areas";
+import { areaTitle } from "@/config/areas";
 import { NOINDEX } from "@/lib/seo";
 
-export const metadata: Metadata = { title: `${AREAS.treasury.name} · ${AREAS.treasury.english}`, ...NOINDEX };
+export const metadata: Metadata = { title: areaTitle("treasury"), ...NOINDEX };
 
 export default function TreasuryPage() {
   return (

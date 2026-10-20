@@ -1,6 +1,6 @@
 "use client";
 /**
- * Start a thread. Opened from the reader's "Ask in the forum", it arrives with the passage quoted
+ * Start a thread. Opened from the reader's "Ask in the Agora", it arrives with the passage quoted
  * (Greek, translation and a live link back), so the member only adds a question and a category.
  * URL: /town-hall/new?c=<category>&ask=1 (the passage waits in sessionStorage, see ASK_KEY)
  * In "Bug reports" (c=bugs) the thread is written through the bug form instead; `page` and `err` fill in
@@ -28,7 +28,7 @@ export default function NewThread() {
   const params = useSearchParams();
   const router = useRouter();
   const cats = useLoad("forum-categories", categories);
-  // a passage left by the reader's "Ask in the forum" (read once; the form shows only in the browser)
+  // a passage left by the reader's "Ask in the Agora" (read once; the form shows only in the browser)
   const [quote, setQuote] = useState<Quote | null>(() => {
     if (params.get("ask") !== "1" || typeof sessionStorage === "undefined") return null;
     try { return JSON.parse(sessionStorage.getItem(ASK_KEY) ?? "null") as Quote | null; } catch { return null; }
@@ -58,7 +58,7 @@ export default function NewThread() {
 
   return (
     <div className={`wrap ${styles.narrow}`}>
-      <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / A new thread</p>
+      <p className={styles.crumbs}><Link href="/town-hall">The Agora</Link> / A new thread</p>
       <section className={styles.card}>
         <h2>{heading}</h2>
         {bug && <p className={styles.small}>Thank you for taking the time. A clear report is usually fixed quickly; the moderator marks it confirmed, then fixed.</p>}

@@ -144,8 +144,8 @@ test("Mine shows the moderator the way in, with how many there are; the shelf li
   await expect(way).toContainText("2 translations");
   await way.click();
   await expect(page).toHaveURL(/\/treasury\/translations$/);
-  // the site's header (the banner), not the page's own head, whose path also starts with a link to Mine
-  await expect(page.getByRole("banner").getByRole("link", { name: /^Mine/ })).toHaveAttribute("aria-current", "page");
+  // the site's header (the banner), not the page's own head
+  await expect(page.getByRole("banner").getByRole("link", { name: /Θησαυρός/ })).toHaveAttribute("aria-current", "page");
   await expect(page.getByRole("heading", { level: 1, name: "Private translations" })).toBeVisible();
   await expect(page.getByText("Private · only you can see this")).toBeVisible();
   await expect(page.getByText("2 translations")).toBeVisible();
@@ -200,7 +200,7 @@ test("the first address leads to Mine, with the translation it named; the modera
 
   await page.goto("/town-hall/moderation");
   // while the forum is closed (FORUM_OPEN), the desk shows only the "Closed for now" notice
-  if (FORUM_OPEN) await expect(page.getByText("Nothing waiting. The Town Hall is calm.")).toBeVisible();
+  if (FORUM_OPEN) await expect(page.getByText("Nothing waiting. The Agora is calm.")).toBeVisible();
   else await expect(page.getByRole("heading", { level: 1, name: "Closed for now" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Our own translations/ })).toHaveCount(0);
 });
@@ -402,7 +402,7 @@ test("a private translation opens in the reader, with the reading aids and its t
   await expect(page.getByRole("link", { name: "Notes and comparison" }).first()).toHaveAttribute("href", "/treasury/translations?id=placeholder-one");
   await text.locator("[data-row]").first().click();
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Ask in the forum" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "Ask in the Agora" })).toHaveCount(0);
   await expect(page.getByText("From your private collection")).toBeVisible();
   // a word opens the look-up, as in any book
   await text.locator("[data-w]").first().click();

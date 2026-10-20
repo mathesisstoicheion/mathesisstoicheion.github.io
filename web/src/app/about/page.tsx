@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
 import PageHead from "@/components/PageHead";
-import { AREAS, SITE, doorWord, menuWord, shown, type AreaId } from "@/config/areas";
+import { AREAS, SITE, shown, type AreaId } from "@/config/areas";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
@@ -10,19 +10,21 @@ export const metadata: Metadata = { title: "About the names", description: PAGE_
 
 /**
  * The areas under the names of the header's menu (config/areas.ts: the five doors, then the Oracle), each with the places that
- * belong to it: the Scroll opens from the Mouseion (the phone bar's `also` lists it there), the Kerameikos, the Census and
- * the Periplus are pages of the Painted Stoa (their addresses begin /stoa), the Pnyx is in the Town Hall (/town-hall/pnyx),
+ * belong to it: the reader opens from the Mouseion (the phone bar's `also` lists it there), the Kerameikos, the Census and
+ * the Periplus are pages of the Painted Stoa (their addresses begin /stoa), the Pnyx is in the Agora (/town-hall/pnyx),
  * and the Scroll Case is kept with the Treasury (the Treasury links to it as the place for what is read offline).
  * While the forum is closed (FORUM_OPEN) its group is left out.
  */
+/** each group is headed by its room's verb (what you do there), or the place's plain English word */
+const verb = (id: AreaId) => AREAS[id].door ?? AREAS[id].english ?? AREAS[id].name;
 const GROUPS: { heading: string; ids: AreaId[] }[] = ([
-  { heading: doorWord("home"), ids: ["home"] },
-  { heading: doorWord("study"), ids: ["study"] },
-  { heading: doorWord("library"), ids: ["library", "reader"] },
-  { heading: doorWord("wiki"), ids: ["wiki", "archaeology", "census", "map"] },
-  { heading: doorWord("forum"), ids: ["forum", "debates"] },
-  { heading: doorWord("treasury"), ids: ["treasury", "downloads"] },
-  { heading: menuWord("search"), ids: ["search"] },
+  { heading: verb("home"), ids: ["home"] },
+  { heading: verb("study"), ids: ["study"] },
+  { heading: verb("library"), ids: ["library", "reader"] },
+  { heading: verb("wiki"), ids: ["wiki", "archaeology", "census", "map"] },
+  { heading: verb("forum"), ids: ["forum", "debates"] },
+  { heading: verb("treasury"), ids: ["treasury", "downloads"] },
+  { heading: verb("search"), ids: ["search"] },
 ] as { heading: string; ids: AreaId[] }[]).map((g) => ({ ...g, ids: g.ids.filter(shown) })).filter((g) => g.ids.length > 0);
 
 export default function AboutPage() {
@@ -35,7 +37,7 @@ export default function AboutPage() {
             reader of Greek begins.</>} />
         <div className="meander" aria-hidden="true" />
         <h2>Why each area has a Greek name</h2>
-        <p>Every part of the site is named after a place or thing from the Greek world, always with a plain English subtitle.</p>
+        <p>Every part of the site is named after a place or thing from the Greek world, always shown the same way: its Greek name first, then its English name.</p>
         {GROUPS.map((g) => (
           <section key={g.heading} className={styles.group} aria-labelledby={`about-${g.ids[0]}`}>
             <h3 id={`about-${g.ids[0]}`} className={styles.groupHead}>{g.heading}</h3>
@@ -45,9 +47,9 @@ export default function AboutPage() {
                 return (
                   <div key={id}>
                     <dt>
+                      {a.greek && <span lang="grc">{a.greek} </span>}
                       <Link href={a.href} transitionTypes={["page-turn"]}>{a.name}</Link>
-                      {a.greek && <span lang="grc"> {a.greek}</span>}
-                      <small>{a.english}</small>
+                      {a.english && <small>{a.english}</small>}
                     </dt>
                     <dd>{a.origin} {a.fit}</dd>
                   </div>

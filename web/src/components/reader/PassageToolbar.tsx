@@ -32,7 +32,7 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
   /** the one word selected, for its quick meaning (phones) */
   word?: { w: string; ctx: WordContext | null } | null;
   onLookUp?: () => void;
-  /** "Ask in the forum": left out for a book of the private collection, whose text is never to be posted */
+  /** "Ask in the Agora": left out for a book of the private collection, whose text is never to be posted */
   ask?: boolean;
 }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -98,8 +98,8 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h2M9 7v10M13 4v16M17 8v8M21 11v2" /></svg><span>Echoes</span>
       </button>
       {ask && FORUM_OPEN && (
-        <button type="button" onClick={() => onAction("ask")} title="Ask the Town Hall about this passage">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the forum</span>
+        <button type="button" onClick={() => onAction("ask")} title="Ask the Agora about this passage">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the Agora</span>
         </button>
       )}
     </div>

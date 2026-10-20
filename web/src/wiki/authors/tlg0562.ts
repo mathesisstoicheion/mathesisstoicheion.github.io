@@ -7,7 +7,7 @@
  * man who numbered the chapters (Leopold gives the chapter division to the anonymous Lyon edition of 1626);
  * Michael Toxites as the owner of the lost manuscript (it came from the Elector Palatine's library through him);
  * the Antonine Plague's death toll; the "miraculous" rain victory against the Quadi; Dio's "kingdom of gold" (Dio's
- * books on Marcus are not in the Scroll and were not opened); Theiler's edition and the newer translations
+ * books on Marcus are not in the reader and were not opened); Theiler's edition and the newer translations
  * (Waterfield, the Hickses, Staniforth) whose details were not opened.
  */
 import type { AuthorArticle } from "../author-articles";
@@ -69,7 +69,7 @@ The ancient world already remembered him as the philosopher on the throne. Herod
     { year: 1626, kind: "print", what: "An anonymous edition at Lyon first divides the books into chapters", src: [19] },
     { year: 1634, kind: "print", what: "Meric Casaubon's first English translation", src: [5] },
     { year: 1652, kind: "print", what: "Thomas Gataker's edition at Cambridge, with voluminous notes", src: [2, 19] },
-    { year: 1908, kind: "print", what: "J. H. Leopold's Oxford text, the Greek in the Scroll", src: [19, 3] },
+    { year: 1908, kind: "print", what: "J. H. Leopold's Oxford text, the Greek in the reader", src: [19, 3] },
     { year: 1916, kind: "print", what: "C. R. Haines's Loeb edition and translation", src: [5, 2] },
     { year: 1944, kind: "print", what: "A. S. L. Farquharson's two-volume Oxford edition with commentary", src: [2] },
     { year: 1979, kind: "print", what: "Joachim Dalfen's Teubner text (second edition 1987)", src: [2] },
@@ -81,7 +81,7 @@ The ancient world already remembered him as the philosopher on the throne. Herod
 
 **Byzantium.** The first clear mention is by Arethas, a bishop of Caesarea in Cappadocia and a great collector of manuscripts. Before 907 he sent a volume of the book to Demetrius, archbishop of Heraclea, saying he had long had an old copy “so old indeed that it is altogether falling to pieces”, and had had it copied.[^8] Leopold prints the letter's words for it, Μάρκου τοῦ αὐτοκράτορος τὸ μεγαλωφελέστατον βιβλίον, “the most profitable book of the emperor Marcus” (our translation).[^19] In notes on Lucian, Arethas calls it τὰ εἰς ἑαυτὸν ἠθικά, “the ethical writings to himself”; the manuscript behind the first printed edition was headed more simply τῶν εἰς ἑαυτόν, “of the things to himself”. Arethas' copy is lost, but it is thought to be the likely ancestor of the manuscripts we have.[^8,19]
 
-The Suda, the great Byzantine encyclopedia of the late tenth century, quotes the book some thirty times, from Books 1, 3, 4, 5, 9 and 11, and calls it “a directing” (ἀγωγή) “of his own life by Marcus the Emperor in twelve books”: the first mention of the twelve books.[^8,5] Under the word ἀκενόσπουδος, “shunning vain pursuits”, it quotes, in its own words, the opening of [Book 1, chapter 6](cts:tlg0562.tlg001:1.6.1) and names its author «Μάρκοϲ ὁ φιλόϲοφοϲ βαϲιλεύϲ», “Marcus the philosopher emperor” (our translation; the Scroll's text of the Suda prints sigma in its old moon shape, ϲ).[^20,15,22] Around 1150 John Tzetzes quoted Books 4 and 5, and later Greek anthologies, from the fourteenth to the sixteenth century, took extracts.[^8,5]
+The Suda, the great Byzantine encyclopedia of the late tenth century, quotes the book some thirty times, from Books 1, 3, 4, 5, 9 and 11, and calls it “a directing” (ἀγωγή) “of his own life by Marcus the Emperor in twelve books”: the first mention of the twelve books.[^8,5] Under the word ἀκενόσπουδος, “shunning vain pursuits”, it quotes, in its own words, the opening of [Book 1, chapter 6](cts:tlg0562.tlg001:1.6.1) and names its author «Μάρκοϲ ὁ φιλόϲοφοϲ βαϲιλεύϲ», “Marcus the philosopher emperor” (our translation; the reader's text of the Suda prints sigma in its old moon shape, ϲ).[^20,15,22] Around 1150 John Tzetzes quoted Books 4 and 5, and later Greek anthologies, from the fourteenth to the sixteenth century, took extracts.[^8,5]
 
 **Manuscripts.** Modern texts rest almost entirely on two witnesses. One is P, the Palatine manuscript from the library of the Elector Palatine Otto Heinrich at Heidelberg, which held the whole work; it was printed in 1558 and then disappeared, so the first printed edition now stands in its place.[^5,19,8] The other is A, Vaticanus graecus 1950 in the Vatican Library, written on paper in the fourteenth century; it came to the Vatican from the collection of Stefano Gradi in 1683, and about forty-two lines have dropped out of it by accident here and there.[^19,5,8] Shorter selections survive in a fourteenth-century manuscript at Darmstadt (D, more than a hundred passages from Books 1–9), in a fifteenth-century Paris manuscript (C), and in twenty-five or more manuscripts of an anthology that may be the work of the Byzantine scholar Maximus Planudes. D and C give some independent help; the anthology, practically none.[^5,19] P and A share the same gaps and hundreds of the same corruptions, down to spelling, so they come from a single earlier edition. Leopold judged that P was cleaner, while A, full of copying slips, often kept the true reading more faithfully.[^19]
 
@@ -89,18 +89,18 @@ The Suda, the great Byzantine encyclopedia of the late tenth century, quotes the
 
   variants: `**Too few witnesses.** Because the two main witnesses, P (the lost Palatine manuscript, printed in 1558) and A (a fourteenth-century manuscript in the Vatican), descend from one ancestor, they usually fail together: the first editor to use A's readings carefully, J. M. Schultz, complained that in the worst passages the new manuscript gave him no help.[^19] Haines warned that the Greek is “in many places corrupt beyond cure”, and editors have to mend it by conjecture.[^5]
 
-{debated} **Whose note is it?** The two place-notes do not stand the same way in both witnesses. In P the words «Τὰ ἐν Κουάδοις πρὸς τῷ Γρανούᾳ» come after Book 1, then three more chapters follow before Book 2 begins; A has no note at all, only a gap of about three lines. «Τὰ ἐν Καρνούντῳ» is missing from A and D, while P sets it before Book 3.[^19] So does each note end the book before it or head the one after? The Scroll prints both at the end of a book.[^10,11] Haines thought the first “more likely” heads Book 2 and the second “very possibly” Book 3, and in his introduction he took them to show that Book 2 was written among the Quadi and Book 3 at Carnuntum; Wikipedia gives the Quadi to Book 1 and Carnuntum to Book 2.[^5,8]
+{debated} **Whose note is it?** The two place-notes do not stand the same way in both witnesses. In P the words «Τὰ ἐν Κουάδοις πρὸς τῷ Γρανούᾳ» come after Book 1, then three more chapters follow before Book 2 begins; A has no note at all, only a gap of about three lines. «Τὰ ἐν Καρνούντῳ» is missing from A and D, while P sets it before Book 3.[^19] So does each note end the book before it or head the one after? The reader prints both at the end of a book.[^10,11] Haines thought the first “more likely” heads Book 2 and the second “very possibly” Book 3, and in his introduction he took them to show that Book 2 was written among the Quadi and Book 3 at Carnuntum; Wikipedia gives the Quadi to Book 1 and Carnuntum to Book 2.[^5,8]
 
-**A whirl or a wanderer?** In [Book 2, chapter 17](cts:tlg0562.tlg001:2.17.1) the Scroll's text says «ἡ δὲ ψυχὴ ῥόμβος», “the soul a whirl” (our translation): ῥόμβος is a toy whirled on a string, or a whirling motion.[^11,15] That is the reading of the first printed edition, which noted ῥεμβός beside it; the manuscripts A, D and C have ῥεμβός, “roving”, and the dictionary lists this passage under that word as a variant reading.[^19,15]
+**A whirl or a wanderer?** In [Book 2, chapter 17](cts:tlg0562.tlg001:2.17.1) the reader's text says «ἡ δὲ ψυχὴ ῥόμβος», “the soul a whirl” (our translation): ῥόμβος is a toy whirled on a string, or a whirling motion.[^11,15] That is the reading of the first printed edition, which noted ῥεμβός beside it; the manuscripts A, D and C have ῥεμβός, “roving”, and the dictionary lists this passage under that word as a variant reading.[^19,15]
 
 **An oracle at Caieta?** Among the gods' gifts in [Book 1, chapter 17](cts:tlg0562.tlg001:1.17.9), Marcus lists remedies given in dreams, «καὶ τούτου ἐν Καιήτῃ ὥσπερ χρήσῃ», a phrase editors have struggled to explain. Leopold prints τούτου as both witnesses have it. Haines adopted a later correction, τὸ τοῦ, and took the last two words as the reply of an oracle at Caieta, a town on the coast of Italy.[^10,19,5]
 
 {debated} **The one mention of Christians.** In [Book 11, chapter 3](cts:tlg0562.tlg001:11.3.1) Marcus says that readiness to die should come from one's own judgement, «μὴ κατὰ ψιλὴν παράταξιν ὡς οἱ Χριστιανοί», “not out of sheer opposition, like the Christians” (our translation).[^23] It is the only place in the book where Christians are named.[^1] Leopold prints the words; Haines put them in brackets, calling them “ungrammatical and pretty certainly a gloss”, a reader's note that slipped into the text.[^19,5]
 
-**The Suda as a witness.** Where a Byzantine reader quotes the book, he may have read a different copy. In [Book 3, chapter 5](cts:tlg0562.tlg001:3.5.1) the Scroll's text speaks of a man «περιμένων τὸ ἀνακλητικὸν ἐκ τοῦ βίου», “waiting for the call to leave life” (our translation); the Suda, under the word for that trumpet call, quotes the same words as «ἀναμένων τὸ ἀνακλητικὸν ἐκ τοῦ βίου».[^26,24] Leopold's notes cite the Suda beside the manuscripts.[^19]`,
+**The Suda as a witness.** Where a Byzantine reader quotes the book, he may have read a different copy. In [Book 3, chapter 5](cts:tlg0562.tlg001:3.5.1) the reader's text speaks of a man «περιμένων τὸ ἀνακλητικὸν ἐκ τοῦ βίου», “waiting for the call to leave life” (our translation); the Suda, under the word for that trumpet call, quotes the same words as «ἀναμένων τὸ ἀνακλητικὸν ἐκ τοῦ βίου».[^26,24] Leopold's notes cite the Suda beside the manuscripts.[^19]`,
 
   editions: [
-    { text: "J. H. Leopold, *M. Antoninus Imperator ad se ipsum* (Scriptorum Classicorum Bibliotheca Oxoniensis, Oxford, Clarendon Press, 1908).[^19,2,3]", note: "The Greek text in the Scroll. Its file header names Teubner of Leipzig as the publisher, but the scan it links to, and the book, are Oxford's." },
+    { text: "J. H. Leopold, *M. Antoninus Imperator ad se ipsum* (Scriptorum Classicorum Bibliotheca Oxoniensis, Oxford, Clarendon Press, 1908).[^19,2,3]", note: "The Greek text in the reader. Its file header names Teubner of Leipzig as the publisher, but the scan it links to, and the book, are Oxford's." },
     { text: "C. R. Haines, *The Communings with Himself of Marcus Aurelius Antoninus* (Loeb Classical Library; London, Heinemann, and New York, Putnam, 1916).[^5,2]", note: "Greek text with a facing English translation, notes and indexes; later reprinted by Harvard University Press." },
     { text: "A. S. L. Farquharson, *The Meditations of the Emperor Marcus Antoninus*, 2 vols (Oxford, Clarendon Press, 1944).[^2]", note: "Text, translation and a full commentary: “arguably the definitive edition”, says the Internet Encyclopedia of Philosophy." },
     { text: "J. Dalfen, *Marci Aurelii Antonini Ad se ipsum libri XII* (Bibliotheca Teubneriana, Leipzig, 1979; second edition 1987).[^2]", note: "A modern Greek text with a word index." },
@@ -113,30 +113,30 @@ The Suda, the great Byzantine encyclopedia of the late tenth century, quotes the
   sources: [
     { label: "Wikipedia, Marcus Aurelius (life, family and teachers, Rusticus, reign, wars, plague, death, the Historia Augusta, the Meditations, the equestrian statue, later readers)", url: "https://en.wikipedia.org/wiki/Marcus_Aurelius" },
     { label: "John Sellars, Marcus Aurelius, Internet Encyclopedia of Philosophy (the Meditations, Epictetus, the three topoi, editions and translations)", url: "https://iep.utm.edu/marcus/" },
-    { label: "Marcus Aurelius, Meditations 1.1, the opening, in the Scroll; the file's header names Leopold's text of 1908 as its source", cite: { work: "tlg0562.tlg001", ref: "1.1.1" } },
-    { label: "Marcus Aurelius, Meditations 1.7 (Rusticus), in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.7.1", to: "1.7.3" } },
+    { label: "Marcus Aurelius, Meditations 1.1, the opening, in the reader; the file's header names Leopold's text of 1908 as its source", cite: { work: "tlg0562.tlg001", ref: "1.1.1" } },
+    { label: "Marcus Aurelius, Meditations 1.7 (Rusticus), in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.7.1", to: "1.7.3" } },
     { label: "C. R. Haines, The Communings with Himself of Marcus Aurelius Antoninus (Loeb Classical Library; London, Heinemann, and New York, Putnam, 1916), Internet Archive: preface, introduction, notes and index", url: "https://archive.org/details/communingswithhi00marc" },
     { label: "Wikipedia, Marcomannic Wars (about 166–180)", url: "https://en.wikipedia.org/wiki/Marcomannic_Wars" },
-    { label: "Herodian, History of the Empire after the Death of Marcus 1.2.1–1.4.8, in the Scroll (Greek only)", cite: { work: "tlg0015.tlg001", ref: "1.2.1", to: "1.4.8" } },
+    { label: "Herodian, History of the Empire after the Death of Marcus 1.2.1–1.4.8, in the reader (Greek only)", cite: { work: "tlg0015.tlg001", ref: "1.2.1", to: "1.4.8" } },
     { label: "Wikipedia, Meditations (composition, the notes on the Quadi and Carnuntum, Herodian, the Historia Augusta, Themistius, Arethas, the Suda, Tzetzes, the manuscripts, the first edition, translations)", url: "https://en.wikipedia.org/wiki/Meditations" },
-    { label: "Marcus Aurelius, Meditations 3.14, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "3.14.1" } },
-    { label: "Marcus Aurelius, Meditations 1.17.9, with the note on the Quadi, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.17.9" } },
-    { label: "Marcus Aurelius, Meditations 2.17, with the note on Carnuntum, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.17.1", to: "2.17.2" } },
-    { label: "Marcus Aurelius, Meditations 2.1, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.1.1" } },
-    { label: "Marcus Aurelius, Meditations 5.1, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "5.1.1" } },
-    { label: "Marcus Aurelius, Meditations 2.2, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.2.1" } },
+    { label: "Marcus Aurelius, Meditations 3.14, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "3.14.1" } },
+    { label: "Marcus Aurelius, Meditations 1.17.9, with the note on the Quadi, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.17.9" } },
+    { label: "Marcus Aurelius, Meditations 2.17, with the note on Carnuntum, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.17.1", to: "2.17.2" } },
+    { label: "Marcus Aurelius, Meditations 2.1, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.1.1" } },
+    { label: "Marcus Aurelius, Meditations 5.1, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "5.1.1" } },
+    { label: "Marcus Aurelius, Meditations 2.2, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "2.2.1" } },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entries ἡγεμονικός, ἀποκαισαρόομαι, ῥόμβος, ῥεμβός, ἀκενόσπουδος and βάπτω (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Marcus Aurelius, Meditations 4.3, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "4.3.1", to: "4.3.4" } },
-    { label: "Marcus Aurelius, Meditations 6.30, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "6.30.1" } },
-    { label: "Marcus Aurelius, Meditations 12.36, the last chapter, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "12.36.1" } },
+    { label: "Marcus Aurelius, Meditations 4.3, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "4.3.1", to: "4.3.4" } },
+    { label: "Marcus Aurelius, Meditations 6.30, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "6.30.1" } },
+    { label: "Marcus Aurelius, Meditations 12.36, the last chapter, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "12.36.1" } },
     { label: "J. H. Leopold, M. Antoninus Imperator ad se ipsum (Oxford, Clarendon Press, 1908), Internet Archive: the Latin preface, the testimonia and the critical notes", url: "https://archive.org/details/mantoninusimpera00marcuoft" },
-    { label: "The Suda, entry alpha 830 (ἀκενόσπουδος), quoting Meditations 1.6, in the Scroll (Greek only)", cite: { work: "tlg9010.tlg001", ref: "1.A.830" } },
+    { label: "The Suda, entry alpha 830 (ἀκενόσπουδος), quoting Meditations 1.6, in the reader (Greek only)", cite: { work: "tlg9010.tlg001", ref: "1.A.830" } },
     { label: "Wikipedia, Wilhelm Xylander (the first edition of the Meditations, 1558, from a Heidelberg manuscript now lost)", url: "https://en.wikipedia.org/wiki/Wilhelm_Xylander" },
-    { label: "Marcus Aurelius, Meditations 1.6, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.6.1" } },
-    { label: "Marcus Aurelius, Meditations 11.3, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "11.3.1" } },
-    { label: "The Suda, entry alpha 1903 (ἀνακλητικόν), quoting Meditations 3.5, in the Scroll (Greek only)", cite: { work: "tlg9010.tlg001", ref: "1.A.1903" } },
+    { label: "Marcus Aurelius, Meditations 1.6, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "1.6.1" } },
+    { label: "Marcus Aurelius, Meditations 11.3, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "11.3.1" } },
+    { label: "The Suda, entry alpha 1903 (ἀνακλητικόν), quoting Meditations 3.5, in the reader (Greek only)", cite: { work: "tlg9010.tlg001", ref: "1.A.1903" } },
     { label: "Wikipedia, Equestrian statue (the statue of Marcus Aurelius, almost the only surviving Roman equestrian bronze, spared by being taken for Constantine)", url: "https://en.wikipedia.org/wiki/Equestrian_statue" },
-    { label: "Marcus Aurelius, Meditations 3.5, in the Scroll (Greek only)", cite: { work: "tlg0562.tlg001", ref: "3.5.1" } },
+    { label: "Marcus Aurelius, Meditations 3.5, in the reader (Greek only)", cite: { work: "tlg0562.tlg001", ref: "3.5.1" } },
   ],
   outsideQuotes: [
     "From my grandfather Verus: a good character and a temper free from anger",

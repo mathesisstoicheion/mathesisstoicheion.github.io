@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Treasury (My Library): everything the reader has saved, in one place.
+ * The Treasury: everything the reader has saved, in one place.
  * The overview is the home page's grid of rooms (the owner, 2026-10-20: "Every page must follow the design choices of the
  * homepage"; the Treasury "seems inconsistent and boring"): nine offerings in fine gold lines, each with a small red
  * window onto an ancient object, its count in tall gold numerals, its name and what it holds; one opens that section.

@@ -25,13 +25,13 @@ After Rome crushed King Perseus of Macedon at Pydna in 168, every Achaean whom t
 
 One day the younger son, Scipio, “for he was only just eighteen”, blushed and asked why Polybius always talked to his elder brother. Polybius promised his help, and Scipio seized his hand: “Oh that I might see the day on which you would devote your first attention to me, and join your life with mine.”[^10] The boy became the general Scipio Aemilianus, and the two remained friends.[^4]
 
-The detainees waited for a trial that never came.[^3] In 151 or 150 BC, when three hundred or fewer were left, Rome let them go home.[^9,3,4] The Roman statesman Cato mocked the long debate, as Plutarch tells it: “As though we had nothing else to do, we sit here the whole day debating whether some old Greek dotards should be buried by Italian or Achaean undertakers!” The Greek text in the Scroll prints Plutarch's words among the fragments of Polybius.[^12,11]
+The detainees waited for a trial that never came.[^3] In 151 or 150 BC, when three hundred or fewer were left, Rome let them go home.[^9,3,4] The Roman statesman Cato mocked the long debate, as Plutarch tells it: “As though we had nothing else to do, we sit here the whole day debating whether some old Greek dotards should be buried by Italian or Achaean undertakers!” The Greek text in the reader prints Plutarch's words among the fragments of Polybius.[^12,11]
 
 ### Carthage and Corinth
 
 In 146 Polybius stood beside Scipio as Carthage burned.[^3,4] Scipio turned, took his hand and said: «ὦ Πολύβιε», «καλὸν μέν, ἀλλʼ οὐκ οἶδʼ ὅπως ἐγὼ δέδια», “O Polybius, it is a grand thing, but, I know not how, I feel a terror and dread, lest some one should one day give the same order about my own native city.”[^13] The historian Appian adds that Scipio is said to have wept and quoted Homer on the fall of Troy, and that “Polybius wrote this down just as he heard it”.[^14]
 
-Did Scipio name Rome? The Greek says he did: «φασὶν οὐ φυλαξάμενον ὀνομάσαι τὴν πατρίδα σαφῶς», “they say that he named his country plainly, without guarding his words” (our translation). Horace White's Appian in the Scroll agrees (“he did not hesitate frankly to name his own country”), but Shuckburgh's Polybius reads it the other way: “he did not name Rome distinctly”.[^13,14]
+Did Scipio name Rome? The Greek says he did: «φασὶν οὐ φυλαξάμενον ὀνομάσαι τὴν πατρίδα σαφῶς», “they say that he named his country plainly, without guarding his words” (our translation). Horace White's Appian in the reader agrees (“he did not hesitate frankly to name his own country”), but Shuckburgh's Polybius reads it the other way: “he did not name Rome distinctly”.[^13,14]
 
 The same year the Romans sacked Corinth.[^4] Polybius, Strabo reports, “says that he was present and saw paintings that had been flung to the ground and saw the soldiers playing dice on these”.[^15] Afterwards the Roman commissioners asked him to go round the Greek cities and settle their disputes under their new laws, and the cities honoured him in his life and after his death.[^16] He also spoke up for the statues of Philopoemen when a Roman wanted them removed, and they stayed.[^6]
 
@@ -80,8 +80,8 @@ In Cicero's *On the Republic* (54–51 BC), Scipio is reminded of the talks on t
     { year: 1568, kind: "print", what: "Christopher Watson's English translation, made from a Latin version", src: [21, 46] },
     { year: 1609, kind: "print", what: "Isaac Casaubon's edition at Paris gathers the books and the excerpts", src: [45] },
     { year: 1787, kind: "reception", what: "John Adams discusses Polybius in his *Defence of the Constitutions*", src: [40, 41] },
-    { year: 1882, kind: "print", what: "Büttner-Wobst's Teubner edition begins (1882–1904); it is the Greek text in the Scroll", src: [4, 47] },
-    { year: 1889, kind: "print", what: "Evelyn Shuckburgh's English translation, the one in the Scroll", src: [47] },
+    { year: 1882, kind: "print", what: "Büttner-Wobst's Teubner edition begins (1882–1904); it is the Greek text in the reader", src: [4, 47] },
+    { year: 1889, kind: "print", what: "Evelyn Shuckburgh's English translation, the one in the reader", src: [47] },
     { year: 1957, kind: "print", what: "F. W. Walbank's *Historical Commentary* begins (three volumes, 1957–79)", src: [4] },
     { year: 2010, kind: "print", what: "The revised Loeb edition begins (six volumes, 2010–12)", src: [24, 48, 49] },
   ],
@@ -94,23 +94,23 @@ In Cicero's *On the Republic* (54–51 BC), Scipio is reminded of the talks on t
 
 **The Constantinian Excerpts.** The emperor Constantine VII (945–959) commissioned an anthology of 53 volumes, in which passages of at least 25 historians were sorted by subject. Only four volumes survive: *On Embassies*, *On Ambushes*, *On Virtues and Vices* (whose original tenth-century book is at Tours, the Codex Peirescianus) and *On Sayings* (whose original is a palimpsest in the Vatican, Graecus 73, wiped and written over in the fourteenth century). Some of the Polybius they keep is found nowhere else.[^44,43]
 
-**Quotations.** Other writers fill more gaps. Strabo and Athenaeus quote him at length.[^4] Some famous scenes, like Scipio's tears at Carthage or the paintings at Corinth, are known from Appian's and Strabo's retellings, and the Greek text in the Scroll prints those retellings among the fragments, at [38.22](cts:tlg0543.tlg001:38.22.1-38.22.3) and [39.2](cts:tlg0543.tlg001:39.2.1-39.2.3).[^13,14,15]
+**Quotations.** Other writers fill more gaps. Strabo and Athenaeus quote him at length.[^4] Some famous scenes, like Scipio's tears at Carthage or the paintings at Corinth, are known from Appian's and Strabo's retellings, and the Greek text in the reader prints those retellings among the fragments, at [38.22](cts:tlg0543.tlg001:38.22.1-38.22.3) and [39.2](cts:tlg0543.tlg001:39.2.1-39.2.3).[^13,14,15]
 
 **Print.** Niccolò Perotti had translated Books 1–5 into Latin. Part of Book 6 was printed at Venice in 1529, edited by Janus Lascaris. The first Greek edition of Books 1–5, by Vincentius Obsopoeus, appeared at Hagenau in 1530 with Perotti's Latin. The Old Excerpts were printed at Basel in 1549, the excerpts *On Embassies* by Fulvio Orsini at Antwerp in 1582, and Isaac Casaubon brought it all together at Paris in 1609.[^45] The first English Polybius, by Christopher Watson (London, 1568), was made from Perotti's Latin.[^21,46] The standard Greek text is still Theodor Büttner-Wobst's for the Teubner series (1882–1904), itself a reworking of Ludwig Dindorf's.[^4,24,48]`,
 
-  variants: `**A gap at the very start.** Manuscript A, the oldest copy of Books 1–5, has two gaps on facing pages, in the preface at 1.2.7–8 and 1.3.3, and the other manuscripts have the same gaps.[^42] So the editors must rebuild the sentence about Rome's empire. The Scroll's Greek reads «ἀνυπόστατον μὲν τοῖς ὑπάρχουσι πᾶσιν, ἀνυπέρβλητον δὲ καὶ τοῖς ἐπιγινομένοις».[^23] W. R. Paton's Loeb of 1922 put part of its English here in square brackets, as guesses. The revised Loeb of 2010 translates a new, still partly hypothetical, reconstruction: “for those living irresistible, for those to come insurpassable”.[^24]
+  variants: `**A gap at the very start.** Manuscript A, the oldest copy of Books 1–5, has two gaps on facing pages, in the preface at 1.2.7–8 and 1.3.3, and the other manuscripts have the same gaps.[^42] So the editors must rebuild the sentence about Rome's empire. The reader's Greek reads «ἀνυπόστατον μὲν τοῖς ὑπάρχουσι πᾶσιν, ἀνυπέρβλητον δὲ καὶ τοῖς ἐπιγινομένοις».[^23] W. R. Paton's Loeb of 1922 put part of its English here in square brackets, as guesses. The revised Loeb of 2010 translates a new, still partly hypothetical, reconstruction: “for those living irresistible, for those to come insurpassable”.[^24]
 
-**Which book is which?** Most of the later books are jigsaws of excerpts, and editors number them differently.[^48] In the Scroll you can see it at once. The Greek follows Büttner-Wobst, but Shuckburgh's English follows a different numbering: Scipio's talk with Polybius is 31.23–24 in the Greek and 32.9–10 in the English, and Shuckburgh's Book 39 includes what Dindorf printed as Book 40.[^10,47] The Scroll has no Book 17 at all: the Byzantine excerpts keep nothing from it, though Athenaeus quotes two passages that he says come from it.[^47,43] Of Book 37 the Greek keeps a single sentence, quoted for a place name, «Πολύβιος τριακοστῷ ἑβδόμῳ», Polybius in the thirty-seventh book (our translation).[^51,48] And the 1922 Loeb introduction cites the last chapter as 40.14, while the Loeb's own text, like the Scroll, numbers it [39.8](cts:tlg0543.tlg001:39.8.1-39.8.8).[^3]
+**Which book is which?** Most of the later books are jigsaws of excerpts, and editors number them differently.[^48] In the reader you can see it at once. The Greek follows Büttner-Wobst, but Shuckburgh's English follows a different numbering: Scipio's talk with Polybius is 31.23–24 in the Greek and 32.9–10 in the English, and Shuckburgh's Book 39 includes what Dindorf printed as Book 40.[^10,47] The reader has no Book 17 at all: the Byzantine excerpts keep nothing from it, though Athenaeus quotes two passages that he says come from it.[^47,43] Of Book 37 the Greek keeps a single sentence, quoted for a place name, «Πολύβιος τριακοστῷ ἑβδόμῳ», Polybius in the thirty-seventh book (our translation).[^51,48] And the 1922 Loeb introduction cites the last chapter as 40.14, while the Loeb's own text, like the reader, numbers it [39.8](cts:tlg0543.tlg001:39.8.1-39.8.8).[^3]
 
 **In what order?** Even inside a book the order of fragments is a guess. Walbank, in his commentary, proposed reordering the fragments of Book 29 about the battle of Pydna; the revised Loeb did not follow him.[^48]
 
-**Golden shields?** King Antiochus IV once held a great festival procession at Daphne, near Antioch. The Scroll's Greek lists «Μακεδόνες δισμύριοι καὶ χαλκάσπιδες πεντακισχίλιοι, ἄλλοι δὲ ἀργυράσπιδες»: twenty thousand Macedonians, five thousand with bronze shields, the rest with silver.[^52,53] Paton's translation adds ten thousand with golden shields, following a conjecture by the scholar Kaibel. Walbank doubted it in his commentary but later changed his mind, and the revised Loeb kept it; its reviewer still thought the grounds doubtful.[^53,48]
+**Golden shields?** King Antiochus IV once held a great festival procession at Daphne, near Antioch. The reader's Greek lists «Μακεδόνες δισμύριοι καὶ χαλκάσπιδες πεντακισχίλιοι, ἄλλοι δὲ ἀργυράσπιδες»: twenty thousand Macedonians, five thousand with bronze shields, the rest with silver.[^52,53] Paton's translation adds ten thousand with golden shields, following a conjecture by the scholar Kaibel. Walbank doubted it in his commentary but later changed his mind, and the revised Loeb kept it; its reviewer still thought the grounds doubtful.[^53,48]
 
-**A god's name.** In 2.39 three Greek cities of southern Italy built a common temple «Διὸς Ὁμαρίου», of Zeus Homarios. Shuckburgh translates “Zeus Homorios”, and his note in the Scroll explains that the manuscripts vary between the two spellings.[^54]`,
+**A god's name.** In 2.39 three Greek cities of southern Italy built a common temple «Διὸς Ὁμαρίου», of Zeus Homarios. Shuckburgh translates “Zeus Homorios”, and his note in the reader explains that the manuscripts vary between the two spellings.[^54]`,
 
   editions: [
-    { text: "T. Büttner-Wobst, *Polybii Historiae* (Leipzig, Teubner, 1882–1904).[^4,47]", note: "The Greek text in the Scroll is Perseus's copy of volumes 1–4 of this edition." },
-    { text: "E. S. Shuckburgh, *The Histories of Polybius*, 2 vols (London and New York, Macmillan, 1889).[^47]", note: "The English translation in the Scroll; it numbers the later fragments differently." },
+    { text: "T. Büttner-Wobst, *Polybii Historiae* (Leipzig, Teubner, 1882–1904).[^4,47]", note: "The Greek text in the reader is Perseus's copy of volumes 1–4 of this edition." },
+    { text: "E. S. Shuckburgh, *The Histories of Polybius*, 2 vols (London and New York, Macmillan, 1889).[^47]", note: "The English translation in the reader; it numbers the later fragments differently." },
     { text: "W. R. Paton, *Polybius: The Histories*, 6 vols (Loeb Classical Library, 1922–27).[^4,3]", note: "Free to read on LacusCurtius." },
     { text: "W. R. Paton, revised by F. W. Walbank and C. Habicht, *Polybius: The Histories*, 6 vols (Loeb Classical Library 128, 137, 138, 159, 160, 161; Harvard University Press, 2010–12); volume 6 edited and translated with S. D. Olson.[^24,48,49,21]", note: "Greek and English, with new notes, and 236 fragments from unknown books." },
     { text: "F. W. Walbank, *A Historical Commentary on Polybius*, 3 vols (Oxford, 1957, 1967, 1979).[^4,48]", note: "A review of 2013 calls it still essential." },
@@ -119,41 +119,41 @@ In Cicero's *On the Republic* (54–51 BC), Scipio is reminded of the talks on t
   ],
 
   sources: [
-    { label: "Polybius, Histories 1.1, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "1.1.1", to: "1.1.6" } },
-    { label: "Polybius, Histories 3.1, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "3.1.1", to: "3.1.11" } },
+    { label: "Polybius, Histories 1.1, in the reader", cite: { work: "tlg0543.tlg001", ref: "1.1.1", to: "1.1.6" } },
+    { label: "Polybius, Histories 3.1, in the reader", cite: { work: "tlg0543.tlg001", ref: "3.1.1", to: "3.1.11" } },
     { label: "H. J. Edwards, introduction to W. R. Paton's Loeb Polybius (1922), with Bill Thayer's notes, on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Polybius/Introduction*.html" },
     { label: "Wikipedia, Polybius (life, works, influence, editions)", url: "https://en.wikipedia.org/wiki/Polybius" },
     { label: "Oxford Classical Dictionary, entry “Polybius (1), Greek historian, c. 200–c. 118 BCE” (the title page; the article itself would not open)", url: "https://academic.oup.com/edited-volume/61673/chapter/548090484" },
-    { label: "Plutarch, Philopoemen 21.3–21.6, in the Scroll", cite: { work: "tlg0007.tlg027", ref: "21.3", to: "21.6" } },
-    { label: "Polybius, Histories 24.6.3–7, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "24.6.3", to: "24.6.7" } },
-    { label: "Polybius, Histories 28.6.8–9, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "28.6.8", to: "28.6.9" } },
-    { label: "Pausanias, Description of Greece 7.10.11–12, in the Scroll", cite: { work: "tlg0525.tlg001", ref: "7.10.11", to: "7.10.12" } },
-    { label: "Polybius, Histories 31.23–24, in the Scroll (Shuckburgh's translation numbers it 32.9–10)", cite: { work: "tlg0543.tlg001", ref: "31.23.1", to: "31.24.3" } },
-    { label: "Polybius, Histories 35.6, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "35.6.1", to: "35.6.4" } },
-    { label: "Plutarch, Cato the Elder 9.2–3, in the Scroll", cite: { work: "tlg0007.tlg025", ref: "9.2", to: "9.3" } },
-    { label: "Polybius, Histories 38.21–22, in the Scroll (Shuckburgh's translation numbers it 39.5)", cite: { work: "tlg0543.tlg001", ref: "38.21.1", to: "38.22.3" } },
-    { label: "Appian, Punic Wars 132, in the Scroll", cite: { work: "tlg0551.tlg009", ref: "19.132" } },
-    { label: "Strabo, Geography 8.6.23, in the Scroll", cite: { work: "tlg0099.tlg001", ref: "8.6.23" } },
-    { label: "Polybius, Histories 39.5, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "39.5.1", to: "39.5.6" } },
-    { label: "Pausanias, Description of Greece 8.30.8–9, in the Scroll (Megalopolis)", cite: { work: "tlg0525.tlg001", ref: "8.30.8", to: "8.30.9" } },
-    { label: "Pausanias, Description of Greece 8.37.2, in the Scroll (the sanctuary of the Mistress)", cite: { work: "tlg0525.tlg001", ref: "8.37.2" } },
-    { label: "Lucian (attributed), The Long-Lived 22, in the Scroll", cite: { work: "tlg0062.tlg011", ref: "22" } },
-    { label: "Polybius, Histories 1.4, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "1.4.1", to: "1.4.5" } },
+    { label: "Plutarch, Philopoemen 21.3–21.6, in the reader", cite: { work: "tlg0007.tlg027", ref: "21.3", to: "21.6" } },
+    { label: "Polybius, Histories 24.6.3–7, in the reader", cite: { work: "tlg0543.tlg001", ref: "24.6.3", to: "24.6.7" } },
+    { label: "Polybius, Histories 28.6.8–9, in the reader", cite: { work: "tlg0543.tlg001", ref: "28.6.8", to: "28.6.9" } },
+    { label: "Pausanias, Description of Greece 7.10.11–12, in the reader", cite: { work: "tlg0525.tlg001", ref: "7.10.11", to: "7.10.12" } },
+    { label: "Polybius, Histories 31.23–24, in the reader (Shuckburgh's translation numbers it 32.9–10)", cite: { work: "tlg0543.tlg001", ref: "31.23.1", to: "31.24.3" } },
+    { label: "Polybius, Histories 35.6, in the reader", cite: { work: "tlg0543.tlg001", ref: "35.6.1", to: "35.6.4" } },
+    { label: "Plutarch, Cato the Elder 9.2–3, in the reader", cite: { work: "tlg0007.tlg025", ref: "9.2", to: "9.3" } },
+    { label: "Polybius, Histories 38.21–22, in the reader (Shuckburgh's translation numbers it 39.5)", cite: { work: "tlg0543.tlg001", ref: "38.21.1", to: "38.22.3" } },
+    { label: "Appian, Punic Wars 132, in the reader", cite: { work: "tlg0551.tlg009", ref: "19.132" } },
+    { label: "Strabo, Geography 8.6.23, in the reader", cite: { work: "tlg0099.tlg001", ref: "8.6.23" } },
+    { label: "Polybius, Histories 39.5, in the reader", cite: { work: "tlg0543.tlg001", ref: "39.5.1", to: "39.5.6" } },
+    { label: "Pausanias, Description of Greece 8.30.8–9, in the reader (Megalopolis)", cite: { work: "tlg0525.tlg001", ref: "8.30.8", to: "8.30.9" } },
+    { label: "Pausanias, Description of Greece 8.37.2, in the reader (the sanctuary of the Mistress)", cite: { work: "tlg0525.tlg001", ref: "8.37.2" } },
+    { label: "Lucian (attributed), The Long-Lived 22, in the reader", cite: { work: "tlg0062.tlg011", ref: "22" } },
+    { label: "Polybius, Histories 1.4, in the reader", cite: { work: "tlg0543.tlg001", ref: "1.4.1", to: "1.4.5" } },
     { label: "Wikipedia, Histories (Polybius) (forty books, excerpts, tyche, Watson's translation, modern translations)", url: "https://en.wikipedia.org/wiki/Histories_(Polybius)" },
-    { label: "Polybius, Histories 1.14.5–8, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "1.14.5", to: "1.14.8" } },
-    { label: "Polybius, Histories 1.2.7–8, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "1.2.7", to: "1.2.8" } },
+    { label: "Polybius, Histories 1.14.5–8, in the reader", cite: { work: "tlg0543.tlg001", ref: "1.14.5", to: "1.14.8" } },
+    { label: "Polybius, Histories 1.2.7–8, in the reader", cite: { work: "tlg0543.tlg001", ref: "1.2.7", to: "1.2.8" } },
     { label: "Bryn Mawr Classical Review 2011.05.40, Edith Foster on the revised Loeb Polybius, vols. 1–2 (Harvard, 2010)", url: "https://bmcr.brynmawr.edu/2011/2011.05.40/" },
-    { label: "Polybius, Histories 12.25e.1, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "12.25e.1" } },
-    { label: "Polybius, Histories 12.28.1–5, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "12.28.1", to: "12.28.5" } },
-    { label: "Polybius, Histories 3.48.12, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "3.48.12" } },
-    { label: "Polybius, Histories 3.59.7–8, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "3.59.7", to: "3.59.8" } },
-    { label: "Polybius, Histories 3.4.12–13, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "3.4.12", to: "3.4.13" } },
-    { label: "Polybius, Histories 10.45.6–7, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "10.45.6", to: "10.45.7" } },
-    { label: "Polybius, Histories 6.3.5–8, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "6.3.5", to: "6.3.8" } },
-    { label: "Polybius, Histories 6.4.6–13, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "6.4.6", to: "6.4.13" } },
-    { label: "Polybius, Histories 6.9.9–13, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "6.9.9", to: "6.9.13" } },
-    { label: "Polybius, Histories 6.11.11–12, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "6.11.11", to: "6.11.12" } },
-    { label: "Dionysius of Halicarnassus, On the Arrangement of Words 4, in the Scroll (Greek only)", cite: { work: "tlg0081.tlg012", ref: "4" } },
+    { label: "Polybius, Histories 12.25e.1, in the reader", cite: { work: "tlg0543.tlg001", ref: "12.25e.1" } },
+    { label: "Polybius, Histories 12.28.1–5, in the reader", cite: { work: "tlg0543.tlg001", ref: "12.28.1", to: "12.28.5" } },
+    { label: "Polybius, Histories 3.48.12, in the reader", cite: { work: "tlg0543.tlg001", ref: "3.48.12" } },
+    { label: "Polybius, Histories 3.59.7–8, in the reader", cite: { work: "tlg0543.tlg001", ref: "3.59.7", to: "3.59.8" } },
+    { label: "Polybius, Histories 3.4.12–13, in the reader", cite: { work: "tlg0543.tlg001", ref: "3.4.12", to: "3.4.13" } },
+    { label: "Polybius, Histories 10.45.6–7, in the reader", cite: { work: "tlg0543.tlg001", ref: "10.45.6", to: "10.45.7" } },
+    { label: "Polybius, Histories 6.3.5–8, in the reader", cite: { work: "tlg0543.tlg001", ref: "6.3.5", to: "6.3.8" } },
+    { label: "Polybius, Histories 6.4.6–13, in the reader", cite: { work: "tlg0543.tlg001", ref: "6.4.6", to: "6.4.13" } },
+    { label: "Polybius, Histories 6.9.9–13, in the reader", cite: { work: "tlg0543.tlg001", ref: "6.9.9", to: "6.9.13" } },
+    { label: "Polybius, Histories 6.11.11–12, in the reader", cite: { work: "tlg0543.tlg001", ref: "6.11.11", to: "6.11.12" } },
+    { label: "Dionysius of Halicarnassus, On the Arrangement of Words 4, in the reader (Greek only)", cite: { work: "tlg0081.tlg012", ref: "4" } },
     { label: "Livy, History of Rome 30.45, in Latin (The Latin Library)", url: "https://www.thelatinlibrary.com/livy/liv.30.shtml" },
     { label: "Wikipedia, De re publica (written between 54 and 51 BC)", url: "https://en.wikipedia.org/wiki/De_re_publica" },
     { label: "Cicero, On the Republic 1.34, in Latin (The Latin Library)", url: "https://www.thelatinlibrary.com/cicero/repub1.shtml" },
@@ -165,14 +165,14 @@ In Cicero's *On the Republic* (54–51 BC), Scipio is reminded of the talks on t
     { label: "Wikipedia, Constantinian Excerpts", url: "https://en.wikipedia.org/wiki/Constantinian_Excerpts" },
     { label: "Wikipedia, List of editiones principes in Greek (Polybius: Venice 1529, Hagenau 1530, Basel 1549, Antwerp 1582, Paris 1609)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
     { label: "Wikipedia, Christopher Watson (translator): his Polybius of 1568, made from Perotti's Latin", url: "https://en.wikipedia.org/wiki/Christopher_Watson_(translator)" },
-    { label: "Perseus's copies of Polybius shown in the Scroll: the file headers name Büttner-Wobst's Teubner text (vols. 1–4) and Shuckburgh's translation (Macmillan, 1889); Shuckburgh's notes give his numbering (Book 17 lost; his Book 39 including Dindorf's Book 40)", cite: { work: "tlg0543.tlg001", ref: "1.1.1" } },
+    { label: "Perseus's copies of Polybius shown in the reader: the file headers name Büttner-Wobst's Teubner text (vols. 1–4) and Shuckburgh's translation (Macmillan, 1889); Shuckburgh's notes give his numbering (Book 17 lost; his Book 39 including Dindorf's Book 40)", cite: { work: "tlg0543.tlg001", ref: "1.1.1" } },
     { label: "Bryn Mawr Classical Review 2013.06.04, Duncan B. Campbell on the revised Loeb Polybius, vol. 6 (Harvard, 2012)", url: "https://bmcr.brynmawr.edu/2013/2013.06.04/" },
     { label: "East Carolina University library record: Polybius, The Histories, vol. 6, Books 28–39, Fragments (Loeb Classical Library 161, Harvard University Press, 2012)", url: "https://librarycatalog.ecu.edu/catalog/3329809" },
-    { label: "Polybius, Histories 3.32.1–2, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "3.32.1", to: "3.32.2" } },
-    { label: "Polybius, Histories 37.1.1, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "37.1.1" } },
-    { label: "Polybius, Histories 30.25.1–6, in the Scroll", cite: { work: "tlg0543.tlg001", ref: "30.25.1", to: "30.25.6" } },
+    { label: "Polybius, Histories 3.32.1–2, in the reader", cite: { work: "tlg0543.tlg001", ref: "3.32.1", to: "3.32.2" } },
+    { label: "Polybius, Histories 37.1.1, in the reader", cite: { work: "tlg0543.tlg001", ref: "37.1.1" } },
+    { label: "Polybius, Histories 30.25.1–6, in the reader", cite: { work: "tlg0543.tlg001", ref: "30.25.1", to: "30.25.6" } },
     { label: "W. R. Paton's Loeb translation of Polybius, Book 30 (30.25: the parade at Daphne), on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Polybius/30*.html" },
-    { label: "Polybius, Histories 2.39, in the Scroll, with Shuckburgh's note on the name", cite: { work: "tlg0543.tlg001", ref: "2.39.1", to: "2.39.6" } },
+    { label: "Polybius, Histories 2.39, in the reader, with Shuckburgh's note on the name", cite: { work: "tlg0543.tlg001", ref: "2.39.1", to: "2.39.6" } },
   ],
   outsideQuotes: [
     "political history or history of events",

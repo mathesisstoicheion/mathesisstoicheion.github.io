@@ -70,7 +70,7 @@ test("Quick search opens the wiki's and the forum's own searches", async ({ page
   await page.keyboard.press("Control+k");
   await page.getByRole("combobox", { name: "Search" }).fill("plague");
   await expect(page.getByRole("option", { name: /Search the Painted Stoa/ })).toBeVisible();
-  if (FORUM_OPEN) await expect(page.getByRole("option", { name: /Search the Town Hall/ })).toBeVisible();
+  if (FORUM_OPEN) await expect(page.getByRole("option", { name: /Search the Agora/ })).toBeVisible();
   await page.getByRole("option", { name: /Search the Painted Stoa/ }).click();
   await expect(page).toHaveURL(/\/stoa\?q=plague/);
   await expect(page.getByRole("searchbox", { name: "Search the Painted Stoa" })).toHaveValue("plague");

@@ -10,10 +10,10 @@ import { cardOf } from "@/wiki/cards";
 import { ENTRIES } from "@/wiki/index";
 import ExploreLead, { ExploreCredit } from "@/components/stoa/ExploreLead";
 import type { Catalog } from "@/lib/catalog";
-import { AREAS } from "@/config/areas";
+import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
-export const metadata: Metadata = { title: `${AREAS.wiki.name} · ${AREAS.wiki.english}`, description: PAGE_DESCRIPTIONS.stoa };
+export const metadata: Metadata = { title: areaTitle("wiki"), description: PAGE_DESCRIPTIONS.stoa };
 
 // The map, the Census and Archaeology lead the page (ExploreLead); the search and the colonnade follow, and the reference
 // pages are the colonnade's last panel. Counts for the reference pages, taken from the catalogue when the site is built.

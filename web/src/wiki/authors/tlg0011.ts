@@ -18,7 +18,7 @@ The seven plays that survive are *Ajax*, *Antigone*, *Oedipus the King*, *Women 
 
 One more play came back from the sand. *The Tracking Satyrs* (*Ichneutae*) is a satyr play found at Oxyrhynchus in Egypt: some 400 lines of a play that was probably about 800 long, in which satyrs track Apollo's stolen cows and find that the thief is his newborn brother Hermes.[^3] It was written out on a papyrus roll of the second century AD and published in 1912.[^4][^5]
 
-His Greek can say two things at once. The famous ode in *Antigone* begins πολλὰ τὰ δεινὰ κοὐδὲν ἀνθρώπου δεινότερον πέλει (line 333 in the Scroll's text).[^6] LSJ lists for δεινός both “fearful, terrible” and “wondrous, marvellous, strange”, so the line can be heard as “Many things are wondrous and dreadful, and none more so than man” (our translation).[^7]
+His Greek can say two things at once. The famous ode in *Antigone* begins πολλὰ τὰ δεινὰ κοὐδὲν ἀνθρώπου δεινότερον πέλει (line 333 in the reader's text).[^6] LSJ lists for δεινός both “fearful, terrible” and “wondrous, marvellous, strange”, so the line can be heard as “Many things are wondrous and dreadful, and none more so than man” (our translation).[^7]
 
 ### Things worth knowing about the text
 
@@ -57,31 +57,31 @@ His Greek can say two things at once. The famous ode in *Antigone* begins πολ
 
 **A play on one papyrus.** The *Tracking Satyrs* has no medieval copy at all. Its text is what a single papyrus roll, broken and gapped, gives us.[^3][^4][^5]
 
-**Line numbers.** The Scroll's text of *Antigone* numbers the first line of the famous ode 333.[^6]`,
+**Line numbers.** The reader's text of *Antigone* numbers the first line of the famous ode 333.[^6]`,
 
   editions: [
-    { text: "F. Storr, *Sophocles*, 2 vols (Loeb Classical Library, 1912–13).[^15]", note: "The Greek of the plays in the Scroll is Perseus's copy of this edition; the *Tracking Satyrs* is Hunt's papyrus text of 1912." },
-    { text: "R. C. Jebb's translations (Cambridge University Press).[^15]", note: "The English *Antigone* in the Scroll is Jebb's, of 1891; the *Tracking Satyrs* is translated by Anne Mahoney." },
+    { text: "F. Storr, *Sophocles*, 2 vols (Loeb Classical Library, 1912–13).[^15]", note: "The Greek of the plays in the reader is Perseus's copy of this edition; the *Tracking Satyrs* is Hunt's papyrus text of 1912." },
+    { text: "R. C. Jebb's translations (Cambridge University Press).[^15]", note: "The English *Antigone* in the reader is Jebb's, of 1891; the *Tracking Satyrs* is translated by Anne Mahoney." },
     { text: "H. Lloyd-Jones and N. G. Wilson, *Sophoclis Fabulae* (Oxford Classical Texts, 1990), and their *Sophoclea: Studies on the Text of Sophocles* (Oxford, 1990).[^13][^14]", note: "The standard Greek text." },
     { text: "H. Lloyd-Jones, *Sophocles*, 3 vols (Loeb Classical Library, 1994–96).[^16]" },
   ],
 
   sources: [
     { label: "Wikipedia, Sophocles (his offices, victories, plays, the seven survivors, Poetics, hero cult)", url: "https://en.wikipedia.org/wiki/Sophocles" },
-    { label: "Plutarch, Cimon 8, in the Scroll", cite: { work: "tlg0007.tlg035", ref: "8.7", to: "8.8" } },
-    { label: "Sophocles, The Tracking Satyrs (Ichneutae), in the Scroll, with its introduction", cite: { work: "tlg0011.tlg008", ref: "1" } },
+    { label: "Plutarch, Cimon 8, in the reader", cite: { work: "tlg0007.tlg035", ref: "8.7", to: "8.8" } },
+    { label: "Sophocles, The Tracking Satyrs (Ichneutae), in the reader, with its introduction", cite: { work: "tlg0011.tlg008", ref: "1" } },
     { label: "Wikipedia, Ichneutae (the papyrus, its date and its publication)", url: "https://en.wikipedia.org/wiki/Ichneutae" },
-    { label: "Oxyrhynchus Papyri, part 9, no. 1174 (A. S. Hunt, Egypt Exploration Fund, 1912), the papyrus behind the Scroll's Greek text", cite: { work: "tlg0011.tlg008", ref: "1" } },
-    { label: "Sophocles, Antigone 333, in the Scroll", cite: { work: "tlg0011.tlg002", ref: "333" } },
+    { label: "Oxyrhynchus Papyri, part 9, no. 1174 (A. S. Hunt, Egypt Exploration Fund, 1912), the papyrus behind the reader's Greek text", cite: { work: "tlg0011.tlg008", ref: "1" } },
+    { label: "Sophocles, Antigone 333, in the reader", cite: { work: "tlg0011.tlg002", ref: "333" } },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entry δεινός (Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Sophocles, Antigone 904–912, in the Scroll", cite: { work: "tlg0011.tlg002", ref: "904", to: "912" } },
+    { label: "Sophocles, Antigone 904–912, in the reader", cite: { work: "tlg0011.tlg002", ref: "904", to: "912" } },
     { label: "Aristotle, Rhetoric 3.16 (1417a), in Perseus", url: "http://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.01.0060%3Abook%3D3%3Achapter%3D16" },
     { label: "Roger Pearse, Some manuscript traditions of the Greek classics (the Sophocles section)", url: "https://www.tertullian.org/rpearse/manuscripts/greek_classics.htm" },
     { label: "Biblissima, Florence, Biblioteca Medicea Laurenziana, Plut. 32.9 (tenth century; Sophocles, Aeschylus, Apollonius Rhodius)", url: "https://iiif.biblissima.fr/collections/manifest/1fdd391bd6dc0adca9472aea0d71aec3dc37e49a" },
     { label: "Wikipedia, Editio princeps (Sophocles, Aldus Manutius, Venice, 1502)", url: "https://en.wikipedia.org/wiki/Editio_princeps" },
     { label: "Oxford University Press, Sophocles, Fabulae (Lloyd-Jones and Wilson, Oxford Classical Texts, 1990)", url: "https://global.oup.com/academic/product/fabulae-9780198145776" },
     { label: "Revue des études grecques, review of Lloyd-Jones and Wilson, Sophoclis Fabulae (Oxford 1990) and Sophoclea", url: "https://www.persee.fr/doc/reg_0035-2039_1991_num_104_495_2512_t1_0291_0000_2" },
-    { label: "Perseus's copies of Sophocles shown in the Scroll: each file's header names its edition (Storr, Heinemann 1912; Jebb, Cambridge 1891; Mahoney; Hunt, 1912)", cite: { work: "tlg0011.tlg002", ref: "1" } },
+    { label: "Perseus's copies of Sophocles shown in the reader: each file's header names its edition (Storr, Heinemann 1912; Jebb, Cambridge 1891; Mahoney; Hunt, 1912)", cite: { work: "tlg0011.tlg002", ref: "1" } },
     { label: "Loeb Classical Library, Sophocles, Ajax, Electra, Oedipus Tyrannus (H. Lloyd-Jones, 1994)", url: "https://www.loebclassics.com/view/LCL020/1994/pb_LCL020.19.xml" },
     { label: "Wikipedia, Hellenotamiae (the ten magistrates who received the contributions of the allied states)", url: "https://en.wikipedia.org/wiki/Hellenotamiae" },
   ],

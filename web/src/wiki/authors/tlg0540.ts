@@ -22,7 +22,7 @@ His father, Cephalus, came from Syracuse in Sicily. Lysias himself tells the sto
 
 Plato set the *Republic* in their home. Socrates goes back with Polemarchus to his house, and says: “there we found Lysias and Euthydemus, the brothers of Polemarchus”; old Cephalus was at home too.[^9] The scene suggests that Plato knew the family well.[^8]
 
-{debated} When was Lysias born? The *Lives* and Dionysius of Halicarnassus give a date that works out at 459 BC. That date was probably reckoned back from a story that he went to the new Athenian colony of Thurii, in southern Italy, at fifteen, the colony having been founded in 444.[^8,7] Most modern scholars put his birth about 445 and his journey to Thurii about 430,[^1,2] though W. R. M. Lamb, the translator of the Scroll's English, was still ready to accept the ancient date in 1930.[^6]
+{debated} When was Lysias born? The *Lives* and Dionysius of Halicarnassus give a date that works out at 459 BC. That date was probably reckoned back from a story that he went to the new Athenian colony of Thurii, in southern Italy, at fifteen, the colony having been founded in 444.[^8,7] Most modern scholars put his birth about 445 and his journey to Thurii about 430,[^1,2] though W. R. M. Lamb, the translator of the reader's English, was still ready to accept the ancient date in 1930.[^6]
 
 At Thurii, the story goes, he studied rhetoric with the Sicilian teachers Tisias and Nicias.[^7,8] After the Athenian disaster in Sicily in 413, he “was accused of favouring Athens” and expelled with three hundred others.[^7] In 412 he settled at Athens.[^8,6]
 
@@ -74,7 +74,7 @@ Plato's *Phaedrus* opens with Phaedrus coming from a morning with Lysias, the so
     { year: 1584, kind: "copy", what: "Ulrich Fugger, one of X's owners, leaves his manuscripts to the Elector Palatine's library at Heidelberg", src: [26] },
     { year: 1912, kind: "print", what: "Carl Hude's Oxford text", src: [6] },
     { year: 1919, kind: "copy", what: "Grenfell and Hunt publish an Oxyrhynchus papyrus with parts of lost speeches, including Lysias' own case *Against Hippotherses*", src: [6, 24] },
-    { year: 1930, kind: "print", what: "W. R. M. Lamb's Loeb edition and translation, the Greek and English in the Scroll", src: [6, 27] },
+    { year: 1930, kind: "print", what: "W. R. M. Lamb's Loeb edition and translation, the Greek and English in the reader", src: [6, 27] },
     { year: 1968, kind: "reception", what: "K. J. Dover's *Lysias and the Corpus Lysiacum*", src: [2] },
     { year: 2007, kind: "print", what: "Christopher Carey's new Oxford text, with the fragments; Stephen Todd's commentary on speeches 1–11", src: [2, 11] },
   ],
@@ -87,7 +87,7 @@ Plato's *Phaedrus* opens with Phaedrus coming from a morning with Lysias, the so
 
 **Renaissance owners.** In the fifteenth century X belonged to the Florentine Palla Strozzi, who had copies made of it.[^25,26] Later it passed to Ulrich Fugger, who in 1584 left his manuscripts to the Elector Palatine; that is how it came to Heidelberg.[^26] Of the later copies, Jebb names a fifteenth-century manuscript in Florence (Laurentianus C) as the next most valuable.[^8]
 
-**Print.** The first printed Lysias appeared in the Aldine *Oratores* at Venice in 1513. Its main source was a copy written for the scholar Marcus Musurus, and through it the whole tradition of X stands behind that first edition.[^25] Among the great later editions are Reiske's (1772), Bekker's (1823) and Baiter and Sauppe's (1839).[^8,1] Lamb based the Scroll's Greek on Thalheim's Teubner text of 1901.[^6] The Oxford Classical Texts printed Carl Hude's text in 1912 and Christopher Carey's new one, with the fragments, in 2007.[^6,2]`,
+**Print.** The first printed Lysias appeared in the Aldine *Oratores* at Venice in 1513. Its main source was a copy written for the scholar Marcus Musurus, and through it the whole tradition of X stands behind that first edition.[^25] Among the great later editions are Reiske's (1772), Bekker's (1823) and Baiter and Sauppe's (1839).[^8,1] Lamb based the reader's Greek on Thalheim's Teubner text of 1901.[^6] The Oxford Classical Texts printed Carl Hude's text in 1912 and Christopher Carey's new one, with the fragments, in 2007.[^6,2]`,
 
   variants: `**A critic rejects a speech.** The *Lives of the Ten Orators* says Lysias wrote speeches for the general Iphicrates, and that Iphicrates defended himself on a charge of treason with a speech by Lysias.[^7] Dionysius of Halicarnassus thought otherwise. He found the speech *On the Statue of Iphicrates* well argued, but «ἄχαρίς ἐστι», “it has no charm” (our translation). Then he checked the dates. If Lysias died at eighty, the speech was written seven years after his death, and Iphicrates' defence on a charge of treason a full twenty years after. Dionysius guessed that Iphicrates wrote both himself.[^23]
 
@@ -100,7 +100,7 @@ Plato's *Phaedrus* opens with Phaedrus coming from a morning with Lysias, the so
 **Mending a text from one book.** Because nearly everything hangs on X, editors must often repair its mistakes by guesswork. Lamb's notes credit corrections to generations of scholars, from the Renaissance printers onwards.[^6] Even a title can be wrong: the title Lamb prints for speech 17 is a correction by Hoelscher, because the one in the manuscripts is plainly mistaken.[^6]`,
 
   editions: [
-    { text: "W. R. M. Lamb, *Lysias* (Loeb Classical Library; London, Heinemann, and New York, Putnam, 1930; reprinted by Harvard University Press).[^6,27]", note: "The Greek and English in the Scroll are Perseus's copies of this edition; the Greek is based on Thalheim's text of 1901." },
+    { text: "W. R. M. Lamb, *Lysias* (Loeb Classical Library; London, Heinemann, and New York, Putnam, 1930; reprinted by Harvard University Press).[^6,27]", note: "The Greek and English in the reader are Perseus's copies of this edition; the Greek is based on Thalheim's text of 1901." },
     { text: "C. Carey, *Lysiae Orationes cum Fragmentis* (Oxford Classical Texts, 2007).[^2,11]", note: "The standard Greek text, with the fragments." },
     { text: "S. C. Todd, *A Commentary on Lysias, Speeches 1–11* (Oxford, 2007) and *A Commentary on Lysias, Speeches 12–16* (Oxford, 2020).[^2,11]", note: "Carey's Greek with a facing English translation, introductions and a full commentary." },
     { text: "S. C. Todd, *Lysias* (The Oratory of Classical Greece 2, University of Texas Press, Austin, 2000).[^11,2]", note: "A modern English translation of the speeches." },
@@ -113,30 +113,30 @@ Plato's *Phaedrus* opens with Phaedrus coming from a morning with Lysias, the so
     { label: "Wikipedia, Lysias (dates of life, modern and ancient; the ten Attic orators; the table of speeches, with their dates and doubts; editions)", url: "https://en.wikipedia.org/wiki/Lysias" },
     { label: "Bryn Mawr Classical Review 2008.11.05, Matthew R. Christ on S. C. Todd, A Commentary on Lysias, Speeches 1–11 (Oxford, 2007): his life and career, the numbers of speeches, the arrangement of the corpus, authorship, speeches 1–11", url: "https://bmcr.brynmawr.edu/2008/2008.11.05/" },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entries μέτοικος, ἰσοτελής, λογογράφος and ἠθοποιία (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Dionysius of Halicarnassus, On Lysias 1–3, in the Scroll (Greek only): his life; his pure Attic; his everyday words", cite: { work: "tlg0081.tlg003", ref: "1", to: "3" } },
-    { label: "Lysias, Against Eratosthenes 4–20, in the Scroll (his father; the Thirty; his arrest and escape; Polemarchus' death)", cite: { work: "tlg0540.tlg012", ref: "4", to: "20" } },
+    { label: "Dionysius of Halicarnassus, On Lysias 1–3, in the reader (Greek only): his life; his pure Attic; his everyday words", cite: { work: "tlg0081.tlg003", ref: "1", to: "3" } },
+    { label: "Lysias, Against Eratosthenes 4–20, in the reader (his father; the Thirty; his arrest and escape; Polemarchus' death)", cite: { work: "tlg0540.tlg012", ref: "4", to: "20" } },
     { label: "W. R. M. Lamb, Lysias (Loeb Classical Library; first printed 1930), Internet Archive: preface, bibliography, general introduction and the introductions to the speeches", url: "https://archive.org/details/lysiaslamb00lysiuoft" },
-    { label: "Plutarch (attributed), Lives of the Ten Orators: Lysias, in the Scroll", cite: { work: "tlg0007.tlg121", ref: "3.1" } },
+    { label: "Plutarch (attributed), Lives of the Ten Orators: Lysias, in the reader", cite: { work: "tlg0007.tlg121", ref: "3.1" } },
     { label: "R. C. Jebb, “Lysias”, Encyclopaedia Britannica, 11th edition (1911), vol. 17, pp. 182–184, on Wikisource", url: "https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Lysias" },
-    { label: "Plato, Republic 1.328, in the Scroll", cite: { work: "tlg0059.tlg030", ref: "1.328" } },
-    { label: "Lysias, Against Eratosthenes 100, in the Scroll", cite: { work: "tlg0540.tlg012", ref: "100" } },
+    { label: "Plato, Republic 1.328, in the reader", cite: { work: "tlg0059.tlg030", ref: "1.328" } },
+    { label: "Lysias, Against Eratosthenes 100, in the reader", cite: { work: "tlg0540.tlg012", ref: "100" } },
     { label: "Bryn Mawr Classical Review 2021.07.14, Jeremy Trevett on S. C. Todd, A Commentary on Lysias, Speeches 12–16 (Oxford, 2020)", url: "https://bmcr.brynmawr.edu/2021/2021.07.14/" },
-    { label: "Plato, Phaedrus 257, in the Scroll", cite: { work: "tlg0059.tlg012", ref: "257" } },
-    { label: "Plutarch, Concerning Talkativeness 5, in the Scroll", cite: { work: "tlg0007.tlg101", ref: "5" } },
-    { label: "Lysias, On the Murder of Eratosthenes 6–10, in the Scroll", cite: { work: "tlg0540.tlg001", ref: "6", to: "10" } },
-    { label: "Lysias, Olympic Oration 1–3, in the Scroll", cite: { work: "tlg0540.tlg033", ref: "1", to: "3" } },
-    { label: "Dionysius of Halicarnassus, On Lysias 29–30, in the Scroll (Greek only): the Olympic speech and its opening", cite: { work: "tlg0081.tlg003", ref: "29", to: "30" } },
+    { label: "Plato, Phaedrus 257, in the reader", cite: { work: "tlg0059.tlg012", ref: "257" } },
+    { label: "Plutarch, Concerning Talkativeness 5, in the reader", cite: { work: "tlg0007.tlg101", ref: "5" } },
+    { label: "Lysias, On the Murder of Eratosthenes 6–10, in the reader", cite: { work: "tlg0540.tlg001", ref: "6", to: "10" } },
+    { label: "Lysias, Olympic Oration 1–3, in the reader", cite: { work: "tlg0540.tlg033", ref: "1", to: "3" } },
+    { label: "Dionysius of Halicarnassus, On Lysias 29–30, in the reader (Greek only): the Olympic speech and its opening", cite: { work: "tlg0081.tlg003", ref: "29", to: "30" } },
     { label: "Wikipedia, Dionysius of Halicarnassus (flourished in the reign of Augustus; moved to Rome and taught rhetoric there)", url: "https://en.wikipedia.org/wiki/Dionysius_of_Halicarnassus" },
-    { label: "Dionysius of Halicarnassus, On Lysias 8, in the Scroll (Greek only): character-drawing; art that hides itself", cite: { work: "tlg0081.tlg003", ref: "8" } },
+    { label: "Dionysius of Halicarnassus, On Lysias 8, in the reader (Greek only): character-drawing; art that hides itself", cite: { work: "tlg0081.tlg003", ref: "8" } },
     { label: "Quintilian, Institutio Oratoria 10.1.78, translated by H. E. Butler (Loeb, 1920–22), on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Quintilian/Institutio_Oratoria/10A*.html" },
-    { label: "Plato, Phaedrus 227–228, in the Scroll", cite: { work: "tlg0059.tlg012", ref: "227", to: "228" } },
-    { label: "Plato, Phaedrus 279, in the Scroll", cite: { work: "tlg0059.tlg012", ref: "279" } },
-    { label: "Diogenes Laertius, Lives of Eminent Philosophers 2.40–41, in the Scroll", cite: { work: "tlg0004.tlg001", ref: "2.5.40", to: "2.5.41" } },
-    { label: "Dionysius of Halicarnassus, On Lysias 12, in the Scroll (Greek only): the speeches for Iphicrates rejected", cite: { work: "tlg0081.tlg003", ref: "12" } },
+    { label: "Plato, Phaedrus 227–228, in the reader", cite: { work: "tlg0059.tlg012", ref: "227", to: "228" } },
+    { label: "Plato, Phaedrus 279, in the reader", cite: { work: "tlg0059.tlg012", ref: "279" } },
+    { label: "Diogenes Laertius, Lives of Eminent Philosophers 2.40–41, in the reader", cite: { work: "tlg0004.tlg001", ref: "2.5.40", to: "2.5.41" } },
+    { label: "Dionysius of Halicarnassus, On Lysias 12, in the reader (Greek only): the speeches for Iphicrates rejected", cite: { work: "tlg0081.tlg003", ref: "12" } },
     { label: "The Classical Review 57.2 (2007) 303–304, Christos Kremmydas on E. Medda (ed.), Lysiae In Hippothersem, In Theomnestum et fragmenta ex incertis orationibus (P. Oxy. XIII 1606) (Florence, 2003), in the Royal Holloway repository", url: "https://repository.royalholloway.ac.uk/items/9875fe3a-6487-338e-8d08-66543c80b971/6/S0009840X07000200a.pdf" },
     { label: "Mark L. Sosower, “Marcus Musurus and a Codex of Lysias”, Greek, Roman, and Byzantine Studies 23.4 (1982)", url: "https://grbs.library.duke.edu/index.php/grbs/article/download/6141/5193/15059" },
     { label: "Pinakes (IRHT, CNRS), notice of Heidelberg, Universitätsbibliothek, Pal. gr. 88 (diktyon 32459): date, contents, owners, bibliography", url: "https://pinakes.irht.cnrs.fr/notices/cote/getPdf/32459" },
-    { label: "Perseus's copies of Lysias shown in the Scroll: each file's header names W. R. M. Lamb's edition and translation (London, Heinemann, and Cambridge, Mass., Harvard University Press, 1930)", cite: { work: "tlg0540.tlg012", ref: "1" } },
+    { label: "Perseus's copies of Lysias shown in the reader: each file's header names W. R. M. Lamb's edition and translation (London, Heinemann, and Cambridge, Mass., Harvard University Press, 1930)", cite: { work: "tlg0540.tlg012", ref: "1" } },
   ],
   outsideQuotes: [
     "alien resident in a foreign city",

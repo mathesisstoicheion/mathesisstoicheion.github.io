@@ -4,7 +4,7 @@ import Page from "@/components/Page";
 import NewThread from "@/components/community/NewThread";
 import { NOINDEX } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "A new thread · The Town Hall", ...NOINDEX };
+export const metadata: Metadata = { title: "A new thread · The Agora", ...NOINDEX };
 
 export default function NewPage() {
   return (

@@ -264,10 +264,10 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
           {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
         </footer>
       )}
-      {/* talk where you learn (Phase 11): a question about the lesson goes to the Town Hall's board for it */}
+      {/* talk where you learn (Phase 11): a question about the lesson goes to the Agora's board for it */}
       {FORUM_OPEN && (
         <p className={styles.askLesson}>
-          Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Town Hall</Link>,
+          Stuck on something here? <Link href={`/town-hall/new?c=${i < 2 ? "beginners" : "grammar"}`} transitionTypes={["page-turn"]}>Ask in the Agora</Link>,
           in {i < 2 ? "Beginners' questions" : "Grammar help"}: no question is too small.
         </p>
       )}

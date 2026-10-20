@@ -19,12 +19,19 @@ export const ALIASES = [
   ["forum", /\b[Tt]he forum\b/g, "the forum is the Agora"],
   ["forum", /(?<![\w-])Forum\b/g, "the forum is the Agora"],
   ["treasury", /\bMy Library\b/g, "your saved things are the Treasury"],
-  ["treasury", /(?:^|[>›·|"]\s*)Mine(?=\s*(?:$|[<›·|"]))/gm, "your saved things are the Treasury"],
-  ["treasury", /θησαυρός/g, "the room's Greek name is capitalised: Θησαυρός"],
-  ["reader", /\bThe Scroll\b(?! Case)/g, "the reader is \"the reader\""],
-  ["search", /\bThe Oracle\b(?![^<]{0,40}Μαντεῖον)/g, "the Oracle carries its Greek name, Μαντεῖον"],
+  ["treasury", /(?:^|[>›·|"]\s*)Mine(?=\s*(?:$|[<›·|":]))/gm, "your saved things are the Treasury"],
+  ["treasury", /θησαυρός(?=\s*(?:$|[<›·|"]))/gm, "the room's Greek name is capitalised: Θησαυρός"],
+  ["reader", /\b[Tt]he Scroll\b(?! Case)/g, "the reader is \"the reader\""],
+  // as a label (a name on its own: in a heading, a link, a path), the Oracle goes with its Greek name
+  ["search", /(?:^|[>›·|"]\s*)The Oracle(?=\s*(?:$|[<›·|"]))/gm, "the Oracle carries its Greek name, Μαντεῖον"],
   ["wiki", /\bWiki\b/g, "the wiki is the Painted Stoa"],
+  ["wiki", /(?:^|[>›·|"]\s*)The Stoa(?=\s*(?:$|[<›·|"]))/gm, "the Painted Stoa has one name"],
+  ["library", /(?:^|[>›·|"]\s*)(?:Read · )?The Library(?=\s*(?:$|[<›·|"]))/gm, "the library is the Mouseion"],
 ];
+// one order everywhere: a room's Greek name comes before its English name, never after it
+export const ROOMS = [["The Academy", "Ἀκαδήμεια"], ["The Mouseion", "Μουσεῖον"], ["The Painted Stoa", "Στοὰ Ποικίλη"], ["The Agora", "Ἀγορά"],
+  ["The Treasury", "Θησαυρός"], ["The Oracle", "Μαντεῖον"]];
+for (const [en, gr] of ROOMS) ALIASES.push(["order", new RegExp(`${en}(?:\\s|[|·:,])*${gr}`, "g"), `Greek first: ${gr} before ${en}`]);
 // phrases that use an alias's words but are not a name for a room
 export const ALLOW = [
   /town hall of [A-Z]/i, /Forum Classicum/, /\bwiki(pedia|source|data|tionary)/i, /Mine:/,
@@ -52,6 +59,8 @@ const scan = (text, where) => {
     for (const m of text.matchAll(re)) {
       const context = text.slice(Math.max(0, m.index - 50), m.index + m[0].length + 50).replace(/\s*\|\s*/g, " | ").trim();
       if (ALLOW.some((a) => a.test(context))) continue;
+      if (room === "search" && context.includes("Μαντεῖον")) continue;   // the label stands beside its Greek name
+      if (room === "search" && where === "source src/config/areas.ts") continue;   // where the name is given
       add(room, why, m[0].replace(/^[>›·|"]\s*/, "").trim(), where, context);
     }
   }

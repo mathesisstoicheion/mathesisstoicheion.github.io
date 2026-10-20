@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import PageHead from "@/components/PageHead";
 import { AREAS, trail, type AreaId } from "@/config/areas";
 
-// the five doors and the Town Hall have the large head; every place inside them the shorter one (PAGE-RULES.md, rule 1)
+// the five doors and the Agora have the large head; every place inside them the shorter one (PAGE-RULES.md, rule 1)
 const LARGE: AreaId[] = ["study", "library", "search", "wiki", "treasury", "forum"];
 
 /**

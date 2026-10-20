@@ -118,7 +118,7 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
               {a.sources.map((s, i) => (
                 <li key={i} id={`src-${i + 1}`}>
                   {s.cite
-                    ? <Link href={readHref(s.cite)} transitionTypes={["page-turn"]} title="Read this passage in the Scroll">{s.label}</Link>
+                    ? <Link href={readHref(s.cite)} transitionTypes={["page-turn"]} title="Read this passage in the reader">{s.label}</Link>
                     : <a href={s.url} target="_blank" rel="noopener noreferrer">{s.label}</a>}
                   {s.note && <span className="muted"> {s.note}</span>}
                 </li>

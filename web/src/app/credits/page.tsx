@@ -22,7 +22,7 @@ const SOFTWARE = [
   { name: "saxes", by: "Louis-Dominique Dubeau and contributors", licence: "ISC", href: "https://github.com/lddubeau/saxes" },
   { name: "Next.js and React", by: "Vercel and Meta", licence: "MIT", href: "https://nextjs.org" },
   { name: "Zustand", by: "Poimandres", licence: "MIT", href: "https://github.com/pmndrs/zustand" },
-  { name: "supabase-js (accounts, the Town Hall and the Pnyx)", by: "Supabase", licence: "MIT", href: "https://github.com/supabase/supabase-js" },
+  { name: "supabase-js (accounts, the Agora and the Pnyx)", by: "Supabase", licence: "MIT", href: "https://github.com/supabase/supabase-js" },
   { name: "OpenSeadragon (the reader's manuscript viewer)", by: "OpenSeadragon contributors", licence: "BSD 3-Clause", href: "https://openseadragon.github.io" },
   { name: "ts-fsrs (FSRS, which schedules the daily review)", by: "Open Spaced Repetition", licence: "MIT", href: "https://github.com/open-spaced-repetition/ts-fsrs" },
 ];
@@ -93,7 +93,7 @@ export default function CreditsPage() {
         <ul>
           <li>No adverts, no analytics, no trackers and no cookies.</li>
           <li>Fonts and code are served from this site, so your browser does not contact Google or any other company just to show a page.</li>
-          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint on the home page, and the people you have hidden in the Town Hall, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
+          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint on the home page, and the people you have hidden in the Agora, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
           <li>When you are online and a text is not in your downloaded library, your browser fetches that text&apos;s file from GitHub (raw.githubusercontent.com).</li>
           <li>When you look up a word or open its Word Study page while online, that word (and nothing else) is sent to Wiktionary (en.wiktionary.org).</li>
           <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>
@@ -101,13 +101,13 @@ export default function CreditsPage() {
           <li>Downloading the library fetches the text files from GitHub. Links to Logeion and Perseus take you to those sites only when you click them.</li>
           {FORUM_OPEN ? <>
             <li>
-              <b>The Town Hall, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
+              <b>The Agora, the Pnyx and accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European
               Union (Ireland). Your browser contacts Supabase on those pages and on your account page, when you are signed in; the home page,
-              reading, study and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+              reading, study and the Painted Stoa never do. An account holds your email address (used only to sign you in and to send the confirmation and
               password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
               display name and what you write about yourself.
             </li>
-            <li>What you write in the Town Hall and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
+            <li>What you write in the Agora and the Pnyx, and your display name, are public. Your upvotes can be seen by others; your
               pebble in a debate cannot: only the totals are shown, once the debate closes. Reports are seen only by the moderator.</li>
             <li>A bug report is a public thread like any other. The form fills in the page you were on and a short description of your browser
               (its name and version, the system, and the window&apos;s size); you see both before sending and can change or remove them. Nothing else about your computer is sent.</li>
@@ -115,15 +115,15 @@ export default function CreditsPage() {
             <li>
               <b>Accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European Union
               (Ireland). Your browser contacts Supabase on your account page and when you are signed in; the home page, reading, study
-              and the wiki never do. An account holds your email address (used only to sign you in and to send the confirmation and
+              and the Painted Stoa never do. An account holds your email address (used only to sign you in and to send the confirmation and
               password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
               display name and what you write about yourself.
             </li>
-            <li>The forum (the Town Hall and the Pnyx) is closed for now. What was written there is kept, and is no longer shown.</li>
+            <li>The Agora and the Pnyx are closed for now. What was written there is kept, and is no longer shown.</li>
           </>}
           <li>If you choose to keep your Treasury in step between devices, a copy of it is stored in your account, readable only by you.</li>
           <li>You can delete your account at any time from your account page: this removes your account, your profile, everything you
-            wrote in the Town Hall and the Pnyx, your votes and your stored Treasury.</li>
+            wrote in the Agora and the Pnyx, your votes and your stored Treasury.</li>
         </ul>
 
         <h2 id="words">Words and dictionaries</h2>
@@ -149,7 +149,7 @@ export default function CreditsPage() {
           <li><b>Liddell–Scott–Jones Greek-English Lexicon (LSJ)</b>: {LSJ_CREDIT}</li>
           <li><b>Short definitions of the commonest words</b> and their frequency ranks: <a href="https://dcc.dickinson.edu/greek-core-list" rel="noopener">Dickinson College Commentaries Greek Core Vocabulary</a>, by Christopher Francese and collaborators, CC BY-SA 3.0.</li>
           <li><b>Scansion of verse</b> (long and short syllables, and the metre of each line) for Homer, Hesiod, Apollonius, Nonnus, Pindar, Theognis, the Greek Anthology, three plays of Aeschylus and other poets: <a href="https://hypotactic.com" rel="noopener">hypotactic.com</a>, by David Chamberlain, CC BY 4.0. The vowel lengths the site&apos;s own scanner uses for other texts were also learned from these scansions.</li>
-          <li><b>Authors&apos; dates, birthplaces and descriptions</b> on the Wiki&apos;s Authors and Eras pages and on each author&apos;s page: <a href="https://www.wikidata.org" rel="noopener">Wikidata</a> (property P3576, the TLG author ID, matches its people to the library&apos;s authors), CC0. Built by <code>pipeline/build_authors_meta.py</code>; where Wikidata has no date, the dating of works in GLAUx is used and marked.</li>
+          <li><b>Authors&apos; dates, birthplaces and descriptions</b> on the Painted Stoa&apos;s Authors and Eras pages and on each author&apos;s page: <a href="https://www.wikidata.org" rel="noopener">Wikidata</a> (property P3576, the TLG author ID, matches its people to the library&apos;s authors), CC0. Built by <code>pipeline/build_authors_meta.py</code>; where Wikidata has no date, the dating of works in GLAUx is used and marked.</li>
           <li><b>Wiktionary</b> entries, fetched live when you look up a word, and each word&apos;s origin, related Greek words and English descendants on its Word Study page: English Wiktionary contributors, CC BY-SA 4.0.</li>
         </ul>
 

@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Town Hall: the forum's categories (the rooms), a search and the order of the threads in one toolbar directly above
+ * The Agora: the forum's categories (the rooms), a search and the order of the threads in one toolbar directly above
  * the list, the threads (newest activity first, or new, or most valued, or still unanswered), the Pnyx, and the rules.
  * Anyone may read; members write.
  * In the site's own boards (bug reports, suggestions) each thread shows its status, and they can be
@@ -43,7 +43,7 @@ export default function TownHall() {
     router.replace(`?${sp}`, { scroll: false });
   };
 
-  // "Try again" after the Town Hall could not be reached: the rooms are asked for afresh (a new key), the list reloads
+  // "Try again" after the Agora could not be reached: the rooms are asked for afresh (a new key), the list reloads
   const [tries, setTries] = useState(0);
   const cats = useLoad(`forum-categories|${tries}`, categories);
   // reloadable: a pull to refresh keeps the list on screen until the new one arrives
@@ -79,7 +79,7 @@ export default function TownHall() {
       <div className={styles.toolbar}>
         <form role="search" onSubmit={(e) => { e.preventDefault(); go({ q: typed.trim() || null }); }} className={styles.search}>
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-          <input enterKeyHint="search" type="search" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Search the Town Hall" aria-label="Search the Town Hall" />
+          <input enterKeyHint="search" type="search" value={typed} onChange={(e) => setTyped(e.target.value)} placeholder="Search the Agora" aria-label="Search the Agora" />
           <button type="submit" className="btn small">Search</button>
         </form>
         <div className={styles.sorts} role="group" aria-label="Order">
@@ -104,7 +104,7 @@ export default function TownHall() {
         </h2>
         {offline && (
           <div className={styles.offline} role="alert">
-            <p className={styles.error}>The Town Hall could not be reached. It needs a connection; check the connection light at the top of the page.</p>
+            <p className={styles.error}>The Agora could not be reached. It needs a connection; check the connection light at the top of the page.</p>
             <button type="button" className="btn small ghost" onClick={retry}>Try again</button>
           </div>
         )}
@@ -177,7 +177,7 @@ function FeaturedDebate({ d }: { d: Debate }) {
 export function Rules() {
   return (
     <section id="rules" className={styles.rules} aria-labelledby="rules-h">
-      <h2 id="rules-h">The rules of the Town Hall</h2>
+      <h2 id="rules-h">The rules of the Agora</h2>
       <ol>
         <li><b>Argue the idea, not the person.</b> Disagree as hard as you like with what someone says; never attack who they are.</li>
         <li><b>Beginners are welcome.</b> Every question is a good one. Answer the way you would have wanted to be answered.</li>
@@ -186,7 +186,7 @@ export function Rules() {
         <li><b>No spam, no advertising, no one else&apos;s words passed off as yours.</b></li>
       </ol>
       <p className={styles.fine}>
-        The Town Hall is looked after by the site&apos;s owner, who may hide posts, close threads and pause members who break these rules.
+        The Agora is looked after by the site&apos;s owner, who may hide posts, close threads and pause members who break these rules.
         If something needs the moderator&apos;s eye, use “Report” beside it. Only the moderator sees reports.
       </p>
     </section>

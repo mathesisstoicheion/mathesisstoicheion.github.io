@@ -102,9 +102,8 @@ export default function Header() {
     const a = AREAS[id];
     return (
       <Link key={id} className={styles.navI} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
-        <span className={styles.mono}>{doorWord(id)}</span>
         {a.greek && <span lang="grc">{a.greek}</span>}
-        <span className="visually-hidden">: {a.name}</span>
+        <span className={styles.mono}>{doorWord(id)}</span>
       </Link>
     );
   };
@@ -133,7 +132,7 @@ export default function Header() {
         </button>
         {/* while the forum is closed Mine is a door beside the mark, so its small button stands down */}
         {FORUM_OPEN && (
-          <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="Mine: bookmarks and notes" title="Mine: bookmarks and notes"
+          <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="The Treasury: bookmarks and notes" title="The Treasury: bookmarks and notes"
             aria-current={current(pathname, "treasury") ? "page" : undefined}>
             <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
           </Link>
@@ -149,8 +148,8 @@ export default function Header() {
             {MENU_DOORS.map((id) => (
               <li key={id}>
                 <Link href={AREAS[id].href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
+                  {AREAS[id].greek && <span className={styles.menuName} lang="grc">{AREAS[id].greek}</span>}
                   <span className={styles.mono}>{doorWord(id)}</span>
-                  <span className={styles.menuName}>{AREAS[id].name}{AREAS[id].greek && <> · <span lang="grc">{AREAS[id].greek}</span></>}</span>
                 </Link>
               </li>
             ))}

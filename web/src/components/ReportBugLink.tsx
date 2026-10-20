@@ -1,6 +1,6 @@
 "use client";
 /**
- * "Report a bug": opens the Town Hall's bug form with the page you were on already filled in
+ * "Report a bug": opens the Agora's bug form with the page you were on already filled in
  * (and, from the error page, the message it showed).
  */
 import Link from "next/link";

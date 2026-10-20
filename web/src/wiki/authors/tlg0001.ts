@@ -27,7 +27,7 @@ Almost nothing about him is certain.[^1] What we have are two short ancient *Liv
 
 {legend} The *Lives* tell a story. While still young, Apollonius recited the *Argonautica* at Alexandria and it failed; ashamed, he left for Rhodes, polished the poem, recited it again to great acclaim, and was made a citizen; the first *Life* says that he then called himself a Rhodian in the poem's title, the second that he is called the Rhodian because he made his home and taught there. “Some say”, the second *Life* adds, that he came back to Alexandria, was put in charge of the libraries, and was buried next to Callimachus.[^6,5] Ancient biographers liked to send poets into exile, and the scholar Mary Lefkowitz argues that these tales were probably invented to explain why there were two editions of the poem; the name “of Rhodes” may only mean that he wrote a poem about the island.[^1]
 
-{debated} Then there is the quarrel. The *Suda*'s entry on Callimachus says that his lost poem *Ibis* was aimed «εἴϲ τινα Ἴβον, γενόμενον ἐχθρὸν τοῦ Καλλιμάχου· ἦν δὲ οὗτοϲ Ἀπολλώνιοϲ, ὁ γράψαϲ τὰ Ἀργοναυτικά», “at a certain Ibis, who had become Callimachus' enemy; this was Apollonius, who wrote the Argonautica” (our translation).[^11] An epigram under the name of “Apollonius the grammarian” mocks Callimachus and his *Aetia* (“Causes”): «Καλλίμαχος τὸ κάθαρμα, τὸ παίγνιον, ὁ ξύλινος νοῦς», “Callimachus the scum, the plaything, the wooden brain” (our translation).[^12,1] In 1912 George Mooney, whose Greek text the Scroll uses, wrote that their feud “stands out as the most bitter in the ancient world of letters”.[^5] Most scholars now think it has been greatly exaggerated, if it happened at all: both *Lives* stress the two poets' friendship, the *Ibis* was meant to be obscure, and the epigram may be by another Apollonius.[^1]
+{debated} Then there is the quarrel. The *Suda*'s entry on Callimachus says that his lost poem *Ibis* was aimed «εἴϲ τινα Ἴβον, γενόμενον ἐχθρὸν τοῦ Καλλιμάχου· ἦν δὲ οὗτοϲ Ἀπολλώνιοϲ, ὁ γράψαϲ τὰ Ἀργοναυτικά», “at a certain Ibis, who had become Callimachus' enemy; this was Apollonius, who wrote the Argonautica” (our translation).[^11] An epigram under the name of “Apollonius the grammarian” mocks Callimachus and his *Aetia* (“Causes”): «Καλλίμαχος τὸ κάθαρμα, τὸ παίγνιον, ὁ ξύλινος νοῦς», “Callimachus the scum, the plaything, the wooden brain” (our translation).[^12,1] In 1912 George Mooney, whose Greek text the reader uses, wrote that their feud “stands out as the most bitter in the ancient world of letters”.[^5] Most scholars now think it has been greatly exaggerated, if it happened at all: both *Lives* stress the two poets' friendship, the *Ibis* was meant to be obscure, and the epigram may be by another Apollonius.[^1]
 
 ### A scholar's poem
 
@@ -63,7 +63,7 @@ Roman poets read him closely. Varro of Atax, who died about 35 BC, put the *Argo
     { year: 1521, kind: "print", what: "The Aldine edition at Venice", src: [5, 31] },
     { year: 1780, kind: "print", what: "Brunck's edition at Strasbourg, the first truly critical text", src: [5] },
     { year: 1854, kind: "print", what: "Merkel's edition, with Keil's text of the scholia in L", src: [31] },
-    { year: 1912, kind: "print", what: "Mooney's edition with commentary (the Greek in the Scroll) and Seaton's Loeb translation", src: [33, 31] },
+    { year: 1912, kind: "print", what: "Mooney's edition with commentary (the Greek in the reader) and Seaton's Loeb translation", src: [33, 31] },
     { year: 1935, kind: "print", what: "Carl Wendel's edition of the ancient scholia", src: [2] },
     { year: 1961, kind: "print", what: "Hermann Fränkel's Oxford Classical Text", src: [34, 35] },
     { year: 1974, kind: "print", what: "Francis Vian's Budé edition, with Émile Delage's French translation, begins (complete 1981)", src: [2, 36] },
@@ -80,14 +80,14 @@ Roman poets read him closely. Varro of Atax, who died about 35 BC, put the *Argo
 
   variants: `**Two editions?** In six places in Book 1 the scholia quote a different text from a προέκδοσις, an “earlier edition”.[^5] At line 515, for instance, the Argonauts sit spellbound by Orpheus' song, «κηληθμῷ· τοῖόν σφιν ἐνέλλιπε θέλκτρον ἀοιδῆς»; our text then has them pour a drink-offering and go to sleep (516–518), before dawn comes and the helmsman Tiphys wakes them. In the earlier edition, the scholia say, the poem went straight from line 515 to four other lines: at the third dawn a wind came from Zeus and Tiphys called the crew aboard; the text then went on at our line 524, so our lines 516–523 were not there.[^5,22] In another place (788–789) the earlier text sat Jason on a δίφραξ, a very rare word for a woman's chair, where ours has the Homeric «κλισμῷ».[^5,38] Mooney and Seaton took the earlier edition to be the poet's own earlier version; Lefkowitz thinks the ancient story of a failed first reading was invented to explain it.[^5,31,1]
 
-**“Your” oracle or a “true” one?** In line 8 of Book 1 the poet, still speaking to Phoebus Apollo, says that Jason came «τεὴν κατὰ βάξιν», “according to your word”, meaning the oracle Pelias had heard. Almost every critic suspected τεήν; Merkel proposed ἐτεήν, “true”, and Seaton's Loeb translates “in accordance with that true report”. Mooney, whose text the Scroll prints, kept the manuscripts' reading: the poet, he argued, wants to show Apollo's hand in the whole voyage.[^5,31,39]
+**“Your” oracle or a “true” one?** In line 8 of Book 1 the poet, still speaking to Phoebus Apollo, says that Jason came «τεὴν κατὰ βάξιν», “according to your word”, meaning the oracle Pelias had heard. Almost every critic suspected τεήν; Merkel proposed ἐτεήν, “true”, and Seaton's Loeb translates “in accordance with that true report”. Mooney, whose text the reader prints, kept the manuscripts' reading: the poet, he argued, wants to show Apollo's hand in the whole voyage.[^5,31,39]
 
-**Two missing lines.** In Book 4 the Scroll's numbering jumps from line 543 to 546. A line about the hero Hyllus (τυτθὸς ἐών ποτ᾽ ἔναιεν, “he lived there as a small boy”) stands in a different place in different manuscripts; L, the tenth-century manuscript in Florence, has it in the margin, with letters to show where it belongs. Brunck printed an arrangement he found in a book by Cardinal Angelus Quirinus, which made two extra lines, 544–545. Later editions kept Brunck's numbering, but, Mooney wrote in 1912, no modern editor had followed his text.[^5,40]
+**Two missing lines.** In Book 4 the reader's numbering jumps from line 543 to 546. A line about the hero Hyllus (τυτθὸς ἐών ποτ᾽ ἔναιεν, “he lived there as a small boy”) stands in a different place in different manuscripts; L, the tenth-century manuscript in Florence, has it in the margin, with letters to show where it belongs. Brunck printed an arrangement he found in a book by Cardinal Angelus Quirinus, which made two extra lines, 544–545. Later editions kept Brunck's numbering, but, Mooney wrote in 1912, no modern editor had followed his text.[^5,40]
 
 **An editor's correction.** In line 18 of Book 1 the manuscripts say that the old singers ἔτι κλείουσιν, “still celebrate”, the building of the Argo. Brunck changed it to ἐπικλείουσιν, and Seaton and Mooney both print his correction: «νῆα μὲν οὖν οἱ πρόσθεν ἐπικλείουσιν ἀοιδοὶ».[^5,31,39]`,
 
   editions: [
-    { text: "G. W. Mooney, *The Argonautica of Apollonius Rhodius*, edited with introduction and commentary (London: Longmans, Green, 1912).[^33,5]", note: "The Greek text in the Scroll. Not a translation: a Greek text with notes in English." },
+    { text: "G. W. Mooney, *The Argonautica of Apollonius Rhodius*, edited with introduction and commentary (London: Longmans, Green, 1912).[^33,5]", note: "The Greek text in the reader. Not a translation: a Greek text with notes in English." },
     { text: "R. C. Seaton, *Apollonius Rhodius: The Argonautica* (Loeb Classical Library 1; London: Heinemann, 1912).[^31]", note: "Greek text with a prose translation, reprinted many times; also on the Internet Archive." },
     { text: "H. Fränkel, *Apollonii Rhodii Argonautica* (Oxford Classical Texts; Oxford, 1961).[^34,35]", note: "The standard Oxford Greek text." },
     { text: "F. Vian, *Apollonios de Rhodes: Argonautiques*, translated by É. Delage (the last volume by Delage and Vian), 3 vols (Collection Budé; Paris: Les Belles Lettres, 1974–81).[^2,36]", note: "Greek text, French translation and notes." },
@@ -103,23 +103,23 @@ Roman poets read him closely. Varro of Atax, who died about 35 BC, put the *Argo
     { label: "Peter Hulse, Apollonius, Argonautica Book 4, Dickinson College Commentaries: Reception of the Argonautica (ancient commentators, the papyri, Roman imitators)", url: "https://dcc.dickinson.edu/node/29983" },
     { label: "G. W. Mooney, The Argonautica of Apollonius Rhodius (London: Longmans, Green, 1912), Internet Archive: the introduction (life, manuscripts, scholia, editions), the commentary on 1.8 and 1.18, and Appendix I, The Double Recension", url: "https://archive.org/details/argonauticaedite00apoluoft" },
     { label: "Attalus.org, Lives of Apollonius of Rhodes (the two lives from the scholia, from Wendel's text) and the list of the Library's directors, P.Oxy. 1241, in English", url: "http://www.attalus.org/poetry/lives.html" },
-    { label: "The Suda, entry α 3419, Apollonius (Adler's numbering), in the Scroll", cite: { work: "tlg9010.tlg001", ref: "1.A.3419" } },
-    { label: "Strabo, Geography 14.2.13, in the Scroll", cite: { work: "tlg0099.tlg001", ref: "14.2.13" } },
-    { label: "Athenaeus, The Deipnosophists 7.19 (Kaibel's numbering; Casaubon 7.283), quoting the Foundation of Naucratis, in the Scroll", cite: { work: "tlg0008.tlg001", ref: "7.19" } },
-    { label: "Aelian, On the Nature of Animals 15.23, in the Scroll", cite: { work: "tlg0545.tlg001", ref: "15.23" } },
-    { label: "The Suda, entry κ 227, Callimachus (Adler's numbering), in the Scroll", cite: { work: "tlg9010.tlg001", ref: "3.Κ.227" } },
-    { label: "Testimonia to Callimachus' Aetia: the epigram of “Apollonius”, Greek Anthology 11.275, in the Scroll", cite: { work: "tlg0533.tlg006", ref: "0.1" } },
-    { label: "Apollonius, Argonautica 1.1–4, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "1.1", to: "1.4" } },
+    { label: "The Suda, entry α 3419, Apollonius (Adler's numbering), in the reader", cite: { work: "tlg9010.tlg001", ref: "1.A.3419" } },
+    { label: "Strabo, Geography 14.2.13, in the reader", cite: { work: "tlg0099.tlg001", ref: "14.2.13" } },
+    { label: "Athenaeus, The Deipnosophists 7.19 (Kaibel's numbering; Casaubon 7.283), quoting the Foundation of Naucratis, in the reader", cite: { work: "tlg0008.tlg001", ref: "7.19" } },
+    { label: "Aelian, On the Nature of Animals 15.23, in the reader", cite: { work: "tlg0545.tlg001", ref: "15.23" } },
+    { label: "The Suda, entry κ 227, Callimachus (Adler's numbering), in the reader", cite: { work: "tlg9010.tlg001", ref: "3.Κ.227" } },
+    { label: "Testimonia to Callimachus' Aetia: the epigram of “Apollonius”, Greek Anthology 11.275, in the reader", cite: { work: "tlg0533.tlg006", ref: "0.1" } },
+    { label: "Apollonius, Argonautica 1.1–4, in the reader", cite: { work: "tlg0001.tlg001", ref: "1.1", to: "1.4" } },
     { label: "Peter Hulse, Apollonius, Argonautica Book 4, Dickinson College Commentaries: The Language of the Argonautica", url: "https://dcc.dickinson.edu/apollonius-argonautica/intro/language" },
-    { label: "Apollonius, Argonautica 1.1309, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "1.1309" } },
+    { label: "Apollonius, Argonautica 1.1309, in the reader", cite: { work: "tlg0001.tlg001", ref: "1.1309" } },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entries ἀμηχανία, ἄπτωτος, σχέτλιος and στύγος (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057%3Aentry%3Da)%2Fptwtos" },
-    { label: "Apollonius, Argonautica 3.1–5, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "3.1", to: "3.5" } },
-    { label: "Apollonius, Argonautica 3.284–298, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "3.284", to: "3.298" } },
-    { label: "Apollonius, Argonautica 3.744–760, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "3.744", to: "3.760" } },
-    { label: "Apollonius, Argonautica 4.445–467, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "4.445", to: "4.467" } },
-    { label: "Apollonius, Argonautica 4.1773–1781, the end of the poem, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "4.1773", to: "4.1781" } },
-    { label: "Apollonius, Argonautica 1.512–524, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "1.512", to: "1.524" } },
-    { label: "[Longinus], On the Sublime 33.4, in the Scroll (Greek only)", cite: { work: "tlg0560.tlg001", ref: "33.4" } },
+    { label: "Apollonius, Argonautica 3.1–5, in the reader", cite: { work: "tlg0001.tlg001", ref: "3.1", to: "3.5" } },
+    { label: "Apollonius, Argonautica 3.284–298, in the reader", cite: { work: "tlg0001.tlg001", ref: "3.284", to: "3.298" } },
+    { label: "Apollonius, Argonautica 3.744–760, in the reader", cite: { work: "tlg0001.tlg001", ref: "3.744", to: "3.760" } },
+    { label: "Apollonius, Argonautica 4.445–467, in the reader", cite: { work: "tlg0001.tlg001", ref: "4.445", to: "4.467" } },
+    { label: "Apollonius, Argonautica 4.1773–1781, the end of the poem, in the reader", cite: { work: "tlg0001.tlg001", ref: "4.1773", to: "4.1781" } },
+    { label: "Apollonius, Argonautica 1.512–524, in the reader", cite: { work: "tlg0001.tlg001", ref: "1.512", to: "1.524" } },
+    { label: "[Longinus], On the Sublime 33.4, in the reader (Greek only)", cite: { work: "tlg0560.tlg001", ref: "33.4" } },
     { label: "Quintilian, Institutio Oratoria 10.1.54, translated by H. E. Butler (Loeb, 1920–22), on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Quintilian/Institutio_Oratoria/10A*.html" },
     { label: "Wikipedia, Varro Atacinus (82 – about 35 BC; his Latin Argonautica)", url: "https://en.wikipedia.org/wiki/Varro_Atacinus" },
     { label: "Peter Hulse, Apollonius, Argonautica Book 4, Dickinson College Commentaries: Ancient Scholarly Perspectives (Longinus, Catullus, Virgil, Macrobius)", url: "https://dcc.dickinson.edu/apollonius-argonautica/intro/scholarly-perspectives" },
@@ -129,14 +129,14 @@ Roman poets read him closely. Varro of Atax, who died about 35 BC, put the *Argo
     { label: "Biblissima, Florence, Biblioteca Medicea Laurenziana, Plut. 32.9 (tenth century; Sophocles, Aeschylus, Apollonius Rhodius)", url: "https://iiif.biblissima.fr/collections/manifest/1fdd391bd6dc0adca9472aea0d71aec3dc37e49a" },
     { label: "R. C. Seaton, Apollonius Rhodius: The Argonautica (Loeb Classical Library; London: Heinemann; first printed 1912, this copy the reprint of 1919), Internet Archive: introduction, bibliography and notes", url: "https://archive.org/details/argonautica01apol" },
     { label: "Wikipedia, List of editiones principes in Greek (Apollonius Rhodius: Florence, 1496, Laurentius de Alopa, edited by Janus Lascaris, with the scholia)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
-    { label: "The Scroll's copy of the Argonautica: its file header names its source (Mooney's edition, London: Longmans, Green, 1912)", cite: { work: "tlg0001.tlg001", ref: "1.1" } },
+    { label: "The reader's copy of the Argonautica: its file header names its source (Mooney's edition, London: Longmans, Green, 1912)", cite: { work: "tlg0001.tlg001", ref: "1.1" } },
     { label: "Wikipedia, Hermann Fränkel (his Oxford Classical Text of Apollonius, 1961)", url: "https://en.wikipedia.org/wiki/Hermann_Fr%C3%A4nkel" },
     { label: "Internet Archive, library record of Apollonii Rhodii Argonautica, ed. Hermann Fränkel (1961)", url: "https://archive.org/details/bwb_KR-524-324" },
     { label: "Open Library, record of Apollonios de Rhodes, Argonautiques, tome 2, Livre 3 (Paris: Les Belles Lettres, 1980)", url: "https://openlibrary.org/works/OL26531349W" },
     { label: "Exemplaria Classica 16 (2012), Evina Sistakou's review of W. H. Race (ed.), Apollonius Rhodius, Argonautica (Loeb Classical Library 1; Harvard University Press, 2008), on Propylaeum", url: "https://www.propylaeum.de/recensio-antiquitatis/rezensionen/zeitschriften/exemplaria-classica/16-2012/ReviewMonograph476756318" },
-    { label: "Apollonius, Argonautica 1.788–789, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "1.788", to: "1.789" } },
-    { label: "Apollonius, Argonautica 1.5–19, in the Scroll", cite: { work: "tlg0001.tlg001", ref: "1.5", to: "1.19" } },
-    { label: "Apollonius, Argonautica 4.538–548, in the Scroll (the numbering skips 544–545)", cite: { work: "tlg0001.tlg001", ref: "4.538", to: "4.548" } },
+    { label: "Apollonius, Argonautica 1.788–789, in the reader", cite: { work: "tlg0001.tlg001", ref: "1.788", to: "1.789" } },
+    { label: "Apollonius, Argonautica 1.5–19, in the reader", cite: { work: "tlg0001.tlg001", ref: "1.5", to: "1.19" } },
+    { label: "Apollonius, Argonautica 4.538–548, in the reader (the numbering skips 544–545)", cite: { work: "tlg0001.tlg001", ref: "4.538", to: "4.548" } },
     { label: "Open Library, record of R. L. Hunter (ed.), Apollonius of Rhodes: Argonautica Book III (Cambridge Greek and Latin Classics; Cambridge University Press, 1989)", url: "https://openlibrary.org/works/OL7981836W" },
     { label: "Open Library, record of R. Hunter (ed.), Apollonius of Rhodes: Argonautica Book IV (Cambridge University Press, 2015)", url: "https://openlibrary.org/works/OL21100967W" },
     { label: "Open Library, record of P. Green, The Argonautika: The Story of Jason and the Quest for the Golden Fleece (University of California Press, 1997; later printings 2007 and 2008)", url: "https://openlibrary.org/works/OL8303207W" },

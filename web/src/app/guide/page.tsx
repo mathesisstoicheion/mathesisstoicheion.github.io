@@ -12,7 +12,7 @@ export const metadata: Metadata = {
   description: `The Guide: ${FORUM_OPEN ? "ten" : "nine"} short chapters on finding, reading and searching the Greek texts, looking up words, keeping notes${FORUM_OPEN ? ", learning Greek and joining in" : " and learning Greek"}, each with a "Show me" tour of the real page.`,
 };
 
-const place = (id: AreaId) => ({ name: AREAS[id].name, greek: AREAS[id].greek, english: AREAS[id].english });
+const place = (id: AreaId) => ({ name: AREAS[id].name, greek: AREAS[id].greek });
 
 const ALL_CHAPTERS: Chapter[] = [
   {
@@ -31,10 +31,10 @@ const ALL_CHAPTERS: Chapter[] = [
     ],
   },
   {
-    id: "read", title: "Read in the Scroll", place: place("reader"),
+    id: "read", title: "Read a text", place: place("reader"),
     text: [
-      "A work opens in the Scroll with the Greek on one side and the English on the other, passage by passage. You can read one column alone, choose another edition or translation, and go straight to any passage by its reference.",
-      "If a translation leaves a passage out, the Scroll says so: it is not a fault in the site.",
+      "A work opens in the reader with the Greek on one side and the English on the other, passage by passage. You can read one column alone, choose another edition or translation, and go straight to any passage by its reference.",
+      "If a translation leaves a passage out, the reader says so: it is not a fault in the site.",
     ],
   },
   {
@@ -77,7 +77,7 @@ const ALL_CHAPTERS: Chapter[] = [
   {
     id: "talk", title: "Ask and argue", place: place("forum"),
     text: [
-      "In the Town Hall you can ask about a passage, share what you are reading, or suggest an idea for the site. In the Pnyx members propose a motion, argue it and vote.",
+      "In the Agora you can ask about a passage, share what you are reading, or suggest an idea for the site. In the Pnyx members propose a motion, argue it and vote.",
       "Reading needs no account; to write, sign in or join for free.",
     ],
     also: { label: "Open the Pnyx", href: AREAS.debates.href },

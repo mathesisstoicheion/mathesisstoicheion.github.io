@@ -3,12 +3,12 @@ import { FORUM_OPEN } from "../src/config/areas";
 
 test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
 
-// The Town Hall and the Pnyx read from Supabase, so these need internet, like the reader's tests.
+// The Agora and the Pnyx read from Supabase, so these need internet, like the reader's tests.
 
-test("the Town Hall can be read without an account, and explains its rules", async ({ page }) => {
+test("the Agora can be read without an account, and explains its rules", async ({ page }) => {
   await page.goto("/town-hall");
   await expect(page.getByRole("button", { name: /^Grammar help/ })).toBeVisible();
-  await expect(page.getByRole("heading", { name: "The rules of the Town Hall" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "The rules of the Agora" })).toBeVisible();
   await expect(page.getByText(/to start a thread or reply/)).toBeVisible();
   await page.getByRole("button", { name: /^Grammar help/ }).click();
   await expect(page).toHaveURL(/[?&]c=grammar/);
@@ -35,10 +35,10 @@ test("a wiki entry offers to debate it in the Pnyx", async ({ page }) => {
   await expect(page.getByRole("link", { name: "Debate this in the Pnyx →" })).toHaveAttribute("href", "/town-hall/pnyx?from=melos#propose");
 });
 
-test("Ask in the forum carries the passage from the reader to a new thread", async ({ page }) => {
+test("Ask in the Agora carries the passage from the reader to a new thread", async ({ page }) => {
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await page.locator('[data-row="1.1"]').click();
-  await page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name: "Ask in the forum" }).click();
+  await page.getByRole("toolbar", { name: "Passage actions" }).getByRole("button", { name: "Ask in the Agora" }).click();
   await expect(page).toHaveURL(/\/town-hall\/new\?ask=1/);
   await expect(page.locator("figure blockquote").first()).toContainText("μῆνιν");
   await expect(page.getByRole("link", { name: /1\.1/ }).first()).toHaveAttribute("href", /\/read\?w=tlg0012\.tlg001/);

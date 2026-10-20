@@ -27,17 +27,17 @@ export default function Member() {
   const p = got.data?.p;
   const ts = got.data?.ts ?? [];
 
-  if (!id) return <div className="wrap"><p className="notice">No member was named. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
+  if (!id) return <div className="wrap"><p className="notice">No member was named. <Link href="/town-hall">Back to the Agora</Link></p></div>;
   if (got.error && !got.data) return <p className={`wrap ${styles.error}`}>{problem(got.error)}</p>;
   if (p === undefined) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> One moment…</div>;
-  if (!p) return <p className={`wrap ${styles.status}`}>No such member. <Link href="/town-hall">Back to the Town Hall</Link></p>;
+  if (!p) return <p className={`wrap ${styles.status}`}>No such member. <Link href="/town-hall">Back to the Agora</Link></p>;
   const mod = isModerator(account.profile);
   const me = account.session?.user.id === p.id;
   return (
     <div className={`wrap ${styles.narrow}`}>
-      <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / Member</p>
+      <p className={styles.crumbs}><Link href="/town-hall">The Agora</Link> / Member</p>
       <section className={styles.card}>
-        <p className="label">{p.role === "moderator" ? "Moderator of the Town Hall" : "Member of the Town Hall"}</p>
+        <p className="label">{p.role === "moderator" ? "Moderator of the Agora" : "Member of the Agora"}</p>
         <h2>{p.display_name}</h2>
         <p className={styles.small}>Member since {new Date(p.created_at).toLocaleDateString("en-GB", { month: "long", year: "numeric" })}</p>
         {p.bio ? <PostText text={p.bio} /> : <p className="muted">{me ? "You have not written about yourself yet." : "Nothing written here yet."}</p>}

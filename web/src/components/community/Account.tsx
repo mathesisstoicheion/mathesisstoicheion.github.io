@@ -2,7 +2,7 @@
 /**
  * Your account: join (display name, email, password), sign in, a forgotten password, and once
  * signed in your public profile and signing out. Reading the site never needs an account; only
- * the Town Hall and the Pnyx do, and syncing your Treasury between devices.
+ * the Agora and the Pnyx do, and syncing your Treasury between devices.
  */
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -10,7 +10,7 @@ import { Suspense, useEffect, useState } from "react";
 import { isBanned, isModerator, problem, supabase, useAccount } from "@/lib/community/client";
 import { updateProfile } from "@/lib/community/data";
 import { useHidden, useHiddenPeople } from "@/lib/community/hidden";
-import { FORUM_OPEN } from "@/config/areas";
+import { AREAS, FORUM_OPEN } from "@/config/areas";
 import styles from "./Community.module.css";
 import PageHead from "@/components/PageHead";
 
@@ -27,8 +27,8 @@ export default function Account() {
   return (
     <>
       <div className={`wrap ${styles.signedOutHead}`}>
-        <PageHead bare path={[{ label: "Mine", href: "/treasury" }, { label: "Account" }]} title={title}
-          purpose={FORUM_OPEN ? "Your membership of the Town Hall: sign in or join to write there, and choose the name others see."
+        <PageHead bare path={[{ label: AREAS.treasury.name, href: AREAS.treasury.href }, { label: "Account" }]} title={title}
+          purpose={FORUM_OPEN ? "Your membership of the Agora: sign in or join to write there, and choose the name others see."
             : "Sign in or join to keep your Treasury in step between devices."} />
       </div>
       <Suspense>
@@ -134,7 +134,7 @@ function SignIn({ next }: { next: string | null }) {
         {mode === "join" && FORUM_OPEN && (
           <label className={styles.check}>
             <input type="checkbox" checked={agree} onChange={(e) => setAgree(e.target.checked)} required />
-            <span>I will keep the <Link href="/town-hall#rules" target="_blank">rules of the Town Hall</Link>: argue the idea, not the person.</span>
+            <span>I will keep the <Link href="/town-hall#rules" target="_blank">rules of the Agora</Link>: argue the idea, not the person.</span>
           </label>
         )}
         {error && <p className={styles.error} role="alert">{error}</p>}
@@ -145,7 +145,7 @@ function SignIn({ next }: { next: string | null }) {
         {mode === "forgot" && <button type="button" className={styles.linkBtn} onClick={() => setMode("in")}>Back to signing in</button>}
       </form>
       <p className={styles.fine}>
-        {FORUM_OPEN ? "An account is needed only to write in the Town Hall and the Pnyx, and to keep your Treasury in step between devices."
+        {FORUM_OPEN ? "An account is needed only to write in the Agora and the Pnyx, and to keep your Treasury in step between devices."
           : "An account is needed only to keep your Treasury in step between devices."}
         Accounts are kept by Supabase, in the European Union; see <Link href="/credits#privacy">Privacy</Link>.
       </p>
@@ -186,7 +186,7 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
   const changed = name.trim() !== profile.display_name || bio !== profile.bio;
   return (
     <section className={styles.card}>
-      <p className="label">{!FORUM_OPEN ? "Your account" : isModerator(profile) ? "Moderator of the Town Hall" : "Member of the Town Hall"}</p>
+      <p className="label">{!FORUM_OPEN ? "Your account" : isModerator(profile) ? "Moderator of the Agora" : "Member of the Agora"}</p>
       <p className={styles.fine}>Signed in as {email} (never shown to anyone). Member since {new Date(profile.created_at).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}.</p>
       {isBanned(profile) && <p className={styles.error}>The moderator has paused your writing until {new Date(profile.banned_until!).toLocaleString("en-GB")}{profile.ban_reason ? `: ${profile.ban_reason}` : "."}</p>}
       <form className={styles.form} onSubmit={async (e) => {
@@ -207,7 +207,7 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
       </form>
       <details className={styles.danger}>
         <summary>Delete my account</summary>
-        <p>This removes your account, your profile, {FORUM_OPEN ? "everything you wrote in the Town Hall and the Pnyx, your votes" : "everything you wrote in the forum"} and your stored Treasury.
+        <p>This removes your account, your profile, {FORUM_OPEN ? "everything you wrote in the Agora and the Pnyx, your votes" : "everything you wrote in the Agora"} and your stored Treasury.
           It cannot be undone. Your notes and marks in this browser stay here.</p>
         <DeleteAccount />
       </details>

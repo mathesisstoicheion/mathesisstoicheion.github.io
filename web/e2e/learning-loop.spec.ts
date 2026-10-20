@@ -34,9 +34,9 @@ test("a lesson's real passages open in the reader, and the lesson says where to 
   await expect(page.getByText("Now read it for real")).toHaveCount(0);
   // and a way to ask about it: the first two lessons go to Beginners' questions, the rest to Grammar help
   if (FORUM_OPEN) {
-    await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
+    await expect(page.getByRole("link", { name: "Ask in the Agora" })).toHaveAttribute("href", "/town-hall/new?c=beginners");
     await page.goto("/academy/lesson/participles");
-    await expect(page.getByRole("link", { name: "Ask in the Town Hall" })).toHaveAttribute("href", "/town-hall/new?c=grammar");
+    await expect(page.getByRole("link", { name: "Ask in the Agora" })).toHaveAttribute("href", "/town-hall/new?c=grammar");
   }
 });
 
@@ -57,7 +57,7 @@ test("Words I know marks the words learned in the daily practice", async ({ page
   await expect(page.getByText(/the 1 you have reviewed successfully/)).toBeVisible();
 });
 
-test("Talk about it lists the Town Hall's questions on this page, and says how to ask one", async ({ page }) => {
+test("Talk about it lists the Agora's questions on this page, and says how to ask one", async ({ page }) => {
   test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
   // a stand-in for the forum's answer, so the test writes nothing to the real database
   const quote = (ref: string, at: string) => ({ work: "tlg0012.tlg001", ref, grc: "μῆνιν ἄειδε θεὰ", cite: `Homer, Iliad ${ref}`, href: `/read?w=tlg0012.tlg001&at=${at}` });
@@ -71,5 +71,5 @@ test("Talk about it lists the Town Hall's questions on this page, and says how t
   await expect(panel.getByRole("link", { name: "Test question about the first lines" })).toHaveAttribute("href", "/town-hall/thread?id=991");
   await expect(panel.getByText("2 replies · answered")).toBeVisible();
   await expect(panel.getByText("Test question about book five")).toHaveCount(0);
-  await expect(panel.getByText(/Ask in the forum/)).toBeVisible();
+  await expect(panel.getByText(/Ask in the Agora/)).toBeVisible();
 });

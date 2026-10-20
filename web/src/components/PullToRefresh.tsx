@@ -1,6 +1,6 @@
 "use client";
 /**
- * Pull down to refresh, on touch screens (the Town Hall and a thread): at the top of the page, a pull
+ * Pull down to refresh, on touch screens (the Agora and a thread): at the top of the page, a pull
  * brings down a ring; let go past the mark and `onPull` runs, and the ring spins until `busy` is false.
  * The browser's own pull-to-refresh (which reloads the whole page) is switched off while this is on the
  * page. Nothing changes for a mouse or a keyboard: the pages have their own ways to load more.

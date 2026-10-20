@@ -1,7 +1,7 @@
 /**
  * Aeschylus. Checked on 2026-09-30 (notes: pipeline/drafts/CHECKED.md). Left out because nothing
  * reliable could be found: the "Doric colouring" of the choral songs, the reading ἑλέναυς at
- * Agamemnon 689 (both Greek texts in the Scroll print ἑλένας), the exact lines M has lost from the
+ * Agamemnon 689 (both Greek texts in the reader print ἑλένας), the exact lines M has lost from the
  * Agamemnon, the siglum and date of each Triclinian manuscript, "among the most corrupt texts in Greek",
  * and a second Teubner edition in 1998.
  */
@@ -64,18 +64,18 @@ After his death his plays were honoured in a way no one else's were: his were th
 
 **Print.** The first printed edition came from the Aldine press at Venice in 1518. It has only six plays: its manuscripts had fused the *Agamemnon* and the *Libation Bearers*, leaving out lines 311–1066 of the *Agamemnon*. The error was first put right in 1552, in Francesco Robortello's edition at Venice.[^18]`,
 
-  variants: `**A lost opening, saved by a joke.** The *Libation Bearers* has lost its opening in M, the Medicean manuscript in Florence.[^16] Its first lines are known because Aristophanes quotes them in the *Frogs*, where “Euripides” picks at them: «ἥκω γὰρ ἐς γῆν τήνδε καὶ κατέρχομαι» “I have come to this land and I return”, he says, is saying the same thing twice.[^19] In the Scroll's Greek text of the play these opening lines are printed as the editor's additions, with gaps where words are still missing.[^20]
+  variants: `**A lost opening, saved by a joke.** The *Libation Bearers* has lost its opening in M, the Medicean manuscript in Florence.[^16] Its first lines are known because Aristophanes quotes them in the *Frogs*, where “Euripides” picks at them: «ἥκω γὰρ ἐς γῆν τήνδε καὶ κατέρχομαι» “I have come to this land and I return”, he says, is saying the same thing twice.[^19] In the reader's Greek text of the play these opening lines are printed as the editor's additions, with gaps where words are still missing.[^20]
 
 {debated} **Is *Prometheus Bound* his?** No one doubted it in antiquity. Since the nineteenth century scholars have questioned it on grounds of language, metre, vocabulary and style; Mark Griffith (1977) made the case at length, and Martin West suggested it could be the work of Aeschylus' son Euphorion, also a playwright. The question is still argued.[^21]
 
-{debated} **A new ending for *Seven against Thebes*.** The play ends with a herald announcing that Polynices must not be buried, and Antigone saying she will bury him anyway (from line 1011 in the Scroll's text).[^22] Many think this ending was written about fifty years after Aeschylus died, because Sophocles' *Antigone* had made the story popular.[^7]
+{debated} **A new ending for *Seven against Thebes*.** The play ends with a herald announcing that Polynices must not be buried, and Antigone saying she will bury him anyway (from line 1011 in the reader's text).[^22] Many think this ending was written about fifty years after Aeschylus died, because Sophocles' *Antigone* had made the story popular.[^7]
 
 **Actors' changes.** Lycurgus' law forbade actors to depart from the official text, which suggests they had been doing so.[^14]`,
 
   editions: [
-    { text: "H. W. Smyth, *Aeschylus*, 2 vols (Loeb Classical Library, 1922–26).[^23]", note: "The Greek text and the English translation of the plays in the Scroll are Perseus's copies of Smyth's." },
-    { text: "A. Sidgwick, *Aeschyli Tragoediae* (Oxford, Clarendon Press, 1902).[^23]", note: "The Scroll's second Greek text of each play." },
-    { text: "Robert Browning's translation of the *Agamemnon*.[^23]", note: "The Scroll's second English *Agamemnon*, from *The Poetical Works of Robert Browning* (London, 1889)." },
+    { text: "H. W. Smyth, *Aeschylus*, 2 vols (Loeb Classical Library, 1922–26).[^23]", note: "The Greek text and the English translation of the plays in the reader are Perseus's copies of Smyth's." },
+    { text: "A. Sidgwick, *Aeschyli Tragoediae* (Oxford, Clarendon Press, 1902).[^23]", note: "The reader's second Greek text of each play." },
+    { text: "Robert Browning's translation of the *Agamemnon*.[^23]", note: "The reader's second English *Agamemnon*, from *The Poetical Works of Robert Browning* (London, 1889)." },
     { text: "D. L. Page, *Aeschyli Septem Quae Supersunt Tragoedias* (Oxford Classical Texts, 1972).[^24]" },
     { text: "M. L. West, *Aeschyli Tragoediae* (Teubner, Stuttgart, 1990).[^25]" },
     { text: "A. H. Sommerstein, *Aeschylus*, 3 vols (Loeb Classical Library 145, 146 and 505, 2008).[^26]", note: "The third volume holds the fragments of the lost plays." },
@@ -85,28 +85,28 @@ After his death his plays were honoured in a way no one else's were: his were th
 
   sources: [
     { label: "Wikipedia, Aeschylus (his life, the plays, victories, Sicily, the Mysteries, restaging after his death)", url: "https://en.wikipedia.org/wiki/Aeschylus" },
-    { label: "Pausanias, Description of Greece 1.14.5, in the Scroll (the epitaph; Artemisium and Salamis)", cite: { work: "tlg0525.tlg001", ref: "1.14.5" } },
-    { label: "Herodotus, Histories 6.114, in the Scroll (Cynegirus at Marathon)", cite: { work: "tlg0016.tlg001", ref: "6.114.1" } },
+    { label: "Pausanias, Description of Greece 1.14.5, in the reader (the epitaph; Artemisium and Salamis)", cite: { work: "tlg0525.tlg001", ref: "1.14.5" } },
+    { label: "Herodotus, Histories 6.114, in the reader (Cynegirus at Marathon)", cite: { work: "tlg0016.tlg001", ref: "6.114.1" } },
     { label: "Wikipedia, The Persians (472 BC, Pericles, the oldest surviving play)", url: "https://en.wikipedia.org/wiki/The_Persians" },
-    { label: "Herodotus, Histories 6.21.2, in the Scroll (Phrynichus fined)", cite: { work: "tlg0016.tlg001", ref: "6.21.2" } },
-    { label: "Plutarch, Cimon 8, in the Scroll", cite: { work: "tlg0007.tlg035", ref: "8.7", to: "8.8" } },
+    { label: "Herodotus, Histories 6.21.2, in the reader (Phrynichus fined)", cite: { work: "tlg0016.tlg001", ref: "6.21.2" } },
+    { label: "Plutarch, Cimon 8, in the reader", cite: { work: "tlg0007.tlg035", ref: "8.7", to: "8.8" } },
     { label: "Wikipedia, Seven Against Thebes (467 BC; the rewritten ending)", url: "https://en.wikipedia.org/wiki/Seven_Against_Thebes" },
     { label: "Wikipedia, The Suppliants (Aeschylus) (the papyrus of 1952 and the date)", url: "https://en.wikipedia.org/wiki/The_Suppliants_(Aeschylus)" },
     { label: "Wikipedia, Oresteia (458 BC; the only surviving trilogy; Proteus)", url: "https://en.wikipedia.org/wiki/Oresteia" },
-    { label: "Aristotle, Poetics 4.16, in the Scroll", cite: { work: "tlg0086.tlg034", ref: "4.16" } },
-    { label: "Aristophanes, Frogs 924, in the Scroll", cite: { work: "tlg0019.tlg009", ref: "924" } },
-    { label: "Aeschylus, Agamemnon 685–690, in the Scroll", cite: { work: "tlg0085.tlg005", ref: "685", to: "690" } },
-    { label: "Aristotle, Nicomachean Ethics 3.1, in the Scroll", cite: { work: "tlg0086.tlg010", ref: "3.1" } },
-    { label: "Plutarch (attributed), Lives of the Ten Orators: Lycurgus, in the Scroll", cite: { work: "tlg0007.tlg121", ref: "7.1" } },
+    { label: "Aristotle, Poetics 4.16, in the reader", cite: { work: "tlg0086.tlg034", ref: "4.16" } },
+    { label: "Aristophanes, Frogs 924, in the reader", cite: { work: "tlg0019.tlg009", ref: "924" } },
+    { label: "Aeschylus, Agamemnon 685–690, in the reader", cite: { work: "tlg0085.tlg005", ref: "685", to: "690" } },
+    { label: "Aristotle, Nicomachean Ethics 3.1, in the reader", cite: { work: "tlg0086.tlg010", ref: "3.1" } },
+    { label: "Plutarch (attributed), Lives of the Ten Orators: Lycurgus, in the reader", cite: { work: "tlg0007.tlg121", ref: "7.1" } },
     { label: "Wikipedia, Library of Alexandria (Galen's story of Ptolemy III and the Athenian copies)", url: "https://en.wikipedia.org/wiki/Library_of_Alexandria" },
     { label: "Roger Pearse, Notes on the transmission of Aeschylus (after T. G. Rosenmeyer, The Art of Aeschylus, 1982)", url: "https://www.roger-pearse.com/weblog/2011/05/26/notes-on-the-transmission-of-aeschylus/" },
     { label: "Bryn Mawr Classical Review 2025.07.38, review of Edith Hall, Aeschylus: Agamemnon (Liverpool, 2024)", url: "https://bmcr.brynmawr.edu/2025/2025.07.38/" },
     { label: "Wikipedia, Editio princeps (Aeschylus, Venice 1518; Robortello 1552)", url: "https://en.wikipedia.org/wiki/Editio_princeps" },
-    { label: "Aristophanes, Frogs 1126–1174, in the Scroll", cite: { work: "tlg0019.tlg009", ref: "1126", to: "1174" } },
-    { label: "Aeschylus, Libation Bearers 1–5, in the Scroll", cite: { work: "tlg0085.tlg006", ref: "1", to: "5" } },
+    { label: "Aristophanes, Frogs 1126–1174, in the reader", cite: { work: "tlg0019.tlg009", ref: "1126", to: "1174" } },
+    { label: "Aeschylus, Libation Bearers 1–5, in the reader", cite: { work: "tlg0085.tlg006", ref: "1", to: "5" } },
     { label: "Wikipedia, Prometheus Bound (the authorship question)", url: "https://en.wikipedia.org/wiki/Prometheus_Bound" },
-    { label: "Aeschylus, Seven against Thebes 1011, in the Scroll", cite: { work: "tlg0085.tlg004", ref: "1011" } },
-    { label: "Perseus's copies of Aeschylus shown in the Scroll: each file's header names its edition (Smyth, Heinemann 1922 and 1926; Sidgwick, Clarendon Press 1902; Browning, Smith, Elder 1889)", cite: { work: "tlg0085.tlg002", ref: "1" } },
+    { label: "Aeschylus, Seven against Thebes 1011, in the reader", cite: { work: "tlg0085.tlg004", ref: "1011" } },
+    { label: "Perseus's copies of Aeschylus shown in the reader: each file's header names its edition (Smyth, Heinemann 1922 and 1926; Sidgwick, Clarendon Press 1902; Browning, Smith, Elder 1889)", cite: { work: "tlg0085.tlg002", ref: "1" } },
     { label: "Oxford University Press, Aeschylus, Septem Quae Supersunt Tragoediae (Page, Oxford Classical Texts)", url: "https://global.oup.com/academic/product/septem-quae-supersunt-tragoediae-9780198145707" },
     { label: "The Classical Review 42.2 (1992), “The New Teubner Aeschylus”: review of M. L. West, Aeschyli Tragoediae (Stuttgart, 1990)", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/the-new-teubner-aeschylus-westmartin-l-aeschyli-tragoediae-bibl-teubneriana-pp-lxxxv-508-stuttgart-b-g-teubner-1990-dm-195-westmartin-l-studies-in-aeschylus-beitrage-zur-altertumskunde-1-pp-x-408-stuttgart-b-g-teubner-1990-dm-184/3A5ACBC33DBE5EDA49B0244C9515CE87" },
     { label: "Harvard University Press, Aeschylus I: Persians, Seven against Thebes, Suppliants, Prometheus Bound (Sommerstein, Loeb Classical Library 145, 2008)", url: "https://www.hup.harvard.edu/books/9780674996274" },

@@ -42,7 +42,7 @@ test("an offline phone says so under the header", async ({ page, context }) => {
   await expect(sign).toBeHidden({ timeout: 20_000 });
 });
 
-test("pull down to refresh the Town Hall", async ({ page }) => {
+test("pull down to refresh the Agora", async ({ page }) => {
   test.skip(!FORUM_OPEN, "the forum is closed (FORUM_OPEN in src/config/areas.ts)");
   await page.goto("/town-hall");
   await expect(page.getByText(/Gathering the conversations|Latest activity/).first()).toBeVisible();

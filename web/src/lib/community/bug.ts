@@ -1,5 +1,5 @@
 /**
- * A bug report as a Town Hall thread: the member's answers to three questions, plus the page and a
+ * A bug report as a Agora thread: the member's answers to three questions, plus the page and a
  * plain description of the browser (both shown in the form, where they can be changed or removed,
  * before anything is sent).
  */

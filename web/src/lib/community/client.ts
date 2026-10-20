@@ -1,6 +1,6 @@
 "use client";
 /**
- * The connection to Supabase (accounts, the Town Hall, the Pnyx). The signed-in member, and the
+ * The connection to Supabase (accounts, the Agora, the Pnyx). The signed-in member, and the
  * privacy rules for when Supabase is contacted, are in ./account (re-exported here).
  */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";

@@ -37,7 +37,7 @@ At the festival of the Lenaea in the winter of 316 BC his *Dyskolos* won first p
 
 No one copied his plays in the Middle Ages, or no such copy survives: there are no Byzantine manuscripts of them.[^3] Until the end of the nineteenth century he was known only from lines quoted by other writers.[^1] Then papyri began to turn up in Egypt. A book of his plays copied in the fifth century AD gave large parts of three comedies: *The Arbitration* (*Epitrepontes*), *The Girl with her Hair Cut Short* (*Perikeiromene*) and *The Girl from Samos* (*Samia*).[^14,15] In 1958 came the great prize, the *Dyskolos*, from a papyrus book said to have been bought in Egypt for the collector Martin Bodmer.[^16,17] Of about 969 lines only about nine are missing, so it is the one comedy of Menander, and of the whole of New Comedy, that we can read almost whole.[^18] The same book has also given us large parts of the *Samia* and about half of *The Shield* (*Aspis*), published in 1969.[^16,1]
 
-Then there is the collection called the *Sententiae*, or *One-line maxims*: several hundred single lines of moral advice that went about under his name.[^19,15] The Scroll's Greek text of it is printed from Manfred Ullmann's book on the Arabic versions of these “so-called” sayings of Menander,[^20] and many of the lines are not his at all.[^21,15]
+Then there is the collection called the *Sententiae*, or *One-line maxims*: several hundred single lines of moral advice that went about under his name.[^19,15] The reader's Greek text of it is printed from Manfred Ullmann's book on the Arabic versions of these “so-called” sayings of Menander,[^20] and many of the lines are not his at all.[^21,15]
 
 ### Reading Menander
 
@@ -70,7 +70,7 @@ Rome learned comedy from him. A papyrus of Menander's *Double Deceiver* (*Dis Ex
     { year: 1907, kind: "print", what: "Gustave Lefebvre publishes the Cairo codex (revised, with photographs, in 1911)", src: [15, 31, 14] },
     { year: 1921, kind: "print", what: "F. G. Allinson's single-volume Loeb Menander", src: [15, 12] },
     { year: 1958, kind: "print", what: "Victor Martin publishes the *Dyskolos* from the Bodmer papyrus", src: [16, 18] },
-    { year: 1961, kind: "print", what: "Manfred Ullmann publishes the Arabic tradition of the *Sententiae*, with the Greek lines (the text in the Scroll)", src: [20] },
+    { year: 1961, kind: "print", what: "Manfred Ullmann publishes the Arabic tradition of the *Sententiae*, with the Greek lines (the text in the reader)", src: [20] },
     { year: 1969, kind: "print", what: "Rodolphe Kasser and Colin Austin publish the *Samia* and the *Aspis* from the same book", src: [16] },
     { year: 1972, kind: "print", what: "F. H. Sandbach's Oxford Classical Text (second edition 1990)", src: [32, 33] },
     { year: 1979, kind: "print", what: "W. G. Arnott's three-volume Loeb begins (completed in 2000)", src: [12, 35] },
@@ -94,12 +94,12 @@ Rome learned comedy from him. A papyrus of Menander's *Double Deceiver* (*Dis Ex
 
 **Against the papyrus.** At *Dyskolos* 430 and after, the Bodmer papyrus explicitly gives some lines to the slave Getas; the Oxford text and Arnott both give them to Sostratos' mother instead.[^34]
 
-{debated} **Whose line did Paul quote?** «φθείρουσιν ἤθη χρηστὰ ὁμιλίαι κακαί» is usually given to Menander's *Thais*,[^1] but the ancient writers were not sure. Clement of Alexandria says that here Paul «ἰαμβείῳ συγκέχρηται τραγικῷ», “made use of a tragic iambic line” (our translation),[^37] and the church historian Socrates took the verse as proof that Paul knew “the tragedies of Euripides”.[^38] August Nauck's collection of the fragments of tragedy (1889) prints it among those of Euripides, as fragment 1024.[^39] The wording differs a little too: the New Testament text in the Scroll writes χρηστὰ in full, while Nauck's line has the shortened χρήσθ’ before ὁμιλίαι.[^26,39]
+{debated} **Whose line did Paul quote?** «φθείρουσιν ἤθη χρηστὰ ὁμιλίαι κακαί» is usually given to Menander's *Thais*,[^1] but the ancient writers were not sure. Clement of Alexandria says that here Paul «ἰαμβείῳ συγκέχρηται τραγικῷ», “made use of a tragic iambic line” (our translation),[^37] and the church historian Socrates took the verse as proof that Paul knew “the tragedies of Euripides”.[^38] August Nauck's collection of the fragments of tragedy (1889) prints it among those of Euripides, as fragment 1024.[^39] The wording differs a little too: the New Testament text in the reader writes χρηστὰ in full, while Nauck's line has the shortened χρήσθ’ before ὁμιλίαι.[^26,39]
 
-**Whose sayings?** The *One-line maxims* were never a fixed book. Allinson calls them gnomic verses “loosely attributed” to Menander, and notes that various other Byzantine anthologies were current.[^15] A Syriac collection of sayings of “Menander the Wise” is probably a translation from a lost Greek original,[^21] and Ullmann's book on the Arabic versions calls them the “so-called” sentences of Menander.[^20] The Scroll has three Greek texts from Ullmann's book: two follow two versions of the Arabic collection, and the third follows lines in a poem of Gregory of Nazianzus (his *Carmen morale* 30).[^20]`,
+**Whose sayings?** The *One-line maxims* were never a fixed book. Allinson calls them gnomic verses “loosely attributed” to Menander, and notes that various other Byzantine anthologies were current.[^15] A Syriac collection of sayings of “Menander the Wise” is probably a translation from a lost Greek original,[^21] and Ullmann's book on the Arabic versions calls them the “so-called” sentences of Menander.[^20] The reader has three Greek texts from Ullmann's book: two follow two versions of the Arabic collection, and the third follows lines in a poem of Gregory of Nazianzus (his *Carmen morale* 30).[^20]`,
 
   editions: [
-    { text: "M. Ullmann, *Die arabische Überlieferung der sogenannten Menandersentenzen* (Wiesbaden: Franz Steiner, 1961), pp. 17–59, 64–73 and 77–80.[^20]", note: "The Greek lines in the Scroll, printed beside the Arabic tradition." },
+    { text: "M. Ullmann, *Die arabische Überlieferung der sogenannten Menandersentenzen* (Wiesbaden: Franz Steiner, 1961), pp. 17–59, 64–73 and 77–80.[^20]", note: "The Greek lines in the reader, printed beside the Arabic tradition." },
     { text: "V. Martin, *Papyrus Bodmer IV. Ménandre: Le Dyscolos* (Cologny-Genève: Bibliotheca Bodmeriana, 1958).[^16]", note: "The first edition of the one nearly complete play." },
     { text: "F. H. Sandbach, *Menandri Reliquiae Selectae* (Oxford Classical Texts, 1972; second edition with a new appendix, 1990).[^32,33,34]", note: "The Greek text of the plays; the first edition had eighteen of them." },
     { text: "A. W. Gomme and F. H. Sandbach, *Menander: A Commentary* (Oxford University Press, 1973).[^40]", note: "A commentary in English on the plays." },
@@ -117,28 +117,28 @@ Rome learned comedy from him. A papyrus of Menander's *Double Deceiver* (*Dis Ex
     { label: "Aulus Gellius, Attic Nights 17.4, Latin text, on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/L/Roman/Texts/Gellius/17*.html" },
     { label: "Attalus.org, Apollodorus of Athens, Chronicle, fragment 43 (Aulus Gellius 17.4 in English)", url: "https://www.attalus.org/translate/apollodorus.html" },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon, the entries ἔφηβος and δύσκολος (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Strabo, Geography 14.1.18, in the Scroll (Epicurus and Menander ephebes together)", cite: { work: "tlg0099.tlg001", ref: "14.1.18" } },
-    { label: "Diogenes Laertius, Lives of the Philosophers 5.36, in the Scroll (Theophrastus taught Menander)", cite: { work: "tlg0004.tlg001", ref: "5.2.36" } },
+    { label: "Strabo, Geography 14.1.18, in the reader (Epicurus and Menander ephebes together)", cite: { work: "tlg0099.tlg001", ref: "14.1.18" } },
+    { label: "Diogenes Laertius, Lives of the Philosophers 5.36, in the reader (Theophrastus taught Menander)", cite: { work: "tlg0004.tlg001", ref: "5.2.36" } },
     { label: "Attalus.org, Greek Chronicles: the Parian Marble, section B 13–14 (Demetrius' laws, 317/16; Menander's first victory, 316/15)", url: "https://www.attalus.org/translate/chronicles.html" },
-    { label: "Diogenes Laertius, Lives of the Philosophers 5.79, in the Scroll (Menander nearly tried as Demetrius' friend)", cite: { work: "tlg0004.tlg001", ref: "5.5.79" } },
+    { label: "Diogenes Laertius, Lives of the Philosophers 5.79, in the reader (Menander nearly tried as Demetrius' friend)", cite: { work: "tlg0004.tlg001", ref: "5.5.79" } },
     { label: "Bryn Mawr Classical Review 1997.10.07, W. Anderson on W. G. Arnott, Menander, vol. 2 (Loeb Classical Library 459, 1996) (read in the Internet Archive's copy)", url: "https://web.archive.org/web/2024/https://bmcr.brynmawr.edu/1997/1997.10.07/" },
-    { label: "Pausanias, Description of Greece 1.2.2, in the Scroll (the grave on the road from Piraeus)", cite: { work: "tlg0525.tlg001", ref: "1.2.2" } },
+    { label: "Pausanias, Description of Greece 1.2.2, in the reader (the grave on the road from Piraeus)", cite: { work: "tlg0525.tlg001", ref: "1.2.2" } },
     { label: "Wikipedia, Cairo Codex (Menander)", url: "https://en.wikipedia.org/wiki/Cairo_Codex" },
     { label: "F. G. Allinson, Menander: The Principal Fragments (Loeb Classical Library; London: W. Heinemann; New York: G. P. Putnam's Sons, 1921), introduction (the transmission, the Cairo papyrus found in 1905, Lefebvre's editions of 1907 and 1911, the gnomic verses), Internet Archive", url: "https://archive.org/details/menanderprincipa00menauoft" },
     { label: "Bodmer Lab (University of Geneva), the Bodmer Menander codex, P.Bodmer 25 + 4 + 26: contents, date, acquisition, structure and editions", url: "https://bodmerlab.unige.ch/constellations/papyri/barcode/1072205365" },
     { label: "Dieter Harlfinger, “Warten auf Menander im Vatikan. 400 griechische Komödienverse in einer syrischen Palimpsest-Handschrift entdeckt”, Forum Classicum 1/2004 (Internet Archive copy)", url: "https://web.archive.org/web/20090508043006/http://www.forum-classicum.de/archiv104.htm" },
     { label: "Wikipedia, Dyskolos (the Lenaea of 316, the papyrus, publication in 1958, about 969 lines with about nine missing, the plot)", url: "https://en.wikipedia.org/wiki/Dyskolos" },
     { label: "Smith's Dictionary of Greek and Roman Biography and Mythology (1849), Menander (the one-line maxims; the saying ascribed to Aristophanes of Byzantium), on Perseids", url: "https://cts.perseids.org/read/pdlrefwk/viaf88890045/003/perseus-eng1/M.menander_6" },
-    { label: "Menander (pseudo-Menander), Sententiae, in the Scroll; the file headers name the source, M. Ullmann, Die arabische Überlieferung der sogenannten Menandersentenzen (Wiesbaden, 1961), pp. 17–59, 64–73 and 77–80, and the catalogue titles name the three versions", cite: { work: "tlg0541.tlg042", ref: "1.1", to: "1.28" } },
+    { label: "Menander (pseudo-Menander), Sententiae, in the reader; the file headers name the source, M. Ullmann, Die arabische Überlieferung der sogenannten Menandersentenzen (Wiesbaden, 1961), pp. 17–59, 64–73 and 77–80, and the catalogue titles name the three versions", cite: { work: "tlg0541.tlg042", ref: "1.1", to: "1.28" } },
     { label: "Gorgias Encyclopedic Dictionary of the Syriac Heritage, electronic edition: Menander, Syriac sentences of", url: "https://gedsh.bethmardutho.org/Menander-Syriac-sentences-of" },
     { label: "Greek Wikisource, Menander, Δύσκολος (the Greek text: Pan's prologue, lines 1–7; Knemon's speech, lines 713–714)", url: "https://el.wikisource.org/wiki/%CE%94%CF%8D%CF%83%CE%BA%CE%BF%CE%BB%CE%BF%CF%82" },
-    { label: "Strabo, Geography 10.5.6, in the Scroll (the law of Ceos)", cite: { work: "tlg0099.tlg001", ref: "10.5.6" } },
-    { label: "Athenaeus, Deipnosophists 13.8, in the Scroll (Menander's Arrhephoros: “the die is cast”)", cite: { work: "tlg0008.tlg001", ref: "13.8" } },
-    { label: "Plutarch, Pompey 60.2, in the Scroll (Caesar at the Rubicon)", cite: { work: "tlg0007.tlg045", ref: "60.2" } },
-    { label: "1 Corinthians 15.33–34, in the Scroll", cite: { work: "tlg0031.tlg007", ref: "15.33", to: "15.34" } },
-    { label: "Plutarch, Summary of a Comparison between Aristophanes and Menander 2–3, in the Scroll", cite: { work: "tlg0007.tlg122", ref: "2", to: "3" } },
+    { label: "Strabo, Geography 10.5.6, in the reader (the law of Ceos)", cite: { work: "tlg0099.tlg001", ref: "10.5.6" } },
+    { label: "Athenaeus, Deipnosophists 13.8, in the reader (Menander's Arrhephoros: “the die is cast”)", cite: { work: "tlg0008.tlg001", ref: "13.8" } },
+    { label: "Plutarch, Pompey 60.2, in the reader (Caesar at the Rubicon)", cite: { work: "tlg0007.tlg045", ref: "60.2" } },
+    { label: "1 Corinthians 15.33–34, in the reader", cite: { work: "tlg0031.tlg007", ref: "15.33", to: "15.34" } },
+    { label: "Plutarch, Summary of a Comparison between Aristophanes and Menander 2–3, in the reader", cite: { work: "tlg0007.tlg122", ref: "2", to: "3" } },
     { label: "Quintilian, Institutio Oratoria 10.1.69–72, translated by H. E. Butler, on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Quintilian/Institutio_Oratoria/10A*.html" },
-    { label: "Pausanias, Description of Greece 1.21.1, in the Scroll (the statue in the theatre)", cite: { work: "tlg0525.tlg001", ref: "1.21.1" } },
+    { label: "Pausanias, Description of Greece 1.21.1, in the reader (the statue in the theatre)", cite: { work: "tlg0525.tlg001", ref: "1.21.1" } },
     { label: "Suetonius, Life of Terence, translated by J. C. Rolfe, on LacusCurtius (Caesar's verses on Terence)", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Suetonius/de_Poetis/Terence*.html" },
     { label: "Internet Archive, G. Lefebvre, Fragments d'un manuscrit de Ménandre découverts et publiés (Le Caire: Institut français d'archéologie orientale, 1907)", url: "https://archive.org/details/fragmentsdunman00algoog" },
     { label: "University of Patras Library, record of F. H. Sandbach (ed.), Menandri reliquiae selectae (Oxford Classical Texts, Oxford, 1972)", url: "https://find.library.upatras.gr/Record/89346?lng=en" },
@@ -146,9 +146,9 @@ Rome learned comedy from him. A papyrus of Menander's *Double Deceiver* (*Dis Ex
     { label: "Bryn Mawr Classical Review 2001.05.16, S. Goldberg on W. G. Arnott, Menander, vol. 3 (Loeb Classical Library 460, 2000) (read in the Internet Archive's copy): Samia 96 ff. and Dyskolos 430 ff.", url: "https://web.archive.org/web/2024/https://bmcr.brynmawr.edu/2001/2001.05.16/" },
     { label: "CiNii Books, record of W. G. Arnott, Menander (Loeb Classical Library 132, 459–460; Harvard University Press and Heinemann, 1979–2000)", url: "https://ci.nii.ac.jp/ncid/BA0086792X" },
     { label: "AbeBooks, record of R. Kassel and C. Austin, Poetae Comici Graeci VI.2: Menander, Testimonia et Fragmenta apud scriptores servata (De Gruyter, 1998)", url: "https://www.abebooks.com/9783110158250/Menander-Testimonia-Fragmenta-apud-scriptores-3110158256/plp" },
-    { label: "Clement of Alexandria, Miscellanies (Stromata) 1.14.59, in the Scroll (Greek only)", cite: { work: "tlg0555.tlg004", ref: "1.14.59" } },
+    { label: "Clement of Alexandria, Miscellanies (Stromata) 1.14.59, in the reader (Greek only)", cite: { work: "tlg0555.tlg004", ref: "1.14.59" } },
     { label: "Socrates Scholasticus, Ecclesiastical History 3.16, translated by A. C. Zenos (Nicene and Post-Nicene Fathers), on New Advent", url: "https://www.newadvent.org/fathers/26013.htm" },
-    { label: "Euripides, fragment 1024 in A. Nauck, Tragicorum Graecorum Fragmenta (Teubner, 1889), in the Scroll", cite: { work: "tlg0006.tlg020", ref: "1024" } },
+    { label: "Euripides, fragment 1024 in A. Nauck, Tragicorum Graecorum Fragmenta (Teubner, 1889), in the reader", cite: { work: "tlg0006.tlg020", ref: "1024" } },
     { label: "Internet Archive, library record of A. W. Gomme and F. H. Sandbach, Menander: A Commentary (London: Oxford University Press, 1973)", url: "https://archive.org/details/menandercommenta0000gomm" },
     { label: "ELTE University Library (Budapest), record of S. Jaekel (ed.), Menandri Sententiae; Comparatio Menandri et Philistionis (Leipzig: Teubner, 1964)", url: "https://opac.elte.hu/Record/opac-EUL01-000238704/StaffView" },
     { label: "Internet Archive, library record of Menander, Plays and Fragments, translated by N. P. Miller (London and New York: Penguin, 1987)", url: "https://archive.org/details/playsfragments0000mena" },

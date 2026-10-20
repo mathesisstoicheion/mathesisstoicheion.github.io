@@ -6,7 +6,7 @@
  * speaker only with a dash or a double point; the prize won by the Babylonians (Wikipedia gives two
  * different years for it); the producer of the Banqueters by name; the prize of the Wasps; the exact year
  * of the Assemblywomen (sources say 392 or 391); Sommerstein's publisher; and an "ancient summary" saying
- * the revision of the Clouds was never finished (the summaries are not in the Scroll's text).
+ * the revision of the Clouds was never finished (the summaries are not in the reader's text).
  */
 import type { AuthorArticle } from "../author-articles";
 
@@ -30,7 +30,7 @@ The *Knights* is a sustained attack on Cleon. He appears as a slave of old Demos
 
 ### The *Clouds* and Socrates
 
-The *Clouds* was staged at the City Dionysia in 423 BC and came last of the three plays that competed. One of the two plays that beat it, Ameipsias' *Connus*, also made fun of Socrates.[^12] In Aristophanes' play an old man, Strepsiades, sunk in debt, goes to Socrates' school, the “thinking-shop” of the Scroll's translation, to learn the arguments that will beat his creditors in court. He finds the philosopher hanging in a basket: “Why callest thou me, thou creature of a day?” And what is he doing up there? «ἀεροβατῶ καὶ περιφρονῶ τὸν ἥλιον», “I am walking in the air, and speculating about the sun.”[^13]
+The *Clouds* was staged at the City Dionysia in 423 BC and came last of the three plays that competed. One of the two plays that beat it, Ameipsias' *Connus*, also made fun of Socrates.[^12] In Aristophanes' play an old man, Strepsiades, sunk in debt, goes to Socrates' school, the “thinking-shop” of the reader's translation, to learn the arguments that will beat his creditors in court. He finds the philosopher hanging in a basket: “Why callest thou me, thou creature of a day?” And what is he doing up there? «ἀεροβατῶ καὶ περιφρονῶ τὸν ἥλιον», “I am walking in the air, and speculating about the sun.”[^13]
 
 Aristophanes thought it his best play. In the revised parabasis he tells the audience that he had judged them “to be clever spectators, and this to be the cleverest of my comedies”, and that he “retired from the contest defeated by vulgar fellows, though I did not deserve it”.[^7]
 
@@ -82,7 +82,7 @@ Plato puts Aristophanes at the dinner party of the *Symposium*, though how far t
     { year: 1423, kind: "copy", what: "Giovanni Aurispa brings the Ravenna manuscript to Niccolò Niccoli in Florence", src: [36] },
     { year: 1498, kind: "print", what: "First printed edition (Aldus Manutius, Venice, edited by Marcus Musurus): nine plays, with the ancient notes", src: [38] },
     { year: 1515, approx: true, kind: "print", what: "*Lysistrata* and *Women at the Thesmophoria* first printed, in Florence by the Giunti (1515 or 1516)", src: [36, 39] },
-    { year: 1906, kind: "print", what: "The revised edition of Hall and Geldart's Oxford Classical Text (1906–07), the Greek text in the Scroll", src: [42, 40] },
+    { year: 1906, kind: "print", what: "The revised edition of Hall and Geldart's Oxford Classical Text (1906–07), the Greek text in the reader", src: [42, 40] },
     { year: 2007, kind: "print", what: "N. G. Wilson's new Oxford Classical Text", src: [40] },
   ],
 
@@ -94,13 +94,13 @@ Plato puts Aristophanes at the dinner party of the *Symposium*, though how far t
 
 **Print.** In July 1498 Aldus Manutius printed at Venice the first edition of nine plays (*Wealth*, *Clouds*, *Frogs*, *Knights*, *Acharnians*, *Wasps*, *Birds*, *Peace* and *Assemblywomen*), edited by the Cretan scholar Marcus Musurus. The Greek text stands in the centre of the page, with the scholia that Musurus compiled from the ancient commentators.[^38] The two missing plays, *Lysistrata* and *Women at the Thesmophoria*, were first printed by the Giunti in Florence, using the Ravenna manuscript. Our two sources disagree on the year, 1515 or 1516.[^36,39]
 
-**Modern texts.** For a century the Oxford Classical Text was F. W. Hall and W. M. Geldart's (first published in 1900, revised in 1906–07; the Scroll uses the revised text).[^42,40] In 2007 N. G. Wilson replaced it with a new Oxford text, based on a fairly small number of chosen manuscripts.[^40]`,
+**Modern texts.** For a century the Oxford Classical Text was F. W. Hall and W. M. Geldart's (first published in 1900, revised in 1906–07; the reader uses the revised text).[^42,40] In 2007 N. G. Wilson replaced it with a new Oxford text, based on a fairly small number of chosen manuscripts.[^40]`,
 
   variants: `**Who says which line?** Deciding which character speaks each line is one of the hardest jobs for an editor of Aristophanes. Papyri and manuscripts are of little or no help, and opinions can differ widely with no way to settle them.[^40]
 
 {debated} **The Clouds we read is a second draft.** No copy of the play staged in 423 survives. What we have is a partial revision, which was afterwards circulated in written copies.[^12] The clues are in the parabasis. It complains that the first version failed,[^7] and it mentions Eupolis' *Maricas* (staged in 421) and attacks on the politician Hyperbolus, who was ostracised in about 416 (the year is uncertain). That puts the revision somewhere between about 421 and 416 BC.[^12,7] Yet the same parabasis still urges the audience to “convict the cormorant Cleon of bribery and embezzlement”, though Cleon died in 422. So that part must be left over from 423, and the revision was only partial.[^15,12]
 
-{debated} **Three lines too many?** Near the end of the *Clouds* there are three lines in which old Strepsiades admits that his son “seems to speak justly” ([Clouds 1437–1439](cts:tlg0019.tlg003:1437-1439)). Wilson's 2007 text removes these three lines as a later addition, something nobody seems to have suspected before.[^40,41] The Scroll's text, Hall and Geldart's, prints them.[^41]
+{debated} **Three lines too many?** Near the end of the *Clouds* there are three lines in which old Strepsiades admits that his son “seems to speak justly” ([Clouds 1437–1439](cts:tlg0019.tlg003:1437-1439)). Wilson's 2007 text removes these three lines as a later addition, something nobody seems to have suspected before.[^40,41] The reader's text, Hall and Geldart's, prints them.[^41]
 
 **Is the text as sound as it looks?** Aristophanes' text is often said to be better preserved than that of the tragic poets. Wilson argues that critics who defend every word of the manuscripts forget “the deterioration of texts” over almost two thousand years of copying by hand. His reviewer in BMCR agreed that the text is not in as good a state as many believe.[^40]
 
@@ -109,9 +109,9 @@ Plato puts Aristophanes at the dinner party of the *Symposium*, though how far t
 {debated} **When was the Frogs restaged?** The ancient summary says only that the play was honoured with a second production, not that it came the next year. Sommerstein has argued that it was in 404, and was used by the oligarchs who seized power that year (the Thirty) against the politician Cleophon.[^27]`,
 
   editions: [
-    { text: "F. W. Hall and W. M. Geldart, *Aristophanis Comoediae*, 2 vols (Oxford Classical Texts, 1906–07).[^42,40]", note: "The Greek text of all eleven plays in the Scroll." },
-    { text: "W. J. Hickie, *The Comedies of Aristophanes* (London, Bohn, 1853).[^42]", note: "The Scroll's English *Clouds*." },
-    { text: "Anonymous translator, in *The Complete Greek Drama*, vol. 2 (New York, Random House, 1938).[^42]", note: "The Scroll's English *Birds*." },
+    { text: "F. W. Hall and W. M. Geldart, *Aristophanis Comoediae*, 2 vols (Oxford Classical Texts, 1906–07).[^42,40]", note: "The Greek text of all eleven plays in the reader." },
+    { text: "W. J. Hickie, *The Comedies of Aristophanes* (London, Bohn, 1853).[^42]", note: "The reader's English *Clouds*." },
+    { text: "Anonymous translator, in *The Complete Greek Drama*, vol. 2 (New York, Random House, 1938).[^42]", note: "The reader's English *Birds*." },
     { text: "N. G. Wilson, *Aristophanis Fabulae*, 2 vols (Oxford Classical Texts, 2007), with his companion volume of studies, *Aristophanea* (2007).[^40]", note: "The current Oxford text." },
     { text: "A. H. Sommerstein, the plays edited with translation and commentary (1980–2002).[^40]", note: "For a time, for many scholars, the edition of reference." },
     { text: "J. Henderson, *Aristophanes*, 5 vols (Loeb Classical Library 178–180, 488 and 502, 1998–2007).[^43,2]", note: "A newly edited Greek text with an English translation and notes; the fifth volume holds the fragments of the lost plays." },
@@ -124,45 +124,45 @@ Plato puts Aristophanes at the dinner party of the *Symposium*, though how far t
     { label: "Wikipedia, Aristophanes (life, family, the forty plays, prizes and producers, Cleon, the Symposium, his sons, the list of plays and their dates, Kassel and Austin)", url: "https://en.wikipedia.org/wiki/Aristophanes" },
     { label: "Harvard University Press, Aristophanes V: Fragments (J. Henderson, Loeb Classical Library 502): over forty plays read in antiquity, nearly a thousand fragments", url: "https://www.hup.harvard.edu/books/9780674996151" },
     { label: "Wikipedia, Old Comedy (only Aristophanes' plays survive complete; the chorus of 24; plays named after the chorus)", url: "https://en.wikipedia.org/wiki/Old_Comedy" },
-    { label: "Aristophanes, Acharnians 377–382, in the Scroll (Cleon and “last year's comedy”)", cite: { work: "tlg0019.tlg001", ref: "377", to: "382" } },
+    { label: "Aristophanes, Acharnians 377–382, in the reader (Cleon and “last year's comedy”)", cite: { work: "tlg0019.tlg001", ref: "377", to: "382" } },
     { label: "Wikipedia, The Acharnians (425 BC, Callistratus, first prize at the Lenaia; the Babylonians and Cleon)", url: "https://en.wikipedia.org/wiki/The_Acharnians" },
-    { label: "Aristophanes, Acharnians 130–132, in the Scroll (the private peace)", cite: { work: "tlg0019.tlg001", ref: "130", to: "132" } },
-    { label: "Aristophanes, Clouds 518–562, in the Scroll (the parabasis)", cite: { work: "tlg0019.tlg003", ref: "518", to: "562" } },
-    { label: "Aristophanes, Knights 512–516, in the Scroll", cite: { work: "tlg0019.tlg002", ref: "512", to: "516" } },
+    { label: "Aristophanes, Acharnians 130–132, in the reader (the private peace)", cite: { work: "tlg0019.tlg001", ref: "130", to: "132" } },
+    { label: "Aristophanes, Clouds 518–562, in the reader (the parabasis)", cite: { work: "tlg0019.tlg003", ref: "518", to: "562" } },
+    { label: "Aristophanes, Knights 512–516, in the reader", cite: { work: "tlg0019.tlg002", ref: "512", to: "516" } },
     { label: "Wikipedia, The Knights (424 BC, first prize at the Lenaia; Cleon as the Paphlagonian; the mask-makers)", url: "https://en.wikipedia.org/wiki/The_Knights" },
-    { label: "Aristophanes, Knights 230–233, in the Scroll (no mask for Cleon)", cite: { work: "tlg0019.tlg002", ref: "230", to: "233" } },
-    { label: "Aristophanes, Knights 40–45, in the Scroll (Demos and his Paphlagonian tanner)", cite: { work: "tlg0019.tlg002", ref: "40", to: "45" } },
+    { label: "Aristophanes, Knights 230–233, in the reader (no mask for Cleon)", cite: { work: "tlg0019.tlg002", ref: "230", to: "233" } },
+    { label: "Aristophanes, Knights 40–45, in the reader (Demos and his Paphlagonian tanner)", cite: { work: "tlg0019.tlg002", ref: "40", to: "45" } },
     { label: "Wikipedia, The Clouds (423 BC, last of three; Ameipsias' Connus; the revision and its date; Plato and the trial of 399)", url: "https://en.wikipedia.org/wiki/The_Clouds" },
-    { label: "Aristophanes, Clouds 218–234, in the Scroll (Socrates in his basket)", cite: { work: "tlg0019.tlg003", ref: "218", to: "234" } },
-    { label: "Plato, Apology 19, in the Scroll", cite: { work: "tlg0059.tlg002", ref: "19" } },
-    { label: "Aristophanes, Clouds 591–594, in the Scroll (convict Cleon)", cite: { work: "tlg0019.tlg003", ref: "591", to: "594" } },
+    { label: "Aristophanes, Clouds 218–234, in the reader (Socrates in his basket)", cite: { work: "tlg0019.tlg003", ref: "218", to: "234" } },
+    { label: "Plato, Apology 19, in the reader", cite: { work: "tlg0059.tlg002", ref: "19" } },
+    { label: "Aristophanes, Clouds 591–594, in the reader (convict Cleon)", cite: { work: "tlg0019.tlg003", ref: "591", to: "594" } },
     { label: "Wikipedia, The Wasps (Lenaia, 422 BC; the jurymen; editors who move the second parabasis)", url: "https://en.wikipedia.org/wiki/The_Wasps" },
     { label: "Wikipedia, Peace (play) (421 BC, second prize; the Peace of Nicias; the dung beetle; Cleon's death)", url: "https://en.wikipedia.org/wiki/Peace_(play)" },
     { label: "Wikipedia, The Birds (play) (414 BC, second prize; the longest play; Cloudcuckooland)", url: "https://en.wikipedia.org/wiki/The_Birds_(play)" },
-    { label: "Aristophanes, Birds 817–821, in the Scroll (naming the city)", cite: { work: "tlg0019.tlg006", ref: "817", to: "821" } },
+    { label: "Aristophanes, Birds 817–821, in the reader (naming the city)", cite: { work: "tlg0019.tlg006", ref: "817", to: "821" } },
     { label: "Wikipedia, Lysistrata (Lenaia, 411 BC; the sex strike and the Acropolis)", url: "https://en.wikipedia.org/wiki/Lysistrata" },
-    { label: "Aristophanes, Lysistrata 120–124, in the Scroll", cite: { work: "tlg0019.tlg007", ref: "120", to: "124" } },
+    { label: "Aristophanes, Lysistrata 120–124, in the reader", cite: { work: "tlg0019.tlg007", ref: "120", to: "124" } },
     { label: "Wikipedia, Thesmophoriazusae (411 BC, probably the City Dionysia; result unknown)", url: "https://en.wikipedia.org/wiki/Thesmophoriazusae" },
     { label: "Wikipedia, The Frogs (Lenaia, 405 BC, first place; Dionysus' journey; the contest of Aeschylus and Euripides)", url: "https://en.wikipedia.org/wiki/The_Frogs" },
-    { label: "Aristophanes, Frogs 66–72, in the Scroll", cite: { work: "tlg0019.tlg009", ref: "66", to: "72" } },
-    { label: "Aristophanes, Frogs 209–210, in the Scroll (the frogs' song)", cite: { work: "tlg0019.tlg009", ref: "209", to: "210" } },
-    { label: "Aristophanes, Frogs 686–705, in the Scroll (the parabasis)", cite: { work: "tlg0019.tlg009", ref: "686", to: "705" } },
+    { label: "Aristophanes, Frogs 66–72, in the reader", cite: { work: "tlg0019.tlg009", ref: "66", to: "72" } },
+    { label: "Aristophanes, Frogs 209–210, in the reader (the frogs' song)", cite: { work: "tlg0019.tlg009", ref: "209", to: "210" } },
+    { label: "Aristophanes, Frogs 686–705, in the reader (the parabasis)", cite: { work: "tlg0019.tlg009", ref: "686", to: "705" } },
     { label: "Bryn Mawr Classical Review 2013.08.48, Ian C. Storey on Mark Griffith, Aristophanes' Frogs (Oxford, 2013): Dicaearchus, the second production, Sommerstein's date of 404", url: "https://bmcr.brynmawr.edu/2013/2013.08.48/" },
-    { label: "Aristophanes, Frogs 1418–1471, in the Scroll (Dionysus chooses)", cite: { work: "tlg0019.tlg009", ref: "1418", to: "1471" } },
-    { label: "Euripides, Hippolytus 612, in the Scroll", cite: { work: "tlg0006.tlg005", ref: "612" } },
+    { label: "Aristophanes, Frogs 1418–1471, in the reader (Dionysus chooses)", cite: { work: "tlg0019.tlg009", ref: "1418", to: "1471" } },
+    { label: "Euripides, Hippolytus 612, in the reader", cite: { work: "tlg0006.tlg005", ref: "612" } },
     { label: "Wikipedia, Assemblywomen (written in 391 BC; the women take over the government)", url: "https://en.wikipedia.org/wiki/Assemblywomen" },
     { label: "Wikipedia, Plutus (play) (Wealth, 388 BC)", url: "https://en.wikipedia.org/wiki/Plutus_(play)" },
-    { label: "Plato, Symposium 185–189, in the Scroll (the hiccough)", cite: { work: "tlg0059.tlg011", ref: "185", to: "189" } },
-    { label: "Plato, Symposium 191, in the Scroll (Aristophanes' speech)", cite: { work: "tlg0059.tlg011", ref: "191" } },
-    { label: "Plato, Symposium 221, in the Scroll (Alcibiades quotes the Clouds)", cite: { work: "tlg0059.tlg011", ref: "221" } },
+    { label: "Plato, Symposium 185–189, in the reader (the hiccough)", cite: { work: "tlg0059.tlg011", ref: "185", to: "189" } },
+    { label: "Plato, Symposium 191, in the reader (Aristophanes' speech)", cite: { work: "tlg0059.tlg011", ref: "191" } },
+    { label: "Plato, Symposium 221, in the reader (Alcibiades quotes the Clouds)", cite: { work: "tlg0059.tlg011", ref: "221" } },
     { label: "Wikipedia, Papyrus Oxyrhynchus 212 (three fragments of a comedy of Aristophanes, first or second century; found 1897)", url: "https://en.wikipedia.org/wiki/Papyrus_Oxyrhynchus_212" },
     { label: "Wikipedia, Codex Ravennas 429 (mid-tenth century; all eleven plays; Thesmophoriazusae and part of Lysistrata; Aurispa 1423; Giunti 1516; Ravenna 1712)", url: "https://en.wikipedia.org/wiki/Codex_Ravennas_429" },
     { label: "Wikipedia (German), Byzantinische Trias (the three plays read in Byzantine schools: Wealth, Clouds, Frogs)", url: "https://de.wikipedia.org/wiki/Byzantinische_Trias" },
     { label: "Bridwell Library, Southern Methodist University, “The First Printed Edition of Aristophanes” (Aldus, Venice, July 1498; Musurus; nine plays; scholia)", url: "https://bridwell.omeka.net/exhibits/show/earlygreek/classics/firstaristophanes" },
     { label: "Wikipedia, Editio princeps (Lysistrata and Thesmophoriazusae, Florence, 1515, Philippus Junta)", url: "https://en.wikipedia.org/wiki/Editio_princeps" },
     { label: "Bryn Mawr Classical Review 2008.07.50, Gauthier Liberman on N. G. Wilson, Aristophanis Fabulae (Oxford Classical Texts, 2007), in French", url: "https://bmcr.brynmawr.edu/2008/2008.07.50/" },
-    { label: "Aristophanes, Clouds 1435–1440, in the Scroll", cite: { work: "tlg0019.tlg003", ref: "1435", to: "1440" } },
-    { label: "Perseus's copies of Aristophanes shown in the Scroll: each file's header names its edition (Hall and Geldart, Clarendon Press 1906 and 1907; Hickie, Bohn 1853; anonymous translator, The Complete Greek Drama, Random House 1938)", cite: { work: "tlg0019.tlg003", ref: "1" } },
+    { label: "Aristophanes, Clouds 1435–1440, in the reader", cite: { work: "tlg0019.tlg003", ref: "1435", to: "1440" } },
+    { label: "Perseus's copies of Aristophanes shown in the reader: each file's header names its edition (Hall and Geldart, Clarendon Press 1906 and 1907; Hickie, Bohn 1853; anonymous translator, The Complete Greek Drama, Random House 1938)", cite: { work: "tlg0019.tlg003", ref: "1" } },
     { label: "Bryn Mawr Classical Review 1999.05.17, Martin Revermann on J. Henderson, Aristophanes: Acharnians, Knights (Loeb Classical Library, 1998; 5 vols, 1998–2007)", url: "https://bmcr.brynmawr.edu/1999/1999.05.17" },
     { label: "The Journal of Hellenic Studies, review of R. Kassel and C. Austin, Poetae Comici Graeci III.2: Aristophanes (de Gruyter, 1984)", url: "https://www.cambridge.org/core/journals/journal-of-hellenic-studies/article/abs/comici-poetae-comici-graeci-pcg-ed-r-kassel-and-c-austin-iii-2-aristophanes-testimonia-et-fragmenta-berlin-and-new-york-de-gruyter-1984-pp-xxvii-444-dm-198/E8250C0DFC440C9917935B21757E88E0" },
     { label: "The Classical Review, “The Clouds of Aristophanes”: review of K. J. Dover, Aristophanes, Clouds (Oxford, 1968)", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/clouds-of-aristophanes-k-j-dover-aristophanes-clouds-edited-with-introduction-and-commentary-pp-cxxviii285-oxford-clarendon-press-1968-cloth-63s-net/C5CC73CBC00B57F570B3E0A9A9863810" },

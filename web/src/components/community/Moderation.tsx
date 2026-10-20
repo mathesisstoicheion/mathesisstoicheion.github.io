@@ -45,14 +45,14 @@ export default function Moderation() {
   const error = got.error ? problem(got.error) : null;
 
   if (!account.ready || (account.session && !account.profile)) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> One moment…</div>;
-  if (!mod) return <div className="wrap"><p className="notice">This desk is for the moderator. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
+  if (!mod) return <div className="wrap"><p className="notice">This desk is for the moderator. <Link href="/town-hall">Back to the Agora</Link></p></div>;
   return (
     <div className={`wrap ${styles.narrow}`}>
-      <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / The moderator&apos;s desk</p>
+      <p className={styles.crumbs}><Link href="/town-hall">The Agora</Link> / The moderator&apos;s desk</p>
       {error && <p className={styles.error}>{error}</p>}
       <section className={styles.motions}>
         <h2>Reports {open && <small>({open.length})</small>}</h2>
-        {open?.length === 0 && <p className={styles.empty}>Nothing waiting. The Town Hall is calm.</p>}
+        {open?.length === 0 && <p className={styles.empty}>Nothing waiting. The Agora is calm.</p>}
         <ul>
           {open?.map((r) => (
             <li key={r.id}>

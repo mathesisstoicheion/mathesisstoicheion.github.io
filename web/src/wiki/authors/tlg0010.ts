@@ -91,7 +91,7 @@ Through Cicero his rhythmical sentence passed into Latin, and through Latin into
 
   variants: `**Which family to follow?** Bekker followed Γ, and Baiter and Sauppe, in their Zurich edition, followed it even more closely.[^1] The vulgate manuscripts are contaminated by notes that slipped from the margins into the text.[^1,7] Yet Γ is not always right, and Mandilaras's Teubner edition decides case by case, which in practice gives more weight to the vulgate and the papyri.[^22] {debated} That edition has itself been sharply criticised: Stefano Martinelli Tempesta advised readers not to use it, and Johannes Engels, more mildly, recommends it only with reservations.[^22]
 
-**Isocrates quoting himself.** In the *Antidosis* the clerk reads out long passages of Isocrates' earlier speeches. Γ gives these self-quotations in shortened form, while Θ and Λ copy them out in full.[^26] The Scroll's text, from Norlin's Loeb, does not print them again: at [section 66](cts:tlg0010.tlg019:66) it gives only a pointer to the passages of *On the Peace* that were read.[^28]
+**Isocrates quoting himself.** In the *Antidosis* the clerk reads out long passages of Isocrates' earlier speeches. Γ gives these self-quotations in shortened form, while Θ and Λ copy them out in full.[^26] The reader's text, from Norlin's Loeb, does not print them again: at [section 66](cts:tlg0010.tlg019:66) it gives only a pointer to the passages of *On the Peace* that were read.[^28]
 
 **Removing every hiatus.** A rule against letting vowels clash was ascribed to Isocrates, and G. E. Benseler (1851) removed every hiatus from the text, even against the best manuscript; Norlin judged that he went too far.[^7,1] Benseler also doubted two court speeches, *Against Euthynus* and the *Trapeziticus*, partly because they contain hiatus. Jebb answered that the young speech-writer need not have kept the rules of his maturity.[^7] The papyri now play a part in this debate.[^22]
 
@@ -100,7 +100,7 @@ Through Cicero his rhythmical sentence passed into Latin, and through Latin into
 {debated} **The letters and the court speeches.** Nine letters survive under his name. Wikipedia reports that four of them have been questioned,[^2] while the translator Terry Papillon and the editor Mandilaras accept all nine.[^22] Of the court speeches, *Against Euthynus* is thought by some to be spurious;[^1] in antiquity the very existence of court speeches by Isocrates was disputed, as Dionysius' reply to Aphareus shows.[^8]`,
 
   editions: [
-    { text: "G. Norlin and L. Van Hook, *Isocrates*, 3 vols (Loeb Classical Library 209, 229, 373; 1928, 1929, 1945).[^22,1,29]", note: "The Greek text and the English translation in the Scroll are Perseus's copies of these volumes." },
+    { text: "G. Norlin and L. Van Hook, *Isocrates*, 3 vols (Loeb Classical Library 209, 229, 373; 1928, 1929, 1945).[^22,1,29]", note: "The Greek text and the English translation in the reader are Perseus's copies of these volumes." },
     { text: "G. Mathieu and É. Brémond, *Isocrate: Discours*, 4 vols (Paris, Les Belles Lettres, 1928–62).[^26,22]", note: "Greek text with a French translation." },
     { text: "B. G. Mandilaras, *Isocrates: Opera omnia*, 3 vols (Bibliotheca Teubneriana, Munich and Leipzig, K. G. Saur, 2003).[^22]", note: "The newest complete critical edition, with the ancient lives, the papyri and a long list of earlier editions; its reviewers found many errors." },
     { text: "E. Drerup, *Isocratis opera omnia*, vol. 1 (Leipzig, Teubner, 1906).[^1,22]", note: "Only the first volume appeared; for the speeches it contains, Engels still counts it the first choice." },
@@ -113,33 +113,33 @@ Through Cicero his rhythmical sentence passed into Latin, and through Latin into
   sources: [
     { label: "G. Norlin, Isocrates, vol. 1 (Loeb Classical Library, London and New York, 1928), Internet Archive: the general introduction (life, school, pupils, style, Chaeronea, the third letter) and the bibliography (manuscripts, papyri, editions)", url: "https://archive.org/details/L209IsocratesIDemonicusNicocklesPanegyricusPhilipArchidamus" },
     { label: "Wikipedia, Isocrates (the Attic orators; the Phaedrus read as sarcasm; the leaders he appealed to; the doubted letters; the Renaissance)", url: "https://en.wikipedia.org/wiki/Isocrates" },
-    { label: "Plutarch (attributed), Lives of the Ten Orators: Isocrates, in the Scroll", cite: { work: "tlg0007.tlg121", ref: "4.1" } },
-    { label: "Isocrates, Antidosis 161, in the Scroll (the lost patrimony)", cite: { work: "tlg0010.tlg019", ref: "161" } },
-    { label: "Isocrates, Panathenaicus 1–11, in the Scroll (his style; his age; his voice)", cite: { work: "tlg0010.tlg021", ref: "1", to: "11" } },
-    { label: "Isocrates, To Philip 81, in the Scroll", cite: { work: "tlg0010.tlg020", ref: "81" } },
+    { label: "Plutarch (attributed), Lives of the Ten Orators: Isocrates, in the reader", cite: { work: "tlg0007.tlg121", ref: "4.1" } },
+    { label: "Isocrates, Antidosis 161, in the reader (the lost patrimony)", cite: { work: "tlg0010.tlg019", ref: "161" } },
+    { label: "Isocrates, Panathenaicus 1–11, in the reader (his style; his age; his voice)", cite: { work: "tlg0010.tlg021", ref: "1", to: "11" } },
+    { label: "Isocrates, To Philip 81, in the reader", cite: { work: "tlg0010.tlg020", ref: "81" } },
     { label: "R. C. Jebb, “Isocrates”, Encyclopædia Britannica, 11th edition, vol. 14 (1911), on Wikisource", url: "https://en.wikisource.org/wiki/1911_Encyclop%C3%A6dia_Britannica/Isocrates" },
-    { label: "Dionysius of Halicarnassus, On Isocrates 18, in the Scroll (Greek only): Aphareus, Aristotle and the booksellers", cite: { work: "tlg0081.tlg004", ref: "18" } },
+    { label: "Dionysius of Halicarnassus, On Isocrates 18, in the reader (Greek only): Aphareus, Aristotle and the booksellers", cite: { work: "tlg0081.tlg004", ref: "18" } },
     { label: "Cicero, De oratore 2.94, in Latin (The Latin Library): “cuius e ludo tamquam ex equo Troiano meri principes exierunt”", url: "https://www.thelatinlibrary.com/cicero/oratore2.shtml" },
-    { label: "Plato, Phaedrus 278–279, in the Scroll", cite: { work: "tlg0059.tlg012", ref: "278", to: "279" } },
-    { label: "Isocrates, Against the Sophists 14–15, in the Scroll", cite: { work: "tlg0010.tlg008", ref: "14", to: "15" } },
-    { label: "Isocrates, Antidosis 270–272, in the Scroll", cite: { work: "tlg0010.tlg019", ref: "270", to: "272" } },
-    { label: "Isocrates, Panegyricus 1–4, in the Scroll", cite: { work: "tlg0010.tlg011", ref: "1", to: "4" } },
-    { label: "Isocrates, Panegyricus 47–50, in the Scroll", cite: { work: "tlg0010.tlg011", ref: "47", to: "50" } },
-    { label: "Isocrates, Antidosis 4–9, in the Scroll (the lawsuit; his age)", cite: { work: "tlg0010.tlg019", ref: "4", to: "9" } },
+    { label: "Plato, Phaedrus 278–279, in the reader", cite: { work: "tlg0059.tlg012", ref: "278", to: "279" } },
+    { label: "Isocrates, Against the Sophists 14–15, in the reader", cite: { work: "tlg0010.tlg008", ref: "14", to: "15" } },
+    { label: "Isocrates, Antidosis 270–272, in the reader", cite: { work: "tlg0010.tlg019", ref: "270", to: "272" } },
+    { label: "Isocrates, Panegyricus 1–4, in the reader", cite: { work: "tlg0010.tlg011", ref: "1", to: "4" } },
+    { label: "Isocrates, Panegyricus 47–50, in the reader", cite: { work: "tlg0010.tlg011", ref: "47", to: "50" } },
+    { label: "Isocrates, Antidosis 4–9, in the reader (the lawsuit; his age)", cite: { work: "tlg0010.tlg019", ref: "4", to: "9" } },
     { label: "G. Norlin, Isocrates, vol. 2 (Loeb Classical Library, 1929), Internet Archive: the introductions to the Antidosis (354–353) and the Panathenaicus (342–339)", url: "https://archive.org/details/isocrateswitheng02isocuoft" },
-    { label: "Isocrates, Panathenaicus 266–270, in the Scroll (the illness and the finishing of the speech)", cite: { work: "tlg0010.tlg021", ref: "266", to: "270" } },
-    { label: "Dionysius of Halicarnassus, On Isocrates 2, in the Scroll (Greek only): his style", cite: { work: "tlg0081.tlg004", ref: "2" } },
-    { label: "Dionysius of Halicarnassus, On Isocrates 1, in the Scroll (Greek only): his life and death", cite: { work: "tlg0081.tlg004", ref: "1" } },
+    { label: "Isocrates, Panathenaicus 266–270, in the reader (the illness and the finishing of the speech)", cite: { work: "tlg0010.tlg021", ref: "266", to: "270" } },
+    { label: "Dionysius of Halicarnassus, On Isocrates 2, in the reader (Greek only): his style", cite: { work: "tlg0081.tlg004", ref: "2" } },
+    { label: "Dionysius of Halicarnassus, On Isocrates 1, in the reader (Greek only): his life and death", cite: { work: "tlg0081.tlg004", ref: "1" } },
     { label: "The John Milton Reading Room (Dartmouth College), Sonnet 10, from Poems (1645)", url: "https://milton.host.dartmouth.edu/reading_room/sonnets/sonnet_10/text.shtml" },
-    { label: "Isocrates, Letter 3, To Philip II, 1–6, in the Scroll", cite: { work: "tlg0010.tlg030", ref: "1", to: "6" } },
+    { label: "Isocrates, Letter 3, To Philip II, 1–6, in the reader", cite: { work: "tlg0010.tlg030", ref: "1", to: "6" } },
     { label: "J. Engels, review of B. G. Mandilaras (ed.), Isocrates. Opera omnia (2003), Exemplaria Classica 12 (2008), in German: the manuscripts, papyri, editions, the letters, and Martinelli Tempesta's verdict", url: "https://uhu.es/publicaciones/ojs/index.php/exemplaria/article/view/60/99" },
     { label: "Monash University Library, Ancient Kellis exhibition (1998), archived copy: the Kellis Isocrates Codex", url: "https://web.archive.org/web/20120420055545/http://www.lib.monash.edu.au/exhibitions/egypt/xegy.html" },
     { label: "R. Pearse, “The texts found at Kellis in the Dakhleh Oasis” (notes drawn from the Monash exhibition): the nine boards, the date, the schoolmaster", url: "https://tertullian.org/rpearse/manuscripts/kellis.htm" },
     { label: "Zenon (German Archaeological Institute), library record: The Kellis Isocrates Codex (P. Kell. III Gr. 95), ed. K. A. Worp and A. Rijksbaron (Oxford, Oxbow, 1997)", url: "https://zenon.dainst.org/Record/000189146" },
     { label: "Bryn Mawr Classical Review 2019.08.02, Francesca Berlinzani on M. Vallozza (ed.), Isocrate: per una nuova edizione critica (Olschki, 2017), in Italian", url: "https://bmcr.brynmawr.edu/?p=44199" },
     { label: "Onassis Library, Isocrates, [Λόγοι], edited by D. Chalkokondyles, Milan, Ulrich Scinzenzeler, 24 January 1493", url: "https://library.onassis.org/en/collection-items/logoi" },
-    { label: "Isocrates, Antidosis 59–66, in the Scroll (the passages read out by the clerk)", cite: { work: "tlg0010.tlg019", ref: "59", to: "66" } },
-    { label: "Perseus's copies of Isocrates shown in the Scroll: each file's header names its edition (Norlin, vol. 1, 1928, and vol. 2, 1929; Van Hook, vol. 3, 1945; Harvard University Press and Heinemann)", cite: { work: "tlg0010.tlg011", ref: "1" } },
+    { label: "Isocrates, Antidosis 59–66, in the reader (the passages read out by the clerk)", cite: { work: "tlg0010.tlg019", ref: "59", to: "66" } },
+    { label: "Perseus's copies of Isocrates shown in the reader: each file's header names its edition (Norlin, vol. 1, 1928, and vol. 2, 1929; Van Hook, vol. 3, 1945; Harvard University Press and Heinemann)", cite: { work: "tlg0010.tlg011", ref: "1" } },
     { label: "University of Texas Press, Isocrates I, translated by David C. Mirhady and Yun Lee Too (2000)", url: "https://utpress.utexas.edu/9780292752382/" },
     { label: "Bryn Mawr Classical Review 2005.02.43, Christos Kremmydas on T. L. Papillon, Isocrates II (Texas, 2004)", url: "https://bmcr.brynmawr.edu/?p=24150" },
     { label: "4CARE database, artefact 430: the Kellis Agricultural Account Book, found on 20 January 1988 with the wooden codex of Isocrates (after R. S. Bagnall, The Kellis Agricultural Account Book, 1997)", url: "https://4care-skos.mf.no/artefacts/430/" },

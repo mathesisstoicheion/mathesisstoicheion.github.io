@@ -1,6 +1,6 @@
 "use client";
 /**
- * People a member has chosen not to see in the Town Hall and the Pnyx. Kept only in this browser
+ * People a member has chosen not to see in the Agora and the Pnyx. Kept only in this browser
  * (nothing is sent, and the person is not told): their threads leave the lists, and their replies and
  * arguments fold to a line with "Show it". Managed on their member page and on the account page.
  */

@@ -1,6 +1,6 @@
 "use client";
 /**
- * Reading and writing the Town Hall and the Pnyx. Everything here goes through the database's
+ * Reading and writing the Agora and the Pnyx. Everything here goes through the database's
  * row-level security rules (supabase/migrations): what a member may not do is refused there, not
  * just hidden here.
  */
@@ -64,7 +64,7 @@ function must<T>(r: { data: T | null; error: unknown }): T {
   return r.data as T;
 }
 
-// ------------------------------------------------------------ the Town Hall
+// ------------------------------------------------------------ the Agora
 export async function categories(): Promise<Category[]> {
   return must(await supabase().from("forum_categories").select("*").order("sort"));
 }

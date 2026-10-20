@@ -20,14 +20,15 @@ test("moving between areas does not reload the page", async ({ page }) => {
   expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
 });
 
-test("the header is design A's four doors around the mark, in plain words with their Greek names, then Mine; Read is current in the library", async ({ page }) => {
+test("the header is design A's four doors around the mark, each its Greek name over its English name; the Mouseion is current in the reader", async ({ page }) => {
   await page.goto("/read");
   const header = page.locator("header").first();
   const doors = header.locator("a:has(> span[lang='grc'])");
-  expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk"] : ["Learn", "Read", "Explore", "Mine"]);
+  expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Ἀγορά"] : ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Θησαυρός"]);
+  expect(await doors.evaluateAll((as) => as.map((a) => a.children[1]?.textContent))).toEqual(FORUM_OPEN ? ["The Academy", "The Mouseion", "The Painted Stoa", "The Agora"] : ["The Academy", "The Mouseion", "The Painted Stoa", "The Treasury"]);
   await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
-  await expect(header.getByRole("link", { name: /^Learn.*: The Academy$/ })).toBeVisible();
-  if (FORUM_OPEN) await expect(header.getByRole("link", { name: "Mine: bookmarks and notes" })).toBeVisible();
+  await expect(header.getByRole("link", { name: "Ἀκαδήμεια The Academy" })).toBeVisible();
+  if (FORUM_OPEN) await expect(header.getByRole("link", { name: "The Treasury: bookmarks and notes" })).toBeVisible();
 });
 
 test("the reader's page chosen in Settings (Lamplight or Daylight) is remembered after a reload", async ({ page }) => {

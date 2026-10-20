@@ -1,6 +1,6 @@
 /**
  * Draws the Painted Stoa's markup (src/wiki/markup.ts) as React elements. Greek words in running
- * English are set in the Greek typeface; citations open the passage in the Scroll (the reader).
+ * English are set in the Greek typeface; citations open the passage in the reader.
  */
 import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
@@ -53,7 +53,7 @@ export function Inline({ xs }: { xs: Inl[] }) {
         if ("i" in x) return <i key={i}><Inline xs={x.i} /></i>;
         if ("cert" in x) return <CertTag key={i} c={x.cert} />;
         if ("src" in x) return <SourceMark key={i} n={x.src} />;
-        if ("cite" in x) return <Link key={i} className={styles.cite} href={readHref(x.cite)} transitionTypes={["page-turn"]} title="Read this passage in the Scroll">{emphAware(x.text, "t")}</Link>;
+        if ("cite" in x) return <Link key={i} className={styles.cite} href={readHref(x.cite)} transitionTypes={["page-turn"]} title="Read this passage in the reader">{emphAware(x.text, "t")}</Link>;
         if ("wiki" in x) {
           return <Link key={i} className={styles.wikiLink} href={`/stoa/${x.wiki}`} transitionTypes={["page-turn"]} title={(HINTS as Record<string, string>)[x.wiki]}>{emphAware(x.text, "t")}</Link>;
         }

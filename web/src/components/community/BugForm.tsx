@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Town Hall's bug report: a short title and three questions (what happened, the steps, what you
+ * The Agora's bug report: a short title and three questions (what happened, the steps, what you
  * expected), with the page and a plain description of the browser filled in, both open to change.
  * It is posted as an ordinary thread in "Bug reports", where the moderator gives it a status.
  * An unsent report is kept in this browser as it is typed, like every other forum draft.
@@ -68,7 +68,7 @@ export default function BugForm({ page, error: pageError }: { page: string; erro
         <input id={`${fid}-p`} aria-label="Page" value={f.page} onChange={set("page")} maxLength={500} placeholder="/read?w=…" /></label>
       <label htmlFor={`${fid}-b`}><span>Browser <small>filled in for you; you can change or remove it</small></span>
         <input id={`${fid}-b`} aria-label="Browser" value={f.browser} onChange={set("browser")} maxLength={200} /></label>
-      <p className={styles.small}>Everything above is posted publicly in the Town Hall, like any thread. Nothing else about your computer is sent.</p>
+      <p className={styles.small}>Everything above is posted publicly in the Agora, like any thread. Nothing else about your computer is sent.</p>
       {restored && <p className={styles.small} role="status">Your unsent report has come back.</p>}
       {error && <p className={styles.error} role="alert">{error}</p>}
       <button type="submit" className="btn" disabled={busy}>{busy ? "Sending…" : "Send the report"}</button>

@@ -1,6 +1,6 @@
 "use client";
 /**
- * Pieces shared by the Town Hall and the Pnyx: a post's text (light formatting and links to
+ * Pieces shared by the Agora and the Pnyx: a post's text (light formatting and links to
  * passages, wiki entries and the web), a quoted passage, the author line, upvotes, reporting,
  * the writing box, and the invitation to sign in.
  */
@@ -77,7 +77,7 @@ export function AuthorLine({ author, at, edited, extra }: { author: Author | nul
   return (
     <p className={styles.byline}>
       {author ? <Link href={`/town-hall/member?id=${author.id}`} className={styles.author}>{author.display_name}</Link> : <span className="muted">a former member</span>}
-      {author?.role === "moderator" && <span className={styles.modTag} title="The moderator of the Town Hall">moderator</span>}
+      {author?.role === "moderator" && <span className={styles.modTag} title="The moderator of the Agora">moderator</span>}
       <time dateTime={at} title={new Date(at).toLocaleString("en-GB")}>{ago(at)}</time>
       {edited && <span className="muted" title={`Edited ${new Date(edited).toLocaleString("en-GB")}`}>· edited</span>}
       {extra}

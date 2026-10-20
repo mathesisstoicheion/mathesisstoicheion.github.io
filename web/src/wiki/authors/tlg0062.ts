@@ -14,7 +14,7 @@ export const lucian: AuthorArticle = {
   id: "tlg0062",
   summary: `Lucian (Λουκιανός) was born at Samosata on the river Euphrates, in the Roman province of Syria, probably not long before AD 125, and he died some time after 180.[^1,2] One of his essays calls Samosata “my own birthplace”,[^3] and in a dialogue his stand-in, asked for his country, answers “I am a Syrian, Philosophy, from the banks of the Euphrates”.[^4] His first language was probably Syriac, a form of Aramaic, yet everything he left is in Greek, most of it in Attic, the Greek of classical Athens, which was the fashion among writers of his day, the period called the Second Sophistic.[^2]
 
-More than eighty works have come down under his name, far more than for most classical writers.[^2] The Scroll has seventy-one of them under Lucian and eight more under “Pseudo-Lucian”, for works that are probably not his.[^5]
+More than eighty works have come down under his name, far more than for most classical writers.[^2] The reader has seventy-one of them under Lucian and eight more under “Pseudo-Lucian”, for works that are probably not his.[^5]
 
 ### His life, as he tells it
 
@@ -67,7 +67,7 @@ One of his stories is still told everywhere. In *The Lover of Lies* a man overhe
     { year: 1726, kind: "reception", what: "Swift's *Gulliver's Travels*, inspired by the *True Story*", src: [2] },
     { year: 1797, kind: "reception", what: "Goethe's ballad *The Sorcerer's Apprentice*, from a tale first found in *The Lover of Lies*", src: [28] },
     { year: 1906, kind: "print", what: "Rabe edits the scholia; Nilén's Teubner edition begins (never finished)", src: [1, 29] },
-    { year: 1913, kind: "print", what: "Harmon's first Loeb volume: the start of the Greek and English text in the Scroll", src: [43, 1] },
+    { year: 1913, kind: "print", what: "Harmon's first Loeb volume: the start of the Greek and English text in the reader", src: [43, 1] },
     { year: 1972, kind: "print", what: "Macleod's Oxford critical text begins (completed 1987)", src: [35, 36] },
     { year: 1993, kind: "print", what: "Bompaire's Budé edition begins", src: [37] },
   ],
@@ -80,7 +80,7 @@ One of his stories is still told everywhere. In *The Lover of Lies* a man overhe
 
 **Print.** The first printed Lucian was edited by Janus Lascaris and printed by Laurentius de Alopa at Florence in 1496.[^1,34] Karl Jacobitz's edition of 1836–41 included the ancient notes, and Hugo Rabe published an edition of them in 1906.[^1] Nils Nilén's critical edition for the Teubner series began in 1906 but was never finished, stopping after the first nineteen works.[^29] So when Harmon made his Loeb edition he had to make a new text of his own for everything after the *True Story*.[^1] The modern critical texts are M. D. Macleod's Oxford edition in four volumes, the first in 1972 and the last, which completed it, in 1987, and the French Budé edition, begun by Jacques Bompaire in 1993.[^35,36,37]`,
 
-  variants: `{debated} **Which works are his?** In 1913 Harmon wrote: “Certainly spurious are Halcyon, Nero, Philopatris, and Astrology”, added the *Consonants at Law* (the Scroll's *Trial in the Court of Vowels*), and listed several more that were generally thought not to be Lucian's.[^1] Wittek, following Nilén, numbered six works 81 to 86 as certainly not Lucian's, though they travel in his manuscripts.[^29] The Scroll's catalogue draws the line in its own place: *The Halcyon*, *Philopatris* and six others are under “Pseudo-Lucian”, but *Astrology* and *The Purist Purized* (Harmon's “Ungrammatical Man”, which he listed as generally doubted) are under Lucian.[^5,1] The *Philopatris* is a dialogue set in Constantinople; it was once dated to the reign of Julian (361–363), then by many to that of Nicephorus Phocas (963–969), by others to Heraclius (610–641), and Barry Baldwin argued against the Byzantine dates altogether.[^38]
+  variants: `{debated} **Which works are his?** In 1913 Harmon wrote: “Certainly spurious are Halcyon, Nero, Philopatris, and Astrology”, added the *Consonants at Law* (the reader's *Trial in the Court of Vowels*), and listed several more that were generally thought not to be Lucian's.[^1] Wittek, following Nilén, numbered six works 81 to 86 as certainly not Lucian's, though they travel in his manuscripts.[^29] The reader's catalogue draws the line in its own place: *The Halcyon*, *Philopatris* and six others are under “Pseudo-Lucian”, but *Astrology* and *The Purist Purized* (Harmon's “Ungrammatical Man”, which he listed as generally doubted) are under Lucian.[^5,1] The *Philopatris* is a dialogue set in Constantinople; it was once dated to the reign of Julian (361–363), then by many to that of Nicephorus Phocas (963–969), by others to Heraclius (610–641), and Barry Baldwin argued against the Byzantine dates altogether.[^38]
 
 {debated} **Lucius, or the Ass.** This short novel tells how a man called Lucius was turned into a donkey; near the end the narrator names his city, «πατρὶς δὲ ἡμῖν Πάτραι τῆς Ἀχαΐας», “our home is Patrae in Achaea” (our translation).[^39] Photius read a longer *Metamorphoses* by “Lucius of Patras” and thought that Lucian had cut it down into *Lucius or The Ass*.[^23] Macleod, in his Loeb edition, explains why it is generally agreed that the *Ass* and Apuleius' Latin *Golden Ass* both come from that lost book, and that the *Ass* is the abridgement. Most editors have rejected its Greek as unworthy of Lucian; Macleod himself thought it more probable that Lucian had a hand in it.[^23,40] A recent study calls it spurious in the view of most scholars.[^33]
 
@@ -91,60 +91,60 @@ One of his stories is still told everywhere. In *The Lover of Lies* a man overhe
 {debated} **Editors at odds.** Harmon admitted that in his Loeb text, so that Greek and English would agree, “conjectures have been admitted with considerable freedom”.[^1] Macleod's Oxford text drew what one reviewer calls Nesselrath's “lengthy, scathing review”, and that reviewer holds that any new editor must reckon with it and with Bompaire's Budé; he finds Neil Hopkinson's school edition of 2008 almost the same as Macleod's text.[^42]`,
 
   editions: [
-    { text: "A. M. Harmon, K. Kilburn and M. D. Macleod, *Lucian*, 8 vols (Loeb Classical Library, London and Cambridge, Mass., 1913–67).[^43,2]", note: "Greek and English. The Scroll's Greek for most works (vols 1–5, 1913–36) and its main English translation (vols 1–7, 1913–61) are Perseus's copies; the Greek of vols 6–7 is offered beside Jacobitz's for the later works." },
-    { text: "K. Jacobitz, *Luciani Samosatensis Opera* (Teubner, Leipzig; the Scroll uses printings of 1909 and 1913).[^43,1]", note: "The Scroll's Greek for some later works and for the Pseudo-Lucianic pieces." },
-    { text: "H. W. Fowler and F. G. Fowler, *The Works of Lucian of Samosata*, 4 vols (Oxford, Clarendon Press, 1905).[^43,2]", note: "An English translation of most of the works, shown in the Scroll beside many of them." },
-    { text: "E. J. Smith, *Selections from Lucian* (New York, Harper and Brothers, 1892).[^43]", note: "An older English selection, also in the Scroll." },
+    { text: "A. M. Harmon, K. Kilburn and M. D. Macleod, *Lucian*, 8 vols (Loeb Classical Library, London and Cambridge, Mass., 1913–67).[^43,2]", note: "Greek and English. The reader's Greek for most works (vols 1–5, 1913–36) and its main English translation (vols 1–7, 1913–61) are Perseus's copies; the Greek of vols 6–7 is offered beside Jacobitz's for the later works." },
+    { text: "K. Jacobitz, *Luciani Samosatensis Opera* (Teubner, Leipzig; the reader uses printings of 1909 and 1913).[^43,1]", note: "The reader's Greek for some later works and for the Pseudo-Lucianic pieces." },
+    { text: "H. W. Fowler and F. G. Fowler, *The Works of Lucian of Samosata*, 4 vols (Oxford, Clarendon Press, 1905).[^43,2]", note: "An English translation of most of the works, shown in the reader beside many of them." },
+    { text: "E. J. Smith, *Selections from Lucian* (New York, Harper and Brothers, 1892).[^43]", note: "An older English selection, also in the reader." },
     { text: "M. D. Macleod, *Luciani Opera*, 4 vols (Oxford Classical Texts, 1972–87).[^35,36]", note: "The standard critical Greek text; the fourth volume completed it and added an index to all four." },
     { text: "J. Bompaire and others, *Lucien: Œuvres* (Collection des Universités de France, Paris, Les Belles Lettres, 1993– ); vol. 12, *Opuscules 55–57*, ed. É. Marquis (2017).[^37,8]", note: "Greek and French, with full introductions on the manuscripts." },
     { text: "N. Hopkinson, *Lucian: A Selection* (Cambridge Greek and Latin Classics, Cambridge University Press, 2008).[^42]", note: "Seven works with notes for students, among them *The Dream* and the *Trial in the Court of Vowels*." },
-    { text: "H. Rabe, *Scholia in Lucianum* (Leipzig, Teubner, 1906).[^30,1]", note: "The ancient and Byzantine notes, Arethas' among them; the Greek in the Scroll." },
+    { text: "H. Rabe, *Scholia in Lucianum* (Leipzig, Teubner, 1906).[^30,1]", note: "The ancient and Byzantine notes, Arethas' among them; the Greek in the reader." },
   ],
 
   sources: [
     { label: "A. M. Harmon, Lucian, vol. 1 (Loeb Classical Library, 1913), introduction and bibliography (Internet Archive scan of a later impression): his dates, his career as a lecturer, the eighty-two pieces and the disputed ones, Vaticanus 90 as the best manuscript, about 150 manuscripts, the two groups, the editions", url: "https://archive.org/details/lucianha01luciuoft" },
     { label: "Wikipedia, Lucian (life and its sources; Syriac as his first language; Attic Greek and the Second Sophistic; the works; Russell, Swain and Richter on the autobiographical passages; Helm on Menippus; the Glycon cult; Byzantine and later reception; the Pseudo-Lucianic works)", url: "https://en.wikipedia.org/wiki/Lucian" },
-    { label: "Lucian, How to Write History 24, in the Scroll (“my own birthplace, Samosata”)", cite: {work: "tlg0062.tlg053",ref: "24"} },
-    { label: "Lucian, The Dead Come to Life, or the Fisherman 19, in the Scroll (“a Syrian … from the banks of the Euphrates”)", cite: {work: "tlg0062.tlg025",ref: "19"} },
-    { label: "The Scroll's catalogue of Lucian: seventy-one works under his name (among them Astrology, opened here) and eight under “Pseudo-Lucian”", cite: {work: "tlg0062.tlg048",ref: "1"} },
-    { label: "Lucian, The Dream, or Lucian's Career 1–14, in the Scroll", cite: {work: "tlg0062.tlg029",ref: "1",to: "14"} },
-    { label: "Lucian, The Double Indictment 27, in the Scroll (Rhetoric's speech)", cite: {work: "tlg0062.tlg026",ref: "27"} },
+    { label: "Lucian, How to Write History 24, in the reader (“my own birthplace, Samosata”)", cite: {work: "tlg0062.tlg053",ref: "24"} },
+    { label: "Lucian, The Dead Come to Life, or the Fisherman 19, in the reader (“a Syrian … from the banks of the Euphrates”)", cite: {work: "tlg0062.tlg025",ref: "19"} },
+    { label: "The reader's catalogue of Lucian: seventy-one works under his name (among them Astrology, opened here) and eight under “Pseudo-Lucian”", cite: {work: "tlg0062.tlg048",ref: "1"} },
+    { label: "Lucian, The Dream, or Lucian's Career 1–14, in the reader", cite: {work: "tlg0062.tlg029",ref: "1",to: "14"} },
+    { label: "Lucian, The Double Indictment 27, in the reader (Rhetoric's speech)", cite: {work: "tlg0062.tlg026",ref: "27"} },
     { label: "J. Delhez, review of É. Marquis (ed., tr.), Lucien, Œuvres, tome XII: Opuscules 55–57 (Collection des Universités de France, Paris, Les Belles Lettres, 2017), Les Études classiques (PDF; in French)", url: "https://lesetudesclassiques.be/index.php/lec/article/download/479/446" },
-    { label: "Lucian, The Passing of Peregrinus 35–36, in the Scroll", cite: {work: "tlg0062.tlg042",ref: "35",to: "36"} },
-    { label: "Lucian, Alexander 55, in the Scroll (the bite)", cite: {work: "tlg0062.tlg038",ref: "55"} },
-    { label: "Lucian, Apology for “The Dependent Scholar” 12, in the Scroll (his post in Egypt)", cite: {work: "tlg0062.tlg059",ref: "12"} },
-    { label: "Lucian, The Double Indictment 33, in the Scroll (Dialogue's speech)", cite: {work: "tlg0062.tlg026",ref: "33"} },
-    { label: "Lucian, Dialogues of the Dead 18.1, in the Scroll (Greek; the English shown beside it belongs to another dialogue)", cite: {work: "tlg0062.tlg066",ref: "18.1"} },
-    { label: "Lucian, Menippus, or the Descent into Hades 21, in the Scroll", cite: {work: "tlg0062.tlg035",ref: "21"} },
+    { label: "Lucian, The Passing of Peregrinus 35–36, in the reader", cite: {work: "tlg0062.tlg042",ref: "35",to: "36"} },
+    { label: "Lucian, Alexander 55, in the reader (the bite)", cite: {work: "tlg0062.tlg038",ref: "55"} },
+    { label: "Lucian, Apology for “The Dependent Scholar” 12, in the reader (his post in Egypt)", cite: {work: "tlg0062.tlg059",ref: "12"} },
+    { label: "Lucian, The Double Indictment 33, in the reader (Dialogue's speech)", cite: {work: "tlg0062.tlg026",ref: "33"} },
+    { label: "Lucian, Dialogues of the Dead 18.1, in the reader (Greek; the English shown beside it belongs to another dialogue)", cite: {work: "tlg0062.tlg066",ref: "18.1"} },
+    { label: "Lucian, Menippus, or the Descent into Hades 21, in the reader", cite: {work: "tlg0062.tlg035",ref: "21"} },
     { label: "Wikipedia, A True Story (the plot; “the first known text that could be called science fiction”; the scholiast's note)", url: "https://en.wikipedia.org/wiki/A_True_Story" },
-    { label: "Lucian, A True Story 1.4, in the Scroll", cite: {work: "tlg0062.tlg012",ref: "1.4"} },
-    { label: "Lucian, A True Story 1.9–1.10, in the Scroll (the whirlwind and the Moon)", cite: {work: "tlg0062.tlg012",ref: "1.9",to: "1.10"} },
-    { label: "Lucian, A True Story 2.47, in the Scroll (the last section)", cite: {work: "tlg0062.tlg012",ref: "2.47"} },
-    { label: "Scholia on Lucian, on A True Story 2.47 (Rabe's no. 14.47), in the Scroll: the scholiast's note and Alexander of Nicaea's subscription", cite: {work: "tlg5029.tlg001",ref: "14.47"} },
-    { label: "Lucian, Trial in the Court of Vowels 9, in the Scroll", cite: {work: "tlg0062.tlg014",ref: "9"} },
+    { label: "Lucian, A True Story 1.4, in the reader", cite: {work: "tlg0062.tlg012",ref: "1.4"} },
+    { label: "Lucian, A True Story 1.9–1.10, in the reader (the whirlwind and the Moon)", cite: {work: "tlg0062.tlg012",ref: "1.9",to: "1.10"} },
+    { label: "Lucian, A True Story 2.47, in the reader (the last section)", cite: {work: "tlg0062.tlg012",ref: "2.47"} },
+    { label: "Scholia on Lucian, on A True Story 2.47 (Rabe's no. 14.47), in the reader: the scholiast's note and Alexander of Nicaea's subscription", cite: {work: "tlg5029.tlg001",ref: "14.47"} },
+    { label: "Lucian, Trial in the Court of Vowels 9, in the reader", cite: {work: "tlg0062.tlg014",ref: "9"} },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon, θάλασσα (“Att. θάλαττα”), read in the site's copy and on the Perseus Digital Library", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0057:entry=qa/lassa" },
-    { label: "Lucian, Lexiphanes 22–23, in the Scroll", cite: {work: "tlg0062.tlg046",ref: "22",to: "23"} },
+    { label: "Lucian, Lexiphanes 22–23, in the reader", cite: {work: "tlg0062.tlg046",ref: "22",to: "23"} },
     { label: "M. D. Macleod, Lucian, vol. 8 (Loeb Classical Library 432), introduction to Lucius or The Ass, with his translation of Photius, Bibliotheca codex 129 (Internet Archive scan)", url: "https://archive.org/details/lucianhar08luciuoft" },
     { label: "Suda On Line, lambda 683, Lucian (English translation)", url: "https://www.cs.uky.edu/~raphael/sol/sol-entries/lambda/683" },
     { label: "Bibliothèque nationale de France, Bibliographie des éditions parisiennes du 16e siècle, BP16_100767: Luciani … compluria opuscula, translated by Erasmus and Thomas More (Paris, Josse Bade, 13 November 1506)", url: "https://bp16.bnf.fr/ark:/12148/cb41873780k" },
     { label: "C. Monzó Gallo, “Traducciones moreanas de los diálogos de Luciano”, Ágora 26.1 (2024), 58–80 (in Spanish): the 1506 volume and its reprints", url: "https://proa.ua.pt/index.php/agora/article/download/41680/26953" },
-    { label: "Lucian, The Lover of Lies 35–36, in the Scroll (the pestle that carries water)", cite: {work: "tlg0062.tlg031",ref: "35",to: "36"} },
+    { label: "Lucian, The Lover of Lies 35–36, in the reader (the pestle that carries water)", cite: {work: "tlg0062.tlg031",ref: "35",to: "36"} },
     { label: "Wikipedia, The Sorcerer's Apprentice (Goethe's ballad of 1797; Lucian's version; Dukas; Fantasia)", url: "https://en.wikipedia.org/wiki/The_Sorcerer%27s_Apprentice" },
     { label: "M. Wittek, “Liste des manuscrits de Lucien”, Scriptorium 6 (1952), 309–323, first page (Persée; in French)", url: "https://www.persee.fr/doc/scrip_0036-9772_1952_num_6_2_2448" },
     { label: "H. Rabe (ed.), Scholia in Lucianum (Leipzig, Teubner, 1906), preface (Internet Archive scan; in Latin): Vaticanus gr. 90, Harleianus 5694, Vindobonensis gr. 123", url: "https://archive.org/details/scholiainlucianu00rabe" },
     { label: "Pinakes (IRHT), London, British Library, Harley 5694, record with bibliography (E. Gamillscheg: Lucian, copied by the notary Baanes for Arethas of Caesarea)", url: "https://pinakes.irht.cnrs.fr/notices/cote/getPdf/39648/" },
-    { label: "Scholia on Lucian, on The Passing of Peregrinus 13 (Rabe's no. 55.13), in the Scroll: the note headed with Arethas' name", cite: {work: "tlg5029.tlg001",ref: "55.13"} },
+    { label: "Scholia on Lucian, on The Passing of Peregrinus 13 (Rabe's no. 55.13), in the reader: the note headed with Arethas' name", cite: {work: "tlg5029.tlg001",ref: "55.13"} },
     { label: "C. Brignone, “Parisinus Graecus 2957 e Vaticanus Urbinas Graecus 118”, Lexis 43 (2025), 125–148 (open access; in Italian)", url: "https://edizionicafoscari.unive.it/media/pdf/article/lexis-journal/2025/1/art-10.30687-Lexis-2724-1564-2025-01-008_2YsE8bH.pdf" },
     { label: "Wikipedia, List of editiones principes in Greek (Lucian: Florence, Laurentius de Alopa, 1496, edited by Janus Lascaris)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
     { label: "Kyushu University Library, record of Luciani Opera, ed. M. D. Macleod (Oxford, Clarendon Press, Scriptorum classicorum bibliotheca Oxoniensis), 4 vols", url: "https://catalog.lib.kyushu-u.ac.jp/ja/recordID/1000081817" },
     { label: "AbeBooks, Lucian, Opera, vol. IV (libelli 69–86), ed. M. D. Macleod (Oxford Classical Texts, Clarendon Press, 1987): publisher's description", url: "https://www.abebooks.com/9780198145967/Opera-Oxford-Classical-Texts-Lucian-0198145969/plp" },
     { label: "The Classical Review 45.1 (1995), 24–26, Graham Anderson on J. Bompaire (ed., tr.), Lucien, Œuvres, tome I (Paris, Les Belles Lettres, 1993)", url: "https://www.cambridge.org/core/journals/classical-review/article/bude-lucian-j-bompaireed-tr-lucien-oeuvres-tome-i-introduction-generale-opuscules-110-collection-des-universites-de-france-pp-clxiv188-texte-double-paris-les-belles-lettres-1993-cased/FDDBBB47DFB2385262C71EEC08BFBD93" },
     { label: "Wikipedia, Philopatris (its dates: Julian, Nicephorus Phocas, Heraclius; Baldwin 1982)", url: "https://en.wikipedia.org/wiki/Philopatris" },
-    { label: "[Lucian], The Ass 55, in the Scroll (the narrator names himself and Patrae)", cite: {work: "tlg0061.tlg001",ref: "55"} },
+    { label: "[Lucian], The Ass 55, in the reader (the narrator names himself and Patrae)", cite: {work: "tlg0061.tlg001",ref: "55"} },
     { label: "Wikipedia, The Golden Ass (Lucius of Patrae; Lucius or the Ass as a probable epitome)", url: "https://en.wikipedia.org/wiki/The_Golden_Ass" },
     { label: "Wikipedia, Amores (Lucian) (Bloch 1907; Mossman; Jope 2011)", url: "https://en.wikipedia.org/wiki/Amores_(Lucian)" },
     { label: "Bryn Mawr Classical Review 2009.08.11, James Brusuelas on N. Hopkinson, Lucian: A Selection (Cambridge, 2008)", url: "https://bmcr.brynmawr.edu/2009/2009.08.11/" },
-    { label: "Perseus's copies of Lucian shown in the Scroll: each file's header names its source (Harmon's Loeb vols 1–5, 1913–36; Kilburn, vol. 6, 1959; Macleod, vol. 7, 1961; Jacobitz's Teubner text, Leipzig, printings of 1909 and 1913; the Fowlers' translation, Oxford, 1905; E. J. Smith, Selections from Lucian, New York, 1892)", cite: {work: "tlg0062.tlg012",ref: "1.1"} },
+    { label: "Perseus's copies of Lucian shown in the reader: each file's header names its source (Harmon's Loeb vols 1–5, 1913–36; Kilburn, vol. 6, 1959; Macleod, vol. 7, 1961; Jacobitz's Teubner text, Leipzig, printings of 1909 and 1913; the Fowlers' translation, Oxford, 1905; E. J. Smith, Selections from Lucian, New York, 1892)", cite: {work: "tlg0062.tlg012",ref: "1.1"} },
   ],
   outsideQuotes: [
     "is no more to be trusted than the voyage to the moon",

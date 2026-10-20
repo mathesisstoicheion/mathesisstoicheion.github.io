@@ -142,15 +142,15 @@ test("wiki categories have their signs, and the featured entry its picture or si
   await expect(featured.locator("img, svg").first()).toBeVisible();
 });
 
-test("the map and the Town Hall put their search first", async ({ page }) => {
+test("the map and the Agora put their search first", async ({ page }) => {
   await page.goto("/stoa/periplus");
   const find = page.getByRole("searchbox", { name: "Find a place" });
   const map = page.getByRole("application");
   expect((await find.boundingBox())!.y).toBeLessThan((await map.boundingBox())!.y);
   if (!FORUM_OPEN) return;
   await page.goto("/town-hall");
-  // the Town Hall's search stands in the toolbar, straight above the list it narrows
-  const hall = page.getByRole("searchbox", { name: "Search the Town Hall" });
+  // the Agora's search stands in the toolbar, straight above the list it narrows
+  const hall = page.getByRole("searchbox", { name: "Search the Agora" });
   const list = page.locator("#threads-h");
   await expect(hall).toBeVisible();
   await expect(list).toBeVisible();

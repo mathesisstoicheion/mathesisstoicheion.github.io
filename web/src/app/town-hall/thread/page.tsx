@@ -4,7 +4,7 @@ import Page from "@/components/Page";
 import ThreadView from "@/components/community/ThreadView";
 import { NOINDEX } from "@/lib/seo";
 
-export const metadata: Metadata = { title: "A thread · The Town Hall", ...NOINDEX };
+export const metadata: Metadata = { title: "A thread · The Agora", ...NOINDEX };
 
 export default function ThreadPage() {
   return (

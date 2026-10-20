@@ -24,7 +24,7 @@ test.describe("on a phone", () => {
     await expect(search).toHaveCount(1);
     await openMenu(page);
     const doors = menu(page).getByRole("list").first().getByRole("link");
-    expect(await doors.evaluateAll((els) => els.map((e) => e.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk", "Mine", "Search"] : ["Learn", "Read", "Explore", "Mine", "Search"]);
+    expect(await doors.evaluateAll((els) => els.map((e) => e.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Ἀγορά", "Θησαυρός", "Μαντεῖον"] : ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Θησαυρός", "Μαντεῖον"]);
     await expect(menu(page).getByRole("button", { name: "Settings" })).toBeVisible();
     // every door and button in it is finger-sized
     for (const el of await menu(page).locator("a, button").filter({ visible: true }).all()) {
@@ -41,16 +41,16 @@ test.describe("on a phone", () => {
     await page.goto("/");
     await page.evaluate(() => { (window as unknown as { marker: string }).marker = "kept"; });
     await openMenu(page);
-    await menu(page).getByRole("link", { name: /^Learn/ }).click();
+    await menu(page).getByRole("link", { name: /Ἀκαδήμεια/ }).click();
     await expect(page).toHaveURL(/\/academy$/);
     await expect(menu(page)).toBeHidden();
     expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
     await openMenu(page);
-    await expect(menu(page).getByRole("link", { name: /^Learn/ })).toHaveAttribute("aria-current", "page");
+    await expect(menu(page).getByRole("link", { name: /Ἀκαδήμεια/ })).toHaveAttribute("aria-current", "page");
     // the reader belongs to the Read door (a book open in it has its own bar instead of the header, as in design A)
     await page.goto("/read");
     await openMenu(page);
-    await expect(menu(page).getByRole("link", { name: /^Read/ })).toHaveAttribute("aria-current", "page");
+    await expect(menu(page).getByRole("link", { name: /Μουσεῖον/ })).toHaveAttribute("aria-current", "page");
     // pages outside the doors mark none
     await page.goto("/about");
     await openMenu(page);

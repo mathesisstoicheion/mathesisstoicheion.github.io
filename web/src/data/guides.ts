@@ -51,7 +51,7 @@ export const GUIDES: Guide[] = [
         { q: "In which kind of Greek is the New Testament written?", options: ["Homer's Greek", "Koine", "Aeolic"], answer: 1, why: "The New Testament is in Koine, the common Greek that grew from Attic after Alexander." },
       ] },
       { kind: "links", items: [
-        { href: "/stoa/eras", label: "Greek through the centuries", note: "the Wiki's Eras page: authors and works century by century" },
+        { href: "/stoa/eras", label: "Greek through the centuries", note: "the Painted Stoa's Eras page: authors and works century by century" },
         { href: "/library", label: "The library by dialect", note: "the Mouseion's filters include the dialect of each work" },
       ] },
     ],

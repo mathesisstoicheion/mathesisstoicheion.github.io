@@ -1,12 +1,12 @@
 import { test, expect, type Page } from "@playwright/test";
 import { FORUM_OPEN } from "../src/config/areas";
 
-// The forum (the Town Hall and the Pnyx) is frozen and hidden (SPEC.md, owner 2026-10-18): no page may link
+// The forum (the Agora and the Pnyx) is frozen and hidden (SPEC.md, owner 2026-10-18): no page may link
 // to it or offer it, while sign-in keeps working. Runs only while FORUM_OPEN is false.
 test.skip(FORUM_OPEN, "the forum is open");
 test.describe.configure({ timeout: 90_000 });
 
-const FORUM_WORDS = /Town Hall|Pnyx|Ask in the forum|Talk about it|Report a bug|Suggest an idea|Tell us about/;
+const FORUM_WORDS = /Agora|Pnyx|Ask in the Agora|Talk about it|Report a bug|Suggest an idea|Tell us about/;
 
 async function noForum(page: Page, words = true) {
   await expect(page.locator('a[href^="/town-hall"]')).toHaveCount(0);
@@ -38,7 +38,7 @@ test("the home page asks the database for nothing", async ({ page }) => {
   expect(asked).toEqual([]);
 });
 
-test("the reader has no Talk panel and no Ask in the forum", async ({ page }) => {
+test("the reader has no Talk panel and no Ask in the Agora", async ({ page }) => {
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   const line = page.locator('[data-u="1.1"]').first();
   await expect(line).toBeVisible({ timeout: 30_000 });
@@ -52,11 +52,11 @@ test("the reader has no Talk panel and no Ask in the forum", async ({ page }) =>
     el.dispatchEvent(new MouseEvent("mouseup", { bubbles: true }));
   });
   await expect(page.getByRole("button", { name: "Echoes" })).toBeVisible({ timeout: 10_000 });
-  await expect(page.getByRole("button", { name: /Ask in the forum/ })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: /Ask in the Agora/ })).toHaveCount(0);
   await noForum(page, false);
 });
 
-test("quick search offers neither the Town Hall nor the Pnyx", async ({ page }) => {
+test("quick search offers neither the Agora nor the Pnyx", async ({ page }) => {
   await page.goto("/");
   await page.keyboard.press("Control+k");
   const box = page.getByRole("combobox", { name: "Search" });

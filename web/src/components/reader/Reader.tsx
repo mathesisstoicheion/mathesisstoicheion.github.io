@@ -1037,7 +1037,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     const where = rangeLabel(sel.start.u, sel.end.u);
     if (a === "ask" && isPrivate) return;   // a private book's text is never posted to the forum
     if (a === "ask") {
-      // the Town Hall's new-thread page picks this up (components/community/NewThread.tsx)
+      // the Agora's new-thread page picks this up (components/community/NewThread.tsx)
       const tr = rows.filter((r) => sel.rowKeys.includes(r.key)).map((r) => blockText(r.trans)).filter(Boolean).join(" ");
       const quote = { work: workId, ref: where, grc: sel.quote, eng: tr ? tr.slice(0, 1500) : undefined, cite: `${cite} ${where}`, href: href({ at: sel.start.u }) };
       try { sessionStorage.setItem(ASK_KEY, JSON.stringify(quote)); } catch { /* private mode: the page opens without it */ }
@@ -1359,7 +1359,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         <span className={styles.aidLabel} aria-hidden="true">This passage</span>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
         <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-        {!isPrivate && FORUM_OPEN && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Town Hall about the passages on this page">Talk about it</button>}
+        {!isPrivate && FORUM_OPEN && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Agora about the passages on this page">Talk about it</button>}
         {canDiff && <>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
           <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>

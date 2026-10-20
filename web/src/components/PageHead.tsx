@@ -9,7 +9,7 @@ import type { Step } from "@/config/areas";
  * saying what the page is for, and the page's own object in design A's engraved window, at the right on a computer
  * (components/a/PageWin.tsx; the owner, 2026-10-19: every page A did not draw keeps its layout, in A's look).
  *
- * `size="large"` is for the five doors and the Town Hall; every page inside them is `"short"`, shorter in its words and
+ * `size="large"` is for the five doors and the Agora; every page inside them is `"short"`, shorter in its words and
  * spacing but never in its window (the owner's standing rule: the pictures stay big).
  *
  * On a phone the page's one main thing (`action`: its search box or main button) comes after the purpose line and before

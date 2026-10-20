@@ -8,7 +8,7 @@ import MineButtons from "@/components/library/MineButtons";
 import LibStage from "@/components/a/LibStage";
 import LibSearch from "@/components/a/LibSearch";
 import Featured, { type Book } from "@/components/a/Featured";
-import { AREAS } from "@/config/areas";
+import { AREAS, areaTitle } from "@/config/areas";
 import { hasTranslation, greekEditions, type Catalog } from "@/lib/catalog";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 import { MEDALLIONS } from "@/data/medallions";
@@ -17,7 +17,7 @@ import Link from "next/link";
 import s from "@/components/a/a.module.css";
 import styles from "./library.module.css";
 
-export const metadata: Metadata = { title: `${AREAS.library.name} · ${AREAS.library.english}`, description: PAGE_DESCRIPTIONS.library };
+export const metadata: Metadata = { title: areaTitle("library"), description: PAGE_DESCRIPTIONS.library };
 
 // The library's size, counted from the catalogue when the site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
@@ -70,8 +70,8 @@ export default function LibraryPage() {
         <div className={s.flow}>
           <div className={`${s.wrap} ${s["lib-hero"]}`}>
             <div className={s.blk}>
-              <span className={s.mono} style={{ color: "var(--a-accent)" }}>Read · The Library</span>
-              <h1 className={s["lib-title"]}>{AREAS.library.name}<span className={s["gr-t"]} lang="grc">{AREAS.library.greek}</span></h1>
+              <span className={s.mono} style={{ color: "var(--a-accent)" }}>{AREAS.library.door}</span>
+              <h1 className={s["lib-title"]}><span lang="grc">{AREAS.library.greek}</span><span className={s["en-t"]}>{AREAS.library.name}</span></h1>
               <p className={s.lede}>
                 In Greek a mouseion is a shrine of the Muses. This one holds {n(WORKS.length)} Greek works, from Homer to the Byzantine scholars,
                 {" "}{n(WORKS.filter(hasTranslation).length)} of them with an English translation beside the Greek. Each of the famous books below carries a picture of its author or of the thing it is best known for.

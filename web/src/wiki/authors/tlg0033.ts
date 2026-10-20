@@ -13,7 +13,7 @@ export const pindar: AuthorArticle = {
   id: "tlg0033",
   summary: `Pindar of Thebes was born about 518 BC and died about 438, at the age of about eighty.[^1] Of the nine lyric poets whom the ancient world ranked as the classics, his work is the best preserved,[^1] and the Roman teacher Quintilian had no doubt about the order: “Of the nine lyric poets Pindar is by far the greatest”.[^2]
 
-What survives almost whole is one kind of song: the victory ode, written for a winner at the great games. Ancient scholars sorted the odes into four books, named after the four festivals: the Olympian, Pythian, Isthmian and Nemean games.[^1,3] The Scroll's text has forty-five of them: fourteen Olympian, twelve Pythian, eleven Nemean and eight Isthmian.[^30]
+What survives almost whole is one kind of song: the victory ode, written for a winner at the great games. Ancient scholars sorted the odes into four books, named after the four festivals: the Olympian, Pythian, Isthmian and Nemean games.[^1,3] The reader's text has forty-five of them: fourteen Olympian, twelve Pythian, eleven Nemean and eight Isthmian.[^30]
 
 ### Songs for winners
 
@@ -72,7 +72,7 @@ In 335 BC Alexander the Great destroyed Thebes for rising against Macedon, but l
     { year: 1811, kind: "print", what: "August Boeckh's great edition begins to appear", src: [3] },
     { year: 1906, kind: "copy", what: "The *Paeans* papyrus is dug up at Oxyrhynchus, in about 380 pieces", src: [23] },
     { year: 1908, kind: "print", what: "Grenfell and Hunt publish the *Paeans* papyrus (P.Oxy. 841)", src: [23] },
-    { year: 1915, kind: "print", what: "Sandys's Loeb edition, the Greek text in the Scroll (revised 1937)", src: [3, 30] },
+    { year: 1915, kind: "print", what: "Sandys's Loeb edition, the Greek text in the reader (revised 1937)", src: [3, 30] },
     { year: 1997, kind: "print", what: "William H. Race's new Loeb edition and translation", src: [31] },
   ],
 
@@ -84,19 +84,19 @@ In 335 BC Alexander the Great destroyed Thebes for rising against Macedon, but l
 
 **Print.** The first printed Pindar came from Aldus Manutius at Venice in 1513. Two years later Zacharias Callierges printed him at Rome, with the scholia for the first time,[^3,25] working from the Vatican manuscript B.[^1] A new era began with August Boeckh's edition (Leipzig, 1811–21), which gave the text and the metres, then the scholia, then a Latin translation and notes.[^3]`,
 
-  variants: `**A line struck out at Alexandria.** In *Olympian 2* Pindar lists who loves Semele, the mother of Dionysus. According to the scholia, Aristophanes of Byzantium rejected the words φιλέοντι δὲ Μοῖσαι (“and the Muses love her”, our translation) because they did not fit the metre, but the manuscripts went on copying them.[^22] The Scroll's text, Sandys's, does not print them: its line runs straight from Zeus to the ivy-crowned god, «καὶ Ζεὺς πατὴρ μάλα, φιλεῖ δὲ παῖς ὁ κισσοφόρος».[^26]
+  variants: `**A line struck out at Alexandria.** In *Olympian 2* Pindar lists who loves Semele, the mother of Dionysus. According to the scholia, Aristophanes of Byzantium rejected the words φιλέοντι δὲ Μοῖσαι (“and the Muses love her”, our translation) because they did not fit the metre, but the manuscripts went on copying them.[^22] The reader's text, Sandys's, does not print them: its line runs straight from Zeus to the ivy-crowned god, «καὶ Ζεὺς πατὴρ μάλα, φιλεῖ δὲ παῖς ὁ κισσοφόρος».[^26]
 
 {debated} **Is *Olympian 5* by Pindar?** An ancient note says that the ode was not in the *edaphia*, an early collection of the texts (scholars disagree whose), but that Didymus' commentary called it Pindar's. It is the only poem of Pindar whose authorship the scholia question.[^22]
 
-**One ode or two?** The manuscripts give two separate odes, *Isthmian 3* and *Isthmian 4*, both for Melissus of Thebes, and the Scroll prints them that way.[^28] But no two odes of Pindar share a metre except these two, and that is one of the reasons for reading them as a single poem.[^3]
+**One ode or two?** The manuscripts give two separate odes, *Isthmian 3* and *Isthmian 4*, both for Melissus of Thebes, and the reader prints them that way.[^28] But no two odes of Pindar share a metre except these two, and that is one of the reasons for reading them as a single poem.[^3]
 
 **In the thicket.** In *Olympian 6* the baby Iamus, son of Apollo, lies hidden «σχοίνῳ βατιᾷ τʼ ἐν ἀπειράτῳ», in Svarlien's English “hidden in the rushes and the boundless thicket”.[^27] Two of those words are editors' choices. For βατιᾷ, a correction by Wilamowitz, the older manuscripts have βατείᾳ; for ἀπειράτῳ they have ἀπεράτῳ or ἀπεράντῳ, and Heyne proposed ἀπειρίτῳ instead.[^3]
 
-**Uncertain dates.** Many dates of the odes are guesses. For Olympia and Delphi ancient scholars drew up lists of winners, but Pausanias remarks that in early times the Corinthians and Argives kept no complete records of the winners at the Isthmus and Nemea.[^29,1] So the headings in the Scroll's translation carry question marks: every Nemean ode has one, and *Pythian 11* is dated 474 or 454.[^30]`,
+**Uncertain dates.** Many dates of the odes are guesses. For Olympia and Delphi ancient scholars drew up lists of winners, but Pausanias remarks that in early times the Corinthians and Argives kept no complete records of the winners at the Isthmus and Nemea.[^29,1] So the headings in the reader's translation carry question marks: every Nemean ode has one, and *Pythian 11* is dated 474 or 454.[^30]`,
 
   editions: [
-    { text: "J. E. Sandys, *The Odes of Pindar, including the Principal Fragments* (Loeb Classical Library, 1915; revised 1937).[^3,30]", note: "The Greek text in the Scroll is Perseus's copy of Sandys's revised Loeb." },
-    { text: "Diane Arnson Svarlien, translation of the odes made for the Perseus Project (1990).[^30]", note: "The English in the Scroll." },
+    { text: "J. E. Sandys, *The Odes of Pindar, including the Principal Fragments* (Loeb Classical Library, 1915; revised 1937).[^3,30]", note: "The Greek text in the reader is Perseus's copy of Sandys's revised Loeb." },
+    { text: "Diane Arnson Svarlien, translation of the odes made for the Perseus Project (1990).[^30]", note: "The English in the reader." },
     { text: "W. H. Race, *Pindar*, 2 vols (Loeb Classical Library 56 and 485, Harvard University Press, 1997).[^31]", note: "Greek text and English translation of the odes and the fragments." },
     { text: "B. Snell and H. Maehler, *Pindari Carmina cum Fragmentis*, part 1, *Epinicia* (Teubner, Leipzig, 1987).[^32]", note: "The Greek text of the victory odes." },
     { text: "H. Maehler, *Pindari Carmina cum Fragmentis*, part 2, *Fragmenta, Indices* (Teubner, Leipzig, 1989).[^33]", note: "The lost poems: the quotations and the papyri." },
@@ -108,33 +108,33 @@ In 335 BC Alexander the Great destroyed Thebes for rising against Macedon, but l
     { label: "Wikipedia, Pindar (life, patrons, Aegina, the seventeen books, style and dialect, triads, performance, the ancient lives, Alexander, the manuscripts)", url: "https://en.wikipedia.org/wiki/Pindar" },
     { label: "Quintilian, Institutio Oratoria 10.1.61, translated by H. E. Butler (Loeb, 1920–22), on LacusCurtius", url: "https://penelope.uchicago.edu/Thayer/E/Roman/Texts/Quintilian/Institutio_Oratoria/10A*.html" },
     { label: "J. E. Sandys, The Odes of Pindar (Loeb Classical Library; first edition 1915, revised 1937), Internet Archive: the introduction (life, structure, manuscripts, bibliography) and the critical notes", url: "https://archive.org/details/odesofpindar0000sirj_o8b0" },
-    { label: "Pindar, Pythian 10, opening and heading (498 BC), in the Scroll", cite: { work: "tlg0033.tlg002", ref: "10.1", to: "10.3" } },
-    { label: "Pindar, Olympian 1.1–2, with its heading (476 BC), in the Scroll", cite: { work: "tlg0033.tlg001", ref: "1.1", to: "1.2" } },
-    { label: "Pindar, Pythian 12, heading (a flute-playing contest), in the Scroll", cite: { work: "tlg0033.tlg002", ref: "12.1" } },
-    { label: "Pindar, Nemean 11, heading (the president of the council of Tenedos), in the Scroll", cite: { work: "tlg0033.tlg003", ref: "11.1" } },
-    { label: "Pindar, Pythian 8.95–97, in the Scroll", cite: { work: "tlg0033.tlg002", ref: "8.95", to: "8.97" } },
+    { label: "Pindar, Pythian 10, opening and heading (498 BC), in the reader", cite: { work: "tlg0033.tlg002", ref: "10.1", to: "10.3" } },
+    { label: "Pindar, Olympian 1.1–2, with its heading (476 BC), in the reader", cite: { work: "tlg0033.tlg001", ref: "1.1", to: "1.2" } },
+    { label: "Pindar, Pythian 12, heading (a flute-playing contest), in the reader", cite: { work: "tlg0033.tlg002", ref: "12.1" } },
+    { label: "Pindar, Nemean 11, heading (the president of the council of Tenedos), in the reader", cite: { work: "tlg0033.tlg003", ref: "11.1" } },
+    { label: "Pindar, Pythian 8.95–97, in the reader", cite: { work: "tlg0033.tlg002", ref: "8.95", to: "8.97" } },
     { label: "Liddell–Scott–Jones, Greek–English Lexicon: the entries ἐπάμερος, ἡμέρα and Μοῦσα (read in the site's copy; also on the Perseus Digital Library)", url: "https://www.perseus.tufts.edu/hopper/text?doc=Perseus%3Atext%3A1999.04.0057" },
-    { label: "Pindar, Pythian 8, opening and heading (446 BC), in the Scroll", cite: { work: "tlg0033.tlg002", ref: "8.1", to: "8.2" } },
-    { label: "Pausanias, Description of Greece 9.22.3, in the Scroll (Corinna; Pindar's Doric)", cite: { work: "tlg0525.tlg001", ref: "9.22.3" } },
-    { label: "Pindar, Olympian 3.4–9, in the Scroll", cite: { work: "tlg0033.tlg001", ref: "3.4", to: "3.9" } },
-    { label: "Herodotus, Histories 3.38.4, in the Scroll", cite: { work: "tlg0016.tlg001", ref: "3.38.4" } },
-    { label: "Plato, Gorgias 484, in the Scroll", cite: { work: "tlg0059.tlg023", ref: "484" } },
-    { label: "Pausanias, Description of Greece 9.23.2–4, in the Scroll (the tomb, the bees, Delphi, Persephone)", cite: { work: "tlg0525.tlg001", ref: "9.23.2", to: "9.23.4" } },
-    { label: "Pausanias, Description of Greece 10.24.5, in the Scroll (the iron chair at Delphi)", cite: { work: "tlg0525.tlg001", ref: "10.24.5" } },
-    { label: "Pausanias, Description of Greece 1.8.4, in the Scroll (the statue at Athens)", cite: { work: "tlg0525.tlg001", ref: "1.8.4" } },
-    { label: "Pausanias, Description of Greece 9.25.3, in the Scroll (the ruins of the house)", cite: { work: "tlg0525.tlg001", ref: "9.25.3" } },
-    { label: "Arrian, Anabasis of Alexander 1.9.10, in the Scroll", cite: { work: "tlg0074.tlg001", ref: "1.9.10" } },
-    { label: "Plutarch, Alexander 11.6, in the Scroll", cite: { work: "tlg0007.tlg047", ref: "11.6" } },
+    { label: "Pindar, Pythian 8, opening and heading (446 BC), in the reader", cite: { work: "tlg0033.tlg002", ref: "8.1", to: "8.2" } },
+    { label: "Pausanias, Description of Greece 9.22.3, in the reader (Corinna; Pindar's Doric)", cite: { work: "tlg0525.tlg001", ref: "9.22.3" } },
+    { label: "Pindar, Olympian 3.4–9, in the reader", cite: { work: "tlg0033.tlg001", ref: "3.4", to: "3.9" } },
+    { label: "Herodotus, Histories 3.38.4, in the reader", cite: { work: "tlg0016.tlg001", ref: "3.38.4" } },
+    { label: "Plato, Gorgias 484, in the reader", cite: { work: "tlg0059.tlg023", ref: "484" } },
+    { label: "Pausanias, Description of Greece 9.23.2–4, in the reader (the tomb, the bees, Delphi, Persephone)", cite: { work: "tlg0525.tlg001", ref: "9.23.2", to: "9.23.4" } },
+    { label: "Pausanias, Description of Greece 10.24.5, in the reader (the iron chair at Delphi)", cite: { work: "tlg0525.tlg001", ref: "10.24.5" } },
+    { label: "Pausanias, Description of Greece 1.8.4, in the reader (the statue at Athens)", cite: { work: "tlg0525.tlg001", ref: "1.8.4" } },
+    { label: "Pausanias, Description of Greece 9.25.3, in the reader (the ruins of the house)", cite: { work: "tlg0525.tlg001", ref: "9.25.3" } },
+    { label: "Arrian, Anabasis of Alexander 1.9.10, in the reader", cite: { work: "tlg0074.tlg001", ref: "1.9.10" } },
+    { label: "Plutarch, Alexander 11.6, in the reader", cite: { work: "tlg0007.tlg047", ref: "11.6" } },
     { label: "The John Milton Reading Room (Dartmouth College), Sonnet 8, from Poems (1645)", url: "https://milton.host.dartmouth.edu/reading_room/sonnets/sonnet_8/text.shtml" },
     { label: "Pontus Österdahl, Pindaric Scholarship between Aristarchus and Didymus (doctoral thesis, Stockholm University, 2021), chapters 1–2", url: "https://www.diva-portal.org/smash/get/diva2:1609384/FULLTEXT01.pdf" },
     { label: "B. P. Grenfell and A. S. Hunt, The Oxyrhynchus Papyri, part 5 (London, 1908): preface and no. 841, Pindar, Paeans (Internet Archive)", url: "https://archive.org/details/oxyrhynchuspapyr0000bern_r9u6" },
     { label: "Almut Fries, “For Use in Schools: Prosodical Marks in Two Pre-Palaeologan Manuscripts of Pindar”, Greek, Roman, and Byzantine Studies 57 (2017) 745–770", url: "https://grbs.library.duke.edu/index.php/grbs/article/download/15950/7044" },
     { label: "Wikipedia, List of editiones principes in Greek (Pindar: Aldus, Venice, 1513; Callierges, Rome, with the scholia)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
-    { label: "Pindar, Olympian 2.25–27, in the Scroll", cite: { work: "tlg0033.tlg001", ref: "2.25", to: "2.27" } },
-    { label: "Pindar, Olympian 6.53–54, in the Scroll", cite: { work: "tlg0033.tlg001", ref: "6.53", to: "6.54" } },
-    { label: "Pindar, Isthmian 3 and the opening of Isthmian 4, with their headings (both for Melissus of Thebes), in the Scroll", cite: { work: "tlg0033.tlg004", ref: "3.1", to: "4.3" } },
-    { label: "Pausanias, Description of Greece 6.13.8, in the Scroll (no complete records at the Isthmus and Nemea)", cite: { work: "tlg0525.tlg001", ref: "6.13.8" } },
-    { label: "Perseus's copies of Pindar shown in the Scroll: each file's header names its source (Sandys's Loeb text, Heinemann and Harvard, reprint of 1937; Diane Arnson Svarlien's translation for the Perseus Project, 1990), and the translation's headings give each ode's date", cite: { work: "tlg0033.tlg002", ref: "1.1" } },
+    { label: "Pindar, Olympian 2.25–27, in the reader", cite: { work: "tlg0033.tlg001", ref: "2.25", to: "2.27" } },
+    { label: "Pindar, Olympian 6.53–54, in the reader", cite: { work: "tlg0033.tlg001", ref: "6.53", to: "6.54" } },
+    { label: "Pindar, Isthmian 3 and the opening of Isthmian 4, with their headings (both for Melissus of Thebes), in the reader", cite: { work: "tlg0033.tlg004", ref: "3.1", to: "4.3" } },
+    { label: "Pausanias, Description of Greece 6.13.8, in the reader (no complete records at the Isthmus and Nemea)", cite: { work: "tlg0525.tlg001", ref: "6.13.8" } },
+    { label: "Perseus's copies of Pindar shown in the reader: each file's header names its source (Sandys's Loeb text, Heinemann and Harvard, reprint of 1937; Diane Arnson Svarlien's translation for the Perseus Project, 1990), and the translation's headings give each ode's date", cite: { work: "tlg0033.tlg002", ref: "1.1" } },
     { label: "UCL Discovery, record of “Pindar Translated”, a review of W. H. Race, Pindar I–II (Loeb Classical Library 56 and 485, Harvard University Press, 1997)", url: "https://discovery.ucl.ac.uk/180373/" },
     { label: "Internet Archive, library record of Pindari Carmina cum fragmentis, ed. B. Snell and H. Maehler (Leipzig: Teubner, 1987; pars 1, Epinicia)", url: "https://archive.org/details/pindaricarminacu0000pind_y9m1" },
     { label: "The Classical Review 40.2 (1990), C. Carey's review of H. Maehler (ed.), Pindari Carmina cum Fragmentis, Pars II: Fragmenta, Indices (Leipzig: Teubner, 1989)", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/h-maehler-ed-pindari-carmina-cum-fragmentis-pars-ii-fragmenta-indices-bibliotheca-teubneriana-pp-vii-224-leipzig-teubner-1989-dm-40/D727A0B519C3A840A3A090B22A0D6011" },

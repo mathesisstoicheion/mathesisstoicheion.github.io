@@ -1,6 +1,6 @@
 "use client";
 /**
- * One thread of the Town Hall: the question (with a quoted passage if it came from the reader),
+ * One thread of the Agora: the question (with a quoted passage if it came from the reader),
  * the replies as a conversation tree, upvotes, "marked as answered", editing and deleting your
  * own words, reporting, and the moderator's tools. A bug report or suggestion shows its status, which
  * the moderator sets here. What people you have hidden wrote folds away. URL: /town-hall/thread?id=<id>
@@ -34,10 +34,10 @@ export default function ThreadView() {
   const votes = data?.votes ?? { threads: new Set<number>(), posts: new Set<number>() };
   const load = async () => got.reload();
 
-  if (!id) return <div className="wrap"><p className="notice">No thread was named. <Link href="/town-hall">Back to the Town Hall</Link></p></div>;
+  if (!id) return <div className="wrap"><p className="notice">No thread was named. <Link href="/town-hall">Back to the Agora</Link></p></div>;
   if (got.error && !data) return <p className={`wrap ${styles.error}`}>{problem(got.error)}</p>;
   if (!data) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the thread…</div>;
-  if (!data.t) return <p className={`wrap ${styles.status}`}>This thread does not exist, or it has been removed. <Link href="/town-hall">Back to the Town Hall</Link></p>;
+  if (!data.t) return <p className={`wrap ${styles.status}`}>This thread does not exist, or it has been removed. <Link href="/town-hall">Back to the Agora</Link></p>;
 
   const t = data.t;
   const mod = isModerator(account.profile);
@@ -53,7 +53,7 @@ export default function ThreadView() {
   return (
     <article className={`wrap ${styles.threadPage}`}>
       <PullToRefresh onPull={got.reload} busy={got.busy} />
-      <p className={styles.crumbs}><Link href="/town-hall">The Town Hall</Link> / <Link href={`/town-hall?c=${t.category_id}`}>{data.cats.find((c) => c.id === t.category_id)?.title ?? t.category_id.replace(/-/g, " ")}</Link></p>
+      <p className={styles.crumbs}><Link href="/town-hall">The Agora</Link> / <Link href={`/town-hall?c=${t.category_id}`}>{data.cats.find((c) => c.id === t.category_id)?.title ?? t.category_id.replace(/-/g, " ")}</Link></p>
       <ThreadHead t={t} mine={mine} mod={mod} writer={writer} votes={votes} toggle={toggle} reload={load} />
 
       {answered && (

@@ -1,7 +1,7 @@
 /**
  * The Guide's small moving pictures, one for each chapter: drawings of the real controls, in the site's own
  * colours, that play a few seconds of what the control does and then rest. Every Greek line, meaning and
- * transliteration in them is the site's own (the Iliad and Murray's English in the Scroll, LSJ, lib/translit).
+ * transliteration in them is the site's own (the Iliad and Murray's English in the reader, LSJ, lib/translit).
  * With reduced motion they show their finished state.
  */
 import styles from "./Guide.module.css";
@@ -100,7 +100,7 @@ export function Picture({ id }: { id: string }) {
       );
     case "talk":
       return (
-        <Frame label="A question in the forum, an answer, and a vote in the Pnyx.">
+        <Frame label="A question in the Agora, an answer, and a vote in the Pnyx.">
           <div className={`${styles.tBubble} ${styles.tAsk}`}>What does <span lang="grc">ἄειδε</span> mean here?</div>
           <div className={`${styles.tBubble} ${styles.tAns}`}>“Sing!”: Homer asks the goddess to sing.</div>
           <div className={styles.tVote}><span>For</span><i /><span>Against</span></div>

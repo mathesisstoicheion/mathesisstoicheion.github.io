@@ -1,5 +1,5 @@
 /**
- * The Supabase project behind accounts, the Town Hall and the Pnyx. Both values come from the build
+ * The Supabase project behind accounts, the Agora and the Pnyx. Both values come from the build
  * settings: on GitHub, the repository's variables SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY (passed in
  * by .github/workflows/deploy.yml); on a development computer, web/.env.local. A copy of the project
  * without them builds a site with no accounts, and never writes to this site's database.

@@ -75,7 +75,7 @@ export default function EntryView({ e }: { e: Entry }) {
                   <Link href={readHref(r)} transitionTypes={["page-turn"]}>
                     <b>{r.label}</b>
                     <span>{greekAware(r.why, "w")}</span>
-                    <small>Open in the Scroll →</small>
+                    <small>Open in the reader →</small>
                   </Link>
                 </li>
               ))}

@@ -57,8 +57,8 @@ He is the tragedian who sounds most like people talking. Aristotle says so in th
 **Fragments.** What survives of his lost plays is gathered in Kannicht's *TrGF* 5.[^10]`,
 
   editions: [
-    { text: "G. Murray, *Euripidis Fabulae* (Oxford Classical Texts, 1902–13).[^4]", note: "The Greek plays in the Scroll are Perseus's copies of Murray's text." },
-    { text: "E. P. Coleridge's translations (1906), T. A. Buckley's *Bacchae* (1850) and Gilbert Murray's *Rhesus* (1913).[^4]", note: "The English in the Scroll." },
+    { text: "G. Murray, *Euripidis Fabulae* (Oxford Classical Texts, 1902–13).[^4]", note: "The Greek plays in the reader are Perseus's copies of Murray's text." },
+    { text: "E. P. Coleridge's translations (1906), T. A. Buckley's *Bacchae* (1850) and Gilbert Murray's *Rhesus* (1913).[^4]", note: "The English in the reader." },
     { text: "J. Diggle, *Euripidis Fabulae*, 3 vols (Oxford Classical Texts, 1981–94).[^5][^6]", note: "The standard modern Greek text." },
     { text: "D. Kovacs, *Euripides*, 6 vols (Loeb Classical Library, 1994–2003).[^7][^8]" },
     { text: "D. J. Mastronarde, *Euripides: Medea* (Cambridge Greek and Latin Classics, 2002).[^9]", note: "With a commentary." },
@@ -67,9 +67,9 @@ He is the tragedian who sounds most like people talking. Aristotle says so in th
 
   sources: [
     { label: "Wikipedia, Euripides (his plays, victories, the streams of manuscripts, L and P, Rhesus, the papyri)", url: "https://en.wikipedia.org/wiki/Euripides" },
-    { label: "Aristotle, Rhetoric 3.2.5, in the Scroll", cite: { work: "tlg0086.tlg038", ref: "3.2.5" } },
+    { label: "Aristotle, Rhetoric 3.2.5, in the reader", cite: { work: "tlg0086.tlg038", ref: "3.2.5" } },
     { label: "Wikipedia, List of editiones principes in Greek (Euripides, about 1494 and 1503)", url: "https://en.wikipedia.org/wiki/List_of_editiones_principes_in_Greek" },
-    { label: "Perseus's copies of Euripides shown in the Scroll; each file's header names its edition (Murray's Oxford text, 1902–13; Coleridge, 1906; Buckley, 1850; Gilbert Murray, 1913)", cite: { work: "tlg0006.tlg003", ref: "1" } },
+    { label: "Perseus's copies of Euripides shown in the reader; each file's header names its edition (Murray's Oxford text, 1902–13; Coleridge, 1906; Buckley, 1850; Gilbert Murray, 1913)", cite: { work: "tlg0006.tlg003", ref: "1" } },
     { label: "Oxford University Press, Euripides, Fabulae (J. Diggle, Oxford Classical Texts)", url: "https://global.oup.com/academic/product/fabulae-9780198145950" },
     { label: "The Classical Review, “The Re-Editing of Euripides”, on Diggle's Euripidis Fabulae, vol. 2 (1981)", url: "https://www.cambridge.org/core/journals/classical-review/article/abs/reediting-of-euripides-james-diggle-euripidis-fabulae-tomus-ii-supplices-electra-hercules-troades-iphigenia-in-tauris-ion-oxford-classical-texts-pp-xiii373-oxford-clarendon-press-1981-625/63B02DA7667C0A906A72134D4DA633CD" },
     { label: "Loeb Classical Library, Euripides, Cyclops, Alcestis, Medea (D. Kovacs, 1994)", url: "https://www.loebclassics.com/view/LCL012/1994/volume.xml" },

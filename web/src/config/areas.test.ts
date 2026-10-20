@@ -4,10 +4,10 @@ import { AREAS, NAV } from "./areas";
 describe("area names config", () => {
   const areas = Object.values(AREAS);
 
-  it("gives every area a name, an English subtitle and an explanation", () => {
+  it("gives every area a name and an explanation, and the rooms a Greek name, capitalised", () => {
     for (const a of areas) {
       expect(a.name, a.id).toMatch(/^The /);
-      expect(a.english.length, a.id).toBeGreaterThan(0);
+      if (a.door) expect(a.greek, a.id).toMatch(/^[\p{Lu}]/u);
       expect(a.origin.length, a.id).toBeGreaterThan(5);
       expect(a.fit.length, a.id).toBeGreaterThan(5);
     }
