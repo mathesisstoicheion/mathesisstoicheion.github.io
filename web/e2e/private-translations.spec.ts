@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 import { openAids, openChange } from "./reader-menus";
+import { FORUM_OPEN } from "../src/config/areas";
 
 // The moderator's private translations, in Mine (/treasury/translations). A pretend account and a pretend database: nothing is
 // sent to, or written in, the real one. The translations here are made-up placeholders: no real translation may
@@ -197,7 +198,9 @@ test("the first address leads to Mine, with the translation it named; the modera
   expect(await (await page.request.get("/admin/translations")).text()).toContain('<meta name="robots" content="noindex');
 
   await page.goto("/town-hall/moderation");
-  await expect(page.getByText("Nothing waiting. The Town Hall is calm.")).toBeVisible();
+  // while the forum is closed (FORUM_OPEN), the desk shows only the "Closed for now" notice
+  if (FORUM_OPEN) await expect(page.getByText("Nothing waiting. The Town Hall is calm.")).toBeVisible();
+  else await expect(page.getByRole("heading", { level: 1, name: "Closed for now" })).toBeVisible();
   await expect(page.getByRole("link", { name: /Our own translations/ })).toHaveCount(0);
 });
 
