@@ -1,7 +1,7 @@
 # SPEC.md — Mathesis Stoicheion · Μάθησις Στοιχείων
 
 Agreed with the owner on 2026-10-17, updated 2026-10-18. This file decides what the site is. Where the older `PLAN.md`, `Handoff.md` or the
-brief (`greek-reader-website-prompt.md`), now in `_archive/`, disagree with it, this file wins. Terms are defined in `CONTEXT.md`.
+brief (`greek-reader-website-prompt.md`), now in `_archive/`, disagree with it, this file wins. Terms are defined in `GLOSSARY.md`.
 
 ## The site in one line
 

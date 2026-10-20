@@ -5,7 +5,7 @@ from an earlier site. Nothing from them goes on a live page until each claim is 
 source is recorded.
 
 ## Start of every session
-1. Read `SPEC.md` (what the site is, and what is frozen or cut), `CONTEXT.md` (the site's own words) and the top of
+1. Read `SPEC.md` (what the site is, and what is frozen or cut), `GLOSSARY.md` (the site's own words) and the top of
    `PROGRESS.md` (where things stand). Where older files in `_archive/` (`PLAN.md`, `Handoff.md`, the brief) disagree with
    `SPEC.md`, `SPEC.md` wins.
 2. Check the site still builds and runs.
@@ -31,6 +31,9 @@ source is recorded.
   - For a design question, use `/prototype`.
   - When a message is confusing, use `/wait-what`.
   - At the end of a session, run `/handoff`, then update the top of `PROGRESS.md`.
+  - `/grill-with-docs`, `/to-spec`, `/to-tickets`, `/improve-codebase-architecture`, `/wait-what` and `/handoff` run
+    only when the owner types them. Never run them yourself; at the right moment, suggest the command for the owner to
+    type.
 - **Tickets.** Tickets live in `.scratch/`. `PROGRESS.md` stays the owner's plain-English summary of where things stand.
 - **Models.** Sonnet does routine edits, file moves and test runs. Opus does grilling, design, hard bugs and
   architecture. The owner is on the Max x5 plan, so keep usage low. Keep outputs short, and never redo work that
