@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: `${AREAS.treasury.name} · ${AREAS.tr
 export default function TreasuryPage() {
   return (
     <Page>
-      <Door id="treasury" fig="mine" art={A_ART.mask}>
+      <Door id="treasury" art={A_ART.mask}>
         <DoorBlock>
           <Suspense fallback={null}>
             <Treasury />

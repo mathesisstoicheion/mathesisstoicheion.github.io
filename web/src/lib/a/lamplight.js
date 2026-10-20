@@ -30,8 +30,8 @@ const cssv=n=>getComputedStyle(document.documentElement).getPropertyValue(n).tri
 function readTokens(){gen++;T={red:cssv("--red"),gold:cssv("--gold"),goldHi:cssv("--gold-hi"),amber:cssv("--amber"),amberHi:cssv("--amber-hi"),room:cssv("--room"),bg:cssv("--bg")||"#050403"};
   F={gentium:cssv("--font-gentium")||'"Gentium Book Plus",serif',display:cssv("--font-display")||'"Noto Serif Display",serif',mono:cssv("--font-mono")||'"Noto Sans Mono",monospace'}}
 
-/* ---------- the texts the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
-   Socrates and the Socrates emblems, and one for each other figure (data/figures.ts; scripts/make-figure-texts.py) ---------- */
+/* ---------- the text the figures are spelled out of: the Apology (Burnet's Oxford text, via Perseus) for the library's
+   Socrates and the Socrates emblems ---------- */
 const APO_URL="/data/a/apology.txt";
 const GL="αβγδεζηθικλμνξοπρστυφχψωΑΒΓΔΘΛΞΠΣΦΨΩ";
 const RAMP=" ··˙ιιτνυοσρκεαγδζλβξθφψωΦΘΨΩ";
@@ -163,7 +163,7 @@ function Atlas(chars,styles,px){
   return {cv,ci,sx,sy,nc,cw,ch,OS,base:.7}
 }
 
-/* The objects a figure's letters become further down its page. Each gives its size in letter cells (`size`, from the room
+/* The object the figure's letters become further down its page. It gives its size in letter cells (`size`, from the room
    it has, the face's box and one cell's width and height) and lays itself out (`build`): `text(x, line, brightness)` puts
    the next letter of the text there, `put(x, line, brightness, letter?)` a letter of the object's own shape. A cell holds
    one letter; the text is laid first, so it is never covered. */
@@ -176,64 +176,15 @@ const TARGETS={
       for(const l of[top,bot])for(let gx=rl;gx<C2-rl;gx++)put(gx,l,.3);   // the sheet's top and bottom edges
       for(const side of[0,1])for(let l=0;l<R2;l++)for(let i=0;i<rl;i++){const u=(i+.5)/rl,sh=Math.pow(Math.sin(Math.PI*u),.7)*(side?.82+.18*u:1-.18*u);   // the rolled ends, shaded like cylinders
         put(side?C2-rl+i:i,l,(.14+.78*sh)*(l===0||l===R2-1?.55:1))}}},
-  // Learn: a pupil's writing tablet, two wooden leaves tied together, with the text written in rows on the wax
-  tablet:{size(maxW,boxW,boxH,cw,ch){const C2=Math.max(36,Math.floor(Math.min(maxW,boxW*1.18)/cw));return{C2,R2:Math.max(16,Math.round(C2*cw*.5/ch))}},
-    build({C2,R2,text,put}){const hinge=2,lw=Math.floor((C2-hinge)/2),fx=Math.max(2,Math.round(lw*.07)),leaves=[0,C2-lw];
-      for(const x0 of leaves)for(let l=2;l<=R2-3;l+=2)for(let i=x0+fx+1;i<x0+lw-fx-1;i++)text(i,l,.5+.12*rnd());   // the lines on the wax
-      for(const x0 of leaves)for(let l=0;l<R2;l++)for(let i=x0;i<x0+lw;i++){const side=i<x0+fx?(i-x0+.5)/fx:i>=x0+lw-fx?(x0+lw-i-.5)/fx:-1;
-        if(side>=0)put(i,l,.4+.36*Math.sin(Math.PI*side*.5+.3));else if(l===0||l===R2-1)put(i,l,.62);else put(i,l,.05)}   // the wooden frame, and the dark wax
-      for(const l of[Math.round(R2*.32),Math.round(R2*.68)])for(let i=lw;i<C2-lw;i++)put(i,l,.85,"Ο")}},   // the cords that tie the leaves
-  // Explore: a stoa's colonnade, its columns on three steps under the beams, the text along the frieze and the painted panels behind
-  colonnade:{size(maxW,boxW,boxH,cw,ch){const C2=Math.max(40,Math.floor(Math.min(maxW,boxW*1.18)/cw));return{C2,R2:Math.max(18,Math.round(C2*cw*.62/ch))}},
-    build({C2,R2,text,put}){const n=C2>=64?7:5,cwid=Math.max(3,Math.round(C2*.055)),x0=3,x1=C2-4,span=(x1-x0-cwid)/(n-1),cols=[];for(let k=0;k<n;k++)cols.push(Math.round(x0+k*span));
-      const inCol=i=>cols.some(c=>i>=c-1&&i<c+cwid+1),top=0,arch=1,frieze=2,cor=3,cap=4,base=R2-3;
-      for(let i=x0;i<=x1;i++)text(i,frieze,.62);   // the frieze: the text in one line
-      for(let l=cap+2;l<base-1;l++)for(let i=x0+1;i<x1;i++)if(!inCol(i))text(i,l,.28+.08*rnd());   // the panels on the back wall, between the columns
-      for(let i=x0-2;i<=x1+2;i++){put(i,top,.78);put(i,arch,.58);put(i,cor,.7)}   // the cornice and the beams
-      for(const c of cols){for(let i=c-1;i<c+cwid+1;i++)put(i,cap,.84);   // each column's capital, then its shaft, shaded like a cylinder
-        for(let l=cap+1;l<base;l++)for(let i=c;i<c+cwid;i++){const u=(i-c+.5)/cwid;put(i,l,.14+.8*Math.pow(Math.sin(Math.PI*u),.6)*(.8+.2*u))}}
-      for(let st=0;st<3;st++)for(let i=x0-1-st;i<=x1+1+st;i++)put(i,base+st,.74-.12*st)}},   // the three steps
-  // Talk: an allotment machine (kleroterion), a stone slab cut with rows of slots for the citizens' bronze name tickets, some in
-  // place, with the tube beside it into which the black and white balls were dropped
-  kleroterion:{size(maxW,boxW,boxH,cw,ch){return{C2:Math.floor(Math.min(maxW,boxW*.8)/cw),R2:Math.floor(boxH*.9/ch)}},
-    build({C2,R2,text,put}){const tube=4,x0=tube+3,x1=C2-1,y0=0,y1=R2-1,sw=4,ncol=C2-x0>=38?5:4,gap=Math.max(2,Math.floor((x1-x0-3-ncol*sw)/(ncol+1)));
-      const slot=(i,l)=>{if(l<y0+4||l>y1-4||(l-y0)%2)return -1;const j=i-(x0+2+gap);if(j<0||j%(sw+gap)>=sw)return -1;const c=Math.floor(j/(sw+gap));return c<ncol?c:-1};
-      for(let l=y0+2;l<=y1-2;l++)for(let i=x0+2;i<=x1-2;i++)if(slot(i,l)<0)text(i,l,.2+.08*rnd());   // the stone's face, a little dimmer than the tickets' bronze
-      for(let l=y0+4;l<=y1-4;l+=2)for(let c=0;c<ncol;c++)if((c*5+l*3)%7<4)for(let k=0;k<sw;k++)put(x0+2+gap+c*(sw+gap)+k,l,k===0||k===sw-1?.78:1);   // tickets in their slots; the empty slots stay dark
-      for(let l=y0;l<=y1;l++)for(const i of[x0,x0+1,x1-1,x1])put(i,l,i===x0||i===x1?.74:.5);for(let i=x0;i<=x1;i++)for(const l of[y0,y0+1,y1-1,y1])put(i,l,l===y0||l===y1?.74:.5);   // its edges
-      for(let l=y0+5;l<y1-3;l++)for(let i=0;i<tube;i++)put(i,l,.16+.76*Math.pow(Math.sin(Math.PI*(i+.5)/tube),.7));   // the tube
-      for(let r=0;r<4;r++)for(let i=-r;i<tube+r;i++)put(i+0,y0+4-r,.82-.1*r)}},   // its funnel
-  // Search: Apollo's lyre: a tortoise-shell sound box, two arms rising from it like horns to the crossbar, and seven strings
-  lyre:{size(maxW,boxW,boxH,cw,ch){return{C2:Math.floor(Math.min(maxW,boxW*1.04)/cw),R2:Math.floor(boxH*.92/ch)}},
-    build({C2,R2,text,put}){const X=u=>Math.round((u+1)/2*C2-.5),V=l=>(l+.5)/R2,U=i=>(i+.5)/C2*2-1;   // across from -1 to 1, and down from 0 to 1
-      // the shell: a low dome, its plates in a pattern, written over
-      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const u=U(i),v=V(l),e=(u/.62)**2+((v-.82)/.14)**2;if(e>=1)continue;
-        const pl=.78+.22*Math.cos(u*15+(v<.82?0:1.6))*Math.cos((v-.82)*48);text(i,l,(.2+.6*(1-e))*pl)}
-      const arm=v=>{const k=clamp((.72-v)/.62,0,1);return .38+.16*Math.sin(Math.PI*k*.78)-.08*k*k+(k>.93?(k-.93)*1.6:0)};   // out, then in, then a little out at the tip
-      for(let l=Math.round(.08*R2);l<R2;l++){const v=V(l);if(v>.73)break;const x=arm(v);for(const sg of[-1,1]){put(X(sg*x),l,.86);put(X(sg*(x+.04)),l,.62);put(X(sg*(x+.08)),l,.3)}}
-      const yb=Math.round(.16*R2);for(let i=X(-arm(V(yb))-.06);i<=X(arm(V(yb))+.06);i++){put(i,yb,.88);put(i,yb+1,.52)}   // the crossbar
-      const yr=Math.round(.7*R2);for(let i=X(-.22);i<=X(.22);i++)put(i,yr,.84);   // the bridge
-      for(let k=0;k<7;k++){const ut=-.27+k*.09,ub=-.18+k*.06;for(let l=yb+2;l<yr;l++){const f=(l-yb-2)/Math.max(1,yr-yb-2);put(X(ut+(ub-ut)*f),l,.46,"Ι")}}}},   // the strings
-  // any object with a picture of its own: the picture itself, every lit cell a letter of the text
-  // Mine: an Athenian silver coin, the picture in letters inside its rim
-  coin:{size(...a){return TARGETS.pic.size(...a)},
-    build(o){TARGETS.pic.build(o);const{C2,R2,put}=o,cx=C2/2,cy=R2/2;
-      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const e=Math.hypot((i+.5-cx)/(C2/2),(l+.5-cy)/(R2/2));if(e>.9&&e<1.02)put(i,l,.5+.3*Math.cos((i+l)*.9))}}},
-  pic:{size(maxW,boxW,boxH,cw,ch,img){const asp=img?img.height/img.width:1;let W=Math.min(maxW,boxW*1.16),H=W*asp;if(H>boxH*.95){H=boxH*.95;W=H/asp}return{C2:Math.floor(W/cw),R2:Math.floor(H/ch)}},
-    build({C2,R2,text,img}){if(!img)return;const d=sample(img,C2,R2),N=C2*R2,G=new Float32Array(N),B=new Float32Array(N),rad=Math.max(2,Math.round(C2/24));
-      for(let k=0;k<N;k++)G[k]=(.3*d[k*4]+.59*d[k*4+1]+.11*d[k*4+2])/255;
-      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){let s2=0,c=0;for(let v=Math.max(0,l-rad);v<=Math.min(R2-1,l+rad);v++)for(let u=Math.max(0,i-rad);u<=Math.min(C2-1,i+rad);u++){s2+=G[v*C2+u];c++}B[l*C2+i]=s2/c}
-      const lit=[...G].filter(v=>v>.05).sort((a,b)=>a-b),lo=lit[Math.floor(lit.length*.03)]||0,hi=lit[Math.floor(lit.length*.985)]||1;
-      for(let l=0;l<R2;l++)for(let i=0;i<C2;i++){const k=l*C2+i;if(G[k]<=.05)continue;const v=clamp((G[k]+.25*(G[k]-B[k])-lo)/(hi-lo),0,1);text(i,l,.05+.95*Math.pow(v,1.35))}}},
 };
 
 /* Scene: a face spelled out of a Greek text, in a dark room lit by one lamp: design A's Socrates, spelled out of Plato's
-   Apology (the library), and the other areas' figures (data/figures.ts), each out of its own text.
+   Apology (the library).
    Every letter is the text in reading order; only their brightness draws the face. With a pointer, the lamp is also a
    reading glass that enlarges the letters under it.
    The face stands in its opening near the top of the page (an element marked data-face-anchor) and moves with the page.
-   Scroll on, and its letters fly out and become the area's object (TARGETS above: the library's papyrus roll, as A drew
-   it, or another), grown large behind the whole page and dimmed, so the page's words stay clear over it. It stays there
+   Scroll on, and its letters fly out and become its object (TARGETS above: the library's papyrus roll, as A drew it),
+   grown large behind the whole page and dimmed, so the page's words stay clear over it. It stays there
    until you scroll back to the top, and then the letters fly back into the face (the owner, 2026-10-20: "The figures should
    grow into the background, as you scroll, then stay there, until you scroll back to the top, then it animates into the
    face again"). `tx` is the text (loadText), `target` the object's name, `img2` its picture.
@@ -791,7 +742,7 @@ export function begin(){Engine.start()}
 export function opened(){Engine.start();Engine.opened()}
 /** a window onto an engraving: kind "coin" (Athena's head, with its rays) or "pic" (any other picture) */
 export function addWindow(el,{src,kind="pic"}){Engine.start();const w={el,cv:el.querySelector("canvas"),cap:el.querySelector("[data-wcap]"),src,kind};wins.add(w);Engine.kick();return()=>{wins.delete(w)}}
-/** a figure behind the page: the library's Socrates, or another area's (data/figures.ts). Its face stands in the page's
+/** a figure behind the page: the library's Socrates. Its face stands in the page's
  * opening marked data-face-anchor and becomes its object, grown behind the page, once you scroll; `text` is its text's
  * address (the Apology if none), `target` the object, `img2` the object's picture where it has one
  * @param {HTMLCanvasElement} cv
@@ -814,7 +765,7 @@ export function track(el){Engine.start();const it={el,v:-1};Settle.items.push(it
  * @param {{settles?: boolean, points?: () => number[]}} [o] */
 export function glide(on,{settles=false,points}={}){Glide.on_=on;Glide.settles=settles;Glide.pts=points||(()=>[]);if(!on)Glide.stop()}
 /** a book's emblem, its picture drawn in letters; `text` spells it out of a text instead: true for the Apology (Socrates),
- * or a text's address (a figure's, data/figures.ts) */
+ * or a text's address */
 export async function emblem(cv,src,o){Engine.start();const [img,tx]=await Promise.all([loadImg(src),o.text?loadText(typeof o.text==="string"?o.text:APO_URL):null]);if(!img||!cv.isConnected)return null;
   if(tx){if(!tx.raw)return null;o={...o,caps:capsOf(tx)}}
   if(document.fonts)await document.fonts.ready;const r=Letters(cv,img,o);r.start();return r}

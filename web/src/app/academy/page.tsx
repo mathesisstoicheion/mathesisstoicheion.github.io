@@ -25,7 +25,7 @@ export default function AcademyPage() {
   return (
     <Page>
       {/* the next step (the day's session, or the next lesson) is the door's main action, under its name */}
-      <Door id="study" fig="learn" art={A_ART.douris} action={<AcademyProgress />}>
+      <Door id="study" art={A_ART.douris} action={<AcademyProgress />}>
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
             <div>

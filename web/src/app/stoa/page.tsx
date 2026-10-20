@@ -33,7 +33,7 @@ const REFERENCE: RefCard[] = [
 export default function StoaPage() {
   return (
     <Page>
-      <Door id="wiki" fig="explore" art={A_ART.crates} action={<FindJump target="stoa-search" label="Search the Painted Stoa">Search every entry: Melos, plague…</FindJump>}>
+      <Door id="wiki" art={A_ART.crates} action={<FindJump target="stoa-search" label="Search the Painted Stoa">Search every entry: Melos, plague…</FindJump>}>
         <DoorBlock><ExploreLead /></DoorBlock>
         <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} foot={<ExploreCredit />} /></DoorBlock>
       </Door>

@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: `${AREAS.forum.name} · ${AREAS.forum
 export default function TownHallPage() {
   return (
     <Page>
-      <Door id="forum" fig="talk" art={A_ART.ostraka}>
+      <Door id="forum" art={A_ART.ostraka}>
         <DoorBlock>
           <Suspense>
             <TownHall />

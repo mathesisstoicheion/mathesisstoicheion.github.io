@@ -1,5 +1,16 @@
 # PROGRESS.md — project memory
 
+## Gold and lamplight on every page (2026-10-20, round 3; waiting for the owner's "Publish")
+The owner, 14:38 UTC: "Let's go with gold and lamp everything"; on the card they chose "Pure A, keep fixes": every page in
+design A's own look, only the Museion keeps its letter figure, and this morning's full-width pages and lighter drawing stay.
+- The doors (`components/a/Door.tsx`) have a tall red gilded window beside the name instead of a letter face (wide above the
+  name on a phone), and their dark blocks still span the page. Inner pages have their red window at the head again
+  (`PageWin.tsx`). The home page's five rooms show their red windows again (as on 2026-10-19 afternoon).
+- Removed: the five other letter figures and everything that drew them (`data/figures.ts`, `FigStage`, `AreaStage`,
+  `FootPiece`, `RoomFig`, their texts and pictures, `make-figure-texts.py`, `prepare-figures.py`, the engine's tablet,
+  colonnade, allotment machine, lyre and coin shapes). All are in git history (commit 69169fb and after).
+- Kept: the library's Socrates and roll, the italic gold page titles, the full-width pages, the lighter engine.
+
 ## Pages fill the screen; figures grow behind them (2026-10-20, round 2; LIVE after the owner's "Publish" at 14:10 UTC)
 The owner, 06:49 UTC: "I don't like the way the content is displayed on each page. Everything is stuck to the left, and doesn't
 fill out the page. Also, The figures should grow into the background, as you scroll, then stay there, until you scroll back to

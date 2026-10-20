@@ -73,8 +73,8 @@ const CARVE = {
 export default function Search() {
   const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
   return (
-    // a door of the site, built as the library is (components/a/Door.tsx): Apollo, spelled out of his Hymn, becomes his lyre
-    <Door id="search" fig="search" art={A_ART.amphora} carve={CARVE} action={
+    // a door of the site (components/a/Door.tsx), with its red window onto an amphora
+    <Door id="search" art={A_ART.amphora} carve={CARVE} action={
       <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
         <OracleBox draft={draft} />
       </Suspense>}>

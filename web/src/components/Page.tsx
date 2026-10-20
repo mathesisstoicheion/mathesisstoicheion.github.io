@@ -1,6 +1,4 @@
 import { ViewTransition } from "react";
-import AreaStage from "@/components/a/AreaStage";
-import FootPiece from "@/components/a/FootPiece";
 
 /**
  * Wraps every page so that navigating between areas plays the page-turn transition.
@@ -15,9 +13,7 @@ export default function Page({ children, screen = "room" }: { children: React.Re
       default="none"
     >
       {/* which of design A's rooms the page is in: the doorway (home), or the lamp room (styles/tokens.css) */}
-      {/* every page inside an area has its area's figure (data/figures.ts) behind it, its face in the page's head, and its
-          own gilded piece at its foot */}
-      <main id="main" tabIndex={-1} data-screen={screen}>{screen === "room" && <AreaStage />}{children}{screen === "room" && <FootPiece />}</main>
+      <main id="main" tabIndex={-1} data-screen={screen}>{children}</main>
     </ViewTransition>
   );
 }

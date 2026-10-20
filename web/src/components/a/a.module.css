@@ -197,58 +197,20 @@
   .library .flow > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
 }
 
-/* ---------- THE DOORS (components/a/Door.tsx): the library's stage and dark blocks, each door with its own figure ----------
-   The owner, 2026-10-19: "mixes elements of gold and torch (A) and ... the Museion"; the library itself keeps its own rules
-   above. The figure is on a stage pinned behind the page; dark blocks slide over it, across the page's width; the gaps are
-   the windows. */
-.door { background: transparent; }
-.door .stage { display: block; position: sticky; top: 0; height: 100vh; z-index: 0; background: var(--room); }
-.door .stage canvas { width: 100%; height: 100%; display: block; touch-action: pan-y; }
-.door .flow { margin-top: -100vh; }
+/* ---------- THE DOORS (components/a/Door.tsx), in design A's look (the owner, 2026-10-20: "Let's go with gold and lamp
+   everything"): the lamp room, dark blocks across the page's width, and beside the door's name one of A's tall red windows
+   onto a gilded object of the area ---------- */
+.door { background: var(--room); }
 .door .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
 .door-hero { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, .85fr); gap: clamp(20px, 4vw, 56px); align-items: end; padding-block: clamp(40px, 8vw, 120px) clamp(24px, 4vw, 48px); }
 .door-hero .tall { aspect-ratio: 4 / 5; }
 .door-carve { margin: 18px 0 0; font-family: var(--face-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 300; line-height: 1.2; letter-spacing: .16em; color: var(--a-accent); }
 .door-carve + .lib-title { margin-top: 6px; }
 .door-action { margin-top: 22px; max-width: 560px; }
-/* the windows onto the figure: openings in the black page, no frame; their labels on small dark plates */
-.door .gap { background: transparent; border-color: transparent; }
-.door .gap .wcap { background: rgba(5, 4, 3, .92); }
-/* the door's red window onto a gilded object of the area, framed as A's windows are */
-.door .art { border: 1px solid var(--a-line); margin-block: 0 clamp(24px, 4vw, 48px); }
-.art-desk { display: none; }
 .door-body > .wrap + .wrap { margin-top: clamp(24px, 4vw, 48px); }
-.door-credit { margin-top: clamp(24px, 4vw, 48px); }
+.door-credit { margin-top: clamp(24px, 4vw, 48px); padding-bottom: clamp(24px, 4vw, 48px); }
 .door-credit .cap { margin: 0; }
 /* a door's parts written for the whole page (with the site's own .wrap) sit inside their block without a second margin */
 .door .blk :global(.wrap) { max-width: none; padding-left: 0; padding-right: 0; }
-@media (max-width: 860px) { .door-hero { grid-template-columns: 1fr; } .door-hero .win { order: -1; } }
-@media (min-width: 1100px) {
-  .door .stcap { display: block; }
-  .door-hero .wcap { display: none; }
-  .art-desk { display: block; padding-top: clamp(40px, 12vh, 140px); }
-  .art-phone { display: none; }
-  .door .art-desk .art { margin-bottom: 0; }
-  .door-body { padding-top: clamp(40px, 12vh, 140px); }
-  .door-body > .wrap + .wrap { margin-top: clamp(40px, 12vh, 140px); }
-}
-
-/* ---------- the pages inside an area: the area's figure fixed behind the whole page (components/a/AreaStage.tsx), its face in
-   the page's head, and at the foot the page's own gilded piece with a label as in a museum (components/a/FootPiece.tsx) ---------- */
-.area-stage { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-.area-stage canvas { width: 100%; height: 100%; display: block; }
-.foot-piece { margin-top: clamp(48px, 8vw, 96px); }
-.fp-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: clamp(24px, 5vw, 72px); align-items: center; }
-.fp-one { grid-template-columns: minmax(0, 1fr); }
-.fp-title { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 3vw, 2.6rem); line-height: 1.04; margin: 12px 0 14px; color: var(--a-ink); text-wrap: balance; }
-.fp-text .cap { max-width: 60ch; }
-.fp-go { display: inline-block; margin-top: 16px; color: var(--a-accent2); text-underline-offset: 3px; }
-.fp-grid :global(.piece-foot) { float: none; margin: 0; }
-@media (max-width: 760px) { .fp-grid { grid-template-columns: 1fr; } .fp-grid :global(.piece-foot) { margin: 0 auto; } }
-
-/* ---------- the home page's five rooms (components/a/RoomFig.tsx): each small window shows the figure of its room's door,
-   its face in gold letters of its own text on Pompeian red; the room's name beneath says whose ---------- */
-.home .roomfig { display: grid; place-items: center; height: 176px; background: var(--a-field); border-color: transparent; }
-/* on a computer each letter is drawn at one pixel to the point, so the faces stand taller to keep their letters legible */
-@media (min-width: 1100px) { .home .roomfig { height: clamp(176px, 15vw, 232px); } }
-.roomfig canvas { position: relative; inset: auto; }
+/* on a phone the window comes first, wide rather than tall, so the door's name is on the first screen */
+@media (max-width: 860px) { .door-hero { grid-template-columns: 1fr; } .door-hero .win { order: -1; } .door-hero .tall { aspect-ratio: 4 / 3; min-height: 0; } }

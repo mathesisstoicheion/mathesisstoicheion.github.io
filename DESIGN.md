@@ -15,8 +15,9 @@ Stone and torch (design B), live from 2026-10-16 until then, is kept for referen
 ## What is A's, and what is the site's own (the owner's answers, 2026-10-19)
 1. **A only.** The home page, the library and the reader are A's own screens with the site's real content
    (components/a/, lib/a/lamplight.js, components/a/a.module.css). Every other page keeps its own layout, dressed in A's
-   colours, type, buttons and engraved windows (components/a/PageWin.tsx). The page flows of 2026-10-18 were dropped.
-   (The art growing behind pages came back on 2026-10-20, as each area's letter figure; see below.)
+   colours, type, buttons and engraved windows (components/a/PageWin.tsx). The page flows of 2026-10-18 and the art
+   growing behind pages were dropped. A "mixed" version with a letter figure for every area was live 2026-10-19 21:20 to
+   2026-10-20; the owner then chose "gold and lamp everything" (2026-10-20 14:38): only the library keeps its figure.
 2. **No Muses.** The home page is A's without the nine Muses and their lamps.
 3. **The coin's rays turn by themselves,** slowly, as in A.
 4. **No settling.** The wheel is slow and smooth on the home page and in the library, as in A, but the page stops exactly
@@ -30,12 +31,13 @@ Stone and torch (design B), live from 2026-10-16 until then, is kept for referen
   when they come into view. And should stay expanded, even if you scroll back up"). A window opens by itself once it is
   well in view and a heading's letters settle by themselves; neither goes back when you scroll up. In design A these followed
   the scroll position, so a page left mid-scroll showed half-open windows and scrambled titles.
-- **The figures are the exception** (the owner, 2026-10-20: "The figures should grow into the background, as you scroll,
-  then stay there, until you scroll back to the top, then it animates into the face again"). Each area's letter figure (the
-  library's Socrates among them) gathers into its face in the opening the page marks (`data-face-anchor`); once you scroll a
-  fifth of the window, its letters become the area's object, large and dim behind the whole page; back at the top they
-  become the face again. Every line of text over it sits on a soft dark band drawn under the words, so text never sits on
-  bright letters (the overlap rule below). Pages are as wide as the frame (1240 px): no column stuck to the left.
+- **The library's Socrates is the exception** (the owner, 2026-10-20: "The figures should grow into the background, as you
+  scroll, then stay there, until you scroll back to the top, then it animates into the face again"). He gathers into his
+  face in the opening the page marks (`data-face-anchor`); once you scroll a fifth of the window, his letters become the
+  papyrus roll, large behind the page; back at the top they become the face again. Every line of text over it sits on a soft
+  dark band drawn under the words, so text never sits on bright letters (the overlap rule below).
+- **Pages are as wide as the frame** (1240 px; the owner, 2026-10-20: "Everything is stuck to the left, and doesn't fill out
+  the page"). The doors (components/a/Door.tsx) have dark blocks across the page and a tall red window beside the name.
 
 ## The three animation levels (the owner, 2026-10-19)
 "One with the full beauty and intricate design and animation. One with a few visual sacrifices for better performance,
