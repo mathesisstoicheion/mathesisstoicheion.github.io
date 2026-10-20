@@ -192,6 +192,9 @@
 .library .flow { margin-top: -100vh; }
 .library .win { background: transparent; border-color: transparent; }   /* Socrates is drawn behind it, so it stays see-through */
 .library .blk { background: rgba(5, 4, 3, .8); padding: clamp(18px, 2.6vw, 32px); }
+/* the quieter words (an author's name over a title, a Greek title, the filters not chosen) a shade lighter here, where the
+   roll glows faintly under them, so every word still reads at 4.5 to 1 (review fix list, slice 6; scripts/check-library.mjs) */
+.library { --a-ink2: color-mix(in srgb, var(--parch-2) 85%, var(--parch)); --ink-2: color-mix(in srgb, var(--parch-2) 85%, var(--parch)); }
 .library .lib-hero { padding-top: clamp(40px, 8vw, 120px); }
 .library .books .book { padding-inline: 4px; }
 .library .win .wcap { background: rgba(5, 4, 3, .92); }

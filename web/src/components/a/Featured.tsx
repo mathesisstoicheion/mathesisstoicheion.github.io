@@ -2,7 +2,7 @@
 /**
  * The library's famous books (design A): two groups of three, each book a row with its emblem, its picture drawn in
  * letters (lib/a/lamplight.js, Letters), which wakes and glints while the pointer is on the row. Socrates' emblem is spelled
- * out of the Apology itself. Each row opens its book in the reader. While a search or a filter is on, the famous books stand
+ * out of the Apology itself. Each row opens its book in the reader. While a search is on, the famous books stand
  * aside, so the catalogue's answers come up right under the search.
  */
 import Link from "next/link";
@@ -10,9 +10,12 @@ import { Fragment, useEffect, useRef } from "react";
 import { emblem } from "@/lib/a/lamplight";
 import { useLibQuery } from "@/components/library/libQuery";
 import SettleText from "./SettleText";
+import InfoTip from "./InfoTip";
+import f from "./Featured.module.css";
 import s from "./a.module.css";
 
-export interface Book { id: string; author: string; title: string; greek: string; pic: string; why: string; english: boolean }
+/** `about` is a line on the work itself; `why`, the picture's credit, waits behind an ⓘ */
+export interface Book { id: string; author: string; title: string; greek: string; pic: string; about: string; why: string; english: boolean }
 
 function BookRow({ b }: { b: Book }) {
   const row = useRef<HTMLAnchorElement>(null), cv = useRef<HTMLCanvasElement>(null);
@@ -27,17 +30,20 @@ function BookRow({ b }: { b: Book }) {
     return () => { gone = true; art?.stop(); a.removeEventListener("pointerenter", on); a.removeEventListener("pointerleave", off); a.removeEventListener("focus", on); a.removeEventListener("blur", off); };
   }, [b.pic]);
   return (
-    <Link ref={row} className={s.book} href={`/read?w=${b.id}`} transitionTypes={["page-turn"]}>
-      <canvas ref={cv} aria-hidden="true" />
-      <div><div className={`${s.who} ${s.mono}`}>{b.author}</div><div className={s.tt}>{b.title}</div>{b.greek && <span className={s.gt} lang="grc">{b.greek}</span>}</div>
-      <p className={s.why}>{b.why}</p>
-      <span className={`${s.tag} ${s.mono}`}>{b.english ? "Greek + English" : "Greek"}</span>
-    </Link>
+    <div className={f.row}>
+      <Link ref={row} className={s.book} href={`/read?w=${b.id}`} transitionTypes={["page-turn"]}>
+        <canvas ref={cv} aria-hidden="true" />
+        <div><div className={`${s.who} ${s.mono}`}>{b.author}</div><div className={s.tt}>{b.title}</div>{b.greek && <span className={s.gt} lang="grc">{b.greek}</span>}</div>
+        <p className={s.why}>{b.about}</p>
+        <span className={`${s.tag} ${s.mono}`}>{b.english ? "Greek + English" : "Greek"}</span>
+      </Link>
+      <InfoTip className={f.tip} label={`About the picture beside ${b.title}`}>{b.why}</InfoTip>
+    </div>
   );
 }
 
 export default function Featured({ groups, between, after }: { groups: { name: string; books: Book[] }[]; between?: React.ReactNode; after?: React.ReactNode }) {
-  const aside = useLibQuery((x) => !!x.q.trim() || x.tr !== "all");
+  const aside = useLibQuery((x) => !!x.q.trim());
   if (aside) return null;
   return (
     <section aria-label="Famous books to begin with" style={{ display: "contents" }}>

@@ -6,6 +6,7 @@
  */
 import { hasTranslation, type CatAuthor } from "./catalog";
 import { centuries, familyOf, type WorkMeta } from "./works-meta";
+import { bcAd } from "./bc-ad";
 
 export interface AuthorMeta {
   q: string;
@@ -14,9 +15,15 @@ export interface AuthorMeta {
   desc?: string; place?: string; occ?: string[]; wp?: string;
 }
 
+/** Wikidata's descriptions in the site's own dates, BC and AD (lib/bc-ad.ts) */
+export function tidyAuthors(authors: Record<string, AuthorMeta>): Record<string, AuthorMeta> {
+  for (const a of Object.values(authors)) if (a.desc) a.desc = bcAd(a.desc);
+  return authors;
+}
+
 let pending: Promise<Record<string, AuthorMeta>> | null = null;
 export function loadAuthorsMeta(): Promise<Record<string, AuthorMeta>> {
-  pending ??= fetch("/data/authors-meta.json").then((r) => (r.ok ? r.json() : { authors: {} })).then((d) => d.authors ?? {}).catch(() => ({}));
+  pending ??= fetch("/data/authors-meta.json").then((r) => (r.ok ? r.json() : { authors: {} })).then((d) => tidyAuthors(d.authors ?? {})).catch(() => ({}));
   return pending;
 }
 

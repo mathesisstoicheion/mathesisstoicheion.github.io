@@ -9,6 +9,7 @@
  * a named ancient source says.
  */
 import credits from "./piece-images.json";
+import { bcAd } from "@/lib/bc-ad";
 import shapes from "./piece-shapes.json";
 
 export interface PieceCredit {
@@ -18,7 +19,8 @@ export interface PieceCredit {
 export type Material = "marble" | "limestone" | "plaster" | "bronze" | "terracotta" | "gold";
 export interface PieceShape { w: number; h: number; form: "round" | "slab" | "relief" | "lathe" | "coin"; material: Material }
 
-export const PIECE_CREDITS = credits as Record<string, PieceCredit>;
+// the museums' dates in the site's own convention, BC and AD (lib/bc-ad.ts); the file keeps the museums' own words
+export const PIECE_CREDITS = Object.fromEntries(Object.entries(credits as Record<string, PieceCredit>).map(([k, c]) => [k, { ...c, date: c.date && bcAd(c.date) }])) as Record<string, PieceCredit>;
 export const PIECE_SHAPES = shapes as Record<string, PieceShape>;
 
 interface PageSpec { piece: string; why?: string }

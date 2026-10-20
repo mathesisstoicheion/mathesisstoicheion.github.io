@@ -1,15 +1,14 @@
 "use client";
 /**
- * The library's search, as design A set it under the page's title: one field for an author or a title, and below it All,
- * With English, Greek only. Typing puts the famous books aside, so the catalogue's answers come up right under the field.
+ * The library's search, as design A set it under the page's title: one field for an author or a title. Typing puts the
+ * famous books aside, so the catalogue's answers come up right under the field. What to show (All, With English, Greek
+ * only) is in the list's one bar of filters (components/library/Library.tsx).
  */
-import { useLibQuery, type Tr } from "@/components/library/libQuery";
+import { useLibQuery } from "@/components/library/libQuery";
 import s from "./a.module.css";
 
-const SEG: [Tr, string][] = [["all", "All"], ["with", "With English"], ["greek", "Greek only"]];
-
 export default function LibSearch() {
-  const { q, tr, setQ, setTr } = useLibQuery();
+  const { q, setQ } = useLibQuery();
   return (
     <>
       <label className={s.search}>
@@ -17,11 +16,6 @@ export default function LibSearch() {
         <input id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false}
           placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" aria-controls="library-list" />
       </label>
-      <div className={s.lfilters}>
-        <div className={s.seg} role="group" aria-label="Show">
-          {SEG.map(([id, label]) => <button key={id} type="button" aria-pressed={tr === id} onClick={() => setTr(id)}>{label}</button>)}
-        </div>
-      </div>
     </>
   );
 }

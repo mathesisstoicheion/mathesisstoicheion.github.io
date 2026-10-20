@@ -35,12 +35,12 @@ test("the library opens with its search, and lists authors who open to show thei
 test("the search and the filters are kept in the address, so Back and shared links return to the same list", async ({ page }) => {
   await page.goto("/library");
   await page.getByRole("searchbox", { name: "Search the library" }).fill("odyssey");
-  await page.getByRole("group", { name: "Show" }).getByRole("button", { name: "With English" }).click();
+  await page.getByRole("radiogroup", { name: "Show" }).getByRole("radio", { name: "With English" }).click();
   await expect(page).toHaveURL(/[?&]q=odyssey/);
   await expect(page).toHaveURL(/[?&]tr=with/);
   await page.goto("/library?q=medea&tr=greek");
   await expect(page.getByRole("searchbox", { name: "Search the library" })).toHaveValue("medea");
-  await expect(page.getByRole("group", { name: "Show" }).getByRole("button", { name: "Greek only" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("radiogroup", { name: "Show" }).getByRole("radio", { name: "Greek only" })).toHaveAttribute("aria-checked", "true");
 });
 
 test("arrow keys move between the authors, and the best-known work comes first", async ({ page }) => {
@@ -190,12 +190,17 @@ test("the library opens with its search and the famous books, then the order and
   await expect(list).toBeInViewport();
 });
 
-test("the reading paths, once on the home page, wait in the library under \"Not sure where to begin?\"", async ({ page }) => {
+test("\"Not sure where to begin?\" stands under the library's name, open on a first visit, and stays shut once shut", async ({ page }) => {
   await page.goto("/library");
   const begin = page.locator("details", { hasText: "Not sure where to begin?" });
-  await expect(begin.getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
-  await begin.getByText("Not sure where to begin?").click();
+  // above the famous books, and open
+  expect(await begin.evaluate((d) => !!(d.compareDocumentPosition(document.querySelector('[aria-label="Famous books to begin with"]') ?? document.body) & Node.DOCUMENT_POSITION_FOLLOWING))).toBe(true);
   await expect(begin.getByRole("heading", { level: 4 })).toHaveCount(6);
+  await begin.getByText("Not sure where to begin?").click();
+  await expect(begin.getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
+  await page.reload();
+  await expect(page.locator("details", { hasText: "Not sure where to begin?" }).getByRole("heading", { name: "First steps in Greek prose" })).toBeHidden();
+  await begin.getByText("Not sure where to begin?").click();
   // the first level starts with it, and so does the first path
   await expect(begin.getByRole("link", { name: "Lysias, On the Murder of Eratosthenes" }).first()).toHaveAttribute("href", "/read?w=tlg0540.tlg001");
 });

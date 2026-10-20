@@ -3,12 +3,14 @@
 import OrigTitle from "./OrigTitle";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { Fragment, useDeferredValue, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { Fragment, useDeferredValue, useEffect, useMemo, useState, type ReactNode } from "react";
 import { loadCatalog, fold, greekEditions, hasTranslation, type CatalogIndex, type CatAuthor, type CatWork } from "@/lib/catalog";
 import { loadWorksMeta, FAMILIES, PERIODS, familyOf, periodOf, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { commonShare, loadDifficulty, VOCAB_BANDS } from "@/lib/difficulty";
 import { loadAuthorsMeta, loadAuthorNames, type AuthorMeta, type AuthorNames } from "@/lib/authors-meta";
 import { BEST_KNOWN } from "@/data/best-known";
+import { entryLine } from "@/data/author-lines";
+import { undated } from "@/lib/bc-ad";
 import { recentPositions } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
@@ -20,17 +22,8 @@ import styles from "./Library.module.css";
 import A from "@/components/a/a.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
-/**
- * Where to begin. The site's own guidance, following the brief; the reasons are the ones
- * teachers usually give. Difficulty is about the Greek, not the ideas.
- */
-const START = [
-  { level: "Gentle", why: "Short sentences and everyday words.", works: [["tlg0031.tlg004", "The Gospel of John"], ["tlg0096.tlg002", "Aesop's fables"]] },
-  { level: "Steady", why: "Clear Classical Attic prose, the usual first authors after a textbook.", works: [["tlg0032.tlg006", "Xenophon, Anabasis"], ["tlg0540.tlg001", "Lysias, On the Murder of Eratosthenes"]] },
-  { level: "Demanding", why: "Dense, unusual constructions and rare words, hard even for experienced readers.", works: [["tlg0003.tlg001", "Thucydides, History"], ["tlg0033.tlg001", "Pindar, Olympian Odes"]] },
-];
-
 type Sort = "author" | "title" | "period";
+const SHOW: [Tr, string][] = [["all", "All"], ["with", "With English"], ["greek", "Greek only"]];
 const SORTS: [Sort, string][] = [["author", "Author A–Z"], ["title", "Title A–Z"], ["period", "By period"]];
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** How many authors (or titles) a list needs before the rail of letters stands beside it. */
@@ -109,10 +102,10 @@ interface Group { key: string; label: string; short: string; rows?: Row[]; title
 
 /**
  * Every work in the library (design A's list, under its famous books): the order and the filters, then every author with
- * their works. The search and its English filter stand at the top of the page, under its title (components/a/LibSearch.tsx);
- * they reach this list through useLibQuery.
+ * their works. The search stands at the top of the page, under its title (components/a/LibSearch.tsx), and reaches this list,
+ * with what to show (all, with English, Greek only), through useLibQuery. Where to begin is under the title (BeginHere.tsx).
  */
-export default function Library({ paths }: { paths?: ReactNode }) {
+export default function Library() {
   const params = useSearchParams();
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -156,11 +149,6 @@ export default function Library({ paths }: { paths?: ReactNode }) {
     if (u.href !== location.href) history.replaceState(history.state, "", u);
   }, [ready, query, sort, tr, family, period, dialect, vocab]);
   useEffect(() => { loadCatalog().then(setIdx, (e: Error) => setError(e.message)); loadWorksMeta().then(setMeta); loadDifficulty().then(setDiff); loadAuthorsMeta().then(setWho); loadAuthorNames().then(setNames); }, []);
-  // "where to begin" stays as the reader left it (the box itself holds whether it is open)
-  const beginRef = useRef<HTMLDetailsElement>(null);
-  useEffect(() => { try { if (beginRef.current && localStorage.getItem("mathesis:lib-begin") === "open") beginRef.current.open = true; } catch {} }, []);
-  const rememberBegin = (open: boolean) => { try { localStorage.setItem("mathesis:lib-begin", open ? "open" : "shut"); } catch {} };
-
   const dialects = useMemo(() => [...new Set(Object.values(meta).map((m) => m.dialect).filter((d): d is string => !!d))].sort(), [meta]);
   const authors = useMemo(() => idx?.catalog.authors ?? [], [idx]);
 
@@ -301,7 +289,7 @@ export default function Library({ paths }: { paths?: ReactNode }) {
   }, [idx, selected]);
 
   const filtering = !!query.trim() || tr !== "all" || !!period || !!dialect || !!vocab;
-  const active = (tr !== "all" ? 1 : 0) + (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
+  const active = (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
@@ -316,29 +304,16 @@ export default function Library({ paths }: { paths?: ReactNode }) {
           <SettleText as="h2" id="library-list-h" className={A.mono} text="Every work in the library" />
           <span className={A.mono}>{idx ? (narrowed ? `${n(shown.works)} of ${n(total.works)} works` : `${n(total.works)} works`) : ""}</span>
         </div>
-        <details ref={beginRef} className={styles.begin} onToggle={(e) => rememberBegin((e.currentTarget as HTMLDetailsElement).open)}>
-          <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
-          <div className={styles.levels}>
-            {START.map((x) => (
-              <div key={x.level} className={styles.level}>
-                <h3>{x.level}</h3>
-                <p className="muted">{x.why}</p>
-                <ul>
-                  {x.works.map(([id, label]) => (
-                    <li key={id}><Link href={`/read?w=${id}`} transitionTypes={["page-turn"]}>{label} <span aria-hidden="true">→</span></Link></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
+        {/* one bar of filters (review fix list, slice 6: the English filter used to stand apart, under the search): what to
+            show, and the order and every other filter behind one button, so the list starts high on the screen */}
+        <div className={styles.bar}>
+          <div className="segmented" role="radiogroup" aria-label="Show">
+            {SHOW.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
           </div>
-          {/* the reading paths (data/paths.ts), short routes through the library in a sensible order */}
-          {paths && <><h3 className={`label ${styles.pathsH}`}>Where to read next: six paths, each in a sensible order</h3>{paths}</>}
-        </details>
-
-        {/* the order and every filter wait behind one button, so the list starts high on the screen */}
-        <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
-          Order and filters{active ? ` (${active} on)` : ""}
-        </button>
+          <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
+            Order and filters{active ? ` (${active} on)` : ""}
+          </button>
+        </div>
         <div id="library-filters" className={styles.filters} data-open={more ? "" : undefined}>
         <div className={styles.controls}>
           <div className="segmented" role="radiogroup" aria-label="Order">
@@ -428,7 +403,7 @@ export default function Library({ paths }: { paths?: ReactNode }) {
             <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
               <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-period={sort === "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>{g.label}</h3>
               {g.rows?.map((r) => (
-                <AuthorRow key={r.a.id} r={r} desc={who[r.a.id]?.desc ?? kindsLine(r.a, meta)} grc={names[r.a.id]?.grc}
+                <AuthorRow key={r.a.id} r={r} desc={whoLine(r, who[r.a.id]?.desc, meta)} grc={names[r.a.id]?.grc}
                   aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r.a.id)} onToggle={() => toggle(r.a.id)}
                   selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} />
               ))}
@@ -444,6 +419,14 @@ export default function Library({ paths }: { paths?: ReactNode }) {
       </section>
     </div></div>
   );
+}
+
+/**
+ * Who an author was, in one line: Wikidata's description, without its dates when the row gives the date beside it
+ * (lib/bc-ad.ts); else the kinds of writing of their works; else what the entry is (data/author-lines.ts).
+ */
+function whoLine(r: Row, desc: string | undefined, meta: Record<string, WorkMeta>): string | undefined {
+  return (r.from !== null ? undated(desc) : desc) ?? kindsLine(r.a, meta) ?? entryLine(r.a.id, r.a.name, r.a.works);
 }
 
 /** For an author Wikidata does not describe: the kinds of writing of their works (GLAUx's genres), "Medicine · Letters". */

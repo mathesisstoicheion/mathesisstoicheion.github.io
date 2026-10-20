@@ -24,6 +24,7 @@ import PageHead from "@/components/PageHead";
 import lib from "./Library.module.css";
 import { BEST_KNOWN } from "@/data/best-known";
 import styles from "./AuthorProfile.module.css";
+import { undated } from "@/lib/bc-ad";
 
 export type { RelatedEntry } from "@/wiki/related";
 import type { RelatedEntry } from "@/wiki/related";
@@ -130,12 +131,14 @@ export function AuthorView({ author, meta, diff, who: wd, related: entries, land
   const azItems = useMemo<AZItem[]>(() => author.works.map((w) => ({
     id: w.id, title: w.title, node: <WorkItem w={w} meta={meta[w.id]} common={commonShare(diff[w.id])} about={landing} usual={facts.usual} />,
   })), [author, meta, diff, landing, facts.usual]);
+  // Wikidata's line without its dates when the facts below give them (lib/bc-ad.ts)
+  const desc = lived || facts.when ? undated(wd?.desc) : wd?.desc;
   return (
     <div className={`wrap ${styles.page}`}>
       <PageHead bare path={trail("library", author.name)} title={author.name}
         purpose={<>{author.works.length} work{author.works.length === 1 ? "" : "s"} in the library, {facts.english} with an English translation.</>}>
         {author.orig && <p className={styles.note}><i lang="la">{author.orig}</i> <span className="muted">· the collection&apos;s own Latin name; the English is this site&apos;s translation</span></p>}
-        {wd?.desc && <p className={styles.note}>{wd.desc.charAt(0).toUpperCase() + wd.desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}
+        {wd && desc && <p className={styles.note}>{desc.charAt(0).toUpperCase() + desc.slice(1)}{wd.place ? `, born at ${wd.place}` : ""}. <span className="muted">From <a href={`https://www.wikidata.org/wiki/${wd.q}`} target="_blank" rel="noreferrer noopener">Wikidata</a>{wd.wp ? <>; <a href={wd.wp} target="_blank" rel="noreferrer noopener">Wikipedia</a></> : null}.</span></p>}
         <dl className={styles.facts}>
           {lived && <div><dt>Lived</dt><dd title="From Wikidata">{lived}</dd></div>}
           {facts.when && facts.when !== lived && <div><dt>Wrote in</dt><dd title={DATE_NOTE}>{facts.when}</dd></div>}

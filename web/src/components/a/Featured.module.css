@@ -1,0 +1,4 @@
+/* A famous book's row (components/a/Featured.tsx): the row is the link; the ⓘ for its picture's credit sits at its end. */
+.row { position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: 12px; border-bottom: 1px solid var(--a-line); }
+.row > a { border-bottom: 0; }
+.tip { justify-self: end; }

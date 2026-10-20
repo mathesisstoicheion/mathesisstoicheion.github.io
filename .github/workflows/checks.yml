@@ -40,3 +40,9 @@ jobs:
       - name: The two lesson tracks agree everywhere (slice 4)
         working-directory: web
         run: node scripts/check-lessons.mjs http://localhost:3100
+      - name: Dates in BC and AD, once (slice 6)
+        working-directory: web
+        run: node scripts/check-eras.mjs
+      - name: The library reads clearly over its letters, every author with a line (slice 6)
+        working-directory: web
+        run: node scripts/check-library.mjs http://localhost:3100

@@ -3,6 +3,7 @@
  * authors and works. Every sentence is built from data the site holds (catalogue, GLAUx, Wikidata);
  * nothing is written about an author or a work that a source does not give.
  */
+import { undated } from "./bc-ad";
 import { SITE } from "@/config/areas";
 
 export const SITE_URL = "https://mathesisstoicheion.com";
@@ -32,7 +33,9 @@ export interface AuthorFacts {
 
 /** "Sophocles: Ancient Greek playwright (5th c. BC). 8 works in the library, all with an English translation…" */
 export function authorDescription(a: AuthorFacts): string {
-  const who = a.desc ? `${upFirst(a.desc.replace(/\.$/, ""))}${a.lived ? ` (${a.lived})` : ""}` : a.lived ? `Greek author of the ${a.lived}` : "Author in the Greek library";
+  // the date once: Wikidata's line loses its own dates when the life's dates follow it (lib/bc-ad.ts)
+  const desc = a.lived ? undated(a.desc) : a.desc;
+  const who = desc ? `${upFirst(desc.replace(/\.$/, ""))}${a.lived ? ` (${a.lived})` : ""}` : a.lived ? `Greek author of the ${a.lived}` : "Author in the Greek library";
   const have = a.english === 0 ? `${plural(a.works, "work")} in the library, in Greek`
     : a.english === a.works ? `${plural(a.works, "work")} in the library, each with an English translation beside the Greek`
     : `${plural(a.works, "work")} in the library, ${a.english.toLocaleString("en-GB")} with an English translation beside the Greek`;

@@ -1,5 +1,5 @@
 /* Every work in the Mouseion (design A's list, in one of its black blocks: app/library/page.tsx): where to begin, the order
-   and filters, then every author with their works. Lines, not panels; titles in A's tall, narrow capitals. */
+   and filters (where to begin is under the page's title now: BeginHere.tsx), then every author with their works. Lines, not panels; titles in A's tall, narrow capitals. */
 .lib { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
 .error { color: var(--accent); padding-block: 40px; }
 
@@ -8,6 +8,9 @@
 .pathsH { padding: var(--space-3) var(--space-4) 0; color: var(--accent-2); }
 
 /* ---------------------------------------------------------------- order and filters */
+/* the one bar: what to show, then the button for the order and every other filter */
+.bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+@media (max-width: 760px) { .bar > :global(.segmented) { display: flex; width: 100%; } .bar > :global(.segmented) > button { flex: 1 1 0; padding-inline: 6px; } }
 .controls { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: end; }
 .selects { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .selects select { font: inherit; font-size: 0.92rem; color: var(--ink); background: var(--hollow); border: 1px solid transparent; box-shadow: var(--hollow-edge); border-radius: var(--radius); padding: var(--space-2) 10px; width: 10.5rem; }

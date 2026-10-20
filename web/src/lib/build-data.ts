@@ -6,7 +6,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { indexCatalog, type Catalog, type CatalogIndex } from "./catalog";
 import type { WorkMeta } from "./works-meta";
-import type { AuthorMeta } from "./authors-meta";
+import { tidyAuthors, type AuthorMeta } from "./authors-meta";
 
 const read = <T>(file: string): T => JSON.parse(readFileSync(join(process.cwd(), "public/data", file), "utf8")) as T;
 
@@ -16,7 +16,7 @@ export function siteData() {
   cached ??= {
     idx: indexCatalog(read<Catalog>("catalog.json")),
     works: read<{ works: Record<string, WorkMeta> }>("works-meta.json").works,
-    who: read<{ authors: Record<string, AuthorMeta> }>("authors-meta.json").authors,
+    who: tidyAuthors(read<{ authors: Record<string, AuthorMeta> }>("authors-meta.json").authors),
     diff: read<{ works: Record<string, [number, number]> }>("difficulty.json").works,
   };
   return cached;

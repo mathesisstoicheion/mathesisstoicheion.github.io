@@ -5,6 +5,8 @@ import { join } from "node:path";
 import Page from "@/components/Page";
 import Library from "@/components/library/Library";
 import MineButtons from "@/components/library/MineButtons";
+import BeginHere from "@/components/library/BeginHere";
+import InfoTip from "@/components/a/InfoTip";
 import LibStage from "@/components/a/LibStage";
 import LibSearch from "@/components/a/LibSearch";
 import Featured, { type Book } from "@/components/a/Featured";
@@ -31,9 +33,9 @@ const greekTitle = (w: Catalog["authors"][number]["works"][number]) =>
 // design A's famous books, in its two groups: the books that have a picture (data/medallions.ts)
 const GROUPS = [...new Set(MEDALLIONS.map((b) => b.group))].map((name) => ({
   name,
-  books: MEDALLIONS.filter((b) => b.group === name).map(({ id, pic, why }): Book => {
+  books: MEDALLIONS.filter((b) => b.group === name).map(({ id, pic, about, why }): Book => {
     const a = CATALOG.authors.find((x) => x.works.some((w) => w.id === id))!, w = a.works.find((x) => x.id === id)!;
-    return { id, author: a.name, title: w.title, greek: greekTitle(w), pic, why, english: hasTranslation(w) };
+    return { id, author: a.name, title: w.title, greek: greekTitle(w), pic, about, why, english: hasTranslation(w) };
   }),
 }));
 
@@ -78,17 +80,18 @@ export default function LibraryPage() {
               </p>
               <LibSearch />
               <MineButtons />
-              <p className={`${s.stcap} ${s.mono}`}>The letters gather into Socrates, spelled out of Plato’s Apology. Scroll on, and they become a papyrus roll behind the page; back at the top, Socrates again. Press and hold to read.</p>
+              <p className={`${s.stcap} ${s.mono}`}>Socrates, spelled out of Plato’s Apology · press and hold to read</p>
             </div>
             <div className={`${s.win} ${s.tall}`} data-face-anchor="" role="img" aria-label="The head of Socrates, spelled out letter by letter from the Greek of Plato's Apology; scroll on, and the letters become a papyrus roll behind the page. Press and hold on his face to read it">
               <span className={s.wcap}>Socrates · spelled out of the Apology · press and hold to read</span>
             </div>
           </div>
+          <BeginHere paths={<Paths />} />
           <Featured groups={GROUPS}
             between={<div className={`${s.win} ${s.band}`} aria-hidden="true" />}
-            after={<p className={s.cap} style={{ marginTop: 22 }}>Socrates wrote nothing, so his face is spelled out of the speech Plato gave him, the Apology: the whole Greek text in reading order, from “<span lang="grc">ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι</span>” to “<span lang="grc">τῷ θεῷ</span>” (Platonis Opera, ed. John Burnet, Oxford, via the Perseus Digital Library). Press and hold on his face, and a glass lets you read it. The face is a Roman marble portrait, 1st century AD, Musée du Louvre; photograph by Eric Gaba, public domain. Each book’s picture is credited beside it.</p>} />
+            after={<p className={s.cap} style={{ marginTop: 22 }}>Socrates’ face, behind the page, is spelled out of Plato’s Apology. <InfoTip label="About Socrates’ face and the pictures">Socrates wrote nothing, so his face is spelled out of the speech Plato gave him, the Apology: the whole Greek text in reading order, from “<span lang="grc">ὅτι μὲν ὑμεῖς, ὦ ἄνδρες Ἀθηναῖοι</span>” to “<span lang="grc">τῷ θεῷ</span>” (Platonis Opera, ed. John Burnet, Oxford, via the Perseus Digital Library). Press and hold on his face, and a glass lets you read it. The face is a Roman marble portrait, 1st century AD, Musée du Louvre; photograph by Eric Gaba, public domain. Each book’s picture is credited by its ⓘ.</InfoTip></p>} />
           <Suspense fallback={null}>
-            <Library paths={<Paths />} />
+            <Library />
           </Suspense>
         </div>
       </div>

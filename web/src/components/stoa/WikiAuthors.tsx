@@ -12,11 +12,15 @@ import { loadCatalog, fold, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, type WorkMeta } from "@/lib/works-meta";
 import { ERAS, KINDS, authorRows, eraById, loadAuthorsMeta, type AuthorMeta, type AuthorRow, type Era } from "@/lib/authors-meta";
 import styles from "./WikiIndex.module.css";
+import { undated } from "@/lib/bc-ad";
 
 type Row = AuthorRow;
 const NONE = "none";
 const num = (n: number) => n.toLocaleString("en-GB");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** who an author was, without the dates when the row gives them beside it (lib/bc-ad.ts) */
+const who = (r: { span?: string | null; meta?: AuthorMeta }) => (r.span ? undated(r.meta?.desc) : r.meta?.desc);
 
 export default function WikiAuthors() {
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
@@ -102,7 +106,7 @@ export default function WikiAuthors() {
                       <span className={styles.name}>{r.a.name}</span>
                       {r.span && <span className={styles.when} title={r.estimated ? "From the dates GLAUx gives for this author's works" : "From Wikidata"}>{r.span}{r.estimated ? " †" : ""}</span>}
                     </span>
-                    {(r.meta?.desc || r.meta?.place) && <span className={styles.desc}>{r.meta?.desc ? cap(r.meta.desc) : ""}{r.meta?.desc && r.meta?.place ? " · " : ""}{r.meta?.place ? `born at ${r.meta.place}` : ""}</span>}
+                    {(who(r) || r.meta?.place) && <span className={styles.desc}>{who(r) ? cap(who(r)!) : ""}{who(r) && r.meta?.place ? " · " : ""}{r.meta?.place ? `born at ${r.meta.place}` : ""}</span>}
                   </span>
                   <span className={styles.meta}>
                     {r.kinds.slice(0, 2).map((k) => <span key={k} className={styles.kind}>{k}</span>)}
