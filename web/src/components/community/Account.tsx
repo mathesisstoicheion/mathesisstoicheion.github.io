@@ -29,11 +29,11 @@ export default function Account() {
       <div className={`wrap ${styles.signedOutHead}`}>
         <PageHead bare path={[{ label: AREAS.treasury.name, href: AREAS.treasury.href }, { label: "Account" }]} title={title}
           purpose={FORUM_OPEN ? "Your membership of the Agora: sign in or join to write there, and choose the name others see."
-            : "Sign in or join to keep your Treasury in step between devices."} />
+            : "Sign in or join to keep your Treasury in step between devices."}
+          // the form first (review fix list, slice 9): in the head's place for its main thing, beside the portrait on a
+          // computer and before it on a phone
+          action={<Suspense><AccountBox /></Suspense>} />
       </div>
-      <Suspense>
-        <AccountBox />
-      </Suspense>
     </>
   );
 }
@@ -50,18 +50,18 @@ function AccountBox() {
   }, []);
   const next = params.get("next");
 
-  if (!ready) return <div className={`wrap ${styles.status}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the doors…</div>;
-  if (session && (recovering || params.get("reset") === "1")) return <div className={`wrap ${styles.narrow}`}><NewPassword onDone={() => { setRecovering(false); router.replace("/account"); }} /></div>;
+  if (!ready) return <div className={styles.status} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the doors…</div>;
+  if (session && (recovering || params.get("reset") === "1")) return <div className={styles.narrow}><NewPassword onDone={() => { setRecovering(false); router.replace("/account"); }} /></div>;
   if (session) {
     return (
-      <div className={`wrap ${styles.narrow}`}>
+      <div className={styles.narrow}>
         {next && <p className={styles.note}>You are signed in. <Link href={next}>Go back to where you were →</Link></p>}
         {profile ? <ProfileCard key={profile.id} email={session.user.email ?? ""} onSaved={refreshProfile} /> : <p className="muted">Loading your profile…</p>}
         {FORUM_OPEN && <HiddenPeople />}
       </div>
     );
   }
-  return <div className={`wrap ${styles.narrow}`}><SignIn next={next} />{FORUM_OPEN && <HiddenPeople />}</div>;
+  return <div className={styles.narrow}><SignIn next={next} />{FORUM_OPEN && <HiddenPeople />}</div>;
 }
 
 // ------------------------------------------------------------ signing in and joining

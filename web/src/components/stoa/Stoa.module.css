@@ -32,6 +32,9 @@
   transition: transform calc(0.6s / var(--tempo)) var(--ease);
 }
 .featured:hover .featuredPic { transform: scale(1.02); }
+/* the photographs rule (docs/adr/0007-photographs-in-the-stoa.md): on the wall, in the engraving's gold until pointed at */
+.featuredPic { filter: grayscale(1) sepia(0.6) brightness(0.82) contrast(1.12); transition: transform var(--dur) var(--ease), filter calc(0.6s / var(--tempo, 1)) var(--ease); }
+.featured:hover .featuredPic, .featured:focus-visible .featuredPic { filter: none; }
 .featuredPic[data-whole] { object-fit: contain; background: color-mix(in srgb, var(--inv-fg) 7%, var(--inv-bg)); padding: 10px; }
 .featuredIcon { justify-self: center; display: grid; place-items: center; width: 160px; height: 160px; border-radius: var(--radius-round); color: var(--accent); background: var(--boss); box-shadow: var(--boss-edge); }
 .featuredIcon svg { width: 78px; height: 78px; }

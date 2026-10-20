@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
 import { A_ART } from "@/components/a/pictures";
-import FindJump from "@/components/FindJump";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
@@ -33,7 +32,8 @@ const REFERENCE: RefCard[] = [
 export default function StoaPage() {
   return (
     <Page>
-      <Door id="wiki" art={A_ART.crates} action={<FindJump target="stoa-search" label="Search the Painted Stoa">Search every entry: Melos, plague…</FindJump>}>
+      {/* one search box, the colonnade's own, beside what it finds (review fix list, slice 9) */}
+      <Door id="wiki" art={A_ART.crates}>
         <DoorBlock><ExploreLead /></DoorBlock>
         <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} foot={<ExploreCredit />} /></DoorBlock>
       </Door>

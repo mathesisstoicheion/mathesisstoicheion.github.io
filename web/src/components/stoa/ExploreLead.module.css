@@ -17,6 +17,10 @@
 .map, .bars, .pic { display: block; width: 100%; aspect-ratio: 16 / 10; }
 .pic { height: auto; object-fit: cover; transition: transform calc(1.2s / var(--tempo)) var(--ease); }
 .card:hover .pic { transform: scale(1.04); }
+/* the photographs rule (review fix list, slice 9; docs/adr/0007-photographs-in-the-stoa.md): a photograph standing for a room or
+   an entry takes the engraving's gold, and comes into its own colours when pointed at; on the entry itself it is evidence, in colour */
+.pic { filter: grayscale(1) sepia(0.6) brightness(0.82) contrast(1.12); transition: transform 1.2s var(--ease), filter calc(0.6s / var(--tempo, 1)) var(--ease); }
+.card:hover .pic, .card:focus-visible .pic { filter: none; }
 /* on a phone the pictures take a shorter crop, so the three cards do not fill a screen and a half */
 @media (max-width: 760px) { .map, .bars, .pic { aspect-ratio: 16 / 9; } }
 

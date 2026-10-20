@@ -39,7 +39,7 @@ export interface Secondary {
 }
 
 export type CategoryId =
-  | "people" | "democracy" | "education" | "daily" | "religion" | "beautiful" | "weird" | "strange" | "dark" | "archaeology" | "language";
+  | "people" | "democracy" | "education" | "daily" | "religion" | "beautiful" | "weird" | "dark" | "archaeology" | "language";
 
 export interface Entry {
   slug: string;
@@ -75,8 +75,8 @@ export const CATEGORIES: Category[] = [
   { id: "daily", title: "Daily life", blurb: "Food, wine, clothes, houses, money, medicine, sport and the theatre." },
   { id: "religion", title: "Religion and belief", blurb: "The gods as the Greeks worshipped them: sacrifice, oracles, mysteries, magic and the dead." },
   { id: "beautiful", title: "The beautiful", blurb: "Poetry, painted statues, vases and the passages worth learning Greek for." },
-  { id: "weird", title: "The weird", blurb: "Marvels, taboos, odd lives and odder deaths, and what is likely true." },
-  { id: "strange", title: "The strange", blurb: "Unsolved mysteries, lost wonders and the things archaeology cannot yet explain." },
+  // one category (the owner, 2026-10-20: "Merge the weird and the strange"; review fix list, slice 9)
+  { id: "weird", title: "The weird and the strange", blurb: "Marvels, taboos, odd lives and odder deaths, unsolved mysteries and lost wonders, and what is likely true." },
   { id: "dark", title: "The dark side", blurb: "Slavery, war, plague and cruelty, told factually, without sensation and without apology." },
   { id: "archaeology", title: "Archaeology", blurb: "How we know: excavation, dating, pottery, great sites and finds, and the problems.", href: "/stoa/kerameikos" },
   { id: "language", title: "Language", blurb: "Where Greek came from, how it was written, and what became of it." },
