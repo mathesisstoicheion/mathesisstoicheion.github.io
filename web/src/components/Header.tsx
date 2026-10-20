@@ -128,10 +128,13 @@ export default function Header() {
         <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
           <SearchIcon />
         </button>
-        <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="Mine: bookmarks and notes" title="Mine: bookmarks and notes"
-          aria-current={current(pathname, "treasury") ? "page" : undefined}>
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
-        </Link>
+        {/* while the forum is closed Mine is a door beside the mark, so its small button stands down */}
+        {FORUM_OPEN && (
+          <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="Mine: bookmarks and notes" title="Mine: bookmarks and notes"
+            aria-current={current(pathname, "treasury") ? "page" : undefined}>
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
+          </Link>
+        )}
         <AccountButton />
         <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings" title="Settings">
           <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>

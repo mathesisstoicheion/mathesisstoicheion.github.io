@@ -26,7 +26,7 @@ test("the header is design A's four doors around the mark, in plain words with t
   expect(await doors.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk"] : ["Learn", "Read", "Explore", "Mine"]);
   await expect(doors.filter({ hasText: "Μουσεῖον" })).toHaveAttribute("aria-current", "page");
   await expect(header.getByRole("link", { name: /^Learn.*: The Academy$/ })).toBeVisible();
-  await expect(header.getByRole("link", { name: "Mine: bookmarks and notes" })).toBeVisible();
+  if (FORUM_OPEN) await expect(header.getByRole("link", { name: "Mine: bookmarks and notes" })).toBeVisible();
 });
 
 test("the reader's page chosen in Settings (Lamplight or Daylight) is remembered after a reload", async ({ page }) => {
