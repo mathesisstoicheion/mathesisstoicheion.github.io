@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
 import LettersStepView from "@/components/academy/LettersStepView";
-import { LETTERS_STEP, PATH } from "@/data/reading-path";
+import { LETTERS_STEP, readingLesson } from "@/data/reading-path";
+import { TRACKS } from "@/data/tracks";
 import { AREAS, trail } from "@/config/areas";
 import PageHead from "@/components/PageHead";
 
@@ -14,7 +15,7 @@ export default function LettersStepPage() {
   return (
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
-        <PageHead bare path={trail("study", { label: "Learn by reading", href: "/academy/reading" }, `Step 0 of ${PATH.length}`)}
+        <PageHead bare path={trail("study", { label: TRACKS.reading.name, href: TRACKS.reading.href }, readingLesson(LETTERS_STEP.id))}
           inscription={LETTERS_STEP.carve} title={LETTERS_STEP.title} greek={null} purpose={LETTERS_STEP.who} />
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
         <LettersStepView />

@@ -2928,8 +2928,8 @@ export function firstMet(lemma: string, before: number): number | null {
 
 /**
  * How much help a lesson gives (Noa, 2026-10-18): one kind of help goes every three lessons.
- * 0 lessons 1–3: everything. 1 lessons 4–6: no letters stage. 2 lessons 7–9: guess each meaning, build the
- * sentence yourself. 3 lessons 10–12: no cards for words already met, and the English pieces put in order first.
+ * 0 lessons 2–4 (the first lines; lesson 1 is the letters): everything. 1 lessons 5–7: no letters stage. 2 lessons 8–10: guess each meaning, build the
+ * sentence yourself. 3 lessons 11–13: no cards for words already met, and the English pieces put in order first.
  */
 export const pathLevel = (index: number) => Math.min(3, Math.floor(index / 3));
 
@@ -2942,7 +2942,7 @@ export const PRACTICE: PathPractice[] = [
 {
   id: "practice-1",
   after: "everything-moves",
-  title: "Practice: lessons 1 to 3",
+  title: "Practice: lessons 2 to 4",
   intro: "First a quick check of the words from the first three lessons. Then three more real lines, from three other works of Plato, made almost entirely of words you have already met.",
   lines: [
     {
@@ -3042,8 +3042,8 @@ export const PRACTICE: PathPractice[] = [
 {
   id: "practice-2",
   after: "measure-of-all-things",
-  title: "Practice: lessons 4 to 6",
-  intro: "First a quick check of the words from lessons 4 to 6. Then three real lines about long and short speeches, and about the gods, that use them again.",
+  title: "Practice: lessons 5 to 7",
+  intro: "First a quick check of the words from lessons 5 to 7. Then three real lines about long and short speeches, and about the gods, that use them again.",
   lines: [
     {
       work: "tlg0059.tlg012",
@@ -3143,8 +3143,8 @@ export const PRACTICE: PathPractice[] = [
 {
   id: "practice-3",
   after: "political-animal",
-  title: "Practice: lessons 7 to 9",
-  intro: "First a quick check of the words from lessons 7 to 9. Then three real lines about persuading, speaking and being wise, from Plato and Diogenes Laertius.",
+  title: "Practice: lessons 8 to 10",
+  intro: "First a quick check of the words from lessons 8 to 10. Then three real lines about persuading, speaking and being wise, from Plato and Diogenes Laertius.",
   lines: [
     {
       work: "tlg0059.tlg034",
@@ -3246,7 +3246,7 @@ export const PRACTICE: PathPractice[] = [
 {
   id: "practice-4",
   after: "desire-to-know",
-  title: "Practice: lessons 10 to 12",
+  title: "Practice: lessons 11 to 13",
   intro: "First a quick check of the words from the last three lessons. Then three real lines from Plato's *Laws* and two works of Aristotle that use them again.",
   lines: [
     {
@@ -3377,3 +3377,10 @@ export function knownBefore(index: number): Set<string> {
 
 /** The line as printed: the words with their punctuation. */
 export const partText = (p: PathPart) => p.words.map((w) => w.form + (w.after ?? "")).join(" ");
+
+/** Learn by reading, counted from 1 (data/tracks.ts): the letters are lesson 1, the first line lesson 2 */
+export const READING_TOTAL = PATH.length + 1;
+export const readingNo = (id: string) => (id === LETTERS_STEP.id ? 1 : PATH.findIndex((s) => s.id === id) + 2);
+export const readingLesson = (id: string) => `Lesson ${readingNo(id)} of ${READING_TOTAL}`;
+/** the words a line teaches (each lesson is fresh: every word in its line gets its card) */
+export const lineWords = (s: PathStep) => new Set(s.parts.flatMap((p) => p.words.map((w) => w.lemma))).size;

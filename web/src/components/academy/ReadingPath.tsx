@@ -6,7 +6,8 @@
  */
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
-import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, type PathWord } from "@/data/reading-path";
+import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, READING_TOTAL, type PathWord } from "@/data/reading-path";
+import { wordsLabel } from "@/data/tracks";
 import { useAcademy } from "@/lib/academy";
 import Rich from "./Rich";
 import { AlphabetFold } from "./PathStepView";
@@ -29,7 +30,7 @@ const done = (mark: string) => <span className={`${w.mark} ${w.markPassed}`} tit
 function PathList({ completed }: { completed: Record<string, number> }) {
   const nextId = ITEMS.find((it) => !completed[pathKey(it.id)])?.id;
   return (
-    <ol className={styles.path} start={0}>
+    <ol className={styles.path}>
       {ITEMS.map((it) => {
         const lit = it.id === nextId;
         const style = lit ? { backgroundColor: "var(--slab-lit)" } : undefined;
@@ -37,12 +38,12 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         if (it.kind === "letters") return (
           <li key={it.id}>
             <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
-              <span className={styles.pathNo}>0</span>
+              <span className={styles.pathNo}>{readingNo(it.id)}</span>
               <span>
                 <b>{LETTERS_STEP.title}</b> <span lang="grc" className={styles.pathGr}>{LETTERS_STEP.names.slice(0, 3).map((n) => n.gr).join(" ")}</span>
                 <span className={styles.pathAbout}>{LETTERS_STEP.who}</span>
               </span>
-              <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Read") : lit ? nextMark : `${LETTERS_STEP.names.length} names`}</span>
+              <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Read") : lit ? nextMark : wordsLabel(LETTERS_STEP.names.length)}</span>
             </Link>
           </li>
         );
@@ -53,7 +54,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
               <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
                 <span className={styles.pathNo} aria-hidden="true">✦</span>
                 <span><b>{p.title}</b><span className={styles.pathAbout}><Rich text={p.intro} /></span></span>
-                <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Done") : lit ? nextMark : `${p.lines.length} lines`}</span>
+                <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Done") : lit ? nextMark : "Practice"}</span>
               </Link>
             </li>
           );
@@ -62,12 +63,12 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         return (
           <li key={it.id}>
             <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
-              <span className={styles.pathNo}>{i + 1}</span>
+              <span className={styles.pathNo}>{readingNo(s.id)}</span>
               <span>
                 <b>{s.title}</b> <span lang="grc" className={styles.pathGr}>{s.parts.map(partText).join(" ")}</span>
                 <span className={styles.pathAbout}>{s.who}</span>
               </span>
-              <span className={styles.pathMin}>{completed[pathKey(s.id)] ? done("Read") : lit ? nextMark : `${s.parts.reduce((n, p) => n + p.words.length, 0)} words`}</span>
+              <span className={styles.pathMin}>{completed[pathKey(s.id)] ? done("Read") : lit ? nextMark : wordsLabel(lineWords(s))}</span>
             </Link>
           </li>
         );
@@ -78,9 +79,9 @@ function PathList({ completed }: { completed: Record<string, number> }) {
 
 /** The help each level leaves behind, and after which lesson it goes. */
 const OUTGROWN = [
-  { after: 3, title: "The letters stage", text: "From lesson 4 you sound each word out yourself. The whole alphabet, with every letter's sound, is here." },
-  { after: 6, title: "Cards before guessing", text: "From lesson 7 you guess each meaning before the card shows it, and build each sentence yourself. Every word you have met, with its meaning, is below." },
-  { after: 9, title: "Cards for words you know", text: "From lesson 10 words you have met get no card, and you put the English in order yourself. Every piece of grammar you have met is below." },
+  { after: 3, title: "The letters stage", text: "From lesson 5 you sound each word out yourself. The whole alphabet, with every letter's sound, is here." },
+  { after: 6, title: "Cards before guessing", text: "From lesson 8 you guess each meaning before the card shows it, and build each sentence yourself. Every word you have met, with its meaning, is below." },
+  { after: 9, title: "Cards for words you know", text: "From lesson 11 words you have met get no card, and you put the English in order yourself. Every piece of grammar you have met is below." },
 ];
 
 function Completed({ completed }: { completed: Record<string, number> }) {
@@ -127,8 +128,8 @@ function Completed({ completed }: { completed: Record<string, number> }) {
       </section>
 
       <p className={styles.lp}>
-        You have finished {lessons.length} of {PATH.length} lessons{practices.length > 0 ? ` and ${practices.length} of ${PRACTICE.length} practice lessons` : ""}.
-        {lessons.length >= 3 ? " Each three lessons, one kind of help has gone, because you no longer need it." : " After lesson 3 the first kind of help goes: you will be ready for it."}
+        You have finished {lessons.length + (completed[pathKey(LETTERS_STEP.id)] ? 1 : 0)} of {READING_TOTAL} lessons{practices.length > 0 ? ` and ${practices.length} of ${PRACTICE.length} practice lessons` : ""}.
+        {lessons.length >= 3 ? " Each three lessons, one kind of help has gone, because you no longer need it." : " After lesson 4 the first kind of help goes: you will be ready for it."}
       </p>
 
       {outgrown.length > 0 && (

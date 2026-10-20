@@ -37,3 +37,6 @@ jobs:
       - name: One name per room (slice 2)
         working-directory: web
         run: node scripts/check-names.mjs
+      - name: The two lesson tracks agree everywhere (slice 4)
+        working-directory: web
+        run: node scripts/check-lessons.mjs http://localhost:3100

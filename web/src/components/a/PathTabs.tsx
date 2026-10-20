@@ -12,7 +12,7 @@ import { markVisitor, saveStart, type StartChoice } from "@/lib/visitor";
 import s from "./a.module.css";
 
 const PATHS: { id: StartChoice; tab: string; head: string; text: string; href: string; go: string; settings: Partial<Settings> }[] = [
-  { id: "none", tab: "No Greek", head: "I know no Greek.", text: "Begin with the letters and their sounds. A real line of Homer by the end of the first lesson.", href: "/academy/alphabet", go: "Meet the alphabet",
+  { id: "none", tab: "No Greek", head: "I know no Greek.", text: "Begin with the letters and their sounds. In the grammar course, a real line of Homer by the end of lesson 1.", href: "/academy/alphabet", go: "Meet the alphabet",
     settings: { translit: true } },
   { id: "some", tab: "A little", head: "I know a little.", text: "Pick up the lessons where you are, and read real texts with help one tap away.", href: "/academy", go: "Open the Academy",
     settings: { translit: false } },

@@ -14,6 +14,7 @@ import { useAcademy, dueCards, type DeckCard } from "@/lib/academy";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import s from "./a.module.css";
+import { TRACKS, grammarLesson, wordsLabel } from "@/data/tracks";
 
 const remember = (href: string) => { try { sessionStorage.setItem(RESTORE, pageKey(href)); } catch { /* ignore */ } };
 
@@ -89,7 +90,7 @@ export default function HomeDesk() {
             {nextLesson >= 0 ? (
               <><b>{LESSONS[nextLesson].title}</b>{" "}
                 <Link href={`/academy/lesson/${LESSONS[nextLesson].id}`} transitionTypes={["page-turn"]}>Open the lesson →</Link>
-                <small>Lesson {nextLesson + 1} of {LESSONS.length} · about {LESSONS[nextLesson].minutes} minutes{done ? ` · ${done} done` : ""}</small></>
+                <small>{TRACKS.grammar.name} · {grammarLesson(LESSONS[nextLesson].id).toLowerCase()} · {wordsLabel(LESSONS[nextLesson].words.length)}{done ? ` · ${done} done` : ""}</small></>
             ) : (
               <><b>All {LESSONS.length} lessons done</b> <Link href="/academy" transitionTypes={["page-turn"]}>The Academy →</Link></>
             )}

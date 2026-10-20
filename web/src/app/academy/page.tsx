@@ -10,6 +10,7 @@ import { areaTitle } from "@/config/areas";
 import { GUIDES } from "@/data/guides";
 import styles from "@/components/academy/Academy.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
+import { TRACKS } from "@/data/tracks";
 
 export const metadata: Metadata = { title: areaTitle("study"), description: PAGE_DESCRIPTIONS.academy };
 
@@ -29,8 +30,9 @@ export default function AcademyPage() {
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
             <div>
-              <span className="label">Start here</span>
-              <h2 id="reading-title" style={{ marginTop: 8 }}><Link href="/academy/reading" transitionTypes={["page-turn"]}>Learn by reading</Link></h2>
+              <span className="label">Track 1</span>
+              <h2 id="reading-title" style={{ marginTop: 8 }}><Link href={TRACKS.reading.href} transitionTypes={["page-turn"]}>{TRACKS.reading.name}</Link></h2>
+              <p style={{ marginTop: 8, maxWidth: "64ch" }}>{TRACKS.reading.who}</p>
               <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
                 Real lines, from the sayings carved at Delphi to the first sentence of Aristotle&apos;s <i>Metaphysics</i>. Each lesson
                 builds on the ones before, with a practice lesson after every three; the English waits until you have tried the Greek.
@@ -58,8 +60,9 @@ export default function AcademyPage() {
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="lessons-title">
             <div>
-              <span className="label">For review, alongside the reading</span>
-              <h2 id="lessons-title" style={{ marginTop: 8 }}>Lessons</h2>
+              <span className="label">Track 2</span>
+              <h2 id="lessons-title" style={{ marginTop: 8 }}>{TRACKS.grammar.name}</h2>
+              <p style={{ marginTop: 8, maxWidth: "64ch" }}>{TRACKS.grammar.who}</p>
               <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
                 The grammar in full, from the alphabet to Homer, for when you want more than the reading path gives. Read each lesson, practise it, then pass its short test. A passed lesson comes back for a quick refresh
                 after three days, a week, then a month, so what you learn stays with you.

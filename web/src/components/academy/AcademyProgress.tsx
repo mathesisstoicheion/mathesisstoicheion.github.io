@@ -6,6 +6,7 @@ import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { useAcademy, dueCards, streak, knownLemmas } from "@/lib/academy";
 import { dueRefreshes, readyCheckpoint } from "@/lib/refreshes";
 import styles from "./Academy.module.css";
+import { TRACKS, grammarLesson } from "@/data/tracks";
 
 /** Where the learner stands, and what to do next. */
 export default function AcademyProgress() {
@@ -42,8 +43,8 @@ export default function AcademyProgress() {
             </>
           : next
             ? <>
-                <p>{done ? "Carry on with" : "Begin with"}</p>
-                <Link className="btn" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Lesson {LESSONS.indexOf(next) + 1}: {next.title} <span className="arr" aria-hidden="true">→</span></Link>
+                <p>{done ? `Your next lesson in ${TRACKS.grammar.name.toLowerCase()}:` : `${TRACKS.grammar.name}, ${grammarLesson(next.id).toLowerCase()}:`}</p>
+                <Link className="btn" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>{next.title} <span className="arr" aria-hidden="true">→</span></Link>
               </>
             : <>
                 <p>You have finished every lesson so far.</p>

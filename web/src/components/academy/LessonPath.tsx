@@ -5,6 +5,7 @@ import { Fragment } from "react";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { CHECKPOINTS, CHECKPOINT_GREEK, checkpointKey } from "@/data/checkpoints";
 import { useAcademy } from "@/lib/academy";
+import { wordsLabel } from "@/data/tracks";
 import { refreshDue } from "@/lib/mastery";
 import styles from "./Academy.module.css";
 import w from "./Workout.module.css";
@@ -31,7 +32,7 @@ export default function LessonPath() {
                 {m?.passed
                   ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? "↻" : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
                   : completed[l.id] ? <span className={w.mark} title="Read; test not yet passed">read<span className="visually-hidden">: test not yet passed</span></span>
-                  : `${l.minutes} min`}
+                  : wordsLabel(l.words.length)}
               </span>
             </Link>
           </li>
@@ -52,7 +53,8 @@ function CheckpointRow({ id }: { id: string }) {
   return (
     <li className={w.cpRow}>
       <Link href={`/academy/checkpoint/${c.id}`} transitionTypes={["page-turn"]} className={`${styles.pathItem} ${w.cpItem}`}>
-        <span className={w.cpNo} aria-hidden="true">{c.numeral}</span>
+        {/* the same marker as the practice lessons of Learn by reading (review fixes, slice 4) */}
+        <span className={styles.pathNo} aria-hidden="true">✦</span>
         <span>
           <b>Checkpoint {c.numeral}</b> <span lang="grc" className={styles.pathGr}>{CHECKPOINT_GREEK}</span>
           <span className={styles.pathAbout}>{c.title}: lessons {first} to {last} tested together.{!m?.passed && ready ? " You are ready for it." : ""}</span>
@@ -60,7 +62,7 @@ function CheckpointRow({ id }: { id: string }) {
         <span className={styles.pathMin}>
           {m?.passed
             ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? "↻" : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
-            : "15 questions"}
+            : "Test"}
         </span>
       </Link>
     </li>
