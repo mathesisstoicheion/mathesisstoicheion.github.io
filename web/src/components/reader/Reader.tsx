@@ -127,11 +127,15 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
   const notes = marks.filter((m) => m.kind === "note");
   const [shown, setShown] = useState(false);
   const veiled = tryFirst && !shown && row.trans.length > 0;
+  const front = /(^|\.)0$/.test(row.key);
   return (
     <section className={styles.row} data-key={row.key}>
       <div className={styles.ref}>
-        <button type="button" data-row={row.key} title="Actions for this passage" aria-label={verses ? row.key : undefined}>{verses ? row.key.split(".").pop() : row.key}</button>
-        <span className={styles.grip} draggable data-drag={row.key} title="Drag into a note to quote this passage with its citation" aria-hidden="true" />
+        {/* Perseus's line 0 (only the first speaker's name, before line 1) has no number to show (review fix list, slice 8) */}
+        {front
+          ? <button type="button" data-row={row.key} className={styles.front} title="Actions for the heading before the first line" aria-label="Before the first line" />
+          : <button type="button" data-row={row.key} title="Actions for this passage" aria-label={verses ? row.key : undefined}>{verses ? row.key.split(".").pop() : row.key}</button>}
+        <span className={styles.grip} draggable data-drag={row.key} data-tip="Drag into a note to quote" title="Drag into a note to quote this passage with its citation" aria-hidden="true" />
         {marks.some((m) => m.kind !== "highlight") && (
           <span className={styles.marks}>
             {marks.filter((m) => m.kind !== "highlight").map((m) => (
@@ -438,8 +442,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // once the page is drawn, bring the requested passage into view (and briefly mark it if it was asked for)
   useEffect(() => {
     if (!rows.length) return;
-    if (!startKey) { if (contained) rootRef.current?.scrollTo({ top: 0 }); else window.scrollTo({ top: 0 }); return; }
-    const row = rows.find((r) => r.greek.some((u) => u.ref.join(".") === startKey));
+    // the book's title page is for a first visit: a reader coming back to the book (a place saved), or sent to a passage,
+    // lands on the text itself, the title page above it (review fix list, slice 8)
+    const back = single && (!!remembered || !!at);
+    if (!startKey && !back) { if (contained) rootRef.current?.scrollTo({ top: 0 }); else window.scrollTo({ top: 0 }); return; }
+    const row = startKey ? rows.find((r) => r.greek.some((u) => u.ref.join(".") === startKey)) : rows[0];
     const el = row && root().querySelector<HTMLElement>(`[data-key="${CSS.escape(row.key)}"]`);
     if (!el) return;
     if (at || tu) { el.classList.remove(styles.flash); void el.offsetWidth; el.classList.add(styles.flash); }
@@ -910,7 +917,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
   // colour by case: mark each Greek word with the case GLAUx gives it here
   useEffect(() => {
-    const clear = () => root().querySelectorAll("[data-case]").forEach((el) => el.removeAttribute("data-case"));
+    const clear = () => root().querySelectorAll("article [data-w][data-case]").forEach((el) => el.removeAttribute("data-case"));
     if (!cases || !rows.length || !doc) { clear(); return; }
     let live = true;
     loadWordPack(lexWork).then((pack) => {
@@ -1348,37 +1355,39 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     <div className={styles.aids} role="group" aria-label="Reading aids">
       <div className={styles.aidGroup} role="group" aria-label="Help with the Greek">
         <span className={styles.aidLabel} aria-hidden="true">The Greek</span>
-        <button type="button" className="chip" aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters">Transliteration</button>
-        <button type="button" className="chip" aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case">Colour by case</button>
-        <button type="button" className="chip" aria-pressed={known} onClick={() => setSettings({ known: !known })} title="Mark the words you have learned in the daily practice">Words I know</button>
-        {mInfo && <button type="button" className="chip" aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura">Metre</button>}
-        {trText && !cmpText && columns === "both" && <button type="button" className="chip" aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first">Try it first</button>}
-        {hasLines && <button type="button" className="chip" aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping">Fit lines</button>}
+        <button type="button" className={`chip ${styles.mode}`} aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters"><span className={styles.switch} data-switch="" aria-hidden="true" />Transliteration</button>
+        <button type="button" className={`chip ${styles.mode}`} aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case"><span className={styles.switch} data-switch="" aria-hidden="true" />Colour by case</button>
+        <button type="button" className={`chip ${styles.mode}`} aria-pressed={known} onClick={() => setSettings({ known: !known })} title="Mark the words you have learned in the daily practice"><span className={styles.switch} data-switch="" aria-hidden="true" />Words I know</button>
+        {mInfo && <button type="button" className={`chip ${styles.mode}`} aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura"><span className={styles.switch} data-switch="" aria-hidden="true" />Metre</button>}
+        {trText && !cmpText && columns === "both" && <button type="button" className={`chip ${styles.mode}`} aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first"><span className={styles.switch} data-switch="" aria-hidden="true" />Try it first</button>}
+        {hasLines && <button type="button" className={`chip ${styles.mode}`} aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping"><span className={styles.switch} data-switch="" aria-hidden="true" />Fit lines</button>}
       </div>
       <div className={styles.aidGroup} role="group" aria-label="This passage">
         <span className={styles.aidLabel} aria-hidden="true">This passage</span>
-        <button type="button" className="chip" data-closes-sheet="" aria-pressed={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
-        <button type="button" className="chip" data-closes-sheet="" aria-pressed={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
-        {!isPrivate && FORUM_OPEN && <button type="button" className="chip" data-closes-sheet="" aria-pressed={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Agora about the passages on this page">Talk about it</button>}
+        <button type="button" className={`chip ${styles.act}`} data-closes-sheet="" aria-expanded={vocabOpen} onClick={() => { setFindOpen(false); setVocabOpen(!vocabOpen); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setWord(null); setEcho(null); }}>Vocabulary</button>
+        <button type="button" className={`chip ${styles.act}`} data-closes-sheet="" aria-expanded={placesOpen} onClick={() => { setFindOpen(false); setPlacesOpen(!placesOpen); setTalkOpen(false); setVocabOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="The places this page names, on a map">Places</button>
+        {!isPrivate && FORUM_OPEN && <button type="button" className={`chip ${styles.act}`} data-closes-sheet="" aria-expanded={talkOpen} onClick={() => { setFindOpen(false); setTalkOpen(!talkOpen); setVocabOpen(false); setPlacesOpen(false); setMsOpen(false); setWord(null); setEcho(null); }} title="Questions asked in the Agora about the passages on this page">Talk about it</button>}
         {canDiff && <>
-          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
-          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
-          <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setFindOpen(false); setWord(null); }}>List of differences</button>
+          <button type="button" className={`chip ${styles.act} ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(-1)}>← Previous difference</button>
+          <button type="button" className={`chip ${styles.act} ${styles.listenChip}`} data-closes-sheet="" onClick={() => goDiff(1)}>Next difference →</button>
+          <button type="button" className={`chip ${styles.act} ${styles.listenChip}`} data-closes-sheet="" aria-expanded={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setFindOpen(false); setWord(null); }}>List of differences</button>
         </>}
-        <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
-        {trText && !cmpText && <button type="button" className={`chip ${styles.listenChip}`} data-closes-sheet="" aria-pressed={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
+        <button type="button" className={`chip ${styles.act} ${styles.listenChip}`} data-closes-sheet="" aria-expanded={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text">Find in this text</button>
+        {trText && !cmpText && <button type="button" className={`chip ${styles.act} ${styles.listenChip}`} data-closes-sheet="" aria-expanded={listenOpen} onClick={() => setListenOpen(!listenOpen)} title="Hear the English translation read aloud, passage by passage">Listen</button>}
       </div>
       <div className={styles.aidGroup} role="group" aria-label="This work">
         <span className={styles.aidLabel} aria-hidden="true">This work</span>
-        {!isPrivate && <button type="button" className="chip" data-closes-sheet="" aria-pressed={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>}
-        {author && !isPrivate && <Link className="chip" data-closes-sheet="" href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]} title={`${author.name}: life, works, and how the text survived`}>About {author.name}</Link>}
+        {!isPrivate && <button type="button" className={`chip ${styles.act}`} data-closes-sheet="" aria-expanded={msOpen} onClick={() => { setFindOpen(false); setMsOpen(!msOpen); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setWord(null); setEcho(null); }} title="The passage as a scribe wrote it, and the page of a real manuscript">Manuscript</button>}
+        {author && !isPrivate && <Link className={`chip ${styles.act}`} data-closes-sheet="" href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]} title={`${author.name}: life, works, and how the text survived`}>About {author.name}</Link>}
         {isPrivate && mineDoc && mineDoc.status !== "imported" && (
-          <Link className="chip" data-closes-sheet="" href={`${PRIVATE_TRANSLATIONS}?id=${encodeURIComponent(mineDoc.id)}`} transitionTypes={["page-turn"]}
+          <Link className={`chip ${styles.act}`} data-closes-sheet="" href={`${PRIVATE_TRANSLATIONS}?id=${encodeURIComponent(mineDoc.id)}`} transitionTypes={["page-turn"]}
             title="The introduction, the translator's notes, and where our English parts from the published one">Notes and comparison</Link>
         )}
       </div>
     </div>
   );
+  // how many of the modes above are on, for the sign on the Tools button (review fix list, slice 8)
+  const modesOn = [translit, cases, known, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst, hasLines && fitLines].filter(Boolean).length;
   const setCols = (c: Columns) => setColsFor({ work: workId, c });
   const columnsSeg = (
     <div className={styles.seg} role="radiogroup" aria-label="Columns">
@@ -1395,6 +1404,19 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     </div>
   );
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
+  const marksList = (
+    <ul className={styles.marksList}>
+      {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
+      {sortedMarks.map((m) => (
+        <li key={m.id}>
+          <button type="button" data-closes-sheet="" onClick={() => nav.go(query({ at: m.start.u }))}>
+            <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
+            <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
+          </button>
+        </li>
+      ))}
+    </ul>
+  );
   // the edition, the translation, an edition to compare with, and a second book: in the panel that Change opens under
   // the title (in the floating window, folded away above the text)
   const editionControls = work && grcText && (
@@ -1472,12 +1494,14 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         {/* (the floating window keeps its aids folded above the text) */}
         {single && (
           <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Lamplight or Daylight), the lamp on the passage, the size and the typeface of the Greek"
-            className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aaPop}`} panelLabel="Page and text">
+            className={`${styles.dropBtn} ${styles.wideOnly}`} panelClass={`${styles.pop} ${styles.aaPop}`} panelLabel="Page and text">
             {aaPanel}
           </Drop>
         )}
         {!floating && (
-          <Drop {...dropOf("aids")} label="Tools" chevron={!single} title="Reading aids: help with the Greek, this passage and this work (Find and Listen are here too)" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
+          <Drop {...dropOf("aids")} chevron={!single}
+            ariaLabel={modesOn > 0 ? `Tools, ${modesOn} on` : undefined}
+            label={<>Tools{modesOn > 0 && <span className={styles.onCount} data-on="" aria-hidden="true">{modesOn}</span>}</>} title="Reading aids: help with the Greek, this passage and this work (Find and Listen are here too)" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
             {single && (
               <div className={`${styles.aidGroup} ${styles.whereGroup}`} role="group" aria-label="Where">
                 <span className={styles.aidLabel} aria-hidden="true">Page and passage</span>
@@ -1487,22 +1511,29 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             {aids}
           </Drop>
         )}
-        <Drop {...dropOf("marks")} label={single ? `Marks ${allMarks.length}` : `Your marks (${allMarks.length})`} chevron={!single} className={styles.dropBtn} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
-          <ul className={styles.marksList}>
-            {!allMarks.length && <li className="muted">Select words in the Greek, or click a passage number, to bookmark, highlight or write a note.</li>}
-            {sortedMarks.map((m) => (
-              <li key={m.id}>
-                <button type="button" data-closes-sheet="" onClick={() => nav.go(query({ at: m.start.u }))}>
-                  <span className="label">{m.kind} · {rangeLabel(m.start.u, m.end.u)}</span>
-                  <span>{m.kind === "note" && m.text ? m.text.slice(0, 80) : <span lang="grc">{m.quote.slice(0, 60)}</span>}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
+        <Drop {...dropOf("marks")} label={single ? `Marks ${allMarks.length}` : `Your marks (${allMarks.length})`} chevron={!single} className={`${styles.dropBtn} ${styles.wideOnly}`} panelClass={`${styles.pop} ${styles.marksPop}`} panelLabel="Your marks">
+          {marksList}
         </Drop>
         <Drop {...dropOf("more")} ariaLabel="More" title="Signs beside the scroll bar, the floating reader, and the keys" chevron={false}
           label={<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="19" cy="12" r="1.6" /></svg>}
           className={`${styles.dropBtn} ${styles.moreDrop}`} panelClass={`${styles.pop} ${styles.morePop}`} panelLabel="More">
+          {/* phones: the bar keeps to one row (review fix list, slice 8), so the columns, the page's settings and your marks wait here */}
+          {single && (
+            <div className={styles.phoneMore}>
+              <div className={styles.moreActs} role="group" aria-label="Columns on a phone">
+                <p className="label">Columns</p>
+                {columnsSeg}
+              </div>
+              <div className={styles.moreActs} role="group" aria-label="Page and text on a phone">
+                <p className="label">Page and text</p>
+                {aaPanel}
+              </div>
+              <div className={styles.moreActs} role="group" aria-label="Your marks on a phone">
+                <p className="label">Your marks ({allMarks.length})</p>
+                {marksList}
+              </div>
+            </div>
+          )}
           <MarkersLegend inline counts={markerCounts} />
           {/* "Marks" (the toolbar) are what you made; the signs beside the scroll bar only show where they are (slice 5) */}
           {!floating && pane === 1 && (
@@ -1544,7 +1575,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             <SiteMark size="bar" className={styles.rmark} />
             <Link className={styles.back} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library">←<span className={styles.bl}> Library</span></Link>
             <div className={styles.rtitle}>
-              <b>{author && !isPrivate ? <Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link> : author?.name}{author ? " · " : ""}{work?.title ?? ""}</b>
+              {/* phones: the work's title alone, so it is read whole */}
+              <b><span className={styles.rauthor}>{author && !isPrivate ? <Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link> : author?.name}{author ? " · " : ""}</span>{work?.title ?? ""}</b>
               {chunkInfo && <span className="label">{chunkInfo.label}</span>}
               {isPrivate && <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span>}
             </div>
@@ -1632,10 +1664,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {!single && <div className={`wrap ${styles.bar}`}>{barRow}</div>}
 
           {cases && (
-            <p className={`wrap ${styles.legend}`} aria-label="Case colours">
+            <p className={`wrap ${styles.legend} ${styles.caseKey}`} aria-label="Case colours" title="From GLAUx's analyses of this text">
               <span data-case="nominative">nominative</span> <span data-case="genitive">genitive</span> <span data-case="dative">dative</span>
               <span data-case="accusative">accusative</span> <span data-case="vocative">vocative</span>
-              <span className="muted">From GLAUx&apos;s analyses of this text.</span>
+              <span className={`muted ${styles.legendCredit}`}>From GLAUx&apos;s analyses of this text.</span>
             </p>
           )}
           {known && (

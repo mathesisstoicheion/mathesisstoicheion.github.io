@@ -169,6 +169,8 @@
 .line .speaker { grid-column: 1 / -1; }
 .ln { font-family: var(--f-label); font-size: 0.62em; color: var(--ink-2); text-align: right; padding-right: 0.9em; padding-top: 0.35em; }
 .lt { padding-left: 1.2em; text-indent: -1.2em; }
+/* the translation reads as ordinary paragraphs, its first line not pulled out to the left (review fix list, slice 8) */
+.tr .lt { padding-left: 0; text-indent: 0; }
 .para { margin-top: 0.7em; }
 .speaker { display: block; font-family: var(--f-label); font-size: 0.72em; letter-spacing: 0.08em; color: var(--accent); margin-top: 0.5em; }
 .p > .speaker { margin-top: 0; }
@@ -198,7 +200,14 @@
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
 @keyframes slide-in { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
-@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover { margin-right: 400px; margin-left: 0; } }
+@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .single.withPanel .caseKey { margin-right: 400px; margin-left: 0; } }
+/* narrower desktops: the look-up docks at the side too, a little narrower, and the text makes room for it, so the English of
+   the line being read stays in sight (review fix list, slice 8) */
+@media (min-width: 901px) and (max-width: 1279px) {
+  .single .panel { width: 340px; }
+  .single.withPanel .text, .single.withPanel .bottom, .single.withPanel .cover, .single.withPanel .caseKey { margin-right: 340px; margin-left: 0; }
+  .single.withPanel .row { grid-template-columns: 3rem minmax(0, 1.1fr) minmax(0, 1fr); column-gap: 18px; }
+}
 .panelHead { display: flex; justify-content: space-between; gap: var(--space-3); align-items: start; }
 /* wide screens: the look-up's parts sit straight in the panel's grid; phones: they scroll below a fixed head */
 .panelBody { display: contents; }
@@ -391,18 +400,50 @@
 .aidGroup { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
 .aids a:global(.chip) { text-decoration: none; }
 .aidGroup:not(:has(> :not(.aidLabel))) { display: none; }
+/* the Tools menu (review fix list, slice 8): a mode (Transliteration, Colour by case…) is a switch that stays on or off, its
+   knob across and lit when on; an action (Vocabulary, Places…) is a button that opens a panel, a raised stone like the bar's */
+.mode { gap: 9px; }
+.switch {
+  position: relative; flex: none; width: 26px; height: 15px; border-radius: var(--radius-round); border: 1px solid var(--rule-2);
+  transition: background-color calc(0.2s / var(--tempo, 1)) var(--ease), border-color calc(0.2s / var(--tempo, 1)) var(--ease);
+}
+.switch::before {
+  content: ""; position: absolute; top: 2px; left: 2px; width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--ink-2);
+  transition: transform calc(0.2s / var(--tempo, 1)) var(--ease), background-color calc(0.2s / var(--tempo, 1)) var(--ease);
+}
+.mode[aria-pressed="true"] .switch { background: var(--accent); border-color: var(--accent); }
+.mode[aria-pressed="true"] .switch::before { transform: translateX(11px); background: var(--bg); }
+.act { background: var(--slab); box-shadow: var(--slab-edge); border-color: transparent; }
+.act:hover { background: var(--slab-lit); border-color: transparent; }
+.act[aria-expanded="true"] { background: var(--sel-bg); color: var(--ink); border-color: var(--accent); }
+/* the Tools button says when a mode is on: a lit dot and how many */
+.onCount { color: var(--accent); }
+.onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: 4px; border-radius: var(--radius-round); background: currentColor; box-shadow: 0 0 6px currentColor; }
 .aidLabel { flex-basis: 100%; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
 /* words I know (the "Words I know" aid): a soft wash of green, under any case colour */
 .reader [data-known] { background: color-mix(in srgb, var(--ok) 17%, transparent); border-radius: var(--radius); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 17%, transparent); }
-.reader [data-case] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.18em; }
-.reader [data-case="nominative"] { text-decoration-color: #4F7CA8; }
-.reader [data-case="genitive"] { text-decoration-color: #D9A441; }
-.reader [data-case="dative"] { text-decoration-color: #6E9A5B; }
-.reader [data-case="accusative"] { text-decoration-color: #C0492B; }
-.reader [data-case="vocative"] { text-decoration-color: #8B5FA8; }
+/* colour by case (review fix list, slice 8): colours from Okabe and Ito's set for colour-blind readers, chosen so that no two
+   look alike with any of the three common kinds of colour blindness (scripts/check-reader.mjs), and a line of its own kind for
+   each case, so the colour is never the only sign: nominative solid, genitive dotted, dative dashed, accusative double,
+   vocative wavy. The key above the text, and the look-up's parsing, show the same. */
+.reader { --case-nom: #56B4E9; --case-gen: #F0E442; --case-dat: #009E73; --case-acc: #D55E00; --case-voc: #CC79A7; }
+.page[data-page="day"] .reader { --case-gen: #C9AE00; }
+.reader [data-case] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.18em; text-decoration-skip-ink: none; }
+.reader [data-case="nominative"] { text-decoration-color: var(--case-nom); text-decoration-style: solid; }
+.reader [data-case="genitive"] { text-decoration-color: var(--case-gen); text-decoration-style: dotted; text-decoration-thickness: 3px; }
+.reader [data-case="dative"] { text-decoration-color: var(--case-dat); text-decoration-style: dashed; }
+.reader [data-case="accusative"] { text-decoration-color: var(--case-acc); text-decoration-style: double; text-decoration-thickness: 1.5px; }
+.reader [data-case="vocative"] { text-decoration-color: var(--case-voc); text-decoration-style: wavy; text-decoration-thickness: 1.5px; }
 .legend { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; font-size: 0.88rem; padding-block: var(--space-2) 0; }
+/* one book: the key stays in sight under the bar while you read, in one quiet line */
+.single .caseKey {
+  position: sticky; top: calc(var(--bar-h, 59px) + env(safe-area-inset-top, 0px)); z-index: 15; margin: 0; padding-block: 6px;
+  gap: 4px 14px; font-size: var(--step--1);
+  background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule);
+}
+@media (max-width: 640px) { .single .caseKey .legendCredit { display: none; } }
 
 .vocabTitle { font-size: 1.3rem; }
 .vocab { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -505,6 +546,17 @@ p.translit { margin: -0.3em 0 0.8em; }
 .grip { display: block; width: 10px; height: 16px; margin: var(--space-1) 0 0 auto; cursor: grab; opacity: 0; transition: opacity 0.2s;
   background: radial-gradient(circle, var(--ink-2) 1.3px, transparent 1.7px) 0 0 / 5px 5px; }
 .row:hover .grip, .grip:focus-visible { opacity: 0.7; }
+/* pointed at, the grip says what it is for at once (review fix list, slice 8), rather than after the browser's slow title */
+.grip { position: relative; }
+.grip::after {
+  content: attr(data-tip); position: absolute; left: calc(100% + 8px); top: -4px; z-index: 3; pointer-events: none; white-space: nowrap;
+  padding: 3px 8px; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); color: var(--ink);
+  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; opacity: 0; transition: opacity calc(0.15s / var(--tempo, 1));
+}
+.grip:hover { opacity: 1; }
+.grip:hover::after { opacity: 1; }
+/* the margin of Perseus's line 0 (the first speaker's name): no number, the passage's actions still to hand */
+.ref button.front { min-width: 24px; min-height: 24px; }
 @media (hover: none) { .grip { display: none; } }
 .floatFold { font-size: 0.92rem; }
 .floatFold summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.05em; color: var(--ink-2); padding: 2px 0; }
@@ -684,6 +736,15 @@ p.translit { margin: -0.3em 0 0.8em; }
 .rbar .seg button { min-height: 0; padding-inline: 11px; }
 @media (pointer: coarse) { .rbar .seg button, .rbar .dropBtn { min-height: 32px; } }
 @media (max-width: 640px) { .rtitle :global(.label), .bl { display: none; } .rtitle b { font-size: 0.9rem; } }
+/* phones: one row (review fix list, slice 8): the mark, the way back, the work's title, Tools and ⋯; the columns, Aa and your
+   marks are in ⋯ */
+.phoneMore { display: none; }
+@media (max-width: 640px) {
+  .rbarIn { flex-wrap: nowrap; gap: 8px; }
+  .rauthor, .rbar .wideOnly, .rbar .rtools > .seg { display: none; }
+  .phoneMore { display: contents; }
+  .rbar .morePop { max-height: calc(100svh - var(--bar-h, 59px) - 24px); overflow-y: auto; }
+}
 /* its panels (A's .pop): under the bar at the right */
 .rbar .pop {
   right: max(16px, env(safe-area-inset-right, 0px)); top: 100%; margin-top: 6px; max-width: none; width: min(370px, calc(100vw - 32px));

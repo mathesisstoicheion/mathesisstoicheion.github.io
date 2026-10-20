@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readFileSync } from "node:fs";
 import { parseTei } from "./parse";
-import { translationPieces, placePieces, alignChunk } from "./align";
+import { translationPieces, placePieces, alignChunk, mendBreaks } from "./align";
 import type { Block, TeiDoc } from "./types";
 
 const load = (f: string) => readFileSync(`test-fixtures/${f}.xml`, "utf8");
@@ -225,5 +225,23 @@ describe("pages", () => {
   it("a play's cast list does not get a page of its own", () => {
     const d = doc("tlg0011.tlg002.perseus-grc2");
     expect(d.chunks.every((c) => d.units.slice(c.first, c.last + 1).some((u) => plain(u.blocks).trim().length > 0))).toBe(true);
+  });
+});
+
+describe("English cut only where a sentence or clause ends (review fix list, slice 8)", () => {
+  const long = "So now I am still watching for the signal-flame, the gleaming fire that is to bring news from ";
+  const piece = (key: string, c: Block["c"], speaker?: string) => ({ key, src: 0, blocks: [{ t: "l", n: key, c, ...(speaker ? { speaker } : {}) } as Block] });
+  it("moves the rest of a sentence back to finish it, word for word", () => {
+    const [a, b] = mendBreaks([piece("5", [long, "Troy", " and"]), piece("10", ["tidings of its capture.  For thus commands my queen."])]);
+    expect(a.blocks[0].c.join("")).toBe(`${long}Troy and tidings of its capture.`);
+    expect(b.blocks[0].c.join("")).toBe("For thus commands my queen.");
+  });
+  it("leaves verse, a finished sentence and a new speaker alone", () => {
+    const verse = [piece("1", ["Sing, goddess, the wrath of"]), piece("2", ["Achilles, son of Peleus."])];
+    expect(mendBreaks(verse)).toEqual(verse);
+    const done = [piece("5", [long + "Troy."]), piece("10", ["Tidings of its capture."])];
+    expect(mendBreaks(done)).toEqual(done);
+    const speech = [piece("35", [long + "Enter the chorus of Argive Elders"]), piece("40", ["This is now the tenth year."], "Chorus")];
+    expect(mendBreaks(speech)).toEqual(speech);
   });
 });

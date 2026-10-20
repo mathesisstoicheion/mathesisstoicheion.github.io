@@ -7,7 +7,7 @@ import { decapitalise, isElided, lookupForm } from "@/lib/greek";
 import { lookUpWiktionary, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
 import { loadWordPack, analyse, type Analysis } from "@/lib/lookup/words";
 import { lsjEntries, citationHref, LSJ_CREDIT, type LsjEntry, type Seg } from "@/lib/lookup/lsj";
-import { readTag } from "@/lib/lookup/postag";
+import { readTag, caseOf } from "@/lib/lookup/postag";
 import { lessonFor } from "@/lib/lookup/lesson-link";
 import { coreEntry, CORE_CREDIT, type CoreEntry } from "@/lib/lookup/core";
 import { useUI } from "@/lib/ui";
@@ -284,6 +284,14 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   // the lesson that explains this form, only when the analysis is of this very word (Phase 11)
   const lesson = a && a.where === "here" ? lessonFor(a.tag, a.lemma) : null;
   const quick = (core.key === lsjKey && core.value?.def) || l?.value?.entries[0]?.s || "";
+  // its case, in the colour and line that Colour by case gives it in the text (review fix list, slice 8)
+  const wcase = a ? caseOf(a.tag) : null;
+  // a meaning is given once (slice 8): LSJ's short definition is left out when it says what is already shown above it
+  const same = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+  const above = new Set([sheet && a && parsing ? quick : "", core.key === lsjKey ? core.value?.def ?? "" : ""].filter(Boolean).map(same));
+  const lsjShort = l?.value ? l.value.entries.filter((e) => full || !above.has(same(e.s || ""))) : [];
+  // Wiktionary has nothing for this form: the section is left out rather than shown empty
+  const wiktNone = !!w && !w.value && !w.error;
 
   return (
     <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""}`} data-snap={snap} data-overlay="" aria-label={`Look-up: ${word}`} tabIndex={-1}
@@ -310,7 +318,9 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         {a && parsing && (
           <div className={styles.here}>
             <p className={styles.lemmaBig} lang="grc">{a.lemma}</p>
-            <p className={styles.parse}><b>{parsing.pos}</b>{parsing.detail ? ` · ${parsing.detail}` : ""}</p>
+            <p className={styles.parse}><b>{parsing.pos}</b>{parsing.detail ? " · " : ""}{wcase && parsing.detail.includes(wcase)
+              ? <>{parsing.detail.slice(0, parsing.detail.indexOf(wcase))}<span data-case={wcase} title="Its colour and line when Colour by case is on">{wcase}</span>{parsing.detail.slice(parsing.detail.indexOf(wcase) + wcase.length)}</>
+              : parsing.detail}</p>
             {/* phones: the short meaning shows at the sheet's first height too (the dictionary is further down) */}
             {sheet && quick && <p className={styles.quick}>{quick}</p>}
             {a.where === "here" && (a.manual
@@ -363,7 +373,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       {core.key === lsjKey && core.value && (
         <section className={styles.sec}>
           <h3 className="label">Core vocabulary · one of the commonest words (#{core.value.rank})</h3>
-          <p className={styles.gloss}>{core.value.def}</p>
+          {!(sheet && a && parsing && same(quick) === same(core.value.def)) && <p className={styles.gloss}>{core.value.def}</p>}
           <p className={styles.fine}><span lang="grc">{core.value.head}</span> · {core.value.pos}. {CORE_CREDIT}.</p>
         </section>
       )}
@@ -373,17 +383,17 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         <h3 className="label">Dictionary · LSJ {l?.value && <span lang="grc" className={styles.lemma}>{l.value.head}</span>}</h3>
         {!l && <p className="muted">Opening the dictionary…</p>}
         {l && !l.value && <p className="muted">{l.error ? `The dictionary could not be loaded (${l.error}).` : "No LSJ entry found under this headword."}</p>}
-        {l?.value && l.value.entries.map((e, i) => <LsjEntryView key={i} e={e} full={full} />)}
+        {lsjShort.map((e, i) => <LsjEntryView key={i} e={e} full={full} />)}
         {l?.value && <button type="button" className="chip" onClick={() => { setFull(!full); if (!full && sheet) setSnap("full"); }}>{full ? "Short definition" : "Full entry"}</button>}
         {l?.value && full && <p className={styles.fine}>{LSJ_CREDIT}</p>}
       </section>
 
       {/* ------------------------------------------------ Wiktionary */}
-      <section className={styles.sec}>
+      {!wiktNone && <section className={styles.sec}>
         <h3 className="label">Wiktionary · live</h3>
         {offline && <p className="muted">You are offline. Wiktionary needs a connection.</p>}
         {!offline && !w && <p className="muted">Looking it up…</p>}
-        {w && !w.value && <p className="muted">{w.error ? `Wiktionary could not be reached (${w.error}).` : "No Wiktionary entry for this form."}</p>}
+        {w && !w.value && w.error && <p className="muted">Wiktionary could not be reached ({w.error}).</p>}
         {w?.value && (
           <>
             <Senses senses={w.value.senses} />
@@ -391,7 +401,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
             <p className={styles.fine}>From <a href={w.value.url} target="_blank" rel="noopener noreferrer">Wiktionary</a>, CC BY-SA 4.0.</p>
           </>
         )}
-      </section>
+      </section>}
 
       <section className={styles.sec}>
         <h3 className="label">More dictionaries</h3>

@@ -24,6 +24,10 @@ jobs:
         run: npm ci && npx playwright install --with-deps chromium
       - name: Build
         working-directory: web
+        # the public Supabase values, as the deploy uses them, so the account page is the one visitors see (slice 9)
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
         run: npm run build
       - name: Serve the build
         working-directory: web
@@ -49,3 +53,9 @@ jobs:
       - name: The home page is in order (slice 7)
         working-directory: web
         run: node scripts/check-home.mjs http://localhost:3100
+      - name: The reader (slice 8)
+        working-directory: web
+        run: node scripts/check-reader.mjs http://localhost:3100
+      - name: The other rooms (slice 9)
+        working-directory: web
+        run: node scripts/check-rooms.mjs http://localhost:3100

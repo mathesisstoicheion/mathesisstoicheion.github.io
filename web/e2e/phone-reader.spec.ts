@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { openAids } from "./reader-menus";
+import { openAids, openMore } from "./reader-menus";
 
 // The reader on a phone: design A's bar along the top of the window (the way back, the book and its page, then the
 // page's settings, Aa; Tools; your marks; More). These read texts from GitHub, so they need a connection.
@@ -15,9 +15,11 @@ const top = (page: Page, sel: string) => page.locator(sel).first().evaluate((e) 
 test("the reader's bar is at the top: the way back, the book, and its buttons, all within the phone's width", async ({ page }) => {
   await openIliad(page);
   await expect(page.getByRole("link", { name: "Back to the library" })).toBeAttached();
-  for (const name of ["Page and text", "Tools", "More"]) await expect(page.getByRole("button", { name, exact: true }).first()).toBeAttached();
-  await expect(page.getByRole("button", { name: /^Marks/ }).first()).toBeAttached();
+  for (const name of ["Tools", "More"]) await expect(page.getByRole("button", { name, exact: true }).first()).toBeVisible();
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
+  // one row (review fix list, slice 8): the columns, the page's settings and your marks wait in More (⋯)
+  const more = await openMore(page);
+  for (const name of ["Columns on a phone", "Page and text on a phone", "Your marks on a phone"]) await expect(more.getByRole("group", { name })).toBeVisible();
 });
 
 test("Tools turns to the next and previous book, and says which one is open", async ({ page }) => {
@@ -57,8 +59,9 @@ test("the reading aids are in Tools and the text size in Aa, and a tap elsewhere
   await page.mouse.click(8, 600);
   await expect(tools).toBeHidden();
 
-  await page.getByRole("button", { name: "Page and text" }).first().click();
-  const size = page.getByRole("group", { name: "Page and text" });
+  // on a phone the page's settings (Aa) are in More (⋯)
+  await openMore(page);
+  const size = page.getByRole("group", { name: "Page and text on a phone" });
   await expect(size).toBeVisible();
   const before = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--greek-size"));
   await size.getByRole("button", { name: "Larger" }).click();

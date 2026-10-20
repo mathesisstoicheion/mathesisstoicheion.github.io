@@ -46,8 +46,51 @@ function splitAtMarkers(u: Unit, marker: string, prefix: string[], src: number):
   return pieces.filter((p) => p.blocks.length);
 }
 
+const textOf = (b: Block) => b.c.map((x) => (typeof x === "string" ? x : "")).join("");
+/** where a sentence or clause ends: a full stop, colon, semicolon, question or exclamation mark, or a dash (and any closing quote) */
+const CLAUSE_END = /[.;:!?·](?:["'”’)\]]*)(?=\s|$)|—/;
+
+/**
+ * Prose English cut at the Greek's line numbers often stops mid-sentence ("…to bring news from Troy and" beside lines 5–9,
+ * "tidings of its capture. For thus…" beside line 10). Where a piece of prose ends inside a sentence, the next piece's words
+ * up to the end of that sentence or clause move back to finish it, so the English breaks only where a sentence or clause
+ * ends (review fix list, slice 8). Verse (short lines) is left as it is, and so is a cut where a new speaker begins.
+ */
+export function mendBreaks(pieces: Piece[]): Piece[] {
+  const out = pieces.map((p) => ({ ...p, blocks: [...p.blocks] }));
+  for (let i = 0; i < out.length - 1; i++) {
+    const a = out[i], b = out[i + 1];
+    const last = a.blocks[a.blocks.length - 1], first = b.blocks[0];
+    if (!last || !first || last.t === "head" || first.t === "head" || ("speaker" in first && first.speaker)) continue;
+    const tail = textOf(last).trimEnd();
+    if (tail.length < 100 || !/[\p{L}\p{N}]$/u.test(tail)) continue;
+    // the end of the sentence, in the next piece's first block, not too far in
+    let j = -1, cut = -1, chars = 0;
+    for (let k = 0; k < first.c.length && chars < 400; k++) {
+      const x = first.c[k];
+      if (typeof x !== "string") continue;
+      const m = CLAUSE_END.exec(x);
+      if (m) { j = k; cut = m.index + m[0].length; break; }
+      chars += x.length;
+    }
+    if (j < 0) continue;
+    const s = first.c[j] as string;
+    const moved: Inline[] = [...first.c.slice(0, j), s.slice(0, cut)];
+    const rest: Inline[] = [s.slice(cut).replace(/^\s+/, ""), ...first.c.slice(j + 1)].filter((x) => typeof x !== "string" || x);
+    a.blocks[a.blocks.length - 1] = { ...last, c: [...last.c, /\s$/.test(textOf(last)) ? "" : " ", ...moved].filter((x) => x !== "") } as Block;
+    const left = rest.some((x) => typeof x !== "string" || x.trim());
+    b.blocks = left ? [{ ...first, c: rest } as Block, ...b.blocks.slice(1)] : b.blocks.slice(1);
+    if (!b.blocks.length) { out.splice(i + 1, 1); i--; }   // all of it finished the sentence: its lines join the piece before
+  }
+  return out;
+}
+
 /** Break the whole translation into anchored pieces, in reading order. */
 export function translationPieces(grc: TeiDoc, tr: TeiDoc): Piece[] {
+  return mendBreaks(rawPieces(grc, tr));
+}
+
+function rawPieces(grc: TeiDoc, tr: TeiDoc): Piece[] {
   const gl = grc.levels, tl = tr.levels;
   let common = 0;
   while (common < Math.min(gl.length, tl.length) && gl[common] === tl[common]) common++;

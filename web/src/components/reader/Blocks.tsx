@@ -87,7 +87,8 @@ function inlines(c: Inline[], greek: boolean, key: string, line: LineCtx = null,
   });
 }
 
-const lineNo = (n?: string) => n && /^\d+$/.test(n) && (+n % 5 === 0 || n === "1") ? n : "";
+// every fifth line, and the first; never Perseus's line 0, which only names the first speaker
+const lineNo = (n?: string) => n && /^\d+$/.test(n) && +n > 0 && (+n % 5 === 0 || n === "1") ? n : "";
 
 const plain = (c: Inline[]) => c.map((x) => (typeof x === "string" ? x : "")).join("");
 

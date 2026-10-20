@@ -282,6 +282,8 @@ function makeChunks(units: Unit[], levels: string[], containers: number[]): TeiD
   const chunks: TeiDoc["chunks"] = [];
   if (!units.length) return chunks;
   const range = (a: number, b: number) => {
+    // Perseus's line 0 holds only the first speaker's name, for display: a page starts at line 1 (review fix list, slice 8)
+    while (a < b && units[a].ref[units[a].ref.length - 1] === "0") a++;
     const x = units[a].ref.join("."), y = units[b].ref.join(".");
     return x === y ? x : `${x}–${y}`;
   };
