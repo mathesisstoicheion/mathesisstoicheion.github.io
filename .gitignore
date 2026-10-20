@@ -12,3 +12,6 @@ web/public/data/syntax/
 
 # Python caches
 __pycache__/
+
+# unchecked old-site author drafts, known errors: kept on the owner's computer only
+pipeline/drafts/old-site-author-articles.json
