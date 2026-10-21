@@ -12,6 +12,8 @@ import { AREAS } from "@/config/areas";
 import styles from "./Header.module.css";
 
 const LABEL = { online: "Online", offline: "Offline", syncing: "Syncing" } as const;
+/** the word beside the light (in the menu): what it is for, offline reading, rather than a bare "Online" (review fixes, slice 10) */
+const WORD = { online: "Offline reading", offline: "Offline", syncing: "Syncing" } as const;
 
 function useRegister() {
   useEffect(() => {
@@ -74,7 +76,7 @@ export default function ConnectionLight() {
       <button type="button" className={`${styles.tbtn} ${styles.light}`} data-status={st} aria-expanded={open} aria-haspopup="dialog"
         onClick={() => setOpen(!open)} title={`${LABEL[st]}: click for details and Reconnect`} aria-label={`Connection: ${LABEL[st]}`}>
         <span className={styles.dot} aria-hidden="true" />
-        <span className={styles.txt}>{LABEL[st]}</span>
+        <span className={styles.txt}>{WORD[st]}</span>
       </button>
       {open && (
         <div className={styles.connPanel} role="dialog" aria-label="Connection and offline reading">

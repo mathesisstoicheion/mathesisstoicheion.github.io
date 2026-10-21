@@ -235,3 +235,5 @@
 .door .blk :global(.wrap) { max-width: none; padding-left: 0; padding-right: 0; }
 /* on a phone the window comes first, wide rather than tall, so the door's name is on the first screen */
 @media (max-width: 860px) { .door-hero { grid-template-columns: 1fr; } .door-hero .win { order: -1; } .door-hero .tall { aspect-ratio: 4 / 3; min-height: 0; } }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .ptab { min-height: var(--tap); } .blk p > a { padding-block: 12px; } }

@@ -243,3 +243,5 @@ button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; background: var
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .panelIn, .quote, .dyk { outline: var(--moulding); outline-offset: var(--moulding-in); }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .panelIn ul { gap: 0; } .panelIn li a { display: inline-block; padding-block: 11.5px; } }

@@ -194,10 +194,10 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 }
 .chip:hover { border-color: var(--rule-2); }
 .chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--ink); border-color: var(--accent); }
-/* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 4 px beyond it (a 44 px target) */
+/* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 5 px beyond its edge (a 44 px target) */
 @media (pointer: coarse) {
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
-  .chip::after { content: ""; position: absolute; inset: -4px 0; }
+  .chip::after { content: ""; position: absolute; inset: -5px 0; }
 }
 /* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): design A's .seg, small capitals
    in a fine frame, the chosen one filled with the dark chip colour */
@@ -412,6 +412,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-path { color: var(--accent-2); display: flex; flex-wrap: wrap; align-items: center; min-height: 1.6em; }
 .ph-path a { color: inherit; text-decoration: none; }
 .ph-path a:hover, .ph-path a:focus-visible { color: var(--accent); }
+/* the way back is a small line of capitals; under a finger it answers 15 px above and below it (a 44 px target) */
+@media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px -4px; } }
 .ph-sep { color: var(--ink-3); white-space: pre; }
 /* a line in Greek over a page's title, in gold capitals, as design A sets its kickers */
 .ph-inscr { margin: 18px 0 0; font-family: var(--face-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 300; line-height: 1.2;
@@ -522,3 +524,5 @@ select { max-width: 100%; }
 
 /* the word being read aloud (Listen, in the reader) */
 ::highlight(listen-word) { background-color: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { :where(main) :where(h2, h3) > a { padding-block: 4px; } }

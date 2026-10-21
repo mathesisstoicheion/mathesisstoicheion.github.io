@@ -212,3 +212,9 @@
 
 /* the works an author's page suggests beginning with (components/library/AuthorProfile.tsx) */
 .start { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) {
+  .level ul { gap: 0; }
+  .level li a { display: inline-block; padding-block: 11.5px; }
+  .count button { display: inline-block; padding-block: 10.5px; margin-block: -10.5px; }
+}

@@ -59,3 +59,6 @@ jobs:
       - name: The other rooms (slice 9)
         working-directory: web
         run: node scripts/check-rooms.mjs http://localhost:3100
+      - name: Accessibility and touch (slice 10)
+        working-directory: web
+        run: node scripts/check-a11y.mjs http://localhost:3100

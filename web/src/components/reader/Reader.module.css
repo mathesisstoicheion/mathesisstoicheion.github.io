@@ -833,3 +833,11 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single .bottomGo { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .single .bottom button:disabled { display: none; }
 .hint { font-family: var(--f-label); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) {
+  .back { position: relative; min-width: var(--tap); padding-inline: 0; text-align: center; }
+  .back::after { content: ""; position: absolute; inset: -7px 0; }
+  .rbar .dropBtn { position: relative; min-width: var(--tap); justify-content: center; }
+  /* the bar clips below its buttons: their finger-sized area reaches up */
+  .rbar .dropBtn::before { content: ""; position: absolute; inset: -10px 0 -2px; }
+}

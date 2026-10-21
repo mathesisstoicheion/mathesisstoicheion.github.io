@@ -141,7 +141,7 @@ export function AZRail({ keys, has, jump, noun, variant = "row", show = true, na
 
   return (
     <nav ref={nav} className={variant === "side" ? `${styles.letters} ${styles.side}` : styles.letters} aria-label={`${noun} by first letter`} data-show={show ? "" : undefined}
-      data-slide={sliding ? "" : undefined} style={{ "--n": keys.length, "--at": Math.max(at, 0) } as CSSProperties}
+      data-slide={sliding ? "" : undefined} data-touch-strip={variant === "side" ? "" : undefined} style={{ "--n": keys.length, "--at": Math.max(at, 0) } as CSSProperties}
       onPointerDown={touchOn} onPointerMove={touchMove} onPointerUp={touchOff} onPointerCancel={touchOff}>
       {part && <i className={styles.mark} data-on={at >= 0 ? "" : undefined} aria-hidden="true" />}
       {keys.map((k, i) => (

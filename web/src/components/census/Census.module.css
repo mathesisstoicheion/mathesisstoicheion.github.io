@@ -227,3 +227,5 @@
   .methodCols { grid-template-columns: minmax(0, 1fr); }
   .row { grid-template-columns: 1.8em minmax(7em, 44%) 1fr; gap: 8px; }
 }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .cats { row-gap: 10px; } }

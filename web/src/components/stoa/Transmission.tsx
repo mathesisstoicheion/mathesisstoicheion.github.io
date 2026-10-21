@@ -70,7 +70,7 @@ function Roads() {
         </ul>
         <p>The marks of each author article&apos;s own timeline, drawn on one scale. Look for the gaps: between an author&apos;s own time and the copies of their words, and between the last copies made by hand and the first printed books. Point at a mark for its year; the article tells what happened.</p>
       </figcaption>
-      <SideScroll className={styles.scroller}>
+      <SideScroll className={styles.scroller} label="The timelines, side by side">
       <div className={styles.chart}>
         <Axis />
         <ol className={styles.rows}>

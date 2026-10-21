@@ -27,7 +27,7 @@
 }
 .ic svg, .tbtn svg { width: 16px; height: 16px; }
 /* on a touch screen the square buttons keep A's size but answer a finger anywhere within 44px of their middle */
-@media (pointer: coarse) { .ic::before { content: ""; position: absolute; inset: -5px; } }
+@media (pointer: coarse) { .ic::before, .tbtn::before { content: ""; position: absolute; inset: -6px; } }
 @media (hover: hover) { .ic:hover, .tbtn:hover { border-color: var(--ink); } }
 .tbtn[aria-current="page"], .tbtn[aria-expanded="true"], .ic[aria-expanded="true"] { border-color: var(--gold); color: var(--gold); }
 .txt { display: none; }
@@ -97,3 +97,5 @@
 .connActs { display: flex; flex-wrap: wrap; gap: 8px; }
 .connReport { display: grid; gap: 4px; padding: 10px 12px; background: var(--field); box-shadow: var(--field-edge), var(--inlay-left-ok); font-size: 0.9rem; }
 .connReport[data-ok="false"] { box-shadow: var(--field-edge), var(--inlay-left); }
+/* review fixes, slice 10: room between the square buttons, so that each one's 44 px touch area is its own */
+@media (pointer: coarse) { .utils, .phoneMenu { gap: 12px; } }

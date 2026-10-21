@@ -104,3 +104,5 @@
 }
 
 .instrumentNote { margin: calc(-1 * var(--space-3)) auto 0; max-width: 72ch; text-align: center; font-size: var(--step--1); color: var(--ink-3); }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .vol input { min-height: var(--tap); } }

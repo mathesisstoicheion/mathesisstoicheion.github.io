@@ -58,7 +58,7 @@ export default function WikiEras() {
             ))}
           </ol>
           {/* each period's bracket under its columns is a link to its card below */}
-          <div className={styles.bands} style={{ gridTemplateColumns: bands.map((b) => `${b.n}fr`).join(" ") }}>
+          <div className={styles.bands} style={{ gridTemplateColumns: bands.map((b) => `minmax(44px, ${b.n}fr)`).join(" ") }}>
             {bands.map((b) => <a key={b.era.id} href={`#${b.era.id}`} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2} title={`${b.era.name}, ${b.era.span}`}>{b.era.name}</a>)}
           </div>
         </div>

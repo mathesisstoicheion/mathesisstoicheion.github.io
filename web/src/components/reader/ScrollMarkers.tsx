@@ -72,7 +72,7 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
   if (!visible.length) return null;
   return (
     <div className={styles.strip} style={{ top: contained ? 0 : "var(--hdr-vis)" }} aria-hidden={false}>
-      <div className={styles.track} style={{ height }} role="list" aria-label="Scroll-bar signs on this page">
+      <div className={styles.track} style={{ height }} role="list" aria-label="Scroll-bar signs on this page" data-touch-strip="">
         {visible.map((p, i) => (
           <button key={p.id} type="button" role="listitem" className={styles.marker} data-kind={p.kind} data-colour={p.colour}
             style={{ top: p.top, "--i": i } as React.CSSProperties}

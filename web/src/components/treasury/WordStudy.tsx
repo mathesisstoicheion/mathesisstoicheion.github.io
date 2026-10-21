@@ -153,7 +153,7 @@ function GridTable({ g, verb }: { g: Grid; verb: boolean }) {
     <figure className={styles.grid}>
       {g.title && <figcaption>{g.title} <small>{g.n.toLocaleString("en-GB")}</small></figcaption>}
       {g.rows.length > 0 && (
-        <div className={styles.scrollX}>
+        <div className={styles.scrollX} tabIndex={0} role="region" aria-label={g.title ? `${g.title}: the table` : "The table"}>
           <table>
             <thead><tr><td />{g.cols.map((c) => <th key={c.key} scope="col">{c.label}</th>)}</tr></thead>
             <tbody>

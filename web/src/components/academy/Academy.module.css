@@ -614,3 +614,5 @@ a.card:hover { background-color: var(--slab-lit); }
 .detail, .progress, .coverage, .drill, .check, .real, .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* a panel that is a link keeps the site's focus ring (the moulding uses the outline too) */
 a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .small > a { padding-block: 13px; } .seg button, .stroke .seg button { min-height: var(--tap); } }

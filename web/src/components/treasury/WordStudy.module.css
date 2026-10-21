@@ -121,3 +121,5 @@
   /* (not flex: these links hold italics, and flex would drop the spaces between the pieces) */
   .exWhere a { display: inline-block; min-height: var(--tap); padding-block: 9px; }
 }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .asTable summary { padding-block: 11px; } }

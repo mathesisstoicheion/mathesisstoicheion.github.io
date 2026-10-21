@@ -184,3 +184,5 @@
 .invite p { margin: 0; line-height: 1.5; }
 .invite div { display: flex; flex-wrap: wrap; gap: 8px; }
 @keyframes inviteIn { from { opacity: 0; transform: translateY(16px); } }
+/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .contents a { min-height: var(--tap); } }
