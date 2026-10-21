@@ -48,7 +48,7 @@ test("the home page tells why Stoics are called Stoics and leads into the Painte
   await page.goto("/");
   const stoa = page.getByRole("region", { name: "From the Painted Stoa" });
   await expect(stoa).toContainText("Diogenes Laertius");
-  await expect(page.getByRole("region", { name: "The rooms of the site" }).getByRole("link", { name: /People, places and objects/ })).toHaveAttribute("href", "/stoa");
+  await expect(page.getByRole("region", { name: "The rooms of the site" }).getByRole("link", { name: /Painted Stoa/ })).toHaveAttribute("href", "/stoa");
 });
 
 test("the credits page lists every picture with its licence", async ({ page }) => {

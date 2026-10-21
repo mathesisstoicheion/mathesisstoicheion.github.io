@@ -65,7 +65,9 @@ test("the Academy's front page puts the tools first and names the next step", as
   await page.goto("/academy");
   // a first visit meets no zeros: the four numbers wait until something has been done
   await expect(page.getByLabel("Your progress")).not.toContainText("lessons done");
-  await expect(page.getByLabel("Your progress").getByRole("link", { name: /^Lesson 1:/ })).toBeVisible();
+  // the step names its track and its place in it (review fix list, slice 4: "The grammar course, lesson 1 of 18")
+  await expect(page.getByLabel("Your progress")).toContainText(/lesson 1 of \d+/);
+  await expect(page.getByLabel("Your progress").getByRole("link").first()).toBeVisible();
   // the tools stand under it, before the lessons; Daily review is reached from the session, not listed here
   const tools = page.locator('section[aria-labelledby="tools-title"]');
   await expect(tools.getByRole("link")).toHaveCount(5);

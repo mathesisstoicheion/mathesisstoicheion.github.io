@@ -15,9 +15,10 @@ const OVERLAYS = [
   { name: "menu", page: "/stoa", trigger: 'header button[aria-label="Menu"]', panel: "#site-menu" },
   { name: "search", page: "/stoa", trigger: 'header button[aria-label="Search"]', panel: 'dialog[open], [role="dialog"]' },
   { name: "settings", page: "/stoa", trigger: 'header button[aria-label="Settings"]', viaMenu: 'header button[aria-label="Menu"]', panel: 'dialog[open], [role="dialog"]' },
-  { name: "reader Aa", page: READER, trigger: 'button[aria-label="Page and text"]', panel: "controls" },
-  { name: "reader Tools", page: READER, trigger: 'button:text-is("Tools")', panel: "controls" },
-  { name: "reader Marks", page: READER, trigger: 'button:text-matches("^(Marks|Your marks)")', panel: "controls" },
+  // on a phone, Aa and your marks are inside More (review fix list, slice 8), which is checked below
+  { name: "reader Aa", page: READER, trigger: 'button[aria-label="Page and text"]', panel: "controls", computerOnly: true },
+  { name: "reader Tools", page: READER, trigger: 'button:text-matches("^Tools")', panel: "controls" },
+  { name: "reader Marks", page: READER, trigger: 'button:text-matches("^(Marks|Your marks)")', panel: "controls", computerOnly: true },
   { name: "reader More", page: READER, trigger: 'button[aria-label="More"]', panel: "controls" },
   { name: "word panel", page: READER, trigger: '[data-u="1.1"] [data-w]:nth-child(2)', panel: 'aside[aria-label^="Look-up"]' },
 ].filter((o) => o.name.includes(only));
@@ -32,7 +33,7 @@ const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: p
 let problems = 0;
 for (const [w, h, size] of SIZES) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, isMobile: size === "phone", hasTouch: size === "phone", serviceWorkers: "block" });
-  for (const o of OVERLAYS) {
+  for (const o of OVERLAYS.filter((o) => !(o.computerOnly && size === "phone"))) {
     const page = await ctx.newPage();
     const found = [];
     try {

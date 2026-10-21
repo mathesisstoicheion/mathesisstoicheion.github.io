@@ -14,7 +14,7 @@ const total = async (page: Page) =>
 
 test("choose an edition to compare with, and the readings that differ are marked on both sides", async ({ page }) => {
   await page.goto(`${AGAM}&at=80`);
-  await expect(page.locator('[data-key="80"]').first()).toBeVisible({ timeout: 60_000 });
+  await expect(page.locator('[data-u="80"]').first()).toBeVisible({ timeout: 60_000 });
   await openChange(page);
   await page.getByLabel("Compare with").selectOption("1st1K-grc1");
   const bar = page.getByRole("region", { name: "Comparing two editions" });

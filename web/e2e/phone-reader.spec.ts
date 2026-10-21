@@ -64,7 +64,7 @@ test("the reading aids are in Tools and the text size in Aa, and a tap elsewhere
   const size = page.getByRole("group", { name: "Page and text on a phone" });
   await expect(size).toBeVisible();
   const before = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--greek-size"));
-  await size.getByRole("button", { name: "Larger" }).click();
+  await size.getByRole("button", { name: "Increase Greek text size" }).click();
   await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--greek-size"))).not.toBe(before);
   await page.keyboard.press("Escape");
   await expect(size).toBeHidden();

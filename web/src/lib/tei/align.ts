@@ -85,9 +85,10 @@ export function mendBreaks(pieces: Piece[]): Piece[] {
   return out;
 }
 
-/** Break the whole translation into anchored pieces, in reading order. */
+/** Break the whole translation into anchored pieces, in reading order. A second Greek edition, compared line for line, is not mended. */
 export function translationPieces(grc: TeiDoc, tr: TeiDoc): Piece[] {
-  return mendBreaks(rawPieces(grc, tr));
+  const pieces = rawPieces(grc, tr);
+  return tr.lang?.startsWith("grc") ? pieces : mendBreaks(pieces);
 }
 
 function rawPieces(grc: TeiDoc, tr: TeiDoc): Piece[] {

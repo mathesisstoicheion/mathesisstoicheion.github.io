@@ -82,6 +82,8 @@ function inspect() {
   const seenEls = new Set();
   for (const el of document.querySelectorAll("main h1, main h2, main h3, main p, main a, main button, main label, main li, nav[aria-label] a, header a, header button")) {
     if (seenEls.has(el) || el === h1 || el === p || !shown(el) || !onFirstScreen(el) || el.closest("[aria-hidden='true']:not([data-st] *)")) continue;
+    // a picture's caption (and its ⓘ) comes up with the picture, once its window has opened: part of the art, not the page's words
+    if (el.closest("[data-wcap]")) continue;
     if (!label(el)) continue;
     const ls = leaves(el).filter(onFirstScreen);
     if (!ls.length) continue;

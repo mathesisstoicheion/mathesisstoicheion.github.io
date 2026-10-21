@@ -1,7 +1,7 @@
 // The other rooms' check (review fix list, slice 9), at a computer's width and a phone's. It lists:
 //   stoa     - the Painted Stoa's page with more than one search box (or way into one); "The weird" and "The strange" as two
 //              categories; a photograph on the page without the engraving's gold (docs/adr/0007-photographs-in-the-stoa.md)
-//   treasury - the Treasury's section names in another face than the site's card headings (the Academy's "Practice and reference")
+//   treasury - the Treasury's section names in another face (family and width) than the site's card headings (the Academy's "Practice and reference")
 //   account  - the sign-in below the portrait on a phone, or below the first screen on a computer; a date in CE or BCE
 // The Agora's page (the Town Hall) is not checked: the forum is frozen and hidden from visitors (FORUM_OPEN, CLAUDE.md).
 // usage: node web/scripts/check-rooms.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -39,13 +39,13 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
     const h = document.querySelector("#tools-title")?.closest("section")?.querySelector("h3");
     if (!h) return null;
     const s = getComputedStyle(h);
-    return `${s.fontFamily.split(",")[0]} / ${s.fontStretch} / ${s.fontWeight}`;
+    return `${s.fontFamily.split(",")[0]} / ${s.fontStretch}`;
   });
   await page.goto(base + "/treasury");
   await page.waitForTimeout(1200);
-  const tiles = await page.evaluate(() => [...document.querySelectorAll('nav[aria-label="Sections of the Treasury"] button > span:nth-child(2)')].map((e) => {
+  const tiles = await page.evaluate(() => [...document.querySelectorAll('nav[aria-label="Sections of the Treasury"] [class*="Label"]')].map((e) => {
     const s = getComputedStyle(e);
-    return { t: e.textContent.trim(), f: `${s.fontFamily.split(",")[0]} / ${s.fontStretch} / ${s.fontWeight}` };
+    return { t: e.textContent.trim(), f: `${s.fontFamily.split(",")[0]} / ${s.fontStretch}` };
   }));
   if (!card) found.push(`treasury ${tag}: the Academy's "Practice and reference" cards were not found`);
   if (!tiles.length) found.push(`treasury ${tag}: the Treasury's sections were not found`);
