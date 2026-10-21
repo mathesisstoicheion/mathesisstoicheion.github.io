@@ -8,7 +8,7 @@ On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with
 The owner, 08:25 UTC: "Take the website offline, temporarily. We're doing a full revision of the design". Since then
 https://mathesisstoicheion.com/ shows only a holding page ("closed for a redesign, back soon"), on every address, including
 the owner's private pages. Returning visitors' old offline copies are cleared on their next visit. Nothing was deleted: the
-site's code is unchanged and the last live version is tagged `site-before-redesign`. To bring the site back, see
+site's code is unchanged and the last live version is kept on the branch `site-before-redesign`. To bring the site back, see
 DEPLOYMENT.md, "Closed for a redesign". The data packs at /packs/ and the accounts (Supabase) are untouched.
 
 ## The home page's red everywhere; animation at 3x; the home page stripe (2026-10-20, round 4; LIVE on the owner's "Publish", 21:03 UTC)

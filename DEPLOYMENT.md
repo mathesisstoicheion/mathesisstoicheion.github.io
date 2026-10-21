@@ -12,7 +12,7 @@ visitors' kept copies of the old site and removes the old offline helper). The s
 redesign work can still be merged into `main` without going live.
 - **To bring the site back:** change `SITE_CLOSED` to `"false"` and push to `main` (about 4 minutes). The site's own offline
   helper registers itself again on visitors' next visit.
-- **The last version that was live** before the closure is the git tag `site-before-redesign` (commit f60c0ef).
+- **The last version that was live** before the closure is kept on the branch `site-before-redesign` (commit f60c0ef).
 - `/packs/` is a separate repository and keeps being served; Supabase (accounts) is unchanged.
 
 ## The custom domain
