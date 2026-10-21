@@ -5,6 +5,16 @@ https://mathesisstoicheion.github.io/ redirects to it once the domain is switche
 https://github.com/mathesisstoicheion/mathesisstoicheion.github.io (public), owned by the free GitHub organization `mathesisstoicheion`.
 (Until 2026-09-28 it was ladygagastani.github.io; a GitHub Pages address is always `<owner>.github.io`, so the address moved with the repositories.)
 
+## Closed for a redesign (since 2026-10-21)
+`SITE_CLOSED: "true"` near the top of `.github/workflows/deploy.yml` makes every push to `main` publish only the holding page
+in `holding/` (`index.html`, the same page as `404.html` so every address shows it, and a `sw.js` that clears returning
+visitors' kept copies of the old site and removes the old offline helper). The site is not built while it is closed, so
+redesign work can still be merged into `main` without going live.
+- **To bring the site back:** change `SITE_CLOSED` to `"false"` and push to `main` (about 4 minutes). The site's own offline
+  helper registers itself again on visitors' next visit.
+- **The last version that was live** before the closure is the git tag `site-before-redesign` (commit f60c0ef).
+- `/packs/` is a separate repository and keeps being served; Supabase (accounts) is unchanged.
+
 ## The custom domain
 - `mathesisstoicheion.com` is registered by the owner. Its DNS records point at GitHub: four `A` records on the bare domain
   (185.199.108.153, 185.199.109.153, 185.199.110.153, 185.199.111.153) and a `CNAME` for `www` to `mathesisstoicheion.github.io`.

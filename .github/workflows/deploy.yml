@@ -5,6 +5,11 @@ on:
     branches: [main]
   workflow_dispatch:
 
+# While SITE_CLOSED is "true", visitors see the holding page in holding/ instead of the site, and the site is not built.
+# To bring the site back: change it to "false" and push to main. (See DEPLOYMENT.md, "Closed for a redesign".)
+env:
+  SITE_CLOSED: "true"
+
 permissions:
   contents: read
   pages: write
@@ -22,6 +27,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Setup Node.js
+        if: env.SITE_CLOSED != 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "20"
@@ -29,10 +35,12 @@ jobs:
           cache-dependency-path: web/package-lock.json
 
       - name: Install dependencies
+        if: env.SITE_CLOSED != 'true'
         working-directory: web
         run: npm ci
 
       - name: Build
+        if: env.SITE_CLOSED != 'true'
         working-directory: web
         run: npm run build
         env:
@@ -43,9 +51,16 @@ jobs:
           NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
 
       - name: Upload artifact
+        if: env.SITE_CLOSED != 'true'
         uses: actions/upload-pages-artifact@v3
         with:
           path: web/out
+
+      - name: Upload the holding page
+        if: env.SITE_CLOSED == 'true'
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: holding
 
   deploy:
     environment:
