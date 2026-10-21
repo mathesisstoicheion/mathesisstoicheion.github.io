@@ -4,6 +4,13 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 
 On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
+## The site is closed for a redesign (2026-10-21)
+The owner, 08:25 UTC: "Take the website offline, temporarily. We're doing a full revision of the design". Since then
+https://mathesisstoicheion.com/ shows only a holding page ("closed for a redesign, back soon"), on every address, including
+the owner's private pages. Returning visitors' old offline copies are cleared on their next visit. Nothing was deleted: the
+site's code is unchanged and the last live version is kept on the branch `site-before-redesign`. To bring the site back, see
+DEPLOYMENT.md, "Closed for a redesign". The data packs at /packs/ and the accounts (Supabase) are untouched.
+
 ## The home page's red everywhere; animation at 3x; the home page stripe (2026-10-20, round 4; LIVE on the owner's "Publish", 21:03 UTC)
 The owner, 16:47–16:51 UTC: "Everything on the website needs to follow the Gold and lamplight with the red colour scheme",
 "Every page must follow the design choices of the homepage", "All little submenus and buttons"; the Museion, Explore, Talk and
