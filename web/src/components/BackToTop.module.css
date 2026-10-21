@@ -11,7 +11,7 @@
 .btt:hover { transform: translateY(-3px); }
 .btt:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
 .btt svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.btt span { font-family: var(--f-label); font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
+.btt span { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
 @keyframes bttIn { from { opacity: 0; transform: translateY(12px) scale(0.9); } }
 
 /* on a phone it would sit over the last words of the lines whenever the header is tucked away, so it is shown only with

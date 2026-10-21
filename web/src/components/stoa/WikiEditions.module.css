@@ -5,7 +5,7 @@
 .group > summary::before { content: "▸"; color: var(--accent); margin-right: 10px; transition: rotate 0.2s var(--ease); display: inline-block; }
 .group[open] > summary::before { rotate: 90deg; }
 .group > summary:hover .gname { color: var(--accent); }
-.gname { flex: 1; font-family: var(--f-display); font-size: 1.25rem; line-height: 1.25; }
+.gname { flex: 1; font-family: var(--f-display); font-size: var(--step-1); line-height: 1.25; }
 .gcount { font-variant-numeric: tabular-nums; color: var(--ink-2); }
 .list { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .row {
@@ -17,8 +17,8 @@
 .row:hover .title, .row:focus-visible .title { color: var(--accent); }
 .what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
 .title { font-weight: 600; }
-.kind { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.05em; color: var(--blue); }
-.desc { grid-column: 1; color: var(--ink-2); font-size: 0.9rem; overflow-wrap: anywhere; }
+.kind { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--blue); }
+.desc { grid-column: 1; color: var(--ink-2); font-size: var(--step--1); overflow-wrap: anywhere; }
 .more { margin: 12px 18px 16px; }
 @media (max-width: 760px) {
   .group > summary { padding: 12px 14px; }

@@ -26,8 +26,8 @@
   transition: top 0.45s var(--ease), left 0.45s var(--ease);
 }
 @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-.card h2 { font-family: var(--f-display); font-size: 1.3rem; font-weight: 400; margin: 6px 0 6px; outline: none; }
-.card p { margin: 0 0 12px; line-height: 1.5; font-size: 0.98rem; }
+.card h2 { font-family: var(--f-display); font-size: var(--step-1); font-weight: 400; margin: 6px 0 6px; outline: none; }
+.card p { margin: 0 0 12px; line-height: 1.5; font-size: var(--step-0); }
 .card p:global(.label) { margin: 0; }
 /* phones, and the closing card: along the bottom of the screen */
 .docked {
@@ -45,12 +45,12 @@
 .dots i[data-on] { background: var(--accent); transform: scale(1.35); }
 .close {
   width: 32px; height: 32px; margin: -6px -8px -6px 0; border: 0; background: none; color: var(--ink-2);
-  font-size: 1.4rem; line-height: 1; cursor: pointer; border-radius: var(--radius-round);
+  font-size: var(--step-1); line-height: 1; cursor: pointer; border-radius: var(--radius-round);
 }
 .head .close { margin-left: 2px; }
 .close:hover, .close:focus-visible { color: var(--ink); background: var(--bg-2); }
 .acts { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; justify-content: flex-end; }
 .acts .close { margin: 0 0 0 auto; }
-.hint { font-size: 0.86rem !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }
+.hint { font-size: var(--step--1) !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }
 .tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: var(--radius-round); background: var(--accent); color: var(--accent-ink); font-size: 0.75em; vertical-align: 0.15em; animation: stamp calc(0.5s / var(--tempo)) var(--ease) calc(0.15s / var(--tempo)) backwards; }
 @keyframes stamp { from { transform: scale(0.2) rotate(-30deg); opacity: 0; } }

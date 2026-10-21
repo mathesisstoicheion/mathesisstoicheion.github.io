@@ -33,9 +33,9 @@
 }
 .grip { width: 10px; height: 18px; flex: none; opacity: 0.55; background: radial-gradient(circle, currentColor 1.2px, transparent 1.6px) 0 0 / 5px 6px; }
 .title { flex: 1; min-width: 0; display: grid; line-height: 1.15; }
-.title b { font-family: var(--f-display); font-weight: 400; font-size: 1.02rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.title small { font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.05em; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.btn { flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: inherit; font-size: 1.3rem; line-height: 1; }
+.title b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.title small { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; opacity: 0.75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.btn { flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: inherit; font-size: var(--step-1); line-height: 1; }
 .btn:hover { background: color-mix(in srgb, var(--inv-fg) 18%, transparent); }
 .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 
@@ -78,8 +78,8 @@
   -webkit-mask: radial-gradient(circle at 50% 50%, #000 5px, transparent 5.5px, transparent 7px, #000 7.5px); mask: radial-gradient(circle at 50% 50%, #000 5px, transparent 5.5px, transparent 7px, #000 7.5px); }
 .tabText { display: grid; min-width: 0; line-height: 1.15; }
 .tabText b { font-family: var(--f-display); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tabText small { font-family: var(--f-label); font-size: 0.75rem; opacity: 0.75; }
-.tabBtn { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 0; border-radius: var(--radius-round); background: transparent; color: inherit; font-size: 1.25rem; }
+.tabText small { font-family: var(--f-label); font-size: var(--step--2); opacity: 0.75; }
+.tabBtn { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 0; border-radius: var(--radius-round); background: transparent; color: inherit; font-size: var(--step-1); }
 .tabBtn:hover { background: color-mix(in srgb, var(--inv-fg) 14%, transparent); }
 .tabBtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 

@@ -32,19 +32,19 @@
 @keyframes breathe { 50% { box-shadow: 0 0 0 7px color-mix(in srgb, var(--accent) 22%, transparent); } }
 
 .where { margin: 0; min-width: 0; display: grid; gap: 1px; line-height: 1.2; }
-.where :global(.label) { color: var(--accent); font-size: 0.72rem; }
-.what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.95rem; }
+.where :global(.label) { color: var(--accent); font-size: var(--step--2); }
+.what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--step-0); }
 .what b { font-family: var(--f-label); font-weight: 500; }
-.rate { font: 600 0.9rem/1 var(--f-label); font-variant-numeric: tabular-nums; }
+.rate { font: 600 var(--step--1)/1 var(--f-label); font-variant-numeric: tabular-nums; }
 .voice {
   max-width: 150px; height: 36px; padding: 0 8px; border-radius: var(--radius); border: 1px solid transparent;
-  background: var(--hollow); box-shadow: var(--hollow-edge); color: inherit; font: 0.85rem var(--f-body);
+  background: var(--hollow); box-shadow: var(--hollow-edge); color: inherit; font: var(--step--1) var(--f-body);
 }
 .voice:focus-visible { box-shadow: var(--hollow-focus), var(--hollow-edge); }
 .voice option { color: var(--ink); background: var(--bg); }
-.x { font-size: 1.5rem; line-height: 1; }
-.note { margin: 0; grid-column: 1 / 5; font-size: 0.92rem; }
-.fine { grid-column: 1 / -1; margin: 2px 0 0; font-size: 0.75rem; color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+.x { font-size: var(--step-1); line-height: 1; }
+.note { margin: 0; grid-column: 1 / 5; font-size: var(--step--1); }
+.fine { grid-column: 1 / -1; margin: 2px 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 
 @media (max-width: 560px) {
   .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; }

@@ -6,10 +6,10 @@
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
 .spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
-.warn { color: var(--accent); font-size: 0.93rem; }
-.note { font-size: 0.9rem; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 12px; }
-.fine { font-size: 0.86rem; color: var(--ink-2); }
-.small { font-size: 0.9rem; }
+.warn { color: var(--accent); font-size: var(--step--1); }
+.note { font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 12px; }
+.fine { font-size: var(--step--1); color: var(--ink-2); }
+.small { font-size: var(--step--1); }
 .blurb { color: var(--ink-2); max-width: 70ch; margin: 0; }
 
 /* ------------------------------------------------ the tally */
@@ -25,7 +25,7 @@
 .tally > div:nth-child(odd) { box-shadow: none; }
 .tally > div:nth-child(n + 3) { box-shadow: var(--cut-over); }
 .tally > div:nth-child(4) { box-shadow: var(--cut-left), var(--cut-over); }
-.tally dt { font-family: var(--f-label); font-size: 0.86rem; letter-spacing: 0.08em; color: var(--ink-2); order: 2; }
+.tally dt { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--ink-2); order: 2; }
 .tally dd { margin: 0; font-family: var(--f-display); font-size: clamp(1.5rem, 3.2vw, 2.3rem); line-height: 1.05; font-variant-numeric: tabular-nums; }
 @keyframes tally-in { from { opacity: 0; transform: translateY(8px); } }
 
@@ -37,8 +37,8 @@
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .shelf > * { position: relative; z-index: 1; }
-.shelf b { font-family: var(--f-display); font-weight: 400; font-size: 1.45rem; line-height: 1.05; }
-.shelf span { font-size: 0.88rem; color: var(--ink-2); }
+.shelf b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.05; }
+.shelf span { font-size: var(--step--1); color: var(--ink-2); }
 .shelf:hover { transform: translateY(-2px); box-shadow: var(--slab-edge), 0 14px 24px -20px var(--shadow); }
 .shelf:active { background: var(--field); box-shadow: var(--field-edge); }
 .shelf[aria-pressed="true"] { color: var(--ink); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
@@ -46,7 +46,7 @@
 
 .cats { display: flex; flex-wrap: wrap; gap: 8px; }
 .cats .chip { cursor: pointer; }
-.size { font-size: 0.74rem; opacity: 0.7; font-variant-numeric: tabular-nums; }
+.size { font-size: var(--step--2); opacity: 0.7; font-variant-numeric: tabular-nums; }
 
 /* ------------------------------------------------ where */
 /* the choices fold into one closed disclosure whose summary says what is chosen now */
@@ -60,9 +60,9 @@
 .scopes { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: end; }
 .scope { border: 0; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: end; min-width: 0; }
 .scope legend { padding: 0; margin-bottom: 6px; }
-.scope label { display: grid; gap: 3px; font-size: 0.82rem; color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
+.scope label { display: grid; gap: 3px; font-size: var(--step--1); color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
 .scope select {
-  font: inherit; font-family: var(--f-body); letter-spacing: 0; font-size: 0.98rem; color: var(--ink); max-width: 260px;
+  font: inherit; font-family: var(--f-body); letter-spacing: 0; font-size: var(--step-0); color: var(--ink); max-width: 260px;
   padding: 7px 10px; border-radius: var(--radius);
 }
 .scopeBtns { display: flex; gap: 8px; }
@@ -82,7 +82,7 @@
 .rank { min-width: 0; }
 .rankHead { padding-bottom: 12px; margin-bottom: 6px; box-shadow: var(--cut-under); }
 .rankHead h2 { font-size: var(--step-2); line-height: 1.1; margin: 2px 0 0; }
-.rankSub { margin: 2px 0 0; font-size: 0.85rem; color: var(--ink-2); }
+.rankSub { margin: 2px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .empty { color: var(--ink-2); font-style: italic; padding: 14px 0; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -99,8 +99,8 @@
 .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .rankN { font-family: var(--f-display); color: var(--ink-2); text-align: right; font-variant-numeric: tabular-nums; }
 .word { display: grid; min-width: 0; }
-.word b { font-family: var(--f-greek); font-weight: 400; font-size: 1.18rem; line-height: 1.2; overflow-wrap: anywhere; }
-.word small { font-size: 0.8rem; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.word b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); line-height: 1.2; overflow-wrap: anywhere; }
+.word small { font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .auto { color: var(--accent); font-family: var(--f-body); margin-left: 2px; }
 .barCell { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
 /* the channel cut in the stone: as long as the longest bar can be (the bar's own largest width), the gilded inlay laid in it */
@@ -115,8 +115,8 @@
   animation: bar-grow calc(0.8s / var(--tempo)) cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
 }
 @keyframes bar-grow { from { transform: scaleX(0); } }
-.count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: 0.92rem; white-space: nowrap; display: grid; line-height: 1.1; }
-.count small { font-size: 0.72rem; color: var(--ink-2); }
+.count { margin-left: auto; font-variant-numeric: tabular-nums; font-size: var(--step--1); white-space: nowrap; display: grid; line-height: 1.1; }
+.count small { font-size: var(--step--2); color: var(--ink-2); }
 .row[aria-pressed="true"] { background: color-mix(in srgb, var(--accent) 12%, transparent); }
 .row[aria-pressed="true"] .bar { background: var(--inlay-side); box-shadow: var(--inlay-edge), 0 0 0 1px var(--accent-hi); }
 .row[aria-pressed="true"] .word b { color: color-mix(in srgb, var(--accent) 80%, var(--ink)); }
@@ -147,14 +147,14 @@
 .panelSub { color: var(--ink-2); font-style: italic; }
 .stats { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; box-shadow: var(--cut-over), var(--cut-under); padding: 12px 0; }
 .stats div { display: grid; gap: 2px; align-content: start; }
-.stats dt { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.05em; color: var(--ink-2); }
-.stats dd { margin: 0; font-family: var(--f-display); font-size: 1.6rem; line-height: 1.1; font-variant-numeric: tabular-nums; display: grid; }
-.stats dd small { font-family: var(--f-body); font-size: 0.8rem; color: var(--ink-2); }
+.stats dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
+.stats dd { margin: 0; font-family: var(--f-display); font-size: var(--step-2); line-height: 1.1; font-variant-numeric: tabular-nums; display: grid; }
+.stats dd small { font-family: var(--f-body); font-size: var(--step--2); color: var(--ink-2); }
 .go { display: flex; flex-wrap: wrap; gap: 8px; }
-.stoa { font-size: 0.93rem; }
+.stoa { font-size: var(--step--1); }
 .charts { display: grid; gap: 16px; }
 .clusters { display: grid; gap: 8px; }
-.clusters select { font: inherit; font-size: 0.92rem; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); max-width: 100%; }
+.clusters select { font: inherit; font-size: var(--step--1); padding: 6px 8px; border-radius: var(--radius); color: var(--ink); max-width: 100%; }
 .strip { margin: 0; display: grid; gap: 4px; position: relative; }
 .strip svg { width: 100%; height: 64px; display: block; cursor: crosshair; background: var(--field); box-shadow: var(--field-edge); }
 .stripBase { fill: var(--ink); }
@@ -165,9 +165,9 @@
 }
 .mark[data-on] { fill: var(--accent); }
 @keyframes mark-rise { from { transform: scaleY(0); } }
-.strip figcaption { font-size: 0.85rem; color: var(--ink-2); min-height: 2.6em; }
+.strip figcaption { font-size: var(--step--1); color: var(--ink-2); min-height: 2.6em; }
 .strip figcaption b { color: var(--ink); font-variant-numeric: tabular-nums; }
-.bookNums { position: relative; height: 1.1em; font-family: var(--f-label); font-size: 0.7rem; color: var(--ink-2); margin-top: -2px; order: -1; }
+.bookNums { position: relative; height: 1.1em; font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); margin-top: -2px; order: -1; }
 .bookNums span { position: absolute; transform: translateX(-50%); top: 0; }
 
 /* ------------------------------------------------ did you know: potsherds */
@@ -184,9 +184,9 @@
 .facts button:hover { background: var(--slab-lit); }
 .facts button:active { background: var(--field); box-shadow: var(--field-edge); }
 .facts button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.factText { font-size: 1.02rem; line-height: 1.45; }
+.factText { font-size: var(--step-0); line-height: 1.45; }
 /* the sherds are the deeper clay (--bg-2): the red is deepened a little so small Greek stays readable (4.5:1) */
-.factText b { font-family: var(--f-greek); font-weight: 400; font-size: 1.2rem; color: color-mix(in srgb, var(--accent) 80%, var(--ink)); }
+.factText b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); color: color-mix(in srgb, var(--accent) 80%, var(--ink)); }
 .factText i { color: var(--ink-2); }
 @keyframes sherd-in { from { opacity: 0; transform: translateY(12px) rotate(-1deg); } }
 
@@ -199,12 +199,12 @@
 .fullMethod[open] > summary { margin-bottom: var(--space-2); }
 .fullMethod > .leftOut { margin-top: var(--space-4); }
 .methodCols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 48px; }
-.methodCols h3, .methodFirst h3 { font-family: var(--f-label); font-weight: 400; font-size: 1rem; letter-spacing: 0.06em; margin: 14px 0 4px; }
+.methodCols h3, .methodFirst h3 { font-family: var(--f-label); font-weight: 400; font-size: var(--step-0); letter-spacing: 0.06em; margin: 14px 0 4px; }
 .methodCols p, .methodFirst p { margin: 0 0 8px; max-width: 64ch; }
 .leftOut summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.04em; }
 .leftOut ul { list-style: none; padding: 0; margin: 10px 0 0; columns: 2 320px; column-gap: 40px; }
-.leftOut li { break-inside: avoid; padding: 3px 0; font-size: 0.92rem; }
-.leftOut li b { font-family: var(--f-greek); font-weight: 400; font-size: 1.05rem; }
+.leftOut li { break-inside: avoid; padding: 3px 0; font-size: var(--step--1); }
+.leftOut li b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-0); }
 .leftOut li span { color: var(--ink-2); }
 .leftOut li small { font-variant-numeric: tabular-nums; color: var(--ink-2); margin-left: 4px; }
 .leftOut li small::before { content: "· "; }

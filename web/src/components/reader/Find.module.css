@@ -1,10 +1,10 @@
 /* Find in this text (FindPanel.tsx): it uses the reader's side panel (a sheet on phones), with its own insides. */
 .panel { gap: 12px; }
-.title { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; }
+.title { margin: 0; font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); }
 
 .row { position: relative; display: flex; align-items: center; gap: 6px; }
 .row input {
-  flex: 1; min-width: 0; min-height: 44px; padding: 0 12px 0 38px; font: inherit; font-size: 1.05rem; color: var(--ink);
+  flex: 1; min-width: 0; min-height: 44px; padding: 0 12px 0 38px; font: inherit; font-size: var(--step-0); color: var(--ink);
   border-radius: var(--radius);
   transition: box-shadow 0.2s var(--ease);
 }
@@ -18,14 +18,14 @@
 .step:not(:disabled):hover { background: var(--slab-lit); }
 .step:not(:disabled):active { background: var(--field); box-shadow: var(--field-edge); transform: scale(0.94); }
 
-.status { margin: 0; min-height: 1.4em; font-size: 0.92rem; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.status { margin: 0; min-height: 1.4em; font-size: var(--step--1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .linkBtn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .scope { display: flex; flex: none; overflow: visible; }   /* (clipped, the panel's grid would squeeze it under a long list) */
 .scope button:first-child { border-radius: var(--radius) 0 0 var(--radius); } .scope button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
 .scope button { flex: 1 1 auto; display: inline-flex; justify-content: center; gap: 6px; align-items: baseline; }
-.n { font-size: 0.8rem; opacity: 0.75; font-variant-numeric: tabular-nums; }
+.n { font-size: var(--step--2); opacity: 0.75; font-variant-numeric: tabular-nums; }
 
-.help { display: grid; gap: 8px; font-size: 0.92rem; color: var(--ink-2); line-height: 1.5; }
+.help { display: grid; gap: 8px; font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
 .help p { margin: 0; }
 .help [lang="grc"] { font-family: var(--f-greek); color: var(--ink); }
 
@@ -44,15 +44,15 @@
 .list button:hover { background-color: var(--slab-lit); }
 .list button[aria-current] { background: color-mix(in srgb, var(--accent) 13%, transparent); box-shadow: var(--inlay-left), var(--cut-under); }
 .list li:last-child button[aria-current] { box-shadow: var(--inlay-left); }
-.ref { font: 600 0.82rem var(--f-label); color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
-.snip { font-size: 0.95rem; line-height: 1.45; }
-.snip[lang="grc"] { font-family: var(--f-greek); font-size: 1.04rem; }
+.ref { font: 600 var(--step--1) var(--f-label); color: var(--accent); font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.snip { font-size: var(--step-0); line-height: 1.45; }
+.snip[lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
 .snip mark { background: color-mix(in srgb, var(--accent) 26%, transparent); color: inherit; border-radius: var(--radius); padding: 0 1px; }
 
 /* phones: once a match is chosen, only the search row stays, low on the screen, so the text shows above it */
 @media (max-width: 900px) {
   .panel[data-compact] { max-height: none; gap: 8px; padding-block: 10px calc(12px + env(safe-area-inset-bottom, 0px)); animation: none; }
-  .panel[data-compact] .title { font-size: 1.05rem; }
+  .panel[data-compact] .title { font-size: var(--step-0); }
   .panel[data-compact] .help, .panel[data-compact] .scope, .panel[data-compact] [data-hide] { display: none; }
 }
 
@@ -63,7 +63,7 @@
 .list .add {
   position: absolute; right: 6px; top: 50%; translate: 0 -50%; z-index: 1; width: 30px; height: 30px; padding: 0; display: grid; place-items: center;
   grid-template-columns: none; border: 1px solid transparent; border-radius: var(--radius-round); background: var(--slab); color: var(--ink);
-  font-size: 1.1rem; line-height: 1; cursor: pointer; box-shadow: var(--slab-edge);
+  font-size: var(--step-sub); line-height: 1; cursor: pointer; box-shadow: var(--slab-edge);
 }
 .list .add:hover { color: var(--accent); background: var(--slab-lit); }
 .list .add:active { background: var(--field); box-shadow: var(--field-edge); }

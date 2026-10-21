@@ -1,11 +1,11 @@
 /* Echoes: where a word or phrase recurs. Marks are stamped along a strip that stands for the whole book. */
 .panel { gap: 16px; }
-.quote { font-family: var(--f-greek); font-size: 1.55rem; line-height: 1.25; margin-top: 4px; }
+.quote { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.25; margin-top: 4px; }
 .back { justify-self: start; color: var(--accent); }
 
 .controls { display: grid; gap: 10px; justify-items: start; }
 .scopes { display: flex; flex-wrap: wrap; gap: 6px; }
-.progress { font-size: 0.88rem; }
+.progress { font-size: var(--step--1); }
 
 .summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; animation: rise-in calc(0.5s / var(--tempo)) var(--ease) both; }
 .big { font-family: var(--f-display); font-size: 2.6rem; line-height: 1; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
@@ -30,10 +30,10 @@
 .mHover { opacity: 0.55; }
 .here { fill: var(--accent); animation: drop calc(0.6s / var(--tempo)) var(--ease) calc(0.3s / var(--tempo)) both; }
 @keyframes drop { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
-.stripFoot { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.04em; color: var(--ink-2); }
+.stripFoot { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; color: var(--ink-2); }
 .hoverLabel { text-align: center; color: var(--ink); }
 
-.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: 0.8rem; color: var(--ink-2); }
+.legend { display: flex; flex-wrap: wrap; gap: 4px 14px; font-size: var(--step--2); color: var(--ink-2); }
 .legend span::before { content: ""; display: inline-block; width: 4px; height: 12px; margin-right: 6px; vertical-align: -1px; }
 .kExact::before { background: var(--ink); }
 .kForms::before { background: var(--accent); }
@@ -51,11 +51,11 @@
 }
 .list li:last-child button { box-shadow: none; }
 .list button:hover { background-color: var(--slab-lit); }
-.ref { font-family: var(--f-label); font-size: 0.85rem; color: var(--accent); font-variant-numeric: tabular-nums; }
-.kind { justify-self: end; font-family: var(--f-label); font-size: 0.75rem; letter-spacing: 0.05em; color: var(--ink-2); }
+.ref { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); font-variant-numeric: tabular-nums; }
+.kind { justify-self: end; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
 .k-forms { color: var(--accent); }
 .k-near { color: var(--ochre); }
-.ctx { grid-column: 1 / -1; font-family: var(--f-greek); font-size: 1.08rem; line-height: 1.5; color: var(--ink-2); }
+.ctx { grid-column: 1 / -1; font-family: var(--f-greek); font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); }
 .hit { color: var(--ink); font-weight: 700; text-decoration: underline 2px color-mix(in srgb, var(--accent) 70%, transparent); text-underline-offset: 3px; }
 .odd { font-style: italic; opacity: 0.65; }
 .list .self { box-shadow: var(--inlay-left), var(--cut-under); }
@@ -66,13 +66,13 @@
 .works { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .works a { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 6px 4px; text-decoration: none; border-radius: var(--radius); }
 .works a:hover { background-color: var(--slab-lit); }
-.wName { font-size: 0.92rem; }
-.wN { font-family: var(--f-label); font-size: 0.85rem; color: var(--accent); font-variant-numeric: tabular-nums; }
+.wName { font-size: var(--step--1); }
+.wN { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); font-variant-numeric: tabular-nums; }
 .wBar { grid-column: 1 / -1; height: 4px; background: var(--channel); box-shadow: var(--channel-edge); }
 .wBar span { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); transform-origin: left; animation: grow calc(0.7s / var(--tempo)) var(--ease) both; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
 
-.rules { font-size: 0.9rem; box-shadow: var(--cut-over); padding-top: 12px; }
+.rules { font-size: var(--step--1); box-shadow: var(--cut-over); padding-top: 12px; }
 .rules summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
 .rules ul { margin: 10px 0; padding-left: 1.1em; display: grid; gap: 8px; }
 .rules li::marker { color: var(--accent); }

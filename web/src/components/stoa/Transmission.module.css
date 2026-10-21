@@ -12,13 +12,13 @@
 .pin { flex: none; width: 9.5rem; position: sticky; left: 0; z-index: var(--z-bar); }
 .axis { position: relative; height: 18px; }
 .axisTrack { position: relative; flex: 1 1 0; min-width: 0; }
-.axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: 0.72rem; color: var(--ink-2); white-space: nowrap; }
+.axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; }
 .axisTrack span:first-child { translate: 0 0; }   /* the first year starts at the track's edge, clear of the names */
 .axisTrack span:last-child { translate: -100% 0; }   /* and the last ends at its far edge, inside the chart's frame */
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .rows li { height: 22px; align-items: center; }
 .rows .track { flex: 1 1 0; min-width: 0; }
-.who { font-size: 0.8rem; color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.who { font-size: var(--step--2); color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track { position: relative; height: 100%; }
 .track i { position: absolute; top: 50%; }
 .grid { width: 2px; translate: -1px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--cut-line-v); }
@@ -46,7 +46,7 @@
 }
 .key { position: static !important; display: inline-block; translate: none; flex: none; align-self: center; }
 /* the site's "Reduce animation" setting stops the animations (globals.css) */
-.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: 0.9rem; }
+.legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: var(--step--1); }
 .legend li { display: flex; align-items: baseline; gap: 6px; }
 .legend span { color: var(--ink-2); }
 .roads figcaption { display: grid; gap: 8px; }
@@ -71,11 +71,11 @@
 }
 .card:hover { background-color: var(--slab-lit); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.when { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.08em; color: var(--ink-2); }
-.card b { font-size: 1.25rem; }
+.when { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
+.card b { font-size: var(--step-1); }
 /* the accounts are cut to four lines, so the cards in a row are alike; the whole account is one click away */
 .text { color: var(--ink); line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
-.go { margin-top: 4px; font-size: 0.88rem; color: var(--accent); white-space: nowrap; }
+.go { margin-top: 4px; font-size: var(--step--1); color: var(--accent); white-space: nowrap; }
 .more { margin: 0; color: var(--ink-2); max-width: 70ch; }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */

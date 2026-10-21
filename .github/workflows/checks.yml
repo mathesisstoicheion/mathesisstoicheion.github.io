@@ -62,3 +62,6 @@ jobs:
       - name: Accessibility and touch (slice 10)
         working-directory: web
         run: node scripts/check-a11y.mjs http://localhost:3100
+      - name: Design tokens (slice 3)
+        working-directory: web
+        run: node scripts/check-design.mjs http://localhost:3100

@@ -2,12 +2,15 @@
 // For every visible piece of words it lists:
 //   face    - a typeface outside the four the site uses: the display serif, the text serif, the Greek face and the mono for
 //             labels (the logo's own face is allowed in the logo; faces a reader picks in Settings are allowed in the text)
-//   size    - a size below 12 px, or not one of the type scale's steps (--step--2 … --step-4, measured at this width)
-//   colour  - words in a colour that is not the place's own words colour (--ink), its quieter one (--ink-2) or its gold (--accent)
+//   size    - a size below 12 px, or, up to the h3 step, not one of the type scale's steps (--step--2 … --step-2, measured at
+//             this width); the display titles above it are fluid by design
+//   colour  - words in a colour that is not one of the place's own: its words (--ink), the quieter ones (--ink-2, and --ink-3
+//             for small print), its gold (--accent) and the bright gold of the place you are in (--accent-hi)
 //   button  - a filled button (not a card that is a link) whose fill is not the one primary fill, so that every page has the same three kinds:
 //             primary (filled), secondary (outlined) and the text link
 // Faint Greek words drawn as decoration (data-decorative), pictures' own lettering (canvas) and the reader's text, whose size
-// and face the reader sets, are not judged.
+// and face the reader sets, are not judged; nor are the sizes of display lettering (titles and inscriptions in the display
+// face, fluid by design) or of Greek quoted at the reader's Greek size.
 // usage: node web/scripts/check-design.mjs <base-url> [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        SUMMARY=1 prints every distinct value found with a count, for working through the list
 import { chromium } from "playwright";
@@ -41,7 +44,7 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
         // the scale's steps, measured here (two of them grow with the window)
         const probe = document.createElement("span");
         document.body.append(probe);
-        const steps = ["--step--2", "--step--1", "--step-0", "--step-1", "--step-2", "--step-3", "--step-4"].map((v) => {
+        const steps = ["--step--2", "--step--1", "--step-0", "--step-sub", "--step-1", "--step-2", "--step-3", "--step-4"].map((v) => {
           probe.style.fontSize = `var(${v})`;
           return parseFloat(getComputedStyle(probe).fontSize);
         });
@@ -66,10 +69,24 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
           const face = first(s.fontFamily);
           if (!FACES.includes(face) && !(face === "Noto Sans Display" && e.closest("[class*=mark]"))) out.face.push([face, word]);
           const px = parseFloat(s.fontSize);
-          if (px < 11.9) out.size.push([`${Math.round(px * 100) / 100}px (under 12)`, word]);
-          else if (!steps.some((v) => Math.abs(v - px) < 0.6)) out.size.push([`${Math.round(px * 100) / 100}px`, word]);
+          // the display titles (the page's title, and anything in the display face) are fluid by design, and the Greek
+          // being read (the reader's lines, on any page) is sized by the reader in Settings
+          let display = !!e.closest("h1, [class*=carve]");   // the title, and the carved inscriptions
+          for (let x = e; x && !display && parseFloat(getComputedStyle(x).fontSize) === px; x = x.parentElement)
+            display = first(getComputedStyle(x).fontFamily) === "Noto Serif Display";
+          // Greek quoted to be read is set at the reader's own Greek size (Settings)
+          probe.style.fontSize = "var(--greek-size)";
+          e.append(probe);
+          const reading = !!e.closest("[lang=grc]") && Math.abs(parseFloat(getComputedStyle(probe).fontSize) - px) < 0.6;
+          document.body.append(probe);
+          if (display || reading || e.closest("[data-u], [data-w]")) { /* not judged */ }
+          else if (px < 11.9) out.size.push([`${Math.round(px * 100) / 100}px (under 12)`, word]);
+          // above the h3 step the display titles are fluid (clamp(), design A's), so they are left as they are
+          else if (px <= steps[5] + 0.6 && !steps.some((v) => Math.abs(v - px) < 0.6)) out.size.push([`${Math.round(px * 100) / 100}px`, word]);
           // inside a filled button the words are in the button's own ink
-          const ok = ["--ink", "--ink-2", "--accent", ...(e.closest(".btn:not(.ghost)") ? ["--btn-ink"] : [])].map((v) => s.getPropertyValue(v).trim()).filter(Boolean).map(rgb);
+          const filled = e.closest("a, button");
+          const onFill = filled && !/rgba\(0, 0, 0, 0\)|, 0\)$/.test(getComputedStyle(filled).backgroundColor);
+          const ok = ["--ink", "--ink-2", "--ink-3", "--accent", "--accent-hi", ...(onFill ? ["--btn-ink"] : [])].map((v) => s.getPropertyValue(v).trim()).filter(Boolean).map(rgb);
           if (ok.length && !ok.some((c) => near(c, s.color))) out.colour.push([s.color, word]);
         }
         // filled buttons: a link or button with an opaque fill and words, that is not a chip, a tab, a choice or a chosen state

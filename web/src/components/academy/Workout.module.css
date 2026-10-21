@@ -21,11 +21,11 @@
 .gr { font-family: var(--f-greek); font-size: 1.15em; }
 
 .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
-.options button { min-height: var(--tap); padding: 12px 16px; text-align: left; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); font-size: 1.05rem; transition: transform 0.15s, background-color 0.25s, opacity 0.25s; }
+.options button { min-height: var(--tap); padding: 12px 16px; text-align: left; background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); font-size: var(--step-0); transition: transform 0.15s, background-color 0.25s, opacity 0.25s; }
 .options button:hover:not(:disabled) { transform: translateY(-2px); background: var(--slab-lit); }
 .options button:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .options button:disabled { cursor: default; }
-.optGr { font-family: var(--f-greek); font-size: 1.35rem !important; }
+.optGr { font-family: var(--f-greek); font-size: var(--step-1) !important; }
 .right { background: color-mix(in srgb, var(--ok) 25%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left-ok) !important; animation: pop calc(0.35s / var(--tempo)) var(--ease); }
 .wrong { background: color-mix(in srgb, var(--accent) 22%, var(--bg)) !important; box-shadow: var(--slab-edge), var(--inlay-left) !important; animation: shake calc(0.35s / var(--tempo)); }
 .faded { opacity: 0.55; }
@@ -34,13 +34,13 @@
 
 .write { display: grid; gap: 12px; }
 .writeRow { display: flex; gap: 10px; flex-wrap: wrap; }
-.writeInput { flex: 1 1 240px; min-width: 0; min-height: var(--tap); font: inherit; font-family: var(--f-greek); font-size: 1.4rem; color: var(--ink); border-radius: var(--radius); padding: 8px 14px; }
+.writeInput { flex: 1 1 240px; min-width: 0; min-height: var(--tap); font: inherit; font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); border-radius: var(--radius); padding: 8px 14px; }
 .writeInput:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .writeTools { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; }
-.dunno { background: none; border: 0; padding: 6px 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; font-size: 0.95rem; min-height: var(--tap); }
-.hint { font-size: 0.88rem; color: var(--ink-2); }
+.dunno { background: none; border: 0; padding: 6px 0; color: var(--ink-2); text-decoration: underline; text-underline-offset: 3px; font-size: var(--step-0); min-height: var(--tap); }
+.hint { font-size: var(--step--1); color: var(--ink-2); }
 
-.feedback { padding: 12px 16px; background: var(--slab); font-size: 1.05rem; line-height: 1.55; animation: rise calc(0.35s / var(--tempo)) var(--ease); }
+.feedback { padding: 12px 16px; background: var(--slab); font-size: var(--step-0); line-height: 1.55; animation: rise calc(0.35s / var(--tempo)) var(--ease); }
 .fbGood { box-shadow: var(--slab-edge), var(--inlay-left-ok); }
 .fbGood b { color: var(--ok); }
 .fbBad { box-shadow: var(--slab-edge), var(--inlay-left); }
@@ -48,7 +48,7 @@
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
 
 .foot { display: flex; justify-content: flex-end; align-items: center; gap: 12px; min-height: 48px; }
-.count { flex: none; font-family: var(--f-label); font-size: 0.85rem; color: var(--ink-2); }
+.count { flex: none; font-family: var(--f-label); font-size: var(--step--1); color: var(--ink-2); }
 
 /* the end of a round */
 .end { display: grid; gap: 14px; justify-items: start; max-width: 680px; animation: rise calc(0.45s / var(--tempo)) var(--ease); }
@@ -63,19 +63,19 @@
 .sealRing { fill: none; stroke: currentColor; stroke-width: 1.5; stroke-dasharray: 0.012 0.012; animation: ring calc(1.1s / var(--tempo)) calc(0.4s / var(--tempo)) var(--ease) both; }
 @keyframes ring { from { stroke-dashoffset: 1; opacity: 0; } to { opacity: 1; } }
 .sealIn { fill: none; stroke: currentColor; stroke-width: 1; opacity: 0.6; }
-.sealLabel { fill: currentColor; font: 600 13px var(--f-label); letter-spacing: 0.16em; }
+.sealLabel { fill: currentColor; font: 600 var(--step--2) var(--f-label); letter-spacing: 0.16em; }
 .sealScore { fill: currentColor; font: 40px var(--f-display); }
-.sealGr { fill: currentColor; font: 17px var(--f-greek); }
+.sealGr { fill: currentColor; font: var(--step-0) var(--f-greek); }
 
 /* where a lesson ends: practise, test, and the lesson's standing */
 .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); gap: 14px; }
 .step { display: grid; gap: 6px; align-content: start; padding: 18px 20px; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); text-decoration: none; color: inherit; transition: background-color var(--dur) ease; }
 .step:hover { background-color: var(--slab-lit); }
-.step b { font-size: 1.2rem; }
+.step b { font-size: var(--step-sub); }
 .stepGr { font-family: var(--f-greek); color: var(--accent); }
 .stepMain { background-color: var(--slab-lit); box-shadow: var(--slab-edge), var(--inlay-left); color: var(--inv-fg); --accent: var(--accent-on-ink); --ink-2: var(--ink-2-on-ink); }
 .stepMain :global(.muted) { color: var(--ink-2-on-ink); }
-.standing { font-size: 1.02rem; }
+.standing { font-size: var(--step-0); }
 .standing b { color: var(--ok); }
 .due { color: var(--accent); font-weight: 600; }
 
@@ -84,7 +84,7 @@
 .warmHead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 14px; }
 
 /* the lesson list: each lesson's standing */
-.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-round); border: 1.5px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--accent); font: 600 0.7rem var(--f-label); letter-spacing: 0.04em; }
+.mark { display: inline-grid; place-items: center; width: 30px; height: 30px; border-radius: var(--radius-round); border: 1.5px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--accent); font: 600 var(--step--2) var(--f-label); letter-spacing: 0.04em; }
 .markPassed { background: var(--inlay); box-shadow: var(--inlay-edge); color: var(--accent-ink); }
 .markDue { animation: breathe 2.4s ease-in-out infinite; }
 @keyframes breathe { 50% { transform: scale(1.08); } }
@@ -95,7 +95,7 @@
 /* a checkpoint in the lesson list: a band across the path, its numeral in a ring */
 .cpRow { background: var(--slab); box-shadow: var(--slab-edge); }
 .cpRow .cpItem { box-shadow: var(--cut-over), var(--cut-under); }
-.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--field); box-shadow: var(--field-edge); color: var(--accent); font: 1.05rem var(--f-display); }
+.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); background: var(--field); box-shadow: var(--field-edge); color: var(--accent); font: var(--step-0) var(--f-display); }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
 .card, .step { outline: var(--moulding); outline-offset: var(--moulding-in); }

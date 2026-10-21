@@ -2,18 +2,18 @@
 .page { display: grid; gap: 28px; padding-block: var(--after-head) 32px; }
 .card { display: grid; gap: 16px; padding: clamp(20px, 3vw, 36px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .card h2 { font-size: var(--step-2); }
-.status { display: inline-flex; align-items: center; gap: 8px; font-size: 0.92rem; }
+.status { display: inline-flex; align-items: center; gap: 8px; font-size: var(--step--1); }
 .status i { width: 10px; height: 10px; border-radius: var(--radius-round); }
 .on { background: var(--ok); box-shadow: 0 0 0 4px color-mix(in srgb, var(--ok) 25%, transparent); }
 .off { background: var(--accent); }
 .haveGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; margin-top: var(--space-4); }
-.haveGrid h3 { font-size: 0.85rem; margin-bottom: 8px; }
+.haveGrid h3 { font-size: var(--step--1); margin-bottom: 8px; }
 .have { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 8px; }
 .have li { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 8px 0; box-shadow: var(--cut-under); }
 .have li:last-child { box-shadow: none; }
-.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: 0.9rem; }
+.confirm { display: inline-flex; gap: 6px; align-items: center; font-size: var(--step--1); }
 .row { display: flex; flex-wrap: wrap; gap: 10px 20px; align-items: center; }
-.small { font-size: 0.85rem; color: var(--ink-2); }
+.small { font-size: var(--step--1); color: var(--ink-2); }
 
 .fs { border: 0; margin: 0; padding: 0; display: grid; gap: 8px; }
 .fs legend { margin-bottom: 6px; }

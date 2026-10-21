@@ -1,14 +1,14 @@
 /* Author and work pages (Stone and torch): the cards of the Stoa are slabs set on the wall. */
 .page { padding-block: 24px 24px; display: grid; gap: clamp(28px, 4vw, 44px); }
-.crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: 0.9rem; }
+.crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: var(--step--1); }
 .crumb a { text-decoration: none; }
 .crumb a:hover { color: var(--accent); }
 .head { display: grid; gap: 14px; }
 .name { line-height: 1.05; }
 .facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 28px; margin: 6px 0 0; }
-.facts dt { font-family: var(--f-label); font-size: 0.78rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
-.facts dd { margin: 4px 0 0; font-size: 1.05rem; }
-.note { color: var(--ink-2); font-size: 0.92rem; max-width: 60ch; }
+.facts dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
+.facts dd { margin: 4px 0 0; font-size: var(--step-0); }
+.note { color: var(--ink-2); font-size: var(--step--1); max-width: 60ch; }
 .msg { padding-block: 40px; color: var(--ink-2); }
 .sec { display: grid; gap: 6px; }
 .sec h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
@@ -29,8 +29,8 @@
   background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color var(--dur) ease;
 }
 .card:hover { background-color: var(--slab-lit); }
-.card b { font-family: var(--f-display); font-weight: 400; font-size: 1.35rem; line-height: 1.2; }
-.card span:last-child { color: var(--ink-2); font-size: 0.95rem; }
+.card b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.2; }
+.card span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 /* the entries past the first four: a plain fold under the cards */
 .allEntries { margin-top: var(--space-3); }
 .allEntries summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); color: var(--accent); text-underline-offset: 3px; }

@@ -15,7 +15,7 @@
   --a-chip: var(--red-chip); --a-chip-ink: var(--bone); --a-solid: var(--bone); --a-solid-ink: var(--red);
   --a-f-greek: var(--face-garamond); --a-f-text: var(--face-garamond);
   --a-read: 1.3rem;
-  position: relative; color: var(--a-ink); font: 400 1rem/1.6 var(--a-f-text);
+  position: relative; color: var(--a-ink); font: 400 var(--step-0)/1.6 var(--a-f-text);
   min-height: auto;
 }
 /* A's element rules, kept as weak as A wrote them (:where), so every class below wins over them as it did there */
@@ -23,19 +23,19 @@
 :where(.screen) a { color: inherit; }
 :where(.screen) :is(button, input) { font: inherit; color: inherit; }
 .screen :focus-visible { outline: 2px solid var(--a-accent); outline-offset: 3px; }
-.mono { font-family: var(--face-mono); font-size: .72rem; letter-spacing: .14em; text-transform: uppercase; }
+.mono { font-family: var(--face-mono); font-size: var(--step--2); letter-spacing: .14em; text-transform: uppercase; }
 .wrap { max-width: 1240px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
 
 .btns { display: flex; flex-wrap: wrap; }
 /* phones: the two buttons stack, with a little room between them rather than touching */
 @media (max-width: 560px) { .btns { gap: 10px; } }
-.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; font-family: var(--face-display); font-stretch: 75%; font-size: 1.02rem; letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--a-solid); cursor: pointer; transition: transform .25s, border-color .25s; }
+.btn { display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px; font-family: var(--face-display); font-stretch: 75%; font-size: var(--step-0); letter-spacing: .06em; text-transform: uppercase; text-decoration: none; border: 1px solid var(--a-solid); cursor: pointer; transition: transform .25s, border-color .25s; }
 .solid { background: var(--a-solid); color: var(--a-solid-ink); }
 .ghost { background: transparent; color: var(--a-ink); border-color: var(--a-line); }
 .btn:hover { transform: translateY(-2px); }
 .ghost:hover { border-color: var(--a-ink); }
 .lede { max-width: 44ch; opacity: .86; margin: 0 0 26px; }
-.cap { font-size: .78rem; line-height: 1.45; color: var(--a-ink2); margin-top: 10px; max-width: 60ch; }
+.cap { font-size: var(--step--2); line-height: 1.45; color: var(--a-ink2); margin-top: 10px; max-width: 60ch; }
 @keyframes rise { to { transform: none; } }
 /* A page's opening (the owner, 2026-10-20, 20:15 UTC: "I like the speed of 3x. Just redo the Animation so it opens at that
    speed, whilst having a pretty opening animation"): the words of the page's head come up one after another, rising a few
@@ -57,41 +57,41 @@
 .paths { margin-top: 34px; border: 1px solid var(--a-line); background: color-mix(in srgb, var(--a-field) 70%, #000 30%); max-width: 560px; }
 .paths-label { padding: 10px 14px 0; color: var(--a-ink2); }
 .ptabs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; padding: 8px; }
-.ptab { border: 0; background: transparent; padding: 9px 6px; cursor: pointer; font-family: var(--face-mono); font-size: .74rem; color: var(--a-ink2); position: relative; }
+.ptab { border: 0; background: transparent; padding: 9px 6px; cursor: pointer; font-family: var(--face-mono); font-size: var(--step--2); color: var(--a-ink2); position: relative; }
 .ptab[aria-selected="true"] { background: var(--a-chip); color: var(--a-chip-ink); }
 .ptab::before, .ptab::after { content: ":"; position: absolute; top: 8px; opacity: .4; }
 .ptab::before { left: 6px; }
 .ptab::after { right: 6px; }
 /* a narrow phone: each tab as wide as its words, so A's little colons never touch "Just reading" */
 @media (max-width: 420px) { .ptabs { grid-template-columns: repeat(3, auto); gap: 2px; } .ptab { padding-inline: 15px; white-space: nowrap; } }
-.ppanel { padding: 4px 16px 16px; font-size: 1rem; min-height: 3.4em; }
+.ppanel { padding: 4px 16px 16px; font-size: var(--step-0); min-height: 3.4em; }
 .ppanel b { font-weight: 500; color: var(--a-accent2); }
 .ppanel a { color: var(--a-accent2); text-underline-offset: 3px; }
 /* a returning visitor's desk (HomeDesk) stands where the question was, in the same panel; which one shows is set before the first paint */
 :global(html[data-visitor="back"]) .first-only, :global(html:not([data-visitor="back"])) .back-only { display: none; }
 .desk h2 { margin: 0; font-weight: 400; }
 .drows { padding: 6px 16px 14px; }
-.drow { display: grid; grid-template-columns: 9.5em 1fr; gap: 4px 14px; padding: 9px 0; border-top: 1px solid var(--a-line); font-size: .98rem; line-height: 1.45; }
+.drow { display: grid; grid-template-columns: 9.5em 1fr; gap: 4px 14px; padding: 9px 0; border-top: 1px solid var(--a-line); font-size: var(--step-0); line-height: 1.45; }
 .drow:first-child { border-top: 0; }
-.drow > .mono { color: var(--a-ink2); padding-top: .3em; font-size: .66rem; }
+.drow > .mono { color: var(--a-ink2); padding-top: .3em; font-size: var(--step--2); }
 .drow b { font-weight: 500; color: var(--a-accent2); }
 .drow a { color: var(--a-accent2); text-underline-offset: 3px; }
-.drow small { display: block; color: var(--a-ink2); font-size: .8rem; }
-.drow ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: .88rem; }
+.drow small { display: block; color: var(--a-ink2); font-size: var(--step--2); }
+.drow ul { list-style: none; margin: 4px 0 0; padding: 0; font-size: var(--step--1); }
 .drow ul small { display: inline; }
-.dalso { margin: 0; padding: 0 16px 14px; font-size: .86rem; color: var(--a-ink2); }
+.dalso { margin: 0; padding: 0 16px 14px; font-size: var(--step--1); color: var(--a-ink2); }
 .dalso a { color: var(--a-ink); }
 .dalso button { border: 0; background: none; padding: 0; color: var(--a-ink2); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (max-width: 520px) { .drow { grid-template-columns: 1fr; } }
 .sec-h { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; border-top: 1px solid var(--a-line); padding-top: 14px; margin-bottom: 26px; color: var(--a-ink2); }
 .pod-g { font-size: clamp(1.6rem, 3vw, 2.5rem); line-height: 1.38; margin: 0 0 18px; max-width: 30ch; }
-.pod-e { font-size: 1.15rem; max-width: 58ch; opacity: .84; margin: 0 0 22px; }
+.pod-e { font-size: var(--step-sub); max-width: 58ch; opacity: .84; margin: 0 0 22px; }
 .rgrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--a-line); }
 .room { padding: 22px 18px 26px; border-right: 1px solid var(--a-line); text-decoration: none; display: flex; flex-direction: column; gap: 8px; min-width: 0; cursor: pointer; transition: background-color .3s; }
 .room:first-child { padding-left: 0; }
 .room:last-child { border-right: 0; }
 .room .gk { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.6vw, 2.4rem); line-height: 1; color: var(--a-accent); }
-.room p { margin: 0; font-size: .98rem; opacity: .82; }
+.room p { margin: 0; font-size: var(--step-0); opacity: .82; }
 .room:hover { background: var(--a-surface); }
 @media (max-width: 860px) { .rgrid { grid-template-columns: 1fr 1fr; } .room, .room:first-child { padding: 18px 12px; border-right: 0; border-bottom: 1px solid var(--a-line); } }
 
@@ -107,8 +107,8 @@
 .win canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
 /* a caption sits on a small dark plate, like a museum label, so the engraving's lines never run through its words */
 .wcap { position: absolute; left: 10px; bottom: 8px; z-index: 2; max-width: calc(100% - 20px); padding: 3px 7px 2px; background: rgba(7, 5, 4, .8); box-shadow: 0 0 0 1px rgba(232, 189, 112, .16);
-  color: var(--a-accent, var(--accent)); font-family: var(--face-mono); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; }
-.mini .wcap { left: 8px; max-width: calc(100% - 16px); line-height: 1.4; text-wrap: balance; font-size: .56rem; }
+  color: var(--a-accent, var(--accent)); font-family: var(--face-mono); font-size: var(--step--2); letter-spacing: .14em; text-transform: uppercase; }
+.mini .wcap { left: 8px; max-width: calc(100% - 16px); line-height: 1.4; text-wrap: balance; font-size: var(--step--2); }
 .tall { aspect-ratio: 3 / 4; width: 100%; }
 .band { height: clamp(160px, 26vw, 300px); margin-block: clamp(36px, 6vw, 80px); border-left: 0; border-right: 0; }
 .sq { aspect-ratio: 1 / 1; width: 100%; }
@@ -160,12 +160,12 @@
 .lib-title .en-t { display: block; font-style: normal; font-size: .42em; color: var(--a-ink2); margin-top: 12px; }
 .lib-title .gr-t { display: block; font-style: normal; font-family: var(--face-gentium); font-size: .42em; color: var(--a-ink2); margin-top: 12px; letter-spacing: .02em; }
 .search { display: flex; align-items: center; gap: 10px; border: 1px solid var(--a-line); background: var(--red-deep); padding: 0 14px; max-width: 560px; margin-top: 22px; }
-.search input { flex: 1; min-width: 0; background: transparent; border: 0; padding: 14px 0; font-size: 1.05rem; outline: none; }
+.search input { flex: 1; min-width: 0; background: transparent; border: 0; padding: 14px 0; font-size: var(--step-0); outline: none; }
 .search input::placeholder { color: var(--a-ink2); }
 .search:focus-within { border-color: var(--a-accent); }
 .lfilters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
 .seg { display: inline-flex; border: 1px solid var(--a-line); }
-.seg button { border: 0; background: transparent; padding: 7px 11px; cursor: pointer; font-family: var(--face-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--a-ink2); }
+.seg button { border: 0; background: transparent; padding: 7px 11px; cursor: pointer; font-family: var(--face-mono); font-size: var(--step--2); letter-spacing: .1em; text-transform: uppercase; color: var(--a-ink2); }
 .seg button[aria-pressed="true"] { background: var(--a-chip); color: var(--a-chip-ink); }
 .books { margin-bottom: 40px; }
 .book { display: grid; grid-template-columns: 92px minmax(0, 1.1fr) minmax(0, 1.3fr) auto; gap: clamp(14px, 2.4vw, 32px); align-items: center; padding-block: 16px; border-bottom: 1px solid var(--a-line); cursor: pointer; text-decoration: none; transition: background-color .35s; }
@@ -173,8 +173,8 @@
 .book canvas { width: 92px; display: block; }   /* a small red window, its picture laid on in gold letters as on the home page (lib/a/lamplight.js, field) */
 .book .who { color: var(--a-ink2); margin-bottom: 4px; }
 .book .tt { font-family: var(--face-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.7rem, 2.8vw, 2.4rem); line-height: 1; }
-.book .gt { font-size: 1.05rem; color: var(--a-ink2); margin-top: 4px; display: block; }
-.book .why { font-size: .9rem; color: var(--a-ink); opacity: .7; margin: 0; }
+.book .gt { font-size: var(--step-0); color: var(--a-ink2); margin-top: 4px; display: block; }
+.book .why { font-size: var(--step--1); color: var(--a-ink); opacity: .7; margin: 0; }
 .book .tag { color: var(--a-accent); white-space: nowrap; }
 @media (max-width: 860px) { .lib-hero { grid-template-columns: 1fr; } .book { grid-template-columns: 72px minmax(0, 1fr); } .book canvas { width: 72px; } .book .why, .book .tag { grid-column: 2; } }
 .lib-hero .tall { aspect-ratio: 4 / 5; }
@@ -211,7 +211,7 @@
 /* the face's opening: as tall as the window allows, beside the name on a computer, above it on a phone */
 :is(.lib-hero, .door-hero) .tall { max-height: calc(100svh - 150px); min-height: 340px; }
 /* on a computer the opening's own caption gives way to this line, under the name */
-.stcap { display: none; color: var(--a-accent); font-size: .62rem; letter-spacing: .14em; text-transform: uppercase; margin: 22px 0 0; opacity: .8; }
+.stcap { display: none; color: var(--a-accent); font-size: var(--step--2); letter-spacing: .14em; text-transform: uppercase; margin: 22px 0 0; opacity: .8; }
 @media (min-width: 1100px) {
   .library .stcap { display: block; }
   .library .lib-hero .wcap { display: none; }

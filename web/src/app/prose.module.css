@@ -6,12 +6,12 @@
 .prose li::marker { color: var(--accent); }
 .prose a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .gr { display: block; font-size: 0.5em; color: var(--accent); margin-top: 8px; }
-.lead { font-size: 1.2rem; color: var(--ink-2); max-width: 60ch; }
+.lead { font-size: var(--step-sub); color: var(--ink-2); max-width: 60ch; }
 .names { margin: 0; display: grid; gap: 0; }
 .names > div { display: grid; grid-template-columns: minmax(180px, 0.8fr) 2fr; gap: 6px 28px; padding: 16px 0; box-shadow: var(--cut-over); }
-.names dt { font-family: var(--f-display); font-size: 1.3rem; line-height: 1.2; }
+.names dt { font-family: var(--f-display); font-size: var(--step-1); line-height: 1.2; }
 .names dt span { color: var(--accent); font-size: 0.85em; }
-.names dt small { display: block; font-family: var(--f-label); font-size: 0.8rem; letter-spacing: 0.06em; color: var(--ink-2); margin-top: 4px; }
+.names dt small { display: block; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.06em; color: var(--ink-2); margin-top: 4px; }
 .names dd { margin: 0; color: var(--ink-2); }
 @media (max-width: 680px) { .names > div { grid-template-columns: minmax(0, 1fr); } }
 
@@ -29,4 +29,4 @@
 .group { display: grid; gap: var(--space-1); }
 .prose h3.groupHead { font-family: var(--f-label); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); margin: var(--space-4) 0 0; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
-@media (pointer: coarse) { .names dt a { padding-block: 8px; } .jump a { min-width: var(--tap); justify-content: center; } }
+@media (pointer: coarse) { .names dt a { padding-block: 10px; } .jump a { min-width: var(--tap); justify-content: center; } }

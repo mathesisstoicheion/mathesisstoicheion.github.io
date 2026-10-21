@@ -1,5 +1,5 @@
 /* Places on this page: a small Periplus cut in the stone (land the stone's face, the sea sunk; the site's map tokens) and a list. */
-.title { font-size: 1.3rem; }
+.title { font-size: var(--step-1); }
 
 .map {
   position: relative; height: 0; padding-top: 75%; overflow: hidden; border-radius: var(--radius);
@@ -20,7 +20,7 @@
 .dot {
   position: absolute; z-index: 1; width: 22px; height: 22px; margin: -11px 0 0 -11px; padding: 0;
   display: grid; place-items: center; border-radius: var(--radius-round); border: 2px solid var(--map-land);
-  background: var(--accent); color: var(--bg); font: 600 0.7rem/1 var(--f-label);
+  background: var(--accent); color: var(--bg); font: 600 var(--step--2)/1 var(--f-label);
   box-shadow: 0 3px 8px -3px rgba(0, 0, 0, 0.6); cursor: pointer;
   animation: drop calc(0.45s / var(--tempo)) var(--ease) both; transition: scale 0.2s var(--ease), background 0.2s;
 }
@@ -36,7 +36,7 @@
 
 /* names beside the dots, in ink with a halo of the land (PlacesPanel works out which have room) */
 .label {
-  position: absolute; z-index: 1; translate: 14px -50%; font: 0.8rem/1 var(--f-body); color: var(--map-name); white-space: nowrap;
+  position: absolute; z-index: 1; translate: 14px -50%; font: var(--step--2)/1 var(--f-body); color: var(--map-name); white-space: nowrap;
   pointer-events: none; text-shadow: 0 0 2px var(--map-halo), 0 0 3px var(--map-halo), 0 0 4px var(--map-halo);
   animation: fade calc(0.3s / var(--tempo)) var(--ease) both;
 }
@@ -45,11 +45,11 @@
 .map[data-many] .label[data-flip] { translate: calc(-100% - 8px) -50%; }
 .tag {
   position: absolute; z-index: 3; translate: 16px -50%; padding: 4px 9px; border-radius: var(--radius);
-  background: var(--inv-bg); color: var(--inv-fg); font-size: 0.85rem; white-space: nowrap; pointer-events: none;
+  background: var(--inv-bg); color: var(--inv-fg); font-size: var(--step--1); white-space: nowrap; pointer-events: none;
   box-shadow: 0 8px 18px -8px var(--shadow); animation: fade calc(0.2s / var(--tempo)) var(--ease);
 }
 .tag[data-flip] { translate: calc(-100% - 16px) -50%; }
-.tag b { font-family: var(--f-greek); font-weight: 400; font-size: 1rem; }
+.tag b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-0); }
 @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
 
 .list { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -62,14 +62,14 @@
 .list li[data-active] { background-color: var(--slab-lit); }
 .num {
   width: 22px; height: 22px; margin-top: 3px; display: grid; place-items: center; border-radius: var(--radius-round);
-  background: var(--accent); color: var(--bg); font: 600 0.7rem/1 var(--f-label);
+  background: var(--accent); color: var(--bg); font: 600 var(--step--2)/1 var(--f-label);
 }
 .num[data-auto] { background: transparent; color: var(--accent); box-shadow: inset 0 0 0 2px var(--accent); }
-.name { padding: 0; border: 0; background: transparent; text-align: left; font-size: 1.02rem; color: var(--ink); cursor: pointer; }
-.name b { font-family: var(--f-greek); font-weight: 400; font-size: 1.12rem; margin-right: 4px; }
+.name { padding: 0; border: 0; background: transparent; text-align: left; font-size: var(--step-0); color: var(--ink); cursor: pointer; }
+.name b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); margin-right: 4px; }
 .name[aria-pressed="true"] { color: var(--accent); }
-.meta { margin: 2px 0 0; font-size: 0.82rem; color: var(--ink-2); }
-.refs { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 0.85rem; }
+.meta { margin: 2px 0 0; font-size: var(--step--1); color: var(--ink-2); }
+.refs { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: var(--step--1); }
 .refs button {
   padding: 2px 8px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge);
   font: inherit; font-family: var(--f-label); color: var(--ink); cursor: pointer;

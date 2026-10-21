@@ -90,7 +90,7 @@ img { max-width: 100%; }
 /* a long placeholder or value that does not fit ends in "…" instead of being cut mid-letter */
 input { text-overflow: ellipsis; }
 /* phones: a menu under 16 px makes iPhones zoom the page when it is tapped; and every menu is finger-sized */
-@media (max-width: 760px) { select { font-size: 16px !important; min-height: var(--tap); } }
+@media (max-width: 760px) { select { font-size: var(--step-0) !important; min-height: var(--tap); } }
 /* on touch screens, tick boxes and radio buttons are big enough for a finger */
 @media (pointer: coarse) { input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; flex: none; } }
 :focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -110,6 +110,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
 /* small labels: design A's .mono */
 .label { font-family: var(--f-label); font-weight: 400; font-size: var(--step--2); line-height: 1.35; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 .muted { color: var(--ink-2); }
+/* small print is the scale's caption step, not the browser's "smaller" (review fixes, slice 3) */
+:where(small) { font-size: var(--step--1); }
 .faint { color: var(--ink-3); }
 .skip { position: absolute; left: -9999px; top: var(--space-2); z-index: 100; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: var(--space-3) var(--space-4); }
 .skip:focus { left: var(--space-2); }
@@ -172,14 +174,14 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .btn {
   display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px;
   border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
-  font-family: var(--f-display); font-stretch: 75%; font-weight: 400; font-size: 1.02rem; line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
+  font-family: var(--f-display); font-stretch: 75%; font-weight: 400; font-size: var(--step-0); line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
   transition: transform 0.25s, border-color 0.25s, background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .btn:hover { transform: translateY(-2px); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
 .btn.ghost:hover { border-color: var(--ink); }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 8px 12px; gap: var(--space-2); font-size: 0.92rem; }
+.btn.small { padding: 8px 12px; gap: var(--space-2); font-size: var(--step--1); }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
 .btn .arr { transition: transform var(--dur) var(--ease); }
 .btn:hover .arr { transform: translateX(3px); }
@@ -188,7 +190,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 /* a chip: design A's reader-tool chip, a fine line round it; pressed, it fills with the dark chip colour and its line lights */
 .chip {
   display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px 10px;
-  border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.88rem; background: transparent;
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent;
   text-decoration: none;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
@@ -202,7 +204,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 /* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): design A's .seg, small capitals
    in a fine frame, the chosen one filled with the dark chip colour */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 7px 11px; font: 400 0.7rem / 1.3 var(--f-label); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 7px 11px; font: 400 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .segmented > button:hover:not([aria-checked="true"]) { color: var(--ink); }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
@@ -324,7 +326,7 @@ a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { backgrou
 :where(input, textarea)::placeholder { color: var(--ink-3); }
 
 /* certainty labels */
-.tag { display: inline-flex; align-items: center; gap: 6px; font: 400 0.66rem / 1.3 var(--f-label);
+.tag { display: inline-flex; align-items: center; gap: 6px; font: 400 var(--step--2) / 1.3 var(--f-label);
   letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px 2px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
@@ -376,7 +378,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .toast {
   position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 70;
   transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: 0.95rem;
+  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: var(--step-0);
   box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
   transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
 }
@@ -385,12 +387,13 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 /* the foot of every page: the black frame, a fine line along its top */
 .site-footer {
   margin-top: clamp(48px, 8vw, 96px); background: var(--frame); color: var(--frame-ink);
+  --ink: var(--frame-ink);   /* the frame's own words, as in the header */
   border-top: 1px solid var(--rule);
 }
 .site-footer-carve { grid-column: 1 / -1; margin-bottom: var(--space-2); }
 
-.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: 0.92rem; }
-.site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 1.3rem / 1.2 var(--face-gentium); margin-bottom: 6px; }
+.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: var(--step--1); }
+.site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-gentium); margin-bottom: 6px; }
 .site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; }
@@ -426,8 +429,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin-top: var(--space-3); }
 .ph-greek { display: block; font-family: var(--f-greek); font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
 .ph-short .ph-greek { font-size: 0.5em; }
-.ph-purpose { max-width: 60ch; font-size: 1.15rem; line-height: 1.5; color: var(--ink-2); font-style: normal; }
-.ph-short .ph-purpose { font-size: 1.06rem; }
+.ph-purpose { max-width: 60ch; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); font-style: normal; }
+.ph-short .ph-purpose { font-size: var(--step-0); }
 .ph .ph-action { margin-top: var(--space-4); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
 @media (max-width: 760px) {
@@ -436,13 +439,13 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .ph-large .ph-title { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
   .ph-short .ph-title { font-size: clamp(1.95rem, 9vw, 2.4rem); }
   .ph-greek { margin-top: 6px; }
-  .ph-purpose, .ph-short .ph-purpose { font-size: 1.02rem; }
+  .ph-purpose, .ph-short .ph-purpose { font-size: var(--step-0); }
 }
 
 /* a page's search offered in its head (components/FindJump.tsx): cut into the stone like the box it opens */
 .find-jump {
   display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 34rem; min-height: var(--tap); text-align: left;
-  font: inherit; font-size: 1.06rem; color: var(--ink-3); background: rgba(8, 6, 5, 0.66); border: 0; border-radius: var(--radius);
+  font: inherit; font-size: var(--step-0); color: var(--ink-3); background: rgba(8, 6, 5, 0.66); border: 0; border-radius: var(--radius);
   padding: 13px var(--space-4); cursor: text;
   box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 3px 6px -2px var(--cut-deep), inset 0 -1px 0 var(--cut-l);
 }

@@ -1,10 +1,10 @@
 /* design A's .mark: a square frame, three rows of three letters, in Noto Sans Display at its narrowest */
 .mark {
   display: grid; grid-template-columns: repeat(3, 1fr); width: 54px; height: 54px; border: 1px solid currentColor; padding: 5px 4px;
-  font: 500 14px / 1 var(--face-mark); font-stretch: 62.5%; text-decoration: none; place-items: center; cursor: pointer; flex: none;
+  font: 500 var(--step--1) / 1 var(--face-mark); font-stretch: 62.5%; text-decoration: none; place-items: center; cursor: pointer; flex: none;
 }
-.bar { width: 38px; height: 38px; font-size: 10px; padding: 3px; }
-.foot { width: 46px; height: 46px; font-size: 12px; }
-@media (max-width: 760px) { .head { width: 46px; height: 46px; font-size: 12px; } }
+.bar { width: 38px; height: 38px; font-size: var(--step--2); padding: 3px; }
+.foot { width: 46px; height: 46px; font-size: var(--step--2); }
+@media (max-width: 760px) { .head { width: 46px; height: 46px; font-size: var(--step--2); } }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .bar { position: relative; } .bar::after { content: ""; position: absolute; inset: -4px; } }

@@ -99,9 +99,10 @@
   --space-8: 80px;
 
   /* type sizes (the titles' face is tall and narrow, so they run a step larger than before) */
-  --step--2: 0.72rem;                         /* small, wide-spaced capital labels (monospaced: design A's .mono) */
+  --step--2: 0.75rem;                         /* small, wide-spaced capital labels (monospaced: design A's .mono); 12 px, the smallest size on the site (review fixes, slice 3) */
   --step--1: 0.875rem;                        /* captions, credits, small print */
   --step-0: 1rem;                             /* reading text (Literata, design A's body: 1rem / 1.6) */
+  --step-sub: 1.125rem;                       /* a small heading, a card's name */
   --step-1: 1.32rem;                          /* a lede */
   --step-2: 1.8rem;                           /* h3 */
   --step-3: clamp(2.3rem, 4.4vw, 3.6rem);     /* h2 */

@@ -1,18 +1,18 @@
 /* The Oracle's research views: the concordance (Concordance.tsx) and the statistics (Stats.tsx). */
 .conc, .stats { display: grid; gap: 14px; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 14px; justify-content: space-between; align-items: center; }
-.small { margin: 0; font-size: 0.86rem; color: var(--ink-2); }
-.status { margin: 0; font-size: 0.9rem; color: var(--ink-2); }
+.small { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
+.status { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .more { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.h { margin: 6px 0 8px; font-family: var(--f-display); font-weight: 400; font-size: 1.25rem; }
-.h4 { margin: 4px 0 6px; font: 600 0.85rem var(--f-label); color: var(--ink-2); letter-spacing: 0.02em; }
+.h { margin: 6px 0 8px; font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); }
+.h4 { margin: 4px 0 6px; font: 600 var(--step--1) var(--f-label); color: var(--ink-2); letter-spacing: 0.02em; }
 
 /* ---- concordance: reference | words before | the match | words after | grammar */
 .lines { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
 .addLine {
   width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid transparent; border-radius: var(--radius-round);
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink-2); font: 1rem/1 var(--f-body); cursor: pointer; opacity: 0.55;
+  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink-2); font: var(--step-0)/1 var(--f-body); cursor: pointer; opacity: 0.55;
   transition: opacity 0.2s, color 0.2s, background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .lines li:hover .addLine, .addLine:focus-visible { opacity: 1; }
@@ -25,9 +25,9 @@
 }
 .lines li:last-child { box-shadow: none; }
 .lines li:hover { background-color: var(--slab-lit); }
-.lines[data-lang="grc"] { font-family: var(--f-greek); font-size: 1.06rem; }
+.lines[data-lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
 .ref {
-  padding-right: 12px; font: 600 0.8rem var(--f-label); color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding-right: 12px; font: 600 var(--step--2) var(--f-label); color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   text-decoration: none; font-variant-numeric: tabular-nums;
 }
 .ref:hover { text-decoration: underline; }
@@ -38,14 +38,14 @@
 .right { overflow: hidden; white-space: pre; text-overflow: ellipsis; color: var(--ink-2); }
 .key { background: none; color: var(--ink); font-weight: 700; white-space: pre; padding: 0 0.12em; margin-left: 0.3em; border-bottom: 2px solid var(--accent); }
 .near { background: color-mix(in srgb, var(--ochre) 24%, transparent); color: var(--ink); border-radius: var(--radius); }
-.gram { padding-left: 14px; font: 0.76rem var(--f-body); color: var(--ink-2); white-space: nowrap; }
-.missing { grid-column: 2 / -1; font: 0.85rem var(--f-body); color: var(--accent); }
-.order button { font-size: 0.86rem; }
+.gram { padding-left: 14px; font: var(--step--2) var(--f-body); color: var(--ink-2); white-space: nowrap; }
+.missing { grid-column: 2 / -1; font: var(--step--1) var(--f-body); color: var(--accent); }
+.order button { font-size: var(--step--1); }
 @media (max-width: 760px) {
   .lines li { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); row-gap: 2px; }
   .ref { grid-column: 1 / -1; }
   .gram { grid-column: 1 / -1; padding-left: 0; text-align: center; }
-  .lines[data-lang="grc"] { font-size: 1rem; }
+  .lines[data-lang="grc"] { font-size: var(--step-0); }
   .order { display: flex; width: 100%; }
   .order button { flex: 1; padding-inline: 6px; white-space: normal; }
 }
@@ -61,15 +61,15 @@
 }
 .bars li:hover, .bars li:focus-visible { background-color: var(--slab-lit); }
 .bars li:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
-.barLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.9rem; }
+.barLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--step--1); }
 .barLabel small { color: var(--ink-2); }
 .track { height: 10px; background: var(--channel); box-shadow: var(--channel-edge); }
 .fill { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow calc(0.6s / var(--tempo)) var(--ease) backwards; }
 @keyframes grow { from { transform: scaleX(0); } }
-.barValue { text-align: right; font-size: 0.86rem; font-variant-numeric: tabular-nums; }
+.barValue { text-align: right; font-size: var(--step--1); font-variant-numeric: tabular-nums; }
 .bars li::after {
   content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + 4px); z-index: 5; width: max-content; max-width: min(340px, 80vw);
-  padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: 0.82rem; line-height: 1.35;
+  padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: var(--step--1); line-height: 1.35;
   box-shadow: var(--slab-edge); pointer-events: none; opacity: 0; translate: 0 4px; transition: opacity 0.15s, translate 0.15s;
 }
 .bars li:hover::after, .bars li:focus-visible::after { opacity: 1; translate: 0 0; }
