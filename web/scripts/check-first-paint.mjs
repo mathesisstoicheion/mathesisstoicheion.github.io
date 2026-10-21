@@ -5,6 +5,8 @@
 //            their opacity (multiplied up through their parents) is under 0.9 of what it is once the page has settled, 6 s
 //            later, or the title is off the screen. Words the design keeps a little dim on purpose are not flagged.
 //   black  - a window onto art on the first screen is still an empty black (or see-through) box
+// Words still rising in the site's opening (a short cascade Noa chose) are not flagged if they are clear once its animations
+// have run; words that stay faint, or wait for anything else, are.
 // It does this twice: once as a visitor sees it, and once with the site's scripts held back ("slow scripts"), which is how
 // a phone on a slow connection sees the page for its first seconds. Words must not wait for the scripts.
 // It also counts the requests each page makes in its first 3 seconds, and how many of them fetch other pages ahead.
@@ -141,9 +143,20 @@ for (const [w, h, size] of SIZES) {
       let late = settled.get(`${size} ${path}`);
       if (!late) { await page.waitForTimeout(6000); late = new Map((await page.evaluate(inspect)).items.map((i) => [i.key, i.o])); settled.set(`${size} ${path}`, late); }
       const found = [...early.found];
-      for (const it of early.items) {
-        const end = late.get(it.key) ?? 1;
-        if (it.o < 0.9 * end) found.push({ kind: "hidden", what: `${it.what} at opacity ${it.o.toFixed(2)} (settles at ${end.toFixed(2)})` });
+      const faint = early.items.filter((it) => it.o < 0.9 * (late.get(it.key) ?? 1));
+      // words still rising in the opening Noa chose (2026-10-20: the 3x opening, over by about 0.55 s) are looked at again
+      // once the page's own finite animations have run (at most 2 s more): only words still faint then are flagged
+      let after = null;
+      if (faint.length) {
+        await page.evaluate(() => Promise.race([
+          Promise.all(document.getAnimations().filter((a) => a.effect?.getComputedTiming().iterations !== Infinity).map((a) => a.finished.catch(() => {}))),
+          new Promise((r) => setTimeout(r, 2000)),
+        ])).catch(() => {});
+        after = new Map((await page.evaluate(inspect).catch(() => ({ items: [] }))).items.map((i) => [i.key, i.o]));
+      }
+      for (const it of faint) {
+        const end = late.get(it.key) ?? 1, then = after?.get(it.key) ?? it.o;
+        if (then < 0.9 * end) found.push({ kind: "hidden", what: `${it.what} at opacity ${it.o.toFixed(2)}, still ${then.toFixed(2)} once the opening has run (settles at ${end.toFixed(2)})` });
       }
       const sameSite = reqs.filter((u) => u.startsWith(base));
       const ahead = sameSite.filter((u) => /_rsc=|\.txt(\?|$)/.test(u)).length;
