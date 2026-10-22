@@ -1,7 +1,8 @@
 import { test, expect, type Locator } from "@playwright/test";
 
 // "A to Z" (components/library/AZList.tsx; asked for by the owner on 2026-10-16): an author's works in alphabetical order with
-// a row of letters (a strip down the right of a phone), and the library's rail of letters down the left of its list.
+// a row of letters (a strip down the right of a phone), and the library's rail of letters down the right of its list when it
+// is in one plain A to Z order (by kind, the first order, it has a contents line of kinds instead).
 
 const PLUTARCH = "/library/author?a=tlg0007";   // 145 works
 
@@ -70,6 +71,9 @@ test("the A to Z list opens at once when animation is turned off", async ({ page
 
 test("the library's rail of letters stands beside its list and follows the order in use", async ({ page }) => {
   await page.goto("/library");
+  await expect(page.getByRole("navigation", { name: "Kinds of writing in the catalogue" })).toBeVisible();   // by kind: no letters
+  await expect(page.getByRole("navigation", { name: /by first letter/ })).toHaveCount(0);
+  await page.getByRole("radiogroup", { name: "Order" }).getByRole("radio", { name: "Authors A–Z" }).click();
   expect(await page.getByRole("button", { name: "A to Z" }).count()).toBe(0);   // no button: the rail is part of the list
   const rail = page.getByRole("navigation", { name: "Authors by first letter" });
   await expect(rail).toBeVisible();
@@ -79,8 +83,7 @@ test("the library's rail of letters stands beside its list and follows the order
   await rail.getByRole("button", { name: "Authors beginning with S" }).click();
   await expect(page.locator("#lib-S")).toBeInViewport();
   await expect(rail).toBeInViewport();                                                 // and still beside it
-  await page.getByRole("button", { name: /^Order and filters/ }).click();   // the order waits behind one button over the list
-  await page.getByRole("radio", { name: "Title A–Z" }).click();
+  await page.getByRole("radio", { name: "Titles A–Z" }).click();
   await expect(page.getByRole("navigation", { name: "Titles by first letter" })).toBeVisible();
   await page.getByRole("radio", { name: "By period" }).click();
   await expect(page.getByRole("navigation", { name: /by first letter/ })).toHaveCount(0);
@@ -119,7 +122,7 @@ test.describe("on a phone", () => {
   });
 
   test("the library's rail stays on the right and does not cover the list", async ({ page }) => {
-    await page.goto("/library");
+    await page.goto("/library?sort=author");
     const rail = page.getByRole("navigation", { name: "Authors by first letter" });
     await expect(rail).toBeVisible();
     await page.locator("#lib-C").scrollIntoViewIfNeeded();

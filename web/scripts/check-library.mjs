@@ -1,8 +1,8 @@
-// The library check (review fix list, slice 6). The library's letters (Socrates spelled out of the Apology, then a papyrus roll)
-// are drawn on one stage pinned behind the whole page; everything else is laid over them. Two things are checked:
+// The library check (review fix list, slice 6; the printed page since 2026-10-22, where the page is plain paper with its
+// plates). Two things are checked:
 //   contrast - every piece of text on the page, down to the first authors of the list, against what is behind it: the page is
-//              photographed with its text made invisible (twice, a moment apart, as the letters move), and the text's colour is
-//              compared with the brightest tenth of what lies under it. WCAG AA: 4.5 to 1, or 3 to 1 for large text.
+//              photographed with its text made invisible (twice, a moment apart), and the text's colour is compared with the
+//              brightest tenth of what lies under it. WCAG AA: 4.5 to 1, or 3 to 1 for large text.
 //   rows     - every author in the list: a "who they were" line that is not empty, that does not give a date when the
 //              row's own date stands beside it ("4th-century BC Greek orator" next to "4th c. BC"), and that says BC and AD.
 // usage: node web/scripts/check-library.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -25,7 +25,7 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
   // what a visitor would open: the order and filters, and the suggestions on where to begin
   for (const b of await page.locator('button[aria-controls="library-filters"][aria-expanded="false"]').all()) await b.click();
   await page.evaluate(() => document.querySelectorAll("details").forEach((d) => { d.open = true; }));
-  await page.waitForTimeout(4500);   // the letters gather into Socrates
+  await page.waitForTimeout(2500);   // everything has inked in
 
   // every piece of text, by its own lines, down to the eighth author
   const stop = await page.evaluate(() => { const r = document.querySelectorAll("[data-author-row]")[7]; return r ? r.getBoundingClientRect().bottom + scrollY : document.body.scrollHeight; });
@@ -106,7 +106,7 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
     await page.evaluate(() => document.querySelector("style[data-check-still]")?.remove());
     for (const r of res) { const old = seen.get(r.key); if (!old || r.worst < old.worst) seen.set(r.key, r); }
   }
-  for (const r of [...seen.values()].sort((p, q) => p.at - q.at)) if (r.worst < r.need) found.push(`contrast ${w}px: ${r.key} at y=${r.at} is ${r.worst}:1 over the letters (needs ${r.need}:1)`);
+  for (const r of [...seen.values()].sort((p, q) => p.at - q.at)) if (r.worst < r.need) found.push(`contrast ${w}px: ${r.key} at y=${r.at} is ${r.worst}:1 (needs ${r.need}:1)`);
 
   if (w === 1280) {
     // every author's row: who they were, and no second date beside the row's own
@@ -128,5 +128,5 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
 
 await browser.close();
 for (const f of found) console.log(`✗ ${f}`);
-console.log(found.length ? `\n${found.length} problem(s)` : "the library reads clearly over its letters, and every author has one plain line");
+console.log(found.length ? `\n${found.length} problem(s)` : "the library reads clearly, and every author has one plain line");
 process.exit(found.length ? 1 : 0);

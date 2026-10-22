@@ -24,7 +24,8 @@
   --paper-3: #ddd0b9;
   --paper-ink: #1e1a15;
   --paper-ink-2: #5c5043;  /* captions */
-  --paper-ink-3: #776853;  /* small print and credits: the spec's faint ink a shade deeper, so it reads at 4.5 : 1 */
+  --paper-ink-3: #675846;  /* small print and credits: the spec's faint ink made deeper, so it reads at 4.5 : 1 even
+                              where the paper's shade at the foot of the screen is darkest (scripts/check-library.mjs) */
   --paper-faint: #8a7b68;  /* rules and marks that are not words */
   --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
   --paper-rubric-2: #c4553a;

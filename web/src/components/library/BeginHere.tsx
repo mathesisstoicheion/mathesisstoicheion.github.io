@@ -1,13 +1,13 @@
 "use client";
 /**
  * Where to begin (review fix list, slice 6: "the best guidance is buried"): the site's suggestions by how hard the Greek is,
- * and the reading paths, right under the library's name. Open for a first visit; after that it stays as the reader left
- * it. While a search is on it stands aside, with the famous books, so the answers come up under the search.
+ * and the reading paths, under the library's search, set as a printed note on how to use a catalogue: three columns under a
+ * rule, and the paths below them. Open for a first visit; after that it stays as the reader left it. While a search is on it
+ * stands aside, with the famous books, so the answers come up under the search.
  */
 import Link from "next/link";
 import { useEffect, useRef, type ReactNode } from "react";
 import { useLibQuery } from "./libQuery";
-import A from "@/components/a/a.module.css";
 import styles from "./Library.module.css";
 
 /**
@@ -28,14 +28,14 @@ export default function BeginHere({ paths }: { paths?: ReactNode }) {
   const remember = (open: boolean) => { try { localStorage.setItem("mathesis:lib-begin", open ? "open" : "shut"); } catch {} };
   if (aside) return null;
   return (
-    <div className={A.wrap}><div className={A.blk}>
+    <div className="wrap">
       <details ref={ref} open className={styles.begin} onToggle={(e) => remember((e.currentTarget as HTMLDetailsElement).open)}>
-        <summary><span className={styles.beginIcon} aria-hidden="true">✦</span> Not sure where to begin? <span className="muted">Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
+        <summary><span className={styles.beginQ}>Not sure where to begin?</span> <span className={styles.beginSub}>Our suggestions, by how hard the Greek is, and six reading paths</span></summary>
         <div className={styles.levels}>
           {START.map((x) => (
             <div key={x.level} className={styles.level}>
               <h3>{x.level}</h3>
-              <p className="muted">{x.why}</p>
+              <p>{x.why}</p>
               <ul>
                 {x.works.map(([id, label]) => (
                   <li key={id}><Link href={`/read?w=${id}`} transitionTypes={["page-turn"]}>{label} <span aria-hidden="true">→</span></Link></li>
@@ -47,6 +47,6 @@ export default function BeginHere({ paths }: { paths?: ReactNode }) {
         {/* the reading paths (data/paths.ts), short routes through the library in a sensible order */}
         {paths && <><h3 className={`label ${styles.pathsH}`}>Where to read next: six paths, each in a sensible order</h3>{paths}</>}
       </details>
-    </div></div>
+    </div>
   );
 }

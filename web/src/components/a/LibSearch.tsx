@@ -1,21 +1,25 @@
 "use client";
 /**
- * The library's search, as design A set it under the page's title: one field for an author or a title. Typing puts the
- * famous books aside, so the catalogue's answers come up right under the field. What to show (All, With English, Greek
- * only) is in the list's one bar of filters (components/library/Library.tsx).
+ * The library's search, first on the page (redesign decision 11: "search first"), set as the sample's catalogue sets it: one
+ * line to write on, in italic, ruled in ink, with what to show (All, With English, Greek only) beside it in small capitals,
+ * the chosen one underlined in red. Typing puts the famous books aside, so the catalogue's answers come up right under it.
  */
-import { useLibQuery } from "@/components/library/libQuery";
-import s from "./a.module.css";
+import { useLibQuery, type Tr } from "@/components/library/libQuery";
+
+const SHOW: [Tr, string][] = [["all", "All"], ["with", "With English"], ["greek", "Greek only"]];
 
 export default function LibSearch() {
-  const { q, setQ } = useLibQuery();
+  const { q, tr, setQ, setTr } = useLibQuery();
   return (
-    <>
-      <label className={s.search}>
-        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>
+    <div className="find">
+      <label className="find-field">
+        <span className="label">Search</span>
         <input id="library-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false}
-          placeholder="An author or a title: Plato, Odyssey, Ἰλιάς…" aria-label="Search the library" aria-controls="library-list" />
+          placeholder="an author or a title, in English or Greek" aria-label="Search the library" aria-controls="library-list" />
       </label>
-    </>
+      <div className="find-show" role="radiogroup" aria-label="Show">
+        {SHOW.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={tr === id} onClick={() => setTr(id)}>{label}</button>)}
+      </div>
+    </div>
   );
 }

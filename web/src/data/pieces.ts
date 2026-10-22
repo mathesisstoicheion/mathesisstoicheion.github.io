@@ -1,14 +1,15 @@
 /**
- * Every page's own piece of ancient sculpture (DESIGN.md: "A piece on every page"; the owner, 2026-10-16: "Every page
- * needs its own dedicated piece"). Each is engraved in gold lines in design A's window (components/a/PageWin.tsx,
- * lib/a/lamplight.js). All are from The Metropolitan Museum of Art's Open Access collection
- * (CC0); their credits are in data/piece-images.json (fetched by scripts/fetch-images.ts from the Met's own records),
- * their sizes and shapes in data/piece-shapes.json (written by pipeline/pieces.py).
+ * Every page's own photo plate (redesign SPEC.md 3.7, decision 6: "every page opens with one large photo plate beside its
+ * title, chosen for that page"; the owner, 2026-10-16: "Every page needs its own dedicated piece"). Most are museum
+ * photographs of ancient sculpture from The Metropolitan Museum of Art's Open Access collection (CC0), with their credits
+ * in data/piece-images.json (fetched by scripts/fetch-images.ts from the Met's own records); a few are pictures of
+ * data/images.json. Every one is a real colour photograph (scripts/check-photos.mjs).
  *
  * `why`, where given, says in a few words why the piece belongs to its page; it states only what the museum's record or
  * a named ancient source says.
  */
 import credits from "./piece-images.json";
+import pictures from "./images.json";
 import { bcAd } from "@/lib/bc-ad";
 import shapes from "./piece-shapes.json";
 
@@ -30,7 +31,7 @@ const PAGES: [string, PageSpec][] = [
   ["/library/private", { piece: "togatus" }],
   // every author's page: a hand holding a book roll (a portrait would seem to be the author's own)
   ["/library/author", { piece: "hand-with-scroll" }],
-  ["/library", { piece: "seated-muse", why: "The Mouseion was the seat of the Muses." }],
+  ["/library", { piece: "muse-head", why: "The Mouseion was the seat of the Muses." }],
   ["/author/[id]", { piece: "hand-with-scroll" }],
   ["/work/[id]", { piece: "seated-man" }],
   ["/search", { piece: "apollo-bronze", why: "Delphi was Apollo’s oracle." }],
@@ -45,14 +46,14 @@ const PAGES: [string, PageSpec][] = [
   ["/academy/guide/[id]", { piece: "hermes-bronze", why: "Hermes was the guide of travellers." }],
   ["/academy/alphabet", { piece: "decree-fragment", why: "Athenian letters, cut in rows and columns." }],
   ["/academy/practice", { piece: "diskos-thrower", why: "ἄσκησις was first an athlete’s training." }],
-  ["/academy/review", { piece: "muse-head", why: "The Muses were daughters of Memory, Mnemosyne (Hesiod, Theogony 53–54)." }],
+  ["/academy/review", { piece: "family-stele", why: "A grave marker was a mnēma, a memorial: the word comes from the same root as mnēmē, memory." }],
   ["/academy/studio", { piece: "harp-player" }],
   ["/academy/tables", { piece: "tribute-list", why: "A table cut in stone: Athens’ tribute lists." }],
   ["/academy/today", { piece: "athletic-prizes" }],
-  ["/academy/vocabulary", { piece: "arsinoe-base" }],
+  ["/academy/vocabulary", { piece: "linear-b-pylos", why: "Greek was first written in Linear B, on clay tablets like this one." }],
   ["/academy", { piece: "philosopher-head" }],
   ["/account", { piece: "strategos-head" }],
-  ["/credits", { piece: "hero-relief" }],
+  ["/credits", { piece: "berlin-painter-amphora", why: "The painter’s name is lost; scholars call him the Berlin Painter, after a vase in Berlin." }],
   ["/downloads", { piece: "hermes-seated" }],
   ["/guide", { piece: "hermes-marble", why: "Hermes was the guide of travellers." }],
   ["/about", { piece: "eukleia-stele" }],
@@ -89,9 +90,11 @@ export const USED_PIECES = [...new Set([...PAGES.map(([, s]) => s.piece), LOST_P
 
 const RX = PAGES.map(([p, spec]) => [new RegExp("^" + p.replace(/\[[a-z]+\]/g, "[^/]+") + "$"), spec] as const);
 
+const ON_RECORD = new Set([...Object.keys(credits), ...Object.keys(pictures)]);
+
 /** The piece for this page's address (none for the reader, which has its own). */
 export function pieceFor(path: string): PageSpec | null {
   const p = path.replace(/\/+$/, "") || "/";
-  for (const [rx, spec] of RX) if (rx.test(p)) return PIECE_SHAPES[spec.piece] ? spec : null;
+  for (const [rx, spec] of RX) if (rx.test(p)) return ON_RECORD.has(spec.piece) ? spec : null;
   return null;
 }

@@ -38,7 +38,7 @@ const BY_WORK: Record<string, { id: string; why?: string }> = {
   "tlg0012.tlg002": { id: "melian-relief" },
   "tlg0003.tlg001": { id: "pericles-bust" },
   "tlg0016.tlg001": { id: "herodotos-bust", why: "Herodotus’ name is carved on the front of the bust." },
-  "tlg0020.tlg001": { id: "seated-muse" },
+  "tlg0020.tlg001": { id: "muse-head", why: "The Theogony opens with the Muses." },
 };
 const ANY = { id: "hand-with-scroll" };
 const plateFor = (work: string) => BY_WORK[work] ?? ANY;
