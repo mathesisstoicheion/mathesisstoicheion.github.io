@@ -9,7 +9,6 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Door, { DoorBlock } from "@/components/a/Door";
-import { A_ART } from "@/components/a/pictures";
 import { fold, loadCatalog, describe, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, familyOf, periodOf, FAMILIES, PERIODS, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { detectScript, queryWords, toPattern, type Script } from "@/lib/search/input";
@@ -74,7 +73,7 @@ export default function Search() {
   const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
   return (
     // a door of the site (components/a/Door.tsx), with its red window onto an amphora
-    <Door id="search" art={A_ART.amphora} carve={CARVE} action={
+    <Door id="search" plate="apollo-bronze" why="Delphi was Apollo’s oracle." carve={CARVE} action={
       <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
         <OracleBox draft={draft} />
       </Suspense>}>

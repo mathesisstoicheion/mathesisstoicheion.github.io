@@ -1,53 +1,42 @@
 /**
- * A door of the site (Learn, Explore, Talk, Mine, Search), in design A's own look (the owner, 2026-10-20: "Let's go with
- * gold and lamp everything"): dark blocks with the door's name, its main action and its parts, across the page's whole
- * width (the owner, 2026-10-20: "Everything is stuck to the left, and doesn't fill out the page"), and beside the name one
- * of A's tall red windows onto a gilded object of the area. On a phone the window comes first, above the name.
+ * A room of the site (Learn, Explore, Mine, Search, and Talk while the forum is open), set as the printed page sets a part
+ * of a book (redesign SPEC.md 4.4): the page's head with its title, its Greek name in red, what the name means, the room's
+ * main action and its plate, a museum's colour photograph with its credit (PageHead); then the room's parts, each a
+ * section under a rule (DoorBlock).
  */
 import type { ReactNode } from "react";
-import Win from "./Win";
-import type { Picture } from "./pictures";
-import { AREAS, type AreaId } from "@/config/areas";
-import s from "./a.module.css";
+import PageHead from "@/components/PageHead";
+import { AREAS, trail, type AreaId } from "@/config/areas";
 
-export default function Door({ id, art, action, carve, children }: {
+export default function Door({ id, plate, why, action, carve, children }: {
   id: AreaId;
-  /** the door's red window: a gilded object of the area (components/a/pictures.ts, A_ART) */
-  art: Picture;
-  /** the door's one main thing: its search box or its next step */
+  /** the room's plate: a photograph in lib/photos.ts */
+  plate: string;
+  /** a few words on why it belongs to the room (only what the museum's record or a named source says) */
+  why?: string;
+  /** the room's one main thing: its search box or its next step */
   action?: ReactNode;
-  /** a line in Greek capitals set above the name, for a door with no Greek name of its own, and its source */
+  /** a line in Greek capitals set above the name, for a room with no Greek name of its own, and its source */
   carve?: { text: string; caption: ReactNode };
   children: ReactNode;
 }) {
   const a = AREAS[id];
   return (
-    <div className={`${s.screen} ${s.door}`}>
-      <div className={`${s.wrap} ${s["door-hero"]}`}>
-        <header className={s.blk}>
-          <span className={s.mono} style={{ color: "var(--a-accent)" }}>{a.door}</span>
-          {carve && <p className={s["door-carve"]} lang="grc">{carve.text}</p>}
-          {/* the Greek name large, the English name small beneath (review fixes, slice 2) */}
-          <h1 className={s["lib-title"]}>{a.greek ? <><span lang="grc">{a.greek}</span><span className={s["en-t"]}>{a.name}</span></> : a.name}</h1>
-          <p className={s.lede}>{a.origin} {a.fit}</p>
-          {action && <div className={s["door-action"]}>{action}</div>}
-          {carve && <p className={s.cap}>{carve.caption}</p>}
-        </header>
-        <Win className={`${s.win} ${s.tall}`} src={art.src} label={art.label} caption={art.cap} capClass={s.wcap} />
-      </div>
-      <div className={s["door-body"]}>{children}</div>
-      <div className={`${s.wrap} ${s["door-credit"]}`}>
-        <div className={s.blk}><p className={s.cap}>The red window: {art.credit}.</p></div>
-      </div>
+    <div className="door">
+      <PageHead path={trail(id)} size="large" inscription={carve?.text} title={a.name} greek={a.greek}
+        purpose={<>{a.origin} {a.fit}</>} action={action} piece={{ piece: plate, why }}>
+        {carve && <p className="area-carve-cap">{carve.caption}</p>}
+      </PageHead>
+      <div className="door-body">{children}</div>
     </div>
   );
 }
 
-/** One of a door's dark blocks, across the page's width. */
+/** One of a room's parts: a section of the page under a rule of ink. */
 export function DoorBlock({ id, label, children }: { id?: string; label?: string; children: ReactNode }) {
   return (
-    <div className={s.wrap}>
-      <section className={s.blk} id={id} aria-label={label}>{children}</section>
+    <div className="wrap">
+      <section className="door-part" id={id} aria-label={label}>{children}</section>
     </div>
   );
 }

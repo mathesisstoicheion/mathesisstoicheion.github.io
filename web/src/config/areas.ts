@@ -90,7 +90,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "Argue a motion, then vote on it.", phase: 8,
   },
   treasury: {
-    id: "treasury", name: "The Treasury", greek: "Θησαυρός", door: "Keep", href: "/treasury",
+    id: "treasury", name: "The Treasury", greek: "Θησαυρός", door: "Mine", href: "/treasury",
     origin: "Cities built small treasuries at Delphi to hold their precious offerings. A thesauros is also a store of words.",
     fit: "Your notes, saved words and favourite passages.", phase: 5,
   },
@@ -114,17 +114,17 @@ export const NAV: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] 
 export const MENU: AreaId[] = [...NAV, "search"];
 
 /**
- * The bar along the bottom of the screen on phones, left to right: the five doors with Search in the middle
- * (owner's decision 2026-10-08, replacing Library, Learn Greek, Search, Wiki, My Library). Talk, the forum, is a
- * button in the phone's header. `also` lists other paths that belong to a place.
+ * The rooms of the site, in the order of the printed page's menu (redesign decision 8): Learn, Read, Explore, (Talk,) Mine.
+ * The header shows them on a computer and the bar along the foot of the screen on a phone (decision 9). `also` lists other
+ * paths that belong to a room (the reader, a work's and an author's pages belong to Read).
  */
-export const TABS: { id: AreaId; also?: string[] }[] = [
+export const TABS: { id: AreaId; also?: string[] }[] = ([
   { id: "study" },
-  { id: "library", also: [AREAS.reader.href, "/work", "/author"] },
-  { id: "search" },       // a button: opens the universal search (Quick search) rather than a page
+  { id: "library", also: [AREAS.reader.href, "/work", "/author", "/downloads"] },
   { id: "wiki" },
-  { id: "treasury" },
-];
+  { id: "forum" },
+  { id: "treasury", also: ["/account"] },
+] as { id: AreaId; also?: string[] }[]).filter((t) => shown(t.id));
 
 /** Whether an area is offered anywhere on the site: everything but the forum's two while it is closed (FORUM_OPEN). */
 export function shown(id: AreaId): boolean {

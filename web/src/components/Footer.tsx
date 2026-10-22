@@ -5,7 +5,7 @@ import Mark from "./a/Mark";
 
 export default function Footer() {
   return (
-    // the foot of every page, on the black frame: the ΣΤΟΙΧΕΙΑ mark and the site's name
+    // the foot of every page, a colophon: the printer's device and the site's name
     <footer className="site-footer">
       <div className="wrap site-footer-in">
         <div>

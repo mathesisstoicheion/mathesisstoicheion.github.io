@@ -229,17 +229,15 @@ function Box({ onClose }: { onClose: () => void }) {
     const s = useSettings.getState();
     const step = LIMITS.greekSize.step * 2;
     switch (id) {
-      case "theme-dark": s.set({ theme: "dark" }); break;
-      case "theme-light": s.set({ theme: "light" }); break;
+      case "theme-dark": s.set({ theme: "night" }); break;
+      case "theme-light": s.set({ theme: "paper" }); break;
+      case "theme-auto": s.set({ theme: "auto" }); break;
       case "bigger": s.set({ greekSize: s.greekSize + step }); break;
       case "smaller": s.set({ greekSize: s.greekSize - step }); break;
       case "face-didot": s.set({ greekFace: "didot" }); break;
       case "face-gentium": s.set({ greekFace: "gentium" }); break;
-      case "face-sans": s.set({ greekFace: "sans" }); break;
-      case "text-sans": s.set({ textFace: "sans" }); break;
-      case "text-serif": s.set({ textFace: "serif" }); break;
-      case "motion-reduce": s.set({ level: "performance" }); break;
-      case "motion-auto": s.set({ level: "full" }); break;
+      case "motion-reduce": s.set({ motion: "reduce" }); break;
+      case "motion-auto": s.set({ motion: "auto" }); break;
       case "settings": onClose(); useUI.getState().openSettings(); return;
     }
     useUI.getState().showToast(`${ACTIONS.find((a) => a.id === id)!.label}: done.`);

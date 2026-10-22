@@ -1,27 +1,24 @@
 import { create } from "zustand";
 import { persist, createJSONStorage, type StateStorage } from "zustand/middleware";
 
-/** The reader's page: Night (the stone, as everywhere on the site) or Daylight ("light"), a light page against eye
- *  strain. The site itself is dark only (DESIGN.md); "auto" and "dark" both mean Night. */
-export type ThemePref = "auto" | "light" | "dark";
+/** Paper or Night (decision 2 of the printed-page redesign, 2026-10-22): "auto" follows the phone's or computer's own light
+ *  or dark mode; "paper" and "night" choose one for good, everywhere on the site, the reader included. */
+export type ThemePref = "auto" | "paper" | "night";
+/** Movement: there is one kind only, the ink-in (decision 3), and the device's reduced-motion setting turns it off.
+ *  "reduce" turns it off here too, whatever the device says; "full" keeps it even when the device asks for less. */
 export type MotionPref = "auto" | "reduce" | "full";
-/** How much the art moves (the owner, 2026-10-19: "Just do 3 levels of animation. One with the full beauty and intricate
- *  design and animation. One with a few visual sacrifices for better performance, and a full performance mode, for older
- *  computers and older phones. Main focus is the beauty"). Performance also stills every other animation on the site. */
-export type AnimLevel = "full" | "balanced" | "performance";
 export type Columns = "both" | "greek" | "trans";
 export type Pronunciation = "attic" | "erasmian" | "modern";
-/** The typeface of Greek text, and of English reading text. Headings keep the site's own (GFS Didot). */
-export type GreekFace = "didot" | "gentium" | "sans";
-export type TextFace = "serif" | "sans";
+/** The typeface of Greek being read: Gentium Book Plus (the default) or GFS Didot. English is always EB Garamond: the
+ *  printed page has three typefaces and no others (SPEC.md 3.2). */
+export type GreekFace = "gentium" | "didot";
 /** Kinds of marker beside the reader's scroll bar. */
 export type MarkerKind = "note" | "bookmark" | "highlight" | "favourite" | "xref" | "left" | "echo";
 export const MARKER_KINDS: MarkerKind[] = ["note", "bookmark", "highlight", "favourite", "xref", "left", "echo"];
 
 export interface Settings {
   theme: ThemePref;
-  level: AnimLevel;
-  motion: MotionPref;   // follows `level`: "reduce" for Performance, otherwise "auto" (the device's own setting decides)
+  motion: MotionPref;
   greekSize: number;   // rem
   leading: number;     // unitless line height for reading text
   columns: Columns;    // reader: Greek and translation, or one of them
@@ -31,19 +28,13 @@ export interface Settings {
   metre: boolean;      // reader aid: show the scansion of verse
   tryFirst: boolean;   // reader aid: each translation stays hidden until tapped, so the Greek is read first
   fitLines: boolean;   // reader aid: verse lines shrink to fit the width instead of wrapping
-  bar: BarMode;        // phones: the bar of doors along the bottom (TabBar.tsx); never kept showing in the reader
   vibrate: boolean;    // phones: a short vibration on a save, a bookmark, a right answer (lib/haptics.ts)
   pron: Pronunciation; // pronunciation system shown in the Academy
   markers: MarkerKind[];   // reader: which kinds of marker to show beside the scroll bar
   greekFace: GreekFace;
-  textFace: TextFace;
 }
 
-/** The phone's bottom bar: tucked away while you read on and back on any scroll up; shown until its own button hides it;
- *  or always shown. */
-export type BarMode = "scroll" | "button" | "always";
-
-export const DEFAULTS: Settings = { theme: "auto", level: "full", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, bar: "scroll", vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
+export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "gentium" };
 export const LIMITS = {
   greekSize: { min: 1, max: 2, step: 0.0625 },
   leading: { min: 1.4, max: 2.2, step: 0.1 },
@@ -64,65 +55,55 @@ const safeStorage: StateStorage = {
 
 const clamp = (v: number, { min, max }: { min: number; max: number }) => Math.min(max, Math.max(min, v));
 
-/**
- * The level a first visit starts at, before anything is chosen in Settings (the owner, 2026-10-19: "Step down if weak"):
- * Full beauty, unless the device is clearly weak. A browser that says how much memory it has (Chrome, Android) and says
- * 1 GB or less starts on Performance; 2 GB, or only one or two processor cores, starts on Balanced. Keep the same test in
- * BOOT_SCRIPT below.
- */
-export function deviceLevel(): AnimLevel {
-  if (typeof navigator === "undefined") return "full";
-  const mem = (navigator as Navigator & { deviceMemory?: number }).deviceMemory, cores = navigator.hardwareConcurrency;
-  if (mem && mem < 2) return "performance";
-  if ((mem && mem <= 2) || (cores && cores <= 2)) return "balanced";
-  return "full";
-}
-/** the defaults on this device: its level, and the motion that follows the level */
-const firstSettings = (): Settings => { const level = deviceLevel(); return { ...DEFAULTS, level, motion: level === "performance" ? "reduce" : "auto" }; };
-
 export const useSettings = create<SettingsStore>()(
   persist(
     (set) => ({
-      ...firstSettings(),
+      ...DEFAULTS,
       set: (patch) => set((s) => ({
         ...patch,
-        ...(patch.level ? { motion: patch.level === "performance" ? "reduce" as const : "auto" as const } : {}),
         greekSize: clamp(patch.greekSize ?? s.greekSize, LIMITS.greekSize),
         leading: clamp(patch.leading ?? s.leading, LIMITS.leading),
       })),
-      reset: () => set(firstSettings()),
+      reset: () => set(DEFAULTS),
     }),
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
-      partialize: ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace }) => ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace }),
-      // settings saved before the three levels: "reduce motion" becomes Performance
-      merge: (saved, current) => {
-        const p = (saved ?? {}) as Partial<Settings>;
-        return { ...current, ...p, level: p.level ?? (p.motion === "reduce" ? "performance" : deviceLevel()) };
-      },
+      partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }),
+      // version 1: the settings of Gold and lamplight; version 2: the printed page's (migrate, below)
+      version: 2,
+      migrate: (saved, version) => (version < 2 ? upgrade(saved) : saved) as SettingsStore,
       skipHydration: true,
     },
   ),
 );
 
-/** The colour of the browser's own bar on phones (and of an installed app's title bar): design A's black frame. */
-export const THEME_COLOUR = "#070504";
+/**
+ * Settings saved before the printed page (version 1): the reader's Daylight page becomes Paper and its Lamplight the
+ * device's own choice; the old Greek faces (Garamond, then called "didot", and Sans) give way to Gentium; the animation
+ * levels, the bottom bar's setting and the English face are dropped (Performance still asks for no movement).
+ */
+export function upgrade(saved: unknown): Partial<Settings> {
+  const p = { ...((saved ?? {}) as Record<string, unknown>) };
+  const theme: ThemePref = p.theme === "light" ? "paper" : "auto";
+  const motion: MotionPref = p.motion === "reduce" || p.level === "performance" ? "reduce" : p.motion === "full" ? "full" : "auto";
+  delete p.level; delete p.bar; delete p.textFace;
+  return { ...(p as Partial<Settings>), theme, greekFace: "gentium", motion };
+}
 
-/** True when the reader's page is Daylight. */
-export const isDaylight = (theme: ThemePref) => theme === "light";
+/** The colour of the browser's own bar on phones (and of an installed app's title bar): the paper, and the night page. */
+export const THEME_COLOUR = "#f3ece0";
+export const THEME_COLOUR_NIGHT = "#1b1814";
 
 /** Writes the settings onto <html>. Kept in one place so the no-flash boot script matches it. */
 export function applySettings(s: Settings) {
   const el = document.documentElement;
-  // the reader's page (Night or Daylight); only the reader reads it (styles/tokens.css, [data-page="day"])
-  if (isDaylight(s.theme)) el.setAttribute("data-reader-page", "day"); else el.removeAttribute("data-reader-page");
+  // Paper or Night, chosen for good; "auto" leaves it to the device (styles/tokens.css)
+  if (s.theme === "paper" || s.theme === "night") el.setAttribute("data-theme", s.theme); else el.removeAttribute("data-theme");
   if (s.motion === "auto") el.removeAttribute("data-motion"); else el.setAttribute("data-motion", s.motion);
-  el.setAttribute("data-level", s.level);
   el.style.setProperty("--greek-size", `${s.greekSize}rem`);
   el.style.setProperty("--reading-leading", String(s.leading));
-  if (s.greekFace === "didot") el.removeAttribute("data-greek-face"); else el.setAttribute("data-greek-face", s.greekFace);
-  if (s.textFace === "serif") el.removeAttribute("data-text-face"); else el.setAttribute("data-text-face", s.textFace);
+  if (s.greekFace === "didot") el.setAttribute("data-greek-face", "didot"); else el.removeAttribute("data-greek-face");
 }
 
 /** True when animation should be skipped: the user's setting wins, then the system setting. */
@@ -136,16 +117,12 @@ export function prefersReducedMotion(motion: MotionPref): boolean {
 export const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion(useSettings.getState().motion) ? "auto" : "smooth");
 
 /**
- * Runs before first paint (inlined in <head>) so the reader's saved page never flashes.
+ * Runs before first paint (inlined in <head>) so a page chosen as Paper or Night never flashes the other.
  * Must mirror applySettings().
  */
-export const BOOT_SCRIPT = `(function(){try{var s=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}").state||{};var e=document.documentElement;
-var m=navigator.deviceMemory,c=navigator.hardwareConcurrency,d=m&&m<2?"performance":(m&&m<=2)||(c&&c<=2)?"balanced":"full";
-if(!s.level&&!s.motion&&d==="performance")s.motion="reduce";
-if(s.theme==="light")e.setAttribute("data-reader-page","day");
-if(s.motion==="reduce"||s.motion==="full")e.setAttribute("data-motion",s.motion);
-e.setAttribute("data-level",s.level==="full"||s.level==="balanced"||s.level==="performance"?s.level:(s.motion==="reduce"?"performance":d));
+export const BOOT_SCRIPT = `(function(){try{var j=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}")||{},s=j.state||{},o=!(j.version>=2),e=document.documentElement;
+var t=o?(s.theme==="light"?"paper":""):s.theme;if(t==="paper"||t==="night")e.setAttribute("data-theme",t);
+if(s.motion==="reduce"||(o&&s.level==="performance"))e.setAttribute("data-motion","reduce");else if(s.motion==="full")e.setAttribute("data-motion","full");
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));
-if(s.greekFace==="gentium"||s.greekFace==="sans")e.setAttribute("data-greek-face",s.greekFace);
-if(s.textFace==="sans")e.setAttribute("data-text-face","sans");}catch(_){}})();`;
+if(!o&&s.greekFace==="didot")e.setAttribute("data-greek-face","didot");}catch(_){}})();`;

@@ -1,23 +1,18 @@
 "use client";
 /**
- * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the reader's page, the
- * typefaces, the size of the Greek and the line spacing. Settings shows it under Reading and the
+ * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the page (Paper or Night), the
+ * Greek typeface, the size of the Greek and the line spacing. Settings shows it under Reading and the
  * reader's Aa panel shows the same controls, so a change in either is the same change, made the same way.
  */
-import { useSettings, LIMITS, type ThemePref, type GreekFace, type TextFace } from "@/lib/settings";
+import { useSettings, LIMITS, type ThemePref, type GreekFace } from "@/lib/settings";
 import styles from "./SettingsPanel.module.css";
 
-// the site is dark; the reader's page can be Lamplight or Daylight (warm paper), against eye strain (design A's names)
-const PAGES: [ThemePref, string][] = [["dark", "Lamplight"], ["light", "Daylight"]];
+// the page follows the device's light or dark mode, unless Paper or Night is chosen for good (redesign decision 2)
+export const PAGES: [ThemePref, string][] = [["auto", "Follow device"], ["paper", "Paper"], ["night", "Night"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
 const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
-  { v: "didot", name: "Garamond", about: "The site's own face", font: "var(--font-garamond)" },
   { v: "gentium", name: "Gentium", about: "A book face made for scholarly Greek", font: "var(--font-gentium)" },
-  { v: "sans", name: "Sans", about: "Clean, without serifs", font: "var(--font-noto-sans)" },
-];
-const TEXT_FACES: { v: TextFace; name: string; font: string }[] = [
-  { v: "serif", name: "Serif", font: "var(--font-garamond)" },
-  { v: "sans", name: "Sans", font: "var(--font-alegreya-sans)" },
+  { v: "didot", name: "Didot", about: "The Greek of the old Didot editions", font: "var(--font-didot)" },
 ];
 
 export function FacePicker<T extends string>({ label, value, options, sample, lang, onChange }:
@@ -61,15 +56,13 @@ export default function ReadingControls() {
   const s = useSettings();
   return (
     <>
-      <span className={styles.subLabel}>The reader&apos;s page</span>
-      <Segmented label="The reader's page" value={s.theme === "light" ? "light" : "dark"} options={PAGES} onChange={(theme) => s.set({ theme })} />
+      <span className={styles.subLabel}>The page</span>
+      <Segmented label="The page" value={s.theme} options={PAGES} onChange={(theme) => s.set({ theme })} />
       <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
         μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
       </p>
       <span className={styles.subLabel}>Greek typeface</span>
       <FacePicker label="Greek typeface" value={s.greekFace} options={GREEK_FACES} sample="Ἀχιλλεύς" lang="grc" onChange={(greekFace) => s.set({ greekFace })} />
-      <span className={styles.subLabel}>English typeface</span>
-      <FacePicker label="English typeface" value={s.textFace} options={TEXT_FACES} sample="Sing, goddess" onChange={(textFace) => s.set({ textFace })} />
       <div className={styles.row}>
         <span>Greek text size</span>
         <Stepper label="Greek text size" value={s.greekSize} display={`${Math.round(s.greekSize * 16)} px`}

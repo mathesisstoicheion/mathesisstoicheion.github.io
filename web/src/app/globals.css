@@ -1,9 +1,9 @@
 /* =====================================================================
-   Mathesis Stoicheion: "Gold and lamplight", taken from design A itself (DESIGN.md; redesign/design-a/design-a.html).
-   Colours, type sizes, spacing and motion are named in styles/tokens.css; this file uses those names. The home page, the
-   library and the reader are drawn with design A's own stylesheet (components/a/a.module.css); every other page keeps its
-   own layout, dressed here in design A's type, lines, buttons and fields.
-   The site is dark; the reader's Daylight page redefines the same names inside the reader.
+   Mathesis Stoicheion: the printed page with real photographs (the owner's choice, 2026-10-22; redesign/printed-page/SPEC.md
+   in the project files, and the sample printed-photos.html). Colours, type sizes, spacing and motion are named in
+   styles/tokens.css; this file uses those names: the paper and the ink, the three typefaces, hairline rules, square
+   corners, small capitals spaced wide, red for what matters, and real photographs set as numbered plates.
+   Paper or Night follows the device (tokens.css). The only movement is the ink-in, as a thing arrives.
    ===================================================================== */
 
 :root {
@@ -19,10 +19,11 @@
 }
 
 /* ------------------------------------------------------------- phones */
-/* Phones are up to 760 px wide: they have the header's search and menu, as in design A, and headings take less of the first screen. */
+/* Phones are up to 760 px wide: they have the Menu button and the bar of rooms at the foot, and headings take less of the
+   first screen. */
 @media (max-width: 760px) {
   :root {
-    --step-1: 1.2rem;
+    --step-1: 1.18rem;
     --step-2: 1.4rem;
     --step-3: clamp(1.7rem, 7.4vw, 2.1rem);
     --step-4: clamp(2.4rem, 11.5vw, 3.2rem);
@@ -30,22 +31,35 @@
 }
 
 /* ---------------------------------------------------------------- maps
-   The small maps (the reader's Places, My Library's places, the Explore card) are cut in the stone, like a relief map
-   on a wall (the owner, 2026-10-17: every page element in stone): the land is the face of the stone, the sea is sunk
-   into it, darker, and the coast is the cut's edge catching the torch; names in ivory with a halo of the land.
-   The Periplus lies on NASA's satellite picture, dimmed for the night (--map-dim multiplies it). */
+   The small maps (the reader's Places, the Treasury's places, the Explore card) are printed like an atlas's plates: the
+   land a warm tint of the paper, the sea a shade darker, the coast a fine line of ink, the names in ink with a halo of the
+   land. The Periplus lies on NASA's satellite picture, softened for the page (--map-dim multiplies it). */
 :root {
-  --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(240, 206, 156, 0.34); --map-wave: rgba(240, 206, 156, 0.05);
-  --map-name: #f2ddbb; --map-halo: #3b3026; --map-accent-sea: #f08a5d;
+  --map-land: #e6d8bd; --map-sea: #cfc3ab; --map-coast: rgba(30, 26, 21, 0.45); --map-wave: rgba(30, 26, 21, 0.05);
+  --map-name: #1e1a15; --map-halo: #e6d8bd; --map-accent-sea: #a3301a;
+  --map-edge: #b9aa8e; --map-dim: #f3ece0; --map-shadow: rgba(40, 28, 14, 0.4);
+  --map-sea-name: #2f4f5a; --map-sea-halo: rgba(207, 195, 171, 0.8); --map-region: #5c5043; --map-region-halo: rgba(243, 236, 224, 0.75);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="paper"]) {
+    --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
+    --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
+    --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
+    --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
+  }
+}
+:root[data-theme="night"] {
+  --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
+  --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
   --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
   --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
 }
 
-/* phones: the bar of doors along the bottom (TabBar.tsx), its height with the home-bar area. While it shows (data-tabbar
-   on <html>), the end of every page and what floats at the foot of the screen stand above it. */
+/* phones: the rooms along the foot of the screen (TabBar.tsx), its height with the gesture bar's area. While it shows
+   (data-tabbar on <html>), the end of every page and what floats at the foot of the screen stand above it. */
 :root { --tabbar-h: 0px; }
 @media (max-width: 760px) {
-  :root { --tabbar-h: calc(58px + env(safe-area-inset-bottom, 0px)); }
+  :root { --tabbar-h: calc(56px + env(safe-area-inset-bottom, 0px)); }
   body { padding-bottom: var(--tabbar-h); }
   html[data-tabbar="up"] .toast { bottom: calc(20px + var(--tabbar-h)); }
 }
@@ -53,8 +67,6 @@
 ::view-transition-old(site-tabbar) { display: none; }
 ::view-transition-new(site-tabbar) { animation: none; }
 
-/* the home page vase: a warm glow behind it, so the black gloss never sinks into the dark */
-:root { --vase-glow: rgba(214, 122, 62, 0.30); }
 
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
@@ -65,21 +77,24 @@ html { -webkit-text-size-adjust: 100%; }
    bars keep working. (Clip on <html> or <body> would not do: their setting goes to the window, or, on a <body> whose
    <html> has one of its own, makes <body> a scroll box and unpins every sticky bar.) */
 main { overflow-x: clip; }
+/* the paper: EB Garamond at 19 px on a computer, 18 px on a phone (the sample's body), old-style figures as a book has */
 body {
   margin: 0;
-  background: transparent;   /* the page's black is <html>'s */
+  background: transparent;   /* the paper is <html>'s */
   color: var(--ink);
-  font: 400 var(--step-0) / 1.6 var(--f-body);
+  font: 400 1.1875rem / 1.55 var(--f-body);
+  font-variant-numeric: oldstyle-nums;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-/* the page: design A's black (html,body{background:var(--black)}) */
-html { background: var(--bg); }
-/* the doorway (the home page) reads in EB Garamond, the lamp room in Literata (styles/tokens.css) */
+@media (max-width: 900px) { body { font-size: 1.125rem; } }
+html { background: var(--bg); transition: background-color 0.6s var(--ease); }
 main[data-screen] { font-family: var(--f-body); }
-
-/* the home page's floating letters, behind every other page's words (components/Page.tsx; the home page has its own) */
-.page-dust { position: fixed; inset: 0; z-index: -1; pointer-events: none; width: 100%; height: 100%; display: block; }
+/* the paper's still, faint fibre: two soft shades at its head and foot, made of gradients (no picture, nothing moves) */
+body::after {
+  content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(120% 80% at 50% 0%, transparent 55%, var(--paper-shade)), radial-gradient(90% 60% at 50% 110%, var(--paper-shade), transparent 70%);
+}
 /* design A's reader with one book open: its own bar along the top is the way home and back to the library, so the site's
    header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
 html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
@@ -89,8 +104,9 @@ body::before {
   content: ""; position: fixed; z-index: var(--z-over-header); top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px);
   background: var(--frame); pointer-events: none;
 }
-/* titles: design A's tall, narrow, thin capitals (Noto Serif Display at 62.5% width, weight 300) */
-h1, h2, h3, h4 { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; line-height: 1.02; margin: 0; text-wrap: balance; letter-spacing: -0.005em; }
+/* titles: EB Garamond, upright and regular, set close, as a book's (red for an emphasis inside them) */
+h1, h2, h3, h4 { font-family: var(--f-display); font-weight: 400; line-height: 1.1; margin: 0; text-wrap: balance; letter-spacing: -0.01em; }
+:where(h1, h2, h3) em { color: var(--rubric); }
 h2 { font-size: var(--step-3); }
 h3 { font-size: var(--step-2); }
 p { margin: 0; }
@@ -105,22 +121,22 @@ input { text-overflow: ellipsis; }
 @media (max-width: 760px) { select { font-size: var(--step-0) !important; min-height: var(--tap); } }
 /* on touch screens, tick boxes and radio buttons are big enough for a finger */
 @media (pointer: coarse) { input[type="checkbox"], input[type="radio"] { width: 20px; height: 20px; flex: none; } }
-:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-::selection { background: color-mix(in srgb, var(--accent) 30%, transparent); color: var(--accent-hi); }
-/* the typefaces chosen in Settings (lib/settings.ts): Greek text, and English reading text; headings keep Didot */
-html[data-greek-face="gentium"] { --f-greek: var(--font-gentium), "Gentium Book Plus", var(--font-didot), serif; }
-html[data-greek-face="sans"] { --f-greek: var(--font-noto-sans), "Noto Sans", system-ui, sans-serif; }
-html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya Sans", system-ui, sans-serif; }
-/* wide-spaced capitals, the way labels are cut in the stone (DESIGN.md: Type) */
+:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
+::selection { background: color-mix(in srgb, var(--rubric) 22%, transparent); color: var(--ink); }
+/* the Greek typeface chosen in Settings (lib/settings.ts): Gentium Book Plus, or GFS Didot */
+html[data-greek-face="didot"] { --f-greek: var(--face-didot); }
 [lang="grc"] { font-family: var(--f-greek); }
+/* small capitals, and wide-spaced capitals for labels (the sample's .sc and .caps) */
+.sc { font-variant: small-caps; letter-spacing: 0.08em; font-feature-settings: "smcp", "c2sc"; }
+.rub { color: var(--rubric); }
 
 .wrap {
   max-width: var(--maxw); margin: 0 auto;
   /* a phone on its side puts the notch at one edge: keep text clear of it */
   padding-left: max(var(--gutter), env(safe-area-inset-left, 0px)); padding-right: max(var(--gutter), env(safe-area-inset-right, 0px));
 }
-/* small labels: design A's .mono */
-.label { font-family: var(--f-label); font-weight: 400; font-size: var(--step--2); line-height: 1.35; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+/* small labels: capitals spaced wide, as a printed running head (the sample's .caps) */
+.label { font-family: var(--f-label); font-weight: 500; font-size: var(--step--2); line-height: 1.35; letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
 .muted { color: var(--ink-2); }
 /* small print is the scale's caption step, not the browser's "smaller" (review fixes, slice 3) */
 :where(small) { font-size: var(--step--1); }
@@ -141,8 +157,8 @@ html[data-text-face="sans"] { --f-body: var(--font-alegreya-sans), "Alegreya San
   .snap-row::-webkit-scrollbar { display: none; }
 }
 
-/* waiting for the next page (NavWait.tsx): the fillet along the header's foot is lit, and a warm light travels along
-   it until the page arrives. It fades in only after a moment, so a page that comes at once shows nothing. */
+/* waiting for the next page (NavWait.tsx): a fine red rule along the top of the window, along which a lighter red travels
+   until the page arrives. It fades in only after a moment, so a page that comes at once shows nothing. */
 .navwait {
   position: fixed; z-index: var(--z-over-header); left: 0; right: 0; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px) - var(--space-1)); height: var(--space-1);
   overflow: hidden; pointer-events: none; opacity: 0; transition: opacity var(--dur-quick) var(--ease);
@@ -172,73 +188,71 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 @keyframes pull-spin { to { transform: rotate(360deg); } }
 
 /* ------------------------------------------------------------- ornament */
-/* Thin 1px lines instead of shadows (design A). The old pottery bands keep their class names, so every page that drew a
-   meander now draws a line. */
+/* Hairline rules. The old ornament bands keep their class names, so every page that drew one now draws a rule. */
 .meander, .tongues, .rays, .cut { display: block; height: 1px; background: var(--rule); }
 .tongues { width: 36px; flex: none; }
 .rays { width: 56px; }
-.draw { animation: draw calc(1.8s / var(--tempo)) var(--ease-cut) both; }
-@keyframes draw { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+.draw { animation: ink var(--ink-in) var(--ease) both; }
 
 /* ------------------------------------------------------------- buttons */
-/* Design A's buttons: tall narrow capitals; the main one solid (lamplight with dark ink in the lamp room, a cream plate
-   with red ink in the doorway), the second outlined in a fine line. Under the hand they rise two pixels. */
+/* The sample's buttons: small capitals spaced wide; the main one in ink with paper letters, turning red under the hand;
+   the second only a hairline frame. Nothing rises or moves. */
 .btn {
-  display: inline-flex; align-items: center; gap: 10px; padding: 12px 18px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; min-height: var(--tap);
   border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
-  font-family: var(--f-display); font-stretch: 75%; font-weight: 400; font-size: var(--step-0); line-height: 1.2; letter-spacing: 0.06em; text-transform: uppercase; text-decoration: none;
-  transition: transform 0.25s, border-color 0.25s, background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+  font: 500 0.78rem / 1.1 var(--f-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.btn:hover { transform: translateY(-2px); }
+.btn:hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
-.btn.ghost:hover { border-color: var(--ink); }
+.btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 8px 12px; gap: var(--space-2); font-size: var(--step--1); }
+.btn.small { padding: 9px 13px; gap: var(--space-2); font-size: 0.7rem; min-height: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
-.btn .arr { transition: transform var(--dur) var(--ease); }
-.btn:hover .arr { transform: translateX(3px); }
-.btn[aria-disabled="true"], .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+.btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn[aria-disabled="true"]:hover, .btn:disabled:hover { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-ink); }
 
-/* a chip: design A's reader-tool chip, a fine line round it; pressed, it fills with the dark chip colour and its line lights */
+/* a chip: a hairline frame; pressed, it is filled with ink and its words are paper (the sample's .seg) */
 .chip {
-  display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px 10px;
-  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent;
+  display: inline-flex; align-items: center; gap: var(--space-2); padding: 6px 11px;
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); background: transparent; color: var(--ink);
   text-decoration: none;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.chip:hover { border-color: var(--rule-2); }
-.chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--ink); border-color: var(--accent); }
+.chip:hover { border-color: var(--ink-3); color: var(--rubric); }
+.chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 5 px beyond its edge (a 44 px target) */
 @media (pointer: coarse) {
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -5px 0; }
 }
-/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): design A's .seg, small capitals
-   in a fine frame, the chosen one filled with the dark chip colour */
+/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, small
+   capitals in a hairline frame, the chosen one in ink */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 7px 11px; font: 400 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.1em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
-.segmented > button:hover:not([aria-checked="true"]) { color: var(--ink); }
-.segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--ink); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
+.segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
-/* fields: design A's search box, the raised surface in a fine line */
-:where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type]), textarea, select) {
-  background-color: var(--hollow); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: none;
+/* fields: a line to write on, as on a printed form; a box of several lines and a drop-down keep a hairline frame */
+:where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type])) {
+  background-color: transparent; color: var(--ink); border: 0; border-bottom: 1px solid var(--ink-3); border-radius: var(--radius); box-shadow: none;
 }
-:where(input, textarea, select):focus-visible { outline: none; border-color: var(--accent); }
-:where(select) option { background-color: var(--surface); color: var(--ink); }
-/* a drop-down keeps the hollow, with a small gilded chevron at its right end in place of the browser's own arrow
-   (stronger than :where so that a module's own background shorthand does not wipe it) */
+:where(textarea, select) { background-color: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: none; }
+:where(input, textarea, select):focus-visible { outline: none; border-color: var(--rubric); }
+:where(select) option { background-color: var(--bg); color: var(--ink); }
+/* a drop-down keeps a small chevron in ink at its right end in place of the browser's own arrow (stronger than :where so
+   that a module's own background shorthand does not wipe it) */
 select:not([multiple]):not([size]) {
   appearance: none; padding-right: var(--space-6);
   background-image: var(--select-arrow); background-repeat: no-repeat; background-position: right 0.8em center; background-size: 10px 6px;
 }
-/* ticks and choices: small hollows cut in the stone; checked, a gilded tick or a gilded stone is set in them */
+/* ticks and choices: a small hairline square or ring; checked, a red tick or a red dot is printed in it */
 :where(input[type="checkbox"], input[type="radio"]) {
   appearance: none; width: 18px; height: 18px; margin: 0; flex: none; display: inline-grid; place-content: center; vertical-align: -3px;
-  background: var(--hollow); border: 1px solid var(--rule-2); border-radius: var(--radius); cursor: pointer;
+  background: transparent; border: 1px solid var(--ink-3); border-radius: var(--radius); cursor: pointer;
 }
 :where(input[type="radio"]) { border-radius: var(--radius-round); }
 :where(input[type="checkbox"])::before {
@@ -247,114 +261,101 @@ select:not([multiple]):not([size]) {
   transform: scale(0); transition: transform var(--dur-quick) var(--ease);
 }
 :where(input[type="radio"])::before {
-  content: ""; width: 0.5em; height: 0.5em; border-radius: var(--radius-round); background: var(--inlay); box-shadow: var(--inlay-edge);
+  content: ""; width: 0.5em; height: 0.5em; border-radius: var(--radius-round); background: var(--inlay);
   transform: scale(0); transition: transform var(--dur-quick) var(--ease);
 }
 :where(input[type="checkbox"], input[type="radio"]):checked::before { transform: none; }
-:where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+:where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 :where(input[type="checkbox"], input[type="radio"]):disabled { opacity: 0.5; cursor: default; }
-/* a "more" disclosure keeps its small triangle, in gilt like the site's own (the Editions page), not the browser's grey */
+/* a "more" disclosure keeps its small triangle, in red like a printer's mark, not the browser's grey */
 :where(summary)::marker { color: var(--accent); }
 :where(summary)::-webkit-details-marker { color: var(--accent); }
 
-/* a short message on a page of its own (sign in first; nothing chosen yet): a tablet sunk into the wall */
+/* a short message on a page of its own (sign in first; nothing chosen yet): a note set off by a rule of red at its left */
 .notice {
-  max-width: 640px; margin-block: var(--space-7); padding: var(--space-6); display: grid; gap: var(--space-3);
-  background: var(--field); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in); color: var(--ink-2);
+  max-width: 640px; margin-block: var(--space-7); padding: var(--space-2) 0 var(--space-2) var(--space-5); display: grid; gap: var(--space-3);
+  border-left: 1px solid var(--rubric); color: var(--ink-2);
 }
-/* a page's own window onto art (components/a/PageWin.tsx, design A's window): a framed opening in the black page onto its
-   object, engraved in gold lines, which opens as a round iris and whose lines bend away from the pointer (lib/a/lamplight.js
-   draws the iris, its gold rim and its frame line). At the head of a page it stands at the right of the title and the
-   words run round it; a header that holds one is laid out as plain flow, since a grid would give the window a row of its own. */
-.piece { margin: 0; }
-.awin-frame { position: relative; width: 100%; aspect-ratio: 1 / var(--piece-ratio); overflow: hidden; background: var(--win-wait); }
-.awin-frame canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: pan-y; }
-.piece figcaption { margin-top: var(--space-2); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
-.piece figcaption b { color: var(--ink); font-weight: 600; }
-.piece figcaption a { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 3px; }
-.piece-why { font-style: italic; }
-/* a big window, like the home page's reliefs (the owner, 2026-10-17: "I liked the bigger windows") */
-.piece-head { float: right; width: min(clamp(240px, 27vw, 380px), 500px / var(--piece-ratio)); margin: var(--space-1) 0 var(--space-5) var(--space-7); }
-.piece-head.piece-wide { width: clamp(300px, 38vw, 520px); }
-/* a broad window in a narrow column of text (the credits, the about page) leaves the title room beside it */
-@media (min-width: 761px) { .page-head > .piece-head.piece-wide { width: min(clamp(300px, 38vw, 520px), 45%); } }
-/* A page opens calmly (the owner, 2026-10-17: "each page should open with a beautiful animation with a big stone piece and
-   the name and function of the page"): its name, its Greek name and what it is for rise into place one after another,
-   and last its window, which then opens onto its piece. Only opacity and a small rise move, and
-   nothing holds its last frame. (:where keeps these weaker than any animation of an element's own.) */
-@keyframes enter { from { opacity: .3; transform: translateY(10px); } }  /* starts dim, never black: at 3x a fade from nothing reads as a blank page */
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > * { animation: enter var(--dur-enter) var(--ease-enter) backwards; }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(2)) { animation-delay: var(--enter-step); }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(3)) { animation-delay: calc(2 * var(--enter-step)); }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(4)) { animation-delay: calc(3 * var(--enter-step)); }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(:nth-child(n + 5)) { animation-delay: calc(4 * var(--enter-step)); }
-:where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > :where(.piece-head) { animation-duration: calc(1.5 * var(--dur-enter)); animation-delay: calc(3.5 * var(--enter-step)); }
-/* a header laid out as a grid or a column becomes plain flow round its piece, with the same steps between its lines */
-.page-head, header:has(> .piece-head), .area-head .wrap:has(> .piece-head) { display: flow-root; }
-:is(.page-head, header:has(> .piece-head)) > :not(.piece, .meander):not(:first-child):not(.piece:first-child + *) { margin-top: var(--space-3); }
-.piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); text-align: center; }
+
+/* ------------------------------------------------------------- plates
+   A plate (components/plate/Plate.tsx): a real photograph in its real colours, in a fine double frame on the page's
+   second surface, numbered and credited beneath (SPEC.md 3.7; the sample's .plate.frame). */
+.plate { margin: 0; position: relative; min-width: 0; }
+.plate-ph { position: relative; aspect-ratio: 1 / var(--plate-ratio, 1.333); overflow: hidden; background: var(--bg-2); }
+.plate-ph img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 35%; }
+.plate-frame { padding: 14px; border: 1px solid var(--rule); background: var(--bg); }
+.plate-frame::before { content: ""; position: absolute; inset: 5px; border: 1px solid var(--rule-2); pointer-events: none; }
+.plate figcaption { margin-top: 10px; display: flex; gap: 10px; font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.plate-no { flex: none; padding-top: 3px; color: var(--rubric); font: 500 0.66rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
+.plate figcaption i { color: var(--ink-2); }
+.plate-credit { color: var(--ink-3); }
+.plate figcaption a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.plate figcaption a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+/* a photograph inks in as it arrives (the one movement there is), then never moves */
+.plate-ph img { animation: ink var(--ink-in) var(--ease) both; }
+/* the head of a page: its plate at the right of the title on a computer, after the main action on a phone */
+.piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); }
 .piece-foot.piece-wide { width: min(520px, 100%); }
-/* a page that is a tool (a round of questions, the day's cards): on a computer its piece stands in its big window beside the
-   tool rather than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
+/* a page that is a tool (a round of questions, the day's cards): on a computer its plate stands beside the tool rather
+   than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
 .tool-page { display: grid; grid-template-columns: minmax(0, 1fr); }
 .tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; }
 @media (min-width: 761px) {
-  .tool-page { grid-template-columns: minmax(0, 1fr) auto; column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
-  .tool-page > .piece-head { float: none; margin: var(--space-6) 0 0; }
+  .tool-page { grid-template-columns: minmax(0, 1fr) min(30%, 300px); column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
+  .tool-page > .piece-head { margin: var(--space-6) 0 0; }
 }
-/* a page's piece standing outside a header (the home page's) rises into place like a header's */
-:where(.tool-page) > :where(.piece-head), .piece-rise { animation: enter calc(1.5 * var(--dur-enter)) var(--ease-enter) calc(3.5 * var(--enter-step)) backwards; }
-/* Performance, the lightest of the three animation levels: pages simply appear */
-html[data-level="performance"] :where(.area-head .wrap, .page-head, header:has(> .piece-head), .enter) > *,
-html[data-level="performance"] :where(.tool-page) > .piece-head, html[data-level="performance"] .piece-rise { animation: none; }
-/* on a phone the piece stands in a window of its own across the screen, after the title, the purpose and the page's main
-   action (a header holds both, "piece-desk" before the title and "piece-phone" after the action; the one not shown loads
-   nothing) */
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
   .piece-phone { display: block; }
-  /* full size: on a phone it follows the title, the purpose and the page's main action (PAGE-RULES.md, rule 2) */
-  .piece-head { float: none; width: min(74vw, 60svh / var(--piece-ratio)); margin: var(--space-5) auto; }
-  .piece-head.piece-wide { width: 100%; }
-  .piece-head figcaption { text-align: center; }
-  .piece figcaption { font-size: var(--step--2); }
+  .piece-head { width: min(100%, 420px); margin: var(--space-5) 0 var(--space-2); }
 }
 
-/* stone surfaces, for markup that has no module of its own: a panel sunk into the wall, and a slab set on it */
+/* ------------------------------------------------------------- ink-in
+   Decision 3: text and photographs ink in gently as they arrive, like ink settling into the paper, then nothing moves.
+   A page's head inks in line by line; any element marked .rv inks in as it comes into view (components/Reveal.tsx). */
+@keyframes ink { from { opacity: 0; filter: blur(3px); transform: translateY(8px); } }
+@keyframes lift { from { opacity: 0; filter: blur(3px); transform: translateY(8px); } }   /* an older name for the same */
+:where(.area-head .wrap, .ph-text, .enter) > * { animation: ink var(--ink-in) var(--ease) backwards; }
+:where(.area-head .wrap, .ph-text, .enter) > :where(:nth-child(2)) { animation-delay: var(--ink-step); }
+:where(.area-head .wrap, .ph-text, .enter) > :where(:nth-child(3)) { animation-delay: calc(2 * var(--ink-step)); }
+:where(.area-head .wrap, .ph-text, .enter) > :where(:nth-child(4)) { animation-delay: calc(3 * var(--ink-step)); }
+:where(.area-head .wrap, .ph-text, .enter) > :where(:nth-child(n + 5)) { animation-delay: calc(4 * var(--ink-step)); }
+:where(.page-head) > :where(.piece-head) { animation: ink var(--ink-in) var(--ease) calc(3 * var(--ink-step)) backwards; }
+
+/* surfaces, for markup that has no module of its own: a hairline frame, and a panel on the page's second surface */
 .field { background: var(--field); box-shadow: var(--field-edge); }
 .slab { background: var(--slab); box-shadow: var(--slab-edge); }
-/* Every ordinary link card is the same square carved slab (PAGE-RULES.md, rule 3): square corners, a thin edge, no icons.
-   (The Library's stelai, the Treasury's temple and the Stoa's colonnade keep their own shapes.) */
-.slab-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-3); }
+/* Every ordinary link card is set like the sample's "Where are you starting?": a rule of ink over it, its name, a line or
+   two beneath; under the hand its name turns red. No box, no icon. */
+.slab-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-5) clamp(20px, 3vw, 40px); }
 .slab-card {
-  display: grid; gap: 4px; align-content: start; padding: var(--space-4) var(--space-5); border-radius: 0;
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); text-decoration: none;
-  transition: background-color var(--dur) ease;
+  display: grid; gap: 4px; align-content: start; padding: var(--space-4) 0 var(--space-2); border-radius: 0; border-top: 1px solid var(--ink);
+  background: transparent; color: var(--ink); text-decoration: none;
+  transition: color var(--dur) var(--ease);
 }
-a.slab-card:hover, a.slab-card:focus-visible, .slab-card:has(a:hover) { background-color: var(--slab-lit); }
-.slab-card :where(b, h3, strong) { color: var(--ink); font-weight: 600; }
+.slab-card :where(b, h3, strong) { color: var(--ink); font-weight: 500; font-size: var(--step-sub); transition: color var(--dur) var(--ease); }
+a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3, strong), .slab-card:has(a:hover) :where(b, h3, strong) { color: var(--rubric); }
 .slab-card :where(.muted, p, small) { color: var(--ink-2); font-size: var(--step--1); margin: 0; }
-:where(input, textarea)::placeholder { color: var(--ink-3); }
+:where(input, textarea)::placeholder { color: var(--ink-3); font-style: italic; }
 
 /* certainty labels */
-.tag { display: inline-flex; align-items: center; gap: 6px; font: 400 var(--step--2) / 1.3 var(--f-label);
-  letter-spacing: 0.14em; text-transform: uppercase; padding: 3px 8px 2px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; }
+.tag { display: inline-flex; align-items: center; gap: 6px; font: 500 var(--step--2) / 1.3 var(--f-label);
+  letter-spacing: 0.16em; text-transform: uppercase; padding: 3px 8px 2px; border: 1px solid currentColor; border-radius: var(--radius); background: transparent; }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
 .tag.legend { color: var(--legend); }
 
 /* --------------------------------------------------------- page turn */
-/* Route changes: the old page fades into the dark and the new one comes up out of it, calmly. */
-::view-transition-old(.page-turn) { animation: calc(240ms / var(--tempo)) ease-in both turn-out; }
-::view-transition-new(.page-turn) { animation: calc(620ms / var(--tempo)) var(--ease-enter) calc(60ms / var(--tempo)) both turn-in; }
+/* Route changes: the old page lifts away and the new one inks in, calmly; nothing slides. */
+::view-transition-old(.page-turn) { animation: 0.22s ease-in both turn-out; }
+::view-transition-new(.page-turn) { animation: 0.6s var(--ease) 0.05s both turn-in; }
 @keyframes turn-out { to { opacity: 0; } }
-@keyframes turn-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes turn-in { from { opacity: 0; } to { opacity: 1; } }
 
 
-/* reveal: visible at rest, the class only cuts it in (it fades up out of the stone, rising a few pixels) */
-.rv.in { animation: lift var(--dur-slow) var(--ease-enter) both; }
-@keyframes lift { from { transform: translateY(12px); opacity: 0; } to { transform: none; opacity: 1; } }
+/* reveal: visible at rest, the class only inks it in as it comes into view (components/Reveal.tsx) */
+.rv.in { animation: ink var(--ink-in) var(--ease) both; }
 
 html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
   animation: none !important; transition: none !important;
@@ -389,83 +390,76 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 
 .toast {
   position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom, 0px)); z-index: 70;
-  transform: translate(-50%, 20px); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
+  transform: translateX(-50%); opacity: 0; pointer-events: none; max-width: calc(100vw - 32px);
   background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); padding: 10px 18px; border-radius: var(--radius); font-size: var(--step-0);
-  box-shadow: inset 0 0 0 1px var(--inv-edge), 0 18px 36px -18px var(--shadow);
-  transition: opacity var(--dur-quick), transform var(--dur-quick) var(--ease);
+  box-shadow: 0 14px 30px -18px var(--shadow);
+  transition: opacity var(--dur) var(--ease);
 }
-.toast.show { opacity: 1; transform: translate(-50%, 0); }
+.toast.show { opacity: 1; }
 
-/* the foot of every page: the black frame, a fine line along its top */
-.site-footer {
-  margin-top: clamp(48px, 8vw, 96px); background: var(--frame); color: var(--frame-ink);
-  --ink: var(--frame-ink);   /* the frame's own words, as in the header */
-  border-top: 1px solid var(--rule);
-}
-.site-footer-carve { grid-column: 1 / -1; margin-bottom: var(--space-2); }
-
-.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 40px; padding-block: var(--space-6) 48px; font-size: var(--step--1); }
-.site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-gentium); margin-bottom: 6px; }
-.site-footer-src { color: var(--ink-3); font-size: var(--step--1); }
+/* the foot of every page: a colophon, under a rule of ink, the printer's device beside the name */
+.site-footer { margin-top: clamp(64px, 10vh, 120px); color: var(--ink-2); }
+.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 48px; padding-block: 28px 56px; font-size: var(--step--1); border-top: 1px solid var(--ink); }
+.site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-didot); color: var(--ink); margin-bottom: 6px; }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-.site-footer-src { grid-column: 1 / -1; max-width: 70ch; }
+.site-footer-links a { text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.site-footer-links a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+.site-footer-src { grid-column: 1 / -1; max-width: 70ch; color: var(--ink-3); font-size: var(--step--1); }
+.site-footer-fin { grid-column: 1 / -1; text-align: center; margin-top: var(--space-5); font: 400 1.3rem / 1 var(--face-didot); color: var(--rubric); letter-spacing: 0.4em; }
 @media (max-width: 680px) {
   .site-footer-in { grid-template-columns: minmax(0, 1fr); }
   .site-footer-links { align-items: flex-start; gap: 0; }
   .site-footer-links a { display: inline-flex; align-items: center; min-height: var(--tap); }  /* a finger-sized target */
 }
 
-/* an area's head (components/AreaHeader.tsx): the source of a line set in place of its Greek name, and the band under it */
+/* an area's head (components/AreaHeader.tsx): the source of a line set in place of its Greek name, and the rule under it */
 .area-carve-cap { max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
 .area-meander { margin-top: var(--space-2); }
 
-/* The one page head (components/PageHead.tsx; PAGE-RULES.md, rule 1): the path, a line in Greek where the page has one,
-   the title, the Greek name in gold, one upright line saying what the page is for, its window onto art at the right. Large
-   for the doors and the Town Hall, shorter for every page inside them: shorter in its words and spacing, never in its window. */
-.ph { padding-block: clamp(40px, 6vw, 72px) var(--space-5); }
-.ph-short { padding-block: clamp(28px, 4.4vw, 52px) var(--space-4); }
-.ph-path { color: var(--accent-2); display: flex; flex-wrap: wrap; align-items: center; min-height: 1.6em; }
+/* The one page head (components/PageHead.tsx), as the sample's catalogue head: the kicker (the path, after a short red
+   rule), the title, its Greek name in GFS Didot in red, one line saying what the page is for, the page's main action, and
+   the page's plate at the right. Large for the rooms, shorter for every page inside them, never in its plate. */
+.ph { display: grid; grid-template-columns: minmax(0, 1fr) min(32%, 320px); column-gap: clamp(28px, 5vw, 64px); align-items: end; padding-block: clamp(36px, 7vh, 80px) var(--space-6); }
+.ph-short { padding-block: clamp(28px, 5vh, 56px) var(--space-5); }
+.ph.ph-tool { grid-template-columns: minmax(0, 1fr); }
+.ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
+.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; }
+.ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
 .ph-path a { color: inherit; text-decoration: none; }
-.ph-path a:hover, .ph-path a:focus-visible { color: var(--accent); }
+.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); }
 /* the way back is a small line of capitals; under a finger it answers 15 px above and below it (a 44 px target) */
 @media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px -4px; } }
 .ph-sep { color: var(--ink-3); white-space: pre; }
-/* a line in Greek over a page's title, in gold capitals, as design A sets its kickers */
-.ph-inscr { margin: 18px 0 0; font-family: var(--face-display); font-size: clamp(1.3rem, 2.4vw, 2rem); font-weight: 300; line-height: 1.2;
-  letter-spacing: .16em; color: var(--accent); }
-.ph-short .ph-inscr { font-size: clamp(1.1rem, 1.9vw, 1.6rem); margin-top: var(--space-3); }
-/* every page's title in the library's hand (the mix, 2026-10-19): A's narrow capitals in italic, in the lamp's bright gold */
-.ph .ph-title { color: var(--accent-hi); font-style: italic; line-height: 1.02; margin-top: var(--space-4); }
-.ph .ph-title .ph-greek { font-style: normal; }
-.ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5rem); }
-.ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); margin-top: var(--space-3); }
-.ph-greek { display: block; font-family: var(--f-greek); font-size: 0.42em; color: var(--accent); margin-top: 10px; letter-spacing: 0.02em; }
-.ph-short .ph-greek { font-size: 0.5em; }
-.ph-purpose { max-width: 60ch; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); font-style: normal; }
+/* a line in Greek over a page's title, in spaced capitals in red, as a book sets a motto */
+.ph-inscr { margin: 18px 0 0; font: 400 clamp(1.1rem, 2vw, 1.6rem) / 1.3 var(--face-didot); letter-spacing: 0.16em; color: var(--rubric); }
+.ph .ph-title { color: var(--ink); font-weight: 400; line-height: 0.98; margin: 18px 0 10px; letter-spacing: -0.015em; }
+.ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5.2rem); }
+.ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); }
+.ph-greek { display: block; font: 400 0.46em / 1.2 var(--face-didot); color: var(--rubric); margin-top: 12px; letter-spacing: 0.01em; }
+.ph-purpose { max-width: 34em; font-size: 1.08rem; line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
 .ph-short .ph-purpose { font-size: var(--step-0); }
-.ph .ph-action { margin-top: var(--space-4); }
+.ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
+.ph > .piece-desk { align-self: end; }
 @media (max-width: 760px) {
-  .ph { padding-top: 28px; }
-  .ph-short { padding-top: 22px; }
-  .ph-large .ph-title { font-size: clamp(2.2rem, 10.5vw, 2.75rem); margin-top: var(--space-3); }
-  .ph-short .ph-title { font-size: clamp(1.95rem, 9vw, 2.4rem); }
-  .ph-greek { margin-top: 6px; }
+  .ph, .ph.ph-tool { grid-template-columns: minmax(0, 1fr); padding-top: 26px; }
+  .ph-short { padding-top: 20px; }
+  .ph-large .ph-title { font-size: clamp(2.3rem, 11vw, 3rem); }
+  .ph-short .ph-title { font-size: clamp(2rem, 9vw, 2.5rem); }
   .ph-purpose, .ph-short .ph-purpose { font-size: var(--step-0); }
 }
 
-/* a page's search offered in its head (components/FindJump.tsx): cut into the stone like the box it opens */
+/* a page's search offered in its head (components/FindJump.tsx): a line to write on, as the library's search */
 .find-jump {
   display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 34rem; min-height: var(--tap); text-align: left;
-  font: inherit; font-size: var(--step-0); color: var(--ink-3); background: rgba(8, 6, 5, 0.66); border: 0; border-radius: var(--radius);
-  padding: 13px var(--space-4); cursor: text;
-  box-shadow: inset 0 0 0 1px var(--cut-deep), inset 0 3px 6px -2px var(--cut-deep), inset 0 -1px 0 var(--cut-l);
+  font: italic 400 1.2rem / 1.3 var(--f-body); color: var(--ink-3); background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: var(--radius);
+  padding: 8px 0; cursor: text;
 }
-.find-jump svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; }
-.find-jump:hover, .find-jump:focus-visible { outline: none; box-shadow: inset 0 0 0 1px var(--accent), inset 0 3px 6px -2px var(--cut-deep); }
+.find-jump svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
+.find-jump:hover, .find-jump:focus-visible { outline: none; border-bottom-color: var(--rubric); color: var(--ink-2); }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
-.page-title { font-size: clamp(2.4rem, 5vw, 4rem); }
+.page-title { font-size: clamp(2.4rem, 5vw, 4rem); font-weight: 400; }
 /* a title that is one long word (Batrachomyomachia) may break inside the word on a narrow phone, never widen the page;
    on a computer a word breaks only when it would not fit on a line of its own, so a title beside a piece's window wraps
    at its spaces */
@@ -473,10 +467,10 @@ h1, .page-title { overflow-wrap: anywhere; }
 @media (min-width: 761px) { h1, .page-title { overflow-wrap: break-word; } }
 /* a drop-down is as wide as its longest choice; never wider than its column */
 select { max-width: 100%; }
-.page-title > [lang="grc"] { color: var(--accent); }
+.page-title > [lang="grc"] { color: var(--rubric); font-family: var(--face-didot); }
 
 .soon { padding-block: clamp(32px, 5vw, var(--space-7)); }
-.soon-card { max-width: 720px; display: grid; gap: var(--space-4); justify-items: start; padding: var(--space-6); background: var(--field); box-shadow: var(--field-edge); }
+.soon-card { max-width: 720px; display: grid; gap: var(--space-4); justify-items: start; padding: var(--space-5) 0; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
 .soon-card ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); }
 .soon-card li::marker { color: var(--accent); }
 
@@ -541,3 +535,23 @@ select { max-width: 100%; }
 ::highlight(listen-word) { background-color: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { :where(main) :where(h2, h3) > a { padding-block: 4px; } }
+
+/* ------------------------------------------------------------- parts of a page
+   A room's parts (components/a/Door.tsx, DoorBlock), and any section set like the sample's: a rule above it, room to
+   breathe, and a heading set like a book's, with a red section number where it has one (.sh: α´, β´…) and a running rule
+   to the margin. */
+.door-body { padding-bottom: var(--space-6); }
+.door-part { margin-top: clamp(36px, 6vh, 72px); padding-top: clamp(24px, 4vh, 40px); border-top: 1px solid var(--rule); }
+.door-part h2 { font-size: var(--step-3); }
+.door-part h2 a { text-decoration: none; }
+.door-part h2 a:hover { color: var(--rubric); }
+.sh { display: flex; align-items: baseline; gap: 16px; margin: 0 0 30px; }
+.sh .no { font: 400 1.05rem var(--face-didot); color: var(--rubric); }
+.sh h2 { font: 400 clamp(1.7rem, 3.2vw, 2.5rem) / 1.1 var(--f-display); margin: 0; }
+.sh .fill { flex: 1; border-bottom: 1px solid var(--rule); transform: translateY(-6px); min-width: 12px; }
+.sh .src { font-size: var(--step--1); color: var(--ink-3); font-style: italic; }
+@media (max-width: 600px) { .sh { flex-wrap: wrap; gap: 4px 12px; } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
+
+/* the home page: a first visit's question or a returning visitor's desk; which one shows is set before the first paint
+   (lib/visitor.ts, data-visitor on <html>) */
+html[data-visitor="back"] .first-only, html:not([data-visitor="back"]) .back-only { display: none; }

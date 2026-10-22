@@ -38,24 +38,22 @@ export function rank<T>(items: T[], query: string, texts: (x: T) => { main: stri
 
 /** Something the search can do rather than a page it can open. */
 export type ActionId =
-  | "theme-dark" | "theme-light" | "settings" | "bigger" | "smaller"
-  | "face-didot" | "face-gentium" | "face-sans" | "text-sans" | "text-serif" | "motion-reduce" | "motion-auto";
+  | "theme-dark" | "theme-light" | "theme-auto" | "settings" | "bigger" | "smaller"
+  | "face-didot" | "face-gentium" | "motion-reduce" | "motion-auto";
 
 export interface Action { id: ActionId; label: string; words: string[] }
 
 export const ACTIONS: Action[] = [
-  // the site is dark only; the reader's page can be Night (the stone) or Daylight, against eye strain
-  { id: "theme-dark", label: "Reader's page: Night (the stone)", words: ["dark", "dark mode", "night", "black", "theme"] },
-  { id: "theme-light", label: "Reader's page: Daylight", words: ["light", "light mode", "day", "daylight", "papyrus", "theme"] },
+  // Paper or Night (the site follows the device unless one is chosen)
+  { id: "theme-dark", label: "The page: Night", words: ["dark", "dark mode", "night", "black", "theme"] },
+  { id: "theme-light", label: "The page: Paper", words: ["light", "light mode", "day", "daylight", "paper", "papyrus", "theme"] },
+  { id: "theme-auto", label: "The page: follow this device", words: ["auto", "system", "device", "follow", "theme"] },
   { id: "bigger", label: "Bigger Greek text", words: ["bigger", "larger", "zoom in", "text size", "font size", "size"] },
   { id: "smaller", label: "Smaller Greek text", words: ["smaller", "zoom out", "text size", "font size", "size"] },
-  { id: "face-didot", label: "Greek typeface: Garamond", words: ["garamond", "literata", "didot", "typeface", "font"] },
   { id: "face-gentium", label: "Greek typeface: Gentium", words: ["gentium", "typeface", "font"] },
-  { id: "face-sans", label: "Greek typeface: Sans", words: ["sans", "sans serif", "typeface", "font"] },
-  { id: "text-sans", label: "English typeface: Sans", words: ["sans", "sans serif", "english font", "typeface", "font"] },
-  { id: "text-serif", label: "English typeface: Serif", words: ["serif", "english font", "typeface", "font"] },
-  { id: "motion-reduce", label: "Animation: Performance (still art, for older devices)", words: ["reduce motion", "animation", "motion", "still", "performance", "slow", "lag"] },
-  { id: "motion-auto", label: "Animation: Full beauty", words: ["animation", "motion", "full", "beauty"] },
+  { id: "face-didot", label: "Greek typeface: Didot", words: ["didot", "typeface", "font"] },
+  { id: "motion-reduce", label: "Movement: off (nothing inks in)", words: ["reduce motion", "animation", "motion", "still", "performance", "slow", "lag"] },
+  { id: "motion-auto", label: "Movement: ink-in, as this device allows", words: ["animation", "motion", "ink"] },
   { id: "settings", label: "Open Settings", words: ["settings", "preferences", "options", "line spacing", "vibration", "offline"] },
 ];
 

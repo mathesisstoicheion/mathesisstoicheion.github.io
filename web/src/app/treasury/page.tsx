@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
-import { A_ART } from "@/components/a/pictures";
 import Treasury from "@/components/treasury/Treasury";
 import { areaTitle } from "@/config/areas";
 import { NOINDEX } from "@/lib/seo";
@@ -12,7 +11,7 @@ export const metadata: Metadata = { title: areaTitle("treasury"), ...NOINDEX };
 export default function TreasuryPage() {
   return (
     <Page>
-      <Door id="treasury" art={A_ART.mask}>
+      <Door id="treasury" plate="athena-votive">
         <DoorBlock>
           <Suspense fallback={null}>
             <Treasury />

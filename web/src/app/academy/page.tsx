@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
-import { A_ART } from "@/components/a/pictures";
 import AcademyProgress from "@/components/academy/AcademyProgress";
 import LessonPath from "@/components/academy/LessonPath";
 import ReadingPath from "@/components/academy/ReadingPath";
@@ -26,7 +25,7 @@ export default function AcademyPage() {
   return (
     <Page>
       {/* the next step (the day's session, or the next lesson) is the door's main action, under its name */}
-      <Door id="study" art={A_ART.douris} action={<AcademyProgress />}>
+      <Door id="study" plate="douris-school-cup" why="A school: lessons in writing, reading and music, painted on a cup." action={<AcademyProgress />}>
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
             <div>

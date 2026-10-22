@@ -1,17 +1,19 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { useSettings, DEFAULTS, LIMITS, deviceLevel } from "./settings";
+import { describe, expect, it } from "vitest";
+import { useSettings, DEFAULTS, LIMITS, upgrade } from "./settings";
 
 describe("settings", () => {
-  it("starts from the defaults, at this device's level", () => {
-    const { theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace } = useSettings.getState();
-    const first = deviceLevel();
-    expect({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace })
-      .toEqual({ ...DEFAULTS, level: first, motion: first === "performance" ? "reduce" : "auto" });
+  it("starts from the defaults: the page follows the device, Greek in Gentium", () => {
+    const { theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace } = useSettings.getState();
+    expect({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }).toEqual(DEFAULTS);
+    expect(DEFAULTS.theme).toBe("auto");
+    expect(DEFAULTS.greekFace).toBe("gentium");
   });
 
-  it("has no lamp on the passage any more (the owner, 2026-10-22: distracting, never asked for)", () => {
-    expect("lamp" in useSettings.getState()).toBe(false);
-    expect("lamp" in DEFAULTS).toBe(false);
+  it("has no lamp on the passage, no animation levels and no bottom-bar setting any more", () => {
+    for (const gone of ["lamp", "level", "bar", "textFace"]) {
+      expect(gone in useSettings.getState()).toBe(false);
+      expect(gone in DEFAULTS).toBe(false);
+    }
   });
 
   it("keeps text size and line spacing inside their limits", () => {
@@ -23,19 +25,21 @@ describe("settings", () => {
   });
 });
 
-describe("the level a first visit starts at", () => {
-  afterEach(() => vi.unstubAllGlobals());
-  const device = (deviceMemory: number | undefined, hardwareConcurrency: number) => vi.stubGlobal("navigator", { deviceMemory, hardwareConcurrency });
-
-  it("is Full beauty on an ordinary phone or computer", () => {
-    device(8, 8); expect(deviceLevel()).toBe("full");
-    device(4, 8); expect(deviceLevel()).toBe("full");
-    device(undefined, 4); expect(deviceLevel()).toBe("full");   // Safari says nothing of its memory
+describe("settings saved before the printed page", () => {
+  it("turn the reader's Daylight into Paper and its Lamplight into following the device", () => {
+    expect(upgrade({ theme: "light" }).theme).toBe("paper");
+    expect(upgrade({ theme: "dark" }).theme).toBe("auto");
+    expect(upgrade({ theme: "auto" }).theme).toBe("auto");
   });
-  it("steps down on clearly weak devices", () => {
-    device(2, 8); expect(deviceLevel()).toBe("balanced");
-    device(undefined, 2); expect(deviceLevel()).toBe("balanced");
-    device(1, 4); expect(deviceLevel()).toBe("performance");
-    device(0.5, 2); expect(deviceLevel()).toBe("performance");
+  it("keep asking for no movement where Performance was chosen, and drop the old levels, the bar's setting and the English face", () => {
+    const m = upgrade({ level: "performance", bar: "always", textFace: "sans", greekSize: 1.5 }) as Record<string, unknown>;
+    expect(m.motion).toBe("reduce");
+    expect("level" in m || "bar" in m || "textFace" in m).toBe(false);
+    expect(m.greekSize).toBe(1.5);
+    expect(upgrade({ level: "full" }).motion).toBe("auto");
+  });
+  it("give the old Greek faces (Garamond, saved as \"didot\", and Sans) the new default, Gentium", () => {
+    expect(upgrade({ greekFace: "sans" }).greekFace).toBe("gentium");
+    expect(upgrade({ greekFace: "didot" }).greekFace).toBe("gentium");
   });
 });

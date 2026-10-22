@@ -1,10 +1,11 @@
 "use client";
 /**
- * The site's header, as design A drew it: on a computer, Learn and Read, the ΣΤΟΙΧΕΙΑ mark in the middle, Explore and Talk,
- * each door's word with its Greek name beneath and a line of lamplight drawn under the one you are in; at the far right,
- * small square buttons for Search, Mine, your account and Settings. On a phone, the mark at the left and two buttons at
- * the right, Search and the menu. It stands on the black frame at the top of the page and scrolls away with it, as in A.
- * While you read on, what floats over the page (Back to top) steps aside, and any scroll up brings it back (lib/header.ts).
+ * The site's header, as the printed page sets it (redesign SPEC.md 3.5 and 3.6): the printer's device and the name at the
+ * left; on a computer the four rooms, Learn, Read, Explore and Mine, each with its Greek name in small italic underneath,
+ * the current one in red; Search, your account, Settings and the connection light at the right. A double rule closes it,
+ * as on a title page. On a phone (and on a narrow computer screen, for the small buttons) a Menu button opens the same
+ * things in a panel. It stands at the top of the page and scrolls away with it; any scroll up brings back what floats at
+ * the foot of the screen (lib/header.ts, data-hdr).
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -25,12 +26,12 @@ function isActive(pathname: string, href: string) {
 /** a door is also current in the places that belong to it (the reader, work and author pages belong to Read) */
 const current = (pathname: string, id: AreaId) => [AREAS[id].href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
 
-const LEFT: AreaId[] = ["study", "library"];
-// while the forum is closed (FORUM_OPEN), Mine takes Talk's place, so two doors still stand either side of the mark
-const RIGHT: AreaId[] = FORUM_OPEN ? ["wiki", "forum"] : ["wiki", "treasury"];
-const MENU_DOORS: AreaId[] = (["study", "library", "wiki", "forum", "treasury", "search"] as AreaId[]).filter(shown);
+// the rooms, in the order of the sample; Talk only while the forum is open (FORUM_OPEN)
+const DOORS: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] as AreaId[]).filter(shown);
+const MENU_DOORS: AreaId[] = [...DOORS, "search"];
 
-const SearchIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>;
+const SearchIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>;
+const SettingsIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>;
 
 export default function Header() {
   const pathname = usePathname() ?? "/";
@@ -98,66 +99,62 @@ export default function Header() {
     return () => { removeEventListener("keydown", key); removeEventListener("click", click); };
   }, [menu]);
 
-  const door = (id: AreaId) => {
+  const door = (id: AreaId, cls: string) => {
     const a = AREAS[id];
     return (
-      <Link key={id} className={styles.navI} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
-        {a.greek && <span lang="grc">{a.greek}</span>}
-        <span className={styles.mono}>{doorWord(id)}</span>
+      <Link key={id} className={cls} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
+        <span className={styles.word}>{a.door ?? doorWord(id)}</span>
+        {a.greek && <i lang="grc">{a.greek}</i>}
       </Link>
     );
   };
 
   return (
     <header ref={ref} className={styles.site} data-site-header="" style={{ viewTransitionName: "site-header" }}>
-      <div className={styles.wrap}>
-        {LEFT.map(door)}
-        <Mark className={styles.mark} />
-        {RIGHT.map(door)}
-        <div className={styles.phoneMenu}>
-          <button className={styles.ic} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search">
+      <div className={styles.mast}>
+        <Mark className={styles.mark} words />
+        <nav className={styles.nav} aria-label="The rooms of the site">{DOORS.map((id) => door(id, styles.navI))}</nav>
+        <div className={styles.utils}>
+          <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
             <SearchIcon />
           </button>
-          <button className={styles.ic} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true">{menu ? <path d="M3 3l10 10M13 3 3 13" /> : <path d="M2 5h12M2 11h12" />}</svg>
+          {/* while the forum is closed Mine is a room in the menu, so its small button stands down */}
+          {FORUM_OPEN && (
+            <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="The Treasury: bookmarks and notes" title="The Treasury: bookmarks and notes"
+              aria-current={current(pathname, "treasury") ? "page" : undefined}>
+              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
+            </Link>
+          )}
+          <AccountButton />
+          <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings" title="Settings">
+            <SettingsIcon />
           </button>
+          <ConnectionLight />
         </div>
+        <button className={styles.menuBtn} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
+          {menu ? "Close" : "Menu"}
+        </button>
       </div>
+      <div className={styles.rule2} aria-hidden="true" />
       {/* narrower screens keep the connection light in the menu: while offline, a line under the header says so */}
       <OfflineSign />
-      <div className={styles.utils}>
-        <ConnectionLight />
-        <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
-          <SearchIcon />
-        </button>
-        {/* while the forum is closed Mine is a door beside the mark, so its small button stands down */}
-        {FORUM_OPEN && (
-          <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="The Treasury: bookmarks and notes" title="The Treasury: bookmarks and notes"
-            aria-current={current(pathname, "treasury") ? "page" : undefined}>
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
-          </Link>
-        )}
-        <AccountButton />
-        <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings" title="Settings">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>
-        </button>
-      </div>
       {menu && (
         <nav id="site-menu" className={styles.menu} aria-label="Menu" data-overlay="">
           <ul className={styles.menuDoors}>
             {MENU_DOORS.map((id) => (
               <li key={id}>
-                <Link href={AREAS[id].href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
-                  {AREAS[id].greek && <span className={styles.menuName} lang="grc">{AREAS[id].greek}</span>}
-                  <span className={styles.mono}>{doorWord(id)}</span>
-                </Link>
+                {id === "search" ? (
+                  <button type="button" onClick={() => { setMenu(false); setSearchOpen(true); }} aria-haspopup="dialog">
+                    <span className={styles.word}>Search</span><i lang="grc">{AREAS.search.greek}</i>
+                  </button>
+                ) : door(id, "")}
               </li>
             ))}
           </ul>
           <div className={styles.menuTools}>
             <AccountButton />
             <button className={styles.tbtn} type="button" onClick={() => { setMenu(false); openSettings(); }} aria-label="Settings">
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.4" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>
+              <SettingsIcon />
               <span className={styles.txt}>Settings</span>
             </button>
             <ConnectionLight />

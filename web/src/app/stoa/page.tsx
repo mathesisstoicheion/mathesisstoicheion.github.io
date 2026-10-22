@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
-import { A_ART } from "@/components/a/pictures";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
@@ -33,7 +32,7 @@ export default function StoaPage() {
   return (
     <Page>
       {/* one search box, the colonnade's own, beside what it finds (review fix list, slice 9) */}
-      <Door id="wiki" art={A_ART.crates}>
+      <Door id="wiki" plate="chrysippos-head" why="Chrysippus was the third head of the Stoic school.">
         <DoorBlock><ExploreLead /></DoorBlock>
         <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} foot={<ExploreCredit />} /></DoorBlock>
       </Door>

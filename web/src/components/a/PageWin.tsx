@@ -1,48 +1,21 @@
 "use client";
 /**
- * A page's window onto art, for the pages design A did not draw (the owner, 2026-10-19, "A only": every other page keeps
- * its layout, in A's colours, type, buttons and engraved windows). It is A's window: a framed opening in the black page onto
- * the page's own object, engraved in gold lines on Pompeian red (lib/a/lamplight.js), which opens as a round iris and whose
- * lines bend away from the pointer or a finger. data/pieces.ts says which object belongs to which page. Its caption is A's
- * one caption, a small label on the window, and its credit waits behind the label's ⓘ (review fix list, slice 7).
+ * A page's own plate (redesign SPEC.md 3.7, decision 6: "every page opens with one large photo plate beside its title,
+ * chosen for that page"): the museum's colour photograph of the page's piece, numbered Plate I, with its credit printed
+ * beneath. data/pieces.ts says which piece belongs to which page.
  *
- * At the head of a page it stands at the right of the title, the words flowing round it. A header holds it twice: before
- * the title for a computer (`className="piece-desk"`) and after the page's main action for a phone (`"piece-phone"`);
- * only the one shown is drawn (the engine skips a window that takes no room).
+ * At the head of a page it stands at the right of the title. A header holds it twice: beside the title for a computer
+ * (`className="piece-desk"`) and after the page's main action for a phone (`"piece-phone"`); only the one shown is
+ * fetched (its photograph loads lazily, and one that takes no room is never fetched).
  */
 import { usePathname } from "next/navigation";
-import { useEffect, useRef } from "react";
-import { addWindow } from "@/lib/a/lamplight";
-import { PIECE_CREDITS, PIECE_SHAPES, pieceFor } from "@/data/pieces";
-import InfoTip from "./InfoTip";
-import a from "./a.module.css";
+import { pieceFor } from "@/data/pieces";
+import Plate from "@/components/plate/Plate";
 
-export default function PageWin({ spec: given, className }: { spec?: { piece: string; why?: string } | null; className?: string }) {
+export default function PageWin({ spec: given, className, n = 1 }: { spec?: { piece: string; why?: string } | null; className?: string; n?: number }) {
   const path = (usePathname() ?? "/").replace(/\/+$/, "") || "/";
   const spec = given !== undefined ? given : pieceFor(path);
-  const shape = spec ? PIECE_SHAPES[spec.piece] : undefined;
-  const credit = spec ? PIECE_CREDITS[spec.piece] : undefined;
-  const ref = useRef<HTMLDivElement>(null);
-  const src = spec && shape && credit ? `/images/a/pieces/${spec.piece}.png` : "";
-  useEffect(() => { const el = ref.current; if (!el || !src) return; return addWindow(el, { src, kind: "pic" }); }, [src]);
-  if (!spec || !shape || !credit) return null;
-  // the window's shape: about the object's own, between a square and two wide by three high (A's tall window is 3 by 4)
-  const ratio = Math.min(1.5, Math.max(1, shape.h / shape.w));
-  return (
-    <figure className={`piece piece-head awin${className ? ` ${className}` : ""}`} style={{ "--piece-ratio": ratio } as React.CSSProperties}>
-      <div ref={ref} className="awin-frame">
-        <canvas role="img" aria-label={`${credit.alt}, engraved in gold lines`} />
-        <span className={a.wcap} data-wcap="">
-          {credit.title}{credit.date && <> · {credit.date}</>}{" "}
-          <InfoTip small label={`About the picture: ${credit.title}`}>
-            <b>{credit.title}</b>{credit.date && <>, {credit.date}</>}.{" "}
-            {spec.why && <i>{spec.why} </i>}
-            {credit.place && <>{credit.place}. </>}{credit.creator && <>{credit.creator}. </>}
-            {credit.licence && <>{credit.licenceUrl ? <a href={credit.licenceUrl} rel="noopener">{credit.licence}</a> : credit.licence}. </>}
-            <a href={credit.source} rel="noopener">{credit.sourceName || "The source"}</a>
-          </InfoTip>
-        </span>
-      </div>
-    </figure>
-  );
+  if (!spec) return null;
+  return <Plate id={spec.piece} n={n} why={spec.why} className={`piece piece-head${className ? ` ${className}` : ""}`}
+    sizes="(max-width: 760px) min(92vw, 420px), 320px" />;
 }

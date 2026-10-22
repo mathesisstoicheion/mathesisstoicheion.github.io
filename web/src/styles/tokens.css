@@ -1,94 +1,49 @@
 /* =====================================================================
-   Mathesis Stoicheion: design tokens for "Gold and lamplight", taken from design A itself (redesign/design-a/design-a.html
-   in the project files). The owner, 2026-10-19: "Just take the template of the original gold and lamplight design".
-   Design A's own words (its DESIGN.md): "a dark room where a single lamp, or the glint of old gold, lets you see the Greeks".
-   Design A drew two rooms: the doorway (the home page: Pompeian red, gold and bone) and the lamp room (near-black with
-   amber lamplight). Every page is now in the doorway (the owner, 2026-10-20: "Every page must follow the design choices of
-   the homepage", "All little submenus and buttons"): black pages, gold lines and accents, words in bone, raised surfaces
-   and chosen chips in Pompeian red, reading text in EB Garamond. Thin 1px lines instead of shadows, square corners. The
-   one light surface is the reader's Daylight page ([data-page="day"]). The lamp room's colours stay below as primitives
-   only for what still names them.
+   Mathesis Stoicheion: design tokens for "the printed page with real photographs", chosen by the owner on 2026-10-22
+   ("Printed page with real photos is our new design choice"; the sample is printed-photos.html, and the rules are in
+   redesign/printed-page/SPEC.md and DECISIONS.md in the project files). A fine two-language edition: warm paper, black ink,
+   red for what matters, wide margins, and real colour photographs set as numbered plates. Nothing glows, nothing is carved,
+   nothing moves once it has inked in.
+
+   Paper or Night follows the device (decision 2): Paper when the phone or computer is in light mode, Night when it is in
+   dark mode, and Settings can choose either for good (data-theme="paper" or "night" on <html>, written by lib/settings.ts).
 
    Two layers:
-   - primitives: design A's colours, the spacing steps and the type sizes;
-   - semantic tokens, which the site's styles use (--bg, --ink, --accent, --rule …). Components use only these,
-     so a restyle changes this file. (Some names, --slab, --groove, --lintel…, are older than design A: they now
-     name flat panels and fine lines.)
-   The home page, the library and the reader are drawn with design A's own stylesheet (components/a/a.module.css), which
-   uses design A's own role names, prefixed --a- so they never mix with the site's.
+   - primitives: the paper's and the night page's colours, the spacing steps and the type sizes;
+   - semantic tokens, which the site's styles use (--bg, --ink, --accent, --rule …). Components use only these, so a
+     restyle changes this file. (Some names, --slab, --groove, --lintel…, are older than the printed page: they now name
+     a hairline frame, a rule across the page and the paper of the bars.)
    Every value the site paints with is named here; scripts/check-tokens.mjs stops new hardcoded values creeping in.
    ===================================================================== */
 
 :root {
   /* ---------------------------------------------------------- primitives */
-  /* design A's own names */
-  --frame: #070504;        /* the black frame: the header, and behind everything */
-  --frame-ink: #efdcc0;    /* words on the frame */
-  --black: #050403;        /* the pages: black, with windows onto art */
-  --room: #0b0806;         /* the lamp room (the reader) */
-  --room-2: #140f0a;       /* its raised surfaces */
-  --parch: #ecca97;        /* words in the lamp room */
-  --parch-2: #8f7556;
-  --amber-hi: #ffd59a;
-  /* the rooms, darkest to lightest: the black page, the lamp room, its raised surfaces */
-  --stone-0: #050403;
-  --stone-1: #0b0806;
-  --stone-2: #140f0a;
-  --stone-3: #1d150d;
-  --stone-4: #2a1f14;
-  /* parchment text in the lamp room, and its quieter lines (never pure white) */
-  --ivory-1: #ecca97;
-  --ivory-2: #b89a74;
-  --ivory-3: #8f7556;
-  /* lamplight */
-  --honey: #ffad45;
-  --honey-hi: #ffd59a;
-  --amber: #ffad45;
-  --ember: #d0642a;
-  /* the doorway's gold, bone and Pompeian red (the home page, and the gold of the engravings) */
-  --gold: #e8bd70;
-  --gold-hi: #f6dca6;
-  --bone: #f2e0c6;
-  --bone-2: #c39f83;
-  --red: #5c1910;
-  --red-deep: #1b0907;
-  --red-chip: #6d2216;
-  --red-surface: #26100c;   /* a raised surface in the doorway */
-  --red-surface-2: #36150f; /* a band across it, a hover, a pressed chip */
-  --bone-3: #9c7d66;        /* the quietest words (small print) */
-  /* behind a modal (the search, the settings): a dark, neutral shade that keeps the page's colours true */
-  --scrim: rgba(0, 0, 0, 0.72);
-  /* a window onto art before its picture opens: dim Pompeian red with fine engraved hatching, never a black box */
-  --win-wait: repeating-linear-gradient(135deg, color-mix(in srgb, var(--gold) 7%, transparent) 0 1px, transparent 1px 6px),
-    color-mix(in srgb, var(--red) 55%, var(--black));
-  --room-chip: #1a130b;     /* a pressed chip in the lamp room */
-  /* the second accent: the doorway's gold, for small text */
-  --ochre-red: #a65d40;
-  --ochre-red-text: var(--gold);
-  /* a dull bronze patina: the one cool colour, for what must read apart from the lamplight. Never bright. */
-  --patina: #92b0a6;
-  /* a muted sage, for "done" and "right" */
-  --sage: #9fc39a;
-  /* the dark ink set on lamplight (a main button) */
-  --on-honey: #0b0806;
-  /* warm paper, never white: the reader's Daylight page (design A's own values) */
-  --limestone: #ece0c9;
-  --limestone-2: #f3e9d6;
-  --limestone-3: #e1cfae;
-  --day-ink: #2a1c10;
-  --day-ink-2: #6d5539;
-  --day-ink-3: #6d5539;
-  --sienna: #8c460a;   /* A's #a8550f, a shade deeper so that small text on the paper meets the 4.5:1 contrast rule */
-  --sienna-deep: #5e2f08;
-  /* lines: lamplight thinned to a hair */
-  --line-1: rgba(232, 189, 112, 0.1);
-  --line-2: rgba(232, 189, 112, 0.32);
-  --cut-dark: rgba(0, 0, 0, 0.62);
-  --cut-light: rgba(232, 189, 112, 0.06);
-  --black-62: rgba(0, 0, 0, 0.62);
-  --none-shadow: 0 0 0 0 transparent;   /* an empty place in a list of shadows */
+  /* the paper (SPEC.md 3.1) */
+  --paper: #f3ece0;
+  --paper-2: #e9dfcd;      /* the second surface: a plate's mount, a margin, a pressed key */
+  --paper-3: #ddd0b9;
+  --paper-ink: #1e1a15;
+  --paper-ink-2: #5c5043;  /* captions */
+  --paper-ink-3: #776853;  /* small print and credits: the spec's faint ink a shade deeper, so it reads at 4.5 : 1 */
+  --paper-faint: #8a7b68;  /* rules and marks that are not words */
+  --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
+  --paper-rubric-2: #c4553a;
+  /* the night page */
+  --night: #1b1814;
+  --night-2: #24201a;
+  --night-3: #332c23;
+  --night-ink: #ebe1cf;
+  --night-ink-2: #b7a891;
+  --night-ink-3: #9a8c77;
+  --night-faint: #8c7f6c;
+  --night-rubric: #e0805f;
+  --night-rubric-2: #f09a7b;
+  /* the few other colours a page needs, chosen to sit on paper and on the night page alike */
+  --verdigris: #3f6b5f;    /* the one cool mark (well established; the second mark in the reader) */
+  --ochre-ink: #8a5a12;    /* debated; finds in the reader */
+  --sage-ink: #4a6b3c;     /* done, right */
 
-  /* spacing: the steps of DESIGN.md (4, 8, 12, 16, 24, 36, 56 and 80 px) */
+  /* spacing: 4, 8, 12, 16, 24, 36, 56 and 80 px */
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -98,258 +53,247 @@
   --space-7: 56px;
   --space-8: 80px;
 
-  /* type sizes (the titles' face is tall and narrow, so they run a step larger than before) */
-  --step--2: 0.75rem;                         /* small, wide-spaced capital labels (monospaced: design A's .mono); 12 px, the smallest size on the site (review fixes, slice 3) */
+  /* type sizes: a book's, set in EB Garamond at 19 px on a computer and 18 px on a phone (the sample's body) */
+  --step--2: 0.75rem;                         /* small capitals spaced wide: labels, kickers */
   --step--1: 0.875rem;                        /* captions, credits, small print */
-  --step-0: 1rem;                             /* reading text (Literata, design A's body: 1rem / 1.6) */
-  --step-sub: 1.125rem;                       /* a small heading, a card's name */
-  --step-1: 1.32rem;                          /* a lede */
-  --step-2: 1.8rem;                           /* h3 */
-  --step-3: clamp(2.3rem, 4.4vw, 3.6rem);     /* h2 */
-  --step-4: clamp(3rem, 6.6vw, 6.2rem);       /* a page's title */
+  --step-0: 1rem;                             /* reading text */
+  --step-sub: 1.125rem;                       /* a small heading, a row's name */
+  --step-1: 1.25rem;                          /* a lede */
+  --step-2: 1.6rem;                           /* h3 */
+  --step-3: clamp(1.9rem, 3.4vw, 2.6rem);     /* h2 */
+  --step-4: clamp(2.8rem, 6.6vw, 5.6rem);     /* a page's title */
 
-  /* typefaces: design A's (its DESIGN.md, Type). The next/font variables are set in app/layout.tsx.
-     Display: Noto Serif Display, condensed (font-stretch 62.5%) and thin. Text: EB Garamond, the doorway's (Literata was
-     the lamp room's). Greek falls back to Gentium Book Plus. Labels: Noto Sans Mono. The mark: Noto Sans Display. */
-  --face-display: var(--font-display), "Noto Serif Display", "Noto Serif", Georgia, serif;
-  --face-text: var(--font-literata), "Literata", var(--font-gentium), Georgia, serif;
+  /* typefaces, three and no more (SPEC.md 3.2): EB Garamond for English, GFS Didot for titles, Greek room names and the
+     logo, Gentium Book Plus for Greek being read. The next/font variables are set in app/layout.tsx. */
   --face-garamond: var(--font-garamond), "EB Garamond", var(--font-gentium), Georgia, serif;
-  --face-gentium: var(--font-gentium), "Gentium Book Plus", Georgia, serif;
-  --face-mono: var(--font-mono), "Noto Sans Mono", ui-monospace, monospace;
-  --face-mark: var(--font-mark), "Noto Sans Display", "Noto Sans", sans-serif;
-  --face-carved: var(--face-display);
-  --face-didot: var(--face-text);   /* an older name: the Greek face chosen by default in Settings */
+  --face-didot: var(--font-didot), "GFS Didot", var(--font-gentium), serif;
+  --face-gentium: var(--font-gentium), "Gentium Book Plus", var(--font-garamond), serif;
+  /* older names, kept so every stylesheet resolves to one of the three */
+  --face-display: var(--face-garamond);
+  --face-text: var(--face-garamond);
+  --face-mono: var(--face-garamond);
+  --face-mark: var(--face-didot);
+  --face-carved: var(--face-didot);
 
-  /* motion: everything eases and settles; nothing bounces (DESIGN.md, "All movement is calm") */
-  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
-  --ease-out: cubic-bezier(0, 0, 0.58, 1);
-  --ease-cut: cubic-bezier(0.3, 0.6, 0.2, 1);
-  --ease-enter: cubic-bezier(0.16, 1, 0.3, 1);   /* a page's opening: quick away, then a long soft glide into place, so a
-                                                    short animation still reads as calm rather than as a jump */
-  /* tempo (the owner, 2026-10-20: "They need to animate faster"; 20:15 UTC: "I like the speed of 3x. Just redo the Animation
-     so it opens at that speed, whilst having a pretty opening animation"): every animation that plays out once (a window
-     opening, a heading settling, a page coming in, Socrates gathering) runs this many times as fast as its written time.
-     Stylesheets divide their times by it and the scripts read it (lib/tempo.ts, lib/a/lamplight.js); quick hover responses
-     (under half a second) and endless loops keep their own pace. */
-  --tempo: 3;
-  --dur-quick: 0.25s;
+  /* motion (decision 3): one movement only, ink-in. Text and photographs settle onto the page as they arrive, then nothing
+     moves. Reduced motion turns it off (globals.css). Quick colour changes under the hand are not movement. */
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-out: var(--ease);
+  --ease-cut: var(--ease);
+  --ease-enter: var(--ease);
+  --ink-in: 1.4s;          /* how long a line takes to ink in */
+  --ink-step: 0.12s;       /* each line a step after the one before */
+  --tempo: 1;              /* older stylesheets divide their times by this; there are no animation levels any more */
+  --dur-quick: 0.2s;
   --dur: 0.4s;
-  --dur-slow: calc(1.2s / var(--tempo));
-  --dur-enter: calc(0.9s / var(--tempo));    /* a page's name and its piece rising into place as it opens */
-  --enter-step: calc(0.18s / var(--tempo));  /* ...each line a step after the one before (60 ms at 3x: enough apart to read
-                                                as one line after another, not as one block) */
-  --dur-fade: calc(1.6s / var(--tempo));     /* a window giving way to its picture as it comes */
+  --dur-slow: 0.6s;
+  --dur-enter: var(--ink-in);
+  --enter-step: var(--ink-step);
+  --dur-fade: 0.9s;
 
-  /* shape: thin lines, square corners, no rounded cards */
+  /* shape: hairlines and square corners, as a printed page has */
   --radius: 0px;
   --radius-round: 50%;
-  --radius-arch: 999px 999px 0 0;   /* a window with a round head */
+  --radius-arch: 0;
 
   /* layers: just above the header */
   --z-over-header: 31;
-  --z-bar: 5;           /* a sticky bar under the header (the reader's, the tables' search): over what scrolls beneath it */
+  --z-bar: 5;
 
-  /* ---------------------------------------------------------- semantic tokens */
-  --bg: var(--stone-0);            /* the page: black (design A: "Pages are black, and pictures appear through framed openings") */
-  --bg-deep: var(--stone-0);       /* the black frame, and deep recesses */
-  --bg-2: var(--red-surface-2);    /* hover, and bands across the page */
-  --surface: var(--red-surface);   /* a raised surface: Pompeian red, darkened */
-  --surface-2: var(--red-surface-2);   /* a pressed chip */
-  --ink: var(--bone);
-  --ink-2: var(--bone-2);
-  --ink-3: var(--bone-3);
-  --accent: var(--gold);
-  --accent-hi: var(--gold-hi);
-  --accent-ink: var(--red);        /* text on an accent-coloured field */
-  --accent-2: var(--gold);
-  --band: var(--line-2);
-  --white-slip: var(--red-surface-2);
-  --blue: var(--patina);           /* certainty: well established; a second, cooler mark in the reader */
-  --ochre: var(--gold);            /* certainty: debated; finds in the reader */
-  --legend: #d4917a;               /* certainty: legend */
-  --rule: rgba(232, 189, 112, 0.22);   /* design A's --line in the doorway */
-  --rule-2: var(--line-2);
+  /* layout */
+  --gutter: clamp(16px, 4vw, 56px);
+  --maxw: 1180px;
+  --tap: 44px;
+  --tex: none;
+}
+
+/* ---------------------------------------------------------- the roles: Paper */
+:root,
+:root[data-theme="paper"] {
+  --bg: var(--paper);
+  --bg-deep: var(--paper-2);
+  --bg-2: var(--paper-2);
+  --surface: var(--paper);
+  --surface-2: var(--paper-2);
+  --ink: var(--paper-ink);
+  --ink-2: var(--paper-ink-2);
+  --ink-3: var(--paper-ink-3);
+  --faint: var(--paper-faint);
+  --rubric: var(--paper-rubric);
+  --rubric-2: var(--paper-rubric-2);
+  --rule: rgba(30, 26, 21, 0.2);
+  --rule-2: rgba(30, 26, 21, 0.1);
+  --paper-shade: rgba(120, 90, 50, 0.09);   /* the paper's still, faint fibre at its edges (globals.css) */
+  --gutter-shade: rgba(80, 55, 25, 0.12);   /* the fold between two facing pages */
+  --shadow: rgba(40, 28, 14, 0.18);
+  --blue: var(--verdigris);
+  --ochre: var(--ochre-ink);
+  --legend: #8a3e1e;
+  --ok: var(--sage-ink);
+  --map-land-wash: rgba(160, 130, 90, 0.28);
+  --map-sea-wash: rgba(225, 207, 174, 0.6);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%231e1a15' stroke-width='1.3'/%3E%3C/svg%3E");
+  --case-gen: #8a6d00;
+  color-scheme: light;
+}
+
+/* ---------------------------------------------------------- the roles: Night (the device's dark mode, or chosen) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="paper"]) {
+    --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
+    --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
+    --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2);
+    --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
+    --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
+    --blue: #8fb5a8; --ochre: #d9a85a; --legend: #e09a7a; --ok: #9fc39a;
+    --map-land-wash: rgba(92, 72, 50, 0.45); --map-sea-wash: rgba(10, 9, 8, 0.6);
+    --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ebe1cf' stroke-width='1.3'/%3E%3C/svg%3E");
+    --case-gen: #d9c24a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="night"] {
+  --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
+  --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
+  --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2);
+  --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
+  --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
+  --blue: #8fb5a8; --ochre: #d9a85a; --legend: #e09a7a; --ok: #9fc39a;
+  --map-land-wash: rgba(92, 72, 50, 0.45); --map-sea-wash: rgba(10, 9, 8, 0.6);
+  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ebe1cf' stroke-width='1.3'/%3E%3C/svg%3E");
+  --case-gen: #d9c24a;
+  color-scheme: dark;
+}
+
+/* ---------------------------------------------------------- the roles every stylesheet uses, made from the above.
+   Paper and Night are switched on <html> itself, so these follow whichever is in force. */
+:root {
+  /* the accent is the red; there is no gold */
+  --accent: var(--rubric);
+  --accent-hi: var(--rubric);
+  --accent-2: var(--rubric);
+  --accent-ink: var(--bg);           /* text on a red field */
+  --band: var(--rule);
+  --white-slip: var(--bg-2);
   --cut-d: var(--rule);
   --cut-l: transparent;
-  --cut-deep: rgba(0, 0, 0, 0.6);
-  --shadow: rgba(0, 0, 0, 0.6);
-  --veil: rgba(5, 4, 3, 0.62);   /* the black page dimmed behind a window that opens over it (a dialog's backdrop) */
+  --cut-deep: var(--rule);
+  --veil: color-mix(in srgb, var(--bg) 70%, transparent);   /* behind a dialog: the page, dimmed like a leaf turned over it */
+  --scrim: color-mix(in srgb, var(--ink) 35%, transparent);
 
-  /* surfaces: every panel is a thin gold line round a wash of Pompeian red (the home page's "Where are you starting?"),
-     never a raised, shadowed box */
-  --field: rgba(92, 25, 16, 0.4);   /* a panel set in the page */
+  /* surfaces: on a printed page a panel is a hairline frame on the paper, never a raised box */
+  --field: transparent;
   --field-edge: inset 0 0 0 1px var(--rule);
-  --slab: transparent;             /* a panel or a button standing on the page: a fine line round it */
+  --slab: transparent;
   --slab-edge: inset 0 0 0 1px var(--rule);
-  --slab-lit: rgba(109, 34, 22, 0.45);   /* one under the hand, or the chosen one: the home page's red chip, thinned */
-  --moulding: 1px solid rgba(232, 189, 112, 0.1);
-  --moulding-in: -8px;
-  --plinth-edge: inset 0 1px 0 0 var(--rule);   /* the foot of every page: a fine line along its top */
-  --broken-edge: var(--none-shadow);
-  /* a field to type in */
-  --hollow: var(--red-deep);
-  --hollow-edge: inset 0 0 0 1px var(--rule);
-  --hollow-focus: inset 0 0 0 1px var(--accent);
-  /* a line across the page: one hair of gold */
+  --slab-lit: var(--bg-2);
+  --moulding: 1px solid var(--rule-2);
+  --moulding-in: -5px;
+  --plinth-edge: inset 0 1px 0 0 var(--ink);
+  --broken-edge: 0 0 0 0 transparent;
+  --none-shadow: 0 0 0 0 transparent;
+  /* a field to type in: a line to write on */
+  --hollow: transparent;
+  --hollow-edge: inset 0 -1px 0 0 var(--ink);
+  --hollow-focus: inset 0 -2px 0 0 var(--rubric);
+  /* a rule across the page */
   --groove: var(--rule);
   --lip: transparent;
   --cut-line: linear-gradient(var(--groove) 0 1px, var(--lip) 1px 2px);
   --cut-line-v: linear-gradient(90deg, var(--groove) 0 1px, var(--lip) 1px 2px);
-  /* the same lines as box-shadows, for the edge of a row or a cell: under it, over it, at its left */
   --cut-under: inset 0 -1px 0 var(--groove);
   --cut-over: inset 0 1px 0 var(--groove);
   --cut-left: inset 1px 0 0 var(--groove);
-  --panel-cut: inset 0 0 0 1px var(--groove);   /* a panel within a panel */
-  --panel-cut-lit: inset 0 0 0 1px var(--rule-2);   /* the same, under the hand */
-  --ledge-lip: var(--none-shadow);
-  /* a frame round a picture or a map */
+  --panel-cut: inset 0 0 0 1px var(--groove);
+  --panel-cut-lit: inset 0 0 0 1px var(--ink-3);
+  --ledge-lip: 0 0 0 0 transparent;
   --frame-line: 0 0 0 1px var(--rule);
-  /* a slim line of lamplight along a call-out's edge (a tip, a note, a right answer) */
-  --inlay-left: inset 1px 0 0 var(--accent);
+  /* a call-out's edge: a red rule down its left, as a printed note in the margin */
+  --inlay-left: inset 1px 0 0 var(--rubric);
   --inlay-left-ok: inset 1px 0 0 var(--ok);
   --inlay-left-ochre: inset 1px 0 0 var(--ochre);
   --inlay-left-blue: inset 1px 0 0 var(--blue);
   --inlay-left-legend: inset 1px 0 0 var(--legend);
-  --inlay-top: inset 0 1px 0 var(--accent);
+  --inlay-top: inset 0 1px 0 var(--rubric);
   --inlay-top-blue: inset 0 1px 0 var(--blue);
-  --chosen-foot: inset 0 -1px 0 var(--sel-edge);   /* the chosen one of a set of choices: a line of lamplight along its foot */
-  /* a channel for a bar or a meter, and the lamplight that fills it */
-  --channel: rgba(232, 189, 112, 0.1);
+  --chosen-foot: inset 0 -2px 0 var(--rubric);
+  /* a channel for a bar or a meter, and the ink that fills it */
+  --channel: var(--rule-2);
   --channel-edge: inset 0 0 0 1px var(--rule);
-  --inlay: linear-gradient(var(--gold), var(--gold));
-  --inlay-side: linear-gradient(var(--gold), var(--gold));
-  --inlay-dim: linear-gradient(rgba(232, 189, 112, 0.5), rgba(232, 189, 112, 0.5));
-  --inlay-edge: var(--none-shadow);
-  --inlay-drop: var(--none-shadow);
-  --inlay-press: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
-  /* the bar across the top of the screen (the site header) and along its foot (the phone's bar): the black frame, solid,
-     so the page never shows through, with a fine line where it meets the room */
-  --lintel: linear-gradient(var(--stone-0), var(--stone-0));
-  --sill: linear-gradient(var(--stone-0), var(--stone-0));
+  --inlay: linear-gradient(var(--rubric), var(--rubric));
+  --inlay-side: linear-gradient(var(--rubric), var(--rubric));
+  --inlay-dim: linear-gradient(var(--rule), var(--rule));
+  --inlay-edge: 0 0 0 0 transparent;
+  --inlay-drop: 0 0 0 0 transparent;
+  --inlay-press: inset 0 0 0 1px var(--rule);
+  /* the bars at the top and foot of the screen: the paper itself, a hairline where they meet the page */
+  --lintel: linear-gradient(var(--bg), var(--bg));
+  --sill: linear-gradient(var(--bg), var(--bg));
   --lintel-foot: linear-gradient(var(--rule) 0 1px, transparent 1px);
-  --sill-head: linear-gradient(var(--rule) 0 1px, transparent 1px);
-  --lintel-shadow: var(--none-shadow);
-  --sill-shadow: var(--none-shadow);
-  /* gold letters and signs */
-  --gilt: linear-gradient(var(--gold), var(--gold));
+  --sill-head: linear-gradient(var(--ink) 0 1px, transparent 1px);
+  --lintel-shadow: 0 0 0 0 transparent;
+  --sill-shadow: 0 0 0 0 transparent;
+  --gilt: linear-gradient(var(--rubric), var(--rubric));
   --gilt-cut: drop-shadow(0 0 0 transparent);
   --block-light: linear-gradient(transparent, transparent);
-  --lip-hi: rgba(232, 189, 112, 0.24);   /* an edge in the light */
-  --tympanum: var(--red-deep);
-  /* the small maps' land and sea */
-  --map-land-wash: rgba(92, 42, 26, 0.5);
-  --map-sea-wash: rgba(4, 3, 2, 0.75);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23e8bd70' stroke-width='1.5'/%3E%3C/svg%3E");
-  /* a column, drawn in fine lines */
-  --shaft: linear-gradient(90deg, var(--stone-0), var(--red-surface) 40%, var(--red-surface-2) 50%, var(--red-surface) 60%, var(--stone-0));
-  --flutes: repeating-linear-gradient(90deg, rgba(232, 189, 112, 0.08) 0 1px, transparent 1px 4px);
-  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--red-surface) 1px 6px, var(--stone-0) 6px 8px);
+  --lip-hi: var(--rule);
+  --tympanum: var(--bg-2);
+  --shaft: linear-gradient(var(--bg-2), var(--bg-2));
+  --flutes: none;
+  --capital: linear-gradient(var(--rule), var(--rule));
   --capital-shadow: linear-gradient(transparent, transparent);
-  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--red-surface) 1px);
+  --stylobate: linear-gradient(var(--ink), var(--ink));
   --carved-text: none;
-  /* the connection light, in a fine gold ring */
-  --bezel: 0 0 0 1px var(--stone-0), 0 0 0 2px var(--gold);
-  --gem-shine: radial-gradient(circle at 34% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 45%);
-  /* the phone bar's Search: a round button ringed in gold */
-  --boss: var(--red-surface);
-  --boss-edge: 0 0 0 1px var(--gold);
+  --bezel: 0 0 0 1px var(--bg), 0 0 0 2px var(--ink-3);
+  --gem-shine: none;
+  --boss: var(--bg);
+  --boss-edge: 0 0 0 1px var(--ink);
+  --warn: var(--ochre);
+  --danger: var(--rubric);
+  --glow-torch: transparent;
+  --win-wait: var(--bg-2);
 
-  --ok: var(--sage);
-  --warn: var(--gold);
-  --danger: var(--ember);
-  --glow-torch: rgba(232, 189, 112, 0.16);
+  /* chosen things (a pressed key, the chosen tab): the ink itself, with paper letters, as the sample's .seg */
+  --accent-on-ink: var(--rubric-2);
+  --accent-ink-on-ink: var(--ink);
+  --ink-2-on-ink: color-mix(in srgb, var(--bg) 80%, var(--ink));
+  --inv-bg: var(--ink);
+  --inv-fg: var(--bg);
+  --inv-edge: var(--ink);
+  --sel-bg: var(--ink);
+  --sel-fg: var(--bg);
+  --sel-edge: var(--ink);
+  --accent-on-sel: var(--bg);
 
-  /* selected things (pressed chips, chosen tabs): the home page's red chip, its words in bone (A's .ptab[aria-selected]) */
-  --accent-on-ink: var(--gold);
-  --accent-ink-on-ink: var(--red);
-  --ink-2-on-ink: var(--bone-2);
-  --inv-bg: var(--red-chip);
-  --inv-fg: var(--bone);
-  --inv-edge: var(--line-2);
-  --sel-bg: var(--red-chip);
-  --sel-fg: var(--bone);
-  --sel-edge: var(--gold);
-  --accent-on-sel: var(--gold-hi);
-
-  /* the main button (design A's .btn.solid in the doorway): a bone plate with Pompeian red capitals */
-  --btn-bg: var(--bone);
-  --btn-ink: var(--red);
-
+  /* the main button: ink with paper capitals; under the hand it turns red (the sample's .btn) */
+  --btn-bg: var(--ink);
+  --btn-ink: var(--bg);
 
   /* type roles */
-  --f-greek: var(--face-garamond);
-  --f-display: var(--face-display);
+  --f-greek: var(--face-gentium);
+  --f-display: var(--face-garamond);
+  --f-title: var(--face-didot);
   --f-body: var(--face-garamond);
-  --f-label: var(--face-mono);
-  --f-carved: var(--face-carved);
+  --f-label: var(--face-garamond);
+  --f-carved: var(--face-didot);
 
-  /* layout */
-  --gutter: clamp(16px, 4vw, 48px);
-  --maxw: 1240px;
-  --tap: 44px;
-
-  /* no texture: design A's pages are plain black (its faint scan lines are a layer of their own, globals.css) */
-  --tex: none;
-
-  color-scheme: dark;
-}
-
-/* ---------------------------------------------------------- warm paper: the reader's Daylight page */
-[data-page="day"] {
-  --bg: var(--limestone);
-  --bg-deep: var(--limestone-3);
-  --bg-2: var(--limestone-3);
-  --surface: var(--limestone-2);
-  --surface-2: var(--limestone-3);
-  --ink: var(--day-ink);
-  --ink-2: var(--day-ink-2);
-  --ink-3: var(--day-ink-3);
-  --accent: var(--sienna);
-  --accent-hi: var(--sienna-deep);
-  --accent-ink: var(--limestone-2);
-  --accent-2: #8a3e1e;
-  --blue: #2f5a52;
-  --ochre: #7a4c0e;
-  --legend: #8a3e1e;
-  --rule: rgba(42, 28, 16, 0.18);
-  --rule-2: rgba(42, 28, 16, 0.32);
-  --shadow: rgba(40, 24, 10, 0.3);
-  --field: rgba(42, 28, 16, 0.03);
-  --slab-lit: rgba(168, 85, 15, 0.08);
-  --moulding: 1px solid rgba(42, 28, 16, 0.1);
-  --hollow: var(--limestone-2);
-  --lip-hi: rgba(42, 28, 16, 0.3);
-  --channel: rgba(42, 28, 16, 0.08);
-  --inlay: linear-gradient(var(--sienna), var(--sienna));
-  --inlay-side: linear-gradient(var(--sienna), var(--sienna));
-  --inlay-dim: linear-gradient(rgba(168, 85, 15, 0.45), rgba(168, 85, 15, 0.45));
-  --inlay-press: inset 0 0 0 1px rgba(40, 16, 4, 0.35);
-  --lintel: linear-gradient(var(--limestone-2), var(--limestone-2));
-  --sill: linear-gradient(var(--limestone-2), var(--limestone-2));
-  --gilt: linear-gradient(var(--sienna), var(--sienna));
-  --boss: var(--limestone-2);
-  --boss-edge: 0 0 0 1px var(--sienna);
-  --bezel: 0 0 0 1px var(--limestone-2), 0 0 0 2px var(--sienna);
-  --flutes: repeating-linear-gradient(90deg, rgba(42, 28, 16, 0.1) 0 1px, transparent 1px 4px);
-  --shaft: linear-gradient(90deg, var(--limestone-3), var(--limestone-2) 50%, var(--limestone-3));
-  --capital: linear-gradient(180deg, var(--rule-2) 0 1px, var(--limestone-3) 1px 6px, var(--limestone) 6px 8px);
-  --stylobate: linear-gradient(180deg, var(--rule-2) 0 1px, var(--limestone-3) 1px);
-  --tympanum: var(--limestone);
-  --map-land-wash: rgba(160, 130, 90, 0.35);
-  --map-sea-wash: rgba(225, 207, 174, 0.7);
-  --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%238c460a' stroke-width='1.5'/%3E%3C/svg%3E");
-  --ok: #2f5f35;
-  --glow-torch: rgba(255, 190, 120, 0.2);
-  --accent-on-ink: var(--honey);
-  --inv-bg: var(--day-ink);
-  --inv-fg: var(--limestone-2);
-  --inv-edge: var(--day-ink);
-  --sel-bg: var(--limestone-3);
-  --sel-fg: var(--day-ink);
-  --sel-edge: var(--sienna);
-  --accent-on-sel: var(--sienna-deep);
-  /* the main button: dark ink with paper capitals (design A's Daylight --solid) */
-  --btn-bg: var(--day-ink);
-  --btn-ink: var(--limestone-2);
-  color-scheme: light;
+  /* older names for the paper and the ink, so nothing that still names them falls back to a browser colour */
+  --frame: var(--bg);
+  --frame-ink: var(--ink);
+  --black: var(--bg);
+  --gold: var(--rubric);
+  --gold-hi: var(--rubric);
+  --bone: var(--ink);
+  --bone-2: var(--ink-2);
+  --bone-3: var(--ink-3);
+  --red: var(--rubric);
+  --red-deep: var(--bg-2);
+  --red-chip: var(--ink);
+  --red-surface: var(--bg-2);
+  --red-surface-2: var(--bg-2);
+  --parch: var(--ink);
+  --parch-2: var(--ink-3);
+  --ochre-red: var(--rubric);
+  --sage: var(--ok);
+  --patina: var(--blue);
 }

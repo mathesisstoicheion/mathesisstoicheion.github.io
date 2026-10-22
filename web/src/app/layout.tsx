@@ -1,11 +1,10 @@
 import type { Metadata, Viewport } from "next";
-import { EB_Garamond, Noto_Serif_Display, Noto_Sans_Display, Noto_Sans_Mono, Literata, Gentium_Book_Plus, Noto_Sans, Alegreya_Sans } from "next/font/google";
+import { EB_Garamond, GFS_Didot, Gentium_Book_Plus } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TabBar from "@/components/TabBar";
 import OfflineSign from "@/components/OfflineSign";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
-import LamplightLevel from "@/components/a/LamplightLevel";
 import Toast from "@/components/Toast";
 import NavWait from "@/components/NavWait";
 import Reveal from "@/components/Reveal";
@@ -15,7 +14,7 @@ import { ResumeTracker } from "@/components/Resume";
 import Tour from "@/components/tour/Tour";
 import { Suspense } from "react";
 import { SITE } from "@/config/areas";
-import { BOOT_SCRIPT, THEME_COLOUR } from "@/lib/settings";
+import { BOOT_SCRIPT, THEME_COLOUR, THEME_COLOUR_NIGHT } from "@/lib/settings";
 import { VISITOR_SCRIPT } from "@/lib/visitor";
 import { SHARE_IMAGE, SITE_URL } from "@/lib/seo";
 import "../styles/tokens.css";
@@ -23,19 +22,12 @@ import "./globals.css";
 
 // next/font downloads these at build time and serves them from this site,
 // so visitors' browsers never contact Google (no-trackers decision).
-// Design A's typefaces (its DESIGN.md, Type): titles in Noto Serif Display, condensed (its width axis, used at 62.5%) and
-// thin; reading text in Literata (EB Garamond on the home page); labels in Noto Sans Mono; the ΣΤΟΙΧΕΙΑ mark in Noto Sans
-// Display; Gentium Book Plus for any Greek letter the others lack. Every alphabet range of each font is always available
-// (the browser fetches one when a page uses its letters); `subsets` only names the files preloaded with every page.
-const display = Noto_Serif_Display({ subsets: ["latin"], style: ["normal", "italic"], axes: ["wdth"], variable: "--font-display", display: "swap" });
-const literata = Literata({ subsets: ["latin", "greek-ext"], style: ["normal", "italic"], variable: "--font-literata", display: "swap" });
+// The printed page's three typefaces, and no others (redesign SPEC.md 3.2): EB Garamond for English, GFS Didot for titles,
+// Greek room names and the logo, Gentium Book Plus for Greek being read. Every alphabet range of each font is always
+// available (the browser fetches one when a page uses its letters); `subsets` only names the files preloaded with every page.
 const garamond = EB_Garamond({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-garamond", display: "swap" });
-const mono = Noto_Sans_Mono({ weight: ["400", "500"], subsets: ["latin"], variable: "--font-mono", display: "swap" });
-const mark = Noto_Sans_Display({ subsets: ["greek"], axes: ["wdth"], variable: "--font-mark", display: "swap" });
-const gentium = Gentium_Book_Plus({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["greek-ext"], variable: "--font-gentium", display: "swap", preload: false });
-// The sans-serif faces a reader can choose in Settings: never preloaded, so a browser downloads one only if it is chosen.
-const notoSans = Noto_Sans({ subsets: ["greek-ext"], variable: "--font-noto-sans", display: "swap", preload: false });
-const alegreyaSans = Alegreya_Sans({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["latin"], variable: "--font-alegreya-sans", display: "swap", preload: false });
+const didot = GFS_Didot({ weight: "400", subsets: ["greek"], variable: "--font-didot", display: "swap" });
+const gentium = Gentium_Book_Plus({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["greek-ext"], variable: "--font-gentium", display: "swap" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -54,18 +46,18 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  // the site is dark: the browser's bar is design A's black frame
-  themeColor: THEME_COLOUR,
-  colorScheme: "dark",
+  // the browser's bar is the paper, or the night page when the device is dark (the site follows the device)
+  themeColor: [{ media: "(prefers-color-scheme: light)", color: THEME_COLOUR }, { media: "(prefers-color-scheme: dark)", color: THEME_COLOUR_NIGHT }],
+  colorScheme: "light dark",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${display.variable} ${literata.variable} ${garamond.variable} ${mono.variable} ${mark.variable} ${gentium.variable} ${notoSans.variable} ${alegreyaSans.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${garamond.variable} ${didot.variable} ${gentium.variable}`} suppressHydrationWarning>
       <head>
-        {/* the black frame from the very first byte, before the stylesheet arrives, so no page ever flashes white
-            (:where gives way to every rule of the stylesheet's own) */}
-        <style dangerouslySetInnerHTML={{ __html: `:where(html){background-color:${THEME_COLOUR}}` }} />
+        {/* the paper (or the night page) from the very first byte, before the stylesheet arrives, so no page ever flashes
+            the wrong colour (:where gives way to every rule of the stylesheet's own) */}
+        <style dangerouslySetInnerHTML={{ __html: `:where(html){background-color:${THEME_COLOUR}}@media (prefers-color-scheme:dark){:where(html:not([data-theme="paper"])){background-color:${THEME_COLOUR_NIGHT}}}:where(html[data-theme="night"]){background-color:${THEME_COLOUR_NIGHT}}` }} />
         <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         {/* first visit or returning, before the first paint: the home page shows the question or the desk (lib/visitor.ts) */}
         <script dangerouslySetInnerHTML={{ __html: VISITOR_SCRIPT }} />
@@ -73,7 +65,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body>
         <a className="skip" href="#main">Skip to content</a>
         <SettingsApplier />
-        <LamplightLevel />
         <Header />
         {children}
         <Footer />

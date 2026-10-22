@@ -1,81 +1,33 @@
-/* The phone bar (TabBar.tsx), in the home page's red, gold and bone. Phones are up to 760 px wide, the width at which the
-   header gives its doors to the menu. --tabbar-h (app/globals.css) is its height, the home-bar area included. */
-.bar, .bringBack { display: none; }
+/* The phone's foot of the page (TabBar.tsx): the paper, a thin rule of ink above, the rooms set like a book's running foot.
+   Phones are up to 760 px wide, the width at which the header gives its rooms to this bar. --tabbar-h (app/globals.css) is
+   its height, the gesture bar's area included. */
+.bar { display: none; }
 
 @media (max-width: 760px) {
   .bar {
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 35; display: block; height: var(--tabbar-h);
-    padding: 0 max(4px, env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(4px, env(safe-area-inset-left, 0px));
-    /* a sill along the foot of the screen, the header's frame turned over: solid, a fine gold line along its top */
-    background: var(--sill), var(--frame);
-    box-shadow: var(--sill-shadow), inset 0 1px 0 var(--rule);
-    transition: transform calc(1.2s / var(--tempo)) var(--ease);
+    padding: 0 max(var(--gutter), env(safe-area-inset-right, 0px)) env(safe-area-inset-bottom, 0px) max(var(--gutter), env(safe-area-inset-left, 0px));
+    background: var(--bg); color: var(--ink);
+    transition: transform 0.5s var(--ease), opacity 0.5s var(--ease);
   }
-  .bar[data-away] { transform: translateY(calc(100% + 12px)); pointer-events: none; }
-
-  /* "Hide with a button" (Settings): a small tab in the bottom corner brings the bar back */
-  .bringBack {
-    position: fixed; z-index: 35; display: grid; place-items: center;
-    right: max(12px, env(safe-area-inset-right, 0px)); bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-    width: var(--tap); height: 30px; padding: 0; border: 0; border-radius: var(--radius);
-    background: var(--frame); color: var(--accent); box-shadow: inset 0 0 0 1px var(--rule), 0 10px 24px -12px var(--shadow);
-    cursor: pointer; animation: back-in calc(0.9s / var(--tempo)) var(--ease) backwards;
-  }
+  /* the rule: one line of ink across the measure, a hairline under it, as at the foot of a printed page */
+  .bar::before { content: ""; position: absolute; top: 0; left: max(var(--gutter), env(safe-area-inset-left, 0px)); right: max(var(--gutter), env(safe-area-inset-right, 0px)); height: 3px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule-2); }
+  .bar[data-away] { transform: translateY(100%); opacity: 0; pointer-events: none; }
 }
-@keyframes back-in { from { opacity: 0; transform: translateY(8px); } }
 
-.tabs { position: relative; display: grid; grid-template-columns: repeat(var(--n, 5), minmax(0, 1fr)); height: 100%; }
-
+.tabs { list-style: none; margin: 0; padding: 0; display: grid; height: 100%; }
+.tabs li { display: flex; min-width: 0; }
 .tab {
-  position: relative; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; gap: 3px;
-  min-height: 0; padding: 6px 2px 9px; text-decoration: none; color: var(--ink-2);
-  -webkit-tap-highlight-color: transparent; transition: color var(--dur) ease;
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
+  padding: 8px 2px 6px; text-decoration: none; color: var(--ink); -webkit-tap-highlight-color: transparent;
+  transition: color var(--dur) var(--ease);
 }
-.tab svg {
-  width: 25px; height: 25px; overflow: visible;
-  fill: currentColor; fill-opacity: 0; stroke: currentColor; stroke-width: 1.4; stroke-linecap: round; stroke-linejoin: round;
-  transition: transform var(--dur) var(--ease), fill-opacity var(--dur) ease, color var(--dur) ease;
-}
-.label { font: 500 0.58rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
-.tab:active svg { transform: scale(0.92); }
+.word { font: 400 1.02rem / 1.15 var(--face-garamond); white-space: nowrap; }
+.tab i { font: italic 400 0.72rem / 1.2 var(--face-gentium); color: var(--ink-3); white-space: nowrap; transition: color var(--dur) var(--ease); }
+.tab[aria-current="page"], .tab[aria-current="page"] i { color: var(--rubric); }
 .tab:focus-visible { outline-offset: -4px; }
+/* the room you are in: a short red rule over its word, like a printer's mark in the margin */
+.tab[aria-current="page"] .word { background: linear-gradient(var(--rubric), var(--rubric)) 50% 0 / 18px 1px no-repeat; padding-top: 5px; margin-top: -5px; }
+@media (max-width: 359px) { .word { font-size: 0.94rem; } .tab i { font-size: 0.66rem; } }
 
-/* the place you are in: its icon and word in gold */
-.tab[aria-current="page"] { color: var(--accent); }
-.tab[aria-current="page"] svg { fill-opacity: 0.16; }
-
-/* ... on a red slab with a gold line along its foot, which slides to the place you go to */
-.ind {
-  position: absolute; top: 8px; bottom: 5px; left: 0; width: calc(100% / var(--n, 5)); pointer-events: none;
-  transform: translateX(calc(var(--i, 0) * 100%)); transition: transform calc(1.6s / var(--tempo)) var(--ease), opacity var(--dur) ease;
-}
-.ind::before { content: ""; position: absolute; inset: 0 var(--space-2); background: var(--slab-lit); box-shadow: inset 0 -2px 0 var(--accent); }
-.tabs[data-none] .ind { opacity: 0; }
-
-/* the smallest phones: the labels need every pixel of their share of the width */
-@media (max-width: 359px) {
-  .label { font-size: 0.54rem; letter-spacing: 0.08em; }
-}
-
-/* Search, in the middle: the lens on a round boss ringed with gold */
-.searchTab { border: 0; background: transparent; font: inherit; cursor: pointer; }
-.lens {
-  display: grid; place-items: center; width: 38px; height: 38px; border-radius: var(--radius-round);
-  background: var(--boss); color: var(--accent); box-shadow: var(--boss-edge);
-  transition: transform var(--dur) var(--ease);
-}
-.lens svg { width: 21px; height: 21px; }
-.searchTab:active .lens { transform: scale(0.94); }
-.searchTab[aria-current="page"] svg { fill-opacity: 0; }
-
-/* "Hide with a button": a small chevron at the top right of the bar puts it away */
-.putAway {
-  position: absolute; right: max(6px, env(safe-area-inset-right, 0px)); top: -26px; display: grid; place-items: center;
-  width: 40px; height: 26px; padding: 0; border: 0; border-radius: 0; cursor: pointer;
-  background: var(--frame); color: var(--accent); box-shadow: inset 0 1px 0 var(--rule), inset 1px 0 0 var(--rule), inset -1px 0 0 var(--rule);
-}
-.putAway::after { content: ""; position: absolute; inset: -9px -2px 0; }   /* a 44 px target under a finger */
-.putAway svg, .bringBack svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-.putAway:focus-visible, .bringBack:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-@media (prefers-reduced-motion: reduce) { .bar, .ind, .bringBack { transition: none; animation: none; } }
+@media (prefers-reduced-motion: reduce) { .bar { transition: none; } }
