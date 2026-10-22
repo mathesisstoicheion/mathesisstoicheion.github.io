@@ -1,0 +1,1 @@
+The app now checks for a new beta each time it opens, and installs it with one tap.
