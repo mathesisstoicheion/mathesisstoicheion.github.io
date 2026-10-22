@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId "com.mathesisstoicheion.reader"
         minSdk 26
-        targetSdk 34
+        targetSdk 35
         versionCode build
         versionName "beta ${build}"
     }

@@ -6,7 +6,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.WindowInsets;
+import android.view.WindowManager;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
 import android.webkit.WebResourceRequest;
@@ -14,6 +18,7 @@ import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.FrameLayout;
 
 import androidx.webkit.WebViewAssetLoader;
 
@@ -32,6 +37,7 @@ public class MainActivity extends Activity {
     static final String HOME = "https://" + HOST + "/";
 
     private WebView web;
+    private FrameLayout frame;
     private WebViewAssetLoader loader;
     private SharedPreferences prefs;
 
@@ -52,6 +58,8 @@ public class MainActivity extends Activity {
                 return loader.shouldInterceptRequest(request.getUrl());
             }
         });
+
+        edgeToEdge();
 
         web = new WebView(this);
         web.setBackgroundColor(0xFF14100D);
@@ -80,11 +88,91 @@ public class MainActivity extends Activity {
                 }
                 return true;
             }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                checkSafeAreas();
+            }
         });
-        setContentView(web);
+        frame = new FrameLayout(this);
+        frame.addView(web);
+        frame.setOnApplyWindowInsetsListener((v, insets) -> {
+            readInsets(insets);
+            fitFrame();
+            return insets; // passed on unchanged, so the page itself learns where the clock and gesture bar are
+        });
+        setContentView(frame);
 
         if (saved != null) web.restoreState(saved);
         else web.loadUrl(prefs.getString("last", HOME));
+    }
+
+    // ---- full screen: the page runs under the clock and the gesture bar ----
+
+    /** Where the system bars and the camera hole are, and how tall the keyboard is (in screen pixels). */
+    private int barTop, barBottom, keyboard;
+    /** True when this phone's WebView doesn't tell the page about the bars, so the app keeps the page clear of them. */
+    private boolean keepClear;
+
+    private void edgeToEdge() {
+        android.view.Window w = getWindow();
+        if (Build.VERSION.SDK_INT >= 30) {
+            w.setDecorFitsSystemWindows(false);
+        } else {
+            w.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+        }
+        w.setStatusBarColor(0);
+        w.setNavigationBarColor(0);
+        if (Build.VERSION.SDK_INT >= 29) {
+            w.setNavigationBarContrastEnforced(false);
+            w.setStatusBarContrastEnforced(false);
+        }
+        if (Build.VERSION.SDK_INT >= 28) {
+            WindowManager.LayoutParams a = w.getAttributes();
+            a.layoutInDisplayCutoutMode = WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_SHORT_EDGES;
+            w.setAttributes(a);
+        }
+    }
+
+    @SuppressWarnings("deprecation")
+    private void readInsets(WindowInsets insets) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.graphics.Insets bars = insets.getInsets(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            barTop = bars.top;
+            barBottom = bars.bottom;
+            keyboard = insets.isVisible(WindowInsets.Type.ime()) ? insets.getInsets(WindowInsets.Type.ime()).bottom : 0;
+        } else {
+            barTop = insets.getSystemWindowInsetTop();
+            barBottom = insets.getSystemWindowInsetBottom();
+            keyboard = barBottom > barTop * 3 ? barBottom : 0; // older Android reports the keyboard as a tall bottom bar
+        }
+    }
+
+    /** Lifts the page above the keyboard, and keeps it clear of the bars only when the page can't do it itself. */
+    private void fitFrame() {
+        int top = keepClear ? barTop : 0;
+        int bottom = keyboard > 0 ? keyboard : (keepClear ? barBottom : 0);
+        if (frame.getPaddingTop() != top || frame.getPaddingBottom() != bottom) frame.setPadding(0, top, 0, bottom);
+    }
+
+    /** The site places its header below the clock using the phone's safe areas; checks the page is told them. */
+    private void checkSafeAreas() {
+        if (barTop == 0) return;
+        String probe = "(function(){var d=document.createElement('div');"
+                + "d.style.cssText='position:fixed;top:0;left:0;width:1px;visibility:hidden;pointer-events:none;height:env(safe-area-inset-top,0px)';"
+                + "document.documentElement.appendChild(d);var h=d.getBoundingClientRect().height;d.remove();return h;})()";
+        web.evaluateJavascript(probe, value -> {
+            boolean told;
+            try {
+                told = Double.parseDouble(value) > 0;
+            } catch (NumberFormatException e) {
+                told = false;
+            }
+            if (keepClear == !told) return;
+            keepClear = !told;
+            fitFrame();
+        });
     }
 
     @Override
