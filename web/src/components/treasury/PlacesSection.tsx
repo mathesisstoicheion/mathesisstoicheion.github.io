@@ -47,6 +47,9 @@ export default function PlacesSection() {
   );
 }
 
+/** The map's shape, height to width: always the same, so the drawing fills its frame (scripts/check-svg-fill.mjs). */
+const SHAPE = 0.5;
+
 /** A still map framed around the saved places. */
 function MiniMap({ base, places }: { base: Base; places: Place[] }) {
   const sea = useMemo(() => ringsPath(base, base.water), [base]);
@@ -54,11 +57,11 @@ function MiniMap({ base, places }: { base: Base; places: Place[] }) {
   const xs = pts.map((q) => q.xy[0]), ys = pts.map((q) => q.xy[1]);
   const pad = 140;
   let [x0, x1, y0, y1] = [Math.min(...xs) - pad, Math.max(...xs) + pad, Math.min(...ys) - pad, Math.max(...ys) + pad];
-  // at least a region's width, and a pleasant shape
+  // at least a region's width; then the places' own extent widened or deepened to the map's one shape
   const minW = 900;
   if (x1 - x0 < minW) { const c = (x0 + x1) / 2; x0 = c - minW / 2; x1 = c + minW / 2; }
-  const wantH = (x1 - x0) * 0.55;
-  if (y1 - y0 < wantH) { const c = (y0 + y1) / 2; y0 = c - wantH / 2; y1 = c + wantH / 2; }
+  if (y1 - y0 < (x1 - x0) * SHAPE) { const c = (y0 + y1) / 2, h = (x1 - x0) * SHAPE; y0 = c - h / 2; y1 = c + h / 2; }
+  else { const c = (x0 + x1) / 2, w = (y1 - y0) / SHAPE; x0 = c - w / 2; x1 = c + w / 2; }
   const s = (x1 - x0) / 1000;
   return (
     <svg className={styles.miniMap} viewBox={`${x0} ${y0} ${x1 - x0} ${y1 - y0}`} role="img" aria-label={places.length === 1 ? "A map of your saved place" : `A map of your ${places.length} saved places`}>

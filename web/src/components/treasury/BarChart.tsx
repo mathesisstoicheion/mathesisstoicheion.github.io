@@ -2,7 +2,7 @@
 /**
  * A single-series horizontal bar chart in plain HTML: thin bars from one baseline, the value at
  * each tip in ink (never the bar colour), a tooltip on hover or focus, and the same numbers as a
- * table for anyone who prefers one. Bars grow in once when first shown.
+ * table for anyone who prefers one. The bars ink in once when first shown; nothing grows.
  */
 import { useState } from "react";
 import styles from "./WordStudy.module.css";

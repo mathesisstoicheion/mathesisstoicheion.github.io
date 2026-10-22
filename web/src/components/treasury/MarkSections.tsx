@@ -115,7 +115,7 @@ export function RecentSection({ t }: { t: TreasuryState }) {
     <>
       <ContinueReading t={t} limit={6} />
       {latest.length > 0 && (
-        <div>
+        <div className={styles.latest}>
           <h2>Latest</h2>
           <ol className={styles.cards}>
             {latest.map((x, i) => <li key={x.key} className={styles.card} style={{ "--i": i } as React.CSSProperties}>{x.node}</li>)}
@@ -240,7 +240,7 @@ export function HighlightsSection({ t }: { t: TreasuryState }) {
         <div key={work} className={styles.group}>
           <WorkHead t={t} work={work} n={ms.length} />
           <ol className={styles.rows}>
-            {ms.map((m) => <li key={m.id}><span className={styles.swatch} data-colour={m.colour} aria-label={m.colour} /><RefLink m={m} /><p className={styles.quote} lang="grc" data-hl={m.colour}>{m.quote}</p><RemoveButton m={m} what="highlight" /></li>)}
+            {ms.map((m) => <li key={m.id}><span className={styles.swatch} data-colour={m.colour} aria-label={m.colour} /><RefLink m={m} /><p className={styles.quote} lang="grc"><span className={styles.hl} data-hl={m.colour}>{m.quote}</span></p><RemoveButton m={m} what="highlight" /></li>)}
           </ol>
         </div>
       ))}

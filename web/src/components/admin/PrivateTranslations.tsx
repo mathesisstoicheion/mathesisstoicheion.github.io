@@ -72,9 +72,8 @@ function Shelf() {
       <PageHead bare path={trail("treasury", "Private translations")} title="Private translations"
         purpose={<>Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
           the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.</>}>
-        <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /></div>
+        <div className={styles.kicker}><Seal /></div>
       </PageHead>
-      <div className="meander draw" aria-hidden="true" />
 
       <section className={styles.shelfSec} aria-labelledby="shelf-h" aria-busy={list.busy}>
         <div className={styles.secHead}>

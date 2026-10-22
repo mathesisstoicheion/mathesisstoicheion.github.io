@@ -6,7 +6,12 @@ import type { Page } from "@playwright/test";
 // unless it is already open and returns the menu's panel.
 async function open(page: Page, name: string | RegExp) {
   const button = (typeof name === "string" ? page.getByRole("button", { name, exact: true }) : page.getByRole("button", { name })).first();
-  if ((await button.getAttribute("aria-expanded")) !== "true") await button.click();
+  if ((await button.getAttribute("aria-expanded")) !== "true") {
+    // one menu at a time, as a reader opens them: another one open may lie over this one's button (Tools drops over the
+    // book's title page, where Change is), so it is closed first, with Escape (Drop.tsx)
+    if (await page.locator('button[aria-controls][aria-expanded="true"]').count()) await page.keyboard.press("Escape");
+    await button.click();
+  }
   return page.locator(`#${await button.getAttribute("aria-controls")}`);
 }
 // Tools says how many modes are on ("Tools, 2 on")

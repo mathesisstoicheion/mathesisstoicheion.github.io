@@ -64,7 +64,10 @@ test("gather from the reader, the concordance and a comparison, then cite and do
   const html = readFileSync((await file.path())!, "utf8");
   expect(html).toContain("<h2>Notebooks</h2>");
   expect(html).toContain('"notebooks":[{');
-  // and the page passes the accessibility checks
+  // and the page passes the accessibility checks, read once nothing is still inking in (the download's message has only
+  // just come, and the page's plate inks in as its photograph arrives): with reduced motion all of it is printed at once,
+  // as in a11y.spec.ts
+  await page.emulateMedia({ reducedMotion: "reduce" });
   const r = await new AxeBuilder({ page }).include("main").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
   expect(r.violations.map((x) => `${x.id}: ${x.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(", ")}`)).toEqual([]);
 });

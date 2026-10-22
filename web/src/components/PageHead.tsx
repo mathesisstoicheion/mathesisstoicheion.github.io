@@ -16,13 +16,15 @@ import type { Step } from "@/config/areas";
  * the plate (PAGE-RULES.md rule 2); `children` follow. The plate is held twice, once beside the title for a computer and
  * once after the action for a phone; only the one shown is fetched.
  */
-export default function PageHead({ path, inscription, inscriptionSays, title, greek, purpose, action, size = "short", piece, bare, desk = true, className, children }: {
+export default function PageHead({ path, inscription, inscriptionSays, title, titleId, greek, purpose, action, size = "short", piece, bare, desk = true, className, children }: {
   path: Step[];
   /** a few Greek words set in capitals above the title, as an inscription (the reading path's line, the Oracle's maxim) */
   inscription?: string | null;
   /** what the inscription means, read out in its place when it is a sign rather than words (the not-found page's ΥΔ) */
   inscriptionSays?: string;
   title: ReactNode;
+  /** the title's id, for a page that is labelled by it */
+  titleId?: string;
   greek?: string | null;
   purpose?: ReactNode;
   action?: ReactNode;
@@ -49,7 +51,7 @@ export default function PageHead({ path, inscription, inscriptionSays, title, gr
           ))}
         </p>
         {inscription && <p className="ph-inscr" lang="grc" role={inscriptionSays ? "img" : undefined} aria-label={inscriptionSays}>{inscription}</p>}
-        <h1 className="ph-title">
+        <h1 className="ph-title" id={titleId}>
           {title}
           {greek && <span className="ph-greek" lang="grc">{greek}</span>}
         </h1>

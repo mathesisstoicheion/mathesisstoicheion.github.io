@@ -1,201 +1,167 @@
-/* The moderator's private translations (PrivateTranslations.tsx, TranslationReader.tsx, parts.tsx, Rich.tsx):
-   the shelf, adding a file, and the side-by-side reader. The reader is set like the site's own (a ruled band of
-   clay slip, references in the margin in rubric red), and a small seal on every view says the page is private. */
+/* The moderator's private translations (PrivateTranslations.tsx, TranslationReader.tsx, parts.tsx, Rich.tsx), on the
+   printed page: the shelf of translations, adding a file, and the side-by-side reader, set like a two-language edition
+   (the reference in the margin in red, the Greek and our English in facing columns ruled by hairlines). A small stamp in
+   red ink on every view says the page is private. Things ink in as they arrive; nothing presses, rises or slides. */
+@keyframes ink-in { from { opacity: 0; } }
 
 /* ------------------------------------------------------------ shared */
 .page { padding-bottom: clamp(48px, 8vw, 96px); }
 .status { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); }
 .status > p { flex-basis: 100%; }
-.spinner {
-  display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round);
-  border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite;
-}
-@keyframes spin { to { transform: rotate(360deg); } }
+/* the waiting mark: a small red ring that stands still (the words beside it say what is happening; nothing spins) */
+.spinner { display: inline-block; vertical-align: -3px; width: 14px; height: 14px; border-radius: var(--radius-round); border: 1.5px solid var(--rubric); }
 .small { font-size: var(--step--1); color: var(--ink-2); }
-.error { color: var(--accent); font-weight: 600; }
+.error { color: var(--rubric); font-weight: 600; }
 .warn { color: var(--ochre); font-weight: 600; }
 .btnRow { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
 /* signed in, but not the moderator: one quiet line, nothing more */
-.privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font-size: var(--step-3); color: var(--ink-2); }
+.privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font: 400 var(--step-3) / 1.15 var(--f-display); color: var(--ink-2); }
 
-.crumbs { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); }
-.crumbs a { text-decoration: none; padding-block: 5px; }  /* taller than the words, for a finger */
-.crumbs a:hover { color: var(--accent); }
 .kicker { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; }
-.kicker :global(.tongues) { width: 72px; }
 
-/* the seal: pressed on as the page opens, like wax on a letter */
+/* the stamp: "private", in red ink in a red hairline frame, as a stamp on a document */
 .seal {
-  display: inline-flex; align-items: center; gap: 6px; padding: 3px 11px 3px 9px;
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.06em; color: var(--accent);
-  border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius);
-  animation: press calc(0.7s / var(--tempo)) var(--ease) calc(0.35s / var(--tempo)) backwards;
+  display: inline-flex; align-items: center; gap: 7px; padding: 3px 11px 2px 9px;
+  font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric);
+  border: 1px solid var(--rubric); border-radius: var(--radius);
 }
 .seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-@keyframes press {
-  from { opacity: 0; transform: scale(1.4) rotate(-8deg); }
-  60% { opacity: 1; transform: scale(0.96) rotate(1deg); }
-}
 
+/* how far along a translation is: small capitals in a hairline frame, with a dot in the colour of its state */
 .statusTag {
-  display: inline-flex; align-items: center; gap: 6px; padding: 1px 10px;
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.06em; color: var(--ink-2);
-  border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius);
+  display: inline-flex; align-items: center; gap: 7px; padding: 2px 10px 1px;
+  font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
+  border: 1px solid var(--rule); border-radius: var(--radius);
 }
 .statusTag::before { content: ""; width: 6px; height: 6px; border-radius: var(--radius-round); background: currentColor; }
 .statusTag[data-status="sample"] { color: var(--ochre); }
 .statusTag[data-status="draft"] { color: var(--blue); }
 .statusTag[data-status="complete"] { color: var(--ok); }
+.statusTag[data-status="imported"] { color: var(--rubric); }
 
-/* a small button for a tool (Download, Remove), in whatever colour it stands on */
+/* a small button for a tool (Download, Remove): a hairline frame, red under the hand */
 .act {
   display: inline-flex; align-items: center; padding: 6px 13px; font-size: var(--step--1); line-height: 1.2;
-  background: var(--slab); color: inherit; border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), color var(--dur) var(--ease);
+  background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); text-decoration: none;
+  transition: border-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
 }
-.act:hover { background: var(--slab-lit); }
-.act:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
+.act:hover, .act:focus-visible { color: var(--rubric); border-color: var(--ink-3); }
 .act:disabled { opacity: 0.6; cursor: progress; }
-.act[aria-expanded="true"] { background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.act[aria-expanded="true"] { color: var(--rubric); border-color: var(--rubric); }
 @media (pointer: coarse) { .act { min-height: var(--tap); } }
 
-@keyframes rise { from { opacity: 0; transform: translateY(16px); } }
-@keyframes unfold { from { opacity: 0; transform: translateY(-6px); } }
-
 /* ------------------------------------------------------------ the shelf */
-.deskHead { padding-top: clamp(28px, 5vw, 56px); display: grid; gap: 14px; }
-.deskTitle { font-size: clamp(2.6rem, 5.6vw, 4.4rem); margin-top: 4px; }
-.deskTitle::first-letter { color: var(--accent); }
-.lead { max-width: 62ch; font-size: var(--step-sub); line-height: 1.6; color: var(--ink-2); }
-.deskHead :global(.meander) { margin-top: clamp(18px, 4vw, 40px); }
-
-.shelfSec { margin-top: var(--after-head); }
-.secHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 18px; }
-.secHead h2 { font-size: var(--step-2); }
-.count { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--ink-2); }
+.shelfSec { margin-top: var(--after-head); padding-top: clamp(20px, 3vw, 28px); border-top: 1px solid var(--rule); }
+/* the shelf's head: its name, then a hairline to the margin, and how many there are */
+.secHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 14px; margin-bottom: 20px; }
+.secHead h2 { flex: 1 1 auto; display: flex; align-items: baseline; gap: 14px; margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
+.secHead h2::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
+.count { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .empty { font-style: italic; color: var(--ink-2); padding-block: 12px; }
 
-/* what was just done: a tick drawn in, and a way to read what was saved */
+/* what was just done: a note with a green rule down its margin, and a way to read what was saved */
 .done {
   display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin-bottom: 16px; padding: 10px 14px;
-  background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); animation: rise calc(0.45s / var(--tempo)) var(--ease) backwards;
+  box-shadow: var(--inlay-left-ok), var(--slab-edge); animation: ink-in var(--dur-slow) var(--ease) backwards;
 }
-.done svg {
-  flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ok); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round;
-  stroke-dasharray: 18; animation: tick calc(0.5s / var(--tempo)) var(--ease) calc(0.2s / var(--tempo)) backwards;
-}
-@keyframes tick { from { stroke-dashoffset: 18; } }
+.done svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ok); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* each translation, a slab with a band of gilded inlay along its top, rising into place in turn */
-.shelf { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 18px; }
-.book {
-  --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
-  --ochre: #D9A15A; --blue: #8FB0CC; --ok: #7CC08E; --rule: color-mix(in srgb, var(--inv-fg) 30%, transparent);
-  display: flex; flex-direction: column; background: var(--slab); color: var(--inv-fg);
-  border-radius: var(--radius);
-  box-shadow: var(--inlay-top), var(--slab-edge);
-  animation: rise calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 8) * (70ms / var(--tempo)));
-  transition: background-color 0.25s;
-}
-.book:has(.bookLink:hover) { background-color: var(--slab-lit); }
-.bookLink { flex: 1; display: grid; align-content: start; gap: 4px; padding: 24px 22px 18px; color: inherit; text-decoration: none; }
+/* each translation: a hairline frame with a red rule along its top, its words in ink */
+.shelf { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.book { display: flex; flex-direction: column; color: var(--ink); border-radius: var(--radius); box-shadow: var(--inlay-top), var(--slab-edge); }
+.bookLink { flex: 1; display: grid; align-content: start; gap: 4px; padding: 22px 22px 18px; color: inherit; text-decoration: none; }
 .bookLink:focus-visible { outline-offset: -5px; }
-.bookGr { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.3; color: var(--accent); }
-.bookTitle { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.12; text-wrap: balance; }
+.bookGr { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.3; color: var(--rubric); }
+.bookTitle { font: 400 var(--step-1) / 1.15 var(--f-display); text-wrap: balance; transition: color var(--dur-quick) var(--ease); }
+.bookLink:hover .bookTitle, .bookLink:focus-visible .bookTitle { color: var(--rubric); }
 .bookBy { color: var(--ink-2); }
-.bookGo { margin-top: 12px; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--accent); transition: transform 0.25s var(--ease); }
-.bookLink:hover .bookGo { transform: translateX(4px); }
+.bookGo { margin-top: 12px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 .bookFoot { display: grid; gap: 10px; padding: 14px 22px 16px; box-shadow: var(--cut-over); }
 .bookMeta { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; font-size: var(--step--1); color: var(--ink-2); }
 .bookActs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .bookActs .error { flex-basis: 100%; font-size: var(--step--1); }
 
-/* "are you sure?", asked in the page */
+/* "are you sure?", asked in the page: a note with a red rule down its margin */
 .ask {
   flex-basis: 100%; display: grid; gap: 10px; padding: 12px 14px; font-size: var(--step--1); line-height: 1.45;
-  background: var(--field); box-shadow: var(--field-edge), var(--inlay-left); border-radius: var(--radius); animation: unfold calc(0.3s / var(--tempo)) var(--ease) backwards;
+  box-shadow: var(--inlay-left), var(--field-edge); border-radius: var(--radius); animation: ink-in var(--dur) var(--ease) backwards;
 }
 .askRow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.ask :global(.chip) { box-shadow: var(--slab-edge), var(--chosen-foot); transition: background-color var(--dur) var(--ease); }
-.ask :global(.chip):hover { background: var(--slab-lit); }
+.ask :global(.chip) { color: var(--rubric); border-color: var(--rubric); }
 
-/* ------------------------------------------------------------ adding or updating a translation */
+/* ------------------------------------------------------------ adding or updating a translation: a notice in a double rule */
 .add {
-  margin-top: clamp(40px, 6vw, 64px); padding: clamp(20px, 3vw, 32px); display: grid; gap: 14px; justify-items: start;
-  border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge);
-  transition: box-shadow 0.2s, background-color 0.2s;
+  margin-top: clamp(40px, 6vw, 64px); padding: clamp(22px, 3vw, 32px); display: grid; gap: 14px; justify-items: start;
+  border-radius: var(--radius); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in);
+  transition: background-color var(--dur-quick) var(--ease);
 }
-.add[data-over] { background: color-mix(in srgb, var(--accent) 12%, var(--field)); box-shadow: var(--field-edge), var(--inlay-left); }
-.add h2 { font-size: var(--step-2); }
+/* a file held over it: the paper's second tone, and a red rule down its margin */
+.add[data-over] { background: var(--bg-2); box-shadow: var(--inlay-left), var(--field-edge); }
+.add h2 { margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
 .addLead { max-width: 64ch; color: var(--ink-2); }
 .problems {
-  justify-self: stretch; display: grid; gap: 8px; padding: 14px 18px; background: var(--slab);
-  box-shadow: var(--slab-edge), var(--inlay-left); animation: rise calc(0.35s / var(--tempo)) var(--ease) backwards;
+  justify-self: stretch; display: grid; gap: 8px; padding: 14px 18px;
+  box-shadow: var(--inlay-left), var(--slab-edge); animation: ink-in var(--dur-slow) var(--ease) backwards;
 }
 .problems ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
-.problems li::marker { color: var(--accent); }
+.problems li::marker { color: var(--rubric); }
 .preview {
-  justify-self: stretch; display: grid; gap: 14px; padding: clamp(18px, 2.4vw, 26px); background: var(--field);
-  box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards;
+  justify-self: stretch; display: grid; gap: 14px; padding: clamp(18px, 2.4vw, 26px);
+  box-shadow: var(--inlay-top), var(--field-edge); border-radius: var(--radius); animation: ink-in var(--dur-slow) var(--ease) backwards;
 }
-.previewGr { font-size: var(--step-1); color: var(--accent); }
-.previewTitle { font-size: var(--step-2); }
+.previewGr { font-family: var(--f-greek); font-size: var(--step-1); color: var(--rubric); }
+.previewTitle { margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
 .facts { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px 24px; }
-.facts dt, .about dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
+.facts dt, .about dt { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .facts dd { margin: 2px 0 0; overflow-wrap: anywhere; }
 
 /* ------------------------------------------------------------ the reader */
 .reading { --ref-w: 76px; --col-gap: clamp(18px, 2.6vw, 40px); --band-pad: clamp(10px, 1.6vw, 20px); }
-.docHead { padding-top: clamp(24px, 4vw, 40px); display: grid; gap: 14px; }
-.docTitle { margin-top: 2px; }
-.docTitle::first-letter { color: var(--accent); }
-.docGr { display: block; font-size: 0.5em; margin-top: 8px; letter-spacing: 0.01em; }
-.docBy { font-family: var(--f-display); font-size: var(--step-1); color: var(--ink-2); }
-.about { margin: 4px 0 0; display: flex; flex-wrap: wrap; gap: 12px 36px; font-size: var(--step-0); }
+.about { margin: 14px 0 0; display: flex; flex-wrap: wrap; gap: 12px 36px; font-size: var(--step-0); }
 .about > div { max-width: 48ch; }
 .about dd { margin: 2px 0 0; }
-.docHead :global(.meander) { margin-top: clamp(16px, 3vw, 30px); }
-.messageTitle { font-size: var(--step-3); }
 .message { padding-block: 24px 60px; display: grid; gap: 16px; justify-items: start; max-width: 70ch; }
 
 /* the introduction opens with a red initial, as a rubricated book would */
 .intro { max-width: 68ch; margin-top: var(--after-head); font-size: var(--step-sub); line-height: 1.75; }
 .intro p + p { margin-top: 0.85em; }
+/* the first paragraph holds its initial whole, so a short one never lets it hang into the next */
+.intro > p:first-child { display: flow-root; }
 .intro > p:first-child::first-letter {
-  float: left; font-family: var(--f-display); font-size: 3.3em; line-height: 0.82; padding: 0.08em 0.12em 0 0; color: var(--accent);
+  float: left; font-family: var(--f-title); font-size: 3.3em; line-height: 0.82; padding: 0.08em 0.12em 0 0; color: var(--rubric);
 }
 .key { display: flex; align-items: baseline; gap: 12px; max-width: 68ch; margin-top: 20px; font-size: var(--step--1); color: var(--ink-2); }
-.keyMark { flex: none; font-family: var(--f-greek); color: var(--accent); letter-spacing: 0.12em; }
+.keyMark { flex: none; font-family: var(--f-greek); color: var(--rubric); letter-spacing: 0.12em; }
 
+/* the list of passages: a contents page, each number in red */
 .contents { margin-top: 28px; display: grid; gap: 6px; }
-.contents ol { list-style: none; margin: 0; padding: 0; columns: 2 280px; column-gap: 32px; }
-.contents li { break-inside: avoid; }
-.contents a { display: flex; gap: 10px; align-items: baseline; padding-block: 5px; text-decoration: none; }
-.contents a:hover { color: var(--accent); }
-.cNum { flex: none; min-width: 1.6em; font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); font-variant-numeric: tabular-nums; }
+.contents ol { list-style: none; margin: 0; padding: 0; columns: 2 280px; column-gap: 32px; border-top: 1px solid var(--ink); }
+.contents li { break-inside: avoid; border-bottom: 1px solid var(--rule); }
+.contents a { display: flex; gap: 10px; align-items: baseline; padding-block: 7px; color: var(--ink); text-decoration: none; transition: color var(--dur-quick) var(--ease); }
+.contents a:hover, .contents a:focus-visible { color: var(--rubric); }
+.cNum { flex: none; min-width: 1.6em; font: 400 var(--step-0) var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
 
-/* the bar that follows the page down: the published English on or off, and Download */
+/* the bar that follows the page down: the published English on or off, and Download. It keeps the paper behind it. */
 .bar {
-  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5; transition: top 0.35s var(--ease);
+  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5;
   margin-top: clamp(24px, 4vw, 36px); display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; padding-block: 10px;
-  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
-  box-shadow: var(--cut-under);   /* it follows the page down, so it keeps its own backing */
+  background: var(--bg); box-shadow: var(--cut-under);
 }
 :global(html[data-hdr="hidden"]) .bar { --hdr-vis: 0px; }
 .barSize { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); }
 .barEnd { margin-left: auto; display: inline-flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 8px; }
 
-/* a passage: its place and heading over the Greek column, then its rows on a ruled band, then its notes */
-.passage { margin-top: clamp(32px, 5vw, 52px); outline: none; animation: rise calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 4) * (90ms / var(--tempo)) + (0.1s / var(--tempo))); }
+/* a passage: its place and heading over the Greek column, then its rows ruled by hairlines, then its notes */
+.passage { margin-top: clamp(32px, 5vw, 52px); outline: none; animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 4) * 90ms); }
 /* reached by a link: clear of the site header and the bar that follows the page */
 .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-vis) + 76px); }
 .passageHead { display: grid; gap: 4px; margin-bottom: 12px; padding-left: calc(var(--ref-w) + var(--col-gap) + var(--band-pad)); }
 /* the locator and the margin are in the text face, not small capitals, so a line number keeps its small letter ("1097a15") */
-.locator { font-size: var(--step-0); letter-spacing: 0.02em; color: var(--accent); font-variant-numeric: lining-nums; }
-.passageTitle { font-size: var(--step-2); }
-/* reached from the list of passages: the heading glows red for a moment */
-.passageTitle.flash { animation: ink calc(1.8s / var(--tempo)) ease-out; }
-@keyframes ink { 0%, 30% { color: var(--accent); } }
+.locator { font-size: var(--step-0); letter-spacing: 0.02em; color: var(--rubric); font-variant-numeric: lining-nums; }
+.passageTitle { margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
+/* reached from the list of passages: the heading is marked in red for a moment, so the eye finds it */
+.passageTitle.flash { animation: ink-red 1.8s ease-out; }
+@keyframes ink-red { 0%, 30% { color: var(--rubric); } }
 
 .heads, .line {
   display: grid; column-gap: var(--col-gap);
@@ -206,77 +172,77 @@
   grid-template-columns: var(--ref-w) minmax(0, 1.08fr) minmax(0, 1fr) minmax(0, 1fr);
   grid-template-areas: "ref grc ours pub";
 }
-.heads { padding: 0 var(--band-pad) 8px; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--ink-2); }
+.heads { padding: 0 var(--band-pad) 8px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .hGrc { grid-area: grc; }
 .hOurs { grid-area: ours; padding-left: clamp(14px, 1.8vw, 24px); }
-.hPub { grid-area: pub; padding-left: clamp(14px, 1.8vw, 24px); animation: wipe calc(0.55s / var(--tempo)) var(--ease) backwards; }
+.hPub { grid-area: pub; padding-left: clamp(14px, 1.8vw, 24px); animation: ink-in var(--dur-slow) var(--ease) backwards; }
 
-.lines { background: var(--field); box-shadow: var(--field-edge); padding: 2px var(--band-pad); }
+/* the rows: between an ink rule above and below, each divided from the next by a hairline */
+.lines { padding: 0 var(--band-pad); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--ink); }
 .line {
   position: relative; margin-inline: calc(-1 * var(--band-pad)); padding: 16px var(--band-pad);
-  box-shadow: var(--cut-under); outline: none; transition: background-color 0.25s;
+  box-shadow: var(--cut-under); outline: none; transition: background-color var(--dur-quick) var(--ease);
 }
 .line:last-child { box-shadow: none; }
-/* a faint wash under the row the pointer is on, so the eye keeps its line across the columns */
-.line:hover { background: color-mix(in srgb, var(--accent) 4%, transparent); }
+/* the paper's second tone under the row the pointer is on, so the eye keeps its line across the columns */
+.line:hover { background: var(--bg-2); }
 .line:focus-visible { box-shadow: var(--inlay-left), var(--cut-under); }
 .line:last-child:focus-visible { box-shadow: var(--inlay-left); }
-.flash { animation: flash calc(2.4s / var(--tempo)) ease-out; }
-@keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
+/* reached from a note: the row is marked for a moment in the paper's second tone, so the eye finds it */
+.flash { animation: mark-row 2.4s ease-out; }
+@keyframes mark-row { 0%, 30% { background: var(--bg-2); } 100% { background: transparent; } }
 
 .margin {
   grid-area: ref; text-align: right; padding-top: 0.4em; font-size: var(--step--1); letter-spacing: 0.02em;
   line-height: 1.35; font-variant-numeric: lining-nums tabular-nums; overflow-wrap: anywhere;
 }
-.refName { color: var(--accent); }
-.refLink { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 3px; color: var(--accent); text-decoration: none; }
-.refLink:hover .refName { text-decoration: underline; text-underline-offset: 3px; }
-.go { font-size: 0.9em; transition: transform 0.2s var(--ease); }
-.refLink:hover .go { transform: translate(2px, -2px); }
+.refName { color: var(--rubric); }
+.refLink { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 3px; color: var(--rubric); text-decoration: none; }
+.refLink:hover .refName, .refLink:focus-visible .refName { text-decoration: underline; text-underline-offset: 3px; }
+.go { font-size: 0.9em; }
 @media (pointer: coarse) { .refLink { padding-block: 10px; margin-block: -10px; } }
 /* the words "open in the reader": spoken by screen readers everywhere, shown on phones */
 .goText, .cellLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
 .grc { grid-area: grc; font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
 .ours { grid-area: ours; font-size: var(--step-0); line-height: 1.72; color: var(--ink); box-shadow: var(--cut-left); padding-left: clamp(14px, 1.8vw, 24px); }
+/* the published English, inked in when the column is turned on */
 .pub {
   grid-area: pub; font-size: var(--step-0); line-height: 1.68; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: clamp(14px, 1.8vw, 24px);
-  /* drawn in from the left when the column is turned on, row after row */
-  animation: wipe calc(0.55s / var(--tempo)) var(--ease) backwards; animation-delay: calc(min(var(--j, 0), 10) * (22ms / var(--tempo)));
+  animation: ink-in var(--dur-slow) var(--ease) backwards;
 }
-@keyframes wipe { from { clip-path: inset(0 100% 0 0); opacity: 0.2; } to { clip-path: inset(0 0 0 0); opacity: 1; } }
 .grc p + p, .ours p + p, .pub p + p { margin-top: 0.65em; }
 .none { font-style: italic; font-size: var(--step--1); color: var(--ink-2); }
 
 /* the light markup: words the editor thinks were added later, fainter, between their brackets */
-.added { color: var(--ink-2); text-decoration: underline dotted 1px color-mix(in srgb, var(--ink-2) 55%, transparent); text-underline-offset: 0.3em; cursor: help; }
-.bracket { color: var(--accent); font-size: 0.9em; }
+.added { color: var(--ink-2); text-decoration: underline dotted 1px var(--ink-3); text-underline-offset: 0.3em; cursor: help; }
+.bracket { color: var(--rubric); font-size: 0.9em; }
 
 /* under the passage: notes and differences, lined up with the Greek */
 .apparatus {
   display: grid; gap: 24px 44px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
   padding: 24px 0 0 calc(var(--ref-w) + var(--col-gap) + var(--band-pad));
 }
-.appHead { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.08em; color: var(--accent); margin-bottom: 12px; }
+.appHead { margin: 0 0 12px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 .notes ol { list-style: none; margin: 0; padding: 0; counter-reset: note; display: grid; gap: 12px; }
 .notes li { counter-increment: note; display: grid; grid-template-columns: 1.8em minmax(0, 1fr); font-size: var(--step-0); line-height: 1.65; }
-.notes li::before { content: counter(note); font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); padding-top: 0.12em; }
+.notes li::before { content: counter(note); font-family: var(--f-title); font-size: var(--step--1); color: var(--rubric); padding-top: 0.12em; }
 .notes li > p { grid-column: 2; }
 .notes li > p + p { margin-top: 0.5em; }
 .diffs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
 .diff { display: grid; gap: 8px; padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); }
-.diffGr { font-size: calc(var(--greek-size) * 0.95); line-height: 1.45; color: var(--accent); }
+.diffGr { font-size: calc(var(--greek-size) * 0.95); line-height: 1.45; color: var(--rubric); }
 .pair { margin: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 170px), 1fr)); gap: 6px 22px; }
-.pair dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
+.pair dt { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .pair dd { margin: 2px 0 0; font-size: var(--step-0); line-height: 1.5; color: var(--ink-2); }
 .pairOurs dd { color: var(--ink); }
 .why { font-size: var(--step-0); line-height: 1.6; }
 .why p + p { margin-top: 0.5em; }
 .seeIt {
   justify-self: start; padding: 4px 0; background: none; border: 0; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em;
-  color: var(--accent); text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent); text-underline-offset: 3px;
+  color: var(--rubric); text-decoration: underline; text-decoration-color: var(--rule); text-underline-offset: 3px;
 }
-.seeIt:hover { text-decoration-color: currentColor; }
+.seeIt:hover, .seeIt:focus-visible { text-decoration-color: currentColor; }
 @media (pointer: coarse) { .seeIt { min-height: var(--tap); } }
 
 /* middle widths: with the published English on, it goes under ours, and the Greek spans both */
@@ -290,7 +256,7 @@
   .pub { box-shadow: var(--cut-left), var(--cut-over); padding-top: 14px; margin-top: 12px; }
   .pub .cellLabel {
     position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
-    display: block; margin-bottom: 4px; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; line-height: 1.3;
+    display: block; margin-bottom: 4px; font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
   }
 }
 
@@ -311,14 +277,10 @@
   .pub { box-shadow: var(--cut-over); padding-left: 0; padding-top: 12px; }
   [data-pub] .ours .cellLabel, .pub .cellLabel {
     position: static; width: auto; height: auto; overflow: visible; clip: auto; white-space: normal;
-    display: block; margin-bottom: 4px; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; line-height: 1.3; color: var(--ink-2);
+    display: block; margin-bottom: 4px; font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
   }
-  .lines { margin-inline: calc(-1 * var(--gutter)); border-inline: 0; }
+  .lines { margin-inline: calc(-1 * var(--gutter)); }
   .passageHead, .apparatus { padding-left: 0; }
   .bar { position: static; }
   .reading .passage, .reading .line { scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 }
-.statusTag[data-status="imported"] { color: var(--accent); }
-
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.book, .add { outline: var(--moulding); outline-offset: var(--moulding-in); }

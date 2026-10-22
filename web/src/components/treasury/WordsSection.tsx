@@ -44,7 +44,7 @@ export default function WordsSection({ t }: { t: TreasuryState }) {
         </span>
         <span className={styles.seg} role="group" aria-label="Order">
           <button type="button" aria-pressed={order === "new"} onClick={() => setOrder("new")}>Newest</button>
-          <button type="button" aria-pressed={order === "abc"} onClick={() => setOrder("abc")}>α–ω</button>
+          <button type="button" aria-pressed={order === "abc"} onClick={() => setOrder("abc")}><span lang="grc">α–ω</span></button>
         </span>
         <label className={styles.check}><input type="checkbox" checked={all} onChange={(e) => setAll(e.target.checked)} /> Include lesson and core words</label>
       </div>

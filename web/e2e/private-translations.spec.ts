@@ -420,7 +420,7 @@ for (const role of [null, "member"] as const) {
     await expect(page.getByText("Placeholder")).toHaveCount(0);
     expect(db.asked).toEqual([]);
     await page.goto("/read");
-    await expect(page.getByRole("heading", { level: 1, name: "No work chosen" })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1, name: "The reader" })).toBeVisible();   // the reader with no book (Reader.tsx)
     await page.waitForTimeout(800);
     await expect(page.getByRole("button", { name: "Private collection" })).toHaveCount(0);
   });

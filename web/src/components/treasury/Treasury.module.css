@@ -1,108 +1,122 @@
-/* ================================================================ the Treasury */
-/* In the home page's look: fine gold lines, panels washed in Pompeian red, tall gold numerals. */
-.treasury { display: grid; gap: clamp(28px, 4vw, 44px); padding-block: var(--after-head) var(--space-5); }
-.error { color: var(--accent); }
+/* ================================================================ the Treasury (Mine), as a printed page */
+/* The reader's own book. What they have kept is set as a book sets its contents: the nine kinds, each with its Greek
+   numeral, its name and what it holds, a dotted leader and its count in red where a contents page has its page numbers.
+   The part chosen follows under its own head: lists are entries under hairlines, passages are quoted in the Greek type,
+   and a frame is a hairline on the paper (a double one round the two notices). The page inks in once, a newly chosen
+   part inks in as it arrives, and then nothing moves; nothing lifts, slides or grows. */
+.treasury { display: grid; gap: clamp(40px, 6vw, 64px); padding-bottom: var(--space-5); }
+.error { color: var(--rubric); }
 .small { font-size: var(--step--1); color: var(--ink-2); }
+@keyframes ink-in { from { opacity: 0; } }
 
-/* ------------------------------------------------ the nine offerings: the home page's grid of rooms (a.module.css .rgrid) */
+/* ------------------------------------------------ the nine kinds: a table of contents, read down its columns */
 .offerings { display: grid; }
-.offerings > div:first-child { margin-bottom: 0; }   /* the home page's section head (.sec-h), its line over the grid */
-.ogrid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
-.ogrid li { display: grid; border-bottom: 1px solid var(--rule); animation: rise calc(0.7s / var(--tempo)) var(--ease-enter) backwards; animation-delay: calc((0.3s / var(--tempo)) + var(--i) * (60ms / var(--tempo))); }
-.ogrid li:not(:nth-child(3n)) { border-right: 1px solid var(--rule); }
-@keyframes rise { from { transform: translateY(14px); opacity: 0; } }
-/* one offering: its window at the left, then its count in tall gold numerals, its name and what it holds */
+.ogrid {
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, auto);
+  grid-auto-flow: column; column-gap: clamp(24px, 4vw, 48px); border-top: 1px solid var(--ink);
+}
+.ogrid li { display: grid; border-bottom: 1px solid var(--rule); }
 .offer {
-  display: grid; grid-template-columns: 96px minmax(0, 1fr); grid-template-rows: auto auto 1fr; column-gap: 18px; align-items: start; text-align: left;
-  padding: 18px 18px 18px 0; margin: 0; border: 0; border-radius: 0; background: transparent; color: var(--ink);
-  transition: background-color 0.3s;
+  display: grid; grid-template-columns: 2.4rem minmax(0, auto) 1fr auto; align-items: baseline; column-gap: 10px;
+  width: 100%; margin: 0; padding: 14px 4px 15px; border: 0; border-radius: 0; background: transparent; color: var(--ink);
+  font: inherit; text-align: left; cursor: pointer;
 }
-.ogrid li:not(:nth-child(3n + 1)) .offer { padding-left: 18px; }
-.offer:hover { background-color: var(--surface); }
-.offer[aria-current="page"] { background-color: var(--surface); box-shadow: var(--chosen-foot); }
-.owin { grid-row: 1 / -1; width: 96px; height: 96px; }
-.count { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(2.2rem, 3.4vw, 3rem); line-height: 0.9; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
-.offer[data-empty] .count { opacity: 0.4; }
-.offerLabel { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-size: clamp(1.35rem, 1.9vw, 1.7rem); line-height: 1.05; margin-top: 6px; }
-.offerHint { font-size: var(--step--1); line-height: 1.3; color: var(--ink-2); }
-/* a Treasury with nothing in it: the nine wait quietly, their zeros as dots */
-.offerings[data-bare] .offer { color: var(--ink-2); }
-
-/* narrower: three to a row, each centred with its window above it, as the home page's rooms keep theirs on a phone */
-@media (max-width: 860px) {
-  .offer { grid-template-columns: minmax(0, 1fr); justify-items: center; text-align: center; padding: 16px 8px; min-height: 120px; }
-  .ogrid li:not(:nth-child(3n + 1)) .offer { padding-left: 8px; }
-  .owin { grid-row: auto; width: 72px; height: 72px; margin-bottom: 10px; }
-  .offer { grid-template-rows: none; align-content: start; }
-}
-@media (max-width: 520px) {
-  .offer { min-height: 104px; padding-inline: 4px; }
-  .owin { width: 56px; height: 56px; margin-bottom: 8px; }
-  .offerLabel { font-size: var(--step-sub); overflow-wrap: anywhere; }
-  .offerHint { font-size: var(--step--2); }
+.gn { font: 400 1.1rem var(--face-didot); color: var(--rubric); }
+.offerLabel { font: 500 var(--step-sub) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
+.offerHint { display: block; margin-top: 2px; font: italic 400 var(--step--1) / 1.35 var(--f-body); color: var(--ink-2); }
+.lead { border-bottom: 1px dotted var(--ink-3); transform: translateY(-6px); min-width: 16px; }
+.count { font: 400 1.4rem / 1 var(--face-didot); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+.offer:hover .offerLabel, .offer:focus-visible .offerLabel, .offer[aria-current="page"] .offerLabel { color: var(--rubric); }
+/* the part open below: its name in red, a red rule at its foot */
+.offer[aria-current="page"] { box-shadow: var(--chosen-foot); }
+/* nothing of a kind kept yet: its count in the faint ink; a Treasury with nothing in it shows dots, not zeros */
+.offer[data-empty] .count { color: var(--ink-3); }
+.offerings[data-bare] .offerLabel { color: var(--ink-2); }
+@media (max-width: 900px) { .ogrid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); } }
+/* a phone: one column, each kind's line with what it holds beside its name */
+@media (max-width: 600px) {
+  .ogrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+  .offer { grid-template-columns: 2rem minmax(0, 1fr) auto; padding-block: 11px 12px; min-height: var(--tap); }
+  .lead { display: none; }
+  .offerHint { display: inline; margin: 0 0 0 0.3em; }
 }
 
-/* ------------------------------------------------ the moderator's private translations (PrivateShelf.tsx), under the frieze */
+/* ------------------------------------------------ the two notices: the private shelf and keeping it safe, in a double rule */
+.private, .keep { box-shadow: var(--slab-edge); outline: var(--moulding); outline-offset: var(--moulding-in); }
+
+/* the moderator's private translations (PrivateShelf.tsx), under the contents */
 .private {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-1) 28px;
-  padding: 18px 22px var(--space-4); text-decoration: none; color: var(--ink); background: var(--slab);
-  box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur-quick);
-  animation: rise calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(0.6s / var(--tempo));   /* it waits for the account too, so it comes about as the frieze finishes */
+  padding: 20px 24px var(--space-4); text-decoration: none; color: var(--ink);
 }
-.private:hover, .private:focus-visible { background-color: var(--slab-lit); }
 .privateSeal, .privateTitle, .privateText { grid-column: 1; }   /* the count keeps the right-hand column, even when it is not shown */
-.privateSeal { display: inline-flex; align-items: center; gap: 6px; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); }
+.privateSeal { display: inline-flex; align-items: center; gap: 8px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .privateSeal svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
-.privateTitle { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.35rem, 2.6vw, 1.7rem); line-height: 1.15; }
+.privateTitle { font: 400 clamp(1.35rem, 2.6vw, 1.7rem) / 1.15 var(--f-display); transition: color var(--dur-quick) var(--ease); }
+.private:hover .privateTitle, .private:focus-visible .privateTitle { color: var(--rubric); }
 .privateText { color: var(--ink-2); max-width: 60ch; }
-.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: 2px; min-width: 5.5rem; }
-.privateGo { grid-column: 1 / -1; justify-self: end; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--accent); transition: transform var(--dur-quick) var(--ease); }
-.private:hover .privateGo, .private:focus-visible .privateGo { transform: translateX(4px); }
+.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: 4px; min-width: 5.5rem; }
+.privateCount .count { font-size: clamp(2rem, 3.4vw, 2.6rem); }
+.privateGo { grid-column: 1 / -1; justify-self: end; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
+/* the double rule uses the outline, so the link gives the focus ring back */
+.private:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
 @media (max-width: 520px) {
   .private { gap: var(--space-1) 14px; padding: var(--space-4) var(--space-4) 14px; }
   .privateCount { min-width: 0; }
 }
 
-/* ------------------------------------------------ section frame */
-.section { display: grid; gap: 22px; animation: rise calc(0.45s / var(--tempo)) var(--ease) backwards; }
-.section h2 { font-size: var(--step-2); }
-.section h2::first-letter { color: var(--accent); }
-.sectionHead { display: grid; gap: 6px; max-width: 72ch; }
-.sectionHead h2::first-letter, .continue h2::first-letter { color: var(--accent); }
-.empty { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); max-width: 72ch; color: var(--ink-2); }
-.soon { display: grid; gap: 10px; max-width: 64ch; padding: 22px; background: var(--field); box-shadow: var(--field-edge); }
+/* ------------------------------------------------ the part shown below the contents */
+.section { display: grid; gap: 22px; animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.sectionHead { display: grid; gap: 6px; }
+.sectionHead > p { max-width: 72ch; }
+/* each part's head: its name, then a hairline to the margin, as the page's own section heads (globals.css .sh) */
+.treasury :is(.sectionHead, .continue, .latest, .places, .soon) > h2 {
+  display: flex; align-items: baseline; gap: 14px; margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display);
+}
+.treasury :is(.sectionHead, .continue, .latest, .places, .soon) > h2::after {
+  content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px);
+}
+.latest { display: grid; gap: 14px; }
+.empty { max-width: 72ch; color: var(--ink-2); font-style: italic; }
+.empty b { color: var(--ink); font-style: normal; font-weight: 500; }
+.soon { display: grid; gap: 10px; max-width: 64ch; color: var(--ink-2); }
+.soon > h2 { color: var(--ink); }
 
 .welcome { display: grid; gap: var(--space-4); justify-items: start; max-width: 70ch; }
-.welcome p { margin: 0; }
+.welcome p { margin: 0; font-size: var(--step-1); line-height: 1.5; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
-.filters input[type="search"], .inlineForm input, .pick input {
-  font: inherit; font-size: var(--step-0); color: var(--ink);
-  border-radius: var(--radius); padding: 9px 13px;
-}
+.filters input[type="search"], .inlineForm input, .pick input { font: inherit; font-size: var(--step-0); color: var(--ink); padding: 9px 2px; }
 .filters > input[type="search"] { flex: 1 1 320px; }
 .tagRow { display: flex; flex-wrap: wrap; gap: 6px var(--space-2); align-items: center; flex-basis: 100%; }
 .tagRow small { opacity: 0.65; font-variant-numeric: tabular-nums; }
 .add { border-style: dashed !important; }
-.seg { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.seg button { border: 0; border-radius: var(--radius); background: transparent; padding: 6px var(--space-3); font-size: var(--step--1); color: var(--ink-2); }
-.seg button:hover:not([aria-pressed="true"]) { background: var(--slab); color: var(--ink); }
-.seg button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+/* a choice of order: small capitals in a hairline frame, the chosen one in ink (globals.css .segmented) */
+.seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
+.seg button {
+  border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px;
+  font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
+}
+.seg button [lang="grc"] { font: 400 0.9rem / 1 var(--f-greek); letter-spacing: 0.04em; text-transform: none; }
+.seg button:hover:not([aria-pressed="true"]) { color: var(--rubric); }
+.seg button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); }
+@media (pointer: coarse) { .seg button { min-height: var(--tap); } }
 .check { display: inline-flex; gap: var(--space-2); align-items: center; font-size: var(--step-0); }
 .inlineForm { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
-.inlineForm input { padding: 6px 10px; }
+.inlineForm input { padding: 6px 2px; }
 
-/* ------------------------------------------------ groups by work */
+/* ------------------------------------------------ marks grouped by work: a running head over each */
 .group { display: grid; gap: 10px; }
-.workHead { display: flex; align-items: baseline; gap: var(--space-3); font-size: var(--step-1); padding-bottom: 8px; box-shadow: var(--cut-under); }
-.workHead a { text-decoration: none; }
-.workHead a:hover .workTitle { text-decoration: underline; text-decoration-color: var(--accent); }
-.byline { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink-2); }
-.workTitle { font-style: italic; }
-.n { margin-left: auto; font-family: var(--f-label); font-size: var(--step--1); color: var(--ink-2); }
-.ref { font-family: var(--f-label); font-size: var(--step-0); letter-spacing: 0.04em; color: var(--accent); text-decoration: none; white-space: nowrap; }
-.ref:hover { text-decoration: underline; }
+.workHead { display: flex; align-items: baseline; gap: var(--space-3); margin: 0; padding-bottom: 8px; font: 400 var(--step-1) / 1.2 var(--f-display); box-shadow: var(--cut-under); }
+.workHead a { text-decoration: none; color: var(--ink); }
+.workHead a:hover .workTitle, .workHead a:focus-visible .workTitle { color: var(--rubric); }
+/* an author's name in spaced small capitals, as a book's running head sets it */
+.byline { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.workTitle { font-style: italic; transition: color var(--dur-quick) var(--ease); }
+.n { margin-left: auto; font: 400 var(--step-sub) var(--face-didot); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+.ref { font-family: var(--f-label); font-size: var(--step-0); letter-spacing: 0.04em; color: var(--rubric); text-decoration: none; white-space: nowrap; }
+.ref:hover, .ref:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
 .quote { font-family: var(--f-greek); font-size: var(--step-sub); line-height: 1.5; }
 .lemma { font-family: var(--f-greek); font-size: var(--step-1); text-decoration: none; }
 
@@ -111,88 +125,86 @@
 .rows li:last-child { box-shadow: none; }
 .rows li:has(.swatch) { grid-template-columns: auto auto 1fr auto; }
 .when { font-size: var(--step--1); color: var(--ink-2); white-space: nowrap; }
-.x { width: 28px; height: 28px; border-radius: var(--radius-round); border: 1px solid transparent; background: transparent; color: var(--ink-2); font-size: var(--step-sub); line-height: 1; }
-.x:hover { background: var(--slab); box-shadow: var(--slab-edge); color: var(--accent); }
+.x { width: 28px; height: 28px; border-radius: var(--radius-round); border: 1px solid transparent; background: transparent; color: var(--ink-2); font-size: var(--step-sub); line-height: 1; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
+.x:hover, .x:focus-visible { border-color: var(--rule); color: var(--rubric); }
+@media (pointer: coarse) { .x { width: var(--tap); height: var(--tap); } }
 .confirm { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 
+/* the four pens a reader highlights with: a dot of each, and the Greek underlaid as a pen lays it, under the words only */
 .swatch { display: inline-block; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--rule); }
-.swatch[data-colour="red"], .quote[data-hl="red"] { --hl: var(--pen-red); }
-.swatch[data-colour="ochre"], .quote[data-hl="ochre"] { --hl: var(--pen-ochre); }
-.swatch[data-colour="blue"], .quote[data-hl="blue"] { --hl: var(--pen-blue); }
-.swatch[data-colour="green"], .quote[data-hl="green"] { --hl: var(--pen-green); }
+.swatch[data-colour="red"], .hl[data-hl="red"] { --hl: var(--pen-red); }
+.swatch[data-colour="ochre"], .hl[data-hl="ochre"] { --hl: var(--pen-ochre); }
+.swatch[data-colour="blue"], .hl[data-hl="blue"] { --hl: var(--pen-blue); }
+.swatch[data-colour="green"], .hl[data-hl="green"] { --hl: var(--pen-green); }
 .swatch[data-colour] { background: var(--hl); }
-.quote[data-hl] { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--hl) 35%, transparent) 58%); }
+.hl[data-hl] { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--hl) 35%, transparent) 58%); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
 
-/* notes */
+/* notes: each a note in the margin (the reader's NoteEditor, a hairline frame with a red rule down its left) */
 .noteList { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+.noteCard { display: grid; }
 .noteHead { display: inline-flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); }
 .noteHead .quote { font-size: var(--step-0); color: var(--ink-2); }
 .noteGroupItem { display: grid; gap: var(--space-1); }
 
-/* ------------------------------------------------ continue reading: book spines on a shelf */
+/* ------------------------------------------------ continue reading: the books, each with where you stopped */
 .continue { display: grid; gap: 14px; }
-.shelf { list-style: none; margin: 0; padding: 0 0 var(--space-3); display: grid; grid-auto-flow: column; grid-auto-columns: minmax(200px, 1fr); gap: var(--space-3); overflow-x: auto;
-  /* the shelf is a dark ledge cut into the wall, its lip caught by the torch */
-  border-bottom: 8px solid var(--bg-deep); box-shadow: var(--ledge-lip); }
-.shelf li { animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo))); display: grid; }
-.spine { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 18px; min-height: 120px; text-decoration: none;
-  background: var(--slab-lit); box-shadow: var(--slab-edge), var(--inlay-top); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); border-top: 4px solid transparent;
-  transition: transform 0.3s var(--ease); }
-.spine:hover { transform: translateY(-5px); }
-.spine .byline { color: var(--ink-2); }
-.spine b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
-.at { margin-top: auto; font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); }
+.shelf {
+  list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 0 28px; border-top: 1px solid var(--ink);
+}
+.shelf li { display: grid; border-bottom: 1px solid var(--rule); }
+.spine { display: grid; gap: 3px; align-content: start; padding: 14px 2px 16px; text-decoration: none; color: var(--ink); }
+.spine b { font: italic 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
+.spine:hover b, .spine:focus-visible b { color: var(--rubric); }
+.at { margin-top: 4px; font-family: var(--f-label); font-size: var(--step--1); color: var(--rubric); }
 
-/* ------------------------------------------------ latest */
-.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-.card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 18px; background: var(--field); box-shadow: var(--field-edge); animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (50ms / var(--tempo))); overflow-wrap: anywhere; }
-.card a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
+/* ------------------------------------------------ latest: entries under hairlines, in columns */
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 0 28px; }
+.card { display: grid; gap: 6px; align-content: start; padding: 14px 0 20px; box-shadow: var(--cut-over); overflow-wrap: anywhere; }
+.card p { margin: 0; }
+.card a { color: var(--ink); text-decoration-color: var(--rubric); text-underline-offset: 3px; }
+.card a:hover, .card a:focus-visible { color: var(--rubric); }
 
 /* ------------------------------------------------ anthology: leaves of a book of passages */
 .collectionHead { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
-.collectionName { font-size: var(--step-2); font-style: italic; margin-right: var(--space-2); }
-.anthology { list-style: none; margin: 0; padding: 0; columns: 3 320px; column-gap: 22px; }
-.leaf {
-  break-inside: avoid; margin: 0 0 22px; display: grid; gap: 10px; padding: 26px var(--space-5) var(--space-4);
-  background: var(--slab); position: relative;
-  box-shadow: var(--slab-edge);
-  animation: leaf calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo)));
-}
-/* the red ruled line of a manuscript page */
-.leaf::before { content: ""; position: absolute; left: var(--space-3); top: 18px; bottom: 18px; width: 1px; background: color-mix(in srgb, var(--accent) 55%, transparent); }
-@keyframes leaf { from { transform: translateY(12px) rotate(-0.6deg); opacity: 0; } }
+.collectionName { margin: 0 var(--space-2) 0 0; font: italic 400 var(--step-2) / 1.15 var(--f-display); }
+.anthology { list-style: none; margin: 0; padding: 0; columns: 3 320px; column-gap: 24px; }
+/* a leaf: a hairline frame with a red rule down its margin, as a scribe ruled the page */
+.leaf { break-inside: avoid; position: relative; margin: 0 0 24px; display: grid; gap: 10px; padding: 26px var(--space-5) var(--space-4) calc(var(--space-5) + 6px); box-shadow: var(--slab-edge); }
+.leaf::before { content: ""; position: absolute; left: var(--space-3); top: 18px; bottom: 18px; width: 1px; background: var(--rubric); opacity: 0.6; }
 .leafGreek { margin: 0; font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.6; text-wrap: pretty; }
-.leafGreek::first-letter { color: var(--accent); font-size: 1.6em; line-height: 0; }
+.leafGreek::first-letter { color: var(--rubric); font-size: 1.6em; line-height: 0; }
 .leafCite { font-size: var(--step-0); text-align: right; }
 .leafCite a { text-decoration: none; color: var(--ink-2); }
-.leafCite a:hover { color: var(--accent); }
+.leafCite a:hover, .leafCite a:focus-visible { color: var(--rubric); }
 .leafCite a::before { content: "— "; }
 .leafFoot { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; justify-content: flex-end; padding-top: var(--space-2); box-shadow: var(--cut-over); }
-.colTag { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; padding: 1px var(--space-2); border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); margin-right: auto; }
+/* a collection's name on a leaf: small capitals in a hairline frame */
+.colTag { margin-right: auto; padding: 2px var(--space-2) 1px; border: 1px solid var(--rule); border-radius: var(--radius); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
 .colTag + .colTag { margin-left: 0; }
 .leafFoot .colTag ~ .colTag { margin-right: 0; }
-.more { justify-self: start; border: 0; background: transparent; padding: 0; color: var(--accent); font-size: var(--step--1); text-decoration: underline; }
+.more { justify-self: start; border: 0; background: transparent; padding: 0; color: var(--rubric); font-size: var(--step--1); text-decoration: underline; text-underline-offset: 3px; }
 .menuWrap { position: relative; }
 .menu { position: absolute; right: 0; bottom: calc(100% + 6px); z-index: 5; display: grid; gap: 6px; min-width: 200px; padding: var(--space-3) 14px;
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge); animation: rise calc(0.2s / var(--tempo)) var(--ease) backwards; }   /* a pop-over: it stays opaque */
+  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge); }   /* a pop-over: it stays opaque */
 .menu label { display: flex; gap: var(--space-2); align-items: center; font-size: var(--step-0); }
 
-/* ------------------------------------------------ cross-references */
+/* ------------------------------------------------ cross-references: two passages, each in a hairline frame, joined */
 .xrefs { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
 .xrefs li { display: grid; grid-template-columns: 1fr auto 1fr auto; gap: 14px; align-items: center; }
-.xside { display: grid; gap: var(--space-1); padding: 14px var(--space-4); background: var(--slab); box-shadow: var(--slab-edge); text-decoration: none; transition: background-color var(--dur) ease; }
-.xside:hover { background-color: var(--slab-lit); }
+.xside { display: grid; gap: var(--space-1); padding: 14px var(--space-4); box-shadow: var(--slab-edge); text-decoration: none; color: var(--ink); }
+.xside b { font-weight: 500; transition: color var(--dur-quick) var(--ease); }
+.xside:hover b, .xside:focus-visible b { color: var(--rubric); }
 .xside .quote { font-size: var(--step-0); color: var(--ink-2); }
-.link { font-size: var(--step-2); color: var(--accent); }
+.link { font-size: var(--step-2); color: var(--rubric); }
 @media (max-width: 760px) { .xrefs li { grid-template-columns: minmax(0, 1fr); } .link { justify-self: center; transform: rotate(90deg); } }
 
-/* ------------------------------------------------ words */
-.words { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-3); }
-.words li { display: grid; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (35ms / var(--tempo))); }
-.wordCard { display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 18px 14px; text-decoration: none; background: var(--slab);
-  box-shadow: var(--slab-edge); transition: background-color var(--dur-quick); }
-.wordCard:hover { background-color: var(--slab-lit); }
-.wordGr { font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.15; }
+/* ------------------------------------------------ words: a word list, each word in the Greek type */
+.words { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 0 28px; }
+.words li { display: grid; }
+.wordCard { display: grid; gap: var(--space-1); align-content: start; padding: 14px 0 16px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over); }
+.wordGr { font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
+.wordCard:hover .wordGr, .wordCard:focus-visible .wordGr { color: var(--rubric); }
 .gloss { font-size: var(--step-0); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
 .status { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; margin-top: var(--space-1); }
 .status[data-tone="new"] { color: var(--ink-2); }
@@ -203,65 +215,54 @@
 .pick { position: relative; flex: 1 1 320px; display: grid; }
 .pickList { position: absolute; z-index: 5; top: calc(100% + var(--space-1)); left: 0; right: 0; list-style: none; margin: 0; padding: 6px;
   background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge); }   /* a drop-down: it stays opaque */
-.pickList button { width: 100%; display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px; background: transparent; border: 0; border-radius: var(--radius); text-align: left; }
-.pickList button:hover { background: var(--bg-2); }
+.pickList button { width: 100%; display: flex; justify-content: space-between; gap: 10px; padding: 7px 10px; background: transparent; border: 0; border-radius: var(--radius); color: var(--ink); text-align: left; }
+.pickList button:hover, .pickList button:focus-visible { color: var(--rubric); }
 .pickList small { color: var(--ink-2); }
-.authorNotes { list-style: none; margin: 0; padding: 0; display: grid; gap: 18px; }
-.authorNote { display: grid; gap: 10px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); }
-.authorNote[data-open] { box-shadow: var(--field-edge), var(--inlay-left); animation: rise var(--dur) var(--ease) backwards; }
-.authorNote h3 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px var(--space-4); font-size: var(--step-1); }
+.authorNotes { list-style: none; margin: 0; padding: 0; display: grid; }
+.authorNote { display: grid; gap: 10px; padding: 16px 0 20px; box-shadow: var(--cut-over); }
+/* the author just chosen: a red rule down its margin */
+.authorNote[data-open] { padding-left: 18px; box-shadow: var(--inlay-left), var(--cut-over); }
+.authorNote h3 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px var(--space-4); margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
 .pageNote { display: grid; gap: 10px; }
 .pageNoteFoot { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; align-items: center; font-size: var(--step--1); }
 
-/* ------------------------------------------------ keep safe */
-.keep { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) var(--space-6); align-items: center; padding: clamp(20px, 3vw, 30px);
-  background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); }
-.keep h2 { font-size: var(--step-2); color: var(--accent); margin-bottom: var(--space-2); }
+/* ------------------------------------------------ keep safe: a notice in a double rule, its words in ink */
+.keep { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) var(--space-6); align-items: center; padding: clamp(22px, 3vw, 32px); color: var(--ink); }
+.treasury .keep h2 { margin: 0 0 var(--space-2); font: 400 var(--step-2) / 1.15 var(--f-display); color: var(--rubric); }
 .keep p { max-width: 70ch; }
 .keep p + p { margin-top: 10px; }
 .keepActs { display: flex; flex-wrap: wrap; gap: 10px; }
 /* phones: the two buttons as one even pair of bars */
 @media (max-width: 760px) { .keepActs { display: grid; grid-template-columns: minmax(0, 1fr); } .keepActs > :global(.btn) { justify-content: center; } }
-.keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); animation: rise calc(0.3s / var(--tempo)) var(--ease) backwards; }
-.keepResult[data-ok="false"] { box-shadow: var(--slab-edge), var(--inlay-left); }
-.keepResult :global(.muted) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+/* what a download, a restore or keeping in step did: a note with a green rule down its margin (red when it failed) */
+.keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); color: var(--ink); box-shadow: var(--inlay-left-ok), var(--slab-edge); animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.keepResult[data-ok="false"] { box-shadow: var(--inlay-left), var(--slab-edge); }
 @media (max-width: 760px) { .keep { grid-template-columns: minmax(0, 1fr); } }
 /* a Treasury with nothing in it: only "Restore from a file", a small link (KeepSafe.tsx) */
 .keepSmall { display: grid; gap: var(--space-2); justify-items: start; font-size: var(--step--1); color: var(--ink-2); }
 .keepSmall .keepActs { gap: var(--space-2); }
-.keepSmall .keepResult { color: var(--inv-fg); }
-.linkBtn { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.linkBtn { font: inherit; color: var(--rubric); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (pointer: coarse) { .linkBtn { min-height: var(--tap); } }
 
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
 .places { display: grid; gap: var(--space-4); }
-.places h2 { margin: 0; }
-.miniMap { width: 100%; height: auto; max-height: 460px; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--surface) var(--tex, none) center / 420px 420px; }
+.miniMap { display: block; width: 100%; height: auto; border-radius: var(--radius); box-shadow: var(--field-edge); background: var(--bg); }
 .mmLand { fill: var(--map-land-wash); }
-.mmSea { fill: var(--map-sea-wash); fill-rule: evenodd; stroke: var(--map-coast); stroke-width: 1; vector-effect: non-scaling-stroke; }
-.mmPlace { animation: mmIn calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (60ms / var(--tempo))); }
-.mmPlace circle { fill: var(--accent); stroke: var(--map-halo); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
-.mmPlace text { font-family: var(--f-greek); fill: var(--map-name); paint-order: stroke; stroke: var(--map-halo); stroke-linejoin: round; }
-@keyframes mmIn { from { opacity: 0; } }
-.placeList { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
-.placeList li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); align-items: center; padding: 10px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+.mmSea { fill: var(--map-sea-wash); fill-rule: evenodd; stroke: var(--ink-3); stroke-width: 0.8; vector-effect: non-scaling-stroke; }
+.mmPlace { animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 80ms); }
+.mmPlace circle { fill: var(--rubric); stroke: var(--bg); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+.mmPlace text { font-family: var(--f-greek); fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-linejoin: round; }
+.placeList { list-style: none; margin: 0; padding: 0; display: grid; }
+.placeList li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); align-items: center; padding: 12px 2px; box-shadow: var(--cut-under); }
 .placeList a { text-decoration: none; color: inherit; }
-.placeList b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); }
+.placeList a:hover b, .placeList a:focus-visible b { color: var(--rubric); }
+.placeList b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 .placeList span { color: var(--ink-2); }
 .placeList small { grid-row: 2; color: var(--ink-2); font-size: var(--step--1); }
 .placeList button { grid-row: 1 / span 2; grid-column: 2; }
 
-/* the way to Downloads, at the foot of the Treasury */
-.offline {
-  display: grid; gap: 2px; margin-top: 28px; padding: var(--space-4) 20px; max-width: 640px; text-decoration: none;
-  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color var(--dur-quick);
-}
-.offline:hover { background-color: var(--slab-lit); }
-.offline b { font-size: var(--step-sub); }
-.offline > span:last-child { color: var(--ink-2); }
-
-/* the bigger panels carry a moulding, an inner panel cut just inside the edge, as round a carved stele */
-.private, .keep { outline: var(--moulding); outline-offset: var(--moulding-in); }
-/* the moulding uses the outline, so the link card gives the focus ring back */
-.private:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-
+/* ------------------------------------------------ the way to Downloads, at the foot of the Treasury */
+.offline { display: grid; justify-items: start; gap: 4px; padding: 18px 2px 0; text-decoration: none; color: var(--ink); border-top: 1px solid var(--ink); }
+.offline b { font: 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
+.offline:hover b, .offline:focus-visible b { color: var(--rubric); }
+.offline > span:last-child { max-width: 64ch; color: var(--ink-2); }

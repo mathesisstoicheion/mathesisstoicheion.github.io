@@ -1,9 +1,9 @@
 "use client";
 /**
  * The Treasury: everything the reader has saved, in one place.
- * The overview is the home page's grid of rooms (the owner, 2026-10-20: "Every page must follow the design choices of the
- * homepage"; the Treasury "seems inconsistent and boring"): nine offerings in fine gold lines, each with a small red
- * window onto an ancient object, its count in tall gold numerals, its name and what it holds; one opens that section.
+ * The overview is set as a book sets its contents, like the home page's (redesign SPEC.md 4.4: every page keeps what it
+ * does, in the printed page's look): the nine kinds of thing kept, each with its Greek numeral, its name and what it
+ * holds, a dotted leader and its count in red where a contents page has its page numbers. One opens that part below.
  */
 import Link from "next/link";
 import { AREAS } from "@/config/areas";
@@ -21,18 +21,11 @@ import { loadSavedPlaces, useSavedPlaces } from "@/lib/map";
 import NotebooksSection from "./NotebooksSection";
 import PrivateShelf from "./PrivateShelf";
 import { useNotebooks } from "@/lib/notebooks";
-import Win from "@/components/a/Win";
-import SettleText from "@/components/a/SettleText";
-import a from "@/components/a/a.module.css";
-import { PIECE_CREDITS } from "@/data/pieces";
 
 export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
 
-/** each offering's small window: an ancient object from the Met's open collection (data/pieces.ts), chosen to suit it */
-const PIECES: Record<Exclude<SectionId, "recent">, string> = {
-  notes: "teacher-and-pupil", anthology: "muse-head", bookmarks: "hand-with-scroll", highlights: "nike-relief", xrefs: "bilingual-plaque",
-  words: "decree-fragment", authors: "herodotos-bust", places: "tribute-list", notebooks: "chrysippos-head",
-};
+/** the Greek numerals a contents page counts its parts with: 1 to 9 */
+const NUM = ["α´", "β´", "γ´", "δ´", "ε´", "ϛ´", "ζ´", "η´", "θ´"];
 
 export default function Treasury() {
   const params = useSearchParams();
@@ -73,7 +66,7 @@ export default function Treasury() {
   const empty = t.ready && !marks.length && !Object.keys(deck).length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
 
   return (
-    <div className={`wrap ${styles.treasury}`}>
+    <div className={styles.treasury}>
       {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
       {empty && (
         <div className={styles.welcome}>
@@ -85,22 +78,19 @@ export default function Treasury() {
       )}
 
       <nav className={styles.offerings} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
-        <div className={a["sec-h"]}><SettleText className={a.mono} text="Nine kinds of offering" /><SettleText className={a.mono} text="What you have kept" /></div>
-        <ol className={styles.ogrid}>
-          {OFFERINGS.map((m, i) => {
-            const piece = PIECE_CREDITS[PIECES[m.id]];
-            return (
-              <li key={m.id} style={{ "--i": i } as React.CSSProperties}>
-                <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
-                  data-empty={m.n === 0 || m.n === null ? "" : undefined}>
-                  <Win className={`${a.win} ${styles.owin}`} src={`/images/a/pieces/${PIECES[m.id]}.png`} label={`${piece.title}, engraved in gold lines`} capClass={a.wcap} decorative />
-                  <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
-                  <span className={styles.offerLabel}>{m.label}</span>
-                  <span className={styles.offerHint}>{m.hint}</span>
-                </button>
-              </li>
-            );
-          })}
+        <div className="sh rv"><h2>What you have kept</h2><span className="fill" /><span className="src">in nine kinds</span></div>
+        <ol className={`${styles.ogrid} rv`}>
+          {OFFERINGS.map((m, i) => (
+            <li key={m.id}>
+              <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
+                data-empty={m.n === 0 || m.n === null ? "" : undefined}>
+                <span className={styles.gn} aria-hidden="true">{NUM[i]}</span>
+                <span className={styles.offerLabel}>{m.label} <i className={styles.offerHint}>{m.hint}</i></span>
+                <span className={styles.lead} aria-hidden="true" />
+                <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
+              </button>
+            </li>
+          ))}
         </ol>
       </nav>
 
@@ -129,12 +119,6 @@ export default function Treasury() {
         <b>Read without a connection</b>
         <span>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</span>
       </Link>
-
-      {/* the nine small windows, credited as the door's red window is */}
-      <p className={a.cap}>The small windows, from The Metropolitan Museum of Art, New York (open access, CC0): {OFFERINGS.map((m, i) => {
-        const c = PIECE_CREDITS[PIECES[m.id]];
-        return <span key={m.id}>{i ? "; " : ""}{m.label}, {c.title.charAt(0).toLowerCase() + c.title.slice(1)}, {c.date}</span>;
-      })}.</p>
     </div>
   );
 }

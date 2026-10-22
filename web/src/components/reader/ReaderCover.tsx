@@ -15,8 +15,11 @@ import styles from "./Reader.module.css";
 /** A Greek name as a title page sets it: capitals, without accents or breathings ("Πλάτων" → "ΠΛΑΤΩΝ"). */
 export const titleCaps = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLocaleUpperCase("el").normalize("NFC");
 
-export default function ReaderCover({ workId, title, greek, author, authorId, orig, editions }: {
-  workId: string; title: string; greek?: string | null; author?: string; authorId?: string; orig?: ReactNode; editions: ReactNode;
+export default function ReaderCover({ workId, title, greek, author, authorId, orig, seal, editions }: {
+  workId: string; title: string; greek?: string | null; author?: string; authorId?: string; orig?: ReactNode;
+  /** a mark under the title: a private book's "Only you can see this" */
+  seal?: ReactNode;
+  editions: ReactNode;
 }) {
   const [authorGr, setAuthorGr] = useState<string | null>(null);
   useEffect(() => { if (authorId) loadAuthorNames().then((n) => setAuthorGr(n[authorId]?.grc ?? null)); }, [authorId]);
@@ -36,6 +39,7 @@ export default function ReaderCover({ workId, title, greek, author, authorId, or
       <h1 className={styles.tpTitle}>{big ? <span lang="grc">{big}</span> : title}{big && big !== title && <span className="visually-hidden">: {title}</span>}</h1>
       {big && big !== title && <p className={styles.tpEn} aria-hidden="true">{title}</p>}
       {orig && <p className={styles.tpOrig}>{orig}</p>}
+      {seal && <p className={styles.tpSeal}>{seal}</p>}
       <p className={styles.orn} aria-hidden="true">❦</p>
       <div className={styles.tpEd}>{editions}</div>
     </header>

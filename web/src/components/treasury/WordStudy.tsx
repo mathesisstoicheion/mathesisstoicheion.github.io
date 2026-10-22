@@ -42,7 +42,6 @@ export default function WordStudy() {
   if (!asked) return <div className={`wrap ${styles.ws}`}><Finder /></div>;
   return (
     <div className={`wrap ${styles.ws}`}>
-      <p className={styles.crumbs}><Link href="/treasury?s=words" transitionTypes={["page-turn"]}>The Treasury · Words</Link> / Word Study</p>
       <Head lemma={lemma} entry={found?.entry ?? null} meta={meta} lexState={lex.state} alike={found?.alike ?? []} />
       <div className={styles.layout}>
         <div className={styles.main}>
@@ -67,12 +66,13 @@ export default function WordStudy() {
   );
 }
 
+/** the page's path: the Treasury, its Words, then this page */
+const PATH = trail("treasury", { label: "Words", href: "/treasury?s=words" }, "Word study");
+
 function Finder() {
   return (
-    <section className={`${styles.sec} notice`}>
-      <h1>Word Study</h1>
-      <p>Open a word from <Link href="/treasury?s=words">your saved words</Link>, or from the look-up panel in the reader (“Word Study”).</p>
-    </section>
+    <PageHead bare path={PATH} title="Word Study"
+      purpose={<>Open a word from <Link href="/treasury?s=words">your saved words</Link>, or from the look-up panel in the reader (“Word Study”).</>} />
   );
 }
 
@@ -91,7 +91,7 @@ function Head({ lemma, entry, meta, lexState, alike }: { lemma: string; entry: L
     return top.pos;
   }, [entry, meta]);
   return (
-    <PageHead bare path={trail("treasury", "Word study")} title={<span lang="grc">{lemma}</span>}
+    <PageHead bare path={PATH} title={<span lang="grc">{lemma}</span>}
       purpose={<span className={styles.headMeta}>
         <span className={styles.translit}>{transliterate(lemma)}</span>
         {pos && <span>{pos}</span>}

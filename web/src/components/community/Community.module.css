@@ -13,7 +13,7 @@
 .ok { color: var(--ok); font-size: var(--step--1); }
 .fine { font-size: var(--step--1); color: var(--ink-2); }
 .small { font-size: var(--step--1); color: var(--ink-2); }
-.note { padding: 10px 14px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); font-size: var(--step-0); }
+.note { padding: 10px 14px; background: var(--slab); box-shadow: var(--inlay-left), var(--slab-edge); font-size: var(--step-0); }
 .empty { color: var(--ink-2); font-style: italic; padding: 10px 0; }
 .lead { max-width: 72ch; color: var(--ink-2); }
 .crumbs { font-family: var(--f-label); letter-spacing: 0.05em; font-size: var(--step--1); color: var(--ink-2); margin: 0 0 14px; }
@@ -62,7 +62,7 @@
 .hall { display: grid; gap: 22px; padding-top: var(--after-head); padding-bottom: 72px; }
 .featured {
   display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--inv-fg); background: var(--slab); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
-  border-radius: var(--radius); box-shadow: var(--slab-edge), var(--inlay-left); position: relative; overflow: hidden; transition: background-color var(--dur) ease;
+  border-radius: var(--radius); box-shadow: var(--inlay-left), var(--slab-edge); position: relative; overflow: hidden; transition: background-color var(--dur) ease;
 }
 .featured:hover { background-color: var(--slab-lit); }
 .featured :global(.label) { color: color-mix(in srgb, var(--inv-fg) 75%, transparent); }
@@ -180,7 +180,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 .reply:target { animation: flash calc(1.6s / var(--tempo)) var(--ease); }
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
-.isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left-ok); }
+.isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--inlay-left-ok), var(--slab-edge); }
 .replyBody { min-width: 0; display: grid; gap: 8px; }
 .replyBox { padding-top: 14px; box-shadow: var(--cut-over); }
 .composer { display: grid; gap: 10px; }

@@ -1609,7 +1609,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
               {/* phones: the work's title alone, so it is read whole */}
               <b><span className={styles.rauthor}>{author && !isPrivate ? <Link href={`${AREAS.library.href}/author?a=${author.id}`} transitionTypes={["page-turn"]}>{author.name}</Link> : author?.name}{author ? " · " : ""}</span>{work?.title ?? ""}</b>
               {chunkInfo && <span className="label">{chunkInfo.label}</span>}
-              {isPrivate && <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span>}
+              {/* the bar has room for the lock alone; the words stand on the book's title page */}
+              {isPrivate && <span className={styles.privateLock} role="img" aria-label="Only you can see this" title="Only you can see this"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg></span>}
             </div>
             {load.state === "ready" && doc && chunkInfo && <div className={styles.rtools}>{columnsSeg}{barRow}</div>}
           </div>
@@ -1617,6 +1618,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       )}
       {single ? (
         <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id}
+          seal={isPrivate ? <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span> : null}
           orig={work?.orig && work.orig !== grcText?.label ? <OrigTitle work={work} full /> : null}
           editions={work && grcText ? (
     <div className={styles.edLine}>

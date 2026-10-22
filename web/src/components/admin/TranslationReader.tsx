@@ -9,7 +9,7 @@
 import Link from "next/link";
 import { useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import {
-  checkTranslation, hasPublished, marksAdded, readerHref, rowName, rowWith, sizeOf,
+  checkTranslation, hasPublished, marksAdded, plainText, readerHref, rowName, rowWith, sizeOf,
   type Difference, type Passage, type TranslationDoc, type TranslationRow,
 } from "@/lib/private-translations";
 import { getTranslation, trouble } from "@/lib/private-translations-db";
@@ -19,6 +19,11 @@ import { useReloadable } from "@/lib/use-load";
 import { DownloadButton, HERE, Seal, StatusTag, docDate, savedTime } from "./parts";
 import Rich from "./Rich";
 import styles from "./PrivateTranslations.module.css";
+import PageHead from "@/components/PageHead";
+import { trail } from "@/config/areas";
+
+/** the path above a translation's title: the Treasury, then the shelf */
+const PATH = trail("treasury", { label: "Private translations", href: HERE });
 
 /** This browser's choice: the published English shown beside ours. Only a convenience, so it may be lost. */
 const PUB_KEY = "mathesis:translations-published";
@@ -70,10 +75,7 @@ export default function TranslationReader({ id }: { id: string }) {
 function Message({ title, children }: { title: string; children: ReactNode }) {
   return (
     <div className={`wrap ${styles.page}`}>
-      <header className={styles.docHead}>
-        <p className={styles.crumbs}><Link href={HERE}>Private translations</Link></p>
-        <h1 className={styles.messageTitle}>{title}</h1>
-      </header>
+      <PageHead bare path={[...PATH, { label: title }]} title={title} />
       <div className={styles.message}>
         {children}
         <p><Link href={HERE}>Back to the shelf</Link></p>
@@ -103,17 +105,10 @@ function ReaderView({ id, doc, raw, savedAt }: { id: string; doc: TranslationDoc
 
   return (
     <article className={`wrap ${styles.page} ${styles.reading}`} data-pub={showPub ? "" : undefined} aria-labelledby="doc-title">
-      <header className={styles.docHead}>
-        <p className={styles.crumbs}>
-          <Link href="/treasury" transitionTypes={["page-turn"]}>The Treasury</Link> <span aria-hidden="true">/</span>{" "}
-          <Link href={HERE}>Private translations</Link>
-        </p>
-        <div className={styles.kicker}><span className="tongues draw" aria-hidden="true" /><Seal /><StatusTag status={doc.status} /></div>
-        <h1 id="doc-title" className={`page-title ${styles.docTitle}`}>
-          <Rich text={doc.title} inline />
-          {doc.greekTitle && <span className={styles.docGr} lang="grc"><Rich text={doc.greekTitle} inline /></span>}
-        </h1>
-        <p className={styles.docBy}><Rich text={doc.author} inline /></p>
+      <PageHead bare path={[...PATH, { label: plainText(doc.title) }]} titleId="doc-title"
+        title={<><Rich text={doc.title} inline />{doc.greekTitle && <span className="ph-greek" lang="grc"><Rich text={doc.greekTitle} inline /></span>}</>}
+        purpose={<Rich text={doc.author} inline />}>
+        <div className={styles.kicker}><Seal /><StatusTag status={doc.status} /></div>
         <dl className={styles.about}>
           {doc.greekEdition && <div><dt>The Greek</dt><dd><Rich text={doc.greekEdition} inline /></dd></div>}
           {doc.publishedTranslation && <div><dt>Published English</dt><dd><Rich text={doc.publishedTranslation} inline /></dd></div>}
@@ -122,8 +117,7 @@ function ReaderView({ id, doc, raw, savedAt }: { id: string; doc: TranslationDoc
             <dd>{doc.updated && <>Dated {docDate(doc.updated)}; </>}saved <time dateTime={savedAt}>{savedTime(savedAt)}</time></dd>
           </div>
         </dl>
-        <div className="meander draw" aria-hidden="true" />
-      </header>
+      </PageHead>
 
       {doc.intro && <div className={styles.intro}><Rich text={doc.intro} /></div>}
 

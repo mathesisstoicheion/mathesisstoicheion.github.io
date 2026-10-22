@@ -39,7 +39,8 @@
 .voice option { color: var(--ink); background: var(--bg); }
 .x { font-size: var(--step-1); line-height: 1; }
 .note { margin: 0; grid-column: 1 / 5; font-size: var(--step--1); }
-.fine { grid-column: 1 / -1; margin: 2px 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+/* the small print, on the bar's ink (scripts/check-on-ink.mjs wants that said in the selector) */
+.bar .fine { grid-column: 1 / -1; margin: 2px 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 
 @media (max-width: 560px) {
   .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; }

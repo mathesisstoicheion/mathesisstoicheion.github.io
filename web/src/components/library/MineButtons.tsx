@@ -18,7 +18,7 @@ export default function MineButtons() {
   if (!moderator) return null;
   return (
     <nav className={styles.mine} aria-label="Your private collection" title="Only you can see these">
-      <span className={styles.mineSeal}>{LOCK}<span className="label">Only you</span></span>
+      <span className={styles.mineSeal}>{LOCK}<span className="label">Only you<span className="visually-hidden"> can see these</span></span></span>
       <Link href={PRIVATE_COLLECTION} className={styles.mineBtn}>Private collection</Link>
       <Link href={`${PRIVATE_COLLECTION}?tab=import`} className={styles.mineBtn}>Import a text</Link>
     </nav>
