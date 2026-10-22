@@ -116,20 +116,23 @@ export function useQuickGloss(word: string | null, ctx: WordContext | null) {
 }
 
 type Snap = "peek" | "half" | "full";
-const PHONE = "(max-width: 760px)";
+/** where the sheet takes a finger: its handle, and a swipe across it (Reader.module.css sets the sheet to the same widths) */
+const PHONE = "(max-width: 1099px)";
 
 /**
- * Phones: the look-up is a sheet with a handle and three heights. It opens at "peek" (the word, its
- * grammar and short meaning); drag the handle up for half or all of the screen (the dictionary),
- * down to close. Swipe sideways, on the handle or the text, for the next or previous word; the arrow
- * buttons do the same. Returns the handlers for the head and for the body.
+ * A sheet from the foot of the screen, with a handle and three heights. It opens at "peek" (the word, its
+ * grammar and short meaning); drag the handle up for half or all of the room it has (the dictionary),
+ * down to close. It never rises over the line being read (maxH, from the reader). Swipe sideways, on the
+ * handle or the text, for the next or previous word; the arrow buttons do the same. Returns the handlers
+ * for the head and for the body.
  */
-function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: boolean; snap: Snap; setSnap: (s: Snap) => void; onClose: () => void; onStep?: (dir: 1 | -1) => void }) {
+function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: boolean; snap: Snap; setSnap: (s: Snap) => void; onClose: () => void; onStep?: (dir: 1 | -1) => void; maxH: number | null }) {
   const g = useRef<{ id: number; x: number; y: number; h: number; axis: "" | "x" | "y"; lastY: number; lastT: number; v: number; head: boolean } | null>(null);
   const o = useRef(opts);
   useEffect(() => { o.current = opts; });
   const heights = (el: HTMLElement) => {
-    const probe = (s: Snap) => { const was = el.dataset.snap; el.dataset.snap = s; const h = parseFloat(getComputedStyle(el).getPropertyValue("--sheet-h")) || 0; el.dataset.snap = was; return h; };
+    const cap = o.current.maxH ?? Infinity;
+    const probe = (s: Snap) => { const was = el.dataset.snap; el.dataset.snap = s; const h = parseFloat(getComputedStyle(el).getPropertyValue("--sheet-h")) || 0; el.dataset.snap = was; return Math.min(h, cap); };
     return { peek: probe("peek"), half: probe("half"), full: probe("full") };
   };
   const down = (head: boolean) => (e: React.PointerEvent) => {
@@ -150,7 +153,7 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
     }
     if (s.axis === "y") {
       s.v = (e.clientY - s.lastY) / Math.max(1, e.timeStamp - s.lastT); s.lastY = e.clientY; s.lastT = e.timeStamp;
-      el.style.height = `${Math.max(80, Math.min(innerHeight, s.h - dy))}px`;
+      el.style.height = `${Math.max(80, Math.min(o.current.maxH ?? innerHeight, s.h - dy))}px`;
     } else el.style.translate = `${dx * 0.35}px 0`;
   };
   const up = (e: React.PointerEvent, cancelled = false) => {
@@ -179,14 +182,18 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, onStep, sheet = false }: {
+export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
   word: string | null; ctx: WordContext | null; onClose: () => void; onEchoes?: () => void;
   /** show how the sentence this word is in is built */
   onSentence?: () => void;
   /** the next (1) or previous (-1) word of the passage */
   onStep?: (dir: 1 | -1) => void;
-  /** a sheet with heights on phones (not in the floating window) */
+  /** a sheet from the foot of the screen (or of the floating window), with heights */
   sheet?: boolean;
+  /** one book on a wide screen: written in the margin beside the line, at this place in the reader */
+  note?: { top: number; left: number; width: number } | null;
+  /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
+  maxH?: number | null;
 }) {
   const toast = useUI((s) => s.showToast);
   const deck = useAcademy((s) => s.deck);
@@ -197,7 +204,9 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   if (!!word !== wasOpen) { setWasOpen(!!word); if (word) setSnap("peek"); }
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });
-  const gestures = useSheetGestures(ref, { on: sheet, snap, setSnap, onClose, onStep: step });
+  const gestures = useSheetGestures(ref, { on: sheet, snap, setSnap, onClose, onStep: step, maxH });
+  // the short meaning near the top: in a sheet's first height and in a margin note, where the dictionary is further down
+  const brief = sheet || !!note;
   const [analysis, setAnalysis] = useState<Loaded<Analysis>>({ key: "", value: null });
   const [lsj, setLsj] = useState<Loaded<{ head: string; entries: LsjEntry[] }>>({ key: "", value: null });
   const [wikt, setWikt] = useState<Loaded<WiktResult>>({ key: "", value: null });
@@ -288,13 +297,14 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const wcase = a ? caseOf(a.tag) : null;
   // a meaning is given once (slice 8): LSJ's short definition is left out when it says what is already shown above it
   const same = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
-  const above = new Set([sheet && a && parsing ? quick : "", core.key === lsjKey ? core.value?.def ?? "" : ""].filter(Boolean).map(same));
+  const above = new Set([brief && a && parsing ? quick : "", core.key === lsjKey ? core.value?.def ?? "" : ""].filter(Boolean).map(same));
   const lsjShort = l?.value ? l.value.entries.filter((e) => full || !above.has(same(e.s || ""))) : [];
   // Wiktionary has nothing for this form: the section is left out rather than shown empty
   const wiktNone = !!w && !w.value && !w.error;
 
   return (
-    <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""}`} data-snap={snap} data-overlay="" aria-label={`Look-up: ${word}`} tabIndex={-1}
+    <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" aria-label={`Look-up: ${word}`} tabIndex={-1}
+      style={note ? { top: note.top, left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
       onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
       <div className={styles.panelHead} {...(sheet ? gestures.head : {})}>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
@@ -322,7 +332,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
               ? <>{parsing.detail.slice(0, parsing.detail.indexOf(wcase))}<span data-case={wcase} title="Its colour and line when Colour by case is on">{wcase}</span>{parsing.detail.slice(parsing.detail.indexOf(wcase) + wcase.length)}</>
               : parsing.detail}</p>
             {/* phones: the short meaning shows at the sheet's first height too (the dictionary is further down) */}
-            {sheet && quick && <p className={styles.quick}>{quick}</p>}
+            {brief && quick && <p className={styles.quick}>{quick}</p>}
             {a.where === "here" && (a.manual
               ? <span className="tag well">Checked by hand · treebank</span>
               : <span className="tag debated">Automatic analysis · about 97% accurate</span>)}
@@ -373,7 +383,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       {core.key === lsjKey && core.value && (
         <section className={styles.sec}>
           <h3 className="label">Core vocabulary · one of the commonest words (#{core.value.rank})</h3>
-          {!(sheet && a && parsing && same(quick) === same(core.value.def)) && <p className={styles.gloss}>{core.value.def}</p>}
+          {!(brief && a && parsing && same(quick) === same(core.value.def)) && <p className={styles.gloss}>{core.value.def}</p>}
           <p className={styles.fine}><span lang="grc">{core.value.head}</span> · {core.value.pos}. {CORE_CREDIT}.</p>
         </section>
       )}

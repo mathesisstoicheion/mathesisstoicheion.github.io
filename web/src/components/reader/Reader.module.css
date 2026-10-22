@@ -1,14 +1,15 @@
-/* The reader: margin references and ruled lines, on the stone by night or on pale limestone by day (styles/tokens.css). */
+/* The reader, set as a two-language edition on the printed page (redesign SPEC.md 4.3; the sample printed-photos.html, its
+   reader): the Greek and the English side by side, the passage numbers in red in the left margin, a hairline between the
+   passages, and on a wide screen a margin at the right where the look-up is written beside its line. Paper or Night follows
+   the device (styles/tokens.css); there is no separate page for the reader. */
 .reader { padding-bottom: 40px; }
-/* the reader's page: on the Daylight page the books' area is painted light, edge to edge */
 .page { color: var(--ink); }
-.page[data-page="day"] { min-height: 100svh; background-color: var(--bg); transition: background-color var(--dur-slow) ease, color var(--dur-slow) ease; }
 
 .top { position: relative; padding-block: clamp(var(--space-5), 4vw, 40px) var(--space-4); display: grid; gap: 14px; }
 .crumbs { display: flex; flex-wrap: wrap; gap: var(--space-2); font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); }
 .crumbs a { text-decoration: none; padding-block: 5px; }  /* taller than the words, for a finger */
 .crumbs a:hover { color: var(--accent); }
-.title { font-size: clamp(2.2rem, 4.6vw, 3.6rem); }
+.title { font-family: var(--f-title); font-size: clamp(2.2rem, 4.6vw, 3.6rem); }
 .title::first-letter { color: var(--accent); }
 .titleGr { display: block; font-size: 0.5em; color: var(--accent); margin-top: 6px; }
 
@@ -29,17 +30,18 @@
 .change:hover, .change[aria-expanded="true"] { color: var(--accent-hi); text-decoration-color: currentColor; }
 @media (pointer: coarse) { .change { min-height: var(--tap); padding-inline: var(--space-2); margin-inline: calc(-1 * var(--space-2)); } }
 
-/* The small panels (Drop.tsx): Aids, Your marks and More from the bar, Change from the edition's line. Stone set on the
-   wall, opaque, its lit edge and its shadow; each fades in as it rises a few pixels into place. */
+/* The small panels (Drop.tsx): Aids, Your marks and More from the bar, Change from the edition's line. A leaf of the same
+   paper laid over the page: a hairline frame and a soft shadow under it. It inks in where it stands; nothing rises. */
 .pop {
   position: absolute; z-index: 20; top: calc(100% + var(--space-1)); right: max(var(--gutter), env(safe-area-inset-right, 0px));
   width: max-content; max-width: calc(100% - 2 * var(--gutter)); max-height: min(70vh, 40rem); overflow-y: auto; overscroll-behavior: contain;
   display: grid; align-content: start; gap: var(--space-3); padding: var(--space-4);
-  background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow);
-  animation: pop-in var(--dur-quick) var(--ease) backwards;
+  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); box-shadow: 0 18px 40px -22px var(--shadow);
+  animation: leaf-in var(--dur) var(--ease) backwards;
 }
 .pop[hidden] { display: none; }
-@keyframes pop-in { from { opacity: 0; transform: translateY(var(--space-2)); } }
+/* a leaf laid over the page, or a panel beside it, inks in where it stands (decision 3) */
+@keyframes leaf-in { from { opacity: 0; } }
 .changePop { left: 0; right: auto; top: calc(100% + var(--space-2)); max-width: min(100%, 26rem); justify-items: start; }
 .changePop .pick, .changePop .pick select { width: 100%; max-width: none; }
 .aidsPop { width: min(40rem, calc(100% - 2 * var(--gutter))); }
@@ -51,35 +53,38 @@
   font: inherit; font-size: var(--step--1); color: var(--ink);
   border-radius: var(--radius); padding: 7px 10px; max-width: min(360px, 90vw);
 }
-/* design A's .seg: mono capitals in a fine frame, the chosen one on the chip colour */
+/* a row of choices (Both / Greek / English): capitals spaced wide in a hairline frame, the chosen one in ink with paper
+   letters (the sample's .seg) */
 .seg { display: inline-flex; border: 1px solid var(--rule); }
 .seg button {
-  border: 0; border-radius: 0; background: transparent; padding: 7px 11px; cursor: pointer;
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2);
+  border: 0; border-radius: 0; background: transparent; padding: 9px 10px; cursor: pointer;
+  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
+  transition: color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
-.seg button:hover:not([aria-checked="true"]):not(:disabled) { color: var(--ink); }
+.seg button:hover:not([aria-checked="true"]):not(:disabled) { color: var(--rubric); }
 .seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 .seg button:disabled { opacity: 0.4; cursor: default; }
 
 .status { padding-block: 60px; display: grid; gap: var(--space-4); justify-items: start; }
-.loadingBand { width: 220px; animation: band 1.4s linear infinite; }
-@keyframes band { from { -webkit-mask-position: 0 center; mask-position: 0 center; } to { -webkit-mask-position: 64px center; mask-position: 64px center; } }
+.loadingBand { width: 220px; }
 .statusActions { display: flex; gap: var(--space-3); flex-wrap: wrap; }
 .warn { color: var(--accent); font-weight: 600; }
 .message { padding-block: var(--space-8); display: grid; gap: var(--space-4); justify-items: start; }
 
 .bar {
-  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5; transition: top 0.35s var(--ease);
+  position: sticky; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); z-index: 5;
   display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); align-items: center; padding-block: var(--space-2);
-  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
   box-shadow: var(--cut-under);
 }
 :global(html[data-hdr="hidden"]) .bar { --hdr-vis: 0px; }
 .pager { display: flex; align-items: center; gap: 6px; }
+/* the reader's buttons, as the printed page sets them: a hairline frame, the label red under the hand */
 .pager button, .goto button, .helpBtn {
-  min-width: 38px; height: 36px; padding: 0 10px; background: var(--slab); box-shadow: var(--slab-edge); border: 1px solid transparent; border-radius: var(--radius);
+  min-width: 38px; height: 36px; padding: 0 10px; background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.pager button:not(:disabled):active, .goto button:active, .helpBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.pager button:not(:disabled):hover, .goto button:hover, .helpBtn:hover { color: var(--rubric); border-color: var(--rubric); }
 .pager button:disabled { opacity: 0.35; cursor: default; }
 .goto { display: flex; gap: 6px; }
 .goto input { width: 150px; font: inherit; font-size: var(--step--1); color: var(--ink); border-radius: var(--radius); padding: 7px 10px; }
@@ -88,18 +93,18 @@
 .barEnd { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
 .dropBtn {
   display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3);
-  background: var(--slab); box-shadow: var(--slab-edge); border: 1px solid transparent; border-radius: var(--radius); font-size: var(--step--1);
-  transition: background-color var(--dur-quick) var(--ease), box-shadow var(--dur-quick) var(--ease);
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
+  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
-.dropBtn:hover { background: var(--slab-lit); }
-.dropBtn:active { background: var(--field); box-shadow: var(--field-edge); }
-.dropBtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; transition: transform var(--dur) var(--ease); }
-.dropBtn[aria-expanded="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.dropBtn:hover { color: var(--rubric); border-color: var(--rubric); }
+.dropBtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
+.dropBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
 .dropBtn[aria-expanded="true"] svg { transform: rotate(180deg); }
 .moreDrop { min-width: 40px; justify-content: center; }
 .moreDrop svg, .moreDrop[aria-expanded="true"] svg { width: 18px; height: 18px; fill: currentColor; stroke: none; transform: none; }
 .findBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
-.findBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.findBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
 @media (max-width: 760px) { .findBtn { display: none !important; } }
 /* a narrow bar (two books on a phone, or the floating window there): the page and Go to share the first row */
 @media (max-width: 680px) {
@@ -118,30 +123,29 @@
 /* ------------------------------------------------------------ the text */
 .cols, .row { display: grid; grid-template-columns: 64px minmax(0, 1.25fr) minmax(0, 1fr); column-gap: clamp(18px, 2.6vw, 40px); }
 .cols { padding-block: var(--space-4) var(--space-2); }
-.text {
-  background: var(--field); box-shadow: var(--field-edge);
-  padding-block: var(--space-2); margin-top: var(--space-4);
-}
+/* the passages on the paper itself, a hairline between each and the next (the sample's .sec) */
+.text { padding-block: var(--space-2); margin-top: var(--space-4); }
 .cols + .text { margin-top: 0; }
 .row {
-  padding-block: 14px; box-shadow: var(--cut-under);
+  padding-block: 14px; box-shadow: inset 0 1px 0 var(--rule-2);
   content-visibility: auto; contain-intrinsic-size: auto 160px; scroll-margin-top: calc(var(--hdr-vis) + var(--bar-h, 64px) + var(--space-3));
 }
 :global(html[data-hdr="hidden"]) .row { --hdr-vis: 0px; }
-.row:last-child { box-shadow: none; }
+.row:first-child { box-shadow: none; }
 .flash { animation: flash calc(2.4s / var(--tempo)) ease-out; }
 @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 
+/* the passage's number in the left margin, in red Didot (the sample's .mk) */
 .ref { text-align: right; }
 .ref button {
-  font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--accent);
-  background: transparent; border: 0; padding: 2px 0; cursor: copy; font-variant-numeric: tabular-nums;
+  font: 400 var(--step-0) / 1.25 var(--f-title); color: var(--rubric);
+  background: transparent; border: 0; padding: 2px 0; cursor: copy; font-variant-numeric: lining-nums tabular-nums;
   max-width: 100%; overflow-wrap: anywhere;  /* long references wrap in the margin instead of running into the text */
 }
 .ref button:hover { text-decoration: underline; }
 
 .grc { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); }
-.tr { font-size: var(--step-0); line-height: 1.7; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: clamp(var(--space-4), 2vw, 28px); }
+.tr { font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); }
 /* comparing editions: the second column is Greek too, set like the first */
 .tr[data-greek] { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
 .compare { display: grid; gap: 10px; padding-block: var(--space-3); box-shadow: var(--cut-under); }
@@ -160,11 +164,11 @@
 .cols-greek .tr, .cols-greek .cols > :nth-child(3) { display: none; }
 .cols-trans .cols, .cols-trans .row { grid-template-columns: 64px minmax(0, 46rem); }
 .cols-trans .grc, .cols-trans .cols > :nth-child(2) { display: none; }
-.cols-trans .tr { box-shadow: none; padding-left: 0; font-size: var(--step-sub); color: var(--ink); }
+.cols-trans .tr { font-size: var(--step-sub); color: var(--ink); }
 
 .p { margin: 0 0 0.6em; }
 .p:last-child { margin-bottom: 0; }
-.head { margin: 0.4em 0 0.6em; font-family: var(--f-display); font-size: 1.4em; color: var(--accent); text-align: center; }
+.head { margin: 0.4em 0 0.6em; font-family: var(--f-title); font-size: 1.4em; color: var(--accent); text-align: center; }
 .line { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
 .line .speaker { grid-column: 1 / -1; }
 .ln { font-family: var(--f-label); font-size: 0.62em; color: var(--ink-2); text-align: right; padding-right: 0.9em; padding-top: 0.35em; }
@@ -172,7 +176,7 @@
 /* the translation reads as ordinary paragraphs, its first line not pulled out to the left (review fix list, slice 8) */
 .tr .lt { padding-left: 0; text-indent: 0; }
 .para { margin-top: 0.7em; }
-.speaker { display: block; font-family: var(--f-label); font-size: 0.72em; letter-spacing: 0.08em; color: var(--accent); margin-top: 0.5em; }
+.speaker { display: block; font-family: var(--f-label); font-size: 0.72em; letter-spacing: 0.14em; color: var(--accent); margin-top: 0.5em; }
 .p > .speaker { margin-top: 0; }
 .mk {
   font-family: var(--f-label); font-size: 0.6em; letter-spacing: 0.04em; color: var(--accent);
@@ -181,25 +185,30 @@
 .note { font-family: var(--f-label); color: var(--accent); cursor: help; margin: 0 1px; }
 .gap { color: var(--ink-2); }
 
-.w { cursor: pointer; border-radius: var(--radius); transition: background-color 0.15s; }
-.w:hover { background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
-.w:focus-visible { outline-offset: 1px; background-color: color-mix(in srgb, var(--accent) 16%, transparent); }
-.sel { background-color: color-mix(in srgb, var(--accent) 28%, transparent); }
+/* a word: red under the hand; the word being looked up stays red, with a fine red rule under it (the sample's .w.on) */
+.w { cursor: pointer; transition: color var(--dur-quick) var(--ease); }
+.w:hover, .w:focus-visible { color: var(--rubric); }
+.w:focus-visible { outline: 1px solid var(--rubric); outline-offset: 2px; }
+.sel {
+  color: var(--rubric);
+  background-image: linear-gradient(var(--rubric-2), var(--rubric-2)); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 92%;
+}
 
 .bottom { display: flex; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-5); }
 .bottom button:disabled { visibility: hidden; }
 .source { font-size: var(--step--2); color: var(--ink-2); max-width: 90ch; }
 
-/* ------------------------------------------------------------ look-up panel */
+/* ------------------------------------------------------------ the panels at the side (vocabulary, find, places…, and the
+   look-up while one of them is open): a leaf of the same paper along the right of the screen, a hairline at its edge. It
+   inks in where it stands; nothing slides (decision 3). */
 .panel {
-  position: fixed; z-index: 40; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0; transition: top 0.35s var(--ease);
+  position: fixed; z-index: 40; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0;
   width: min(400px, 100vw); overflow-y: auto; padding: 20px 22px 32px;
-  background: var(--surface); box-shadow: var(--slab-edge), -24px 0 48px -32px var(--shadow);
+  background: var(--bg); box-shadow: inset 1px 0 0 var(--rule), -24px 0 48px -40px var(--shadow);
   display: grid; align-content: start; gap: 18px; outline: none;
-  animation: slide-in calc(0.35s / var(--tempo)) var(--ease);
+  animation: leaf-in var(--dur) var(--ease) backwards;
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
-@keyframes slide-in { from { transform: translateX(40px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .single.withPanel .caseKey { margin-right: 400px; margin-left: 0; } }
 /* narrower desktops: the look-up docks at the side too, a little narrower, and the text makes room for it, so the English of
    the line being read stays in sight (review fix list, slice 8) */
@@ -213,9 +222,10 @@
 .panelBody { display: contents; }
 .grab, .stepBtn, .moreBtn { display: none; }
 .quick { margin: 0; }
-.pw { font-family: var(--f-greek); font-size: 2rem; line-height: 1.1; }
-.x { width: 36px; height: 36px; flex: none; font-size: var(--step-1); line-height: 1; background: var(--slab); box-shadow: var(--slab-edge); border: 1px solid transparent; border-radius: var(--radius); }
-.x:active { background: var(--field); box-shadow: var(--field-edge); }
+/* the word looked up, in red (the sample's .lk-f); its × plain, as the sample's */
+.pw { font-family: var(--f-greek); font-size: 2rem; line-height: 1.1; color: var(--rubric); }
+.x { width: 36px; height: 36px; flex: none; padding: 0; font-size: 1.6rem; line-height: 1; color: var(--ink-2); background: transparent; border: 0; border-radius: var(--radius); transition: color var(--dur-quick) var(--ease); }
+.x:hover { color: var(--rubric); }
 .sec { display: grid; gap: var(--space-2); }
 .sec h3 { font-size: var(--step--1); }
 .lemma { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); letter-spacing: 0; margin-left: 6px; }
@@ -228,24 +238,25 @@
 
 @media (max-width: 900px) {
   .cols, .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .tr { grid-column: 2; padding-left: 0; margin-top: 10px; padding-top: 12px; box-shadow: var(--cut-over); }
+  .tr { grid-column: 2; margin-top: 10px; }
   .cols > :nth-child(3) { display: none; }
   .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .cols-trans .tr { box-shadow: none; margin-top: 0; padding-top: 0; }
-  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-radius: var(--radius); }
+  .cols-trans .tr { margin-top: 0; }
+  /* a panel is a leaf across the foot of the screen, a hairline along its top */
+  .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-radius: var(--radius); box-shadow: inset 0 1px 0 var(--rule), 0 -10px 30px -12px var(--shadow); }
   .helpBtn { display: none; }
 }
 
 /* look-up: analysis and dictionary */
 .here { display: grid; gap: 6px; justify-items: start; }
-.lemmaBig { font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.1; color: var(--accent); }
+.lemmaBig { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.2; color: var(--ink); }
 .parse { font-size: var(--step-0); }
 /* the lesson that explains this form (lib/lookup/lesson-link.ts) */
 .lessonLink {
   display: flex; gap: 10px; align-items: center; margin-top: var(--space-1); padding: var(--space-2) var(--space-3); text-decoration: none;
-  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color 0.2s;
+  border: 1px solid var(--rule); border-radius: var(--radius); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.lessonLink:hover { background-color: var(--slab-lit); }
+.lessonLink:hover { color: var(--rubric); border-color: var(--rubric); }
 .lessonLink svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linejoin: round; }
 .lessonLink b { display: block; font-size: var(--step-0); }
 .lessonLink b + span { font-size: var(--step--1); color: var(--ink-2); }
@@ -273,10 +284,10 @@
 .sw-red { background: #C0492B !important; } .sw-ochre { background: #D9A441 !important; } .sw-blue { background: #4F7CA8 !important; } .sw-green { background: #6E9A5B !important; }
 
 .w[data-hl] { border-radius: var(--radius); }
-.w[data-hl="red"] { background: color-mix(in srgb, #C0492B 32%, transparent); }
-.w[data-hl="ochre"] { background: color-mix(in srgb, #D9A441 42%, transparent); }
-.w[data-hl="blue"] { background: color-mix(in srgb, #4F7CA8 34%, transparent); }
-.w[data-hl="green"] { background: color-mix(in srgb, #6E9A5B 36%, transparent); }
+.w[data-hl="red"] { background: color-mix(in srgb, var(--pen-red) 32%, transparent); }
+.w[data-hl="ochre"] { background: color-mix(in srgb, var(--pen-ochre) 42%, transparent); }
+.w[data-hl="blue"] { background: color-mix(in srgb, var(--pen-blue) 34%, transparent); }
+.w[data-hl="green"] { background: color-mix(in srgb, var(--pen-green) 36%, transparent); }
 
 .ref { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
 .ref button[data-row] { cursor: pointer; }
@@ -303,8 +314,8 @@
 .marksList li:global(.muted) { padding: var(--space-3); font-size: var(--step--1); }
 
 /* ------------------------------------------------------------ share */
-.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 0; border-radius: var(--radius); background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge), 0 40px 80px -30px var(--shadow); }
-.share::backdrop { background: rgba(10, 6, 3, 0.45); }
+.share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: 0 30px 60px -30px var(--shadow); }
+.share::backdrop { background: var(--veil); }
 .shareIn { display: grid; gap: var(--space-4); padding: 22px var(--space-5); }
 .shareIn h2 { font-size: var(--step-1); }
 .shareMenu { display: flex; flex-wrap: wrap; gap: 10px; justify-content: flex-end; }
@@ -327,7 +338,7 @@
 .pane .bar { top: 0; }
 .pane .title { font-size: clamp(1.6rem, 2.6vw, 2.4rem); }
 .pane .wrap { padding-inline: clamp(var(--space-3), 2vw, var(--space-5)); }
-.activePane { --pane-cap: inset 0 3px 0 var(--accent); box-shadow: var(--pane-cap); }
+.activePane { --pane-cap: inset 0 2px 0 var(--accent); box-shadow: var(--pane-cap); }
 .pane + .activePane { box-shadow: var(--cut-left), var(--pane-cap); }
 .paneBar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-2) clamp(var(--space-3), 2vw, var(--space-5)) 0; }
 .linkHere { background: var(--accent) !important; color: var(--accent-ink) !important; }
@@ -342,10 +353,10 @@
 /* each pane adapts to its own width */
 @container (max-width: 760px) {
   .cols, .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .tr { grid-column: 2; padding-left: 0; margin-top: 10px; padding-top: 12px; box-shadow: var(--cut-over); }
+  .tr { grid-column: 2; margin-top: 10px; }
   .cols > :nth-child(3) { display: none; }
   .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: 44px minmax(0, 1fr); }
-  .cols-trans .tr { box-shadow: none; margin-top: 0; padding-top: 0; }
+  .cols-trans .tr { margin-top: 0; }
   .notes { grid-column: 1 / -1; }
 }
 @media (max-width: 900px) {
@@ -404,21 +415,21 @@
    knob across and lit when on; an action (Vocabulary, Places…) is a button that opens a panel, a raised stone like the bar's */
 .mode { gap: 9px; }
 .switch {
-  position: relative; flex: none; width: 26px; height: 15px; border-radius: var(--radius-round); border: 1px solid var(--rule-2);
-  transition: background-color calc(0.2s / var(--tempo, 1)) var(--ease), border-color calc(0.2s / var(--tempo, 1)) var(--ease);
+  position: relative; flex: none; width: 26px; height: 15px; border-radius: var(--radius-round); border: 1px solid var(--rule);
+  transition: background-color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .switch::before {
   content: ""; position: absolute; top: 2px; left: 2px; width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--ink-2);
-  transition: transform calc(0.2s / var(--tempo, 1)) var(--ease), background-color calc(0.2s / var(--tempo, 1)) var(--ease);
+  transition: background-color var(--dur-quick) var(--ease);
 }
 .mode[aria-pressed="true"] .switch { background: var(--accent); border-color: var(--accent); }
 .mode[aria-pressed="true"] .switch::before { transform: translateX(11px); background: var(--bg); }
-.act { background: var(--slab); box-shadow: var(--slab-edge); border-color: transparent; }
-.act:hover { background: var(--slab-lit); border-color: transparent; }
-.act[aria-expanded="true"] { background: var(--sel-bg); color: var(--ink); border-color: var(--accent); }
+.act { background: transparent; border-color: var(--rule); }
+.act:hover { color: var(--rubric); border-color: var(--rubric); }
+.act[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
 /* the Tools button says when a mode is on: a lit dot and how many */
 .onCount { color: var(--accent); }
-.onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: 4px; border-radius: var(--radius-round); background: currentColor; box-shadow: 0 0 6px currentColor; }
+.onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: 4px; border-radius: var(--radius-round); background: currentColor; }
 .aidLabel { flex-basis: 100%; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
@@ -427,9 +438,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* colour by case (review fix list, slice 8): colours from Okabe and Ito's set for colour-blind readers, chosen so that no two
    look alike with any of the three common kinds of colour blindness (scripts/check-reader.mjs), and a line of its own kind for
    each case, so the colour is never the only sign: nominative solid, genitive dotted, dative dashed, accusative double,
-   vocative wavy. The key above the text, and the look-up's parsing, show the same. */
-.reader { --case-nom: #56B4E9; --case-gen: #F0E442; --case-dat: #009E73; --case-acc: #D55E00; --case-voc: #CC79A7; }
-.page[data-page="day"] .reader { --case-gen: #C9AE00; }
+   vocative wavy. The key above the text, and the look-up's parsing, show the same. The colours are set for Paper and for
+   Night in styles/tokens.css (--case-nom … --case-voc). */
 .reader [data-case] { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 0.18em; text-decoration-skip-ink: none; }
 .reader [data-case="nominative"] { text-decoration-color: var(--case-nom); text-decoration-style: solid; }
 .reader [data-case="genitive"] { text-decoration-color: var(--case-gen); text-decoration-style: dotted; text-decoration-thickness: 3px; }
@@ -441,7 +451,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single .caseKey {
   position: sticky; top: calc(var(--bar-h, 59px) + env(safe-area-inset-top, 0px)); z-index: 15; margin: 0; padding-block: 6px;
   gap: 4px 14px; font-size: var(--step--1);
-  background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); border-bottom: 1px solid var(--rule);
+  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule);
 }
 @media (max-width: 640px) { .single .caseKey .legendCredit { display: none; } }
 
@@ -456,8 +466,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 /* ------------------------------------------------------------ metre */
 /* marks sit in a row above each line: – long, ˘ short, × either; | between feet; ‖ at the caesura.
-   One animation per line sweeps its marks in from left to right (--mk runs 0 → 1; each mark
-   appears as the sweep passes its syllable number --i), rather than one animation per mark. */
+   They ink in once, in reading order: one animation per line runs --mk from 0 to 1, and each mark fades in as it passes
+   its syllable number --i (rather than one animation per mark). Nothing moves. */
 @property --mk { syntax: "<number>"; inherits: true; initial-value: 1; }
 .metreOn .line { position: relative; animation: mark-sweep calc(0.9s / var(--tempo)) var(--ease) both; }
 @keyframes mark-sweep { from { --mk: 0; } to { --mk: 1; } }
@@ -471,7 +481,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   font-family: var(--f-body); font-size: 0.72em; font-weight: 700; line-height: 1; color: var(--accent);
   pointer-events: none; text-indent: 0; white-space: nowrap;
   --show: clamp(0, calc((var(--mk) * 24 - var(--i, 0)) / 3), 1);
-  opacity: var(--show); translate: 0 calc((1 - var(--show)) * -0.45em);
+  opacity: var(--show);
 }
 .syl[data-q="L"]::before { content: "–"; }
 .syl[data-q="S"]::before { content: "˘"; font-size: 0.78em; }
@@ -496,26 +506,23 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 .beatBtn::before { content: "▸"; }
 .metreQ::before { content: "?"; }
-.beatBtn { border: 1px solid transparent; background: var(--slab); box-shadow: var(--slab-edge); color: var(--accent); opacity: 0.25; transition: opacity 0.2s, transform 0.2s var(--ease); }
+.beatBtn { border: 1px solid var(--rule); background: var(--bg); color: var(--accent); opacity: 0.25; transition: opacity var(--dur-quick), border-color var(--dur-quick); }
 .line:hover .beatBtn, .beatBtn:focus-visible, .playing .beatBtn { opacity: 1; }
-.beatBtn:hover { transform: scale(1.12); }
-.beatBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.beatBtn:hover { border-color: var(--rubric); }
 @media (hover: none) { .beatBtn { opacity: 0.6; } }
 @media (pointer: coarse) { .beatBtn, .metreQ { width: 1.8em; height: 1.8em; top: 1.45em; } }
-.metreQ { font-family: var(--f-label); color: var(--ochre); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); cursor: help; }
+.metreQ { font-family: var(--f-label); color: var(--ochre); border: 1px solid var(--rule); background: var(--bg); cursor: help; }
 .metreLabel { grid-column: 1 / -1; display: block; margin-top: 0.8em; font-family: var(--f-label); font-size: 0.62em; letter-spacing: 0.07em; color: var(--ochre); }
 .line[data-metre="none"] .lt { opacity: 0.92; }
 
-/* the rhythm player: the syllable sounding now */
-.syl.beatNow { background-color: color-mix(in srgb, var(--accent) 24%, transparent); }
-.syl.beatNow::before { scale: 1.5; translate: 0 -0.15em; transition: scale 0.12s, translate 0.12s; }
+/* the rhythm player: the syllable sounding now, and its mark, in red */
+.syl.beatNow { background-color: color-mix(in srgb, var(--accent) 20%, transparent); color: var(--rubric); }
 .playing .lt { text-decoration: none; }
 
 /* the metre's legend and explanation */
-.metreBar { display: grid; gap: var(--space-2); padding-block: 10px var(--space-1); font-size: var(--step--1); max-width: 100ch; animation: rise calc(0.5s / var(--tempo)) var(--ease) both; }
-@keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+.metreBar { display: grid; gap: var(--space-2); padding-block: 10px var(--space-1); font-size: var(--step--1); max-width: 100ch; animation: leaf-in var(--dur) var(--ease) backwards; }
 .metreHead { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; }
-.metreName { font-family: var(--f-display); font-size: var(--step-sub); color: var(--accent); }
+.metreName { font-family: var(--f-title); font-size: var(--step-sub); color: var(--accent); }
 .metreKey { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-4); color: var(--ink-2); font-size: var(--step--1); }
 .metreKey b { display: inline-block; min-width: 1em; text-align: center; margin-right: 3px; font-family: var(--f-body); }
 .kL, .kS { color: var(--accent); } .kX { color: var(--ink-2); } .kFt { color: var(--ink-2); font-weight: 400; } .kCaes { color: var(--accent); }
@@ -538,9 +545,11 @@ p.translit { margin: -0.3em 0 0.8em; }
 .floating.withPanel .text, .floating.withPanel .cols, .floating.withPanel .bar, .floating.withPanel .bottom { margin-right: 0; }
 .floating .row, .pane .row { scroll-margin-top: calc(var(--bar-h, 64px) + var(--space-3)); }
 .floating .helpBtn { display: none; }
-.floatBtn { display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); background: var(--slab); box-shadow: var(--slab-edge); border: 1px solid transparent; border-radius: var(--radius); font-size: var(--step--1); }
-.floatBtn:hover { background: var(--slab-lit); }
-.floatBtn:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
+.floatBtn {
+  display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); background: transparent; color: var(--ink);
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+.floatBtn:hover:not(:disabled) { color: var(--rubric); border-color: var(--rubric); }
 .floatBtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 /* a grip beside each passage number: drag it into a note to quote the passage */
 .grip { display: block; width: 10px; height: 16px; margin: var(--space-1) 0 0 auto; cursor: grab; opacity: 0; transition: opacity 0.2s;
@@ -550,8 +559,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 .grip { position: relative; }
 .grip::after {
   content: attr(data-tip); position: absolute; left: calc(100% + 8px); top: -4px; z-index: 3; pointer-events: none; white-space: nowrap;
-  padding: 3px 8px; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); color: var(--ink);
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; opacity: 0; transition: opacity calc(0.15s / var(--tempo, 1));
+  padding: 3px 8px; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
+  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; opacity: 0; transition: opacity var(--dur-quick);
 }
 .grip:hover { opacity: 1; }
 .grip:hover::after { opacity: 1; }
@@ -561,8 +570,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 .floatFold { font-size: var(--step--1); }
 .floatFold summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.05em; color: var(--ink-2); padding: 2px 0; }
 .floatFold[open] summary { margin-bottom: 10px; }
-.floatFoldIn { display: grid; gap: var(--space-3); animation: slide-in var(--dur-quick) var(--ease); }
-.floatTitle { font-family: var(--f-display); font-size: var(--step-sub); }
+.floatFoldIn { display: grid; gap: var(--space-3); animation: leaf-in var(--dur) var(--ease) backwards; }
+.floatTitle { font-family: var(--f-title); font-size: var(--step-sub); }
 
 /* ------------------------------------------------------------ phones (Phase 10) */
 @media (max-width: 760px) {
@@ -572,47 +581,6 @@ p.translit { margin: -0.3em 0 0.8em; }
   .floatBtn { min-height: var(--tap); height: auto; padding: var(--space-2) 14px; border-radius: var(--radius); text-align: left; }
 }
 
-/* Phones: the look-up as a sheet with a handle and three heights (WordPanel.tsx): peek, half and full.
-   --sheet-h is registered as a length so that WordPanel can read each height in pixels. */
-@property --sheet-h { syntax: "<length>"; inherits: false; initial-value: 0px; }
-@media (max-width: 760px) {
-  .panel.wordSheet {
-    --sheet-h: min(46dvh, 400px);
-    display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
-    top: auto; max-height: none; height: var(--sheet-h);
-    border-radius: var(--radius); box-shadow: var(--slab-edge), 0 -24px 48px -24px var(--shadow);
-    transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
-    animation: sheet-up calc(0.35s / var(--tempo)) var(--ease);
-  }
-  .panel.wordSheet[data-snap="half"] { --sheet-h: 70dvh; }
-  .panel.wordSheet[data-snap="full"] { --sheet-h: calc(100dvh - env(safe-area-inset-top, 0px) - 10px); }
-  .panel.wordSheet.sheetDragging { transition: none; }
-  .wordSheet .panelHead {
-    position: relative; flex: none; align-items: center; gap: var(--space-1); padding: 22px var(--space-3) 10px var(--space-4);
-    box-shadow: var(--cut-under); touch-action: none; cursor: grab;
-  }
-  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 5px; margin-left: -20px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); }
-  .wordSheet .pw { flex: 1; min-width: 0; font-size: var(--step-2); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .wordSheet .stepBtn, .wordSheet .moreBtn {
-    display: grid; place-items: center; flex: none; width: var(--tap); height: var(--tap); padding: 0;
-    background: transparent; color: var(--ink); border: 0; border-radius: var(--radius); font-size: 1.9rem; line-height: 1;
-  }
-  .wordSheet .stepBtn:active, .wordSheet .moreBtn:active { background: var(--bg-2); }
-  .wordSheet .moreBtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
-  .wordSheet .x { width: var(--tap); height: var(--tap); border-radius: var(--radius); }
-  .wordSheet .panelBody {
-    display: grid; align-content: start; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-    padding: var(--space-4) 20px calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); touch-action: pan-y;
-    animation: word-in calc(0.3s / var(--tempo)) var(--ease);
-  }
-  .wordSheet .panelBody[data-dir="-1"] { animation-name: word-in-back; }
-  .wordSheet .lsj { max-height: none; overflow: visible; }
-  .wordSheet .quick { font-size: var(--step-0); font-style: italic; }
-}
-@keyframes sheet-up { from { transform: translateY(40%); opacity: 0.4; } }
-@keyframes word-in { from { opacity: 0; transform: translateX(28px); } }
-@keyframes word-in-back { from { opacity: 0; transform: translateX(-28px); } }
-
 /* The passage toolbar: a × and the quick meaning of one word are for phones, where it docks along the bottom
    with finger-sized buttons (PassageToolbar.tsx). */
 .tbClose, .quickRow { display: none; }
@@ -621,7 +589,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; border-radius: var(--radius);
     flex-wrap: wrap; justify-content: center; gap: 2px var(--space-1);
     padding: var(--space-2) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-2) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
-    animation: sheet-up calc(0.3s / var(--tempo)) var(--ease);
+    animation: sheet-up var(--dur) var(--ease) backwards;
   }
   .reader:not(.floating) .toolbar button { flex: none; min-height: var(--tap); padding: 6px var(--space-3); flex-direction: column; gap: 2px; font-size: var(--step--2); }
   .reader:not(.floating) .toolbar svg { width: 20px; height: 20px; }
@@ -636,9 +604,9 @@ p.translit { margin: -0.3em 0 0.8em; }
   }
   .quickRow p { margin: 0; font-size: var(--step-0); line-height: 1.35; }
   .quickRow b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-1); color: var(--accent); margin-right: 6px; }
-  .quickRow button { flex-direction: row !important; font-size: var(--step--1) !important; border: 1px solid transparent !important; background: var(--slab); box-shadow: var(--slab-edge); }
-  .quickRow button:hover:not(:disabled) { background: var(--slab-lit); }
-  .quickRow button:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
+  /* on the ink slip, a frame of paper colour faintly (the sample's switcher buttons) */
+  .quickRow button { flex-direction: row !important; font-size: var(--step--1) !important; background: transparent; border: 1px solid color-mix(in srgb, var(--inv-fg) 30%, transparent) !important; }
+  .quickRow button:hover:not(:disabled) { border-color: var(--inv-fg) !important; }
   .quickNone { opacity: 0.7; font-style: italic; }
 }
 
@@ -647,12 +615,10 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tr[data-veiled] > :not(.reveal) { visibility: hidden; max-height: 4.8em; overflow: hidden; }
 .reveal {
   position: absolute; inset: 0; z-index: 1; display: grid; place-items: center; padding: var(--space-2) var(--space-3); min-height: var(--tap);
-  background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--rule) 22%, transparent) 0 8px, transparent 8px 16px), var(--slab);
-  border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius); color: var(--ink-2); font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.03em;
-  text-align: center; cursor: pointer; transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  background: var(--bg-2); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink-2); font-family: var(--f-label); font-size: var(--step--1); font-style: italic;
+  text-align: center; cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.reveal:hover, .reveal:focus-visible { color: var(--accent); background-color: var(--slab-lit); }
-.reveal:active { background-color: var(--field); box-shadow: var(--field-edge); }
+.reveal:hover, .reveal:focus-visible { color: var(--rubric); border-color: var(--rubric); }
 
 /* "Fit lines": whole verse lines, the Greek shrunk to the longest line on the page (--fit, measured in Reader.tsx) */
 .fitLines .grc { font-size: calc(var(--greek-size) * var(--fit, 1)); }
@@ -670,13 +636,12 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* Listen: the passage being read aloud, marked along its translation */
 .row[data-listening] .tr { position: relative; }
 .row[data-listening] .tr::before {
-  content: ""; position: absolute; left: -12px; top: 2px; bottom: 2px; width: 3px; border-radius: var(--radius); background: var(--accent);
-  transform-origin: top; animation: listen-in var(--dur) var(--ease) backwards;
+  content: ""; position: absolute; left: -12px; top: 2px; bottom: 2px; width: 2px; background: var(--accent);
+  animation: leaf-in var(--dur) var(--ease) backwards;
 }
-@keyframes listen-in { from { transform: scaleY(0); } }
 
 /* Listen: a button beside "Float the reader" on wide screens, a chip in the aids sheet on phones */
-.listenBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.listenBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
 @media (min-width: 761px) { .reader:not(.single) .listenChip { display: none !important; } }
 @media (max-width: 760px) { .listenBtn { display: none !important; } }
 
@@ -699,56 +664,61 @@ p.translit { margin: -0.3em 0 0.8em; }
 .mineChip { display: inline-flex; align-items: center; gap: 6px; }
 .mineProblems { margin: 0; padding-left: 1.2em; color: var(--ink-2); }
 
-/* ============================================================ design A's reader (one book on its page)
-   The owner, 2026-10-19: the reader exactly as design A drew it (redesign/design-a/design-a.html, the READER section).
-   Its own bar along the top (the site's header stands aside: globals.css), the book opening in lamplight (ReaderCover.tsx),
-   the passages in rows with the one being read lit, and "Continue to …" at the foot. Two books side by side and the
-   floating window keep the reader's own layout above. */
+/* ============================================================ one book on its page: the printed-page reader
+   Its own bar along the top (the site's header stands aside: globals.css), the title page (ReaderCover.tsx), then the
+   passages as a two-language edition: on a wide screen the Greek and the English side by side, with a margin at the right
+   where the look-up is written; on a phone the English under each Greek paragraph. Two books side by side and the floating
+   window keep the reader's own layout above. */
 
-/* the bar: the mark, the way back, the book and its page, then the columns, Aa, Tools, your marks and More */
+/* the bar: the device, the way back, the running head (the book and its page), then Both / Greek / English, Aa, Tools, your
+   marks and More (the sample's .r-bar) */
 .rbar {
   position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: block; padding: 0;
-  background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
-  border-bottom: 1px solid var(--rule); box-shadow: none; transition: none;
+  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--rule); box-shadow: none;
 }
 .withPanel .rbar { margin-right: 0; }
-.rbarIn { display: flex; align-items: center; gap: 10px; min-height: 58px; flex-wrap: wrap; padding-block: 8px; position: relative; }
-.single :global(.wrap) { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+/* while one of its menus is open, the bar and the menu stand above a panel open at the side (the menu was asked for last) */
+.rbar:has(.pop:not([hidden])) { z-index: 45; }
+.rbarIn { display: flex; align-items: center; gap: 14px; min-height: 56px; flex-wrap: wrap; padding-block: 8px; position: relative; }
 .rmark { color: var(--ink); }
-.back { padding: 6px 4px; color: var(--ink-2); text-decoration: none; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; }
-.back:hover { color: var(--accent); }
-.rtitle { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: baseline; overflow: hidden; white-space: nowrap; }
-.rtitle b { font-family: var(--f-display); font-stretch: 75%; font-weight: 450; letter-spacing: 0.06em; text-transform: uppercase; font-size: var(--step-0); overflow: hidden; text-overflow: ellipsis; }
-.rtitle b a { color: inherit; text-decoration: none; }
-.rtitle b a:hover { color: var(--accent); }
-.rtitle :global(.label) { font-size: var(--step--2); }
-.rtitle .privateTag { align-self: center; }
-/* the controls flow in the bar itself, as A's do: on a phone, what does not fit goes on to a second line */
-.rtools, .rbar .barEnd { display: contents; }
-.rbar .dropBtn {
-  height: auto; padding: 6px 12px; gap: 6px; border: 1px solid var(--rule); border-radius: 0; background: transparent; box-shadow: none; color: var(--ink);
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.1em; text-transform: uppercase;
+.back {
+  padding: 6px 4px; color: var(--ink-2); text-decoration: none; white-space: nowrap;
+  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; transition: color var(--dur-quick) var(--ease);
 }
-.rbar .dropBtn:hover { background: transparent; border-color: var(--ink-2); }
-.rbar .dropBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--ink); box-shadow: none; }
-.rbar .moreDrop { padding-block: 4px; }
+.back:hover { color: var(--rubric); }
+/* the running head: the author and the book in capitals spaced wide, in the middle of the bar, the page after them */
+.rtitle { flex: 1; min-width: 0; display: flex; gap: 12px; align-items: baseline; justify-content: center; overflow: hidden; white-space: nowrap; }
+.rtitle b { font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
+.rtitle b a { color: inherit; text-decoration: none; transition: color var(--dur-quick) var(--ease); }
+.rtitle b a:hover { color: var(--rubric); }
+.rtitle :global(.label) { flex: none; font-size: var(--step--2); letter-spacing: 0.18em; color: var(--ink-3); }
+.rtitle .privateTag { align-self: center; }
+/* the controls flow in the bar itself: on a phone, what does not fit goes into ⋯ */
+.rtools, .rbar .barEnd { display: contents; }
+.rbar .dropBtn { height: auto; padding: 9px 11px; gap: 6px; }
+.rbar .moreDrop { padding-block: 6px; }
 .rbar .moreDrop svg { width: 16px; height: 16px; }
-.rbar .seg button { min-height: 0; padding-inline: 11px; }
+.rbar .seg button { min-height: 0; }
 @media (pointer: coarse) { .rbar .seg button, .rbar .dropBtn { min-height: 32px; } }
-@media (max-width: 640px) { .rtitle :global(.label), .bl { display: none; } .rtitle b { font-size: var(--step--1); } }
-/* phones: one row (review fix list, slice 8): the mark, the way back, the work's title, Tools and ⋯; the columns, Aa and your
-   marks are in ⋯ */
+/* a narrower bar: the book's title alone in the running head, so it is read whole */
+@media (max-width: 1099px) { .rauthor { display: none; } }
+@media (max-width: 640px) { .rtitle :global(.label), .bl { display: none; } }
+/* phones: one row (review fix list, slice 8): the device, the way back, the book's title, Tools and ⋯; Both / Greek /
+   English, Aa and your marks are in ⋯ */
 .phoneMore { display: none; }
 @media (max-width: 640px) {
   .rbarIn { flex-wrap: nowrap; gap: 8px; }
-  .rauthor, .rbar .wideOnly, .rbar .rtools > .seg { display: none; }
+  .rtitle { justify-content: flex-start; }
+  .rtitle b { letter-spacing: 0.16em; }
+  .rbar .wideOnly, .rbar .rtools > .seg { display: none; }
   .phoneMore { display: contents; }
   .rbar .morePop { max-height: calc(100svh - var(--bar-h, 59px) - 24px); overflow-y: auto; }
 }
-/* its panels (A's .pop): under the bar at the right */
+/* its panels: leaves under the bar at the right */
 .rbar .pop {
   right: max(16px, env(safe-area-inset-right, 0px)); top: 100%; margin-top: 6px; max-width: none; width: min(370px, calc(100vw - 32px));
-  padding: 16px; border: 1px solid var(--rule); box-shadow: 0 24px 60px -20px rgba(0, 0, 0, 0.55); z-index: 25;
+  padding: 16px; z-index: 25;
 }
 .rbar .aidsPop { width: min(30rem, calc(100vw - 32px)); }
 .rbar .marksPop { width: min(24rem, calc(100vw - 32px)); padding: 8px; }
@@ -758,75 +728,66 @@ p.translit { margin: -0.3em 0 0.8em; }
 .aa > :global(.label) { margin: 14px 0 8px; }
 .aa > :global(.label):first-child { margin-top: 0; }
 .aa > :global(.muted) { font-size: var(--step--2); margin: 14px 0 0; }
-.rbar .aidLabel { font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; }
+.rbar .aidLabel { font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; }
 .whereGroup { padding-bottom: var(--space-4); box-shadow: var(--cut-under); }
 .whereGroup .goto { flex: 1; min-width: 12rem; }
 .whereGroup .goto input { flex: 1; min-width: 0; width: auto; }
-/* the look-up panel opens under the bar */
+/* a panel at the side opens under the bar */
 @media (min-width: 901px) { .single .panel { top: calc(var(--bar-h, 59px) + env(safe-area-inset-top, 0px)); } }
 
-/* the cover: lamplight and drifting dust, until you scroll into the text (A's .rcover) */
-.rcover {
-  --a-img: var(--gold);
-  position: relative; min-height: calc(100svh - 70px); display: grid; place-items: center; text-align: center;
-  padding: clamp(36px, 7vh, 80px) 16px clamp(70px, 12vh, 120px); margin-bottom: clamp(10px, 3vw, 30px);
-}
-.atm { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: var(--atm, 1); pointer-events: none; }
-.inner { position: relative; z-index: 1; max-width: 900px; opacity: calc(0.35 + 0.65 * var(--atm, 1)); }
-.emblem { margin: 0 auto 18px; width: 200px; text-align: center; }
-.emblem canvas { width: 200px; display: block; margin-inline: auto; }   /* the home page's red window, its picture laid on in gold letters (lib/a/lamplight.js, field) */
-.emCap { font-size: var(--step--2); line-height: 1.45; margin-top: 6px; color: var(--ink-2); }
-.kick { color: var(--accent); font-size: var(--step--2); }
-.coverTitle {
-  font-family: var(--f-greek); font-weight: 400; font-stretch: normal; font-style: normal; letter-spacing: 0; text-transform: none;
-  font-size: clamp(3rem, 9vw, 7rem); line-height: 1; margin: 14px 0 10px; color: var(--ink);
-  text-shadow: 0 0 50px rgba(232, 189, 112, calc(0.3 * var(--atm, 1)));
-}
-.enT { font-family: var(--f-display); font-stretch: 62.5%; font-weight: 300; font-style: italic; font-size: clamp(1.4rem, 3vw, 2.3rem); color: var(--ink-2); margin: 0; }
-.origT { margin: 6px 0 0; font-size: var(--step--1); color: var(--ink-2); }
-.eds { position: relative; margin-top: 16px; display: flex; justify-content: center; }
-.eds .edLine { justify-content: center; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; }
-.eds .edKind { font-size: inherit; margin-right: 0; }
-.eds .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; text-transform: none; letter-spacing: normal; font-family: var(--f-body); font-size: var(--step-0); }
-.begin {
-  position: absolute; left: 50%; bottom: clamp(18px, 4vh, 40px); transform: translateX(-50%); padding-bottom: 42px; white-space: nowrap;
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); opacity: var(--atm, 1);
-}
-.begin::after {
-  content: ""; position: absolute; left: 50%; bottom: 0; width: 1px; height: 34px; background: linear-gradient(var(--accent), transparent);
-  transform-origin: top; animation: drip 2.6s cubic-bezier(0.6, 0, 0.3, 1) infinite;
-}
-@keyframes drip { 0% { transform: scaleY(0); opacity: 1; } 60% { transform: scaleY(1); opacity: 1; } 100% { transform: scaleY(1); opacity: 0; } }
-.page[data-page="day"] .rcover { --a-img: #7a3d0a; }
-.page[data-page="day"] .atm { display: none; }
-.page[data-page="day"] .coverTitle { text-shadow: none; }
-@media (max-width: 640px) { .emblem, .emblem canvas { width: 140px; } .emCap { display: none; } }
-@media (prefers-reduced-motion: reduce) { .begin::after { animation: none; } }
+/* the title page (ReaderCover.tsx; the sample's .r-title): the author in red capitals spaced wide, the Greek title large,
+   the English in italic under it, a fleuron between two red rules, the editions in small print. A book with its own picture
+   opens with it above, as a plate (its frontispiece). It inks in line by line (globals.css, .enter), then nothing moves. */
+.tp { display: grid; justify-items: center; text-align: center; padding: clamp(48px, 10vh, 120px) var(--gutter) clamp(36px, 7vh, 80px); }
+.tpPlate { width: min(240px, 56vw); margin: 0 0 var(--space-6); text-align: left; }
+.tpAu { margin: 0; font: 400 1.05rem / 1.3 var(--f-title); letter-spacing: 0.42em; color: var(--rubric); }
+.tpTitle { margin: 18px 0 10px; max-width: 16ch; font: 400 clamp(2.6rem, 7vw, 5.4rem) / 1.05 var(--f-title); letter-spacing: 0; }
+.tpTitle [lang="grc"] { font-family: var(--f-title); }
+.tpEn { margin: 0; max-width: 32ch; font: italic 400 clamp(1.3rem, 2.4vw, 1.8rem) / 1.3 var(--f-body); color: var(--ink-2); }
+.tpOrig { margin: 8px 0 0; font-size: var(--step--1); color: var(--ink-2); }
+.orn { display: flex; justify-content: center; align-items: center; gap: 14px; width: min(340px, 80%); margin: 30px auto 0; color: var(--rubric); }
+.orn::before, .orn::after { content: ""; height: 1px; flex: 1; background: var(--rubric); opacity: 0.6; }
+.tpEd { position: relative; margin-top: 22px; display: flex; justify-content: center; }
+.tpEd .edLine { justify-content: center; font-size: var(--step--1); color: var(--ink-3); }
+.tpEd .edKind { font-size: var(--step--2); letter-spacing: 0.16em; margin-right: 0; }
+.tpEd .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; }
 
-/* the text: rows on the black page, the passage number in mono at the left, the one being read lit (A's .row) */
-.single .text { background: none; box-shadow: none; padding-block: 0; margin-top: 0; }
-.single .row { grid-template-columns: 4.2rem minmax(0, 1.1fr) minmax(0, 1fr); column-gap: clamp(18px, 3vw, 44px); padding-block: 22px; }
-.single .ref button { font-size: var(--step--2); letter-spacing: 0.08em; padding-top: 0.45em; }
-.single .tr { box-shadow: none; padding-left: 0; font-size: calc(var(--greek-size) * 0.8); line-height: 1.66; }
-.single.cols-greek .row { grid-template-columns: 4.2rem minmax(0, 44rem); }
-.single.cols-trans .row { grid-template-columns: 4.2rem minmax(0, 40rem); }
+/* the passages (the sample's .sec): the number in red in the left margin, the Greek, the English; on a wide screen a margin
+   at the right, kept clear for the look-up. The first lines of a page are red, as a printed book begins a chapter. */
+.single { position: relative; }   /* the look-up in the margin is placed within it */
+.single .text { padding-block: 0 var(--space-5); margin-top: 0; }
+.single .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(24px, 3vw, 44px); padding-block: 18px 22px; }
+.single .ref button { padding-top: 0.35em; }
+.single .tr { font-size: calc(var(--greek-size) * 0.9); line-height: 1.62; }
+.single.cols-greek .row { grid-template-columns: 3.5rem minmax(0, 40em); }
+.single.cols-trans .row { grid-template-columns: 3.5rem minmax(0, 38em); }
 .single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
-@media (max-width: 900px) and (min-width: 761px) {
-  .single .tr { grid-column: auto; margin-top: 0; padding-top: 0; }
+@media (min-width: 1100px) {
+  .single:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr) 240px; }
+  .single.cols-greek:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 40em) 0 240px; }
+  .single.cols-trans:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 38em) 0 240px; }
+  .single:not(.withPanel) .notes { grid-column: 2 / 4; }
+  /* poetry: the Greek takes more of the width, so that a line of Homer is not broken (the margin is a little narrower) */
+  .single.poetry.cols-both:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 1.4fr) minmax(0, 1fr) 210px; }
 }
+.single .row:first-child .grc > [data-u]:first-child > .p:first-child::first-line { color: var(--rubric); }
+.single .row:first-child .grc > [data-u]:first-child > .line:first-child .lt { color: var(--rubric); }
+@media (max-width: 900px) and (min-width: 761px) {
+  .single .tr { grid-column: auto; margin-top: 0; }
+}
+/* phones: the Greek and the English take turns, paragraph by paragraph (decision 5) */
 @media (max-width: 760px) {
-  .single .row, .single.cols-greek .row, .single.cols-trans .row { grid-template-columns: minmax(0, 1fr); row-gap: 10px; }
+  .single .row, .single.cols-greek .row, .single.cols-trans .row { grid-template-columns: minmax(0, 1fr); row-gap: 10px; padding-block: 16px 20px; }
   .single .ref { flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
   .single .ref button { padding-top: 0; }
-  .single .tr { grid-column: auto; margin-top: 0; padding: 0 0 0 12px; box-shadow: var(--cut-left); }
-  .single.cols-trans .tr { padding-left: 0; box-shadow: none; }
+  .single .tr { grid-column: auto; margin-top: 0; }
 }
-/* the foot of the page (A's .rnext) */
+/* the foot of the page: where you are, and the way on */
 .bottomGo { display: contents; }
-.single .bottom { align-items: center; flex-wrap: wrap; gap: 16px; padding-block: 30px 40px; box-shadow: var(--cut-over); color: var(--ink-2); }
+.single .bottom { align-items: center; flex-wrap: wrap; gap: 16px; padding-block: 30px 40px; box-shadow: inset 0 1px 0 var(--ink); color: var(--ink-2); }
 .single .bottomGo { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; }
 .single .bottom button:disabled { display: none; }
-.hint { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; }
+.hint { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
   .back { position: relative; min-width: var(--tap); padding-inline: 0; text-align: center; }
@@ -834,4 +795,81 @@ p.translit { margin: -0.3em 0 0.8em; }
   .rbar .dropBtn { position: relative; min-width: var(--tap); justify-content: center; }
   /* the bar clips below its buttons: their finger-sized area reaches up */
   .rbar .dropBtn::before { content: ""; position: absolute; inset: -10px 0 -2px; }
+}
+
+/* ============================================================ the word look-up (WordPanel.tsx), placed by Reader.tsx's
+   placeWord (decision 4: it never covers the Greek being read) */
+
+/* in the margin, beside the word's line (one book on a wide screen): a printed note, a red rule down its left, the word in
+   red, its dictionary form, the grammar, the meaning in italic, then the dictionary. It inks in where it stands. */
+.panel.wordNote {
+  position: absolute; z-index: 6; right: auto; bottom: auto; max-height: calc(100dvh - var(--bar-h, 59px) - var(--space-6));
+  overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
+  gap: var(--space-3); padding: 4px 6px 4px 16px; background: var(--bg); box-shadow: inset 1px 0 0 var(--rubric);
+  font-size: var(--step--1); line-height: 1.45;
+  animation: note-in 0.7s var(--ease) backwards;
+}
+@keyframes note-in { from { opacity: 0; filter: blur(2px); } }
+.wordNote .panelHead { align-items: center; gap: var(--space-1); }
+.wordNote .pw { flex: 1; min-width: 0; font-size: 1.3rem; line-height: 1.3; overflow-wrap: anywhere; }
+.wordNote .stepBtn {
+  display: grid; place-items: center; flex: none; width: 28px; height: 28px; padding: 0; background: transparent; border: 0;
+  color: var(--ink-3); font-size: 1.3rem; line-height: 1; transition: color var(--dur-quick) var(--ease);
+}
+.wordNote .stepBtn:hover { color: var(--rubric); }
+.wordNote .x { width: 28px; height: 28px; font-size: 1.35rem; }
+.wordNote .sec { gap: var(--space-1); }
+.wordNote .sec h3 { font-size: 0.68rem; letter-spacing: 0.16em; color: var(--ink-3); }
+.wordNote .lemmaBig { font-size: 1.05rem; color: var(--ink-2); }
+.wordNote .parse { font-size: var(--step--1); }
+.wordNote .quick { font: italic 500 1.15rem / 1.3 var(--f-body); color: var(--ink); }
+.wordNote .gloss { font-size: var(--step--1); }
+.wordNote .lsj { max-height: none; overflow: visible; padding-right: 0; }
+.wordNote .panelLinks :global(.chip) { font-size: var(--step--2); }
+
+/* a sheet from the foot of the screen (a phone, a narrower window, two books side by side, the floating window): paper with
+   a red rule along its top (the sample's phone look-up). It rises no higher than just below the line being read
+   (--sheet-max, from Reader.tsx), so it never covers it. It has three heights (WordPanel.tsx): peek, half and full, and on
+   a phone or a tablet a handle to drag between them; --sheet-h is registered as a length so that WordPanel can read each
+   height in pixels. It slides up as it opens (the one movement besides the ink-in, SPEC.md 4.3); a word chosen next inks in. */
+@property --sheet-h { syntax: "<length>"; inherits: false; initial-value: 0px; }
+.panel.wordSheet {
+  --sheet-h: min(46dvh, 400px);
+  top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: none; height: min(var(--sheet-h), var(--sheet-max, 100dvh));
+  display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
+  background: var(--bg); border-top: 2px solid var(--rubric); box-shadow: 0 -10px 30px var(--shadow);
+  transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
+  animation: sheet-up 0.5s var(--ease) backwards;
+}
+.panel.wordSheet[data-snap="half"] { --sheet-h: 70dvh; }
+.panel.wordSheet[data-snap="full"] { --sheet-h: calc(100dvh - env(safe-area-inset-top, 0px) - 10px); }
+.panel.wordSheet.sheetDragging { transition: none; }
+@keyframes sheet-up { from { transform: translateY(30px); opacity: 0; } }
+.wordSheet .panelHead {
+  position: relative; flex: none; align-items: center; gap: var(--space-1); padding: 22px var(--space-3) 10px var(--space-4);
+  box-shadow: inset 0 -1px 0 var(--rule-2); touch-action: none;
+}
+.wordSheet .pw { flex: 1; min-width: 0; font-size: var(--step-2); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.wordSheet .stepBtn, .wordSheet .moreBtn {
+  display: grid; place-items: center; flex: none; width: var(--tap); height: var(--tap); padding: 0;
+  background: transparent; color: var(--ink-2); border: 0; border-radius: var(--radius); font-size: 1.9rem; line-height: 1; transition: color var(--dur-quick) var(--ease);
+}
+.wordSheet .stepBtn:hover, .wordSheet .moreBtn:hover { color: var(--rubric); }
+.wordSheet .moreBtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+.wordSheet .x { width: var(--tap); height: var(--tap); }
+.wordSheet .panelBody {
+  display: grid; align-content: start; gap: 18px; flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--space-4) 20px calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); touch-action: pan-y;
+  animation: leaf-in var(--dur) var(--ease) backwards;
+}
+.wordSheet .lsj { max-height: none; overflow: visible; }
+.wordSheet .quick { font: italic 500 var(--step-sub) / 1.35 var(--f-body); color: var(--ink); }
+/* the handle, where a finger can take the sheet */
+@media (max-width: 1099px) {
+  .wordSheet .panelHead { cursor: grab; }
+  .wordSheet .grab { display: block; position: absolute; top: var(--space-2); left: 50%; width: 40px; height: 4px; margin-left: -20px; background: var(--rule); }
+}
+/* a wide sheet keeps its lines to a reading measure, in the middle */
+@media (min-width: 761px) {
+  .wordSheet .panelHead, .wordSheet .panelBody { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
 }

@@ -10,7 +10,6 @@ import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
-import { atTempo } from "@/lib/tempo";
 
 const MAX_WORDS = 90;
 
@@ -88,9 +87,8 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
   const shown = useRef<Stage>(0);
   useEffect(() => () => running.current.forEach((a) => a.cancel()), []);
   /**
-   * Change step, and let each word glide from where it was to where it now sits (measured before and after, then
-   * moved back and released: transforms only, which phones draw cheaply, inside the panel, in every browser).
-   * The box eases to its new height. Resolves when the words have settled.
+   * Change step, and let the passage ink in again in its new form, word after word (decision 3: the ink-in is the only
+   * movement; nothing glides to its new place). Resolves when the last word has inked in.
    */
   const go = (s: Stage) => new Promise<void>((done) => {
     const box = page.current;
@@ -99,24 +97,9 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
     running.current.forEach((a) => a.cancel());
     running.current = [];
     if (!box || prefersReducedMotion(motion) || typeof box.animate !== "function") { setStage(s); done(); return; }
-    const words = () => [...box.querySelectorAll<HTMLElement>("[data-k]")];
-    const before = new Map(words().map((e) => [e.dataset.k!, e.getBoundingClientRect()]));
-    const h0 = box.getBoundingClientRect().height;
     flushSync(() => setStage(s));
-    const h1 = box.getBoundingClientRect().height;
-    const timing = { duration: atTempo(620), easing: "cubic-bezier(0.3, 0.7, 0.2, 1)" };
-    const list: Animation[] = [];
-    if (Math.abs(h1 - h0) > 1) list.push(box.animate([{ height: `${h0}px` }, { height: `${h1}px` }], timing));
-    words().forEach((e, i) => {
-      const a = before.get(e.dataset.k!);
-      if (!a) return;
-      const b = e.getBoundingClientRect(), dx = a.left - b.left, dy = a.top - b.top;
-      // a word that stays where it is only flickers as its letters change; the rest travel, a little after each other
-      const kf = Math.abs(dx) < 0.5 && Math.abs(dy) < 0.5
-        ? [{ opacity: 0.45 }, { opacity: 1 }]
-        : [{ transform: `translate(${dx}px, ${dy}px)`, opacity: 0.6 }, { transform: "none", opacity: 1 }];
-      list.push(e.animate(kf, { ...timing, delay: atTempo(Math.min(i, 60) * 4), fill: "backwards" }));
-    });
+    const list = [...box.querySelectorAll<HTMLElement>("[data-k]")].map((e, i) =>
+      e.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: Math.min(i, 60) * 6, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "backwards" }));
     running.current = list;
     Promise.allSettled(list.map((x) => x.finished)).then(() => done());
   });

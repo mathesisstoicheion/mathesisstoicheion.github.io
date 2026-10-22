@@ -63,8 +63,15 @@ import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
 // and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
-/** a phone's width (the look-up opens as a sheet there, and a tap on the page closes it) */
-const PHONE = "(max-width: 760px)";
+/** Wide enough for the look-up to be written in the margin beside the line (redesign decision 4); narrower, it is a sheet
+ *  from the foot of the screen that stops below the line. */
+const NOTE_WIDE = "(min-width: 1100px)";
+/** wide enough for the side panels (vocabulary, find, places…) to sit beside the text, which makes room for them */
+const SIDE_WIDE = "(min-width: 901px)";
+/** Where the look-up is set (Reader's placeWord): in the margin beside its line, at this place in the reader; as a sheet that
+ *  rises no higher than this many pixels (so that it stops below the line), or with no limit (null) for a word that is not
+ *  in the text; or in a side panel's place, beside the text that has made room for it. */
+type WordAt = { note: { top: number; left: number; width: number } } | { sheet: number | null } | { side: true };
 const FindPanel = dynamic(() => import("./FindPanel"), { ssr: false });
 const ComparePanel = dynamic(() => import("./ComparePanel"), { ssr: false });
 const SentencePanel = dynamic(() => import("./SentencePanel"), { ssr: false });
@@ -204,7 +211,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [colsFor, setColsFor] = useState<{ work: string; c: Columns } | null>(null);
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
-  const daylight = false;   // (the printed page: the reader follows the site's Paper or Night; the Reader step removes this)
   const cases = useSettings((s) => s.cases);
   const known = useSettings((s) => s.known);
   const deck = useAcademy((s) => s.deck);
@@ -234,6 +240,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [result, setResult] = useState<Loaded | null>(null);
   const [step, setStep] = useState<{ key: string; text: string } | null>(null);
   const [word, setWord] = useState<{ w: string; ctx: WordContext | null; at: Point | null } | null>(null);
+  const [wordAt, setWordAt] = useState<WordAt | null>(null);
   const [echo, setEcho] = useState<EchoQuery | null>(null);
   const [echoMarks, setEchoMarks] = useState<EchoMarks | null>(null);
   const [sel, setSel] = useState<Selection | null>(null);
@@ -368,6 +375,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const unitKeys = useMemo(() => new Set(doc?.units.map((u) => u.ref.join(".")) ?? []), [doc]);
   const pageKeys = useMemo(() => new Set(doc && doc.chunks[chunk] ? doc.units.slice(doc.chunks[chunk].first, doc.chunks[chunk].last + 1).map((u) => u.ref.join(".")) : []), [doc, chunk]);
   const rows = useMemo(() => (doc && doc.chunks[chunk] ? alignChunk(doc, doc.chunks[chunk], placed) : []), [doc, chunk, placed]);
+  // a page of poetry (its Greek set in lines of verse): on a wide screen the Greek takes more of the width, so that a line is
+  // not broken (Reader.module.css)
+  const poetry = useMemo(() => rows.some((r) => r.greek.some((u) => u.blocks.some((b) => b.t === "l"))), [rows]);
   const missing = trText && !cmpText && placed ? untranslated(rows) : [];
   const extraHere = !cmpText && rows.some((r) => r.extra);
   const outOfStep = !cmpText && !!trText && OUT_OF_STEP.has(trText.urn);
@@ -377,6 +387,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const canDiff = comparing && cmpFit >= 0.5;
   const allDiffs = useMemo<RowDiff[]>(() => (canDiff ? compareAll(doc!, placed!, strict) : []), [canDiff, doc, placed, strict]);
   const [cmpListOpen, setCmpListOpen] = useState(false);
+  // a panel open at the side (they all give way to the look-up while a word is open, and come back when it closes)
+  const sideOpen = !!(echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt);
+  const wordAtRef = useRef(wordAt);
+  useEffect(() => { wordAtRef.current = wordAt; });
 
   // ------------------------------------------------------------ metre
   const [mIndex, setMIndex] = useState<MetreIndex | null>(null);
@@ -537,9 +551,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   }, [rows, workId, edV, trV, contained, pane, floating]);
 
   // Opening or closing a side panel narrows or widens the text, and its lines re-flow: keep the passage that
-  // was at the top where it was, instead of letting the page slide back or ahead by many lines.
+  // was at the top where it was, instead of letting the page slide back or ahead by many lines. (The look-up never changes
+  // the text's width: it is written in the margin, rises from the foot of the screen, or takes a side panel's place.)
   const topAnchor = useRef<{ key: string; top: number } | null>(null);
-  const panelOpen = !!(word || echo || vocabOpen || placesOpen || talkOpen || msOpen);
+  const panelOpen = sideOpen;
   useLayoutEffect(() => {
     const a = topAnchor.current;
     const el = a ? root().querySelector<HTMLElement>(`article [data-key="${CSS.escape(a.key)}"]`) : null;
@@ -1085,16 +1100,62 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ctx = { work: lexWork, unitKey: unit.dataset.u!, occurrence: same.indexOf(w), keys: unitKeys, depth: doc.levels.length };
     }
     setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null });
-    // phones and tablets: the look-up rises from the bottom over up to 62% of the screen, so the word moves up above it
-    if (!floating && matchMedia("(max-width: 900px)").matches) {
-      const r = w.getBoundingClientRect();
-      if (r.bottom > innerHeight * 0.38 - 12) scrollBy({ top: r.top - innerHeight * 0.2, behavior: scrollBehavior() });
-    }
+    placeWord(true);
   };
+
+  /** Where the look-up goes (redesign decision 4: it never covers the Greek being read). One book on a wide screen: in the
+   *  margin, level with the word's line (the margin is the last column of each passage's row). Elsewhere (a narrower screen,
+   *  two books, the floating window): a sheet from the foot of the screen, or of the floating window, that rises no higher
+   *  than just below the line; on opening, a line in the lower part is first brought up under the bar. While a side panel is
+   *  open beside one book, in that panel's place, where the text has already made room. */
+  const placeWord = (opening = false) => {
+    const box = rootRef.current, w = box?.querySelector<HTMLElement>(`article .${styles.sel}`);
+    if (!box || !w) return;
+    if (single && sideOpen && matchMedia(SIDE_WIDE).matches) { setWordAt({ side: true }); return; }
+    const row = w.closest<HTMLElement>(`.${styles.row}`);
+    const tracks = row ? getComputedStyle(row).gridTemplateColumns.split(" ").map(parseFloat) : [];
+    const margin = tracks.length >= 4 ? tracks[tracks.length - 1] : 0;
+    if (single && row && margin > 120 && matchMedia(NOTE_WIDE).matches) {
+      const b = box.getBoundingClientRect(), rr = row.getBoundingClientRect(), wr = w.getBoundingClientRect();
+      setWordAt({ note: { top: Math.round(wr.top - b.top - 4), left: Math.round(rr.right - b.left - margin), width: Math.round(margin) } });
+      return;
+    }
+    // a sheet: measured against the screen, or against the floating window it rises in
+    const frame = floating ? box.getBoundingClientRect() : { top: 0, bottom: innerHeight };
+    const edge = Math.max(frame.top, ...[...box.querySelectorAll<HTMLElement>(`.${styles.rbar}, .${styles.caseKey}, .${styles.bar}`)]
+      .filter((el) => getComputedStyle(el).position === "sticky").map((el) => el.getBoundingClientRect().bottom));
+    const r = w.getBoundingClientRect();
+    let bottom = r.bottom;
+    if (opening && r.bottom > frame.top + (frame.bottom - frame.top) * 0.45) {
+      const own = contained && box.scrollHeight > box.clientHeight;
+      // as far as the page can go: near its end the line stays lower, and the sheet is shorter
+      const room = own ? box.scrollHeight - box.clientHeight - box.scrollTop : document.documentElement.scrollHeight - innerHeight - scrollY;
+      const by = Math.max(0, Math.min(r.top - edge - 16, room));
+      (own ? box : window).scrollBy({ top: by, behavior: scrollBehavior() });
+      bottom -= by;
+    }
+    setWordAt({ sheet: Math.max(0, Math.round(frame.bottom - bottom - 12)) });
+  };
+  const placeWordRef = useRef(placeWord);
+  useEffect(() => { placeWordRef.current = placeWord; });
 
   // The keyboard in the text. Tab reaches it as one stop (the first word, or the word last used);
   // there ← → move word by word, ↑ ↓ line by line, Home / End to the first / last word, Enter or Space looks up.
   const textRef = useRef<HTMLElement>(null);
+  // the look-up follows its line when the text reflows: a note in the margin whenever the text changes size (passages above it
+  // drawn for the first time, the size of the Greek), a sheet only when the width changes (a turned phone, a resized window)
+  useEffect(() => {
+    const t = textRef.current;
+    if (!word || !t) return;
+    let last: { w: number; h: number } | null = null;
+    const ro = new ResizeObserver(([e]) => {
+      const now = { w: Math.round(e.contentRect.width), h: Math.round(e.contentRect.height) };
+      if (last && (now.w !== last.w || (now.h !== last.h && wordAtRef.current && "note" in wordAtRef.current))) placeWordRef.current();
+      last = now;
+    });
+    ro.observe(t);
+    return () => ro.disconnect();
+  }, [word]);
   const rove = (w: HTMLElement) => {
     textRef.current?.querySelectorAll<HTMLElement>('[data-w][tabindex="0"]').forEach((x) => { if (x !== w) x.tabIndex = -1; });
     w.tabIndex = 0;
@@ -1155,12 +1216,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       else { useMarks.getState().remove(m.id); toast(m.kind === "bookmark" ? "Bookmark removed." : "Removed from favourites."); }
       return;
     }
-    // phones: a tap on the page away from any word or button puts the controls away for a clean page,
-    // or brings them back (a look-up open is closed first)
-    if (!contained && matchMedia(PHONE).matches && !el.closest("a, button, input, select, textarea, label, summary, [role='button']")
-      && !getSelection()?.toString()) {
-      if (word) closeWord();
-    }
+    // one book: a click or a tap on the page away from any word or button puts the look-up away, from the margin or its sheet
+    // (in a side panel's place it closes with its ×, as the panels do)
+    if (!contained && word && !(wordAt && "side" in wordAt) && !el.closest("a, button, input, select, textarea, label, summary, [role='button']")
+      && !getSelection()?.toString()) closeWord();
   };
 
   // ------------------------------------------------------------ Echoes
@@ -1316,7 +1375,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   /** Close the look-up, back to the word that was looked up, so the keyboard carries on from there. */
   function closeWord() {
     const back = root().querySelector<HTMLElement>(`.${styles.sel}`);
-    setWord(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
+    setWord(null); setWordAt(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
     back?.focus({ preventScroll: true });
   }
 
@@ -1369,11 +1428,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ))}
     </div>
   );
-  // design A's Aa: the page, the typefaces and sizes: the very same controls as Settings > Reading (ReadingControls)
+  // Aa: the page (Paper or Night), the typeface and the sizes: the very same controls as Settings > Reading (ReadingControls)
   const aaPanel = (
     <div className={styles.aa}>
       <ReadingControls />
-      <p className="muted">Daylight is a warm paper page for long reading in bright rooms. The rest of the site stays dark.</p>
     </div>
   );
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
@@ -1466,7 +1524,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       <div className={styles.barEnd}>
         {/* (the floating window keeps its aids folded above the text) */}
         {single && (
-          <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Lamplight or Daylight), the size and the typeface of the Greek"
+          <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Paper or Night), the size and the typeface of the Greek"
             className={`${styles.dropBtn} ${styles.wideOnly}`} panelClass={`${styles.pop} ${styles.aaPop}`} panelLabel="Page and text">
             {aaPanel}
           </Drop>
@@ -1529,7 +1587,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   ) : null;
 
   return (
-    <div ref={rootRef} className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${word || echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1558,7 +1616,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         </div>
       )}
       {single ? (
-        <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} day={daylight}
+        <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id}
           orig={work?.orig && work.orig !== grcText?.label ? <OrigTitle work={work} full /> : null}
           editions={work && grcText ? (
     <div className={styles.edLine}>
@@ -1763,7 +1821,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {vocabOpen && doc && !word && (
         <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
           <VocabPanel work={lexWork} doc={doc} pageKeys={pageKeys}
-            onClose={() => setVocabOpen(false)} onPick={(lemma) => setWord({ w: lemma, ctx: null, at: null })} />
+            onClose={() => setVocabOpen(false)} onPick={(lemma) => { setWord({ w: lemma, ctx: null, at: null }); setWordAt(matchMedia(SIDE_WIDE).matches && !floating ? { side: true } : { sheet: null }); }} />
         </PanelGuard>
       )}
       {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && (
@@ -1822,7 +1880,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
             setSentenceAt(a);
           } : undefined}
-          onStep={word?.at ? stepWord : undefined} sheet={!floating} />
+          onStep={word?.at ? stepWord : undefined}
+          sheet={!wordAt || "sheet" in wordAt} note={wordAt && "note" in wordAt ? wordAt.note : null} maxH={wordAt && "sheet" in wordAt ? wordAt.sheet : null} />
       </PanelGuard>
     </div>
   );
@@ -1877,8 +1936,6 @@ function FloatFold({ children }: { children: React.ReactNode }) {
 export function ReaderBooks() {
   const nav = useNav();
   const split = !!nav.params.get("w2");
-  // the reader's page: Night (the stone) or Daylight, the one light surface on the site (styles/tokens.css)
-  const daylight = false;   // (the printed page: the reader follows the site's Paper or Night; the Reader step removes this)
   const [picking, setPicking] = useState(false);
   // the private collection's window, opened from either book: a book chosen there opens in that pane
   const [mineFor, setMineFor] = useState<1 | 2 | null>(null);
@@ -1898,7 +1955,7 @@ export function ReaderBooks() {
     setPicking(false);
   };
   return (
-    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-page={daylight ? "day" : undefined} data-split={split ? "" : undefined}>
+    <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-split={split ? "" : undefined}>
       <ReaderPane pane={1} split={split} onOpenSecond={() => setPicking(true)} onOpenMine={() => setMineFor(1)} />
       {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} onOpenMine={() => setMineFor(2)} />}
       {picking && <WorkPicker onPick={open} onClose={() => setPicking(false)} />}

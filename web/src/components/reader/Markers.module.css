@@ -1,50 +1,57 @@
-/* Markers beside the scroll bar */
+/* Marks beside the scroll bar (ScrollMarkers.tsx): small printer's marks down the right edge of the screen, one for each
+   note, bookmark, favourite, highlight and echo, where it falls in the book. They ink in once; under the hand a mark
+   darkens to full ink, and nothing grows or slides (decision 3). */
 /* nothing here may reach past the screen's right edge (phones would scroll sideways): clipped where supported, and drawn inside anyway */
-.strip { position: sticky; z-index: 25; height: 0; pointer-events: none; transition: top 0.35s var(--ease); overflow-x: clip; }
+.strip { position: sticky; z-index: 25; height: 0; pointer-events: none; overflow-x: clip; }
 /* ScrollMarkers.tsx sets its top to var(--hdr-vis): 0 while the header is tucked away (lib/header.ts) */
 :global(html[data-hdr="hidden"]) .strip { --hdr-vis: 0px; }
 .track { position: absolute; right: 2px; top: 0; width: 14px; pointer-events: none; }
 .marker {
   position: absolute; right: 0; width: 12px; height: 6px; margin-top: -3px; padding: 0; border: 0; border-radius: var(--radius);
-  background: var(--accent); pointer-events: auto; cursor: pointer; opacity: 0.85;
-  transform-origin: right; transition: transform 0.15s var(--ease), opacity 0.15s; animation: slide calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (25ms / var(--tempo)));
+  background: var(--accent); pointer-events: auto; cursor: pointer; opacity: 0.8;
+  transition: opacity var(--dur-quick) var(--ease); animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(var(--i) * 25ms);
 }
 /* a bigger target than the mark itself, grown inwards only (not past the edge of the screen) */
 .marker::before { content: ""; position: absolute; inset: -5px 0 -5px -8px; }
-.marker:hover, .marker:focus-visible { transform: scaleX(1.5); transform-origin: right; opacity: 1; }
-/* each mark grows out of the right edge (sliding in from beyond it would widen the page while it moved) */
-@keyframes slide { from { transform: scaleX(0); opacity: 0; } }
+.marker:hover, .marker:focus-visible { opacity: 1; }
+.marker:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
+@keyframes ink-in { from { opacity: 0; } }
 
 .marker[data-kind="note"], .sample[data-kind="note"] { background: var(--accent); }
 .marker[data-kind="bookmark"], .sample[data-kind="bookmark"] { background: var(--ink); height: 8px; margin-top: -4px; width: 8px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%); }
 .marker[data-kind="favourite"], .sample[data-kind="favourite"] { background: var(--ochre); width: 8px; height: 8px; margin-top: -4px; transform: rotate(45deg); border-radius: var(--radius); }
-.marker[data-kind="favourite"]:hover { transform: rotate(45deg) scale(1.4); }
 .marker[data-kind="xref"], .sample[data-kind="xref"] { background: transparent; border: 2px solid var(--blue); width: 9px; height: 9px; margin-top: -4.5px; border-radius: var(--radius-round); }
 .marker[data-kind="left"], .sample[data-kind="left"] { background: var(--ink-2); width: 14px; height: 2px; margin-top: -1px; box-shadow: 0 0 0 1px var(--bg); }
 .marker[data-kind="echo"], .sample[data-kind="echo"] { background: var(--ochre); width: 5px; height: 4px; right: 9px; opacity: 0.9; }
-.marker[data-kind="highlight"], .sample[data-kind="highlight"] { width: 4px; height: 10px; margin-top: -5px; right: 4px; background: var(--hl, var(--ochre)); }
-.marker[data-colour="red"] { --hl: #C2462A; }
-.marker[data-colour="ochre"] { --hl: #C9922E; }
-.marker[data-colour="blue"] { --hl: #4C7BA6; }
-.marker[data-colour="green"] { --hl: #4E8A5C; }
+.marker[data-kind="highlight"], .sample[data-kind="highlight"] { width: 4px; height: 10px; margin-top: -5px; right: 4px; background: var(--hl, var(--pen-ochre)); }
+.marker[data-colour="red"] { --hl: var(--pen-red); }
+.marker[data-colour="ochre"] { --hl: var(--pen-ochre); }
+.marker[data-colour="blue"] { --hl: var(--pen-blue); }
+.marker[data-colour="green"] { --hl: var(--pen-green); }
 
+/* what a mark is: a slip of ink with paper letters beside it */
 .tip {
   position: absolute; right: 22px; width: max-content; max-width: min(320px, 70vw); display: grid; gap: 3px;
   padding: 8px 11px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); font-size: var(--step--1); line-height: 1.35;
-  box-shadow: 0 12px 28px -14px var(--shadow); pointer-events: none; animation: fade calc(0.15s / var(--tempo)) backwards;
+  box-shadow: 0 12px 28px -14px var(--shadow); pointer-events: none; animation: ink-in var(--dur-quick) backwards;
 }
 .tip :global(.label) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); font-size: var(--step--2); }
 .preview { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-@keyframes fade { from { opacity: 0; } }
 
-/* legend */
+/* the key to the marks: a printed button, and a leaf of paper under it */
 .legendWrap { position: relative; }
-.legendBtn { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; background: var(--slab); box-shadow: var(--slab-edge); border: 1px solid transparent; border-radius: var(--radius); font-size: var(--step--1); }
-.legendBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.legendBtn {
+  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; background: transparent; color: var(--ink);
+  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+.legendBtn:hover { color: var(--rubric); border-color: var(--rubric); }
+.legendBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .legendIcon { width: 6px; height: 16px; background: linear-gradient(var(--accent) 0 3px, transparent 3px 6px, var(--ink) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); border-radius: var(--radius); }
+.legendBtn[aria-expanded="true"] .legendIcon { background: linear-gradient(var(--accent-on-ink) 0 3px, transparent 3px 6px, var(--sel-fg) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); }
 .legend {
   position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; width: 270px; display: grid; gap: 6px; padding: 12px 14px;
-  background: var(--surface); border-radius: var(--radius); box-shadow: var(--slab-edge), 0 20px 40px -20px var(--shadow); animation: fade calc(0.18s / var(--tempo)) backwards;
+  background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: 0 20px 40px -20px var(--shadow);
+  animation: ink-in var(--dur) var(--ease) backwards;
 }
 .legend[data-to-right] { right: auto; left: 0; }
 .legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 8px; align-items: center; font-size: var(--step--1); }
@@ -55,4 +62,6 @@
 .legendSub { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .sample { position: relative; justify-self: center; display: block; width: 12px; height: 6px; border-radius: var(--radius); }
 .sample[data-kind="echo"] { width: 6px; }
-.sample[data-kind="highlight"] { background: #C9922E; }
+.sample[data-kind="highlight"] { background: var(--pen-ochre); }
+
+@media (prefers-reduced-motion: reduce) { .marker, .tip, .legend { animation: none; } }

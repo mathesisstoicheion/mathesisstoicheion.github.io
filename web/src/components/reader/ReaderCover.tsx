@@ -1,72 +1,43 @@
 "use client";
 /**
- * The reader's cover, as design A drew it: the book opens in lamplight, with dust drifting in a shaft of light and the
- * great letters of its title far back in the dark (lib/a/lamplight.js, Cover); for a book that has a picture
- * (data/medallions.ts), its emblem gathers out of letters above the title (Socrates is spelled out of the Apology itself).
- * Then the author, in Greek and English, the Greek title, the English one, the collection's own (Latin) title where it has
- * one, and the editions. Scroll into the text and the
- * room goes still, so you can read. On the Daylight page there is no lamp and no dust.
+ * The book's title page, as a printed two-language edition sets it (redesign SPEC.md 4.3; the sample printed-photos.html,
+ * its .r-title): the author in spaced capitals in red, the Greek title large, the English title in italic under it, a
+ * fleuron between two red rules, and the editions in small print. A book that has its own picture (data/library-plates.ts:
+ * the work's, or its author's) opens with it as a plate, its frontispiece, with its credit (decision 6: "each book's
+ * picture"). Everything inks in once, then nothing moves.
  */
-import { useEffect, useRef, useState, type ReactNode } from "react";
-import { cover, emblem } from "@/lib/a/lamplight";
-import { medallionOf } from "@/data/medallions";
+import { useEffect, useState, type ReactNode } from "react";
 import { loadAuthorNames } from "@/lib/authors-meta";
+import { AUTHOR_PLATES, WORK_PLATES } from "@/data/library-plates";
+import Plate from "@/components/plate/Plate";
 import styles from "./Reader.module.css";
 
-/** what the cover's caption says of Socrates' emblem (design A's own words) */
-const SOCRATES = "Socrates, Roman marble portrait, Louvre. Public domain. Spelled out of the Apology as Greek was written in Plato’s time: in capitals, with no spaces or accents.";
+/** A Greek name as a title page sets it: capitals, without accents or breathings ("Πλάτων" → "ΠΛΑΤΩΝ"). */
+export const titleCaps = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLocaleUpperCase("el").normalize("NFC");
 
-export default function ReaderCover({ workId, title, greek, author, authorId, day, orig, editions }: {
-  workId: string; title: string; greek?: string | null; author?: string; authorId?: string; day: boolean; orig?: ReactNode; editions: ReactNode;
+export default function ReaderCover({ workId, title, greek, author, authorId, orig, editions }: {
+  workId: string; title: string; greek?: string | null; author?: string; authorId?: string; orig?: ReactNode; editions: ReactNode;
 }) {
-  const host = useRef<HTMLElement>(null), atm = useRef<HTMLCanvasElement>(null), em = useRef<HTMLCanvasElement>(null);
-  const med = medallionOf(workId);
-  const isSoc = med?.pic === "socrates-louvre";
   const [authorGr, setAuthorGr] = useState<string | null>(null);
   useEffect(() => { if (authorId) loadAuthorNames().then((n) => setAuthorGr(n[authorId]?.grc ?? null)); }, [authorId]);
-  // a Greek title the cover can set large: one written in Greek letters
+  // a Greek title the page can set large: one written in Greek letters
   const big = greek && /[Ͱ-Ͽἀ-῿]/.test(greek) ? greek : null;
-
-  // the lamp and the dust (they fade as the cover scrolls away, and stop once it has gone)
-  const dayRef = useRef(day);
-  useEffect(() => { dayRef.current = day; }, [day]);
-  useEffect(() => {
-    const h = host.current, cv = atm.current;
-    if (!h || !cv) return;
-    const c = cover(cv, h, big ?? title, () => dayRef.current);
-    return () => c.stop();
-  }, [big, title]);
-
-  // the emblem gathers out of letters, in the page's ink (redrawn when the page turns to Daylight or back)
-  const art = useRef<{ stop(): void; redraw(): void } | null>(null);
-  useEffect(() => {
-    const cv = em.current;
-    if (!cv || !med) return;
-    let gone = false;
-    emblem(cv, `/images/a/em-${med.pic}.png`, { mode: "gather", cols: 50, text: isSoc, width: () => (innerWidth < 640 ? 140 : 200), tokenEl: host.current, field: () => !dayRef.current })
-      .then((r) => { if (gone) r?.stop(); else art.current = r; });
-    return () => { gone = true; art.current?.stop(); art.current = null; };
-  }, [med, isSoc]);
-  useEffect(() => { art.current?.redraw(); }, [day]);
+  const pic = WORK_PLATES[workId] ?? (authorId ? AUTHOR_PLATES[authorId] : undefined);
 
   return (
-    <header ref={host} className={styles.rcover}>
-      <canvas ref={atm} className={styles.atm} aria-hidden="true" />
-      <div className={styles.inner}>
-        {med && (
-          <figure className={styles.emblem}>
-            <canvas ref={em} role="img" aria-label={isSoc ? "Socrates, drawn in Greek letters from the Apology" : med.alt} />
-            <figcaption className={styles.emCap}>{isSoc ? SOCRATES : med.why}</figcaption>
-          </figure>
-        )}
-        {author && <span className={`label ${styles.kick}`}>{authorGr && <><span lang="grc">{authorGr}</span> · </>}{author}</span>}
-        {/* the Greek title, large; the heading also carries the English one for screen readers and search engines, shown under it */}
-        <h1 className={styles.coverTitle}>{big ? <span lang="grc">{big}</span> : title}{big && big !== title && <span className="visually-hidden">: {title}</span>}</h1>
-        {big && big !== title && <p className={styles.enT} aria-hidden="true">{title}</p>}
-        {orig && <p className={styles.origT}>{orig}</p>}
-        <div className={styles.eds}>{editions}</div>
-      </div>
-      <span className={styles.begin} aria-hidden="true">Scroll to begin reading</span>
+    <header className={`${styles.tp} enter`}>
+      {pic && <Plate id={pic.pic} n={1} why={pic.why} className={styles.tpPlate} sizes="(max-width: 760px) 160px, 220px" priority />}
+      {author && (
+        <p className={styles.tpAu}>
+          {authorGr ? <><span lang="grc" aria-hidden="true">{titleCaps(authorGr)}</span><span className="visually-hidden">{author}</span></> : author}
+        </p>
+      )}
+      {/* the Greek title, large; the heading also carries the English one for screen readers and search engines, shown under it */}
+      <h1 className={styles.tpTitle}>{big ? <span lang="grc">{big}</span> : title}{big && big !== title && <span className="visually-hidden">: {title}</span>}</h1>
+      {big && big !== title && <p className={styles.tpEn} aria-hidden="true">{title}</p>}
+      {orig && <p className={styles.tpOrig}>{orig}</p>}
+      <p className={styles.orn} aria-hidden="true">❦</p>
+      <div className={styles.tpEd}>{editions}</div>
     </header>
   );
 }

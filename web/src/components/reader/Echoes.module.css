@@ -1,4 +1,5 @@
-/* Echoes: where a word or phrase recurs. Marks are stamped along a strip that stands for the whole book. */
+/* Echoes: where a word or phrase recurs. Marks are printed along a strip that stands for the whole book; they and the list
+   ink in as they arrive, and nothing moves (decision 3). */
 .panel { gap: 16px; }
 .quote { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.25; margin-top: 4px; }
 .back { justify-self: start; color: var(--accent); }
@@ -7,9 +8,9 @@
 .scopes { display: flex; flex-wrap: wrap; gap: 6px; }
 .progress { font-size: var(--step--1); }
 
-.summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; animation: rise-in calc(0.5s / var(--tempo)) var(--ease) both; }
-.big { font-family: var(--f-display); font-size: 2.6rem; line-height: 1; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
-@keyframes rise-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+.summary { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; animation: ink-in var(--dur-slow) var(--ease) both; }
+.big { font-family: var(--f-title); font-size: 2.6rem; line-height: 1; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
+@keyframes ink-in { from { opacity: 0; } }
 
 /* ------------------------------------------------------------ the strip */
 .strips { display: grid; gap: 14px; }
@@ -17,19 +18,13 @@
 .strip svg { width: 100%; height: 46px; display: block; overflow: visible; }
 .ground { fill: var(--channel); stroke: var(--groove); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .tick { stroke: var(--ink-2); stroke-width: 1; opacity: 0.6; }
-.mark {
-  transform-box: fill-box; transform-origin: 50% 100%;
-  animation: stamp calc(0.55s / var(--tempo)) var(--ease) both;
-  transition: opacity 0.15s;
-}
-@keyframes stamp { from { transform: scaleY(0); opacity: 0; } 60% { opacity: 1; } to { transform: scaleY(1); opacity: 1; } }
+.mark { animation: ink-in var(--dur-slow) var(--ease) both; transition: opacity 0.15s; }
 .m-exact { fill: var(--ink); }
 .m-forms { fill: var(--accent); }
 .m-near { fill: var(--ochre); opacity: 0.85; }
 .mSelf { fill: var(--accent); }
 .mHover { opacity: 0.55; }
-.here { fill: var(--accent); animation: drop calc(0.6s / var(--tempo)) var(--ease) calc(0.3s / var(--tempo)) both; }
-@keyframes drop { from { transform: translateY(-8px); opacity: 0; } to { transform: none; opacity: 1; } }
+.here { fill: var(--accent); animation: ink-in var(--dur-slow) var(--ease) 0.3s both; }
 .stripFoot { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; color: var(--ink-2); }
 .hoverLabel { text-align: center; color: var(--ink); }
 
@@ -42,16 +37,16 @@
 
 /* ------------------------------------------------------------ the list */
 .list { list-style: none; margin: 0; padding: 0; display: grid; box-shadow: var(--cut-over); }
-.list li { animation: rise-in calc(0.45s / var(--tempo)) var(--ease) both; }
-.list li:nth-child(2) { animation-delay: calc(40ms / var(--tempo)); } .list li:nth-child(3) { animation-delay: calc(80ms / var(--tempo)); } .list li:nth-child(4) { animation-delay: calc(120ms / var(--tempo)); }
-.list li:nth-child(5) { animation-delay: calc(160ms / var(--tempo)); } .list li:nth-child(6) { animation-delay: calc(200ms / var(--tempo)); } .list li:nth-child(n + 7) { animation-delay: calc(240ms / var(--tempo)); }
+.list li { animation: ink-in var(--dur-slow) var(--ease) both; }
+.list li:nth-child(2) { animation-delay: 40ms; } .list li:nth-child(3) { animation-delay: 80ms; } .list li:nth-child(4) { animation-delay: 120ms; }
+.list li:nth-child(5) { animation-delay: 160ms; } .list li:nth-child(6) { animation-delay: 200ms; } .list li:nth-child(n + 7) { animation-delay: 240ms; }
 .list button {
   width: 100%; display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: baseline; text-align: left;
   padding: 9px 4px; background: transparent; border: 0; box-shadow: var(--cut-under);
 }
 .list li:last-child button { box-shadow: none; }
 .list button:hover { background-color: var(--slab-lit); }
-.ref { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); font-variant-numeric: tabular-nums; }
+.ref { font-family: var(--f-title); font-size: var(--step--1); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 .kind { justify-self: end; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
 .k-forms { color: var(--accent); }
 .k-near { color: var(--ochre); }
@@ -67,10 +62,9 @@
 .works a { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 6px 4px; text-decoration: none; border-radius: var(--radius); }
 .works a:hover { background-color: var(--slab-lit); }
 .wName { font-size: var(--step--1); }
-.wN { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); font-variant-numeric: tabular-nums; }
+.wN { font-family: var(--f-title); font-size: var(--step--1); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 .wBar { grid-column: 1 / -1; height: 4px; background: var(--channel); box-shadow: var(--channel-edge); }
-.wBar span { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); transform-origin: left; animation: grow calc(0.7s / var(--tempo)) var(--ease) both; }
-@keyframes grow { from { transform: scaleX(0); } to { transform: none; } }
+.wBar span { display: block; height: 100%; background: var(--inlay-side); animation: ink-in var(--dur-slow) var(--ease) both; }
 
 .rules { font-size: var(--step--1); box-shadow: var(--cut-over); padding-top: 12px; }
 .rules summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }

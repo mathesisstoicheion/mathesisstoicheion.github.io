@@ -92,7 +92,7 @@ test("pinching the Greek changes its size, and the passage under the fingers sta
   expect(Math.abs((await top(page, key)) - y0)).toBeLessThan(40);
 });
 
-test("the look-up is a sheet: it opens at a peek, drags to half or full height, steps word to word, and drags away", async ({ page }) => {
+test("the look-up is a sheet: it opens at a peek, grows to half or all it may, steps word to word, and drags away, never over the line", async ({ page }) => {
   await openIliad(page);
   const words = page.locator('[data-u="1.1"] [data-w]');
   const first = await words.nth(0).getAttribute("data-w"), second = await words.nth(1).getAttribute("data-w");
@@ -100,14 +100,26 @@ test("the look-up is a sheet: it opens at a peek, drags to half or full height, 
   const sheet = page.getByRole("complementary", { name: `Look-up: ${first}` });
   await expect(sheet).toBeVisible();
   const height = () => sheet.evaluate((e) => Math.round(e.getBoundingClientRect().height));
-  await expect.poll(height).toBe(Math.round(Math.min(812 * 0.46, 400)));
-  // all of it, by the button
+  // how far the sheet may rise: to just below the line being read (redesign SPEC.md 4.3: it never covers the Greek)
+  const room = () => page.evaluate(() => 812 - Math.round(document.querySelector("article [data-w][class*='__sel']")!.getBoundingClientRect().bottom));
+  const clear = async (s = sheet) => {
+    const [top, line] = await s.evaluate((e) => [e.getBoundingClientRect().top, document.querySelector("article [data-w][class*='__sel']")!.getBoundingClientRect().bottom]);
+    expect(top, "the sheet stops below the line being read").toBeGreaterThanOrEqual(line - 1);
+  };
+  const peek = Math.round(Math.min(812 * 0.46, 400));
+  await expect.poll(height).toBe(Math.min(peek, (await room()) - 12));
+  await clear();
+  // all it may, by the button: as tall as it can be without reaching the line
   await sheet.getByRole("button", { name: "Show all of the look-up" }).click();
-  await expect.poll(height).toBe(812 - 10);
+  await expect.poll(height).toBeGreaterThan(peek);
+  await expect.poll(async () => (await room()) - (await height())).toBeLessThanOrEqual(14);
+  await clear();
+  const tall = await height();
   // the next word, by the button and back by a swipe to the right
   await sheet.getByRole("button", { name: "Next word" }).click();
   const next = page.getByRole("complementary", { name: `Look-up: ${second}` });
   await expect(next).toBeVisible();
+  await clear(next);
   const head = async () => (await next.locator("div").first().boundingBox())!;
   let h = await head();
   await page.mouse.move(h.x + 60, h.y + h.height / 2);
@@ -115,16 +127,18 @@ test("the look-up is a sheet: it opens at a peek, drags to half or full height, 
   await page.mouse.move(h.x + 220, h.y + h.height / 2 + 4, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByRole("complementary", { name: `Look-up: ${first}` })).toBeVisible();
-  await expect.poll(height).toBe(812 - 10);   // moving word to word keeps the height
-  // drag the handle down to about half: it settles at half
+  await expect.poll(height).toBe(tall);   // moving word to word on one line keeps the height
+  await clear();
+  // drag the handle down a little: it settles at half (or as near as the line allows)
   const s = page.getByRole("complementary", { name: `Look-up: ${first}` });
   h = (await s.locator("div").first().boundingBox())!;
   await page.mouse.move(h.x + h.width / 2, h.y + 10);
   await page.mouse.down();
-  await page.mouse.move(h.x + h.width / 2, h.y + 10 + 250, { steps: 25 });
+  await page.mouse.move(h.x + h.width / 2, h.y + 10 + 60, { steps: 12 });
   await page.waitForTimeout(100);
   await page.mouse.up();
-  await expect.poll(() => s.evaluate((e) => Math.round(e.getBoundingClientRect().height))).toBe(Math.round(812 * 0.7));
+  await expect.poll(() => s.evaluate((e) => Math.round(e.getBoundingClientRect().height))).toBe(Math.min(Math.round(812 * 0.7), tall));
+  await clear(s);
   // and well down: it closes
   h = (await s.locator("div").first().boundingBox())!;
   await page.mouse.move(h.x + h.width / 2, h.y + 10);

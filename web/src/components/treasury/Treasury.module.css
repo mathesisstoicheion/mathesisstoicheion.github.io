@@ -116,10 +116,10 @@
 .confirm { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 
 .swatch { display: inline-block; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--rule); }
-.swatch[data-colour="red"], .quote[data-hl="red"] { --hl: #C2462A; }
-.swatch[data-colour="ochre"], .quote[data-hl="ochre"] { --hl: #C9922E; }
-.swatch[data-colour="blue"], .quote[data-hl="blue"] { --hl: #4C7BA6; }
-.swatch[data-colour="green"], .quote[data-hl="green"] { --hl: #4E8A5C; }
+.swatch[data-colour="red"], .quote[data-hl="red"] { --hl: var(--pen-red); }
+.swatch[data-colour="ochre"], .quote[data-hl="ochre"] { --hl: var(--pen-ochre); }
+.swatch[data-colour="blue"], .quote[data-hl="blue"] { --hl: var(--pen-blue); }
+.swatch[data-colour="green"], .quote[data-hl="green"] { --hl: var(--pen-green); }
 .swatch[data-colour] { background: var(--hl); }
 .quote[data-hl] { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--hl) 35%, transparent) 58%); }
 

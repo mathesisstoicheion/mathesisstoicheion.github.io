@@ -1,18 +1,18 @@
-/* Back to top: a round button, bottom right (the same offset as the toast). */
+/* Back to top (the printed-page redesign): a small leaf of paper at the bottom right (the same offset as the toast), a
+   hairline frame, a red arrow over "Top" in capitals spaced wide. It inks in when it appears; nothing rises or bounces. */
 .btt {
   position: fixed; right: 16px; z-index: 30;
   bottom: calc(20px + env(safe-area-inset-bottom, 0px));
-  display: grid; justify-items: center; align-content: center; gap: 1px; width: 52px; height: 52px; padding: 0;
-  /* a round boss of stone ringed with gold */
-  background: var(--boss); color: var(--inv-fg); --accent: var(--accent-on-ink);
-  border: 0; border-radius: var(--radius-round); box-shadow: var(--boss-edge), 0 14px 30px -14px var(--shadow);
-  cursor: pointer; animation: bttIn calc(0.3s / var(--tempo)) var(--ease) backwards; transition: bottom 0.35s var(--ease), transform 0.2s var(--ease), opacity var(--dur) var(--ease);
+  display: grid; justify-items: center; align-content: center; gap: 2px; width: 48px; height: 48px; padding: 0;
+  background: var(--bg); color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius);
+  cursor: pointer; animation: bttIn var(--dur) var(--ease) backwards;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), opacity var(--dur) var(--ease);
 }
-.btt:hover { transform: translateY(-3px); }
-.btt:focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
-.btt svg { width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
-.btt span { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; text-transform: uppercase; line-height: 1; }
-@keyframes bttIn { from { opacity: 0; transform: translateY(12px) scale(0.9); } }
+.btt:hover { color: var(--rubric); border-color: var(--rubric); }
+.btt:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
+.btt svg { width: 18px; height: 18px; fill: none; stroke: var(--rubric); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.btt span { font: 500 0.62rem / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; }
+@keyframes bttIn { from { opacity: 0; } }
 
 /* on a phone it would sit over the last words of the lines whenever the header is tucked away, so it is shown only with
    the header; scrolling up brings both back. In a pane's own box it stays. */
@@ -32,4 +32,4 @@
 .inPane { position: sticky; bottom: 14px; height: 0; overflow: visible; display: flex; justify-content: flex-end; padding-right: 14px; z-index: 30; pointer-events: none; }
 .inPane .btt { position: static; pointer-events: auto; translate: 0 calc(-100%); width: 44px; height: 44px; }
 
-@media (prefers-reduced-motion: reduce) { .btt { animation: none; transition: none; } .btt:hover { transform: none; } }
+@media (prefers-reduced-motion: reduce) { .btt { animation: none; } }

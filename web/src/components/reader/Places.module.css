@@ -1,13 +1,12 @@
-/* Places on this page: a small Periplus cut in the stone (land the stone's face, the sea sunk; the site's map tokens) and a list. */
-.title { font-size: var(--step-1); }
+/* Places on this page: a small map printed as a plate (the site's map colours; land a wash on the paper, the sea a paler
+   one) and a list. The map and its places ink in, and then nothing moves (decision 3). */
+.title { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); }
 
 .map {
   position: relative; height: 0; padding-top: 75%; overflow: hidden; border-radius: var(--radius);
-  background: var(--surface) var(--tex, none) center / 420px 420px; box-shadow: var(--frame-line);
-  animation: unroll calc(0.7s / var(--tempo)) var(--ease) both;
+  background: var(--surface); box-shadow: var(--frame-line);
+  animation: ink-in var(--dur-slow) var(--ease) both;
 }
-/* (the wipe ends a little outside the map, so that its frame is not clipped away once it has opened) */
-@keyframes unroll { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(-3px -3px -3px -3px); } }
 .map svg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
 .map::before { content: ""; position: absolute; inset: 0; background: var(--map-land-wash); }
 .sea { fill: var(--map-sea-wash); stroke: var(--map-coast); stroke-width: 0.8; vector-effect: non-scaling-stroke; stroke-opacity: 0.6; }
@@ -16,29 +15,27 @@
   background: repeating-linear-gradient(135deg, transparent 0 14px, var(--map-wave) 14px 15px);
 }
 
-/* each place: a numbered red disc that drops onto the map */
+/* each place: a numbered red disc printed on the map */
 .dot {
   position: absolute; z-index: 1; width: 22px; height: 22px; margin: -11px 0 0 -11px; padding: 0;
   display: grid; place-items: center; border-radius: var(--radius-round); border: 2px solid var(--map-land);
   background: var(--accent); color: var(--bg); font: 600 var(--step--2)/1 var(--f-label);
-  box-shadow: 0 3px 8px -3px rgba(0, 0, 0, 0.6); cursor: pointer;
-  animation: drop calc(0.45s / var(--tempo)) var(--ease) both; transition: scale 0.2s var(--ease), background 0.2s;
+  cursor: pointer; animation: ink-in var(--dur-slow) var(--ease) both; transition: background-color var(--dur-quick), color var(--dur-quick);
 }
 .dot[data-auto] { background: var(--map-land); color: var(--accent); border-color: var(--accent); }
-.dot[data-active] { scale: 1.35; z-index: 2; }
+.dot[data-active] { z-index: 2; outline: 2px solid var(--ink); outline-offset: 2px; }
 .map[data-many] .dot { width: 11px; height: 11px; margin: -5.5px 0 0 -5.5px; border-width: 1.5px; }
 .map[data-many] .dot span { display: none; }
-.map[data-many] .dot[data-active] { width: 22px; height: 22px; margin: -11px 0 0 -11px; scale: 1; }
+.map[data-many] .dot[data-active] { width: 22px; height: 22px; margin: -11px 0 0 -11px; }
 .map[data-many] .dot[data-active] span { display: inline; }
 .dot:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-@keyframes drop { from { translate: 0 -18px; opacity: 0; } 60% { translate: 0 2px; opacity: 1; } to { translate: 0 0; } }
 @media (pointer: coarse) { .dot { width: 28px; height: 28px; margin: -14px 0 0 -14px; } .dot::before { content: ""; position: absolute; inset: -8px; } }
 
 /* names beside the dots, in ink with a halo of the land (PlacesPanel works out which have room) */
 .label {
   position: absolute; z-index: 1; translate: 14px -50%; font: var(--step--2)/1 var(--f-body); color: var(--map-name); white-space: nowrap;
   pointer-events: none; text-shadow: 0 0 2px var(--map-halo), 0 0 3px var(--map-halo), 0 0 4px var(--map-halo);
-  animation: fade calc(0.3s / var(--tempo)) var(--ease) both;
+  animation: ink-in var(--dur) var(--ease) both;
 }
 .map[data-many] .label { translate: 8px -50%; }
 .label[data-flip] { translate: calc(-100% - 14px) -50%; }
@@ -46,17 +43,17 @@
 .tag {
   position: absolute; z-index: 3; translate: 16px -50%; padding: 4px 9px; border-radius: var(--radius);
   background: var(--inv-bg); color: var(--inv-fg); font-size: var(--step--1); white-space: nowrap; pointer-events: none;
-  box-shadow: 0 8px 18px -8px var(--shadow); animation: fade calc(0.2s / var(--tempo)) var(--ease);
+  box-shadow: 0 8px 18px -8px var(--shadow); animation: ink-in var(--dur-quick) var(--ease);
 }
 .tag[data-flip] { translate: calc(-100% - 16px) -50%; }
 .tag b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-0); }
-@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes ink-in { from { opacity: 0; } to { opacity: 1; } }
 
 .list { list-style: none; margin: 0; padding: 0; display: grid; }
 .list li {
   display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 12px; align-items: start;
   padding: 10px 4px; box-shadow: var(--cut-under);
-  transition: background 0.2s;
+  transition: background-color var(--dur-quick);
 }
 .list li:last-child { box-shadow: none; }
 .list li[data-active] { background-color: var(--slab-lit); }
@@ -71,11 +68,11 @@
 .meta { margin: 2px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .refs { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: var(--step--1); }
 .refs button {
-  padding: 2px 8px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge);
-  font: inherit; font-family: var(--f-label); color: var(--ink); cursor: pointer;
+  padding: 2px 8px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent;
+  font: inherit; font-family: var(--f-title); color: var(--accent); cursor: pointer; font-variant-numeric: lining-nums tabular-nums;
+  transition: border-color var(--dur-quick) var(--ease);
 }
-.refs button:hover { background: var(--slab-lit); color: var(--accent); }
-.refs button:active { background: var(--field); box-shadow: var(--field-edge); }
+.refs button:hover { border-color: var(--accent); }
 .refs .more { color: var(--ink-2); }
 .refs a { margin-left: auto; color: var(--accent); }
 @media (pointer: coarse) { .refs button, .refs .more { color: var(--ink-2); }
