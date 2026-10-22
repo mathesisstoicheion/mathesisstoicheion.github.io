@@ -9,3 +9,8 @@
   }
 }
 @keyframes offline-in { from { transform: translateY(100%); opacity: 0; } }
+/* above the bottom bar while it shows (TabBar.tsx), without the home-bar padding the bar keeps */
+@media (max-width: 760px) {
+  .sign { transition: bottom 0.35s var(--ease); }
+  :global(html[data-tabbar="up"]) .sign { bottom: var(--tabbar-h); padding-bottom: 6px; }
+}

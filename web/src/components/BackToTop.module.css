@@ -20,6 +20,11 @@
   :global(html[data-hdr="hidden"]) :not(.inPane) > .btt { opacity: 0; pointer-events: none; }
 }
 
+/* on a phone, above the bottom bar while it shows (TabBar.tsx) */
+@media (max-width: 760px) {
+  :global(html[data-tabbar="up"]) :not(.inPane) > .btt { bottom: calc(20px + var(--tabbar-h)); }
+}
+
 /* a minimised floating reader sits in the same corner: this one goes above it */
 :global(html:has([data-float-tab])) .btt { bottom: calc(84px + env(safe-area-inset-bottom, 0px)); }
 

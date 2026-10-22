@@ -821,12 +821,6 @@ p.translit { margin: -0.3em 0 0.8em; }
   .single .tr { grid-column: auto; margin-top: 0; padding: 0 0 0 12px; box-shadow: var(--cut-left); }
   .single.cols-trans .tr { padding-left: 0; box-shadow: none; }
 }
-/* design A's lamp on the passage: the lit passage at full strength, the rest dimmed, on purpose below the 4.5:1 contrast rule
-   (Aa, "Lamp on the passage: Off", gives every line full contrast) */
-.lampOn .row { opacity: 0.42; transition: opacity calc(0.5s / var(--tempo)) ease; }
-.page[data-page="day"] .lampOn .row { opacity: 0.6; }
-.lampOn .row[data-lit] { opacity: 1; }
-
 /* the foot of the page (A's .rnext) */
 .bottomGo { display: contents; }
 .single .bottom { align-items: center; flex-wrap: wrap; gap: 16px; padding-block: 30px 40px; box-shadow: var(--cut-over); color: var(--ink-2); }

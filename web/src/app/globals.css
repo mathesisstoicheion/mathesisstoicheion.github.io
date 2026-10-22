@@ -41,6 +41,18 @@
   --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
 }
 
+/* phones: the bar of doors along the bottom (TabBar.tsx), its height with the home-bar area. While it shows (data-tabbar
+   on <html>), the end of every page and what floats at the foot of the screen stand above it. */
+:root { --tabbar-h: 0px; }
+@media (max-width: 760px) {
+  :root { --tabbar-h: calc(58px + env(safe-area-inset-bottom, 0px)); }
+  body { padding-bottom: var(--tabbar-h); }
+  html[data-tabbar="up"] .toast { bottom: calc(20px + var(--tabbar-h)); }
+}
+::view-transition-group(site-tabbar) { animation: none; z-index: 100; }
+::view-transition-old(site-tabbar) { display: none; }
+::view-transition-new(site-tabbar) { animation: none; }
+
 /* the home page vase: a warm glow behind it, so the black gloss never sinks into the dark */
 :root { --vase-glow: rgba(214, 122, 62, 0.30); }
 

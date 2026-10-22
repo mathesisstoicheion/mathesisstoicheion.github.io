@@ -211,7 +211,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
   const fitLines = useSettings((s) => s.fitLines);
-  const lamp = useSettings((s) => s.lamp);
   const [vocabOpen, setVocabOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [talkOpen, setTalkOpen] = useState(false);
@@ -602,32 +601,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     };
   }, [contained, hasRows]);
 
-  // design A's lamp on the passage: the passage whose middle is nearest a point a little above the middle of the window is
-  // lit, the others stand a little in the dark (Reader.module.css, .lampOn); a tap on a passage lights it. Only the
-  // passages on screen are measured, once a frame while the page moves. Off in Aa, or with two books open.
-  useEffect(() => {
-    const el = textRef.current;
-    if (!el || !single || !lamp) return;
-    let lit: HTMLElement | null = null, frame = 0;
-    const light = (r: HTMLElement | null | undefined) => { if (!r || r === lit) return; lit?.removeAttribute("data-lit"); r.setAttribute("data-lit", ""); lit = r; };
-    const shown = new Set<HTMLElement>();
-    const nearest = () => {
-      frame = 0;
-      const mid = innerHeight * 0.45;
-      let best: HTMLElement | null = null, bd = Infinity;
-      for (const r of shown) { const b = r.getBoundingClientRect(), d = Math.abs((b.top + b.bottom) / 2 - mid); if (d < bd) { bd = d; best = r; } }
-      light(best);
-    };
-    const later = () => { if (!frame) frame = requestAnimationFrame(nearest); };
-    const io = new IntersectionObserver((es) => { for (const e of es) if (e.isIntersecting) shown.add(e.target as HTMLElement); else shown.delete(e.target as HTMLElement); later(); });
-    const all = el.querySelectorAll<HTMLElement>("[data-key]");
-    all.forEach((r) => io.observe(r));
-    light(all[0]);
-    const tap = (e: PointerEvent) => light((e.target as HTMLElement).closest<HTMLElement>("[data-key]"));
-    addEventListener("scroll", later, { passive: true });
-    el.addEventListener("pointerdown", tap);
-    return () => { io.disconnect(); cancelAnimationFrame(frame); removeEventListener("scroll", later); el.removeEventListener("pointerdown", tap); lit?.removeAttribute("data-lit"); };
-  }, [single, lamp, rows]);
 
   // "Fit lines": verse lines stay whole, and the Greek shrinks until the longest line on the page fits
   // (never below half its size; past that, lines wrap again).
@@ -1396,7 +1369,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ))}
     </div>
   );
-  // design A's Aa: the page, the lamp, the typefaces and sizes: the very same controls as Settings > Reading (ReadingControls)
+  // design A's Aa: the page, the typefaces and sizes: the very same controls as Settings > Reading (ReadingControls)
   const aaPanel = (
     <div className={styles.aa}>
       <ReadingControls />
@@ -1493,7 +1466,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       <div className={styles.barEnd}>
         {/* (the floating window keeps its aids folded above the text) */}
         {single && (
-          <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Lamplight or Daylight), the lamp on the passage, the size and the typeface of the Greek"
+          <Drop {...dropOf("aa")} label="Aa" chevron={false} ariaLabel="Page and text" title="The page (Lamplight or Daylight), the size and the typeface of the Greek"
             className={`${styles.dropBtn} ${styles.wideOnly}`} panelClass={`${styles.pop} ${styles.aaPop}`} panelLabel="Page and text">
             {aaPanel}
           </Drop>
@@ -1752,7 +1725,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             </div>
           )}
 
-          <article ref={textRef} className={`wrap ${styles.text} ${single && lamp ? styles.lampOn : ""} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
+          <article ref={textRef} className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText} />)}
           </article>

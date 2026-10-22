@@ -3,10 +3,15 @@ import { useSettings, DEFAULTS, LIMITS, deviceLevel } from "./settings";
 
 describe("settings", () => {
   it("starts from the defaults, at this device's level", () => {
-    const { theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace } = useSettings.getState();
+    const { theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace } = useSettings.getState();
     const first = deviceLevel();
-    expect({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace })
+    expect({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace })
       .toEqual({ ...DEFAULTS, level: first, motion: first === "performance" ? "reduce" : "auto" });
+  });
+
+  it("has no lamp on the passage any more (the owner, 2026-10-22: distracting, never asked for)", () => {
+    expect("lamp" in useSettings.getState()).toBe(false);
+    expect("lamp" in DEFAULTS).toBe(false);
   });
 
   it("keeps text size and line spacing inside their limits", () => {

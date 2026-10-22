@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { EB_Garamond, Noto_Serif_Display, Noto_Sans_Display, Noto_Sans_Mono, Literata, Gentium_Book_Plus, Noto_Sans, Alegreya_Sans } from "next/font/google";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import TabBar from "@/components/TabBar";
 import OfflineSign from "@/components/OfflineSign";
 import SettingsPanel, { SettingsApplier } from "@/components/SettingsPanel";
 import LamplightLevel from "@/components/a/LamplightLevel";
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         {children}
         <Footer />
         <OfflineSign />
+        <TabBar />
         <SettingsPanel />
         <Toast />
         <Reveal />

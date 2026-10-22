@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useSettings, applySettings, type AnimLevel } from "@/lib/settings";
+import { useSettings, applySettings, type AnimLevel, type BarMode } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
@@ -18,6 +18,8 @@ const LEVEL_HINT: Record<AnimLevel, string> = {
   balanced: "The same art, drawn a little less sharply and less often while nothing moves. Kinder to a busy phone or laptop.",
   performance: "The art is drawn once and holds still, and pages open without animation. For older computers and phones.",
 };
+// the phone's bottom bar (TabBar.tsx)
+const BAR: [BarMode, string][] = [["scroll", "Hides as you scroll"], ["button", "Hide with a button"], ["always", "Always shown"]];
 const ON_OFF: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 
 /**
@@ -91,6 +93,12 @@ export default function SettingsPanel() {
           <h3 className="label">Animation</h3>
           <Segmented label="Animation" value={s.level} options={LEVELS} onChange={(level) => s.set({ level })} />
           <p className={styles.hint}>{LEVEL_HINT[s.level]}</p>
+        </section>
+
+        <section className={`${styles.group} ${styles.phoneOnly}`}>
+          <h3 className="label">Bottom bar</h3>
+          <Segmented label="Bottom bar" value={s.bar} options={BAR} onChange={(bar) => s.set({ bar })} />
+          <p className={styles.hint}>The doors along the bottom of a phone&apos;s screen. In the reader the bar always tucks away while you read on.</p>
         </section>
 
         <section className={styles.group}>

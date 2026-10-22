@@ -1,7 +1,7 @@
 "use client";
 /**
- * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the reader's page, the lamp
- * on the passage, the typefaces, the size of the Greek and the line spacing. Settings shows it under Reading and the
+ * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the reader's page, the
+ * typefaces, the size of the Greek and the line spacing. Settings shows it under Reading and the
  * reader's Aa panel shows the same controls, so a change in either is the same change, made the same way.
  */
 import { useSettings, LIMITS, type ThemePref, type GreekFace, type TextFace } from "@/lib/settings";
@@ -9,7 +9,6 @@ import styles from "./SettingsPanel.module.css";
 
 // the site is dark; the reader's page can be Lamplight or Daylight (warm paper), against eye strain (design A's names)
 const PAGES: [ThemePref, string][] = [["dark", "Lamplight"], ["light", "Daylight"]];
-const LAMP: ["on" | "off", string][] = [["on", "On"], ["off", "Off"]];
 /** Each choice shown in its own typeface (the font variables come from layout.tsx). */
 const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
   { v: "didot", name: "Garamond", about: "The site's own face", font: "var(--font-garamond)" },
@@ -64,8 +63,6 @@ export default function ReadingControls() {
     <>
       <span className={styles.subLabel}>The reader&apos;s page</span>
       <Segmented label="The reader's page" value={s.theme === "light" ? "light" : "dark"} options={PAGES} onChange={(theme) => s.set({ theme })} />
-      <span className={styles.subLabel}>Lamp on the passage</span>
-      <Segmented label="Lamp on the passage" value={s.lamp ? "on" : "off"} options={LAMP} onChange={(v) => s.set({ lamp: v === "on" })} />
       <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
         μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
       </p>

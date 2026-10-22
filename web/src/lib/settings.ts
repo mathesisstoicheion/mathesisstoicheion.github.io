@@ -31,7 +31,7 @@ export interface Settings {
   metre: boolean;      // reader aid: show the scansion of verse
   tryFirst: boolean;   // reader aid: each translation stays hidden until tapped, so the Greek is read first
   fitLines: boolean;   // reader aid: verse lines shrink to fit the width instead of wrapping
-  lamp: boolean;       // reader (design A): the passage being read is lit, the others stand a little in the dark
+  bar: BarMode;        // phones: the bar of doors along the bottom (TabBar.tsx); never kept showing in the reader
   vibrate: boolean;    // phones: a short vibration on a save, a bookmark, a right answer (lib/haptics.ts)
   pron: Pronunciation; // pronunciation system shown in the Academy
   markers: MarkerKind[];   // reader: which kinds of marker to show beside the scroll bar
@@ -39,7 +39,11 @@ export interface Settings {
   textFace: TextFace;
 }
 
-export const DEFAULTS: Settings = { theme: "auto", level: "full", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, lamp: true, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
+/** The phone's bottom bar: tucked away while you read on and back on any scroll up; shown until its own button hides it;
+ *  or always shown. */
+export type BarMode = "scroll" | "button" | "always";
+
+export const DEFAULTS: Settings = { theme: "auto", level: "full", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, known: false, metre: false, tryFirst: false, fitLines: false, bar: "scroll", vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "didot", textFace: "serif" };
 export const LIMITS = {
   greekSize: { min: 1, max: 2, step: 0.0625 },
   leading: { min: 1.4, max: 2.2, step: 0.1 },
@@ -91,7 +95,7 @@ export const useSettings = create<SettingsStore>()(
     {
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
-      partialize: ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace }) => ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, lamp, vibrate, pron, markers, greekFace, textFace }),
+      partialize: ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace }) => ({ theme, level, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, bar, vibrate, pron, markers, greekFace, textFace }),
       // settings saved before the three levels: "reduce motion" becomes Performance
       merge: (saved, current) => {
         const p = (saved ?? {}) as Partial<Settings>;

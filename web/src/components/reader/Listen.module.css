@@ -2,6 +2,7 @@
 .bar {
   position: fixed; z-index: 45; left: 50%; translate: -50% 0;
   bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+  transition: bottom 0.35s var(--ease);
   width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: 4px 10px;
   padding: 10px 10px 8px 12px; border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: var(--slab-edge), 0 18px 40px -18px var(--shadow);
@@ -52,3 +53,6 @@
   .fine { grid-row: 4; }
 }
 @media (pointer: coarse) { .transport button, .x, .rate { min-width: 44px; height: 44px; } }
+
+/* on a phone, above the bottom bar while it shows (TabBar.tsx) */
+@media (max-width: 760px) { :global(html[data-tabbar="up"]) .bar { bottom: calc(14px + var(--tabbar-h)); } }
