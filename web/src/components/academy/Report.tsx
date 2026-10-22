@@ -1,9 +1,9 @@
 "use client";
 /**
  * Reported speech, drawn: a plain statement, and at a press it becomes what someone says or thinks. A verb of
- * saying slides in at the front, the subject slips into the accusative and the verb into the infinitive; the
- * words that changed are then in red, and every word glides from where it was (a FLIP animation, as in Shift.tsx).
- * With reduced motion the words simply appear in their new form.
+ * saying comes in at the front, the subject goes into the accusative and the verb into the infinitive; the
+ * words that changed are then in red, and each word that moved or changed inks in where it now stands (lib/use-flip.ts,
+ * as in Shift.tsx). With reduced motion the words simply appear in their new form.
  */
 import { Fragment, useState } from "react";
 import type { Section } from "@/data/lessons";
@@ -26,7 +26,7 @@ function keyed(phrase: string, alias: Map<string, string>) {
 
 function ReportItem({ it }: { it: Item }) {
   const [told, setTold] = useState(false);
-  const { box, capture } = useFlip<HTMLSpanElement>(told, { transform: "translateX(-14px)" }, 560);
+  const { box, capture } = useFlip<HTMLSpanElement>(told, 560);
   // a word in the reported form is keyed by the plain-statement word it came from
   const alias = new Map(it.pairs.map(([from, to]) => [to, fold(from)]));
   const words = told ? keyed(it.b, alias) : keyed(it.a, new Map());

@@ -1,8 +1,9 @@
 "use client";
 /**
  * Out of, in, into: three small drawings of a house and a traveller, each with its preposition and
- * case. The traveller leaves (genitive), stays (dative) or enters (accusative) when the drawing
- * scrolls into view; "Again" plays it once more. With reduced motion the drawings are still.
+ * case: each traveller is drawn where the preposition leaves it (outside, inside), with an arrow for
+ * the way it went. When the drawing scrolls into view the arrows ink in, then the travellers; "Again"
+ * inks them in once more. With reduced motion the drawings are simply there.
  */
 
 import type { Section } from "@/data/lessons";

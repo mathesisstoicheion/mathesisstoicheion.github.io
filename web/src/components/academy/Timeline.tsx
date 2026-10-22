@@ -2,14 +2,13 @@
 /**
  * When does a participle's action happen? Each real sentence gets a strip of time: the main verb
  * as a plain bar (ink colour), the participle as a red one, before it (aorist), alongside it (present) or after
- * it (future, dashed: intended, not yet done). The bars grow in the order the actions happen when
+ * it (future, dashed: intended, not yet done). The bars ink in in the order the actions happen when
  * the strips scroll into view; "Again" replays. With reduced motion they are simply drawn.
  */
 
 import type { Section } from "@/data/lessons";
 import { usePlay } from "@/lib/use-play";
 import styles from "./Academy.module.css";
-import { cssTempo } from "@/lib/tempo";
 
 type Props = Extract<Section, { kind: "timeline" }>;
 type Item = Props["items"][number];
@@ -27,12 +26,12 @@ function Strip({ it }: { it: Item }) {
     <svg viewBox="0 0 330 78" className={styles.tlSvg} aria-hidden="true">
       <path d="M8 60H318m-7-4l7 4-7 4" className={styles.tlAxis} />
       <text x="318" y="76" className={styles.tlTime}>time</text>
-      <g className={`${styles.tlBar} ${styles.tlMain}`} style={{ animationDelay: cssTempo(ptcFirst ? "1s" : "0.3s") }}>
+      <g className={`${styles.tlBar} ${styles.tlMain}`} style={{ animationDelay: ptcFirst ? "1s" : "0.3s" }}>
         <rect x={MAIN[0]} y={mainY - 11} width={MAIN[1] - MAIN[0]} height="22" rx="3" />
         <text x={(MAIN[0] + MAIN[1]) / 2} y={mainY + 5}>{it.verb}</text>
       </g>
       <g className={`${styles.tlBar} ${styles.tlPtc} ${it.time === "after" ? styles.tlIntent : ""}`}
-        style={{ animationDelay: cssTempo(ptcFirst ? "0.3s" : it.time === "same" ? "0.3s" : "1s") }}>
+        style={{ animationDelay: ptcFirst ? "0.3s" : it.time === "same" ? "0.3s" : "1s" }}>
         <rect x={p0} y={ptcY - 11} width={p1 - p0} height="22" rx="3" />
         <text x={(p0 + p1) / 2} y={ptcY + 5}>{it.ptc}</text>
       </g>

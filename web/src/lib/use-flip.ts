@@ -1,35 +1,33 @@
 "use client";
 /**
- * Words that glide to their new places (a FLIP animation): call `capture()` just before the change, and after
- * it each element marked `data-k` moves from where it was to where it now is; a newcomer comes in with `enter`.
- * With reduced motion nothing is captured, so the words simply appear in their new places. Used by the Academy's
- * Shift and Report drawings.
+ * Words that change place ink in at their new places (the printed page: nothing glides). Call `capture()` just before
+ * the change; after it, each element marked `data-k` that now stands somewhere else, or is new, fades in where it is,
+ * while the words that kept their place stay as they were. With reduced motion nothing is captured, so the words
+ * simply appear in their new places. Used by the Academy's Shift and Report drawings.
  */
 import { useLayoutEffect, useRef } from "react";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
-import { atTempo } from "@/lib/tempo";
 
-export function useFlip<T extends HTMLElement>(change: unknown, enter: Keyframe, ms: number) {
+export function useFlip<T extends HTMLElement>(change: unknown, ms: number) {
   const motion = useSettings((s) => s.motion);
   const box = useRef<T>(null);
-  const before = useRef<Map<string, DOMRect> | null>(null);
+  const before = useRef<Map<string, { r: DOMRect; t: string | null }> | null>(null);
   const capture = () => {
     const el = box.current;
     if (el && !prefersReducedMotion(motion)) {
-      before.current = new Map([...el.querySelectorAll<HTMLElement>("[data-k]")].map((s) => [s.dataset.k!, s.getBoundingClientRect()]));
+      before.current = new Map([...el.querySelectorAll<HTMLElement>("[data-k]")].map((s) => [s.dataset.k!, { r: s.getBoundingClientRect(), t: s.textContent }]));
     }
   };
   useLayoutEffect(() => {
     const el = box.current, old = before.current;
     before.current = null;
     if (!el || !old) return;
+    let n = 0;
     for (const s of el.querySelectorAll<HTMLElement>("[data-k]")) {
-      const r0 = old.get(s.dataset.k!);
-      const r1 = s.getBoundingClientRect();
-      const anim = r0
-        ? [{ transform: `translate(${r0.left - r1.left}px, ${r0.top - r1.top}px)` }, { transform: "none" }]
-        : [{ opacity: 0, ...enter }, { opacity: 1, transform: "none" }];
-      s.animate(anim, { duration: atTempo(ms), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+      const was = old.get(s.dataset.k!), r1 = s.getBoundingClientRect();
+      // a word that kept its place and its form stays as it is
+      if (was && Math.abs(was.r.left - r1.left) < 1 && Math.abs(was.r.top - r1.top) < 1 && was.t === s.textContent) continue;
+      s.animate([{ opacity: 0 }, { opacity: 1 }], { duration: ms, delay: n++ * 60, easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "backwards" });
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [change]);

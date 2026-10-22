@@ -1,7 +1,7 @@
 "use client";
 /**
  * Today's session: a few minutes of study as the pages of a small book, turned forward with Next or
- * a swipe to the left (Phase 10). A few flashcards, a lesson's refresh when one is due, one question on the
+ * a swipe to the left (Phase 10); each page inks in where the last one stood. A few flashcards, a lesson's refresh when one is due, one question on the
  * forms, and one real sentence;
  * then a last page with what was done and the days in a row. Full screen on phones.
  */

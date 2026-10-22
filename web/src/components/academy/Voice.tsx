@@ -1,10 +1,10 @@
 "use client";
 /**
  * Active, middle, passive: one scene drawn three times (a father frees his daughter). An arrow
- * shows who acts on whom, the rope falls from the daughter, and the subject of each sentence
+ * shows who acts on whom, the rope lies loosed on the ground, and the subject of each sentence
  * stands on a patch of red; the verb is marked in the sentence. In the middle a second arrow
- * turns back to the father: he frees her for himself. The drawings play when they scroll into
- * view; "Again" plays them once more. With reduced motion they are still, in their final state.
+ * turns back to the father: he frees her for himself. The arrows and then the rope ink in when the
+ * drawings scroll into view; "Again" inks them in once more. With reduced motion they are simply there.
  */
 import { useId } from "react";
 import type { Section } from "@/data/lessons";

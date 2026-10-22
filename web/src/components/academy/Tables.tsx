@@ -137,7 +137,7 @@ export default function Tables() {
           {matches.length ? matches.map((m) => <a key={m.key} href={`#t-${m.id}`} lang="grc" onClick={(e) => follow(e, m)}>{m.text}</a>) : "That form is not in these tables."}
         </p>
       )}
-      <p className={styles.small}>Endings are shown in gold. The small number after each form is how often it occurs with that analysis in the 16 million analysed words of GLAUx; every form was checked against it.</p>
+      <p className={styles.small}>Endings are shown in red. The small number after each form is how often it occurs with that analysis in the 16 million analysed words of GLAUx; every form was checked against it.</p>
       <div className={styles.tableGrid}>
         {shown.map((p) => <ParadigmTable key={p.id} p={p} query={query} marked={mark === p.id} />)}
       </div>

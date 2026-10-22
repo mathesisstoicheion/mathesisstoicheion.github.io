@@ -1,9 +1,9 @@
 "use client";
 /**
- * How the future is made, drawn: the stem, a σ and the ending slide together, and where the stem ends in a
- * consonant the two letters fuse (φ + σ = ψ, γ + σ = ξ; θ drops out). The parts close up, the σ glows, and the
- * finished word takes their place with the fused letters in red. Plays when it scrolls into view; "Again"
- * replays. At rest, and with reduced motion, the finished words are shown with their parts written beside them.
+ * How the future is made, drawn: the stem, a σ and the ending, and where the stem ends in a consonant the two
+ * letters fuse (φ + σ = ψ, γ + σ = ξ; θ drops out). The parts ink in, then give way to the finished word with the
+ * fused letters in red. Plays when it scrolls into view; "Again" replays. At rest, and with reduced motion, the
+ * finished words are shown with their parts written beside them.
  */
 
 import type { Section } from "@/data/lessons";

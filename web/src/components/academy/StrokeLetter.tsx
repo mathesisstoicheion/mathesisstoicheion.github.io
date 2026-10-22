@@ -107,8 +107,8 @@ export default function StrokeLetter({ letter, size = 220, children }: { letter:
       <figcaption>
         {!tracing ? (
           <>
-            <button type="button" className="chip" onClick={() => setRun((r) => r + 1)}>Write <span className={styles.more}>it </span>again</button>
-            <button type="button" className="chip" onClick={() => { clear(); setTracing(true); }}>Trace<span className={styles.more}> it yourself</span></button>
+            <button type="button" className="chip" onClick={() => setRun((r) => r + 1)}><span>Write <span className={styles.more}>it </span>again</span></button>
+            <button type="button" className="chip" onClick={() => { clear(); setTracing(true); }}><span>Trace<span className={styles.more}> it yourself</span></span></button>
             {children}
             <span className="muted">{strokes.length} stroke{strokes.length === 1 ? "" : "s"} · a common way to write it</span>
           </>

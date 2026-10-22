@@ -1,8 +1,8 @@
 "use client";
 /**
- * The same words in a new order: press the button and the adjective slides to its new place
- * (the words glide from where they were: a FLIP animation), the English and the name of the
- * position change with it. With reduced motion the words simply appear in the new order.
+ * The same words in a new order: press the button and the adjective inks in at its new place
+ * (lib/use-flip.ts), the English and the name of the position change with it. With reduced
+ * motion the words simply appear in the new order.
  */
 import { Fragment, useState } from "react";
 import type { Section } from "@/data/lessons";
@@ -26,7 +26,7 @@ function keyed(phrase: string) {
 
 function ShiftItem({ it }: { it: Item }) {
   const [moved, setMoved] = useState(false);
-  const { box, capture } = useFlip<HTMLSpanElement>(moved, { transform: "translateY(-10px)" }, 520);
+  const { box, capture } = useFlip<HTMLSpanElement>(moved, 520);
   const a = keyed(it.a), b = keyed(it.b);
   const words = moved ? b : a;
   const other = moved ? a : b;

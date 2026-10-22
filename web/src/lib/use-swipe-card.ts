@@ -4,10 +4,11 @@ import { prefersReducedMotion, useSettings } from "./settings";
 export type SwipeDir = "left" | "right" | "up";
 
 /**
- * A card that follows the finger (or mouse) and is thrown off the screen to answer: right, left or up.
+ * A card that follows the finger (or mouse), pushed aside to answer: right, left or up.
  * While it is dragged, the element gets `data-lean` (the answer it would give if let go now) and the
  * CSS variable `--lean` (0 to 1, how sure), for the CSS to show a label. Let go past the mark, or with
- * a flick, and it flies off that way before `onSwipe` runs; otherwise it springs back.
+ * a flick, and it fades where it was let go before `onSwipe` runs (the printed page: nothing is thrown
+ * across the screen); otherwise it goes back to its place.
  * Only while `enabled()` is true (e.g. once a flashcard shows its answer).
  */
 export function useSwipeCard(opts: { el: () => HTMLElement | null; enabled: () => boolean; onSwipe: (dir: SwipeDir) => void }) {
@@ -20,7 +21,7 @@ export function useSwipeCard(opts: { el: () => HTMLElement | null; enabled: () =
     dy < -40 && -dy > Math.abs(dx) ? "up" : dx > 40 ? "right" : dx < -40 ? "left" : null;
 
   const place = (el: HTMLElement, dx: number, dy: number) => {
-    el.style.transform = `translate(${dx}px, ${Math.min(dy, 40)}px) rotate(${dx * 0.05}deg)`;
+    el.style.transform = `translate(${dx}px, ${Math.min(dy, 40)}px)`;
     const l = lean(dx, dy);
     if (l) el.dataset.lean = l; else delete el.dataset.lean;
     el.style.setProperty("--lean", String(Math.min(1, Math.max(Math.abs(dx), -dy) / MARK)));
@@ -58,9 +59,8 @@ export function useSwipeCard(opts: { el: () => HTMLElement | null; enabled: () =
       const dir = Math.abs(s.dx) > MARK || -s.dy > MARK || fast ? lean(s.dx * 3, s.dy * 3) : null;
       if (!dir) { reset(el, true); return; }
       if (prefersReducedMotion(useSettings.getState().motion)) { reset(el, false); o.current.onSwipe(dir); return; }
-      // off the screen the way it was thrown, then the answer (the next card takes its place)
-      el.style.transition = "transform 0.28s ease-in, opacity 0.28s";
-      el.style.transform = dir === "up" ? `translate(${s.dx}px, -120vh)` : `translate(${dir === "right" ? "" : "-"}130vw, ${s.dy}px) rotate(${dir === "right" ? 24 : -24}deg)`;
+      // it fades where it was let go, then the answer (the next card inks in in its place)
+      el.style.transition = "opacity 0.28s";
       el.style.opacity = "0";
       setTimeout(() => {
         o.current.onSwipe(dir);
