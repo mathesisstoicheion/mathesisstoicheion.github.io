@@ -25,8 +25,8 @@ test("the site keeps working offline once visited, and the connection light says
   await expect(await headerButton(page, "Connection: Offline")).toBeVisible();
   await page.goto("/treasury");
   await expect(page.getByRole("heading", { level: 1, name: /The Treasury/ })).toBeVisible();
-  // moving between areas offline, through the site's own links
-  await page.getByRole("link", { name: /The Academy/ }).first().click();
+  // moving between areas offline, through the site's own links (the menu's Learn, Ἀκαδήμεια, is the Academy)
+  await page.getByRole("link", { name: /^Learn/ }).first().click();
   await expect(page.getByRole("heading", { level: 1, name: /The Academy/ })).toBeVisible();
   await page.goto("/academy/lesson/case");
   await expect(page.locator("h1").first()).toBeVisible();
@@ -90,7 +90,7 @@ test("the floating reader follows the reader around the site, snaps, minimises a
   await win.getByRole("button", { name: "Close look-up" }).click();
 
   // it survives moving to another area, and a reload
-  await page.getByRole("link", { name: /The Academy/ }).first().click();
+  await page.getByRole("link", { name: /^Learn/ }).first().click();
   await expect(page.getByRole("heading", { level: 1, name: /The Academy/ })).toBeVisible();
   await expect(win).toBeVisible();
   await page.reload();
@@ -116,14 +116,15 @@ test("the floating reader follows the reader around the site, snaps, minimises a
 });
 
 test("a passage dragged from the reader lands in a note with its citation", async ({ page }) => {
+  // a screen tall enough to hold both: the first lines of the Iliad, and the note being written under the fifth line's passage
+  await page.setViewportSize({ width: 1280, height: 900 });
   await openIliad(page);
   await page.locator('[data-row="1.5"]').click();
   await act(page, "Note");
   const box = page.getByLabel("Your note", { exact: true });
-  // both on screen: the passage, and the note being written
+  // both on screen: the passage, just under the reader's bar (its scroll margin leaves room for the bar), and the note
   await page.locator('[data-key="1.1"]').first().evaluate((el) => el.scrollIntoView({ block: "start" }));
-  // (scrolling up brings the site's header back, so leave room under it and the reader's bar for the grip)
-  await page.evaluate(() => scrollBy(0, -110));
+  await expect(box).toBeInViewport();
   // drag the grip beside 1.1 onto the note, as a person would
   await page.locator('[data-key="1.1"]').first().hover();
   const from = (await page.locator('[data-drag="1.1"]').boundingBox())!, to = (await box.boundingBox())!;

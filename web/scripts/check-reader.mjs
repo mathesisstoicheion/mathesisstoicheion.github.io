@@ -1,4 +1,5 @@
-// The reader check (review fix list, slice 8), on Aeschylus' Agamemnon with Smyth's English, at a computer's width and a phone's.
+// The reader check (review fix list, slice 8), on Aeschylus' Agamemnon with Smyth's English, at a computer's width and a phone's,
+// on Paper, and once more at Night (the printed-page redesign: the case colours are chosen for each).
 // It lists:
 //   cover   - a reader coming back to the book (a saved position) who lands on its title page, not on the text
 //   zero    - "Lines 0–103" in the bar, or a passage numbered 0 in the margin (Perseus's line 0 is only the first speaker's name)
@@ -56,9 +57,9 @@ async function reader(ctx, w, h, seed) {
   return page;
 }
 
-for (const [w, h] of [[1280, 900], [1100, 860], [375, 812]]) {
-  const tag = `${w}px`;
-  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: w < 700 });
+for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1280, 900, "dark"]]) {
+  const tag = `${w}px${scheme === "dark" ? " Night" : ""}`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, serviceWorkers: "block", hasTouch: w < 700 });
   const page = await reader(ctx, w, h, true);
 
   // ---- cover: coming back to a book with a place saved, the text is on the screen, not the title page
