@@ -40,6 +40,7 @@ public class MainActivity extends Activity {
     private FrameLayout frame;
     private WebViewAssetLoader loader;
     private SharedPreferences prefs;
+    private BetaUpdates updates;
 
     @Override
     protected void onCreate(Bundle saved) {
@@ -105,6 +106,9 @@ public class MainActivity extends Activity {
 
         if (saved != null) web.restoreState(saved);
         else web.loadUrl(prefs.getString("last", HOME));
+
+        updates = new BetaUpdates(this, prefs);
+        updates.check(true);
     }
 
     // ---- full screen: the page runs under the clock and the gesture bar ----
@@ -173,6 +177,12 @@ public class MainActivity extends Activity {
             keepClear = !told;
             fitFrame();
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (updates != null) updates.check(false);
     }
 
     @Override
