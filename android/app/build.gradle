@@ -1,0 +1,39 @@
+plugins {
+    id "com.android.application"
+}
+
+// Every build on GitHub gets a higher number, so the phone installs it as an update over the last one.
+def build = (System.getenv("GITHUB_RUN_NUMBER") ?: "1") as int
+
+android {
+    namespace "com.mathesisstoicheion.reader"
+    compileSdk 35
+
+    defaultConfig {
+        applicationId "com.mathesisstoicheion.reader"
+        minSdk 26
+        targetSdk 34
+        versionCode build
+        versionName "beta ${build}"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    // the site's pictures, fonts and data are already compressed or small; keep them as they are
+    androidResources {
+        noCompress += ["woff2", "png", "jpg", "jpeg", "webp", "mp3", "ogg"]
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation "androidx.webkit:webkit:1.12.1"
+}

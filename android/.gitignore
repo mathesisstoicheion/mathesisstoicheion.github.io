@@ -1,0 +1,6 @@
+.gradle/
+build/
+app/build/
+local.properties
+# the site, copied in by the build (.github/workflows/android.yml)
+app/src/main/assets/

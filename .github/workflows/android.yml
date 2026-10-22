@@ -1,0 +1,50 @@
+name: Android beta app
+
+# Builds the phone app (android/) with the whole site inside it. The app comes out unsigned; it is signed
+# afterwards with the app's private key, which is never in this public repository. Never touches the live site.
+on:
+  push:
+    branches: [claude/project-thread-dk7dln]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build the site
+        working-directory: web
+        run: npm ci && npm run build
+        env:
+          # the same settings as the live site (deploy.yml)
+          NEXT_PUBLIC_PACKS: /packs
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY: ${{ vars.SUPABASE_PUBLISHABLE_KEY }}
+
+      - name: Put the site inside the app
+        run: mkdir -p android/app/src/main/assets && cp -r web/out android/app/src/main/assets/site
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Build the app
+        working-directory: android
+        run: ./gradlew --no-daemon assembleRelease
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mathesis-unsigned-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/*.apk
+          retention-days: 14

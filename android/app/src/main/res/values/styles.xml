@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the site's stone colour (web/src/app/manifest.ts), so the app never flashes white -->
+    <color name="stone">#14100D</color>
+    <style name="Site" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/stone</item>
+        <item name="android:statusBarColor">@color/stone</item>
+        <item name="android:navigationBarColor">@color/stone</item>
+        <item name="android:colorBackground">@color/stone</item>
+    </style>
+</resources>
