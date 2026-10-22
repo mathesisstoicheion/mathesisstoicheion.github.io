@@ -1,6 +1,7 @@
 /**
- * One entry of the Painted Stoa: title and its hook, the lead picture, the body with its quotations and
- * boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
+ * One entry of the Painted Stoa: title and its hook, with the entry's own photograph as the page's plate beside them
+ * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has the room's plate), the body with
+ * its quotations and boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
  * sections ("On this page"), the places on the map, the Pnyx and the key to the certainty labels; on a phone the rail
  * gives way to a closed "On this page" above the article, and the other three stand at its end, before "Read it yourself".
  */
@@ -9,13 +10,14 @@ import { blocks, inline } from "@/wiki/markup";
 import { CERTAINTY, type Entry } from "@/wiki/types";
 import { BIB } from "@/wiki/bibliography";
 import { entryBySlug, categoryOf } from "@/wiki/index";
-import { Blocks, Figure, Inline, CertTag, readHref, greekAware } from "./Markup";
+import { Blocks, Inline, CertTag, readHref, greekAware } from "./Markup";
 import Contents from "./Contents";
 import { EntryMarkers, SectionNote } from "./EntryNotes";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
 import PageHead from "@/components/PageHead";
+import { photo } from "@/lib/photos";
 import { FORUM_OPEN, trail } from "@/config/areas";
 
 const PLACE_NAME = new Map((mapData as { places: { id: string; grc: string; en: string }[] }).places.map((p) => [p.id, p]));
@@ -52,14 +54,14 @@ export default function EntryView({ e }: { e: Entry }) {
   return (
     <article className={styles.entry} data-entry={e.slug}>
       <EntryMarkers slug={e.slug} heads={heads} />
-      <PageHead path={trail("wiki", { label: cat.title, href: cat.href ?? `/stoa#${cat.id}` }, e.title)} title={e.title} greek={e.greek} purpose={e.kicker}>
+      <PageHead path={trail("wiki", { label: cat.title, href: cat.href ?? `/stoa#${cat.id}` }, e.title)} title={e.title} greek={e.greek} purpose={e.kicker}
+        piece={e.image && photo(e.image) ? { piece: e.image } : undefined}>
         {/* the opening follows the purpose line, beside the niche on a computer (after the statue on a phone) */}
         <div className={styles.hookBlock}>
           <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>
           <SectionNote slug={e.slug} section="top" title={e.title} />
         </div>
       </PageHead>
-      {e.image ? <div className="wrap"><Figure id={e.image} lead /></div> : <div className="wrap"><div className={`${styles.band} rays draw`} aria-hidden="true" /></div>}
 
       <div className={`wrap ${styles.entryGrid}`}>
         <div className={styles.entryMain}>

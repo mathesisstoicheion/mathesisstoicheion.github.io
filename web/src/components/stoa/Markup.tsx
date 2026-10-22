@@ -6,7 +6,8 @@ import Link from "next/link";
 import { Fragment, type ReactNode } from "react";
 import type { Blk, Inl } from "@/wiki/markup";
 import { CERTAINTY, type Certainty, type Entry } from "@/wiki/types";
-import { IMAGES, srcSet } from "@/wiki/images";
+import Plate from "@/components/plate/Plate";
+import { photo } from "@/lib/photos";
 // only the kickers, for the links' tooltips: importing the entries themselves would put every entry's whole text
 // into each page that shows an author article
 import HINTS from "@/wiki/entry-hints.json";
@@ -76,19 +77,9 @@ export function Quote({ q }: { q: NonNullable<Entry["quotes"]>[string] }) {
   );
 }
 
-export function Figure({ id, lead = false }: { id: string; lead?: boolean }) {
-  const im = IMAGES[id];
-  if (!im) return null;
-  return (
-    <figure className={lead ? styles.lead : `${styles.figure} rv`}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, sized files; no image service */}
-      <img src={`/images/${im.file}`} srcSet={srcSet(im)} sizes={lead ? "(max-width: 1240px) 100vw, 1180px" : "(max-width: 980px) 100vw, 736px"} width={im.width} height={im.height} alt={im.alt} loading={lead ? "eager" : "lazy"} decoding="async" className={im.height > im.width * 0.9 ? styles.tall : undefined} />
-      <figcaption>
-        <span className={styles.figTitle}>{im.title}</span>{im.date && <>, {im.date}</>}. {im.place}.
-        <span className={styles.credit}> {im.creator !== "Unknown" ? `${im.creator}. ` : ""}<a href={im.source} target="_blank" rel="noopener noreferrer">{im.sourceName}</a>, <a href={im.licenceUrl} target="_blank" rel="noopener noreferrer">{im.licence}</a>.</span>
-      </figcaption>
-    </figure>
-  );
+/** A photograph in an entry's text: set as a plate, with its credit printed beneath it (components/plate/Plate.tsx). */
+export function Figure({ id }: { id: string }) {
+  return photo(id) ? <Plate id={id} className={`${styles.figure} rv`} sizes="(max-width: 980px) 92vw, 736px" /> : null;
 }
 
 /** The dated timeline that ends an entry, under a small heading of its own so it does not read as part of the last section. */

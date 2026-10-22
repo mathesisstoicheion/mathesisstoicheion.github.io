@@ -101,7 +101,7 @@ export default function ExploreLead() {
           <Link href={AREAS.archaeology.href} transitionTypes={["page-turn"]} className={styles.card}>
             {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, sized files; no image service */}
             <img className={styles.pic} src={`/images/${KER.file}`} srcSet={srcSet(KER)} sizes="(max-width: 760px) 100vw, 400px"
-              alt={KER.alt} title={`${KER.title} · ${KER.sourceName} · ${KER.licence}`} width={KER.width} height={KER.height} loading="lazy" decoding="async" />
+              alt={KER.alt} width={KER.width} height={KER.height} loading="lazy" decoding="async" data-photo="kerameikos-street" />
             <span className={styles.txt}>
               <span className={styles.gr} lang="grc">{AREAS.archaeology.greek}</span>
               <b>Archaeology</b>
@@ -114,7 +114,11 @@ export default function ExploreLead() {
   );
 }
 
-/** The small print for the three cards' pictures and counts, which ends the page (StoaIndex's `foot`) rather than sitting under them. */
+/** The small print for the three pictures and counts at the head of the page, which ends the page rather than sitting under them. */
 export function ExploreCredit() {
-  return <p className={styles.credit}>Map: the Ancient World Mapping Center (ODbL) and Pleiades (CC BY); counts from GLAUx (CC BY-SA). Photograph: {KER.title}, {KER.sourceName}, {KER.licence}.</p>;
+  return (
+    <p className={styles.credit}>
+      Map: the Ancient World Mapping Center (ODbL) and Pleiades (CC BY); counts from GLAUx (CC BY-SA). Archaeology: <span data-credit="kerameikos-street">{KER.title}{KER.creator && !/^unknown$/i.test(KER.creator) ? `, ${KER.creator}` : ""}, <a href={KER.licenceUrl || KER.source} rel="noopener">{KER.licence}</a>, via <a href={KER.source} rel="noopener">{KER.sourceName}</a></span>.
+    </p>
+  );
 }

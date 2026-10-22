@@ -11,10 +11,11 @@ test("the Painted Stoa lists its entries and searches them", async ({ page }) =>
 test("an entry shows its picture with a credit, its quotations, and links into the reader", async ({ page }) => {
   await page.goto("/stoa/pericles");
   await expect(page.getByRole("heading", { level: 1 })).toContainText("Pericles");
-  // the entry's own picture (the page's lit sculpture, a figure of its own, stands beside the title)
-  const lead = page.locator("figure:not(.piece)").first();
-  await expect(lead.locator("img")).toHaveAttribute("src", "/images/pericles-bust.jpg");
-  await expect(lead).toContainText("CC BY 2.5");
+  // the printed page: the entry's own photograph is the plate beside its title, its credit printed beneath it
+  const photo = page.locator("header img[data-photo]:visible");
+  await expect(photo).toHaveAttribute("src", /\/images\/(w\d+\/)?pericles-bust\.jpg$/);
+  const id = await photo.getAttribute("data-photo");
+  await expect(page.locator(`header [data-credit="${id}"]:visible`)).toContainText("CC BY 2.5");
   await expect(page.getByText("ἐγίγνετό τε λόγῳ μὲν δημοκρατία")).toBeVisible();
   await expect(page.getByRole("link", { name: "Thucydides 2.35–46" })).toHaveAttribute("href", /\/read\?w=tlg0003\.tlg001/);
 });
@@ -43,12 +44,14 @@ test("Quick search finds wiki entries", async ({ page }) => {
   await expect(page).toHaveURL(/\/stoa\/symposium$/);
 });
 
-test("the home page tells why Stoics are called Stoics and leads into the Painted Stoa", async ({ page }) => {
-  // design A: the story stands by itself; the way into the Stoa is its room among the five
+test("Explore tells why Stoics are called Stoics, from Diogenes Laertius, and the home page's contents lead into it", async ({ page }) => {
+  // the printed page (redesign SPEC.md 4.1, 4.4): the story moved from the home page to Explore, with its source
+  await page.goto("/stoa");
+  const why = page.getByRole("region", { name: "Why Stoics are called Stoics" });
+  await expect(why).toContainText("Diogenes Laertius");
+  await expect(why.getByRole("link", { name: /Read it in Diogenes Laertius/ })).toHaveAttribute("href", /\/read\?w=tlg0004\.tlg001&at=7\.1\.5$/);
   await page.goto("/");
-  const stoa = page.getByRole("region", { name: "From the Painted Stoa" });
-  await expect(stoa).toContainText("Diogenes Laertius");
-  await expect(page.getByRole("region", { name: "The rooms of the site" }).getByRole("link", { name: /Painted Stoa/ })).toHaveAttribute("href", "/stoa");
+  await expect(page.getByRole("region", { name: "Contents" }).getByRole("link", { name: /Painted Stoa/ })).toHaveAttribute("href", "/stoa");
 });
 
 test("the credits page lists every picture with its licence", async ({ page }) => {

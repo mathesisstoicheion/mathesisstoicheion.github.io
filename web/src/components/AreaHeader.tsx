@@ -7,9 +7,10 @@ const LARGE: AreaId[] = ["study", "library", "search", "wiki", "treasury", "foru
 
 /**
  * The head every area opens with (PageHead, PAGE-RULES.md): the path from the menu's word down to it, its name in full
- * with the Greek in gold, and what the name means and why it fits, with the area's own object in design A's engraved
- * window at the right. An area with no Greek name of its own may set a line that belongs to it above its name instead,
- * with its source (`carve`). `action` is the page's one main thing (on a phone it comes before the window); `children` follow.
+ * with the Greek in red, and what the name means and why it fits, with the area's own photo plate and its credit at the
+ * right. An area with no Greek name of its own may set a line that belongs to it above its name instead, with its source
+ * (`carve`). `action` is the page's one main thing (on a phone it comes before the plate); `children` follow. A hairline
+ * rule closes the head.
  */
 export default function AreaHeader({ id, carve, action, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; children?: ReactNode }) {
   const a = AREAS[id];

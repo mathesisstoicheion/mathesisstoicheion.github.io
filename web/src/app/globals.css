@@ -235,6 +235,8 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   background-color: transparent; color: var(--ink); border: 0; border-bottom: 1px solid var(--ink-3); border-radius: var(--radius); box-shadow: none;
 }
 :where(textarea, select) { background-color: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: none; }
+/* a drop-down speaks in the page's own type, not the system's */
+:where(select) { font: inherit; font-size: var(--step--1); line-height: 1.3; padding: 0.45em 0.75em; }
 :where(input, textarea, select):focus-visible { outline: none; border-color: var(--rubric); }
 :where(select) option { background-color: var(--bg); color: var(--ink); }
 /* a drop-down keeps a small chevron in ink at its right end in place of the browser's own arrow (stronger than :where so

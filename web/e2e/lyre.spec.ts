@@ -178,7 +178,8 @@ test.describe("on a phone", () => {
 
 for (const scheme of ["light", "dark"] as const) {
   test(`the lyre passes the accessibility checks (${scheme})`, async ({ page }) => {
-    await page.emulateMedia({ colorScheme: scheme });
+    // with reduced motion the page is printed at once, so nothing is caught half inked in (as in a11y.spec.ts)
+    await page.emulateMedia({ colorScheme: scheme, reducedMotion: "reduce" });
     await page.goto("/stoa/lyre");
     await page.getByRole("radio", { name: /Seikilos/ }).click();
     await page.getByRole("radio", { name: "Sheet music" }).click();

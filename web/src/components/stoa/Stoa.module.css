@@ -1,130 +1,93 @@
-/* ================================================================ the Painted Stoa (Stone and torch) */
-/* panels are sunk into the wall or set on it as slabs; rules are cut lines. The colonnade's fluted columns are stone already. */
+/* ================================================================ the Painted Stoa (Explore), as the printed page sets it
+   The front is a printed index (each category under a hairline, its entries listed with a red dash), the entry of the
+   day a feature with its photograph as a plate, and an entry an article with a margin: notes set in from a red rule,
+   quotations set in from a red rule, photographs in their real colours with their credits. Nothing lifts, develops or
+   turns (decision 3); a photograph is never tinted (SPEC.md 3.7). */
 
-/* ------------------------------------------------ the front: a colonnade of painted panels */
+/* ------------------------------------------------ the front: an index of the categories */
 .index { display: grid; gap: 28px; padding-block: var(--after-head) 12px; }
 .searchRow { position: relative; scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 .searchRow svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .searchRow input {
   width: 100%; font: inherit; font-size: var(--step-sub); color: var(--ink);
-  border-radius: var(--radius); padding: 14px 16px 14px 48px; transition: box-shadow 0.2s;
+  border-radius: var(--radius); padding: 14px 16px 14px 48px;
 }
-.found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; }
-.found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 8px 10px; text-decoration: none; border-radius: var(--radius); }
-.found a:hover { background-color: var(--slab-lit); }
-.found b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); }
+.found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
+.found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 10px 2px; text-decoration: none; box-shadow: var(--cut-under); }
+.found b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
+.found a:hover b { color: var(--rubric); }
 .found span { color: var(--ink-2); font-size: var(--step-0); }
 
+/* the entry of the day: the words on the left, its photograph as a plate on the right, between an ink rule and a hairline */
 .featured {
-  position: relative; display: grid; gap: 10px; padding: clamp(24px, 4vw, 40px); text-decoration: none; overflow: hidden;
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius);
-  /* a slab set on the wall, with a panel cut just inside its edge (the moulding, below) */
-  box-shadow: var(--slab-edge); outline: var(--moulding); outline-offset: var(--moulding-in);
-  animation: lift calc(0.7s / var(--tempo)) var(--ease) both;
+  display: grid; gap: 18px clamp(20px, 3vw, 44px); padding-block: clamp(20px, 3vw, 32px);
+  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule);
 }
-/* the moulding uses the outline, so the link card gives the focus ring back */
-.featured:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.featured[data-pic], .featured:has(.featuredIcon) { grid-template-columns: minmax(0, 1fr) minmax(200px, 38%); align-items: center; gap: 18px clamp(20px, 3vw, 40px); }
-.featuredText { display: grid; gap: 10px; align-content: center; }
-.featuredPic {
-  width: 100%; height: auto; max-height: 320px; aspect-ratio: 4 / 3; object-fit: cover; object-position: center 35%;
-  border-radius: var(--radius);
-  transition: transform calc(0.6s / var(--tempo)) var(--ease);
-}
-.featured:hover .featuredPic { transform: scale(1.02); }
-/* the photographs rule (docs/adr/0007-photographs-in-the-stoa.md): on the wall, in the engraving's gold until pointed at */
-.featuredPic { filter: grayscale(1) sepia(0.6) brightness(0.82) contrast(1.12); transition: transform var(--dur) var(--ease), filter calc(0.6s / var(--tempo, 1)) var(--ease); }
-.featured:hover .featuredPic, .featured:focus-visible .featuredPic { filter: none; }
-.featuredPic[data-whole] { object-fit: contain; background: color-mix(in srgb, var(--inv-fg) 7%, var(--inv-bg)); padding: 10px; }
-.featuredIcon { justify-self: center; display: grid; place-items: center; width: 160px; height: 160px; border-radius: var(--radius-round); color: var(--accent); background: var(--boss); box-shadow: var(--boss-edge); }
-.featuredIcon svg { width: 78px; height: 78px; }
+.featured[data-pic] { grid-template-columns: minmax(0, 1fr) minmax(200px, 36%); align-items: start; }
+.featuredText { display: grid; gap: 10px; align-content: start; }
+.featuredText :global(.label) { color: var(--accent); margin: 0; }
+.featuredText h2 { margin: 0; font-family: var(--f-title); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; }
+.featuredText h2 a { color: inherit; text-decoration: none; transition: color var(--dur-quick) var(--ease); }
+.featuredText h2 a:hover { color: var(--rubric); }
+.featuredHook { margin: 0; max-width: 70ch; font-size: var(--step-sub); }
+.featuredGo { justify-self: start; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+.featuredGo:hover { text-decoration: underline; text-underline-offset: 3px; }
+.featuredPic { margin: 0; }
 @media (max-width: 760px) {
-  .featured[data-pic], .featured:has(.featuredIcon) { grid-template-columns: minmax(0, 1fr); }
-  .featuredPic, .featuredIcon { order: -1; }
-  .featuredPic { max-height: 220px; aspect-ratio: 16 / 9; }
-  .featuredIcon { width: 110px; height: 110px; }
-  .featuredIcon svg { width: 54px; height: 54px; }
+  .featured[data-pic] { grid-template-columns: minmax(0, 1fr); }
+  .featuredPic { order: -1; }
 }
-.featured :global(.label) { color: var(--accent); }
-.featured b { font-family: var(--f-display); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.4rem); line-height: 1.05; }
-.featuredHook { max-width: 70ch; font-size: var(--step-sub); color: var(--ink); }
-.featuredGo { font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
-.featured:hover .featuredGo { text-decoration: underline; }
 
-/* the colonnade: each panel stands between two fluted columns, on a shared stylobate. Each column is a round shaft of
-   stone, lit from the front by the torch and darker at its sides, cut with fine flutes and crowned with a capital. */
-.colonnade {
-  list-style: none; margin: 0; padding: 0 7px 24px; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0;
-  position: relative;
-  /* the last column, at the right end (the first stands at the left end, the first panel's ::before), and the stylobate:
-     a step of stone 10 px deep, its front edge caught by the torch */
-  background:
-    var(--flutes) right top / 13px calc(100% - 10px) no-repeat, var(--shaft) right top / 13px calc(100% - 10px) no-repeat,
-    var(--stylobate) left bottom / 100% 10px no-repeat;
-}
-/* the right-hand column's capital */
-.colonnade::before { content: ""; position: absolute; right: calc(var(--space-1) * -0.75); top: 0; width: 19px; height: 14px; background: var(--capital) center top / 100% 8px no-repeat, var(--capital-shadow) center 8px / 13px 6px no-repeat; }
-/* the step below the stylobate */
-.colonnade::after { content: ""; position: absolute; left: -8px; right: -8px; bottom: -8px; height: 6px; background: var(--block-light), var(--surface); box-shadow: inset 0 1px 0 var(--lip), var(--lintel-shadow); }
-.panel { display: grid; padding: 0 14px; position: relative; animation: rise calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (50ms / var(--tempo))); }
-/* a fluted column on the left of every panel, and its capital (a block a little wider than the shaft, its shadow under it) */
-.panel::before {
-  content: ""; position: absolute; left: -10px; top: 0; bottom: 0; width: 19px; z-index: 1;
-  background: var(--capital) center top / 100% 8px no-repeat, var(--capital-shadow) center 8px / 13px 6px no-repeat,
-    var(--flutes) center / 13px 100% no-repeat, var(--shaft) center / 13px 100% no-repeat;
-}
-@keyframes rise { from { transform: translateY(16px); opacity: 0; } }
-/* one column (a phone): each panel is only as tall as its list; side by side, the panels of a row stand level between their columns */
-@media (max-width: 560px) { .colonnade { align-items: start; } }
-.panelIn {
-  display: grid; gap: 10px; align-content: start; padding: 22px 20px 20px; margin-block: 44px 18px;
-  background: var(--field); box-shadow: var(--field-edge);
-}
-/* each category's sign, on a round boss of stone ringed with gold, hung over the panel's top edge like a medallion */
-.roundel {
-  position: relative; width: 56px; height: 56px; margin-top: -50px; display: grid; place-items: center; border-radius: var(--radius-round);
-  background: var(--boss); color: var(--accent-on-ink); box-shadow: var(--boss-edge);
-  transition: transform 0.4s var(--ease);
-}
-.roundel svg { width: 30px; height: 30px; }
-.panel:hover .roundel { transform: rotate(-8deg) scale(1.06); }
-.panelIn h2 { font-size: var(--step-1); }
+/* the categories: an index in columns, each under a hairline, its entries listed with a red dash */
+.colonnade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(20px, 3vw, 40px); }
+.panel { display: grid; animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
+@keyframes ink-in { from { opacity: 0; } }
+.panelIn { display: grid; gap: 8px; align-content: start; padding: 16px 2px 26px; box-shadow: var(--cut-over); }
+.panelIn h2 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
 .panelIn h2 a { text-decoration: none; }
-.panelIn h2 a:hover { text-decoration: underline; text-decoration-color: var(--accent); }
+.panelIn h2 a:hover { color: var(--rubric); }
 .blurb { font-size: var(--step--1); color: var(--ink-2); }
 .panelIn ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
 .panelIn li a { text-decoration: none; font-size: var(--step-0); }
 .panelIn li a::before { content: "— "; color: var(--accent); }
-.panelIn li a:hover { color: var(--accent); }
+.panelIn li a:hover { color: var(--rubric); }
 .soonLine { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
+
+/* ------------------------------------------------ works in stone, and why Stoics are called Stoics (StoaPlates.tsx) */
+.plates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); align-items: start; }
+@media (max-width: 900px) { .plates { grid-template-columns: 1fr 1fr; } .plates > :last-child { grid-column: 1 / -1; } }
+@media (max-width: 520px) { .plates { grid-template-columns: minmax(0, 1fr); } }
+.essay { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; }
+.essay p { margin: 0 0 1em; font-size: var(--step-sub); max-width: 36em; }
+.essay p:first-of-type::first-letter { font: 400 4.1em / 0.8 var(--f-title); float: left; margin: 0.06em 0.1em 0 0; color: var(--rubric); }
+.essayGo a { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+.essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; }
+/* the source in the margin, set in from a red rule, and the plate under it */
+.side { align-self: start; padding-left: 14px; border-left: 1px solid var(--rubric); font-size: var(--step--1); color: var(--ink-2); }
+.side :global(.plate) { margin-top: 14px; }
+@media (max-width: 760px) { .essay { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
 
 /* ------------------------------------------------ an entry */
 .entry { padding-bottom: 20px; }
-.entryHead { display: grid; gap: 10px; padding-block: clamp(28px, 5vw, 56px) 20px; }
 .crumbs { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.05em; color: var(--ink-2); }
 .crumbs a { text-decoration: none; }
-.crumbs a:hover { color: var(--accent); }
-.title { font-size: clamp(2.6rem, 6.4vw, 5rem); line-height: 1.02; animation: lift calc(0.8s / var(--tempo)) var(--ease) both; }
-.title::first-letter { color: var(--accent); }
-.titleGr { display: block; font-family: var(--f-greek); font-size: 0.4em; color: var(--accent); margin-top: 10px; }
+.crumbs a:hover { color: var(--rubric); }
 .kicker { font-size: var(--step-sub); color: var(--ink-2); max-width: 60ch; font-style: italic; }
-.band { height: 22px; margin-bottom: 8px; }
 
 .lead { margin: 0 0 12px; display: grid; gap: 8px; }
-.lead img { width: 100%; height: auto; max-height: 72vh; object-fit: cover; border-radius: var(--radius); animation: develop calc(1.2s / var(--tempo)) var(--ease) backwards; }
-/* tall objects (vases, busts) are shown whole on a panel rather than cropped */
+.lead img { width: 100%; height: auto; max-height: 72vh; object-fit: cover; border: 1px solid var(--rule); }
+/* tall objects (vases, busts) are shown whole rather than cropped */
 .lead img.tall, .figure img.tall { object-fit: contain; max-height: 72vh; padding: clamp(8px, 2vw, 20px); }
-@keyframes develop { from { filter: sepia(0.6) blur(4px); opacity: 0.4; } }
 .lead figcaption, .figure figcaption { font-size: var(--step--1); color: var(--ink-2); max-width: 90ch; }
 .figTitle { color: var(--ink); }
 .credit a { color: inherit; }
 
-.entryGrid { display: grid; grid-template-columns: minmax(0, 46rem) minmax(220px, 280px); gap: clamp(28px, 5vw, 72px); justify-content: space-between; align-items: start; }
+.entryGrid { display: grid; grid-template-columns: minmax(0, 46rem) minmax(220px, 280px); gap: clamp(28px, 5vw, 72px); justify-content: space-between; align-items: start; margin-top: clamp(20px, 3vw, 36px); }
 .entryMain { display: grid; gap: 20px; font-size: var(--step-sub); line-height: 1.75; min-width: 0; }
 .entryMain > p { margin: 0; }
-.entryAside { position: sticky; top: calc(var(--hdr-vis) + 22px); transition: top 0.35s var(--ease); display: grid; gap: 22px; }
+.entryAside { position: sticky; top: calc(var(--hdr-vis) + 22px); display: grid; gap: 22px; padding-left: 18px; box-shadow: var(--cut-left); }
 :global(html[data-hdr="hidden"]) .entryAside { --hdr-vis: 0px; }
-/* the phone's versions of the rail: a closed "On this page" above the article, and the rail's other three blocks at its end
+/* the phone's versions of the rail: a closed "On this page" above the article, and the rail's other blocks at its end
    (EntryView holds both; each is hidden where it does not belong) */
 .contentsFold, .entryExtras { display: none; }
 @media (max-width: 980px) {
@@ -133,19 +96,19 @@
   .contentsFold { display: block; }
   .entryExtras { display: grid; gap: 22px; padding-top: var(--space-5); box-shadow: var(--cut-over); }
 }
-.contentsFold { background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
-.contentsFold > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) var(--space-4); cursor: pointer; list-style: none; }
+.contentsFold { border-block: 1px solid var(--rule); }
+.contentsFold > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) 2px; cursor: pointer; list-style: none; }
 .contentsFold > summary::-webkit-details-marker { display: none; }
-.contentsFold > summary::before { content: "▸"; color: var(--accent); display: inline-block; transition: rotate var(--dur-quick) var(--ease); }
-.contentsFold[open] > summary::before { rotate: 90deg; }
-.contentsFold > .contents { padding: 0 var(--space-4) var(--space-3); }
+.contentsFold > summary::before { content: "▸"; color: var(--accent); display: inline-block; }
+.contentsFold[open] > summary::before { content: "▾"; }
+.contentsFold > .contents { padding: 0 2px var(--space-3); }
 .contentsFold .contents ol { margin-top: 0; }
 
-/* the opening stands in the header, beside the niche on a computer, with the note button under it */
+/* the opening, under the title, with the note button under it; its first letter a red initial */
 .hookBlock { display: grid; gap: var(--space-2); max-width: 46rem; }
 .hook { font-size: var(--step-1); line-height: 1.6; }
-.hook::first-letter { float: left; font-family: var(--f-display); font-size: 4.2em; line-height: 0.8; margin: 0.08em 0.1em 0 0; color: var(--accent); }
-.h2 { font-size: var(--step-2); margin-top: 18px; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
+.hook::first-letter { float: left; font-family: var(--f-title); font-size: 4.2em; line-height: 0.8; margin: 0.08em 0.1em 0 0; color: var(--accent); }
+.h2 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-2); margin-top: 18px; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
 /* a section's heading with its note button at the right end of the same line; a written note opens beneath them. The pull of
    the margin keeps the heading close to its text, as the grid gap of the article would otherwise leave it floating. */
 .sectionHead { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: baseline; column-gap: var(--space-3); row-gap: var(--space-2); margin-bottom: calc(var(--space-2) * -1); }
@@ -155,7 +118,7 @@
 .h3 { font-size: var(--step-1); }
 .inGr { font-family: var(--f-greek); font-size: 1.04em; }
 .cite { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-.cite:hover { color: var(--accent); }
+.cite:hover { color: var(--rubric); }
 .wikiLink { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--blue); text-underline-offset: 3px; }
 .list { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
 .list li::marker { color: var(--accent); }
@@ -165,38 +128,37 @@
 .claim[data-cert="well"] { box-shadow: var(--inlay-left-blue); }
 .claim :global(.tag) { margin-right: 6px; vertical-align: 0.15em; }
 
-.quote { margin: 12px 0; padding: 26px clamp(18px, 4vw, 36px); background: var(--field); box-shadow: var(--field-edge); display: grid; gap: 12px; position: relative; }
-.quote::before { content: "“"; position: absolute; top: -18px; left: 18px; font-family: var(--f-display); font-size: 4.5rem; line-height: 1; color: var(--accent); }
+/* a quotation: the Greek, its English in italic and its source, set in from a red rule */
+.quote { margin: 12px 0; padding: 4px 0 4px clamp(18px, 3vw, 28px); box-shadow: var(--inlay-left); display: grid; gap: 12px; }
 .quoteGr { margin: 0; font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.55; white-space: pre-line; }
 .quoteTr { margin: 0; font-style: italic; color: var(--ink-2); }
 .quote figcaption { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink-2); }
 .quote figcaption a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
 .quote figcaption a:hover { text-decoration-color: var(--accent); }
 
-.dyk { margin: 8px 0; padding: 18px 22px 18px 58px; position: relative; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); display: grid; gap: 6px; font-size: var(--step-0); }
+/* "Did you know?": a note between two hairlines, a small red amphora in its margin as a printer's ornament */
+.dyk { margin: 8px 0; padding: 16px 0 16px 40px; position: relative; border-block: 1px solid var(--rule); display: grid; gap: 6px; font-size: var(--step-0); }
 .dyk :global(.label) { color: var(--accent); }
 .dyk p { margin: 0; }
 .dyk a { color: inherit; }
-/* a small amphora in the margin of the box, laid in gold and cut into the stone */
-.dyk::before { content: ""; position: absolute; left: 20px; top: 20px; width: 22px; height: 30px; background: var(--gilt); filter: var(--gilt-cut);
+.dyk::before { content: ""; position: absolute; left: 4px; top: 18px; width: 18px; height: 25px; background: var(--accent);
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat; }
 
 .timelineBlock { display: grid; gap: var(--space-2); margin: var(--space-4) 0 var(--space-2); }
 .timeline { list-style: none; margin: 0; padding: 0 0 0 24px; display: grid; gap: 14px; box-shadow: var(--cut-left); font-size: var(--step-0); line-height: 1.5; }
 .timeline li { position: relative; display: grid; gap: 2px; }
-.timeline li::before { content: ""; position: absolute; left: -29px; top: 6px; width: 12px; height: 12px; border-radius: var(--radius-round); background: var(--gem-shine), var(--inlay); box-shadow: var(--inlay-edge); }
+.timeline li::before { content: ""; position: absolute; left: -28.5px; top: 7px; width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--bg); border: 2px solid var(--accent); }
 .when { font-family: var(--f-label); letter-spacing: 0.05em; color: var(--accent); font-size: var(--step--1); }
 
 .figure { margin: 8px 0; display: grid; gap: 8px; }
-.figure img { width: 100%; height: auto; border-radius: var(--radius); }
-/* the pictures sit in a cut frame (the pictures themselves are untouched) */
-.featuredPic, .lead img, .figure img { background: var(--bg-deep); box-shadow: var(--frame-line); }
+.figure img { width: 100%; height: auto; border: 1px solid var(--rule); }
 
-.readIt ul, .related ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 12px; }
-.readIt a, .related a { display: grid; gap: 4px; height: 100%; padding: 16px 18px; text-decoration: none; background: var(--slab); box-shadow: var(--slab-edge); font-size: var(--step-0); line-height: 1.45; transition: background-color var(--dur) ease; }
-.readIt a:hover, .related a:hover { background-color: var(--slab-lit); }
-.readIt b, .related b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); }
+/* "Read it yourself" and related entries: catalogue entries, each under a hairline, the title red under the hand */
+.readIt ul, .related ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0 24px; }
+.readIt a, .related a { display: grid; gap: 4px; height: 100%; padding: 14px 2px 16px; text-decoration: none; box-shadow: var(--cut-over); font-size: var(--step-0); line-height: 1.45; }
+.readIt b, .related b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
+.readIt a:hover b, .related a:hover b { color: var(--rubric); }
 .readIt small { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.04em; margin-top: auto; }
 .related span:last-child { color: var(--ink-2); }
 
@@ -208,20 +170,19 @@
 .checked { margin-top: 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--cut-over); padding-top: 14px; }
 @media (max-width: 700px) { .sourceCols { grid-template-columns: minmax(0, 1fr); } }
 
-.contents ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; box-shadow: var(--cut-left); }
-.contents a { display: block; padding: 4px 0 4px 12px; margin-left: 0; border-left: 2px solid transparent; text-decoration: none; font-size: var(--step-0); color: var(--ink-2); transition: color 0.2s, border-color 0.2s; }
-.contents a:hover { color: var(--ink); }
+.contents ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; }
+.contents a { display: block; padding: 4px 0 4px 12px; margin-left: 0; border-left: 2px solid transparent; text-decoration: none; font-size: var(--step-0); color: var(--ink-2); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
+.contents a:hover { color: var(--rubric); }
 .contents a[aria-current="location"] { color: var(--ink); border-left-color: var(--accent); }
 .certKey { display: grid; gap: 8px; font-size: var(--step--1); color: var(--ink-2); }
 .certKey p { margin: 0; display: grid; gap: 4px; justify-items: start; }
 
 /* ---------------------------------------------------------------- the reader's own notes on an entry */
 /* the note button is faint until the hand is on it (or it has focus); on a phone it is just the pencil (its label is read out) */
-button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink); opacity: 0.6; transition: opacity var(--dur-quick) var(--ease), background-color var(--dur) var(--ease); }
-button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; background: var(--slab-lit); }
+button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink); opacity: 0.6; transition: opacity var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease); }
+button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; color: var(--rubric); }
 @media (max-width: 760px) { .noteWord { display: none; } }
-.sectionNote { padding: 12px 16px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: 0 var(--radius) var(--radius) 0; font-size: var(--step-0); animation: noteIn calc(0.35s / var(--tempo)) var(--ease) backwards; }
-@keyframes noteIn { from { opacity: 0; transform: translateY(-4px); } }
+.sectionNote { padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); font-size: var(--step-0); animation: ink-in var(--dur) var(--ease) backwards; }
 @media (prefers-reduced-motion: reduce) { .sectionNote { animation: none; } }
 .markersKey { position: fixed; right: 26px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
 .onMap { display: grid; gap: 4px; }
@@ -241,7 +202,5 @@ button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; background: var
 .srcSep { color: var(--accent); margin-right: 1px; }
 .srcMark a:hover, .srcMark a:focus-visible { text-decoration: underline; }
 
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.panelIn, .quote, .dyk { outline: var(--moulding); outline-offset: var(--moulding-in); }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .panelIn ul { gap: 0; } .panelIn li a { display: inline-block; padding-block: 11.5px; } }

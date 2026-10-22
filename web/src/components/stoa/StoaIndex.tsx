@@ -1,9 +1,8 @@
 "use client";
 /**
- * The Painted Stoa's front: a colonnade of painted panels, one per category, each listing its
- * entries (and one more, "Reference", listing the library's own reference pages), with a search across every entry
- * directly on top of it, whose results stand in the colonnade's place while a search is typed, and a featured entry that
- * changes each day, below it.
+ * The Painted Stoa's front, set as a printed index: one part per category, each listing its entries (and one more,
+ * "Reference", listing the library's own reference pages), with a search across every entry directly on top of it, whose
+ * results stand in the index's place while a search is typed, and below it the entry of the day with its photograph.
  * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
  * search also looks through, are fetched only when a search begins, so the page itself stays light.
  */
@@ -14,7 +13,8 @@ import { fold } from "@/lib/catalog";
 import { inline, plain } from "@/wiki/markup";
 import { CATEGORIES, type CategoryId } from "@/wiki/types";
 import type { EntryCard } from "@/wiki/cards";
-import { IMAGES, srcSet } from "@/wiki/images";
+import Plate from "@/components/plate/Plate";
+import { photo } from "@/lib/photos";
 import styles from "./Stoa.module.css";
 
 const text = (s: string) => plain(inline(s));
@@ -54,7 +54,6 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
   // one entry featured each day, the same for everyone (by date, not at random); the built page shows the first
   const day = useSyncExternalStore(noSubscribe, () => Math.floor(Date.now() / 864e5), () => 0);
   const featured = entries.length ? [...entries].sort((a, b) => a.slug.localeCompare(b.slug))[day % entries.length] : null;
-  const pic = featured?.image ? IMAGES[featured.image] : undefined;
 
   return (
     <div className={`wrap ${styles.index}`}>
@@ -89,7 +88,7 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             );
           })}
           {reference.length > 0 && (
-            // the library's own reference pages (Authors, Eras, Editions…) are one more panel of the colonnade
+            // the library's own reference pages (Authors, Eras, Editions…) are the index's last part
             <li id="reference" className={styles.panel} style={{ "--i": CATEGORIES.length } as React.CSSProperties}>
               <nav className={styles.panelIn} aria-labelledby="ref-h">
                 <h2 id="ref-h">Reference</h2>
@@ -102,18 +101,16 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
       )}
 
       {featured && !n && (
-        <Link href={`/stoa/${featured.slug}`} className={styles.featured} transitionTypes={["page-turn"]} data-pic={pic ? "" : undefined}>
-          <span className={styles.featuredText}>
-            <span className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</span>
-            <b>{featured.title}</b>
-            <span className={styles.featuredHook}>{text(featured.hook)}</span>
-            <span className={styles.featuredGo}>Read the entry →</span>
-          </span>
-          {pic
-            // eslint-disable-next-line @next/next/no-img-element -- self-hosted, sized files; no image service
-            ? <img className={styles.featuredPic} data-whole={pic.height > pic.width * 0.9 ? "" : undefined} src={`/images/${pic.file}`} srcSet={srcSet(pic)} sizes="(max-width: 760px) 100vw, 420px" alt={pic.alt} title={`${pic.title} · ${pic.sourceName} · ${pic.licence}`} width={pic.width} height={pic.height} loading="lazy" decoding="async" />
-            : null}
-        </Link>
+        // the entry of the day: its title and opening on the left, its photograph as a plate with its credit on the right
+        <section className={styles.featured} aria-labelledby="featured-h" data-pic={featured.image && photo(featured.image) ? "" : undefined}>
+          <div className={styles.featuredText}>
+            <p className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</p>
+            <h2 id="featured-h"><Link href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>{featured.title}</Link></h2>
+            <p className={styles.featuredHook}>{text(featured.hook)}</p>
+            <Link className={styles.featuredGo} href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>Read the entry →</Link>
+          </div>
+          {featured.image && <Plate id={featured.image} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
+        </section>
       )}
 
       {foot}

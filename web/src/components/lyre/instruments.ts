@@ -14,9 +14,9 @@
  * The plectrum hangs from each on a ribbon, as the sources say it did when not in use. The colours and ornaments are
  * the site's own.
  *
- * Each instrument is drawn once, in its own colours with a soft light from above (`paintAlbedo`), and once more as the
- * glints its edges would catch from the left and from the right (`paintSheen`). The page then lights these with the
- * torch (draw.ts, `lightBody`) whenever the light moves, which costs a few copies of the picture, not a redrawing.
+ * Each instrument is drawn once, in its own colours with a soft light from above (`paintAlbedo`), and the page copies
+ * that picture under its strings each frame (draw.ts, `inkBody`). (The painters can still draw an edge's glints, the
+ * `sheen` they are given; on the printed page they are always given none: nothing glints or glows.)
  */
 
 export type RGB = [number, number, number];
@@ -397,10 +397,9 @@ function bridgeAndTail(g: G2, d: Design, S: Shape, sheen: Sheen) {
 function plectrum(g: G2, d: Design, x0: number, y0: number, x1: number, y1: number, sheen: Sheen) {
   const f = d.finish;
   if (!sheen) {
-    // the cord: a soft ribbon falling in a curve, with its shadow
+    // the cord: a soft ribbon falling in a curve (no shadow on the page: the plate prints the object alone)
     const c = bez([x0, y0], [x0 + 0.03, y0 + (y1 - y0) * 0.25], [x1 + 0.01, y1 - (y1 - y0) * 0.45], [x1, y1], 20);
     const { L, R } = band(c, (t) => 0.011 - 0.004 * t);
-    g.save(); g.translate(0.006, 0.01); fillBand(g, L, R); g.fillStyle = "rgba(0,0,0,0.3)"; g.fill(); g.restore();
     fillBand(g, L, R);
     const gr = g.createLinearGradient(x0, y0, x1, y1);
     gr.addColorStop(0, rgb(shade(f.ribbon, -0.35))); gr.addColorStop(0.4, rgb(shade(f.ribbon, 0.1))); gr.addColorStop(1, rgb(shade(f.ribbon, -0.3)));
@@ -437,9 +436,6 @@ function studs(g: G2, ps: P[], r: number, c: RGB, sheen: Sheen) {
 function arm(g: G2, c: P[], w: (t: number) => number, base: RGB, tip: RGB, ringed: boolean, seed: number, sheen: Sheen) {
   const { L, R } = band(c, w);
   if (!sheen) {
-    // the arm's shadow on what is behind it
-    fillBand(g, L.map(([x, y]) => [x + 0.008, y + 0.012] as P), R.map(([x, y]) => [x + 0.008, y + 0.012] as P));
-    g.fillStyle = "rgba(0,0,0,0.25)"; g.fill();
     fillBand(g, L, R);
     const [a, b] = [c[0], c[c.length - 1]];
     const gr = g.createLinearGradient(a[0], a[1], b[0], b[1]);
@@ -485,8 +481,6 @@ function shell(g: G2, d: Design, cx: number, cy: number, rx: number, ry: number,
     g.strokeStyle = sheen.c(0.5); g.lineWidth = 0.006; g.stroke();
     return;
   }
-  // its shadow below
-  g.beginPath(); g.ellipse(cx + 0.01, cy + 0.03, rx * 1.03, ry, 0, 0, Math.PI * 2); g.fillStyle = "rgba(0,0,0,0.35)"; g.fill();
   // the rim: a dome of shell, mottled, in plates
   g.beginPath(); g.ellipse(cx, cy, rx, ry, 0, 0, Math.PI * 2);
   const dome = g.createRadialGradient(cx - rx * 0.25, cy - ry * 0.4, rx * 0.1, cx, cy, rx * 1.05);
@@ -601,8 +595,6 @@ function paintKithara(g: G2, d: Design, S: Shape, tops: number[], sheen: Sheen, 
     gg.closePath();
   };
   if (!sheen) {
-    // the frame's shadow on the wall
-    g.save(); g.translate(0.012, 0.016); path(g); g.fillStyle = "rgba(0,0,0,0.3)"; g.fill(); g.restore();
     path(g);
     const col = o.gilded ? mix(body, f.trim, 0.55) : body;
     const gr = g.createLinearGradient(-K.ob, 0, K.ob, 0);
@@ -815,9 +807,4 @@ export function stringTops(S: Shape, n: number) {
 /** The instrument in its own colours, under a soft light from above. `g` is set to its units. */
 export function paintAlbedo(g: G2, d: Design, S: Shape) {
   paintKind(g, d, S, stringTops(S, d.n), null);
-}
-
-/** Its glints: where its edges would catch a light from the left (`side` -1) or from the right (1). */
-export function paintSheen(g: G2, d: Design, S: Shape, side: -1 | 1) {
-  paintKind(g, d, S, stringTops(S, d.n), { side, c: (a) => `rgba(255,236,196,${a})` });
 }

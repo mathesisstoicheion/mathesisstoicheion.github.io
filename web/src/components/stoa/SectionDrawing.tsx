@@ -1,9 +1,9 @@
 /**
- * The Kerameikos' opening picture: a section drawing, the way excavators draw the side of a trench,
- * layer by layer, each deposit with its own hatching, carved in relief: the boundaries are grooves cut
- * in the stone, the pits sunk hollows, the jar and the sherds gilded inlays. It is an illustration, not a
- * real site. The grooves cut themselves on arrival (visible at rest, so reduced motion shows the finished
- * drawing), and each numbered layer links to its part of the page. On a phone the drawing keeps a size its labels can be read
+ * The Kerameikos' opening picture: a section drawing, the way excavators draw the side of a trench and
+ * an excavation report prints it, layer by layer, each deposit with its own hatching in brown ink, the
+ * boundaries fine black lines, the finds (the jar, the sherds) in red. It is an illustration, not a real
+ * site. It inks in once (complete at rest, so reduced motion shows the finished drawing), and each
+ * numbered layer links to its part of the page. On a phone the drawing keeps a size its labels can be read
  * at and scrolls sideways, its right edge fading while there is more (Kerameikos.module.css).
  */
 import type { Layer } from "@/wiki/kerameikos";
@@ -51,8 +51,7 @@ const SHERDS = [[88, 128], [140, 146], [388, 120], [452, 150], [530, 128], [600,
 
 export default function SectionDrawing({ layers }: { layers: Layer[] }) {
   const labelX = 944;
-  // the section's outline and the boundaries between deposits: drawn twice, a little lower first for each groove's lit
-  // lower lip, then the groove itself over it
+  // the section's outline and the boundaries between deposits
   const cuts = (
     <>
       <path d={`M ${smooth(B[0])} L ${W} ${BOTTOM} L 0 ${BOTTOM} Z`} className={styles.frame} pathLength={1} />
@@ -72,18 +71,15 @@ export default function SectionDrawing({ layers }: { layers: Layer[] }) {
           <pattern id="kd-loose" width="12" height="12" patternUnits="userSpaceOnUse"><path d="M2 3l3 2M8 9l2-3M6 1l1 2" /></pattern>
         </defs>
 
-        {/* the deposits, each with its hatching, then the grooves between them cut in */}
+        {/* the deposits, each with its hatching, then the lines between them */}
         {["dots", "dash", "pebble", "hatch", "cross"].map((p, i) => (
           <path key={p} d={band(i)} className={`${styles.fill} ${styles[`f${i}`] ?? ""}`} style={{ "--i": i } as React.CSSProperties} fill={`url(#kd-${p})`} />
         ))}
-        <g className={styles.lip} transform="translate(0 2.4)">{cuts}</g>
         {cuts}
 
         {/* the wall */}
         <g className={styles.objects} style={{ "--i": 5 } as React.CSSProperties}>
-          {STONES.map(([x, y, w, h], i) => <rect key={i} x={x} y={y} width={w} height={h} rx={8} className={styles.stone} />)}
-          {/* light caught along each block's top */}
-          <path d={STONES.map(([x, y, w]) => `M ${x + 8} ${y + 1.8} H ${x + w - 8}`).join(" ")} className={styles.stoneLit} />
+          {STONES.map(([x, y, w, h], i) => <rect key={i} x={x} y={y} width={w} height={h} rx={3} className={styles.stone} />)}
         </g>
         {/* the grave: its cut, and a storage jar laid on its side */}
         <g className={styles.objects} style={{ "--i": 6 } as React.CSSProperties}>

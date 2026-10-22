@@ -1,7 +1,8 @@
-/* ================================================================ the Kerameikos (archaeology) (Stone and torch) */
-/* The drawing is a sunk field carved in relief, the finds and the site labels are slabs, the picture thumbnails sit in
-   cut frames, the trench's soil bands are courses of dark stone. The ranging pole is artwork and keeps its own colours. */
-/* Every animation here starts from a hidden "from" and rests on the finished state, so with
+/* ================================================================ the Kerameikos (archaeology), as a printed excavation report */
+/* The section drawing is a figure as an excavation report prints one: each deposit hatched in brown ink, the boundaries
+   between them fine black lines, the finds (the jar, the sherds) in red, the layers' numbers in rings. Below it the page is
+   the trench, dug from the topsoil down: each layer a section under an ink rule, its number in the same ring, its finds a
+   catalogue with their photographs in hairline frames. The ranging pole stands in the margin. Everything inks in once; with
    reduced motion (animation: none) the page is simply complete. */
 
 .page { padding-top: var(--after-head); }
@@ -11,10 +12,7 @@
   margin: 0; display: grid; grid-template-columns: minmax(0, 2.3fr) minmax(220px, 1fr); gap: 18px 36px; align-items: center;
 }
 .drawScroll { min-width: 0; }
-.drawing svg {
-  width: 100%; height: auto; display: block; background: var(--field);
-  box-shadow: var(--field-edge); border-radius: var(--radius);
-}
+.drawing svg { width: 100%; height: auto; display: block; border: 1px solid var(--rule); }
 /* a phone: the drawing keeps a size its labels and numbers can be read at (it is not cropped or changed) and scrolls
    sideways, its right edge fading while there is more to see */
 @media (max-width: 760px) {
@@ -24,156 +22,120 @@
 }
 .drawing figcaption { grid-column: 1; font-size: var(--step--1); color: var(--ink-2); max-width: 72ch; }
 .drawing figcaption b { color: var(--ink); font-weight: 600; }
-.legend { grid-column: 2; grid-row: 1 / span 2; list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.legend a { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 8px 10px; text-decoration: none; border-radius: var(--radius); transition: background-color 0.2s; }
-.legend a:hover { background-color: var(--slab-lit); }
-.legend b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); line-height: 1.15; }
+.legend { grid-column: 2; grid-row: 1 / span 2; list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.legend a { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 8px 0; text-decoration: none; color: var(--ink); }
+.legend a:hover b, .legend a:focus-visible b { color: var(--rubric); }
+.legend b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .legend small { grid-column: 2; color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; font-size: var(--step--2); }
-.legend li[aria-hidden] { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 4px 10px; }
+.legend li[aria-hidden] { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 4px 0; }
+/* a layer's number: a ring of ink, its figure in Didot, as on the drawing */
 .num {
   grid-row: span 2; width: 30px; height: 30px; border-radius: var(--radius-round); display: grid; place-items: center;
-  font-family: var(--f-display); font-size: var(--step-0); background: var(--slab); box-shadow: var(--slab-edge);
+  font-family: var(--f-title); font-size: var(--step-0); border: 1px solid var(--ink);
 }
-.num.natural { background: var(--field); box-shadow: var(--field-edge); color: var(--ink-2); }
+.num.natural { border-color: var(--rule); color: var(--ink-2); }
 
-/* tooling: each deposit's own texture, pecked and chiselled into the stone (a quiet stone tone, not ink) */
+/* each deposit's own hatching, in the brown ink */
 .drawing pattern circle, .drawing pattern ellipse { fill: var(--ink-3); }
 .drawing pattern path { stroke: var(--ink-3); stroke-width: 1; fill: none; }
-.fill { opacity: 0.8; animation: kd-fade calc(0.9s / var(--tempo)) ease backwards; animation-delay: calc((500ms / var(--tempo)) + var(--i, 0) * (170ms / var(--tempo))); }
+.fill { opacity: 0.8; animation: kd-ink var(--ink-in) var(--ease) backwards; animation-delay: calc(400ms + var(--i, 0) * 140ms); }
 .f4 { opacity: 0.55; }
-@keyframes kd-fade { from { opacity: 0; } }
+@keyframes kd-ink { from { opacity: 0; } }
 
-/* the cuts: the section's outline and the boundaries between deposits are grooves in the stone, cut on arrival; then
-   the lit lower lip of each (the same lines, drawn a little lower, under the grooves) comes up as the light catches it */
-.line, .frame, .pit { fill: none; stroke: var(--cut-deep); stroke-width: 3; stroke-linecap: round; stroke-dasharray: 1; stroke-dashoffset: 0; }
-.frame { stroke-width: 3.6; }
-.line, .frame { animation: kd-draw calc(1.3s / var(--tempo)) cubic-bezier(0.6, 0, 0.2, 1) both; animation-delay: calc(var(--i, 0) * (170ms / var(--tempo))); }
-.lip { animation: kd-fade var(--dur-slow) var(--ease) var(--dur-slow) backwards; }
-.lip .line, .lip .frame { stroke: var(--lip-hi); stroke-width: 1.6; animation: none; }
-/* the looters' pit: a dark hollow cut down through the layers, a shadowed edge round it and a lit rim; its loose
-   fill glints with gilded flecks */
-.pit { stroke: var(--lip-hi); stroke-width: 2; animation: kd-draw calc(1.1s / var(--tempo)) cubic-bezier(0.6, 0, 0.2, 1) calc(1.7s / var(--tempo)) both; }
-@keyframes kd-draw { from { stroke-dashoffset: 1; } }
-.pitBg { fill: var(--bg-deep); stroke: var(--cut-deep); stroke-width: 6; stroke-linejoin: round; animation: kd-fade calc(0.6s / var(--tempo)) ease calc(2.2s / var(--tempo)) backwards; }
-.pitFill { opacity: 0.9; animation: kd-fade calc(0.6s / var(--tempo)) ease calc(2.3s / var(--tempo)) backwards; }
-.drawing pattern#kd-loose path { stroke: var(--accent); }
+/* the section's outline and the boundaries between deposits: fine black lines */
+.line, .frame { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; animation: kd-ink var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 140ms); }
+.frame { stroke-width: 2; }
+/* the looters' pit: a cut down through the layers, its loose fill hatched across them */
+.pitBg { fill: var(--bg); animation: kd-ink var(--ink-in) var(--ease) 1.1s backwards; }
+.pitFill { opacity: 0.9; animation: kd-ink var(--ink-in) var(--ease) 1.1s backwards; }
+.pit { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-dasharray: 7 4; animation: kd-ink var(--ink-in) var(--ease) 1.1s backwards; }
+.drawing pattern#kd-loose path { stroke: var(--ink-2); }
 
-/* the wall: small blocks standing proud, dark joints round them and light caught along their tops; the grave: a
-   shallower hollow with a lit rim, its jar a gilded inlay laid in it (a darker gilt at its edge); the sherds gilded chips */
-.objects { animation: kd-set calc(0.7s / var(--tempo)) var(--ease) backwards; animation-delay: calc((700ms / var(--tempo)) + var(--i, 0) * (170ms / var(--tempo))); }
-@keyframes kd-set { from { opacity: 0; transform: translateY(-6px); } }
-.stone { fill: color-mix(in srgb, var(--surface-2) 80%, var(--ink-3)); stroke: var(--cut-deep); stroke-width: 1.8; }
-.stoneLit { fill: none; stroke: var(--lip-hi); stroke-width: 1.6; stroke-linecap: round; }
-.cut { fill: var(--hollow); stroke: var(--lip-hi); stroke-width: 2; stroke-linejoin: round; }
-.pot { fill: var(--accent); stroke: color-mix(in srgb, var(--accent) 45%, var(--bg-deep)); stroke-width: 1.6; stroke-linejoin: round; stroke-linecap: round; }
-.pot + .pot { fill: none; stroke: var(--accent); stroke-width: 2.6; }   /* the handles and the mouth: gilded wire */
-.sherd { fill: var(--accent); stroke: color-mix(in srgb, var(--accent) 45%, var(--bg-deep)); stroke-width: 1; }
+/* the wall: its blocks drawn in outline; the grave's cut a line; the jar laid in it and the sherds, the finds, in red */
+.objects { animation: kd-ink var(--ink-in) var(--ease) backwards; animation-delay: calc(600ms + var(--i, 0) * 140ms); }
+.stone { fill: var(--bg-2); stroke: var(--ink); stroke-width: 1.2; }
+.cut { fill: none; stroke: var(--ink); stroke-width: 1.4; stroke-linejoin: round; }
+.pot { fill: var(--rubric); stroke: var(--rubric); stroke-width: 1; stroke-linejoin: round; stroke-linecap: round; }
+.pot + .pot { fill: none; stroke: var(--rubric); stroke-width: 2.2; }   /* the handles and the mouth */
+.sherd { fill: var(--rubric); stroke: none; }
 
-/* the datum line and the scale: fine lines in a quiet stone tone */
+/* the datum line and the scale: fine lines in the brown ink */
 .datum { stroke: var(--ink-3); stroke-width: 1; stroke-dasharray: 10 6; }
 .datumMark { fill: var(--ink); }
-.scale path { stroke: var(--ink-3); stroke-width: 1.6; fill: none; }
-.note { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; fill: var(--ink-2); paint-order: stroke; stroke: var(--bg-deep); stroke-width: 5px; stroke-linejoin: round; }
+.scale path { stroke: var(--ink); stroke-width: 1.2; fill: none; }
+.note { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; fill: var(--ink-2); paint-order: stroke; stroke: var(--bg); stroke-width: 5px; stroke-linejoin: round; }
 
-/* the layers' numbers: small bosses of stone ringed with bronze, their numerals cut in (a dark edge round each) */
+/* the layers' numbers on the drawing: rings of ink on the paper, red under the hand */
 .ctx .ctxHit { fill: transparent; stroke: none; }
-.ctx circle:not(.ctxHit) { fill: color-mix(in srgb, var(--surface-2) 80%, var(--ink-3)); stroke: color-mix(in srgb, var(--accent) 60%, var(--bg-deep)); stroke-width: 2.4; transition: fill 0.2s; }
-.ctx text { font-family: var(--f-display); font-size: var(--step-0); fill: var(--ink); paint-order: stroke; stroke: var(--cut-deep); stroke-width: 2; stroke-linejoin: round; pointer-events: none; }
-.ctx:hover circle:not(.ctxHit), .ctx:focus-visible circle:not(.ctxHit) { fill: var(--accent); }
-.ctx:hover text, .ctx:focus-visible text { fill: var(--accent-ink); }
+.ctx circle:not(.ctxHit) { fill: var(--bg); stroke: var(--ink); stroke-width: 1.4; transition: fill var(--dur-quick) var(--ease), stroke var(--dur-quick) var(--ease); }
+.ctx text { font-family: var(--f-title); font-size: var(--step-0); fill: var(--ink); pointer-events: none; }
+.ctx:hover circle:not(.ctxHit), .ctx:focus-visible circle:not(.ctxHit) { fill: var(--rubric); stroke: var(--rubric); }
+.ctx:hover text, .ctx:focus-visible text { fill: var(--bg); }
 .ctx { cursor: pointer; outline: none; }
 
-/* ------------------------------------------------ the trench: one band per layer, each a course of the wall's dark,
-   warm stone cut in section, with the wall's own texture: a little different in warmth and darkness from the next,
-   and dark enough for the finds' slabs to stand out on it */
+/* ------------------------------------------------ the trench: one section per layer, from the topsoil down */
 .trench { position: relative; margin-top: 56px; }
-.layer {
-  --soil: color-mix(in srgb, var(--surface) 55%, var(--bg-2));   /* the topsoil: dark humus */
-  position: relative; padding-block: 56px 60px; scroll-margin-top: 70px;
-  /* a shadow gathered at the foot of each band, under the lit edge of the band below */
-  background: linear-gradient(transparent calc(100% - 14px), var(--groove)), var(--soil) var(--tex, none) 0 0 / 420px 420px;
-}
-.layer:nth-of-type(2) { --soil: color-mix(in srgb, var(--surface) 88%, var(--ochre-red)); }   /* clay: red-brown */
-.layer:nth-of-type(3) { --soil: color-mix(in srgb, var(--surface) 94%, var(--ink-3)); }      /* the wall's footings: grey stone */
-.layer:nth-of-type(4) { --soil: color-mix(in srgb, var(--surface) 86%, var(--bg-deep)); }    /* the grave's layer: darker */
-/* the boundary between two deposits is never straight: each band rises into the one above in a wave, and the wave's
-   edge catches the light (a lit lip, 2px deep: the lit wave under a plain one set 2px lower). Both carry the band's
-   texture, placed to line up with the band's own. */
-.layer::before, .layer::after {
-  content: ""; position: absolute; left: 0; right: 0; top: -13px; height: 14px;
-  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V8C30 2 55 12 90 7S150 1 185 8 225 10 240 6V14Z'/%3E%3C/svg%3E") 0 0 / 240px 14px repeat-x;
-          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 14' preserveAspectRatio='none'%3E%3Cpath d='M0 14V8C30 2 55 12 90 7S150 1 185 8 225 10 240 6V14Z'/%3E%3C/svg%3E") 0 0 / 240px 14px repeat-x;
-}
-.layer::before { background: linear-gradient(var(--lip-hi), var(--lip-hi)), var(--soil) var(--tex, none) 0 13px / 420px 420px; }
-.layer::after { translate: 0 2px; background: var(--soil) var(--tex, none) 0 11px / 420px 420px; }
-.layer.natural { --soil: color-mix(in srgb, var(--surface) 92%, var(--ochre)); padding-bottom: 80px; }   /* the natural subsoil: yellow-brown */
+.layer { position: relative; padding-block: 0 56px; scroll-margin-top: 70px; }
+.layer.natural { padding-bottom: 80px; }
 .layerIn { display: grid; gap: 26px; }
-.layerHead { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: start; }
-.layerHead h2 { font-size: var(--step-3); line-height: 1.05; }
+.layerHead { display: grid; grid-template-columns: auto 1fr; gap: 20px; align-items: start; padding-top: 22px; border-top: 1px solid var(--ink); }
+.layerHead h2 { font-family: var(--f-title); font-size: var(--step-3); line-height: 1.05; }
 .blurb { max-width: 68ch; color: var(--ink-2); margin-top: 8px; }
 .ctxLabel {
   width: 52px; height: 52px; border-radius: var(--radius-round); display: grid; place-items: center; margin-top: 6px;
-  background: var(--slab); font-family: var(--f-display); font-size: var(--step-2);
-  box-shadow: var(--slab-edge);
+  font-family: var(--f-title); font-size: var(--step-2); border: 1px solid var(--ink);
 }
-.ctxNatural { background: var(--field); box-shadow: var(--field-edge); color: var(--ink-2); }
+.ctxNatural { border-color: var(--rule); color: var(--ink-2); }
 .soon { font-style: italic; color: var(--ink-2); padding-left: 72px; }
 
-/* entries: finds laid out on a tray */
-.finds { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
-.finds li { animation-delay: calc(var(--j, 0) * (70ms / var(--tempo))); }
+/* the layer's finds: a catalogue, each entry under a hairline with its photograph in a hairline frame */
+.finds { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 0 28px; }
+.finds li { animation-delay: calc(var(--j, 0) * 70ms); }
 .card {
   display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: center; height: 100%;
-  padding: 12px; text-decoration: none; background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
+  padding: 14px 0; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
 }
-.card:hover { background-color: var(--slab-lit); }
-.card:hover b { color: var(--accent); }
-.thumb { width: 104px; height: 104px; overflow: hidden; border-radius: var(--radius); background: var(--bg-deep); box-shadow: var(--frame-line); display: grid; place-items: center; }
+.card:hover b, .card:focus-visible b { color: var(--rubric); }
+.thumb { width: 104px; height: 104px; overflow: hidden; background: var(--bg-2); border: 1px solid var(--rule); display: grid; place-items: center; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .thumb img.tallImg { object-fit: contain; padding: 4px; }
-.noImg { width: 60%; height: 60%; background: var(--ink-2); opacity: 0.35;
+.noImg { width: 60%; height: 60%; background: var(--ink-3); opacity: 0.5;
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M6 30q8-12 20-9l-3 6q-9-2-13 7z'/%3E%3C/svg%3E") center / contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M6 30q8-12 20-9l-3 6q-9-2-13 7z'/%3E%3C/svg%3E") center / contain no-repeat; }
 .cardText { display: grid; gap: 4px; }
-.cardText b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.1; transition: color 0.2s; }
+.cardText b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.1; transition: color var(--dur-quick) var(--ease); }
 .cardText span { font-size: var(--step--1); color: var(--ink-2); }
-.cardText small { font-family: var(--f-label); letter-spacing: 0.05em; font-size: var(--step--2); color: var(--accent); }
+.cardText small { font-family: var(--f-label); letter-spacing: 0.05em; font-size: var(--step--2); color: var(--rubric); }
 
-/* excavated sites: find labels, tied on with string through a small drilled hole (dark, its lower lip lit) */
-.sites { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px 12px; }
+/* the excavated sites, as a gazetteer: each with a map's ring for a site, its Greek name, its English and its count */
+.sites { list-style: none; margin: 0; padding: 0 0 0 72px; display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0 20px; }
 .sites a {
-  position: relative; display: grid; gap: 2px; height: 100%; align-content: center; padding: 10px 16px 10px 30px; text-decoration: none;
-  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
+  position: relative; display: grid; gap: 2px; height: 100%; align-content: center; padding: 12px 8px 12px 24px; text-decoration: none; color: var(--ink);
+  box-shadow: var(--cut-over);
 }
-.sites a::before { content: ""; position: absolute; left: 11px; top: 50%; width: 8px; height: 8px; margin-top: -4px; border-radius: var(--radius-round); background: var(--cut-deep); box-shadow: var(--ledge-lip); }
-.sites a:hover { background-color: var(--slab-lit); }
-.sites b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); }
+.sites a::before { content: ""; position: absolute; left: 4px; top: 50%; width: 9px; height: 9px; margin-top: -5px; border-radius: var(--radius-round); border: 1px solid var(--rubric); }
+.sites a:hover b, .sites a:focus-visible b { color: var(--rubric); }
+.sites b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 .sites span { font-size: var(--step--1); }
 .sites small { font-family: var(--f-label); letter-spacing: 0.04em; font-size: var(--step--2); color: var(--ink-2); }
 
-/* ------------------------------------------------ the ranging pole */
+/* ------------------------------------------------ the ranging pole, printed in the margin */
 .poleRail { position: absolute; top: 0; bottom: 0; left: max(10px, calc((100vw - var(--maxw)) / 2 - 18px)); width: 14px; z-index: 2; pointer-events: none; }
 .pole {
-  --p: 0; position: sticky; top: calc(var(--hdr-vis) + 42px); transition: top 0.35s var(--ease); height: min(58vh, 520px); width: 12px; border: 1px solid var(--rule-2); border-radius: var(--radius);
-  background: repeating-linear-gradient(180deg, var(--accent) 0 12.5%, var(--white-slip) 12.5% 25%);
-  box-shadow: 0 10px 20px -12px var(--shadow);
+  --p: 0; position: sticky; top: calc(var(--hdr-vis) + 42px); height: min(58vh, 520px); width: 10px; border: 1px solid var(--ink);
+  background: repeating-linear-gradient(180deg, var(--rubric) 0 12.5%, var(--bg) 12.5% 25%);
 }
 :global(html[data-hdr="hidden"]) .pole { --hdr-vis: 0px; }
-/* the marker: how far down the trench you have read */
-.poleMark {
-  position: absolute; left: -9px; top: calc(var(--p) * 100%); width: 30px; height: 2px; background: var(--ink);
-  transform: translateY(-1px); transition: top 0.12s linear;
-}
-.poleMark::after { content: ""; position: absolute; right: -8px; top: -5px; border: 6px solid transparent; border-left-color: var(--ink); }
+/* the marker: how far down the trench you have read (it follows the page as you scroll it, and nothing else moves it) */
+.poleMark { position: absolute; left: -9px; top: calc(var(--p) * 100%); width: 28px; height: 1px; background: var(--ink); }
+.poleMark::after { content: ""; position: absolute; right: -8px; top: -5px; border: 5px solid transparent; border-left-color: var(--ink); }
 
 @media (max-width: 1120px) {
   .poleRail { display: none; }
 }
 @media (max-width: 860px) {
   .drawing { grid-template-columns: minmax(0, 1fr); }
-  .legend { grid-column: 1; grid-row: auto; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .legend { grid-column: 1; grid-row: auto; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0 20px; }
   .finds, .sites, .soon { padding-left: 0; }
   .ctxLabel { width: 42px; height: 42px; font-size: var(--step-1); }
   .finds { grid-template-columns: minmax(0, 1fr); }

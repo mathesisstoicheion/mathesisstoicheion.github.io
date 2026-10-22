@@ -4,18 +4,19 @@
  * the computer keyboard (a key for each string, in order) or a MIDI keyboard (velocity sets how hard each string is
  * plucked), under a roll on which the notes of a surviving ancient melody come down to their strings, each with the
  * syllable sung to it.
- * Instead of the roll the melody can be read as modern sheet music (Sheet.tsx), a bead of light marking the note now
- * sounding; another marks the syllable in the words below.
+ * Instead of the roll the melody can be read as modern sheet music (Sheet.tsx), the note now sounding in red with a red
+ * mark beneath it; another marks the syllable in the words below.
  *
  * "Listen" plays the melody as a player might (record.ts: phrasing, a little rubato, no two plucks alike), handed to
  * the audio clock a moment ahead, so its rhythm stays even whatever the page is doing; the roll follows what is heard.
  * "Play along" lets you play it, and with "Wait for me" the roll waits at each note until you play it. What you play
- * rises from the strings as a trail of light, as on a MIDI visualiser. "Save a recording" writes the melody, played
+ * rises from the strings as a fading trail of red ink, as on a MIDI visualiser. "Save a recording" writes the melody, played
  * the same way, as a CD-quality WAV file.
  *
  * Nothing here waits on React while you play: the strings are rendered in a worker before the first touch (sound.ts),
  * every frame reads one mutable record, and the words, the caption and the score are lit by touching the elements
- * themselves. The instrument is painted once, lit by a lamp held above it (draw.ts).
+ * themselves. The instrument is painted once, in its own colours and evenly, as a coloured plate prints an object, and
+ * everything else is drawn in the page's own inks, so it reads on Paper and at Night (draw.ts).
  */
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Melody, MelodyNote, MelodyNotes } from "@/data/melodies/types";
@@ -27,7 +28,7 @@ import {
   type LyreString, type Tuning,
 } from "@/lib/lyre/tuning";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
-import { geometry, glints, lightBody, paintRoll, paintStrings, plate, stringX, type Flare, type Geom, type Lamp, type NoteLook, type Plate, type Trail } from "./draw";
+import { geometry, inkBody, paintRoll, paintStrings, plate, readInks, stringX, type Geom, type NoteLook, type Plate, type Trail } from "./draw";
 import { designFor, type Design } from "./instruments";
 import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
 import styles from "./Lyre.module.css";
@@ -94,7 +95,7 @@ interface Live {
   /** the last note that has sounded (listening) or reached the strings (playing along) */
   shown: number; sylPos: number;
   vib: Map<number, { a: number; t: number }>;
-  trails: Trail[]; flares: Flare[];
+  trails: Trail[];
   held: Map<string, { m: number; trail: Trail }>;
   pedal: boolean; pedalled: Set<number>;
   /** the key of a MIDI keyboard each string answers to, and the key of the computer's keyboard that plays each */
@@ -162,7 +163,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     mode, playing: false, tempo, wait, damping, view, room, vol,
     beat: -LEAD_BEATS, perf: [], t0: 0, sched: 0,
     next: 0, waiting: false, hits: new Set(), missed: new Set(), shown: -1, sylPos: -1,
-    vib: new Map(), trails: [], flares: [], held: new Map(), pedal: false, pedalled: new Set(),
+    vib: new Map(), trails: [], held: new Map(), pedal: false, pedalled: new Set(),
     places, keys,
     design, G: null, plate: null, laidOut: null, RH: 300, dirty: true, visible: true,
   });
@@ -241,7 +242,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     if (p < st.sylPos) { for (const e of els) e?.classList.remove(styles.sylNow, styles.sylPast); st.sylPos = -1; }
     for (let q = Math.max(0, st.sylPos); q < p; q++) { els[q]?.classList.remove(styles.sylNow); els[q]?.classList.add(styles.sylPast); }
     if (p >= 0) els[p]?.classList.add(styles.sylNow);
-    // the bead glides to the syllable now sung (straight there when it starts again or moves to a new line)
+    // the red mark goes to the syllable now sung
     const b = bead.current, e = p >= 0 ? els[p] : null;
     if (b) {
       if (!e) b.classList.remove(styles.beadOn);
@@ -268,10 +269,9 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       const k = st.strings.findIndex((s) => s.midi === n.m);
       const p = st.perf[i];
       if (k >= 0) st.vib.set(k, { a: 0.3 + 0.7 * (p?.strength ?? 0.6), t: performance.now() });
-      st.flares.push({ x: laneOf(n.m), at: performance.now(), s: p?.strength ?? 0.6 });
       caption(k, n.m);
     }
-  }, [caption, laneOf, sylTo]);
+  }, [caption, sylTo]);
 
   /** Playing along: does a string just played match a note that is due? */
   const check = useCallback((m: number) => {
@@ -283,12 +283,11 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       if (st.hits.has(i) || st.missed.has(i) || n.m !== m) continue;
       if (Math.abs(n.t - st.beat) <= HIT_WINDOW || (st.waiting && i === st.next)) {
         st.hits.add(i);
-        st.flares.push({ x: laneOf(m), at: performance.now(), s: 0.8 });
         if (st.waiting && i === st.next) st.waiting = false;
         break;
       }
     }
-  }, [laneOf]);
+  }, []);
 
   /** A string plucked by a person: its sound, its sway, a rising trail, and the play-along check. `i` is the string
    *  (-1 for a MIDI key the lyre has no string for); `holder` is what holds it down (a key, a finger), if anything. */
@@ -457,20 +456,22 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const st = S.current;
     const body = document.createElement("canvas"), bodyG = body.getContext("2d")!;
     const face = getComputedStyle(document.documentElement).getPropertyValue("--f-greek").trim() || "serif";
-    let bodyKey = "", W = 0, LH = 0, dpr = 1;
+    let inked = false, W = 0, LH = 0, dpr = 1;
+    // the page's inks, read again whenever Paper or Night changes (chosen in Settings, or by the device)
+    let inks = readInks();
+    const reink = () => { inks = readInks(); st.dirty = true; };
+    const themed = new MutationObserver(reink);
+    themed.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+    const dark = matchMedia("(prefers-color-scheme: dark)");
+    dark.addEventListener("change", reink);
 
-    let later = 0;
     const layout = () => {
       if (!W) return;
       st.G = geometry(W, LH, st.design);
-      const P = st.plate = plate(st.G, dpr);
+      st.plate = plate(st.G, dpr);
       st.laidOut = st.design;
-      // the glints on its edges a moment later, when the page is quiet
-      if (typeof cancelIdleCallback === "function") cancelIdleCallback(later); else clearTimeout(later);
-      const add = () => { if (st.plate === P) { glints(P); bodyKey = ""; } };
-      later = typeof requestIdleCallback === "function" ? requestIdleCallback(add, { timeout: 600 }) : window.setTimeout(add, 120);
       bodyG.clearRect(0, 0, W, LH);
-      bodyKey = "";
+      inked = false;
       st.vib.clear();
       st.dirty = true;
     };
@@ -557,17 +558,13 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       if (st.laidOut !== st.design) layout();
       const G = st.G;
       if (!st.visible || !G) return;
-      // the lamp above the lyre
-      const lamp: Lamp = { x: G.cx, y: -G.H * 0.4, I: 0.7 };
-      const key = `${Math.round(lamp.x / 6)},${Math.round(lamp.y / 6)}`;
-      const R = 442;
-      const relit = key !== bodyKey;
-      if (relit && st.plate) { lightBody(bodyG, st.plate, lamp, R); bodyKey = key; }
+      // the instrument, copied once for each new layout
+      const fresh = !inked && !!st.plate;
+      if (fresh) { inkBody(bodyG, st.plate!); inked = true; }
       // let go of what has faded
       st.trails = st.trails.filter((t) => t.end === null || now - t.end < ((st.RH + 40) / 64) * 1000);
-      st.flares = st.flares.filter((f) => now - f.at < 700);
-      const moving = st.playing || st.vib.size > 0 || st.trails.length > 0 || st.flares.length > 0;
-      if (!moving && !st.dirty && !relit) return;
+      const moving = st.playing || st.vib.size > 0 || st.trails.length > 0;
+      if (!moving && !st.dirty && !fresh) return;
       st.dirty = false;
       const still = prefersReducedMotion(useSettings.getState().motion);
       const vib = (i: number) => {
@@ -581,19 +578,18 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         const g = roll.getContext("2d")!;
         paintRoll(g, {
           W: G.W, H: st.RH, lanes: G.top, laneGlow: (i) => vib(i).glow, notes: st.notes, gaps: st.gaps, beat: st.beat,
-          laneOf, look, trails: st.trails, flares: st.flares, now, still, face,
+          laneOf, look, trails: st.trails, now, face, inks,
           hint: st.notes ? null : "Play a string: what you play rises here.",
         });
       }
       const g = lyre.getContext("2d")!;
       g.clearRect(0, 0, G.W, G.H);
       g.drawImage(body, 0, 0, G.W, G.H);
-      paintStrings(g, G, lamp, R, vib, labelsFor.current, face);
+      paintStrings(g, G, vib, labelsFor.current, face, inks);
     };
     raf = requestAnimationFrame(frame);
     return () => {
-      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect();
-      if (typeof cancelIdleCallback === "function") cancelIdleCallback(later); else clearTimeout(later);
+      cancelAnimationFrame(raf); ro.disconnect(); io.disconnect(); themed.disconnect(); dark.removeEventListener("change", reink);
     };
   }, [laneOf, reached]);
 

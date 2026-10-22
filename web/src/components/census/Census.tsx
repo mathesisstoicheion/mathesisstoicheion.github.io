@@ -24,7 +24,6 @@ import Method from "./Method";
 import { fmt, useLoad, type Links, type Shown } from "./shared";
 import { useSwipeNav } from "@/lib/use-swipe-nav";
 import styles from "./Census.module.css";
-import { atTempo } from "@/lib/tempo";
 
 export default function Census({ links }: { links: Links }) {
   const meta = useLoad("meta", loadCensusMeta);
@@ -178,31 +177,11 @@ function Tally({ meta }: { meta: CensusMeta }) {
       {figures.map(([n, label], i) => (
         <div key={label} style={{ "--i": i } as React.CSSProperties}>
           <dt>{label}</dt>
-          <dd><CountUp value={n} /></dd>
+          <dd>{fmt(n)}</dd>
         </div>
       ))}
     </dl>
   );
-}
-
-/** A number that counts up once when it first appears (not with reduced motion). */
-function CountUp({ value }: { value: number }) {
-  const motion = useSettings((s) => s.motion);
-  const ref = useRef<HTMLSpanElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || prefersReducedMotion(motion)) return;
-    let raf = 0;
-    const t0 = performance.now();
-    const step = (t: number) => {
-      const p = Math.min(1, (t - t0) / 1400);
-      el.textContent = fmt(Math.round(value * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => { cancelAnimationFrame(raf); el.textContent = fmt(value); };
-  }, [value, motion]);
-  return <span ref={ref}>{fmt(value)}</span>;
 }
 
 // ------------------------------------------------------------ choosing where to count
@@ -272,7 +251,7 @@ function Ranking({ side, cat, label, words, rows, state, selected, onPick, regis
   const max = rows?.[0]?.n ?? 1;
   const signature = visible.map((r) => `${r.key}:${r.n}`).join("|");
 
-  // FLIP: each row that was already shown slides from its old rank to its new one; new rows fade in
+  // a row that is new, or has a new rank, inks in where it now stands (decision 3: nothing slides); the rest stay still
   useLayoutEffect(() => {
     const list = listRef.current;
     if (!list) return;
@@ -286,11 +265,8 @@ function Ranking({ side, cat, label, words, rows, state, selected, onPick, regis
       now.set(k, y);
       if (reduce) continue;
       const was = prev.current.get(k);
-      if (was === undefined) {
-        el.animate([{ opacity: 0, transform: "translateX(-14px)" }, { opacity: 1, transform: "none" }],
-          { duration: atTempo(420), delay: atTempo(Math.min(fresh++ * 22, 440)), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)", fill: "backwards" });
-      } else if (Math.abs(was - y) > 1) {
-        el.animate([{ transform: `translateY(${was - y}px)` }, { transform: "none" }], { duration: atTempo(650), easing: "cubic-bezier(0.2, 0.7, 0.2, 1)" });
+      if (was === undefined || Math.abs(was - y) > 1) {
+        el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 600, delay: Math.min(fresh++ * 22, 440), easing: "cubic-bezier(0.22, 0.61, 0.36, 1)", fill: "backwards" });
       }
     }
     prev.current = now;
@@ -359,12 +335,12 @@ function Threads({ a, b, selected, deps }: { a: Map<string, HTMLElement>; b: Map
       setH(box.height);
       setPaths(out);
     };
-    // after the rows have slid into place
-    const t = setTimeout(draw, 700);
+    // once the rows stand in their places (they never slide)
+    const t = requestAnimationFrame(draw);
     draw();
     const ro = new ResizeObserver(draw);
     if (ref.current?.parentElement) ro.observe(ref.current.parentElement);
-    return () => { clearTimeout(t); ro.disconnect(); };
+    return () => { cancelAnimationFrame(t); ro.disconnect(); };
   }, [a, b, deps]);
   return (
     <svg ref={ref} className={styles.threads} aria-hidden="true" preserveAspectRatio="none" viewBox={`0 0 48 ${Math.max(1, h)}`}>

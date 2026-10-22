@@ -44,7 +44,7 @@ const Sheet = forwardRef<SheetHandle, { melody: Melody; notes: MelodyNote[]; bpm
       return () => ro.disconnect();
     }, []);
 
-    /** The marker to note `i` (none for -1): the column of light behind it, the bead below its line. */
+    /** The marker to note `i` (none for -1): a red mark below its line. */
     const place = (i: number) => {
       const m = mark.current, p = paper.current;
       if (!m || !p) return;
@@ -77,9 +77,9 @@ const Sheet = forwardRef<SheetHandle, { melody: Melody; notes: MelodyNote[]; bpm
       const narrow = width < 560, scale = SCALE[size][narrow ? 1 : 0];
       import("abcjs").then((abcjs) => {
         if (gone) return;
-        const ink = getComputedStyle(document.documentElement).getPropertyValue("--ivory-1").trim() || "#efe5d2";
+        // engraved in the page's own ink (the score's colour, so Paper and Night both read without engraving it again)
         abcjs.renderAbc(el, score.abc, {
-          add_classes: true, foregroundColor: ink, scale, staffwidth: Math.max(220, width - 14),
+          add_classes: true, foregroundColor: "currentColor", scale, staffwidth: Math.max(220, width - 14),
           wrap: { minSpacing: 1.7, maxSpacing: 2.4, preferredMeasuresPerLine: 12 },
           paddingtop: 8, paddingbottom: 22, paddingleft: 4, paddingright: 4,
           format: { gchordfont: "serif 12", annotationfont: "Georgia 11 italic", vocalfont: "GFS Didot, serif 15" },

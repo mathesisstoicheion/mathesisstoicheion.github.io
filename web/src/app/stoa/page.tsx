@@ -7,14 +7,17 @@ import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
 import { cardOf } from "@/wiki/cards";
 import { ENTRIES } from "@/wiki/index";
 import ExploreLead, { ExploreCredit } from "@/components/stoa/ExploreLead";
+import { StonePlates, WhyStoics } from "@/components/stoa/StoaPlates";
 import type { Catalog } from "@/lib/catalog";
 import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
 export const metadata: Metadata = { title: areaTitle("wiki"), description: PAGE_DESCRIPTIONS.stoa };
 
-// The map, the Census and Archaeology lead the page (ExploreLead); the search and the colonnade follow, and the reference
-// pages are the colonnade's last panel. Counts for the reference pages, taken from the catalogue when the site is built.
+// The map, the Census and Archaeology lead the page (ExploreLead); the search and the index of entries follow, and the
+// reference pages are the index's last part. Then the plates of works in stone and "Why Stoics are called Stoics" (from the
+// home page; redesign SPEC.md 4.4), and the small print. Counts for the reference pages, taken from the catalogue when the
+// site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
 const TEXTS = CATALOG.authors.flatMap((a) => a.works.flatMap((w) => w.texts)).length;
 const n = (x: number) => x.toLocaleString("en-GB");
@@ -34,7 +37,9 @@ export default function StoaPage() {
       {/* one search box, the colonnade's own, beside what it finds (review fix list, slice 9) */}
       <Door id="wiki" plate="chrysippos-head" why="Chrysippus was the third head of the Stoic school.">
         <DoorBlock><ExploreLead /></DoorBlock>
-        <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} foot={<ExploreCredit />} /></DoorBlock>
+        <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} /></DoorBlock>
+        <DoorBlock id="plates" label="Plates: works in stone"><StonePlates /></DoorBlock>
+        <DoorBlock id="stoics" label="Why Stoics are called Stoics"><WhyStoics /><ExploreCredit /></DoorBlock>
       </Door>
     </Page>
   );

@@ -135,11 +135,16 @@ test("the genre chips count and filter, and a long list of works folds", async (
   await expect(page.locator("#author-tlg0059").getByRole("link", { name: /^Apology/ })).toHaveCount(0);
 });
 
-test("wiki categories have their signs, and the featured entry its picture or sign", async ({ page }) => {
+test("Explore's index sets each kind of entry under its head, and the featured entry has its photograph and its credit", async ({ page }) => {
   await page.goto("/stoa");
-  await expect(page.locator("#people svg")).toBeVisible();
-  const featured = page.getByRole("link", { name: /On the wall today/ });
-  await expect(featured.locator("img, svg").first()).toBeVisible();
+  await expect(page.locator("#people").getByRole("link").first()).toBeVisible();
+  // the printed page: a colour photograph, never a drawn sign, with its credit printed beneath it
+  const featured = page.locator("section[aria-labelledby='featured-h']");
+  await expect(featured.getByRole("heading", { level: 2 }).getByRole("link")).toBeVisible();
+  const photo = featured.locator("img[data-photo]");
+  await expect(photo).toBeVisible();
+  const id = await photo.getAttribute("data-photo");
+  await expect(featured.locator(`[data-credit="${id}"]`)).toBeVisible();
 });
 
 test("the map and the Agora put their search first", async ({ page }) => {

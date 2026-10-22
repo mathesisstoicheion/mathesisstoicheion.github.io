@@ -1,5 +1,7 @@
-/* The Periplus (Stone and torch): clay land, an Aegean sea, places in added red (the colours are the site's map tokens, globals.css).
-   The map is a picture and keeps its own look, in a cut frame; the panel, list and bars round it are stone. The zoom buttons are buttons and stay. */
+/* The Periplus, on the printed page: the map is a picture and keeps its own drawing (washed land, a paler sea, places in red;
+   the colours are the site's map tokens) in a hairline frame; the panel, the list and the bars round it are paper and ink,
+   and the zoom buttons, the compass and the scale are small paper labels in hairline frames. The map inks in once; after
+   that only the reader's own hand moves it (a frozen feature: restyled, nothing added). */
 .layout {
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(280px, 360px); gap: clamp(18px, 3vw, 36px); align-items: start;
   padding-block: var(--after-head) 60px;
@@ -10,61 +12,54 @@
 .stage { scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
 .stage {
   position: relative; height: min(74vh, 760px); min-height: 420px; overflow: hidden; touch-action: none; cursor: grab;
-  border-radius: var(--radius); box-shadow: var(--frame-line);
-  background: var(--map-edge); animation: unroll calc(0.9s / var(--tempo)) var(--ease) both;
+  border-radius: 0; box-shadow: var(--frame-line);
+  background: var(--map-edge); animation: ink-in var(--ink-in) var(--ease) backwards;
 }
 .stage:active { cursor: grabbing; }
 /* touch screens: one finger moves the map, two zoom it (Periplus.tsx); phones keep some page in view, to scroll by */
 @media (pointer: coarse) { .stage { cursor: auto; } }
 @media (pointer: coarse) and (max-width: 760px) { .stage { height: 62vh; height: 62svh; min-height: 340px; } }
-@keyframes hint-in { from { opacity: 0; scale: 0.92; } }
+@keyframes ink-in { from { opacity: 0; } }
 .stage:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-/* it ends a little beyond the map's edge, so the frame and the focus ring (outside the box) are not clipped once it has unrolled */
-@keyframes unroll { from { clip-path: inset(0 0 100% 0); } to { clip-path: inset(-6px); } }
 .canvas { position: absolute; inset: 0; display: block; }
 .stage[data-hover] { cursor: pointer; }
 
-/* the chosen place: a pulsing ring over the canvas (moved by Periplus.tsx) */
-.ring { position: absolute; left: 0; top: 0; border-radius: var(--radius-round); border: 2px solid var(--accent); pointer-events: none; animation: pulse 1.8s var(--ease) infinite; }
-@keyframes pulse { 0% { opacity: 1; } 70% { opacity: 0.25; } 100% { opacity: 1; } }
+/* the chosen place: a red ring over the canvas, still (it goes where the map goes: Periplus.tsx) */
+.ring { position: absolute; left: 0; top: 0; border-radius: var(--radius-round); border: 2px solid var(--rubric); pointer-events: none; }
 
 /* a place's name under the mouse */
 .tip {
   position: absolute; left: 0; top: 0; z-index: 4; margin: 0; pointer-events: none; white-space: nowrap;
-  translate: 14px -130%; padding: 5px 10px; border-radius: var(--radius);
-  background: var(--inv-bg); color: var(--inv-fg); --accent: var(--accent-on-ink); font-size: var(--step--1);
-  box-shadow: var(--slab-edge); animation: hint-in calc(0.15s / var(--tempo)) var(--ease);
+  translate: 14px -130%; padding: 4px 9px; border-radius: 0;
+  background: var(--bg); color: var(--ink); font-size: var(--step--1); border: 1px solid var(--ink);
 }
 .tip b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-0); }
-.tip small { font-family: var(--f-label); color: var(--accent); margin-left: 4px; }
+.tip small { font-family: var(--f-label); color: var(--rubric); margin-left: 4px; }
 
 /* zoom: one slim column, clear of the sea's middle */
 .controls { position: absolute; right: 12px; top: 12px; display: grid; gap: 8px; justify-items: end; z-index: 3; }
-.zoomPair { display: grid; border-radius: var(--radius); overflow: hidden; box-shadow: var(--slab-edge); }
+.zoomPair { display: grid; overflow: hidden; box-shadow: var(--frame-line); }
 .zoomPair button + button { box-shadow: var(--cut-over); }
 .controls button {
   width: 36px; height: 36px; display: grid; place-items: center; padding: 0; border: 0; cursor: pointer;
-  background: color-mix(in srgb, var(--surface) 88%, transparent); color: var(--ink);
-  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); transition: background 0.2s;
+  background: var(--bg); color: var(--ink); transition: color var(--dur-quick) var(--ease);
 }
-.controls button:hover { background: var(--surface); color: var(--accent); }
-.controls button:active svg { scale: 0.88; }
-.controls svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; transition: scale 0.15s; }
-.homeBtn { border-radius: var(--radius); box-shadow: var(--slab-edge); }
+.controls button:hover { color: var(--rubric); }
+.controls svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+.homeBtn { box-shadow: var(--frame-line); }
 
-/* a compass at the bottom left, a scale bar at the bottom right: small pills like the zoom buttons */
+/* a compass at the bottom left, a scale bar at the bottom right: small paper labels like the zoom buttons */
 .compass, .scale {
   position: absolute; bottom: 12px; pointer-events: none; z-index: 2; color: var(--ink);
-  background: color-mix(in srgb, var(--surface) 82%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  border-radius: var(--radius); box-shadow: var(--slab-edge);
+  background: var(--bg); box-shadow: var(--frame-line);
 }
 .compass { left: 12px; display: grid; justify-items: center; gap: 2px; padding: 6px 9px 5px; }
 .compass svg { width: 12px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.3; stroke-linejoin: round; }
-.compass .north { fill: var(--accent); stroke: var(--accent); }
+.compass .north { fill: var(--rubric); stroke: var(--rubric); }
 .compass span { font: var(--step--2)/1 var(--f-label); letter-spacing: 0.2em; margin-right: -0.2em; }
 .scale { right: 12px; min-width: 96px; display: grid; justify-items: end; gap: 4px; padding: 7px 10px 6px; box-sizing: border-box; }
-.scale i { display: block; height: 5px; border: 1.5px solid currentColor; border-top: 0; transition: width 0.12s linear; }
-.scale span { font: var(--step--2)/1 var(--f-label); letter-spacing: 0.08em; font-variant-numeric: tabular-nums; }
+.scale i { display: block; height: 5px; border: 1px solid currentColor; border-top: 0; }
+.scale span { font: var(--step--2)/1 var(--f-label); letter-spacing: 0.08em; font-variant-numeric: lining-nums tabular-nums; }
 
 /* the search and the layer chips are one bar (Periplus.tsx): in the page's header, beside the sculpture's niche on a computer,
    and just above the map on a phone. A grid, so it takes the room beside the niche rather than running under it. */
@@ -78,39 +73,40 @@
   .filters > :global(.chip) { flex: none; }
 }
 
-.panel { position: sticky; top: calc(var(--hdr-vis) + 20px); transition: top 0.35s var(--ease); display: grid; gap: 14px; }
+.panel { position: sticky; top: calc(var(--hdr-vis) + 20px); display: grid; gap: 14px; }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
 @media (max-width: 980px) { .panel { position: static; } }
 .search { position: relative; z-index: 6; }
-.search svg { position: absolute; left: 14px; top: 50%; translate: 0 -50%; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
-.search input { width: 100%; padding: 12px 14px 12px 42px; font: inherit; font-size: var(--step-0); color: var(--ink); border-radius: var(--radius); }
+.search svg { position: absolute; left: 4px; top: 50%; translate: 0 -50%; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
+.search input { width: 100%; padding: 12px 14px 12px 32px; font: inherit; font-size: var(--step-0); color: var(--ink); border-radius: 0; }
 .found, .top { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.found { position: absolute; z-index: 3; left: 0; right: 0; top: calc(100% + 4px); background: var(--surface); box-shadow: var(--slab-edge); padding: 4px; }
+.found { position: absolute; z-index: 3; left: 0; right: 0; top: calc(100% + 4px); background: var(--bg); box-shadow: var(--frame-line); padding: 4px 10px; }
 .found button, .top button {
-  width: 100%; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; padding: 7px 8px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: var(--radius);
+  width: 100%; display: flex; flex-wrap: wrap; gap: 0 8px; align-items: baseline; padding: 7px 2px; border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer; border-radius: 0;
+  box-shadow: var(--cut-under);
 }
-.found button:hover, .top button:hover { background: var(--bg-2); }
-.found b, .top b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); }
+.found li:last-child button, .top li:last-child button { box-shadow: none; }
+.found button:hover b, .top button:hover b, .found button:focus-visible b, .top button:focus-visible b { color: var(--rubric); }
+.found b, .top b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 .found span, .top span { color: var(--ink-2); flex: 1; }
-.found small, .top small { font-family: var(--f-label); color: var(--accent); }
+.found small, .top small { font-family: var(--f-label); color: var(--rubric); }
 
-.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: cardIn calc(0.4s / var(--tempo)) var(--ease) backwards; }
-@keyframes cardIn { from { opacity: 0; transform: translateY(6px); } }
+/* the chosen place: a leaf in a hairline frame under a red rule */
+.card { display: grid; gap: 10px; padding: 18px 20px; background: var(--bg); box-shadow: var(--inlay-top), var(--field-edge); border-radius: 0; animation: ink-in var(--ink-in) var(--ease) backwards; }
 .card p { margin: 0; }
 .placeName { margin: 0; display: grid; font: 400 2rem/1.1 var(--f-greek); }
 .placeName small { font: var(--step-0) var(--f-body); color: var(--ink-2); margin-top: 4px; }
-.count b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); color: var(--accent); }
+.count b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); color: var(--rubric); font-variant-numeric: lining-nums; }
 .caveat { font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left-ochre); padding-left: 12px; }
 .entries { display: grid; gap: 4px; }
-.entries a { color: var(--accent); }
+.entries a { color: var(--rubric); }
 .works { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
 .works li { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; font-size: var(--step-0); }
 .works a { color: inherit; }
 .works small { font-family: var(--f-label); color: var(--ink-2); grid-row: 1; grid-column: 2; }
-/* each work's share: gilded inlay laid in a channel cut across the row */
-.works li::before { content: ""; grid-column: 1 / -1; grid-row: 2; height: 5px; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); }
-.bar { grid-column: 1 / -1; grid-row: 2; height: 5px; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow calc(0.6s / var(--tempo)) var(--ease) backwards; }
-@keyframes grow { from { transform: scaleX(0); } }
+/* each work's share: a rule of the brown ink as long as its share, on a hairline as long as the whole */
+.works li::before { content: ""; grid-column: 1 / -1; grid-row: 2; align-self: center; height: 1px; background: var(--rule); }
+.bar { grid-column: 1 / -1; grid-row: 2; height: 4px; background: var(--ink-3); animation: ink-in var(--ink-in) var(--ease) backwards; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .small { font-size: var(--step--1); color: var(--ink-2); }
 .small a { color: inherit; }
@@ -122,8 +118,8 @@
 .method p { margin: 8px 0 0; font-size: var(--step--1); line-height: 1.55; }
 
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
-.spinner { width: 18px; height: 18px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* the waiting mark: a small red ring that stands still (the words beside it say what is happening) */
+.spinner { width: 16px; height: 16px; border-radius: var(--radius-round); border: 1.5px solid var(--rubric); }
 /* reduced motion is handled site-wide (globals.css), honouring the reader's own setting */
 
 /* phones: finger-sized controls and rows (Phase 10) */
@@ -133,5 +129,3 @@
   .found button, .top button { min-height: var(--tap); }
 }
 
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.card { outline: var(--moulding); outline-offset: var(--moulding-in); }

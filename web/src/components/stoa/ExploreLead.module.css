@@ -1,31 +1,23 @@
-/* The Explore door's lead: three picture cards (ExploreLead.tsx) (Stone and torch): slabs set on the wall; the map is cut in the
-   stone, the photograph keeps its own look; the bars are gilded inlay laid in channels. */
+/* The Explore room's lead: three entries with their pictures (ExploreLead.tsx), set as the printed page sets a row of
+   figures: each under a hairline, its picture in a hairline frame (the map drawn on the paper, the counts as red bars, the
+   photograph in its real colours), its Greek name in red and its title in Didot, red under the hand. The towns and bars
+   ink in; nothing grows or zooms (decision 3). */
 .lead { display: grid; gap: 10px; }
-.lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
 @media (max-width: 900px) { .lead ul { grid-template-columns: 1fr 1fr; } .lead li:first-child { grid-column: 1 / -1; } }
 @media (max-width: 560px) { .lead ul { grid-template-columns: 1fr; } }
 
-.card {
-  display: flex; flex-direction: column; height: 100%; overflow: hidden; text-decoration: none;
-  background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
-}
-.card:hover { background-color: var(--slab-lit); }
+.card { display: flex; flex-direction: column; height: 100%; padding-top: 14px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* the picture area: the same height for all three */
-.map, .bars, .pic { display: block; width: 100%; aspect-ratio: 16 / 10; }
-.pic { height: auto; object-fit: cover; transition: transform calc(1.2s / var(--tempo)) var(--ease); }
-.card:hover .pic { transform: scale(1.04); }
-/* the photographs rule (review fix list, slice 9; docs/adr/0007-photographs-in-the-stoa.md): a photograph standing for a room or
-   an entry takes the engraving's gold, and comes into its own colours when pointed at; on the entry itself it is evidence, in colour */
-.pic { filter: grayscale(1) sepia(0.6) brightness(0.82) contrast(1.12); transition: transform 1.2s var(--ease), filter calc(0.6s / var(--tempo, 1)) var(--ease); }
-.card:hover .pic, .card:focus-visible .pic { filter: none; }
-/* on a phone the pictures take a shorter crop, so the three cards do not fill a screen and a half */
+/* the picture area: the same height for all three, in a hairline frame */
+.map, .bars, .pic { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--rule); }
+.pic { height: auto; object-fit: cover; }
+/* on a phone the pictures take a shorter crop, so the three do not fill a screen and a half */
 @media (max-width: 760px) { .map, .bars, .pic { aspect-ratio: 16 / 9; } }
 
-/* the map is cut in the stone (globals.css, maps): the grain shows through the land and, darker, through the sunk sea */
-.map { background: var(--surface) var(--tex, none) center / 420px 420px; }
+/* the map, drawn on the paper: the land washed, the sea a paler wash inside its coast */
+.map { background: var(--bg-2); }
 .land { fill: var(--map-land-wash); }
 .sea { fill: var(--map-sea-wash); stroke: var(--map-coast); stroke-width: 1.4; stroke-linejoin: round; }
 .town circle { fill: var(--map-name); stroke: var(--map-halo); stroke-width: 2.5; }
@@ -33,24 +25,23 @@
   font-family: var(--f-body); font-size: var(--step-2); font-weight: 700; fill: var(--map-name);
   paint-order: stroke; stroke: var(--map-halo); stroke-width: 5px; stroke-linejoin: round;
 }
-/* the towns appear one after another, the most named first */
-/* (the site's "Reduce animation" setting stops these, globals.css) */
-.town { animation: town calc(0.6s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.25s / var(--tempo)) + var(--i) * (90ms / var(--tempo))); transform-box: fill-box; transform-origin: center; }
-@keyframes town { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+/* the towns ink in one after another, the most named first */
+.town { animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(0.25s + var(--i) * 90ms); }
+@keyframes ink-in { from { opacity: 0; } }
 
-.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; background: var(--field); box-shadow: var(--field-edge); }
+/* the counts: red bars on hairline tracks */
+.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; }
 .bar { display: grid; grid-template-columns: minmax(0, 11em) 1fr auto; align-items: center; gap: 10px; font-size: var(--step--1); }
 .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .who [lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
-.fill { height: 9px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); overflow: hidden; }
-.fill i { display: block; height: 100%; width: var(--w); background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; }
-.fill i { animation: grow calc(1.1s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.3s / var(--tempo)) + var(--i) * (110ms / var(--tempo))); }
-@keyframes grow { from { transform: scaleX(0); } }
-.n { font-variant-numeric: tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }
+.fill { height: 6px; border-radius: var(--radius); background: var(--rule-2); box-shadow: var(--channel-edge); overflow: hidden; }
+.fill i { display: block; height: 100%; width: var(--w); background: var(--accent); border-radius: var(--radius); }
+.n { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }
 
-.txt { display: grid; gap: 2px; padding: 14px 18px 18px; }
-.txt b { font-size: var(--step-1); }
+.txt { display: grid; gap: 2px; padding: 12px 2px 18px; }
+.txt b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
+.card:hover .txt b, .card:focus-visible .txt b { color: var(--rubric); }
 .txt > span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-0); }
 /* the small print at the foot of the page (ExploreCredit) */
-.credit { margin: 0; font-size: var(--step--2); color: var(--ink-2); }
+.credit { margin: 32px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }

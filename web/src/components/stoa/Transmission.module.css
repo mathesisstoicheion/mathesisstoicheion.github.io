@@ -1,9 +1,12 @@
-/* "Manuscripts & transmission" and "Textual variants" (Transmission.tsx) (Stone and torch): the chart is a sunk field with its grid lines and
-   roads cut in the stone and its marks set in as inlays (keeping their shapes and colours); the authors' accounts are slabs. */
+/* "Manuscripts & transmission" and "Textual variants" (Transmission.tsx), as a printed book sets a chart: a figure in a
+   hairline frame, each author's road a fine rule across it, the marks small printer's signs in ink, red, blue and ochre;
+   the authors' accounts are catalogue entries under hairlines. The roads and marks ink in; nothing grows (decision 3). */
 .page { display: grid; gap: clamp(28px, 4vw, 44px); padding-bottom: 64px; }
 
 /* ------------------------------------------------ the roads of the texts */
-.roads { margin: 0; display: grid; gap: 14px; padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+/* the figure is one flat leaf of the paper (so the names' column, which must cover the marks scrolling under it on a
+   phone, is the same paper as the rest) */
+.roads { margin: 0; display: grid; gap: 14px; padding: 18px 20px; background: var(--bg); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .chart { display: grid; gap: 2px; }
 .scroller { min-width: 0; }
 /* a row: the name, then its track. Flex, not a grid, so that on a phone the name can stay in view while the marks
@@ -12,7 +15,7 @@
 .pin { flex: none; width: 9.5rem; position: sticky; left: 0; z-index: var(--z-bar); }
 .axis { position: relative; height: 18px; }
 .axisTrack { position: relative; flex: 1 1 0; min-width: 0; }
-.axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; }
+.axisTrack span { position: absolute; top: 2px; translate: -50% 0; font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; font-variant-numeric: lining-nums; }
 .axisTrack span:first-child { translate: 0 0; }   /* the first year starts at the track's edge, clear of the names */
 .axisTrack span:last-child { translate: -100% 0; }   /* and the last ends at its far edge, inside the chart's frame */
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
@@ -21,63 +24,45 @@
 .who { font-size: var(--step--2); color: var(--ink-2); text-align: right; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .track { position: relative; height: 100%; }
 .track i { position: absolute; top: 50%; }
-.grid { width: 2px; translate: -1px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--cut-line-v); }
-/* each author's road: a fine groove cut across the stone, its upper wall in shadow and its lower lip catching the torch */
-.road { height: 2px; translate: 0 -50%; background: linear-gradient(var(--groove) 0 1px, var(--lip-hi) 1px 2px); transform-origin: left; animation: road calc(1.4s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i) * (25ms / var(--tempo))); }
-@keyframes road { from { transform: scaleX(0); } }
+.grid { width: 1px; translate: -0.5px 0; top: 0 !important; bottom: 0; height: 100%; background: var(--rule-2); }
+/* each author's road: a fine rule across the chart */
+.road { height: 1px; translate: 0 -50%; background: var(--ink-3); animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 25ms); }
+@keyframes ink-in { from { opacity: 0; } }
 .mark { width: 9px; height: 9px; translate: -50% -50%; }
-.track .mark { animation: mark calc(0.5s / var(--tempo)) var(--ease) backwards; animation-delay: calc((0.2s / var(--tempo)) + var(--x) * (1.6s / var(--tempo)) + var(--i) * (12ms / var(--tempo))); }
-@keyframes mark { from { opacity: 0; scale: 0.2; } }
-/* the marks: inlays set into the stone, light on their upper edge, shadow at their foot and a fine dark joint round
-   them (the slab edge's ring; its long shadow is too wide to show on a mark this small). The author's own life in
-   bone, the copies in gilt, print in bronze patina, the later readers as rings of gilt round a dark hollow. */
-.writing { background: linear-gradient(180deg, var(--ink) 35%, color-mix(in srgb, var(--ink) 72%, var(--ink-3))); border-radius: var(--radius-round); box-shadow: var(--inlay-edge), var(--slab-edge); }
-.copy { background: var(--inlay); box-shadow: var(--inlay-edge), var(--slab-edge); }
-/* turned 45°, so its light runs from the top corner (135deg) */
-.print {
-  background: linear-gradient(135deg, color-mix(in srgb, var(--blue) 70%, var(--ink)), var(--blue) 50%, color-mix(in srgb, var(--blue) 62%, var(--bg-deep)));
-  box-shadow: var(--inlay-edge), var(--slab-edge); rotate: 45deg; width: 8px; height: 8px;
-}
-.reception {
-  border: 2px solid transparent; border-radius: var(--radius-round); box-shadow: var(--channel-edge);
-  background:
-    linear-gradient(var(--bg-deep), var(--bg-deep)) padding-box,
-    linear-gradient(180deg, color-mix(in srgb, var(--ochre) 55%, var(--accent-hi)), var(--ochre) 50%, color-mix(in srgb, var(--ochre) 60%, var(--bg-deep))) border-box;
-}
+.track .mark { animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(0.2s + var(--x) * 1.6s + var(--i) * 12ms); }
+/* the marks: the author's own life a round of ink, the copies red squares, print a blue diamond, the later readers ochre rings */
+.writing { background: var(--ink); border-radius: var(--radius-round); }
+.copy { background: var(--accent); }
+.print { background: var(--blue); rotate: 45deg; width: 8px; height: 8px; }
+.reception { border: 2px solid var(--ochre); border-radius: var(--radius-round); background: var(--bg); }
 .key { position: static !important; display: inline-block; translate: none; flex: none; align-self: center; }
-/* the site's "Reduce animation" setting stops the animations (globals.css) */
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: var(--step--1); }
 .legend li { display: flex; align-items: baseline; gap: 6px; }
 .legend span { color: var(--ink-2); }
 .roads figcaption { display: grid; gap: 8px; }
 .roads figcaption p { margin: 0; color: var(--ink-2); max-width: 75ch; }
 /* phones: the key and the caption keep the width of the screen; the chart keeps its proportions and scrolls sideways
-   inside its panel, its right edge fading while there is more, with the names kept in view at the left */
+   inside its frame, its right edge fading while there is more, with the names kept in view at the left */
 @media (max-width: 760px) {
   .roads { padding: 14px; }
   .scroller { overflow-x: auto; scrollbar-width: thin; }
   .scroller[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
   .chart { min-width: 680px; }
-  /* the names are solid stone (the panel's own shade), so the marks pass under them rather than through the words */
-  .pin { width: 6.5rem; background: var(--bg-deep); }
+  /* the names stand on the paper itself, so the marks pass under them rather than through the words */
+  .pin { width: 6.5rem; background: var(--bg); }
 }
 
-/* ------------------------------------------------ the authors' accounts */
-.list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 14px; }
+/* ------------------------------------------------ the authors' accounts: catalogue entries under hairlines */
+.list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 0 28px; }
 .card {
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: start; gap: 6px; height: 100%; padding: 18px 20px; text-decoration: none;
-  background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: start; gap: 6px; height: 100%; padding: 16px 2px 20px; text-decoration: none; color: var(--ink);
+  box-shadow: var(--cut-over);
 }
-.card:hover { background-color: var(--slab-lit); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
-.when { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
-.card b { font-size: var(--step-1); }
-/* the accounts are cut to four lines, so the cards in a row are alike; the whole account is one click away */
+.when { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+.card b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
+.card:hover b { color: var(--rubric); }
+/* the accounts are cut to four lines, so the entries in a row are alike; the whole account is one click away */
 .text { color: var(--ink); line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
 .go { margin-top: 4px; font-size: var(--step--1); color: var(--accent); white-space: nowrap; }
 .more { margin: 0; color: var(--ink-2); max-width: 70ch; }
-
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
-.roads, .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
-

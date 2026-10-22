@@ -1,8 +1,9 @@
 "use client";
 /**
- * A ranging pole (the red-and-white measuring rod in every excavation photograph) standing beside the
- * Kerameikos' layers. A marker slides down it as you read down the trench. Decorative: hidden from
- * screen readers, and still (at the top) with reduced motion.
+ * A ranging pole (the red-and-white measuring rod in every excavation photograph) printed in the margin
+ * beside the Kerameikos' layers. Its marker follows the page as you scroll down the trench, showing how
+ * deep you have read; nothing else moves it. Decorative: hidden from screen readers, and still (at the
+ * top) with reduced motion.
  */
 import { useEffect, useRef } from "react";
 import styles from "./Kerameikos.module.css";

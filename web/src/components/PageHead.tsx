@@ -40,10 +40,11 @@ export default function PageHead({ path, inscription, inscriptionSays, title, gr
     <header className={`${bare ? "" : "wrap "}page-head ph ph-${size}${desk ? "" : " ph-tool"}${className ? ` ${className}` : ""}`}>
       <div className="ph-text">
         <p className="ph-path label">
+          {/* each step carries the dot after it, so a path that wraps ends its line with the dot, as a printed one does */}
           {path.map((s, i) => (
             <span key={i}>
-              {i > 0 && <span className="ph-sep" aria-hidden="true"> · </span>}
               {s.href && i < path.length - 1 ? <Link href={s.href} transitionTypes={["page-turn"]}>{s.label}</Link> : <span>{s.label}</span>}
+              {i < path.length - 1 && <span className="ph-sep" aria-hidden="true"> · </span>}
             </span>
           ))}
         </p>
