@@ -1,4 +1,6 @@
-/* The note editor and note text, shared by the reader and the Treasury. */
+/* The note editor and note text, shared by the reader and the Treasury: on the printed page a note is written on the
+   paper itself, its tools small words in hairline frames, its tags small labels under a hairline. It inks in; nothing
+   drops or pops (decision 3). */
 .field { display: grid; gap: 6px; }
 .field textarea {
   width: 100%; font: inherit; font-size: var(--step-0); line-height: 1.55; color: var(--ink);
@@ -7,33 +9,33 @@
 
 .tools { display: flex; flex-wrap: wrap; gap: 4px; }
 .tools button {
-  min-width: 34px; height: 30px; padding: 0 9px; border: 1px solid transparent; border-radius: var(--radius);
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font-size: var(--step--1);
+  min-width: 34px; height: 30px; padding: 0 9px; border: 1px solid var(--rule); border-radius: var(--radius);
+  background: transparent; color: var(--ink); font-size: var(--step--1);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.tools button:hover { background: var(--slab-lit); }
-.tools button:active { background: var(--field); box-shadow: var(--field-edge); }
-.tools button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.tools button:hover { color: var(--rubric); border-color: var(--rubric); }
+.tools button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 
+/* typing Greek with Latin letters: the box, and the Greek it makes beside it, set in from a red rule */
 .greek {
   display: grid; grid-template-columns: 1fr auto; gap: 6px 10px; align-items: end;
-  padding: 10px 12px; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge);
-  animation: open calc(0.28s / var(--tempo)) var(--ease) backwards;
+  padding: 6px 0 6px 14px; box-shadow: var(--inlay-left);
+  animation: ink-in var(--dur) var(--ease) backwards;
 }
 .greek label { display: grid; gap: 4px; grid-column: 1 / -1; }
-.greek input { font: inherit; font-family: ui-monospace, Consolas, monospace; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); }
+.greek input { font: inherit; letter-spacing: 0.04em; padding: 6px 8px; border-radius: var(--radius); color: var(--ink); }
 .preview { font-family: var(--f-greek); font-size: var(--step-1); min-height: 1.6em; }
 .help { grid-column: 1 / -1; font-size: var(--step--1); color: var(--ink-2); margin: 0; }
-@keyframes open { from { opacity: 0; transform: translateY(-6px); } }
+@keyframes ink-in { from { opacity: 0; } }
 
 .tags { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
 .tag {
-  display: inline-flex; align-items: center; gap: 4px; padding: 2px 4px 2px 10px; border-radius: var(--radius);
-  background: var(--bg-2); font-size: var(--step--1); animation: pop calc(0.25s / var(--tempo)) var(--ease) backwards;
+  display: inline-flex; align-items: center; gap: 4px; padding: 1px 4px 1px 10px; border: 1px solid var(--rule); border-radius: var(--radius);
+  font-family: var(--f-label); font-size: var(--step--1); animation: ink-in var(--dur) var(--ease) backwards;
 }
-.tag button { border: 0; background: transparent; color: var(--ink-2); width: 20px; height: 20px; border-radius: var(--radius-round); line-height: 1; }
-.tag button:hover { background: var(--rule); color: var(--ink); }
+.tag button { border: 0; background: transparent; color: var(--ink-2); width: 20px; height: 20px; border-radius: var(--radius); line-height: 1; transition: color var(--dur-quick) var(--ease); }
+.tag button:hover { color: var(--rubric); }
 .tags input { flex: 1 1 120px; min-width: 100px; font: inherit; font-size: var(--step--1); padding: 3px 8px; border-radius: var(--radius); color: var(--ink); }
-@keyframes pop { from { transform: scale(0.8); opacity: 0; } }
 
 .rich p { margin: 0 0 0.5em; }
 .rich p:last-child { margin-bottom: 0; }

@@ -157,24 +157,19 @@ html[data-greek-face="didot"] { --f-greek: var(--face-didot); }
   .snap-row::-webkit-scrollbar { display: none; }
 }
 
-/* waiting for the next page (NavWait.tsx): a fine red rule along the top of the window, along which a lighter red travels
-   until the page arrives. It fades in only after a moment, so a page that comes at once shows nothing. */
+/* waiting for the next page (NavWait.tsx): a fine red rule inks in along the top of the window and stays until the page
+   arrives; nothing travels along it (decision 3). It appears only after a moment, so a page that comes at once shows
+   nothing. */
 .navwait {
   position: fixed; z-index: var(--z-over-header); left: 0; right: 0; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px) - var(--space-1)); height: var(--space-1);
   overflow: hidden; pointer-events: none; opacity: 0; transition: opacity var(--dur-quick) var(--ease);
   background: linear-gradient(90deg, transparent, var(--accent) 12% 88%, transparent); background-size: 100% 1px; background-position: 0 1px; background-repeat: no-repeat;
 }
 html[data-hdr="hidden"] .navwait { --hdr-vis: var(--space-1); }
-.navwait::before {
-  content: ""; position: absolute; inset: 0; transform: translateX(-100%);
-  background: linear-gradient(90deg, transparent 30%, var(--accent-hi) 50%, transparent 70%);
-}
-html[data-nav="wait"] .navwait { opacity: 0.9; transition: opacity var(--dur) var(--ease) var(--dur-quick); }
-html[data-nav="wait"] .navwait::before { animation: navwait calc(2 * var(--dur-slow)) var(--ease) infinite; }
-@keyframes navwait { to { transform: translateX(100%); } }
-@media (prefers-reduced-motion: reduce) { html[data-nav="wait"] .navwait::before { animation: none; transform: none; opacity: 0.6; } }
+html[data-nav="wait"] .navwait { opacity: 0.9; transition: opacity var(--dur-slow) var(--ease) var(--dur-quick); }
 
-/* pull down to refresh (PullToRefresh.tsx): a ring slides down from under the header, turning as it comes */
+/* pull down to refresh (PullToRefresh.tsx): a ring comes down from under the header with the finger, turning as it is
+   pulled; while the page reloads it stands still, closed into a full ring (nothing spins by itself) */
 .pull {
   position: fixed; z-index: 29; left: 50%; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); width: 40px; height: 40px; margin-left: -20px;
   display: grid; place-items: center; border: 0; border-radius: var(--radius-round); background: var(--boss); box-shadow: var(--boss-edge);
@@ -184,8 +179,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .pull[data-waiting] { opacity: 1; }
 .pull-ring { width: 20px; height: 20px; border: 2.5px solid var(--accent); border-right-color: transparent; border-radius: var(--radius-round); transform: rotate(calc(var(--turn, 0) * 320deg)); }
 .pull[data-ready] .pull-ring { border-color: var(--ok); border-right-color: transparent; }
-.pull[data-waiting] .pull-ring { animation: pull-spin 0.8s linear infinite; }
-@keyframes pull-spin { to { transform: rotate(360deg); } }
+.pull[data-waiting] .pull-ring { border-right-color: var(--accent); }
 
 /* ------------------------------------------------------------- ornament */
 /* Hairline rules. The old ornament bands keep their class names, so every page that drew one now draws a rule. */
@@ -258,13 +252,13 @@ select:not([multiple]):not([size]) {
 :where(input[type="checkbox"])::before {
   content: ""; width: 0.62em; height: 0.62em; background: var(--inlay);
   clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
-  transform: scale(0); transition: transform var(--dur-quick) var(--ease);
+  opacity: 0; transition: opacity var(--dur-quick) var(--ease);
 }
 :where(input[type="radio"])::before {
   content: ""; width: 0.5em; height: 0.5em; border-radius: var(--radius-round); background: var(--inlay);
-  transform: scale(0); transition: transform var(--dur-quick) var(--ease);
+  opacity: 0; transition: opacity var(--dur-quick) var(--ease);
 }
-:where(input[type="checkbox"], input[type="radio"]):checked::before { transform: none; }
+:where(input[type="checkbox"], input[type="radio"]):checked::before { opacity: 1; }
 :where(input[type="checkbox"], input[type="radio"]):focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 :where(input[type="checkbox"], input[type="radio"]):disabled { opacity: 0.5; cursor: default; }
 /* a "more" disclosure keeps its small triangle, in red like a printer's mark, not the browser's grey */

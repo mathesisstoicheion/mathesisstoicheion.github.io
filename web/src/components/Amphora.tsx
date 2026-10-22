@@ -15,10 +15,11 @@ import styles from "./Amphora.module.css";
 
 /**
  * A neck-amphora turned on a lathe in WebGL and painted in the manner of Athenian pots: black gloss on
- * clay, with added red. It turns slowly and can be dragged; on phones it also turns as the phone is tilted,
- * where the phone allows it (an iPhone asks first). "Paint it yourself" opens a studio: brush, scratch and
- * rub out straight onto the pot, choose its patterns and style, write its words. The visitor's vase is kept
- * in this browser (lib/amphora.ts). three.js is loaded only when the vase comes into view.
+ * clay, with added red. It stands still until a hand turns it (on the printed page nothing moves by itself): it can
+ * be dragged, and on phones it also turns as the phone is tilted, where the phone allows it (an iPhone asks first).
+ * "Paint it yourself" opens a studio: brush, scratch and rub out straight onto the pot, choose its patterns and
+ * style, write its words. The visitor's vase is kept in this browser (lib/amphora.ts). three.js is loaded only
+ * when the vase comes into view.
  */
 
 type Tool = "brush" | "scratch" | "rub" | "strike" | "turn";
@@ -324,8 +325,8 @@ export default function Amphora() {
       resize();
       const ro = new ResizeObserver(resize); ro.observe(stage);
 
-      const SPEED = 0.0045, PAN = 1.02;
-      let rot = -0.6, vel = reduceRef.current ? 0 : SPEED, rise = reduceRef.current ? 1 : 0, visible = true, raf = 0, tilted = 0;
+      const PAN = 1.02;
+      let rot = -0.6, vel = 0, visible = true, raf = 0, tilted = 0;
       let zoom = 1, zoomT = 1, pan = PAN, panT = PAN;
       const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
       io.observe(stage);
@@ -562,16 +563,15 @@ export default function Amphora() {
         rot += rock.spin; rock.spin *= Math.pow(0.02, dt);
         rocker.rotation.set(reduce ? 0 : rock.x, 0, reduce ? 0 : rock.z);
         const flying = chips.update(dt);
-        if (!drag && !pinch) { vel += ((inStudio || reduce ? 0 : SPEED) - vel) * (inStudio ? 0.1 : 0.02); rot += vel; }
-        rise = reduce ? 1 : Math.min(1, rise + 0.012);
-        const e = 1 - Math.pow(1 - rise, 3);
+        // a turn given by a flick of the finger dies away; nothing turns by itself
+        if (!drag && !pinch) { vel *= inStudio ? 0.9 : 0.98; rot += vel; }
         tilted += ((inStudio ? 0 : tiltRef.current * 0.9) - tilted) * 0.06;   // eased, so a shaky hand does not jolt it
         // the camera glides to where it is sent: quickly, so the vase answers the fingers at once
         zoom += (zoomT - zoom) * 0.3; pan += (panT - pan) * 0.3;
         camera.zoom = zoom; camera.position.set(0, pan + 0.13, 6.4); camera.lookAt(0, pan, 0); camera.updateProjectionMatrix();
-        vase.rotation.y = rot + tilted; vase.position.y = -0.35 * (1 - e); vase.scale.setScalar(0.9 + 0.1 * e);
+        vase.rotation.y = rot + tilted;
         // nothing moving and nothing new: the last picture stands (the studio stays light on the computer)
-        const still = Math.abs(vel) < 1e-5 && Math.abs(zoomT - zoom) < 1e-4 && Math.abs(panT - pan) < 1e-4 && rise >= 1
+        const still = Math.abs(vel) < 1e-5 && Math.abs(zoomT - zoom) < 1e-4 && Math.abs(panT - pan) < 1e-4
           && Math.abs(rock.x) + Math.abs(rock.z) + Math.abs(rock.vx) + Math.abs(rock.vz) < 1e-4 && Math.abs(rock.spin) < 1e-6
           && Math.abs((inStudio ? 0 : tiltRef.current * 0.9) - tilted) < 1e-4 && !flying && !spreading.length && !drag && !pinch;
         if (still && !wake && !all && !dirty.length && !bumpDirty.length && shown) return;
@@ -594,7 +594,7 @@ export default function Amphora() {
 
     // three.js is large (about 190 KB to download, and a second or two of work for a phone to set up and paint),
     // so it is fetched only when the vase comes into view, and once the browser has a moment to spare: the page
-    // is ready to use first. Until then the stage shows its halo and shadow.
+    // is ready to use first. Until then the stage shows the shadow under its foot.
     let idle = 0;
     const near = new IntersectionObserver(([e]) => {
       if (!e.isIntersecting) return;
@@ -619,7 +619,6 @@ export default function Amphora() {
         role={studio ? "dialog" : undefined} aria-modal={studio || undefined} aria-labelledby={studio ? "studio-title" : undefined}
       >
         <div ref={stageRef} className={styles.stage} data-tool={studio ? tool : undefined}>
-          <div className={styles.halo} aria-hidden="true" />
           {charge && <span key={charge.id} className={styles.charge} style={{ left: charge.x, top: charge.y }} aria-hidden="true" />}
           <div className={styles.shadow} aria-hidden="true" />
           {studio && (

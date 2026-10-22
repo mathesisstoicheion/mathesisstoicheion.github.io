@@ -1,18 +1,16 @@
-/* The vase and its studio (Stone and torch): the studio is a full-screen opaque ground, its tools a sunk panel, its notes a slab;
-   the colour swatches keep their own look. */
+/* The vase and its studio (the Kerameikos): on the printed page the pot stands on the paper itself, and its studio is a leaf
+   of the same paper over the whole screen, the tools in a column beside it under a hairline. Nothing glows, wiggles or
+   lifts: the studio inks in where it stands (decision 3). The colour swatches show their own colours, flat, as a printer's
+   colour chart would. */
 .slot { --stage-h: clamp(360px, 44vw, 520px); min-width: 0; }
 .figure { margin: 0; }
 .stage { position: relative; isolation: isolate; height: var(--stage-h); }   /* its picture stays under the caption that rises over its foot */
-.canvas { position: absolute; inset: 0; z-index: 1; width: 100% !important; height: 100% !important; cursor: grab; touch-action: pan-y; outline: none; }
+.canvas {
+  position: absolute; inset: 0; z-index: 1; width: 100% !important; height: 100% !important; cursor: grab; touch-action: pan-y; outline: none;
+  animation: ink-in var(--ink-in) var(--ease) backwards;   /* the pot inks in once it is drawn */
+}
 .canvas:active { cursor: grabbing; }
 .canvas:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-/* a warm glow behind the pot, so its black gloss stands clear of a dark page */
-.halo {
-  position: absolute; left: 50%; top: 46%; width: min(78%, 520px); aspect-ratio: 1; translate: -50% -50%; border-radius: var(--radius-round);
-  background: radial-gradient(closest-side, var(--vase-glow), transparent);
-  animation: glow 7s ease-in-out infinite alternate;
-}
-@keyframes glow { from { scale: 0.94; opacity: 0.8; } to { scale: 1.04; opacity: 1; } }
 .shadow {
   /* under the foot: the camera puts the foot about a fifth of the way up the stage */
   position: absolute; left: 50%; bottom: calc(19% - 13px); width: 46%; height: 26px; transform: translateX(-50%); border-radius: var(--radius-round);
@@ -23,107 +21,116 @@
 .cap { position: relative; margin: calc(var(--stage-h) * -0.12) auto 0; max-width: 46ch; font-size: var(--step--1); color: var(--ink-2); text-align: center; font-style: italic; }
 .capBtns { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 10px; font-style: normal; }
 .paintBtn svg { margin-left: -4px; }
-.paintBtn:hover svg { animation: wiggle calc(0.6s / var(--tempo)) var(--ease); }
-@keyframes wiggle { 30% { rotate: -14deg; } 60% { rotate: 8deg; } }
-.tiltBtn { display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: inherit; font-style: normal; }
-.tiltBtn:active { background: var(--field); box-shadow: var(--field-edge); }
+.tiltBtn {
+  display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 14px; border: 1px solid var(--rule); border-radius: var(--radius);
+  background: transparent; color: var(--ink); font: inherit; font-style: normal;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+.tiltBtn:hover { color: var(--rubric); border-color: var(--rubric); }
 /* phones: a smaller vase, so the first screen shows more than the hero */
 @media (max-width: 760px) {
   .slot { --stage-h: 250px; }
 }
 
 /* ---------------------------------------------------------------- the studio
-   The vase lifts out of the page into a workshop that fills the screen: the pot on a warm ground, the
-   tools beside it (below it on phones). */
+   The vase is set on a leaf of paper that fills the screen: the pot on the paper, the tools in a column beside it
+   (below it on phones) under a hairline. */
 .figure[data-studio] {
   position: fixed; inset: 0; z-index: 80; display: grid; grid-template-columns: minmax(0, 1fr) min(400px, 42vw);
   padding-top: env(safe-area-inset-top, 0px);
-  background: radial-gradient(120% 90% at 35% 45%, var(--bg-2, var(--surface)), var(--bg) 70%);
-  animation: lift calc(0.45s / var(--tempo)) var(--ease) backwards;
+  background: var(--bg);
+  animation: ink-in var(--dur) var(--ease) backwards;
 }
-@keyframes lift { from { opacity: 0; scale: 0.97; } }
+@keyframes ink-in { from { opacity: 0; } }
 .figure[data-studio] .stage { height: auto; min-height: 0; }
-.figure[data-studio] .halo { width: min(70%, 640px); }
 .figure[data-studio] .shadow { display: none; }
 .figure[data-studio] .canvas { touch-action: none; cursor: crosshair; }
 .stage[data-tool="turn"] .canvas { cursor: grab; }
 .stage[data-tool="turn"] .canvas:active { cursor: grabbing; }
+/* turn and come closer: a strip of paper in a hairline frame at the foot of the pot */
 .view {
-  position: absolute; z-index: 2; left: 50%; bottom: 14px; translate: -50% 0; display: flex; gap: 4px; padding: 4px;
-  border-radius: var(--radius); background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(6px); box-shadow: var(--slab-edge);
+  position: absolute; z-index: 2; left: 50%; bottom: 14px; translate: -50% 0; display: flex; gap: 2px; padding: 3px;
+  border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg);
 }
-.view button { display: grid; place-items: center; width: var(--tap); height: var(--tap); border: 0; border-radius: var(--radius-round); background: transparent; color: var(--ink); cursor: pointer; }
-.view button:hover { background: color-mix(in srgb, var(--ink) 10%, transparent); }
+.view button {
+  display: grid; place-items: center; width: var(--tap); height: var(--tap); border: 0; border-radius: var(--radius);
+  background: transparent; color: var(--ink); cursor: pointer; transition: color var(--dur-quick) var(--ease);
+}
+.view button:hover { color: var(--rubric); }
 
 .tools {
   display: grid; gap: 22px; align-content: start; overflow-y: auto; overscroll-behavior: contain;
   padding: 20px 22px calc(24px + env(safe-area-inset-bottom, 0px));
-  background: var(--field); box-shadow: var(--field-edge);
-  animation: toolsIn calc(0.5s / var(--tempo)) calc(0.08s / var(--tempo)) var(--ease) backwards;
+  background: var(--bg); box-shadow: inset 1px 0 0 var(--rule);
+  animation: ink-in var(--dur-slow) var(--ease) 0.08s backwards;
 }
-@keyframes toolsIn { from { opacity: 0; translate: 24px 0; } }
-.toolsHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
-.toolsTitle { margin: 0; font-family: var(--f-display); font-size: var(--step-1); font-weight: 400; }
+.toolsHead { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--ink); }
+.toolsTitle { margin: 0; font-family: var(--f-title); font-size: var(--step-1); font-weight: 400; }
 .group { display: grid; gap: 10px; }
 .group h3 { margin: 0; }
 .hint { margin: 0; font-size: var(--step--1); color: var(--ink-2); line-height: 1.45; }
-.note { margin: 0; padding: 10px 12px; background: var(--slab); box-shadow: var(--slab-edge), var(--inlay-left); font-size: var(--step--1); }
+/* what the studio has to say: a line set in from a red rule, as a printer's note */
+.note { margin: 0; padding: 4px 0 4px 14px; box-shadow: var(--inlay-left); font-size: var(--step--1); }
 
-.seg { display: flex; flex-wrap: wrap; gap: var(--space-1); border: 0; border-radius: var(--radius); padding: var(--space-1); background: var(--field); box-shadow: var(--field-edge); }
+/* a row of choices: small capitals in a hairline frame, the chosen one in ink with paper letters */
+.seg { display: flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: var(--radius); }
 .seg button {
   flex: 1 1 auto; display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 38px; padding: 0 12px;
-  border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); font: 500 var(--step--1) var(--f-label); cursor: pointer;
-  transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); cursor: pointer;
+  font: 500 0.7rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
 }
-.seg button[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
-.seg button:not([aria-pressed="true"]):hover { background: var(--slab); }
+.seg button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); }
+.seg button:not([aria-pressed="true"]):hover { color: var(--rubric); }
 .dot { display: inline-block; border-radius: var(--radius-round); background: currentColor; }
 @media (pointer: coarse) { .seg button { min-height: var(--tap); } }
 
+/* the painter's colours: flat rounds of colour in a hairline, the chosen one ringed in ink */
 .swatches { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .swatch {
-  width: 38px; height: 38px; border-radius: var(--radius-round); border: 2px solid var(--rule); background: var(--sw); cursor: pointer;
-  box-shadow: inset 0 -6px 10px -6px rgba(0, 0, 0, 0.35), inset 0 4px 8px -6px rgba(255, 255, 255, 0.5);
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  width: 38px; height: 38px; border-radius: var(--radius-round); border: 1px solid var(--rule); background: var(--sw); cursor: pointer;
+  transition: box-shadow var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.swatch:hover { transform: translateY(-2px); }
-.swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--surface), 0 0 0 5px var(--accent); transform: scale(1.08); }
+.swatch:hover { border-color: var(--ink-3); }
+.swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--ink); }
 /* more colours: a grid of small swatches, the ones picked with the colour picker, and the picker itself */
 .colours { display: grid; gap: 10px; }
 .more { display: grid; grid-template-columns: repeat(auto-fill, minmax(26px, 1fr)); gap: 6px; }
 .chipSwatch, .anyColour {
-  aspect-ratio: 1; width: 100%; min-width: 26px; border-radius: var(--radius); border: 1px solid color-mix(in srgb, var(--ink) 18%, transparent);
-  background: var(--sw); cursor: pointer; padding: 0; transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  aspect-ratio: 1; width: 100%; min-width: 26px; border-radius: var(--radius); border: 1px solid var(--rule);
+  background: var(--sw); cursor: pointer; padding: 0; transition: box-shadow var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.chipSwatch:hover { transform: translateY(-2px); }
-.chipSwatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--accent); transform: scale(1.06); }
+.chipSwatch:hover { border-color: var(--ink-3); }
+.chipSwatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--ink); }
+/* any colour at all: the four pens of the margin in a round, a plus in its middle */
 .anyColour {
   position: relative; display: grid; place-items: center; overflow: hidden; color: var(--ink); font: 600 var(--step-sub)/1 var(--f-label);
-  background: conic-gradient(from 0deg, #e53935, #fdd835, #43a047, #1e88e5, #8e24aa, #e53935);
+  background: conic-gradient(from 0deg, var(--pen-red), var(--pen-ochre), var(--pen-green), var(--pen-blue), var(--pen-red));
 }
-.anyColour span { display: grid; place-items: center; width: 62%; aspect-ratio: 1; border-radius: var(--radius-round); background: var(--surface); }
+.anyColour span { display: grid; place-items: center; width: 62%; aspect-ratio: 1; border-radius: var(--radius-round); background: var(--bg); }
 .anyColour input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; cursor: pointer; border: 0; padding: 0; }
 .anyColour:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
-/* striking: a ring that tightens while the blow gathers strength (about a second and a half to full) */
+/* striking: a red ring under the finger that darkens and thickens while the blow gathers strength (about a second and a
+   half to full); it stays where it is, as a mark on the page */
 .charge {
-  position: absolute; z-index: 3; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: var(--radius-round); pointer-events: none;
-  border: 3px solid var(--accent); box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 60%, transparent);
-  animation: gather calc(1.5s / var(--tempo)) cubic-bezier(0.3, 0, 0.2, 1) forwards;
+  position: absolute; z-index: 3; width: 44px; height: 44px; margin: -22px 0 0 -22px; border-radius: var(--radius-round); pointer-events: none;
+  border: 1px solid var(--accent); opacity: 0.25;
+  animation: gather 1.5s linear forwards;
 }
-@keyframes gather { from { scale: 1.6; opacity: 0.2; border-width: 1px; } to { scale: 0.32; opacity: 1; border-width: 6px; } }
+@keyframes gather { to { opacity: 1; border-width: 5px; } }
 .stage[data-tool="strike"] .canvas { cursor: crosshair; }
 .swatchName { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
 @media (pointer: coarse) { .swatch { width: var(--tap); height: var(--tap); } }
 
 .row { display: flex; flex-wrap: wrap; gap: 8px; }
+/* the studio's plain buttons: words in a hairline frame */
 .plain {
-  display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 1px solid transparent; border-radius: var(--radius);
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: 500 var(--step--1) var(--f-label); cursor: pointer;
+  display: inline-flex; align-items: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 1px solid var(--rule); border-radius: var(--radius);
+  background: transparent; color: var(--ink); font: 500 var(--step--1) var(--f-label); cursor: pointer;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .plain:disabled { opacity: 0.4; cursor: default; }
-.plain:not(:disabled):hover { background: var(--slab-lit); }
-.plain:not(:disabled):active { background: var(--field); box-shadow: var(--field-edge); }
+.plain:not(:disabled):hover { color: var(--rubric); border-color: var(--rubric); }
 @media (pointer: coarse) { .plain { min-height: var(--tap); } }
 
 .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px 12px; }
@@ -136,8 +143,7 @@
 
 @media (max-width: 760px) {
   .figure[data-studio] { grid-template-columns: minmax(0, 1fr); grid-template-rows: minmax(0, 1fr) auto; }
-  .tools { max-height: 48dvh; padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px)); gap: 18px; animation-name: toolsUp; }
+  .tools { max-height: 48dvh; padding: 14px 16px calc(18px + env(safe-area-inset-bottom, 0px)); gap: 18px; box-shadow: inset 0 1px 0 var(--ink); }
   .toolsTitle { font-size: var(--step-1); }
   .view { bottom: 8px; }
 }
-@keyframes toolsUp { from { opacity: 0; translate: 0 24px; } }

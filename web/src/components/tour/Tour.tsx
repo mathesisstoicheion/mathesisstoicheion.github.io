@@ -1,8 +1,8 @@
 "use client";
 /**
  * The "Show me" tours (lib/tours.ts): with ?tour=<id> in the address, the page's controls are shown one at a
- * time. A soft light glides from control to control while the rest of the page dims, and a card beside it says
- * what the control does. The page stays usable underneath (the light lets clicks through), so a reader can try
+ * time. Each control is ringed in red, as an editor marks a page, while the rest of the page is veiled, and a card
+ * beside it says what the control does. The page stays usable underneath (the ring lets clicks through), so a reader can try
  * each control as it is shown. Esc ends the tour; the arrow keys and Enter step through it.
  */
 import Link from "next/link";
@@ -231,7 +231,7 @@ export default function Tour() {
   return (
     <>
       {box && !done && (
-        <div className={styles.light} aria-hidden="true"
+        <div key={step} className={styles.light} aria-hidden="true"
           style={{ transform: `translate(${box.x - PAD}px, ${box.y - PAD}px)`, width: box.w + PAD * 2, height: box.h + PAD * 2 }} />
       )}
       {(box || done || finding) && (
@@ -272,7 +272,7 @@ export default function Tour() {
               </div>
               <h2 id="tour-title" tabIndex={-1}>{finding ? "One moment…" : s.title}</h2>
               <p id="tour-text" aria-live="polite">{finding ? "Finding it on the page." : (phone && s.phoneText) || s.text}</p>
-              {pos === 0 && !finding && <p className={styles.hint}>You can try each control while the light is on it.</p>}
+              {pos === 0 && !finding && <p className={styles.hint}>You can try each control while it is ringed in red.</p>}
               <div className={styles.acts}>
                 <button type="button" className="btn small ghost" onClick={() => go(-1)} disabled={step === 0}>Back</button>
                 <button type="button" className="btn small" onClick={() => go(1)} disabled={finding}>{pos === seen.length - 1 ? "Done" : "Next"}</button>

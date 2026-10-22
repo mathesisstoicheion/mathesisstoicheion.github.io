@@ -1,38 +1,34 @@
-/* Offline actions (Stone and torch): a card you press is a slab set proud of the wall, lit under the hand; the download card,
-   which is not itself pressed, is a panel sunk into the wall holding its choices as small slabs (the same stone as the
-   settings' controls); the progress job is a sunk panel with a channel and a gilded inlay */
-.list { display: grid; gap: 12px; }
+/* Offline actions (OfflineActions.tsx), as the printed page sets a list of things to do: each one under a rule of ink,
+   its name, a line beneath, its small red mark at the left; under the hand the name turns red. The download's choices are
+   the sample's small framed buttons; its progress a fine rule of red filling a hairline. */
+.list { display: grid; gap: 0; }
 .item {
   display: grid; grid-template-columns: 30px 1fr; gap: 14px; align-items: start;
-  width: 100%; padding: 14px 16px; text-align: left;
-  background: var(--slab); border: 0; box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: background-color var(--dur) ease;
+  width: 100%; padding: 14px 0 12px; text-align: left; color: var(--ink);
+  background: transparent; border: 0; border-top: 1px solid var(--rule); border-radius: var(--radius);
 }
-div.item { background: var(--field); box-shadow: var(--field-edge); }
-button.item:hover:not(:disabled) { background-color: var(--slab-lit); }
+.list > .item:first-child { border-top-color: var(--ink); }
+button.item b { transition: color var(--dur-quick) var(--ease); }
+button.item:hover:not(:disabled) b { color: var(--rubric); }
 button.item:disabled { opacity: 0.6; cursor: default; }
-.item svg { width: 26px; height: 26px; color: var(--accent); margin-top: 2px; }
-.item b { display: block; font-size: var(--step-0); }
+.item svg { width: 24px; height: 24px; color: var(--accent); margin-top: 2px; }
+.item b { display: block; font-size: var(--step-0); font-weight: 500; }
 .item > div > span { display: block; font-size: var(--step--1); color: var(--ink-2); }
 .quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
-.quick :global(.chip) {
-  display: inline-block; font-weight: 600; text-align: left; line-height: 1.35; padding-block: 8px;
-  background: var(--slab); border-color: transparent; box-shadow: var(--slab-edge);
-}
-.quick :global(.chip):hover:not(:disabled) { background: var(--slab-lit); border-color: transparent; }
+.quick :global(.chip) { display: inline-block; text-align: left; line-height: 1.35; padding-block: 8px; }
 @media (max-width: 680px) { .quick :global(.chip) { width: 100%; border-radius: var(--radius); } }
 .quick :global(.chip):disabled { opacity: 0.5; cursor: default; }
 .size { font-weight: 400; color: var(--ink-2); }
 .small { font-size: var(--step--1); color: var(--ink-2); margin-top: 10px; }
 .small a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
 
-.job { display: grid; gap: 6px; margin-top: 12px; padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
+.job { display: grid; gap: 6px; margin-top: 12px; padding: 10px 0 12px; border-block: 1px solid var(--rule); border-radius: var(--radius); }
 .jobHead { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
-.bar { height: 8px; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); overflow: hidden; }
-.bar span { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: inherit; transition: width 0.4s var(--ease); }
+.bar { height: 3px; background: var(--rule-2); border-radius: var(--radius); overflow: hidden; }
+.bar span { display: block; height: 100%; background: var(--rubric); border-radius: inherit; }
 .err { color: var(--accent); font-weight: 600; font-size: var(--step--1); }
 
-.compact .item { padding: 10px 12px; grid-template-columns: 22px 1fr; gap: 10px; }
+.compact .item { padding: 10px 0; grid-template-columns: 22px 1fr; gap: 10px; }
 .compact .item svg { width: 20px; height: 20px; }
 .compact .item b { font-size: var(--step-0); }
 .compact .item span { font-size: var(--step--1); }

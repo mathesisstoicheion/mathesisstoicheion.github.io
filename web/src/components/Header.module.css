@@ -56,7 +56,7 @@
 .menu {
   position: absolute; right: max(var(--gutter), env(safe-area-inset-right, 0px)); top: calc(100% - 2px); width: min(360px, calc(100vw - 2 * var(--gutter))); z-index: 25;
   background: var(--bg); color: var(--ink); border: 1px solid var(--rule); padding: 6px 20px 18px; box-shadow: 0 18px 40px -22px var(--shadow);
-  animation: ink calc(0.5s) var(--ease) backwards;
+  animation: ink var(--dur) var(--ease) backwards;
 }
 .menuDoors { list-style: none; margin: 0; padding: 0; }
 .menuDoors :is(a, button) {
@@ -77,14 +77,16 @@
 .dot { width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--gem-shine), var(--ok); box-shadow: var(--bezel); flex: none; position: relative; }
 [data-status="offline"] .dot { background: var(--gem-shine), var(--danger); }
 [data-status="syncing"] .dot { background: var(--gem-shine), var(--ochre); }
-/* a slow, soft ripple while syncing, like a flame breathing; one ring when the connection is lost */
-[data-status="syncing"] .dot::after { content: ""; position: absolute; inset: -4px; border-radius: var(--radius-round); border: 1px solid var(--ochre); animation: ripple 2.4s ease-out infinite; }
-[data-status="offline"] .dot::after { content: ""; position: absolute; inset: -4px; border-radius: var(--radius-round); border: 1px solid var(--danger); animation: ripple 0.8s ease-out 1; }
-@keyframes ripple { from { transform: scale(0.7); opacity: 0.8; } to { transform: scale(1.7); opacity: 0; } }
+/* while syncing, or once the connection is lost, a fine ring of the same colour is printed round the light; it inks in
+   and stands still (decision 3: nothing pulses or ripples) */
+[data-status="syncing"] .dot::after, [data-status="offline"] .dot::after {
+  content: ""; position: absolute; inset: -4px; border-radius: var(--radius-round); border: 1px solid var(--ochre); animation: ink var(--dur) var(--ease) backwards;
+}
+[data-status="offline"] .dot::after { border-color: var(--danger); }
 .connPanel {
   position: absolute; right: 0; top: calc(100% + 8px); z-index: 60; width: min(380px, calc(100vw - 24px));
-  display: grid; gap: 12px; padding: 16px 18px; background: var(--surface); border: 1px solid var(--rule); border-radius: var(--radius);
-  box-shadow: 0 18px 40px -22px var(--shadow); animation: ink 0.5s var(--ease) backwards; font-size: var(--step-0); color: var(--ink);
+  display: grid; gap: 12px; padding: 16px 18px; background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius);
+  box-shadow: 0 18px 40px -22px var(--shadow); animation: ink var(--dur) var(--ease) backwards; font-size: var(--step-0); color: var(--ink);
 }
 /* phones: the light sits mid-row, so its panel hangs from the whole header instead, inside the screen */
 @media (max-width: 760px) {
@@ -94,7 +96,7 @@
 .connHead { display: flex; align-items: center; gap: 10px; font-size: var(--step-0); }
 .connList { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; color: var(--ink-2); }
 .connActs { display: flex; flex-wrap: wrap; gap: 8px; }
-.connReport { display: grid; gap: 4px; padding: 10px 12px; background: var(--field); box-shadow: var(--field-edge), var(--inlay-left-ok); font-size: var(--step--1); }
-.connReport[data-ok="false"] { box-shadow: var(--field-edge), var(--inlay-left); }
+.connReport { display: grid; gap: 4px; padding: 2px 0 2px 14px; box-shadow: var(--inlay-left-ok); font-size: var(--step--1); }
+.connReport[data-ok="false"] { box-shadow: var(--inlay-left); }
 /* review fixes, slice 10: room between the small buttons, so that each one's 44 px touch area is its own */
 @media (pointer: coarse) { .utils { gap: 10px; } }
