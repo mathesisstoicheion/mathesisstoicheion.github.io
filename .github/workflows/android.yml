@@ -43,6 +43,14 @@ jobs:
         working-directory: android
         run: ./gradlew --no-daemon assembleRelease
 
+      - name: Check the site's code and accounts made it into the app
+        run: |
+          APK=android/app/build/outputs/apk/release/app-release-unsigned.apk
+          unzip -l "$APK" | grep -q "assets/site/_next/static/" || { echo "the site's code (_next) is missing from the app"; exit 1; }
+          unzip -l "$APK" | grep -q "assets/site/index.html" || { echo "the home page is missing from the app"; exit 1; }
+          mkdir /tmp/code && unzip -q "$APK" 'assets/site/_next/static/*' -d /tmp/code
+          grep -rqs "supabase.co" /tmp/code || echo "::warning::no Supabase address in the site's code: sign-in will be off in this app"
+
       # The unsigned app goes to its own branch, in parts under GitHub's 100 MB file limit, for signing. The branch
       # holds only the latest build (one commit, replaced each time) and is never merged.
       - name: Hand over the unsigned app

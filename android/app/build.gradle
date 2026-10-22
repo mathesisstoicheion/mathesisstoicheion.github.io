@@ -26,6 +26,8 @@ android {
     // the site's pictures, fonts and data are already compressed or small; keep them as they are
     androidResources {
         noCompress += ["woff2", "png", "jpg", "jpeg", "webp", "mp3", "ogg"]
+        // Android's default leaves out folders starting with "_", which would drop the site's code in _next/
+        ignoreAssetsPattern = "!.svn:!.git:!.ds_store:!*.scc:!CVS:!thumbs.db:!picasa.ini:!*~"
     }
 
     compileOptions {
