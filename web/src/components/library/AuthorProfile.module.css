@@ -57,5 +57,12 @@
 @media (pointer: coarse) { .crumb a { display: inline-block; padding-block: 12.5px; margin-block: -12.5px; } }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {
-  .sec { margin-top: calc(var(--part-room) - 44px); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .sec { margin-top: calc(var(--part-room) - var(--space-6)); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a wide screen a part's heading hangs in the left margin beside its text (tokens.css --hang-*; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .sec:not(.worksSec) { grid-template-columns: var(--hang-cols); column-gap: var(--hang-gap); align-items: start; }
+  .sec:not(.worksSec) > * { grid-column: 2; }
+  .sec:not(.worksSec) > :first-child { grid-column: 1; }
+  .record { max-width: var(--measure); }
 }

@@ -70,6 +70,7 @@
 .about { display: grid; gap: var(--space-3); max-width: 70ch; padding-top: var(--space-4); border-top: 1px solid var(--ink); }
 .about h2 { font-family: var(--f-title); font-size: var(--step-2); }
 .about p { margin: 0; }
+.aboutText { display: grid; gap: var(--space-3); }
 .words { display: grid; gap: var(--space-3); padding: var(--space-4); background: var(--field); box-shadow: var(--field-edge); }
 .words p { display: grid; gap: 2px; }
 .wordsGrc { font: 400 var(--step-1) / 1.4 var(--f-greek); color: var(--ink); }
@@ -88,7 +89,7 @@
   .vol input { width: 110px; }
 }
 
-.instrumentNote { margin: calc(-1 * var(--space-3)) auto 0; max-width: 72ch; text-align: center; font-size: var(--step--1); color: var(--ink-3); }
+.instrumentNote { margin: calc(-1 * var(--space-3)) auto 0; max-width: var(--measure); text-align: center; font-size: var(--step--1); color: var(--ink-3); }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .vol input { min-height: var(--tap); } }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
@@ -97,6 +98,12 @@
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
-  .song { padding-inline: 14px; box-shadow: inset 0 0 0 1px var(--rule); }
-  .song[aria-checked="true"] { box-shadow: inset 0 2px 0 var(--rubric), inset 0 0 0 1px var(--rule); }
+  .song { padding-inline: var(--space-3); box-shadow: var(--field-edge); }
+  .song[aria-checked="true"] { box-shadow: var(--chosen-top), var(--field-edge); }
+}
+/* on a wide screen the song's words stand beside what the page says about it, not under it (the owner, 2026-10-23: the
+   computer version "doesn't use a lot of the available space"; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .about { max-width: none; grid-template-columns: minmax(0, var(--measure)) minmax(18rem, 34rem); column-gap: var(--hang-gap); justify-content: space-between; align-items: start; }
+  .words { grid-column: 2; grid-row: 1 / span 2; }
 }

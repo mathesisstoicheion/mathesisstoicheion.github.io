@@ -8,7 +8,7 @@
 .small { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .warn { color: var(--rubric); }
 /* a word about the search (a form read two ways, a limit reached): a note set off by a red rule down its margin */
-.note { margin: 0; max-width: 80ch; padding: 4px 0 4px 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left); }
+.note { margin: 0; max-width: var(--measure); padding: 4px 0 4px 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left); }
 .status { color: var(--ink-2); display: flex; align-items: center; gap: 12px; padding-block: 24px; margin: 0; }
 
 /* ------------------------------------------------------------ the box, in the page's head */
@@ -34,7 +34,7 @@
 }
 .kbdBtn:hover { color: var(--rubric); border-color: var(--ink-3); }
 .kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
-.hint { margin: 0; font-size: var(--step-0); color: var(--ink-2); max-width: 80ch; }
+.hint { margin: 0; font-size: var(--step-0); color: var(--ink-2); max-width: var(--measure); }
 .readAs { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: var(--step-0); }
 .readAs select, .field select { font-size: var(--step--1); max-width: 100%; }
 .readAs b { font-size: var(--step-sub); color: var(--rubric); font-weight: 400; }
@@ -107,7 +107,7 @@
 .moreTips summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); font-size: var(--step--1); }
 .moreTips summary::marker { color: var(--rubric); }
 @media (pointer: coarse) { .moreTips summary { min-height: var(--tap); padding-block: var(--space-2); } }
-.tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
+.tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: var(--measure); }
 .tips li::marker { color: var(--rubric); }
 .tips span[lang] { font-family: var(--f-greek); color: var(--ink); }
 

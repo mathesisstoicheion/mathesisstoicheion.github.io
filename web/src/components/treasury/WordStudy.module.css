@@ -29,7 +29,8 @@
 /* each part's head: its name, then a hairline to the margin, as the page's own section heads (globals.css .sh) */
 .sec > h2, .secHead > h2 { display: flex; align-items: baseline; gap: 14px; margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
 .sec > h2::after, .secHead > h2::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
-.sec > h3 { margin-top: 6px; }
+.sec > h3, .lsj > h3 { margin-top: 6px; }
+.lsj { display: grid; gap: inherit; align-content: start; }
 .secHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
 .secHead > h2 { flex: 1 1 auto; }
 .sec :global(.chip) { justify-self: start; }
@@ -138,4 +139,11 @@
 @media (min-width: 761px) {
   .sec { padding-top: var(--part-pad); border-top: var(--part-rule); }
   .layout { margin-top: var(--after-head); }
+}
+/* on a wide screen the core meaning and the dictionary's entry stand side by side under the heading, not one short block
+   under another with the right half of the column empty (the owner, 2026-10-23; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .meaning { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--hang-gap); align-items: start; }
+  .meaning > h2 { grid-column: 1 / -1; }
+  .meaning > .lsj > h3 { margin-top: 0; }
 }

@@ -38,7 +38,7 @@ export function WhyStoics() {
         </div>
         <aside className={`${styles.side} rv`}>
           Diogenes Laertius, <i>Lives of Eminent Philosophers</i> 7.5.
-          <Plate id="crates-hipparchia" n={5} frame={false} why="Zeno was a pupil of the Cynic Crates (Diogenes Laertius 7.2–3)." sizes="260px" />
+          <Plate id="crates-hipparchia" n={5} frame={false} why="Zeno was a pupil of the Cynic Crates (Diogenes Laertius 7.2–3)." sizes="(min-width: 1200px) 560px, 260px" />
         </aside>
       </div>
     </>

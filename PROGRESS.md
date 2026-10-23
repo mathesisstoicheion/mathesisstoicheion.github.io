@@ -29,6 +29,13 @@ decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claud
 - **Beta 8** of the phone app (2026-10-23 04:45 UTC) carries the redesign; the app offers it when opened. The laptop copy
   (Documents\Mathesis Local Site, port 3100) is brought up to the branch by a Remote Control session, which also gives
   the desktop start app the printer's device for its icon.
+- **The computer version** (2026-10-23, the owner: the phone design "is great", but on a computer the heads "load at
+  different heights", the parts "blend into each other", "It's not clear what is a clickable", the grey text "can be a
+  little unintelligible", overlaps like the census word panel, and it "doesn't use a lot of the available space"): every
+  head at one height; each part under a rule of ink with room above it; clickables shown at rest; darker grey in Paper
+  and Night; nothing spilling out of its frame; pages up to 1760 px wide with the type a little larger on big screens,
+  reading lines kept to about 80 letters, headings hung in the margin, and things that belong together side by side.
+  Six new checks guard it (DESIGN.md, "Space and shape"). The phone layout is unchanged apart from the colours.
 - The holding page (`holding/`, shown only while the site is closed) is set as the printed page too.
 - The old look's files are in `_archive/old-look-2026-10-22/`.
 

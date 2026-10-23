@@ -318,3 +318,7 @@
   .workTitle::after { content: "\00a0→"; color: var(--rubric); }
   .go { opacity: 1; }
 }
+/* the six reading paths in two even rows of three on a wide screen, not four and two (scripts/check-room.mjs) */
+@media (min-width: 1100px) {
+  .paths { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

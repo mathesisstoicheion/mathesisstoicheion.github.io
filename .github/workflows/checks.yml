@@ -159,3 +159,7 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-spill.mjs http://localhost:3100
+      - name: A wide screen is used, with reading lines kept to a comfortable length
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-room.mjs http://localhost:3100

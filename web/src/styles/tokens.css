@@ -124,9 +124,16 @@
   --z-over-header: 31;
   --z-bar: 5;
 
-  /* layout */
+  /* layout. The type area fills a computer's screen as it fills a sheet, inside a margin of a twentieth of the window
+     either side (the owner, 2026-10-23: "the pc version also doesn't use a lot of the available space on the page";
+     scripts/check-room.mjs); running text keeps its own measure, about 80 characters to a line, however wide the page. */
   --gutter: clamp(16px, 4vw, 56px);
-  --maxw: 1180px;
+  --maxw: 1760px;
+  --measure: 64ch;
+  /* a part of reading on a wide screen, as a book sets it: its heading hung in the left margin, the text at its measure,
+     a narrower margin to the right (scripts/check-room.mjs) */
+  --hang-cols: minmax(11rem, 1fr) minmax(0, 46rem) minmax(0, 0.5fr);
+  --hang-gap: clamp(32px, 4vw, 72px);
   --tap: 44px;
   /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
      line's own height, where the token is used). The browser lays boxes out in 64ths of a pixel and rounds each part
@@ -135,6 +142,8 @@
   --tap-pad: calc((var(--tap) - 1lh) / 2 + 0.5px);
   --tex: none;
 }
+/* a wide screen: the margin grows with the window, a twentieth of it either side */
+@media (min-width: 1400px) { :root { --gutter: 5vw; } }
 
 /* ---------------------------------------------------------- the roles: Paper */
 :root,
@@ -242,6 +251,10 @@
   /* surfaces: on a printed page a panel is a hairline frame on the paper, never a raised box */
   --field: transparent;
   --field-edge: inset 0 0 0 1px var(--rule);
+  /* the chosen one of a row of framed choices: a red rule along its top (a shelf in the census, a song on the lyre) */
+  --chosen-top: inset 0 2px 0 var(--rubric);
+  /* a part's rule of ink drawn as a line along a framed box's top */
+  --part-edge: inset 0 1px 0 var(--ink);
   --slab: transparent;
   --slab-edge: inset 0 0 0 1px var(--rule);
   --slab-lit: var(--bg-2);

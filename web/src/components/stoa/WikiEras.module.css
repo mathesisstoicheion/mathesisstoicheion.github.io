@@ -92,7 +92,7 @@
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {
-  .era { margin-top: calc(var(--part-room) - 36px); }
+  .era { margin-top: calc(var(--part-room) - var(--space-6)); }
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {

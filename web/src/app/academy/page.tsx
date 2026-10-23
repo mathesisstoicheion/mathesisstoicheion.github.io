@@ -28,7 +28,7 @@ export default function AcademyPage() {
       <Door id="study" plate="douris-school-cup" why="A school: lessons in writing, reading and music, painted on a cup." action={<AcademyProgress />}>
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
-            <div>
+            <div className={styles.trackHead}>
               <span className="label">Track 1</span>
               <h2 id="reading-title" style={{ marginTop: 8 }}><Link href={TRACKS.reading.href} transitionTypes={["page-turn"]}>{TRACKS.reading.name}</Link></h2>
               <p style={{ marginTop: 8, maxWidth: "64ch" }}>{TRACKS.reading.who}</p>
@@ -58,7 +58,7 @@ export default function AcademyPage() {
 
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="lessons-title">
-            <div>
+            <div className={styles.trackHead}>
               <span className="label">Track 2</span>
               <h2 id="lessons-title" style={{ marginTop: 8 }}>{TRACKS.grammar.name}</h2>
               <p style={{ marginTop: 8, maxWidth: "64ch" }}>{TRACKS.grammar.who}</p>

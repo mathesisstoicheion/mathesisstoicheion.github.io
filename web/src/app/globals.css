@@ -18,6 +18,8 @@
   --part-rule: 1px solid var(--ink);
   --part-room: clamp(56px, 7vh, 80px);
   --part-pad: 20px;
+  /* the room above a page's head on a computer, the same on every page (scripts/check-heads.mjs) */
+  --head-top: clamp(28px, 5vh, var(--space-7));
   /* the fine line under a link set in words, at rest (the owner, 2026-10-23: "It's not clear what is a clickable";
      scripts/check-clickable.mjs); under the hand it turns red with the words */
   --link-line: color-mix(in srgb, var(--ink) 45%, transparent);
@@ -56,6 +58,9 @@
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+/* a wide screen sets the type a little larger, as a larger sheet is printed in a larger size (the owner, 2026-10-23:
+   "doesn't use a lot of the available space"; scripts/check-room.mjs) */
+@media (min-width: 1600px) { html { font-size: clamp(100%, calc(100% + (100vw - 1600px) / 160), 112.5%); } }
 /* Phones: nothing may nudge the page sideways, not even for a moment while something slides in. A phone sizes
    its screen to everything on the page and ignores the overflow set on <body> (which goes to the window, below), so
    the page's content clips itself: <main> with overflow-x: clip, which unlike hidden makes no scroll box, so sticky
@@ -302,7 +307,12 @@ select:not([multiple]):not([size]) {
 .plate-margin .plate-on { display: block; background: var(--bg); animation: ink var(--ink-in) var(--ease) backwards; }
 /* a page's list of plates (Plate.tsx, PlateList): small print under a rule of ink, as a book's list of illustrations */
 .plate-list { padding-top: var(--space-5); border-top: 1px solid var(--ink); font-size: var(--step--1); line-height: 1.5; color: var(--ink-3); }
-.plate-list > p { max-width: 90ch; }
+.plate-list > p { max-width: var(--measure); }
+/* a long list of plates runs in columns across a wide screen, as a book's colophon may, not in one narrow column under an
+   empty right half (the owner, 2026-10-23; scripts/check-room.mjs) */
+@media (min-width: 1100px) {
+  .plate-list > p:has(> span:nth-of-type(5)) { max-width: none; columns: 3 20em; column-gap: var(--hang-gap); }
+}
 .plate-list b { color: var(--ink-2); font-weight: 500; }
 .plate-list-no { color: var(--rubric); font-variant-numeric: lining-nums; }
 .plate-list .plate-credit { color: inherit; }
@@ -454,7 +464,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5.2rem); }
 .ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); }
 .ph-greek { display: block; font: 400 0.46em / 1.2 var(--face-didot); color: var(--rubric); margin-top: var(--space-3); letter-spacing: 0.01em; }
-.ph-purpose { max-width: 34em; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
+.ph-purpose { max-width: 31em; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
 .ph-short .ph-purpose { font-size: var(--step-0); }
 .ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
@@ -464,7 +474,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
    format. A photograph of another shape is cut to it when it is near it, and shown whole on its mount when it is not
    (Plate.tsx, data-fit). */
 @media (min-width: 761px) {
-  .ph, .ph-short { align-items: start; padding-top: clamp(28px, 5vh, var(--space-7)); }
+  .ph, .ph-short { align-items: start; padding-top: var(--head-top); }
   .ph > .piece-desk { align-self: start; }
   .ph > .piece-desk .plate-ph { aspect-ratio: 3 / 4; }
   .ph > .piece-desk[data-fit="whole"] .plate-ph img { object-fit: contain; object-position: 50% 50%; }
@@ -619,6 +629,9 @@ select { max-width: 100%; }
   .door-part h2 a::after, .slab-card :where(b, h3, strong):first-child::after { content: "\00a0→"; color: var(--rubric); }
   .door-part { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .sh { padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .door-part > .sh:first-child { padding-top: 0; border-top: 0; }   /* the part's own rule is enough: never two */
+  /* running text keeps its measure in a wide column; a part that sets its own measure keeps it (zero specificity) */
+  :where(main) :where(p, dd, blockquote, figcaption, :is(ul, ol):not([class]) > li) { max-width: var(--measure); }
   /* a part laid straight in a page (the potters' quarter under the Kerameikos): its rule across the column */
   .part-top { padding-top: var(--part-pad); border-top: var(--part-rule); }
   /* the choices of what to show beside a search field: each ruled under at rest, the chosen one in red */

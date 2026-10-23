@@ -221,8 +221,18 @@
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
-  .shelf { padding-inline: 14px; box-shadow: inset 0 0 0 1px var(--rule); }
-  .shelf[aria-pressed="true"] { box-shadow: inset 0 2px 0 var(--rubric), inset 0 0 0 1px var(--rule); }
+  .shelf { padding-inline: var(--space-3); box-shadow: var(--field-edge); }
+  .shelf[aria-pressed="true"] { box-shadow: var(--chosen-top), var(--field-edge); }
   .fullMethod > summary::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); margin-right: var(--space-2); background: var(--accent); clip-path: var(--tri-right); }
   .fullMethod[open] > summary::before { clip-path: var(--tri-down); }
+}
+/* on a wide screen the method's first paragraph and the way into the full method stand side by side, not in one narrow
+   column under an empty right half (the owner, 2026-10-23; scripts/check-room.mjs). Opened, the full method runs across. */
+@media (min-width: 1200px) {
+  .method { grid-template-columns: minmax(0, var(--measure)) minmax(16rem, 1fr); column-gap: var(--hang-gap); align-items: start; }
+  .method > h2 { grid-column: 1 / -1; }
+  .methodFirst { grid-column: 1; grid-row: 2 / span 2; }
+  .fullMethod { grid-column: 2; grid-row: 2; }
+  .method > .fine { grid-column: 2; grid-row: 3; }
+  .fullMethod[open] { grid-column: 1 / -1; grid-row: 4; }
 }

@@ -16,7 +16,7 @@
 .lead p:first-child { font-size: var(--step-sub); display: flow-root; }   /* the initial stays inside its paragraph */
 .lead p:first-child::first-letter { float: left; font-family: var(--f-display); font-size: 3.7em; line-height: 0.82; padding: 0.06em 0.1em 0 0; color: var(--accent); }
 /* what the footnote numbers and the labels mean: one small line before the first place that uses them */
-.keyLine { margin: 0; max-width: 78ch; font-size: var(--step--1); line-height: 1.55; color: var(--ink-2); }
+.keyLine { margin: 0; max-width: var(--measure); font-size: var(--step--1); line-height: 1.55; color: var(--ink-2); }
 .keyLine b { font-family: var(--f-label); font-weight: 500; letter-spacing: 0.04em; color: var(--ink); }
 .keyLine :global(.tag) { margin-inline: var(--space-1); }
 .fakeMark { font-family: var(--f-label); font-size: var(--step--2); color: var(--accent); }   /* as the marks themselves (Stoa.module.css .srcMark) */
@@ -63,19 +63,19 @@
 .panel ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
 
 /* ---------------------------------------------------------------- editions and sources */
-.eds { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 0; max-width: 78ch; }
+.eds { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 0; max-width: var(--measure); }
 .eds li { padding: 12px 0 12px 22px; box-shadow: var(--cut-over); position: relative; line-height: 1.55; }
 .eds li:last-child { box-shadow: var(--cut-over), var(--cut-under); }
 .eds li::before { content: ""; position: absolute; left: 2px; top: 1.15em; width: 8px; height: 8px; background: var(--accent); transform: rotate(45deg); }
 /* the sources, folded away until a footnote or the reader asks for them (SourcesFold.tsx) */
-.sourcesFold { max-width: 78ch; }
+.sourcesFold { max-width: var(--measure); }
 .sourcesFold summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
 .sourcesFold summary:hover { text-decoration: underline; text-underline-offset: 3px; }
-.sources { margin: 4px 0 0; padding-left: 1.6em; display: grid; gap: 8px; max-width: 78ch; line-height: 1.55; }
+.sources { margin: 4px 0 0; padding-left: 1.6em; display: grid; gap: 8px; max-width: var(--measure); line-height: 1.55; }
 .sources li::marker { font-family: var(--f-label); color: var(--accent); }
 .sources li:target { background: color-mix(in srgb, var(--accent) 14%, transparent); outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius); }
 .sources a { text-underline-offset: 3px; text-decoration-color: var(--accent); }
-.checked { margin: 12px 0 0; padding-top: 14px; box-shadow: var(--cut-over); font-size: var(--step--1); color: var(--ink-2); max-width: 78ch; }
+.checked { margin: 12px 0 0; padding-top: 14px; box-shadow: var(--cut-over); font-size: var(--step--1); color: var(--ink-2); max-width: var(--measure); }
 
 /* ---------------------------------------------------------------- phones: the road runs downwards */
 @media (max-width: 899px) {
@@ -109,4 +109,11 @@
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {
   .sec { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a wide screen a part's heading hangs in the left margin beside its text (tokens.css --hang-*; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .sec:not(.worksSec) { grid-template-columns: var(--hang-cols); column-gap: var(--hang-gap); align-items: start; }
+  .sec:not(.worksSec) > * { grid-column: 2; }
+  .sec:not(.worksSec) > :first-child { grid-column: 1; }
+  .sec > .panels, .sec[aria-labelledby="road-title"] > :not(:first-child) { grid-column: 2 / -1; }
 }

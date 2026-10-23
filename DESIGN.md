@@ -105,7 +105,20 @@ The printer's device: a round seal, ΜΣ in the middle (Μ in ink, Σ in red), �
   from the foot and stops below the line being read. It never covers the Greek being read.
 
 ## Space and shape
-- Spacing steps of 4, 8, 12, 16, 24, 36, 56 and 80 px. Pages are up to 1180 px wide, with a margin of 16 to 56 px.
+- Spacing steps of 4, 8, 12, 16, 24, 36, 56 and 80 px. Pages are up to 1760 px wide (`--maxw`), with a margin of 16 to
+  56 px, 5% of the window from 1400 px. Above 1600 px the type grows a little with the window, up to 18 px to the rem.
+- **A wide screen is used, as a book's sheet is** (the owner, 2026-10-23: the computer version "doesn't use a lot of the
+  available space on the page"). Running text keeps the reading measure (`--measure`, about 80 letters a line); the room
+  beside it is filled with the page's own furniture, never with longer lines: a part's heading hangs in the left margin
+  beside its text (`--hang-cols`, from 1200 px: About, Credits, the author pages), notes and contents stand in a margin
+  that stays beside the text as it is read, two things that belong together stand side by side (the census method, the
+  lyre's words, a word's meaning and its dictionary entry, a learning track's name and what it offers), long credit
+  lists run in columns, and a timeline becomes a chronology table.
+- **On a computer a page reads as a sequence of parts** (the owner, 2026-10-23: "the heros load at different heights, the
+  seperate sections in the pages blend into each other"): every page's head starts at the same height (`--head-top`);
+  each part opens under a rule of ink with room above it (`--part-room`, `--part-pad`, `--part-rule`); everything that
+  can be clicked shows it at rest (an underline, a red arrow, a frame, or a tab's rule); grey words are dark enough to
+  read in Paper and Night.
 - Hairline rules and square corners. No shadows, no rounded cards.
 - Buttons are small capitals spaced wide: the main one in ink with paper letters, turning red under the hand; the others a
   hairline frame. A chip is a hairline frame, filled with ink when pressed. A field to type in has a rule beneath it.
@@ -125,6 +138,10 @@ was shown to catch what it is for. The ones the printed page added or changed:
   to its last frame.
 - `sideways.mjs` at 390 px: nothing scrolls sideways; a page that fails to open fails the check.
 - `check-a11y.mjs`: contrast in Paper and Night, names for every control, and finger-sized targets.
+- On a computer (2026-10-23): `check-heads.mjs` (every head at one height, no jump), `check-parts.mjs` (each part under a
+  rule of ink with room above it), `check-clickable.mjs` (clickables show it at rest), `check-ink.mjs` (grey words that
+  read), `check-spill.mjs` (nothing spills out of its frame) and `check-room.mjs` (a wide screen used, with no stretch
+  where half the column stands empty, and reading lines of 90 letters at most, at 1440 and 1920 px).
 
 By hand, for every change to the look before the owner sees it (since 2026-10-19, when a release that the test browsers
 had passed stopped drawing on phones, because test browsers never run out of graphics memory):
