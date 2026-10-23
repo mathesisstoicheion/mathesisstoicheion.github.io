@@ -127,8 +127,10 @@
   --maxw: 1180px;
   --tap: 44px;
   /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
-     line's own height, where the token is used) */
-  --tap-pad: calc((var(--tap) - 1lh) / 2);
+     line's own height, where the token is used). The browser lays boxes out in 64ths of a pixel and rounds each part
+     down, so the exact half came out at 43.98 px, and a link in a list ran a hair under the next one's; half a pixel
+     more each side keeps every target at least --tap tall */
+  --tap-pad: calc((var(--tap) - 1lh) / 2 + 0.5px);
   --tex: none;
 }
 
