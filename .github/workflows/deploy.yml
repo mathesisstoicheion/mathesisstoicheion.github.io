@@ -8,7 +8,7 @@ on:
 # While SITE_CLOSED is "true", visitors see the holding page in holding/ instead of the site, and the site is not built.
 # To bring the site back: change it to "false" and push to main. (See DEPLOYMENT.md, "Closed for a redesign".)
 env:
-  SITE_CLOSED: "true"
+  SITE_CLOSED: "false"
 
 permissions:
   contents: read
