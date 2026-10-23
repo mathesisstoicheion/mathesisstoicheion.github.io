@@ -1,5 +1,5 @@
 // The overlap check (DESIGN.md, "Before anything goes live"): opens each page at phone, tablet and computer widths,
-// scrolls through it so every window and heading has played, and lists what looks broken on the page:
+// scrolls through it so everything has inked in, and lists what looks broken on the page:
 //   wide  - the page is wider than the screen (it scrolls sideways)
 //   spill - a piece of text, a picture or a box runs out of the box or card it belongs to (the owner, 2026-10-19:
 //           "fix these kinds of overlaps")
@@ -31,7 +31,6 @@ function inspect() {
     for (let e = el; e && e !== document.documentElement; e = e.parentElement) {
       const cs = getComputedStyle(e);
       if (cs.visibility === "hidden" || cs.display === "none" || parseFloat(cs.opacity) < 0.05) return false;
-      if (e.getAttribute("aria-hidden") === "true" && e.closest("[data-st]")) continue;   // settling letters: drawn, checked as text
     }
     return true;
   };
@@ -116,7 +115,6 @@ function inspect() {
     const a = runs[i].r;
     for (let j = i + 1; j < runs.length && runs[j].r.top < a.bottom; j++) {
       const b = runs[j].r; if (runs[i].el === runs[j].el && runs[i].t === runs[j].t) continue;
-      const st = runs[i].el.closest("[data-st]"); if (st && st === runs[j].el.closest("[data-st]")) continue;   // a settling title's own letters touch, as set
       const w = Math.min(a.right, b.right) - Math.max(a.left, b.left), h = Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top);
       if (w < 4 || h < 0.35 * Math.min(a.height, b.height)) continue;
       if (w * h < 0.2 * Math.min(a.width * a.height, b.width * b.height)) continue;
@@ -140,12 +138,17 @@ for (const [w, h, label] of SIZES) {
     try {
       await page.goto(base + p, { waitUntil: "networkidle", timeout: 45000 }).catch(() => undefined);
       await page.waitForTimeout(1200);
-      // scroll through a screenful at a time; each window and heading plays as it comes into view, and is checked once it has
+      // scroll through a screenful at a time; what arrives inks in (the printed page's one movement, 1.4 s, rising 8 px as it
+      // comes), and each screenful is checked once nothing on it moves any more, so nothing is measured on its way in
       const all = new Map();
       for (let y = 0, H = 1; y < H; y += Math.round(h * 0.85)) {
-        // pages with windows or settling headings wait for them to finish playing; others need only a moment to draw
-        const plays = await page.evaluate(() => document.querySelectorAll("[data-st], .awin-frame canvas, [class*='win'] > canvas").length > 0);
-        await page.evaluate((yy) => scrollTo(0, yy), y); await page.waitForTimeout(plays ? (y ? 2900 : 3200) : 400);
+        await page.evaluate((yy) => scrollTo(0, yy), y); await page.waitForTimeout(300);
+        await page.evaluate(() => new Promise((done) => {
+          const t0 = performance.now();
+          const still = () => !document.getAnimations().some((a) => a.playState === "running" && a.effect?.getTiming().iterations !== Infinity);
+          const wait = () => (still() || performance.now() - t0 > 5000 ? done() : requestAnimationFrame(wait));
+          wait();
+        }));
         for (const f of await page.evaluate(inspect)) { const k = f.kind + f.what + (f.at || ""); const o = all.get(k); if (!o) all.set(k, f); }
         H = await page.evaluate(() => document.documentElement.scrollHeight - innerHeight + 1);
         if (y > h * 25) break;   // a long book: its first 25 screens show every kind of line it has
