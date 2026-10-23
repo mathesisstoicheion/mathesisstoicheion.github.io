@@ -80,8 +80,8 @@ function PathList({ completed }: { completed: Record<string, number> }) {
 /** The help each level leaves behind, and after which lesson it goes. */
 const OUTGROWN = [
   { after: 3, title: "The letters stage", text: "From lesson 5 you sound each word out yourself. The whole alphabet, with every letter's sound, is here." },
-  { after: 6, title: "Cards before guessing", text: "From lesson 8 you guess each meaning before the card shows it, and build each sentence yourself. Every word you have met, with its meaning, is below." },
-  { after: 9, title: "Cards for words you know", text: "From lesson 11 words you have met get no card, and you put the English in order yourself. Every piece of grammar you have met is below." },
+  { after: 6, title: "Meanings before guessing", text: "From lesson 8 you pick each new word's meaning before it opens, and build each sentence yourself. Every word you have met, with its meaning, is below." },
+  { after: 9, title: "New-word marks for words you know", text: "From lesson 11 words you have met are no longer marked as new, and you put the English in order yourself. Every piece of grammar you have met is below." },
 ];
 
 function Completed({ completed }: { completed: Record<string, number> }) {

@@ -59,7 +59,13 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
         {u === -1 ? (
           <MatchCheck cards={cards} pool={pool} onNext={() => setU(0)} nextLabel="On to the lines →" doneText="Now read them in other real lines." />
         ) : atEnd ? (
-          <p className={styles.good}>You have finished this practice.</p>
+          <div style={{ display: "grid", gap: 12 }}>
+            <p className={styles.good}>You have finished this practice.</p>
+            <p className={styles.lp}>Now read each line where it stands, in the reader, with the sentences around it. Tap any word you forget.</p>
+            {practice.lines.map((l) => (
+              <Link key={l.ref + l.work} className="btn ghost" style={{ justifySelf: "start" }} href={`/read?w=${l.work}&at=${l.ref}`} transitionTypes={["page-turn"]}>{l.label} in the reader →</Link>
+            ))}
+          </div>
         ) : (
           <>
             {unit!.key.endsWith("p0") && <p className={styles.lp}><Rich text={line!.who} /></p>}

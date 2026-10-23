@@ -67,8 +67,8 @@ const STAGES = ["The letters", "The words", "Build the sentence", "Read it yours
 export const LEVEL_NOTE = [
   "",
   "From this lesson on there is no letters stage: sound each word out yourself. The alphabet is still in the fold above.",
-  "From this lesson on you guess each word's meaning before its card shows it, and you build the sentence yourself.",
-  "From this lesson on, words you have already met get no card, and you put the English in order before the translation shows.",
+  "From this lesson on you pick each new word's meaning before it opens, and you build the sentence yourself.",
+  "From this lesson on, words you have already met are not marked as new, and you put the English in order before the translation shows.",
 ];
 const tap = <><span className={styles.hoverOnly}>Click</span><span className={styles.touchOnly}>Tap</span></>;
 const tapLc = <><span className={styles.hoverOnly}>click</span><span className={styles.touchOnly}>tap</span></>;
@@ -179,60 +179,65 @@ function Choices({ c, pool, k, onRight }: { c: PathWord; pool: string[]; k: numb
 
 const dedupe = (ws: PathWord[]) => ws.filter((x, i) => ws.findIndex((y) => y.form === x.form && y.here === x.here) === i);
 
-/* 2 · word cards, Greek first, then a check: which meaning goes with each word.
-   From level 2 you guess each meaning before its card shows; from level 3 words already met get no card. */
+/* 2 · the words, read as in the reader: the piece is shown as text, and tapping a word opens what it means there.
+   Each new word has to be looked at once (dotted until it is); from level 2 you pick its meaning before it opens;
+   from level 3 words already met are not marked as new. Then a check: which meaning goes with each word. */
 function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; level: number; known: Set<string>; pool: string[]; onNext: () => void }) {
-  const unique = useMemo(() => dedupe(words), [words]);
-  const cards = useMemo(() => (level >= 3 ? unique.filter((x) => !known.has(x.lemma)) : unique), [unique, level, known]);
-  const met = level >= 3 ? unique.filter((x) => known.has(x.lemma)) : [];
-  const [i, setI] = useState(0);
-  const [shown, setShown] = useState(false);
+  const fresh = useMemo(() => words.map((x) => !(level >= 3 && known.has(x.lemma))), [words, level, known]);
+  const toLearn = useMemo(() => dedupe(words.filter((_, i) => fresh[i])), [words, fresh]);
+  const [sel, setSel] = useState<number | null>(null);
+  const [seen, setSeen] = useState<Set<string>>(new Set());
   const [checking, setChecking] = useState(false);
-  const metNote = met.length > 0 && (
-    <p className={styles.small}>
-      You have met {met.length === 1 ? "this word" : "these words"} before, so {met.length === 1 ? "it gets" : "they get"} no card:{" "}
-      {met.map((x, j) => <span key={j}>{j > 0 && ", "}<span lang="grc" className={styles.inlineGr}>{x.form}</span></span>)}.
-      If you forget one, {tapLc} it in the next stage.
-    </p>
-  );
-  if (cards.length === 0) return (
-    <section style={{ display: "grid", gap: 14 }}>
-      {metNote}
-      <p className={styles.good}>You know every word of this piece already.</p>
-      <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>On to the sentence →</button>
-    </section>
-  );
-  if (checking) return <MatchCheck cards={cards} pool={pool} onNext={onNext} />;
-  const c = cards[i];
   const guess = level >= 2;
-  const last = i === cards.length - 1;
+  const id = (x: PathWord) => `${x.form}|${x.here}`;
+  const left = toLearn.filter((x) => !seen.has(id(x))).length;
+  if (checking) return <MatchCheck cards={toLearn} pool={pool} onNext={onNext} />;
+  const c = sel === null ? null : words[sel];
+  const open = !!c && (!guess || !fresh[sel!] || seen.has(id(c)));
   return (
     <section style={{ display: "grid", gap: 14 }}>
-      {i === 0 && metNote}
       <p className={styles.small}>
-        Word {i + 1} of {cards.length}.{" "}
-        {guess ? "Sound it out, then pick what you think it means: the card opens when you find it."
-          : level >= 1 ? "Sound it out yourself, then try to guess what it means before you look."
-          : "Look at the Greek, say it, and try to guess what it means before you look."}
+        {tap} a word to see what it means here, as you would in the reader.{" "}
+        {toLearn.length > 0
+          ? <>The words with a dotted line are new: {guess ? "pick what you think each one means, then it opens" : "sound each one out and guess its meaning before you look"}.</>
+          : "You have met every word here before: look up only the ones you forget."}
       </p>
-      <div className={w.card}>
-        <p lang="grc" className={styles.revealGr} style={{ fontSize: "clamp(2.2rem, 7vw, 3.2rem)" }}>{c.form}</p>
-        {guess && !shown && <Choices key={i} c={c} pool={pool} k={i} onRight={() => setTimeout(() => setShown(true), 500)} />}
-        {shown ? (
-          <div aria-live="polite" style={{ display: "grid", gap: 8 }}>
-            <p style={{ fontSize: "var(--step-1)" }}><b>{c.here}</b></p>
-            <p className="muted">{c.form_note}.</p>
-            <p className={styles.small}>In the dictionary: <span lang="grc" className={styles.inlineGr}>{c.lemma}</span>, “{c.dict}” ({c.src === "DCC" ? "DCC core list" : "LSJ"}).</p>
-          </div>
-        ) : !guess && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setShown(true)}>Show the meaning</button>}
-      </div>
-      {shown && (!last
-        ? <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => { setI(i + 1); setShown(false); }}>Next word →</button>
-        : guess
+      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.4 }}>
+        {words.map((x, i) => (
+          <button key={i} type="button" className={`${readerStyles.w} ${sel === i ? readerStyles.sel : ""}`} aria-pressed={sel === i}
+            onClick={() => setSel(sel === i ? null : i)}
+            style={{ background: "none", border: 0, padding: 0, font: "inherit", color: sel === i ? undefined : "inherit",
+              textDecoration: fresh[i] && !seen.has(id(x)) ? "underline dotted" : "none", textUnderlineOffset: "0.25em" }}>
+            {x.form}{x.after}
+          </button>
+        ))}
+      </p>
+      {c && (
+        <div className={w.card} aria-live="polite" style={{ display: "grid", gap: 8 }}>
+          <p lang="grc" className={styles.revealGr} style={{ fontSize: "clamp(1.8rem, 6vw, 2.6rem)" }}>{c.form}</p>
+          {!open && <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />}
+          {open && (
+            <SeenOnce onSeen={() => setSeen((t) => (t.has(id(c)) ? t : new Set(t).add(id(c))))}>
+              <p style={{ fontSize: "var(--step-1)" }}><b>{c.here}</b></p>
+              <p className="muted">{c.form_note}.</p>
+              <p className={styles.small}>In the dictionary: <span lang="grc" className={styles.inlineGr}>{c.lemma}</span>, “{c.dict}” ({c.src === "DCC" ? "DCC core list" : "LSJ"}).</p>
+            </SeenOnce>
+          )}
+        </div>
+      )}
+      {left > 0
+        ? <p className={styles.small}>{left} new {left === 1 ? "word" : "words"} still to look at.</p>
+        : toLearn.length === 0 || guess
           ? <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>On to the sentence →</button>
-          : <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setChecking(true)}>Check yourself →</button>)}
+          : <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setChecking(true)}>Check yourself →</button>}
     </section>
   );
+}
+
+/** Its children, and a call to `onSeen` once they have been shown. */
+function SeenOnce({ onSeen, children }: { onSeen: () => void; children: React.ReactNode }) {
+  useEffect(() => { onSeen(); }, [onSeen]);
+  return <div style={{ display: "grid", gap: 8 }}>{children}</div>;
 }
 
 /** Match each word to its meaning, in a fixed shuffled order (the same each visit); distractors come from `pool`. */
@@ -294,7 +299,7 @@ function BuildStage({ unit, level, onNext }: { unit: Unit; level: number; onNext
       <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.3 }}>
         {ws.map((x, i) => (
           <span key={i} style={{ display: "inline-grid", justifyItems: "center", gap: 2, opacity: i > n ? 0.45 : 1 }}>
-            <span className={readerStyles.w} data-quote={i === n ? "1" : undefined}>{x.form}{x.after}</span>
+            <span className={`${readerStyles.w} ${i === n ? readerStyles.sel : ""}`}>{x.form}{x.after}</span>
             <span lang="en" className={styles.small} style={{ visibility: i < n ? "visible" : "hidden", fontFamily: "var(--f-body)" }}>{x.here}</span>
           </span>
         ))}
@@ -486,7 +491,17 @@ export default function PathStepView({ step }: { step: PathStep }) {
                 <p className={styles.lp}><Rich text={step.passage.intro} /></p>
                 <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => { setAtEnd(false); setU(1); }}>Continue: read the passage →</button>
               </>
-            ) : <p className={styles.good}>{u === 0 ? "You have read the line." : "You have read the passage."}</p>}
+            ) : (
+              <>
+                <p className={styles.good}>{u === 0 ? "You have read the line." : "You have read the passage."}</p>
+                <p className={styles.lp}>
+                  Now use it where you will really read: open the passage in the reader and read it there, from the line on.
+                  {tap} any word you forget, just as you did here; the reader shows what it means.
+                </p>
+                <Link className="btn" style={{ justifySelf: "start" }} transitionTypes={["page-turn"]}
+                  href={u > 0 ? `/read?w=${step.passage?.work ?? step.work}&at=${step.passage?.ref ?? step.ref}` : `/read?w=${step.work}&at=${step.ref}`}>Read it in the reader →</Link>
+              </>
+            )}
           </div>
         ) : (
           <UnitView key={unit.key} unit={unit} level={level} known={known[u]} pool={pool} doneLabel={nextLabel}
