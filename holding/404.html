@@ -5,39 +5,47 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Mathesis Stoicheion</title>
 <meta name="description" content="Mathesis Stoicheion is closed for a redesign and will be back soon.">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#f3ece0" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1b1814" media="(prefers-color-scheme: dark)">
 <link rel="icon" href="/favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital@0;1&family=GFS+Didot&display=swap" rel="stylesheet">
 <style>
-  /* The holding page while the site is closed for its redesign (see DEPLOYMENT.md, "Closed for a redesign").
-     The home page's Pompeian red, gold and bone, nothing else. */
-  :root { --gold: #e8bd70; --bone: #f2e0c6; --bone-2: #c39f83; --red: #5c1910; --red-deep: #1b0907; }
+  /* The holding page while the site is closed (see DEPLOYMENT.md, "Closed for a redesign"), set as the printed page
+     (DESIGN.md): Paper, or Night when the device is in dark mode; the printer's device; one ink-in, then nothing moves. */
+  :root { --page: #f3ece0; --ink: #1e1a15; --caption: #5c5043; --red: #a3301a; }
+  @media (prefers-color-scheme: dark) { :root { --page: #1b1814; --ink: #ebe1cf; --caption: #b7a891; --red: #e0805f; } }
   * { box-sizing: border-box; margin: 0; }
   html, body { height: 100%; }
   body {
     display: grid; place-items: center; padding: 24px 16px;
-    background: radial-gradient(ellipse at 50% 40%, var(--red) 0%, var(--red-deep) 75%) fixed, var(--red-deep);
-    color: var(--bone); font-family: "EB Garamond", Georgia, serif; text-align: center;
+    background: var(--page); color: var(--ink); font-family: "EB Garamond", Georgia, serif; text-align: center;
   }
   main { max-width: 34rem; }
-  .mark { font-size: clamp(1.6rem, 6vw, 2.6rem); letter-spacing: .32em; color: var(--gold); padding-left: .32em; }
-  .rule { width: 0; height: 1px; margin: 1.6rem auto; background: var(--gold); opacity: .7; }
+  svg { display: block; width: 104px; height: 104px; margin: 0 auto; overflow: visible; }
+  svg text { font-family: "GFS Didot", Georgia, serif; fill: var(--ink); }
+  svg .red { fill: var(--red); }
+  .rule { width: 8rem; height: 1px; margin: 1.6rem auto; background: var(--red); }
   h1 { font-weight: 400; font-size: clamp(1.3rem, 4.4vw, 1.75rem); line-height: 1.35; }
-  p { margin-top: .9rem; font-size: 1.1rem; line-height: 1.55; color: var(--bone-2); font-style: italic; }
+  p { margin-top: .9rem; font-size: 1.1rem; line-height: 1.55; color: var(--caption); font-style: italic; }
   @media (prefers-reduced-motion: no-preference) {
-    .mark, h1, p { opacity: 0; animation: rise 1.6s cubic-bezier(.2,.7,.2,1) forwards; }
-    h1 { animation-delay: .9s; } p { animation-delay: 1.3s; }
-    .rule { animation: draw 1.4s .5s cubic-bezier(.2,.7,.2,1) forwards; }
+    svg, .rule, h1, p { animation: ink 1.4s cubic-bezier(.22,.61,.36,1) backwards; }
+    .rule { animation-delay: .12s; } h1 { animation-delay: .24s; } p { animation-delay: .36s; }
   }
-  @media (prefers-reduced-motion: reduce) { .rule { width: 8rem; } }
-  @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
-  @keyframes draw { to { width: 8rem; } }
+  @keyframes ink { from { opacity: 0; filter: blur(3px); transform: translateY(8px); } }
 </style>
 </head>
 <body>
 <main>
-  <div class="mark" lang="grc">ΣΤΟΙΧΕΙΑ</div>
+  <svg viewBox="0 0 100 100" role="img" aria-label="Mathesis Stoicheion">
+    <defs><path id="ring" d="M 12.25 50 a 37.75 37.75 0 1 1 75.5 0 a 37.75 37.75 0 1 1 -75.5 0" /></defs>
+    <text font-size="5.8" letter-spacing="1.2" dominant-baseline="middle"><textPath href="#ring" textLength="236.0" lengthAdjust="spacing">ΜΑΘΗΣΙΣ · ΣΤΟΙΧΕΙΩΝ · ΜΑΘΗΣΙΣ · ΣΤΟΙΧΕΙΩΝ ·</textPath></text>
+    <circle cx="50" cy="50" r="44" fill="none" stroke="currentColor" stroke-width="1.2" />
+    <circle cx="50" cy="50" r="32" fill="none" stroke="currentColor" stroke-width="0.6" />
+    <text x="50" y="51" text-anchor="middle" dominant-baseline="central" font-size="25" letter-spacing="-1">Μ<tspan class="red">Σ</tspan></text>
+  </svg>
   <div class="rule"></div>
   <h1>Mathesis Stoicheion is closed for a redesign.</h1>
   <p>We will be back soon.</p>

@@ -24,3 +24,6 @@ What is here:
 - `web/scripts/make-logo.mjs` and `web/scripts/make-share-card.mjs`: the old scripts that drew the owl and the old share
   picture (`web/public/og-card.png`, also here). New scripts of the same names draw the printer's device and the new
   share picture.
+- `holding/`: the page shown while the site is closed, in the home page's old red, gold and bone, with the owl as its tab
+  icon. The holding page in `holding/` at the top of the repository is set as the printed page now, with the printer's
+  device; the live one changes only when `main` does.
