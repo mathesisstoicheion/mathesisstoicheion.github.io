@@ -1,18 +1,20 @@
 import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { ARTICLES } from "../src/wiki/author-articles-all";
-for (const theme of ["light", "dark"] as const) {
-  test(`herodotus article ${theme}`, async ({ page }) => {
-    await page.addInitScript((t) => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t, motion: "reduce" }, version: 0 })); }, theme);
+import { expectLook, seedLook, LOOKS } from "./look";
+for (const look of LOOKS) {
+  test(`herodotus article ${look}`, async ({ page }) => {
+    await seedLook(page, look);
     await page.goto("/author/tlg0016");
     await expect(page.locator("h1").first()).toBeVisible();
+    await expectLook(page, look);
     await expect(page.getByRole("heading", { name: "Life and work" })).toBeVisible();
     await expect(page.locator("ol[aria-label=Timeline] li")).toHaveCount(9);
     await expect(page.locator("#sources-title")).toBeVisible();
     await expect(page.locator("ol li[id^=src-]")).toHaveCount(36);
     await page.waitForTimeout(800);
     const res = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
-    console.log(theme, JSON.stringify(res.violations.map((v) => [v.id, v.impact, v.nodes.length, v.nodes[0]?.target.join(" ")])));
+    console.log(look, JSON.stringify(res.violations.map((v) => [v.id, v.impact, v.nodes.length, v.nodes[0]?.target.join(" ")])));
     expect(res.violations.filter((v) => v.impact === "serious" || v.impact === "critical")).toEqual([]);
   });
 }
@@ -50,9 +52,10 @@ test("the published site carries only checked articles (no draft text)", async (
 /** Every published article renders its road of marks and its numbered sources (the counts come from the data). */
 for (const [id, marks, sources] of Object.values(ARTICLES).filter((a) => a.id !== "tlg0016").map((a) => [a.id, a.timeline.length, a.sources.length] as const)) {
   test(`${id}: the article shows ${marks} marks and ${sources} sources, with no accessibility problems`, async ({ page }) => {
-    await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: "dark", motion: "reduce" }, version: 0 })); });
+    await seedLook(page, "night");
     await page.goto(`/author/${id}`);
     await expect(page.getByRole("heading", { name: "Life and work" })).toBeVisible();
+    await expectLook(page, "night");
     await expect(page.locator("ol[aria-label=Timeline] li")).toHaveCount(marks);
     await expect(page.locator("ol li[id^=src-]")).toHaveCount(sources);
     // no stray markup: footnote markers and asterisks must all have been turned into links and italics

@@ -28,9 +28,6 @@ export function useScrollLock(on: boolean) {
   useEffect(() => (on ? lockScroll() : undefined), [on]);
 }
 
-/** true while a modal has the page locked (the slow wheel, lib/a/lamplight.js, then leaves the page alone) */
-export const scrollLocked = () => document.documentElement.hasAttribute("data-scroll-lock");
-
 /** can this element itself scroll any further in the wheel's direction? */
 function canScroll(el: Element, dy: number) {
   const cs = getComputedStyle(el);

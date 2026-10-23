@@ -146,7 +146,7 @@ function SignIn({ next }: { next: string | null }) {
       </form>
       <p className={styles.fine}>
         {FORUM_OPEN ? "An account is needed only to write in the Agora and the Pnyx, and to keep your Treasury in step between devices."
-          : "An account is needed only to keep your Treasury in step between devices."}
+          : "An account is needed only to keep your Treasury in step between devices."}{" "}
         Accounts are kept by Supabase, in the European Union; see <Link href="/credits#privacy">Privacy</Link>.
       </p>
     </section>

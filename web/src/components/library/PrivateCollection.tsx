@@ -34,9 +34,9 @@ export default function PrivateCollection() {
   if (!ready || (session && !profile)) return <Waiting />;
   if (!session) {
     return (
-      <div className={`wrap ${styles.pageStatus}`}>
-        <h1 className="visually-hidden">Private collection</h1>
-        <p className="notice"><Link href={`/account?next=${encodeURIComponent(href(tab))}`}>Sign in</Link> to open this page.</p>
+      <div className={`wrap ${styles.page}`}>
+        <PageHead bare path={trail("library", "Private collection")} title="Private collection"
+          purpose={<><Link href={`/account?next=${encodeURIComponent(href(tab))}`}>Sign in</Link> to open this page.</>} />
       </div>
     );
   }

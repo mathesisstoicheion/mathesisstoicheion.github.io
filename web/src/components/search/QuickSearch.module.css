@@ -1,102 +1,112 @@
+/* The quick search (QuickSearch.tsx: "/" or Ctrl+K on any page), on the printed page: a leaf of paper laid over the page
+   in a hairline frame, a line of ink under the words typed, the kinds of result in red small capitals, and the chosen
+   result in ink with paper letters. It inks in; nothing drops, rises or blurs. */
+@keyframes ink-in { from { opacity: 0; } }
+
 .dialog {
   width: min(640px, calc(100vw - 32px)); margin: 12vh auto auto; padding: 0; border: 0; border-radius: var(--radius);
-  background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge);   /* a pop-over: it stays opaque */
-  animation: drop calc(0.25s / var(--tempo)) var(--ease);
+  background: var(--surface); color: var(--ink); box-shadow: var(--slab-edge);   /* a leaf over the page: it stays opaque */
+  outline: var(--moulding); outline-offset: var(--moulding-in);
+  animation: ink-in var(--dur) var(--ease);
 }
-.dialog::backdrop { background: var(--scrim); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
-@keyframes drop { from { opacity: 0; transform: translateY(-10px) scale(0.98); } }
+.dialog::backdrop { background: var(--veil); }
 .inner { display: grid; }
-.head { position: relative; display: flex; align-items: stretch; }
-/* the rule under the search box, now a gilded inlay laid along its foot */
-.head::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--inlay-side); box-shadow: var(--inlay-edge); pointer-events: none; }
+/* the rules inside the leaf stop at its inner frame (the moulding, 5 px in), as a printed frame's rules do */
+.head { position: relative; display: flex; align-items: stretch; margin-inline: 5px; border-bottom: 1px solid var(--ink); }
 .input {
-  flex: 1; min-width: 0; font-family: var(--f-greek); font-size: var(--step-1); padding: 16px 18px; color: var(--ink); background: transparent;
+  flex: 1; min-width: 0; font-family: var(--f-greek); font-size: var(--step-1); padding: 16px 18px 16px 12px; color: var(--ink); background: transparent;
   border: 0; -webkit-appearance: none; appearance: none;
 }
 .input:focus { outline: none; }
-.glass { flex: none; align-self: center; width: 20px; height: 20px; margin-left: 18px; color: var(--ink-2); }
-.input { padding-left: 12px; }
+.glass { flex: none; align-self: center; width: 20px; height: 20px; margin-left: 13px; color: var(--ink-2); }
 .clear {
   flex: none; align-self: center; width: 36px; height: 36px; margin-right: 6px; border: 0; border-radius: var(--radius-round);
-  background: transparent; color: var(--ink-2); font-size: var(--step-1); line-height: 1; cursor: pointer;
+  background: transparent; color: var(--ink-2); font-size: var(--step-1); line-height: 1; cursor: pointer; transition: color var(--dur-quick) var(--ease);
 }
-.clear:hover { background: var(--bg-2); color: var(--ink); }
+.clear:hover { color: var(--rubric); }
 .input::-webkit-search-cancel-button { display: none; }
+/* the Greek letters on screen: a hairline frame; while they are shown, filled with ink */
 .kbdBtn {
-  flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-right: 10px; padding: 0 10px;
-  font-family: var(--f-greek); font-size: var(--step-0); color: var(--ink); background: var(--slab); border: 1.5px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
+  flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-right: 10px; padding: 0 10px; cursor: pointer;
+  font-family: var(--f-greek); font-size: var(--step-0); color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
-.kbdBtn:active { background: var(--field); box-shadow: var(--field-edge); }
-.kbdBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.kbdBtn:hover { color: var(--rubric); border-color: var(--ink-3); }
+.kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .close { display: none; }
 .body { display: grid; align-content: start; }
 .list { margin: 0; padding: 4px 6px 8px; max-height: 56vh; overflow: auto; }
-.group + .group { margin-top: 4px; padding-top: 6px; box-shadow: var(--cut-over); }
-.groupTitle { margin: 0; padding: 8px 12px 4px; font-family: var(--f-label); font-size: var(--step--2); font-weight: 500; letter-spacing: 0.08em; color: var(--accent); }
-.opt { display: flex; gap: 12px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; animation: opt-in calc(0.18s / var(--tempo)) var(--ease) backwards; }
-@keyframes opt-in { from { opacity: 0; transform: translateY(3px); } }
-.opt[aria-selected="true"] { background: var(--sel-bg); --accent: var(--accent-on-sel); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
+.group + .group { margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--rule); }
+/* each kind of result named in red small capitals */
+.groupTitle { margin: 0; padding: 10px 12px 4px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
+.opt { display: flex; gap: 12px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; }
+/* the result chosen (with the arrow keys or under the hand): in ink, its words in paper */
+.opt[aria-selected="true"] { background: var(--sel-bg); --accent: var(--accent-on-ink); --rubric: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .opt[aria-selected="true"] .kind { color: var(--accent); }
 .opt b[lang="grc"], .opt [lang="grc"] { font-family: var(--f-greek); font-weight: 400; font-size: 1.12em; }
+.opt b { font-weight: 500; }
 .opt[data-group="word"] b[lang="grc"] { font-size: 1.35em; }
 .what { min-width: 0; }
-.more { margin-left: 6px; font-family: var(--f-label); font-size: var(--step--2); color: var(--accent); white-space: nowrap; }
-.kind { flex: none; min-width: 9.5em; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
-.muted { opacity: 0.7; }
-.help { padding: 14px 18px; font-size: var(--step--1); color: var(--ink-2); }
+.more { margin-left: 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--rubric); white-space: nowrap; }
+.kind { flex: none; min-width: 9.5em; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }
+.muted { color: var(--ink-2); }
+.help { margin: 0; padding: 14px 18px; font-size: var(--step--1); color: var(--ink-2); }
 .full {
-  display: flex; align-items: center; gap: 8px; min-height: var(--tap); padding: 8px 18px; box-shadow: var(--cut-over);
-  font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink-2); text-decoration: none;
+  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: var(--tap); margin: 0 5px 5px; padding: 8px 13px;
+  border-top: 1px solid var(--rule); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); text-decoration: none;
+  transition: color var(--dur-quick) var(--ease);
 }
-.full:hover, .full:focus-visible { color: var(--accent); }
+.full:hover, .full:focus-visible { color: var(--rubric); }
 @media (max-width: 560px) { .kind { min-width: 0; } .opt { flex-direction: column; gap: 2px; } }
 
-/* Phones: a full-screen sheet that rises from the bottom. Its height follows the part of the screen the
-   on-screen keyboard leaves visible (--vv-h, --vv-top: set from visualViewport in QuickSearch.tsx), so the
-   results scroll between the search box and the Greek letters, which sit just above the phone's keyboard. */
+/* Phones: a full-screen leaf. Its height follows the part of the screen the on-screen keyboard leaves visible (--vv-h,
+   --vv-top: set from visualViewport in QuickSearch.tsx), so the results scroll between the search box and the Greek
+   letters, which sit just above the phone's keyboard. */
 @media (max-width: 760px) {
   .dialog {
     position: fixed; top: var(--vv-top, 0px); left: 0; right: auto; bottom: auto; margin: 0;
-    width: 100%; max-width: none; height: var(--vv-h, 100dvh); max-height: none; border-radius: 0; box-shadow: none;
-    animation: rise calc(0.32s / var(--tempo)) var(--ease);
+    width: 100%; max-width: none; height: var(--vv-h, 100dvh); max-height: none; border-radius: 0; box-shadow: none; outline: 0;
   }
   .inner { display: flex; flex-direction: column; height: 100%; }
-  .head { flex: none; padding-top: env(safe-area-inset-top, 0px); padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px); background: var(--bg); }
+  .head { flex: none; margin-inline: 0; padding-top: env(safe-area-inset-top, 0px); padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px); background: var(--bg); }
+  .full { margin: 0; padding-inline: 18px; }
   .input { padding: 14px 12px 14px 16px; }
   .kbdBtn { margin-right: 4px; height: var(--tap); }
   .close {
-    display: block; flex: none; align-self: center; min-height: var(--tap); padding: 0 16px 0 10px;
-    border: 0; background: transparent; color: var(--accent); font-family: var(--f-label); font-size: var(--step-0); letter-spacing: 0.04em;
+    display: block; flex: none; align-self: center; min-height: var(--tap); padding: 0 16px 0 10px; cursor: pointer;
+    border: 0; background: transparent; color: var(--rubric); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
   }
   .body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
   .list { max-height: none; overflow: visible; padding: 4px 6px; }
   .opt { padding: 11px 12px; min-height: var(--tap); }
   .keys { display: none; }
 }
-@keyframes rise { from { opacity: 0.4; transform: translateY(32px); } }
 @media (prefers-reduced-motion: reduce) { .dialog { animation: none; } }
 
 /* before anything is typed: recent searches, where you left off, examples */
 .start { display: grid; gap: 14px; padding: 10px 6px 4px; }
 .startHead { display: flex; align-items: baseline; justify-content: space-between; padding-right: 12px; }
-.link { border: 0; background: transparent; color: var(--ink-2); font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; text-decoration: underline; cursor: pointer; }
-.link:hover { color: var(--accent); }
+.link { border: 0; background: transparent; color: var(--ink-2); font-size: var(--step--1); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; transition: color var(--dur-quick) var(--ease); }
+.link:hover { color: var(--rubric); }
 .chips { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+/* a search to run again: a hairline frame, red under the hand (as the site's chips) */
 .chip {
-  padding: 6px 12px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge);
-  color: var(--ink); font-size: var(--step-0); cursor: pointer; transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  padding: 6px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent;
+  color: var(--ink); font-size: var(--step--1); cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .chip[lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
-.chip:hover, .chip:focus-visible { background: var(--slab-lit); }
-.chip:active { background: var(--field); box-shadow: var(--field-edge); }
-.recent { display: inline-flex; align-items: center; }
-.recent .chip { border-radius: var(--radius); border-right: 0; }
-.chipX { align-self: stretch; padding: 0 10px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink-2); cursor: pointer; }
-.chipX:hover { color: var(--accent); background: var(--slab-lit); }
-.chipX:active { background: var(--field); box-shadow: var(--field-edge); }
+.chip:hover, .chip:focus-visible { color: var(--rubric); border-color: var(--ink-3); }
+.chip:active { background: var(--bg-2); }
+.recent { display: inline-flex; align-items: stretch; }
+.recent .chip { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.chipX {
+  padding: 0 10px; border: 1px solid var(--rule); border-left: 0; border-radius: 0 var(--radius) var(--radius) 0; background: transparent;
+  color: var(--ink-2); cursor: pointer; transition: color var(--dur-quick) var(--ease);
+}
+.chipX:hover { color: var(--rubric); }
+.chipX:active { background: var(--bg-2); }
 .visits { list-style: none; margin: 0; padding: 0 6px; display: grid; }
-.visits button { width: 100%; padding: 8px 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: var(--step-0); cursor: pointer; }
+.visits button { width: 100%; padding: 8px 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: var(--step-0); cursor: pointer; transition: background-color var(--dur-quick) var(--ease); }
 .visits button:hover, .visits button:focus-visible { background: var(--bg-2); }
-.visits button span { color: var(--accent); }
+.visits button span { color: var(--rubric); }
 @media (pointer: coarse) { .chip, .chipX { min-height: 40px; } .visits button { min-height: var(--tap); } }
-@media (prefers-reduced-motion: reduce) { .opt { animation: none; } }

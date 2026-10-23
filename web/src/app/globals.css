@@ -113,6 +113,11 @@ p { margin: 0; }
 a { color: inherit; }
 button { font: inherit; color: inherit; cursor: pointer; }
 img { max-width: 100%; }
+/* what to type, a file's name, a code: in the type around it, as a printed grammar sets them (the page has three typefaces and no
+   fourth, so no typewriter face) */
+code, kbd, samp { font-family: inherit; font-size: 1em; letter-spacing: 0.02em; text-transform: none; }
+/* a key to press, in a hairline frame as a manual prints it */
+kbd { padding: 0 0.3em; border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.92em; }
 /* anything linked to by #id lands clear of the site header, whose height changes with the screen */
 [id] { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 /* a long placeholder or value that does not fit ends in "…" instead of being cut mid-letter */
@@ -202,6 +207,8 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
 .btn.small { padding: 9px 13px; gap: var(--space-2); font-size: 0.7rem; min-height: 0; }
+/* buttons side by side, as the page's ways on */
+.btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
 .btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; cursor: not-allowed; }
 .btn[aria-disabled="true"]:hover, .btn:disabled:hover { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-ink); }
@@ -214,7 +221,8 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .chip:hover { border-color: var(--ink-3); color: var(--rubric); }
-.chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
+/* (what is set quieter inside it, a count or a gloss, takes the colours that read on its ink) */
+.chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 5 px beyond its edge (a 44 px target) */
 @media (pointer: coarse) {
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
@@ -225,7 +233,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
 .segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
-.segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
+.segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
@@ -267,11 +275,15 @@ select:not([multiple]):not([size]) {
 :where(summary)::marker { color: var(--accent); }
 :where(summary)::-webkit-details-marker { color: var(--accent); }
 
-/* a short message on a page of its own (sign in first; nothing chosen yet): a note set off by a rule of red at its left */
+/* a short message on a page of its own (sign in first; nothing chosen yet): a note set off by a rule of red at its left.
+   It is a plain block, so a sentence with a link in it stays one sentence (as a grid, "Sign in" and "to open this page."
+   stood on two lines: scripts/check-split-sentences.mjs). */
 .notice {
-  max-width: 640px; margin-block: var(--space-7); padding: var(--space-2) 0 var(--space-2) var(--space-5); display: grid; gap: var(--space-3);
+  max-width: 640px; margin-block: var(--space-7); padding: var(--space-2) 0 var(--space-2) var(--space-5);
   border-left: 1px solid var(--rubric); color: var(--ink-2);
 }
+.notice > * { margin-block: 0; }
+.notice > * + * { margin-top: var(--space-3); }
 
 /* ------------------------------------------------------------- plates
    A plate (components/plate/Plate.tsx): a real photograph in its real colours, in a fine double frame on the page's

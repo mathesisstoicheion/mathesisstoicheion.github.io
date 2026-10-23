@@ -1,4 +1,5 @@
-/* Author and work pages (Stone and torch): the cards of the Stoa are slabs set on the wall. */
+/* Author and work pages on the printed page: the facts in small capitals over figures, the works as a list under hairlines,
+   and the Painted Stoa's articles on the author as entries in a double frame, as the plates are. */
 .page { padding-block: 24px 24px; display: grid; gap: clamp(28px, 4vw, 44px); }
 .crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: var(--step--1); }
 .crumb a { text-decoration: none; }

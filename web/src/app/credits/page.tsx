@@ -5,8 +5,6 @@ import { COLLECTIONS, repoUrl } from "@/config/sources";
 import { LSJ_CREDIT } from "@/lib/lookup/lsj";
 import { IMAGES } from "@/wiki/images";
 import { PIECE_CREDITS, USED_PIECES } from "@/data/pieces";
-import { MEDALLIONS } from "@/data/medallions";
-import { A_ART } from "@/components/a/pictures";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -15,10 +13,13 @@ import { FORUM_OPEN } from "@/config/areas";
 export const metadata: Metadata = { title: "Credits, licences & privacy", description: PAGE_DESCRIPTIONS.credits };
 
 // Only list what the site actually uses today. Add each new source, image or library here when it arrives.
+// the three typefaces (app/layout.tsx), then the code
 const SOFTWARE = [
-  { name: "GFS Didot", by: "Greek Font Society", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/GFS+Didot" },
-  { name: "Alegreya and Alegreya Sans SC", by: "Juan Pablo del Peral, Huerta Tipográfica", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/Alegreya" },
-  { name: "three.js", by: "three.js authors", licence: "MIT", href: "https://threejs.org" },
+  { name: "EB Garamond (the English)", by: "Georg Duffner and Octavio Pardo", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/EB+Garamond" },
+  { name: "GFS Didot (titles, the Greek names and the logo)", by: "Greek Font Society", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/GFS+Didot" },
+  { name: "Gentium Book Plus (the Greek being read)", by: "SIL International", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/Gentium+Book+Plus" },
+  { name: "three.js (the Kerameikos's vase)", by: "three.js authors", licence: "MIT", href: "https://threejs.org" },
+  { name: "abcjs (the lyre's sheet music)", by: "Paul Rosen", licence: "MIT", href: "https://abcjs.net" },
   { name: "saxes", by: "Louis-Dominique Dubeau and contributors", licence: "ISC", href: "https://github.com/lddubeau/saxes" },
   { name: "Next.js and React", by: "Vercel and Meta", licence: "MIT", href: "https://nextjs.org" },
   { name: "Zustand", by: "Poimandres", licence: "MIT", href: "https://github.com/pmndrs/zustand" },
@@ -29,7 +30,7 @@ const SOFTWARE = [
 
 /** The sections, in the order of the page, for the line of jumps under the title (Privacy stands second, not last, as the title names it). */
 const SECTIONS: [string, string][] = [
-  ["texts", "Texts"], ["privacy", "Privacy"], ["words", "Words"], ["pictures", "Pictures"], ["sculpture", "Sculpture"],
+  ["texts", "Texts"], ["privacy", "Privacy"], ["words", "Words"], ["pictures", "Pictures"], ["plates", "Plates"],
   ["manuscripts", "Manuscripts"], ["maps", "Maps"], ["fonts", "Fonts"],
 ];
 
@@ -93,7 +94,7 @@ export default function CreditsPage() {
         <ul>
           <li>No adverts, no analytics, no trackers and no cookies.</li>
           <li>Fonts and code are served from this site, so your browser does not contact Google or any other company just to show a page.</li>
-          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint on the home page, and the people you have hidden in the Agora, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
+          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint in the Kerameikos, and the people you have hidden in the Agora, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
           <li>When you are online and a text is not in your downloaded library, your browser fetches that text&apos;s file from GitHub (raw.githubusercontent.com).</li>
           <li>When you look up a word or open its Word Study page while online, that word (and nothing else) is sent to Wiktionary (en.wiktionary.org).</li>
           <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>
@@ -155,22 +156,15 @@ export default function CreditsPage() {
 
         <h2 id="pictures">Pictures</h2>
         <p>
-          The pictures in the windows of the home page, the library and the reader&apos;s covers are photographs of real objects, redrawn
-          as gold engravings (or, for the books&apos; emblems, in letters) by this site&apos;s own code. Each is credited where it is shown,
-          and all are listed below. All ornament is drawn by this site&apos;s own code. Photographs of real objects also arrive with the
-          wiki, each with its source, creator and licence listed here.
+          Every picture on the site is a colour photograph of a real object, never redrawn or tinted, and each is credited where it is
+          shown: under a page&apos;s plate, at the foot of the library, beside an article in the Painted Stoa. All ornament (the rules,
+          frames and figures) is drawn by this site&apos;s own code.
         </p>
-        <details className={styles.fold}>
-          <summary>The pictures in the windows and the books&apos; emblems</summary>
-          <ul>
-            {Object.values(A_ART).map((p) => <li key={p.src}>{p.credit.charAt(0).toUpperCase() + p.credit.slice(1)}.</li>)}
-            {MEDALLIONS.map((m) => <li key={m.id}>{m.why}</li>)}
-          </ul>
-        </details>
         <p>
-          Every picture in the Painted Stoa comes from a collection that states its licence, and the licence is copied from that record
-          by the script that fetched it (<code>web/scripts/fetch-images.ts</code>). Pictures from The Metropolitan Museum of Art are from its
-          Open Access programme (CC0: free for any use). Photographs from Wikimedia Commons keep their photographers&apos; licences.
+          Every picture comes from a collection that states its licence, and the licence is copied from that record by the script that
+          fetched it (<code>web/scripts/fetch-images.ts</code>), which also makes the smaller copies shown on small screens. Pictures from
+          The Metropolitan Museum of Art are from its Open Access programme (CC0: free for any use). Photographs from Wikimedia Commons
+          keep their photographers&apos; licences.
         </p>
         <details className={styles.fold}>
           <summary>Every picture and its licence</summary>
@@ -189,17 +183,16 @@ export default function CreditsPage() {
           </ul>
         </details>
 
-        <h2 id="sculpture">The sculpture on each page</h2>
+        <h2 id="plates">The plate on each page</h2>
         <p>
-          Each page has its own piece of ancient sculpture, engraved in gold lines in its window. All are from The Metropolitan Museum of
-          Art&apos;s Open Access programme (CC0); their titles and dates are copied from the museum&apos;s records by
-          <code>web/scripts/fetch-images.ts</code>, each photograph was cut out by <code>pipeline/pieces.py</code>, and its engraving is
-          made by <code>web/scripts/prepare-engravings.py</code>.
+          Each page opens with its own plate: a photograph of an ancient work, most of them sculpture, numbered Plate I, with its
+          credit printed beneath it. Most are from The Metropolitan Museum of Art&apos;s Open Access programme (CC0), their titles, dates
+          and places copied from the museum&apos;s records by <code>web/scripts/fetch-images.ts</code>; the others are among the pictures above.
         </p>
         <details className={styles.fold}>
-          <summary>Every piece of sculpture and its licence</summary>
+          <summary>Every plate and its licence</summary>
           <ul>
-            {USED_PIECES.map((id) => [id, PIECE_CREDITS[id]] as const).filter(([, im]) => im).map(([id, im]) => (
+            {USED_PIECES.map((id) => [id, PIECE_CREDITS[id] ?? IMAGES[id]] as const).filter(([, im]) => im).map(([id, im]) => (
               <li key={id}>
                 <b>{im.title}</b>{im.date && <>, {im.date}</>}. <Where im={im} />. <Source im={im} /><a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
               </li>

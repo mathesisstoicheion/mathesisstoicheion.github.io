@@ -94,7 +94,7 @@
 .answer:empty { display: none; }
 
 /* the same, as a page of its own (components/library/PrivateCollection.tsx) */
-.page { display: grid; gap: 22px; padding-block: clamp(28px, 6vw, 64px) 72px; }
+.page { display: grid; gap: 22px; padding-block: 0 72px; }   /* the page head brings its own space above */
 .page .panel { max-height: none; overflow: visible; }
 .page .books { grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 0 32px; }
 .crumbs { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); display: flex; gap: 8px; }
@@ -102,9 +102,9 @@
 .pageTitle { font-family: var(--f-title); font-weight: 400; font-size: clamp(2.6rem, 8vw, 4.6rem); line-height: 1; animation: ink-in var(--ink-in) var(--ease) 0.1s backwards; }
 .pageTitle::first-letter { color: var(--accent); }
 .pageLead { max-width: 60ch; color: var(--ink-2); animation: ink-in var(--ink-in) var(--ease) 0.25s backwards; }
-.pageStatus { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); font-style: italic; }
+.pageStatus { padding-block: 60px; display: flex; flex-wrap: wrap; gap: 12px; align-items: center; color: var(--ink-2); }
 .pageStatus > p { flex-basis: 100%; }
-.privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font-family: var(--f-title); font-weight: 400; font-size: var(--step-3); color: var(--ink-2); }
+.privateLine { padding-block: clamp(96px, 16vw, 180px); text-align: center; font: 400 var(--step-3) / 1.15 var(--f-display); color: var(--ink-2); }
 
 @media (prefers-reduced-motion: reduce) {
   .dialog[open], .dialog::backdrop, .seal, .panel, .books li, .preview, .pageTitle, .pageLead { animation: none; }

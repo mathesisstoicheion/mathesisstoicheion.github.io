@@ -132,7 +132,7 @@
 }
 :global(html[data-hdr="hidden"]) .row { --hdr-vis: 0px; }
 .row:first-child { box-shadow: none; }
-.flash { animation: flash calc(2.4s / var(--tempo)) ease-out; }
+.flash { animation: flash 2.4s ease-out; }
 @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 
 /* the passage's number in the left margin, in red Didot (the sample's .mk) */
@@ -281,7 +281,7 @@
 .swatches { display: inline-flex; gap: var(--space-1); padding: 0 var(--space-2); box-shadow: var(--cut-left); }
 .swatches + button { box-shadow: var(--cut-left); }   /* (there is no cut for a right-hand edge, so the group's far side is the next button's left edge) */
 .swatches button { width: 20px; height: 20px; padding: 0; border-radius: var(--radius-round); border: 2px solid var(--inv-fg); }
-.sw-red { background: #C0492B !important; } .sw-ochre { background: #D9A441 !important; } .sw-blue { background: #4F7CA8 !important; } .sw-green { background: #6E9A5B !important; }
+.sw-red { background: var(--pen-red) !important; } .sw-ochre { background: var(--pen-ochre) !important; } .sw-blue { background: var(--pen-blue) !important; } .sw-green { background: var(--pen-green) !important; }
 
 .w[data-hl] { border-radius: var(--radius); }
 .w[data-hl="red"] { background: color-mix(in srgb, var(--pen-red) 32%, transparent); }
@@ -469,7 +469,7 @@ p.translit { margin: -0.3em 0 0.8em; }
    They ink in once, in reading order: one animation per line runs --mk from 0 to 1, and each mark fades in as it passes
    its syllable number --i (rather than one animation per mark). Nothing moves. */
 @property --mk { syntax: "<number>"; inherits: true; initial-value: 1; }
-.metreOn .line { position: relative; animation: mark-sweep calc(0.9s / var(--tempo)) var(--ease) both; }
+.metreOn .line { position: relative; animation: mark-sweep 0.9s var(--ease) both; }
 @keyframes mark-sweep { from { --mk: 0; } to { --mk: 1; } }
 /* every row of a line, even a wrapped one, needs room above it for the marks */
 .metreOn .lt { display: block; position: relative; padding-top: 0.2em; line-height: max(2.6, var(--reading-leading)); }

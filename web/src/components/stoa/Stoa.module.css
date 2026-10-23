@@ -179,8 +179,9 @@
 
 /* ---------------------------------------------------------------- the reader's own notes on an entry */
 /* the note button is faint until the hand is on it (or it has focus); on a phone it is just the pencil (its label is read out) */
-button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink); opacity: 0.6; transition: opacity var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease); }
-button.noteBtn:hover, button.noteBtn:focus-visible { opacity: 1; color: var(--rubric); }
+/* quiet, in the captions' ink (not the ink made faint, which fell under 4.5 : 1 on the paper); red under the hand */
+button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink-2); transition: color var(--dur-quick) var(--ease); }
+button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
 @media (max-width: 760px) { .noteWord { display: none; } }
 .sectionNote { padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); font-size: var(--step-0); animation: ink-in var(--dur) var(--ease) backwards; }
 @media (prefers-reduced-motion: reduce) { .sectionNote { animation: none; } }

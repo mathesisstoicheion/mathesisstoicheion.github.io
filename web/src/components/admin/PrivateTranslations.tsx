@@ -37,9 +37,9 @@ export default function PrivateTranslations() {
   if (!session) {
     const back = `${HERE}${id ? `?id=${encodeURIComponent(id)}` : ""}`;
     return (
-      <div className={`wrap ${styles.status}`}>
-        <h1 className="visually-hidden">Private translations</h1>
-        <p className="notice"><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open this page.</p>
+      <div className={`wrap ${styles.page}`}>
+        <PageHead bare path={trail("treasury", "Private translations")} title="Private translations"
+          purpose={<><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open this page.</>} />
       </div>
     );
   }

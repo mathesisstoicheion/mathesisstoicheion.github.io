@@ -1,24 +1,24 @@
-/* The Guide (/guide), Stone and torch: ten chapters, each a moving picture of a real control beside a few plain sentences.
-   Each picture is a window cut into the wall; the sample controls inside are pictures of the real ones and keep their look. */
-.page { max-width: 1080px; padding-block: var(--after-head, 28px) 72px; }
-/* the header takes the page's width, so the big window of its piece stands beside the words, not over them */
-.top > :not(:global(.piece)) { max-width: 70ch; }
-.top :global(.label) span { font-family: var(--f-greek); letter-spacing: 0; text-transform: none; font-size: 1.05em; }
-.lead { font-size: var(--step-1); line-height: 1.5; margin: 6px 0 10px; }
-.small { color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
-.small a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
+/* The Guide (/guide) on the printed page: its chapters listed as a book's contents, then each chapter as a numbered section
+   with a figure beside it, as a printed manual has: a still drawing of the real control, in a hairline frame, numbered
+   and captioned as the plates are. The figures ink in with their chapter; nothing in them moves. */
+@keyframes ink-in { from { opacity: 0; } }
 
-/* the chapters as an even grid of numbered stones: two across on a phone, five across (two rows) on a wide screen */
-.contents ol { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; counter-reset: none; }
-@media (min-width: 900px) { .contents ol { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+/* the page's measure is the running head's, as on every page */
+.page { padding-block: var(--after-head, 28px) 72px; }
+.small { color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
+.small a { color: var(--ink); text-decoration-color: var(--rubric); text-underline-offset: 3px; }
+
+/* the chapters as a book's contents: entries under hairlines, each number in red figures; a chapter already shown is ticked */
+.contents ol { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--ink); }
+@media (min-width: 900px) { .contents ol { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.contents li { border-bottom: 1px solid var(--rule); }
 .contents a {
-  display: flex; height: 100%; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; border: 1px solid transparent;
-  border-radius: var(--radius); color: var(--ink); text-decoration: none; font-size: var(--step-0); background: var(--slab); box-shadow: var(--slab-edge);
-  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform 0.2s var(--ease);
+  display: flex; height: 100%; align-items: baseline; gap: 12px; padding: 11px 2px 12px; color: var(--ink); text-decoration: none; font-size: var(--step-0);
+  transition: color var(--dur-quick) var(--ease);
 }
-.contents a:hover, .contents a:focus-visible { background: var(--slab-lit); transform: translateY(-1px); }
-.no { display: inline-grid; place-items: center; width: 24px; height: 24px; border-radius: var(--radius-round); background: var(--channel); box-shadow: var(--channel-edge); font-family: var(--f-label); font-size: var(--step--1); }
-.contents a[data-done] .no { background: var(--inlay); box-shadow: var(--inlay-edge); color: var(--accent-ink); }
+.contents a:hover, .contents a:focus-visible { color: var(--rubric); }
+.no { flex: none; min-width: 1.4em; font: 400 1.25rem / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+.contents a[data-done] .no { font-family: var(--f-body); }
 
 .chapters { list-style: none; margin: 34px 0 0; padding: 0; display: grid; gap: clamp(44px, 7vw, 84px); }
 .chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(22px, 4vw, 56px); align-items: center; scroll-margin-top: calc(var(--hdr-vis, 64px) + 20px); }
@@ -27,10 +27,11 @@
 .say h2 { font-family: var(--f-display); font-weight: 400; font-size: var(--step-3); margin: 2px 0 10px; line-height: 1.1; }
 .say p { margin: 0 0 10px; line-height: 1.6; max-width: 56ch; }
 .kicker { display: flex; align-items: baseline; gap: 12px; margin: 0 !important; }
-.big { font-family: var(--f-display); font-size: 2.6rem; line-height: 1; color: var(--accent); }
+/* the chapter's number, large, in red figures */
+.big { font: 400 2.6rem / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums; }
 .kicker :global(.label) span { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
 .go { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: 16px; }
-.steps { font-family: var(--f-label); color: var(--ink-2); font-size: var(--step--1); }
+.steps { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .fork { display: flex; flex-wrap: wrap; gap: 12px; margin: var(--space-4) 0 var(--space-5); }
 
 @media (max-width: 760px) {
@@ -40,149 +41,116 @@
   /* the start buttons: one under the other, each the full width */
   .fork { flex-direction: column; }
   .fork > :global(.btn) { justify-content: center; text-align: center; }
-  /* each chapter is its own: a wide space before it and a cut line across its top; inside it the picture and the words keep close */
+  /* each chapter is its own: a wide space before it and a hairline across its top; inside it the figure and the words keep close */
   .chapters { gap: var(--space-8); }
   .chapter { gap: var(--space-3); }
-  .chapter + .chapter { padding-top: var(--space-5); box-shadow: var(--cut-over); }
+  .chapter + .chapter { padding-top: var(--space-5); border-top: 1px solid var(--rule); }
   .steps { display: none; }   /* the step count is in the Show me button */
 }
 
-/* ------------------------------------------------------------------ the pictures */
-/* Each plays when its chapter scrolls into view (Reveal adds .in), and rests at its finished state. */
-.pic {
-  --play: paused;
-  background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); overflow: hidden;
-  aspect-ratio: 16 / 10; display: grid; grid-template-rows: auto 1fr;
+/* ------------------------------------------------------------------ the figures */
+/* a figure: the drawing in a hairline frame, then its number in red small capitals and what it shows (as the plates' captions) */
+.pic { margin: 0; display: grid; gap: 10px; }
+.picBody {
+  position: relative; aspect-ratio: 16 / 10; display: grid; align-content: center; gap: 12px; padding: clamp(14px, 3vw, 26px);
+  border: 1px solid var(--rule); outline: 1px solid var(--rule-2); outline-offset: -6px; border-radius: var(--radius); overflow: hidden;
+  font-size: clamp(0.82rem, 1.6vw, 1rem);
 }
-:global(.in) .pic { --play: running; }
-.pic * { animation-play-state: var(--play); }
-/* no browser-window bar: a plain line cut across the top of the window (its three dots stay in the markup, unseen) */
-.picBar { height: 2px; padding: 0; background: var(--cut-line); }
-.picBar i { display: none; }
-.picBody { position: relative; padding: clamp(14px, 3vw, 26px); display: grid; align-content: center; gap: 12px; font-size: clamp(0.82rem, 1.6vw, 1rem); }
 .picBody [lang="grc"] { font-family: var(--f-greek); }
+.pic figcaption { display: flex; gap: 10px; font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.figNo { flex: none; font: 500 var(--step--2) / 1.6 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 
-/* find: a search box types "homer", and the works rise in under it */
-.fSearch { display: flex; align-items: center; border: 1px solid transparent; border-radius: var(--radius); padding: 8px 14px; background: var(--hollow); box-shadow: var(--hollow-edge); }
-.fTyped { display: inline-block; overflow: hidden; white-space: nowrap; font-family: var(--f-body); width: 5ch; animation: type calc(1.4s / var(--tempo)) steps(5) calc(0.3s / var(--tempo)) both; }
-@keyframes type { from { width: 0; } }
-.caret { width: 1px; height: 1.1em; background: var(--ink); margin-left: 2px; animation: blink 1s steps(1) infinite; }
-@keyframes blink { 50% { opacity: 0; } }
-.fList { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
-.fList li { display: flex; gap: 10px; align-items: baseline; padding: 8px 12px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); animation: up calc(0.5s / var(--tempo)) var(--ease) backwards; }
-.fList li:nth-child(1) { animation-delay: calc(1.8s / var(--tempo)); }
-.fList li:nth-child(2) { animation-delay: calc(2.05s / var(--tempo)); }
+/* find: a search box with "homer" in it, and the two works it finds under it */
+.fSearch { display: flex; align-items: center; padding: 6px 2px; border-bottom: 1px solid var(--ink-3); }
+.fTyped { font-family: var(--f-body); }
+.caret { width: 1px; height: 1.1em; background: var(--ink); margin-left: 2px; }
+.fList { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--ink); }
+.fList li { display: flex; gap: 10px; align-items: baseline; padding: 8px 2px; border-bottom: 1px solid var(--rule); }
 .fList span { font-style: italic; }
-.fList em { margin-left: auto; font-style: normal; color: var(--ink-2); font-size: 0.85em; }
-@keyframes up { from { opacity: 0; transform: translateY(10px); } }
+.fList em { margin-left: auto; font: 500 0.7em / 1.35 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 
-/* read: a row of the reader; the English arrives beside the Greek */
-.rRow { display: grid; grid-template-columns: auto 1.2fr 1fr; gap: 12px; align-items: baseline; padding: 12px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); }
-.rNo { font-family: var(--f-label); color: var(--accent); }
-.rGr { font-size: 1.15em; animation: up calc(0.6s / var(--tempo)) var(--ease) calc(0.2s / var(--tempo)) backwards; }
-.rEn { color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 12px; animation: slideIn calc(0.7s / var(--tempo)) var(--ease) calc(0.9s / var(--tempo)) backwards; }
-@keyframes slideIn { from { opacity: 0; transform: translateX(14px); } }
-.rCols { justify-self: center; display: flex; gap: var(--space-1); padding: var(--space-1); border: 0; border-radius: var(--radius); overflow: hidden; background: var(--field); box-shadow: var(--field-edge); font-family: var(--f-label); font-size: 0.85em; }
-.rCols i { font-style: normal; padding: 4px 12px; border-radius: var(--radius); }
-.rCols i:first-child { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+/* read: a row of the reader, the Greek and the English beside it; the columns' choice under it */
+.rRow { display: grid; grid-template-columns: auto 1.2fr 1fr; gap: 12px; align-items: baseline; padding: 12px 2px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); }
+.rNo { color: var(--rubric); font-variant-numeric: lining-nums; }
+.rGr { font-size: 1.15em; }
+.rEn { color: var(--ink-2); padding-left: 12px; border-left: 1px solid var(--rule); }
+.rCols { justify-self: center; display: flex; border: 1px solid var(--rule); border-radius: var(--radius); font: 500 0.66em / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.rCols i { font-style: normal; padding: 6px 11px; }
+.rCols i:first-child { background: var(--sel-bg); color: var(--sel-fg); }
 
-/* word: the word is clicked and its meaning rises above it */
-.wLine { margin: 30px 0 0; font-size: 1.6em; text-align: center; }
-.wHit { position: relative; }
-.wHit::after { content: ""; position: absolute; left: 0; right: 0; bottom: -3px; height: 2px; background: var(--accent); transform-origin: left; animation: grow calc(0.5s / var(--tempo)) var(--ease) calc(0.9s / var(--tempo)) backwards; }
-@keyframes grow { from { transform: scaleX(0); } }
-.wCard { justify-self: center; display: grid; gap: 2px; padding: 10px 14px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--inlay-top), var(--slab-edge); animation: pop calc(0.45s / var(--tempo)) var(--ease) calc(1.3s / var(--tempo)) backwards; }
+/* word: the word chosen, under a red rule, and its meaning on a slip under it */
+.wLine { margin: 10px 0 0; font-size: 1.6em; text-align: center; }
+.wHit { border-bottom: 2px solid var(--rubric); }
+.wCard { justify-self: center; display: grid; gap: 2px; padding: 10px 14px 10px 16px; border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: var(--inlay-top); }
 .wCard b { font-family: var(--f-greek); font-weight: 400; font-size: 1.25em; }
 .wCard span { color: var(--ink-2); font-size: 0.9em; }
 .wCard .wMean { color: var(--ink); font-size: 1em; }
-.wMean small { color: var(--ink-2); font-family: var(--f-label); }
-@keyframes pop { from { opacity: 0; transform: translateY(10px) scale(0.96); } }
-.wPointer { position: absolute; width: 14px; height: 14px; border-radius: var(--radius-round); border: 2px solid var(--accent); left: calc(50% - 74px); top: 56px; opacity: 0; animation: tap calc(0.9s / var(--tempo)) var(--ease) calc(0.4s / var(--tempo)) both; }
-@keyframes tap { 0% { opacity: 0; transform: translate(30px, 30px); } 60% { opacity: 1; transform: none; } 80% { transform: scale(0.7); } 100% { opacity: 0; transform: scale(1.4); } }
+.wMean small { color: var(--ink-2); }
+.wPointer { display: none; }
 
-/* aids: Transliteration switches on and the Latin letters appear under the Greek */
+/* aids: Transliteration on, and the Latin letters under the Greek */
 .aChips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
-.aChips i { font-style: normal; font-family: var(--f-label); font-size: 0.82em; padding: 4px 10px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); }
-.aChips i[data-on] { animation: on calc(0.4s / var(--tempo)) var(--ease) calc(0.6s / var(--tempo)) both; }
-@keyframes on { from { background: var(--slab); box-shadow: var(--slab-edge); } }
-.aChips i[data-on] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.aChips i { font-style: normal; font-size: 0.8em; padding: 4px 10px; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink); }
+.aChips i[data-on] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .aGr { margin: 8px 0 0; text-align: center; font-size: 1.6em; }
-.aTr { margin: 0; text-align: center; color: var(--accent); font-style: italic; letter-spacing: 0.02em; animation: up calc(0.6s / var(--tempo)) var(--ease) calc(1s / var(--tempo)) backwards; }
+.aTr { margin: 0; text-align: center; color: var(--rubric); font-style: italic; letter-spacing: 0.02em; }
 
-/* keep: a highlight sweeps across, a bookmark drops, a note slides in */
+/* keep: a line highlighted and bookmarked, with a note in the margin's ochre rule and the tools under it */
 .kLine { margin: 0; font-size: 1.4em; }
-.kMark { background: linear-gradient(color-mix(in srgb, var(--ochre, #c9a227) 45%, transparent), color-mix(in srgb, var(--ochre, #c9a227) 45%, transparent)) no-repeat left / 100% 100%; animation: sweep calc(0.9s / var(--tempo)) var(--ease) calc(0.4s / var(--tempo)) both; }
-@keyframes sweep { from { background-size: 0% 100%; } }
-.kRibbon { position: absolute; top: 0; right: 28px; width: 14px; height: 34px; background: var(--accent); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); animation: drop calc(0.5s / var(--tempo)) var(--ease) calc(1.3s / var(--tempo)) backwards; }
-@keyframes drop { from { transform: translateY(-40px); } }
-.kNote { justify-self: start; padding: 8px 12px; background: var(--field); box-shadow: var(--inlay-left-ochre), var(--field-edge); font-style: italic; animation: slideIn calc(0.6s / var(--tempo)) var(--ease) calc(1.8s / var(--tempo)) backwards; }
-.kTools { display: flex; gap: 8px; align-items: center; font-family: var(--f-label); font-size: 0.8em; color: var(--ink-2); }
-.kTools i { font-style: normal; padding: 3px 8px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); }
-.kTools .kSw { width: 14px; height: 14px; padding: 0; border-radius: var(--radius-round); background: var(--ochre, #c9a227); border: 0; box-shadow: var(--bezel); }
+.kMark { background: color-mix(in srgb, var(--ochre) 32%, transparent); box-decoration-break: clone; -webkit-box-decoration-break: clone; }
+.kRibbon { position: absolute; top: 0; right: 28px; width: 14px; height: 34px; background: var(--rubric); clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); }
+.kNote { justify-self: start; padding: 4px 0 4px 16px; box-shadow: var(--inlay-left-ochre); font-style: italic; }
+.kTools { display: flex; gap: 8px; align-items: center; font-size: 0.8em; color: var(--ink-2); }
+.kTools i { font-style: normal; padding: 3px 8px; border: 1px solid var(--rule); border-radius: var(--radius); }
+.kTools .kSw { width: 14px; height: 14px; padding: 0; border-radius: var(--radius-round); background: var(--ochre); border: 0; }
 
-/* search: concordance lines slide in and line up on the word */
-.sConc { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 1.05em; }
-.sConc li { display: grid; grid-template-columns: 5.2em auto 1fr; gap: 10px; align-items: baseline; white-space: nowrap; overflow: hidden; animation: fromRight calc(0.55s / var(--tempo)) var(--ease) backwards;
+/* search: concordance lines, lined up on the word */
+.sConc { list-style: none; margin: 0; padding: 0; display: grid; font-size: 1.05em; border-top: 1px solid var(--ink); }
+.sConc li { display: grid; grid-template-columns: 5.2em auto 1fr; gap: 10px; align-items: baseline; white-space: nowrap; overflow: hidden; padding: 5px 0; border-bottom: 1px solid var(--rule-2);
   /* a concordance line runs on past the edge: it fades out there rather than being cut through a letter */
   mask-image: linear-gradient(to right, #000 calc(100% - 3em), transparent); }
-.sConc li:nth-child(2) { animation-delay: calc(0.25s / var(--tempo)); }
-.sConc li:nth-child(3) { animation-delay: calc(0.5s / var(--tempo)); }
-.sConc li:nth-child(4) { animation-delay: calc(0.75s / var(--tempo)); }
-.sConc span { font-family: var(--f-label); font-size: 0.8em; color: var(--ink-2); }
-.sConc b { font-weight: 400; color: var(--bg); background: var(--inlay); box-shadow: var(--inlay-edge); padding: 0 4px; border-radius: var(--radius); }
-@keyframes fromRight { from { opacity: 0; transform: translateX(24px); } }
+.sConc span { font-family: var(--f-body); font-size: 0.8em; color: var(--rubric); }
+.sConc b { font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--rubric); }
 
-/* learn: letter cards turn over one after another */
-.lTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; perspective: 600px; }
-.lTile { display: grid; place-items: center; gap: 4px; aspect-ratio: 3 / 4; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); animation: flip calc(0.7s / var(--tempo)) var(--ease) backwards; }
-.lTile:nth-child(2) { animation-delay: calc(0.2s / var(--tempo)); }
-.lTile:nth-child(3) { animation-delay: calc(0.4s / var(--tempo)); }
-.lTile:nth-child(4) { animation-delay: calc(0.6s / var(--tempo)); }
+/* learn: four letter cards */
+.lTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.lTile { display: grid; place-items: center; gap: 4px; aspect-ratio: 3 / 4; border: 1px solid var(--rule); border-radius: var(--radius); }
 .lTile b { font-family: var(--f-greek); font-weight: 400; font-size: 1.7em; }
-.lTile span { font-family: var(--f-label); color: var(--ink-2); font-size: 0.85em; }
-@keyframes flip { from { transform: rotateY(90deg); opacity: 0; } }
+.lTile span { font: 500 0.7em / 1.35 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 
-/* explore: the coast draws itself, then the places light up and a route joins two of them */
+/* explore: a coast, three places and a road between two of them */
 .eMap { width: 100%; height: auto; }
-.eCoast { fill: color-mix(in srgb, var(--ochre, #c9a227) 12%, transparent); stroke: var(--lip-hi); stroke-width: 1.2; stroke-dasharray: 700; animation: draw calc(1.6s / var(--tempo)) var(--ease) both; }
-@keyframes draw { from { stroke-dashoffset: 700; } }
-.eRoute { fill: none; stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 4; animation: fadeIn calc(0.6s / var(--tempo)) var(--ease) calc(2.2s / var(--tempo)) backwards; }
-.ePlace circle { fill: var(--accent); }
-.ePlace text { font-family: var(--f-label); font-size: var(--step--2); fill: var(--ink); }
-.ePlace { animation: fadeIn calc(0.5s / var(--tempo)) var(--ease) calc((1.4s / var(--tempo)) + var(--d, 0s)) backwards; }
-@keyframes fadeIn { from { opacity: 0; } }
+.eCoast { fill: var(--map-land-wash); stroke: var(--ink-3); stroke-width: 1.2; }
+.eRoute { fill: none; stroke: var(--rubric); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.ePlace circle { fill: var(--rubric); }
+.ePlace text { font-family: var(--f-body); font-size: var(--step--2); fill: var(--ink); }
 
-/* talk: a question, an answer, and a vote tipping one way */
-.tBubble { max-width: 80%; padding: 8px 12px; border-radius: var(--radius); border: 1px solid transparent; background: var(--slab); box-shadow: var(--slab-edge); }
-.tAsk { justify-self: start; border-bottom-left-radius: var(--radius); animation: up calc(0.5s / var(--tempo)) var(--ease) calc(0.3s / var(--tempo)) backwards; }
-.tAns { justify-self: end; border-bottom-right-radius: var(--radius); background: color-mix(in srgb, var(--accent) 10%, var(--bg)); animation: up calc(0.5s / var(--tempo)) var(--ease) calc(1.2s / var(--tempo)) backwards; }
-.tVote { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font-family: var(--f-label); font-size: 0.82em; color: var(--ink-2); }
-/* the bar is a channel; its gilded fill is the ::before, which grows from half to 64% exactly as the old two-colour bar did */
-.tVote i { position: relative; overflow: hidden; height: 8px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); }
-.tVote i::before { content: ""; position: absolute; inset: 0; transform: scaleX(0.64); transform-origin: left; border-radius: inherit; background: var(--inlay-side); box-shadow: var(--inlay-edge); animation: tip calc(1s / var(--tempo)) var(--ease) calc(1.9s / var(--tempo)) both; animation-play-state: var(--play); }
-@keyframes tip { from { transform: scaleX(0.5); } }
+/* talk: a question, an answer, and a vote */
+.tBubble { max-width: 80%; padding: 8px 12px; border: 1px solid var(--rule); border-radius: var(--radius); }
+.tAsk { justify-self: start; }
+.tAns { justify-self: end; box-shadow: var(--inlay-left); padding-left: 16px; }
+.tVote { display: grid; grid-template-columns: auto 1fr auto; gap: 10px; align-items: center; font: 500 0.7em / 1.35 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+.tVote i { position: relative; height: 8px; background: var(--rule-2); }
+.tVote i::before { content: ""; position: absolute; inset: 0 36% 0 0; background: var(--rubric); }
 
-/* settings: the Greek grows as the slider moves, and the page turns from papyrus to black-figure */
-.zPage { display: grid; gap: 14px; padding: 16px; border-radius: var(--radius); animation: night calc(1.6s / var(--tempo)) var(--ease) calc(1.8s / var(--tempo)) both; background: var(--field); box-shadow: var(--field-edge); color: #efe4cf; }
-@keyframes night { from { background: var(--bg); color: var(--ink); } }
-.zGr { margin: 0; text-align: center; font-size: 1.7em; animation: bigger calc(1.2s / var(--tempo)) var(--ease) calc(0.4s / var(--tempo)) both; }
-@keyframes bigger { from { font-size: 1.2em; } }
+/* settings: the page at Night, its Greek set large, and the size's slider */
+.zPage { display: grid; gap: 14px; padding: 16px; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--night); color: var(--night-ink); }
+.zGr { margin: 0; text-align: center; font-size: 1.7em; }
 .zSlider { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 10px; }
-/* the slider is a channel; its gilded fill is the ::before, which grows from a quarter to three quarters as the old two-colour line did */
-.zSlider i { position: relative; overflow: hidden; height: 3px; border-radius: var(--radius); background: var(--channel); box-shadow: var(--channel-edge); opacity: 0.8; }
-.zSlider i::before { content: ""; position: absolute; inset: 0; transform: scaleX(0.75); transform-origin: left; border-radius: inherit; background: var(--inlay-side); box-shadow: var(--inlay-edge); animation: slide calc(1.2s / var(--tempo)) var(--ease) calc(0.4s / var(--tempo)) both; animation-play-state: var(--play); }
-@keyframes slide { from { transform: scaleX(0.25); } }
+.zSlider i { position: relative; height: 2px; background: color-mix(in srgb, var(--night-ink) 25%, transparent); }
+.zSlider i::before { content: ""; position: absolute; inset: 0 25% 0 0; background: var(--night-rubric); }
 .zSlider b { font-weight: 400; font-size: 1.2em; }
 
-/* the first visit's invitation, in a corner of the home page */
+/* the first visit's invitation, in a corner of the home page: a leaf of paper laid on it, under a red rule */
 .invite {
   position: fixed; z-index: 65; left: 16px; bottom: calc(16px + env(safe-area-inset-bottom, 0px));
   width: min(340px, calc(100vw - 32px)); padding: 14px 16px; display: grid; gap: 10px;
   background: var(--surface); box-shadow: var(--inlay-top), var(--slab-edge); border-radius: var(--radius);
-  animation: inviteIn calc(0.6s / var(--tempo)) var(--ease) backwards;
+  outline: var(--moulding); outline-offset: var(--moulding-in);
+  animation: ink-in var(--dur-slow) var(--ease) backwards;
 }
 .invite p { margin: 0; line-height: 1.5; }
 .invite div { display: flex; flex-wrap: wrap; gap: 8px; }
-@keyframes inviteIn { from { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) { .invite { animation: none; } }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .contents a { min-height: var(--tap); } }

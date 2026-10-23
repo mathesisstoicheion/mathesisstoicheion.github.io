@@ -161,7 +161,7 @@ function Oracle({ draft, setDraft }: { draft: NearDraft; setDraft: (d: NearDraft
   });
 
   return (
-    <div className={`wrap ${styles.page}`}>
+    <div className={styles.page}>
       {refs.length > 0 && (
         <section className={styles.refs} aria-label="Go to a passage">
           <span className="label">Go straight to the passage</span>
@@ -458,14 +458,14 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
           {o.hits ? <><b>{o.hits.toLocaleString("en-GB")}</b> {o.hits === 1 ? "result" : "results"} in <b>{o.works.length.toLocaleString("en-GB")}</b> {o.works.length === 1 ? "work" : "works"} by {authors} {authors === 1 ? "author" : "authors"}</> : "Nothing found."}
         </p>
         {o.hits > 0 && (
-          <div className={styles.seg} role="radiogroup" aria-label="Show the results">
+          <div className="segmented" role="radiogroup" aria-label="Show the results">
             <button type="button" role="radio" aria-checked={view === "works"} onClick={() => go({ v: null })}>By work</button>
             <button type="button" role="radio" aria-checked={view === "conc"} onClick={() => go({ v: "conc" })}>Concordance</button>
             <button type="button" role="radio" aria-checked={view === "stats"} onClick={() => go({ v: "stats" })}>Statistics</button>
           </div>
         )}
         {o.works.length > 1 && view !== "stats" && (
-          <div className={styles.seg} role="radiogroup" aria-label="Order">
+          <div className="segmented" role="radiogroup" aria-label="Order">
             <button type="button" role="radio" aria-checked={sort === "most"} onClick={() => go({ o: null })}>Most results</button>
             <button type="button" role="radio" aria-checked={sort === "date"} onClick={() => go({ o: "date" })}>Earliest first</button>
           </div>

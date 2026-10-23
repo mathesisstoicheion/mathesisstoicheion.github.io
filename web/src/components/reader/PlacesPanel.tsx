@@ -11,7 +11,6 @@ import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Places.module.css";
 import rs from "./Reader.module.css";
-import { cssTempo } from "@/lib/tempo";
 
 type Marks = Map<string, Set<string>>;
 interface ViewBox { x: number; y: number; w: number; h: number }
@@ -168,7 +167,7 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
             const left = ((x - view.x) / view.w) * 100, top = ((y - view.y) / view.h) * 100;
             if (left < -5 || left > 105 || top < -5 || top > 105) return null;
             return (
-              <button key={`${p.place.id}-${[...pageKeys][0]}`} type="button" className={styles.dot} style={{ left: `${left}%`, top: `${top}%`, animationDelay: cssTempo(`${Math.min(i, 12) * 70}ms`) }}
+              <button key={`${p.place.id}-${[...pageKeys][0]}`} type="button" className={styles.dot} style={{ left: `${left}%`, top: `${top}%`, animationDelay: `${Math.min(i, 12) * 70}ms` }}
                 data-active={active === p.place.id ? "" : undefined} data-auto={p.place.checked ? undefined : ""}
                 onClick={() => setActive(active === p.place.id ? null : p.place.id)}
                 onMouseEnter={() => setActive(p.place.id)} aria-label={`${shortName(p.place)}: mark only its words`}>

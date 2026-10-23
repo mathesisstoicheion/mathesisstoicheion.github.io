@@ -1,13 +1,14 @@
 /* ================================================================ the Town Hall and the Pnyx */
-/* Stone and torch: the boxes are sunk into the wall (threads, posts, forms) or set on it as slabs (links, call-outs); the rows
-   are divided by cut lines. For is patina blue and Against is honey. Every animation rests on its finished state, so with
-   reduced motion (handled site-wide) the page is complete. */
+/* The account page, and the forum while it is closed (frozen: restyled only where the old stone would break the printed
+   page). Forms and threads stand in hairline frames on the paper, rows are divided by hairlines, a call-out has a red rule
+   down its side. For is the verdigris and Against the ochre. Every animation rests on its finished state, so with reduced
+   motion (handled site-wide) the page is complete. */
 
 .status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
-.spinner { display: inline-block; vertical-align: -3px; width: 16px; height: 16px; border-radius: var(--radius-round); border: 2px solid var(--rule); border-top-color: var(--accent); animation: spin 0.9s linear infinite; }
-@keyframes spin { to { transform: rotate(360deg); } }
+/* waiting: a still red ring beside the words (nothing spins by itself, as the pull-to-refresh ring: globals.css) */
+.spinner { display: inline-block; vertical-align: -3px; width: 14px; height: 14px; border-radius: var(--radius-round); border: 1.5px solid var(--rubric); }
 .error { color: var(--accent); font-size: var(--step--1); }
-/* "could not be reached": the list's own stone panel, with a way to try again */
+/* "could not be reached": the list's own frame, with a way to try again */
 .offline { display: grid; gap: var(--space-3); justify-items: start; padding: var(--space-5); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .offline p { margin: 0; max-width: 60ch; }
 .ok { color: var(--ok); font-size: var(--step--1); }
@@ -34,14 +35,12 @@
 /* ------------------------------------------------ cards and forms */
 .card {
   padding: clamp(20px, 3vw, 32px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
-  display: grid; gap: 14px; animation: rise calc(0.5s / var(--tempo)) var(--ease) backwards;
+  display: grid; gap: 14px; animation: rise 0.5s var(--ease) backwards;
 }
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
+/* the sample's ink-in, as a page's head inks in */
 @keyframes rise { from { opacity: 0; transform: translateY(10px); } }
-/* a card (the sign-in form, say) is there to read and fill in from the first frame; it only rises into place */
-@keyframes settle-in { from { transform: translateY(10px); } }
-:global(html[data-level="performance"]) .card { animation: none; }
 .tabs { display: flex; gap: 4px; box-shadow: var(--cut-under); }
 .tabs button { font: inherit; font-family: var(--f-display); font-size: var(--step-1); padding: 6px 16px 8px; border: 0; background: none; color: var(--ink-2); cursor: pointer; position: relative; }
 .tabs button[aria-selected="true"] { color: var(--ink); }
@@ -60,19 +59,16 @@
 
 /* ------------------------------------------------ the Town Hall */
 .hall { display: grid; gap: 22px; padding-top: var(--after-head); padding-bottom: 72px; }
+/* this week's debate: a notice in a double frame with a red rule down its left side, its words in ink (the paper-coloured
+   words of the old stone slab, on the paper, could not be read; nothing glints) */
 .featured {
-  display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--inv-fg); background: var(--slab); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink);
-  border-radius: var(--radius); box-shadow: var(--inlay-left), var(--slab-edge); position: relative; overflow: hidden; transition: background-color var(--dur) ease;
+  display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--ink);
+  border-radius: var(--radius); box-shadow: var(--inlay-left), var(--slab-edge); transition: background-color var(--dur-quick) var(--ease);
 }
-.featured:hover { background-color: var(--slab-lit); }
-.featured :global(.label) { color: color-mix(in srgb, var(--inv-fg) 75%, transparent); }
+.featured:hover { background-color: var(--bg-2); }
+.featured :global(.label) { color: var(--rubric); }
 .featured b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
-.featured span:last-child { font-size: var(--step--1); }
-.featured::after {   /* a slow band of light, like glaze catching the sun */
-  content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 40%, color-mix(in srgb, var(--inv-fg) 14%, transparent) 50%, transparent 60%);
-  transform: translateX(-100%); animation: glint 5s ease-in-out 1s infinite;
-}
-@keyframes glint { 0%, 70% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
+.featured span:last-child { font-size: var(--step--1); color: var(--ink-2); }
 
 .pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); transition: background-color var(--dur) ease; }
 .pnyxCard:hover, .pnyxCard:focus-visible { background-color: var(--slab-lit); }
@@ -84,7 +80,7 @@
 .cat {
   text-align: left; display: grid; gap: 3px; padding: 12px 14px; border: 1px solid transparent; border-radius: var(--radius);
   background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); cursor: pointer; position: relative; overflow: hidden; font: inherit;
-  animation: rise calc(0.45s / var(--tempo)) var(--ease) backwards; animation-delay: calc(var(--i, 0) * (40ms / var(--tempo)));
+  animation: rise 0.45s var(--ease) backwards; animation-delay: calc(var(--i, 0) * 40ms);
   transition: transform 0.2s var(--ease), color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
 }
 .cat > * { position: relative; }
@@ -114,7 +110,7 @@
 .threads li {
   display: grid; grid-template-columns: 56px 1fr 96px; gap: 14px; align-items: center; padding: 12px 4px;
   box-shadow: var(--cut-under);
-  animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 20) * (25ms / var(--tempo)));
+  animation: rise 0.4s var(--ease) backwards; animation-delay: calc(min(var(--i, 0), 20) * 25ms);
 }
 .threads li:last-child { box-shadow: none; }
 .threadScore, .threadReplies { display: grid; justify-items: center; text-align: center; line-height: 1.1; }
@@ -169,7 +165,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .vote:hover:not(:disabled) { color: var(--accent); background: var(--slab-lit); }
 .vote[aria-pressed="true"] { color: var(--accent); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .vote:active:not(:disabled) { transform: scale(0.94); background: var(--field); box-shadow: var(--field-edge); }
-.vote[aria-pressed="true"] svg { animation: pop calc(0.35s / var(--tempo)) var(--ease); }
+.vote[aria-pressed="true"] svg { animation: pop 0.35s var(--ease); }
 .vote:disabled { cursor: default; }
 @keyframes pop { 50% { transform: translateY(-4px) scale(1.2); } }
 .answerNote { margin: 0; color: var(--ok); }
@@ -178,7 +174,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .replyList, .subReplies, .argList { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
 .subReplies { margin: 10px 0 0 22px; padding-left: 16px; box-shadow: var(--cut-left); }
 .reply { padding: 12px 0; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
-.reply:target { animation: flash calc(1.6s / var(--tempo)) var(--ease); }
+.reply:target { animation: flash 1.6s var(--ease); }
 @keyframes flash { from { background: color-mix(in srgb, var(--accent) 16%, transparent); } }
 .isAnswer { padding: 12px; border-radius: var(--radius); background: var(--slab); box-shadow: var(--inlay-left-ok), var(--slab-edge); }
 .replyBody { min-width: 0; display: grid; gap: 8px; }
@@ -218,7 +214,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .proposeBox { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
 .resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); box-shadow: var(--channel-edge); }   /* the two colours stay: they say For and Against */
-.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow calc(1s / var(--tempo)) var(--ease) backwards; transform-origin: left; }
+.resultBar span { display: block; height: 100%; background: var(--blue); box-shadow: var(--inlay-edge); animation: grow 1s var(--ease) backwards; transform-origin: left; }
 @keyframes grow { from { transform: scaleX(0); } }
 .result p { margin: 0; font-size: var(--step--1); }
 .resultSmall .resultBar { height: 6px; max-width: 320px; }
@@ -239,7 +235,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .urnCol:first-child .urn path { fill: color-mix(in srgb, var(--blue) 14%, var(--surface)); }
 .urnCol:last-child .urn path { fill: color-mix(in srgb, var(--accent) 12%, var(--surface)); }
 .urnMine path { stroke-width: 3; }
-.pebble { fill: var(--ink); animation: drop calc(0.85s / var(--tempo)) cubic-bezier(0.5, 0, 0.75, 0) both; }
+.pebble { fill: var(--ink); animation: drop 0.85s cubic-bezier(0.5, 0, 0.75, 0) both; }
 @keyframes drop { 0% { transform: translateY(-26px); } 80% { transform: translateY(66px); } 90% { transform: translateY(60px); } 100% { transform: translateY(66px); } }
 .pebbleIn { fill: var(--ink); }
 .urnCount { font-family: var(--f-display); font-size: var(--step-2); }
@@ -250,7 +246,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .sideAgainst { box-shadow: var(--inlay-top); }
 .side h2 { margin: 0; font-size: var(--step-2); }
 .side h2 small { font-size: var(--step--1); color: var(--ink-2); }
-.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise calc(0.4s / var(--tempo)) var(--ease) backwards; }
+.arg { padding: 12px 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; animation: rise 0.4s var(--ease) backwards; }
 
 @media (max-width: 760px) {
   .threads li { grid-template-columns: 44px 1fr; }

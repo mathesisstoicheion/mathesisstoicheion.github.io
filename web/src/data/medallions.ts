@@ -1,7 +1,8 @@
 /**
- * Books with an emblem: a picture of the author, or of the thing the book is best known for, drawn in letters (design A:
- * the library's famous books, components/a/Featured.tsx, and the reader's cover). The pictures are in
- * web/public/images/a/em-*.png, from the originals in data/images.json, whose credits `why` repeats.
+ * The library's famous books (app/library/page.tsx), each with a photograph of its author or of the thing it is best known
+ * for: the photographs are in data/images.json, whose credits `why` repeats, and each book's plate is chosen in
+ * data/library-plates.ts. (Under the old look these pictures were redrawn in letters; that is set aside in
+ * _archive/old-look-2026-10-22/.)
  */
 /** `about` is one line on the work itself (as the reading paths, data/paths.ts, describe it); `why` is the picture's credit */
 export interface Medallion { group: string; id: string; pic: string; alt: string; about: string; why: string }

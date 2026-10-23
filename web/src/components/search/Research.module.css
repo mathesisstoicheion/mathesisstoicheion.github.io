@@ -1,46 +1,52 @@
-/* The Oracle's research views: the concordance (Concordance.tsx) and the statistics (Stats.tsx). */
+/* The Oracle's research views, on the printed page: the concordance (Concordance.tsx) as a printed concordance's columns
+   under hairlines, the word itself in bold over a red rule; the statistics (Stats.tsx) as bars of red from one baseline,
+   their values in figures at the end. The bars ink in; nothing grows or slides. */
+@keyframes ink-in { from { opacity: 0; } }
+
 .conc, .stats { display: grid; gap: 14px; }
 .bar { display: flex; flex-wrap: wrap; gap: 10px 14px; justify-content: space-between; align-items: center; }
 .small { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .status { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .more { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
-.h { margin: 6px 0 8px; font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); }
-.h4 { margin: 4px 0 6px; font: 600 var(--step--1) var(--f-label); color: var(--ink-2); letter-spacing: 0.02em; }
+/* a part of the statistics: its name, then a hairline to the margin, as the Treasury's parts */
+.h { display: flex; align-items: baseline; gap: 14px; margin: 14px 0 8px; font: 400 var(--step-1) / 1.2 var(--f-display); }
+.h::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
+.h4 { margin: 4px 0 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 
 /* ---- concordance: reference | words before | the match | words after | grammar */
-.lines { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
+.lines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+/* add the line to a notebook: a small ring of hairline with a plus, red under the hand */
 .addLine {
-  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid transparent; border-radius: var(--radius-round);
-  background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink-2); font: var(--step-0)/1 var(--f-body); cursor: pointer; opacity: 0.55;
-  transition: opacity 0.2s, color 0.2s, background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round);
+  background: transparent; color: var(--ink-3); font: var(--step-0)/1 var(--f-body); cursor: pointer;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.lines li:hover .addLine, .addLine:focus-visible { opacity: 1; }
-.addLine:hover { color: var(--accent); background: var(--slab-lit); }
-.addLine:active { background: var(--field); box-shadow: var(--field-edge); }
-@media (pointer: coarse) { .addLine { opacity: 1; width: 32px; height: 32px; } }
+.lines li:hover .addLine, .addLine:focus-visible { color: var(--ink-2); border-color: var(--ink-3); }
+.addLine:hover { color: var(--rubric); border-color: var(--rubric); }
+.addLine:active { background: var(--bg-2); }
+@media (pointer: coarse) { .addLine { width: 32px; height: 32px; color: var(--ink-2); } }
 .lines li {
   display: grid; grid-template-columns: minmax(5em, 11em) minmax(0, 1fr) auto minmax(0, 1fr) auto auto; align-items: baseline;
-  padding: 7px 6px; box-shadow: var(--cut-under); transition: background 0.15s;
+  padding: 7px 4px; border-bottom: 1px solid var(--rule-2); transition: background-color var(--dur-quick) var(--ease);
 }
-.lines li:last-child { box-shadow: none; }
-.lines li:hover { background-color: var(--slab-lit); }
+.lines li:last-child { border-bottom-color: var(--rule); }
+.lines li:hover { background-color: var(--bg-2); }
 .lines[data-lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
 .ref {
-  padding-right: 12px; font: 600 var(--step--2) var(--f-label); color: var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  text-decoration: none; font-variant-numeric: tabular-nums;
+  padding-right: 12px; font: 500 var(--step--2) / 1.5 var(--f-body); color: var(--rubric); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  text-decoration: none; font-variant-numeric: lining-nums tabular-nums;
 }
-.ref:hover { text-decoration: underline; }
+.ref:hover { text-decoration: underline; text-underline-offset: 3px; }
 .work { font-weight: 400; color: var(--ink-2); }
 /* the words before are set right to left so that, when too long, they are cut at their far end, not next to the match */
 .left { direction: rtl; overflow: hidden; white-space: pre; text-overflow: ellipsis; color: var(--ink-2); }
 .left > span { direction: ltr; unicode-bidi: isolate; }
 .right { overflow: hidden; white-space: pre; text-overflow: ellipsis; color: var(--ink-2); }
-.key { background: none; color: var(--ink); font-weight: 700; white-space: pre; padding: 0 0.12em; margin-left: 0.3em; border-bottom: 2px solid var(--accent); }
+.key { background: none; color: var(--ink); font-weight: 700; white-space: pre; padding: 0 0.12em; margin-left: 0.3em; border-bottom: 2px solid var(--rubric); }
 .near { background: color-mix(in srgb, var(--ochre) 24%, transparent); color: var(--ink); border-radius: var(--radius); }
-.gram { padding-left: 14px; font: var(--step--2) var(--f-body); color: var(--ink-2); white-space: nowrap; }
-.missing { grid-column: 2 / -1; font: var(--step--1) var(--f-body); color: var(--accent); }
-.order button { font-size: var(--step--1); }
+.gram { padding-left: 14px; font: var(--step--2) var(--f-body); font-style: italic; color: var(--ink-2); white-space: nowrap; }
+.missing { grid-column: 2 / -1; font: var(--step--1) var(--f-body); color: var(--rubric); }
 @media (max-width: 760px) {
   .lines li { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); row-gap: 2px; }
   .ref { grid-column: 1 / -1; }
@@ -57,20 +63,22 @@
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .bars li {
   position: relative; display: grid; grid-template-columns: minmax(6em, 14em) minmax(0, 1fr) 3.6em; gap: 10px; align-items: center;
-  padding: 4px 6px; border-radius: var(--radius); outline: none;
+  padding: 4px 4px; border-radius: var(--radius); outline: none; transition: background-color var(--dur-quick) var(--ease);
 }
-.bars li:hover, .bars li:focus-visible { background-color: var(--slab-lit); }
-.bars li:focus-visible { box-shadow: inset 0 0 0 2px var(--accent); }
+.bars li:hover, .bars li:focus-visible { background-color: var(--bg-2); }
+.bars li:focus-visible { box-shadow: inset 0 0 0 1px var(--rubric); }
 .barLabel { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: var(--step--1); }
 .barLabel small { color: var(--ink-2); }
-.track { height: 10px; background: var(--channel); box-shadow: var(--channel-edge); }
-.fill { display: block; height: 100%; background: var(--inlay-side); box-shadow: var(--inlay-edge); border-radius: var(--radius); transform-origin: left; animation: grow calc(0.6s / var(--tempo)) var(--ease) backwards; }
-@keyframes grow { from { transform: scaleX(0); } }
-.barValue { text-align: right; font-size: var(--step--1); font-variant-numeric: tabular-nums; }
+/* the whole measure, faint, and the part of it in red */
+.track { height: 10px; background: var(--rule-2); }
+.fill { display: block; height: 100%; background: var(--rubric); animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.barValue { text-align: right; font-size: var(--step--1); font-variant-numeric: lining-nums tabular-nums; }
+/* the line's details, on a slip of ink over it: it fades in where it stands */
 .bars li::after {
   content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + 4px); z-index: 5; width: max-content; max-width: min(340px, 80vw);
   padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: var(--step--1); line-height: 1.35;
-  box-shadow: var(--slab-edge); pointer-events: none; opacity: 0; translate: 0 4px; transition: opacity 0.15s, translate 0.15s;
+  pointer-events: none; opacity: 0; transition: opacity var(--dur-quick) var(--ease);
 }
-.bars li:hover::after, .bars li:focus-visible::after { opacity: 1; translate: 0 0; }
+.bars li:hover::after, .bars li:focus-visible::after { opacity: 1; }
 @media (max-width: 760px) { .bars li { grid-template-columns: minmax(5em, 9em) minmax(0, 1fr) 3.2em; gap: 8px; } }
+@media (prefers-reduced-motion: reduce) { .fill { animation: none; } }

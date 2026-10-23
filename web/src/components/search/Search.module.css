@@ -1,53 +1,62 @@
-/* The Oracle (Stone and torch): boxes are sunk into the wall or set on it as slabs, rows are divided by cut lines. Buttons, tabs, text keep their own look. */
-.page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-block: var(--after-head) 64px; }
-.gr { font-family: var(--f-greek); }
-.small { font-size: var(--step--1); color: var(--ink-2); }
-.warn { color: var(--accent); font-weight: 600; }
-.note { font-size: var(--step--1); padding: 8px 12px; background: var(--slab); box-shadow: var(--inlay-left), var(--slab-edge); max-width: 80ch; }
-.status { color: var(--ink-2); display: flex; align-items: center; gap: 12px; padding-block: 24px; }
+/* The Oracle (Search.tsx) on the printed page: the kinds of search as a row of words with a red rule under the chosen
+   one, a line to write on, the filters in a column of small capitals, and the results as entries under hairlines, the
+   references in red and each count in red figures. Things ink in; nothing rises, slides, pulses or turns. */
+@keyframes ink-in { from { opacity: 0; } }
 
-/* ------------------------------------------------------------ the box */
+.page { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; padding-bottom: 64px; }
+.gr { font-family: var(--f-greek); }
+.small { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
+.warn { color: var(--rubric); }
+/* a word about the search (a form read two ways, a limit reached): a note set off by a red rule down its margin */
+.note { margin: 0; max-width: 80ch; padding: 4px 0 4px 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left); }
+.status { color: var(--ink-2); display: flex; align-items: center; gap: 12px; padding-block: 24px; margin: 0; }
+
+/* ------------------------------------------------------------ the box, in the page's head */
 .box { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; }
-.tabs { display: flex; flex-wrap: wrap; gap: 0; box-shadow: var(--cut-under); }
+/* the kinds of search: words in a row on a hairline, the chosen one in ink over a red rule */
+.tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--rule); }
 .tabs button {
-  background: transparent; border: 0; padding: 10px 16px; font-family: var(--f-label); letter-spacing: 0.05em; font-size: var(--step-0);
-  color: var(--ink-2); border-bottom: 3px solid transparent; margin-bottom: -1px; transition: color 0.2s, border-color 0.25s var(--ease);
+  background: transparent; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 10px 16px;
+  font: 400 var(--step-0) / 1.3 var(--f-body); color: var(--ink-2); cursor: pointer;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.tabs button:hover { color: var(--ink); }
-.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--accent); }
+.tabs button:hover { color: var(--rubric); }
+.tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rubric); }
 
 .form { display: flex; gap: 10px; align-items: stretch; }
-.input {
-  flex: 1; min-width: 0; font-family: var(--f-greek); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink);
-  border-radius: var(--radius); padding: 12px 16px;
-  transition: box-shadow 0.3s var(--ease);
-}
+.input { flex: 1; min-width: 0; font-family: var(--f-greek); font-size: clamp(1.3rem, 2.6vw, 1.7rem); color: var(--ink); padding: 12px 16px; }
+/* the Greek letters on screen: a hairline frame; while they are shown, filled with ink */
 .kbdBtn {
-  font-family: var(--f-greek); font-size: var(--step-0); padding: 0 14px; background: var(--slab); color: var(--ink);
-  border: 1.5px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
+  font-family: var(--f-greek); font-size: var(--step-0); padding: 0 14px; background: transparent; color: var(--ink);
+  border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
-.kbdBtn:active { background: var(--field); box-shadow: var(--field-edge); }
-.kbdBtn[aria-pressed="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
-.hint { font-size: var(--step-0); color: var(--ink-2); max-width: 80ch; }
+.kbdBtn:hover { color: var(--rubric); border-color: var(--ink-3); }
+.kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
+.hint { margin: 0; font-size: var(--step-0); color: var(--ink-2); max-width: 80ch; }
 .readAs { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: var(--step-0); }
-.readAs select, .field select {
-  font: inherit; font-size: var(--step--1); color: var(--ink);
-  border-radius: var(--radius); padding: 5px 8px; max-width: 100%;
-}
-.readAs b { font-size: var(--step-sub); color: var(--accent); font-weight: 400; }
+.readAs select, .field select { font-size: var(--step--1); max-width: 100%; }
+.readAs b { font-size: var(--step-sub); color: var(--rubric); font-weight: 400; }
 
-.kbd { display: grid; gap: 6px; justify-items: center; padding: 14px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); animation: rise calc(0.3s / var(--tempo)) var(--ease); }
+/* the Greek letters on screen: keys in hairline frames on a leaf of their own */
+.kbd {
+  display: grid; gap: 6px; justify-items: center; padding: 14px; border: 1px solid var(--rule); border-radius: var(--radius);
+  background: var(--bg); animation: ink-in var(--dur) var(--ease) backwards;
+}
 .kbdRow { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
 .kbd button {
-  min-width: 42px; height: 42px; font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink);
-  background: var(--slab); border: 1px solid transparent; box-shadow: var(--slab-edge); border-radius: var(--radius);
-  transition: transform 0.12s, background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease);
+  min-width: 42px; height: 42px; font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); cursor: pointer;
+  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
-.kbd button:hover { background: var(--slab-lit); }
-.kbd button:active { transform: translateY(1px) scale(0.97); background: var(--field); box-shadow: var(--field-edge); }
-.kbd .kbdSpace { min-width: 240px; font-family: var(--f-label); font-size: var(--step--1); }
-@keyframes rise { from { opacity: 0; transform: translateY(-6px); } }
-.kbdDocked { justify-items: stretch; gap: 7px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); border: 0; box-shadow: var(--cut-over); border-radius: 0; background: var(--bg-2); animation: none; }   /* fixed to the foot of the sheet: it stays opaque */
+.kbd button:hover { color: var(--rubric); border-color: var(--ink-3); }
+.kbd button:active { background: var(--bg-2); }
+.kbd .kbdSpace { min-width: 240px; font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; }
+/* fixed to the foot of the quick search's sheet (QuickSearch.tsx): it stays opaque, under a hairline */
+.kbdDocked {
+  justify-items: stretch; gap: 7px; padding: 8px 6px calc(8px + env(safe-area-inset-bottom, 0px)); border: 0; border-radius: 0;
+  border-top: 1px solid var(--rule); background: var(--bg-2); animation: none;
+}
 /* phones: a row of letters spans the width in equal keys, as on the phone's own keyboard, instead of wrapping */
 @media (max-width: 760px) {
   .kbdRow { flex-wrap: nowrap; width: 100%; gap: 5px; }
@@ -55,126 +64,127 @@
   .kbd .kbdSpace { flex: 0 1 60%; min-width: 0; }
 }
 
-/* ------------------------------------------------------------ references */
-.refs { display: grid; gap: 8px; padding: 16px 20px; background: var(--slab); box-shadow: var(--slab-edge); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); animation: rise calc(0.35s / var(--tempo)) var(--ease); }
-.refs .label { color: var(--accent); }
+/* ------------------------------------------------------------ a reference, straight to its passage */
+/* a note in the margin's red rule: the passage the words name, to open at once */
+.refs { display: grid; gap: 8px; padding: 6px 0 6px 18px; box-shadow: var(--inlay-left); animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.refs :global(.label) { color: var(--rubric); }
 .refs ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.refs a { color: var(--inv-fg); text-decoration: none; font-size: var(--step-sub); }
-.refs a:hover b { color: var(--accent); }
-.refs small { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+.refs a { color: var(--ink); text-decoration: none; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
+.refs a:hover, .refs a:focus-visible { color: var(--rubric); }
+.refs small { color: var(--ink-2); }
 
-/* ------------------------------------------------------------ layout */
+/* ------------------------------------------------------------ the filters and the results */
 .layout { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: clamp(20px, 3vw, 40px); align-items: start; }
-.filters { position: sticky; top: calc(var(--hdr-vis) + 16px + env(safe-area-inset-top, 0px)); max-height: calc(100vh - var(--hdr-vis) - 32px); transition: top 0.35s var(--ease); overflow: hidden auto; }
+.filters { position: sticky; top: calc(var(--hdr-vis) + 16px + env(safe-area-inset-top, 0px)); max-height: calc(100vh - var(--hdr-vis) - 32px); overflow: hidden auto; }
 :global(html[data-hdr="hidden"]) .filters { --hdr-vis: 0px; }
 .filterBody { display: grid; gap: 18px; justify-items: start; }
-.fs { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; width: 100%; }
-.fs legend { font-family: var(--f-label); letter-spacing: 0.08em; font-size: var(--step--1); color: var(--accent); padding: 0; margin-bottom: 6px; }
+.fs { border: 0; margin: 0; padding: 0; display: grid; gap: 10px; width: 100%; min-width: 0; }
+/* each group's name in small capitals, red, as a printed form's */
+.fs legend { padding: 0; margin-bottom: 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 .field { display: grid; gap: 3px; font-size: var(--step--1); width: 100%; }
 .field select { width: 100%; }
 .field span { color: var(--ink-2); }
+.field input { width: 100%; min-width: 0; font: inherit; padding: 7px 2px; }
 .check { display: flex; gap: 8px; align-items: flex-start; font-size: var(--step--1); min-width: 0; }
-.check input { margin-top: 4px; accent-color: var(--accent); }
+.check input { margin-top: 4px; accent-color: var(--rubric); }
+.nearBtns { display: flex; flex-wrap: wrap; gap: 8px; }
 
-.welcome { display: grid; gap: 14px; padding-block: 8px; }
+.welcome { display: grid; gap: 14px; padding-block: 4px; }
+.welcome > p { margin: 0; }
 .examples { display: flex; flex-wrap: wrap; gap: 8px; }
-.examples .chip, .examples button { font-size: var(--step-0); }
+.examples :global(.chip) { font-size: var(--step-0); }
 /* phones: the five kinds of search in two even rows (three, then two), and the four examples as a two-by-two grid */
 @media (max-width: 760px) {
   .tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
   /* a third of a phone's width holds "Translations" whole: the label a little smaller on the narrowest phones */
-  .tabs button { grid-column: span 2; text-align: center; padding-inline: 4px; font-size: clamp(0.72rem, 3.3vw, 0.95rem); letter-spacing: 0.02em; }
+  .tabs button { grid-column: span 2; text-align: center; padding-inline: 4px; font-size: clamp(0.78rem, 3.5vw, 1rem); }
   .tabs button:nth-child(n + 4) { grid-column: span 3; }
   .examples { display: grid; grid-template-columns: 1fr 1fr; }
-  .examples .chip, .examples button { justify-content: center; }
+  .examples :global(.chip) { justify-content: center; }
 }
 .moreTips summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); font-size: var(--step--1); }
+.moreTips summary::marker { color: var(--rubric); }
 @media (pointer: coarse) { .moreTips summary { min-height: var(--tap); padding-block: var(--space-2); } }
 .tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
+.tips li::marker { color: var(--rubric); }
 .tips span[lang] { font-family: var(--f-greek); color: var(--ink); }
 
 /* ------------------------------------------------------------ results */
 .results { min-width: 0; }
-.found { display: grid; gap: 16px; }
+.found { display: grid; gap: 18px; }
 .summary { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 20px; }
-.count { font-size: var(--step-sub); }
-.count b { font-family: var(--f-display); font-size: 1.4em; font-weight: 400; color: var(--accent); }
-.seg { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border: 0; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.seg button { background: transparent; border: 0; border-radius: var(--radius); padding: 6px 12px; font-size: var(--step--1); }
-.seg button:hover:not([aria-checked="true"]) { background: var(--slab); }
-.seg button[aria-checked="true"] { background: var(--slab-lit); color: var(--ink); box-shadow: var(--slab-edge), var(--chosen-foot); }
+.count { margin: 0; font-size: var(--step-sub); }
+/* the numbers of the count in red figures, as the Treasury's contents give theirs */
+.count b { font: 400 1.35em / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
 .lemmas { display: grid; gap: 8px; }
 
-.groups { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
-.group { box-shadow: var(--cut-under); animation: rise calc(0.35s / var(--tempo)) var(--ease) backwards; }
-.group:last-child { box-shadow: none; }
-.group:nth-child(2) { animation-delay: calc(40ms / var(--tempo)); } .group:nth-child(3) { animation-delay: calc(80ms / var(--tempo)); } .group:nth-child(4) { animation-delay: calc(120ms / var(--tempo)); }
+/* the works found: entries under hairlines, each opening onto its passages */
+.groups { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.group { border-bottom: 1px solid var(--rule); animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.group:nth-child(2) { animation-delay: 60ms; } .group:nth-child(3) { animation-delay: 120ms; } .group:nth-child(4) { animation-delay: 180ms; }
 .groupHead {
-  display: grid; grid-template-columns: 12px minmax(0, 1fr) auto auto; gap: 14px; align-items: baseline; width: 100%;
-  padding: 12px 4px; background: transparent; border: 0; text-align: left; color: inherit;
+  display: grid; grid-template-columns: 14px minmax(0, 1fr) auto auto; gap: 14px; align-items: baseline; width: 100%;
+  padding: 13px 2px 12px; background: transparent; border: 0; text-align: left; color: inherit; font: inherit; cursor: pointer;
 }
-.groupHead:hover .groupTitle b { color: var(--accent); }
-.groupHead::before { content: "▸"; color: var(--accent); transition: transform 0.2s var(--ease); }
-.groupHead[aria-expanded="true"]::before { transform: rotate(90deg); }
-.groupTitle b { font-size: var(--step-sub); transition: color 0.2s; }
-.groupDate { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink-2); white-space: nowrap; }
+/* a small red pointer, turned down while the work is open: the sign changes, nothing turns */
+.groupHead::before { content: "▸"; color: var(--rubric); }
+.groupHead[aria-expanded="true"]::before { content: "▾"; }
+.groupTitle b { font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
+.groupHead:hover .groupTitle b, .groupHead:focus-visible .groupTitle b { color: var(--rubric); }
+.groupDate { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; }
 /* on a narrow phone the date goes under the work's name, so the name keeps the width it needs */
-@media (max-width: 420px) { .groupHead { grid-template-columns: 12px minmax(0, 1fr) auto; } .groupDate { grid-column: 2; grid-row: 2; } }
-.groupCount {
-  font-variant-numeric: tabular-nums; min-width: 3.2em; text-align: center; padding: 2px 10px; border-radius: var(--radius);
-  background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); font-size: var(--step--1);
-}
-.hits { padding: 0 4px 16px; display: grid; gap: 10px; justify-items: start; }
-.hits ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; width: 100%; }
-.hit { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; padding: 8px 0; box-shadow: var(--cut-over); }
+@media (max-width: 420px) { .groupHead { grid-template-columns: 14px minmax(0, 1fr) auto; } .groupDate { grid-column: 2; grid-row: 2; } }
+.groupCount { min-width: 2.6em; text-align: right; font: 400 1.25rem / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+.hits { padding: 0 2px 18px 28px; display: grid; gap: 10px; justify-items: start; }
+.hits ol { list-style: none; margin: 0; padding: 0; display: grid; width: 100%; }
+.hit { display: grid; grid-template-columns: 88px minmax(0, 1fr); column-gap: 16px; padding: 9px 0; border-top: 1px solid var(--rule-2); }
 .hit p { margin: 0; line-height: 1.6; }
 .hit p[lang="grc"] { font-size: var(--greek-size); }
-.hit mark { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; padding: 0 2px; border-bottom: 2px solid var(--accent); }
-.ref { font-family: var(--f-label); letter-spacing: 0.04em; color: var(--accent); text-decoration: none; padding-top: 3px; font-variant-numeric: tabular-nums; min-width: 0; overflow-wrap: anywhere; }  /* a long reference (hosea.praefatio.2) wraps inside its column */
-.ref:hover { text-decoration: underline; }
+/* the words found, washed in red as the reader's Find marks them */
+.hit mark { background: color-mix(in srgb, var(--rubric) 24%, transparent); color: inherit; border-radius: var(--radius); padding: 0 1px; }
+.ref { font: 500 var(--step--1) / 1.6 var(--f-body); color: var(--rubric); text-decoration: none; font-variant-numeric: lining-nums tabular-nums; min-width: 0; overflow-wrap: anywhere; }  /* a long reference (hosea.praefatio.2) wraps inside its column */
+.ref:hover { text-decoration: underline; text-underline-offset: 3px; }
 .hitMeta { grid-column: 2; font-size: var(--step--1); display: flex; flex-wrap: wrap; gap: 4px 14px; }
-.tagText { color: var(--blue); font-style: italic; }
-.hitLoading { color: var(--ink-2); padding: 8px 0; }
+.tagText { color: var(--ink-2); font-style: italic; }
+.hitLoading { color: var(--ink-3); padding: 8px 0; }
 
-.libList { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
-.libList li { padding: 12px 14px; background: var(--slab); box-shadow: var(--inlay-left), var(--slab-edge); display: grid; gap: 4px; }
-.libList a { text-decoration: none; }
+/* the Treasury's own things found: entries under hairlines */
+.libList { list-style: none; margin: 0; padding: 0; display: grid; border-top: 1px solid var(--ink); }
+.libList li { display: grid; gap: 4px; padding: 12px 2px 13px; border-bottom: 1px solid var(--rule); }
+.libList li p { margin: 0; }
+.libList a { color: var(--ink); text-decoration: none; transition: color var(--dur-quick) var(--ease); }
+.libList a:hover, .libList a:focus-visible { color: var(--rubric); }
 
-.pulse { width: 10px; height: 10px; border-radius: var(--radius-round); background: var(--accent); animation: pulse 1s ease-in-out infinite alternate; }
-@keyframes pulse { from { opacity: 0.25; transform: scale(0.8); } to { opacity: 1; transform: scale(1.1); } }
+/* waiting for the index: a still red dot beside the words, which say what is happening */
+.pulse { flex: none; width: 8px; height: 8px; border-radius: var(--radius-round); background: var(--rubric); }
 
 @media (max-width: 860px) {
   .layout { grid-template-columns: minmax(0, 1fr); }
   .filters { position: static; max-height: none; }
+  .hits { padding-left: 2px; }
   .hit { grid-template-columns: minmax(0, 1fr); }
   .hitMeta { grid-column: 1; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .group, .refs, .kbd { animation: none; }
-  .pulse { animation: none; }
-}
-.nearBtns { display: flex; flex-wrap: wrap; gap: 8px; }
-.field input { width: 100%; min-width: 0; font: inherit; color: var(--ink); border-radius: var(--radius); padding: 7px 10px; }
-
-/* the references panel carries a moulding, a fine line cut just inside the edge, as round a carved panel */
-.refs { outline: var(--moulding); outline-offset: var(--moulding-in); }
 
 /* the Oracle's header (the area's title, then these): the line carved above the title has its source set small beneath it, and the box
    waits in a hollow of its own height until the address is read, so the page does not jump when it comes */
-.cap { display: block; max-width: 56ch; font-size: var(--step--2); line-height: 1.4; }
+.cap { display: block; max-width: 56ch; font-size: var(--step--2); line-height: 1.4; color: var(--ink-2); }
 .boxHold { min-height: 10.5rem; }
-/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set) */
-.refine { width: 100%; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.refine summary { position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4); font-family: var(--f-label); letter-spacing: 0.08em; font-size: var(--step--1); color: var(--accent); }
+/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): a leaf in a
+   hairline frame, its name in red small capitals */
+.refine { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius); }
+.refine summary {
+  position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
+  min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4);
+  font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric);
+}
 .refine summary::-webkit-details-marker { display: none; }
-.refine summary::after { content: "▾"; position: absolute; right: var(--space-4); top: var(--space-3); color: var(--ink-2); transition: transform var(--dur-quick) var(--ease); }
-.refine[open] summary::after { transform: rotate(180deg); }
-.refineOn { font-family: var(--f-body); letter-spacing: 0; font-size: var(--step--1); color: var(--ink-2); }
+.refine summary::after { content: "▾"; position: absolute; right: var(--space-4); top: var(--space-3); color: var(--ink-2); }
+.refine[open] summary::after { content: "▴"; }
+.refineOn { font: 400 var(--step--1) / 1.35 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
 .refineBody { display: grid; gap: var(--space-4); padding: var(--space-1) var(--space-4) var(--space-4); }
-@media (prefers-reduced-motion: reduce) { .refine summary::after { transition: none; } }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
   .tabs button { min-height: var(--tap); }
-  .seg button { position: relative; }
-  .seg button::after { content: ""; position: absolute; inset: -5px 0; }
 }
+@media (prefers-reduced-motion: reduce) { .kbd, .refs, .group { animation: none; } }

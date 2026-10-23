@@ -1,29 +1,35 @@
-/* The Oracle's construction finder (Constructions.tsx). The preset cards are buttons, so they keep their own look. */
+/* The Oracle's construction finder (Constructions.tsx), on the printed page: the constructions to choose from as entries in
+   hairline frames, the chosen one over a red rule; the builder's two words as a printed form's boxes; the sentences found as
+   entries under hairlines, the words of the construction in bold over a red rule. Nothing lifts or rises. */
+@keyframes ink-in { from { opacity: 0; } }
+
 .page { display: grid; gap: 18px; }
 .presets { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 250px), 1fr)); gap: 10px; }
 .preset {
   display: grid; gap: 4px; align-content: start; width: 100%; height: 100%; text-align: left; padding: 12px 14px; cursor: pointer;
-  border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--ink); font: inherit;
-  transition: background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform 0.2s var(--ease);
+  border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); font: inherit;
+  transition: border-color var(--dur-quick) var(--ease), box-shadow var(--dur-quick) var(--ease);
 }
-.preset:hover { background: var(--slab-lit); transform: translateY(-2px); box-shadow: var(--slab-edge), 0 10px 22px -16px var(--shadow); }
-.preset:active { background: var(--field); box-shadow: var(--field-edge); }
-.preset[aria-pressed="true"] { background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
-.preset b { font: 600 var(--step-0) var(--f-body); }
+.preset:hover, .preset:focus-visible { border-color: var(--ink-3); }
+.preset:hover b, .preset:focus-visible b { color: var(--rubric); }
+.preset:active { background: var(--bg-2); }
+.preset[aria-pressed="true"] { border-color: var(--ink-3); box-shadow: var(--chosen-foot); }
+.preset[aria-pressed="true"] b { color: var(--rubric); }
+.preset b { font: 500 var(--step-0) var(--f-body); transition: color var(--dur-quick) var(--ease); }
 .preset small { color: var(--ink-2); font-size: var(--step--1); line-height: 1.4; }
-.eg { font-family: var(--f-greek); font-size: var(--step-0); color: var(--accent); }
+.eg { font-family: var(--f-greek); font-size: var(--step-0); color: var(--rubric); }
 /* once a construction is chosen, the list folds to its names, so the results come up the page */
 .presets[data-compact] { grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr)); gap: 6px; }
 .presets[data-compact] .preset { padding: 6px 10px; }
-.presets[data-compact] .preset b { font-size: var(--step--1); font-weight: 500; }
-.presets[data-compact] .preset[aria-pressed="true"] b { font-weight: 700; }
+.presets[data-compact] .preset b { font-size: var(--step--1); font-weight: 400; }
+.presets[data-compact] .preset[aria-pressed="true"] b { font-weight: 600; }
 .presets[data-compact] .eg, .presets[data-compact] small { display: none; }
 .own .eg { font-family: var(--f-body); font-style: italic; font-size: var(--step--1); }
-@media (prefers-reduced-motion: reduce) { .preset, .preset:hover { transition: none; transform: none; } }
 
 .builder { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 10px 16px; align-items: center; margin-top: 14px; }
-.word { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px 10px; margin: 0; padding: 10px 12px 12px; border: 1px solid transparent; border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }   /* the border stays, unseen, so the legend sits where it did */
-.word legend { padding: 0 6px; font: 600 var(--step--1) var(--f-label); }
+/* each word of the construction: a box of the form in a hairline frame, its name in small capitals on the frame */
+.word { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 8px 10px; margin: 0; padding: 10px 12px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; }
+.word legend { padding: 0 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 .word label:first-of-type { grid-column: 1 / -1; }
 .role { display: grid; gap: 6px; justify-items: center; text-align: center; }
 .role select { max-width: 15em; }
@@ -36,17 +42,17 @@
 .scope { display: grid; gap: 10px; }
 .count { margin: 0; font-size: var(--step-0); }
 .works ul { list-style: none; margin: 8px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: var(--step--1); color: var(--ink-2); }
-.works summary { cursor: pointer; font: 600 var(--step--1) var(--f-label); color: var(--ink-2); }
+.works summary { cursor: pointer; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.works summary::marker { color: var(--rubric); }
 .lemma { border: 0; padding: 0; background: none; color: var(--ink); font: var(--step-0) var(--f-greek); text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.lemma:hover { color: var(--accent); text-decoration: underline; }
+.lemma:hover { color: var(--rubric); text-decoration: underline; text-underline-offset: 3px; }
 
-.list { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
-.list li { padding: 10px 6px; box-shadow: var(--cut-under); animation: rise calc(0.35s / var(--tempo)) var(--ease) backwards; }
-.list li:last-child { box-shadow: none; }
-@keyframes rise { from { opacity: 0; transform: translateY(4px); } }
+.list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
+.list li { padding: 10px 2px 11px; border-bottom: 1px solid var(--rule); animation: ink-in var(--dur-slow) var(--ease) backwards; }
 @media (prefers-reduced-motion: reduce) { .list li { animation: none; } }
 .where { display: flex; align-items: center; gap: 10px; }
-.how { font: var(--step--2) var(--f-label); color: var(--ink-2); border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); border-radius: var(--radius); padding: 1px 8px; }
-.how[data-hand] { color: var(--ink); }
+/* how the sentence was analysed: small capitals in a hairline frame; by hand, in ink */
+.how { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 1px 8px; }
+.how[data-hand] { color: var(--ink); border-color: var(--ink-3); }
 .sentence { margin: 4px 0 0; font-family: var(--f-greek); font-size: var(--step-0); line-height: 1.6; color: var(--ink-2); }
-.sentence mark { background: none; color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--accent); }
+.sentence mark { background: none; color: var(--ink); font-weight: 700; border-bottom: 2px solid var(--rubric); }

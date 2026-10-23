@@ -92,7 +92,6 @@
   --ease-enter: var(--ease);
   --ink-in: 1.4s;          /* how long a line takes to ink in */
   --ink-step: 0.12s;       /* each line a step after the one before */
-  --tempo: 1;              /* older stylesheets divide their times by this; there are no animation levels any more */
   --dur-quick: 0.2s;
   --dur: 0.4s;
   --dur-slow: 0.6s;
@@ -130,6 +129,7 @@
   --faint: var(--paper-faint);
   --rubric: var(--paper-rubric);
   --rubric-2: var(--paper-rubric-2);
+  --rubric-on-ink: var(--night-rubric);   /* red on a block of ink: the dark ink takes the night page's red */
   --rule: rgba(30, 26, 21, 0.2);
   --rule-2: rgba(30, 26, 21, 0.1);
   --paper-shade: rgba(120, 90, 50, 0.09);   /* the paper's still, faint fibre at its edges (globals.css) */
@@ -154,7 +154,7 @@
   :root:not([data-theme="paper"]) {
     --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
     --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
-    --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2);
+    --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
     --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
     --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
     --blue: #8fb5a8; --ochre: #d9a85a; --legend: #e09a7a; --ok: #9fc39a;
@@ -167,7 +167,7 @@
 :root[data-theme="night"] {
   --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
   --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
-  --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2);
+  --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
   --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
   --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
   --blue: #8fb5a8; --ochre: #d9a85a; --legend: #e09a7a; --ok: #9fc39a;
@@ -266,7 +266,9 @@
   --win-wait: var(--bg-2);
 
   /* chosen things (a pressed key, the chosen tab): the ink itself, with paper letters, as the sample's .seg */
-  --accent-on-ink: var(--rubric-2);
+  /* red on ink: at Night the ink is light, so the red is the paper's own (each reads at 4.5 : 1 or more on its ink:
+     e2e/a11y.spec.ts, the quick search's chosen result) */
+  --accent-on-ink: var(--rubric-on-ink);
   --accent-ink-on-ink: var(--ink);
   --ink-2-on-ink: color-mix(in srgb, var(--bg) 80%, var(--ink));
   --inv-bg: var(--ink);

@@ -1,23 +1,34 @@
 /**
- * The Guide's small moving pictures, one for each chapter: drawings of the real controls, in the site's own
- * colours, that play a few seconds of what the control does and then rest. Every Greek line, meaning and
- * transliteration in them is the site's own (the Iliad and Murray's English in the reader, LSJ, lib/translit).
- * With reduced motion they show their finished state.
+ * The Guide's figures, one for each chapter, as a printed manual has them: still drawings of the real controls, in the
+ * site's own colours, each in a hairline frame with its number and a line saying what it shows (the caption is what a
+ * screen reader hears; the drawing itself is hidden from it). Every Greek line, meaning and transliteration in them is
+ * the site's own (the Iliad and Murray's English in the reader, LSJ, lib/translit).
  */
+import { createContext, useContext } from "react";
 import styles from "./Guide.module.css";
 
-const Frame = ({ children, label }: { children: React.ReactNode; label: string }) => (
-  <div className={styles.pic} role="img" aria-label={label}>
-    <div className={styles.picBar} aria-hidden="true"><i /><i /><i /></div>
-    <div className={styles.picBody} aria-hidden="true">{children}</div>
-  </div>
-);
+/** the figure's number: the chapter's (GuideChapters.tsx) */
+const FigNo = createContext(0);
 
-export function Picture({ id }: { id: string }) {
+const Frame = ({ children, label }: { children: React.ReactNode; label: string }) => {
+  const n = useContext(FigNo);
+  return (
+    <figure className={styles.pic}>
+      <div className={styles.picBody} aria-hidden="true">{children}</div>
+      <figcaption>{n > 0 && <span className={styles.figNo}>Fig. {n}</span>}<span>{label}</span></figcaption>
+    </figure>
+  );
+};
+
+export function Picture({ id, n = 0 }: { id: string; n?: number }) {
+  return <FigNo.Provider value={n}><Drawing id={id} /></FigNo.Provider>;
+}
+
+function Drawing({ id }: { id: string }) {
   switch (id) {
     case "find":
       return (
-        <Frame label="A search box: typing homer finds the Iliad and the Odyssey.">
+        <Frame label="A search box: homer finds the Iliad and the Odyssey.">
           <div className={styles.fSearch}><span className={styles.fTyped}>homer</span><span className={styles.caret} /></div>
           <ul className={styles.fList}>
             <li><b>Homer</b><span>Iliad</span><em>Greek · English</em></li>
@@ -38,7 +49,7 @@ export function Picture({ id }: { id: string }) {
       );
     case "word":
       return (
-        <Frame label="Clicking the word μῆνιν opens its meaning: wrath.">
+        <Frame label="The word μῆνιν, chosen, and its meaning: wrath.">
           <p className={styles.wLine} lang="grc"><span className={styles.wHit}>μῆνιν</span> ἄειδε θεὰ</p>
           <div className={styles.wCard}>
             <b lang="grc">μῆνις</b>
@@ -108,7 +119,7 @@ export function Picture({ id }: { id: string }) {
       );
     case "settings":
       return (
-        <Frame label="Settings: the Greek text growing larger, and the page switching between light and dark.">
+        <Frame label="Settings: the Greek set larger, on the page at Night.">
           <div className={styles.zPage}>
             <p className={styles.zGr} lang="grc">μῆνιν ἄειδε θεὰ</p>
             <div className={styles.zSlider}><small>Aa</small><i /><b>Aa</b></div>

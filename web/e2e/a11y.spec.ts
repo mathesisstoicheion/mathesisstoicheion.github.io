@@ -4,25 +4,27 @@ import AxeBuilder from "@axe-core/playwright";
 import { writeFileSync, mkdirSync } from "node:fs";
 import { offlinePages } from "../src/config/pages";
 import { aid } from "./reader-menus";
+import { expectLook, seedLook, LOOKS, type Look } from "./look";
 
 /**
  * Accessibility: every page is checked by axe (the standard automated checker, WCAG 2.1 AA rules)
- * in both themes. With A11Y_REPORT=1 it writes everything it found to test-results/a11y.json
+ * in both looks, Paper and Night (each test first makes sure the page really is in the look it checks: e2e/look.ts). With A11Y_REPORT=1 it writes everything it found to test-results/a11y.json
  * instead of failing, for working through the list.
  */
 const REPORT = !!process.env.A11Y_REPORT;
 
 // pages that need something to show: a book in the reader, a word, a search
-const EXTRA = ["/read?w=tlg0012.tlg001", "/treasury/word?l=λόγος", "/search?q=μῆνιν", "/author/tlg0011", "/work/tlg0012-tlg001"];
+// (the dictionary-word search shows its spellings as chips, the chosen one in ink with its count inside: its concordance and
+// its statistics are checked too, as their small print once stood dark on that ink)
+const EXTRA = ["/read?w=tlg0012.tlg001", "/treasury/word?l=λόγος", "/search?q=μῆνιν", "/search?m=lemma&q=δίκη&a=tlg0059&v=conc",
+  "/search?m=lemma&q=λόγος&v=stats", "/author/tlg0011", "/work/tlg0012-tlg001"];
 const PAGES = [...[...new Set(offlinePages())].filter((p) => !["/town-hall/thread", "/town-hall/member", "/town-hall/pnyx/debate"].includes(p)), ...EXTRA];
 
-async function audit(page: Page, path: string, theme: "light" | "dark") {
-  await page.addInitScript((t) => {
-    // the reader's lamp dims the lines away from it on purpose (design A); with it off every line has full contrast
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t, motion: "reduce", lamp: false }, version: 0 }));
-  }, theme);
+async function audit(page: Page, path: string, look: Look) {
+  await seedLook(page, look);
   await page.goto(path);
   await expect(page.locator("h1").first()).toBeVisible();
+  await expectLook(page, look);
   await page.waitForLoadState("networkidle").catch(() => {});
   await page.waitForTimeout(600);
   // big faint Greek words behind empty states are decoration (WCAG 1.4.3 exempts it), marked data-decorative
@@ -34,15 +36,15 @@ async function audit(page: Page, path: string, theme: "light" | "dark") {
   }));
 }
 
-for (const theme of ["light", "dark"] as const) {
-  test.describe(`accessibility, ${theme}`, () => {
+for (const look of LOOKS) {
+  test.describe(`accessibility, ${look}`, () => {
     for (const path of PAGES) {
-      test(`${path} (${theme})`, async ({ page }) => {
+      test(`${path} (${look})`, async ({ page }) => {
         test.setTimeout(60_000);
-        const v = await audit(page, path, theme);
+        const v = await audit(page, path, look);
         if (REPORT) {
           mkdirSync("test-results", { recursive: true });
-          writeFileSync(`test-results/a11y-${theme}-${encodeURIComponent(path)}.json`, JSON.stringify(v, null, 1));
+          writeFileSync(`test-results/a11y-${look}-${encodeURIComponent(path)}.json`, JSON.stringify(v, null, 1));
           return;
         }
         expect(v.filter((x) => x.impact === "serious" || x.impact === "critical"), JSON.stringify(v, null, 1)).toEqual([]);
@@ -51,7 +53,7 @@ for (const theme of ["light", "dark"] as const) {
   });
 }
 
-/** Things that only appear after a click: panels, pop-ups, editors. Each is checked open, in both themes. */
+/** Things that only appear after a click: panels, pop-ups, editors. Each is checked open, in both looks. */
 const ILIAD = "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1";
 const iliad = async (page: Page) => expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
 const STATES: [string, string, (page: Page) => Promise<void>][] = [
@@ -76,17 +78,16 @@ const STATES: [string, string, (page: Page) => Promise<void>][] = [
   ["account join", "/account", async (page) => { await page.getByRole("tab", { name: "Join" }).click(); }],
 ];
 
-for (const theme of ["light", "dark"] as const) {
-  test.describe(`accessibility after a click, ${theme}`, () => {
+for (const look of LOOKS) {
+  test.describe(`accessibility after a click, ${look}`, () => {
     for (const [name, path, act] of STATES) {
-      test(`${name} (${theme})`, async ({ page }) => {
+      test(`${name} (${look})`, async ({ page }) => {
         // every reading aid at once makes a page of some 23,000 elements, which the checker alone takes over a minute to scan
         test.setTimeout(name === "reading aids" ? 240_000 : 90_000);
-        await page.addInitScript((t) => {
-          localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t, motion: "reduce", lamp: false }, version: 0 }));
-        }, theme);
+        await seedLook(page, look);
         await page.goto(path);
         await expect(page.locator("h1").first()).toBeVisible();
+        await expectLook(page, look);
         await act(page);
         await page.waitForTimeout(600);
         // (the reader's title page fades as it scrolls away, as design A drew it: it is checked at full strength above)
@@ -95,7 +96,7 @@ for (const theme of ["light", "dark"] as const) {
           nodes: x.nodes.slice(0, 8).map((n) => ({ target: n.target.join(" "), summary: n.failureSummary?.split("\n").slice(0, 3).join(" | "), html: n.html.slice(0, 160) })) }));
         if (REPORT) {
           mkdirSync("test-results", { recursive: true });
-          writeFileSync(`test-results/a11y-${theme}-${encodeURIComponent("state " + name)}.json`, JSON.stringify(v, null, 1));
+          writeFileSync(`test-results/a11y-${look}-${encodeURIComponent("state " + name)}.json`, JSON.stringify(v, null, 1));
           return;
         }
         expect(v.filter((x) => x.impact === "serious" || x.impact === "critical"), JSON.stringify(v, null, 1)).toEqual([]);

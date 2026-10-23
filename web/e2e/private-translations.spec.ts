@@ -3,6 +3,7 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 import { openAids, openChange } from "./reader-menus";
 import { FORUM_OPEN } from "../src/config/areas";
+import { expectLook, LOOKS, type Look } from "./look";
 
 // The moderator's private translations, in Mine (/treasury/translations). A pretend account and a pretend database: nothing is
 // sent to, or written in, the real one. The translations here are made-up placeholders: no real translation may
@@ -66,7 +67,7 @@ interface Db {
   removed: string[];
 }
 
-async function pretend(page: Page, o: { role?: "member" | "moderator" | null; theme?: "light" | "dark"; pub?: boolean; start?: Record<string, unknown>[] } = {}): Promise<Db> {
+async function pretend(page: Page, o: { role?: "member" | "moderator" | null; look?: Look; pub?: boolean; start?: Record<string, unknown>[] } = {}): Promise<Db> {
   const role = o.role === undefined ? "moderator" : o.role;
   const db: Db = { rows: new Map(), asked: [], saved: [], removed: [] };
   const start = o.start ?? [DOC_ONE, DOC_THREE];
@@ -74,9 +75,10 @@ async function pretend(page: Page, o: { role?: "member" | "moderator" | null; th
 
   await page.addInitScript(([k, s, theme, pub]) => {
     if (s && !localStorage.getItem(k)) localStorage.setItem(k, s);
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce", lamp: false }, version: 0 }));
+    // the look as the printed page saves it (e2e/look.ts)
+    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce" }, version: 2 }));
     if (pub && !localStorage.getItem("mathesis:translations-published")) localStorage.setItem("mathesis:translations-published", "1");
-  }, [KEY, role ? JSON.stringify(session) : "", o.theme ?? "light", o.pub ? "1" : ""] as const);
+  }, [KEY, role ? JSON.stringify(session) : "", o.look ?? "paper", o.pub ? "1" : ""] as const);
 
   const cors = { "access-control-allow-origin": "*" };
   await page.route("**/rest/v1/**", async (route) => {
@@ -348,10 +350,11 @@ test("Download gives back the stored file in the format's order; Remove asks fir
   await expect(page.getByRole("main").getByRole("listitem").filter({ hasText: "Placeholder Work One" })).toHaveCount(0);
 });
 
-for (const theme of ["light", "dark"] as const) {
-  test(`the way in from Mine, the shelf and the reader pass the accessibility check (${theme})`, async ({ page }) => {
-    await pretend(page, { theme, pub: true });
+for (const look of LOOKS) {
+  test(`the way in from Mine, the shelf and the reader pass the accessibility check (${look})`, async ({ page }) => {
+    await pretend(page, { look, pub: true });
     const check = async () => {
+      await expectLook(page, look);
       await page.waitForTimeout(400);
       // as in a11y.spec.ts: the big faint Greek word behind the empty Treasury is decoration (WCAG 1.4.3 exempts it)
       const res = await new AxeBuilder({ page }).exclude("[data-decorative]").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
@@ -491,10 +494,11 @@ test("a TEI file is imported with what its header says, one row per passage", as
   await expect(page.locator("article [data-w]").first()).toHaveText("λόγος");
 });
 
-for (const theme of ["light", "dark"] as const) {
-  test(`a private book in the reader and the private collection's window pass the accessibility check (${theme})`, async ({ page }) => {
-    await pretend(page, { theme });
+for (const look of LOOKS) {
+  test(`a private book in the reader and the private collection's window pass the accessibility check (${look})`, async ({ page }) => {
+    await pretend(page, { look });
     const check = async () => {
+      await expectLook(page, look);
       await page.waitForTimeout(600);
       const res = await new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       const bad = res.violations.filter((v) => v.impact === "serious" || v.impact === "critical")
@@ -565,10 +569,11 @@ for (const role of [null, "member"] as const) {
   });
 }
 
-for (const theme of ["light", "dark"] as const) {
-  test(`the library's private buttons and the private collection's page pass the accessibility check (${theme})`, async ({ page }) => {
-    await pretend(page, { theme });
+for (const look of LOOKS) {
+  test(`the library's private buttons and the private collection's page pass the accessibility check (${look})`, async ({ page }) => {
+    await pretend(page, { look });
     const check = async (include?: string) => {
+      await expectLook(page, look);
       await page.waitForTimeout(600);
       let axe = new AxeBuilder({ page }).withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]);
       if (include) axe = axe.include(include);

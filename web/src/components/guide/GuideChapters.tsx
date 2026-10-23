@@ -1,6 +1,6 @@
 "use client";
 /**
- * The Guide's chapters: for each part of the site a moving picture, a few plain sentences, and "Show me",
+ * The Guide's chapters: for each part of the site a figure (a still drawing of its controls), a few plain sentences, and "Show me",
  * which opens the real page and points at its controls one by one (lib/tours.ts, components/tour/Tour.tsx).
  * A chapter whose tour has been watched in this browser is ticked.
  */
@@ -60,7 +60,7 @@ export function GuideChapters({ chapters }: { chapters: Chapter[] }) {
     <ol className={styles.chapters}>
       {chapters.map((c, i) => (
         <li key={c.id} id={c.id} className={`${styles.chapter} rv`} aria-labelledby={`${c.id}-h`}>
-          <Picture id={c.id} />
+          <Picture id={c.id} n={i + 1} />
           <div className={styles.say}>
             <p className={styles.kicker}>
               <span className={styles.big} aria-hidden="true">{i + 1}</span>

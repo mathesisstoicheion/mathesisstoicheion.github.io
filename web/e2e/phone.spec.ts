@@ -2,6 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { headerButton } from "./header";
 import AxeBuilder from "@axe-core/playwright";
 import { FORUM_OPEN } from "../src/config/areas";
+import { expectLook, seedLook, LOOKS } from "./look";
 
 // The phone edition (design A, 2026-10-19): a one-row header with Search and a menu (the five doors, your account, Settings
 // and the connection); no bar along the bottom (the owner's choice). Search opens as a full-screen sheet.
@@ -107,11 +108,9 @@ test.describe("on a phone", () => {
     await expect(sheet).toBeHidden();
   });
 
-  for (const theme of ["light", "dark"] as const) {
-    test(`the phone header, menu and sheets pass the accessibility check (${theme})`, async ({ page }) => {
-      await page.addInitScript((t) => {
-        localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t, motion: "reduce" }, version: 0 }));
-      }, theme);
+  for (const look of LOOKS) {
+    test(`the phone header, menu and sheets pass the accessibility check (${look})`, async ({ page }) => {
+      await seedLook(page, look);
       const check = async (what: string) => {
         const res = await new AxeBuilder({ page }).include("header").include("dialog[open]")
           .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
@@ -119,6 +118,7 @@ test.describe("on a phone", () => {
       };
       await page.goto("/academy");
       await expect(page.locator("h1").first()).toBeVisible();
+      await expectLook(page, look);
       await check("header");
       await openMenu(page);
       await check("menu");

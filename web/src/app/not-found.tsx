@@ -4,15 +4,16 @@ import Page from "@/components/Page";
 import PageHead from "@/components/PageHead";
 import ReportBugLink from "@/components/ReportBugLink";
 import NotFoundSearch from "@/components/NotFoundSearch";
-import { AREAS, FORUM_OPEN, doorWord } from "@/config/areas";
+import { AREAS, FORUM_OPEN } from "@/config/areas";
 import styles from "./not-found.module.css";
 import { LOST_PAGE } from "@/data/pieces";
 
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 
 /**
- * An address that leads nowhere: 404 in Greek numerals over the title, a broken piece of sculpture in its window, and
- * the ways on (search, the main areas, a report). Also served as 404.html on the static site.
+ * An address that leads nowhere: 404 in Greek numerals over the title, the plate of a head that has outlived the rest of
+ * its stele, and the ways on (search, the main rooms with what each is for, a report). Also served as 404.html on the
+ * static site.
  */
 export default function NotFound() {
   return (
@@ -28,7 +29,7 @@ export default function NotFound() {
           <nav className={`slab-cards ${styles.ways}`} aria-label="Ways on">
             {(["home", "library", "study", "wiki"] as const).map((id) => (
               <Link key={id} className="slab-card" href={AREAS[id].href} transitionTypes={["page-turn"]}>
-                <b>{AREAS[id].name}</b> <span className="muted">{doorWord(id)}</span>
+                <b>{AREAS[id].name}</b> <span className="muted">{AREAS[id].english ?? AREAS[id].door}</span>
               </Link>
             ))}
           </nav>

@@ -12,7 +12,6 @@ import type { Point } from "@/lib/annotations";
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Reader.module.css";
 import es from "./Echoes.module.css";
-import { cssTempo } from "@/lib/tempo";
 
 /** What Echoes was asked about: words selected (or clicked) in a book open in the reader. */
 export interface EchoQuery { work: string; urn: string; doc: TeiDoc; title: string; start: Point; end: Point }
@@ -328,7 +327,7 @@ function Strip({ book, echoes, label, onPick }: { book: Book; echoes: Echo[]; la
           return (
             <rect key={e.from} className={`${es.mark} ${es[`m-${e.kind}`]} ${e.self ? es.mSelf : ""} ${hover === e ? es.mHover : ""}`}
               x={x(e.from)} y={38 - h} width={Math.max(3, x(e.to + 1) - x(e.from))} height={h}
-              style={{ animationDelay: cssTempo(`${Math.round(x(e.from) * 0.7)}ms`) }} />
+              style={{ animationDelay: `${Math.round(x(e.from) * 0.7)}ms` }} />
           );
         })}
         {echoes.filter((e) => e.self).map((e) => <path key={`s${e.from}`} className={es.here} d={`M${x(e.from) - 9} 0 L${x(e.from) + 9} 0 L${x(e.from)} 8 Z`} />)}
