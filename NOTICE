@@ -69,8 +69,10 @@ Photographs are shown from the libraries' own image servers; none is copied into
 
 FONTS AND SOFTWARE
 
-- GFS Didot (Greek Font Society) and Alegreya, Alegreya Sans SC (Juan Pablo del Peral, Huerta
-  Tipográfica). SIL Open Font License 1.1.
+- EB Garamond (Georg Duffner and Octavio Pardo), GFS Didot (Greek Font Society) and Gentium Book
+  Plus (SIL International). SIL Open Font License 1.1. The site's own copies of the arrows and signs
+  of EB Garamond and Gentium Book Plus, and of Gentium Book Plus's phonetic letters, are in
+  web/src/fonts/, with their licences beside them.
 - three.js, Next.js, React, Zustand, supabase-js: MIT. saxes: ISC. OpenSeadragon: BSD 3-Clause.
 
 

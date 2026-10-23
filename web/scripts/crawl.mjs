@@ -23,7 +23,7 @@ for (const [label, opts] of [["wide", { viewport: { width: 1280, height: 860 } }
     if (theme === "dark" && label === "wide" && !all) continue;
     if (process.env.VIEWS === "wide" && (label !== "wide" || theme !== "light")) continue;
     const ctx = await b.newContext({ ...opts, reducedMotion: "reduce" });
-    await ctx.addInitScript((t) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t }, version: 0 })), theme);
+    await ctx.addInitScript((t) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })), theme);
     const p = await ctx.newPage();
     let cur = "";
     const note = (kind, msg) => found.push(`${label}/${theme} ${cur}  [${kind}] ${String(msg).slice(0, 220)}`);

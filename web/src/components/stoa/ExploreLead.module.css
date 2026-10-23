@@ -38,10 +38,10 @@
 .fill i { display: block; height: 100%; width: var(--w); background: var(--accent); border-radius: var(--radius); }
 .n { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }
 
-.txt { display: grid; gap: 2px; padding: 12px 2px 18px; }
+.txt { display: grid; gap: 2px; padding: var(--space-3) 2px 18px; }
 .txt b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .card:hover .txt b, .card:focus-visible .txt b { color: var(--rubric); }
 .txt > span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-0); }
 /* the small print at the foot of the page (ExploreCredit) */
-.credit { margin: 32px 0 0; padding-top: 12px; border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }
+.credit { margin: 32px 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }

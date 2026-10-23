@@ -15,6 +15,10 @@ import styles from "./Kerameikos.module.css";
 // how often the library names each site (read at build time; the page ships only the numbers it shows)
 const MENTIONS = new Map((mapData as { places: { id: string; n: number }[] }).places.map((p) => [p.id, p.n]));
 
+/** the photographs of the finds, in the order the trench shows them: the page's list of plates credits each one, since a
+ *  find's card has no room for a credit (decision 6 of the printed page: every photo shows its credit) */
+export const KERAMEIKOS_PLATES = [...new Set(LAYERS.flatMap((l) => l.slugs.map((s) => entryBySlug.get(s)?.image).filter((id): id is string => !!id && !!IMAGES[id])))];
+
 export default function Kerameikos() {
   return (
     <div className={styles.page}>
@@ -47,7 +51,7 @@ export default function Kerameikos() {
                           <Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]} className={styles.card}>
                             <span className={styles.thumb} aria-hidden="true">
                               {/* eslint-disable-next-line @next/next/no-img-element -- self-hosted, sized files; no image service */}
-                              {im ? <img src={`/images/${im.file}`} srcSet={srcSet(im)} sizes="104px" alt="" width={im.width} height={im.height} loading="lazy" decoding="async" className={im.height > im.width * 0.9 ? styles.tallImg : undefined} />
+                              {im ? <img src={`/images/${im.file}`} srcSet={srcSet(im)} sizes="104px" alt="" width={im.width} height={im.height} loading="lazy" decoding="async" className={im.height > im.width * 0.9 ? styles.tallImg : undefined} data-photo={e.image} />
                                 : <span className={styles.noImg} />}
                             </span>
                             <span className={styles.cardText}>

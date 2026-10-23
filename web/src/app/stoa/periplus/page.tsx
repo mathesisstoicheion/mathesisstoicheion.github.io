@@ -21,7 +21,7 @@ export default function StoaPeriplusPage() {
       <Suspense>
         <Periplus entriesByPlace={entriesByPlace} />
       </Suspense>
-      <p className="wrap muted" style={{ fontSize: "0.88rem", paddingBottom: 40 }}>
+      <p className="wrap muted" style={{ fontSize: "var(--step--1)", paddingBottom: 40 }}>
         The land and sea: NASA Earth Observatory, Blue Marble: Next Generation with topography and bathymetry, July 2004 (Reto Stöckli), public domain.
         Coastlines: Ancient World Mapping Center, geodata (ODbL 1.0), derived from the Barrington Atlas of the Greek and Roman World.
         Places: Pleiades (pleiades.stoa.org), CC BY 3.0. Counts of mentions: GLAUx, CC BY-SA 4.0. Everything is served from this site.

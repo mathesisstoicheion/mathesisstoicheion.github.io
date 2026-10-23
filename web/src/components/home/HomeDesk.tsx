@@ -55,7 +55,8 @@ export default function HomeDesk() {
   const lessonRow = !(nextLesson >= 0 && lastLesson === LESSONS[nextLesson].id);
 
   return (
-    <section className={s.desk} aria-label="Your desk">
+    // (the section it stands in is "Your desk", by its heading: this part is not named again)
+    <div className={s.desk}>
       <div className={s.drows}>
         <div className={s.drow}>
           <span className={s.dlabel}>Carry on</span>
@@ -108,6 +109,6 @@ export default function HomeDesk() {
           {" "}<button type="button" onClick={() => { clearTrail(); setVisits([]); }}>Forget these pages</button>
         </p>
       )}
-    </section>
+    </div>
   );
 }

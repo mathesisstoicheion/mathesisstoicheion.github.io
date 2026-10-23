@@ -99,8 +99,8 @@
 .contentsFold { border-block: 1px solid var(--rule); }
 .contentsFold > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) 2px; cursor: pointer; list-style: none; }
 .contentsFold > summary::-webkit-details-marker { display: none; }
-.contentsFold > summary::before { content: "▸"; color: var(--accent); display: inline-block; }
-.contentsFold[open] > summary::before { content: "▾"; }
+.contentsFold > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--accent); }
+.contentsFold[open] > summary::before { clip-path: var(--tri-down); }
 .contentsFold > .contents { padding: 0 2px var(--space-3); }
 .contentsFold .contents ol { margin-top: 0; }
 

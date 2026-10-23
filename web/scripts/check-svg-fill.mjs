@@ -25,7 +25,7 @@ for (const [w, h] of [[1280, 900], [390, 844]]) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block" });
   // calm, and three saved places, so the Treasury's map is drawn
   await ctx.addInitScript(() => {
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 0 }));
+    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 2 }));
     if (!localStorage.getItem("mathesis:places")) localStorage.setItem("mathesis:places", JSON.stringify({ state: { saved: { 579885: 3, 540726: 2, 570685: 1 } }, version: 0 }));
   });
   for (const path of PAGES) {

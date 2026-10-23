@@ -276,7 +276,7 @@ export function XrefsSection({ t }: { t: TreasuryState }) {
           return (
             <li key={m.id}>
               {side(m.work, m.ed, m.start.u, rangeText(m), m.quote)}
-              <span className={styles.link} aria-label="linked to">⟷</span>
+              <span className={styles.link} aria-label="linked to">↔</span>
               {p ? side(p.work, p.ed, p.start.u, rangeText(p), p.quote) : side(m.link!.work, m.link!.ed, m.link!.start.u, m.link!.label.split(" ").pop() ?? m.link!.start.u)}
               <RemoveButton m={m} also={p} what="cross-reference" />
             </li>

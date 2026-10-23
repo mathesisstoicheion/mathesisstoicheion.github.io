@@ -83,7 +83,7 @@ export default function ItemPanel({ meta, cat, item, listed, scope, links, onClo
 
   return (
     <article className={styles.panel}>
-      <button type="button" className={styles.close} onClick={onClose} aria-label="Close">✕</button>
+      <button type="button" className={styles.close} onClick={onClose} aria-label="Close">×</button>
       <p className="label">{cat.label}{item.auto && " · sorted automatically"}</p>
       <h2 lang="grc" className={styles.panelWord}>{item.text}</h2>
       {item.sub && <p className={styles.panelSub}>{item.sub}</p>}

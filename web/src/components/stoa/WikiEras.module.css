@@ -4,12 +4,12 @@
    Didot figures and its best-represented authors as an index line with dotted leaders. The bars ink in one after
    another and then stand still (decision 3): nothing grows, lifts or glows. */
 .h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
-.chartBox { --axis: 20px; display: grid; gap: 12px; padding-block: 18px 22px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.chartBox { --axis: 20px; display: grid; gap: var(--space-3); padding-block: 18px 22px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
 .scroll { overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
 .scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 /* the axis: one ink line under all the columns, just above the centuries' names */
 .chart {
-  list-style: none; margin: 0; padding: 0; display: flex; gap: 4px; align-items: stretch; height: 260px; min-width: 780px;
+  list-style: none; margin: 0; padding: 0; display: flex; gap: var(--space-1); align-items: stretch; height: 260px; min-width: 780px;
   background: linear-gradient(var(--ink), var(--ink)) left calc(100% - var(--axis)) / 100% 1px no-repeat;
 }
 /* one track exactly the column's width: a century's name wider than its column hangs over its neighbours' gaps instead of
@@ -24,10 +24,10 @@
 .col:hover .value { color: var(--ink); }
 .tick { grid-row: 3; font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; align-self: center; font-variant-numeric: lining-nums; }
 /* each period's bracket under its columns, and its name under the bracket (a link to its entry below) */
-.bands { display: grid; gap: 4px; min-width: 780px; margin-top: 2px; }
+.bands { display: grid; gap: var(--space-1); min-width: 780px; margin-top: 2px; }
 .bands a {
   position: relative; display: block; text-align: center; text-decoration: none; font-family: var(--f-label); font-size: var(--step--2);
-  letter-spacing: 0.06em; padding: 12px 2px 4px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: 0.06em; padding: var(--space-3) 2px var(--space-1); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   transition: color var(--dur-quick) var(--ease);
 }
 .bands a:hover { color: var(--rubric); }
@@ -37,8 +37,8 @@
 @keyframes ink-in { from { opacity: 0; } }
 
 /* the periods, as entries in a gazetteer */
-.eras { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 36px clamp(24px, 4vw, 56px); }
-.era { display: grid; gap: 14px; align-content: start; padding-top: 16px; border-top: 1px solid var(--ink); scroll-margin-top: 90px; }
+.eras { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) clamp(var(--space-5), 4vw, var(--space-7)); }
+.era { display: grid; gap: 14px; align-content: start; padding-top: var(--space-4); border-top: 1px solid var(--ink); scroll-margin-top: 90px; }
 .era:target { border-top-color: var(--rubric); }
 .eraHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px; }
 .eraHead h2 { font-family: var(--f-title); font-size: var(--step-2); }
@@ -50,20 +50,20 @@
 /* the best represented: name, a dotted leader, the count, as a book's index sets them */
 .plain { list-style: none; margin: 6px 0 0; padding: 0; display: grid; }
 .plain li { display: flex; align-items: baseline; gap: 0; }
-.plain li::before { content: ""; order: 1; flex: 1; min-width: 16px; margin: 0 8px; border-bottom: 1px dotted var(--ink-3); translate: 0 -0.3em; }
+.plain li::before { content: ""; order: 1; flex: 1; min-width: 16px; margin: 0 var(--space-2); border-bottom: 1px dotted var(--ink-3); translate: 0 -0.3em; }
 .plain a { order: 0; display: inline-flex; align-items: center; min-height: var(--tap); min-width: var(--tap); text-decoration: none; color: var(--ink); }
 .plain a:hover { color: var(--rubric); }
 .plain li span { order: 2; flex: none; white-space: nowrap; color: var(--ink-2); font-size: var(--step--1); font-variant-numeric: lining-nums tabular-nums; }
 /* the kinds of writing wrap inside the entry (unlike the page-wide chip rows, which scroll on phones) */
-.kinds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 6px; }
+.kinds { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 6px; }
 .kinds :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-3); font-size: 0.85em; }
 .all { display: inline-flex; align-items: center; min-height: var(--tap); }
-/* the kinds of writing and dialects: a fold inside the entry, its mark turning from ▸ to ▾ as it opens */
+/* the kinds of writing and dialects: a fold inside the entry, its small triangle pointing down as it opens */
 .more { display: grid; gap: var(--space-3); }
 .more > summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); font-family: var(--f-label); letter-spacing: 0.04em; }
 .more > summary::-webkit-details-marker { display: none; }
-.more > summary::before { content: "▸"; color: var(--rubric); }
-.more[open] > summary::before { content: "▾"; }
+.more > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--rubric); }
+.more[open] > summary::before { clip-path: var(--tri-down); }
 .more > summary:hover { color: var(--rubric); }
 .more[open] > summary { margin-bottom: calc(var(--space-2) * -1); }
 
@@ -81,6 +81,6 @@
   /* a named century, a little smaller, centred under its column and clear of the next name and of the chart's edges */
   .tick { visibility: hidden; font-size: var(--step--2); }
   .col:nth-child(3n + 1) .tick { visibility: visible; }
-  .bands a { writing-mode: vertical-rl; text-align: start; font-size: var(--step--2); letter-spacing: 0.04em; padding: 12px 0 0; overflow: visible; text-overflow: clip; min-width: 24px; }
+  .bands a { writing-mode: vertical-rl; text-align: start; font-size: var(--step--2); letter-spacing: 0.04em; padding: var(--space-3) 0 0; overflow: visible; text-overflow: clip; min-width: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }

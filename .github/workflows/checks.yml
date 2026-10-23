@@ -1,7 +1,7 @@
 name: Site checks
 
-# The review fixes' detectors (web/scripts/check-*.mjs): run on every pull request and by hand. They never block the
-# live site's deploy (deploy.yml), they only report.
+# The review fixes' detectors and the printed page's checks (web/scripts/check-*.mjs): run on every pull request and by
+# hand. They never block the live site's deploy (deploy.yml), they only report.
 on:
   pull_request:
   workflow_dispatch:
@@ -13,6 +13,7 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
+      # each check runs whatever the one before it found, so one run lists every problem; the job fails if any check does
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
@@ -23,6 +24,7 @@ jobs:
         working-directory: web
         run: npm ci && npx playwright install --with-deps chromium
       - name: Build
+        id: build
         working-directory: web
         # the public Supabase values, as the deploy uses them, so the account page is the one visitors see (slice 9)
         env:
@@ -33,35 +35,103 @@ jobs:
         working-directory: web
         run: (node scripts/serve-out.mjs 3100 &) && sleep 2
       - name: Words visible on first paint (slice 1)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: npm run check:first-paint
       - name: Overlays hold the page, close on Escape, give focus back (slice 5)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: npm run check:overlays
       - name: One name per room (slice 2)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-names.mjs
       - name: The two lesson tracks agree everywhere (slice 4)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-lessons.mjs http://localhost:3100
       - name: Dates in BC and AD, once (slice 6)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-eras.mjs
       - name: The library reads clearly over its letters, every author with a line (slice 6)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-library.mjs http://localhost:3100
       - name: The home page is in order (slice 7)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-home.mjs http://localhost:3100
       - name: The reader (slice 8)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-reader.mjs http://localhost:3100
       - name: The other rooms (slice 9)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-rooms.mjs http://localhost:3100
       - name: Accessibility and touch (slice 10)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-a11y.mjs http://localhost:3100
-      - name: Design tokens (slice 3)
+      - name: Design tokens, no new hardcoded colours, sizes or spacing (slice 3)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-tokens.mjs
+      - name: The printed page's three typefaces, type scale, colours and buttons, in Paper and Night (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-design.mjs http://localhost:3100
+      # the printed page's own checks (redesign SPEC.md 7), and the detectors built for the bugs found on the way
+      - name: Paper or Night follows the device, and the choice in Settings wins (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-look.mjs http://localhost:3100
+      - name: Every photograph has its record, its file and real colour (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-photos.mjs
+      - name: Every photograph on a page has its credit (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-credits.mjs http://localhost:3100
+      - name: The word look-up never covers the line being read (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-lookup.mjs http://localhost:3100
+      - name: The bar along a phone's foot hides as you read on and is not in the reader (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-bar.mjs http://localhost:3100
+      - name: Nothing moves after the ink-in, and nothing with reduced motion (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-still.mjs http://localhost:3100
+      - name: No sideways scrolling at a phone's width, 390 px (redesign)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/sideways.mjs http://localhost:3100 some 390
+      - name: Words on paper never set in the colours kept for a block of ink
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-on-ink.mjs
+      - name: A note's red rule is not hidden under its own frame
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-callout-rules.mjs
+      - name: Drawings fill their frames
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-svg-fill.mjs http://localhost:3100
+      - name: No words run together across a line of JSX
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-jsx-spaces.mjs
+      - name: No link, button or heading says the same words twice
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-repeats.mjs
+      - name: No sentence split in two by its own box
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-split-sentences.mjs http://localhost:3100

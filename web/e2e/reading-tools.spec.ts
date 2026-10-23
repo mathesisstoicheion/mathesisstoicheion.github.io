@@ -34,7 +34,7 @@ test("Places lists the places the page names, marks their words, and goes to a p
 });
 
 test("Manuscript takes the passage back to capitals without spaces, and opens the Venetus A at the line", async ({ page }) => {
-  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 0 })); });
+  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 2 })); });
   await open(page, "w=tlg0012.tlg001&at=1.1", "1.1");
   await aid(page, "Manuscript");
   const panel = page.getByRole("complementary", { name: "The manuscript" });

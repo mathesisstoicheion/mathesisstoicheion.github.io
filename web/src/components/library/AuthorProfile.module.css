@@ -1,14 +1,14 @@
 /* Author and work pages on the printed page: the facts in small capitals over figures, the works as a list under hairlines,
    and the Painted Stoa's articles on the author as entries in a double frame, as the plates are. */
-.page { padding-block: 24px 24px; display: grid; gap: clamp(28px, 4vw, 44px); }
+.page { padding-block: var(--space-5) var(--space-5); display: grid; gap: clamp(28px, 4vw, 44px); }
 .crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: var(--step--1); }
 .crumb a { text-decoration: none; }
 .crumb a:hover { color: var(--accent); }
 .head { display: grid; gap: 14px; }
 .name { line-height: 1.05; }
-.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px 28px; margin: 6px 0 0; }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: var(--space-4) 28px; margin: 6px 0 0; }
 .facts dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-2); }
-.facts dd { margin: 4px 0 0; font-size: var(--step-0); }
+.facts dd { margin: var(--space-1) 0 0; font-size: var(--step-0); }
 .note { color: var(--ink-2); font-size: var(--step--1); max-width: 60ch; }
 .msg { padding-block: 40px; color: var(--ink-2); }
 .sec { display: grid; gap: 6px; }
@@ -24,9 +24,9 @@
 .swapIn { min-height: 0; overflow: clip; transition: opacity var(--dur) var(--ease) calc(var(--dur-quick) * 2.2); }
 .swap[data-away] { grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 0s var(--ease) var(--dur-quick), visibility 0s var(--ease) var(--dur-quick); }
 .swap[data-away] .swapIn { opacity: 0; transition: opacity var(--dur-quick) var(--ease); }
-.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 16px; margin-top: 12px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: var(--space-4); margin-top: var(--space-3); }
 .card {
-  display: grid; gap: 8px; align-content: start; padding: 20px; text-decoration: none;
+  display: grid; gap: var(--space-2); align-content: start; padding: 20px; text-decoration: none;
   background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); transition: background-color var(--dur) ease;
 }
 .card:hover { background-color: var(--slab-lit); }
@@ -37,7 +37,7 @@
 .allEntries summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); color: var(--accent); text-underline-offset: 3px; }
 .allEntries summary:hover { text-decoration: underline; }
 .allEntries[open] summary { margin-bottom: var(--space-1); }
-.links { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; }
+.links { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: var(--space-2); }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 
 /* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */

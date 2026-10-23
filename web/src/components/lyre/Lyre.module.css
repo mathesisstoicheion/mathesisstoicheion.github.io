@@ -3,7 +3,7 @@
    red, with a red mark beneath; nothing glows, and the marks step from note to note rather than glide. */
 .lyre { display: grid; gap: var(--space-5); min-width: 0; }
 
-.songs { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0 clamp(16px, 2.4vw, 28px); }
+.songs { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 0 clamp(var(--space-4), 2.4vw, 28px); }
 .song {
   display: grid; gap: 6px; align-content: start; text-align: left; padding: var(--space-4) 2px;
   background: transparent; box-shadow: inset 0 1px 0 var(--rule); border: 0; border-radius: 0; color: var(--ink); cursor: pointer;

@@ -25,7 +25,7 @@ export default function GreekKeyboard({ onKey, docked, wildcards = true }: { onK
             <>
               {wildcards && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("*")} aria-label="wildcard: any letters" title="any letters">*</button>}
               {wildcards && <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("?")} aria-label="wildcard: one letter" title="one letter">?</button>}
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("Backspace")} aria-label="delete">⌫</button>
+              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => onKey("Backspace")} aria-label="delete"><svg viewBox="0 0 24 16" width="22" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true"><path d="M8 2h13v12H8L2 8z M11.5 5.5l5 5 M16.5 5.5l-5 5" /></svg></button>
             </>
           )}
         </div>

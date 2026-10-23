@@ -1,5 +1,7 @@
 // The accessibility and touch check (review fix list, slice 10), over every room at a computer's width and on a phone. It lists:
-//   axe      - what axe (the standard automated checker, WCAG 2.1 AA rules) calls serious or critical, contrast among them
+//   axe      - what axe (the standard automated checker, WCAG 2.1 AA rules) calls serious or critical, contrast among them, in
+//              Paper and in Night (redesign SPEC.md 7: readable contrast in both); the rest is the same in both, so it is
+//              looked for in Paper
 //   twice    - a heading a screen reader reads twice ("Five roomsFive rooms": the copy drawn for the animation not hidden from it)
 //   empty    - a heading with nothing to read
 //   tap      - on a phone, a link, button or field whose touch area is under 44 × 44 px (a link inside a sentence is exempt, as
@@ -15,22 +17,23 @@ import AxeBuilder from "@axe-core/playwright";
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/tables", "/academy/vocabulary", "/academy/practice",
-  "/library", "/library/author?id=tlg0012", "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1", "/search?q=μῆνιν",
-  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/census", "/stoa/antikythera",
+  "/library", "/library/author?a=tlg0012", "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1", "/search?q=μῆνιν",
+  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/census", "/stoa/antikythera-mechanism",
   "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall",
 ];
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
 
-for (const [w, h, phone] of [[1536, 900, false], [1280, 900, false], [375, 812, true]]) {
+for (const [w, h, phone, look] of [[1536, 900, false, "paper"], [1280, 900, false, "paper"], [1280, 900, false, "night"], [375, 812, true, "paper"], [375, 812, true, "night"]]) {
   if (w === 1536 && only.length) continue;
-  const tag = `${w}px`;
+  const tag = `${w}px${look === "night" ? " Night" : ""}`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, hasTouch: phone, isMobile: phone, serviceWorkers: "block" });
-  await ctx.addInitScript(() => {
-    // the reader's lamp dims the lines away from it on purpose (design A); with it off every line has full contrast
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce", lamp: false }, version: 0 }));
-  });
-  for (const path of w === 1536 ? ["/"] : PAGES) {   // at 1536 px only the header's own row (its buttons stand beside the doors)
+  // Paper or Night as Settings saves the choice (lib/settings.ts, version 2), with motion reduced so nothing is caught
+  // half inked in
+  await ctx.addInitScript((l) => {
+    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: l, motion: "reduce" }, version: 2 }));
+  }, look);
+  for (const path of w === 1536 ? ["/"] : PAGES) {   // at 1536 px only the header's own row (its buttons stand beside the rooms)
     const page = await ctx.newPage();
     try {
       await page.goto(base + path);
@@ -47,6 +50,7 @@ for (const [w, h, phone] of [[1536, 900, false], [1280, 900, false], [375, 812, 
       const axe = await ax.withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       for (const v of axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical"))
         found.push(`axe ${at}: ${v.id} (${v.nodes.length}) ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" · ")}`);
+      if (look === "night") continue;   // the rest does not change with the look
 
       if (path === "/") await page.locator('header button[aria-label="Menu"]').click({ timeout: 2000 }).catch(() => {});
       const r = await page.evaluate((phoneOpts) => {
@@ -73,7 +77,7 @@ for (const [w, h, phone] of [[1536, 900, false], [1280, 900, false], [375, 812, 
           if (!t) empty.push(hd.outerHTML.slice(0, 80));
           else if (s.length >= 4 && s.length % 2 === 0 && s.slice(0, s.length / 2) === s.slice(s.length / 2)) twice.push(t.slice(0, 60));
         }
-        // the header's connection word (in the menu, below 1440 px, opened before this)
+        // the header's connection word (in the menu, below 1040 px, opened before this)
         const header = document.querySelector("header");
         const online = !!header && [...header.querySelectorAll("*")].some((e) => e.children.length === 0 && shown(e) && e.textContent.trim() === "Online");
 
@@ -120,8 +124,9 @@ for (const [w, h, phone] of [[1536, 900, false], [1280, 900, false], [375, 812, 
       if (r.tap.length) found.push(`tap ${at}: ${r.tap.length} target(s) under 44 × 44 px: ${(process.env.DETAIL ? r.tap : r.tap.slice(0, 12)).join(" · ")}${!process.env.DETAIL && r.tap.length > 12 ? " …" : ""}`);
     } catch (e) {
       found.push(`load ${path} ${tag}: ${String(e).split("\n")[0]}`);
+    } finally {
+      await page.close();
     }
-    await page.close();
   }
   await ctx.close();
 }

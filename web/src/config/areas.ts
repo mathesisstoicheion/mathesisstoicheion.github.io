@@ -8,8 +8,10 @@ export const FORUM_OPEN = false;
  * Every area of the site and its name from Greek culture.
  * Change names here only; the rest of the site reads from this file.
  *
- * One name per room (the owner, 2026-10-20, review fixes slice 2): its Greek name, large, then its English name, small, in
- * that order everywhere (the header, the menu, the home page, titles, paths, tab titles); scripts/check-names.mjs keeps it so.
+ * One name per room (the owner, 2026-10-20, review fixes slice 2), and one word for each of the rooms you move between
+ * (Learn, Read, Explore, Mine). The printed page sets the English first and the Greek name after it, or under it in small
+ * italic (redesign SPEC.md 3.5), in that order everywhere (the header, the menu, the home page, titles, paths, tab
+ * titles); scripts/check-names.mjs keeps it so.
  *
  * `origin` explains the original place or thing; `fit` says why the name suits the area.
  * Both are shown in each area's header and on the About page, so they must stay factual.
@@ -135,10 +137,10 @@ export function shown(id: AreaId): boolean {
 export const doorWord = (id: AreaId) => AREAS[id].name;
 /** A place's name in the header's menu. */
 export const menuWord = (id: AreaId) => AREAS[id].menu ?? doorWord(id);
-/** A page's tab title for a place: its Greek name, then its English name ("Ἀκαδήμεια · The Academy"). */
+/** A page's tab title for a place: its English name, then its Greek name ("The Academy · Ἀκαδήμεια"). */
 export const areaTitle = (id: AreaId) => {
   const a = AREAS[id];
-  return a.greek ? `${a.greek} · ${a.name}` : a.english ? `${a.name} · ${a.english}` : a.name;
+  return a.greek ? `${a.name} · ${a.greek}` : a.english ? `${a.name} · ${a.english}` : a.name;
 };
 
 /** One step of a page's path (PAGE-RULES.md, rule 4): its words, and where it leads (none for the page itself). */

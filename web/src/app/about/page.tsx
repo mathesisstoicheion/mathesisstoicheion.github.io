@@ -37,7 +37,7 @@ export default function AboutPage() {
             reader of Greek begins.</>} />
         <div className="meander" aria-hidden="true" />
         <h2>Why each area has a Greek name</h2>
-        <p>Every part of the site is named after a place or thing from the Greek world, always shown the same way: its Greek name first, then its English name.</p>
+        <p>Every part of the site is named after a place or thing from the Greek world, always shown the same way: its English name first, then its Greek name.</p>
         {GROUPS.map((g) => (
           <section key={g.heading} className={styles.group} aria-labelledby={`about-${g.ids[0]}`}>
             <h3 id={`about-${g.ids[0]}`} className={styles.groupHead}>{g.heading}</h3>
@@ -47,8 +47,8 @@ export default function AboutPage() {
                 return (
                   <div key={id}>
                     <dt>
-                      {a.greek && <span lang="grc">{a.greek} </span>}
                       <Link href={a.href} transitionTypes={["page-turn"]}>{a.name}</Link>
+                      {a.greek && <span lang="grc">{a.greek}</span>}
                       {a.english && <small>{a.english}</small>}
                     </dt>
                     <dd>{a.origin} {a.fit}</dd>

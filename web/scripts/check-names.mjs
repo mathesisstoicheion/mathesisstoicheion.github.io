@@ -1,5 +1,7 @@
 // The names check (review fix list, slice 2: "one name per thing"). Every room has one English name, one Greek name and
-// one plain word (config/areas.ts); this lists every place a visitor can read an old or other name for one:
+// one plain word (config/areas.ts: Learn, Read, Explore, Mine, and Talk while the forum is open); this lists every place a
+// visitor can read an old or other name for one, and every place where a room's Greek name comes before its English name
+// (the printed page sets the Greek after the English, or under it: redesign SPEC.md 3.5):
 //   in the built pages (web/out): their tab titles, and the words on them (not the scripts inside them)
 //   in the source: words in quotes or between tags in .tsx/.ts files under src/ (text that only appears after a click,
 //   such as the search's group labels, is not in the built pages)
@@ -19,7 +21,7 @@ export const ALIASES = [
   ["forum", /\b[Tt]he forum\b/g, "the forum is the Agora"],
   ["forum", /(?<![\w-])Forum\b/g, "the forum is the Agora"],
   ["treasury", /\bMy [Ll]ibrary\b/g, "your saved things are the Treasury"],
-  ["treasury", /(?:^|[>›·|"]\s*)Mine(?=\s*(?:$|[<›·|":]))/gm, "your saved things are the Treasury"],
+  // (Mine, once flagged here, is the Treasury's own plain word since the printed page: redesign SPEC.md 3.5)
   ["treasury", /θησαυρός(?=\s*(?:$|[<›·|"]))/gm, "the room's Greek name is capitalised: Θησαυρός"],
   ["reader", /\b[Tt]he Scroll\b(?! Case)/g, "the reader is \"the reader\""],
   // as a label (a name on its own: in a heading, a link, a path), the Oracle goes with its Greek name
@@ -28,13 +30,14 @@ export const ALIASES = [
   ["wiki", /(?:^|[>›·|"]\s*)The Stoa(?=\s*(?:$|[<›·|"]))/gm, "the Painted Stoa has one name"],
   ["library", /(?:^|[>›·|"]\s*)(?:Read · )?The Library(?=\s*(?:$|[<›·|"]))/gm, "the library is the Mouseion"],
 ];
-// one order everywhere: a room's Greek name comes before its English name, never after it
-export const ROOMS = [["The Academy", "Ἀκαδήμεια"], ["The Mouseion", "Μουσεῖον"], ["The Painted Stoa", "Στοὰ Ποικίλη"], ["The Agora", "Ἀγορά"],
-  ["The Treasury", "Θησαυρός"], ["The Oracle", "Μαντεῖον"]];
-for (const [en, gr] of ROOMS) ALIASES.push(["order", new RegExp(`${en}(?:\\s|[|·:,])*${gr}`, "g"), `Greek first: ${gr} before ${en}`]);
+// one order everywhere: a room's English name (or its word) comes first, its Greek name after it or under it, never
+// before it (the printed page, redesign SPEC.md 3.5; design A had it the other way round)
+export const ROOMS = [["The Academy", "Ἀκαδήμεια", "Learn"], ["The Mouseion", "Μουσεῖον", "Read"], ["The Painted Stoa", "Στοὰ Ποικίλη", "Explore"],
+  ["The Agora", "Ἀγορά", "Talk"], ["The Treasury", "Θησαυρός", "Mine"], ["The Oracle", "Μαντεῖον", "Search"]];
+for (const [en, gr, word] of ROOMS) ALIASES.push(["order", new RegExp(`${gr}(?:\\s|[|·:,])*(?:${en}|${word})\\b`, "g"), `English first: ${en} (or ${word}) before ${gr}`]);
 // phrases that use an alias's words but are not a name for a room
 export const ALLOW = [
-  /town hall of [A-Z]/i, /Forum Classicum/, /\bwiki(pedia|source|data|tionary)/i, /Mine:/,
+  /town hall of [A-Z]/i, /Forum Classicum/, /\bwiki(pedia|source|data|tionary)/i,
 ];
 
 const strip = (html) => html.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ");

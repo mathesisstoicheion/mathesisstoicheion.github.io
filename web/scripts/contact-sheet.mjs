@@ -8,7 +8,7 @@ const [outdir, base, theme, ...paths] = process.argv.slice(2);
 mkdirSync(outdir, { recursive: true });
 const b = await chromium.launch({ channel: "msedge" });
 const ctx = await b.newContext({ viewport: { width: 375, height: 812 }, deviceScaleFactor: 1, isMobile: true, hasTouch: true, colorScheme: theme, reducedMotion: "reduce" });
-await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t }, version: 0 })); } catch {} }, theme);
+await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })); } catch {} }, theme);
 const p = await ctx.newPage();
 const STRIP = 1500;
 for (const path of paths) {

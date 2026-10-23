@@ -16,7 +16,7 @@ export default class PanelGuard extends Component<Props, { failed: string | null
     return (
       <aside role="alert" className={this.props.className} style={{ padding: 18, border: "1px solid var(--rule)", borderRadius: "var(--radius)", background: "var(--surface)", display: "grid", alignContent: "start", gap: 10 }}>
         <p><b>The {this.props.name} could not be shown.</b> The rest of the page still works.</p>
-        <p className="muted" style={{ fontSize: "0.85rem", overflowWrap: "anywhere" }}>{this.state.failed}</p>
+        <p className="muted" style={{ fontSize: "var(--step--1)", overflowWrap: "anywhere" }}>{this.state.failed}</p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
           <button type="button" className="btn small" onClick={() => this.setState({ failed: null })}>Try again</button>
           {this.props.onClose && <button type="button" className="btn small ghost" onClick={() => { this.setState({ failed: null }); this.props.onClose!(); }}>Close</button>}

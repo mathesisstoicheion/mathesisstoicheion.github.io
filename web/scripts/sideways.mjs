@@ -2,6 +2,8 @@
 // switched off (older iPhones ignore it, and some phones let you pan to clipped content anyway).
 // Elements inside their own sideways scroller (a row of cards to swipe) or a box that clips them do not count.
 //   node scripts/sideways.mjs <baseUrl> [all] [width]     (all: every wiki entry, lesson, 60 authors and 60 works)
+// It exits with 1 when anything sticks out, so it can stand in the checks (redesign SPEC.md 7: no sideways scrolling at
+// 390 px). On Windows it uses Edge; elsewhere the Chromium Playwright brings, or the one CHROMIUM=<path> names.
 import { chromium } from "@playwright/test";
 import { readdirSync } from "node:fs";
 
@@ -17,11 +19,11 @@ const top = ["/", "/about", "/credits", "/downloads", "/library", "/search", "/s
   "/read?w=tlg0085.tlg005", "/read?w=tlg0031.tlg004", "/read?w=tlg0012.tlg001&w2=tlg0012.tlg002", "/town-hall/thread?id=1"];
 const paths = [...top, ...names("academy/lesson"), ...names("academy/guide"), ...(all ? names("stoa") : pick(names("stoa"), 30)), ...pick(names("author"), 25), ...pick(names("work"), 25)];
 
-const b = await chromium.launch({ channel: "msedge" });
+const b = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : process.platform === "win32" ? { channel: "msedge" } : {});
 let bad = 0;
 for (const theme of ["light", "dark"]) {
   const ctx = await b.newContext({ viewport: { width, height: 800 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, reducedMotion: "reduce" });
-  await ctx.addInitScript((t) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t }, version: 0 })), theme);
+  await ctx.addInitScript((t) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })), theme);
   const p = await ctx.newPage();
   for (const path of theme === "dark" ? paths.slice(0, top.length) : paths) {
     try {
@@ -61,3 +63,4 @@ for (const theme of ["light", "dark"]) {
 }
 await b.close();
 console.log(`${paths.length} pages; ${bad} with something sticking out`);
+process.exit(bad ? 1 : 0);

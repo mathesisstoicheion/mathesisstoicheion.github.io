@@ -52,7 +52,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
           return (
             <li key={it.id}>
               <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
-                <span className={styles.pathNo} aria-hidden="true">✦</span>
+                <span className={styles.pathNo} aria-hidden="true">◆</span>
                 <span><b>{p.title}</b><span className={styles.pathAbout}><Rich text={p.intro} /></span></span>
                 <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Done") : lit ? nextMark : "Practice"}</span>
               </Link>

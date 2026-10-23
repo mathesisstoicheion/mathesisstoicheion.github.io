@@ -64,7 +64,7 @@ export function GuideChapters({ chapters }: { chapters: Chapter[] }) {
           <div className={styles.say}>
             <p className={styles.kicker}>
               <span className={styles.big} aria-hidden="true">{i + 1}</span>
-              {c.place && <span className="label">{c.place.greek && <><span lang="grc">{c.place.greek}</span> · </>}{c.place.name}</span>}
+              {c.place && <span className="label">{c.place.name}{c.place.greek && <> · <span lang="grc">{c.place.greek}</span></>}</span>}
             </p>
             <h2 id={`${c.id}-h`}>{c.title}</h2>
             {c.text.map((p, k) => <p key={k}>{p}</p>)}

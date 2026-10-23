@@ -10,6 +10,13 @@ import { refreshDue } from "@/lib/mastery";
 import styles from "./Academy.module.css";
 import w from "./Workout.module.css";
 
+/** "Passed; a refresh is due": a turning arrow, drawn (none of the site's three typefaces has the sign "↻") */
+const Again = () => (
+  <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <path d="M13 8.5A5 5 0 1 1 11.2 4.4 M11.6 1.6v3.1H8.5" />
+  </svg>
+);
+
 export default function LessonPath() {
   const mastery = useAcademy((s) => s.mastery);
   const completed = useAcademy((s) => s.completed);
@@ -30,7 +37,7 @@ export default function LessonPath() {
               </span>
               <span className={styles.pathMin}>
                 {m?.passed
-                  ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? "↻" : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
+                  ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? <Again /> : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
                   : completed[l.id] ? <span className={w.mark} title="Read; test not yet passed">read<span className="visually-hidden">: test not yet passed</span></span>
                   : wordsLabel(l.words.length)}
               </span>
@@ -54,14 +61,14 @@ function CheckpointRow({ id }: { id: string }) {
     <li className={w.cpRow}>
       <Link href={`/academy/checkpoint/${c.id}`} transitionTypes={["page-turn"]} className={`${styles.pathItem} ${w.cpItem}`}>
         {/* the same marker as the practice lessons of Learn by reading (review fixes, slice 4) */}
-        <span className={styles.pathNo} aria-hidden="true">✦</span>
+        <span className={styles.pathNo} aria-hidden="true">◆</span>
         <span>
           <b>Checkpoint {c.numeral}</b> <span lang="grc" className={styles.pathGr}>{CHECKPOINT_GREEK}</span>
           <span className={styles.pathAbout}>{c.title}: lessons {first} to {last} tested together.{!m?.passed && ready ? " You are ready for it." : ""}</span>
         </span>
         <span className={styles.pathMin}>
           {m?.passed
-            ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? "↻" : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
+            ? <span className={`${w.mark} ${w.markPassed} ${due ? w.markDue : ""}`} title={due ? "Passed; a refresh is due" : "Passed"}>{due ? <Again /> : "✓"}<span className="visually-hidden">{due ? "Passed; a refresh is due" : "Passed"}</span></span>
             : "Test"}
         </span>
       </Link>

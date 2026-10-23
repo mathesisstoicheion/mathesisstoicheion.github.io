@@ -6,7 +6,7 @@ import { chromium } from "@playwright/test";
 const [, , path, out, w = "1280", h = "900", theme = "light", js = "", clip = ""] = process.argv;
 const browser = await chromium.launch({ channel: "msedge" });
 const page = await browser.newPage({ viewport: { width: +w, height: +h }, deviceScaleFactor: clip ? 2 : 1, colorScheme: theme === "dark" ? "dark" : "light" });
-await page.addInitScript(() => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { metre: true }, version: 0 })));
+await page.addInitScript(() => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { metre: true }, version: 2 })));
 await page.goto(`http://localhost:${process.env.PORT ?? 3100}${path}`);
 await page.waitForTimeout(6000);
 if (js) { await page.evaluate(js); await page.waitForTimeout(1500); }

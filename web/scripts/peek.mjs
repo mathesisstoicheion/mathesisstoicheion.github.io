@@ -12,7 +12,7 @@ const ctx = await b.newContext({
   viewport: phone ? { width: 375, height: 812 } : { width: 1366, height: 900 }, colorScheme: theme, reducedMotion: "reduce",
   ...(phone ? { isMobile: true, hasTouch: true, deviceScaleFactor: 2 } : {}),
 });
-await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t }, version: 0 })); } catch {} }, theme);
+await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })); } catch {} }, theme);
 const p = await ctx.newPage();
 await p.goto(url, { waitUntil: "load" });
 await p.waitForTimeout(2500);

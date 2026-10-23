@@ -230,7 +230,7 @@ function ScopePicker({ meta, scope, onChange, title, onClose }: { meta: CensusMe
       )}
       <div className={styles.scopeBtns}>
         {!isAll && <button type="button" className="chip" onClick={() => onChange(EMPTY_SCOPE)}>Whole library</button>}
-        {onClose && <button type="button" className="chip" onClick={onClose} aria-label="Stop comparing">✕ Stop comparing</button>}
+        {onClose && <button type="button" className="chip" onClick={onClose} aria-label="Stop comparing">× Stop comparing</button>}
       </div>
     </fieldset>
   );

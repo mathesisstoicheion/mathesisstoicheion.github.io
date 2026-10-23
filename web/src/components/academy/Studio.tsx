@@ -1,13 +1,15 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import { LETTERS, DIPHTHONGS, ALLEN } from "@/data/alphabet";
 import { coreWords } from "@/lib/lookup/core";
 import { audioKey } from "@/lib/audio";
 import { transliterate } from "@/lib/translit";
 import styles from "./Academy.module.css";
 
-interface Item { key: string; say: string; guide: string; group: string }
+interface Item { key: string; say: string; guide: ReactNode; group: string }
+/** a sound in the IPA, in the typeface that has its letters and marks */
+const ipa = (sound: string) => <span className={styles.ipa}>[{sound}]</span>;
 
 /**
  * The recording studio: record the site's audio in reconstructed Classical Attic and save each file,
@@ -26,11 +28,11 @@ export default function Studio() {
     const letters: Item[] = LETTERS.map((L) => ({
       key: audioKey.letter(L.name), group: "Letters (say the Classical name)",
       say: L.classicalName ?? L.greekName,
-      guide: `${L.name}: its sound is [${L.sounds.attic.ipa}]. Say the name as Athenians did: ${transliterate(L.classicalName ?? L.greekName)}.`,
+      guide: <>{L.name}: its sound is {ipa(L.sounds.attic.ipa)}. Say the name as Athenians did: {transliterate(L.classicalName ?? L.greekName)}.</>,
     }));
     const diph: Item[] = DIPHTHONGS.map((d) => ({
       key: audioKey.diphthong(d.spelling), group: "Vowel pairs (say the sound alone)",
-      say: d.spelling, guide: `[${d.sounds.attic.ipa}]: ${d.sounds.attic.say}.`,
+      say: d.spelling, guide: <>{ipa(d.sounds.attic.ipa)}: {d.sounds.attic.say}.</>,
     }));
     coreWords().then((ws) => setItems([...letters, ...diph, ...ws.slice(0, 100).map((w) => ({
       key: audioKey.word(w.lemma), group: "The 100 commonest words (dictionary form)",

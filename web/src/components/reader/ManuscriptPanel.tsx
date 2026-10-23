@@ -135,7 +135,7 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
         {cut && <p className={styles.more} aria-hidden="true">…</p>}
       </div>
       <p className={styles.say}>{STAGES[stage].say}</p>
-      <button type="button" className="btn small" onClick={play} disabled={playing}>{playing ? "Watching…" : "▸ Watch it change"}</button>
+      <button type="button" className="btn small" onClick={play} disabled={playing}>{playing ? "Watching…" : <><span className="tri" aria-hidden="true" /> Watch it change</>}</button>
     </section>
   );
 }
@@ -287,7 +287,7 @@ function Photos({ w, work, line, book }: { w: Witness; work: string; line: strin
           <span className={styles.gap} />
           <button type="button" onClick={() => viewer.current?.viewport.zoomBy(1.6)} aria-label="Zoom in">+</button>
           <button type="button" onClick={() => viewer.current?.viewport.zoomBy(1 / 1.6)} aria-label="Zoom out">−</button>
-          <button type="button" onClick={() => viewer.current?.viewport.goHome()} aria-label="The whole page">⌂</button>
+          <button type="button" onClick={() => viewer.current?.viewport.goHome()} aria-label="The whole page"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true"><path d="M2.5 8 8 2.5 13.5 8M4 6.8v6.7h8V6.8" /></svg></button>
         </div>
       </div>
       {error && <p className={styles.err}>{error}</p>}

@@ -30,30 +30,7 @@
   }
 }
 
-/* ---------------------------------------------------------------- maps
-   The small maps (the reader's Places, the Treasury's places, the Explore card) are printed like an atlas's plates: the
-   land a warm tint of the paper, the sea a shade darker, the coast a fine line of ink, the names in ink with a halo of the
-   land. The Periplus lies on NASA's satellite picture, softened for the page (--map-dim multiplies it). */
-:root {
-  --map-land: #e6d8bd; --map-sea: #cfc3ab; --map-coast: rgba(30, 26, 21, 0.45); --map-wave: rgba(30, 26, 21, 0.05);
-  --map-name: #1e1a15; --map-halo: #e6d8bd; --map-accent-sea: #a3301a;
-  --map-edge: #b9aa8e; --map-dim: #f3ece0; --map-shadow: rgba(40, 28, 14, 0.4);
-  --map-sea-name: #2f4f5a; --map-sea-halo: rgba(207, 195, 171, 0.8); --map-region: #5c5043; --map-region-halo: rgba(243, 236, 224, 0.75);
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="paper"]) {
-    --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
-    --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
-    --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
-    --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
-  }
-}
-:root[data-theme="night"] {
-  --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
-  --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
-  --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
-  --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
-}
+/* the maps' colours are named in styles/tokens.css (--map-*) */
 
 /* phones: the rooms along the foot of the screen (TabBar.tsx), its height with the gesture bar's area. While it shows
    (data-tabbar on <html>), the end of every page and what floats at the foot of the screen stand above it. */
@@ -82,12 +59,12 @@ body {
   margin: 0;
   background: transparent;   /* the paper is <html>'s */
   color: var(--ink);
-  font: 400 1.1875rem / 1.55 var(--f-body);
+  font: 400 var(--step-text) / 1.55 var(--f-body);
   font-variant-numeric: oldstyle-nums;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
 }
-@media (max-width: 900px) { body { font-size: 1.125rem; } }
+@media (max-width: 900px) { :root { --step-text: 1.125rem; } }
 html { background: var(--bg); transition: background-color 0.6s var(--ease); }
 main[data-screen] { font-family: var(--f-body); }
 /* the paper's still, faint fibre: two soft shades at its head and foot, made of gradients (no picture, nothing moves) */
@@ -133,6 +110,8 @@ html[data-greek-face="didot"] { --f-greek: var(--face-didot); }
 [lang="grc"] { font-family: var(--f-greek); }
 /* small capitals, and wide-spaced capitals for labels (the sample's .sc and .caps) */
 .sc { font-variant: small-caps; letter-spacing: 0.08em; font-feature-settings: "smcp", "c2sc"; }
+/* a small triangle for a button that plays, drawn in the colour of its words (tokens.css --tri-*) */
+.tri { display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
 .rub { color: var(--rubric); }
 
 .wrap {
@@ -199,14 +178,14 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; min-height: var(--tap);
   border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
-  font: 500 0.78rem / 1.1 var(--f-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font: 500 var(--step--2) / 1.1 var(--f-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer;
   transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .btn:hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
 .btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 9px 13px; gap: var(--space-2); font-size: 0.7rem; min-height: 0; }
+.btn.small { padding: 9px 13px; gap: var(--space-2); font-size: var(--step--2); min-height: 0; }
 /* buttons side by side, as the page's ways on */
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
@@ -231,7 +210,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 /* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, small
    capitals in a hairline frame, the chosen one in ink */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
@@ -294,7 +273,7 @@ select:not([multiple]):not([size]) {
 .plate-frame { padding: 14px; border: 1px solid var(--rule); background: var(--bg); }
 .plate-frame::before { content: ""; position: absolute; inset: 5px; border: 1px solid var(--rule-2); pointer-events: none; }
 .plate figcaption { margin-top: 10px; display: flex; gap: 10px; font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
-.plate-no { flex: none; padding-top: 3px; color: var(--rubric); font: 500 0.66rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
+.plate-no { flex: none; padding-top: 3px; color: var(--rubric); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; }
 .plate figcaption i { color: var(--ink-2); }
 .plate-credit { color: var(--ink-3); }
 .plate figcaption a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
@@ -352,7 +331,7 @@ select:not([multiple]):not([size]) {
    two beneath; under the hand its name turns red. No box, no icon. */
 .slab-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: var(--space-5) clamp(20px, 3vw, 40px); }
 .slab-card {
-  display: grid; gap: 4px; align-content: start; padding: var(--space-4) 0 var(--space-2); border-radius: 0; border-top: 1px solid var(--ink);
+  display: grid; gap: var(--space-1); align-content: start; padding: var(--space-4) 0 var(--space-2); border-radius: 0; border-top: 1px solid var(--ink);
   background: transparent; color: var(--ink); text-decoration: none;
   transition: color var(--dur) var(--ease);
 }
@@ -363,7 +342,7 @@ a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3,
 
 /* certainty labels */
 .tag { display: inline-flex; align-items: center; gap: 6px; font: 500 var(--step--2) / 1.3 var(--f-label);
-  letter-spacing: 0.16em; text-transform: uppercase; padding: 3px 8px 2px; border: 1px solid currentColor; border-radius: var(--radius); background: transparent; }
+  letter-spacing: 0.16em; text-transform: uppercase; padding: 3px var(--space-2) 2px; border: 1px solid currentColor; border-radius: var(--radius); background: transparent; }
 .tag.well { color: var(--blue); }
 .tag.debated { color: var(--ochre); }
 .tag.legend { color: var(--legend); }
@@ -379,11 +358,12 @@ a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3,
 /* reveal: visible at rest, the class only inks it in as it comes into view (components/Reveal.tsx) */
 .rv.in { animation: ink var(--ink-in) var(--ease) both; }
 
-html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
+/* (the page itself too: its paper crossfades when Paper or Night changes, scripts/check-look.mjs) */
+html[data-motion="reduce"], html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {
   animation: none !important; transition: none !important;
 }
 @media (prefers-reduced-motion: reduce) {
-  html:not([data-motion="full"]) *, html:not([data-motion="full"]) *::before, html:not([data-motion="full"]) *::after {
+  html:not([data-motion="full"]), html:not([data-motion="full"]) *, html:not([data-motion="full"]) *::before, html:not([data-motion="full"]) *::after {
     animation: none !important; transition: none !important;
   }
   html:not([data-motion="full"]) ::view-transition-group(*),
@@ -421,7 +401,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 
 /* the foot of every page: a colophon, under a rule of ink, the printer's device beside the name */
 .site-footer { margin-top: clamp(64px, 10vh, 120px); color: var(--ink-2); }
-.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 48px; padding-block: 28px 56px; font-size: var(--step--1); border-top: 1px solid var(--ink); }
+.site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 48px; padding-block: 28px var(--space-7); font-size: var(--step--1); border-top: 1px solid var(--ink); }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-didot); color: var(--ink); margin-bottom: 6px; }
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
 .site-footer-links a { text-decoration-color: var(--rule); text-underline-offset: 3px; }
@@ -441,8 +421,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 /* The one page head (components/PageHead.tsx), as the sample's catalogue head: the kicker (the path, after a short red
    rule), the title, its Greek name in GFS Didot in red, one line saying what the page is for, the page's main action, and
    the page's plate at the right. Large for the rooms, shorter for every page inside them, never in its plate. */
-.ph { display: grid; grid-template-columns: minmax(0, 1fr) min(32%, 320px); column-gap: clamp(28px, 5vw, 64px); align-items: end; padding-block: clamp(36px, 7vh, 80px) var(--space-6); }
-.ph-short { padding-block: clamp(28px, 5vh, 56px) var(--space-5); }
+.ph { display: grid; grid-template-columns: minmax(0, 1fr) min(32%, 320px); column-gap: clamp(28px, 5vw, 64px); align-items: end; padding-block: clamp(var(--space-6), 7vh, var(--space-8)) var(--space-6); }
+.ph-short { padding-block: clamp(28px, 5vh, var(--space-7)) var(--space-5); }
 .ph.ph-tool { grid-template-columns: minmax(0, 1fr); }
 .ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
 .ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; }
@@ -457,8 +437,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph .ph-title { color: var(--ink); font-weight: 400; line-height: 0.98; margin: 18px 0 10px; letter-spacing: -0.015em; }
 .ph-large .ph-title { font-size: clamp(2.8rem, 6vw, 5.2rem); }
 .ph-short .ph-title { font-size: clamp(2.2rem, 4.4vw, 3.6rem); }
-.ph-greek { display: block; font: 400 0.46em / 1.2 var(--face-didot); color: var(--rubric); margin-top: 12px; letter-spacing: 0.01em; }
-.ph-purpose { max-width: 34em; font-size: 1.08rem; line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
+.ph-greek { display: block; font: 400 0.46em / 1.2 var(--face-didot); color: var(--rubric); margin-top: var(--space-3); letter-spacing: 0.01em; }
+.ph-purpose { max-width: 34em; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
 .ph-short .ph-purpose { font-size: var(--step-0); }
 .ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
@@ -474,8 +454,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 /* a page's search offered in its head (components/FindJump.tsx): a line to write on, as the library's search */
 .find-jump {
   display: flex; align-items: center; gap: var(--space-3); width: 100%; max-width: 34rem; min-height: var(--tap); text-align: left;
-  font: italic 400 1.2rem / 1.3 var(--f-body); color: var(--ink-3); background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: var(--radius);
-  padding: 8px 0; cursor: text;
+  font: italic 400 var(--step-1) / 1.3 var(--f-body); color: var(--ink-3); background: transparent; border: 0; border-bottom: 1px solid var(--ink); border-radius: var(--radius);
+  padding: var(--space-2) 0; cursor: text;
 }
 .find-jump svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
 .find-jump:hover, .find-jump:focus-visible { outline: none; border-bottom-color: var(--rubric); color: var(--ink-2); }
@@ -489,10 +469,10 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .find-field input::placeholder { color: var(--ink-3); opacity: 1; }
 .find-field input:focus-visible { outline: none; }
 .find:focus-within { border-bottom-color: var(--rubric); }
-.find-show { display: flex; flex-wrap: wrap; gap: 4px; }
+.find-show { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .find-show > button {
   min-height: var(--tap); padding: 10px; background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
-  font: 500 0.7rem / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);
+  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .find-show > button:hover { color: var(--rubric); }
@@ -504,7 +484,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .find:focus-within .find-field { border-bottom-color: var(--rubric); }
   .find-field input { font-size: 1.25rem; }
   .find-show { width: 100%; justify-content: space-between; }
-  .find-show > button { padding-inline: 4px; letter-spacing: 0.12em; }
+  .find-show > button { padding-inline: var(--space-1); letter-spacing: 0.12em; }
 }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
@@ -583,23 +563,23 @@ select { max-width: 100%; }
 /* the word being read aloud (Listen, in the reader) */
 ::highlight(listen-word) { background-color: color-mix(in srgb, var(--accent) 30%, transparent); color: inherit; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
-@media (pointer: coarse) { :where(main) :where(h2, h3) > a { padding-block: 4px; } }
+@media (pointer: coarse) { :where(main) :where(h2, h3) > a { padding-block: var(--space-1); } }
 
 /* ------------------------------------------------------------- parts of a page
    A room's parts (components/a/Door.tsx, DoorBlock), and any section set like the sample's: a rule above it, room to
    breathe, and a heading set like a book's, with a red section number where it has one (.sh: α´, β´…) and a running rule
    to the margin. */
 .door-body { padding-bottom: var(--space-6); }
-.door-part { margin-top: clamp(36px, 6vh, 72px); padding-top: clamp(24px, 4vh, 40px); border-top: 1px solid var(--rule); }
+.door-part { margin-top: clamp(var(--space-6), 6vh, 72px); padding-top: clamp(var(--space-5), 4vh, 40px); border-top: 1px solid var(--rule); }
 .door-part h2 { font-size: var(--step-3); }
 .door-part h2 a { text-decoration: none; }
 .door-part h2 a:hover { color: var(--rubric); }
-.sh { display: flex; align-items: baseline; gap: 16px; margin: 0 0 30px; }
+.sh { display: flex; align-items: baseline; gap: var(--space-4); margin: 0 0 30px; }
 .sh .no { font: 400 1.05rem var(--face-didot); color: var(--rubric); }
 .sh h2 { font: 400 clamp(1.7rem, 3.2vw, 2.5rem) / 1.1 var(--f-display); margin: 0; }
 .sh .fill { flex: 1; border-bottom: 1px solid var(--rule); transform: translateY(-6px); min-width: 12px; }
 .sh .src { font-size: var(--step--1); color: var(--ink-3); font-style: italic; }
-@media (max-width: 600px) { .sh { flex-wrap: wrap; gap: 4px 12px; } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
+@media (max-width: 600px) { .sh { flex-wrap: wrap; gap: var(--space-1) var(--space-3); } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
 
 /* the home page: a first visit's question or a returning visitor's desk; which one shows is set before the first paint
    (lib/visitor.ts, data-visitor on <html>) */

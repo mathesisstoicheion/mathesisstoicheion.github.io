@@ -220,7 +220,7 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
         {guess && !shown && <Choices key={i} c={c} pool={pool} k={i} onRight={() => setTimeout(() => setShown(true), 500)} />}
         {shown ? (
           <div aria-live="polite" style={{ display: "grid", gap: 8 }}>
-            <p style={{ fontSize: "1.2rem" }}><b>{c.here}</b></p>
+            <p style={{ fontSize: "var(--step-1)" }}><b>{c.here}</b></p>
             <p className="muted">{c.form_note}.</p>
             <p className={styles.small}>In the dictionary: <span lang="grc" className={styles.inlineGr}>{c.lemma}</span>, “{c.dict}” ({c.src === "DCC" ? "DCC core list" : "LSJ"}).</p>
           </div>

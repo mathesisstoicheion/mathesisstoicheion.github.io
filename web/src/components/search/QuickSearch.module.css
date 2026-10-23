@@ -14,7 +14,7 @@
 /* the rules inside the leaf stop at its inner frame (the moulding, 5 px in), as a printed frame's rules do */
 .head { position: relative; display: flex; align-items: stretch; margin-inline: 5px; border-bottom: 1px solid var(--ink); }
 .input {
-  flex: 1; min-width: 0; font-family: var(--f-greek); font-size: var(--step-1); padding: 16px 18px 16px 12px; color: var(--ink); background: transparent;
+  flex: 1; min-width: 0; font-family: var(--f-greek); font-size: var(--step-1); padding: var(--space-4) 18px var(--space-4) var(--space-3); color: var(--ink); background: transparent;
   border: 0; -webkit-appearance: none; appearance: none;
 }
 .input:focus { outline: none; }
@@ -35,11 +35,11 @@
 .kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .close { display: none; }
 .body { display: grid; align-content: start; }
-.list { margin: 0; padding: 4px 6px 8px; max-height: 56vh; overflow: auto; }
-.group + .group { margin-top: 4px; padding-top: 6px; border-top: 1px solid var(--rule); }
+.list { margin: 0; padding: var(--space-1) 6px var(--space-2); max-height: 56vh; overflow: auto; }
+.group + .group { margin-top: var(--space-1); padding-top: 6px; border-top: 1px solid var(--rule); }
 /* each kind of result named in red small capitals */
-.groupTitle { margin: 0; padding: 10px 12px 4px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
-.opt { display: flex; gap: 12px; align-items: baseline; padding: 9px 12px; border-radius: var(--radius); cursor: pointer; }
+.groupTitle { margin: 0; padding: 10px var(--space-3) var(--space-1); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
+.opt { display: flex; gap: var(--space-3); align-items: baseline; padding: 9px var(--space-3); border-radius: var(--radius); cursor: pointer; }
 /* the result chosen (with the arrow keys or under the hand): in ink, its words in paper */
 .opt[aria-selected="true"] { background: var(--sel-bg); --accent: var(--accent-on-ink); --rubric: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .opt[aria-selected="true"] .kind { color: var(--accent); }
@@ -52,7 +52,7 @@
 .muted { color: var(--ink-2); }
 .help { margin: 0; padding: 14px 18px; font-size: var(--step--1); color: var(--ink-2); }
 .full {
-  display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: var(--tap); margin: 0 5px 5px; padding: 8px 13px;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: var(--tap); margin: 0 5px 5px; padding: var(--space-2) 13px;
   border-top: 1px solid var(--rule); font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); text-decoration: none;
   transition: color var(--dur-quick) var(--ease);
 }
@@ -70,28 +70,28 @@
   .inner { display: flex; flex-direction: column; height: 100%; }
   .head { flex: none; margin-inline: 0; padding-top: env(safe-area-inset-top, 0px); padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px); background: var(--bg); }
   .full { margin: 0; padding-inline: 18px; }
-  .input { padding: 14px 12px 14px 16px; }
-  .kbdBtn { margin-right: 4px; height: var(--tap); }
+  .input { padding: 14px var(--space-3) 14px var(--space-4); }
+  .kbdBtn { margin-right: var(--space-1); height: var(--tap); }
   .close {
-    display: block; flex: none; align-self: center; min-height: var(--tap); padding: 0 16px 0 10px; cursor: pointer;
+    display: block; flex: none; align-self: center; min-height: var(--tap); padding: 0 var(--space-4) 0 10px; cursor: pointer;
     border: 0; background: transparent; color: var(--rubric); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
   }
   .body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
-  .list { max-height: none; overflow: visible; padding: 4px 6px; }
-  .opt { padding: 11px 12px; min-height: var(--tap); }
+  .list { max-height: none; overflow: visible; padding: var(--space-1) 6px; }
+  .opt { padding: 11px var(--space-3); min-height: var(--tap); }
   .keys { display: none; }
 }
 @media (prefers-reduced-motion: reduce) { .dialog { animation: none; } }
 
 /* before anything is typed: recent searches, where you left off, examples */
-.start { display: grid; gap: 14px; padding: 10px 6px 4px; }
-.startHead { display: flex; align-items: baseline; justify-content: space-between; padding-right: 12px; }
+.start { display: grid; gap: 14px; padding: 10px 6px var(--space-1); }
+.startHead { display: flex; align-items: baseline; justify-content: space-between; padding-right: var(--space-3); }
 .link { border: 0; background: transparent; color: var(--ink-2); font-size: var(--step--1); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; transition: color var(--dur-quick) var(--ease); }
 .link:hover { color: var(--rubric); }
-.chips { list-style: none; margin: 0; padding: 0 12px; display: flex; flex-wrap: wrap; gap: 8px; }
+.chips { list-style: none; margin: 0; padding: 0 var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-2); }
 /* a search to run again: a hairline frame, red under the hand (as the site's chips) */
 .chip {
-  padding: 6px 12px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent;
+  padding: 6px var(--space-3); border: 1px solid var(--rule); border-radius: var(--radius); background: transparent;
   color: var(--ink); font-size: var(--step--1); cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .chip[lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
@@ -106,7 +106,7 @@
 .chipX:hover { color: var(--rubric); }
 .chipX:active { background: var(--bg-2); }
 .visits { list-style: none; margin: 0; padding: 0 6px; display: grid; }
-.visits button { width: 100%; padding: 8px 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: var(--step-0); cursor: pointer; transition: background-color var(--dur-quick) var(--ease); }
+.visits button { width: 100%; padding: var(--space-2) 6px; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink); text-align: left; font-size: var(--step-0); cursor: pointer; transition: background-color var(--dur-quick) var(--ease); }
 .visits button:hover, .visits button:focus-visible { background: var(--bg-2); }
 .visits button span { color: var(--rubric); }
 @media (pointer: coarse) { .chip, .chipX { min-height: 40px; } .visits button { min-height: var(--tap); } }

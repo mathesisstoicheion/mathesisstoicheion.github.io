@@ -8,7 +8,7 @@ test("an author page shows real dates, works and the wiki entries that read them
   await expect(page.getByRole("heading", { level: 1, name: "Homer" })).toBeVisible();
   await expect(page.getByText("Wrote in")).toBeVisible();
   await expect(page.getByText(/8th c\. BC/).first()).toBeVisible();
-  await expect(page.getByRole("heading", { name: "What Homer wrote" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^The \d works$/ })).toBeVisible();
   await expect(page.getByRole("link", { name: /Iliad/ }).first()).toBeVisible();
   await expect(page.getByRole("link", { name: /Homer's similes/ })).toHaveAttribute("href", "/stoa/homeric-similes");
   await expect(page.getByRole("link", { name: /Your own notes on Homer/ })).toHaveAttribute("href", "/treasury?s=authors&a=tlg0012");
@@ -16,7 +16,7 @@ test("an author page shows real dates, works and the wiki entries that read them
 
 test("a work's row on an author page names a kind or a date only when it is unusual for that author, and gives no file size", async ({ page }) => {
   await page.goto("/library/author?a=tlg0059");
-  await expect(page.getByRole("heading", { name: "What Plato wrote" })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /^The \d+ works$/ })).toBeVisible();
   await expect(page.getByText(/^\d+(\.\d)? (KB|MB)$/)).toHaveCount(0);
   const rows = page.locator("section[aria-labelledby=works-title] ul").last().locator("li");   // (the A to Z list stands before it, shut)
   await expect(rows.first()).toBeVisible();
@@ -44,7 +44,7 @@ test("an unknown author is said to be unknown, not guessed at", async ({ page })
 
 test("the library can be filtered by how familiar a text's vocabulary is, and says what that measures", async ({ page }) => {
   await page.goto("/library");
-  await page.getByRole("button", { name: /^Order and filters/ }).click();   // the filters wait behind one button over the list
+  await page.getByRole("button", { name: /^Filters/ }).click();   // the filters wait behind one button beside the order, over the list
   await page.locator("#library-vocab").selectOption("familiar");
   // each work shows a meter: easy words (one bar), some rarer words (two), many rare words (three)
   await expect(page.locator("main [data-level]").first()).toHaveAttribute("title", /^8\d% common words/);

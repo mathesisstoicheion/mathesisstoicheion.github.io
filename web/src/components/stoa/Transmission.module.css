@@ -39,7 +39,7 @@
 .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px 22px; font-size: var(--step--1); }
 .legend li { display: flex; align-items: baseline; gap: 6px; }
 .legend span { color: var(--ink-2); }
-.roads figcaption { display: grid; gap: 8px; }
+.roads figcaption { display: grid; gap: var(--space-2); }
 .roads figcaption p { margin: 0; color: var(--ink-2); max-width: 75ch; }
 /* phones: the key and the caption keep the width of the screen; the chart keeps its proportions and scrolls sideways
    inside its frame, its right edge fading while there is more, with the names kept in view at the left */
@@ -55,7 +55,7 @@
 /* ------------------------------------------------ the authors' accounts: catalogue entries under hairlines */
 .list { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr)); gap: 0 28px; }
 .card {
-  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: start; gap: 6px; height: 100%; padding: 16px 2px 20px; text-decoration: none; color: var(--ink);
+  display: grid; grid-template-rows: auto auto minmax(0, 1fr) auto; align-content: start; gap: 6px; height: 100%; padding: var(--space-4) 2px 20px; text-decoration: none; color: var(--ink);
   box-shadow: var(--cut-over);
 }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
@@ -64,5 +64,5 @@
 .card:hover b { color: var(--rubric); }
 /* the accounts are cut to four lines, so the entries in a row are alike; the whole account is one click away */
 .text { color: var(--ink); line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
-.go { margin-top: 4px; font-size: var(--step--1); color: var(--accent); white-space: nowrap; }
+.go { margin-top: var(--space-1); font-size: var(--step--1); color: var(--accent); white-space: nowrap; }
 .more { margin: 0; color: var(--ink-2); max-width: 70ch; }

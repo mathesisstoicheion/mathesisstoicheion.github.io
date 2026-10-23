@@ -6,8 +6,8 @@
 
 /* ---------------------------------------------------------------- the button */
 .button {
-  display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 9px 12px; color: var(--ink-2);
-  font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 9px var(--space-3); color: var(--ink-2);
+  font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer;
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }

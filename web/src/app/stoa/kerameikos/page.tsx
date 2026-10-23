@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
-import Kerameikos from "@/components/stoa/Kerameikos";
+import Kerameikos, { KERAMEIKOS_PLATES } from "@/components/stoa/Kerameikos";
+import { PlateList } from "@/components/plate/Plate";
 import Amphora from "@/components/Amphora";
 import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -19,6 +20,8 @@ export default function StoaKerameikosPage() {
         <h2 id="paint-title">Paint a pot</h2>
         <Amphora />
       </section>
+      {/* the finds' photographs and their credits, as a book lists its plates at the end */}
+      <div className="wrap" style={{ paddingBottom: "var(--space-7)" }}><PlateList ids={KERAMEIKOS_PLATES} label="Photographs of the finds" /></div>
     </Page>
   );
 }

@@ -29,7 +29,7 @@ export function SectionNote({ slug, section, title }: { slug: string; section: s
   if (!note && !open) {
     return (
       <button type="button" className={`chip ${styles.noteBtn}`} onClick={() => setOpen(true)} aria-label={`Write a note on “${title}”`}>
-        <span aria-hidden="true">✎</span><span className={styles.noteWord}>Note</span>
+        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" aria-hidden="true"><path d="M2.8 13.2 3.6 10l7.6-7.6 2.4 2.4L6 12.4z M9.9 3.7l2.4 2.4" /></svg><span className={styles.noteWord}>Note</span>
       </button>
     );
   }

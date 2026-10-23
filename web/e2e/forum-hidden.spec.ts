@@ -6,8 +6,9 @@ import { FORUM_OPEN } from "../src/config/areas";
 test.skip(FORUM_OPEN, "the forum is open");
 test.describe.configure({ timeout: 90_000 });
 
-// the Athenian Agora, the place (the Painted Stoa stood on it), is history, not the forum
-const FORUM_WORDS = /(?<!Athenian )Agora(?! of Athens)|Pnyx|Talk about it|Report a bug|Suggest an idea|Tell us about/;
+// the Athenian Agora, the place (the Painted Stoa stood on it), and the Museum of the Ancient Agora, named in a photograph's
+// credit, are history, not the forum
+const FORUM_WORDS = /(?<!Athenian |Ancient )Agora(?! of Athens)|Pnyx|Talk about it|Report a bug|Suggest an idea|Tell us about/;
 
 async function noForum(page: Page, words = true) {
   await expect(page.locator('a[href^="/town-hall"]')).toHaveCount(0);

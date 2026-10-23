@@ -13,12 +13,12 @@
 .offerings { display: grid; }
 .ogrid {
   list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: repeat(3, auto);
-  grid-auto-flow: column; column-gap: clamp(24px, 4vw, 48px); border-top: 1px solid var(--ink);
+  grid-auto-flow: column; column-gap: clamp(var(--space-5), 4vw, 48px); border-top: 1px solid var(--ink);
 }
 .ogrid li { display: grid; border-bottom: 1px solid var(--rule); }
 .offer {
   display: grid; grid-template-columns: 2.4rem minmax(0, auto) 1fr auto; align-items: baseline; column-gap: 10px;
-  width: 100%; margin: 0; padding: 14px 4px 15px; border: 0; border-radius: 0; background: transparent; color: var(--ink);
+  width: 100%; margin: 0; padding: 14px var(--space-1) 15px; border: 0; border-radius: 0; background: transparent; color: var(--ink);
   font: inherit; text-align: left; cursor: pointer;
 }
 .gn { font: 400 1.1rem var(--face-didot); color: var(--rubric); }
@@ -36,7 +36,7 @@
 /* a phone: one column, each kind's line with what it holds beside its name */
 @media (max-width: 600px) {
   .ogrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
-  .offer { grid-template-columns: 2rem minmax(0, 1fr) auto; padding-block: 11px 12px; min-height: var(--tap); }
+  .offer { grid-template-columns: 2rem minmax(0, 1fr) auto; padding-block: 11px var(--space-3); min-height: var(--tap); }
   .lead { display: none; }
   .offerHint { display: inline; margin: 0 0 0 0.3em; }
 }
@@ -47,15 +47,15 @@
 /* the moderator's private translations (PrivateShelf.tsx), under the contents */
 .private {
   display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-1) 28px;
-  padding: 20px 24px var(--space-4); text-decoration: none; color: var(--ink);
+  padding: 20px var(--space-5) var(--space-4); text-decoration: none; color: var(--ink);
 }
 .privateSeal, .privateTitle, .privateText { grid-column: 1; }   /* the count keeps the right-hand column, even when it is not shown */
-.privateSeal { display: inline-flex; align-items: center; gap: 8px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.privateSeal { display: inline-flex; align-items: center; gap: var(--space-2); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .privateSeal svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 .privateTitle { font: 400 clamp(1.35rem, 2.6vw, 1.7rem) / 1.15 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .private:hover .privateTitle, .private:focus-visible .privateTitle { color: var(--rubric); }
 .privateText { color: var(--ink-2); max-width: 60ch; }
-.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: 4px; min-width: 5.5rem; }
+.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: var(--space-1); min-width: 5.5rem; }
 .privateCount .count { font-size: clamp(2rem, 3.4vw, 2.6rem); }
 .privateGo { grid-column: 1 / -1; justify-self: end; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 /* the double rule uses the outline, so the link gives the focus ring back */
@@ -95,10 +95,10 @@
 .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
 .seg button {
   border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px;
-  font: 500 0.68rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+  font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
-.seg button [lang="grc"] { font: 400 0.9rem / 1 var(--f-greek); letter-spacing: 0.04em; text-transform: none; }
+.seg button [lang="grc"] { font: 400 var(--step--1) / 1 var(--f-greek); letter-spacing: 0.04em; text-transform: none; }
 .seg button:hover:not([aria-pressed="true"]) { color: var(--rubric); }
 .seg button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 @media (pointer: coarse) { .seg button { min-height: var(--tap); } }
@@ -108,7 +108,7 @@
 
 /* ------------------------------------------------ marks grouped by work: a running head over each */
 .group { display: grid; gap: 10px; }
-.workHead { display: flex; align-items: baseline; gap: var(--space-3); margin: 0; padding-bottom: 8px; font: 400 var(--step-1) / 1.2 var(--f-display); box-shadow: var(--cut-under); }
+.workHead { display: flex; align-items: baseline; gap: var(--space-3); margin: 0; padding-bottom: var(--space-2); font: 400 var(--step-1) / 1.2 var(--f-display); box-shadow: var(--cut-under); }
 .workHead a { text-decoration: none; color: var(--ink); }
 .workHead a:hover .workTitle, .workHead a:focus-visible .workTitle { color: var(--rubric); }
 /* an author's name in spaced small capitals, as a book's running head sets it */
@@ -153,10 +153,10 @@
   gap: 0 28px; border-top: 1px solid var(--ink);
 }
 .shelf li { display: grid; border-bottom: 1px solid var(--rule); }
-.spine { display: grid; gap: 3px; align-content: start; padding: 14px 2px 16px; text-decoration: none; color: var(--ink); }
+.spine { display: grid; gap: 3px; align-content: start; padding: 14px 2px var(--space-4); text-decoration: none; color: var(--ink); }
 .spine b { font: italic 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .spine:hover b, .spine:focus-visible b { color: var(--rubric); }
-.at { margin-top: 4px; font-family: var(--f-label); font-size: var(--step--1); color: var(--rubric); }
+.at { margin-top: var(--space-1); font-family: var(--f-label); font-size: var(--step--1); color: var(--rubric); }
 
 /* ------------------------------------------------ latest: entries under hairlines, in columns */
 .cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 0 28px; }
@@ -168,9 +168,9 @@
 /* ------------------------------------------------ anthology: leaves of a book of passages */
 .collectionHead { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
 .collectionName { margin: 0 var(--space-2) 0 0; font: italic 400 var(--step-2) / 1.15 var(--f-display); }
-.anthology { list-style: none; margin: 0; padding: 0; columns: 3 320px; column-gap: 24px; }
+.anthology { list-style: none; margin: 0; padding: 0; columns: 3 320px; column-gap: var(--space-5); }
 /* a leaf: a hairline frame with a red rule down its margin, as a scribe ruled the page */
-.leaf { break-inside: avoid; position: relative; margin: 0 0 24px; display: grid; gap: 10px; padding: 26px var(--space-5) var(--space-4) calc(var(--space-5) + 6px); box-shadow: var(--slab-edge); }
+.leaf { break-inside: avoid; position: relative; margin: 0 0 var(--space-5); display: grid; gap: 10px; padding: 26px var(--space-5) var(--space-4) calc(var(--space-5) + 6px); box-shadow: var(--slab-edge); }
 .leaf::before { content: ""; position: absolute; left: var(--space-3); top: 18px; bottom: 18px; width: 1px; background: var(--rubric); opacity: 0.6; }
 .leafGreek { margin: 0; font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.6; text-wrap: pretty; }
 .leafGreek::first-letter { color: var(--rubric); font-size: 1.6em; line-height: 0; }
@@ -202,7 +202,7 @@
 /* ------------------------------------------------ words: a word list, each word in the Greek type */
 .words { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr)); gap: 0 28px; }
 .words li { display: grid; }
-.wordCard { display: grid; gap: var(--space-1); align-content: start; padding: 14px 0 16px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over); }
+.wordCard { display: grid; gap: var(--space-1); align-content: start; padding: 14px 0 var(--space-4); text-decoration: none; color: var(--ink); box-shadow: var(--cut-over); }
 .wordGr { font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .wordCard:hover .wordGr, .wordCard:focus-visible .wordGr { color: var(--rubric); }
 .gloss { font-size: var(--step-0); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
@@ -219,7 +219,7 @@
 .pickList button:hover, .pickList button:focus-visible { color: var(--rubric); }
 .pickList small { color: var(--ink-2); }
 .authorNotes { list-style: none; margin: 0; padding: 0; display: grid; }
-.authorNote { display: grid; gap: 10px; padding: 16px 0 20px; box-shadow: var(--cut-over); }
+.authorNote { display: grid; gap: 10px; padding: var(--space-4) 0 20px; box-shadow: var(--cut-over); }
 /* the author just chosen: a red rule down its margin */
 .authorNote[data-open] { padding-left: 18px; box-shadow: var(--inlay-left), var(--cut-over); }
 .authorNote h3 { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px var(--space-4); margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
@@ -253,7 +253,7 @@
 .mmPlace circle { fill: var(--rubric); stroke: var(--bg); stroke-width: 1.5; vector-effect: non-scaling-stroke; }
 .mmPlace text { font-family: var(--f-greek); fill: var(--ink); paint-order: stroke; stroke: var(--bg); stroke-linejoin: round; }
 .placeList { list-style: none; margin: 0; padding: 0; display: grid; }
-.placeList li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); align-items: center; padding: 12px 2px; box-shadow: var(--cut-under); }
+.placeList li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); align-items: center; padding: var(--space-3) 2px; box-shadow: var(--cut-under); }
 .placeList a { text-decoration: none; color: inherit; }
 .placeList a:hover b, .placeList a:focus-visible b { color: var(--rubric); }
 .placeList b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
@@ -262,7 +262,7 @@
 .placeList button { grid-row: 1 / span 2; grid-column: 2; }
 
 /* ------------------------------------------------ the way to Downloads, at the foot of the Treasury */
-.offline { display: grid; justify-items: start; gap: 4px; padding: 18px 2px 0; text-decoration: none; color: var(--ink); border-top: 1px solid var(--ink); }
+.offline { display: grid; justify-items: start; gap: var(--space-1); padding: 18px 2px 0; text-decoration: none; color: var(--ink); border-top: 1px solid var(--ink); }
 .offline b { font: 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .offline:hover b, .offline:focus-visible b { color: var(--rubric); }
 .offline > span:last-child { max-width: 64ch; color: var(--ink-2); }

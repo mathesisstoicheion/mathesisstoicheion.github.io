@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { EB_Garamond, GFS_Didot, Gentium_Book_Plus } from "next/font/google";
+import localFont from "next/font/local";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import TabBar from "@/components/TabBar";
@@ -28,6 +29,33 @@ import "./globals.css";
 const garamond = EB_Garamond({ subsets: ["latin"], style: ["normal", "italic"], variable: "--font-garamond", display: "swap" });
 const didot = GFS_Didot({ weight: "400", subsets: ["greek"], variable: "--font-didot", display: "swap" });
 const gentium = Gentium_Book_Plus({ weight: ["400", "700"], style: ["normal", "italic"], subsets: ["greek-ext"], variable: "--font-gentium", display: "swap" });
+// The two typefaces' own arrows and signs ("→", "⋯", "❦", "✓"…), which Google Fonts leaves out of the alphabets above:
+// without them a phone or computer draws these signs in a font of its own (scripts/fetch-sign-fonts.mjs). They stand
+// first in each typeface's list (styles/tokens.css), and each file is fetched only when a page uses one of its signs.
+const garamondSigns = localFont({
+  src: [
+    { path: "../fonts/eb-garamond-signs-normal-400-800.woff2", weight: "400 800", style: "normal" },
+    { path: "../fonts/eb-garamond-signs-italic-400-800.woff2", weight: "400 800", style: "italic" },
+  ],
+  variable: "--font-garamond-signs", display: "swap", preload: false, adjustFontFallback: false,
+  declarations: [{ prop: "unicode-range", value: "U+2190, U+2192, U+2194, U+2197, U+22EF, U+2766, U+261E, U+25C6, U+02D8, U+2075-2076, U+3008-3009, U+2248" }],
+});
+const gentiumSigns = localFont({
+  src: [
+    { path: "../fonts/gentium-book-plus-signs-normal-400.woff2", weight: "400", style: "normal" },
+    { path: "../fonts/gentium-book-plus-signs-normal-700.woff2", weight: "700", style: "normal" },
+    { path: "../fonts/gentium-book-plus-signs-italic-400.woff2", weight: "400", style: "italic" },
+    { path: "../fonts/gentium-book-plus-signs-italic-700.woff2", weight: "700", style: "italic" },
+  ],
+  variable: "--font-gentium-signs", display: "swap", preload: false, adjustFontFallback: false,
+  declarations: [{ prop: "unicode-range", value: "U+2190, U+2192, U+2194, U+2197, U+02D8, U+2713, U+2261, U+266D, U+266F, U+27E6-27E7, U+2135, U+2075-2076, U+2248" }],
+});
+// Gentium Book Plus for the sounds written in the IPA ([ai̯]): its phonetic letters with the marks set under them, which
+// must come from one font (the same script); used only where the IPA is written (--face-ipa), and fetched only there.
+const gentiumIpa = localFont({
+  src: "../fonts/gentium-book-plus-ipa-normal-400.woff2", weight: "400", style: "normal",
+  variable: "--font-gentium-ipa", display: "swap", preload: false, adjustFontFallback: false,
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -53,7 +81,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${garamond.variable} ${didot.variable} ${gentium.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${garamond.variable} ${didot.variable} ${gentium.variable} ${garamondSigns.variable} ${gentiumSigns.variable} ${gentiumIpa.variable}`} suppressHydrationWarning>
       <head>
         {/* the paper (or the night page) from the very first byte, before the stylesheet arrives, so no page ever flashes
             the wrong colour (:where gives way to every rule of the stylesheet's own) */}

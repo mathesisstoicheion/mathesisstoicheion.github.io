@@ -62,21 +62,27 @@
   --space-7: 56px;
   --space-8: 80px;
 
-  /* type sizes: a book's, set in EB Garamond at 19 px on a computer and 18 px on a phone (the sample's body) */
-  --step--2: 0.75rem;                         /* small capitals spaced wide: labels, kickers */
+  /* type sizes: a book's, its text set in EB Garamond at 19 px on a computer and 18 px on a phone (the sample's body).
+     Every size of words on the site is one of these (scripts/check-design.mjs); only lettering in GFS Didot (titles,
+     numerals, the logo) and the reader's own Greek size stand outside them. */
+  --step--2: 0.75rem;                         /* small capitals spaced wide: labels, kickers, plate numbers */
   --step--1: 0.875rem;                        /* captions, credits, small print */
-  --step-0: 1rem;                             /* reading text */
+  --step-0: 1rem;                             /* a quieter line beside the text: a note, a hint, a gloss */
   --step-sub: 1.125rem;                       /* a small heading, a row's name */
+  --step-text: 1.1875rem;                     /* the text itself (18 px on phones and narrow screens, below) */
   --step-1: 1.25rem;                          /* a lede */
   --step-2: 1.6rem;                           /* h3 */
   --step-3: clamp(1.9rem, 3.4vw, 2.6rem);     /* h2 */
   --step-4: clamp(2.8rem, 6.6vw, 5.6rem);     /* a page's title */
 
   /* typefaces, three and no more (SPEC.md 3.2): EB Garamond for English, GFS Didot for titles, Greek room names and the
-     logo, Gentium Book Plus for Greek being read. The next/font variables are set in app/layout.tsx. */
-  --face-garamond: var(--font-garamond), "EB Garamond", var(--font-gentium), Georgia, serif;
-  --face-didot: var(--font-didot), "GFS Didot", var(--font-gentium), serif;
-  --face-gentium: var(--font-gentium), "Gentium Book Plus", var(--font-garamond), serif;
+     logo, Gentium Book Plus for Greek being read. The next/font variables are set in app/layout.tsx. Each list starts with
+     the typefaces' own arrows and signs (--font-*-signs: only those few signs, so for every other letter the browser goes
+     on to the typeface itself); without them a device would draw "→" or "✓" in a font of its own. */
+  --face-garamond: var(--font-garamond-signs), var(--font-gentium-signs), var(--font-garamond), "EB Garamond", var(--font-gentium), Georgia, serif;
+  --face-didot: var(--font-gentium-signs), var(--font-garamond-signs), var(--font-didot), "GFS Didot", var(--font-gentium), serif;
+  --face-gentium: var(--font-gentium-signs), var(--font-garamond-signs), var(--font-gentium), "Gentium Book Plus", var(--font-garamond), serif;
+  --face-ipa: var(--font-gentium-ipa), var(--face-gentium); /* the sounds in the IPA: Gentium's letters with their marks */
   /* older names, kept so every stylesheet resolves to one of the three */
   --face-display: var(--face-garamond);
   --face-text: var(--face-garamond);
@@ -98,6 +104,14 @@
   --dur-enter: var(--ink-in);
   --enter-step: var(--ink-step);
   --dur-fade: 0.9s;
+
+  /* the small triangle of a fold (pointing right while it is shut, down when open) and of a button that plays: drawn,
+     not set in type, since none of the three typefaces has one. A box of --tri-size, painted in the colour of the words
+     (background: currentColor) and cut to one of these shapes with clip-path. */
+  --tri-size: 0.46em;
+  --tri-right: polygon(0 0, 100% 50%, 0 100%);
+  --tri-down: polygon(0 0, 100% 0, 50% 100%);
+  --tri-up: polygon(50% 0, 100% 100%, 0 100%);
 
   /* shape: hairlines and square corners, as a printed page has */
   --radius: 0px;
@@ -175,6 +189,31 @@
   --select-arrow: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' fill='none' stroke='%23ebe1cf' stroke-width='1.3'/%3E%3C/svg%3E");
   --case-nom: #56b4e9; --case-gen: #d9c24a; --case-dat: #009e73; --case-acc: #d55e00; --case-voc: #cc79a7;
   color-scheme: dark;
+}
+
+/* ---------------------------------------------------------- the maps
+   The small maps (the reader's Places, the Treasury's places, the Explore card) are printed like an atlas's plates: the
+   land a warm tint of the paper, the sea a shade darker, the coast a fine line of ink, the names in ink with a halo of the
+   land. The Periplus lies on NASA's satellite picture, softened for the page (--map-dim multiplies it). */
+:root {
+  --map-land: #e6d8bd; --map-sea: #cfc3ab; --map-coast: rgba(30, 26, 21, 0.45); --map-wave: rgba(30, 26, 21, 0.05);
+  --map-name: #1e1a15; --map-halo: #e6d8bd; --map-accent-sea: #a3301a;
+  --map-edge: #b9aa8e; --map-dim: #f3ece0; --map-shadow: rgba(40, 28, 14, 0.4);
+  --map-sea-name: #2f4f5a; --map-sea-halo: rgba(207, 195, 171, 0.8); --map-region: #5c5043; --map-region-halo: rgba(243, 236, 224, 0.75);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="paper"]) {
+    --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
+    --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
+    --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
+    --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
+  }
+}
+:root[data-theme="night"] {
+  --map-land: #3b3026; --map-sea: #0f1011; --map-coast: rgba(235, 225, 207, 0.34); --map-wave: rgba(235, 225, 207, 0.05);
+  --map-name: #ebe1cf; --map-halo: #3b3026; --map-accent-sea: #e0805f;
+  --map-edge: #15120f; --map-dim: #858b9c; --map-shadow: #000;
+  --map-sea-name: #c4dae6; --map-sea-halo: rgba(3, 10, 22, 0.75); --map-region: #eadbc0; --map-region-halo: rgba(0, 0, 0, 0.65);
 }
 
 /* ---------------------------------------------------------- the roles every stylesheet uses, made from the above.

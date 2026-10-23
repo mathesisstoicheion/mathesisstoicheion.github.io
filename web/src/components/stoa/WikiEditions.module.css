@@ -4,8 +4,8 @@
 .group:last-of-type { border-bottom: 1px solid var(--rule); }
 .group > summary { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; padding: 14px 2px; cursor: pointer; list-style: none; min-height: var(--tap); }
 .group > summary::-webkit-details-marker { display: none; }
-.group > summary::before { content: "▸"; color: var(--accent); margin-right: 10px; display: inline-block; }
-.group[open] > summary::before { content: "▾"; }
+.group > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--accent); margin-right: 10px; }
+.group[open] > summary::before { clip-path: var(--tri-down); }
 .group > summary:hover .gname { color: var(--rubric); }
 .gname { flex: 1; font-family: var(--f-title); font-size: var(--step-1); line-height: 1.25; transition: color var(--dur-quick) var(--ease); }
 .gcount { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); }

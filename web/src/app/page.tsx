@@ -11,6 +11,14 @@ import { hasTranslation, type Catalog } from "@/lib/catalog";
 import { maker, objectDate, photo } from "@/lib/photos";
 import h from "@/components/home/Home.module.css";
 
+/** The cross that closes the page either side of ΤΕΛΟΣ, as the sample sets it ("✠"): drawn, since none of the three typefaces
+ *  has the sign, in the red of the words around it (Home.module.css .cross) */
+const Cross = () => (
+  <svg className={h.cross} viewBox="0 0 100 100" aria-hidden="true">
+    <path d="M50 50 38 4 50 16 62 4z M50 50 96 38 84 50 96 62z M50 50 62 96 50 84 38 96z M50 50 4 62 16 50 4 38z" />
+  </svg>
+);
+
 // The library's size, counted from the catalogue when the site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
 const WORKS = CATALOG.authors.flatMap((a) => a.works);
@@ -21,7 +29,7 @@ const ALL_ROOMS: { id: AreaId; text: string }[] = [
   { id: "study", text: "Lessons from the first letters to reading real texts." },
   { id: "library", text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
   { id: "wiki", text: "People, places and objects of the ancient world." },
-  { id: "forum", text: "The forum: ask, answer, and read together." },
+  { id: "forum", text: "The Agora: ask, answer, and read together." },
   { id: "treasury", text: "Your bookmarks, notes, highlights and words." },
 ];
 const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
@@ -90,7 +98,7 @@ export default function Home() {
           </ol>
         </section>
 
-        <p className={h.fin} aria-hidden="true">✠ ΤΕΛΟΣ ✠</p>
+        <p className={h.fin} aria-hidden="true"><Cross /> ΤΕΛΟΣ <Cross /></p>
         <div className={h.colophon}>
           <p><b>Colophon.</b> Set in EB Garamond, GFS Didot and Gentium Book Plus. The Greek texts and their English translations
             are read from the Perseus Digital Library and the First Thousand Years of Greek project; each passage names its editor

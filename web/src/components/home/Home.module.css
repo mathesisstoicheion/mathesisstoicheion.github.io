@@ -3,13 +3,13 @@
    of the day as a two-language spread; the Contents; the credits and the colophon. */
 
 /* ---- the title page ---- */
-.titlePage { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(24px, 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: 56px; align-items: end; }
+.titlePage { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: var(--space-7); align-items: end; }
 .kicker { display: flex; gap: 14px; align-items: center; color: var(--ink-2); }
 .kicker::before { content: ""; width: 28px; height: 1px; background: var(--rubric); flex: none; }
 .title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 22px 0 26px; }
 .title em { font-style: italic; color: var(--rubric); }
-.lede { font-size: 1.18rem; max-width: 30em; color: var(--ink-2); margin: 0 0 30px; }
-.btns { display: flex; flex-wrap: wrap; gap: 12px 22px; align-items: center; }
+.lede { font-size: var(--step-1); max-width: 30em; color: var(--ink-2); margin: 0 0 30px; }
+.btns { display: flex; flex-wrap: wrap; gap: var(--space-3) 22px; align-items: center; }
 .titlePlate { max-width: 460px; justify-self: end; width: 100%; }
 /* the rule under the title page, drawn in red from the left as it inks in */
 .drawn { position: relative; height: 1px; }
@@ -21,11 +21,11 @@
 
 /* ---- where are you starting: three numbered paragraphs ---- */
 .starts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); }
-.start { border-top: 1px solid var(--ink); padding-top: 16px; text-decoration: none; display: block; color: var(--ink); }
+.start { border-top: 1px solid var(--ink); padding-top: var(--space-4); text-decoration: none; display: block; color: var(--ink); }
 .rn { font: 400 2.2rem / 1 var(--face-didot); color: var(--rubric); display: block; margin-bottom: 10px; }
-.start h3 { font: 500 1.25rem / 1.2 var(--f-display); margin: 0 0 8px; transition: color var(--dur) var(--ease); }
-.start p { margin: 0; color: var(--ink-2); font-size: 1rem; }
-.start .go { display: inline-block; margin-top: 12px; font: 500 0.7rem / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); transition: color var(--dur) var(--ease); }
+.start h3 { font: 500 var(--step-1) / 1.2 var(--f-display); margin: 0 0 var(--space-2); transition: color var(--dur) var(--ease); }
+.start p { margin: 0; color: var(--ink-2); font-size: var(--step-0); }
+.start .go { display: inline-block; margin-top: var(--space-3); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); transition: color var(--dur) var(--ease); }
 .start:hover h3, .start:focus-visible h3, .start:hover .go, .start:focus-visible .go { color: var(--rubric); }
 .guide { margin-top: 26px; color: var(--ink-2); font-size: var(--step--1); }
 .guide::before { content: "☞ "; color: var(--rubric); }
@@ -35,8 +35,8 @@
 /* ---- coming back: your desk, set as a short table ---- */
 .desk { max-width: 860px; }
 .drows { border-top: 1px solid var(--ink); }
-.drow { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: 4px 20px; padding: 14px 0; border-bottom: 1px solid var(--rule); line-height: 1.45; }
-.dlabel { font: 500 0.7rem / 1.6 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); padding-top: 0.2em; }
+.drow { display: grid; grid-template-columns: 11em minmax(0, 1fr); gap: var(--space-1) 20px; padding: 14px 0; border-bottom: 1px solid var(--rule); line-height: 1.45; }
+.dlabel { font: 500 var(--step--2) / 1.6 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); padding-top: 0.2em; }
 .drow b { font-weight: 500; }
 .drow a { color: var(--ink); text-underline-offset: 3px; text-decoration-color: var(--rule); }
 .drow a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
@@ -55,10 +55,10 @@
   background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--gutter-shade) 70%, transparent) 46%, var(--gutter-shade) 50%, color-mix(in srgb, var(--gutter-shade) 70%, transparent) 54%, transparent); }
 .spread.one { grid-template-columns: 1fr; }
 .spread.one::after { display: none; }
-.leaf { padding: clamp(28px, 4vw, 56px) clamp(24px, 4vw, 60px); position: relative; min-width: 0; }
-.folio { position: absolute; top: 18px; font: italic 400 0.82rem / 1 var(--f-body); color: var(--ink-3); }
-.leafV .folio { left: clamp(24px, 4vw, 60px); }
-.leafR .folio { right: clamp(24px, 4vw, 60px); }
+.leaf { padding: clamp(28px, 4vw, var(--space-7)) clamp(var(--space-5), 4vw, 60px); position: relative; min-width: 0; }
+.folio { position: absolute; top: 18px; font: italic 400 var(--step--1) / 1 var(--f-body); color: var(--ink-3); }
+.leafV .folio { left: clamp(var(--space-5), 4vw, 60px); }
+.leafR .folio { right: clamp(var(--space-5), 4vw, 60px); }
 .gk { margin-top: 22px; font: 400 clamp(1.3rem, 2.1vw, 1.6rem) / 1.6 var(--f-greek); }
 .gk :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; font-size: 1em; color: var(--rubric); }
 .gk > div:first-child { text-indent: 0; }
@@ -71,23 +71,24 @@
 .sig { margin-top: 28px; font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
 .sig a { color: var(--rubric); }
 .waiting { font-style: italic; color: var(--ink-2); padding: 20px 0; }
-.podFoot { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: clamp(24px, 4vw, 56px); margin-top: 28px; align-items: start; }
+.podFoot { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
 .podFoot .about { color: var(--ink-2); max-width: 40em; }
 .podFoot .about a { color: var(--rubric); }
 
 /* ---- contents: the rooms, set like a book's table of contents ---- */
 .toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .toc li { border-bottom: 1px solid var(--rule); }
-.toc a { display: grid; grid-template-columns: 3.2rem minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px 4px; text-decoration: none; color: var(--ink); }
+.toc a { display: grid; grid-template-columns: 3.2rem minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
 .gn { font: 400 1.25rem var(--face-didot); color: var(--rubric); }
-.t { font: 500 1.35rem / 1.2 var(--f-display); transition: color var(--dur) var(--ease); }
-.t i { display: block; font: 400 0.98rem / 1.4 var(--f-body); font-style: normal; color: var(--ink-2); margin-top: 2px; }
+.t { font: 500 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur) var(--ease); }
+.t i { display: block; font: 400 var(--step-0) / 1.4 var(--f-body); font-style: normal; color: var(--ink-2); margin-top: 2px; }
 .lead { border-bottom: 1px dotted var(--ink-3); transform: translateY(-7px); min-width: 20px; }
-.gr { font: italic 400 1.2rem var(--f-greek); color: var(--ink-2); transition: color var(--dur) var(--ease); }
+.gr { font: italic 400 var(--step-1) var(--f-greek); color: var(--ink-2); transition: color var(--dur) var(--ease); }
 .toc a:hover .gr, .toc a:hover .t, .toc a:focus-visible .t { color: var(--rubric); }
 
 /* ---- the end: ΤΕΛΟΣ and the colophon ---- */
-.fin { text-align: center; font: 400 1.6rem var(--face-didot); color: var(--rubric); margin: 80px 0 0; letter-spacing: 0.4em; }
+.fin { text-align: center; font: 400 1.6rem var(--face-didot); color: var(--rubric); margin: var(--space-8) 0 0; letter-spacing: 0.4em; }
+.cross { display: inline-block; width: 0.62em; height: 0.62em; vertical-align: 0.02em; fill: currentColor; }
 .colophon { margin-top: 40px; padding: 28px 0 0; border-top: 1px solid var(--ink); font-size: var(--step--1); color: var(--ink-3); columns: 2; column-gap: 48px; }
 .colophon p { margin: 0 0 0.8em; break-inside: avoid; }
 .colophon b { color: var(--ink-2); font-weight: 500; }

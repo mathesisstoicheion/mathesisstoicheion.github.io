@@ -3,13 +3,13 @@
    matters. Nothing lifts, slides, shakes or turns over: what changes inks in where it stands (decision 3). The one pen
    that moves is the one that writes a letter's strokes, since writing them in order is what that drawing teaches. */
 .small { font-size: var(--step--1); color: var(--ink-2); }
-.inlineGr { font-family: var(--f-greek); font-size: 1.15em; }
+.inlineGr { font-family: var(--f-greek); }   /* Greek inside an English line is the size of the line, as the printed page sets it */
 /* a row of choices: small capitals in a hairline frame, the chosen one in ink with paper letters (as in Settings); when
    the choices wrap onto a second row (phones) each keeps its own frame */
 .seg { display: inline-flex; flex-wrap: wrap; border: 1px solid var(--rule); border-radius: var(--radius); overflow: hidden; }
 .seg button {
-  flex: 1 1 auto; background: transparent; border: 0; border-radius: var(--radius); padding: 9px 12px; color: var(--ink-2);
-  font: 500 0.7rem / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  flex: 1 1 auto; background: transparent; border: 0; border-radius: var(--radius); padding: 9px var(--space-3); color: var(--ink-2);
+  font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
   transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
 }
 .seg button:hover:not([aria-checked="true"]) { color: var(--rubric); }
@@ -57,7 +57,7 @@
 @media (min-width: 1100px) { .alphaGrid { grid-template-columns: repeat(12, minmax(0, 1fr)); } }
 /* a letter: set in a hairline frame like a piece of type in its case; the chosen one in ink with a paper letter */
 .tile {
-  display: grid; justify-items: center; gap: 2px; padding: 12px 6px; text-align: center;
+  display: grid; justify-items: center; gap: 2px; padding: var(--space-3) 6px; text-align: center;
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
   transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
@@ -75,21 +75,21 @@
 }
 
 .detail {
-  scroll-margin-top: calc(var(--hdr-vis) + 12px);
+  scroll-margin-top: calc(var(--hdr-vis) + var(--space-3));
   display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 48px); align-items: start;
-  padding: clamp(20px, 3vw, 36px); box-shadow: var(--field-edge);
+  padding: clamp(20px, 3vw, var(--space-6)); box-shadow: var(--field-edge);
   animation: ink-in var(--dur) var(--ease) backwards;
 }
 @keyframes ink-in { from { opacity: 0; } }
 :global(html[data-hdr="hidden"]) .detail { --hdr-vis: 0px; }
-.detailDraw { display: grid; gap: 12px; justify-items: center; }
-.detailText { display: grid; gap: 12px; align-content: start; max-width: 60ch; }
+.detailDraw { display: grid; gap: var(--space-3); justify-items: center; }
+.detailText { display: grid; gap: var(--space-3); align-content: start; max-width: 60ch; }
 .bigName { display: flex; align-items: center; gap: 14px; font-family: var(--f-title); font-weight: 400; font-size: clamp(2rem, 4vw, 3rem); line-height: 1.1; }
 .bigName span[lang] { color: var(--accent); font-family: var(--f-greek); }
 /* how it sounds: set in from a red rule, as a printer's note */
-.soundBox { display: grid; gap: 4px; padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); }
+.soundBox { display: grid; gap: var(--space-1); padding: var(--space-1) 0 var(--space-1) var(--space-4); box-shadow: var(--inlay-left); }
 .say2 { font-size: var(--step-sub); }
-.ipa { font-family: var(--face-gentium); color: var(--ink-2); }   /* Gentium has the phonetic letters */
+.ipa { font-family: var(--face-ipa); color: var(--ink-2); }   /* Gentium has the phonetic letters and the marks under them */
 .example { display: grid; gap: 2px; }
 .navLetters { display: flex; justify-content: space-between; gap: 10px; }
 /* hear it: a small round in a hairline, a red speaker in it */
@@ -101,9 +101,9 @@
 .say:hover { border-color: var(--rubric); color: var(--rubric); }
 
 .diph h2 { font-size: var(--step-2); }
-.diph table { width: 100%; border-collapse: collapse; margin-top: 12px; }
-.diph th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); text-align: left; color: var(--ink-2); padding: 6px 8px; box-shadow: var(--cut-under); }
-.diph td { padding: 10px 8px; box-shadow: var(--cut-under); vertical-align: top; }
+.diph table { width: 100%; border-collapse: collapse; margin-top: var(--space-3); }
+.diph th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); text-align: left; color: var(--ink-2); padding: 6px var(--space-2); box-shadow: var(--cut-under); }
+.diph td { padding: 10px var(--space-2); box-shadow: var(--cut-under); vertical-align: top; }
 
 @media (max-width: 760px) { .detail { grid-template-columns: minmax(0, 1fr); padding: var(--space-4); } }
 
@@ -116,7 +116,7 @@
 @media (min-width: 900px) { .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--space-5); } }
 @media (max-width: 560px) { .tools .card h3 { font-size: var(--step-1); } .tools .card p { display: none; } }
 /* each a catalogue entry under a hairline: its Greek name in red, its title in Didot, red under the hand */
-.card { display: grid; gap: 6px; align-content: start; padding: 16px 2px 18px; box-shadow: var(--cut-over); text-decoration: none; color: var(--ink); }
+.card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px 18px; box-shadow: var(--cut-over); text-decoration: none; color: var(--ink); }
 .card h3 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .card .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-sub); }
@@ -126,7 +126,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 /* (a column, so that the search bar below can stay under the header all the way down: a sticky grid item may not leave its grid row) */
 .tables { display: flex; flex-direction: column; gap: 28px; }
 .tableGrid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 28px; }
-.tablesTools { display: flex; flex-wrap: wrap; gap: 12px 18px; align-items: center; }
+.tablesTools { display: flex; flex-wrap: wrap; gap: var(--space-3) 18px; align-items: center; }
 /* the search and the filters stay at the top while the tables go by: the paper itself, with a hairline along its foot;
    --hdr-vis is set to 0 here while the header is tucked away (never on <html>) */
 .tables > .tablesTools {
@@ -135,7 +135,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 }
 :global(html[data-hdr="hidden"]) .tables > .tablesTools { --hdr-vis: 0px; }
 .searchInput { flex: 1 1 320px; min-width: 0; font: inherit; font-size: var(--step-0); color: var(--ink); border-radius: var(--radius); padding: 10px 14px; }
-.found { display: grid; gap: 4px; font-size: var(--step-0); padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); }
+.found { display: grid; gap: var(--space-1); font-size: var(--step-0); padding: var(--space-1) 0 var(--space-1) var(--space-4); box-shadow: var(--inlay-left); }
 .found a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .found a:hover { color: var(--rubric); }
 .table { position: relative; }
@@ -148,10 +148,10 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 /* while a table can still be scrolled sideways, its right edge fades into the paper (Tables.tsx sets data-more) */
 .scrollX[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
 .table table { border-collapse: collapse; min-width: 100%; box-shadow: var(--field-edge); }
-.table th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); color: var(--ink-2); text-align: left; padding: 8px 12px; white-space: nowrap; }
+.table th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); color: var(--ink-2); text-align: left; padding: var(--space-2) var(--space-3); white-space: nowrap; }
 .table thead th, .table tbody th { box-shadow: var(--cut-under); }
 .table tbody tr:last-child > * { box-shadow: none; }
-.table td { font-family: var(--f-greek); font-size: var(--step-1); padding: 8px 12px; box-shadow: var(--cut-under); white-space: nowrap; }
+.table td { font-family: var(--f-greek); font-size: var(--step-1); padding: var(--space-2) var(--space-3); box-shadow: var(--cut-under); white-space: nowrap; }
 /* an ending in red; when the forms change it inks in afresh */
 .ending { color: var(--accent); display: inline-block; animation: ink-in var(--dur-slow) var(--ease) both; }
 /* wide: the small tables stand two to a row; the big ones (more than three columns) take the whole row */
@@ -172,7 +172,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 
 /* hub: lesson path and progress */
 .path { list-style: none; margin: 0; padding: 0; box-shadow: var(--cut-over); }
-.pathItem { display: grid; grid-template-columns: 48px 1fr auto; gap: 16px; align-items: center; padding: 14px 8px; text-decoration: none; box-shadow: var(--cut-under); transition: background-color var(--dur-quick) var(--ease); }
+.pathItem { display: grid; grid-template-columns: 48px 1fr auto; gap: var(--space-4); align-items: center; padding: 14px var(--space-2); text-decoration: none; box-shadow: var(--cut-under); transition: background-color var(--dur-quick) var(--ease); }
 .pathItem:hover { background-color: var(--bg-2); }
 .pathNo { font-family: var(--f-title); font-size: var(--step-2); color: var(--accent); text-align: center; }
 .pathItem b { font-size: var(--step-sub); }
@@ -181,7 +181,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .pathMin { font-family: var(--f-label); font-size: var(--step--1); color: var(--ink-2); }
 /* phones: the lesson title gets the width; the time goes under the summary */
 @media (max-width: 560px) {
-  .pathItem { grid-template-columns: 32px minmax(0, 1fr); gap: 4px 12px; align-items: start; padding: 14px 4px; }
+  .pathItem { grid-template-columns: 32px minmax(0, 1fr); gap: var(--space-1) var(--space-3); align-items: start; padding: 14px var(--space-1); }
   .pathNo { font-size: var(--step-2); line-height: 1.2; }
   .pathMin { grid-column: 2; }
 }
@@ -189,9 +189,9 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 /* where the learner stands: between an ink rule and a hairline, the counts in red Didot figures */
 .progress {
   display: grid; grid-template-columns: auto 1fr; gap: 20px 40px; align-items: center;
-  padding: clamp(16px, 2.5vw, 24px) 2px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); color: var(--ink);
+  padding: clamp(var(--space-4), 2.5vw, var(--space-5)) 2px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); color: var(--ink);
 }
-.stats { display: flex; flex-wrap: wrap; gap: 12px 32px; }
+.stats { display: flex; flex-wrap: wrap; gap: var(--space-3) 32px; }
 .stats div { display: grid; }
 .stats b { font-family: var(--f-title); font-weight: 400; font-size: 2.4rem; line-height: 1; color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 .stats small { font-size: 0.5em; color: var(--ink-2); }
@@ -204,18 +204,18 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 /* phones: the four numbers in two even columns (written after .stats, so it wins) */
 @media (max-width: 760px) {
   .progress { grid-template-columns: minmax(0, 1fr); }
-  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 20px; }
+  .stats { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4) 20px; }
 }
 
 /* lessons */
 .lesson { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
 .lp { font-size: var(--step-sub); line-height: 1.75; max-width: 70ch; }
-.tipBox { display: grid; gap: 6px; padding: 4px 0 4px 18px; box-shadow: var(--inlay-left); max-width: 70ch; }
-.made { display: grid; gap: 8px; padding: 16px 18px; box-shadow: var(--field-edge); border-radius: var(--radius); }
+.tipBox { display: grid; gap: 6px; padding: var(--space-1) 0 var(--space-1) 18px; box-shadow: var(--inlay-left); max-width: 70ch; }
+.made { display: grid; gap: var(--space-2); padding: var(--space-4) 18px; box-shadow: var(--field-edge); border-radius: var(--radius); }
 .made p { font-size: var(--step-sub); }
 .check { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 20px; box-shadow: var(--field-edge); border-radius: var(--radius); }
 .q { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
-.q legend { font-size: var(--step-sub); font-weight: 600; margin-bottom: 8px; }
+.q legend { font-size: var(--step-sub); font-weight: 600; margin-bottom: var(--space-2); }
 /* the answers to a question: the same full-width, left-aligned rows as a lesson's practice and test (Workout.module.css) */
 .options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--space-3); }
 .options button {
@@ -235,7 +235,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .revealGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
 @media (max-width: 560px) { .revealGrid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .revealCard {
-  display: grid; gap: 6px; padding: 16px; text-align: left; color: var(--ink);
+  display: grid; gap: 6px; padding: var(--space-4); text-align: left; color: var(--ink);
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
   transition: border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
@@ -252,10 +252,10 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .revealed .revealAns { color: var(--ink); }
 .revealed .revealText { visibility: visible; animation: ink-in var(--dur) var(--ease) backwards; }
 .realList { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.real { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; padding: clamp(16px, 3vw, 26px); box-shadow: var(--field-edge); }
-.realHead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; align-items: center; }
+.real { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); padding: clamp(var(--space-4), 3vw, 26px); box-shadow: var(--field-edge); }
+.realHead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); align-items: center; }
 .realHead a { text-decoration: none; }
-.realBody { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: 24px; }
+.realBody { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-5); }
 .realGr [data-quote] { background: color-mix(in srgb, var(--accent) 12%, transparent); border-bottom: 2px solid var(--accent); }
 .realTr { font-size: var(--step-0); line-height: 1.65; color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 18px; }
 .realNote { font-size: var(--step-0); }
@@ -265,16 +265,16 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 @media (max-width: 760px) { .realBody { grid-template-columns: minmax(0, 1fr); } .realTr { box-shadow: var(--cut-over); padding: var(--space-3) 0 0; } }
 .words { display: grid; gap: 10px; }
 .words ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-.inDeck { font-family: var(--f-label); font-size: var(--step--2); color: var(--ok); margin-left: 8px; }
+.inDeck { font-family: var(--f-label); font-size: var(--step--2); color: var(--ok); margin-left: var(--space-2); }
 .words :global(.btn) { justify-self: start; }
-.lessonEnd { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; padding-top: 20px; box-shadow: var(--cut-over); }
+.lessonEnd { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; padding-top: 20px; box-shadow: var(--cut-over); }
 .lessonEnd :global(.btn) { margin-left: auto; }
 /* "Mark as read, without the test": a small text link under the two steps */
 .markRead { justify-self: start; min-height: var(--tap); padding: var(--space-2) 0; background: none; border: 0; color: var(--ink-2); font-size: var(--step-0); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; }
 .markRead:hover { color: var(--rubric); }
 
 /* review */
-.row { display: flex; flex-wrap: wrap; gap: 12px; }
+.row { display: flex; flex-wrap: wrap; gap: var(--space-3); }
 .review { display: grid; gap: 18px; justify-items: center; }
 .reviewEmpty { display: grid; gap: 14px; justify-items: start; padding-block: 20px; }
 .reviewBig { font-family: var(--f-title); font-weight: 400; font-size: var(--step-2); }
@@ -282,7 +282,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .flash { width: min(520px, 100%); height: 280px; }
 .flashIn { position: relative; width: 100%; height: 100%; }
 .flashFront, .flashBack {
-  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 12px; padding: 24px; text-align: center;
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: var(--space-3); padding: var(--space-5); text-align: center;
   border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink);
 }
 .flashBack { visibility: hidden; opacity: 0; background: var(--bg-2); box-shadow: inset 0 2px 0 var(--accent); }
@@ -291,7 +291,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .flashWord { font-family: var(--f-greek); font-size: clamp(2.6rem, 8vw, 4rem); }
 .flashSmall { font-family: var(--f-greek); font-size: var(--step-1); color: var(--accent); }
 .flashGloss { font-size: var(--step-1); max-width: 36ch; }
-.grades { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; width: min(620px, 100%); }
+.grades { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--space-2); width: min(620px, 100%); }
 .grade {
   display: grid; gap: 2px; padding: 10px; text-align: center; color: var(--ink);
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
@@ -306,7 +306,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .flash { position: relative; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .flipped { cursor: grab; touch-action: none; }
 .lean {
-  position: absolute; z-index: 3; top: 18px; padding: 4px 12px; border: 1px solid currentColor; border-radius: var(--radius); pointer-events: none;
+  position: absolute; z-index: 3; top: 18px; padding: var(--space-1) var(--space-3); border: 1px solid currentColor; border-radius: var(--radius); pointer-events: none;
   font-family: var(--f-label); font-size: var(--step--1); font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
   opacity: 0; background: var(--bg);
 }
@@ -323,14 +323,14 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 }
 
 /* vocabulary */
-.vocabPage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 36px; }
-.vocabSearch .searchInput { font-size: var(--step-0); padding: 13px 16px; }
-.vocabSearch select { font: inherit; color: var(--ink); border-radius: var(--radius); padding: 12px 10px; }
+.vocabPage { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
+.vocabSearch .searchInput { font-size: var(--step-0); padding: 13px var(--space-4); }
+.vocabSearch select { font: inherit; color: var(--ink); border-radius: var(--radius); padding: var(--space-3) 10px; }
 @media (max-width: 760px) { .vocabSearch select { flex: 1 1 100%; } }
 .coverage { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; padding: clamp(18px, 3vw, 28px); box-shadow: var(--field-edge); }
-.covPick { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; justify-items: start; min-width: 0; }
+.covPick { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-1); justify-items: start; min-width: 0; }
 .covPick select { max-width: 100%; }
-.covPick select, .coreList select { font: inherit; color: var(--ink); border-radius: var(--radius); padding: 8px 10px; }
+.covPick select, .coreList select { font: inherit; color: var(--ink); border-radius: var(--radius); padding: var(--space-2) 10px; }
 .covBars { display: grid; gap: 10px; }
 .covRow { display: grid; grid-template-columns: minmax(180px, 1.2fr) 2fr 56px; gap: 14px; align-items: center; }
 /* how much of a text is known: a red bar on a hairline track, drawn as it is (no growing) */
@@ -340,8 +340,8 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 @media (max-width: 640px) { .covRow { grid-template-columns: 1fr 56px; } .covBar { grid-column: 1 / -1; order: 3; } }
 .coreList { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
 .coreTable { width: 100%; border-collapse: collapse; box-shadow: var(--field-edge); }
-.coreTable th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); text-align: left; color: var(--ink-2); padding: 10px 10px 8px; box-shadow: var(--cut-under); }
-.coreTable td { padding: 8px 10px; box-shadow: var(--cut-under); vertical-align: top; }
+.coreTable th { font-family: var(--f-label); font-weight: 500; font-size: var(--step--1); text-align: left; color: var(--ink-2); padding: 10px 10px var(--space-2); box-shadow: var(--cut-under); }
+.coreTable td { padding: var(--space-2) 10px; box-shadow: var(--cut-under); vertical-align: top; }
 .coreTable tbody tr:last-child td { box-shadow: none; }
 .rank { font-family: var(--f-label); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 /* phones: each word becomes a small entry (number, word and Learn button on top; meaning and kind below),
@@ -349,7 +349,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 @media (max-width: 560px) {
   .coreTable thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
   .coreTable, .coreTable tbody { display: block; }
-  .coreTable tr { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; gap: 2px 10px; align-items: baseline; padding: 10px 8px; box-shadow: var(--cut-under); }
+  .coreTable tr { display: grid; grid-template-columns: 2.4em minmax(0, 1fr) auto; gap: 2px 10px; align-items: baseline; padding: 10px var(--space-2); box-shadow: var(--cut-under); }
   .coreTable td { display: block; padding: 0; border: 0; box-shadow: none; }
   .coreTable td:nth-child(3), .coreTable td:nth-child(4) { grid-column: 2 / -1; }
   .coreTable td:nth-child(5) { grid-column: 3; grid-row: 1; align-self: center; }
@@ -364,7 +364,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .recorded { background: color-mix(in srgb, var(--ok) 8%, transparent); }
 .studioSay { font-family: var(--f-greek); font-size: var(--step-1); }
 .studioGuide { font-size: var(--step--1); color: var(--ink-2); }
-.studioActs { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.studioActs { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; }
 .studioActs audio { height: 32px; max-width: 220px; }
 @media (max-width: 760px) { .studioGroup li { grid-template-columns: minmax(0, 1fr); } }
 
@@ -373,7 +373,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .drill { display: grid; gap: 14px; padding: clamp(18px, 3vw, 28px); box-shadow: var(--field-edge); }
 .drillQ { font-size: var(--step-sub); }
 .optGr { font-family: var(--f-greek); font-size: var(--step-1) !important; }
-.drillFoot { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; }
+.drillFoot { display: flex; flex-wrap: wrap; gap: var(--space-3) 20px; align-items: center; justify-content: space-between; }
 
 /* Phones: answers are large rows, one under another, in reach of the thumb; never the keyboard */
 @media (max-width: 760px) {
@@ -402,16 +402,16 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .sessionDone ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: var(--step-sub); }
 .sessionDone li::marker { color: var(--accent); }
 .sessionDays { font-size: var(--step-sub); }
-.sessionDays b { font-family: var(--f-title); font-size: 2.4rem; color: var(--accent); font-weight: 400; margin-right: 4px; }
+.sessionDays b { font-family: var(--f-title); font-size: 2.4rem; color: var(--accent); font-weight: 400; margin-right: var(--space-1); }
 .sessionFoot { display: flex; justify-content: flex-end; gap: 10px; padding-top: var(--space-2); box-shadow: var(--cut-over); }
 /* Phones: the whole screen, above the site's bars; Next and Back at the bottom, under the thumb */
 @media (max-width: 760px) {
   .session {
-    position: fixed; inset: 0; z-index: 60; max-width: none; gap: 12px; overflow-y: auto; overscroll-behavior: contain; background: var(--bg);
-    padding: calc(10px + env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) 0 max(16px, env(safe-area-inset-left, 0px));
+    position: fixed; inset: 0; z-index: 60; max-width: none; gap: var(--space-3); overflow-y: auto; overscroll-behavior: contain; background: var(--bg);
+    padding: calc(10px + env(safe-area-inset-top, 0px)) max(var(--space-4), env(safe-area-inset-right, 0px)) 0 max(var(--space-4), env(safe-area-inset-left, 0px));
   }
   .sessionFoot {
-    position: sticky; bottom: 0; margin-inline: -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    position: sticky; bottom: 0; margin-inline: -16px; padding: 10px var(--space-4) calc(10px + env(safe-area-inset-bottom, 0px));
     background: var(--bg); box-shadow: var(--cut-over);
   }
   .sessionFoot > * { flex: 1; justify-content: center; min-height: 52px; }
@@ -429,24 +429,24 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .glanceTitle span { font-family: var(--f-greek); color: var(--ink-2); font-size: 0.8em; margin-left: 0.3em; }
 .glance .alphaGrid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 .glance .tile { animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 28ms); }
-.glanceCard { min-height: 92px; display: grid; align-items: center; padding: 6px 0 6px 18px; scroll-margin-bottom: 16px; box-shadow: var(--inlay-left); }
+.glanceCard { min-height: 92px; display: grid; align-items: center; padding: 6px 0 6px 18px; scroll-margin-bottom: var(--space-4); box-shadow: var(--inlay-left); }
 .glanceCard p { margin: 0; }
 .glanceIn { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 18px; align-items: center; animation: ink-in var(--dur) var(--ease) backwards; }
 .glanceBig { font-family: var(--f-greek); font-size: 3.2rem; line-height: 1; min-width: 2.2ch; text-align: center; color: var(--accent); }
-.glanceName { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: center; font-size: var(--step-sub); margin-bottom: 4px !important; }
+.glanceName { display: flex; flex-wrap: wrap; gap: var(--space-1) 10px; align-items: center; font-size: var(--step-sub); margin-bottom: var(--space-1) !important; }
 .glanceName b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); }
 @media (max-width: 900px) { .glance .alphaGrid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
 @media (max-width: 520px) {
   .glance .alphaGrid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .glanceBig { font-size: 2.4rem; }
-  .glanceIn { gap: 12px; }
+  .glanceIn { gap: var(--space-3); }
 }
 
 /* ------------------------------------------------ a reference table of text (lessons' "grid") */
 .gridBox { display: grid; gap: 10px; }
 .gridScroll { overflow-x: auto; border-radius: var(--radius); box-shadow: var(--field-edge); }
 .gridTable { width: 100%; border-collapse: collapse; font-size: var(--step-0); }
-.gridTable th, .gridTable td { padding: 9px 12px; text-align: left; vertical-align: top; box-shadow: var(--cut-under); }
+.gridTable th, .gridTable td { padding: 9px var(--space-3); text-align: left; vertical-align: top; box-shadow: var(--cut-under); }
 .gridTable thead th { font-family: var(--f-label); font-weight: 400; letter-spacing: 0.05em; font-size: var(--step--1); color: var(--ink-2); white-space: nowrap; }
 .gridTable tbody th { font-weight: 400; white-space: nowrap; }
 .gridTable tbody tr:last-child > * { box-shadow: none; }
@@ -469,7 +469,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
    then the traveller (with reduced motion all is simply there). */
 .motion { margin: 0; display: grid; gap: 10px; padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
 .motRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.motPanel { display: grid; justify-items: center; gap: 4px; text-align: center; }
+.motPanel { display: grid; justify-items: center; gap: var(--space-1); text-align: center; }
 .motPanel p { margin: 0; }
 .motSvg { width: 100%; max-width: 220px; height: auto; overflow: visible; }
 .motGround { stroke: var(--ink-2); stroke-width: 1.5; }
@@ -485,7 +485,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .motGr { font-family: var(--f-greek); font-size: var(--step-1); }
 .motCase { font-size: var(--step--1); color: var(--ink-2); }
 .motCase b { font-family: var(--f-label); font-weight: 400; letter-spacing: 0.05em; color: var(--accent); }
-.motCap { display: flex; flex-wrap: wrap; gap: 8px 14px; align-items: center; justify-content: space-between; font-size: var(--step--1); color: var(--ink-2); }
+.motCap { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; align-items: center; justify-content: space-between; font-size: var(--step--1); color: var(--ink-2); }
 @media (max-width: 620px) {
   .motRow { grid-template-columns: minmax(0, 1fr); gap: 18px; }
   .motPanel { grid-template-columns: 120px minmax(0, 1fr); justify-items: start; text-align: left; align-items: center; column-gap: 14px; }
@@ -502,13 +502,13 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .shiftGr [data-k] { display: inline-block; }
 .shiftAdj { color: var(--accent); }
 .shiftEn { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: baseline; }
-.shiftTag { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; padding: 1px 8px; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--accent); }
+.shiftTag { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; padding: 1px var(--space-2); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--accent); }
 .shiftSay { font-size: var(--step-sub); animation: ink-in var(--dur) var(--ease) backwards; }
 
 /* ------------------------------------------------ active, middle, passive (Voice.tsx)
    The figures stand; in view the arrow of the action inks in, then the rope where it ends up (with reduced motion all is
    simply there). */
-.voice { margin: 0; display: grid; gap: 12px; padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
+.voice { margin: 0; display: grid; gap: var(--space-3); padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
 .vRow { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; }
 .vPanel { display: grid; align-content: start; justify-items: start; gap: 6px; }
 .vPanel + .vPanel { box-shadow: var(--cut-left); padding-left: 18px; }
@@ -536,9 +536,9 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .voice[data-go] .vRope { animation: ink-in 0.8s var(--ease) 1.1s backwards; }
 .voice[data-go] .vBack { animation-delay: 1.7s; }
 /* ------------------------------------------------ when a participle happens (Timeline.tsx): the bars ink in in the order of events */
-.timeline { margin: 0; display: grid; gap: 12px; padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
-.tlList { display: grid; gap: 16px; }
-.tlItem { display: grid; justify-items: start; gap: 6px; padding-bottom: 16px; box-shadow: var(--cut-under); }
+.timeline { margin: 0; display: grid; gap: var(--space-3); padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
+.tlList { display: grid; gap: var(--space-4); }
+.tlItem { display: grid; justify-items: start; gap: 6px; padding-bottom: var(--space-4); box-shadow: var(--cut-under); }
 .tlItem:last-child { padding-bottom: 0; box-shadow: none; }
 .tlItem p { margin: 0; }
 .tlSvg { width: 100%; max-width: 440px; height: auto; overflow: visible; }
@@ -572,17 +572,17 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .guideLink .muted { grid-column: 1; font-size: var(--step--1); }
 .guideArrow { grid-row: 1 / span 2; grid-column: 2; color: var(--accent); font-size: var(--step-sub); }
 .guideLink:hover b { color: var(--rubric); }
-.guideSources { display: grid; gap: 8px; padding-top: 16px; box-shadow: var(--cut-over); font-size: var(--step--1); }
-.guideSources ol { margin: 0; padding-left: 1.3em; display: grid; gap: 4px; }
+.guideSources { display: grid; gap: var(--space-2); padding-top: var(--space-4); box-shadow: var(--cut-over); font-size: var(--step--1); }
+.guideSources ol { margin: 0; padding-left: 1.3em; display: grid; gap: var(--space-1); }
 .guideNo { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.06em; }
 
 .askLesson { margin: 14px 0 0; color: var(--ink-2); }
 .askLesson a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
 /* ------------------------------------------------ how the future is made (Sigma.tsx)
    At rest (and with reduced motion) the finished word; in view the parts ink in, then give way to the word they make. */
-.sigma { margin: 0; display: grid; gap: 12px; padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
+.sigma { margin: 0; display: grid; gap: var(--space-3); padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
 .sgList { list-style: none; margin: 0; padding: 0; display: grid; gap: 14px; }
-.sgItem { display: grid; grid-template-columns: minmax(5.5em, auto) auto minmax(7em, auto) 1fr; gap: 6px 12px; align-items: center; padding-bottom: 14px; box-shadow: var(--cut-under); }
+.sgItem { display: grid; grid-template-columns: minmax(5.5em, auto) auto minmax(7em, auto) 1fr; gap: 6px var(--space-3); align-items: center; padding-bottom: 14px; box-shadow: var(--cut-under); }
 .sgItem:last-child { padding-bottom: 0; box-shadow: none; }
 .sgFrom { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink-2); }
 .sgArrow { color: var(--ink-2); }
@@ -602,7 +602,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
   .sgHow { grid-column: 1 / -1; }
 }
 /* ------------------------------------------------ what a pronoun stands for (Refer.tsx): the arcs ink in, one after another */
-.refer { margin: 0; display: grid; gap: 12px; padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
+.refer { margin: 0; display: grid; gap: var(--space-3); padding: 18px; border-radius: var(--radius); box-shadow: var(--field-edge); }
 .rfGr { position: relative; margin: 0; padding-top: 3.2em; font-family: var(--f-greek); font-size: var(--step-1); line-height: 2.3; }
 .rfSvg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
 .rfArc { fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; }

@@ -13,7 +13,7 @@ const SIZES = [["wide", { width: 1440, height: 900 }], ["phone", { width: 375, h
 for (const theme of ["light", "dark"]) {
   for (const [name, viewport] of SIZES) {
     const ctx = await browser.newContext({ viewport, colorScheme: theme, reducedMotion: "reduce", deviceScaleFactor: 1 });
-    await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t }, version: 0 })); } catch {} }, theme);
+    await ctx.addInitScript((t) => { try { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })); } catch {} }, theme);
     const page = await ctx.newPage();
     for (const p of paths) {
       try {

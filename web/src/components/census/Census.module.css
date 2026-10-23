@@ -5,11 +5,11 @@
    handled site-wide) the page is simply complete. */
 
 .census { padding-block: var(--after-head) 72px; display: grid; gap: 22px; }
-.status { padding: 60px 0; display: flex; gap: 12px; align-items: center; color: var(--ink-2); }
+.status { padding: 60px 0; display: flex; gap: var(--space-3); align-items: center; color: var(--ink-2); }
 /* the waiting mark: a small red ring that stands still (the words beside it say what is happening; nothing spins) */
 .spinner { display: inline-block; vertical-align: -3px; width: 14px; height: 14px; border-radius: var(--radius-round); border: 1.5px solid var(--rubric); }
 .warn { color: var(--accent); font-size: var(--step--1); }
-.note { font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--cut-left); padding-left: 12px; }
+.note { font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--cut-left); padding-left: var(--space-3); }
 .fine { font-size: var(--step--1); color: var(--ink-2); }
 .small { font-size: var(--step--1); }
 .blurb { color: var(--ink-2); max-width: 70ch; margin: 0; }
@@ -21,7 +21,7 @@
   border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule);
 }
 .tally > div {
-  padding: 14px 18px 12px; display: grid; gap: 2px; box-shadow: var(--cut-left);
+  padding: 14px 18px var(--space-3); display: grid; gap: 2px; box-shadow: var(--cut-left);
   animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 110ms);
 }
 .tally > div:nth-child(odd) { padding-left: 0; }
@@ -33,9 +33,9 @@
 @keyframes ink-in { from { opacity: 0; } }
 
 /* ------------------------------------------------ what to count: four heads under a rule, the chosen one ruled in red */
-.shelves { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(14px, 2vw, 24px); }
+.shelves { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 clamp(14px, 2vw, var(--space-5)); }
 .shelf {
-  text-align: left; display: grid; gap: 4px; align-content: start; padding: 14px 2px 15px; border: 0; border-radius: 0;
+  text-align: left; display: grid; gap: var(--space-1); align-content: start; padding: 14px 2px 15px; border: 0; border-radius: 0;
   background: transparent; box-shadow: inset 0 1px 0 var(--rule); color: var(--ink); cursor: pointer;
 }
 .shelf b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.05; transition: color var(--dur-quick) var(--ease); }
@@ -45,7 +45,7 @@
 .shelf[aria-pressed="true"] b { color: var(--rubric); }
 .shelf:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-.cats { display: flex; flex-wrap: wrap; gap: 8px; }
+.cats { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .cats .chip { cursor: pointer; }
 .size { font-size: var(--step--2); color: var(--ink-3); font-variant-numeric: lining-nums tabular-nums; }
 .cats :global(.chip[aria-pressed="true"]) .size { color: inherit; }
@@ -55,8 +55,8 @@
 .where { background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .where > summary { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); min-height: var(--tap); padding: var(--space-3) var(--space-4); cursor: pointer; list-style: none; }
 .where > summary::-webkit-details-marker { display: none; }
-.where > summary::before { content: "▸"; color: var(--rubric); }
-.where[open] > summary::before { content: "▾"; }
+.where > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--rubric); }
+.where[open] > summary::before { clip-path: var(--tri-down); }
 .where > summary b { font-weight: 500; }
 .where > .scopes { padding: var(--space-1) var(--space-4) var(--space-4); }
 .scopes { display: flex; flex-wrap: wrap; gap: 14px 28px; align-items: end; }
@@ -67,9 +67,9 @@
   font: inherit; font-family: var(--f-body); letter-spacing: 0; font-size: var(--step-0); color: var(--ink); max-width: 260px;
   padding: 7px 10px; border-radius: var(--radius);
 }
-.scopeBtns { display: flex; gap: 8px; }
+.scopeBtns { display: flex; gap: var(--space-2); }
 .scopeBtns .chip { cursor: pointer; }
-.compareBtn { padding: 9px 16px; cursor: pointer; }
+.compareBtn { padding: 9px var(--space-4); cursor: pointer; }
 /* phones: the choices stack at full width, like the Oracle's, instead of ragged lengths */
 @media (max-width: 560px) {
   .scopes, .scope { display: grid; grid-template-columns: minmax(0, 1fr); width: 100%; }
@@ -82,18 +82,18 @@
 .columns { display: grid; grid-template-columns: minmax(0, 1fr); min-width: 0; }
 .comparing .columns { grid-template-columns: minmax(0, 1fr) 48px minmax(0, 1fr); }
 .rank { min-width: 0; }
-.rankHead { padding-bottom: 12px; margin-bottom: 6px; border-bottom: 1px solid var(--ink); }
+.rankHead { padding-bottom: var(--space-3); margin-bottom: 6px; border-bottom: 1px solid var(--ink); }
 .rankHead h2 { font-family: var(--f-title); font-size: var(--step-2); line-height: 1.1; margin: 2px 0 0; }
 .rankSub { margin: 2px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .empty { color: var(--ink-2); font-style: italic; padding: 14px 0; }
 
 .rows { list-style: none; margin: 0; padding: 0; display: grid; }
 .row {
-  width: 100%; display: grid; grid-template-columns: 2.1em minmax(8em, 40%) 1fr; gap: 12px; align-items: center;
+  width: 100%; display: grid; grid-template-columns: 2.1em minmax(8em, 40%) 1fr; gap: var(--space-3); align-items: center;
   padding: 6px 6px 6px 0; border: 0; box-shadow: var(--cut-under);
   background: transparent; color: inherit; text-align: left; cursor: pointer; font: inherit;
 }
-.comparing .row { grid-template-columns: 1.8em minmax(6em, 44%) 1fr; gap: 8px; }
+.comparing .row { grid-template-columns: 1.8em minmax(6em, 44%) 1fr; gap: var(--space-2); }
 .rows li:last-child .row { box-shadow: none; }
 .row:hover .word b { color: var(--rubric); }
 .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
@@ -102,7 +102,7 @@
 .word b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); line-height: 1.2; overflow-wrap: anywhere; transition: color var(--dur-quick) var(--ease); }
 .word small { font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .auto { color: var(--accent); font-family: var(--f-body); margin-left: 2px; }
-.barCell { position: relative; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.barCell { position: relative; display: flex; align-items: center; gap: var(--space-2); min-width: 0; }
 /* the bar: a rule of the brown ink as long as the count, red for the chosen row */
 .bar { position: relative; height: 7px; width: var(--w); flex: none; max-width: calc(100% - 4.2em); background: var(--ink-3); }
 .count { margin-left: auto; font-variant-numeric: lining-nums tabular-nums; font-size: var(--step--1); white-space: nowrap; display: grid; line-height: 1.1; }
@@ -111,22 +111,22 @@
 .row[aria-pressed="true"] .rankN { color: var(--rubric); }
 .row[aria-pressed="true"] .bar { background: var(--rubric); }
 .row[aria-pressed="true"] .word b { color: var(--rubric); }
-.more { margin-top: 12px; cursor: pointer; }
+.more { margin-top: var(--space-3); cursor: pointer; }
 
 /* threads join the same item in the two columns */
 .threads { width: 48px; height: 100%; align-self: stretch; overflow: visible; }
 .threads path { fill: none; stroke: var(--ink-3); stroke-width: 1; opacity: 0.6; animation: ink-in var(--ink-in) var(--ease) backwards; vector-effect: non-scaling-stroke; }
 .threads path[data-on] { stroke: var(--rubric); stroke-width: 1.8; opacity: 1; }
 
-.side { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); position: sticky; top: calc(var(--hdr-vis) + 16px); max-height: calc(100vh - var(--hdr-vis) - 32px); overflow: auto; overscroll-behavior: contain; }
+.side { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); position: sticky; top: calc(var(--hdr-vis) + var(--space-4)); max-height: calc(100vh - var(--hdr-vis) - 32px); overflow: auto; overscroll-behavior: contain; }
 :global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
-.hint { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 8px; }
+.hint { padding: 18px 20px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: var(--space-2); }
 .hint p { margin: 0; }
 
 /* ------------------------------------------------ one item */
 .panel {
   position: relative; padding: 20px 20px 22px; background: var(--bg); border-radius: 0;
-  box-shadow: var(--inlay-top), var(--field-edge); display: grid; gap: 12px; animation: ink-in var(--ink-in) var(--ease) backwards;
+  box-shadow: var(--inlay-top), var(--field-edge); display: grid; gap: var(--space-3); animation: ink-in var(--ink-in) var(--ease) backwards;
 }
 .panel p { margin: 0; }
 .close {
@@ -136,17 +136,17 @@
 .close:hover { color: var(--rubric); border-color: var(--rubric); }
 .panelWord { font-family: var(--f-greek); font-weight: 400; font-size: clamp(2rem, 3.4vw, 2.6rem); line-height: 1.05; margin: 0; padding-right: 34px; overflow-wrap: anywhere; }
 .panelSub { color: var(--ink-2); font-style: italic; }
-.stats { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 12px 0; }
+.stats { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: var(--space-3) 0; }
 .stats div { display: grid; gap: 2px; align-content: start; }
 .stats dt { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
 .stats dd { margin: 0; font-family: var(--f-title); font-size: var(--step-2); line-height: 1.1; font-variant-numeric: lining-nums tabular-nums; display: grid; }
 .stats dd small { font-family: var(--f-body); font-size: var(--step--2); color: var(--ink-2); }
-.go { display: flex; flex-wrap: wrap; gap: 8px; }
+.go { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .stoa { font-size: var(--step--1); }
-.charts { display: grid; gap: 16px; }
-.clusters { display: grid; gap: 8px; }
-.clusters select { font: inherit; font-size: var(--step--1); padding: 6px 8px; border-radius: var(--radius); color: var(--ink); max-width: 100%; }
-.strip { margin: 0; display: grid; gap: 4px; position: relative; }
+.charts { display: grid; gap: var(--space-4); }
+.clusters { display: grid; gap: var(--space-2); }
+.clusters select { font: inherit; font-size: var(--step--1); padding: 6px var(--space-2); border-radius: var(--radius); color: var(--ink); max-width: 100%; }
+.strip { margin: 0; display: grid; gap: var(--space-1); position: relative; }
 .strip svg { width: 100%; height: 64px; display: block; cursor: crosshair; border: 1px solid var(--rule); }
 .stripBase { fill: var(--ink); }
 .notch { fill: var(--ink-2); }
@@ -158,9 +158,9 @@
 .bookNums span { position: absolute; transform: translateX(-50%); top: 0; }
 
 /* ------------------------------------------------ did you know: notes, each under a hairline */
-.facts { margin-top: 36px; display: grid; gap: 10px; }
+.facts { margin-top: var(--space-6); display: grid; gap: 10px; }
 .facts h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
-.facts ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
+.facts ul { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
 .facts li { animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 90ms); }
 .facts button {
   width: 100%; height: 100%; text-align: left; display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px; cursor: pointer;
@@ -173,7 +173,7 @@
 .factText i { color: var(--ink-2); }
 
 /* ------------------------------------------------ how the counting was done */
-.method { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--ink); display: grid; gap: 16px; }
+.method { margin-top: var(--space-6); padding-top: 28px; border-top: 1px solid var(--ink); display: grid; gap: var(--space-4); }
 .method h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
 /* after its first paragraph the method folds into one disclosure */
 .fullMethod { display: grid; }
@@ -181,14 +181,14 @@
 .fullMethod[open] > summary { margin-bottom: var(--space-2); }
 .fullMethod > .leftOut { margin-top: var(--space-4); }
 .methodCols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 48px; }
-.methodCols h3, .methodFirst h3 { font-family: var(--f-label); font-weight: 400; font-size: var(--step-0); letter-spacing: 0.06em; margin: 14px 0 4px; }
-.methodCols p, .methodFirst p { margin: 0 0 8px; max-width: 64ch; }
+.methodCols h3, .methodFirst h3 { font-family: var(--f-label); font-weight: 400; font-size: var(--step-0); letter-spacing: 0.06em; margin: 14px 0 var(--space-1); }
+.methodCols p, .methodFirst p { margin: 0 0 var(--space-2); max-width: 64ch; }
 .leftOut summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.04em; }
 .leftOut ul { list-style: none; padding: 0; margin: 10px 0 0; columns: 2 320px; column-gap: 40px; }
 .leftOut li { break-inside: avoid; padding: 3px 0; font-size: var(--step--1); }
 .leftOut li b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-0); }
 .leftOut li span { color: var(--ink-2); }
-.leftOut li small { font-variant-numeric: tabular-nums; color: var(--ink-2); margin-left: 4px; }
+.leftOut li small { font-variant-numeric: tabular-nums; color: var(--ink-2); margin-left: var(--space-1); }
 .leftOut li small::before { content: "· "; }
 
 /* ------------------------------------------------ smaller screens */
@@ -207,7 +207,7 @@
   .comparing .columns { grid-template-columns: minmax(0, 1fr); gap: 28px; }
   .threads { display: none; }
   .methodCols { grid-template-columns: minmax(0, 1fr); }
-  .row { grid-template-columns: 1.8em minmax(7em, 44%) 1fr; gap: 8px; }
+  .row { grid-template-columns: 1.8em minmax(7em, 44%) 1fr; gap: var(--space-2); }
 }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .cats { row-gap: 10px; } }

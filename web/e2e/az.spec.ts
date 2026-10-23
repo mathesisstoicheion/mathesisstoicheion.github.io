@@ -1,4 +1,4 @@
-import { test, expect, type Locator } from "@playwright/test";
+import { test, expect, type Locator, type Page } from "@playwright/test";
 
 // "A to Z" (components/library/AZList.tsx; asked for by the owner on 2026-10-16): an author's works in alphabetical order with
 // a row of letters (a strip down the right of a phone), and the library's rail of letters down the right of its list when it
@@ -19,13 +19,16 @@ async function stableBox(loc: Locator) {
   return box!;
 }
 
+/** the switch on an author's list of works: "Where to begin" or "A to Z" */
+const order = (page: Page) => page.getByRole("radiogroup", { name: "Order of the works" });
+
 test("an author with many works opens them as an A to Z list and jumps by letter", async ({ page }) => {
   await page.goto(PLUTARCH);
-  const button = page.getByRole("button", { name: "A to Z" });
-  await expect(button).toHaveAttribute("aria-expanded", "false");
+  const az = order(page).getByRole("radio", { name: "A to Z" });
+  await expect(az).toHaveAttribute("aria-checked", "false");
   await expect(page.locator("#az-works")).toBeHidden();
-  await button.click();
-  await expect(button).toHaveAttribute("aria-expanded", "true");
+  await az.click();
+  await expect(az).toHaveAttribute("aria-checked", "true");
   const letters = page.getByRole("navigation", { name: "Works by first letter" });
   await expect(letters).toBeVisible();
   // letters with no works are dimmed and do nothing
@@ -48,23 +51,28 @@ test("an author with many works opens them as an A to Z list and jumps by letter
   const at = (t: string) => titles.findIndex((x) => x.startsWith(t));
   expect(at("Table Talk")).toBeGreaterThanOrEqual(0);
   expect(at("Table Talk")).toBeLessThan(at("That a Philosopher"));
-  // closing it brings the ordinary list back
-  await button.click();
-  await expect(button).toHaveAttribute("aria-expanded", "false");
+  // "Where to begin" brings the ordinary list back
+  await order(page).getByRole("radio", { name: "Where to begin" }).click();
+  await expect(az).toHaveAttribute("aria-checked", "false");
   await expect(page.locator("#az-works")).toBeHidden();
   await expect(page.getByRole("link", { name: /^Theseus/ }).first()).toBeVisible();
 });
 
-test("an author with a few works has no A to Z button", async ({ page }) => {
+test("an author with a few works has them in A to Z order without a row of letters", async ({ page }) => {
   await page.goto("/library/author?a=tlg0012");   // Homer, 3 works
-  await expect(page.getByRole("heading", { name: "What Homer wrote" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "A to Z" })).toHaveCount(0);
+  await expect(page.getByRole("heading", { name: /^The \d works$/ })).toBeVisible();
+  await order(page).getByRole("radio", { name: "A to Z" }).click();
+  const titles = await page.locator("section[aria-labelledby=works-title] ul li a > span:first-child").evaluateAll((els) => els.map((e) => e.textContent ?? ""));
+  expect(titles.length).toBeGreaterThan(1);
+  expect(titles).toEqual([...titles].sort((a, b) => a.localeCompare(b, "en")));
+  await expect(page.getByRole("navigation", { name: "Works by first letter" })).toHaveCount(0);
+  await expect(page.locator("#az-works")).toHaveCount(0);
 });
 
 test("the A to Z list opens at once when animation is turned off", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.goto(PLUTARCH);
-  await page.getByRole("button", { name: "A to Z" }).click();
+  await order(page).getByRole("radio", { name: "A to Z" }).click();
   await expect(page.getByRole("navigation", { name: "Works by first letter" })).toBeVisible();
   expect(await page.locator("#az-works > div").evaluate((e) => getComputedStyle(e).transitionDuration)).toBe("0s");
 });
@@ -94,7 +102,7 @@ test.describe("on a phone", () => {
 
   test("the author's letters are a strip down the right edge that a finger can slide along", async ({ page }) => {
     await page.goto(PLUTARCH);
-    await page.getByRole("button", { name: "A to Z" }).tap();
+    await order(page).getByRole("radio", { name: "A to Z" }).tap();
     const strip = page.getByRole("navigation", { name: "Works by first letter" });
     const first = page.locator('#az-works [data-az="A"]');
     await expect(first).toBeVisible();
@@ -109,15 +117,18 @@ test.describe("on a phone", () => {
     const touch = (type: "touchStart" | "touchMove" | "touchEnd", p?: { x: number; y: number }) => cdp.send("Input.dispatchTouchEvent", { type, touchPoints: p ? [p] : [] });
     const y0 = await page.evaluate(() => scrollY);
     const a = await centre("A"), t = await centre("T");
+    // at a finger's pace: moves sent all at once are a fling faster than any finger, and Chrome takes the next tap after
+    // one for stopping it (found 2026-10-23: the tap on "Where to begin" below was lost)
     await touch("touchStart", a);
-    for (let i = 1; i <= 8; i++) await touch("touchMove", { x: a.x, y: a.y + ((t.y - a.y) * i) / 8 });
+    for (let i = 1; i <= 8; i++) { await page.waitForTimeout(30); await touch("touchMove", { x: a.x, y: a.y + ((t.y - a.y) * i) / 8 }); }
     await expect(strip.locator('span[aria-hidden="true"]')).toHaveText("T");
     await touch("touchEnd");
     await expect(strip.locator('span[aria-hidden="true"]')).toHaveCount(0);
     expect(await page.evaluate(() => scrollY)).toBeGreaterThan(y0);
-    // it goes when the list is closed
-    await page.getByRole("button", { name: "A to Z" }).scrollIntoViewIfNeeded();
-    await page.getByRole("button", { name: "A to Z" }).tap();
+    // it goes when the ordinary list is chosen again
+    const begin = order(page).getByRole("radio", { name: "Where to begin" });
+    await begin.scrollIntoViewIfNeeded();
+    await begin.tap();
     await expect(page.locator("#az-works")).toBeHidden();
   });
 

@@ -30,7 +30,7 @@ export default function MetreBar({ info, about }: { info: TextMetre; about: Metr
         <span><b className={styles.kCaes}>‖</b> caesura</span>
         <span><b className={styles.kLic}>–</b> a licence (hover to see which)</span>
         <span><b className={styles.kQ}>?</b> not scanned: the scanner is unsure</span>
-        <span><b className={styles.kBeat}>▸</b> play the line&apos;s rhythm</span>
+        <span><b className={styles.kBeat} aria-hidden="true" /> play the line&apos;s rhythm</span>
       </p>
       <p className={styles.metreLinks}>
         <button type="button" className="chip" aria-expanded={open} onClick={() => setOpen(!open)}>How this metre works</button>

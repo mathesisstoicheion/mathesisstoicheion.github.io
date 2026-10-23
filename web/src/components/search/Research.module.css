@@ -9,16 +9,16 @@
 .status { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .more { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 /* a part of the statistics: its name, then a hairline to the margin, as the Treasury's parts */
-.h { display: flex; align-items: baseline; gap: 14px; margin: 14px 0 8px; font: 400 var(--step-1) / 1.2 var(--f-display); }
+.h { display: flex; align-items: baseline; gap: 14px; margin: 14px 0 var(--space-2); font: 400 var(--step-1) / 1.2 var(--f-display); }
 .h::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
-.h4 { margin: 4px 0 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.h4 { margin: var(--space-1) 0 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 
 /* ---- concordance: reference | words before | the match | words after | grammar */
 .lines { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
-.barBtns { display: inline-flex; flex-wrap: wrap; gap: 8px; }
+.barBtns { display: inline-flex; flex-wrap: wrap; gap: var(--space-2); }
 /* add the line to a notebook: a small ring of hairline with a plus, red under the hand */
 .addLine {
-  width: 26px; height: 26px; margin-left: 8px; display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round);
+  width: 26px; height: 26px; margin-left: var(--space-2); display: grid; place-items: center; border: 1px solid var(--rule); border-radius: var(--radius-round);
   background: transparent; color: var(--ink-3); font: var(--step-0)/1 var(--f-body); cursor: pointer;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
@@ -28,13 +28,13 @@
 @media (pointer: coarse) { .addLine { width: 32px; height: 32px; color: var(--ink-2); } }
 .lines li {
   display: grid; grid-template-columns: minmax(5em, 11em) minmax(0, 1fr) auto minmax(0, 1fr) auto auto; align-items: baseline;
-  padding: 7px 4px; border-bottom: 1px solid var(--rule-2); transition: background-color var(--dur-quick) var(--ease);
+  padding: 7px var(--space-1); border-bottom: 1px solid var(--rule-2); transition: background-color var(--dur-quick) var(--ease);
 }
 .lines li:last-child { border-bottom-color: var(--rule); }
 .lines li:hover { background-color: var(--bg-2); }
 .lines[data-lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
 .ref {
-  padding-right: 12px; font: 500 var(--step--2) / 1.5 var(--f-body); color: var(--rubric); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding-right: var(--space-3); font: 500 var(--step--2) / 1.5 var(--f-body); color: var(--rubric); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   text-decoration: none; font-variant-numeric: lining-nums tabular-nums;
 }
 .ref:hover { text-decoration: underline; text-underline-offset: 3px; }
@@ -57,13 +57,13 @@
 }
 
 /* ---- statistics: one hue, bars from a common baseline, values at their ends, details on hover or focus */
-.statGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: 12px 28px; }
-.gramGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: 8px 24px; }
+.statGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 330px), 1fr)); gap: var(--space-3) 28px; }
+.gramGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr)); gap: var(--space-2) var(--space-5); }
 .chart { margin: 0; }
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .bars li {
   position: relative; display: grid; grid-template-columns: minmax(6em, 14em) minmax(0, 1fr) 3.6em; gap: 10px; align-items: center;
-  padding: 4px 4px; border-radius: var(--radius); outline: none; transition: background-color var(--dur-quick) var(--ease);
+  padding: var(--space-1) var(--space-1); border-radius: var(--radius); outline: none; transition: background-color var(--dur-quick) var(--ease);
 }
 .bars li:hover, .bars li:focus-visible { background-color: var(--bg-2); }
 .bars li:focus-visible { box-shadow: inset 0 0 0 1px var(--rubric); }
@@ -75,10 +75,10 @@
 .barValue { text-align: right; font-size: var(--step--1); font-variant-numeric: lining-nums tabular-nums; }
 /* the line's details, on a slip of ink over it: it fades in where it stands */
 .bars li::after {
-  content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + 4px); z-index: 5; width: max-content; max-width: min(340px, 80vw);
+  content: attr(data-tip); position: absolute; left: 20%; bottom: calc(100% + var(--space-1)); z-index: 5; width: max-content; max-width: min(340px, 80vw);
   padding: 6px 10px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg); font-size: var(--step--1); line-height: 1.35;
   pointer-events: none; opacity: 0; transition: opacity var(--dur-quick) var(--ease);
 }
 .bars li:hover::after, .bars li:focus-visible::after { opacity: 1; }
-@media (max-width: 760px) { .bars li { grid-template-columns: minmax(5em, 9em) minmax(0, 1fr) 3.2em; gap: 8px; } }
+@media (max-width: 760px) { .bars li { grid-template-columns: minmax(5em, 9em) minmax(0, 1fr) 3.2em; gap: var(--space-2); } }
 @media (prefers-reduced-motion: reduce) { .fill { animation: none; } }

@@ -9,25 +9,25 @@
 .panel [data-kind="aside"] { --k: var(--ok); }
 .panel [data-kind="link"] { --k: var(--ink-2); }
 
-.sentence { margin: 0; display: flex; flex-wrap: wrap; gap: 4px 6px; font-family: var(--f-greek); font-size: var(--step-sub); line-height: 1.5; }
+.sentence { margin: 0; display: flex; flex-wrap: wrap; gap: var(--space-1) 6px; font-family: var(--f-greek); font-size: var(--step-sub); line-height: 1.5; }
 .word {
   padding: 0 2px; border: 0; background: transparent; color: var(--ink); font: inherit; cursor: pointer; border-radius: var(--radius);
   text-decoration: underline 2px var(--k); text-underline-offset: 5px; transition: background-color var(--dur-quick) var(--ease);
 }
 .word[data-in] { background: color-mix(in srgb, var(--k) 16%, transparent); }
 .word[aria-current] { background: color-mix(in srgb, var(--k) 32%, transparent); }
-.checked { margin: 0; padding: 2px 0 2px 12px; box-shadow: var(--inlay-left); font-size: var(--step--1); font-style: italic; color: var(--ink-2); }
+.checked { margin: 0; padding: 2px 0 2px var(--space-3); box-shadow: var(--inlay-left); font-size: var(--step--1); font-style: italic; color: var(--ink-2); }
 .checked[data-manual] { box-shadow: var(--inlay-left-ok); }
 
 /* the tree: each branch hangs from a line, as on a family tree turned on its side */
 .tree, .tree ul { list-style: none; margin: 0; padding: 0; }
 .tree ul { margin-left: 13px; padding-left: 14px; box-shadow: var(--cut-left); }
-.tree li { position: relative; padding-top: 4px; animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.tree li { position: relative; padding-top: var(--space-1); animation: ink-in var(--dur-slow) var(--ease) backwards; }
 .tree ul > li::before { content: ""; position: absolute; left: -14px; top: 22px; width: 12px; height: 2px; background: var(--cut-line); }
 @keyframes ink-in { from { opacity: 0; } }
 .node {
   display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: 10px; align-items: baseline; width: 100%;
-  padding: 5px 8px; text-align: left; color: var(--ink); background: transparent; cursor: pointer;
+  padding: 5px var(--space-2); text-align: left; color: var(--ink); background: transparent; cursor: pointer;
   border: 1px solid transparent; border-left: 3px solid var(--k); border-radius: var(--radius); transition: background-color var(--dur-quick) var(--ease), border-color var(--dur-quick);
 }
 .node:hover { background: color-mix(in srgb, var(--k) 8%, transparent); }
@@ -37,14 +37,14 @@
 .form i { font-family: var(--f-body); font-size: var(--step--1); color: var(--ink-2); }
 .role { font: 600 var(--step--1) var(--f-label); color: var(--ink); letter-spacing: 0.01em; }
 .gram { grid-column: 1 / -1; font-size: var(--step--2); color: var(--ink-2); }
-.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.steps { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .key summary { cursor: pointer; font: 500 var(--step--2) var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
 .key dl { margin: 10px 0 0; display: grid; gap: 6px; }
-.key dl > div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 10px; font-size: var(--step--1); border-left: 3px solid var(--k); padding-left: 8px; }
+.key dl > div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: 10px; font-size: var(--step--1); border-left: 3px solid var(--k); padding-left: var(--space-2); }
 .key dt { font-weight: 600; }
 .key dd { margin: 0; color: var(--ink-2); }
 @media (max-width: 760px) {
-  .tree ul { margin-left: 8px; padding-left: 9px; }
+  .tree ul { margin-left: var(--space-2); padding-left: 9px; }
   .tree ul > li::before { left: -9px; width: 7px; }
   .sentence { font-size: var(--step-sub); }
 }

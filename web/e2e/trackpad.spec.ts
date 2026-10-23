@@ -65,7 +65,7 @@ test("the map: two fingers move it, a pinch and the wheel zoom", async ({ page }
 });
 
 test("a manuscript page: a pinch zooms; two fingers then move about the page, or scroll the panel when the whole page shows", async ({ page }) => {
-  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 0 })); });
+  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { motion: "reduce" }, version: 2 })); });
   await page.goto("/read?w=tlg0012.tlg001&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
   await aid(page, "Manuscript");

@@ -7,13 +7,13 @@
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
 .prose li::marker { color: var(--accent); }
 .prose a { text-decoration-color: var(--accent); text-underline-offset: 3px; }
-.gr { display: block; font-size: 0.5em; color: var(--accent); margin-top: 8px; }
+.gr { display: block; font-size: 0.5em; color: var(--accent); margin-top: var(--space-2); }
 .lead { font-size: var(--step-sub); color: var(--ink-2); max-width: 60ch; }
 .names { margin: 0; display: grid; gap: 0; }
-.names > div { display: grid; grid-template-columns: minmax(180px, 0.8fr) 2fr; gap: 6px 28px; padding: 16px 0; box-shadow: var(--cut-over); }
+.names > div { display: grid; grid-template-columns: minmax(180px, 0.8fr) 2fr; gap: 6px 28px; padding: var(--space-4) 0; box-shadow: var(--cut-over); }
 .names dt { font-family: var(--f-display); font-size: var(--step-1); line-height: 1.2; }
-.names dt span { color: var(--accent); font-size: 0.85em; }
-.names dt small { display: block; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.06em; color: var(--ink-2); margin-top: 4px; }
+.names dt span { display: block; margin-top: 2px; color: var(--rubric); font-family: var(--face-didot); }   /* the Greek name, under the English, as in the header */
+.names dt small { display: block; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.06em; color: var(--ink-2); margin-top: var(--space-1); }
 .names dd { margin: 0; color: var(--ink-2); }
 @media (max-width: 680px) { .names > div { grid-template-columns: minmax(0, 1fr); } }
 

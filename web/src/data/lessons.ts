@@ -194,7 +194,7 @@ const SECTIONS: Record<string, Section[]> = {
       ] },
       { kind: "real", title: "Read it yourself, with the metre marked", items: [
         { work: "tlg0012.tlg001", ref: "1.1", quote: "μῆνιν ἄειδε θεὰ", label: "Homer, Iliad 1.1", metre: "hexameter",
-          note: "Five dactyls and a final two-syllable foot. The caesura (‖) falls after «θεὰ», just after the long syllable of the third foot. The «-εω» of «Πηληϊάδεω» is one syllable (synizesis). Press ▸ to hear the beat." },
+          note: "Five dactyls and a final two-syllable foot. The caesura (‖) falls after «θεὰ», just after the long syllable of the third foot. The «-εω» of «Πηληϊάδεω» is one syllable (synizesis). Press the play button beside the line to hear the beat." },
         { work: "tlg0012.tlg002", ref: "1.1", quote: "ἄνδρα μοι ἔννεπε", label: "Homer, Odyssey 1.1", metre: "hexameter",
           note: "Here «μοι» is shortened before «ἔννεπε» (correption), so the first foot is a dactyl: «ἄν-δρα-μοι»." },
         { work: "tlg0016.tlg001", ref: "1.47.3", quote: "οἶδα δʼ ἐγὼ ψάμμου", label: "Herodotus 1.47.3: an oracle in hexameters", metre: "hexameter",
