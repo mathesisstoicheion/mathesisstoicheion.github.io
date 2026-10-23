@@ -17,10 +17,19 @@ decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claud
   and English side by side; the look-up written in the margin on a computer, a sheet that stops below the line on a phone.
 - **Phones**: a new bar along the foot, set like the foot of a printed page; it slips away as you read on and is never in
   the reader.
-- **Checks**: every check in `checks.yml` passes on the branch's build. New ones guard Paper and Night, the three typefaces
-  and the type scale, photo credits, the look-up, the bar, stillness after the ink-in, no sideways scroll at 390 px,
-  contrast in both looks, and finger-sized targets on 112 pages. Lint (16) and two unit tests that need the laptop's data
-  fail exactly as on the live site.
+- **Checks** (2026-10-23): all 25 checks in `checks.yml` pass on GitHub on the branch's head (f77e281). New ones guard
+  Paper and Night, the three typefaces and the type scale, photo credits, the look-up, the bar, stillness after the
+  ink-in, no sideways scroll at 390 px, contrast in both looks, and finger-sized targets. Swept here as well: touch,
+  contrast and names on 112 pages, the design rules on 112, sideways on 222, overlaps at six widths (only the eras
+  chart's century labels reach past their thin columns, as they always have) and graphics memory on phones (68 to
+  122 MB a page). The last fix: links stacked in lists came out at 43.98 px, a hair under a finger's 44, because the
+  browser rounds each part of a box down; `--tap-pad` now adds half a pixel each side. Older failures, the same on the
+  last live version, were left alone: lint (16 errors), two unit test files that need the laptop's data, and eight
+  browser tests (the vase studio, comparing editions, Places, trackpad zoom, Word Study's λόγος page).
+- **Beta 8** of the phone app (2026-10-23 04:45 UTC) carries the redesign; the app offers it when opened. The laptop copy
+  (Documents\Mathesis Local Site, port 3100) is brought up to the branch by a Remote Control session, which also gives
+  the desktop start app the printer's device for its icon.
+- The holding page (`holding/`, shown only while the site is closed) is set as the printed page too.
 - The old look's files are in `_archive/old-look-2026-10-22/`.
 
 ## The site is closed for a redesign (2026-10-21)
