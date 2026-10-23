@@ -20,8 +20,8 @@ export function ResumeTracker() {
   const href = `${pathname}${params.size ? `?${params}` : ""}`;
 
   useEffect(() => {
-    // record the visit once the page has settled (a quick redirect is not a visit)
-    const t = setTimeout(() => recordVisit(href, document.title.replace(/ · Mathesis Stoicheion$/, "")), 800);
+    // record the visit once the page has settled (a quick redirect is not a visit, nor an address that leads nowhere)
+    const t = setTimeout(() => { if (!document.querySelector("[data-not-found]")) recordVisit(href, document.title.replace(/ · Mathesis Stoicheion$/, "")); }, 800);
     // remember how far down the page is: noted as it scrolls, and kept once the page rests (and when it is left), so
     // scrolling never waits on the browser's storage
     let pending = 0, timer = 0, y = -1;
@@ -67,7 +67,8 @@ export function describe(v: Visit, idx: CatalogIndex | null): { what: string; wh
   // a room by its one name (an old visit may carry the title the page had then: "The Treasury · My Library")
   const room = (Object.keys(AREAS) as (keyof typeof AREAS)[]).find((id) => AREAS[id].href === u.pathname);
   if (room) return { what: AREAS[room].name };
-  return { what: (v.title || u.pathname).replace(/\s*·\s*(Mathesis Stoicheion|Μάθησις Στοιχείων)$/, "") };
+  // any other page by its own name: the first part of its tab title ("Which dictionary? · The Academy" is "Which dictionary?")
+  return { what: (v.title || u.pathname).split(/\s+·\s+/)[0] };
 }
 
 /** Where to send the reader back to: the reader resumes at its own remembered passage. */

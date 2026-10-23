@@ -72,6 +72,8 @@
   .filters { flex-wrap: nowrap; }
   .filters > :global(.chip) { flex: none; }
 }
+/* (frozen: a fix only) the sliding row clips a chip's widened touch area, so under a finger the chip itself is 44 px */
+@media (pointer: coarse) and (max-width: 760px) { .filters > :global(.chip) { min-height: var(--tap); } }
 
 .panel { position: sticky; top: calc(var(--hdr-vis) + 20px); display: grid; gap: 14px; }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }

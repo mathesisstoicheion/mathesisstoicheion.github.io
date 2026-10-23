@@ -255,6 +255,8 @@ select:not([multiple]):not([size]) {
 /* a "more" disclosure keeps its small triangle, in red like a printer's mark, not the browser's grey */
 :where(summary)::marker { color: var(--accent); }
 :where(summary)::-webkit-details-marker { color: var(--accent); }
+/* under a finger the line that opens a folded section is a finger's height (a summary styled with its own padding keeps it) */
+@media (pointer: coarse) { :where(summary) { padding-block: var(--tap-pad); } }
 
 /* a short message on a page of its own (sign in first; nothing chosen yet): a note set off by a rule of red at its left.
    It is a plain block, so a sentence with a link in it stays one sentence (as a grid, "Sign in" and "to open this page."

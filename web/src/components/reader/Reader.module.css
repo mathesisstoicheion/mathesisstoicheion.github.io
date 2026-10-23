@@ -805,6 +805,9 @@ p.translit { margin: -0.3em 0 0.8em; }
   .rbar .dropBtn { position: relative; min-width: var(--tap); justify-content: center; }
   /* the bar clips below its buttons: their finger-sized area reaches up */
   .rbar .dropBtn::before { content: ""; position: absolute; inset: -10px 0 -2px; }
+  /* each book's own bar when two are open (and the page and Go to, wherever they stand): finger-sized buttons */
+  .pager button, .goto button, .goto input, .helpBtn, .bar:not(.rbar) .dropBtn { min-height: var(--tap); }
+  .pager button { min-width: var(--tap); }
 }
 
 /* ============================================================ the word look-up (WordPanel.tsx), placed by Reader.tsx's

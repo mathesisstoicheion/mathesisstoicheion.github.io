@@ -52,3 +52,5 @@
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 /* a row of chips that scrolls sideways clips their widened touch area: room for it inside the row */
 @media (pointer: coarse) and (max-width: 760px) { .chips:not(.chipsWrapping) { padding-block: 5px; margin-block: -5px; } }
+/* chips wrapped onto a second line: room between the lines for both lines' widened areas */
+@media (pointer: coarse) and (max-width: 760px) { .chips.chipsWrapping { row-gap: var(--space-3); } }

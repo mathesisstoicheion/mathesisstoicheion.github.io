@@ -48,6 +48,12 @@
 .dalso button { border: 0; background: none; padding: 0; color: var(--ink-3); font: inherit; font-style: italic; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .dalso button:hover { color: var(--rubric); }
 @media (max-width: 560px) { .drow { grid-template-columns: 1fr; } }
+/* under a finger each of the desk's links, and its button, answers over 44 px (scripts/check-a11y.mjs): a link alone in its
+   row reaches above and below its line; the lines of a list are made a finger's height */
+@media (pointer: coarse) {
+  .drow > div > a { display: inline-block; padding-block: var(--tap-pad); margin-block: calc(-1 * var(--tap-pad)); }
+  .drow ul a, .dalso a, .dalso button { display: inline-block; padding-block: var(--tap-pad); }
+}
 
 /* ---- the passage of the day: Greek on the left leaf, English on the right, a fold between ---- */
 .spread { position: relative; display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-2); border: 1px solid var(--rule-2); }

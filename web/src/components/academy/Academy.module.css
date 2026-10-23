@@ -616,3 +616,8 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .small > a { padding-block: 13px; } .seg button, .stroke .seg button { min-height: var(--tap); } }
+/* a run of links in a sentence (the lessons not done yet) and a guide's sources: each line a finger's height */
+@media (pointer: coarse) {
+  .small > span > a, .guideSources li a { display: inline-block; padding-block: var(--tap-pad); }
+  .guideSources ol { gap: 0; }
+}

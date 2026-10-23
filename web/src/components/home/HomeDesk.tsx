@@ -28,7 +28,8 @@ export default function HomeDesk() {
   useEffect(() => {
     // storage is only available in the browser: read it after the first paint
     const t = setTimeout(() => {
-      setVisits(trail().filter((v) => v.href !== "/"));
+      // (an address that led nowhere, noted before such visits were left out of the trail, is not offered either)
+      setVisits(trail().filter((v) => v.href !== "/" && v.title !== "Not found"));
       setBooks(recentPositions(4));
       Promise.resolve(useAcademy.persist.rehydrate()).then(() => setReady(true));
     }, 0);

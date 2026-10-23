@@ -2,7 +2,9 @@
 // phone's, it lists:
 //   invite   - the "New here?" card over the "Where are you starting?" panel or the words of the page's head
 //   desk     - Your desk showing raw state: a position "at 0", the same lesson twice, an old page title ("My Library")
-//              where a room has its one name
+//              where a room has its one name, a page's whole tab title ("Which dictionary? · The Academy") for its name,
+//              or a page that was not found offered to carry on with (the visitor really opens a guide and a missing page
+//              first, so their real titles are in the trail)
 //   pictures - more than one picture before the first words of the page's body (the passage of the day)
 //   letters  - the floating letters reaching any words below the page's head
 //   passage  - its title aligned otherwise than its text; on a computer, the English under the Greek, not beside it; its
@@ -113,6 +115,8 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
       { href: "/stoa", title: "The Stoa · Wiki", t: now - 5000 },
     ] }));
   });
+  // pages really visited (a page is noted once it has stood for 0.8 s: components/Resume.tsx)
+  for (const path of ["/academy/guide/which-dictionary", "/no-such-page"]) { await page.goto(base + path); await page.waitForTimeout(1200); }
   await page.goto(base + "/");
   await page.waitForTimeout(1500);
   const desk = await page.evaluate(() => {
@@ -129,6 +133,8 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
     const twice = desk.bold.find((b, i) => desk.bold.some((c, k) => k !== i && (c === b || c.endsWith(`: ${b}`))));
     if (twice) found.push(`desk ${tag}: "${twice}" twice`);
     for (const a of desk.also) if (/My Library|Town Hall|\bWiki\b|The Stoa\b| · /.test(a)) found.push(`desk ${tag}: "Also recently" shows the page title "${a}"`);
+    for (const b of desk.bold) if (/ · /.test(b)) found.push(`desk ${tag}: "${b}" is the page's tab title, not its name`);
+    if (/\bNot found\b|has not survived/.test(desk.text)) found.push(`desk ${tag}: offers a page that was not found`);
   }
 
   // ---- one caption style: here, on the Academy's page, and on pages with a window by their title
