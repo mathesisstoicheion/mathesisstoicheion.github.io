@@ -45,6 +45,8 @@ for (const theme of ["light", "dark"]) {
           const rc = e.getBoundingClientRect();
           if (!rc.width || !rc.height) continue;
           if (rc.right <= W + 1 && rc.left >= -1) continue;
+          // wholly off the left edge, where no one can scroll: a link kept there until a keyboard reaches it ("Skip to content")
+          if (rc.right <= 0) continue;
           let inside = false;
           for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) if (isScrollerOrClip(a)) { inside = true; break; }
           if (inside) continue;

@@ -2,7 +2,8 @@
 // (data/tracks.ts). Every place that names a lesson must agree with the Academy's own lists:
 //   number - a lesson page's "Lesson N of M" is its place in its track's list on the Academy page, counted from 1
 //   title  - the Academy's next-step button, Your desk on the home page and the lesson pages name the same lesson
-//   unit   - every lesson's length in both lists is in one unit (words); practice and tests are marked the same way (✦)
+//   unit   - every lesson's length in both lists is in one unit (words); practice and tests are marked the same way, with
+//            the printed page's one mark (◆, from the site's own typefaces: docs/adr/0008-the-printed-page.md)
 //   promise- the home page's promise about the first lesson names the track it is about
 // usage: node web/scripts/check-lessons.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
@@ -13,6 +14,7 @@ const ctx = await browser.newContext({ viewport: { width: 1024, height: 768 }, s
 const page = await ctx.newPage();
 const found = [];
 const clean = (t) => (t || "").replace(/\s+/g, " ").trim();
+const MARK = "◆";   // practice and tests, in both lists (the old look's ✦ is in none of the three typefaces)
 
 // the Academy's two lists: [number, title, length, href] for every row
 await page.goto(base + "/academy");
@@ -33,17 +35,17 @@ for (const [track, rows] of Object.entries({ reading: lists.reading, grammar: li
   if (!rows.length) { found.push(`${track}: no list found on the Academy page`); continue; }
   let n = 0;
   for (const r of rows) {
-    if (r.no === "✦") {
-      if (!/^(Practice|Test|Next|✓.*|Done|Passed.*)$/.test(r.length)) found.push(`unit: ${track} "${r.title}" marked ✦ but sized "${r.length}"`);
+    if (r.no === MARK) {
+      if (!/^(Practice|Test|Next|✓.*|Done|Passed.*)$/.test(r.length)) found.push(`unit: ${track} "${r.title}" marked ${MARK} but sized "${r.length}"`);
       // "Practice: lessons 2 to 4" must name the lessons just before it, by their numbers in the list
       const m = r.title.match(/lessons (\d+) to (\d+)/i);
       if (track === "reading" && m && (Number(m[2]) !== n || Number(m[1]) !== n - 2)) found.push(`number: "${r.title}" follows lessons ${n - 2} to ${n}`);
       continue;
     }
-    if (!/^\d+$/.test(r.no)) { found.push(`marker: ${track} "${r.title}" is marked "${r.no}", not a number or ✦`); continue; }
+    if (!/^\d+$/.test(r.no)) { found.push(`marker: ${track} "${r.title}" is marked "${r.no}", not a number or ${MARK}`); continue; }
     n++;
     if (Number(r.no) !== n) found.push(`number: ${track} "${r.title}" is numbered ${r.no}, but is lesson ${n} (counted from 1)`);
-    if (!/^(\d+ words?|Next|✓.*|read.*|↻.*)$/.test(r.length)) found.push(`unit: ${track} "${r.title}" is sized "${r.length}", not in words`);
+    if (!/^(\d+ words?|Next|✓.*|read.*|Passed.*)$/.test(r.length)) found.push(`unit: ${track} "${r.title}" is sized "${r.length}", not in words`);
     r.n = n;
   }
   rows.total = n;

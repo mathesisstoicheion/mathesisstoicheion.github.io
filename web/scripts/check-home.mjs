@@ -116,7 +116,9 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
   await page.goto(base + "/");
   await page.waitForTimeout(1500);
   const desk = await page.evaluate(() => {
-    const d = document.querySelector('section[aria-labelledby="desk-title"]');
+    // the desk stands where a first visit's "Where are you starting?" stands, in the same section, under the heading
+    // "Your desk" (the printed page's home, decision 7)
+    const d = document.querySelector('section[aria-labelledby="start-title"] > .back-only');
     if (!d || !d.getBoundingClientRect().height) return null;
     return { text: d.innerText.replace(/\s+/g, " "), bold: [...d.querySelectorAll("b")].map((b) => b.textContent.trim()), also: [...(d.querySelector("p")?.querySelectorAll("a") ?? [])].map((a) => a.textContent.trim()) };
   });

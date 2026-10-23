@@ -13,7 +13,7 @@
 .titlePlate { max-width: 460px; justify-self: end; width: 100%; }
 /* the rule under the title page, drawn in red from the left as it inks in */
 .drawn { position: relative; height: 1px; }
-.drawn::after { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%; background: var(--rubric); transform-origin: left; animation: drawn 2.4s var(--ease) 0.3s both; }
+.drawn::after { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%; background: var(--rubric); transform-origin: left; animation: drawn 2.4s var(--ease) 0.3s backwards; }
 @keyframes drawn { from { transform: scaleX(0); } }
 
 /* a part of the page, under its heading (the sample's section.part and .sh, in globals.css) */

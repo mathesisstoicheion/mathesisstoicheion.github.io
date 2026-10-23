@@ -115,9 +115,10 @@
 .tools > :first-child { grid-column: span 2; }
 @media (min-width: 900px) { .tools { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 var(--space-5); } }
 @media (max-width: 560px) { .tools .card h3 { font-size: var(--step-1); } .tools .card p { display: none; } }
-/* each a catalogue entry under a hairline: its Greek name in red, its title in Didot, red under the hand */
+/* each a catalogue entry under a hairline: its Greek name in red, its title in Garamond as every card heading on the site
+   (the home page's contents, the Treasury's sections: scripts/check-rooms.mjs), red under the hand */
 .card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px 18px; box-shadow: var(--cut-over); text-decoration: none; color: var(--ink); }
-.card h3 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
+.card h3 { font-family: var(--f-display); font-weight: 500; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .card .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-sub); }
 .soon { opacity: 0.6; }

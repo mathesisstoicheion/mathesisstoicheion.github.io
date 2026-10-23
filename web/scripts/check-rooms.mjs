@@ -1,10 +1,13 @@
 // The other rooms' check (review fix list, slice 9), at a computer's width and a phone's. It lists:
 //   stoa     - the Painted Stoa's page with more than one search box (or way into one); "The weird" and "The strange" as two
-//              categories; a photograph on the page without the engraving's gold (docs/adr/0007-photographs-in-the-stoa.md)
+//              categories; a photograph on the page tinted or turned grey: photographs are shown in their real colours (the
+//              printed page, docs/adr/0008-the-printed-page.md, decision 6; this replaces the engraving's gold of ADR 7)
 //   treasury - the Treasury's section names in another face (family and width) than the site's card headings (the Academy's "Practice and reference")
 //   account  - the sign-in below the portrait on a phone, or below the first screen on a computer; a date in CE or BCE
 // The Agora's page (the Town Hall) is not checked: the forum is frozen and hidden from visitors (FORUM_OPEN, CLAUDE.md).
 // usage: node web/scripts/check-rooms.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
+//        PROVE_CSS=<css> adds a fault to every page, to show the check catches it. Proved 2026-10-23: the Stoa's
+//        photographs turned sepia were each listed.
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
@@ -14,6 +17,7 @@ const found = [];
 for (const [w, h] of [[1280, 900], [375, 812]]) {
   const tag = `${w}px`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block" });
+  if (process.env.PROVE_CSS) await ctx.addInitScript((c) => addEventListener("load", () => document.head.append(Object.assign(document.createElement("style"), { textContent: c }))), process.env.PROVE_CSS);
   const page = await ctx.newPage();
 
   // ---- the Painted Stoa
@@ -24,13 +28,20 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
     const searches = [...document.querySelectorAll('main input[type="search"], main [aria-label^="Search the Painted Stoa"]')].filter(shown);
     const boxes = new Set(searches.map((e) => (e.closest("label, form, [class*=search]") ?? e)));
     const titles = [...document.querySelectorAll("main h2, main h3")].map((e) => e.textContent.trim());
+    // a filter that changes its colours (grey, sepia, a tint, a dimming, a drawn SVG filter) or a blend into what lies
+    // under it; a blur leaves the colours as they are (the ink-in passes through one), and so does a function at its
+    // identity value (sepia(0), saturate(1))
+    const SAME = { grayscale: 0, sepia: 0, invert: 0, saturate: 1, brightness: 1, contrast: 1, opacity: 1, "hue-rotate": 0 };
+    const tints = (f) => /url\(/.test(f) || [...f.matchAll(/([a-z-]+)\(([^)]*)\)/g)]
+      .some(([, fn, arg]) => fn in SAME && parseFloat(arg) / (arg.trim().endsWith("%") ? 100 : 1) !== SAME[fn]);
     const photos = [...document.querySelectorAll("main img")].filter(shown)
-      .filter((i) => !/grayscale|sepia/.test(getComputedStyle(i).filter)).map((i) => i.alt.slice(0, 50));
+      .filter((i) => { const s = getComputedStyle(i); return tints(s.filter) || s.mixBlendMode !== "normal"; })
+      .map((i) => `${i.alt.slice(0, 50)}" (${tints(getComputedStyle(i).filter) ? getComputedStyle(i).filter : getComputedStyle(i).mixBlendMode})`);
     return { boxes: boxes.size, weird: titles.includes("The weird") && titles.includes("The strange"), photos };
   });
   if (stoa.boxes > 1) found.push(`stoa ${tag}: ${stoa.boxes} search boxes on the Painted Stoa's page`);
   if (stoa.weird) found.push(`stoa ${tag}: "The weird" and "The strange" are two categories`);
-  for (const p of stoa.photos) found.push(`stoa ${tag}: the photograph "${p}" is in full colour on the Stoa's page`);
+  for (const p of stoa.photos) found.push(`stoa ${tag}: the photograph "${p} is not in its real colours on the Stoa's page`);
 
   // ---- the Treasury, against the Academy's cards
   await page.goto(base + "/academy");

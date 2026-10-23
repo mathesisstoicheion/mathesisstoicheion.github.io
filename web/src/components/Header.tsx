@@ -39,6 +39,7 @@ export default function Header() {
   const setSearchOpen = useUI((s) => s.setSearchOpen);
   const ref = useRef<HTMLElement>(null);
   const showRef = useRef<() => void>(null);
+  const menuBtn = useRef<HTMLButtonElement>(null);
   const [menu, setMenu] = useState(false);
   useScrollLock(menu);
   useEffect(guardOverlayWheel, []);
@@ -131,7 +132,7 @@ export default function Header() {
           </button>
           <ConnectionLight />
         </div>
-        <button className={styles.menuBtn} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
+        <button ref={menuBtn} className={styles.menuBtn} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
           {menu ? "Close" : "Menu"}
         </button>
       </div>
@@ -144,7 +145,9 @@ export default function Header() {
             {MENU_DOORS.map((id) => (
               <li key={id}>
                 {id === "search" ? (
-                  <button type="button" onClick={() => { setMenu(false); setSearchOpen(true); }} aria-haspopup="dialog">
+                  // the menu closes as the search opens: the keyboard waits on the Menu button, and the search gives it back
+                  // there when it closes (scripts/check-overlays.mjs)
+                  <button type="button" onClick={() => { setMenu(false); menuBtn.current?.focus(); setSearchOpen(true); }} aria-haspopup="dialog">
                     <span className={styles.word}>Search</span><i lang="grc">{AREAS.search.greek}</i>
                   </button>
                 ) : door(id, "")}

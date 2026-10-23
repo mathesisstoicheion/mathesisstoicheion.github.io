@@ -31,10 +31,12 @@ export const ALIASES = [
   ["library", /(?:^|[>›·|"]\s*)(?:Read · )?The Library(?=\s*(?:$|[<›·|"]))/gm, "the library is the Mouseion"],
 ];
 // one order everywhere: a room's English name (or its word) comes first, its Greek name after it or under it, never
-// before it (the printed page, redesign SPEC.md 3.5; design A had it the other way round)
+// before it (the printed page, redesign SPEC.md 3.5; design A had it the other way round). A Greek name that already
+// follows its English name is in order, whatever comes after it ("The Academy · Ἀκαδήμεια", then a chapter "Learn Greek");
+// one after the plain word alone is not ("Learn · Ἀκαδήμεια · The Academy")
 export const ROOMS = [["The Academy", "Ἀκαδήμεια", "Learn"], ["The Mouseion", "Μουσεῖον", "Read"], ["The Painted Stoa", "Στοὰ Ποικίλη", "Explore"],
   ["The Agora", "Ἀγορά", "Talk"], ["The Treasury", "Θησαυρός", "Mine"], ["The Oracle", "Μαντεῖον", "Search"]];
-for (const [en, gr, word] of ROOMS) ALIASES.push(["order", new RegExp(`${gr}(?:\\s|[|·:,])*(?:${en}|${word})\\b`, "g"), `English first: ${en} (or ${word}) before ${gr}`]);
+for (const [en, gr, word] of ROOMS) ALIASES.push(["order", new RegExp(`(?<!${en}(?:\\s|[|·:,])*)${gr}(?:\\s|[|·:,])*(?:${en}|${word})\\b`, "g"), `English first: ${en} (or ${word}) before ${gr}`]);
 // phrases that use an alias's words but are not a name for a room
 export const ALLOW = [
   /town hall of [A-Z]/i, /Forum Classicum/, /\bwiki(pedia|source|data|tionary)/i,

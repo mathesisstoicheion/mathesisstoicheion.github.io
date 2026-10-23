@@ -12,7 +12,9 @@
 //             (--rubric), the marks' own colours (--ok, --ochre, --blue, --legend); on a block of ink, the paper and the red
 //             made for it (--bg, --rubric-on-ink, --ink-2-on-ink); on a red field, the paper
 //   button  - a filled button (not a card that is a link) whose fill is not the ink, the one primary fill: every page has
-//             the same three kinds, primary (filled), secondary (a hairline frame) and the text link
+//             the same three kinds, primary (filled), secondary (a hairline frame) and the text link. A fill the colour of
+//             the ground around the button is no fill (a framed button floating over the page, Back to top, keeps the
+//             page's own paper under its words)
 // Pictures' own lettering (canvas) is not judged; nor are the sizes of the reader's lines (the text marked data-reading),
 // of Greek quoted at the reader's Greek size (the reader's own choice in Settings), and of the marks inside a text quoted
 // elsewhere (line and section numbers, sized from the text, which is judged). Words hidden from screen readers as
@@ -20,12 +22,16 @@
 // Faces and sizes are the same in both looks, so they are measured in Paper; colours and buttons in both.
 // usage: node web/scripts/check-design.mjs <base-url> [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        SUMMARY=1 prints every distinct value found with a count, for working through the list
+//        PROVE_CSS="<css>" adds a style to every page, to prove the check finds what it should
+// Proved 2026-10-23: Back to top filled with a yellow of its own was listed (PROVE_CSS='[class*="__btt"] { background:
+// #c8b428 !important }' on the reader opened at Iliad 1.200, which shows the button).
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
+// (the reader opens part-way down the Iliad, so its Back to top shows too)
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/tables", "/academy/vocabulary",
-  "/academy/practice", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/stoa/kerameikos", "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/search?q=μῆνιν",
+  "/academy/practice", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/stoa/kerameikos", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.200", "/search?q=μῆνιν",
   "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/treasury",
   "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall", "/no-such-page",
 ];
@@ -88,6 +94,7 @@ for (const look of ["paper", "night"]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block" });
     // the printed page's settings (version 2): the look, and no movement, so every word is measured where it rests
     await ctx.addInitScript((l) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: l, motion: "reduce" }, version: 2 })), look);
+    if (process.env.PROVE_CSS) await ctx.addInitScript((c) => addEventListener("load", () => document.head.append(Object.assign(document.createElement("style"), { textContent: c }))), process.env.PROVE_CSS);
     for (const path of PAGES) {
       const page = await ctx.newPage();
       const at = `${path} ${w}px ${look}`;
@@ -178,6 +185,9 @@ for (const look of ["paper", "night"]) {
             if (!b.width || !e.textContent.trim() || b.height > 72 || e.querySelector("h2, h3, h4, img, canvas, figure")) continue;
             const bg = rgba(s.backgroundColor);
             if (bg[3] < 0.5) continue;
+            // the colour of the ground around it: no fill of its own
+            const around = ground(e.parentElement);
+            if (around && near(bg, around)) continue;
             if (!near(bg, token(e, "--btn-bg"))) out.fill.push([`${show(bg)} with ${show(rgba(s.color))}`, e.textContent.trim().slice(0, 24)]);
           }
           probe.remove();

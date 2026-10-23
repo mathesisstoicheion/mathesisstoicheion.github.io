@@ -126,6 +126,9 @@
   --gutter: clamp(16px, 4vw, 56px);
   --maxw: 1180px;
   --tap: 44px;
+  /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
+     line's own height, where the token is used) */
+  --tap-pad: calc((var(--tap) - 1lh) / 2);
   --tex: none;
 }
 

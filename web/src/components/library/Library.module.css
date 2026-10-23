@@ -89,7 +89,7 @@
 @media (max-width: 900px) { .levels { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); } }
 @media (pointer: coarse) {
   .level ul { gap: 0; }
-  .level li a { display: inline-block; padding-block: 11px; }
+  .level li a { display: inline-block; padding-block: var(--tap-pad); }
 }
 /* the six reading paths: numbered steps under each path's name */
 .paths { list-style: none; margin: 0; padding: var(--space-3) 0 var(--space-6); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--space-5) clamp(var(--space-5), 3vw, 44px); }
@@ -162,7 +162,7 @@
 .nothing { padding: 32px 0; color: var(--ink-2); font-style: italic; }
 .lib mark { background: color-mix(in srgb, var(--rubric) 18%, transparent); color: inherit; padding: 0 1px; }
 @media (pointer: coarse) {
-  .count button { display: inline-block; padding-block: 11.5px; margin-block: -11.5px; }
+  .count button { display: inline-block; padding-block: var(--tap-pad); margin-block: calc(-1 * var(--tap-pad)); }
   .authorHits button { min-height: var(--tap); }
 }
 

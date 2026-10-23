@@ -205,8 +205,9 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
 
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
-  .panelIn ul { gap: 0; } .panelIn li a { display: inline-block; padding-block: 11.5px; }
-  .sourceCols .inLibrary { gap: 0; } .inLibrary a { display: inline-block; padding-block: 11.5px; }
-  .featuredGo, .essayGo a { display: inline-block; padding-block: 11.5px; margin-block: -11.5px; }
-  button.noteBtn::after { inset: -5px -4px; }   /* at the end of its row: a little wider than its 44 px, as a finger lands */
+  .panelIn ul { gap: 0; } .panelIn li a { display: inline-block; padding-block: var(--tap-pad); }
+  .sourceCols .inLibrary { gap: 0; } .inLibrary a { display: inline-block; padding-block: var(--tap-pad); }
+  .featuredGo, .essayGo a { display: inline-block; padding-block: var(--tap-pad); margin-block: calc(-1 * var(--tap-pad)); }
+  /* at the end of its row: a little wider than its 44 px, as a finger lands (above and below, as every chip) */
+  button.noteBtn::after { left: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
 }

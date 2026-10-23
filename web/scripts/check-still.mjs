@@ -8,6 +8,10 @@
 //              same is asked with reduced motion), which also catches motion made by a script rather than by CSS
 //   reduced  - with the device asking for less motion, the site's own setting left to follow it: any animation or
 //              transition that runs at all, from the first paint on
+//   held     - an animation that has finished but holds its last frame on a box (it fills forwards), when that frame
+//              moves or filters it: the ink-in's rise and blur stay on the box at rest (a filter of blur(0px) on a
+//              photograph, a box made a layer of its own that carries anything fixed inside it). Its end is the box's
+//              own look, so it need not be held.
 // Pictures drawn on a canvas (the pot to paint, the lyre) are not looked inside: only their place on the page is.
 // usage: node web/scripts/check-still.mjs [base-url] [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it. Proved 2026-10-23
@@ -36,6 +40,18 @@ const running = (page) => page.evaluate(() => document.getAnimations().filter((a
   const who = `${host.tagName.toLowerCase()}${host.id ? `#${host.id}` : ""}${host.classList.length ? `.${[...host.classList].slice(0, 2).join(".")}` : ""}`;
   return { what: `${name} on ${who}`, loop: t.iterations === Infinity, duration: Number(t.duration) || 0 };
 }).filter((x) => x && (x.loop || x.duration > 1)));
+
+/** animations that have finished and still hold a last frame that moves or filters their box */
+const held = (page) => page.evaluate(() => document.getAnimations().filter((a) => a.playState === "finished").map((a) => {
+  const fill = a.effect?.getComputedTiming?.().fill;
+  if (fill !== "forwards" && fill !== "both") return null;
+  const props = new Set(a.effect.getKeyframes().flatMap((k) => Object.keys(k)));
+  const left = ["transform", "translate", "scale", "rotate", "filter"].filter((p) => props.has(p));
+  const el = a.effect.target;
+  if (!left.length || !el?.isConnected || !el.getClientRects().length) return null;
+  const who = `${el.tagName.toLowerCase()}${el.classList.length ? `.${[...el.classList].slice(0, 2).join(".")}` : ""}${a.effect.pseudoElement ?? ""}`;
+  return `animation "${a.animationName ?? "?"}" on ${who} holds its ${left.join(" and ")}`;
+}).filter(Boolean));
 
 /** where everything on the screen is now (the page's own scroll aside) */
 const places = (page) => page.evaluate(() => {
@@ -104,6 +120,7 @@ for (const motion of ["no-preference", "reduce"]) {
         for (const m of new Set(await page.evaluate(() => window.__moving.splice(0)))) found.push(`${where}: reduced: ${m}`);
       } else {
         for (const a of await running(page)) found.push(`${where}: after${a.loop ? " (a loop)" : ""}: ${a.what}`);
+        for (const h of new Set(await held(page))) found.push(`${where}: held: ${h}`);
       }
       for (const m of (await moved(page)).slice(0, 5)) found.push(`${where}: moved: ${m}`);
       // read to the end, then leave it: whatever inked in on the way has finished
@@ -115,6 +132,7 @@ for (const motion of ["no-preference", "reduce"]) {
         for (const m of new Set(await page.evaluate(() => window.__moving))) found.push(`${where}, read to the end: reduced: ${m}`);
       } else {
         for (const a of await running(page)) found.push(`${where}, read to the end: after${a.loop ? " (a loop)" : ""}: ${a.what}`);
+        for (const h of new Set(await held(page))) found.push(`${where}, read to the end: held: ${h}`);
       }
       for (const m of (await moved(page)).slice(0, 5)) found.push(`${where}, read to the end: moved: ${m}`);
     }

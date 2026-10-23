@@ -45,7 +45,7 @@
     "spacing": 1
   },
   "src/app/globals.css": {
-    "font-size": 19,
+    "font-size": 16,
     "spacing": 60,
     "shadow": 1,
     "z-index": 6,
@@ -55,7 +55,7 @@
     "spacing": 2
   },
   "src/app/prose.module.css": {
-    "font-size": 2,
+    "font-size": 1,
     "spacing": 9
   },
   "src/app/stoa/lyre/page.tsx": {
@@ -79,7 +79,7 @@
     "z-index": 2
   },
   "src/components/Header.module.css": {
-    "spacing": 32,
+    "spacing": 31,
     "shadow": 2,
     "z-index": 3
   },
@@ -109,7 +109,7 @@
     "spacing": 3
   },
   "src/components/academy/Academy.module.css": {
-    "font-size": 13,
+    "font-size": 10,
     "spacing": 154,
     "shadow": 2,
     "z-index": 2,
@@ -132,7 +132,7 @@
     "motion": 5
   },
   "src/components/academy/Workout.module.css": {
-    "font-size": 4,
+    "font-size": 2,
     "spacing": 24,
     "shadow": 1
   },
@@ -140,7 +140,7 @@
     "spacing": 3
   },
   "src/components/admin/PrivateTranslations.module.css": {
-    "font-size": 3,
+    "font-size": 1,
     "spacing": 135,
     "z-index": 1,
     "motion": 5
@@ -169,7 +169,7 @@
     "motion": 3
   },
   "src/components/home/Home.module.css": {
-    "font-size": 10,
+    "font-size": 6,
     "spacing": 39,
     "motion": 2
   },
@@ -181,7 +181,7 @@
     "z-index": 1
   },
   "src/components/library/AuthorArticle.module.css": {
-    "font-size": 5,
+    "font-size": 2,
     "spacing": 54,
     "z-index": 1
   },
@@ -191,15 +191,14 @@
     "motion": 1
   },
   "src/components/library/Library.module.css": {
-    "font-size": 7,
-    "spacing": 53,
+    "font-size": 4,
+    "spacing": 50,
     "motion": 8
   },
   "src/components/library/WorkLanding.tsx": {
     "spacing": 1
   },
   "src/components/lyre/Lyre.module.css": {
-    "font-size": 1,
     "spacing": 9,
     "shadow": 3
   },
@@ -262,7 +261,6 @@
     "z-index": 1
   },
   "src/components/reader/Manuscript.module.css": {
-    "font-size": 1,
     "spacing": 19,
     "z-index": 1
   },
@@ -284,7 +282,7 @@
     "z-index": 4
   },
   "src/components/reader/Reader.module.css": {
-    "font-size": 19,
+    "font-size": 18,
     "spacing": 198,
     "shadow": 11,
     "z-index": 11,
@@ -297,7 +295,6 @@
     "spacing": 21
   },
   "src/components/search/QuickSearch.module.css": {
-    "font-size": 2,
     "spacing": 30
   },
   "src/components/search/Research.module.css": {
@@ -306,7 +303,7 @@
     "z-index": 1
   },
   "src/components/search/Search.module.css": {
-    "font-size": 3,
+    "font-size": 2,
     "spacing": 73,
     "motion": 3
   },
@@ -320,8 +317,8 @@
     "motion": 9
   },
   "src/components/stoa/Stoa.module.css": {
-    "font-size": 5,
-    "spacing": 109,
+    "font-size": 3,
+    "spacing": 108,
     "z-index": 1,
     "motion": 1
   },
@@ -333,16 +330,15 @@
     "spacing": 14
   },
   "src/components/stoa/WikiEras.module.css": {
-    "font-size": 2,
+    "font-size": 1,
     "spacing": 17,
     "motion": 1
   },
   "src/components/stoa/WikiIndex.module.css": {
-    "font-size": 2,
+    "font-size": 1,
     "spacing": 20
   },
   "src/components/tour/Tour.module.css": {
-    "font-size": 1,
     "spacing": 12,
     "shadow": 2,
     "z-index": 2,

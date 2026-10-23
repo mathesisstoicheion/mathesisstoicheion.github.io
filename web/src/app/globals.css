@@ -172,7 +172,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .meander, .tongues, .rays, .cut { display: block; height: 1px; background: var(--rule); }
 .tongues { width: 36px; flex: none; }
 .rays { width: 56px; }
-.draw { animation: ink var(--ink-in) var(--ease) both; }
+.draw { animation: ink var(--ink-in) var(--ease) backwards; }
 
 /* ------------------------------------------------------------- buttons */
 /* The sample's buttons: small capitals spaced wide; the main one in ink with paper letters, turning red under the hand;
@@ -281,13 +281,13 @@ select:not([multiple]):not([size]) {
 .plate figcaption a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
 .plate figcaption a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
 /* a photograph inks in as it arrives (the one movement there is), then never moves */
-.plate-ph img { animation: ink var(--ink-in) var(--ease) both; }
+.plate-ph img { animation: ink var(--ink-in) var(--ease) backwards; }
 /* a plate in the margin that changes with what is pointed at (components/plate/MarginPlate.tsx): one shape, 3 by 4, each
    photograph shown whole inside it; the new one inks in over the one before, on the paper of the frame */
 .plate-margin .plate-ph { aspect-ratio: 3 / 4; background: var(--bg); }   /* a picture of another shape sits on the paper */
 .plate-margin .plate-ph > * { position: absolute; inset: 0; }
 .plate-margin .plate-ph img { width: 100%; height: 100%; object-fit: contain; object-position: 50% 50%; animation: none; }
-.plate-margin .plate-on { display: block; background: var(--bg); animation: ink var(--ink-in) var(--ease) both; }
+.plate-margin .plate-on { display: block; background: var(--bg); animation: ink var(--ink-in) var(--ease) backwards; }
 /* a page's list of plates (Plate.tsx, PlateList): small print under a rule of ink, as a book's list of illustrations */
 .plate-list { padding-top: var(--space-5); border-top: 1px solid var(--ink); font-size: var(--step--1); line-height: 1.5; color: var(--ink-3); }
 .plate-list > p { max-width: 90ch; }
@@ -357,8 +357,10 @@ a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3,
 @keyframes turn-in { from { opacity: 0; } to { opacity: 1; } }
 
 
-/* reveal: visible at rest, the class only inks it in as it comes into view (components/Reveal.tsx) */
-.rv.in { animation: ink var(--ink-in) var(--ease) both; }
+/* reveal: visible at rest, the class only inks it in as it comes into view (components/Reveal.tsx). Every ink-in ends on
+   the box's own look and lets go of it there (backwards, never both): nothing of its rise or blur is left on the box at
+   rest (scripts/check-still.mjs) */
+.rv.in { animation: ink var(--ink-in) var(--ease) backwards; }
 
 /* (the page itself too: its paper crossfades when Paper or Night changes, scripts/check-look.mjs) */
 html[data-motion="reduce"], html[data-motion="reduce"] *, html[data-motion="reduce"] *::before, html[data-motion="reduce"] *::after {

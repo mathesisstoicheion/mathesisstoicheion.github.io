@@ -182,7 +182,7 @@
   font-family: var(--f-label); font-size: 0.6em; letter-spacing: 0.04em; color: var(--accent);
   vertical-align: 0.5em; margin: 0 0.3em; user-select: none;
 }
-.note { font-family: var(--f-label); color: var(--accent); cursor: help; margin: 0 1px; }
+.note { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); cursor: help; margin: 0 1px; }   /* a note's mark: the caption step, wherever the text is quoted */
 .gap { color: var(--ink-2); }
 
 /* a word: red under the hand; the word being looked up stays red, with a fine red rule under it (the sample's .w.on) */
