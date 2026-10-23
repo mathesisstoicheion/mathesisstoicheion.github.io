@@ -4,10 +4,10 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 
 On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
-## The printed page: the whole site and the app redesigned (2026-10-22 and 23; NOT LIVE)
+## The printed page: the whole site and the app redesigned (2026-10-22 and 23; LIVE on the owner's "Publish", 2026-10-23 20:05 UTC)
 The owner, 2026-10-22 19:31 UTC: "Now, do the full redesign for the whole website/app. No corners missed." Their twelve
-decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claude/project-thread-5hod76`; nothing is on
-`main`, and the site stays closed until the owner says "publish".
+decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claude/project-thread-5hod76`, merged into `main`
+(f37f61a) with `SITE_CLOSED` set to "false", which reopened the site.
 - **Every page** in the printed page: warm paper, or Night when the phone or computer is in dark mode (Settings can choose);
   black ink, red headings and hairline rules; only EB Garamond, GFS Didot and Gentium Book Plus; numbered photo plates in
   their real colours, each with its credit. One movement, the ink-in; reduced motion turns it off.
@@ -39,7 +39,7 @@ decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claud
 - The holding page (`holding/`, shown only while the site is closed) is set as the printed page too.
 - The old look's files are in `_archive/old-look-2026-10-22/`.
 
-## The site is closed for a redesign (2026-10-21)
+## The site was closed for a redesign (2026-10-21 to 2026-10-23)
 The owner, 08:25 UTC: "Take the website offline, temporarily. We're doing a full revision of the design". Since then
 https://mathesisstoicheion.com/ shows only a holding page ("closed for a redesign, back soon"), on every address, including
 the owner's private pages. Returning visitors' old offline copies are cleared on their next visit. Nothing was deleted: the
