@@ -87,14 +87,6 @@ export function RecentSection({ t }: { t: TreasuryState }) {
         ),
       });
     }
-    for (const c of Object.values(t.deck)) if (c.source === "saved") items.push({
-      t: c.added, key: `w:${c.id}`, node: (
-        <>
-          <span className="label">Saved word · {ago(c.added)}</span>
-          <p><Link href={wordHref(c.lemma)} className={styles.lemma} lang="grc" transitionTypes={["page-turn"]}>{c.lemma}</Link> <span className="muted">{c.gloss}</span></p>
-        </>
-      ),
-    });
     for (const n of Object.values(t.pageNotes)) items.push({
       t: n.updated, key: n.id, node: (
         <>
@@ -109,7 +101,7 @@ export function RecentSection({ t }: { t: TreasuryState }) {
       ),
     });
     return items.sort((a, b) => b.t - a.t).slice(0, 9);
-  }, [t.marks, t.deck, t.pageNotes, t.idx, stoa]);
+  }, [t.marks, t.pageNotes, t.idx, stoa]);
 
   return (
     <>

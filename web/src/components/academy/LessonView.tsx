@@ -10,7 +10,6 @@ import { norm } from "@/lib/lookup/words";
 import { coreEntry } from "@/lib/lookup/core";
 import { lsjEntries } from "@/lib/lookup/lsj";
 import { useAcademy } from "@/lib/academy";
-import { useUI } from "@/lib/ui";
 import { Blocks } from "@/components/reader/Blocks";
 import { metreIndex, publishedFor, loadLengths } from "@/lib/metre/load";
 import { renderPassages, type LineRender } from "@/lib/metre/render";
@@ -217,30 +216,20 @@ export function SectionView({ s, onWord }: { s: Section; onWord: (w: string, ctx
 
 function LessonWords({ lesson }: { lesson: Lesson }) {
   const [glosses, setGlosses] = useState<Record<string, string>>({});
-  const deck = useAcademy((s) => s.deck);
-  const add = useAcademy((s) => s.addCard);
-  const toast = useUI((s) => s.showToast);
   useEffect(() => {
     let live = true;
     Promise.all(lesson.words.map(async (w) => [w, (await coreEntry(w))?.def ?? (await lsjEntries(w).catch(() => null))?.entries[0]?.s ?? ""] as const))
       .then((r) => { if (live) setGlosses(Object.fromEntries(r)); });
     return () => { live = false; };
   }, [lesson]);
-  const missing = lesson.words.filter((w) => !deck[w.normalize("NFC")]);
   return (
     <section className={styles.words}>
       <span className="label">Words from this lesson</span>
       <ul>
         {lesson.words.map((w) => (
-          <li key={w}><span lang="grc" className={styles.inlineGr}>{w}</span> <span className="muted">{glosses[w] ?? "…"}</span>{deck[w.normalize("NFC")] && <span className={styles.inDeck}>in your deck</span>}</li>
+          <li key={w}><span lang="grc" className={styles.inlineGr}>{w}</span> <span className="muted">{glosses[w] ?? "…"}</span></li>
         ))}
       </ul>
-      {missing.length > 0 && (
-        <button type="button" className="btn ghost" onClick={() => {
-          for (const w of missing) add(w, glosses[w] ?? "", "lesson");
-          toast(`Added ${missing.length} word${missing.length === 1 ? "" : "s"} to your daily review.`);
-        }}>Add {missing.length === lesson.words.length ? "them" : `the other ${missing.length}`} to my daily review</button>
-      )}
     </section>
   );
 }

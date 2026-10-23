@@ -21,7 +21,6 @@ const reportLines = (r: ApplyReport) => {
   return [
     line("Marks and notes on passages", r.marks),
     line("Notes on authors and words", r.notes),
-    line("Words in your review deck", r.deck),
     `Places you stopped reading: ${r.positions} updated.`,
     `Saved places on the map: ${r.places} added.`,
     `Notebooks: ${r.notebooks.added} added, ${r.notebooks.updated} updated to a newer copy.`,

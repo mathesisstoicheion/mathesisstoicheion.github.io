@@ -31,7 +31,7 @@ export default function Treasury() {
   const params = useSearchParams();
   const router = useRouter();
   const t = useTreasury();
-  const { marks, deck, pageNotes } = t;
+  const { marks, pageNotes } = t;
   const savedPlaces = Object.keys(useSavedPlaces((s) => s.saved)).length;
   const notebooks = Object.keys(useNotebooks((s) => s.books)).length;
   useEffect(() => { loadSavedPlaces(); }, []);
@@ -41,10 +41,10 @@ export default function Treasury() {
     const k = (kind: string) => marks.filter((m) => m.kind === kind).length;
     return {
       notes: k("note"), anthology: k("favourite"), bookmarks: k("bookmark"), highlights: k("highlight"), xrefs: k("xref"),
-      words: Object.values(deck).filter((c) => c.source === "saved").length,
+      words: Object.values(pageNotes).filter((n) => n.kind === "word").length,
       authors: Object.values(pageNotes).filter((n) => n.kind === "author").length,
     };
-  }, [marks, deck, pageNotes]);
+  }, [marks, pageNotes]);
 
   const OFFERINGS: { id: Exclude<SectionId, "recent">; label: string; n: number | null; hint: string }[] = [
     { id: "notes", label: "Notes", n: counts.notes, hint: "on passages" },
@@ -52,7 +52,7 @@ export default function Treasury() {
     { id: "bookmarks", label: "Bookmarks", n: counts.bookmarks, hint: "and where you stopped" },
     { id: "highlights", label: "Highlights", n: counts.highlights, hint: "in four colours" },
     { id: "xrefs", label: "Cross-references", n: counts.xrefs, hint: "between passages" },
-    { id: "words", label: "Words", n: counts.words, hint: "saved, with Word Study" },
+    { id: "words", label: "Words", n: counts.words, hint: "your notes, with Word Study" },
     { id: "authors", label: "Authors", n: counts.authors, hint: "your notes on them" },
     { id: "places", label: "Places", n: savedPlaces, hint: "on your own map" },
     { id: "notebooks", label: "Notebooks", n: notebooks, hint: "for research, cited" },
@@ -63,7 +63,7 @@ export default function Treasury() {
     for (const k of ["tag", "c", "a", "nb"]) q.delete(k);
     router.replace(`/treasury${q.size ? `?${q}` : ""}`, { scroll: false });
   };
-  const empty = t.ready && !marks.length && !Object.keys(deck).length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
+  const empty = t.ready && !marks.length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
 
   return (
     <div className={styles.treasury}>
@@ -72,7 +72,7 @@ export default function Treasury() {
         <div className={styles.welcome}>
           <p>Your Treasury is empty so far. Open a text in <Link href="/library" transitionTypes={["page-turn"]}>the Mouseion</Link>, then
             select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
-            Click any word to look it up, and press <b>Save word</b> to keep it here.</p>
+            Click any word to look it up.</p>
           <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open the Mouseion</Link>
         </div>
       )}
@@ -111,7 +111,7 @@ export default function Treasury() {
         {section === "notebooks" && <NotebooksSection />}
       </section>
 
-      <KeepSafe t={t} compact={empty} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(Object.keys(deck).length, "word")} in your review deck, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
+      <KeepSafe t={t} compact={empty} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
 
       {/* the Mine door also keeps what you download for reading offline (Phase 11: Downloads moved here from the footer) */}
       <Link className={styles.offline} href={AREAS.downloads.href} transitionTypes={["page-turn"]}>

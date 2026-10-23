@@ -41,7 +41,6 @@ import SiteMark from "@/components/a/Mark";
 import PageHead from "@/components/PageHead";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
 import { useFloat } from "@/lib/float";
-import { useAcademy, knownLemmas } from "@/lib/academy";
 import { ASK_KEY } from "@/lib/community/ask";
 import { lastOtherPage } from "@/lib/resume";
 import { isMine, mineBook, mineId, mineParsed, type MineVersion } from "@/lib/mine";
@@ -212,8 +211,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const setSettings = useSettings((s) => s.set);
   const translit = useSettings((s) => s.translit);
   const cases = useSettings((s) => s.cases);
-  const known = useSettings((s) => s.known);
-  const deck = useAcademy((s) => s.deck);
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
   const fitLines = useSettings((s) => s.fitLines);
@@ -928,30 +925,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cases, rows, doc, lexWork]);
 
-  // words I know: mark each Greek word whose dictionary form the daily practice counts as learned (Phase 11)
-  const learned = useMemo(() => knownLemmas(deck), [deck]);
-  const knownCount = learned.size;
-  useEffect(() => {
-    const clear = () => root().querySelectorAll("[data-known]").forEach((el) => el.removeAttribute("data-known"));
-    if (!known || !rows.length || !doc) { clear(); return; }
-    let live = true;
-    loadWordPack(lexWork).then((pack) => {
-      if (!live) return;
-      clear();
-      if (!pack) { toast("No word analyses exist for this text yet, so the words you know can't be marked."); return; }
-      const placed = placeAnalyses(pack, doc);
-      if (placed.cover < 0.05) return;
-      root().querySelectorAll<HTMLElement>("[data-u]").forEach((unit) => {
-        const spans = [...unit.querySelectorAll<HTMLElement>("[data-w]")];
-        positionsFor(placed, unit.dataset.u!, spans.map((sp) => sp.dataset.w!)).forEach((p, i) => {
-          if (p >= 0 && placed.lemma[p] >= 0 && learned.has(pack.lemmas[placed.lemma[p]].normalize("NFC"))) spans[i].dataset.known = "";
-        });
-      });
-    }).catch(() => undefined);
-    return () => { live = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [known, learned, rows, doc, lexWork]);
-
   const pointOf = (span: HTMLElement) => {
     const unit = span.closest<HTMLElement>("[data-u]")!;
     return { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(span) };
@@ -1389,7 +1362,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         <span className={styles.aidLabel} aria-hidden="true">The Greek</span>
         <button type="button" className={`chip ${styles.mode}`} aria-pressed={translit} onClick={() => setSettings({ translit: !translit })} title="Show each line in Latin letters"><span className={styles.switch} data-switch="" aria-hidden="true" />Transliteration</button>
         <button type="button" className={`chip ${styles.mode}`} aria-pressed={cases} onClick={() => setSettings({ cases: !cases })} title="Underline nouns, adjectives and participles in the colour of their case"><span className={styles.switch} data-switch="" aria-hidden="true" />Colour by case</button>
-        <button type="button" className={`chip ${styles.mode}`} aria-pressed={known} onClick={() => setSettings({ known: !known })} title="Mark the words you have learned in the daily practice"><span className={styles.switch} data-switch="" aria-hidden="true" />Words I know</button>
         {mInfo && <button type="button" className={`chip ${styles.mode}`} aria-pressed={metreOn} onClick={() => setSettings({ metre: !metreOn })} title="Mark long and short syllables, feet and caesura"><span className={styles.switch} data-switch="" aria-hidden="true" />Metre</button>}
         {trText && !cmpText && columns === "both" && <button type="button" className={`chip ${styles.mode}`} aria-pressed={tryFirst} onClick={() => setSettings({ tryFirst: !tryFirst })} title="Hide each translation until you tap it, so you read the Greek first"><span className={styles.switch} data-switch="" aria-hidden="true" />Try it first</button>}
         {hasLines && <button type="button" className={`chip ${styles.mode}`} aria-pressed={fitLines} onClick={() => setSettings({ fitLines: !fitLines })} title="Make each verse line fit the width of the page instead of wrapping"><span className={styles.switch} data-switch="" aria-hidden="true" />Fit lines</button>}
@@ -1419,7 +1391,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     </div>
   );
   // how many of the modes above are on, for the sign on the Tools button (review fix list, slice 8)
-  const modesOn = [translit, cases, known, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst, hasLines && fitLines].filter(Boolean).length;
+  const modesOn = [translit, cases, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst, hasLines && fitLines].filter(Boolean).length;
   const setCols = (c: Columns) => setColsFor({ work: workId, c });
   const columnsSeg = (
     <div className={styles.seg} role="radiogroup" aria-label="Columns">
@@ -1701,14 +1673,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
               <span data-case="nominative">nominative</span> <span data-case="genitive">genitive</span> <span data-case="dative">dative</span>
               <span data-case="accusative">accusative</span> <span data-case="vocative">vocative</span>
               <span className={`muted ${styles.legendCredit}`}>From GLAUx&apos;s analyses of this text.</span>
-            </p>
-          )}
-          {known && (
-            <p className={`wrap ${styles.legend}`}>
-              <span data-known="">Marked</span>{" "}
-              <span className="muted">{knownCount
-                ? `the words you know: the ${knownCount} you have reviewed successfully in the daily practice. The more you practise, the more of the page lights up.`
-                : "the words you know, once you have reviewed some in the daily practice. Save words from the look-up, practise them, and they light up here."}</span>
             </p>
           )}
           {metreOn && mInfo && <MetreBar info={mInfo} about={mIndex?.about ?? null} />}

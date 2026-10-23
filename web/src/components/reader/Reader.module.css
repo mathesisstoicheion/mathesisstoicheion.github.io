@@ -434,7 +434,6 @@
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
 /* words I know (the "Words I know" aid): a soft wash of green, under any case colour */
-.reader [data-known] { background: color-mix(in srgb, var(--ok) 17%, transparent); border-radius: var(--radius); box-shadow: 0 0 0 1px color-mix(in srgb, var(--ok) 17%, transparent); }
 /* colour by case (review fix list, slice 8): colours from Okabe and Ito's set for colour-blind readers, chosen so that no two
    look alike with any of the three common kinds of colour blindness (scripts/check-reader.mjs), and a line of its own kind for
    each case, so the colour is never the only sign: nominative solid, genitive dotted, dative dashed, accusative double,

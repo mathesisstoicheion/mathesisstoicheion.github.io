@@ -10,9 +10,6 @@ import { lsjEntries, citationHref, LSJ_CREDIT, type LsjEntry, type Seg } from "@
 import { readTag, caseOf } from "@/lib/lookup/postag";
 import { lessonFor } from "@/lib/lookup/lesson-link";
 import { coreEntry, CORE_CREDIT, type CoreEntry } from "@/lib/lookup/core";
-import { useUI } from "@/lib/ui";
-import { useAcademy } from "@/lib/academy";
-import { buzz } from "@/lib/haptics";
 import { placeNamed, shortName, type Place } from "@/lib/map";
 import styles from "./Reader.module.css";
 
@@ -195,8 +192,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
   maxH?: number | null;
 }) {
-  const toast = useUI((s) => s.showToast);
-  const deck = useAcademy((s) => s.deck);
   const ref = useRef<HTMLElement>(null);
   const [snap, setSnap] = useState<Snap>("peek");
   // a look-up opened afresh starts at "peek"; moving word to word keeps the height chosen
@@ -281,14 +276,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const w = wikt.key === word ? wikt : null;
   const headword = lemma ?? l?.value?.head ?? w?.value?.title ?? lookupForm(word);
   const enc = encodeURIComponent;
-  // save the dictionary form to the daily review, with the clearest short definition we have
-  const saved = !!deck[headword.normalize("NFC")];
-  const save = () => {
-    const gloss = (core.key === lsjKey && core.value?.def) || l?.value?.entries[0]?.s || "";
-    const added = useAcademy.getState().addCard(headword, gloss, "saved");
-    if (added) buzz();
-    toast(added ? `Saved ${headword} to your daily review. It comes back when it is due.` : `${headword} is already in your daily review.`);
-  };
   const parsing = a ? readTag(a.tag) : null;
   // the lesson that explains this form, only when the analysis is of this very word (Phase 11)
   const lesson = a && a.where === "here" ? lessonFor(a.tag, a.lemma) : null;
@@ -355,8 +342,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       </section>}
 
       <p className={styles.panelLinks}>
-        {/* the quickest way to keep a word: it comes back in the daily practice (Phase 11, near the top) */}
-        <button type="button" className="chip" onClick={save} aria-pressed={saved}>{saved ? "Saved for practice ✓" : "Save for practice"}</button>
         {onSentence && (
           <button type="button" className="chip" onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
             How the sentence is built
@@ -421,7 +406,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         </ul>
       </section>
 
-      <button type="button" className="btn ghost" onClick={save} aria-pressed={saved}>{saved ? "Saved to my review ✓" : "Save word to my review"}</button>
       </div>
     </aside>
   );

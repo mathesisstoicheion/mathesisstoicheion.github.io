@@ -206,10 +206,6 @@
 .wordGr { font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .wordCard:hover .wordGr, .wordCard:focus-visible .wordGr { color: var(--rubric); }
 .gloss { font-size: var(--step-0); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-.status { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; margin-top: var(--space-1); }
-.status[data-tone="new"] { color: var(--ink-2); }
-.status[data-tone="learning"] { color: var(--ochre); }
-.status[data-tone="known"] { color: var(--ok); }
 
 /* ------------------------------------------------ authors */
 .pick { position: relative; flex: 1 1 320px; display: grid; }

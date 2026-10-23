@@ -88,7 +88,7 @@ export const useConnection = create<ConnectionState>()((set, get) => ({
       set({ copy: kept ? "kept" : get().copy === "keeping" ? "none" : get().copy });
       lines.push(kept ? "The offline copy of the site is up to date." : "The offline copy of the site could not be updated just now; it will be on the next visit.");
     }
-    lines.push("Your notes, marks, saved words and favourites are kept in this browser, so there is nothing to send: nothing made offline can be lost. Syncing between devices comes with accounts.");
+    lines.push("Your notes, marks and favourites are kept in this browser, so there is nothing to send: nothing made offline can be lost. Syncing between devices comes with accounts.");
     set({ busy: null, report: { ok, lines } });
   },
 }));

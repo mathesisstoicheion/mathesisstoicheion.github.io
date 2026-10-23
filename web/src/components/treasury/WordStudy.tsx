@@ -2,7 +2,7 @@
 /**
  * Word Study: everything about one dictionary word. Its meaning (core vocabulary, LSJ), every form
  * it takes with its grammar, where and when it is used (GLAUx counts), real examples linked into
- * the reader, its family from Wiktionary, and the reader's own note and review status.
+ * the reader, its family from Wiktionary, and the reader's own note.
  */
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -15,15 +15,12 @@ import { readTag } from "@/lib/lookup/postag";
 import { wordFamily, type WordFamily } from "@/lib/lookup/wiktionary-family";
 import { centuries, DATE_NOTE, loadWorksMeta, periodOf, PERIODS, type WorkMeta } from "@/lib/works-meta";
 import { transliterate } from "@/lib/translit";
-import { useAcademy } from "@/lib/academy";
 import { usePageNotes } from "@/lib/annotations";
 import { runSearch, canonLemma } from "@/lib/search/run";
 import { loadTags } from "@/lib/search/engine";
 import { loadDoc, snippet, type Part } from "@/lib/search/context";
-import { useUI } from "@/lib/ui";
 import { LsjEntryView } from "@/components/reader/WordPanel";
 import { PageNoteEditor } from "./AuthorsSection";
-import { reviewStatus } from "./WordsSection";
 import BarChart from "./BarChart";
 import { wordHref } from "./data";
 import { useLoad } from "@/lib/use-load";
@@ -72,7 +69,7 @@ const PATH = trail("treasury", { label: "Words", href: "/treasury?s=words" }, "W
 function Finder() {
   return (
     <PageHead bare path={PATH} title="Word Study"
-      purpose={<>Open a word from <Link href="/treasury?s=words">your saved words</Link>, or from the look-up panel in the reader (“Word Study”).</>} />
+      purpose={<>Open a word from <Link href="/treasury?s=words">your notes on words</Link>, or from the look-up panel in the reader (“Word Study”).</>} />
   );
 }
 
@@ -343,35 +340,10 @@ function Examples({ lemma }: { lemma: string }) {
 
 // ------------------------------------------------------------ the reader's own
 function Mine({ lemma }: { lemma: string }) {
-  const card = useAcademy((s) => s.deck[lemma.normalize("NFC")]);
-  const toast = useUI((s) => s.showToast);
-  const [gloss, setGloss] = useState("");
-  useEffect(() => {
-    useAcademy.persist.rehydrate();
-    usePageNotes.getState().load();
-    let live = true;
-    Promise.all([coreEntry(lemma), lsjEntries(lemma).catch(() => null)]).then(([c, l]) => { if (live) setGloss(c?.def || l?.entries[0]?.s || ""); });
-    return () => { live = false; };
-  }, [lemma]);
-  const status = card ? reviewStatus(card) : null;
+  useEffect(() => { usePageNotes.getState().load(); }, []);
   return (
     <section className={`${styles.sec} ${styles.mine}`} aria-labelledby="ws-mine">
       <h2 id="ws-mine">Yours</h2>
-      <div className={styles.review}>
-        {card && status
-          ? <>
-              <p><span className={styles.status} data-tone={status.tone}>{status.label}</span></p>
-              <p className={styles.fine}>In your daily review since {new Date(card.added).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}{card.source === "saved" ? ", saved from the reader" : card.source === "lesson" ? ", from a lesson" : ""}.</p>
-              <p><Link href="/academy/review" transitionTypes={["page-turn"]}>Go to today&apos;s review →</Link></p>
-            </>
-          : <>
-              <p className="muted">Not in your review deck.</p>
-              <button type="button" className="btn ghost" onClick={() => {
-                const added = useAcademy.getState().addCard(lemma, gloss, "saved");
-                toast(added ? `Saved ${lemma} to your daily review.` : `${lemma} is already in your daily review.`);
-              }}>Save word to my review</button>
-            </>}
-      </div>
       <h3 className="label">Your note on this word</h3>
       <PageNoteEditor kind="word" target={lemma} label={`Your note on ${lemma}`} />
     </section>

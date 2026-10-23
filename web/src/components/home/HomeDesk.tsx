@@ -1,7 +1,7 @@
 "use client";
 /**
  * A returning visitor's desk, in the place of "Where are you starting?" (which a returning visitor has already answered):
- * carry on where you left off, today's practice and the next lesson, all from what this device remembers (lib/resume.ts,
+ * carry on where you left off and the next lesson, all from what this device remembers (lib/resume.ts,
  * lib/position.ts, lib/academy.ts), set as a short table under a rule of ink. Below, the other recent pages. Which of the
  * two the home page shows is decided before the first paint (lib/visitor.ts, data-visitor on <html>).
  */
@@ -10,7 +10,7 @@ import { useEffect, useState } from "react";
 import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { trail, clearTrail, pageKey, type Visit } from "@/lib/resume";
 import { recentPositions, shownAt } from "@/lib/position";
-import { useAcademy, dueCards, type DeckCard } from "@/lib/academy";
+import { useAcademy } from "@/lib/academy";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import s from "./Home.module.css";
@@ -22,8 +22,6 @@ export default function HomeDesk() {
   const [visits, setVisits] = useState<Visit[] | null>(null);
   const [books, setBooks] = useState<[string, { at: string; t: number }][]>([]);
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
-  const [ready, setReady] = useState(false);
-  const deck = useAcademy((st) => st.deck);
   const completed = useAcademy((st) => st.completed);
   useEffect(() => {
     // storage is only available in the browser: read it after the first paint
@@ -31,7 +29,7 @@ export default function HomeDesk() {
       // (an address that led nowhere, noted before such visits were left out of the trail, is not offered either)
       setVisits(trail().filter((v) => v.href !== "/" && v.title !== "Not found"));
       setBooks(recentPositions(4));
-      Promise.resolve(useAcademy.persist.rehydrate()).then(() => setReady(true));
+      useAcademy.persist.rehydrate();
     }, 0);
     loadCatalog().then(setIdx, () => undefined);
     return () => clearTimeout(t);
@@ -46,8 +44,6 @@ export default function HomeDesk() {
   const workName = (w: string) => { const wk = idx?.work.get(w), a = idx?.authorOf.get(w); return wk ? `${a ? `${a.name}, ` : ""}${wk.title}` : w; };
   const bookHref = (w: string, at: string) => `/read?w=${w}&at=${encodeURIComponent(at)}`;
 
-  const due: DeckCard[] = ready ? dueCards(deck) : [];
-  const deckSize = Object.keys(deck).length;
   const nextLesson = LESSONS.findIndex((l) => !completed[l.id]);
   const done = Object.keys(completed).filter((id) => LESSONS.some((l) => l.id === id)).length;
   const alsoRecent = (visits ?? []).slice(1).filter((v) => !v.href.startsWith("/read")).slice(0, 3);
@@ -77,15 +73,6 @@ export default function HomeDesk() {
                 ))}
               </ul>
             )}
-          </div>
-        </div>
-        <div className={s.drow}>
-          <span className={s.dlabel}>Today&apos;s practice</span>
-          <div>
-            {!ready ? "…" : due.length > 0 ? <b>{due.length} {due.length === 1 ? "word" : "words"} to review</b>
-              : deckSize > 0 ? <b>All done for today</b> : <>Your pile is empty</>}{" "}
-            <Link href="/academy/today" transitionTypes={["page-turn"]}>{due.length ? "Start" : "Practise anyway"} →</Link>
-            {ready && deckSize === 0 && <small>Save a word from the reader or a lesson, and it comes back here for practice.</small>}
           </div>
         </div>
         {lessonRow && <div className={s.drow}>

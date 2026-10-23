@@ -1,7 +1,7 @@
 "use client";
 /**
  * The Oracle: search the Greek texts (by form, by dictionary word, by grammar), the English
- * translations, and your own notes and saved words. Everything about a search lives in the
+ * translations, and your own notes. Everything about a search lives in the
  * address, so a search can be bookmarked, shared, and gone back to.
  */
 import { addRecentSearch } from "@/lib/recent-searches";
@@ -21,7 +21,6 @@ import { TAG_FIELDS, loadTags, type TagFilter } from "@/lib/search/engine";
 import { loadDoc, snippet, type Part } from "@/lib/search/context";
 import { readTag } from "@/lib/lookup/postag";
 import { allMarks, allPageNotes, type Mark, type PageNote } from "@/lib/annotations";
-import { useAcademy } from "@/lib/academy";
 import type { TeiDoc } from "@/lib/tei/types";
 import GreekKeyboard from "./GreekKeyboard";
 import { useSwipeNav } from "@/lib/use-swipe-nav";
@@ -34,7 +33,7 @@ const TABS: { id: Tab; label: string; hint: string }[] = [
   { id: "lemma", label: "Dictionary word", hint: "Every form of a word (λόγος finds λόγου, λόγοις…), as the GLAUx treebank analyses it. Add grammar to narrow it, or search by grammar alone." },
   { id: "english", label: "Translations", hint: "Words in the English translations." },
   { id: "syntax", label: "Constructions", hint: "Sentences found by how they are built: the genitive absolute, ἄν with the optative, everything that is the object of λέγω…, from GLAUx's sentence analyses." },
-  { id: "library", label: "The Treasury", hint: "Your notes, bookmarks, highlights and saved words, on this device." },
+  { id: "library", label: "The Treasury", hint: "Your notes, bookmarks and highlights, on this device." },
 ];
 const SCRIPTS: { id: Script | "auto"; label: string }[] = [
   { id: "auto", label: "Work it out" }, { id: "greek", label: "Greek letters" }, { id: "translit", label: "Latin letters" }, { id: "beta", label: "Beta Code" },
@@ -240,7 +239,7 @@ function SearchBox({ tab, initial, script, onTab, onScript, onSubmit }: {
         <label className="visually-hidden" htmlFor="oracle-q">{TABS.find((t) => t.id === tab)!.label}</label>
         <input id="oracle-q" ref={input} className={styles.input} value={text} onChange={(e) => setText(e.target.value)}
           lang={greekTab ? "grc" : undefined} autoComplete="off" autoCapitalize="off" spellCheck={false} enterKeyHint="search"
-          placeholder={tab === "english" ? "wrath, rosy-fingered…" : tab === "library" ? "a word from your notes or saved words" : "λόγος, logos, lo/gos, or Il. 1.1"} />
+          placeholder={tab === "english" ? "wrath, rosy-fingered…" : tab === "library" ? "a word from your notes" : "λόγος, logos, lo/gos, or Il. 1.1"} />
         {greekTab && (
           <button type="button" className={styles.kbdBtn} aria-pressed={kbd} onClick={() => setKbd((v) => !v)} title="Greek letters on screen">
             <span lang="grc" aria-hidden="true">αβγ</span><span className="visually-hidden">Show Greek letters on screen</span>
@@ -602,17 +601,15 @@ function LibraryResults({ q, idx }: { q: string; idx: CatalogIndex | null }) {
   const [marks, setMarks] = useState<Mark[] | null>(null);
   const [pageNotes, setPageNotes] = useState<PageNote[]>([]);
   const stoa = useStoaTitles(pageNotes.some((p) => p.kind === "stoa"));
-  const deck = useAcademy((s) => s.deck);
   useEffect(() => { allMarks().then(setMarks, () => setMarks([])); allPageNotes().then(setPageNotes, () => {}); }, []);
   const n = fold(q).trim().replace(/^#/, "");
-  if (!n) return <p className={styles.status}>Type a word to look for in your notes (and their tags), bookmarks, highlights and saved words.</p>;
+  if (!n) return <p className={styles.status}>Type a word to look for in your notes (and their tags), bookmarks and highlights.</p>;
   const found = (marks ?? []).filter((m) => [m.quote, m.text, m.link?.label, idx?.work.get(m.work)?.title, ...(m.tags ?? []), ...(m.collections ?? [])].some((s) => s && fold(s).includes(n)));
   const others = pageNotes.filter((p) => [p.text, p.target, p.kind === "author" ? idx?.author.get(p.target)?.name : p.kind === "stoa" ? stoaLabel(stoa, p.target) : null, ...(p.tags ?? [])].some((s) => s && fold(s).includes(n)));
-  const words = Object.values(deck).filter((c) => fold(c.lemma).includes(n) || fold(c.gloss).includes(n));
   const KIND: Record<Mark["kind"], string> = { bookmark: "Bookmark", favourite: "Favourite", note: "Note", highlight: "Highlight", xref: "Cross-reference" };
   return (
     <div className={styles.found}>
-      <p className={styles.count}><b>{found.length}</b> in your notes and marks · <b>{others.length}</b> notes on authors, words and the Painted Stoa · <b>{words.length}</b> saved words</p>
+      <p className={styles.count}><b>{found.length}</b> in your notes and marks · <b>{others.length}</b> notes on authors, words and the Painted Stoa</p>
       {found.length > 0 && (
         <ol className={styles.libList}>
           {found.map((m) => (
@@ -637,13 +634,6 @@ function LibraryResults({ q, idx }: { q: string; idx: CatalogIndex | null }) {
               </Link>
               <p>{p.text.length > 240 ? p.text.slice(0, 240) + "…" : p.text}</p>
             </li>
-          ))}
-        </ol>
-      )}
-      {words.length > 0 && (
-        <ol className={styles.libList}>
-          {words.map((c) => (
-            <li key={c.id}><span className="label">Saved word</span> <Link href={`/treasury/word?l=${encodeURIComponent(c.lemma)}`} transitionTypes={["page-turn"]}><b lang="grc" className={styles.gr}>{c.lemma}</b></Link> <span className="muted">{c.gloss}</span></li>
           ))}
         </ol>
       )}

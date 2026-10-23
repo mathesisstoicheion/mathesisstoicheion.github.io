@@ -46,7 +46,6 @@ const PAGES: [string, PageSpec][] = [
   ["/academy/guide/[id]", { piece: "hermes-bronze", why: "Hermes was the guide of travellers." }],
   ["/academy/alphabet", { piece: "decree-fragment", why: "Athenian letters, cut in rows and columns." }],
   ["/academy/practice", { piece: "diskos-thrower", why: "ἄσκησις was first an athlete’s training." }],
-  ["/academy/review", { piece: "family-stele", why: "A grave marker was a mnēma, a memorial: the word comes from the same root as mnēmē, memory." }],
   ["/academy/studio", { piece: "harp-player" }],
   ["/academy/tables", { piece: "tribute-list", why: "A table cut in stone: Athens’ tribute lists." }],
   ["/academy/today", { piece: "athletic-prizes" }],

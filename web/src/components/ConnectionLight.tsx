@@ -85,7 +85,7 @@ export default function ConnectionLight() {
             <li>{copyText}</li>
             <li>{texts ? `${texts.toLocaleString("en-GB")} text files are downloaded` : "No texts are downloaded yet"}{offline.folders.length ? `, and ${offline.folders.length} folder${offline.folders.length === 1 ? " is" : "s are"} connected` : ""}.
               {offline.lookups.words || offline.lookups.lsj ? " Word look-ups are downloaded too." : ""}</li>
-            <li>Your notes, marks and saved words live in this browser and work offline.</li>
+            <li>Your notes and marks live in this browser and work offline.</li>
           </ul>
           <div className={styles.connActs}>
             <button type="button" className="btn small" onClick={() => s.reconnect()} disabled={!!s.busy}>{s.busy ? "Working…" : "Reconnect"}</button>

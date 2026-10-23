@@ -1,34 +1,28 @@
 "use client";
 
 import Link from "next/link";
-import { useMemo } from "react";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
-import { useAcademy, dueCards, streak, knownLemmas } from "@/lib/academy";
+import { useAcademy, streak } from "@/lib/academy";
 import { dueRefreshes, readyCheckpoint } from "@/lib/refreshes";
 import styles from "./Academy.module.css";
 import { TRACKS, grammarLesson } from "@/data/tracks";
 
 /** Where the learner stands, and what to do next. */
 export default function AcademyProgress() {
-  const { completed, days, deck, mastery } = useAcademy();
+  const { completed, days, mastery } = useAcademy();
   const refresh = dueRefreshes(mastery)[0];
   const checkpoint = readyCheckpoint(completed, mastery);
   const done = LESSONS.filter((l) => completed[l.id]).length;
   const next = LESSONS.find((l) => !completed[l.id]);
-  const due = useMemo(() => dueCards(deck).length, [deck]);
-  const known = useMemo(() => knownLemmas(deck).size, [deck]);
-  const cards = Object.keys(deck).length;
   const s = streak(days);
   // the four numbers are for a visitor who has begun: a first visit would meet four zeros
-  const started = done > 0 || cards > 0;
+  const started = done > 0;
 
   return (
     <section className={`${styles.progress} ${started ? "" : styles.progressNew}`} aria-label="Your progress">
       {started && (
         <div className={styles.stats}>
           <div><b>{done}<small>/{LESSONS.length}</small></b><span>lessons done</span></div>
-          <div><b>{known}</b><span>words learned</span></div>
-          <div><b>{due}</b><span>cards due today</span></div>
           <div><b>{s}</b><span>day{s === 1 ? "" : "s"} in a row</span></div>
         </div>
       )}
@@ -36,12 +30,7 @@ export default function AcademyProgress() {
         <span className="label">Next step</span>
         {refresh && <p>{refresh.name} is due for a refresh. <Link href={refresh.href} transitionTypes={["page-turn"]}>Refresh {refresh.title} →</Link></p>}
         {checkpoint && <p>You have done every lesson before Checkpoint {checkpoint.numeral}. <Link href={`/academy/checkpoint/${checkpoint.id}`} transitionTypes={["page-turn"]}>Test them together →</Link></p>}
-        {due > 0
-          ? <>
-              <p>You have {due} word{due === 1 ? "" : "s"} to review.</p>
-              <Link className="btn" href="/academy/today" transitionTypes={["page-turn"]}>Start today&apos;s session <span className="arr" aria-hidden="true">→</span></Link>
-            </>
-          : next
+        {next
             ? <>
                 <p>{done ? `Your next lesson in ${TRACKS.grammar.name.toLowerCase()}:` : `${TRACKS.grammar.name}, ${grammarLesson(next.id).toLowerCase()}:`}</p>
                 <Link className="btn" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>{next.title} <span className="arr" aria-hidden="true">→</span></Link>

@@ -94,7 +94,7 @@ export const AREAS: Record<AreaId, Area> = {
   treasury: {
     id: "treasury", name: "The Treasury", greek: "Θησαυρός", door: "Mine", href: "/treasury",
     origin: "Cities built small treasuries at Delphi to hold their precious offerings. A thesauros is also a store of words.",
-    fit: "Your notes, saved words and favourite passages.", phase: 5,
+    fit: "Your notes, marks and favourite passages.", phase: 5,
   },
   downloads: {
     id: "downloads", parent: "library", name: "The Scroll Case", english: "Downloads", href: "/downloads",

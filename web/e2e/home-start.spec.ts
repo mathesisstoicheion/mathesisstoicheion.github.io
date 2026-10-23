@@ -43,16 +43,15 @@ test("I just want to read: the library, with reading aids off", async ({ page })
   expect([s.translit, s.columns]).toEqual([false, "both"]);
 });
 
-test("a returning visitor's desk: carry on reading, today's practice, the next lesson", async ({ page }) => {
+test("a returning visitor's desk: carry on reading, the next lesson", async ({ page }) => {
   await page.goto("/");
   await page.evaluate(() => {
     localStorage.setItem("mathesis:positions", JSON.stringify({ "tlg0012.tlg001": { ed: "", tr: null, at: "1.5", t: Date.now() } }));
-    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: { letters: Date.now() }, days: [], deck: {} }, version: 0 }));
+    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: { letters: Date.now() }, days: [] }, version: 0 }));
   });
   await page.reload();
   const desk = page.getByRole("region", { name: "Your desk" });
   await expect(desk.getByRole("link", { name: /Homer, Iliad/ }).first()).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.5");
-  await expect(desk.getByText("Your pile is empty")).toBeVisible();
   // lesson 1 is done, so lesson 2 is next
   await expect(desk.getByText("Breathings, accents and punctuation")).toBeVisible();
   await expect(desk.getByRole("link", { name: /Open the lesson/ })).toHaveAttribute("href", "/academy/lesson/marks");

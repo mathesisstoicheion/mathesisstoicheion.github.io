@@ -47,7 +47,6 @@ const PAGES: { href: string; title: string; about: string }[] = [
     .filter(shown).map((id) => ({ href: AREAS[id].href, title: areaTitle(id), about: AREAS[id].fit })),
   { href: "/academy/alphabet", title: "The alphabet", about: "letters, how to write them, how they sounded" },
   { href: "/academy/today", title: "Today's session", about: "a few minutes a day" },
-  { href: "/academy/review", title: "Daily review", about: "flashcards, saved words" },
   { href: "/academy/practice", title: "Practice", about: "drills, endings, parsing" },
   { href: "/academy/tables", title: "Tables of forms", about: "paradigms, declensions, conjugations, endings" },
   { href: "/academy/vocabulary", title: "Vocabulary by frequency", about: "commonest words, core vocabulary" },

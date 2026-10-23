@@ -4,8 +4,6 @@ import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { coreWords, type CoreEntry } from "@/lib/lookup/core";
 import { loadWordPack } from "@/lib/lookup/words";
 import { fold } from "@/lib/catalog";
-import { useAcademy, knownLemmas } from "@/lib/academy";
-import { useUI } from "@/lib/ui";
 import styles from "./Academy.module.css";
 
 const TEXTS: [string, string][] = [
@@ -58,12 +56,8 @@ export default function Vocabulary() {
   const [group, setGroup] = useState("");
   const [work, setWork] = useState(TEXTS[0][0]);
   const query = useDeferredValue(fold(q.trim()));
-  const deck = useAcademy((s) => s.deck);
-  const add = useAcademy((s) => s.addCard);
-  const toast = useUI((s) => s.showToast);
   useEffect(() => { coreWords().then(setWords); }, []);
 
-  const known = useMemo(() => knownLemmas(deck), [deck]);
   const { share, total, failed } = useCoverage(work);
   const [limit, setLimit] = useState(PAGE);
   const groups = useMemo(() => [...new Set(words.map((w) => w.entry.group))].sort(), [words]);
@@ -83,7 +77,6 @@ export default function Vocabulary() {
         </label>
         {failed ? <p className="muted">Not available for this text right now</p> : <div className={styles.covBars}>
           {[
-            ["Words you have learned", share(known), `${known.size} words`],
             ["The 100 commonest words", share(words.slice(0, 100).map((w) => w.lemma)), "DCC core #1–100"],
             ["The 250 commonest words", share(words.slice(0, 250).map((w) => w.lemma)), "DCC core #1–250"],
             [`All ${words.length} core words`, share(words.map((w) => w.lemma)), "the whole DCC core list"],
@@ -110,19 +103,15 @@ export default function Vocabulary() {
         </div>
         <div className={styles.scrollX} tabIndex={0} role="region" aria-label="The commonest words">
           <table className={styles.coreTable}>
-            <thead><tr><th>#</th><th>Word</th><th>Meaning</th><th>Kind</th><th /></tr></thead>
+            <thead><tr><th>#</th><th>Word</th><th>Meaning</th><th>Kind</th></tr></thead>
             <tbody>
               {listed.map((w) => {
-                const c = deck[w.lemma];
                 return (
                   <tr key={w.lemma}>
                     <td className={styles.rank}>{w.entry.rank}</td>
                     <td lang="grc" className={styles.inlineGr}>{w.entry.head}</td>
                     <td>{w.entry.def}</td>
                     <td className={styles.small}>{w.entry.pos}</td>
-                    <td>{known.has(w.lemma) ? <span className={styles.inDeck}>learned</span>
-                      : c ? <span className={styles.inDeck}>in your deck</span>
-                      : <button type="button" className="chip" onClick={() => { add(w.lemma, w.entry.def, "core"); toast(`Added ${w.lemma} to your daily review.`); }}>Learn</button>}</td>
                   </tr>
                 );
               })}

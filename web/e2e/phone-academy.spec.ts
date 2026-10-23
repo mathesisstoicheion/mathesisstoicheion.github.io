@@ -11,43 +11,6 @@ const recordBuzz = (page: Page) => page.addInitScript(() => {
 });
 const buzzes = (page: Page) => page.evaluate(() => (window as unknown as { buzzes: unknown[] }).buzzes.length);
 
-/** Drag an element's centre by (dx, dy) with the mouse, in small steps. */
-async function drag(page: Page, sel: string, dx: number, dy: number) {
-  const b = (await page.locator(sel).first().boundingBox())!;
-  const x = b.x + b.width / 2, y = b.y + b.height / 2;
-  await page.mouse.move(x, y);
-  await page.mouse.down();
-  await page.mouse.move(x + dx, y + dy, { steps: 12 });
-  await page.mouse.up();
-}
-
-test("flashcards turn with a tap and answer with a swipe: right knew it, left again", async ({ page }) => {
-  await recordBuzz(page);
-  await page.goto("/academy/review");
-  await page.getByRole("button", { name: /Add the next 10 commonest words/ }).click();
-  await expect(page.getByText(/^10 to review/)).toBeVisible();
-  const card = "[data-noswipe]";
-  // before it is turned, a swipe does nothing; a tap turns it
-  await drag(page, card, 200, 0);
-  await expect(page.getByText(/^10 to review/)).toBeVisible();
-  await page.locator(card).click();
-  await expect(page.getByText(/Swipe the card/)).toBeVisible();
-  // a short drag springs back without answering
-  await drag(page, card, 60, 0);
-  await expect(page.getByText(/^10 to review/)).toBeVisible();
-  // a throw to the right: "Good", with a buzz
-  await drag(page, card, 220, 10);
-  await expect(page.getByText(/^9 to review · 1 done/)).toBeVisible();
-  expect(await buzzes(page)).toBe(1);
-  // a throw to the left: "Again" (the card stays due today), no buzz
-  await page.locator(card).click();
-  await drag(page, card, -220, 10);
-  await expect(page.getByText(/· 2 done/)).toBeVisible();
-  expect(await buzzes(page)).toBe(1);
-  // the card is back in the middle, ready for the next
-  await expect.poll(() => page.locator(card).evaluate((e) => e.style.transform)).toBe("");
-});
-
 test("practice answers are large buttons, and a right answer buzzes", async ({ page }) => {
   await recordBuzz(page);
   await page.goto("/academy/practice");
@@ -90,21 +53,18 @@ test("today's session: full screen, pages turned by Next or a swipe, and a last 
   // it covers the whole screen, the site's bars included
   const session = top.locator("xpath=../..");
   expect(await session.boundingBox()).toEqual({ x: 0, y: 0, width: 375, height: 812 });
-  await expect(page.getByRole("heading", { name: /Your cards/ })).toBeVisible();
-  await expect(page.getByText(/Your deck is empty for now/)).toBeVisible();
+  await expect(page.getByRole("heading", { name: /One ending/ })).toBeVisible();
   // a swipe to the left turns the page
-  const h = (await page.getByRole("heading", { name: /Your cards/ }).boundingBox())!;
+  const h = (await page.getByRole("heading", { name: /One ending/ }).boundingBox())!;
   await page.mouse.move(h.x + 300, h.y + 10);
   await page.mouse.down();
   await page.mouse.move(h.x + 60, h.y + 16, { steps: 8 });
   await page.mouse.up();
-  await expect(page.getByRole("heading", { name: /One ending/ })).toBeVisible();
-  await page.locator("[class*='options'] button").first().click();
-  await page.getByRole("button", { name: /^Next/ }).click();
   await expect(page.getByRole("heading", { name: /One real sentence/ })).toBeVisible();
   await page.getByRole("button", { name: /^Skip/ }).click();
   await expect(page.getByRole("heading", { name: /Done for today/ })).toBeVisible();
   await expect(page.getByText(/1 day in a row/)).toBeVisible();
+  await expect(page.getByText("The ending was skipped")).toBeVisible();
   await expect(page.getByText("The sentence was skipped")).toBeVisible();
   // back goes to the previous page
   await page.getByRole("button", { name: "Back" }).click();
@@ -113,16 +73,21 @@ test("today's session: full screen, pages turned by Next or a swipe, and a last 
 
 test("the vibration switch in Settings stops the buzzes", async ({ page }) => {
   await recordBuzz(page);
-  await page.goto("/academy/review");
+  await page.goto("/academy/practice");
   // on a phone, Settings are in the header's menu
   await page.locator("header").getByRole("button", { name: "Menu" }).click();
   await page.getByRole("navigation", { name: "Menu" }).getByRole("button", { name: "Settings" }).click();
   const sheet = page.getByRole("dialog", { name: "Settings" });
   await sheet.getByRole("radiogroup", { name: "Short vibrations" }).getByRole("radio", { name: "Off" }).click();
   await sheet.getByRole("button", { name: "Close settings" }).click();
-  await page.getByRole("button", { name: /Add the next 10 commonest words/ }).click();
-  await page.locator("[data-noswipe]").click();
-  await page.getByRole("button", { name: /^Good/ }).click();
-  await expect(page.getByText(/1 done/)).toBeVisible();
+  const options = page.locator("[class*='options'] button");
+  await expect(options.first()).toBeVisible();
+  // answer until one is right: a right answer would buzz if vibrations were on
+  for (let i = 0; i < 6; i++) {
+    await options.first().click();
+    if (await options.first().evaluate((e) => /right/.test(e.className))) break;
+    await page.reload();
+    await expect(options.first()).toBeVisible();
+  }
   expect(await buzzes(page)).toBe(0);
 });

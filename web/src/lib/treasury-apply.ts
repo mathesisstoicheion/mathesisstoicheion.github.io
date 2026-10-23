@@ -15,17 +15,17 @@ import { EXPORT_APP, EXPORT_FORMAT, mergeAcademy, mergeById, mergePositions, typ
 export async function gather(): Promise<TreasuryData> {
   await useAcademy.persist.rehydrate();
   await loadSavedPlaces();
-  const { completed, days, deck } = useAcademy.getState();
+  const { completed, days } = useAcademy.getState();
   return {
     app: EXPORT_APP, format: EXPORT_FORMAT, exported: new Date().toISOString(),
     marks: await allMarks(), notes: await allPageNotes(),
-    academy: { completed, days, deck }, positions: allPositions(), places: useSavedPlaces.getState().saved,
+    academy: { completed, days }, positions: allPositions(), places: useSavedPlaces.getState().saved,
     deleted: deletions(),
     notebooks: Object.values(useNotebooks.getState().books),
   };
 }
 
-export interface ApplyReport { marks: MergeReport; notes: MergeReport; deck: MergeReport; positions: number; places: number; removed: number; notebooks: { added: number; updated: number } }
+export interface ApplyReport { marks: MergeReport; notes: MergeReport; positions: number; places: number; removed: number; notebooks: { added: number; updated: number } }
 
 export async function applyIncoming(incoming: TreasuryData, onPositions?: (p: Record<string, Position>) => void): Promise<ApplyReport> {
   const mine = await gather();
@@ -38,7 +38,7 @@ export async function applyIncoming(incoming: TreasuryData, onPositions?: (p: Re
   await putAll(marks.write, notes.write);
   if (gone.length) await deleteAll(gone);
   setDeletions(dead);
-  const { academy, report: deck } = mergeAcademy(mine.academy, incoming.academy);
+  const { academy } = mergeAcademy(mine.academy, incoming.academy);
   useAcademy.setState(academy);
   const pos = mergePositions(mine.positions, incoming.positions);
   setAllPositions(pos.positions);
@@ -47,5 +47,5 @@ export async function applyIncoming(incoming: TreasuryData, onPositions?: (p: Re
   await usePageNotes.getState().load();
   const places = useSavedPlaces.getState().merge(incoming.places ?? {});
   const notebooks = useNotebooks.getState().merge(incoming.notebooks ?? [], dead);
-  return { marks: marks.report, notes: notes.report, deck, positions: pos.changed, places, removed: gone.length, notebooks };
+  return { marks: marks.report, notes: notes.report, positions: pos.changed, places, removed: gone.length, notebooks };
 }

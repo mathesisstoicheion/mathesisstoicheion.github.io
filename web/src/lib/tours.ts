@@ -48,7 +48,7 @@ export const TOURS: Record<string, Tour> = {
     start: "/academy",
     steps: [
       { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/alphabet"]')], title: "The Academy: begin with the letters", text: "Twenty-four letters. Open the alphabet to see each one's name and hear it. You need no Greek at all to start here." },
-      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session mixes practice with the words you are learning, each brought back just as you would start to forget it." },
+      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session brings back a lesson when it is due for a refresh, then one question on endings and one real sentence." },
       { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "Start with lesson 1", text: "Each lesson teaches one thing with real sentences from the texts, then checks it with a few questions." },
       { at: [t('section[aria-labelledby="guides-title"] a[href^="/academy/guide/"]')], title: "Practical guides", text: "Which Greek is which, how a dictionary lists a word, and which dictionary to use." },
     ],
@@ -110,7 +110,6 @@ export const TOURS: Record<string, Tour> = {
       // open Tools so the next steps can point inside it (it stays open while the tour steps through)
       { click: [t('button[aria-controls$="-aids"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
       { at: [t("button[aria-pressed]", "Colour by case")], title: "Colour by case", text: "A Greek word's ending shows its job in the sentence (its case): who acts, who or what is acted on, whose it is. This colours each word by its case, so you can see who does what to whom." },
-      { at: [t("button[aria-pressed]", "Words I know")], title: "Words I know", text: "Marks the words you have learned in the daily practice, so you can see how much of the page you can already read. The more you practise, the more of it lights up." },
       { at: [t("button[aria-pressed]", "Try it first")], title: "Try it first", text: "Hides each translation until you ask for it, so you read the Greek yourself first. A good way to learn." },
       { at: [t("button[aria-pressed]", "Vocabulary")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
       { at: [t('button[title^="Find a word or phrase"]'), t('[id$="-aids"] button', "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },

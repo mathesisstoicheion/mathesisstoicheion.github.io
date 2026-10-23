@@ -153,14 +153,12 @@ export const GUIDES: Guide[] = [
         ["**Wiktionary · live**", "Wiktionary's entry, when you are online"],
         ["**More dictionaries**", "Links to Logeion and Perseus"],
         ["**Word Study**", "A page for the word: every form, where it is used, examples from every period, its family"],
-        ["**Save word to my review**", "Puts the word in your daily flashcards"],
       ] },
       { kind: "p", text: "**Word Study** gathers everything about one word: its meaning (the core definition and LSJ), every form laid out as a grammar prints it, how often it is used in each period and by which authors, one passage from each period with the word marked, its family (the words built on it and the English words that come from it, from Wiktionary), and your own note on it." },
       { kind: "tip", text: "Select several words, or click a passage number, for more: bookmarks, notes, highlights, sharing and Echoes, which finds where else the words occur." },
       { kind: "links", items: [
         { href: "/read?w=tlg0012.tlg001&at=1.1", label: "Try it: Iliad 1.1 in the reader", note: "click «μῆνιν»" },
         { href: "/treasury/word?l=%CE%BB%CF%8C%CE%B3%CE%BF%CF%82", label: "Word Study: «λόγος»", note: "an example page" },
-        { href: "/academy/review", label: "Daily review", note: "where saved words come back" },
       ] },
     ],
     sources: [

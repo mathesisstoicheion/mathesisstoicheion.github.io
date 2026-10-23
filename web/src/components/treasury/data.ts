@@ -1,9 +1,8 @@
 "use client";
-/** Everything the Treasury shows, loaded once: the catalogue, every mark, notes on authors and words, the deck. */
+/** Everything the Treasury shows, loaded once: the catalogue, every mark, notes on authors and words. */
 import { useEffect, useMemo, useState } from "react";
 import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { useMarks, usePageNotes, type Mark } from "@/lib/annotations";
-import { useAcademy } from "@/lib/academy";
 import { allPositions, type Position } from "@/lib/position";
 
 export function useTreasury() {
@@ -15,18 +14,16 @@ export function useTreasury() {
   const error = useMarks((s) => s.error);
   const pageNotes = usePageNotes((s) => s.notes);
   const notesLoaded = usePageNotes((s) => s.loaded);
-  const deck = useAcademy((s) => s.deck);
 
   useEffect(() => {
     loadCatalog().then(setIdx, () => setIdx(null));
     void Promise.resolve().then(() => setPositions(allPositions()));
     useMarks.getState().loadAll();
     usePageNotes.getState().load();
-    useAcademy.persist.rehydrate();
   }, []);
 
   const marks = useMemo(() => Object.values(byWork).flat(), [byWork]);
-  return { idx, marks, pageNotes, deck, positions, setPositions, ready: allLoaded && notesLoaded, error };
+  return { idx, marks, pageNotes, positions, setPositions, ready: allLoaded && notesLoaded, error };
 }
 
 export type TreasuryState = ReturnType<typeof useTreasury>;

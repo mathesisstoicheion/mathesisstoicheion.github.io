@@ -25,7 +25,6 @@ const SOFTWARE = [
   { name: "Zustand", by: "Poimandres", licence: "MIT", href: "https://github.com/pmndrs/zustand" },
   { name: "supabase-js (accounts, the Agora and the Pnyx)", by: "Supabase", licence: "MIT", href: "https://github.com/supabase/supabase-js" },
   { name: "OpenSeadragon (the reader's manuscript viewer)", by: "OpenSeadragon contributors", licence: "BSD 3-Clause", href: "https://openseadragon.github.io" },
-  { name: "ts-fsrs (FSRS, which schedules the daily review)", by: "Open Spaced Repetition", licence: "MIT", href: "https://github.com/open-spaced-repetition/ts-fsrs" },
 ];
 
 /** The sections, in the order of the page, for the line of jumps under the title (Privacy stands second, not last, as the title names it). */
@@ -94,7 +93,7 @@ export default function CreditsPage() {
         <ul>
           <li>No adverts, no analytics, no trackers and no cookies.</li>
           <li>Fonts and code are served from this site, so your browser does not contact Google or any other company just to show a page.</li>
-          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, saved words, unsent forum drafts and everything else in the Treasury, the vase you paint in the Kerameikos, and the people you have hidden in the Agora, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
+          <li>Your settings, your recent searches, reading positions, bookmarks, notes, highlights, unsent forum drafts and everything else in the Treasury, the vase you paint in the Kerameikos, and the people you have hidden in the Agora, are stored only in this browser, on this computer. “Download my Treasury” saves a copy as a file on your computer; nothing is uploaded.</li>
           <li>When you are online and a text is not in your downloaded library, your browser fetches that text&apos;s file from GitHub (raw.githubusercontent.com).</li>
           <li>When you look up a word or open its Word Study page while online, that word (and nothing else) is sent to Wiktionary (en.wiktionary.org).</li>
           <li>When you open the reader&apos;s Manuscript panel, your browser fetches that manuscript&apos;s photographs from its library&apos;s image server: the Homer Multitext project (homermultitext.org) for the Iliad, the Biblioteca Medicea Laurenziana (via OCLC&apos;s contentdm.oclc.org) for Aeschylus, Sophocles and Apollonius, or the Bibliothèque nationale de France (gallica.bnf.fr) for Plato. Only the page asked for is requested. The Places panel uses only this site&apos;s own map.</li>

@@ -135,9 +135,7 @@ function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, 
   const [log, setLog] = useState<boolean[]>([]);                     // each answer in turn, for the track
   const [tries, setTries] = useState<Record<string, number>>({});
   const [result, setResult] = useState<Mastery | null>(null);
-  const [added, setAdded] = useState(0);
   const record = useAcademy((s) => s.recordTest);
-  const addCard = useAcademy((s) => s.addCard);
   const nextBtn = useRef<HTMLButtonElement>(null);
   const n = LESSONS.findIndex((l) => l.id === lesson.id) + 1;
   // a refresh is the test taken when it is due (decided at the start, before the result moves the date)
@@ -170,13 +168,7 @@ function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, 
       const m = record(recordId, right, total);
       setResult(m);
       onFinish?.(right >= passMark(total));
-      if (m.passed) {
-        // passing puts the lesson's words (a checkpoint's: all its lessons') in the daily review
-        let k = 0;
-        for (const w of checkpoint ? cpLessons.flatMap((l) => l.words) : lesson.words) if (glosses[w] && addCard(w, glosses[w], "lesson")) k++;
-        setAdded(k);
-        buzz("done");
-      }
+      if (m.passed) buzz("done");
     }
     setAnswer(null);
     setAt(at + 1);
@@ -217,7 +209,6 @@ function Round({ lesson, mode, checkpoint, embedded, glosses, onExit, onFinish, 
           <>
             <p className={styles.endBig}>{refresh ? "Refreshed." : checkpoint ? "Checkpoint passed." : "Lesson passed."}</p>
             <p>
-              {added > 0 && <>{added} word{added === 1 ? "" : "s"} from {checkpoint ? "these lessons" : "this lesson"} joined your daily review. </>}
               {result && <>It will come back for a short refresh on <b>{fmtDate(result.due)}</b>, so it stays with you.</>}
             </p>
           </>

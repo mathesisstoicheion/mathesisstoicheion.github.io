@@ -3,8 +3,8 @@ import { useSettings, DEFAULTS, LIMITS, upgrade } from "./settings";
 
 describe("settings", () => {
   it("starts from the defaults: the page follows the device, Greek in Gentium", () => {
-    const { theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace } = useSettings.getState();
-    expect({ theme, motion, greekSize, leading, columns, translit, cases, known, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }).toEqual(DEFAULTS);
+    const { theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace } = useSettings.getState();
+    expect({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }).toEqual(DEFAULTS);
     expect(DEFAULTS.theme).toBe("auto");
     expect(DEFAULTS.greekFace).toBe("gentium");
   });

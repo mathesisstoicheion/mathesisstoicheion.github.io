@@ -1,7 +1,7 @@
 "use client";
 /**
  * Today's session: a few minutes of study as the pages of a small book, turned forward with Next or
- * a swipe to the left (Phase 10); each page inks in where the last one stood. A few flashcards, a lesson's refresh when one is due, one question on the
+ * a swipe to the left (Phase 10); each page inks in where the last one stood. A lesson's refresh when one is due, one question on the
  * forms, and one real sentence;
  * then a last page with what was done and the days in a row. Full screen on phones.
  */
@@ -11,27 +11,23 @@ import dynamic from "next/dynamic";
 import { dueRefreshes, type Due } from "@/lib/refreshes";
 import { useAcademy, streak } from "@/lib/academy";
 import { AREAS } from "@/config/areas";
-import Review from "./Review";
 import { Endings, Parsing } from "./Practice";
 import styles from "./Academy.module.css";
 
 // the refresh carries the lessons with it, so it loads only when one is due
 const SessionRefresh = dynamic(() => import("./SessionRefresh"), { loading: () => <p className="muted">Setting out the questions…</p> });
 
-type StepId = "cards" | "refresh" | "ending" | "sentence" | "done";
+type StepId = "refresh" | "ending" | "sentence" | "done";
 const STEP: Record<StepId, { title: string; gr: string; note: string }> = {
-  cards: { title: "Your cards", gr: "ἀνάμνησις", note: "Up to ten words from your review deck, due today." },
   refresh: { title: "A refresh", gr: "ἀνανέωσις", note: "" },
   ending: { title: "One ending", gr: "ἄσκησις", note: "One question on the forms, from the tables." },
   sentence: { title: "One real sentence", gr: "λόγος", note: "A word in a verse of the Gospel of John, its analysis checked by hand." },
   done: { title: "Done for today", gr: "τέλος", note: "" },
 };
-const CARDS = 10;
 
 export default function DailySession() {
   const [step, setStep] = useState(0);
   const [dir, setDir] = useState<1 | -1>(1);
-  const [cards, setCards] = useState<number | null>(null);
   const [ending, setEnding] = useState<boolean | null>(null);
   const [sentence, setSentence] = useState<boolean[]>([]);
   const days = useAcademy((s) => s.days);
@@ -41,12 +37,12 @@ export default function DailySession() {
   const dueNow = dueRefreshes(mastery)[0] ?? null;
   const refresh = kept !== undefined ? kept : dueNow;
   const [refreshed, setRefreshed] = useState(false);
-  const ids: StepId[] = refresh ? ["cards", "refresh", "ending", "sentence", "done"] : ["cards", "ending", "sentence", "done"];
+  const ids: StepId[] = refresh ? ["refresh", "ending", "sentence", "done"] : ["ending", "sentence", "done"];
   const STEPS = ids.map((id) => (id === "refresh" && refresh ? { ...STEP.refresh, note: `${refresh.name}, ${refresh.title}, has come round again: a short test to keep it fresh.` } : STEP[id]));
   const markActive = useAcademy((s) => s.markActive);
   const box = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
-  // the footer's Next or Skip steps back to a ghost button while the page itself shows a gold one (Show the meaning, Add the next 10…)
+  // the footer's Next or Skip steps back to a ghost button while the page itself shows a gold one (a button on the page itself)
   const [gold, setGold] = useState(false);
   useEffect(() => {
     const el = page.current;
@@ -57,7 +53,7 @@ export default function DailySession() {
     watch.observe(el, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
     return () => { cancelAnimationFrame(first); watch.disconnect(); };
   }, [step]);
-  const doneBy: Record<StepId, boolean> = { cards: cards !== null, refresh: refreshed, ending: ending !== null, sentence: sentence.length >= 2, done: true };
+  const doneBy: Record<StepId, boolean> = { refresh: refreshed, ending: ending !== null, sentence: sentence.length >= 2, done: true };
   const done = ids.map((id) => doneBy[id]);
   const last = STEPS.length - 1;
 
@@ -70,7 +66,7 @@ export default function DailySession() {
     box.current?.scrollTo({ top: 0 });
   };
 
-  // a swipe to the left turns forward, to the right back (not on the flashcard, which has swipes of its own)
+  // a swipe to the left turns forward, to the right back (not on the lesson refresh, which has its own buttons)
   const g = useRef<{ id: number; x: number; y: number } | null>(null);
   const swipe = {
     onPointerDown: (e: React.PointerEvent) => {
@@ -108,14 +104,12 @@ export default function DailySession() {
           <h1 id="session-title">{s.title} <span lang="grc">{s.gr}</span></h1>
           {s.note && <p className="muted">{s.note}</p>}
         </header>
-        {at === "cards" && <div data-noswipe=""><Review limit={CARDS} onDone={(n) => setCards(n)} /></div>}
         {at === "refresh" && refresh && <div data-noswipe=""><SessionRefresh due={refresh} onFinish={() => setRefreshed(true)} /></div>}
         {at === "ending" && <Endings once onScore={(ok) => setEnding(ok)} />}
         {at === "sentence" && <Parsing once onScore={(ok) => setSentence((a) => [...a, ok])} />}
         {at === "done" && (
           <div className={styles.sessionDone}>
             <ul>
-              <li>{cards ? `${cards} card${cards === 1 ? "" : "s"} reviewed` : "No cards were due"}</li>
               {refresh && <li>{refreshed ? `${refresh.name}: refresh taken` : `${refresh.name}: refresh skipped, still due`}</li>}
               <li>{ending === null ? "The ending was skipped" : ending ? "The ending: right" : "The ending: one to look at again in the tables"}</li>
               <li>{sentence.length < 2 ? "The sentence was skipped" : `The sentence: ${sentence.filter(Boolean).length} of 2 right`}</li>

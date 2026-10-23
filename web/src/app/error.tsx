@@ -15,7 +15,7 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
   return (
     <div role="alert">
       <PageHead path={[{ label: "Something went wrong" }]} title="This page stumbled" greek="σφάλμα" piece={null}
-        purpose={<>Part of this page failed while it was working. Your notes, marks and saved words are safe: they are kept in this
+        purpose={<>Part of this page failed while it was working. Your notes and marks are safe: they are kept in this
           browser. Try again, or go back to the home page.</>}
         action={<div className="btn-row">
           <button type="button" className="btn" onClick={reset}>Try again</button>

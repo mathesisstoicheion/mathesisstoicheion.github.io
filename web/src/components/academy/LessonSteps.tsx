@@ -44,7 +44,7 @@ export function LessonSteps({ lesson }: { lesson: Lesson }) {
         <span className="muted">
           {m?.passed
             ? <>Passed on {fmtDate(m.passed)}. {due ? <span className={styles.due}>A refresh is due.</span> : <>Next refresh: {fmtDate(m.due)}.</>}</>
-            : <>8 of 10 to pass. Passing adds the lesson&apos;s words to your daily review{read ? "" : " and completes the lesson"}.</>}
+            : <>8 of 10 to pass.{read ? "" : " Passing completes the lesson."}</>}
         </span>
       </Link>
     </section>

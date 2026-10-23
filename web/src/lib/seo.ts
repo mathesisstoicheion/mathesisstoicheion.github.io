@@ -72,7 +72,7 @@ export const NOINDEX = { robots: { index: false, follow: true } } as const;
  */
 export const PAGE_DESCRIPTIONS = {
   library: "Every Greek text in the Perseus and First1KGreek collections, by author and title, with English translations where they exist, each opening beside the Greek.",
-  academy: "Learn to read Ancient Greek from the letters up: the alphabet with stroke order and sound, short lessons with real sentences from the texts, tables of forms, vocabulary and a daily review.",
+  academy: "Learn to read Ancient Greek from the letters up: the alphabet with stroke order and sound, short lessons with real sentences from the texts, tables of forms, vocabulary and lesson refreshes.",
   alphabet: "The Greek alphabet, letter by letter: how each is written stroke by stroke, its name and its sound in three pronunciations, with example words.",
   tables: "Greek noun, article and verb forms in tables, with the endings highlighted and how often each form is found in real texts.",
   vocabulary: "The commonest Greek words with short definitions, and how much of each text in the library you could read by knowing them.",

@@ -1,20 +1,16 @@
 import { describe, expect, it } from "vitest";
 import type { Mark, PageNote } from "./annotations";
-import type { DeckCard } from "./academy";
 import {
-  EXPORT_APP, ImportProblem, exportHtml, mergeAcademy, mergeById, mergeDeck, mergePositions, noteHtml, parseExport, type TreasuryData,
+  EXPORT_APP, ImportProblem, exportHtml, mergeAcademy, mergeById, mergePositions, noteHtml, parseExport, type TreasuryData,
 } from "./treasury-io";
 
 const mark = (id: string, updated: number, extra: Partial<Mark> = {}): Mark => ({
   id, kind: "note", work: "tlg0012.tlg001", ed: "perseus-grc2", start: { u: "1.1", i: 0 }, end: { u: "1.1", i: 0 },
   quote: "μῆνιν", text: "wrath", created: 1, updated, ...extra,
 });
-const card = (id: string, reps: number, last?: string): DeckCard =>
-  ({ id, lemma: id, gloss: "", source: "saved", added: 1, card: { reps, last_review: last, due: "2026-01-01T00:00:00Z" } as unknown as DeckCard["card"] });
-
 const data = (over: Partial<TreasuryData> = {}): TreasuryData => ({
   app: EXPORT_APP, format: 1, exported: "2026-09-27T10:00:00.000Z",
-  marks: [mark("a", 5, { tags: ["themes"] })], notes: [], academy: { completed: {}, days: [], deck: {} }, positions: {}, ...over,
+  marks: [mark("a", 5, { tags: ["themes"] })], notes: [], academy: { completed: {}, days: [] }, positions: {}, ...over,
 });
 
 describe("merging", () => {
@@ -24,15 +20,8 @@ describe("merging", () => {
     expect(report).toEqual({ added: 1, updated: 1, unchanged: 1 });
   });
 
-  it("keeps the more-reviewed copy of a review card", () => {
-    const { deck, report } = mergeDeck({ x: card("x", 3), y: card("y", 1, "2026-01-01") }, { x: card("x", 1), y: card("y", 1, "2026-02-01"), z: card("z", 0) });
-    expect((deck.x.card as unknown as { reps: number }).reps).toBe(3);
-    expect((deck.y.card as unknown as { last_review: string }).last_review).toBe("2026-02-01");
-    expect(report).toEqual({ added: 1, updated: 1, unchanged: 1 });
-  });
-
   it("keeps the earliest completion of a lesson and every active day", () => {
-    const { academy } = mergeAcademy({ completed: { a: 5 }, days: ["2026-01-02"], deck: {} }, { completed: { a: 3, b: 7 }, days: ["2026-01-01", "2026-01-02"], deck: {} });
+    const { academy } = mergeAcademy({ completed: { a: 5 }, days: ["2026-01-02"] }, { completed: { a: 3, b: 7 }, days: ["2026-01-01", "2026-01-02"] });
     expect(academy.completed).toEqual({ a: 3, b: 7 });
     expect(academy.days).toEqual(["2026-01-01", "2026-01-02"]);
   });

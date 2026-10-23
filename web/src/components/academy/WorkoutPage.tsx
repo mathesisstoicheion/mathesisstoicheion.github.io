@@ -17,7 +17,7 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
           title={<>{mode === "practice" ? "Practise" : "Test yourself"}: {lesson.title}</>} greek={mode === "practice" ? "ἄσκησις" : "δοκιμασία"}
           purpose={mode === "practice"
             ? "A round of questions on this lesson, with some from earlier lessons mixed in. Anything you miss comes back at the end of the round, until you have it."
-            : "Questions on this lesson alone, one try each. Pass it and the lesson's words join your daily review, and the lesson returns for short refreshes so that it stays with you."} />
+            : "Questions on this lesson alone, one try each. Pass it and the lesson returns for short refreshes so that it stays with you."} />
         <div className={`meander ${styles.pageIntro}`} aria-hidden="true" style={{ marginBlock: 6 }} />
         <Workout lesson={lesson} mode={mode} />
         </div>

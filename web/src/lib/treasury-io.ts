@@ -1,13 +1,12 @@
 /**
  * Export and restore everything the reader has made on this device: marks and notes, notes on
- * authors and words, the review deck and lesson progress, and where they stopped in each book.
+ * authors and words, lesson progress, and where they stopped in each book.
  *
  * The export is one HTML file: it reads as a tidy document in any browser, and it carries the same
  * data as JSON inside it, so the Treasury can restore from it. Restoring merges, never deletes:
  * a record already here is replaced only by a newer copy of itself.
  */
 import type { Mark, PageNote } from "./annotations";
-import type { DeckCard } from "./academy";
 import type { Position } from "./position";
 import type { CatalogIndex } from "./catalog";
 
@@ -22,7 +21,7 @@ export interface TreasuryData {
   exported: string;
   marks: Mark[];
   notes: PageNote[];
-  academy: { completed: Record<string, number>; days: string[]; deck: Record<string, DeckCard> };
+  academy: { completed: Record<string, number>; days: string[] };
   positions: Record<string, Position>;
   /** saved places on the Periplus: Pleiades id → when saved */
   places?: Record<string, number>;
@@ -49,30 +48,11 @@ export function mergeById<T extends { id: string; updated: number }>(mine: T[], 
   return { write, report: r };
 }
 
-const reps = (c: DeckCard) => Number((c.card as unknown as { reps?: number }).reps ?? 0);
-const lastReview = (c: DeckCard) => {
-  const v = (c.card as unknown as { last_review?: string | Date }).last_review;
-  return v ? new Date(v).getTime() : 0;
-};
-
-/** The review deck: a card from the file wins only if it has been reviewed more (or more recently). */
-export function mergeDeck(mine: Record<string, DeckCard>, theirs: Record<string, DeckCard>): { deck: Record<string, DeckCard>; report: MergeReport } {
-  const deck = { ...mine }, r = report();
-  for (const [id, t] of Object.entries(theirs)) {
-    const m = mine[id];
-    if (!m) { deck[id] = t; r.added++; }
-    else if (reps(t) > reps(m) || (reps(t) === reps(m) && lastReview(t) > lastReview(m))) { deck[id] = t; r.updated++; }
-    else r.unchanged++;
-  }
-  return { deck, report: r };
-}
-
 export function mergeAcademy(mine: TreasuryData["academy"], theirs: TreasuryData["academy"]) {
   const completed = { ...mine.completed };
   for (const [id, t] of Object.entries(theirs.completed ?? {})) completed[id] = Math.min(completed[id] ?? t, t);
   const days = [...new Set([...mine.days, ...(theirs.days ?? [])])].sort().slice(-400);
-  const { deck, report } = mergeDeck(mine.deck, theirs.deck ?? {});
-  return { academy: { completed, days, deck }, report };
+  return { academy: { completed, days } };
 }
 
 /** Where you stopped: the more recent position wins, book by book. */
@@ -105,7 +85,6 @@ export function parseExport(text: string): TreasuryData {
     academy: {
       completed: d.academy?.completed && typeof d.academy.completed === "object" ? d.academy.completed : {},
       days: Array.isArray(d.academy?.days) ? d.academy.days.filter((x) => typeof x === "string") : [],
-      deck: d.academy?.deck && typeof d.academy.deck === "object" ? d.academy.deck : {},
     },
     positions: d.positions && typeof d.positions === "object" ? d.positions : {},
     places: d.places && typeof d.places === "object" ? Object.fromEntries(Object.entries(d.places).filter(([k, v]) => /^\d+$/.test(k) && typeof v === "number")) : {},
@@ -167,8 +146,6 @@ export function exportHtml(d: TreasuryData, idx: CatalogIndex | null, origin: st
   const simple = (k: Mark["kind"], extra: (m: Mark) => string = () => "") =>
     byWork(kind(k)).map(([w, ms]) => `<h3>${esc(title(w))}</h3><ul>${ms.map((m) => markItem(m, extra(m))).join("")}</ul>`).join("");
   const xrefs = kind("xref").map((m) => `<li><a href="${esc(link(m))}">${esc(title(m.work))} ${esc(rangeText(m))}</a> ↔ ${m.link ? `<a href="${esc(link({ work: m.link.work, ed: m.link.ed, start: m.link.start }))}">${esc(title(m.link.work))} ${esc(m.link.label || m.link.start.u)}</a>` : "?"}</li>`).join("");
-  const words = Object.values(d.academy.deck).sort((a, b) => a.lemma.localeCompare(b.lemma, "el"))
-    .map((c) => `<li><a href="${esc(`${origin}/treasury/word?l=${encodeURIComponent(c.lemma)}`)}" class="grc" lang="grc">${esc(c.lemma)}</a> ${esc(c.gloss)} <span class="muted">${c.source === "saved" ? "saved from the reader" : c.source === "lesson" ? "from a lesson" : "core vocabulary"}</span></li>`).join("");
   const pageNotes = (k: PageNote["kind"]) => d.notes.filter((n) => n.kind === k).sort((a, b) => a.target.localeCompare(b.target, "el"))
     .map((n) => `<h3${k === "word" ? ' class="grc" lang="grc"' : ""}>${k === "stoa" ? `<a href="${esc(`${origin}/stoa/${n.target.replace("#top", "")}`)}">${esc(n.target.replace("#top", "").replace("#", " › ").replace(/-/g, " "))}</a>` : esc(k === "author" ? idx?.author.get(n.target)?.name ?? n.target : n.target)}</h3><div class="note">${noteHtml(n.text)}${tags(n.tags)}</div>`).join("");
   const positions = Object.entries(d.positions).sort((a, b) => b[1].t - a[1].t)
@@ -199,7 +176,6 @@ ${section("Favourite passages", anthology)}
 ${section("Bookmarks", simple("bookmark"))}
 ${section("Highlights", simple("highlight", (m) => ` <span class="muted">(${esc(m.colour ?? "")})</span>`))}
 ${section("Cross-references", xrefs ? `<ul>${xrefs}</ul>` : "")}
-${section("Saved words", words ? `<ul>${words}</ul>` : "")}
 ${section("Notes on words", pageNotes("word"))}
 ${section("Notes on authors", pageNotes("author"))}
 ${section("Notes on the Painted Stoa", pageNotes("stoa"))}

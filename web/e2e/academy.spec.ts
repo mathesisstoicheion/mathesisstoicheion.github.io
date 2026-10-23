@@ -19,16 +19,6 @@ test("a lesson shows a real sentence from the source file, and its quiz responds
   await expect(page.getByText(/Right\./).first()).toBeVisible();
 });
 
-test("lesson words go into the daily review, and a card can be answered", async ({ page }) => {
-  await page.goto("/academy/lesson/letters");
-  await page.getByRole("button", { name: /to my daily review/ }).click();
-  await page.goto("/academy/review");
-  await expect(page.getByRole("button", { name: "Show the meaning" })).toBeVisible();
-  await page.getByRole("button", { name: "Show the meaning" }).click();
-  await page.getByRole("button", { name: /^Good/ }).click();
-  await expect(page.getByText(/to review|Done:/)).toBeVisible();
-});
-
 test("the tables find a form without accents", async ({ page }) => {
   await page.goto("/academy/tables");
   await page.getByLabel("Find a form").fill("λογου");
@@ -68,24 +58,12 @@ test("the Academy's front page puts the tools first and names the next step", as
   // the step names its track and its place in it (review fix list, slice 4: "The grammar course, lesson 1 of 18")
   await expect(page.getByLabel("Your progress")).toContainText(/lesson 1 of \d+/);
   await expect(page.getByLabel("Your progress").getByRole("link").first()).toBeVisible();
-  // the tools stand under it, before the lessons; Daily review is reached from the session, not listed here
+  // the tools stand under it, before the lessons; there is no Daily review any more
   const tools = page.locator('section[aria-labelledby="tools-title"]');
   await expect(tools.getByRole("link")).toHaveCount(5);
   await expect(tools.getByRole("link", { name: /Daily review/ })).toHaveCount(0);
   const y = (s: string) => page.locator(s).evaluate((e) => e.getBoundingClientRect().top);
   expect(await y('section[aria-labelledby="tools-title"]')).toBeLessThan(await y('section[aria-labelledby="lessons-title"]'));
-  // with a card due, the step is a button to today's session
-  await page.evaluate(() => {
-    const day = 864e5, now = Date.now();
-    const card = { due: new Date(now - day).toISOString(), stability: 1, difficulty: 5, elapsed_days: 1, scheduled_days: 1,
-      learning_steps: 0, reps: 1, lapses: 0, state: 2, last_review: new Date(now - 2 * day).toISOString() };
-    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: {}, days: [], deck: {
-      "θεά": { id: "θεά", lemma: "θεά", gloss: "goddess", source: "saved", added: now - 3 * day, card },
-    } }, version: 0 }));
-  });
-  await page.reload();
-  await expect(page.getByLabel("Your progress")).toContainText("cards due today");
-  await expect(page.getByLabel("Your progress").getByRole("link", { name: /Start today's session/ })).toHaveAttribute("href", "/academy/today");
 });
 
 test("lessons 10 to 13: prepositions drawn, adjectives that move, the third declension and the past", async ({ page }) => {
