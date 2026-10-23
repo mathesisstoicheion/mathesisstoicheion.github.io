@@ -100,6 +100,11 @@ export function applySettings(s: Settings) {
   const el = document.documentElement;
   // Paper or Night, chosen for good; "auto" leaves it to the device (styles/tokens.css)
   if (s.theme === "paper" || s.theme === "night") el.setAttribute("data-theme", s.theme); else el.removeAttribute("data-theme");
+  // the browser's bar too: app/layout.tsx gives it the device's look (one colour for a light device, one for a dark one);
+  // a look chosen for good gives both its own colour
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((m) => {
+    m.content = s.theme === "night" || (s.theme !== "paper" && m.media.includes("dark")) ? THEME_COLOUR_NIGHT : THEME_COLOUR;
+  });
   if (s.motion === "auto") el.removeAttribute("data-motion"); else el.setAttribute("data-motion", s.motion);
   el.style.setProperty("--greek-size", `${s.greekSize}rem`);
   el.style.setProperty("--reading-leading", String(s.leading));
@@ -121,7 +126,7 @@ export const scrollBehavior = (): ScrollBehavior => (prefersReducedMotion(useSet
  * Must mirror applySettings().
  */
 export const BOOT_SCRIPT = `(function(){try{var j=JSON.parse(localStorage.getItem(${JSON.stringify(STORAGE_KEY)})||"{}")||{},s=j.state||{},o=!(j.version>=2),e=document.documentElement;
-var t=o?(s.theme==="light"?"paper":""):s.theme;if(t==="paper"||t==="night")e.setAttribute("data-theme",t);
+var t=o?(s.theme==="light"?"paper":""):s.theme;if(t==="paper"||t==="night"){e.setAttribute("data-theme",t);document.querySelectorAll('meta[name="theme-color"]').forEach(function(m){m.content=t==="night"?"${THEME_COLOUR_NIGHT}":"${THEME_COLOUR}"})}
 if(s.motion==="reduce"||(o&&s.level==="performance"))e.setAttribute("data-motion","reduce");else if(s.motion==="full")e.setAttribute("data-motion","full");
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));

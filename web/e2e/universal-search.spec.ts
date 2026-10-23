@@ -45,9 +45,10 @@ test("finds a word's meaning, a place, a lesson, and does what is asked", async 
   await expect(box.getByRole("option", { name: /wrath/ })).toBeVisible();
   await expect(box.getByRole("option").first()).toContainText("wrath");
 
+  // a place named exactly comes first, under its group's title "On the map"
   await box.getByRole("combobox").fill("sparta");
-  await expect(box.getByRole("option").first()).toContainText("On the map");
   await expect(box.getByRole("option").first()).toContainText("Σπάρτη");
+  await expect(box.getByRole("group", { name: "On the map" }).getByRole("option").first()).toContainText("Sparta");
 
   await box.getByRole("combobox").fill("aorist");
   await expect(box.getByRole("option", { name: /The past: imperfect and aorist/ })).toBeVisible();
@@ -56,29 +57,44 @@ test("finds a word's meaning, a place, a lesson, and does what is asked", async 
   await expect(box.getByRole("option").nth(0)).toContainText("Homer");
   await expect(box.getByRole("option").nth(1)).toContainText("Iliad");
 
+  // "daylight" asks for the page in Paper (the printed page has Paper and Night, redesign SPEC.md 3.1)
   await box.getByRole("combobox").fill("daylight");
-  await expect(box.getByRole("option").first()).toContainText("Reader's page: Daylight");
+  await expect(box.getByRole("option").first()).toContainText("The page: Paper");
   await expect(box.getByRole("option", { name: /Search the Greek/ })).toHaveCount(0);
   await page.keyboard.press("Enter");
-  await expect(page.locator("html")).toHaveAttribute("data-reader-page", "day");
+  await expect(page.locator("html")).toHaveAttribute("data-theme", "paper");
   box = page.getByRole("dialog", { name: "Quick search" });
   await expect(box).toBeVisible();
 });
 
-test("the Greek and English typefaces can be chosen, and are remembered", async ({ page }) => {
+test("the Greek typeface can be chosen and is remembered; English is always in EB Garamond", async ({ page }) => {
   await page.goto("/");
   await (await headerButton(page, "Settings")).click();
   const settings = page.getByRole("dialog", { name: "Settings" });
-  await settings.getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Gentium/ }).click();
-  await settings.getByRole("radiogroup", { name: "English typeface" }).getByRole("radio", { name: /Sans/ }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "gentium");
-  await expect(page.locator("html")).toHaveAttribute("data-text-face", "sans");
-  const faces = () => page.evaluate(() => [getComputedStyle(document.querySelector("[lang='grc']")!).fontFamily, getComputedStyle(document.body).fontFamily]);
+  // the printed page has three typefaces and no fourth (redesign SPEC.md 3.2): only the Greek one is a choice
+  await expect(settings.getByRole("radiogroup", { name: "English typeface" })).toHaveCount(0);
+  // the face a piece of Greek and the English around it are set in
+  const faces = () => page.evaluate(() => {
+    const g = document.createElement("span");
+    g.lang = "grc";
+    g.textContent = "λόγος";
+    document.body.append(g);
+    const out = [getComputedStyle(g).fontFamily, getComputedStyle(document.body).fontFamily];
+    g.remove();
+    return out;
+  });
   expect((await faces())[0]).toMatch(/gentium/i);
-  expect((await faces())[1]).toMatch(/alegreya.?sans/i);
+  await settings.getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Didot/ }).click();
+  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "didot");
+  expect(await faces()).toEqual([expect.stringMatching(/didot/i), expect.stringMatching(/garamond/i)]);
   // before the first paint after a reload too (the boot script)
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "gentium");
+  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "didot");
+  expect((await faces())[0]).toMatch(/didot/i);
+  // and back to Gentium, the default
+  await (await headerButton(page, "Settings")).click();
+  await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Gentium/ }).click();
+  await expect(page.locator("html")).not.toHaveAttribute("data-greek-face");
   expect((await faces())[0]).toMatch(/gentium/i);
 });
 

@@ -50,10 +50,10 @@ test("Esc ends a tour, and the passage actions are put away before the Treasury 
   await expect(page).not.toHaveURL(/tour=/);
 });
 
-test("a first visit is invited to the Guide in the \"Where are you starting?\" panel, not by a card over it", async ({ page }) => {
+test("a first visit is invited to the Guide under \"Where are you starting?\", not by a card over it", async ({ page }) => {
   await page.goto("/?invite");
-  const panel = page.locator("div", { has: page.getByRole("tablist", { name: "Where are you starting?" }) }).last();
-  await expect(panel.getByRole("link", { name: /A short guide shows you round/ })).toHaveAttribute("href", "/guide");
+  const part = page.getByRole("region", { name: "Where are you starting?" });
+  await expect(part.getByRole("link", { name: /A short guide shows you round/ })).toHaveAttribute("href", "/guide");
   await page.mouse.wheel(0, 300);
   await page.waitForTimeout(5500);
   await expect(page.getByRole("complementary", { name: "New here?" })).toHaveCount(0);

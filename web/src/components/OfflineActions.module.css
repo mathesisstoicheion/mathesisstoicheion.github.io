@@ -17,6 +17,8 @@ button.item:disabled { opacity: 0.6; cursor: default; }
 .quick { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
 .quick :global(.chip) { display: inline-block; text-align: left; line-height: 1.35; padding-block: 8px; }
 @media (max-width: 680px) { .quick :global(.chip) { width: 100%; border-radius: var(--radius); } }
+/* under a finger, each collection to download is a full row of at least 44 px (e2e/phone.spec.ts) */
+@media (pointer: coarse) { .quick :global(.chip) { min-height: var(--tap); } }
 .quick :global(.chip):disabled { opacity: 0.5; cursor: default; }
 .size { font-weight: 400; color: var(--ink-2); }
 .small { font-size: var(--step--1); color: var(--ink-2); margin-top: 10px; }

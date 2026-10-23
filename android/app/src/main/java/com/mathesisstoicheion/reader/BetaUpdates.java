@@ -91,7 +91,7 @@ class BetaUpdates {
 
     private void offer(long beta, String notes, String url) {
         if (app.isFinishing()) return;
-        new AlertDialog.Builder(app, android.R.style.Theme_Material_Dialog_Alert)
+        new AlertDialog.Builder(app) // in the app's own theme: light on the paper, dark at night
                 .setTitle("Beta " + beta + " is ready")
                 .setMessage((notes.isEmpty() ? "" : notes + "\n\n") + "It installs over this one and keeps your reading, notes and sign-in.")
                 .setPositiveButton("Update", (d, w) -> download(beta, url))

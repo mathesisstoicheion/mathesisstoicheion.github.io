@@ -11,11 +11,13 @@
         android:theme="@style/Site"
         android:allowBackup="true">
 
+        <!-- the phone turning to dark mode or back (uiMode) starts the page afresh in the new theme, so the site's Paper or
+             Night follows the phone (values/ and values-night/styles.xml); the page itself is kept -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTask"
-            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|uiMode|density">
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|keyboard|keyboardHidden|density">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

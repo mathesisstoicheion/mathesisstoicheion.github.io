@@ -5,12 +5,15 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.AssetManager;
+import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowInsets;
+import android.view.WindowInsetsController;
 import android.view.WindowManager;
+import android.webkit.JavascriptInterface;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
 import android.webkit.WebResourceRequest;
@@ -63,7 +66,7 @@ public class MainActivity extends Activity {
         edgeToEdge();
 
         web = new WebView(this);
-        web.setBackgroundColor(0xFF14100D);
+        web.setBackgroundColor(getColor(R.color.page)); // the paper, or the night page (values-night)
         WebSettings s = web.getSettings();
         s.setJavaScriptEnabled(true);
         s.setDomStorageEnabled(true);
@@ -93,8 +96,10 @@ public class MainActivity extends Activity {
             @Override
             public void onPageFinished(WebView view, String url) {
                 checkSafeAreas();
+                followLook();
             }
         });
+        web.addJavascriptInterface(new Look(), "MathesisApp");
         frame = new FrameLayout(this);
         frame.addView(web);
         frame.setOnApplyWindowInsetsListener((v, insets) -> {
@@ -103,6 +108,7 @@ public class MainActivity extends Activity {
             return insets; // passed on unchanged, so the page itself learns where the clock and gesture bar are
         });
         setContentView(frame);
+        barsFor(phoneIsDark()); // until the page says which look it shows
 
         if (saved != null) web.restoreState(saved);
         else web.loadUrl(prefs.getString("last", HOME));
@@ -177,6 +183,42 @@ public class MainActivity extends Activity {
             keepClear = !told;
             fitFrame();
         });
+    }
+
+    // ---- Paper or Night: the clock and the gesture bar drawn dark on the paper, light on the night page ----
+
+    private boolean phoneIsDark() {
+        return (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) == Configuration.UI_MODE_NIGHT_YES;
+    }
+
+    @SuppressWarnings("deprecation")
+    private void barsFor(boolean night) {
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsetsController c = getWindow().getInsetsController();
+            int both = WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS | WindowInsetsController.APPEARANCE_LIGHT_NAVIGATION_BARS;
+            if (c != null) c.setSystemBarsAppearance(night ? 0 : both, both);
+        } else {
+            View d = getWindow().getDecorView();
+            int both = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR | View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
+            int f = d.getSystemUiVisibility();
+            d.setSystemUiVisibility(night ? f & ~both : f | both);
+        }
+    }
+
+    /** The page tells the app which look it shows: the site's Settings can choose Paper or Night whatever the phone says. */
+    public class Look {
+        @JavascriptInterface
+        public void look(String which) {
+            runOnUiThread(() -> barsFor("night".equals(which)));
+        }
+    }
+
+    /** Asks the page which look it shows (web/src/lib/settings.ts sets data-theme for a chosen one), now and whenever it changes. */
+    private void followLook() {
+        web.evaluateJavascript("(function(){if(window.__appLook)return;window.__appLook=1;var e=document.documentElement,"
+                + "q=matchMedia('(prefers-color-scheme: dark)');function s(){var t=e.getAttribute('data-theme');"
+                + "MathesisApp.look(t==='night'||(t!=='paper'&&q.matches)?'night':'paper')}s();"
+                + "new MutationObserver(s).observe(e,{attributes:true,attributeFilter:['data-theme']});q.addEventListener('change',s)})()", null);
     }
 
     @Override

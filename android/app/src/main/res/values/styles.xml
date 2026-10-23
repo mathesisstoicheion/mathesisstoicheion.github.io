@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- the site's stone colour (web/src/app/manifest.ts), so the app never flashes white -->
-    <color name="stone">#14100D</color>
-    <!-- the page runs under the clock and the gesture bar (MainActivity draws edge to edge) -->
-    <style name="Site" parent="android:Theme.Material.NoActionBar">
-        <item name="android:windowBackground">@color/stone</item>
-        <item name="android:colorBackground">@color/stone</item>
+    <!-- the printed page's paper (web/src/styles/tokens.css), so the app never flashes another colour as it opens; with the
+         phone in dark mode the night page is used instead (values-night/styles.xml) -->
+    <color name="page">#F3ECE0</color>
+    <!-- the ground of the app's icon is always the paper (mipmap-anydpi-v26/ic_launcher.xml) -->
+    <color name="icon_paper">#F3ECE0</color>
+    <!-- The page runs under the clock and the gesture bar (MainActivity draws edge to edge). A light theme also tells the
+         site that the phone is in light mode, so it shows Paper; the dark one, in values-night, shows Night. -->
+    <style name="Site" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:windowBackground">@color/page</item>
+        <item name="android:colorBackground">@color/page</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 </resources>

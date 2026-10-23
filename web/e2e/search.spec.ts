@@ -48,7 +48,7 @@ test("quick search goes straight to a typed reference", async ({ page }) => {
 
 test("the kinds of search and the box stand under the title, and the extra filters wait in a Refine fold that opens when one is set", async ({ page }) => {
   await page.goto("/search");
-  const head = page.locator("header.area-head");
+  const head = page.locator("header.page-head");
   await expect(head.getByRole("tablist", { name: "What to search" })).toBeVisible();
   await expect(head.getByRole("button", { name: "Ask" })).toBeVisible();
   // the Pausanias line is a small caption under the carving, in its own words

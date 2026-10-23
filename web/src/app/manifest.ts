@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { SITE } from "@/config/areas";
+import { THEME_COLOUR } from "@/lib/settings";
 
 export const dynamic = "force-static";
 
@@ -13,10 +14,11 @@ export default function manifest(): MetadataRoute.Manifest {
     start_url: "/",
     scope: "/",
     display: "standalone",
-    background_color: "#14100d",
-    theme_color: "#14100d",
+    // the paper: what shows while the app opens, and its bar (a page then follows the device into Night, app/layout.tsx)
+    background_color: THEME_COLOUR,
+    theme_color: THEME_COLOUR,
     icons: [
-      // the site's mark on the stone (made by scripts/make-logo.mjs)
+      // the printer's device on the paper (made by scripts/make-logo.mjs)
       { src: "/icons/icon-192.png", sizes: "192x192", type: "image/png", purpose: "any" },
       { src: "/icons/icon-512.png", sizes: "512x512", type: "image/png", purpose: "any" },
       { src: "/icons/maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },

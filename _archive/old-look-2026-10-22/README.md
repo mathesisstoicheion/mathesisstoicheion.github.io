@@ -16,3 +16,9 @@ What is here:
 - `web/scripts/prepare-engravings.py`: made the letter-drawn pictures.
 - `web/public/images/a/`, `web/public/images/pieces/lit/`, `web/public/images/relit/`: the pictures those files used
   (lit and cut-out copies of the museum photographs; the photographs themselves stay in `web/public/images/`).
+- `web/public/logo/owl.svg`, `web/public/favicon.ico`, `web/public/apple-touch-icon.png`, `web/public/icons/` and
+  `android/app/src/main/res/mipmap-*/ic_launcher.png`: the old owl icons. The printer's device replaced them; the new
+  icons are made by `web/scripts/make-logo.mjs`.
+- `web/scripts/make-logo.mjs` and `web/scripts/make-share-card.mjs`: the old scripts that drew the owl and the old share
+  picture (`web/public/og-card.png`, also here). New scripts of the same names draw the printer's device and the new
+  share picture.

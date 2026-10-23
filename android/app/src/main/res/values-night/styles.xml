@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- the printed page's night page (web/src/styles/tokens.css), for a phone in dark mode (values/styles.xml has the paper) -->
+    <color name="page">#1B1814</color>
+    <!-- a dark theme tells the site that the phone is in dark mode, so it shows Night -->
+    <style name="Site" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/page</item>
+        <item name="android:colorBackground">@color/page</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowLightStatusBar">false</item>
+    </style>
+</resources>

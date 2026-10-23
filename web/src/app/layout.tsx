@@ -38,7 +38,7 @@ export const metadata: Metadata = {
   twitter: { card: "summary_large_image", images: [SHARE_IMAGE.url] },
   // added to an iPhone's home screen, it opens as an app of its own (the manifest says the same for other phones)
   appleWebApp: { capable: true, title: SITE.latin, statusBarStyle: "default" },
-  // the tab icon and the iPhone's home-screen icon: the small form of the site's mark (made by scripts/make-logo.mjs)
+  // the tab icon and the iPhone's home-screen icon: the printer's device (made by scripts/make-logo.mjs)
   icons: { icon: [{ url: "/favicon.ico", sizes: "16x16 32x32 48x48" }], apple: "/apple-touch-icon.png" },
 };
 
