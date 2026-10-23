@@ -147,3 +147,7 @@
   .meaning > h2 { grid-column: 1 / -1; }
   .meaning > .lsj > h3 { margin-top: 0; }
 }
+/* on a computer a word of the family shows it can be clicked at rest (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .kin a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}

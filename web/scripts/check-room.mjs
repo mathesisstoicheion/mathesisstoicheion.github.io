@@ -23,6 +23,9 @@ const PAGES = only.length ? only : [
   "/stoa/ostracism", "/stoa/census", "/stoa/troy", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account",
   "/about", "/credits", "/guide", "/no-such-page",
 ];
+// (a word's Word Study page is filled by the word packs; where they are not served, as on GitHub, its main column is
+// nearly empty by design of the data, not the page, so NOPACKS=1 leaves it out)
+if (process.env.NOPACKS) { const i = PAGES.indexOf("/treasury/word?l=λόγος"); if (i >= 0) { PAGES.splice(i, 1); console.log("(without the word packs: /treasury/word?l=λόγος left out)"); } }
 const WIDTHS = (process.env.WIDTHS ?? "1440,1920").split(",").map(Number);
 const FRAME = 0.8, GAP = 0.45, BAND = 300, CHARS = 90;
 
@@ -81,7 +84,8 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
   for (const e of main.querySelectorAll("*")) {
     if (!shown(e) || getComputedStyle(e).position !== "sticky" || !e.parentElement) continue;
     const b = e.getBoundingClientRect(), p = e.parentElement.getBoundingClientRect();
-    if (b.width > 40) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: p.bottom + scrollY, el: e });
+    // (beyond its own end it only stands beside what the part sets there: where the part sets nothing, that is room)
+    if (b.width > 40) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el: e }, { l: b.left, r: b.right, t: b.bottom + scrollY, b: p.bottom + scrollY, el: e, beside: true });
   }
   // a grid of cards or columns fills the width it is laid out across: a last row that ends short is the end of a list
   for (const e of main.querySelectorAll("*")) {
@@ -91,7 +95,7 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
     const tracks = s.display.endsWith("grid") ? s.gridTemplateColumns.trim().split(/\s+/).map(parseFloat) : [];
     if (tracks.length < 2 || Math.max(...tracks) - Math.min(...tracks) > 2) continue;
     const b = e.getBoundingClientRect();
-    if (b.width > 40 && b.height > 4) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el: e });
+    if (b.width > 40 && b.height > 4) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el: e, beside: true });
   }
   // a plate (a photograph with its caption) stands in white of its own, as a book's plates do: beside it the page is not empty
   const plates = [...main.querySelectorAll("figure, .plate")].filter(shown).map((e) => { const b = e.getBoundingClientRect(); return { t: b.top + scrollY, b: b.bottom + scrollY }; });
@@ -103,6 +107,7 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
   let run = null;
   const runs = [];
   for (let y = from; y < end; y += STEP) {
+    if (!boxes.some((b) => !b.beside && b.b > y && b.t < y + STEP)) { if (run) { runs.push(run); run = null; } continue; }   // nothing set here but a margin's or a grid's reach
     const inStrip = boxes.filter((b) => b.b > y && b.t < y + STEP).map((b) => [Math.max(L, b.l), Math.min(R, b.r)]).filter(([a, b]) => b > a).sort((a, b) => a[0] - b[0]);
     if (!inStrip.length || plates.some((f) => f.b > y && f.t < y + STEP)) { if (run) { runs.push(run); run = null; } continue; }   // white between parts is the page's room
     let gap = 0, at = L;
