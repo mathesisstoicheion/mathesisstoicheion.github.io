@@ -78,7 +78,7 @@
 .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; }
 .chart { margin: 0; display: grid; gap: 10px; align-content: start; }
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.barRow { position: relative; display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 12px; align-items: center; padding: 5px 4px; outline: none; }
+.barRow { position: relative; display: grid; grid-template-columns: minmax(120px, 38%) minmax(0, 1fr); gap: 12px; align-items: center; padding: 5px 4px; outline: none; }
 .barRow[data-hover] .barLabel { color: var(--rubric); }
 .barRow:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 .barLabel { font-size: var(--step--1); line-height: 1.2; transition: color var(--dur-quick) var(--ease); }
@@ -134,3 +134,8 @@
 }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .asTable summary { padding-block: 11px; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .sec { padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .layout { margin-top: var(--after-head); }
+}

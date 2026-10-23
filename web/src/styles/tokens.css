@@ -23,9 +23,11 @@
   --paper-2: #e9dfcd;      /* the second surface: a plate's mount, a margin, a pressed key */
   --paper-3: #ddd0b9;
   --paper-ink: #1e1a15;
-  --paper-ink-2: #5c5043;  /* captions */
-  --paper-ink-3: #675846;  /* small print and credits: the spec's faint ink made deeper, so it reads at 4.5 : 1 even
-                              where the paper's shade at the foot of the screen is darkest (scripts/check-library.mjs) */
+  /* the softer inks, for captions, notes, credits and the English beside the Greek: deeper than the sample's, so every
+     line of words reads at 7 : 1 or more on the paper and on its second surface (the owner, 2026-10-23: "the grey text
+     can be a little unintelligible when reading"; scripts/check-ink.mjs) */
+  --paper-ink-2: #41382f;  /* captions: 9.8 : 1 on the paper */
+  --paper-ink-3: #4f4336;  /* small print and credits: 8.2 : 1 on the paper */
   --paper-faint: #8a7b68;  /* rules and marks that are not words */
   --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
   --paper-rubric-2: #c4553a;
@@ -34,8 +36,8 @@
   --night-2: #24201a;
   --night-3: #332c23;
   --night-ink: #ebe1cf;
-  --night-ink-2: #b7a891;
-  --night-ink-3: #9a8c77;
+  --night-ink-2: #d2c4ab;  /* 10.3 : 1 on the night page */
+  --night-ink-3: #bdad93;  /* 8 : 1 */
   --night-faint: #8c7f6c;
   --night-rubric: #e0805f;
   --night-rubric-2: #f09a7b;

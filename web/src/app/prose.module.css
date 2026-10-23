@@ -32,3 +32,11 @@
 .prose h3.groupHead { font-family: var(--f-label); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); margin: var(--space-4) 0 0; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .names dt a { padding-block: 10px; } .jump a { min-width: var(--tap); justify-content: center; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .prose h2 { margin-top: calc(var(--part-room) - 18px); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .prose .jump a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}

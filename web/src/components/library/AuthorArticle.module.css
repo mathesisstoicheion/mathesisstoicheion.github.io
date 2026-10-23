@@ -106,3 +106,7 @@
 
 /* the two columns of "How the words reached us" are framed twice, a hairline and a fainter rule just inside it, as the plates are */
 .panel { outline: var(--moulding); outline-offset: var(--moulding-in); }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .sec { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}

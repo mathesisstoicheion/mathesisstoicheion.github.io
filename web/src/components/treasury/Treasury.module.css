@@ -266,3 +266,7 @@
 .offline b { font: 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .offline:hover b, .offline:focus-visible b { color: var(--rubric); }
 .offline > span:last-child { max-width: 64ch; color: var(--ink-2); }
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .offline b::after { content: "\00a0→"; color: var(--rubric); }
+}

@@ -91,3 +91,12 @@
 .instrumentNote { margin: calc(-1 * var(--space-3)) auto 0; max-width: 72ch; text-align: center; font-size: var(--step--1); color: var(--ink-3); }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .vol input { min-height: var(--tap); } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .about { margin-top: var(--part-room); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .song { padding-inline: 14px; box-shadow: inset 0 0 0 1px var(--rule); }
+  .song[aria-checked="true"] { box-shadow: inset 0 2px 0 var(--rubric), inset 0 0 0 1px var(--rule); }
+}

@@ -29,6 +29,11 @@
 :global(.ph-action) > .narrow { padding-top: 0; padding-bottom: var(--space-5); }
 /* a signed-out visitor at a form: the head (as the pages inside an area have), then the way in */
 .signedOutHead { padding-top: var(--space-6); }
+/* on a computer the page's head stands where every page's head stands (globals.css .ph; scripts/check-heads.mjs) */
+@media (min-width: 761px) { .signedOutHead { padding-top: 0; } }
+/* the room the sign-in box takes, kept while the page reads its address and opens the account, so nothing under the head
+   moves when the box arrives (scripts/check-heads.mjs) */
+.boxWait { min-height: 468px; align-items: flex-start; }
 .signedOutHead + .narrow { padding-top: var(--space-5); }
 .signIn { display: grid; gap: var(--space-3); justify-items: start; }
 

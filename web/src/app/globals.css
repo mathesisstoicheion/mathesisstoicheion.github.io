@@ -13,6 +13,14 @@
   --hdr-vis: 0px;
   /* the space between an area page's header band and its first content, the same on every area page */
   --after-head: clamp(24px, 4vw, 32px);
+  /* a part of a page on a computer: a rule of ink across the column, room above it, a little under it before the part's
+     heading (the owner, 2026-10-23: "the seperate sections in the pages blend into each other"; scripts/check-parts.mjs) */
+  --part-rule: 1px solid var(--ink);
+  --part-room: clamp(56px, 7vh, 80px);
+  --part-pad: 20px;
+  /* the fine line under a link set in words, at rest (the owner, 2026-10-23: "It's not clear what is a clickable";
+     scripts/check-clickable.mjs); under the hand it turns red with the words */
+  --link-line: color-mix(in srgb, var(--ink) 45%, transparent);
   /* reader settings (changed from the Settings panel) */
   --greek-size: 1.25rem;
   --reading-leading: 1.75;
@@ -450,7 +458,23 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-short .ph-purpose { font-size: var(--step-0); }
 .ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
-.ph > .piece-desk { align-self: end; }
+/* On a computer every head stands at one height (the owner, 2026-10-23: "the heros load at different heights";
+   scripts/check-heads.mjs): the path, the title and the plate all start at the head's top, the same distance under the
+   masthead on every page, large or short, and the plate's photograph has one frame, 3 by 4, as a book's plates of one
+   format. A photograph of another shape is cut to it when it is near it, and shown whole on its mount when it is not
+   (Plate.tsx, data-fit). */
+@media (min-width: 761px) {
+  .ph, .ph-short { align-items: start; padding-top: clamp(28px, 5vh, var(--space-7)); }
+  .ph > .piece-desk { align-self: start; }
+  .ph > .piece-desk .plate-ph { aspect-ratio: 3 / 4; }
+  .ph > .piece-desk[data-fit="whole"] .plate-ph img { object-fit: contain; object-position: 50% 50%; }
+  /* a head inside a narrower column (a lesson, a checkpoint) still spans the page's own width, so its path and title start
+     at the same left edge as on every other page and its plate is the same size; the column below stays narrow */
+  .ph:not(.wrap):not(.ph-tool) {
+    --ph-w: min(calc(var(--maxw) - 2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
+    width: var(--ph-w); max-width: none; margin-inline: calc((100% - var(--ph-w)) / 2);
+  }
+}
 @media (max-width: 760px) {
   .ph, .ph.ph-tool { grid-template-columns: minmax(0, 1fr); padding-top: 26px; }
   .ph-short { padding-top: 20px; }
@@ -588,6 +612,18 @@ select { max-width: 100%; }
 .sh .fill { flex: 1; border-bottom: 1px solid var(--rule); transform: translateY(-6px); min-width: 12px; }
 .sh .src { font-size: var(--step--1); color: var(--ink-3); font-style: italic; }
 @media (max-width: 600px) { .sh { flex-wrap: wrap; gap: var(--space-1) var(--space-3); } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
+@media (min-width: 761px) {
+  /* links on a computer: the path over a title underlined; a card's or a part's name followed by a red arrow */
+  .ph-path a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .ph-path a:hover, .ph-path a:focus-visible { text-decoration-color: var(--rubric); }
+  .door-part h2 a::after, .slab-card :where(b, h3, strong):first-child::after { content: "\00a0→"; color: var(--rubric); }
+  .door-part { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .sh { padding-top: var(--part-pad); border-top: var(--part-rule); }
+  /* a part laid straight in a page (the potters' quarter under the Kerameikos): its rule across the column */
+  .part-top { padding-top: var(--part-pad); border-top: var(--part-rule); }
+  /* the choices of what to show beside a search field: each ruled under at rest, the chosen one in red */
+  .find-show > button:not([aria-checked="true"]) { border-bottom-color: var(--rule); }
+}
 
 /* the home page: a first visit's question or a returning visitor's desk; which one shows is set before the first paint
    (lib/visitor.ts, data-visitor on <html>) */

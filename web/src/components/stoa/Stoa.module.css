@@ -211,3 +211,17 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
   /* at the end of its row: a little wider than its 44 px, as a finger lands (above and below, as every chip) */
   button.noteBtn::after { left: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
 }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .sectionHead { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .sectionHead > .h2 { margin-top: 0; }
+  .featured { margin-top: var(--part-room); }
+  .readIt, .related, .sources { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .readIt > .h2, .related > .h2, .sources > .h2 { margin-top: 0; }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .panelIn li a, .contents a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .contents a[aria-current="location"] { text-decoration-color: var(--rubric); }
+  .readIt b::after, .related b::after { content: "\00a0→"; color: var(--rubric); }
+}

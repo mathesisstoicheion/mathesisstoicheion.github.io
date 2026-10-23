@@ -54,3 +54,11 @@
 @media (pointer: coarse) and (max-width: 760px) { .chips:not(.chipsWrapping) { padding-block: 5px; margin-block: -5px; } }
 /* chips wrapped onto a second line: room between the lines for both lines' widened areas */
 @media (pointer: coarse) and (max-width: 760px) { .chips.chipsWrapping { row-gap: var(--space-3); } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .groupHead { margin-top: var(--part-room); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .name::after { content: "\00a0→"; color: var(--rubric); }
+}

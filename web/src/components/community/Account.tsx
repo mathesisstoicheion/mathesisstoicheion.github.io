@@ -32,7 +32,7 @@ export default function Account() {
             : "Sign in or join to keep your Treasury in step between devices."}
           // the form first (review fix list, slice 9): in the head's place for its main thing, beside the portrait on a
           // computer and before it on a phone
-          action={<Suspense><AccountBox /></Suspense>} />
+          action={<Suspense fallback={<div className={styles.boxWait} aria-hidden="true" />}><AccountBox /></Suspense>} />
       </div>
     </>
   );
@@ -50,7 +50,7 @@ function AccountBox() {
   }, []);
   const next = params.get("next");
 
-  if (!ready) return <div className={styles.status} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the doors…</div>;
+  if (!ready) return <div className={`${styles.status} ${styles.boxWait}`} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening the doors…</div>;
   if (session && (recovering || params.get("reset") === "1")) return <div className={styles.narrow}><NewPassword onDone={() => { setRecovering(false); router.replace("/account"); }} /></div>;
   if (session) {
     return (

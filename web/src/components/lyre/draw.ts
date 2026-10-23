@@ -48,8 +48,8 @@ export function readInks(): Inks {
   };
   const [r0, r1, r2, ra] = one("--rule", "rgba(30,26,21,0.2)");
   return {
-    ink: one("--ink", "#1e1a15").slice(0, 3) as RGB, ink2: one("--ink-2", "#5c5043").slice(0, 3) as RGB,
-    ink3: one("--ink-3", "#675846").slice(0, 3) as RGB, red: one("--rubric", "#a3301a").slice(0, 3) as RGB,
+    ink: one("--ink", "#1e1a15").slice(0, 3) as RGB, ink2: one("--ink-2", "#41382f").slice(0, 3) as RGB,
+    ink3: one("--ink-3", "#4f4336").slice(0, 3) as RGB, red: one("--rubric", "#a3301a").slice(0, 3) as RGB,
     rule: [r0, r1, r2], ruleA: ra,
   };
 }

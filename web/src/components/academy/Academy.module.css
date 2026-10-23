@@ -621,3 +621,9 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
   .small > span > a, .guideSources li a { display: inline-block; padding-block: var(--tap-pad); }
   .guideSources ol { gap: 0; }
 }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .table { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .diph, .coreList { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .coverage { margin-top: var(--part-room); box-shadow: inset 0 1px 0 var(--ink), var(--field-edge); }
+}
