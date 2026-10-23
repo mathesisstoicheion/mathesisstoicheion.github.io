@@ -48,8 +48,9 @@ this site later as a reading aid. Until then nothing of it is built here.
 ## Next, in this order
 
 1. The clean-up and licence work in `PROGRESS.md`.
-2. Redesign, starting with **three very different prototypes of the reader screen only**. The owner picks one
-   before anything else is restyled.
+2. Redesign: the owner chose **the printed page with real photographs** (2026-10-22,
+   `docs/adr/0008-the-printed-page.md`) and asked for the whole site and the Android app in it. The site stays closed
+   until the owner says "publish".
 
 ## Rules that do not change
 

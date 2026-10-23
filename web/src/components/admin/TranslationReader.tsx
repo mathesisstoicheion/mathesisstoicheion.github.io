@@ -172,7 +172,7 @@ function PassageView({ p, n, urn, showPub }: { p: Passage; n: number; urn: strin
         <span className={styles.hOurs}>Our English</span>
         {showPub && <span className={styles.hPub}>Published English</span>}
       </div>
-      <div className={styles.lines}>
+      <div className={styles.lines} data-reading="">
         {p.rows.map((r, j) => <Line key={j} r={r} prev={p.rows[j - 1]} id={`row-${num}-${j + 1}`} j={j} urn={urn} showPub={showPub} />)}
       </div>
       {(p.notes || p.differences) && <Apparatus p={p} num={num} />}

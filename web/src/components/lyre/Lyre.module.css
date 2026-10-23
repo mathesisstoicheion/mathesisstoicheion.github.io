@@ -27,7 +27,7 @@
 .instrument { display: block; width: 100%; touch-action: pan-y; cursor: pointer; user-select: none; -webkit-user-select: none; }
 
 .now { min-height: 1.6em; margin: 0; font-size: var(--step-0); color: var(--ink-2); text-align: center; }
-.nowGreek { font-family: var(--f-greek); color: var(--rubric); font-size: 1.1em; }
+.nowGreek { font-family: var(--f-greek); color: var(--rubric); font-size: var(--step-sub); }
 .result { margin: 0; text-align: center; color: var(--rubric); font-size: var(--step-1); font-family: var(--f-title); }
 
 .sung { position: relative; margin: 0; padding-bottom: 6px; text-align: center; font: 400 var(--step-1) / 2 var(--f-greek); color: var(--ink-3); }

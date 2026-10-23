@@ -43,9 +43,9 @@
 /* the result chosen (with the arrow keys or under the hand): in ink, its words in paper */
 .opt[aria-selected="true"] { background: var(--sel-bg); --accent: var(--accent-on-ink); --rubric: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--sel-fg); }
 .opt[aria-selected="true"] .kind { color: var(--accent); }
-.opt b[lang="grc"], .opt [lang="grc"] { font-family: var(--f-greek); font-weight: 400; font-size: 1.12em; }
+.opt b[lang="grc"], .opt [lang="grc"] { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); }
 .opt b { font-weight: 500; }
-.opt[data-group="word"] b[lang="grc"] { font-size: 1.35em; }
+.opt[data-group="word"] b[lang="grc"] { font-size: var(--step-1); }
 .what { min-width: 0; }
 .more { margin-left: 6px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--rubric); white-space: nowrap; }
 .kind { flex: none; min-width: 9.5em; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); }

@@ -17,6 +17,7 @@ import { renderPassages, type LineRender } from "@/lib/metre/render";
 import { lineHash } from "@/lib/metre/text";
 import { playLine } from "@/lib/metre/beat";
 import WordPanel, { type WordContext } from "@/components/reader/WordPanel";
+import GreekText from "@/components/GreekText";
 import { ParadigmTable } from "./Tables";
 import AlphabetGlance from "./AlphabetGlance";
 import Motion from "./Motion";
@@ -261,7 +262,7 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
       {(done || next) && (
         <footer className={styles.lessonEnd}>
           {done && <p className={styles.good}>You have completed this lesson.</p>}
-          {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: {next.title} →</Link>}
+          {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: <GreekText text={next.title} /> →</Link>}
         </footer>
       )}
       {/* talk where you learn (Phase 11): a question about the lesson goes to the Agora's board for it */}

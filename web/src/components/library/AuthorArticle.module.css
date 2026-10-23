@@ -2,7 +2,7 @@
    hairline, each mark's date in figures), how the text survived in two framed columns, the editions as a list with red
    diamonds, and the sources folded at the foot. The road draws itself once, as a rule is drawn; its marks ink in. */
 .sec { display: grid; gap: 10px; }
-.sec h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.sec h2 { font-size: clamp(1.6rem, 2.6vw, 2rem); }   /* never under the h3 step */
 .head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 18px; }
 /* "Checked against sources": small capitals in a hairline frame, as a printer's note */
 .stamp { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius); padding: 3px 10px; }
@@ -19,7 +19,7 @@
 .keyLine { margin: 0; max-width: 78ch; font-size: var(--step--1); line-height: 1.55; color: var(--ink-2); }
 .keyLine b { font-family: var(--f-label); font-weight: 500; letter-spacing: 0.04em; color: var(--ink); }
 .keyLine :global(.tag) { margin-inline: var(--space-1); }
-.fakeMark { font-family: var(--f-label); font-size: 0.8em; color: var(--accent); }
+.fakeMark { font-family: var(--f-label); font-size: var(--step--2); color: var(--accent); }   /* as the marks themselves (Stoa.module.css .srcMark) */
 
 /* ---------------------------------------------------------------- the road of the text */
 .roadWrap { display: grid; gap: 14px; margin-top: 6px; }
@@ -57,7 +57,7 @@
 .panels { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 20px; margin-top: 6px; }
 .panel { display: grid; gap: 10px; align-content: start; padding: 24px 26px 26px; background: var(--field); box-shadow: var(--field-edge); border-radius: 0 0 var(--radius) var(--radius); font-size: var(--step-0); line-height: 1.65; }
 .panel > svg { color: var(--accent); }
-.panel h3 { font-size: clamp(1.3rem, 2vw, 1.6rem); }
+.panel h3 { font-size: var(--step-2); }
 .panel p { margin: 0; }
 .panel h4 { font-family: var(--f-label); letter-spacing: 0.06em; margin: 6px 0 0; }
 .panel ul { margin: 0; padding-left: 1.1em; display: grid; gap: 4px; }
@@ -101,7 +101,7 @@
 }
 
 /* a subheading inside the summary */
-.lead h4 { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.3rem, 2vw, 1.6rem); margin: 1.6em 0 0.6em; padding-top: 0.6em; box-shadow: var(--cut-over); }
+.lead h4 { font-family: var(--f-display); font-weight: 400; font-size: var(--step-2); margin: 1.6em 0 0.6em; padding-top: 0.6em; box-shadow: var(--cut-over); }
 .lead p b { font-family: var(--f-label); letter-spacing: 0.03em; color: var(--accent); font-weight: 700; }
 
 /* the two columns of "How the words reached us" are framed twice, a hairline and a fainter rule just inside it, as the plates are */

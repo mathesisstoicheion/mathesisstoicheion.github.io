@@ -199,7 +199,7 @@
 .refName { color: var(--rubric); }
 .refLink { display: inline-flex; flex-wrap: wrap; justify-content: flex-end; align-items: baseline; gap: 0 3px; color: var(--rubric); text-decoration: none; }
 .refLink:hover .refName, .refLink:focus-visible .refName { text-decoration: underline; text-underline-offset: 3px; }
-.go { font-size: 0.9em; }
+.go { font-size: var(--step--2); }
 @media (pointer: coarse) { .refLink { padding-block: 10px; margin-block: -10px; } }
 /* the words "open in the reader": spoken by screen readers everywhere, shown on phones */
 .goText, .cellLabel { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
@@ -216,7 +216,7 @@
 
 /* the light markup: words the editor thinks were added later, fainter, between their brackets */
 .added { color: var(--ink-2); text-decoration: underline dotted 1px var(--ink-3); text-underline-offset: 0.3em; cursor: help; }
-.bracket { color: var(--rubric); font-size: 0.9em; }
+.bracket { color: var(--rubric); font-size: var(--step--1); }
 
 /* under the passage: notes and differences, lined up with the Greek */
 .apparatus {

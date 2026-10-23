@@ -1,7 +1,7 @@
 /* How it was written: the passage re-set step by step, then a real manuscript page, shown as a photographic plate in its
    real colours (the printed-page redesign: nothing tinted, nothing glows; a step inks the passage in again). */
 .title { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); }
-.src { font-size: 0.7em; line-height: 0; margin-left: 1px; }
+.src { font-size: var(--step--2); line-height: 0; margin-left: 1px; }   /* as the source marks everywhere (Stoa.module.css .srcMark) */
 .src a { color: var(--accent); text-decoration: none; }
 
 .stages { display: grid; gap: 12px; }

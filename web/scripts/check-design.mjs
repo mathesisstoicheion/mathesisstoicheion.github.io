@@ -13,9 +13,10 @@
 //             made for it (--bg, --rubric-on-ink, --ink-2-on-ink); on a red field, the paper
 //   button  - a filled button (not a card that is a link) whose fill is not the ink, the one primary fill: every page has
 //             the same three kinds, primary (filled), secondary (a hairline frame) and the text link
-// Pictures' own lettering (canvas) is not judged; nor are the sizes of the reader's lines and of Greek quoted at the
-// reader's Greek size (the reader's own choice in Settings). Words hidden from screen readers as decoration (the logo's
-// name beside the seal, ornaments) are judged for their face only.
+// Pictures' own lettering (canvas) is not judged; nor are the sizes of the reader's lines (the text marked data-reading),
+// of Greek quoted at the reader's Greek size (the reader's own choice in Settings), and of the marks inside a text quoted
+// elsewhere (line and section numbers, sized from the text, which is judged). Words hidden from screen readers as
+// decoration (the logo's name beside the seal, ornaments) are judged for their face only.
 // Faces and sizes are the same in both looks, so they are measured in Paper; colours and buttons in both.
 // usage: node web/scripts/check-design.mjs <base-url> [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        SUMMARY=1 prints every distinct value found with a count, for working through the list
@@ -41,7 +42,7 @@ async function faces(page, ctx, at) {
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
     for (let t = walker.nextNode(); t; t = walker.nextNode()) {
       const e = t.parentElement;
-      if (!e || !t.textContent.trim() || e.hasAttribute("data-face-check") || e.closest("canvas, script, style, noscript, [hidden]")) continue;
+      if (!e || !t.textContent.trim() || e.hasAttribute("data-face-check") || e.closest("canvas, script, style, noscript, [hidden], .visually-hidden")) continue;
       const b = e.getBoundingClientRect(), s = getComputedStyle(e);
       if (!b.width || !b.height || s.visibility === "hidden" || +s.opacity === 0) continue;
       e.setAttribute("data-face-check", String(i++));
@@ -129,7 +130,8 @@ for (const look of ["paper", "night"]) {
           const out = { size: [], colour: [], fill: [] };
           // GFS Didot, by the name the build gave it (only the titles' list of typefaces holds it)
           const didot = getComputedStyle(document.documentElement).getPropertyValue("--font-didot").split(",")[0].trim();
-          const skip = (e) => e.closest("[data-decorative], canvas, svg, [aria-hidden=true], script, style, noscript, [hidden]");
+          // (words kept for screen readers only, .visually-hidden, are not drawn)
+          const skip = (e) => e.closest("[data-decorative], canvas, svg, [aria-hidden=true], script, style, noscript, [hidden], .visually-hidden");
           const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
           const seen = new Set();
           for (let t = walker.nextNode(); t; t = walker.nextNode()) {
@@ -143,8 +145,12 @@ for (const look of ["paper", "night"]) {
               const px = parseFloat(s.fontSize);
               // the page's title is fluid by design, and lettering in GFS Didot (titles, numerals) is display lettering,
               // sized for its place; the Greek being read (the reader's lines, and Greek quoted at the reader's own size on
-              // any page) is sized by the reader in Settings
-              let display = !!e.closest("h1, .page-title, article, [data-u], [data-w]");
+              // any page) is sized by the reader in Settings, and so is all that goes with the reader's lines (data-reading:
+              // their numbers, speakers and metre marks, and the lines fitted to the width). A text quoted elsewhere (its
+              // units, data-u, drawn as the reader draws them: the passage of the day, a lesson's passage) is judged at its
+              // own size; its marks are sized from it, as an edition's are, and are not judged
+              const unit = e.closest("[data-u]");
+              let display = !!e.closest("h1, .page-title, [data-reading]") || (!!unit && Math.abs(parseFloat(getComputedStyle(unit).fontSize) - px) > 0.1);
               for (let x = e; x && !display && parseFloat(getComputedStyle(x).fontSize) === px; x = x.parentElement)
                 display = getComputedStyle(x).fontFamily.includes(didot);
               probe.style.fontSize = "var(--greek-size)";

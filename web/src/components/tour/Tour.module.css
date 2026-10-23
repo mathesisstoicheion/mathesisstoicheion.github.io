@@ -45,4 +45,4 @@
 .acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); justify-content: flex-end; }
 .acts .close { margin: 0 0 0 auto; }
 .hint { font-size: var(--step--1) !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }
-.tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: var(--radius-round); background: var(--accent); color: var(--accent-ink); font-size: 0.75em; vertical-align: 0.15em; animation: ink-in var(--dur-slow) var(--ease) 0.15s backwards; }
+.tick { display: inline-grid; place-items: center; width: 1.3em; height: 1.3em; border-radius: var(--radius-round); background: var(--accent); color: var(--accent-ink); font-size: var(--step--2); vertical-align: 0.15em; animation: ink-in var(--dur-slow) var(--ease) 0.15s backwards; }

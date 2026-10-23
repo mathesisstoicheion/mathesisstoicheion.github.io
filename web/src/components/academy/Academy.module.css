@@ -225,7 +225,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 }
 .options button:hover:not(:disabled) { border-color: var(--ink-3); }
 .options button:disabled { cursor: default; }
-.options [lang="grc"] { font-size: 1.4em; }   /* a single letter, such as ι, stays readable */
+.options [lang="grc"] { font-size: var(--step-1); }   /* a single letter, such as ι, stays readable: the size of a Greek answer (.optGr) */
 /* right: a green rule and a faint green wash; wrong: the same in red. Nothing shakes. */
 .right { background: color-mix(in srgb, var(--ok) 12%, var(--bg)) !important; border-color: var(--ok) !important; box-shadow: var(--inlay-left-ok) !important; }
 .wrong { background: color-mix(in srgb, var(--accent) 10%, var(--bg)) !important; border-color: var(--accent) !important; box-shadow: var(--inlay-left) !important; }
@@ -242,7 +242,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .revealCard:hover { border-color: var(--ink-3); }
 .revealGr { font-family: var(--f-greek); font-size: var(--step-2); }
 /* two tiles side by side on a phone: a long word (φιλοσοφία) is set a little smaller so it stays inside its tile */
-@media (max-width: 560px) { .revealGr { font-size: clamp(1.3rem, 6.4vw, 1.8rem); overflow-wrap: anywhere; } }
+@media (max-width: 560px) { .revealGr { font-size: var(--step-1); overflow-wrap: anywhere; } }
 .revealAns { display: grid; font-size: var(--step-0); color: var(--ink-2); }
 .revealAns > * { grid-area: 1 / 1; }
 /* closed: only a faint ? shows, while the answer, unseen, holds the tile at its full height so nothing moves when it opens */
@@ -426,7 +426,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .glance { display: grid; gap: 14px; }
 .glanceHead { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; justify-content: space-between; }
 .glanceTitle { margin: 0; font-size: var(--step-2); }
-.glanceTitle span { font-family: var(--f-greek); color: var(--ink-2); font-size: 0.8em; margin-left: 0.3em; }
+.glanceTitle span { font-family: var(--f-greek); color: var(--ink-2); font-size: var(--step-1); margin-left: 0.3em; }
 .glance .alphaGrid { grid-template-columns: repeat(8, minmax(0, 1fr)); }
 .glance .tile { animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 28ms); }
 .glanceCard { min-height: 92px; display: grid; align-items: center; padding: 6px 0 6px 18px; scroll-margin-bottom: var(--space-4); box-shadow: var(--inlay-left); }
@@ -450,7 +450,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .gridTable thead th { font-family: var(--f-label); font-weight: 400; letter-spacing: 0.05em; font-size: var(--step--1); color: var(--ink-2); white-space: nowrap; }
 .gridTable tbody th { font-weight: 400; white-space: nowrap; }
 .gridTable tbody tr:last-child > * { box-shadow: none; }
-.gridEmpty { color: var(--rule); }
+.gridEmpty { color: var(--ink-3); }   /* the quietest ink: a dot in a cell with nothing in it */
 /* on a phone each row becomes a small block: the first cell as its heading, then only the cells in use, each labelled */
 @media (max-width: 620px) {
   .gridScroll { overflow: visible; }

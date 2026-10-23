@@ -3,7 +3,7 @@
    apart), the periods' names under hairline brackets; then each period as an entry under its rule, its counts as red
    Didot figures and its best-represented authors as an index line with dotted leaders. The bars ink in one after
    another and then stand still (decision 3): nothing grows, lifts or glows. */
-.h2 { font-size: clamp(1.5rem, 3vw, 2rem); }
+.h2 { font-size: clamp(1.6rem, 3vw, 2rem); }   /* never under the h3 step */
 .chartBox { --axis: 20px; display: grid; gap: var(--space-3); padding-block: 18px 22px; border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
 .scroll { overflow-x: auto; padding-bottom: 6px; scrollbar-width: thin; }
 .scroll:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -56,7 +56,7 @@
 .plain li span { order: 2; flex: none; white-space: nowrap; color: var(--ink-2); font-size: var(--step--1); font-variant-numeric: lining-nums tabular-nums; }
 /* the kinds of writing wrap inside the entry (unlike the page-wide chip rows, which scroll on phones) */
 .kinds { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-top: 6px; }
-.kinds :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-3); font-size: 0.85em; }
+.kinds :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-3); font-size: var(--step--2); }
 .all { display: inline-flex; align-items: center; min-height: var(--tap); }
 /* the kinds of writing and dialects: a fold inside the entry, its small triangle pointing down as it opens */
 .more { display: grid; gap: var(--space-3); }

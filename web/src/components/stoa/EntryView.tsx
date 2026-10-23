@@ -100,7 +100,7 @@ export default function EntryView({ e }: { e: Entry }) {
             <div className={styles.sourceCols}>
               <div>
                 <h3 className="label">Ancient sources, in the library</h3>
-                <ul>{e.primary.map((c) => <li key={`${c.work}${c.ref}`}><Link href={readHref(c)} transitionTypes={["page-turn"]}>{c.label}</Link></li>)}</ul>
+                <ul className={styles.inLibrary}>{e.primary.map((c) => <li key={`${c.work}${c.ref}`}><Link href={readHref(c)} transitionTypes={["page-turn"]}>{c.label}</Link></li>)}</ul>
               </div>
               <div>
                 <h3 className="label">Modern scholarship</h3>

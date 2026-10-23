@@ -34,6 +34,13 @@ Use these names in code, docs and messages to the owner. One word for one thing.
 - **Kerameikos**: the archaeology section.
 - **Entry**: one wiki article in the Painted Stoa.
 
+## The look (the printed page, `docs/adr/0008-the-printed-page.md`)
+
+- **Paper** and **Night**: the two looks. The site follows the device unless Settings says otherwise.
+- **Plate**: a numbered photograph with its credit ("Plate I").
+- **Ink-in**: the one movement. Words and plates fade in as they arrive, then nothing moves.
+- **Bottom bar**: the four rooms along the foot of a phone's screen.
+
 ## Data
 
 - **Packs**: the large generated files (word analyses, LSJ, search, Word Study), published at `/packs/`, not in git.

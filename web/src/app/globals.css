@@ -94,7 +94,7 @@ img { max-width: 100%; }
    fourth, so no typewriter face) */
 code, kbd, samp { font-family: inherit; font-size: 1em; letter-spacing: 0.02em; text-transform: none; }
 /* a key to press, in a hairline frame as a manual prints it */
-kbd { padding: 0 0.3em; border: 1px solid var(--rule); border-radius: var(--radius); font-size: 0.92em; }
+kbd { padding: 0 0.3em; border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); }
 /* anything linked to by #id lands clear of the site header, whose height changes with the screen */
 [id] { scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 /* a long placeholder or value that does not fit ends in "…" instead of being cut mid-letter */
@@ -107,7 +107,9 @@ input { text-overflow: ellipsis; }
 ::selection { background: color-mix(in srgb, var(--rubric) 22%, transparent); color: var(--ink); }
 /* the Greek typeface chosen in Settings (lib/settings.ts): Gentium Book Plus, or GFS Didot */
 html[data-greek-face="didot"] { --f-greek: var(--face-didot); }
-[lang="grc"] { font-family: var(--f-greek); }
+/* Greek is never put in capitals by a label's or a button's style: accented Greek capitals are not set in print, and
+   their marks would fall to another typeface (scripts/check-design.mjs). Greek typed in capitals stays as it is. */
+[lang="grc"] { font-family: var(--f-greek); text-transform: none; }
 /* small capitals, and wide-spaced capitals for labels (the sample's .sc and .caps) */
 .sc { font-variant: small-caps; letter-spacing: 0.08em; font-feature-settings: "smcp", "c2sc"; }
 /* a small triangle for a button that plays, drawn in the colour of its words (tokens.css --tri-*) */
@@ -465,7 +467,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .find { display: flex; flex-wrap: wrap; align-items: end; gap: var(--space-3) 28px; border-bottom: 1px solid var(--ink); padding-bottom: 6px; }
 .find-field { flex: 1 1 18rem; display: grid; gap: 2px; min-width: 0; }
 .find-field .label { color: var(--ink-3); }
-.find-field input { width: 100%; min-width: 0; border: 0; padding: 6px 0; font: italic 400 1.4rem / 1.3 var(--f-body); color: var(--ink); background: transparent; }
+.find-field input { width: 100%; min-width: 0; border: 0; padding: 6px 0; font: italic 400 var(--step-1) / 1.3 var(--f-body); color: var(--ink); background: transparent; }
+@media (pointer: coarse) { .find-field input { min-height: var(--tap); } }
 .find-field input::placeholder { color: var(--ink-3); opacity: 1; }
 .find-field input:focus-visible { outline: none; }
 .find:focus-within { border-bottom-color: var(--rubric); }
@@ -482,7 +485,6 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .find { border-bottom: 0; padding-bottom: 0; row-gap: 6px; }
   .find-field { border-bottom: 1px solid var(--ink); }
   .find:focus-within .find-field { border-bottom-color: var(--rubric); }
-  .find-field input { font-size: 1.25rem; }
   .find-show { width: 100%; justify-content: space-between; }
   .find-show > button { padding-inline: var(--space-1); letter-spacing: 0.12em; }
 }

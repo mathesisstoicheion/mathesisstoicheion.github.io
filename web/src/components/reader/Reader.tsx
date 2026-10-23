@@ -1785,7 +1785,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
             </div>
           )}
 
-          <article ref={textRef} className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
+          {/* data-reading: the text being read, sized by the reader's own choices in Settings (scripts/check-design.mjs) */}
+          <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText} />)}
           </article>

@@ -12,7 +12,7 @@
 .note { color: var(--ink-2); font-size: var(--step--1); max-width: 60ch; }
 .msg { padding-block: 40px; color: var(--ink-2); }
 .sec { display: grid; gap: 6px; }
-.sec h2 { font-size: clamp(1.5rem, 2.6vw, 2rem); }
+.sec h2 { font-size: clamp(1.6rem, 2.6vw, 2rem); }   /* never under the h3 step */
 /* the works: the heading with the "A to Z" button beside it, the A to Z list, and the list it replaces while it is open */
 .worksSec { gap: 0; }
 .secHead { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-2) var(--space-4); margin-bottom: var(--space-2); }
@@ -40,7 +40,7 @@
 .links { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: var(--space-2); }
 @media (prefers-reduced-motion: reduce) { .card { transition: none; } }
 
-/* the bigger panels carry a moulding, a fine line cut just inside the edge, as round a carved panel */
+/* the bigger panels are framed twice, a hairline and a fainter rule just inside it, as a printed plate is */
 .card { outline: var(--moulding); outline-offset: var(--moulding-in); }
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }  /* the focus ring replaces the moulding */
 

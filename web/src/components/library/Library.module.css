@@ -89,7 +89,7 @@
 @media (max-width: 900px) { .levels { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); } }
 @media (pointer: coarse) {
   .level ul { gap: 0; }
-  .level li a { display: inline-block; padding-block: 9px; }
+  .level li a { display: inline-block; padding-block: 11px; }
 }
 /* the six reading paths: numbered steps under each path's name */
 .paths { list-style: none; margin: 0; padding: var(--space-3) 0 var(--space-6); display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 17rem), 1fr)); gap: var(--space-5) clamp(var(--space-5), 3vw, 44px); }
@@ -139,7 +139,7 @@
 @media (pointer: coarse) { .selects select { min-height: var(--tap); } }
 .genres { display: grid; gap: var(--space-2); }
 .chipRow { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.chipRow :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; opacity: 0.75; font-size: 0.85em; }
+.chipRow :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; opacity: 0.75; font-size: var(--step--2); }
 .chipRow :global(.chip):disabled { opacity: 0.4; cursor: default; }
 .note { font-size: var(--step--1); color: var(--ink-2); max-width: 70ch; line-height: 1.5; }
 @media (max-width: 760px) {
@@ -162,7 +162,7 @@
 .nothing { padding: 32px 0; color: var(--ink-2); font-style: italic; }
 .lib mark { background: color-mix(in srgb, var(--rubric) 18%, transparent); color: inherit; padding: 0 1px; }
 @media (pointer: coarse) {
-  .count button { display: inline-block; padding-block: 10.5px; margin-block: -10.5px; }
+  .count button { display: inline-block; padding-block: 11.5px; margin-block: -11.5px; }
   .authorHits button { min-height: var(--tap); }
 }
 
@@ -171,7 +171,7 @@
 .contents a { text-decoration: none; padding: var(--space-1) 0; }
 .contents a:not(:last-child)::after { content: "·"; margin-inline: 10px; color: var(--ink-3); }
 .contents a:hover { color: var(--rubric); }
-.contents small { color: var(--ink-3); font-size: 0.85em; font-variant-numeric: lining-nums tabular-nums; }
+.contents small { color: var(--ink-3); font-size: var(--step--2); font-variant-numeric: lining-nums tabular-nums; }
 @media (pointer: coarse) { .contents a { padding-block: 11px; } }
 
 /* ---------------------------------------------------------------- the list */
@@ -299,7 +299,7 @@
 .aboutLink:hover { color: var(--rubric); }
 @media (pointer: coarse) { .aboutLink { display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); min-width: var(--tap); } }
 /* the collection's own Latin or Greek title, under an English one (OrigTitle.tsx) */
-.orig { font-size: 0.85em; color: var(--ink-2); }
+.orig { font-size: var(--step--1); color: var(--ink-2); }
 /* the works an author's page suggests beginning with (components/library/AuthorProfile.tsx) */
 .start { font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
 

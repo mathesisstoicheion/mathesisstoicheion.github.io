@@ -9,7 +9,7 @@
 .filterRow { display: flex; gap: var(--space-2) 14px; align-items: baseline; }
 .kindSelect { min-width: 0; max-width: 100%; }
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.chips :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-3); font-size: 0.85em; }
+.chips :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-3); font-size: var(--step--2); }
 .chips :global(.chip[aria-pressed="true"]) small { color: inherit; }
 .chips :global(.chip):disabled { opacity: 0.4; cursor: default; }
 .note { color: var(--ink-2); font-size: var(--step--1); max-width: 80ch; }

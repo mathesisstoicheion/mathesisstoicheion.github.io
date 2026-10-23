@@ -59,13 +59,15 @@
 .folio { position: absolute; top: 18px; font: italic 400 var(--step--1) / 1 var(--f-body); color: var(--ink-3); }
 .leafV .folio { left: clamp(var(--space-5), 4vw, 60px); }
 .leafR .folio { right: clamp(var(--space-5), 4vw, 60px); }
-.gk { margin-top: 22px; font: 400 clamp(1.3rem, 2.1vw, 1.6rem) / 1.6 var(--f-greek); }
+/* the spread's sizes are the type scale's: the Greek at the h3 step, the English a lede (a step down each on a narrow
+   screen, and for a long passage) */
+.gk { margin-top: 22px; font: 400 var(--step-2) / 1.6 var(--f-greek); }
 .gk :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; font-size: 1em; color: var(--rubric); }
 .gk > div:first-child { text-indent: 0; }
-.en { margin-top: 22px; font: italic 400 clamp(1.1rem, 1.7vw, 1.3rem) / 1.6 var(--f-body); color: var(--ink-2); }
+.en { margin-top: 22px; font: italic 400 var(--step-1) / 1.6 var(--f-body); color: var(--ink-2); }
 .en :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; font-size: 1em; }
-.gk.long { font-size: clamp(1.15rem, 1.7vw, 1.35rem); }
-.en.long { font-size: clamp(1rem, 1.4vw, 1.15rem); }
+.gk.long { font-size: var(--step-1); }
+.en.long { font-size: var(--step-text); }
 .hint { font-size: var(--step--1); color: var(--ink-3); margin-top: 18px; font-style: italic; }
 .hint::before { content: "☞ "; color: var(--rubric); font-style: normal; }
 .sig { margin-top: 28px; font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
@@ -101,6 +103,10 @@
   .starts { grid-template-columns: 1fr; gap: 26px; }
   .spread { grid-template-columns: 1fr; }
   .spread::after { display: none; }
+  .gk { font-size: var(--step-1); }
+  .en { font-size: var(--step-text); }
+  .gk.long { font-size: var(--step-text); }
+  .en.long { font-size: var(--step-0); }
   .leafR { border-top: 1px solid var(--rule); }
   .podFoot { grid-template-columns: 1fr; }
   .colophon { columns: 1; }
