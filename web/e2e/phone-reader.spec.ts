@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import { openAids, openMore } from "./reader-menus";
 
-// The reader on a phone: design A's bar along the top of the window (the way back, the book and its page, then the
+// The reader on a phone: its own bar along the top of the window (the way back, the book and its page, then the
 // page's settings, Aa; Tools; your marks; More). These read texts from GitHub, so they need a connection.
 test.describe.configure({ timeout: 60_000 });
 test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });

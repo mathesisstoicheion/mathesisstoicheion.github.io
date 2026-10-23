@@ -198,7 +198,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const params = nav.params;
   const floating = nav.floating;
   const contained = split || floating;   // the pane scrolls inside its own box, not the page
-  // one book on the reader's page: design A's reader, its bar along the top of the window and the book's cover beneath it
+  // one book on the reader's page: its own bar along the top of the window and the book's title page beneath it
   const single = !contained;
   const P = (k: string) => params.get(pane === 1 ? k : `${k}2`);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -1485,7 +1485,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     </>
   );
 
-  // the bar's controls: the page, Go to, and the panels; in design A's bar (one book) Find and Listen wait in Tools
+  // the bar's controls: the page, Go to, and the panels; in the reader's own bar (one book) Find and Listen wait in Tools
   const where = doc ? (
     <>
       <div className={styles.pager}>
@@ -1598,7 +1598,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {pane === 2 && <button type="button" className="chip" onClick={closePane}>Close this book</button>}
         </div>
       )}
-      {/* one book: design A's bar along the top of the window (the site's own header stands aside on this page): the mark,
+      {/* one book: the reader's own bar along the top of the window (the site's own header stands aside on this page): the mark,
           the way back, the book and the page, then the columns, the page's settings (Aa), the tools and your marks */}
       {single && (
         <div className={`${styles.bar} ${styles.rbar}`}>
@@ -1693,7 +1693,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {load.state === "ready" && doc && chunkInfo && (
         <>
           {/* one slim row that stays at the top while reading: the page, go to, Find and Listen; the reading aids, your
-              marks and the rest behind a button each (Drop.tsx). One book alone has design A's bar at the top instead. */}
+              marks and the rest behind a button each (Drop.tsx). One book alone has the reader's own bar at the top instead. */}
           {!single && <div className={`wrap ${styles.bar}`}>{barRow}</div>}
 
           {cases && (

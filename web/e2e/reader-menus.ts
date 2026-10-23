@@ -1,6 +1,6 @@
 import type { Page } from "@playwright/test";
 
-// The reader's bar (design A's, at the top on every screen) keeps most controls behind drop-downs (Reader.tsx, Drop.tsx):
+// The reader's own bar (at the top on every screen) keeps most controls behind drop-downs (Reader.tsx, Drop.tsx):
 // "Change" beside the edition's name (the edition selects, Compare, a second book, the private collection), "Tools" (the
 // page and passage, the reading aids, Find and Listen) and "More" (⋯: scroll-bar signs, Float, Keys). Each helper opens its menu
 // unless it is already open and returns the menu's panel.

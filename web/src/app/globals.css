@@ -7,8 +7,8 @@
    ===================================================================== */
 
 :root {
-  /* the site header: its height, and how much of it covers the top of the window. As in design A it scrolls away with
-     the page, so it never covers anything and bars that stick to the top stick to the very top. */
+  /* the site header: its height, and how much of it covers the top of the window. It stands at the top of the page and
+     scrolls away with it, so it never covers anything and bars that stick to the top stick to the very top. */
   --hdr-h: 68px;
   --hdr-vis: 0px;
   /* the space between an area page's header band and its first content, the same on every area page */
@@ -72,7 +72,7 @@ body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(120% 80% at 50% 0%, transparent 55%, var(--paper-shade)), radial-gradient(90% 60% at 50% 110%, var(--paper-shade), transparent 70%);
 }
-/* design A's reader with one book open: its own bar along the top is the way home and back to the library, so the site's
+/* the reader with one book open: its own bar along the top is the way home and back to the library, so the site's
    header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
 html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing

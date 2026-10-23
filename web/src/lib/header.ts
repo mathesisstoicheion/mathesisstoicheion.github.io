@@ -1,5 +1,5 @@
 /**
- * The site header stands at the top of the page and scrolls away with it (design A). Header.tsx keeps --hdr-h on <html>
+ * The site header stands at the top of the page and scrolls away with it. Header.tsx keeps --hdr-h on <html>
  * (the header's height) and sets data-hdr="hidden" on <html> while it is tucked away. Anything sticky sits below --hdr-vis
  * (how much of the header covers the window: none). A rule that needs it to be 0 sets it on its own element
  * (html[data-hdr="hidden"] .x { --hdr-vis: 0px }); changing it on <html> instead would restyle every element of the page
@@ -7,8 +7,8 @@
  */
 const px = (name: string) => parseFloat(getComputedStyle(document.documentElement).getPropertyValue(name)) || 0;
 
-/** How much of the window's top the header can cover, in pixels: none, now that it scrolls away with the page as in
- *  design A (--hdr-vis, app/globals.css). */
+/** How much of the window's top the header can cover, in pixels: none, since it scrolls away with the page
+ *  (--hdr-vis, app/globals.css). */
 export const headerHeight = () => px("--hdr-vis");
 
 /** How many pixels of the header are showing at the top of the window now. */

@@ -76,7 +76,7 @@ test.describe("on a phone", () => {
     expect(await page.evaluate(() => (window as unknown as { marker?: string }).marker)).toBe("kept");
     await openMenu(page);
     await expect(menu(page).getByRole("link", { name: /Ἀκαδήμεια/ })).toHaveAttribute("aria-current", "page");
-    // the reader belongs to the Read door (a book open in it has its own bar instead of the header, as in design A)
+    // the reader belongs to the Read door (a book open in it has its own bar instead of the header)
     await page.goto("/read");
     await openMenu(page);
     await expect(menu(page).getByRole("link", { name: /Μουσεῖον/ })).toHaveAttribute("aria-current", "page");

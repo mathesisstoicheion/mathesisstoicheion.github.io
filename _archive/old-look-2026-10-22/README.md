@@ -7,6 +7,8 @@ deletes later. The redesign's own notes are in the project files: `redesign/prin
 
 What is here:
 
+- `DESIGN.md`: the design notes of Gold and lamplight (design A) and, at its end, of Stone and torch (design B). The
+  printed page's notes replaced it at the top of the repository on 2026-10-23.
 - `web/src/components/a/`: the lamplight's level setting, the floating letters, the gliding and settling text, the
   windows that opened onto each page, the home page's old desk and passage, the library's old stage, the famous books
   drawn in letters, and their stylesheets.

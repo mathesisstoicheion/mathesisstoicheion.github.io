@@ -56,7 +56,7 @@ test("on a phone, the differences are reached from the reader's bar", async ({ p
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${AGAM}&cmp=1st1K-grc1&at=80`);
   await expect(page.getByRole("region", { name: "Comparing two editions" })).toContainText("in the whole text", { timeout: 60_000 });
-  // on a phone they wait under Tools, with this passage's other aids (design A's bar has no room for them)
+  // on a phone they wait under Tools, with this passage's other aids (the reader's bar has no room for them)
   await (await openAids(page)).getByRole("button", { name: "Next difference →" }).click();
   await expect.poll(() => page.locator('[data-key="87"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(400);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);

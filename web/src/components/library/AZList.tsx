@@ -4,22 +4,20 @@
  * it on 2026-10-16: "on author pages, there should be a dedicated button for expanding their works into a list from a to z,
  * with a row from a to z that you can click on each letter to take you to the works in alphabetical order. And on phone it
  * should be on the right side and is touch interactive". For the library they then asked for just the side scroller, beside
- * the list itself (no button, nothing separate): first on the left, then (2026-10-17) on the right, carved in the stone, with
- * smooth scrolling.
+ * the list itself (no button, nothing separate): first on the left, then (2026-10-17) on the right, with smooth scrolling.
  *
  * There are three parts, so that a page can use what it needs:
  *  - `AZRail`, the letters. Tap or click one and the page glides to that part of the list (lib/header.ts, glideTo); letters
  *    with nothing under them are dimmed and do nothing. On a phone, press a finger on it and slide up and down: the page
- *    keeps up with it letter by letter (going straight to each one: gliding there as well made the slide stutter), and a bubble beside the finger says which letter it is on. As the list scrolls, a lit
- *    slab with a gilded edge slides along the letters to the one you are reading under. It comes in two forms: "side", a slim rail down the side of a
+ *    keeps up with it letter by letter (going straight to each one: gliding there as well made the slide stutter), and a bubble beside the finger says which letter it is on. As the list scrolls, the
+ *    letter you are reading under turns red, with a short red rule beside it. It comes in two forms: "side", a slim rail down the side of a
  *    list that stays beside it as the page scrolls (the library, at every width), and "row", a row above the list on a
  *    computer that becomes a strip down the right-hand edge of a phone (the author's page, shown only while its list is open
  *    and on the screen, like the index of a phone's contacts).
  *  - `AZButton`, the "A to Z" button.
  *  - `AZPanel`, the list the button opens: the works in alphabetical order under letter headings, with a row of letters.
- *    It opens and closes as a carving is cut (DESIGN.md, Motion): a fine line is cut across the top, left to right; the
- *    panel sinks open beneath it while its shadow deepens; then the letters and the groups are cut in one after another.
- *    Closing goes back the same way, faster. With animation turned off (the site's setting or the device's) it opens at once.
+ *    It opens at once under a rule of ink, and its groups ink in one after another (the one movement, redesign decision 3);
+ *    it closes at once. With movement turned off (the device's reduced motion) the groups are simply there.
  *    The list is built only when it is first opened, so the page without it stays light.
  * The sorting is in az.ts.
  */
@@ -164,8 +162,8 @@ export function AZPanel({ id, open, items, kind = ["item", "items"], layout = "n
   id: string; open: boolean; items: readonly AZItem[]; kind?: [string, string]; layout?: "names" | "rows";
 }) {
   // The list is built while the page is idle (or when it is first opened, if that comes sooner), so that the first opening
-  // is as smooth as the next; it is cut in a moment after it has been drawn closed, so that the cutting-in can be seen the
-  // first time as well.
+  // is as smooth as the next; it is shown a moment after it has been drawn closed, so that its groups ink in the first time
+  // as well.
   const [ready, setReady] = useState(false);
   const [early, setEarly] = useState(false);
   const [onScreen, setOnScreen] = useState(false);

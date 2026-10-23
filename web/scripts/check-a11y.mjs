@@ -47,11 +47,9 @@ for (const [w, h, phone, look] of [[1536, 900, false, "paper"], [1280, 900, fals
       await page.waitForTimeout(800);
       const at = `${path} ${tag}`;
 
-      // big faint Greek words behind empty states are decoration (WCAG 1.4.3 exempts it), marked data-decorative; the reader's
-      // cover fades as it is scrolled away and brightens as it comes back, so off the screen it is not judged (it is, on the cover)
-      const off = await page.evaluate(() => { const c = document.querySelector("[class*=rcover] > [class*=inner]"), bar = document.querySelector("[class*=rbar]"); return !!c && c.getBoundingClientRect().bottom <= (bar ? bar.getBoundingClientRect().bottom : 0); });
-      let ax = new AxeBuilder({ page }).exclude("[data-decorative]");
-      if (off) ax = ax.exclude("[class*=rcover]");   // its words have all gone up under the reader's bar
+      // words set only as a picture, marked data-decorative, are decoration (WCAG 1.4.3 exempts it); the printed page has none.
+      // The book's title page no longer fades as it scrolls away, so it is judged wherever it stands.
+      const ax = new AxeBuilder({ page }).exclude("[data-decorative]");
       const axe = await ax.withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();
       for (const v of axe.violations.filter((v) => v.impact === "serious" || v.impact === "critical"))
         found.push(`axe ${at}: ${v.id} (${v.nodes.length}) ${v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(" · ")}`);

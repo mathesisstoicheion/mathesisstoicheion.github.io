@@ -3,6 +3,7 @@
 A free website for learning to read Ancient Greek and exploring the Greek world. It has no adverts and no trackers.
 
 - **What the site is:** `SPEC.md`, with the site's own words in `GLOSSARY.md`.
+- **The look:** `DESIGN.md` (the printed page with real photographs; why: `docs/adr/0008-the-printed-page.md`).
 - **State:** `PROGRESS.md` records what is done, the decisions that still hold, known problems and next steps. Read it first.
 - **Licences:** `LICENSE` (MIT for code, CC BY-SA 4.0 for content) and `NOTICE` (outside sources and exceptions).
 - **Instructions for AI sessions:** `CLAUDE.md`.
@@ -85,7 +86,8 @@ Rebuilding the committed data, only when its sources change:
 
 - `config/areas.ts` holds **every area's Greek name**, English subtitle and explanation. Change names only here.
 - `config/sources.ts` holds the original text collections (Perseus, First1KGreek).
-- `app/globals.css` is the design system: tokens for both themes, ornament bands and the page-turn transition.
+- `styles/tokens.css` names every colour, type size, space and movement, for Paper and Night; `app/globals.css` builds the
+  look on them (the paper and its type, buttons, plates, the ink-in and the page-turn). The look itself: `DESIGN.md`.
 - `components/Page.tsx` wraps every page so the page-turn transition plays.
 - `lib/settings.ts` stores the reader's settings, together with the boot script that applies them before first paint.
 - `lib/ui.ts` holds site-wide UI state that survives page changes.

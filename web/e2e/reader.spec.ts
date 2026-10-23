@@ -19,7 +19,7 @@ test("the reader shows the Iliad with Murray's translation beside it", async ({ 
 
 test("going to a reference opens the right book", async ({ page }) => {
   await openIliad(page);
-  const tools = await openAids(page);   // the page and Go to wait in Tools (design A's bar)
+  const tools = await openAids(page);   // the page and Go to wait in Tools (the reader's own bar)
   await tools.getByLabel("Go to reference").fill("2.1");
   await tools.getByRole("button", { name: "Go", exact: true }).click();
   await expect(page.locator('[data-u="2.1"]')).toBeVisible();

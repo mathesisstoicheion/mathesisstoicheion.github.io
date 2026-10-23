@@ -1,7 +1,7 @@
 "use client";
 /**
  * Phones: a plain sign along the foot of the screen while the connection is gone (on a computer the header's light says
- * it). Design A has no bar along the bottom of a phone (the owner, 2026-10-19: "As in A"), so the sign stands on its own.
+ * it). While the bar of rooms shows at the foot (TabBar.tsx), the sign stands just above it (OfflineSign.module.css).
  */
 import { status, useConnection } from "@/lib/connection";
 import styles from "./OfflineSign.module.css";
