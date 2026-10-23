@@ -60,7 +60,7 @@
 html { -webkit-text-size-adjust: 100%; }
 /* a wide screen sets the type a little larger, as a larger sheet is printed in a larger size (the owner, 2026-10-23:
    "doesn't use a lot of the available space"; scripts/check-room.mjs) */
-@media (min-width: 1600px) { html { font-size: clamp(100%, calc(100% + (100vw - 1600px) / 160), 112.5%); } }
+@media (min-width: 1600px) { html { font-size: var(--root-grow); } }
 /* Phones: nothing may nudge the page sideways, not even for a moment while something slides in. A phone sizes
    its screen to everything on the page and ignores the overflow set on <body> (which goes to the window, below), so
    the page's content clips itself: <main> with overflow-x: clip, which unlike hidden makes no scroll box, so sticky

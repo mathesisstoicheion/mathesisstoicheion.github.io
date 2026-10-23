@@ -160,3 +160,6 @@
 @media (min-width: 761px) {
   .chapter { padding-top: var(--part-room); border-top: var(--part-rule); }
 }
+/* on a computer a chapter's words open under its rule, as a chapter's first page does, whatever the height of the figure
+   beside them (scripts/check-parts.mjs) */
+@media (min-width: 761px) { .chapter { align-items: start; } }

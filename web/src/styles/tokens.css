@@ -129,7 +129,13 @@
      scripts/check-room.mjs); running text keeps its own measure, about 80 characters to a line, however wide the page. */
   --gutter: clamp(16px, 4vw, 56px);
   --maxw: 1760px;
-  --measure: 64ch;
+  /* (in em, not ch: a ch is the width of the face's nought, which changes when the web face replaces its stand-in, and
+     every paragraph would rewrap a moment after the page appears; scripts/check-heads.mjs) */
+  --measure: 30em;
+  /* above 1600 px the type grows a little with the window, up to 18 px to the rem */
+  --root-grow: clamp(100%, calc(100% + (100vw - 1600px) / 160), 112.5%);
+  /* the date's column in a timeline set as a chronology table */
+  --date-col: 11rem;
   /* a part of reading on a wide screen, as a book sets it: its heading hung in the left margin, the text at its measure,
      a narrower margin to the right (scripts/check-room.mjs) */
   --hang-cols: minmax(11rem, 1fr) minmax(0, 46rem) minmax(0, 0.5fr);

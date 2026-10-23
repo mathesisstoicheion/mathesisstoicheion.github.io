@@ -33,7 +33,7 @@
 @media (min-width: 761px) { .signedOutHead { padding-top: 0; } }
 /* the room the sign-in box takes, kept while the page reads its address and opens the account, so nothing under the head
    moves when the box arrives (scripts/check-heads.mjs) */
-.boxWait { min-height: 468px; align-items: flex-start; }
+.boxWait { min-height: calc(468px + 13 * (1rem - 16px)); align-items: flex-start; }   /* 468 px at 16 px to the rem; the box grows with the type above 1600 px (13 px for each px the rem grows) */
 .signedOutHead + .narrow { padding-top: var(--space-5); }
 .signIn { display: grid; gap: var(--space-3); justify-items: start; }
 

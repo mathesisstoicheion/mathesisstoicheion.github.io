@@ -44,6 +44,13 @@ const MEASURE = (ROOM) => {
     }
     if (e.tagName === "HR") add(r.top, s.borderTopColor === "rgba(0, 0, 0, 0)" ? s.backgroundColor : s.borderTopColor);
     if (r.height <= 2 && rgba(s.backgroundColor)[3] > 0) add(r.top, s.backgroundColor);
+    // a rule drawn by a box of its own set over the element (a heading hung in the margin rules the whole width so)
+    for (const k of ["::before", "::after"]) {
+      const ps = getComputedStyle(e, k);
+      if (ps.content === "none" || ps.position !== "absolute" || !(parseFloat(ps.borderTopWidth) >= 1) || ps.borderTopStyle === "none") continue;
+      const x0 = r.left + (parseFloat(ps.left) || 0), w = parseFloat(ps.width);
+      if (w > 0) lines.push({ y: Y(r.top + (parseFloat(ps.top) || 0)), x0, x1: x0 + w, k: contrast(rgba(ps.borderTopColor)) });
+    }
   }
   const head = document.querySelector("main .ph, main .page-head, main header");
   const headEnd = head ? Y(head.getBoundingClientRect().bottom) : null;

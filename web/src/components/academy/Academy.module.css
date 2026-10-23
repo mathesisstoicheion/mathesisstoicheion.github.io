@@ -119,7 +119,7 @@
    (the home page's contents, the Treasury's sections: scripts/check-rooms.mjs), red under the hand */
 .card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px 18px; box-shadow: var(--cut-over); text-decoration: none; color: var(--ink); }
 /* a card set as one of the site's slab cards keeps the slab's own spacing, whichever style sheet the page loads last */
-.card:global(.slab-card) { padding: var(--space-4) 0 var(--space-2); }
+.card:global(.slab-card) { padding: var(--space-4) 0 var(--space-2); gap: var(--space-1); }
 .card h3 { font-family: var(--f-display); font-weight: 500; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .card .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-sub); }

@@ -230,8 +230,8 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
 @media (min-width: 1200px) {
   .entryGrid { grid-template-columns: minmax(0, 46rem) minmax(260px, 400px); }
   .essay { grid-template-columns: minmax(0, 40em) minmax(260px, 560px); justify-content: space-between; }
-  .side { position: sticky; top: calc(var(--hdr-vis) + 22px); }
+  .side { position: sticky; top: calc(var(--hdr-vis) + var(--space-5)); }
   .list li { max-width: var(--measure); }
   /* the timeline as a chronology table: the date in its own column, the event beside it, each row ruled across */
-  .timeline li { grid-template-columns: 11rem minmax(0, 1fr); column-gap: var(--space-4); align-items: baseline; padding-bottom: var(--space-2); box-shadow: var(--cut-under); }
+  .timeline li { grid-template-columns: var(--date-col) minmax(0, 1fr); column-gap: var(--space-4); align-items: baseline; padding-bottom: var(--space-2); box-shadow: var(--cut-under); }
 }
