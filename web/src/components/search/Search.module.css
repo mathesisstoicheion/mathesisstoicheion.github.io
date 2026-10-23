@@ -110,6 +110,14 @@
 .tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: var(--measure); }
 .tips li::marker { color: var(--rubric); }
 .tips span[lang] { font-family: var(--f-greek); color: var(--ink); }
+/* a computer: the examples in one column and the tips beside them, so the welcome spans the results' width */
+@media (min-width: 1200px) {
+  .welcome { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "try tips" "ex tips" "ex more"; column-gap: var(--hang-gap); align-items: start; }
+  .welcome > p { grid-area: try; }
+  .examples { grid-area: ex; }
+  .welcome > .tips { grid-area: tips; margin: 0; }
+  .moreTips { grid-area: more; }
+}
 
 /* ------------------------------------------------------------ results */
 .results { min-width: 0; }
