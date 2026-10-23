@@ -54,7 +54,8 @@ export default function Home() {
       <div className="wrap">
         <div className={h.titlePage}>
           <div className="enter">
-            <div className={`${h.kicker} label`}><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</div>
+            {/* one run of words beside the red rule, so on a phone it wraps as one line does */}
+            <div className={`${h.kicker} label`}><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
             <h1 className={h.title}>Read the Greeks in <em>their own</em> words</h1>
             <p className={h.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
             <div className={h.btns}>

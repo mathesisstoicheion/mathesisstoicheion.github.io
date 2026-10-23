@@ -20,7 +20,7 @@ const top = ["/", "/about", "/credits", "/downloads", "/library", "/search", "/s
 const paths = [...top, ...names("academy/lesson"), ...names("academy/guide"), ...(all ? names("stoa") : pick(names("stoa"), 30)), ...pick(names("author"), 25), ...pick(names("work"), 25)];
 
 const b = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : process.platform === "win32" ? { channel: "msedge" } : {});
-let bad = 0;
+let bad = 0, unopened = 0;
 for (const theme of ["light", "dark"]) {
   const ctx = await b.newContext({ viewport: { width, height: 800 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2, reducedMotion: "reduce" });
   await ctx.addInitScript((t) => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme: t === "dark" ? "night" : t === "light" ? "paper" : t }, version: 2 })), theme);
@@ -59,10 +59,10 @@ for (const theme of ["light", "dark"]) {
         return { sw, W, out: out.slice(0, 6).map((o) => o.s) };
       });
       if (r.out.length || r.sw > r.W + 1) { bad++; console.log(`${theme} ${path}  page ${r.sw}px wide of ${r.W}\n   ${r.out.join("\n   ")}`); }
-    } catch (e) { console.log(`${theme} ${path}  [load] ${e.message.split("\n")[0]}`); }
+    } catch (e) { unopened++; console.log(`${theme} ${path}  [load] ${e.message.split("\n")[0]}`); }   // a page that did not open was not checked: it fails the check
   }
   await ctx.close();
 }
 await b.close();
-console.log(`${paths.length} pages; ${bad} with something sticking out`);
-process.exit(bad ? 1 : 0);
+console.log(`${paths.length} pages; ${bad} with something sticking out${unopened ? `; ${unopened} did not open` : ""}`);
+process.exit(bad || unopened ? 1 : 0);
