@@ -1,7 +1,7 @@
 /* A page of prose (About, Credits): its head spans the page and aligns with the running head, as every page's head does;
    the text under it keeps a reading measure, set from the same left edge. */
 .prose { padding-block: 0 clamp(40px, 6vw, 72px); display: grid; gap: 18px; }   /* the head brings its own space above */
-.prose > :not(header) { max-width: 46rem; }
+.prose > :not(header) { max-width: var(--measure); }
 .prose h2 { font-size: var(--step-2); margin-top: 18px; }
 .prose h2 { scroll-margin-top: var(--space-7); }
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
@@ -32,3 +32,21 @@
 .prose h3.groupHead { font-family: var(--f-label); font-size: var(--step--1); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent-2); margin: var(--space-4) 0 0; }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .names dt a { padding-block: 10px; } .jump a { min-width: var(--tap); justify-content: center; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .prose h2 { margin-top: calc(var(--part-room) - var(--space-4)); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a wide screen each heading hangs in the left margin beside its text, and the rule runs on across the text (the owner,
+   2026-10-23: "doesn't use a lot of the available space"; tokens.css --hang-*, scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .prose { grid-template-columns: var(--hang-cols); column-gap: var(--hang-gap); container-type: inline-size; }
+  .prose > * { grid-column: 2; }
+  .prose > header { grid-column: 1 / -1; }
+  .prose > h2 { grid-column: 1; position: relative; border-top: 0; }
+  .prose > h2::before { content: ""; position: absolute; left: 0; top: 0; width: 100cqw; border-top: var(--part-rule); }
+  .prose > h2 + * { margin-top: calc(var(--part-room) - var(--space-4)); padding-top: var(--part-pad); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .prose .jump a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}

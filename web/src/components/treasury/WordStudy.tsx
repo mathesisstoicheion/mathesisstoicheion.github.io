@@ -109,7 +109,7 @@ function Meaning({ lemma }: { lemma: string }) {
   const c: CoreEntry | null = core.state === "done" ? core.value : null;
   const l = lsj.state === "done" ? lsj.value : null;
   return (
-    <section className={styles.sec} aria-labelledby="ws-meaning">
+    <section className={`${styles.sec} ${styles.meaning}`} aria-labelledby="ws-meaning">
       <h2 id="ws-meaning">Meaning</h2>
       {c && (
         <div className={styles.core}>
@@ -117,6 +117,7 @@ function Meaning({ lemma }: { lemma: string }) {
           <p className={styles.fine}>One of the commonest words of Greek (#{c.rank} in the core list) · {c.pos}. {CORE_CREDIT}.</p>
         </div>
       )}
+      <div className={styles.lsj}>
       <h3 className="label">Liddell–Scott–Jones {l && l.head !== lemma && <span lang="grc">· {l.head}</span>}</h3>
       {lsj.state === "loading" && <p className="muted">Opening the dictionary…</p>}
       {lsj.state === "error" && <p className={styles.warn}>The dictionary could not be loaded ({lsj.message}).</p>}
@@ -127,6 +128,7 @@ function Meaning({ lemma }: { lemma: string }) {
       <p className={styles.fine}>
         Also in <a href={`https://logeion.uchicago.edu/${encodeURIComponent(lemma)}`} target="_blank" rel="noopener noreferrer">Logeion</a> (LSJ, Middle Liddell, Autenrieth and more).
       </p>
+      </div>
     </section>
   );
 }

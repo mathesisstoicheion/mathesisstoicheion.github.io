@@ -40,7 +40,7 @@
 .legend li { display: flex; align-items: baseline; gap: 6px; }
 .legend span { color: var(--ink-2); }
 .roads figcaption { display: grid; gap: var(--space-2); }
-.roads figcaption p { margin: 0; color: var(--ink-2); max-width: 75ch; }
+.roads figcaption p { margin: 0; color: var(--ink-2); max-width: var(--measure); }
 /* phones: the key and the caption keep the width of the screen; the chart keeps its proportions and scrolls sideways
    inside its frame, its right edge fading while there is more, with the names kept in view at the left */
 @media (max-width: 760px) {

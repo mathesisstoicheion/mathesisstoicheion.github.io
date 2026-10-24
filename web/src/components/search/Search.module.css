@@ -8,7 +8,7 @@
 .small { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .warn { color: var(--rubric); }
 /* a word about the search (a form read two ways, a limit reached): a note set off by a red rule down its margin */
-.note { margin: 0; max-width: 80ch; padding: 4px 0 4px 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left); }
+.note { margin: 0; max-width: var(--measure); padding: 4px 0 4px 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left); }
 .status { color: var(--ink-2); display: flex; align-items: center; gap: 12px; padding-block: 24px; margin: 0; }
 
 /* ------------------------------------------------------------ the box, in the page's head */
@@ -34,7 +34,7 @@
 }
 .kbdBtn:hover { color: var(--rubric); border-color: var(--ink-3); }
 .kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
-.hint { margin: 0; font-size: var(--step-0); color: var(--ink-2); max-width: 80ch; }
+.hint { margin: 0; font-size: var(--step-0); color: var(--ink-2); max-width: 40em; }   /* one line in the head, as the box's hollow (.boxHold) expects */
 .readAs { display: flex; flex-wrap: wrap; gap: 8px 24px; align-items: center; font-size: var(--step-0); }
 .readAs select, .field select { font-size: var(--step--1); max-width: 100%; }
 .readAs b { font-size: var(--step-sub); color: var(--rubric); font-weight: 400; }
@@ -107,9 +107,17 @@
 .moreTips summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); font-size: var(--step--1); }
 .moreTips summary::marker { color: var(--rubric); }
 @media (pointer: coarse) { .moreTips summary { min-height: var(--tap); padding-block: var(--space-2); } }
-.tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: 75ch; }
+.tips { margin: 8px 0 0; padding-left: 1.2em; display: grid; gap: 6px; color: var(--ink-2); max-width: var(--measure); }
 .tips li::marker { color: var(--rubric); }
 .tips span[lang] { font-family: var(--f-greek); color: var(--ink); }
+/* a computer: the examples in one column and the tips beside them, so the welcome spans the results' width */
+@media (min-width: 1200px) {
+  .welcome { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "try tips" "ex tips" "ex more"; column-gap: var(--hang-gap); align-items: start; }
+  .welcome > p { grid-area: try; }
+  .examples { grid-area: ex; }
+  .welcome > .tips { grid-area: tips; margin: 0; }
+  .moreTips { grid-area: more; }
+}
 
 /* ------------------------------------------------------------ results */
 .results { min-width: 0; }
@@ -171,7 +179,10 @@
 /* the Oracle's header (the area's title, then these): the line quoted above the title has its source set small beneath it, and the box
    waits in a hollow of its own height until the address is read, so the page does not jump when it comes */
 .cap { display: block; max-width: 56ch; font-size: var(--step--2); line-height: 1.4; color: var(--ink-2); }
+/* the hollow and the box share one height, a little more than the box needs, so that neither the box's arrival nor a
+   line more or less in it moves what follows (scripts/check-heads.mjs) */
 .boxHold { min-height: 10.5rem; }
+@media (min-width: 761px) { .boxHold, .box { min-height: 13rem; align-content: start; } }
 /* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): a leaf in a
    hairline frame, its name in red small capitals */
 .refine { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius); }
@@ -190,3 +201,7 @@
   .tabs button { min-height: var(--tap); }
 }
 @media (prefers-reduced-motion: reduce) { .kbd, .refs, .group { animation: none; } }
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .tabs button:not([aria-selected="true"]) { border-bottom-color: var(--rule); }
+}

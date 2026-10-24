@@ -118,6 +118,8 @@
 /* each a catalogue entry under a hairline: its Greek name in red, its title in Garamond as every card heading on the site
    (the home page's contents, the Treasury's sections: scripts/check-rooms.mjs), red under the hand */
 .card { display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px 18px; box-shadow: var(--cut-over); text-decoration: none; color: var(--ink); }
+/* a card set as one of the site's slab cards keeps the slab's own spacing, whichever style sheet the page loads last */
+.card:global(.slab-card) { padding: var(--space-4) 0 var(--space-2); gap: var(--space-1); }
 .card h3 { font-family: var(--f-display); font-weight: 500; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .card .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-sub); }
@@ -574,4 +576,21 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (pointer: coarse) {
   .small > span > a, .guideSources li a { display: inline-block; padding-block: var(--tap-pad); }
   .guideSources ol { gap: 0; }
+}
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .table { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .diph, .coreList { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .coverage { margin-top: var(--part-room); box-shadow: var(--part-edge), var(--field-edge); }
+}
+/* on a wide screen a row's note keeps the reading measure (globals.css --measure; scripts/check-room.mjs) */
+@media (min-width: 761px) { .pathAbout { max-width: var(--measure); } }
+/* on a wide screen a track's name stands on the left and what it offers beside it, as the long articles hang their
+   headings, instead of one narrow column under an empty right half (the owner, 2026-10-23; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .trackHead { display: grid; grid-template-columns: minmax(16rem, 1fr) minmax(0, 2fr); column-gap: var(--hang-gap); align-items: start; }
+  .trackHead > * { grid-column: 1; }
+  .trackHead > p:nth-of-type(1) { grid-column: 2; grid-row: 1 / span 2; margin-top: 0 !important; }
+  .trackHead > p:nth-of-type(2) { grid-column: 2; grid-row: 3; }
+  .lesson .guideLinks { max-width: none; }   /* the ways on from a guide run the width of its column, as its sources do */
 }

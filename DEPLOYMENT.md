@@ -5,7 +5,7 @@ https://mathesisstoicheion.github.io/ redirects to it once the domain is switche
 https://github.com/mathesisstoicheion/mathesisstoicheion.github.io (public), owned by the free GitHub organization `mathesisstoicheion`.
 (Until 2026-09-28 it was ladygagastani.github.io; a GitHub Pages address is always `<owner>.github.io`, so the address moved with the repositories.)
 
-## Closed for a redesign (since 2026-10-21)
+## Closed for a redesign (2026-10-21 to 2026-10-23; open again, `SITE_CLOSED: "false"`)
 `SITE_CLOSED: "true"` near the top of `.github/workflows/deploy.yml` makes every push to `main` publish only the holding page
 in `holding/` (`index.html`, the same page as `404.html` so every address shows it, and a `sw.js` that clears returning
 visitors' kept copies of the old site and removes the old offline helper). The site is not built while it is closed, so

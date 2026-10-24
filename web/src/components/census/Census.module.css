@@ -127,6 +127,9 @@
 .panel {
   position: relative; padding: 20px 20px 22px; background: var(--bg); border-radius: 0;
   box-shadow: var(--inlay-top), var(--field-edge); display: grid; gap: var(--space-3); animation: ink-in var(--ink-in) var(--ease) backwards;
+  /* one column the panel's own width: a chart or a row of buttons wider than it wraps or narrows inside the frame, never
+     widens the column past the frame's line (the owner's phone, 2026-10-23; scripts/check-spill.mjs) */
+  grid-template-columns: minmax(0, 1fr);
 }
 .panel p { margin: 0; }
 .close {
@@ -144,9 +147,9 @@
 .go { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .stoa { font-size: var(--step--1); }
 .charts { display: grid; gap: var(--space-4); }
-.clusters { display: grid; gap: var(--space-2); }
+.clusters { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-2); }
 .clusters select { font: inherit; font-size: var(--step--1); padding: 6px var(--space-2); border-radius: var(--radius); color: var(--ink); max-width: 100%; }
-.strip { margin: 0; display: grid; gap: var(--space-1); position: relative; }
+.strip { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-1); position: relative; }
 .strip svg { width: 100%; height: 64px; display: block; cursor: crosshair; border: 1px solid var(--rule); }
 .stripBase { fill: var(--ink); }
 .notch { fill: var(--ink-2); }
@@ -211,3 +214,25 @@
 }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .cats { row-gap: 10px; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .rankHead { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .facts { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .shelf { padding-inline: var(--space-3); box-shadow: var(--field-edge); }
+  .shelf[aria-pressed="true"] { box-shadow: var(--chosen-top), var(--field-edge); }
+  .fullMethod > summary::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); margin-right: var(--space-2); background: var(--accent); clip-path: var(--tri-right); }
+  .fullMethod[open] > summary::before { clip-path: var(--tri-down); }
+}
+/* on a wide screen the method's first paragraph and the way into the full method stand side by side, not in one narrow
+   column under an empty right half (the owner, 2026-10-23; scripts/check-room.mjs). Opened, the full method runs across. */
+@media (min-width: 1200px) {
+  .method { grid-template-columns: minmax(0, var(--measure)) minmax(16rem, 1fr); column-gap: var(--hang-gap); align-items: start; }
+  .method > h2 { grid-column: 1 / -1; }
+  .methodFirst { grid-column: 1; grid-row: 2 / span 2; }
+  .fullMethod { grid-column: 2; grid-row: 2; }
+  .method > .fine { grid-column: 2; grid-row: 3; }
+  .fullMethod[open] { grid-column: 1 / -1; grid-row: 4; }
+}

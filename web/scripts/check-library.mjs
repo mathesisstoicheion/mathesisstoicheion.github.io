@@ -14,7 +14,7 @@ const found = [];
 /** a date in words: "4th-century", "4th c.", "384–322 BC", "(c. 470", "AD 46" */
 export const DATED = /\b\d{1,2}(?:st|nd|rd|th)\b[\s/–-]*(?:(?:and |or |early |late )*\d{1,2}(?:st|nd|rd|th)[\s/–-]*)*(?:c\.|centur)|\b\d{2,4}\s?(?:BC|AD|BCE|CE)\b|\b(?:BC|AD)\s?\d|\(\s*(?:c\.\s?)?\d{2,4}|\bc\.\s?\d{2,4}\s?[–-]/i;
 
-const HIDE = `*, *::before, *::after { color: transparent !important; -webkit-text-fill-color: transparent !important; text-shadow: none !important; caret-color: transparent !important; transition: none !important; }
+const HIDE = `*, *::before, *::after { color: transparent !important; -webkit-text-fill-color: transparent !important; text-decoration-color: transparent !important; text-shadow: none !important; caret-color: transparent !important; transition: none !important; }
   ::placeholder { color: transparent !important; } *::selection { background: transparent !important; }`;
 
 for (const [w, h] of [[1280, 900], [375, 812]]) {

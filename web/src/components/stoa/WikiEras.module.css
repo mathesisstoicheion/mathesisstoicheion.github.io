@@ -35,6 +35,12 @@
 .bands a::before { content: ""; position: absolute; left: 1px; right: 1px; top: 2px; height: 6px; border: 1px solid var(--rubric); border-top: 0; }
 .bands a[data-era="1"]::before { border-color: var(--ink-3); }
 @keyframes ink-in { from { opacity: 0; } }
+/* on a computer the chart stands clear of the page's head (scripts/check-parts.mjs), and a period's name under its bracket
+   is underlined at rest, so it reads as a link (scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .chartBox { margin-top: var(--part-room); }
+  .bands a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}
 
 /* the periods, as entries in a gazetteer */
 .eras { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-6) clamp(var(--space-5), 4vw, var(--space-7)); }
@@ -84,3 +90,11 @@
   .bands a { writing-mode: vertical-rl; text-align: start; font-size: var(--step--2); letter-spacing: 0.04em; padding: var(--space-3) 0 0; overflow: visible; text-overflow: clip; min-width: 24px; }
 }
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .era { margin-top: calc(var(--part-room) - var(--space-6)); }
+}
+/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .plain a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}

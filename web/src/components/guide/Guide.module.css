@@ -5,6 +5,8 @@
 
 /* the page's measure is the running head's, as on every page */
 .page { padding-block: var(--after-head, 28px) 72px; }
+/* on a computer the page's head stands where every page's head stands (globals.css .ph; scripts/check-heads.mjs) */
+@media (min-width: 761px) { .page { padding-top: 0; } }
 .small { color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
 .small a { color: var(--ink); text-decoration-color: var(--rubric); text-underline-offset: 3px; }
 
@@ -154,3 +156,10 @@
 @media (prefers-reduced-motion: reduce) { .invite { animation: none; } }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .contents a { min-height: var(--tap); } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .chapter { padding-top: var(--part-room); border-top: var(--part-rule); }
+}
+/* on a computer a chapter's words open under its rule, as a chapter's first page does, whatever the height of the figure
+   beside them (scripts/check-parts.mjs) */
+@media (min-width: 761px) { .chapter { align-items: start; } }

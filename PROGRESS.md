@@ -4,10 +4,10 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 
 On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
-## The printed page: the whole site and the app redesigned (2026-10-22 and 23; NOT LIVE)
+## The printed page: the whole site and the app redesigned (2026-10-22 and 23; LIVE on the owner's "Publish", 2026-10-23 20:05 UTC)
 The owner, 2026-10-22 19:31 UTC: "Now, do the full redesign for the whole website/app. No corners missed." Their twelve
-decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claude/project-thread-5hod76`; nothing is on
-`main`, and the site stays closed until the owner says "publish".
+decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claude/project-thread-5hod76`, merged into `main`
+(f37f61a) with `SITE_CLOSED` set to "false", which reopened the site.
 - **Every page** in the printed page: warm paper, or Night when the phone or computer is in dark mode (Settings can choose);
   black ink, red headings and hairline rules; only EB Garamond, GFS Didot and Gentium Book Plus; numbered photo plates in
   their real colours, each with its credit. One movement, the ink-in; reduced motion turns it off.
@@ -29,10 +29,17 @@ decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claud
 - **Beta 8** of the phone app (2026-10-23 04:45 UTC) carries the redesign; the app offers it when opened. The laptop copy
   (Documents\Mathesis Local Site, port 3100) is brought up to the branch by a Remote Control session, which also gives
   the desktop start app the printer's device for its icon.
+- **The computer version** (2026-10-23, the owner: the phone design "is great", but on a computer the heads "load at
+  different heights", the parts "blend into each other", "It's not clear what is a clickable", the grey text "can be a
+  little unintelligible", overlaps like the census word panel, and it "doesn't use a lot of the available space"): every
+  head at one height; each part under a rule of ink with room above it; clickables shown at rest; darker grey in Paper
+  and Night; nothing spilling out of its frame; pages up to 1760 px wide with the type a little larger on big screens,
+  reading lines kept to about 80 letters, headings hung in the margin, and things that belong together side by side.
+  Six new checks guard it (DESIGN.md, "Space and shape"). The phone layout is unchanged apart from the colours.
 - The holding page (`holding/`, shown only while the site is closed) is set as the printed page too.
 - The old look's files are in `_archive/old-look-2026-10-22/`.
 
-## The site is closed for a redesign (2026-10-21)
+## The site was closed for a redesign (2026-10-21 to 2026-10-23)
 The owner, 08:25 UTC: "Take the website offline, temporarily. We're doing a full revision of the design". Since then
 https://mathesisstoicheion.com/ shows only a holding page ("closed for a redesign, back soon"), on every address, including
 the owner's private pages. Returning visitors' old offline copies are cleared on their next visit. Nothing was deleted: the

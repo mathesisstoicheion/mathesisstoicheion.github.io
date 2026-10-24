@@ -1,6 +1,8 @@
 /* Author and work pages on the printed page: the facts in small capitals over figures, the works as a list under hairlines,
    and the Painted Stoa's articles on the author as entries in a double frame, as the plates are. */
 .page { padding-block: var(--space-5) var(--space-5); display: grid; gap: clamp(28px, 4vw, 44px); }
+/* on a computer the page's head stands where every page's head stands (globals.css .ph; scripts/check-heads.mjs) */
+@media (min-width: 761px) { .page { padding-top: 0; } }
 .crumb { font-family: var(--f-label); letter-spacing: 0.06em; font-size: var(--step--1); }
 .crumb a { text-decoration: none; }
 .crumb a:hover { color: var(--accent); }
@@ -53,3 +55,14 @@
 .record { color: var(--ink-2); font-size: var(--step--1); }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .crumb a { display: inline-block; padding-block: 12.5px; margin-block: -12.5px; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .sec { margin-top: calc(var(--part-room) - var(--space-6)); padding-top: var(--part-pad); border-top: var(--part-rule); }
+}
+/* on a wide screen a part's heading hangs in the left margin beside its text (tokens.css --hang-*; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .sec:not(.worksSec) { grid-template-columns: var(--hang-cols); column-gap: var(--hang-gap); align-items: start; }
+  .sec:not(.worksSec) > * { grid-column: 2; }
+  .sec:not(.worksSec) > :first-child { grid-column: 1; }
+  .record { max-width: var(--measure); }
+}

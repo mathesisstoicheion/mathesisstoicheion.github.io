@@ -29,7 +29,8 @@
 /* each part's head: its name, then a hairline to the margin, as the page's own section heads (globals.css .sh) */
 .sec > h2, .secHead > h2 { display: flex; align-items: baseline; gap: 14px; margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
 .sec > h2::after, .secHead > h2::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
-.sec > h3 { margin-top: 6px; }
+.sec > h3, .lsj > h3 { margin-top: 6px; }
+.lsj { display: grid; gap: inherit; align-content: start; }
 .secHead { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 16px; }
 .secHead > h2 { flex: 1 1 auto; }
 .sec :global(.chip) { justify-self: start; }
@@ -78,7 +79,7 @@
 .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr)); gap: 32px; }
 .chart { margin: 0; display: grid; gap: 10px; align-content: start; }
 .bars { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
-.barRow { position: relative; display: grid; grid-template-columns: minmax(120px, 38%) 1fr; gap: 12px; align-items: center; padding: 5px 4px; outline: none; }
+.barRow { position: relative; display: grid; grid-template-columns: minmax(120px, 38%) minmax(0, 1fr); gap: 12px; align-items: center; padding: 5px 4px; outline: none; }
 .barRow[data-hover] .barLabel { color: var(--rubric); }
 .barRow:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 .barLabel { font-size: var(--step--1); line-height: 1.2; transition: color var(--dur-quick) var(--ease); }
@@ -129,3 +130,19 @@
 }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .asTable summary { padding-block: 11px; } }
+/* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
+@media (min-width: 761px) {
+  .sec { padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .layout { margin-top: var(--after-head); }
+}
+/* on a wide screen the core meaning and the dictionary's entry stand side by side under the heading, not one short block
+   under another with the right half of the column empty (the owner, 2026-10-23; scripts/check-room.mjs) */
+@media (min-width: 1200px) {
+  .meaning { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--hang-gap); align-items: start; }
+  .meaning > h2 { grid-column: 1 / -1; }
+  .meaning > .lsj > h3 { margin-top: 0; }
+}
+/* on a computer a word of the family shows it can be clicked at rest (globals.css --link-line; scripts/check-clickable.mjs) */
+@media (min-width: 761px) {
+  .kin a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+}

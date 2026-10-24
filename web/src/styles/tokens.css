@@ -23,9 +23,11 @@
   --paper-2: #e9dfcd;      /* the second surface: a plate's mount, a margin, a pressed key */
   --paper-3: #ddd0b9;
   --paper-ink: #1e1a15;
-  --paper-ink-2: #5c5043;  /* captions */
-  --paper-ink-3: #675846;  /* small print and credits: the spec's faint ink made deeper, so it reads at 4.5 : 1 even
-                              where the paper's shade at the foot of the screen is darkest (scripts/check-library.mjs) */
+  /* the softer inks, for captions, notes, credits and the English beside the Greek: deeper than the sample's, so every
+     line of words reads at 7 : 1 or more on the paper and on its second surface (the owner, 2026-10-23: "the grey text
+     can be a little unintelligible when reading"; scripts/check-ink.mjs) */
+  --paper-ink-2: #41382f;  /* captions: 9.8 : 1 on the paper */
+  --paper-ink-3: #4f4336;  /* small print and credits: 8.2 : 1 on the paper */
   --paper-faint: #8a7b68;  /* rules and marks that are not words */
   --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
   --paper-rubric-2: #c4553a;
@@ -34,8 +36,8 @@
   --night-2: #24201a;
   --night-3: #332c23;
   --night-ink: #ebe1cf;
-  --night-ink-2: #b7a891;
-  --night-ink-3: #9a8c77;
+  --night-ink-2: #d2c4ab;  /* 10.3 : 1 on the night page */
+  --night-ink-3: #bdad93;  /* 8 : 1 */
   --night-faint: #8c7f6c;
   --night-rubric: #e0805f;
   --night-rubric-2: #f09a7b;
@@ -122,9 +124,22 @@
   --z-over-header: 31;
   --z-bar: 5;
 
-  /* layout */
+  /* layout. The type area fills a computer's screen as it fills a sheet, inside a margin of a twentieth of the window
+     either side (the owner, 2026-10-23: "the pc version also doesn't use a lot of the available space on the page";
+     scripts/check-room.mjs); running text keeps its own measure, about 80 characters to a line, however wide the page. */
   --gutter: clamp(16px, 4vw, 56px);
-  --maxw: 1180px;
+  --maxw: 1760px;
+  /* (in em, not ch: a ch is the width of the face's nought, which changes when the web face replaces its stand-in, and
+     every paragraph would rewrap a moment after the page appears; scripts/check-heads.mjs) */
+  --measure: 30em;
+  /* above 1600 px the type grows a little with the window, up to 18 px to the rem */
+  --root-grow: clamp(100%, calc(100% + (100vw - 1600px) / 160), 112.5%);
+  /* the date's column in a timeline set as a chronology table */
+  --date-col: 11rem;
+  /* a part of reading on a wide screen, as a book sets it: its heading hung in the left margin, the text at its measure,
+     a narrower margin to the right (scripts/check-room.mjs) */
+  --hang-cols: minmax(11rem, 1fr) minmax(0, 46rem) minmax(0, 0.5fr);
+  --hang-gap: clamp(32px, 4vw, 72px);
   --tap: 44px;
   /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
      line's own height, where the token is used). The browser lays boxes out in 64ths of a pixel and rounds each part
@@ -133,6 +148,8 @@
   --tap-pad: calc((var(--tap) - 1lh) / 2 + 0.5px);
   --tex: none;
 }
+/* a wide screen: the margin grows with the window, a twentieth of it either side */
+@media (min-width: 1400px) { :root { --gutter: 5vw; } }
 
 /* ---------------------------------------------------------- the roles: Paper */
 :root,
@@ -240,6 +257,10 @@
   /* surfaces: on a printed page a panel is a hairline frame on the paper, never a raised box */
   --field: transparent;
   --field-edge: inset 0 0 0 1px var(--rule);
+  /* the chosen one of a row of framed choices: a red rule along its top (a shelf in the census, a song on the lyre) */
+  --chosen-top: inset 0 2px 0 var(--rubric);
+  /* a part's rule of ink drawn as a line along a framed box's top */
+  --part-edge: inset 0 1px 0 var(--ink);
   --slab: transparent;
   --slab-edge: inset 0 0 0 1px var(--rule);
   --slab-lit: var(--bg-2);

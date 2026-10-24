@@ -135,3 +135,34 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-split-sentences.mjs http://localhost:3100
+      # the computer's flow (the owner, 2026-10-23): heads at one height, parts set apart, clickables that look it,
+      # grey words that read clearly, nothing spilling out of its frame
+      - name: Every page's head starts at one height on a computer, and does not move after it is painted
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-heads.mjs http://localhost:3100
+      - name: Every part of a page stands apart under a rule of ink, with room above it
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-parts.mjs http://localhost:3100
+      - name: Everything that can be clicked looks it at rest
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-clickable.mjs http://localhost:3100
+      - name: Grey words read clearly in Paper and Night
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-ink.mjs http://localhost:3100
+      # (the census word's charts need the word packs, which are not served here: their panel is checked by hand on a
+      # server with the packs; the rest of every page is checked)
+      - name: Nothing spills out of its frame or off the screen
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-spill.mjs http://localhost:3100
+      - name: A wide screen is used, with reading lines kept to a comfortable length
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        # (a word's page needs the word packs, which are not served here, to fill its main column)
+        env:
+          NOPACKS: "1"
+        run: node scripts/check-room.mjs http://localhost:3100

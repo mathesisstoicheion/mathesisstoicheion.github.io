@@ -845,9 +845,11 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
 function SongNotes({ song }: { song: Melody }) {
   return (
     <section className={styles.about} aria-labelledby="song-about">
-      <h2 id="song-about">{song.title}</h2>
-      <p className="label">{song.document} · {song.date}</p>
-      {song.about.map((p, i) => <p key={i}>{p}</p>)}
+      <div className={styles.aboutText}>
+        <h2 id="song-about">{song.title}</h2>
+        <p className="label">{song.document} · {song.date}</p>
+        {song.about.map((p, i) => <p key={i}>{p}</p>)}
+      </div>
       {song.words && (
         <div className={styles.words}>
           {song.words.map((w, i) => (

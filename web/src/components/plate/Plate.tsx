@@ -9,6 +9,11 @@
 import type { ReactNode } from "react";
 import { maker, objectDate, photo, plateRatio, roman, srcSet, type Photo } from "@/lib/photos";
 
+/** Whether a photograph may be cut to a 3 by 4 frame (the plate beside a page's title on a computer, globals.css): one
+ *  near that shape loses only a strip of the museum's backdrop; a wide tablet or a tall herm would lose part of the
+ *  piece, so it is shown whole on its mount instead. */
+const fitsThreeByFour = (p: Photo) => { const r = p.height / p.width; return r >= 0.95 && r <= 1.55; };
+
 /** The photograph itself: a copy no larger than the screen needs, fetched only when it comes near (unless `priority`). */
 export function PlateImg({ p, id, sizes, priority = false, className }: { p: Photo; id: string; sizes: string; priority?: boolean; className?: string }) {
   return (
@@ -63,7 +68,8 @@ export default function Plate({ id, n, why, frame = true, sizes = "(max-width: 7
   const p = photo(id);
   if (!p) return null;
   return (
-    <figure className={`plate${frame ? " plate-frame" : ""}${className ? ` ${className}` : ""}`} style={{ "--plate-ratio": plateRatio(p) } as React.CSSProperties}>
+    <figure className={`plate${frame ? " plate-frame" : ""}${className ? ` ${className}` : ""}`} style={{ "--plate-ratio": plateRatio(p) } as React.CSSProperties}
+      data-fit={fitsThreeByFour(p) ? "cut" : "whole"}>
       <div className="plate-ph"><PlateImg p={p} id={id} sizes={sizes} priority={priority} /></div>
       <PlateCaption id={id} p={p} n={n} why={why} credit={credit} caption={caption} />
     </figure>
