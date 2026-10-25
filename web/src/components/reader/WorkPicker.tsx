@@ -1,16 +1,16 @@
 "use client";
 
-import { useDeferredValue, useEffect, useMemo, useRef, useState } from "react";
+import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { loadCatalog, fold, greekEditions, hasTranslation, type CatalogIndex } from "@/lib/catalog";
 import styles from "./Reader.module.css";
+import { ModalDialog } from "./Panel";
 
 /** Choose a work to open in the second pane. */
 export default function WorkPicker({ onPick, onClose }: { onPick: (work: string) => void; onClose: () => void }) {
-  const ref = useRef<HTMLDialogElement>(null);
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [q, setQ] = useState("");
   const query = useDeferredValue(q);
-  useEffect(() => { ref.current?.showModal(); loadCatalog().then(setIdx); }, []);
+  useEffect(() => { loadCatalog().then(setIdx); }, []);
 
   const results = useMemo(() => {
     if (!idx) return [];
@@ -26,13 +26,7 @@ export default function WorkPicker({ onPick, onClose }: { onPick: (work: string)
   }, [idx, query]);
 
   return (
-    <dialog ref={ref} className={styles.share} aria-labelledby="picker-title" onClose={onClose}
-      onClick={(e) => { if (e.target === ref.current) ref.current?.close(); }}>
-      <div className={styles.shareIn}>
-        <div className={styles.panelHead}>
-          <h2 id="picker-title">Open a second book</h2>
-          <button type="button" className={styles.x} onClick={() => ref.current?.close()} aria-label="Close">×</button>
-        </div>
+    <ModalDialog titleId="picker-title" title="Open a second book" onClose={onClose}>
         <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="picker-search" type="search" className={styles.pickerInput} value={q} onChange={(e) => setQ(e.target.value)}
           placeholder="Search authors and works (English or Greek)" aria-label="Search for a work" autoFocus />
         <ul className={styles.pickerList}>
@@ -47,7 +41,6 @@ export default function WorkPicker({ onPick, onClose }: { onPick: (work: string)
           ))}
           {idx && !results.length && <li className="muted">Nothing found.</li>}
         </ul>
-      </div>
-    </dialog>
+    </ModalDialog>
   );
 }

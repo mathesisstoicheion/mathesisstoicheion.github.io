@@ -1,6 +1,7 @@
 # 8. The printed page with real photographs
 Date: 2026-10-22
 Follows: 0001 to 0007, whose look it replaces.
+Followed by: 0009 (the quiet desk), which changes decisions 4, 5 and 7 for the reader.
 
 Context:
 - The owner closed the site for a full redesign on 2026-10-21 and compared complete samples. On 2026-10-22 they chose

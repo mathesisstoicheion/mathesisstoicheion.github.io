@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { renderPassageImage } from "@/lib/share-image";
 import { useUI } from "@/lib/ui";
 import styles from "./Reader.module.css";
+import { ModalDialog } from "./Panel";
 
 export interface ShareData {
   words: string[];            // Greek words of the passage, in order
@@ -18,14 +19,11 @@ type Step = "menu" | "pick" | "preview";
 /** Share: copy a link, copy the text, or make an image (highlight words first, or skip). */
 export default function ShareDialog({ data, onClose }: { data: ShareData; onClose: () => void }) {
   const toast = useUI((s) => s.showToast);
-  const ref = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState<Step>("menu");
   const [hl, setHl] = useState<Set<number>>(new Set());
   const [dark, setDark] = useState(false);
   const [withTr, setWithTr] = useState(!!data.translation);
   const [png, setPng] = useState<{ url: string; blob: Blob } | null>(null);
-
-  useEffect(() => { ref.current?.showModal(); }, []);
 
   // draw the preview whenever its choices change
   useEffect(() => {
@@ -55,13 +53,7 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
   }
 
   return (
-    <dialog ref={ref} className={styles.share} aria-labelledby="share-title" onClose={onClose}
-      onClick={(e) => { if (e.target === ref.current) ref.current?.close(); }}>
-      <div className={styles.shareIn}>
-        <div className={styles.panelHead}>
-          <h2 id="share-title">Share {data.cite}</h2>
-          <button type="button" className={styles.x} onClick={() => ref.current?.close()} aria-label="Close">×</button>
-        </div>
+    <ModalDialog titleId="share-title" title={`Share ${data.cite}`} onClose={onClose}>
 
         {step === "menu" && (
           <div className={styles.shareMenu}>
@@ -105,7 +97,6 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
             </div>
           </>
         )}
-      </div>
-    </dialog>
+    </ModalDialog>
   );
 }

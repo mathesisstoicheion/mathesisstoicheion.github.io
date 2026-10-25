@@ -13,6 +13,7 @@ import { englishSnippet, findInText, FIND_MAX, greekIndex, pieceText, type FindH
 import { snippet } from "@/lib/search/context";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
+import { SidePanel } from "./Panel";
 
 export interface FindMarks { hits: FindHit[]; cur: FindHit | null; seq: number; engSource: string | null }
 
@@ -74,12 +75,8 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
     : `${i >= 0 ? `${num(i + 1)} of ` : ""}${num(hits.length)}${res.capped ? "+" : ""} ${sc === "grc" ? "in the Greek" : "in the translation"}`;
 
   return (
-    <aside className={`${styles.panel} ${fs.panel}`} data-compact={compact || undefined} aria-label="Find in this text"
-      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
-      <div className={styles.panelHead}>
-        <h2 className={fs.title}>Find in this text</h2>
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close find">×</button>
-      </div>
+    <SidePanel className={`${styles.panel} ${fs.panel}`} data-compact={compact || undefined} label="Find in this text" onClose={onClose}
+      title="Find in this text" titleClass={fs.title} closeLabel="Close find">
 
       <form className={fs.row} role="search" onSubmit={(e) => { e.preventDefault(); step(1); }}>
         <svg className={fs.glass} viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg>
@@ -140,6 +137,6 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
           <Link href={`/search?q=${encodeURIComponent(dq.trim())}`} transitionTypes={["page-turn"]}>Search every text in the library for “{dq.trim()}” →</Link>
         </p>
       )}
-    </aside>
+    </SidePanel>
   );
 }

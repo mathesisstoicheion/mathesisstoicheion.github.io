@@ -9,6 +9,7 @@ import { lemmaOf, type RowDiff } from "@/lib/tei/compare";
 import { toCsv } from "@/lib/search/kwic";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
+import { SidePanel } from "./Panel";
 
 const SHOW = 300;
 const num = (n: number) => n.toLocaleString("en-GB");
@@ -31,12 +32,8 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   };
   return (
-    <aside className={`${styles.panel} ${fs.panel}`} aria-label="Differences between the editions" tabIndex={-1}
-      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
-      <div className={styles.panelHead}>
-        <h2 className={fs.title}>Differences</h2>
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close the differences">×</button>
-      </div>
+    <SidePanel className={`${styles.panel} ${fs.panel}`} label="Differences between the editions" onClose={onClose}
+      title="Differences" titleClass={fs.title} closeLabel="Close the differences">
       <p className={styles.fine}>
         Each line gives the passage, then the words of <b>{a}</b>, a bracket ], and the words of <b>{b}</b>. A dash means one edition has no word there.
       </p>
@@ -64,6 +61,6 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
         ))}
       </ol>
       {entries.length > shown && <button type="button" className="chip" onClick={() => setShown((n) => n + SHOW)}>Show {num(Math.min(SHOW, entries.length - shown))} more</button>}
-    </aside>
+    </SidePanel>
   );
 }

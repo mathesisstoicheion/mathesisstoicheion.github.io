@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { loadWordPack } from "@/lib/lookup/words";
 import { placeAnalyses, placedLemmaCounts } from "@/lib/lookup/placed";
 import type { TeiDoc } from "@/lib/tei/types";
 import { lsjEntries } from "@/lib/lookup/lsj";
 import { coreEntry } from "@/lib/lookup/core";
 import styles from "./Reader.module.css";
+import { SidePanel } from "./Panel";
 
 interface Entry { lemma: string; n: number; gloss: string | null; core: number | null }
 
@@ -16,7 +17,6 @@ export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
 }) {
   const [list, setList] = useState<Entry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let live = true;
@@ -44,14 +44,8 @@ export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
     return () => { live = false; };
   }, [work, doc, pageKeys]);
 
-  useEffect(() => { ref.current?.focus({ preventScroll: true }); }, []);
-
   return (
-    <aside ref={ref} className={styles.panel} aria-label="Vocabulary for this page" tabIndex={-1} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-      <div className={styles.panelHead}>
-        <h2 className={styles.vocabTitle}>Vocabulary for this page</h2>
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close vocabulary">×</button>
-      </div>
+    <SidePanel label="Vocabulary for this page" onClose={onClose} focusKey title="Vocabulary for this page" titleClass={styles.vocabTitle} closeLabel="Close vocabulary">
       <p className={styles.fine}>Dictionary words used on this page, most frequent first, counted from GLAUx&apos;s analyses. Definitions from the DCC Greek Core Vocabulary for the commonest words (marked with their rank), otherwise from LSJ.</p>
       {error && <p className="muted">{error}</p>}
       {!list && !error && <p className="muted">Counting the words…</p>}
@@ -68,6 +62,6 @@ export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
           ))}
         </ol>
       )}
-    </aside>
+    </SidePanel>
   );
 }

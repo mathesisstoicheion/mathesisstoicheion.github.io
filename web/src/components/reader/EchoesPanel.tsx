@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { loadCatalog, versionOf, type CatalogIndex } from "@/lib/catalog";
 import { exactEchoes, NEAR_MAX_WORDS, phraseEchoes, wordEchoes, type Echo, type Kind } from "@/lib/echoes/match";
 import { authorPlan, bookFromDoc, bookFromUrn, lexicon, type AuthorPlan, type Book } from "@/lib/echoes/load";
@@ -12,6 +12,7 @@ import type { Point } from "@/lib/annotations";
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Reader.module.css";
 import es from "./Echoes.module.css";
+import { SidePanel } from "./Panel";
 
 /** What Echoes was asked about: words selected (or clicked) in a book open in the reader. */
 export interface EchoQuery { work: string; urn: string; doc: TeiDoc; title: string; start: Point; end: Point }
@@ -32,7 +33,6 @@ const MAX_WORDS = 200;
 export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
   q: EchoQuery; onJump: (t: EchoTarget) => void; onMarks: (m: EchoMarks | null) => void; onClose: () => void;
 }) {
-  const ref = useRef<HTMLElement>(null);
   const [book, setBook] = useState<{ key: EchoQuery; book?: Book; error?: string } | null>(null);
   const [scope, setScope] = useState<Scope>("book");
   const [by, setBy] = useState<"form" | "lemma">("form");
@@ -42,7 +42,6 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
 
   useEffect(() => { loadCatalog().then(setIdx, () => undefined); }, []);
-  useEffect(() => { ref.current?.focus({ preventScroll: true }); }, [q]);
 
   // 1. the book being read, as a stream of words with their dictionary words
   useEffect(() => {
@@ -151,14 +150,12 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
   const where = scope === "book" ? <i>{q.title}</i> : scope === "author" ? `${plan?.author.name ?? "this author"}’s works` : "all the Greek texts";
 
   return (
-    <aside ref={ref} className={`${styles.panel} ${es.panel}`} aria-label="Echoes" tabIndex={-1} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-      <div className={styles.panelHead}>
+    <SidePanel className={`${styles.panel} ${es.panel}`} label="Echoes" onClose={onClose} focusKey={q} closeLabel="Close Echoes" head={
         <div>
           <p className="label">Echoes · where it recurs</p>
           <p className={es.quote} lang="grc">{quote || "…"}</p>
         </div>
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close Echoes">×</button>
-      </div>
+      }>
 
       {away && (
         <button type="button" className={`chip ${es.back}`} onClick={() => { setAway(false); onJump(origin); }}>
@@ -273,7 +270,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
           </details>
         </>
       )}
-    </aside>
+    </SidePanel>
   );
 }
 

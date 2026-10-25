@@ -12,6 +12,7 @@ import { lessonFor } from "@/lib/lookup/lesson-link";
 import { coreEntry, CORE_CREDIT, type CoreEntry } from "@/lib/lookup/core";
 import { placeNamed, shortName, type Place } from "@/lib/map";
 import styles from "./Reader.module.css";
+import { SidePanel } from "./Panel";
 
 export interface WordContext { work: string; unitKey: string; occurrence: number; keys: Set<string>; depth: number }
 
@@ -268,8 +269,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
     return () => ctl.abort();
   }, [word, offline]);
 
-  useEffect(() => { if (word) ref.current?.focus({ preventScroll: true }); }, [word]);
-
   if (!word) return null;
   const a = analysisDone ? analysis.value : undefined;
   const l = lsj.key === lsjKey ? lsj : null;
@@ -290,10 +289,9 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const wiktNone = !!w && !w.value && !w.error;
 
   return (
-    <aside ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" aria-label={`Look-up: ${word}`} tabIndex={-1}
+    <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" label={`Look-up: ${word}`}
       style={note ? { top: note.top, left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
-      onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-      <div className={styles.panelHead} {...(sheet ? gestures.head : {})}>
+      onClose={onClose} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
         {step && <button type="button" className={styles.stepBtn} onClick={() => step(-1)} aria-label="Previous word">‹</button>}
         <div className={styles.pw} lang="grc">{word}</div>
@@ -303,8 +301,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
           </button>
         )}
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close look-up">×</button>
-      </div>
+      </>}>
       <div key={word} className={styles.panelBody} data-dir={dir} {...(sheet ? gestures.body : {})}>
 
       {/* ------------------------------------------------ here */}
@@ -407,6 +404,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       </section>
 
       </div>
-    </aside>
+    </SidePanel>
   );
 }

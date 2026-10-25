@@ -10,6 +10,7 @@ import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
+import { SidePanel } from "./Panel";
 
 const MAX_WORDS = 90;
 
@@ -39,16 +40,10 @@ function Src({ n, sep }: { n: number; sep?: boolean }) {
 export default function ManuscriptPanel({ work, units, label, book, onClose }: {
   work: string; units: Unit[]; label: string; book: string | null; onClose: () => void;
 }) {
-  const ref = useRef<HTMLElement>(null);
-  useEffect(() => { ref.current?.focus({ preventScroll: true }); }, []);
   const witnesses = witnessesOf(work);
 
   return (
-    <aside ref={ref} className={rs.panel} aria-label="The manuscript" tabIndex={-1} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-      <div className={rs.panelHead}>
-        <h2 className={styles.title}>How it was written</h2>
-        <button type="button" className={rs.x} onClick={onClose} aria-label="Close the manuscript panel">×</button>
-      </div>
+    <SidePanel label="The manuscript" onClose={onClose} focusKey title="How it was written" titleClass={styles.title} closeLabel="Close the manuscript panel">
       <Stages units={units} label={label} />
       {witnesses.map((w) => <Photos key={w.id} w={w} work={work} line={units[0]?.ref.join(".") ?? null} book={book} />)}
       {!witnesses.length && (
@@ -58,7 +53,7 @@ export default function ManuscriptPanel({ work, units, label, book, onClose }: {
         <summary>Where these facts come from</summary>
         <ol>{SOURCES.map((s) => <li key={s.url}><a href={s.url} target="_blank" rel="noreferrer">{s.label}</a></li>)}</ol>
       </details>
-    </aside>
+    </SidePanel>
   );
 }
 

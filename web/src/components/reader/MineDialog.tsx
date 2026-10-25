@@ -16,6 +16,7 @@ import { listTranslations, saveTranslation, trouble, type StoredSummary } from "
 import { scrollBehavior } from "@/lib/settings";
 import { StatusTag } from "@/components/admin/parts";
 import styles from "./Mine.module.css";
+import { ModalDialog } from "./Panel";
 
 export type Tab = "shelf" | "import";
 
@@ -24,26 +25,18 @@ export default function MineDialog({ current, onOpen, onClose, start = "shelf" }
   /** the tab it opens on: the shelf, or "Import a text" */
   start?: Tab;
 }) {
-  const ref = useRef<HTMLDialogElement>(null);
   const [tab, setTab] = useState<Tab>(start);
-  useEffect(() => { ref.current?.showModal(); }, []);
-  const close = () => ref.current?.close();
 
   return (
-    <dialog ref={ref} className={styles.dialog} aria-labelledby="mine-title" onClose={onClose}
-      onClick={(e) => { if (e.target === ref.current) close(); }}>
-      <div className={styles.inner}>
-        <header className={styles.head}>
-          <div>
-            <span className={styles.seal}>{LOCK} Private · only you can see this</span>
-            <h2 id="mine-title" className={styles.title}>Private collection</h2>
-          </div>
-          <button type="button" className={styles.x} onClick={close} aria-label="Close">×</button>
-        </header>
-        <Collection current={current} onOpen={onOpen} tab={tab} onTab={setTab} />
-        <p className={styles.foot}><Link href={PRIVATE_COLLECTION}>Open the private collection as a page</Link></p>
+    <ModalDialog titleId="mine-title" onClose={onClose} className={styles.dialog} innerClass={styles.inner} headClass={styles.head} closeClass={styles.x} head={
+      <div>
+        <span className={styles.seal}>{LOCK} Private · only you can see this</span>
+        <h2 id="mine-title" className={styles.title}>Private collection</h2>
       </div>
-    </dialog>
+    }>
+      <Collection current={current} onOpen={onOpen} tab={tab} onTab={setTab} />
+      <p className={styles.foot}><Link href={PRIVATE_COLLECTION}>Open the private collection as a page</Link></p>
+    </ModalDialog>
   );
 }
 

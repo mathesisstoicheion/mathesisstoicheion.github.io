@@ -11,6 +11,7 @@ import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Places.module.css";
 import rs from "./Reader.module.css";
+import { SidePanel } from "./Panel";
 
 type Marks = Map<string, Set<string>>;
 interface ViewBox { x: number; y: number; w: number; h: number }
@@ -75,7 +76,6 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
   const [keysSeen, setKeysSeen] = useState(pageKeys);
   if (keysSeen !== pageKeys) { setKeysSeen(pageKeys); setActive(null); setAllRefs(null); }
   const motion = useSettings((s) => s.motion);
-  const ref = useRef<HTMLElement>(null);
 
   useEffect(() => {
     let live = true;
@@ -92,7 +92,6 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
   // the words that name the places, marked in the text (only the chosen place's while one is chosen)
   useEffect(() => { onMarks(list?.length ? placeMarks(list, active ?? undefined) : null); }, [list, active, onMarks]);
   useEffect(() => () => onMarks(null), [onMarks]);
-  useEffect(() => { ref.current?.focus({ preventScroll: true }); }, []);
 
   // the view glides from one page's places to the next
   const target = useMemo(() => (base && list ? fit(base, list.map((p) => project(base, p.place.lon, p.place.lat))) : null), [base, list]);
@@ -151,11 +150,7 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
   const shown = useMemo(() => (list && byCount ? [...list].sort((a, b) => b.n - a.n) : list), [list, byCount]);
 
   return (
-    <aside ref={ref} className={rs.panel} aria-label="Places on this page" tabIndex={-1} onKeyDown={(e) => { if (e.key === "Escape") onClose(); }}>
-      <div className={rs.panelHead}>
-        <h2 className={styles.title}>Places on this page</h2>
-        <button type="button" className={rs.x} onClick={onClose} aria-label="Close places">×</button>
-      </div>
+    <SidePanel label="Places on this page" onClose={onClose} focusKey title="Places on this page" titleClass={styles.title} closeLabel="Close places">
 
       {base && view && (
         <div ref={setMapBox} className={styles.map} data-empty={list && !list.length ? "" : undefined} data-many={list && list.length > 20 ? "" : undefined}>
@@ -221,6 +216,6 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
 
       <p className={rs.fine}>Names found from GLAUx&apos;s analysis of the words, matched to Pleiades places as on the Periplus map.
         A hollow number means the match was made automatically and has not been checked by hand. Choose a place to mark only its words.</p>
-    </aside>
+    </SidePanel>
   );
 }

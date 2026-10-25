@@ -13,6 +13,7 @@ import { loadSyntax, packForms, phraseOf, readSentence, roleOf, ROLES, sentenceO
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Reader.module.css";
 import ss from "./Sentence.module.css";
+import { SidePanel } from "./Panel";
 
 /** Words on screen to mark: by passage reference and place among the passage's words. */
 export interface SentenceMarks { sentence: { u: string; i: number }[]; phrase: { u: string; i: number }[]; word: { u: string; i: number }[] }
@@ -44,7 +45,6 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
   onNotebook?: (from: string, to: string, grc: string) => void;
 }) {
   const [data, setData] = useState<Ready | { error: string } | null>(null);
-  const ref = useRef<HTMLElement>(null);
   useEffect(() => {
     let live = true;
     Promise.all([loadWordPack(work), loadSyntax(work)]).then(([pack, syn]) => {
@@ -55,7 +55,6 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
     }, (e: Error) => { if (live) setData({ error: e.message }); });
     return () => { live = false; };
   }, [work, doc]);
-  useEffect(() => { ref.current?.focus({ preventScroll: true }); }, []);
 
   // the sentence of the word asked about (or the one stepped to)
   const asked = useMemo(() => {
@@ -127,12 +126,8 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
 
   const total = data && !("error" in data) ? data.syn.raw.s.length : 0;
   return (
-    <aside ref={ref} className={`${styles.panel} ${ss.panel}`} aria-label="How the sentence is built" tabIndex={-1}
-      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
-      <div className={styles.panelHead}>
-        <h2 className={ss.title}>How the sentence is built</h2>
-        <button type="button" className={styles.x} onClick={onClose} aria-label="Close the sentence">×</button>
-      </div>
+    <SidePanel className={`${styles.panel} ${ss.panel}`} label="How the sentence is built" onClose={onClose} focusKey
+      title="How the sentence is built" titleClass={ss.title} closeLabel="Close the sentence">
       {!data && <p className="muted">Reading the sentence…</p>}
       {data && "error" in data && <p className="muted">{data.error}</p>}
       {data && !("error" in data) && !s && <p className="muted">This word could not be matched with GLAUx&apos;s analysis here (its edition may differ from the one on screen).</p>}
@@ -175,6 +170,6 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
           <p className={styles.fine}>Sentence analysis: GLAUx (Keersmaekers 2021), CC BY-SA 4.0, in the scheme of the Ancient Greek Dependency Treebank.</p>
         </>
       )}
-    </aside>
+    </SidePanel>
   );
 }
