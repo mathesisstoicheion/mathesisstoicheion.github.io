@@ -6,7 +6,6 @@ import ReportBugLink from "@/components/ReportBugLink";
 import NotFoundSearch from "@/components/NotFoundSearch";
 import { AREAS, FORUM_OPEN } from "@/config/areas";
 import styles from "./not-found.module.css";
-import { LOST_PAGE } from "@/data/pieces";
 
 export const metadata: Metadata = { title: "Not found", robots: { index: false } };
 
@@ -20,7 +19,7 @@ export default function NotFound() {
     <Page>
       {/* data-not-found: an address that leads nowhere is not a page to carry on with (components/Resume.tsx) */}
       <div className={`wrap ${styles.page}`} data-not-found="">
-        <PageHead bare path={[{ label: "Not found" }]} inscription="ΥΔ" inscriptionSays="ΥΔ, 404 in Greek numerals" title="This page has not survived" greek="ἀπόλωλε" piece={LOST_PAGE}
+        <PageHead bare path={[{ label: "Not found" }]} inscription="ΥΔ" inscriptionSays="ΥΔ, 404 in Greek numerals" title="This page has not survived" greek="ἀπόλωλε"
           purpose={<>The address may be mistyped, or the page may have moved. You are in good company: Aeschylus wrote an estimated
             70 to 90 plays, and <Link href="/author/tlg0085" transitionTypes={["page-turn"]}>seven survive</Link>.</>}
           action={<NotFoundSearch />}>

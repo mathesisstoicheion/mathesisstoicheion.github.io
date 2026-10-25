@@ -1,25 +1,17 @@
 /* The library, set as the catalogue at the back of an old edition (redesign SPEC.md 4.2, decision 11; the sample's
    catalogue): hairline rules between entries, authors in small capitals or in the text face, titles in italic, numbers and
-   kinds in red, the plate of whatever is pointed at in the margin at the left. Nothing moves but the ink-in. */
+   kinds in red. No photographs (the owner, 2026-10-25): the list is for finding something to read. Nothing moves but the
+   ink-in. */
 
 .error { color: var(--rubric); padding-block: 40px; }
 
 /* ---------------------------------------------------------------- the catalogue's frame (the famous books and every work):
-   the plate in the margin, sticky beside the list; then the list; then (A to Z) the rail of letters */
-.cat { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 0 clamp(32px, 4.5vw, var(--space-7)); align-items: start; }
-.cat[data-rail] { grid-template-columns: 250px minmax(0, 1fr) var(--space-6); }
-.margin { position: sticky; top: var(--space-5); align-self: start; }
-.margin :global(.plate-margin) figcaption { min-height: 8.5em; }
+   the list; then (A to Z) the rail of letters */
+.cat { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 clamp(32px, 4.5vw, var(--space-7)); align-items: start; }
+.cat[data-rail] { grid-template-columns: minmax(0, 1fr) var(--space-6); }
 .list { min-width: 0; display: grid; align-content: start; }
-@media (max-width: 1100px) {
-  .cat { grid-template-columns: 210px minmax(0, 1fr); }
-  .cat[data-rail] { grid-template-columns: 210px minmax(0, 1fr) var(--space-6); }
-}
-/* phones: the margin gives way to the small pictures in the rows */
 @media (max-width: 760px) {
-  .cat { grid-template-columns: minmax(0, 1fr); }
-  .cat[data-rail] { grid-template-columns: minmax(0, 1fr) var(--space-6); column-gap: var(--space-3); }
-  .margin { display: none; }
+  .cat[data-rail] { column-gap: var(--space-3); }
 }
 
 /* ---------------------------------------------------------------- six famous books (FamousBooks.tsx) */
@@ -41,7 +33,6 @@
 .book:hover::before, .book:focus-visible::before { transform: scaleY(1); }
 .book:focus-visible { outline-offset: 4px; }
 .bookNo { font: 400 1.05rem / 1 var(--f-title); color: var(--ink-3); }
-.bookPic { display: none; }
 .bookText { display: grid; min-width: 0; }
 .au { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-2); }
 .ti { font: italic 400 var(--step-2) / 1.2 var(--f-body); margin: 2px 0; transition: color 0.5s var(--ease); }
@@ -49,23 +40,16 @@
 .about { margin-top: 6px; font-size: var(--step--1); line-height: 1.45; color: var(--ink-2); max-width: 36em; }
 .bookGo { font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; transition: color 0.5s var(--ease); }
 .book:hover .ti, .book:hover .bookGo { color: var(--rubric); }
-/* the book whose plate is in the margin is lit too; a phone has no margin plate, so there it is lit only while touched */
-@media (min-width: 761px) {
-  .book[data-lit]::before { transform: scaleY(1); }
-  .book[data-lit] .ti, .book[data-lit] .bookGo { color: var(--rubric); }
-}
 @media (max-width: 760px) {
   .famous { margin-top: var(--space-6); }
-  .book { grid-template-columns: 64px minmax(0, 1fr); align-items: center; }
-  .bookNo { display: none; }
-  .bookPic { display: block; width: 64px; height: 84px; object-fit: cover; border: 1px solid var(--rule); background: var(--bg-2); }
+  .book { grid-template-columns: 2rem minmax(0, 1fr); }
   .bookGo { grid-column: 2; font-size: var(--step--2); }
   .book::before { left: -10px; }
   .ti { font-size: var(--step-1); }
 }
 
 /* ---------------------------------------------------------------- where to begin (BeginHere.tsx) */
-.begin { margin-top: var(--space-7); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
+.begin { margin: 0 0 var(--space-5); border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule); }
 .begin summary {
   position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 14px;
   padding: var(--space-4) 40px var(--space-4) 0; min-height: var(--tap);
@@ -114,25 +98,14 @@
 .title { font: 400 var(--step-3) / 1.1 var(--f-body); }
 .total { font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: lining-nums tabular-nums; }
 
-/* the order, always in view (the switch of decision 11), and the button for the other filters */
+/* the order, always in view (the switch of decision 11), and the filters under it, all open */
 .bar { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-3); }
-.moreBtn {
-  display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 9px var(--space-3);
-  font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
-  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
-  transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
-}
-.moreBtn:hover, .moreBtn[aria-expanded="true"] { color: var(--rubric); border-color: var(--rubric); }
-.moreBtn::after { content: "+"; font: 400 var(--step-0) / 1 var(--f-body); color: var(--rubric); }
-.moreBtn[aria-expanded="true"]::after { content: "−"; }
 @media (max-width: 760px) {
   /* the four orders two by two, each a finger's width */
   .order { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .order > button { padding-inline: 6px; letter-spacing: 0.1em; }
-  .moreBtn { width: 100%; justify-content: center; }
 }
-.filters { display: none; }
-.filters[data-open] { display: grid; gap: var(--space-4); padding: var(--space-4) 0; border-block: 1px solid var(--rule); }
+.filters { display: grid; gap: var(--space-4); padding: var(--space-4) 0; border-block: 1px solid var(--rule); }
 .selects { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); }
 .selects select { font: inherit; font-size: var(--step--1); color: var(--ink); padding: var(--space-2) var(--space-6) var(--space-2) 10px; width: 11rem; }
 .selects select[data-set] { border-color: var(--rubric); color: var(--rubric); }
@@ -167,12 +140,6 @@
 }
 
 /* by kind: the kinds as a book's contents, run on in one paragraph, each a link to its part of the list */
-.contents { display: flex; flex-wrap: wrap; gap: var(--space-1) 0; padding-block: var(--space-2); font-size: var(--step--1); color: var(--ink-2); }
-.contents a { text-decoration: none; padding: var(--space-1) 0; }
-.contents a:not(:last-child)::after { content: "·"; margin-inline: 10px; color: var(--ink-3); }
-.contents a:hover { color: var(--rubric); }
-.contents small { color: var(--ink-3); font-size: var(--step--2); font-variant-numeric: lining-nums tabular-nums; }
-@media (pointer: coarse) { .contents a { padding-block: 11px; } }
 
 /* ---------------------------------------------------------------- the list */
 .group { scroll-margin-top: var(--space-4); }
@@ -185,12 +152,8 @@
 /* a letter of the A to Z: large, in red */
 .groupHead[data-letter] .groupName { font: 400 2.2rem / 1 var(--f-body); letter-spacing: 0; text-transform: none; }
 .groupHead[data-best] .groupName { color: var(--rubric); }
-.kindPic { display: none; }
 @media (max-width: 760px) {
   .groupHead { align-items: center; }
-  .groupHead[data-kind-head] { display: grid; grid-template-columns: 48px minmax(0, 1fr); column-gap: var(--space-3); row-gap: 2px; }
-  .kindPic { display: block; grid-row: span 2; width: 48px; height: 62px; object-fit: cover; border: 1px solid var(--rule); background: var(--bg-2); }
-  .groupHead[data-kind-head] .groupCount { margin-left: 0; }
   .groupHead[data-letter] .groupName { font-size: 1.9rem; }
 }
 
@@ -199,9 +162,9 @@
 .author[data-selected] { background: color-mix(in srgb, var(--rubric) 8%, transparent); }
 .authorHead { margin: 0; font: inherit; }
 .toggle {
-  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto auto; grid-template-areas: "name pic sign" "latin pic sign" "desc pic sign" "facts pic sign";
+  position: relative; display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "name sign" "latin sign" "desc sign" "facts sign";
   align-items: center; gap: 1px var(--space-4); width: 100%; padding: 14px 0; margin: 0; text-align: left; color: var(--ink);
-  background: none; border: 0; border-radius: var(--radius); cursor: pointer;
+  background: none; border: 0; border-radius: var(--radius); cursor: pointer; text-decoration: none;
 }
 /* the sample's red bar beside the entry pointed at */
 .toggle::before {
@@ -221,15 +184,17 @@
   grid-area: facts; display: flex; flex-wrap: wrap; gap: 0 14px; margin-top: var(--space-1);
   font: 500 var(--step--2) / 1.5 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); font-variant-numeric: lining-nums tabular-nums;
 }
-.authorPic { display: none; }
-/* a red plus, a minus once open */
+/* a red plus, a minus once open; an arrow for an author with one work, whose row opens it in the reader */
 .sign { grid-area: sign; width: 1rem; text-align: center; font: 400 var(--step-1) / 1 var(--f-body); color: var(--rubric); }
 .sign::before { content: "+"; }
 .author[data-open] .sign::before { content: "−"; }
+.sign.signGo { width: auto; }
+.sign.signGo::before { content: "→"; }
+/* the one work an author has here, named in the row that opens it */
+.onlyTitle { font: italic 400 var(--step-0) / 1.4 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink); }
 @media (max-width: 760px) {
   .toggle { min-height: var(--tap); padding-block: var(--space-3); }
   .toggle::before { left: -10px; }
-  .authorPic { display: block; grid-area: pic; width: 44px; height: 58px; object-fit: cover; border: 1px solid var(--rule); background: var(--bg-2); }
   .name { font-size: var(--step-1); }
 }
 /* the works, inked in beneath the name (globals.css, .enter) */
@@ -276,8 +241,6 @@
 .meter[data-level="3"] .bars i { background: var(--ink-2); }
 .meter[data-level="3"] .bars i:nth-child(3) { background: var(--rubric); }
 
-/* the page's list of plates and their credits (components/plate/Plate.tsx, PlateList) */
-.plates { margin-top: var(--space-7); }
 
 /* ---------------------------------------------------------------- a work as other pages list it (author pages) */
 .works { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--ink); }
@@ -314,7 +277,7 @@
 @media (pointer: coarse) { .mineBtn { display: inline-flex; align-items: center; min-height: var(--tap); } }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
-  .path ol b, .contents a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .path ol b { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
   .workTitle::after { content: "\00a0→"; color: var(--rubric); }
   .go { opacity: 1; }
 }

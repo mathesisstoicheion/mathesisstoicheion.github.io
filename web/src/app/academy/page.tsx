@@ -25,7 +25,7 @@ export default function AcademyPage() {
   return (
     <Page>
       {/* the next step (the day's session, or the next lesson) is the door's main action, under its name */}
-      <Door id="study" plate="douris-school-cup" why="A school: lessons in writing, reading and music, painted on a cup." action={<AcademyProgress />}>
+      <Door id="study" action={<AcademyProgress />}>
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="reading-title">
             <div className={styles.trackHead}>

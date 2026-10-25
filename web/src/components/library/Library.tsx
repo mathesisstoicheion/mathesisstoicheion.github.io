@@ -4,20 +4,16 @@ import OrigTitle from "./OrigTitle";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Fragment, useDeferredValue, useEffect, useMemo, useState, type ReactNode } from "react";
-import { create } from "zustand";
 import { loadCatalog, fold, greekEditions, hasTranslation, type CatalogIndex, type CatAuthor, type CatWork } from "@/lib/catalog";
 import { loadWorksMeta, PERIODS, periodOf, centuries, DATE_NOTE, type WorkMeta } from "@/lib/works-meta";
 import { commonShare, loadDifficulty, VOCAB_BANDS } from "@/lib/difficulty";
 import { loadAuthorsMeta, loadAuthorNames, type AuthorMeta, type AuthorNames } from "@/lib/authors-meta";
 import { BEST_KNOWN } from "@/data/best-known";
 import { entryLine } from "@/data/author-lines";
-import { picByRef, picRef, plateNo, KIND_PLATES } from "@/data/library-plates";
-import { photo } from "@/lib/photos";
 import { undated } from "@/lib/bc-ad";
 import { recentPositions, shownAt } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
-import MarginPlate from "@/components/plate/MarginPlate";
 import { AZRail } from "./AZList";
 import { bestMatch, nameMatch } from "./az";
 import { authorKind, kindKey, KIND_ORDER, OTHER_KIND, workKinds } from "./kinds";
@@ -42,13 +38,6 @@ const n = (x: number) => x.toLocaleString("en-GB");
 /** The letter a name is filed under: its first Latin letter, accents ignored. */
 const initial = (s: string) => fold(s).replace(/^[^a-z]+/, "").charAt(0).toUpperCase() || "#";
 const byName = (a: string, b: string) => fold(a).localeCompare(fold(b), "en");
-
-/**
- * What the plate in the margin shows: the row last pointed at (or moved to with the keyboard), or, while the catalogue is
- * read by kind, the kind whose heading has just come up the screen. Kept apart from the list, so that pointing along the
- * rows draws only the plate again, never the whole catalogue.
- */
-const usePointed = create<{ ref: string | null; point: (ref: string | null) => void }>((set) => ({ ref: null, point: (ref) => set({ ref }) }));
 
 /** The text with the parts that match a search marked, accents and capitals ignored (as the search itself does). */
 export function marked(text: string, query: string): ReactNode {
@@ -118,10 +107,10 @@ interface Group { key: string; label: string; short: string; kind?: string; rows
 /**
  * Every work in the library, set as the catalogue at the back of a printed edition (redesign decision 11): by kind of
  * writing (Epic, Lyric and elegy, Drama…), authors A to Z inside each, or one plain A to Z list, or titles A to Z, or by
- * period. On a computer, the photograph of whatever is pointed at stands as a plate in the margin; on a phone, the kinds and
- * the authors with a portrait carry a small picture instead, credited in the page's list of plates. The search and what to
- * show (All, With English, Greek only) stand at the top of the page, under its title (LibSearch.tsx), and reach this list
- * through useLibQuery; the other filters wait behind one button.
+ * period. The search and what to show (All, With English, Greek only) stand at the top of the page, under its title
+ * (LibSearch.tsx), and reach this list through useLibQuery; the other filters stand open above the list (the owner,
+ * 2026-10-25: "Get rid the filters button, and just make all the category buttons and such visible"). No photographs: the
+ * list is for finding something to read.
  */
 export default function Library() {
   const params = useSearchParams();
@@ -159,7 +148,6 @@ export default function Library() {
   // against that, for the present search and filters only (`ctx`); "Open every author" turns the starting point round.
   const [allOpen, setAllOpen] = useState(false);
   const [flips, setFlips] = useState<{ ctx: string; ids: Set<string> }>({ ctx: "", ids: new Set() });
-  const [more, setMore] = useState(false);                        // the filters shown
   const query = useDeferredValue(q);
   useEffect(() => {
     if (!ready) return;
@@ -336,22 +324,7 @@ export default function Library() {
     });
   }, [listed, selected]);
 
-  // by kind: the plate in the margin follows the kind whose heading comes up past the top third of the screen
-  const point = usePointed((s) => s.point);
-  useEffect(() => {
-    if (sort !== "kind" || !listed || typeof IntersectionObserver === "undefined") return;
-    const io = new IntersectionObserver((es) => {
-      for (const e of es) if (e.isIntersecting) point(`k:${(e.target as HTMLElement).dataset.kind}`);
-    }, { rootMargin: "-25% 0px -70% 0px" });
-    document.querySelectorAll<HTMLElement>("[data-kind-head]").forEach((h) => io.observe(h));
-    return () => io.disconnect();
-  }, [sort, listed, groups, point]);
-  // the plate first shown: the first row's
-  const firstRow = groups[0]?.rows?.[0], firstTitle = groups[0]?.titles?.[0];
-  const firstRef = firstRow ? picRef(null, firstRow.a.id, firstRow.kind) : firstTitle ? picRef(firstTitle.w.id, firstTitle.a.id, kindOf(firstTitle.w)) : `k:${OTHER_KIND}`;
-
   const filtering = !!query.trim() || tr !== "all" || !!period || !!dialect || !!vocab;
-  const active = (family ? 1 : 0) + (period ? 1 : 0) + (dialect ? 1 : 0) + (vocab ? 1 : 0);
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
@@ -365,16 +338,13 @@ export default function Library() {
         <h2 id="library-list-h" className={styles.title}>Every work in the library</h2>
         <span className={styles.total}>{idx ? (narrowed ? `${n(shown.works)} of ${n(total.works)} works` : `${n(total.works)} works`) : ""}</span>
       </header>
-      {/* the order, always in view (decision 11's switch: by kind, or one plain A to Z list), and the other filters behind one button */}
+      {/* the order (decision 11's switch: by kind, or one plain A to Z list) and the filters, all in view */}
       <div className={styles.bar}>
         <div className={`segmented ${styles.order}`} role="radiogroup" aria-label="Order">
           {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
         </div>
-        <button type="button" className={styles.moreBtn} aria-expanded={more} aria-controls="library-filters" onClick={() => setMore(!more)}>
-          Filters{active ? ` (${active} on)` : ""}
-        </button>
       </div>
-      <div id="library-filters" className={`${styles.filters} enter`} data-open={more ? "" : undefined}>
+      <div id="library-filters" className={styles.filters}>
         <div className={styles.selects} role="group" aria-label="More filters">
           <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
             <option value="">Every period</option>
@@ -436,28 +406,13 @@ export default function Library() {
         </p>
       )}
 
-      {/* by kind: the kinds as a book's contents, each a link to its part of the list */}
-      {listed && sort === "kind" && groups.length > 1 && (
-        <nav className={styles.contents} aria-label="Kinds of writing in the catalogue">
-          {groups.filter((g) => g.kind).map((g) => (
-            <a key={g.key} href={`#lib-${g.key}`} onClick={(e) => { e.preventDefault(); jump(g.key, false); }}>
-              {g.label} <small>{n(g.rows!.reduce((s, r) => s + r.works.length, 0))}</small>
-            </a>
-          ))}
-        </nav>
-      )}
-
       {listed && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
 
-      {/* the catalogue: the plate in the margin at its left (on a computer), the list, and the rail of letters at its right
-          (none by kind or by period) */}
+      {/* the catalogue: the list, and the rail of letters at its right (none by kind or by period) */}
       {listed && groups.length > 0 && (
         <div className={styles.cat} data-rail={railOn ? "" : undefined}>
-          <aside className={styles.margin} aria-label="The plate of the work pointed at"><CatalogueMargin first={firstRef} /></aside>
           {/* arrow keys move between the authors' rows; Home and End go to the first and the last */}
           <div className={styles.list}
-            onPointerOver={(e) => { const r = (e.target as HTMLElement).closest<HTMLElement>("[data-plate]"); if (r) point(r.dataset.plate!); }}
-            onFocus={(e) => { const r = (e.target as HTMLElement).closest<HTMLElement>("[data-plate]"); if (r) point(r.dataset.plate!); }}
             onKeyDown={(e) => {
               const t = e.target as HTMLElement;
               if (!t.matches?.("[data-author-row]") || !["ArrowDown", "ArrowUp", "Home", "End"].includes(e.key)) return;
@@ -471,20 +426,19 @@ export default function Library() {
             }}>
             {groups.map((g) => (
               <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
-                <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1} data-plate={g.kind ? `k:${g.kind}` : undefined}
-                  data-kind-head={g.kind ? "" : undefined} data-kind={g.kind} data-letter={!g.kind && sort !== "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>
-                  {g.kind && <Mini pic={KIND_PLATES[g.kind]?.pic} className={styles.kindPic} />}
+                <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1}
+                  data-kind={g.kind} data-letter={!g.kind && sort !== "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>
                   <span className={styles.groupName}>{g.label}</span>
                   {g.kind && <span className={styles.groupCount}>{n(g.rows!.reduce((s, r) => s + r.works.length, 0))} works · {n(g.rows!.length)} {g.rows!.length === 1 ? "author" : "authors"}</span>}
                 </h3>
                 {g.rows?.map((r) => (
                   <AuthorRow key={r.key} r={r} desc={whoLine(r, who[r.a.id]?.desc, meta, kinds)} grc={names[r.a.id]?.grc}
                     aka={query.trim() && !fold(r.a.name).includes(fold(query.trim())) ? alias(r.a.id, fold(query.trim())) : null} open={isOpen(r)} onToggle={() => toggle(r.key)}
-                    selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} kinds={kinds} />
+                    selected={r.a.id === selected} query={query} meta={meta} diff={diff} reading={reading} />
                 ))}
                 {g.titles && (
                   <ul className={`${styles.rows} ${styles.titleRows}`}>
-                    {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} d={diff[w.id]} query={query} at={reading.get(w.id)} plate={picRef(w.id, a.id, kindOf(w))} />)}
+                    {g.titles.map(({ w, a }) => <Title key={w.id} w={w} by={a} meta={meta[w.id]} d={diff[w.id]} query={query} at={reading.get(w.id)} />)}
                   </ul>
                 )}
               </section>
@@ -496,21 +450,6 @@ export default function Library() {
       )}
     </section>
   );
-}
-
-/** The plate in the catalogue's margin: the picture of the row last pointed at, or of the first row. */
-function CatalogueMargin({ first }: { first: string }) {
-  const ref = usePointed((s) => s.ref) ?? first;
-  const p = picByRef(ref);
-  return <MarginPlate id={p.pic} n={plateNo(p.pic)} why={p.why} />;
-}
-
-/** A small picture in a row, for phones, where the margin has no room (credited in the page's list of plates). */
-function Mini({ pic, className }: { pic?: string; className?: string }) {
-  const p = pic ? photo(pic) : undefined;
-  if (!p || !pic) return null;
-  // eslint-disable-next-line @next/next/no-img-element
-  return <img className={className} src={p.width > 320 ? `/images/w320/${p.file}` : `/images/${p.file}`} alt="" width={64} height={84} loading="lazy" decoding="async" data-photo={pic} />;
 }
 
 /**
@@ -544,13 +483,13 @@ function VocabMeter({ pct }: { pct: number }) {
 }
 
 /** One work in the list: its title, Greek title, and what it offers, the whole row a link into the reader. */
-function Title({ w, by, meta, d, query = "", best = false, at, plate }: { w: CatWork; by?: CatAuthor; meta?: WorkMeta; d?: [number, number]; query?: string; best?: boolean; at?: string; plate: string }) {
+function Title({ w, by, meta, d, query = "", best = false, at }: { w: CatWork; by?: CatAuthor; meta?: WorkMeta; d?: [number, number]; query?: string; best?: boolean; at?: string }) {
   const grc = greekEditions(w)[0];
   const tr = hasTranslation(w);
   const common = commonShare(d);
   return (
     <li>
-      <Link href={at ? `/read?w=${w.id}&at=${encodeURIComponent(at)}` : readHref(w)} transitionTypes={["page-turn"]} className={styles.row} data-plate={plate}>
+      <Link href={at ? `/read?w=${w.id}&at=${encodeURIComponent(at)}` : readHref(w)} transitionTypes={["page-turn"]} className={styles.row}>
         <span className={styles.rowTitle}>
           <span className={styles.t}>{marked(w.title, query)}</span>
           {grc?.label && grc.label !== w.title && <span className={styles.gr} lang="grc">{marked(grc.label, query)}</span>}
@@ -576,9 +515,9 @@ function Title({ w, by, meta, d, query = "", best = false, at, plate }: { w: Cat
  * The row says who they were (Wikidata's one-line description), when, and how many works the library holds;
  * opened, it lists the works, each a link into the reader, and then a link to the author's own page.
  */
-function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, diff, reading, kinds }: {
+function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, diff, reading }: {
   r: Row; desc?: string; grc?: string; aka: string | null; open: boolean; onToggle: () => void; selected: boolean; query: string;
-  meta: Record<string, WorkMeta>; diff: Record<string, [number, number]>; reading: Map<string, string>; kinds: Map<string, string>;
+  meta: Record<string, WorkMeta>; diff: Record<string, [number, number]>; reading: Map<string, string>;
 }) {
   const all = r.a.works.length, english = r.a.works.filter(hasTranslation).length;
   const panel = `works-${r.key.replace(/[^\w-]/g, "-")}`;
@@ -587,12 +526,9 @@ function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, d
   const rank = (w: CatWork) => (reading.has(w.id) ? 0 : w.id === best ? 1 : 2);
   const ordered = [...r.works].sort((x, y) => rank(x) - rank(y));
   const withEn = ordered.filter(hasTranslation), greekOnly = ordered.filter((w) => !hasTranslation(w));
-  const item = (w: CatWork) => <Title key={w.id} w={w} meta={meta[w.id]} d={diff[w.id]} query={query} best={w.id === best} at={reading.get(w.id)} plate={picRef(w.id, r.a.id, kinds.get(w.id) ?? r.kind)} />;
-  const own = picRef(null, r.a.id, r.kind);
-  return (
-    <div id={r.anchor ? `author-${r.a.id}` : undefined} className={styles.author} data-selected={selected ? "" : undefined} data-open={open ? "" : undefined}>
-      <h4 className={styles.authorHead}>
-        <button type="button" className={styles.toggle} aria-expanded={open} aria-controls={panel} onClick={onToggle} data-author-row="" data-plate={own}>
+  const item = (w: CatWork) => <Title key={w.id} w={w} meta={meta[w.id]} d={diff[w.id]} query={query} best={w.id === best} at={reading.get(w.id)} />;
+  const head = (
+    <>
           <span className={styles.name}>
             {marked(r.a.name, query)}
             {grc && <span className={styles.nameGr} lang="grc"> {marked(grc, query)}</span>}
@@ -602,14 +538,32 @@ function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, d
           {desc && <span className={styles.desc}>{desc}</span>}
           <span className={styles.facts}>
             {r.from !== null && <span title={DATE_NOTE}>{centuries(r.from, r.to)}</span>}
-            <span>{r.works.length < all ? `${n(r.works.length)} of ${n(all)} works` : `${n(all)} ${all === 1 ? "work" : "works"}`}</span>
+            {r.works.length === 1 ? <span className={styles.onlyTitle}>{marked(r.works[0].title, query)}</span>
+              : <span>{r.works.length < all ? `${n(r.works.length)} of ${n(all)} works` : `${n(all)} works`}</span>}
             {english > 0 && <span>{english === all ? (all === 1 ? "with English" : "all with English") : `${n(english)} with English`}</span>}
           </span>
-          {own.startsWith("a:") && <Mini pic={picByRef(own).pic} className={styles.authorPic} />}
-          <span className={styles.sign} aria-hidden="true" />
-        </button>
+    </>
+  );
+  // an author with one work here: the row opens it in the reader at once, one click from the list (the owner, 2026-10-25:
+  // "Clicking on the list to choose work should only be one or 2 clicks"); with more, the row opens to show them
+  const only = r.works.length === 1 ? r.works[0] : null;
+  return (
+    <div id={r.anchor ? `author-${r.a.id}` : undefined} className={styles.author} data-selected={selected ? "" : undefined} data-open={open && !only ? "" : undefined}>
+      <h4 className={styles.authorHead}>
+        {only ? (
+          <Link href={reading.has(only.id) ? `/read?w=${only.id}&at=${encodeURIComponent(reading.get(only.id)!)}` : readHref(only)} transitionTypes={["page-turn"]}
+            className={styles.toggle} data-author-row="" aria-label={`${r.a.name}: read ${only.title}`}>
+            {head}
+            <span className={`${styles.sign} ${styles.signGo}`} aria-hidden="true" />
+          </Link>
+        ) : (
+          <button type="button" className={styles.toggle} aria-expanded={open} aria-controls={panel} onClick={onToggle} data-author-row="">
+            {head}
+            <span className={styles.sign} aria-hidden="true" />
+          </button>
+        )}
       </h4>
-      <div id={panel} className={`${styles.worksPanel} enter`} hidden={!open}>
+      {!only && <div id={panel} className={`${styles.worksPanel} enter`} hidden={!open}>
         {open && (
           <>
             {/* the works with English beside the Greek come first, under a heading of their own, when an author has both */}
@@ -626,7 +580,7 @@ function AuthorRow({ r, desc, grc, aka, open, onToggle, selected, query, meta, d
             </Link>
           </>
         )}
-      </div>
+      </div>}
     </div>
   );
 }

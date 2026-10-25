@@ -155,9 +155,9 @@ export default function CreditsPage() {
 
         <h2 id="pictures">Pictures</h2>
         <p>
-          Every picture on the site is a colour photograph of a real object, never redrawn or tinted, and each is credited where it is
-          shown: under a page&apos;s plate, at the foot of the library, beside an article in the Painted Stoa. All ornament (the rules,
-          frames and figures) is drawn by this site&apos;s own code.
+          Every picture on the site is a colour photograph of a real object, never redrawn or tinted, shown only where it teaches
+          something about the page it is on (an article in the Painted Stoa, the finds of the Kerameikos), and credited where it is
+          shown. All ornament (the rules, frames and figures) is drawn by this site&apos;s own code.
         </p>
         <p>
           Every picture comes from a collection that states its licence, and the licence is copied from that record by the script that
@@ -182,10 +182,10 @@ export default function CreditsPage() {
           </ul>
         </details>
 
-        <h2 id="plates">The plate on each page</h2>
+        <h2 id="plates">Plates of sculpture</h2>
         <p>
-          Each page opens with its own plate: a photograph of an ancient work, most of them sculpture, numbered Plate I, with its
-          credit printed beneath it. Most are from The Metropolitan Museum of Art&apos;s Open Access programme (CC0), their titles, dates
+          Until October 2026 each page opened with its own plate, a photograph of an ancient work, most of them sculpture. Pages
+          now show photographs only where they teach, but these keep their credits here. Most are from The Metropolitan Museum of Art&apos;s Open Access programme (CC0), their titles, dates
           and places copied from the museum&apos;s records by <code>web/scripts/fetch-images.ts</code>; the others are among the pictures above.
         </p>
         <details className={styles.fold}>

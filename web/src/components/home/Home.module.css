@@ -3,14 +3,13 @@
    of the day as a two-language spread; the Contents; the credits and the colophon. */
 
 /* ---- the title page ---- */
-.titlePage { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: var(--space-7); align-items: end; }
+.titlePage { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: var(--space-7); align-items: end; }
 .kicker { display: flex; gap: 14px; align-items: center; color: var(--ink-2); }
 .kicker::before { content: ""; width: 28px; height: 1px; background: var(--rubric); flex: none; }
 .title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 22px 0 26px; }
 .title em { font-style: italic; color: var(--rubric); }
 .lede { font-size: var(--step-1); max-width: 30em; color: var(--ink-2); margin: 0 0 30px; }
 .btns { display: flex; flex-wrap: wrap; gap: var(--space-3) 22px; align-items: center; }
-.titlePlate { max-width: 460px; justify-self: end; width: 100%; }
 /* the rule under the title page, drawn in red from the left as it inks in */
 .drawn { position: relative; height: 1px; }
 .drawn::after { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%; background: var(--rubric); transform-origin: left; animation: drawn 2.4s var(--ease) 0.3s backwards; }
@@ -73,13 +72,22 @@
 .en { margin-top: 22px; font: italic 400 var(--step-1) / 1.6 var(--f-body); color: var(--ink-2); }
 .en :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; font-size: 1em; }
 .gk.long { font-size: var(--step-1); }
+/* where the passage is, under its title */
+.podWhere { margin: calc(-1 * var(--space-3)) 0 var(--space-4); font: italic 400 var(--step-0) / 1.4 var(--f-body); color: var(--ink-2); }
+/* each leaf opens with a large initial in the red of the headings, as a printed text opens: the English two lines deep; the
+   Greek's first word (HomePassage.tsx marks it) with its first letter raised, so a verse line keeps its place and its number */
+.en > :first-child::first-letter {
+  float: left; font-size: 3.1em; line-height: 0.82; margin: 0.06em 0.08em 0 0; color: var(--rubric); font-style: normal;
+}
+.gk [data-initial] { display: inline-block; text-indent: 0; }
+.gk [data-initial]::first-letter { font-size: 1.9em; line-height: 0.9; color: var(--rubric); }
 .en.long { font-size: var(--step-text); }
 .hint { font-size: var(--step--1); color: var(--ink-3); margin-top: 18px; font-style: italic; }
 .hint::before { content: "☞ "; color: var(--rubric); font-style: normal; }
 .sig { margin-top: 28px; font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
 .sig a { color: var(--rubric); }
 .waiting { font-style: italic; color: var(--ink-2); padding: 20px 0; }
-.podFoot { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
+.podFoot { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
 .podFoot .about { color: var(--ink-2); max-width: 40em; }
 .podFoot .about a { color: var(--rubric); }
 
@@ -105,7 +113,6 @@
 /* ---- phones ---- */
 @media (max-width: 900px) {
   .titlePage { grid-template-columns: 1fr; align-items: start; padding-bottom: 40px; }
-  .titlePlate { max-width: 420px; justify-self: start; }
   .starts { grid-template-columns: 1fr; gap: 26px; }
   .spread { grid-template-columns: 1fr; }
   .spread::after { display: none; }

@@ -3,12 +3,14 @@
  * The Treasury: everything the reader has saved, in one place.
  * The overview is set as a book sets its contents, like the home page's (redesign SPEC.md 4.4: every page keeps what it
  * does, in the printed page's look): the nine kinds of thing kept, each with its Greek numeral, its name and what it
- * holds, a dotted leader and its count in red where a contents page has its page numbers. One opens that part below.
+ * holds, a dotted leader and its count in red where a contents page has its page numbers (TreasuryKept.tsx, at the right of
+ * the page's title, where a photograph stood until the owner's 2026-10-25 "No need for photos in the treasury"). One opens
+ * that part here, below.
  */
 import Link from "next/link";
 import { AREAS } from "@/config/areas";
-import { useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
 import { useTreasury, plural } from "./data";
 import { NotesSection, BookmarksSection, HighlightsSection, XrefsSection, RecentSection } from "./MarkSections";
 import AnthologySection from "./AnthologySection";
@@ -24,12 +26,8 @@ import { useNotebooks } from "@/lib/notebooks";
 
 export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
 
-/** the Greek numerals a contents page counts its parts with: 1 to 9 */
-const NUM = ["α´", "β´", "γ´", "δ´", "ε´", "ϛ´", "ζ´", "η´", "θ´"];
-
 export default function Treasury() {
   const params = useSearchParams();
-  const router = useRouter();
   const t = useTreasury();
   const { marks, pageNotes } = t;
   const savedPlaces = Object.keys(useSavedPlaces((s) => s.saved)).length;
@@ -37,32 +35,6 @@ export default function Treasury() {
   useEffect(() => { loadSavedPlaces(); }, []);
   const section = (params.get("s") ?? "recent") as SectionId;
 
-  const counts = useMemo(() => {
-    const k = (kind: string) => marks.filter((m) => m.kind === kind).length;
-    return {
-      notes: k("note"), anthology: k("favourite"), bookmarks: k("bookmark"), highlights: k("highlight"), xrefs: k("xref"),
-      words: Object.values(pageNotes).filter((n) => n.kind === "word").length,
-      authors: Object.values(pageNotes).filter((n) => n.kind === "author").length,
-    };
-  }, [marks, pageNotes]);
-
-  const OFFERINGS: { id: Exclude<SectionId, "recent">; label: string; n: number | null; hint: string }[] = [
-    { id: "notes", label: "Notes", n: counts.notes, hint: "on passages" },
-    { id: "anthology", label: "Anthology", n: counts.anthology, hint: "favourite passages" },
-    { id: "bookmarks", label: "Bookmarks", n: counts.bookmarks, hint: "and where you stopped" },
-    { id: "highlights", label: "Highlights", n: counts.highlights, hint: "in four colours" },
-    { id: "xrefs", label: "Cross-references", n: counts.xrefs, hint: "between passages" },
-    { id: "words", label: "Words", n: counts.words, hint: "your notes, with Word Study" },
-    { id: "authors", label: "Authors", n: counts.authors, hint: "your notes on them" },
-    { id: "places", label: "Places", n: savedPlaces, hint: "on your own map" },
-    { id: "notebooks", label: "Notebooks", n: notebooks, hint: "for research, cited" },
-  ];
-  const go = (id: SectionId) => {
-    const q = new URLSearchParams(params.toString());
-    if (id === "recent" || id === section) q.delete("s"); else q.set("s", id);
-    for (const k of ["tag", "c", "a", "nb"]) q.delete(k);
-    router.replace(`/treasury${q.size ? `?${q}` : ""}`, { scroll: false });
-  };
   const empty = t.ready && !marks.length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
 
   return (
@@ -76,23 +48,6 @@ export default function Treasury() {
           <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open the Mouseion</Link>
         </div>
       )}
-
-      <nav className={styles.offerings} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
-        <div className="sh rv"><h2>What you have kept</h2><span className="fill" /><span className="src">in nine kinds</span></div>
-        <ol className={`${styles.ogrid} rv`}>
-          {OFFERINGS.map((m, i) => (
-            <li key={m.id}>
-              <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
-                data-empty={m.n === 0 || m.n === null ? "" : undefined}>
-                <span className={styles.gn} aria-hidden="true">{NUM[i]}</span>
-                <span className={styles.offerLabel}>{m.label} <i className={styles.offerHint}>{m.hint}</i></span>
-                <span className={styles.lead} aria-hidden="true" />
-                <span className={styles.count}>{m.n === null || empty ? "·" : t.ready ? m.n.toLocaleString("en-GB") : "…"}</span>
-              </button>
-            </li>
-          ))}
-        </ol>
-      </nav>
 
       {/* the moderator's private translations: shown to the moderator alone */}
       <PrivateShelf />
