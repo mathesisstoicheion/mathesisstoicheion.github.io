@@ -70,9 +70,9 @@ export function Collection({ current, onOpen, tab, onTab }: {
 
       {tab === "shelf" ? (
         <section id="mine-shelf" role="tabpanel" aria-labelledby="mine-tab-shelf" className={styles.panel}>
-          {error && <p className={styles.error} role="alert">{error} <button type="button" className={styles.link} onClick={() => setRound(round + 1)}>Try again</button></p>}
+          {error && <p className={styles.error} role="alert">{error} <button type="button" className={`text-btn ${styles.link}`} onClick={() => setRound(round + 1)}>Try again</button></p>}
           {!rows && !error && <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
-          {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={styles.link} onClick={() => onTab("import")}>Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
+          {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={`text-btn ${styles.link}`} onClick={() => onTab("import")}>Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
           {rows && rows.length > 0 && (
             <ul className={styles.books}>
               {rows.map((r, i) => (
@@ -213,7 +213,7 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
           <span className="label">The Greek</span>
           {teiGrc ? (
             <p className={styles.file}><b>{teiGrc.name}</b> <span className={styles.quiet}>(TEI)</span>
-              <button type="button" className={styles.link} onClick={() => { setTeiGrc(null); setTeiEng(null); setUrn(undefined); setResult(null); }}>Take it away</button></p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiGrc(null); setTeiEng(null); setUrn(undefined); setResult(null); }}>Take it away</button></p>
           ) : (
             <textarea lang="grc" value={greek} onChange={(e) => { setGreek(e.target.value); setResult(null); }} rows={8} aria-label="The Greek text"
               placeholder="Paste or type the Greek. Leave a blank line between passages." spellCheck={false} />
@@ -223,15 +223,15 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
           <span className="label">The English <span className={styles.opt}>(if you have one)</span></span>
           {teiEng ? (
             <p className={styles.file}><b>{teiEng.name}</b> <span className={styles.quiet}>(TEI)</span>
-              <button type="button" className={styles.link} onClick={() => { setTeiEng(null); setResult(null); }}>Take it away</button></p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiEng(null); setResult(null); }}>Take it away</button></p>
           ) : teiGrc ? (
             <p className={styles.quiet}>With a TEI Greek text, the English comes from its own TEI file:{" "}
-              <button type="button" className={styles.link} onClick={() => engInput.current?.click()}>choose the English file</button>.</p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}>choose the English file</button>.</p>
           ) : (
             <>
               <textarea value={english} onChange={(e) => { setEnglish(e.target.value); setResult(null); }} rows={8} aria-label="The English translation"
                 placeholder="Paste the English, a blank line between passages, in the same order as the Greek." />
-              <button type="button" className={styles.link} onClick={() => engInput.current?.click()}>or choose a file</button>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}>or choose a file</button>
             </>
           )}
           <input ref={engInput} type="file" accept=".xml,.txt,text/xml,application/xml,text/plain" hidden aria-label="Choose the English file"

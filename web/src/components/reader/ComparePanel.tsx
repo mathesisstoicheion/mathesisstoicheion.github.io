@@ -50,10 +50,10 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
         {entries.slice(0, shown).map((e) => (
           <li key={`${e.d.key}-${e.j}`} className={onNotebook ? fs.withAdd : undefined}>
             {onNotebook && (
-              <button type="button" className={fs.add} onClick={() => onNotebook([{ key: e.d.key, a: e.a, b: e.b }], "this difference")}
+              <button type="button" className={`icon-btn framed ${fs.add}`} onClick={() => onNotebook([{ key: e.d.key, a: e.a, b: e.b }], "this difference")}
                 aria-label={`Add ${e.d.key} to a notebook`} title="Add to a notebook">+</button>
             )}
-            <button type="button" onClick={() => onJump(e.d)}>
+            <button type="button" className="row-btn" onClick={() => onJump(e.d)}>
               <span className={fs.ref}>{e.d.key}</span>
               <span className={fs.snip} lang="grc">{short(e.a)} ] {short(e.b)}</span>
             </button>

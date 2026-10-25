@@ -276,13 +276,13 @@ function Photos({ w, work, line, book }: { w: Witness; work: string; line: strin
         {!page && !error && <p className={styles.wait}>Opening the manuscript…</p>}
         {hint && <p className={styles.touchHint} role="status">Use two fingers to move the page</p>}
         <div className={styles.tools}>
-          <button type="button" onClick={() => turn(-1)} disabled={!page || at === 0} aria-label="Previous page">‹</button>
+          <button type="button" className="icon-btn" onClick={() => turn(-1)} disabled={!page || at === 0} aria-label="Previous page">‹</button>
           <span className={styles.folio} aria-live="polite">{page ? `f. ${page.folio}` : "…"}</span>
-          <button type="button" onClick={() => turn(1)} disabled={!page || !pages || at === pages.length - 1} aria-label="Next page">›</button>
+          <button type="button" className="icon-btn" onClick={() => turn(1)} disabled={!page || !pages || at === pages.length - 1} aria-label="Next page">›</button>
           <span className={styles.gap} />
-          <button type="button" onClick={() => viewer.current?.viewport.zoomBy(1.6)} aria-label="Zoom in">+</button>
-          <button type="button" onClick={() => viewer.current?.viewport.zoomBy(1 / 1.6)} aria-label="Zoom out">−</button>
-          <button type="button" onClick={() => viewer.current?.viewport.goHome()} aria-label="The whole page"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true"><path d="M2.5 8 8 2.5 13.5 8M4 6.8v6.7h8V6.8" /></svg></button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1.6)} aria-label="Zoom in">+</button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1 / 1.6)} aria-label="Zoom out">−</button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.goHome()} aria-label="The whole page"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true"><path d="M2.5 8 8 2.5 13.5 8M4 6.8v6.7h8V6.8" /></svg></button>
         </div>
       </div>
       {error && <p className={styles.err}>{error}</p>}

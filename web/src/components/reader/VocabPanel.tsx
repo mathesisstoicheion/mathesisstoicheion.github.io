@@ -53,7 +53,7 @@ export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
         <ol className={styles.vocab}>
           {list.map((e) => (
             <li key={e.lemma}>
-              <button type="button" onClick={() => onPick(e.lemma)}>
+              <button type="button" className="row-btn" onClick={() => onPick(e.lemma)}>
                 <span lang="grc" className={styles.vocabLemma}>{e.lemma}</span>
                 <span className={styles.vocabN}>{e.n}×{e.core ? ` · core #${e.core}` : ""}</span>
                 <span className={styles.vocabGloss}>{e.gloss === null ? "…" : e.gloss || "—"}</span>

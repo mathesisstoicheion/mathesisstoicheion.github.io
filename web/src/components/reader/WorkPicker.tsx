@@ -32,7 +32,7 @@ export default function WorkPicker({ onPick, onClose }: { onPick: (work: string)
         <ul className={styles.pickerList}>
           {results.map((r) => (
             <li key={r.id}>
-              <button type="button" onClick={() => onPick(r.id)}>
+              <button type="button" className="row-btn" onClick={() => onPick(r.id)}>
                 <span>{r.label}</span>
                 {r.gr && r.gr !== r.label && <span lang="grc" className="muted">{r.gr}</span>}
                 {r.en && <span className={styles.enBadge}>English</span>}

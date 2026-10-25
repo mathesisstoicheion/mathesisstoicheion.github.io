@@ -232,6 +232,26 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
+/* The rest of the set (the quiet desk, ticket 02: components/reader/buttons.test.ts names it): every button in the reader
+   is a .btn, a .chip, a choice in a .segmented row, or one of these three. A class of a component's own may place or
+   size one of them, never give it a look of its own, so that a new look goes on in this one place. */
+/* a sign or an icon alone (×, ‹ ›, +, play): no frame, the ink a shade quieter, red under the hand; .framed draws a
+   hairline round it. A finger's target on touch screens. */
+.icon-btn {
+  display: inline-grid; place-items: center; flex: none; min-width: 36px; height: 36px; padding: 0;
+  border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); font-size: var(--step-2); line-height: 1; cursor: pointer;
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+.icon-btn:hover:not(:disabled) { color: var(--rubric); }
+.icon-btn:disabled { opacity: 0.35; cursor: default; }
+.icon-btn.framed { border: 1px solid var(--rule); color: var(--ink); }
+.icon-btn.framed:hover:not(:disabled) { border-color: var(--rubric); }
+@media (pointer: coarse) { .icon-btn { min-width: var(--tap); min-height: var(--tap); } }
+/* a button that reads as a link, inside a line of text */
+.text-btn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* a whole entry of a list (a match, a word, a book, a passage's number among others): its list draws it */
+.row-btn { cursor: pointer; }
+
 /* fields: a line to write on, as on a printed form; a box of several lines and a drop-down keep a hairline frame */
 :where(input[type="text"], input[type="search"], input[type="email"], input[type="password"], input[type="number"], input[type="url"], input:not([type])) {
   background-color: transparent; color: var(--ink); border: 0; border-bottom: 1px solid var(--ink-3); border-radius: var(--radius); box-shadow: none;

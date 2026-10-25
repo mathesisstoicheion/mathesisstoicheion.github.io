@@ -204,8 +204,8 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
                 </button>
                 <p className={styles.meta}>{typeLabel(p.place.type)} · {p.n === 1 ? "once" : `${p.n} times`} here{p.place.checked ? "" : " · matched automatically"}</p>
                 <p className={styles.refs}>
-                  {(allRefs === p.place.id ? p.refs : p.refs.slice(0, 8)).map((r) => <button key={r} type="button" onClick={() => onJump(r)} aria-label={`Go to ${r}`}>{r}</button>)}
-                  {p.refs.length > 8 && allRefs !== p.place.id && <button type="button" className={styles.more} onClick={() => setAllRefs(p.place.id)} aria-label={`Show all ${p.refs.length} passages`}>+{p.refs.length - 8}</button>}
+                  {(allRefs === p.place.id ? p.refs : p.refs.slice(0, 8)).map((r) => <button key={r} type="button" className="row-btn" onClick={() => onJump(r)} aria-label={`Go to ${r}`}>{r}</button>)}
+                  {p.refs.length > 8 && allRefs !== p.place.id && <button type="button" className={`row-btn ${styles.more}`} onClick={() => setAllRefs(p.place.id)} aria-label={`Show all ${p.refs.length} passages`}>+{p.refs.length - 8}</button>}
                   <Link href={`/stoa/periplus?p=${p.place.id}`} transitionTypes={["page-turn"]}>On the big map →</Link>
                 </p>
               </div>

@@ -9,16 +9,11 @@
   transition: box-shadow 0.2s var(--ease);
 }
 .glass { position: absolute; left: 12px; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
-.step {
-  display: grid; place-items: center; width: 44px; height: 44px; flex: none; border: 1px solid var(--rule); border-radius: var(--radius);
-  background: transparent; color: var(--ink); cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
-}
+/* the arrows beside the box: framed .icon-btn (globals.css), a finger's size everywhere */
+.step { width: 44px; height: 44px; }
 .step svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.step:disabled { opacity: 0.35; cursor: default; }
-.step:not(:disabled):hover { color: var(--rubric); border-color: var(--rubric); }
 
 .status { margin: 0; min-height: 1.4em; font-size: var(--step--1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
-.linkBtn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .scope { display: flex; flex: none; overflow: visible; }   /* (clipped, the panel's grid would squeeze it under a long list) */
 .scope button:first-child { border-radius: var(--radius) 0 0 var(--radius); } .scope button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
 .scope button { flex: 1 1 auto; display: inline-flex; justify-content: center; gap: 6px; align-items: baseline; }
@@ -59,14 +54,10 @@
 /* a list whose lines can each be added to a notebook: the + sits at the line's end */
 .withAdd { position: relative; }
 .list .withAdd > button:last-child { padding-right: 44px; }
-/* (written with the list's own class, so the list's full-width line buttons do not stretch it) */
+/* (written with the list's own class, so the list's full-width line buttons do not stretch it) the + is a round, framed
+   .icon-btn (globals.css) */
 .list .add {
-  position: absolute; right: 6px; top: 50%; translate: 0 -50%; z-index: 1; width: 30px; height: 30px; padding: 0; display: grid; place-items: center;
-  grid-template-columns: none; border: 1px solid transparent; border-radius: var(--radius-round); background: var(--slab); color: var(--ink);
-  font-size: var(--step-sub); line-height: 1; cursor: pointer; box-shadow: var(--slab-edge);
+  position: absolute; right: 6px; top: 50%; translate: 0 -50%; z-index: 1; min-width: 30px; width: 30px; height: 30px; min-height: 0; padding: 0;
+  display: grid; place-items: center; grid-template-columns: none; border-radius: var(--radius-round); background: transparent; box-shadow: none;
+  font-size: var(--step-sub); line-height: 1;
 }
-.list .add:hover { color: var(--accent); background: var(--slab-lit); }
-.list .add:active { background: var(--field); box-shadow: var(--field-edge); }
-/* (the last line's own rule, above, would otherwise strip the + of its edge) */
-.list li:last-child .add { box-shadow: var(--slab-edge); }
-.list li:last-child .add:active { box-shadow: var(--field-edge); }

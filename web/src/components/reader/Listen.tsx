@@ -188,15 +188,15 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
       ) : (
         <>
           <div className={styles.transport}>
-            <button type="button" onClick={() => step(-1)} disabled={rowIdx === 0} aria-label="Previous passage">
+            <button type="button" className="icon-btn" onClick={() => step(-1)} disabled={rowIdx === 0} aria-label="Previous passage">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M18 6l-8 6 8 6z" /></svg>
             </button>
-            <button type="button" className={styles.play} onClick={status === "playing" ? pause : play} aria-label={status === "playing" ? "Pause" : status === "paused" ? "Resume reading" : "Read aloud"}>
+            <button type="button" className={`icon-btn ${styles.play}`} onClick={status === "playing" ? pause : play} aria-label={status === "playing" ? "Pause" : status === "paused" ? "Resume reading" : "Read aloud"}>
               {status === "playing"
                 ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" /></svg>
                 : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>}
             </button>
-            <button type="button" onClick={() => step(1)} disabled={rowIdx >= rows.length - 1} aria-label="Next passage">
+            <button type="button" className="icon-btn" onClick={() => step(1)} disabled={rowIdx >= rows.length - 1} aria-label="Next passage">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5v14M6 6l8 6-8 6z" /></svg>
             </button>
           </div>
@@ -204,7 +204,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
             <span className="label">{status === "playing" ? "Reading" : status === "paused" ? "Paused" : "Listen"}</span>
             <span className={styles.what}>{title} <b>{ref}</b></span>
           </p>
-          <button type="button" className={styles.rate} onClick={() => { const r = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; setRate(r); writePrefs({ rate: r }); }}
+          <button type="button" className={`icon-btn ${styles.rate}`} onClick={() => { const r = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; setRate(r); writePrefs({ rate: r }); }}
             aria-label={`Speed ${rate} times; change`} title="Speed">{rate}×</button>
           <select className={styles.voice} value={voice?.name} aria-label="English voice"
             onChange={(e) => { setVoiceName(e.target.value); writePrefs({ voice: e.target.value }); }}>
@@ -212,7 +212,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
           </select>
         </>
       )}
-      <button type="button" className={styles.x} onClick={close} aria-label="Stop and close">×</button>
+      <button type="button" className={`icon-btn ${styles.x}`} onClick={close} aria-label="Stop and close">×</button>
       <p className={styles.fine}>The English translation, read by your device&apos;s voice{voice && !voice.localService ? " (an online voice: the passage is sent to your browser's maker to be spoken)" : ""}. The Greek is not read aloud: no voice speaks it as it sounded.</p>
     </div>
   );

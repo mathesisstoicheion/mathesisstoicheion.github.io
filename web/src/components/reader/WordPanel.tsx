@@ -293,11 +293,11 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       style={note ? { top: note.top, left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
       onClose={onClose} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
-        {step && <button type="button" className={styles.stepBtn} onClick={() => step(-1)} aria-label="Previous word">‹</button>}
+        {step && <button type="button" className={`icon-btn ${styles.stepBtn}`} onClick={() => step(-1)} aria-label="Previous word">‹</button>}
         <div className={styles.pw} lang="grc">{word}</div>
-        {step && <button type="button" className={styles.stepBtn} onClick={() => step(1)} aria-label="Next word">›</button>}
+        {step && <button type="button" className={`icon-btn ${styles.stepBtn}`} onClick={() => step(1)} aria-label="Next word">›</button>}
         {sheet && snap !== "full" && (
-          <button type="button" className={styles.moreBtn} onClick={() => setSnap("full")} aria-label="Show all of the look-up">
+          <button type="button" className={`icon-btn ${styles.moreBtn}`} onClick={() => setSnap("full")} aria-label="Show all of the look-up">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
           </button>
         )}

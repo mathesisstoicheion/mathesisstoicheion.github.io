@@ -36,7 +36,7 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
               <Link href={`/town-hall/thread?id=${t.id}`} transitionTypes={["page-turn"]}><b>{t.title}</b></Link>
               <span className="muted">
                 {t.reply_count} {t.reply_count === 1 ? "reply" : "replies"}{t.answered_post_id ? " · answered" : ""} ·{" "}
-                <button type="button" className={styles.talkRef} onClick={() => onJump(quoteStart(t.quote!))}>{t.quote!.ref}</button>
+                <button type="button" className="text-btn" onClick={() => onJump(quoteStart(t.quote!))}>{t.quote!.ref}</button>
               </span>
             </li>
           ))}

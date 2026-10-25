@@ -83,16 +83,16 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
         <input ref={inputRef} type="search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a word or phrase in this text"
           placeholder="A word or phrase" enterKeyHint="search" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
           onKeyDown={(e) => { if (e.key === "Enter" && e.shiftKey) { e.preventDefault(); step(-1); } }} />
-        <button type="button" className={fs.step} onClick={() => step(-1)} disabled={!hits.length} aria-label="Previous match" title="Previous match (Shift+Enter)">
+        <button type="button" className={`icon-btn framed ${fs.step}`} onClick={() => step(-1)} disabled={!hits.length} aria-label="Previous match" title="Previous match (Shift+Enter)">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
         </button>
-        <button type="submit" className={fs.step} disabled={!hits.length} aria-label="Next match" title="Next match (Enter)">
+        <button type="submit" className={`icon-btn framed ${fs.step}`} disabled={!hits.length} aria-label="Next match" title="Next match (Enter)">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
         </button>
       </form>
       <p className={fs.status} role="status" aria-live="polite">
         {status}
-        {compact && hits.length > 0 && <> · <button type="button" className={fs.linkBtn} onClick={() => setCompact(false)}>Show the list</button></>}
+        {compact && hits.length > 0 && <> · <button type="button" className="text-btn" onClick={() => setCompact(false)}>Show the list</button></>}
       </p>
 
       {both && (
@@ -120,7 +120,7 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
             const ref = doc.units[h.unit].ref.join(".");
             return (
               <li key={n}>
-                <button type="button" onClick={() => go(n)} aria-current={n === i ? "true" : undefined}>
+                <button type="button" className="row-btn" onClick={() => go(n)} aria-current={n === i ? "true" : undefined}>
                   <span className={fs.ref}>{ref}</span>
                   {h.lang === "grc"
                     ? <span className={fs.snip} lang="grc">{snippet(doc.units[h.unit], h.words.filter((w) => w.unit === h.unit).map((w) => w.i), "grc", 6).map((p, j) => (p.hit ? <mark key={j}>{p.t}</mark> : p.t))}</span>

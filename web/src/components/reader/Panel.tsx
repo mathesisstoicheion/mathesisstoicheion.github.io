@@ -27,7 +27,7 @@ function PanelHead({ title, titleClass, titleId, head, headClass, headProps, clo
   return (
     <div {...headProps} className={headClass ?? styles.panelHead}>
       {head ?? <h2 id={titleId} className={titleClass}>{title}</h2>}
-      <button type="button" className={closeClass ?? styles.x} onClick={onClose} aria-label={closeLabel}>×</button>
+      <button type="button" className={`icon-btn ${closeClass ?? styles.x}`} onClick={onClose} aria-label={closeLabel}>×</button>
     </div>
   );
 }
