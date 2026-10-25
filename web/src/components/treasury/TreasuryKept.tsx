@@ -22,13 +22,27 @@ const NUM = ["α´", "β´", "γ´", "δ´", "ε´", "ϛ´", "ζ´", "η´", "θ
 export default function TreasuryKept() {
   const params = useSearchParams();
   const router = useRouter();
+  const section = (params.get("s") ?? "recent") as SectionId;
+  const go = (id: SectionId) => {
+    const q = new URLSearchParams(params.toString());
+    if (id === "recent" || id === section) q.delete("s"); else q.set("s", id);
+    for (const k of ["tag", "c", "a", "nb"]) q.delete(k);
+    router.replace(`/treasury${q.size ? `?${q}` : ""}`, { scroll: false });
+  };
+  return <Kept section={section} go={go} />;
+}
+
+/**
+ * The list itself. The page as it is built has no address to read, so it shows the list with no kind chosen (`go` absent)
+ * until the browser has the address: the head is its full height from the first paint (scripts/check-heads.mjs).
+ */
+export function Kept({ section = "recent", go }: { section?: SectionId; go?: (id: SectionId) => void }) {
   const byWork = useMarks((s) => s.byWork);
   const pageNotes = usePageNotes((s) => s.notes);
   const marksLoaded = useMarks((s) => s.allLoaded), notesLoaded = usePageNotes((s) => s.loaded);
   const ready = marksLoaded && notesLoaded;
   const savedPlaces = Object.keys(useSavedPlaces((s) => s.saved)).length;
   const notebooks = Object.keys(useNotebooks((s) => s.books)).length;
-  const section = (params.get("s") ?? "recent") as SectionId;
   const marks = useMemo(() => Object.values(byWork).flat(), [byWork]);
 
   const counts = useMemo(() => {
@@ -52,20 +66,13 @@ export default function TreasuryKept() {
     { id: "places", label: "Places", n: savedPlaces, hint: "on your own map" },
     { id: "notebooks", label: "Notebooks", n: notebooks, hint: "for research, cited" },
   ];
-  const go = (id: SectionId) => {
-    const q = new URLSearchParams(params.toString());
-    if (id === "recent" || id === section) q.delete("s"); else q.set("s", id);
-    for (const k of ["tag", "c", "a", "nb"]) q.delete(k);
-    router.replace(`/treasury${q.size ? `?${q}` : ""}`, { scroll: false });
-  };
-
   return (
     <nav className={`${styles.offerings} ${styles.kept}`} data-bare={empty ? "" : undefined} aria-label="Sections of the Treasury">
       <h2 className={`label ${styles.keptH}`}>What you have kept</h2>
       <ol className={styles.ogrid}>
         {OFFERINGS.map((m, i) => (
           <li key={m.id}>
-            <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go(m.id)}
+            <button type="button" className={styles.offer} aria-current={section === m.id ? "page" : undefined} onClick={() => go?.(m.id)}
               data-empty={m.n === 0 || m.n === null ? "" : undefined}>
               <span className={styles.gn} aria-hidden="true">{NUM[i]}</span>
               <span className={styles.offerLabel}>{m.label} <i className={styles.offerHint}>{m.hint}</i></span>

@@ -169,7 +169,7 @@
     "motion": 3
   },
   "src/components/home/Home.module.css": {
-    "font-size": 6,
+    "font-size": 8,
     "spacing": 39,
     "motion": 2
   },

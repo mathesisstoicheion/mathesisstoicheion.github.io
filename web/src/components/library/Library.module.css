@@ -112,14 +112,14 @@
 @media (pointer: coarse) { .selects select { min-height: var(--tap); } }
 .genres { display: grid; gap: var(--space-2); }
 .chipRow { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.chipRow :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; opacity: 0.75; font-size: var(--step--2); }
+.chipRow :global(.chip) small { font-variant-numeric: lining-nums tabular-nums; font-size: var(--step--2); }
 .chipRow :global(.chip):disabled { opacity: 0.4; cursor: default; }
 .note { font-size: var(--step--1); color: var(--ink-2); max-width: 70ch; line-height: 1.5; }
 @media (max-width: 760px) {
   .selects { display: grid; grid-template-columns: minmax(0, 1fr); }
   .selects select { width: 100%; font-size: var(--step-0); }
   .chipRow { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; margin-inline: calc(-1 * var(--gutter)); padding-inline: var(--gutter); scroll-padding-inline: var(--gutter); }
-  .chipRow :global(.chip) { flex: none; }
+  .chipRow :global(.chip) { flex: none; min-height: var(--tap); }
 }
 
 /* books in progress, the count, the authors a search names: lines of small print */

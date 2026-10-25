@@ -456,6 +456,10 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
    it follows the title and the purpose line */
 @media (min-width: 761px) { .ph:has(> .ph-side) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
 .ph-side { min-width: 0; }
+/* the map's search and layer chips arrive in its head after the first paint (components/map/Periplus.tsx): their room is kept
+   from the start, so the head does not grow under the reader's eyes (its height: a fixed part and a part that grows with the
+   type, measured at 16 and 18 px; scripts/check-heads.mjs) */
+@media (min-width: 761px) { #map-tools { min-height: calc(51px + 2.91rem); } }
 @media (max-width: 760px) { .ph-side { margin-top: var(--space-5); } }
 .ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
 .ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; }
