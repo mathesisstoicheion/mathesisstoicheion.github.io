@@ -29,6 +29,7 @@
   --paper-ink-3: #4f4336;  /* small print and credits: 8.2 : 1 on the paper */
   --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
   --paper-rubric-2: #c4553a;
+  --paper-word-on: #e4d8c2;  /* the word looked up: a soft tone of the paper behind it (the quiet desk, ticket 04) */
   /* the night page */
   --night: #1b1814;
   --night-2: #24201a;
@@ -38,6 +39,7 @@
   --night-faint: #8c7f6c;
   --night-rubric: #e0805f;
   --night-rubric-2: #f09a7b;
+  --night-word-on: #3a3127;
   /* the few other colours a page needs, chosen to sit on paper and on the night page alike */
   --verdigris: #3f6b5f;    /* the one cool mark (well established; the second mark in the reader) */
   --ochre-ink: #8a5a12;    /* debated; finds in the reader */
@@ -132,6 +134,8 @@
   /* the reader's side panel (vocabulary, find, places…), and its width on a narrower computer */
   --side-panel: 400px;
   --side-panel-narrow: 340px;
+  /* the reader's margin on a computer, where the look-up is written as a note beside its line (the quiet desk, ticket 04) */
+  --margin-note: 300px;
   /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
      line's own height, where the token is used). The browser lays boxes out in 64ths of a pixel and rounds each part
      down, so the exact half came out at 43.98 px, and a link in a list ran a hair under the next one's; half a pixel
@@ -147,6 +151,7 @@
   --bg: var(--paper);
   --bg-deep: var(--paper-2);
   --bg-2: var(--paper-2);
+  --word-on: var(--paper-word-on);
   --surface: var(--paper);
   --ink: var(--paper-ink);
   --ink-2: var(--paper-ink-2);
@@ -176,7 +181,7 @@
 /* ---------------------------------------------------------- the roles: Night (the device's dark mode, or chosen) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="paper"]) {
-    --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night);
+    --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --word-on: var(--night-word-on);
     --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3);
     --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
     --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
@@ -189,7 +194,7 @@
   }
 }
 :root[data-theme="night"] {
-  --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night);
+  --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --word-on: var(--night-word-on);
   --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3);
   --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
   --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);

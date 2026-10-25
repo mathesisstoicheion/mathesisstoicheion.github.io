@@ -1,6 +1,6 @@
 # 04. The look-up in one place per device
 
-Status: ready-for-agent
+Status: built (2026-10-25), waiting for the owner to look at it on the computer and the OnePlus
 Type: HITL (the owner looks at it before the next ticket)
 Blocked by: 03
 Spec: `../spec.md`, "Placement". User stories 10 to 15, 22
@@ -21,14 +21,33 @@ Spec: `../spec.md`, "Placement". User stories 10 to 15, 22
 
 ## Acceptance criteria
 
-- [ ] A unit test checks the rule: 1099 px gives the sheet, 1100 px gives the note.
-- [ ] `check-lookup` checks that, on a computer at 1440 × 900:
-  - [ ] the note is at least 280 px wide, beside the tapped line, and never covers it
-  - [ ] the note is in the same place with another panel open
-- [ ] `check-lookup` checks that, on a phone at 390 × 844:
-  - [ ] the sheet rests at or below 27% of the screen height
-  - [ ] the sheet never covers the tapped line
-- [ ] Escape closes the look-up and gives focus back to the word, and Previous and Next still step between words.
+- [x] A unit test checks the rule: 1099 px gives the sheet, 1100 px gives the note.
+- [x] `check-lookup` checks that, on a computer at 1440 × 900:
+  - [x] the note is at least 280 px wide, beside the tapped line, and never covers it
+  - [x] the note is in the same place with another panel open
+- [x] `check-lookup` checks that, on a phone at 390 × 844:
+  - [x] the sheet rests at or below 27% of the screen height
+  - [x] the sheet never covers the tapped line
+- [x] Escape closes the look-up and gives focus back to the word, and Previous and Next still step between words.
 - [ ] The owner has looked at it on the computer and on the OnePlus and given the go.
 
 ## Comments
+- The rule is `lookupPlace` in `web/src/lib/lookup/placement.ts` (test beside it). It takes the room the reader has: the
+  window for one book, and the book's own box when two stand side by side or the reader floats in its small window, so
+  those always use the sheet.
+- Computer: the margin is 300 px (`--margin-note` in tokens.css), at 1100 px and wider, whether a panel is open or not.
+  The look-up no longer takes the place of the panel beside the text; Find, Vocabulary and the rest stay open beside
+  it. With a panel open, the English goes under the Greek, so that the Greek is not squeezed between the note and the
+  panel (at 1440 px with Find open the Greek is about 470 px wide; at 1100 px, about 250).
+- A word picked from the Vocabulary list, which is not on the page, is written at the top of the margin in view.
+- The thin line runs from the last word on the tapped line to the note, as in mockup B. It is left out where the
+  English stands between them.
+- The sheet rests at a quarter of the screen (`clamp(calc(2.25 * var(--space-8)), 25dvh, 400px)`, 180 to 400 px): 211 px on a 390 × 844 phone. It still
+  drags up for more and down to close; it still never rises over the tapped line.
+- The tapped word: `--word-on`, a soft tone of the paper (#e4d8c2, from mockup B) in Paper and #3a3127 in Night, in
+  place of the red with a red rule under it.
+- `check-lookup` failed on the old code with 19 problems (240 px note, the look-up in the side panel's place, a sheet
+  46% of the screen tall), and passes now.
+- Found on the way, not changed (older): at 1100 to 1279 px the Find panel's content is about 60 px wider than the
+  panel, so its right edge is cut off. For ticket 11.
+

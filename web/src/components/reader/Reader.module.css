@@ -185,14 +185,11 @@
 .note { font-family: var(--f-label); font-size: var(--step--1); color: var(--accent); cursor: help; margin: 0 var(--hair); }   /* a note's mark: the caption step, wherever the text is quoted */
 .gap { color: var(--ink-2); }
 
-/* a word: red under the hand; the word being looked up stays red, with a fine red rule under it (the sample's .w.on) */
+/* a word: red under the hand; the word being looked up sits on a soft tone of the paper (the quiet desk, ticket 04) */
 .w { cursor: pointer; transition: color var(--dur-quick) var(--ease); }
 .w:hover, .w:focus-visible { color: var(--rubric); }
 .w:focus-visible { outline: 1px solid var(--rubric); outline-offset: 2px; }
-.sel {
-  color: var(--rubric);
-  background-image: linear-gradient(var(--rubric-2), var(--rubric-2)); background-size: 100% 1px; background-repeat: no-repeat; background-position: 0 92%;
-}
+.sel { color: var(--ink); background: var(--word-on); outline: var(--hair-2) solid var(--word-on); }
 
 .bottom { display: flex; justify-content: space-between; gap: var(--space-3); padding-block: var(--space-5); }
 .bottom button:disabled { visibility: hidden; }
@@ -210,11 +207,12 @@
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
 @media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .single.withPanel .caseKey { margin-right: var(--side-panel); margin-left: 0; } }
-/* narrower desktops: the look-up docks at the side too, a little narrower, and the text makes room for it, so the English of
-   the line being read stays in sight (review fix list, slice 8) */
+/* narrower desktops: the panels are a little narrower, and the text makes room for them (review fix list, slice 8) */
 @media (min-width: 901px) and (max-width: 1279px) {
   .single .panel { width: var(--side-panel-narrow); }
   .single.withPanel .text, .single.withPanel .bottom, .single.withPanel .cover, .single.withPanel .caseKey { margin-right: var(--side-panel-narrow); margin-left: 0; }
+}
+@media (min-width: 901px) and (max-width: 1099px) {
   .single.withPanel .row { grid-template-columns: 3rem minmax(0, 1.1fr) minmax(0, 1fr); column-gap: var(--space-4); }
 }
 .panelHead { display: flex; justify-content: space-between; gap: var(--space-3); align-items: start; }
@@ -770,13 +768,19 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single.cols-greek .row { grid-template-columns: 3.5rem minmax(0, 40em); }
 .single.cols-trans .row { grid-template-columns: 3.5rem minmax(0, 38em); }
 .single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
+/* a computer (lib/lookup/placement.ts): the margin at the right is kept clear for the look-up's note, a panel open or not */
 @media (min-width: 1100px) {
-  .single:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr) 240px; }
-  .single.cols-greek:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 40em) 0 240px; }
-  .single.cols-trans:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 38em) 0 240px; }
-  .single:not(.withPanel) .notes { grid-column: 2 / 4; }
-  /* poetry: the Greek takes more of the width, so that a line of Homer is not broken (the margin is a little narrower) */
-  .single.poetry.cols-both:not(.withPanel) .row { grid-template-columns: 3.5rem minmax(0, 1.4fr) minmax(0, 1fr) 210px; }
+  .single .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr) var(--margin-note); }
+  .single.cols-greek .row { grid-template-columns: 3.5rem minmax(0, 40em) 0 var(--margin-note); }
+  .single.cols-trans .row { grid-template-columns: 3.5rem minmax(0, 38em) 0 var(--margin-note); }
+  .single .notes { grid-column: 2 / 4; }
+  /* poetry: the Greek takes more of the width, so that a line of Homer is not broken */
+  .single.poetry.cols-both .row { grid-template-columns: 3.5rem minmax(0, 1.4fr) minmax(0, 1fr) var(--margin-note); }
+  /* a panel open beside the text as well: the English goes under the Greek, so that neither is squeezed beside the note */
+  .single.withPanel .row, .single.withPanel.cols-greek .row, .single.withPanel.cols-trans .row, .single.withPanel.poetry.cols-both .row {
+    grid-template-columns: 3.5rem minmax(0, 40em) var(--margin-note); row-gap: var(--space-4);
+  }
+  .single.withPanel .tr, .single.withPanel .notes { grid-column: 2; }
 }
 .single .row:first-child .grc > [data-u]:first-child > .p:first-child::first-line { color: var(--rubric); }
 .single .row:first-child .grc > [data-u]:first-child > .line:first-child .lt { color: var(--rubric); }
@@ -821,6 +825,8 @@ p.translit { margin: -0.3em 0 0.8em; }
   animation: note-in 0.7s var(--ease) backwards;
 }
 @keyframes note-in { from { opacity: 0; filter: blur(2px); } }
+/* the thin line from the end of the word's line to its note (mockup B) */
+.lead { position: absolute; height: var(--hair); background: var(--rule); pointer-events: none; animation: note-in var(--dur-slow) var(--ease) backwards; }
 .wordNote .panelHead { align-items: center; gap: var(--space-1); }
 .wordNote .pw { flex: 1; min-width: 0; font-size: var(--step-1); line-height: 1.3; overflow-wrap: anywhere; }
 .wordNote .stepBtn {
@@ -845,7 +851,7 @@ p.translit { margin: -0.3em 0 0.8em; }
    height in pixels. It slides up as it opens (the one movement besides the ink-in, SPEC.md 4.3); a word chosen next inks in. */
 @property --sheet-h { syntax: "<length>"; inherits: false; initial-value: 0px; }
 .panel.wordSheet {
-  --sheet-h: min(46dvh, 400px);
+  --sheet-h: clamp(calc(2.25 * var(--space-8)), 25dvh, 400px);   /* it rests at about a quarter of the screen (the quiet desk, ticket 04) */
   top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: none; height: min(var(--sheet-h), var(--sheet-max, 100dvh));
   display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
   background: var(--bg); border-top: 2px solid var(--rubric); box-shadow: 0 -10px 30px var(--shadow);

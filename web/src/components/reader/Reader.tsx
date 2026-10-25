@@ -54,6 +54,7 @@ import { playLine as playLineRhythm } from "@/lib/metre/beat";
 import { loadWordPack } from "@/lib/lookup/words";
 import { caseOf } from "@/lib/lookup/postag";
 import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
+import { lookupPlace } from "@/lib/lookup/placement";
 import { headerVisible, scrollBelowHeader } from "@/lib/header";
 import Drop from "./Drop";
 import { buzz } from "@/lib/haptics";
@@ -62,15 +63,12 @@ import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
 // and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
-/** Wide enough for the look-up to be written in the margin beside the line (redesign decision 4); narrower, it is a sheet
- *  from the foot of the screen that stops below the line. */
-const NOTE_WIDE = "(min-width: 1100px)";
-/** wide enough for the side panels (vocabulary, find, places…) to sit beside the text, which makes room for them */
-const SIDE_WIDE = "(min-width: 901px)";
-/** Where the look-up is set (Reader's placeWord): in the margin beside its line, at this place in the reader; as a sheet that
- *  rises no higher than this many pixels (so that it stops below the line), or with no limit (null) for a word that is not
- *  in the text; or in a side panel's place, beside the text that has made room for it. */
-type WordAt = { note: { top: number; left: number; width: number } } | { sheet: number | null } | { side: true };
+/** Where the look-up is set (Reader's placeWord; the one rule is lookupPlace): in the margin beside its line, at this place
+ *  in the reader, with a thin line from the end of the line to it where nothing stands between; or as a sheet that rises no
+ *  higher than this many pixels (so that it stops below the line), or with no limit (null) for a word that is not in the
+ *  text. */
+type Box = { top: number; left: number; width: number };
+type WordAt = { note: Box; lead?: Box } | { sheet: number | null };
 const FindPanel = dynamic(() => import("./FindPanel"), { ssr: false });
 const ComparePanel = dynamic(() => import("./ComparePanel"), { ssr: false });
 const SentencePanel = dynamic(() => import("./SentencePanel"), { ssr: false });
@@ -386,6 +384,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [cmpListOpen, setCmpListOpen] = useState(false);
   // a panel open at the side (they all give way to the look-up while a word is open, and come back when it closes)
   const sideOpen = !!(echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt);
+  // a look-up in a sheet stands in for the panel beside the text, which waits behind it; a note in the margin leaves it open
+  const lookSheet = !!word && !(wordAt && "note" in wordAt);
   const wordAtRef = useRef(wordAt);
   useEffect(() => { wordAtRef.current = wordAt; });
 
@@ -1076,23 +1076,39 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     placeWord(true);
   };
 
-  /** Where the look-up goes (redesign decision 4: it never covers the Greek being read). One book on a wide screen: in the
-   *  margin, level with the word's line (the margin is the last column of each passage's row). Elsewhere (a narrower screen,
-   *  two books, the floating window): a sheet from the foot of the screen, or of the floating window, that rises no higher
-   *  than just below the line; on opening, a line in the lower part is first brought up under the bar. While a side panel is
-   *  open beside one book, in that panel's place, where the text has already made room. */
+  /** Where the look-up goes (decision 4 and the quiet desk, ticket 04: one place per device, and it never covers the Greek
+   *  being read). lookupPlace decides from the room the reader has. A note: in the margin, level with the word's line (the
+   *  margin is the last column of each passage's row, kept even while a panel is open beside the text), joined to the end
+   *  of the line by a thin line; a word picked from a list, not in the text, is written at the top of the margin in view.
+   *  A sheet: from the foot of the screen, or of the floating window, that rises no higher than just below the line; on
+   *  opening, a line in the lower part is first brought up under the bar. */
   const placeWord = (opening = false) => {
     const box = rootRef.current, w = box?.querySelector<HTMLElement>(`article .${styles.sel}`);
-    if (!box || !w) return;
-    if (single && sideOpen && matchMedia(SIDE_WIDE).matches) { setWordAt({ side: true }); return; }
-    const row = w.closest<HTMLElement>(`.${styles.row}`);
-    const tracks = row ? getComputedStyle(row).gridTemplateColumns.split(" ").map(parseFloat) : [];
-    const margin = tracks.length >= 4 ? tracks[tracks.length - 1] : 0;
-    if (single && row && margin > 120 && matchMedia(NOTE_WIDE).matches) {
-      const b = box.getBoundingClientRect(), rr = row.getBoundingClientRect(), wr = w.getBoundingClientRect();
-      setWordAt({ note: { top: Math.round(wr.top - b.top - 4), left: Math.round(rr.right - b.left - margin), width: Math.round(margin) } });
-      return;
+    if (!box) return;
+    if (single && lookupPlace(innerWidth) === "note") {
+      const b = box.getBoundingClientRect();
+      const top = Math.max(headerVisible(), ...[...box.querySelectorAll<HTMLElement>(`.${styles.rbar}, .${styles.caseKey}`)]
+        .filter((el) => getComputedStyle(el).position === "sticky").map((el) => el.getBoundingClientRect().bottom));
+      const row = w?.closest<HTMLElement>(`.${styles.row}`)
+        ?? [...box.querySelectorAll<HTMLElement>(`article .${styles.row}`)].find((r) => r.getBoundingClientRect().bottom > top + 40);
+      const tracks = row ? getComputedStyle(row).gridTemplateColumns.split(" ").map(parseFloat) : [];
+      const margin = tracks.length >= 3 ? tracks[tracks.length - 1] : 0;
+      if (row && margin > 120) {
+        const rr = row.getBoundingClientRect(), left = rr.right - b.left - margin;
+        if (!w) { setWordAt({ note: { top: Math.round(Math.max(rr.top, top + 16) - b.top), left: Math.round(left), width: Math.round(margin) } }); return; }
+        const wr = w.getBoundingClientRect();
+        // the thin line: from the last word on the tapped line to the note, unless the English stands between them
+        const unit = w.closest<HTMLElement>("[data-u]") ?? row;
+        const end = Math.max(wr.right, ...[...unit.querySelectorAll<HTMLElement>("[data-w]")].map((x) => x.getBoundingClientRect())
+          .filter((r) => Math.abs(r.top - wr.top) < 2).map((r) => r.right));
+        const tr = row.querySelector<HTMLElement>("[data-tr]")?.getBoundingClientRect();
+        const from = end - b.left + 12, to = left - 12;
+        const lead = (!tr || !tr.width || tr.left < end) && to - from > 16 ? { top: Math.round(wr.top + wr.height / 2 - b.top), left: Math.round(from), width: Math.round(to - from) } : undefined;
+        setWordAt({ note: { top: Math.round(wr.top - b.top - 4), left: Math.round(left), width: Math.round(margin) }, lead });
+        return;
+      }
     }
+    if (!w) { setWordAt({ sheet: null }); return; }
     // a sheet: measured against the screen, or against the floating window it rises in
     const frame = floating ? box.getBoundingClientRect() : { top: 0, bottom: innerHeight };
     const edge = Math.max(frame.top, ...[...box.querySelectorAll<HTMLElement>(`.${styles.rbar}, .${styles.caseKey}, .${styles.bar}`)]
@@ -1190,8 +1206,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       return;
     }
     // one book: a click or a tap on the page away from any word or button puts the look-up away, from the margin or its sheet
-    // (in a side panel's place it closes with its ×, as the panels do)
-    if (!contained && word && !(wordAt && "side" in wordAt) && !el.closest("a, button, input, select, textarea, label, summary, [role='button']")
+    if (!contained && word && !el.closest("a, button, input, select, textarea, label, summary, [role='button']")
       && !getSelection()?.toString()) closeWord();
   };
 
@@ -1785,26 +1800,26 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {doc && <BackToTop paneRef={contained ? rootRef : undefined} page={pane === 1} />}
 
       {/* each panel keeps its own failures to itself: the text stays readable */}
-      {vocabOpen && doc && !word && (
+      {vocabOpen && doc && !lookSheet && (
         <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
           <VocabPanel work={lexWork} doc={doc} pageKeys={pageKeys}
-            onClose={() => setVocabOpen(false)} onPick={(lemma) => { setWord({ w: lemma, ctx: null, at: null }); setWordAt(matchMedia(SIDE_WIDE).matches && !floating ? { side: true } : { sheet: null }); }} />
+            onClose={() => setVocabOpen(false)} onPick={(lemma) => { root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); setWord({ w: lemma, ctx: null, at: null }); placeWord(); }} />
         </PanelGuard>
       )}
-      {findOpen && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && (
+      {findOpen && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && (
         <PanelGuard name="find panel" className={styles.panel} onClose={() => setFindOpen(false)}>
           <FindPanel doc={doc} placed={cmpText ? null : placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks}
             onClose={() => { setFindOpen(false); requestAnimationFrame(() => root().querySelector<HTMLElement>(`.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
-      {cmpListOpen && canDiff && grcText && cmpText && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && (
+      {cmpListOpen && canDiff && grcText && cmpText && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && (
         <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
           <ComparePanel diffs={allDiffs} a={describe(grcText, work?.texts)} b={describe(cmpText, work?.texts)} title={work?.title ?? workId} onJump={goToDiff} onClose={() => setCmpListOpen(false)}
             onNotebook={(ds, what) => setNbPick({ what, items: ds.map((x) => ({ kind: "variant" as const, work: workId, urn: grcText.urn, other: cmpText.urn, from: x.key, a: x.a, b: x.b })) })} />
         </PanelGuard>
       )}
       {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
-      {sentenceAt && doc && !word && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
+      {sentenceAt && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
           <SentencePanel work={lexWork} doc={doc} at={sentenceAt} onMarks={setSynMarks}
             onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
@@ -1815,17 +1830,17 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         <Listen rows={rows} root={root} startKey={topRow} title={work.title}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
       )}
-      {talkOpen && !isPrivate && !word && !echo && (
+      {talkOpen && !isPrivate && !lookSheet && !echo && (
         <PanelGuard name="talk panel" className={styles.panel} onClose={() => setTalkOpen(false)}>
           <TalkPanel work={workId} pageKeys={pageKeys} onJump={jumpToRef} onClose={() => setTalkOpen(false)} />
         </PanelGuard>
       )}
-      {placesOpen && doc && !word && !echo && (
+      {placesOpen && doc && !lookSheet && !echo && (
         <PanelGuard name="places panel" className={styles.panel} onClose={() => setPlacesOpen(false)}>
           <PlacesPanel work={lexWork} doc={doc} pageKeys={pageKeys} onJump={jumpToRef} onMarks={setPlaceMarks} onClose={() => setPlacesOpen(false)} />
         </PanelGuard>
       )}
-      {msOpen && !isPrivate && doc && !word && !echo && (() => {
+      {msOpen && !isPrivate && doc && !lookSheet && !echo && (() => {
         const row = rows.find((r) => r.key === topRow) ?? rows[0];
         const units = row?.greek ?? [];
         return (
@@ -1835,11 +1850,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           </PanelGuard>
         );
       })()}
-      {echo && !word && (
+      {echo && !lookSheet && (
         <PanelGuard name="Echoes panel" className={styles.panel} onClose={() => setEcho(null)}>
           <EchoesPanel q={echo} onJump={echoJump} onMarks={setEchoMarks} onClose={() => setEcho(null)} />
         </PanelGuard>
       )}
+      {word && wordAt && "note" in wordAt && wordAt.lead && <span key={word.w + wordAt.lead.top} className={styles.lead} aria-hidden="true" style={wordAt.lead} />}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
         <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
           onSentence={word?.at ? () => {
