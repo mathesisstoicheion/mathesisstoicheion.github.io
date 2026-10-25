@@ -9,6 +9,10 @@
  * each sentence ending with the whole of it read together. Everything shown is in data/reading-path.ts.
  * The help fades every three lessons (pathLevel): the letters stage goes, then you guess each meaning and build
  * the sentence yourself, then words you have met get no card and you put the English in order before it shows.
+ *
+ * Its look is the commentary (Noa's choice, 2026-10-25): set as a school edition sets a Greek text, the line large, the
+ * notes on its words beneath it keyed to each word as a commentary prints them («word] note»), the grammar as a § and
+ * what it means as a ¶, and the English last, in italic. It is the way a reader then reads in the reader.
  */
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -194,6 +198,8 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
   if (checking) return <MatchCheck cards={toLearn} pool={pool} onNext={onNext} />;
   const c = sel === null ? null : words[sel];
   const open = !!c && (!guess || !fresh[sel!] || seen.has(id(c)));
+  // the notes beneath the line: every word looked at so far, in the line's order, the one chosen lit in red
+  const noted = dedupe(words.filter((x) => seen.has(id(x)) || (open && c && id(c) === id(x))));
   return (
     <section style={{ display: "grid", gap: 14 }}>
       <p className={styles.small}>
@@ -202,27 +208,29 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
           ? <>The words with a dotted line are new: {guess ? "pick what you think each one means, then it opens" : "sound each one out and guess its meaning before you look"}.</>
           : "You have met every word here before: look up only the ones you forget."}
       </p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.4 }}>
+      <p lang="grc" className={styles.cmGr}>
         {words.map((x, i) => (
-          <button key={i} type="button" className={`${readerStyles.w} ${sel === i ? readerStyles.sel : ""}`} aria-pressed={sel === i}
-            onClick={() => setSel(sel === i ? null : i)}
-            style={{ background: "none", border: 0, padding: 0, font: "inherit", color: sel === i ? undefined : "inherit",
-              textDecoration: fresh[i] && !seen.has(id(x)) ? "underline dotted" : "none", textUnderlineOffset: "0.25em" }}>
+          <button key={i} type="button" className={`${readerStyles.w} ${styles.cmW} ${sel === i ? readerStyles.sel : ""}`} aria-pressed={sel === i}
+            onClick={() => setSel(sel === i ? null : i)} data-new={fresh[i] && !seen.has(id(x)) ? "" : undefined}>
             {x.form}{x.after}
           </button>
         ))}
       </p>
-      {c && (
-        <div className={w.card} aria-live="polite" style={{ display: "grid", gap: 8 }}>
-          <p lang="grc" className={styles.revealGr} style={{ fontSize: "clamp(1.8rem, 6vw, 2.6rem)" }}>{c.form}</p>
-          {!open && <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />}
-          {open && (
-            <SeenOnce onSeen={() => setSeen((t) => (t.has(id(c)) ? t : new Set(t).add(id(c))))}>
-              <p style={{ fontSize: "var(--step-1)" }}><b>{c.here}</b></p>
-              <p className="muted">{c.form_note}.</p>
-              <p className={styles.small}>In the dictionary: <span lang="grc" className={styles.inlineGr}>{c.lemma}</span>, “{c.dict}” ({c.src === "DCC" ? "DCC core list" : "LSJ"}).</p>
-            </SeenOnce>
-          )}
+      {/* a new word chosen before its meaning is known (level 2 on): which meaning, first */}
+      {c && !open && (
+        <div className={styles.cmAsk} aria-live="polite">
+          <p className={styles.cmNote} data-on=""><span lang="grc" className={styles.cmLem}>{c.form}</span>which meaning?</p>
+          <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />
+        </div>
+      )}
+      {c && open && <SeenOnce onSeen={() => setSeen((t) => (t.has(id(c)) ? t : new Set(t).add(id(c))))} />}
+      {noted.length > 0 && (
+        <div className={styles.cmNotes} aria-live="polite">
+          {noted.map((x) => (
+            <p key={id(x)} className={styles.cmNote} data-on={c && open && id(c) === id(x) ? "" : undefined}>
+              <span lang="grc" className={styles.cmLem}>{x.form}</span><b>{x.here}</b>. {x.form_note}. In the dictionary <span lang="grc" className={styles.inlineGr}>{x.lemma}</span>, <i>{x.dict}</i> ({x.src === "DCC" ? "DCC core list" : "LSJ"}).
+            </p>
+          ))}
         </div>
       )}
       {left > 0
@@ -234,10 +242,10 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
   );
 }
 
-/** Its children, and a call to `onSeen` once they have been shown. */
-function SeenOnce({ onSeen, children }: { onSeen: () => void; children: React.ReactNode }) {
+/** A call to `onSeen` once a word's note has been shown. */
+function SeenOnce({ onSeen }: { onSeen: () => void }) {
   useEffect(() => { onSeen(); }, [onSeen]);
-  return <div style={{ display: "grid", gap: 8 }}>{children}</div>;
+  return null;
 }
 
 /** Match each word to its meaning, in a fixed shuffled order (the same each visit); distractors come from `pool`. */
@@ -270,22 +278,17 @@ function BuildStage({ unit, level, onNext }: { unit: Unit; level: number; onNext
   const [peek, setPeek] = useState<Set<number>>(new Set()); // words looked up (on your own)
   const [gram, setGram] = useState(false);
   const at = unit.learn.at ?? ws.length - 1;
-  const grammar = (
-    <aside className={styles.tipBox} aria-live="polite">
-      <span className="label">The grammar: {unit.learn.title}</span>
-      {unit.learn.text.map((t, i) => <p key={i}><Rich text={t} /></p>)}
-    </aside>
-  );
+  const grammar = <Section mark="§" title={unit.learn.title} text={unit.learn.text} />;
   if (level >= 2) return (
     <section style={{ display: "grid", gap: 14 }}>
       <p className={styles.small}>Work out what it says yourself, word by word. If you forget a word, {tapLc} it for its meaning.</p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.3 }}>
+      <p lang="grc" className={styles.cmGr}>
         {ws.map((x, i) => (
-          <span key={i} style={{ display: "inline-grid", justifyItems: "center", gap: 2 }}>
+          <span key={i} className={styles.cmGloss}>
             <button type="button" className={readerStyles.w} aria-expanded={peek.has(i)}
               onClick={() => setPeek((s) => { const t = new Set(s); if (t.has(i)) t.delete(i); else t.add(i); return t; })}
               style={{ background: "none", border: 0, padding: 0, font: "inherit", color: "inherit" }}>{x.form}{x.after}</button>
-            <span lang="en" className={styles.small} style={{ visibility: peek.has(i) ? "visible" : "hidden", fontFamily: "var(--f-body)" }}>{x.here}</span>
+            <span lang="en" style={{ visibility: peek.has(i) ? "visible" : "hidden" }}>{x.here}</span>
           </span>
         ))}
       </p>
@@ -296,11 +299,11 @@ function BuildStage({ unit, level, onNext }: { unit: Unit; level: number; onNext
   return (
     <section style={{ display: "grid", gap: 14 }}>
       <p className={styles.small}>One word at a time: say what the lit word means, then {tapLc} <i>Show</i> to check.</p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.3 }}>
+      <p lang="grc" className={styles.cmGr}>
         {ws.map((x, i) => (
-          <span key={i} style={{ display: "inline-grid", justifyItems: "center", gap: 2, opacity: i > n ? 0.45 : 1 }}>
+          <span key={i} className={styles.cmGloss} style={{ opacity: i > n ? 0.45 : 1 }}>
             <span className={`${readerStyles.w} ${i === n ? readerStyles.sel : ""}`}>{x.form}{x.after}</span>
-            <span lang="en" className={styles.small} style={{ visibility: i < n ? "visible" : "hidden", fontFamily: "var(--f-body)" }}>{x.here}</span>
+            <span lang="en" style={{ visibility: i < n ? "visible" : "hidden" }}>{x.here}</span>
           </span>
         ))}
       </p>
@@ -363,13 +366,13 @@ function ReadStage({ unit, level, onDone, doneLabel }: { unit: Unit; level: numb
   const all = !!end && open.size === end.parts.length;
   return (
     <section style={{ display: "grid", gap: 14 }}>
-      <p lang="grc" className={`${styles.realGr} ${styles.revealGr}`} style={{ lineHeight: 1.6 }}>{partText({ words: unit.words, en: "" })}</p>
+      <p lang="grc" className={styles.cmGr}>{partText({ words: unit.words, en: "" })}</p>
       <p className={styles.small}>Read it in your head from start to end, without help. If you get stuck, go back a stage with the buttons above.</p>
       {end?.whole && !whole && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setWhole(true)}>That was the last piece: now the whole sentence →</button>}
       {end?.whole && whole && (
         <>
           <span className="label">The whole sentence</span>
-          <p lang="grc" className={`${styles.realGr} ${styles.revealGr}`} style={{ lineHeight: 1.6 }}>{end.whole}</p>
+          <p lang="grc" className={styles.cmGr}>{end.whole}</p>
           <p className={styles.small}>Every piece of it is one you have just read. Read it through.</p>
         </>
       )}
@@ -392,16 +395,23 @@ function ReadStage({ unit, level, onDone, doneLabel }: { unit: Unit; level: numb
             ))}
           </div>
           {all && <p className={styles.small}>Translation by {end.translator}, as the library gives it.</p>}
-          {all && (
-            <aside className={styles.tipBox} aria-live="polite">
-              <span className="label">What it means</span>
-              {end.meaning.map((t, i) => <p key={i}><Rich text={t} /></p>)}
-            </aside>
-          )}
+          {all && <Section mark="¶" title="What it means" text={end.meaning} />}
         </>
       )}
       {(!end || all) && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onDone}>{doneLabel}</button>}
     </section>
+  );
+}
+
+/** A paragraph of the commentary under the line: the grammar as a §, what the line means as a ¶. */
+function Section({ mark, title, text }: { mark: string; title: string; text: string[] }) {
+  return (
+    <aside className={styles.cmSec} aria-live="polite">
+      <span className={styles.cmSecNo} aria-hidden="true">{mark}</span>
+      <div>
+        {text.map((t, i) => <p key={i}>{i === 0 && <b>{title}. </b>}<Rich text={t} /></p>)}
+      </div>
+    </aside>
   );
 }
 
@@ -479,7 +489,7 @@ export default function PathStepView({ step }: { step: PathStep }) {
 
       <AlphabetFold />
 
-      <figure ref={box} className={styles.real} style={{ scrollMarginTop: 90 }}>
+      <figure ref={box} className={`${styles.real} ${styles.cm}`} style={{ scrollMarginTop: 90 }}>
         <figcaption className={styles.realHead}>
           <span className="label">{unit.label}</span>
           <Link className="chip" href={u > 0 && step.passage?.work ? `/read?w=${step.passage.work}&at=${step.passage.ref}` : `/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>

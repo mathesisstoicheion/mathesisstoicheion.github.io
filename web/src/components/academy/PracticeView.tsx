@@ -41,7 +41,7 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
 
   return (
     <article className={styles.lesson}>
-      <section style={{ display: "grid", gap: 12 }}>
+      <section style={{ display: "grid", gap: "var(--space-3)" }}>
         <span className="label">Where you are</span>
         <p className={styles.lp}><Rich text={practice.intro} /></p>
         <p className={styles.small}>
@@ -51,7 +51,7 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
 
       <AlphabetFold />
 
-      <figure ref={box} className={styles.real} style={{ scrollMarginTop: 90 }}>
+      <figure ref={box} className={`${styles.real} ${styles.cm}`} style={{ scrollMarginTop: 90 }}>
         <figcaption className={styles.realHead}>
           <span className="label">{unit ? unit.label : "Check yourself: the words of these three lessons"}</span>
           {line && <Link className="chip" href={`/read?w=${line.work}&at=${line.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>}
@@ -59,7 +59,7 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
         {u === -1 ? (
           <MatchCheck cards={cards} pool={pool} onNext={() => setU(0)} nextLabel="On to the lines →" doneText="Now read them in other real lines." />
         ) : atEnd ? (
-          <div style={{ display: "grid", gap: 12 }}>
+          <div style={{ display: "grid", gap: "var(--space-3)" }}>
             <p className={styles.good}>You have finished this practice.</p>
             <p className={styles.lp}>Now read each line where it stands, in the reader, with the sentences around it. Tap any word you forget.</p>
             {practice.lines.map((l) => (
