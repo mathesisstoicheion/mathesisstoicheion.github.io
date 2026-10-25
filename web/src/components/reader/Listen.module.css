@@ -2,9 +2,9 @@
    in as it opens; nothing rises, breathes or grows (decision 3). */
 .bar {
   position: fixed; z-index: 45; left: 50%; translate: -50% 0;
-  bottom: calc(14px + env(safe-area-inset-bottom, 0px));
-  width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: var(--space-1) 10px;
-  padding: 10px 10px var(--space-2) var(--space-3); border-radius: var(--radius); overflow: hidden;
+  bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: var(--space-1) var(--space-2);
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3); border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: 0 10px 30px var(--shadow);
   --accent: var(--accent-on-ink);
   animation: ink-in var(--dur) var(--ease) backwards;
@@ -14,9 +14,9 @@
 /* how far through the page: a thin red line along the top, as long as the part already read */
 .progress { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); transform-origin: left; }
 
-.transport { display: flex; align-items: center; gap: 2px; }
+.transport { display: flex; align-items: center; gap: var(--hair-2); }
 .transport button, .x, .rate {
-  display: grid; place-items: center; min-width: 40px; height: 40px; padding: 0 6px; border: 0; border-radius: var(--radius);
+  display: grid; place-items: center; min-width: 40px; height: 40px; padding: 0 var(--space-1); border: 0; border-radius: var(--radius);
   background: transparent; color: inherit; cursor: pointer;
 }
 .transport button:hover:not(:disabled), .x:hover, .rate:hover { color: var(--accent); }
@@ -26,7 +26,7 @@
 .play:hover { color: var(--inv-bg) !important; }
 .play svg { width: 22px; height: 22px; stroke: none; }
 
-.where { margin: 0; min-width: 0; display: grid; gap: 1px; line-height: 1.2; }
+.where { margin: 0; min-width: 0; display: grid; gap: var(--hair); line-height: 1.2; }
 .where :global(.label) { color: var(--accent); font-size: var(--step--2); }
 .what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--step-0); }
 .what b { font-family: var(--f-label); font-weight: 500; }
@@ -40,7 +40,7 @@
 .x { font-size: var(--step-1); line-height: 1; }
 .note { margin: 0; grid-column: 1 / 5; font-size: var(--step--1); }
 /* the small print, on the bar's ink (scripts/check-on-ink.mjs wants that said in the selector) */
-.bar .fine { grid-column: 1 / -1; margin: 2px 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+.bar .fine { grid-column: 1 / -1; margin: var(--hair-2) 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
 
 @media (max-width: 560px) {
   .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; }
@@ -50,4 +50,4 @@
 @media (pointer: coarse) { .transport button, .x, .rate { min-width: 44px; height: 44px; } }
 
 /* on a phone, above the bottom bar while it shows (TabBar.tsx) */
-@media (max-width: 760px) { :global(html[data-tabbar="up"]) .bar { bottom: calc(14px + var(--tabbar-h)); } }
+@media (max-width: 760px) { :global(html[data-tabbar="up"]) .bar { bottom: calc(var(--space-3) + var(--tabbar-h)); } }

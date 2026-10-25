@@ -21,20 +21,17 @@
   /* the paper (SPEC.md 3.1) */
   --paper: #f3ece0;
   --paper-2: #e9dfcd;      /* the second surface: a plate's mount, a margin, a pressed key */
-  --paper-3: #ddd0b9;
   --paper-ink: #1e1a15;
   /* the softer inks, for captions, notes, credits and the English beside the Greek: deeper than the sample's, so every
      line of words reads at 7 : 1 or more on the paper and on its second surface (the owner, 2026-10-23: "the grey text
      can be a little unintelligible when reading"; scripts/check-ink.mjs) */
   --paper-ink-2: #41382f;  /* captions: 9.8 : 1 on the paper */
   --paper-ink-3: #4f4336;  /* small print and credits: 8.2 : 1 on the paper */
-  --paper-faint: #8a7b68;  /* rules and marks that are not words */
   --paper-rubric: #a3301a; /* red: headings' numbers, the Σ, links, the chosen thing */
   --paper-rubric-2: #c4553a;
   /* the night page */
   --night: #1b1814;
   --night-2: #24201a;
-  --night-3: #332c23;
   --night-ink: #ebe1cf;
   --night-ink-2: #d2c4ab;  /* 10.3 : 1 on the night page */
   --night-ink-3: #bdad93;  /* 8 : 1 */
@@ -63,6 +60,9 @@
   --space-6: 36px;
   --space-7: 56px;
   --space-8: 80px;
+  /* hairlines: the few gaps of a line's own width, outside the scale */
+  --hair: 1px;
+  --hair-2: 2px;
 
   /* type sizes: a book's, its text set in EB Garamond at 19 px on a computer and 18 px on a phone (the sample's body).
      Every size of words on the site is one of these (scripts/check-design.mjs); only lettering in GFS Didot (titles,
@@ -85,27 +85,16 @@
   --face-didot: var(--font-gentium-signs), var(--font-garamond-signs), var(--font-didot), "GFS Didot", var(--font-gentium), serif;
   --face-gentium: var(--font-gentium-signs), var(--font-garamond-signs), var(--font-gentium), "Gentium Book Plus", var(--font-garamond), serif;
   --face-ipa: var(--font-gentium-ipa), var(--face-gentium); /* the sounds in the IPA: Gentium's letters with their marks */
-  /* older names, kept so every stylesheet resolves to one of the three */
-  --face-display: var(--face-garamond);
-  --face-text: var(--face-garamond);
-  --face-mono: var(--face-garamond);
-  --face-mark: var(--face-didot);
-  --face-carved: var(--face-didot);
 
   /* motion (decision 3): one movement only, ink-in. Text and photographs settle onto the page as they arrive, then nothing
      moves. Reduced motion turns it off (globals.css). Quick colour changes under the hand are not movement. */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
-  --ease-out: var(--ease);
-  --ease-cut: var(--ease);
-  --ease-enter: var(--ease);
   --ink-in: 1.4s;          /* how long a line takes to ink in */
   --ink-step: 0.12s;       /* each line a step after the one before */
   --dur-quick: 0.2s;
   --dur: 0.4s;
   --dur-slow: 0.6s;
-  --dur-enter: var(--ink-in);
   --enter-step: var(--ink-step);
-  --dur-fade: 0.9s;
 
   /* the small triangle of a fold (pointing right while it is shut, down when open) and of a button that plays: drawn,
      not set in type, since none of the three typefaces has one. A box of --tri-size, painted in the colour of the words
@@ -118,7 +107,6 @@
   /* shape: hairlines and square corners, as a printed page has */
   --radius: 0px;
   --radius-round: 50%;
-  --radius-arch: 0;
 
   /* layers: just above the header */
   --z-over-header: 31;
@@ -141,12 +129,14 @@
   --hang-cols: minmax(11rem, 1fr) minmax(0, 46rem) minmax(0, 0.5fr);
   --hang-gap: clamp(32px, 4vw, 72px);
   --tap: 44px;
+  /* the reader's side panel (vocabulary, find, places…), and its width on a narrower computer */
+  --side-panel: 400px;
+  --side-panel-narrow: 340px;
   /* the padding above and below a line of text that makes it a finger's target, --tap tall, whatever its size (lh: the
      line's own height, where the token is used). The browser lays boxes out in 64ths of a pixel and rounds each part
      down, so the exact half came out at 43.98 px, and a link in a list ran a hair under the next one's; half a pixel
      more each side keeps every target at least --tap tall */
   --tap-pad: calc((var(--tap) - 1lh) / 2 + 0.5px);
-  --tex: none;
 }
 /* a wide screen: the margin grows with the window, a twentieth of it either side */
 @media (min-width: 1400px) { :root { --gutter: 5vw; } }
@@ -158,11 +148,9 @@
   --bg-deep: var(--paper-2);
   --bg-2: var(--paper-2);
   --surface: var(--paper);
-  --surface-2: var(--paper-2);
   --ink: var(--paper-ink);
   --ink-2: var(--paper-ink-2);
   --ink-3: var(--paper-ink-3);
-  --faint: var(--paper-faint);
   --rubric: var(--paper-rubric);
   --rubric-2: var(--paper-rubric-2);
   --rubric-on-ink: var(--night-rubric);   /* red on a block of ink: the dark ink takes the night page's red */
@@ -188,8 +176,8 @@
 /* ---------------------------------------------------------- the roles: Night (the device's dark mode, or chosen) */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="paper"]) {
-    --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
-    --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
+    --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night);
+    --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3);
     --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
     --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
     --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
@@ -201,8 +189,8 @@
   }
 }
 :root[data-theme="night"] {
-  --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night); --surface-2: var(--night-2);
-  --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3); --faint: var(--night-faint);
+  --bg: var(--night); --bg-deep: var(--night-2); --bg-2: var(--night-2); --surface: var(--night);
+  --ink: var(--night-ink); --ink-2: var(--night-ink-2); --ink-3: var(--night-ink-3);
   --rubric: var(--night-rubric); --rubric-2: var(--night-rubric-2); --rubric-on-ink: var(--paper-rubric);
   --rule: rgba(235, 225, 207, 0.2); --rule-2: rgba(235, 225, 207, 0.1);
   --paper-shade: rgba(0, 0, 0, 0.22); --gutter-shade: rgba(0, 0, 0, 0.28); --shadow: rgba(0, 0, 0, 0.5);
@@ -243,16 +231,11 @@
 :root {
   /* the accent is the red; there is no gold */
   --accent: var(--rubric);
-  --accent-hi: var(--rubric);
   --accent-2: var(--rubric);
   --accent-ink: var(--bg);           /* text on a red field */
   --band: var(--rule);
-  --white-slip: var(--bg-2);
-  --cut-d: var(--rule);
   --cut-l: transparent;
-  --cut-deep: var(--rule);
   --veil: color-mix(in srgb, var(--bg) 70%, transparent);   /* behind a dialog: the page, dimmed like a leaf turned over it */
-  --scrim: color-mix(in srgb, var(--ink) 35%, transparent);
 
   /* surfaces: on a printed page a panel is a hairline frame on the paper, never a raised box */
   --field: transparent;
@@ -266,13 +249,6 @@
   --slab-lit: var(--bg-2);
   --moulding: 1px solid var(--rule-2);
   --moulding-in: -5px;
-  --plinth-edge: inset 0 1px 0 0 var(--ink);
-  --broken-edge: 0 0 0 0 transparent;
-  --none-shadow: 0 0 0 0 transparent;
-  /* a field to type in: a line to write on */
-  --hollow: transparent;
-  --hollow-edge: inset 0 -1px 0 0 var(--ink);
-  --hollow-focus: inset 0 -2px 0 0 var(--rubric);
   /* a rule across the page */
   --groove: var(--rule);
   --lip: transparent;
@@ -281,9 +257,6 @@
   --cut-under: inset 0 -1px 0 var(--groove);
   --cut-over: inset 0 1px 0 var(--groove);
   --cut-left: inset 1px 0 0 var(--groove);
-  --panel-cut: inset 0 0 0 1px var(--groove);
-  --panel-cut-lit: inset 0 0 0 1px var(--ink-3);
-  --ledge-lip: 0 0 0 0 transparent;
   --frame-line: 0 0 0 1px var(--rule);
   /* a call-out's edge: a red rule down its left, as a printed note in the margin */
   --inlay-left: inset 1px 0 0 var(--rubric);
@@ -298,37 +271,25 @@
   --channel: var(--rule-2);
   --channel-edge: inset 0 0 0 1px var(--rule);
   --inlay: linear-gradient(var(--rubric), var(--rubric));
-  --inlay-side: linear-gradient(var(--rubric), var(--rubric));
-  --inlay-dim: linear-gradient(var(--rule), var(--rule));
   --inlay-edge: 0 0 0 0 transparent;
-  --inlay-drop: 0 0 0 0 transparent;
-  --inlay-press: inset 0 0 0 1px var(--rule);
-  /* the bars at the top and foot of the screen: the paper itself, a hairline where they meet the page */
-  --lintel: linear-gradient(var(--bg), var(--bg));
-  --sill: linear-gradient(var(--bg), var(--bg));
-  --lintel-foot: linear-gradient(var(--rule) 0 1px, transparent 1px);
-  --sill-head: linear-gradient(var(--ink) 0 1px, transparent 1px);
-  --lintel-shadow: 0 0 0 0 transparent;
-  --sill-shadow: 0 0 0 0 transparent;
-  --gilt: linear-gradient(var(--rubric), var(--rubric));
-  --gilt-cut: drop-shadow(0 0 0 transparent);
-  --block-light: linear-gradient(transparent, transparent);
-  --lip-hi: var(--rule);
-  --tympanum: var(--bg-2);
-  --shaft: linear-gradient(var(--bg-2), var(--bg-2));
-  --flutes: none;
-  --capital: linear-gradient(var(--rule), var(--rule));
-  --capital-shadow: linear-gradient(transparent, transparent);
-  --stylobate: linear-gradient(var(--ink), var(--ink));
-  --carved-text: none;
+  /* the same lines under plain names (the quiet desk, ticket 03): the reader uses these; the older names above (cut,
+     slab, inlay, groove, channel: from the stone look) stay only for the pages not yet tidied */
+  --rule-under: inset 0 -1px 0 var(--rule);
+  --rule-over: inset 0 1px 0 var(--rule);
+  --rule-left: inset 1px 0 0 var(--rule);
+  --rule-box: inset 0 0 0 1px var(--rule);
+  --rule-round: 0 0 0 1px var(--rule);
+  --rule-band: linear-gradient(var(--rule) 0 1px, transparent 1px 2px);
+  --red-left: inset 1px 0 0 var(--rubric);
+  --ok-left: inset 1px 0 0 var(--ok);
+  --red-fill: linear-gradient(var(--rubric), var(--rubric));
+  /* a key's raised edge, a boss and its ring */
   --bezel: 0 0 0 1px var(--bg), 0 0 0 2px var(--ink-3);
   --gem-shine: none;
   --boss: var(--bg);
   --boss-edge: 0 0 0 1px var(--ink);
   --warn: var(--ochre);
   --danger: var(--rubric);
-  --glow-torch: transparent;
-  --win-wait: var(--bg-2);
 
   /* chosen things (a pressed key, the chosen tab): the ink itself, with paper letters, as the sample's .seg */
   /* red on ink: at Night the ink is light, so the red is the paper's own (each reads at 4.5 : 1 or more on its ink:
@@ -338,11 +299,9 @@
   --ink-2-on-ink: color-mix(in srgb, var(--bg) 80%, var(--ink));
   --inv-bg: var(--ink);
   --inv-fg: var(--bg);
-  --inv-edge: var(--ink);
   --sel-bg: var(--ink);
   --sel-fg: var(--bg);
   --sel-edge: var(--ink);
-  --accent-on-sel: var(--bg);
 
   /* the main button: ink with paper capitals; under the hand it turns red (the sample's .btn) */
   --btn-bg: var(--ink);
@@ -354,25 +313,9 @@
   --f-title: var(--face-didot);
   --f-body: var(--face-garamond);
   --f-label: var(--face-garamond);
-  --f-carved: var(--face-didot);
 
   /* older names for the paper and the ink, so nothing that still names them falls back to a browser colour */
   --frame: var(--bg);
-  --frame-ink: var(--ink);
-  --black: var(--bg);
-  --gold: var(--rubric);
-  --gold-hi: var(--rubric);
-  --bone: var(--ink);
-  --bone-2: var(--ink-2);
-  --bone-3: var(--ink-3);
   --red: var(--rubric);
-  --red-deep: var(--bg-2);
-  --red-chip: var(--ink);
-  --red-surface: var(--bg-2);
-  --red-surface-2: var(--bg-2);
-  --parch: var(--ink);
-  --parch-2: var(--ink-3);
-  --ochre-red: var(--rubric);
   --sage: var(--ok);
-  --patina: var(--blue);
 }

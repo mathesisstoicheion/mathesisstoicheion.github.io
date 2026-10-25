@@ -26,9 +26,6 @@
   "src/app/academy/reading/page.tsx": {
     "spacing": 4
   },
-  "src/app/academy/review/page.tsx": {
-    "spacing": 2
-  },
   "src/app/academy/studio/page.tsx": {
     "spacing": 3
   },
@@ -109,10 +106,10 @@
     "spacing": 3
   },
   "src/components/academy/Academy.module.css": {
-    "font-size": 10,
-    "spacing": 154,
-    "shadow": 2,
-    "z-index": 2,
+    "font-size": 9,
+    "spacing": 145,
+    "shadow": 1,
+    "z-index": 1,
     "motion": 20
   },
   "src/components/academy/LettersStepView.tsx": {
@@ -120,10 +117,10 @@
   },
   "src/components/academy/PathStepView.tsx": {
     "font-size": 1,
-    "spacing": 23
+    "spacing": 19
   },
   "src/components/academy/PracticeView.tsx": {
-    "spacing": 2
+    "spacing": 1
   },
   "src/components/academy/ReadingPath.tsx": {
     "spacing": 10
@@ -240,56 +237,48 @@
   },
   "src/components/reader/Echoes.module.css": {
     "font-size": 1,
-    "spacing": 27,
+    "spacing": 1,
     "motion": 8
   },
   "src/components/reader/Find.module.css": {
-    "spacing": 16,
     "z-index": 1,
     "motion": 8
   },
   "src/components/reader/Float.module.css": {
     "colour": 4,
-    "spacing": 19,
     "shadow": 4,
     "z-index": 4,
     "motion": 2
   },
   "src/components/reader/Listen.module.css": {
-    "spacing": 9,
     "shadow": 3,
     "z-index": 1
   },
   "src/components/reader/Manuscript.module.css": {
-    "spacing": 19,
+    "spacing": 1,
     "z-index": 1
   },
   "src/components/reader/Markers.module.css": {
-    "spacing": 23,
     "shadow": 3,
     "z-index": 2,
     "motion": 1
   },
   "src/components/reader/Mine.module.css": {
     "font-size": 2,
-    "spacing": 42,
+    "spacing": 1,
     "shadow": 2,
     "motion": 4
   },
   "src/components/reader/Places.module.css": {
-    "spacing": 21,
     "shadow": 3,
     "z-index": 4
   },
   "src/components/reader/Reader.module.css": {
     "font-size": 18,
-    "spacing": 198,
-    "shadow": 11,
+    "spacing": 37,
+    "shadow": 10,
     "z-index": 11,
     "motion": 9
-  },
-  "src/components/reader/Sentence.module.css": {
-    "spacing": 16
   },
   "src/components/search/Constructions.module.css": {
     "spacing": 21
@@ -351,7 +340,7 @@
     "motion": 1
   },
   "src/components/treasury/WordStudy.module.css": {
-    "spacing": 75,
+    "spacing": 74,
     "z-index": 1,
     "motion": 1
   },
@@ -377,8 +366,5 @@
     "font-size": 4,
     "spacing": 13,
     "radius": 1
-  },
-  "src/lib/use-swipe-card.ts": {
-    "motion": 2
   }
 }

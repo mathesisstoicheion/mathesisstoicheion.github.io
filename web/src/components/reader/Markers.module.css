@@ -5,25 +5,25 @@
 .strip { position: sticky; z-index: 25; height: 0; pointer-events: none; overflow-x: clip; }
 /* ScrollMarkers.tsx sets its top to var(--hdr-vis): 0 while the header is tucked away (lib/header.ts) */
 :global(html[data-hdr="hidden"]) .strip { --hdr-vis: 0px; }
-.track { position: absolute; right: 2px; top: 0; width: 14px; pointer-events: none; }
+.track { position: absolute; right: var(--hair-2); top: 0; width: 14px; pointer-events: none; }
 .marker {
-  position: absolute; right: 0; width: 12px; height: 6px; margin-top: -3px; padding: 0; border: 0; border-radius: var(--radius);
+  position: absolute; right: 0; width: 12px; height: 6px; translate: 0 -50%; padding: 0; border: 0; border-radius: var(--radius);
   background: var(--accent); pointer-events: auto; cursor: pointer; opacity: 0.8;
   transition: opacity var(--dur-quick) var(--ease); animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(var(--i) * 25ms);
 }
 /* a bigger target than the mark itself, grown inwards only (not past the edge of the screen) */
-.marker::before { content: ""; position: absolute; inset: -5px 0 -5px -8px; }
+.marker::before { content: ""; position: absolute; inset: calc(-1 * var(--space-1)) 0 calc(-1 * var(--space-1)) calc(-1 * var(--space-2)); }
 .marker:hover, .marker:focus-visible { opacity: 1; }
 .marker:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 @keyframes ink-in { from { opacity: 0; } }
 
 .marker[data-kind="note"], .sample[data-kind="note"] { background: var(--accent); }
-.marker[data-kind="bookmark"], .sample[data-kind="bookmark"] { background: var(--ink); height: 8px; margin-top: -4px; width: 8px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%); }
-.marker[data-kind="favourite"], .sample[data-kind="favourite"] { background: var(--ochre); width: 8px; height: 8px; margin-top: -4px; transform: rotate(45deg); border-radius: var(--radius); }
-.marker[data-kind="xref"], .sample[data-kind="xref"] { background: transparent; border: 2px solid var(--blue); width: 9px; height: 9px; margin-top: -4.5px; border-radius: var(--radius-round); }
-.marker[data-kind="left"], .sample[data-kind="left"] { background: var(--ink-2); width: 14px; height: 2px; margin-top: -1px; box-shadow: 0 0 0 1px var(--bg); }
-.marker[data-kind="echo"], .sample[data-kind="echo"] { background: var(--ochre); width: 5px; height: 4px; right: 9px; opacity: 0.9; }
-.marker[data-kind="highlight"], .sample[data-kind="highlight"] { width: 4px; height: 10px; margin-top: -5px; right: 4px; background: var(--hl, var(--pen-ochre)); }
+.marker[data-kind="bookmark"], .sample[data-kind="bookmark"] { background: var(--ink); height: 8px; width: 8px; clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 70%, 0 100%); }
+.marker[data-kind="favourite"], .sample[data-kind="favourite"] { background: var(--ochre); width: 8px; height: 8px; transform: rotate(45deg); border-radius: var(--radius); }
+.marker[data-kind="xref"], .sample[data-kind="xref"] { background: transparent; border: 2px solid var(--blue); width: 9px; height: 9px; border-radius: var(--radius-round); }
+.marker[data-kind="left"], .sample[data-kind="left"] { background: var(--ink-2); width: 14px; height: 2px; box-shadow: 0 0 0 1px var(--bg); }
+.marker[data-kind="echo"], .sample[data-kind="echo"] { background: var(--ochre); width: 5px; height: 4px; right: var(--space-2); opacity: 0.9; }
+.marker[data-kind="highlight"], .sample[data-kind="highlight"] { width: 4px; height: 10px; right: var(--space-1); background: var(--hl, var(--pen-ochre)); }
 .marker[data-colour="red"] { --hl: var(--pen-red); }
 .marker[data-colour="ochre"] { --hl: var(--pen-ochre); }
 .marker[data-colour="blue"] { --hl: var(--pen-blue); }
@@ -31,8 +31,8 @@
 
 /* what a mark is: a slip of ink with paper letters beside it */
 .tip {
-  position: absolute; right: 22px; width: max-content; max-width: min(320px, 70vw); display: grid; gap: 3px;
-  padding: 8px 11px; background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); font-size: var(--step--1); line-height: 1.35;
+  position: absolute; right: var(--space-5); width: max-content; max-width: min(320px, 70vw); display: grid; gap: var(--space-1);
+  padding: var(--space-2) var(--space-3); background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); font-size: var(--step--1); line-height: 1.35;
   box-shadow: 0 12px 28px -14px var(--shadow); pointer-events: none; animation: ink-in var(--dur-quick) backwards;
 }
 .tip :global(.label) { color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); font-size: var(--step--2); }
@@ -41,7 +41,7 @@
 /* the key to the marks: a printed button, and a leaf of paper under it */
 .legendWrap { position: relative; }
 .legendBtn {
-  display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 12px; background: transparent; color: var(--ink);
+  display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); background: transparent; color: var(--ink);
   border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .legendBtn:hover { color: var(--rubric); border-color: var(--rubric); }
@@ -49,12 +49,12 @@
 .legendIcon { width: 6px; height: 16px; background: linear-gradient(var(--accent) 0 3px, transparent 3px 6px, var(--ink) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); border-radius: var(--radius); }
 .legendBtn[aria-expanded="true"] .legendIcon { background: linear-gradient(var(--accent-on-ink) 0 3px, transparent 3px 6px, var(--sel-fg) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); }
 .legend {
-  position: absolute; z-index: 20; top: calc(100% + 6px); right: 0; width: 270px; display: grid; gap: 6px; padding: 12px 14px;
+  position: absolute; z-index: 20; top: calc(100% + var(--space-1)); right: 0; width: 270px; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-3);
   background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: 0 20px 40px -20px var(--shadow);
   animation: ink-in var(--dur) var(--ease) backwards;
 }
 .legend[data-to-right] { right: auto; left: 0; }
-.legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: 8px; align-items: center; font-size: var(--step--1); }
+.legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: var(--space-2); align-items: center; font-size: var(--step--1); }
 .legend small, .legendInline small { color: var(--ink-2); font-variant-numeric: tabular-nums; }
 /* in the reader's More menu (Reader.tsx), which is already a panel: the legend set straight in it */
 .legendInline { display: grid; gap: var(--space-2); }

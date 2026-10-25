@@ -1,25 +1,25 @@
 /* How it was written: the passage re-set step by step, then a real manuscript page, shown as a photographic plate in its
    real colours (the printed-page redesign: nothing tinted, nothing glows; a step inks the passage in again). */
 .title { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); }
-.src { font-size: var(--step--2); line-height: 0; margin-left: 1px; }   /* as the source marks everywhere (Stoa.module.css .srcMark) */
+.src { font-size: var(--step--2); line-height: 0; margin-left: var(--hair); }   /* as the source marks everywhere (Stoa.module.css .srcMark) */
 .src a { color: var(--accent); text-decoration: none; }
 
-.stages { display: grid; gap: 12px; }
+.stages { display: grid; gap: var(--space-3); }
 .passage { margin: 0; }
 .steps { justify-self: stretch; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; }
-.steps > button { padding: 8px 6px; font-size: var(--step--1); white-space: normal; line-height: 1.15; }
+.steps > button { padding: var(--space-2) var(--space-1); font-size: var(--step--1); white-space: normal; line-height: 1.15; }
 .steps > button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
 .steps > button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
 
 /* the page: the edition's own paper at first, a scribe's parchment from the capitals on */
 .page {
   --ms-ink: var(--ink);
-  padding: 16px 18px; border: 1px solid var(--rule); border-radius: var(--radius); background-color: transparent;
+  padding: var(--space-4) var(--space-4); border: 1px solid var(--rule); border-radius: var(--radius); background-color: transparent;
   font-family: var(--f-greek); font-size: var(--step-sub); line-height: 1.6; color: var(--ms-ink);
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .page p { margin: 0; }
-.page p + p { margin-top: 2px; }
+.page p + p { margin-top: var(--hair-2); }
 .w { display: inline-block; }
 .page[data-stage="2"], .page[data-stage="3"] { --ms-ink: var(--vellum-ink); background-color: var(--vellum); border-color: var(--vellum); letter-spacing: 0.05em; }
 .page[data-stage="3"] { word-break: break-all; }
@@ -28,7 +28,7 @@
 
 
 /* the manuscript: a plate on its mount */
-.ms { display: grid; gap: 8px; padding-top: 14px; box-shadow: var(--cut-over); }
+.ms { display: grid; gap: var(--space-2); padding-top: var(--space-3); box-shadow: var(--rule-over); }
 .msName { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); margin: 0; }
 .msMeta { margin: 0; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
 .msAbout { margin: 0; font-size: var(--step--1); line-height: 1.55; }
@@ -37,7 +37,7 @@
 /* phones: one finger scrolls the panel past the photograph (the viewer would take every touch); two move and zoom it */
 @media (pointer: coarse) { .viewer, .viewer * { touch-action: pan-y !important; } }
 .touchHint {
-  position: absolute; z-index: 5; left: 50%; top: 42%; translate: -50% -50%; margin: 0; padding: 10px 16px; border-radius: var(--radius); pointer-events: none;
+  position: absolute; z-index: 5; left: 50%; top: 42%; translate: -50% -50%; margin: 0; padding: var(--space-2) var(--space-4); border-radius: var(--radius); pointer-events: none;
   background: var(--inv-bg); color: var(--inv-fg); font-family: var(--f-label); letter-spacing: 0.03em; white-space: nowrap;
   animation: ink-in var(--dur) var(--ease) both;
 }
@@ -45,11 +45,11 @@
 .wait { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; color: var(--ink-2); font-family: var(--f-label); font-style: italic; }
 /* the viewer's tools: a slip of ink along the plate's foot, paper letters on it */
 .tools {
-  position: absolute; left: 8px; right: 8px; bottom: 8px; display: flex; align-items: center; gap: 4px;
-  padding: 4px; border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg);
+  position: absolute; left: var(--space-2); right: var(--space-2); bottom: var(--space-2); display: flex; align-items: center; gap: var(--space-1);
+  padding: var(--space-1); border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg);
 }
 .tools button {
-  min-width: 36px; height: 36px; padding: 0 8px; border: 0; border-radius: var(--radius);
+  min-width: 36px; height: 36px; padding: 0 var(--space-2); border: 0; border-radius: var(--radius);
   background: transparent; color: inherit; font-size: var(--step-sub); cursor: pointer; transition: color var(--dur-quick) var(--ease);
 }
 .tools button:hover:not(:disabled) { color: var(--accent-on-ink); }
@@ -63,4 +63,4 @@
 @keyframes ink-in { from { opacity: 0; } to { opacity: 1; } }
 .err { margin: 0; color: var(--accent); font-size: var(--step--1); }
 .sources { font-size: var(--step--1); color: var(--ink-2); }
-.sources ol { margin: 6px 0 0; padding-left: 1.3em; }
+.sources ol { margin: var(--space-1) 0 0; padding-left: 1.3em; }

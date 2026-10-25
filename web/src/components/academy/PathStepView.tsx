@@ -213,7 +213,7 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
         ))}
       </p>
       {c && (
-        <div className={w.card} aria-live="polite" style={{ display: "grid", gap: 8 }}>
+        <div className={w.card} aria-live="polite" style={{ display: "grid", gap: "var(--space-2)" }}>
           <p lang="grc" className={styles.revealGr} style={{ fontSize: "clamp(1.8rem, 6vw, 2.6rem)" }}>{c.form}</p>
           {!open && <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />}
           {open && (
@@ -237,7 +237,7 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
 /** Its children, and a call to `onSeen` once they have been shown. */
 function SeenOnce({ onSeen, children }: { onSeen: () => void; children: React.ReactNode }) {
   useEffect(() => { onSeen(); }, [onSeen]);
-  return <div style={{ display: "grid", gap: 8 }}>{children}</div>;
+  return <div style={{ display: "grid", gap: "var(--space-2)" }}>{children}</div>;
 }
 
 /** Match each word to its meaning, in a fixed shuffled order (the same each visit); distractors come from `pool`. */
@@ -418,7 +418,7 @@ export function UnitView({ unit, level, known, pool, onDone, doneLabel }:
     if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ block: "start", behavior: prefersReducedMotion(useSettings.getState().motion) ? "auto" : "smooth" });
   };
   return (
-    <div ref={top} style={{ display: "grid", gap: 16, scrollMarginTop: 90 }}>
+    <div ref={top} style={{ display: "grid", gap: "var(--space-4)", scrollMarginTop: 90 }}>
       <div className={styles.seg} role="radiogroup" aria-label="Stages of this lesson" style={{ justifySelf: "start" }}>
         {stages.map((i, j) => (
           <button key={i} type="button" role="radio" aria-checked={stage === i} disabled={i > reached} onClick={() => go(i)}
@@ -465,7 +465,7 @@ export default function PathStepView({ step }: { step: PathStep }) {
 
   return (
     <article className={styles.lesson}>
-      <section style={{ display: "grid", gap: 12 }}>
+      <section style={{ display: "grid", gap: "var(--space-3)" }}>
         <span className="label">Where you are</span>
         {step.where.map((t, i) => <p key={i} className={styles.lp}><Rich text={t} /></p>)}
         {level > 0 && idx % 3 === 0 && <p className={styles.small}>{LEVEL_NOTE[level]} The help you have outgrown is kept under <Link href="/academy/reading#completed" transitionTypes={["page-turn"]}>Lessons completed</Link>.</p>}
@@ -520,7 +520,7 @@ export default function PathStepView({ step }: { step: PathStep }) {
 
       <details>
         <summary className="label" style={{ cursor: "pointer" }}>Extras, if you are curious: the places and people of this lesson</summary>
-        <nav className={styles.guideLinks} aria-label="Extras" style={{ marginTop: 12 }}>
+        <nav className={styles.guideLinks} aria-label="Extras" style={{ marginTop: "var(--space-3)" }}>
           {step.links.map((l) => (
             <Link key={l.href} href={l.href} transitionTypes={["page-turn"]} className={styles.guideLink}>
               <b>{l.label}</b>{l.note && <span className="muted">{l.note}</span>}<span aria-hidden="true" className={styles.guideArrow}>→</span>
@@ -537,7 +537,7 @@ export function AlphabetFold({ label = "Forgot how a letter is read? The whole a
   return (
     <details onToggle={(e) => setOpen((e.target as HTMLDetailsElement).open)}>
       <summary className="label" style={{ cursor: "pointer" }}>{label}</summary>
-      {open && <div style={{ marginTop: 12 }}><AlphabetGlance /></div>}
+      {open && <div style={{ marginTop: "var(--space-3)" }}><AlphabetGlance /></div>}
     </details>
   );
 }

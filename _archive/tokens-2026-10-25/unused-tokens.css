@@ -1,0 +1,87 @@
+/* Tokens moved out of web/src/styles/tokens.css on 2026-10-25 (the quiet desk, ticket 03): nothing on the site used
+   them any more. Most are names from earlier looks (stone and torch, gold and lamplight: lintel, tympanum, flutes,
+   glow-torch, gold, bone, parch…). Kept here, by the block they stood in, in case one is wanted back. */
+:root {
+  --paper-3: #ddd0b9;   /* was line 24 */
+  --paper-faint: #8a7b68;   /* was line 31 */
+  --night-3: #332c23;   /* was line 37 */
+  --face-display: var(--face-garamond);   /* was line 92 */
+  --face-text: var(--face-garamond);   /* was line 93 */
+  --face-mono: var(--face-garamond);   /* was line 94 */
+  --face-mark: var(--face-didot);   /* was line 95 */
+  --face-carved: var(--face-didot);   /* was line 96 */
+  --ease-out: var(--ease);   /* was line 101 */
+  --ease-cut: var(--ease);   /* was line 102 */
+  --ease-enter: var(--ease);   /* was line 103 */
+  --dur-enter: var(--ink-in);   /* was line 109 */
+  --dur-fade: 0.9s;   /* was line 111 */
+  --radius-arch: 0;   /* was line 124 */
+  --tex: none;   /* was line 155 */
+  --accent-hi: var(--rubric);   /* was line 252 */
+  --white-slip: var(--bg-2);   /* was line 256 */
+  --cut-d: var(--rule);   /* was line 257 */
+  --cut-deep: var(--rule);   /* was line 259 */
+  --scrim: color-mix(in srgb, var(--ink) 35%, transparent);   /* was line 261 */
+  --plinth-edge: inset 0 1px 0 0 var(--ink);   /* was line 275 */
+  --broken-edge: 0 0 0 0 transparent;   /* was line 276 */
+  --none-shadow: 0 0 0 0 transparent;   /* was line 277 */
+  --hollow: transparent;   /* was line 279 */
+  --hollow-edge: inset 0 -1px 0 0 var(--ink);   /* was line 280 */
+  --hollow-focus: inset 0 -2px 0 0 var(--rubric);   /* was line 281 */
+  --panel-cut: inset 0 0 0 1px var(--groove);   /* was line 290 */
+  --panel-cut-lit: inset 0 0 0 1px var(--ink-3);   /* was line 291 */
+  --ledge-lip: 0 0 0 0 transparent;   /* was line 292 */
+  --inlay-side: linear-gradient(var(--rubric), var(--rubric));   /* was line 307 */
+  --inlay-dim: linear-gradient(var(--rule), var(--rule));   /* was line 308 */
+  --inlay-drop: 0 0 0 0 transparent;   /* was line 310 */
+  --inlay-press: inset 0 0 0 1px var(--rule);   /* was line 311 */
+  --lintel: linear-gradient(var(--bg), var(--bg));   /* was line 324 */
+  --sill: linear-gradient(var(--bg), var(--bg));   /* was line 325 */
+  --lintel-foot: linear-gradient(var(--rule) 0 1px, transparent 1px);   /* was line 326 */
+  --sill-head: linear-gradient(var(--ink) 0 1px, transparent 1px);   /* was line 327 */
+  --lintel-shadow: 0 0 0 0 transparent;   /* was line 328 */
+  --sill-shadow: 0 0 0 0 transparent;   /* was line 329 */
+  --gilt: linear-gradient(var(--rubric), var(--rubric));   /* was line 330 */
+  --gilt-cut: drop-shadow(0 0 0 transparent);   /* was line 331 */
+  --block-light: linear-gradient(transparent, transparent);   /* was line 332 */
+  --lip-hi: var(--rule);   /* was line 333 */
+  --tympanum: var(--bg-2);   /* was line 334 */
+  --shaft: linear-gradient(var(--bg-2), var(--bg-2));   /* was line 335 */
+  --flutes: none;   /* was line 336 */
+  --capital: linear-gradient(var(--rule), var(--rule));   /* was line 337 */
+  --capital-shadow: linear-gradient(transparent, transparent);   /* was line 338 */
+  --stylobate: linear-gradient(var(--ink), var(--ink));   /* was line 339 */
+  --carved-text: none;   /* was line 340 */
+  --glow-torch: transparent;   /* was line 347 */
+  --win-wait: var(--bg-2);   /* was line 348 */
+  --inv-edge: var(--ink);   /* was line 358 */
+  --accent-on-sel: var(--bg);   /* was line 362 */
+  --f-carved: var(--face-didot);   /* was line 374 */
+  --frame-ink: var(--ink);   /* was line 378 */
+  --black: var(--bg);   /* was line 379 */
+  --gold: var(--rubric);   /* was line 380 */
+  --gold-hi: var(--rubric);   /* was line 381 */
+  --bone: var(--ink);   /* was line 382 */
+  --bone-2: var(--ink-2);   /* was line 383 */
+  --bone-3: var(--ink-3);   /* was line 384 */
+  --red-deep: var(--bg-2);   /* was line 386 */
+  --red-chip: var(--ink);   /* was line 387 */
+  --red-surface: var(--bg-2);   /* was line 388 */
+  --red-surface-2: var(--bg-2);   /* was line 389 */
+  --parch: var(--ink);   /* was line 390 */
+  --parch-2: var(--ink-3);   /* was line 391 */
+  --ochre-red: var(--rubric);   /* was line 392 */
+  --patina: var(--blue);   /* was line 394 */
+}
+:root[data-theme="paper"] {
+  --surface-2: var(--paper-2);   /* was line 167 */
+  --faint: var(--paper-faint);   /* was line 171 */
+}
+:root:not([data-theme="paper"]) {
+  --surface-2: var(--night-2);   /* was line 197 */
+  --faint: var(--night-faint);   /* was line 198 */
+}
+:root[data-theme="night"] {
+  --surface-2: var(--night-2);   /* was line 210 */
+  --faint: var(--night-faint);   /* was line 211 */
+}
