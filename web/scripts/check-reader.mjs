@@ -13,6 +13,8 @@
 //             Places…) drawn as switches; nothing on the Tools button to say a mode is on
 //   word    - the look-up: the same meaning twice, a dead-end "No Wiktionary entry", the reader's English hidden behind it
 //   bar     - on a phone, the bar in more than one row, or the work's title cut short
+//   photos  - a photograph in the reader: on a book's title page (the Iliad had the Mask of Agamemnon) or on the reader with
+//             no book open (the owner, 2026-10-26: "no useless photos plastered everywhere")
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, and answers Wiktionary with "no entry" so that case is seen.
 // usage: node web/scripts/check-reader.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -211,6 +213,19 @@ for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1
     if (bar.h > 64) found.push(`bar ${tag}: the reader's bar is ${Math.round(bar.h)} px tall (in more than one row)`);
     if (bar.cut || bar.width < 60) found.push(`bar ${tag}: the work's title is cut short ("${bar.title}", ${Math.round(bar.width)} px)`);
   }
+  await ctx.close();
+}
+
+// ---- photos: none in the reader
+for (const path of ["/read?w=tlg0012.tlg001", "/read"]) {
+  const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
+  const page = await ctx.newPage();
+  await page.goto(base + path);
+  await page.waitForSelector(path === "/read" ? "[data-nobook]" : "article [data-w]", { timeout: 45000 });
+  await page.waitForTimeout(1500);
+  const pics = await page.evaluate(() => [...document.querySelectorAll("main img, main picture, [data-nobook] img, header[class*='tp'] img")]
+    .filter((i) => i.getBoundingClientRect().width > 40).map((i) => i.getAttribute("src") ?? i.querySelector("img")?.getAttribute("src") ?? "?"));
+  for (const p of new Set(pics)) found.push(`photos ${path}: a photograph in the reader (${p.split("/").pop()})`);
   await ctx.close();
 }
 

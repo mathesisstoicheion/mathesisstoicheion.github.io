@@ -1,10 +1,11 @@
 // The word look-up never covers the line being read (redesign SPEC.md 4.3 and 7; decision 4), on Plato's Apology with
 // Fowler's English. It lists:
 //   margin - one book on a computer (1280 × 900 on Paper, 1440 × 900 on Night, and 1440 × 900 with Find open beside the
-//            text): the look-up is not written in the margin beside the word's line (its top more than a line from the
-//            word's, or its left edge over the text), it is narrower than 280 px (the quiet desk, ticket 04: about 300),
-//            it reaches under the panel beside it, the word moves when it is looked up, Next does not keep it beside the
-//            next word's line, or Escape does not close it and give the keyboard back to the word
+//            text): the look-up is not a window floating over the right margin (fixed to the screen, its left edge clear
+//            of the text, the owner, 2026-10-26: "a floating window that opens on the right"), it moves when the text is
+//            scrolled, it covers the reader's bar, it is narrower than 280 px (the quiet desk, ticket 04: about 300), it
+//            reaches under the panel beside it, the word moves when it is looked up, Next does not keep it in place, or
+//            Escape does not close it and give the keyboard back to the word
 //   sheet  - a narrower window (1000 × 800), a phone (390 × 844), and two books side by side (1280 × 900): the look-up's sheet
 //            reaches over the word's line, when it opens low on the screen, at its full height, or on the next word; or it
 //            opens higher than 27% of the screen (the quiet desk: it rests at about a quarter)
@@ -52,18 +53,18 @@ const boxes = (page) => page.evaluate((LOOKUP) => {
   const row = sel?.closest("section[data-key]");
   const r = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height }; };
   const side = [...document.querySelectorAll("aside")].find((a) => a !== look && getComputedStyle(a).position === "fixed");
-  return { word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
+  return { bar: r(document.querySelector("[class*='rbar']")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
 }, LOOKUP);
 
 // ---- margin: one book on a computer
 const inMargin = (tag, b) => {
   if (!b.look) { found.push(`margin ${tag}: no look-up opened`); return; }
-  if (Math.abs(b.look.top - b.word.top) > b.word.height) found.push(`margin ${tag}: the look-up's top is ${Math.round(b.look.top - b.word.top)} px from the word's line (it belongs beside it, in the margin)`);
   const over = Math.max(b.tr?.right ?? 0, b.grc?.right ?? 0);
   if (b.look.left < over - 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(over - b.look.left)} px over the text (it belongs in the margin)`);
+  if (b.bar && b.look.top < b.bar.bottom - 1) found.push(`margin ${tag}: the look-up covers the reader's bar by ${Math.round(b.bar.bottom - b.look.top)} px`);
   if (b.look.right - b.look.left < 280) found.push(`margin ${tag}: the look-up is ${Math.round(b.look.right - b.look.left)} px wide (at least 280)`);
   if (b.side && b.look.right > b.side.left + 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(b.look.right - b.side.left)} px under the panel beside the text`);
-  if (b.lookPos === "fixed") found.push(`margin ${tag}: the look-up is fixed to the screen, not written in the page's margin`);
+  if (b.lookPos !== "fixed") found.push(`margin ${tag}: the look-up is not fixed to the screen (it scrolls away with the text)`);
 };
 for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [1440, 900, "light", true]]) {
   const tag = `${w}px ${scheme === "dark" ? "Night" : "Paper"}${find ? " with Find open" : ""}`;
@@ -73,7 +74,8 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     await page.waitForSelector('aside[aria-label^="Find"]', { timeout: 10000 }).catch(() => found.push(`margin ${tag}: Find did not open`));
     await page.waitForTimeout(900);
   }
-  for (const frac of [0.3, 0.75]) {
+  // (with Find open the English stands under the Greek, so the lower word is looked for a little higher)
+  for (const frac of find ? [0.3, 0.5] : [0.3, 0.75]) {
     await page.evaluate(() => scrollTo({ top: innerHeight * 1.4, behavior: "instant" }));
     await page.waitForTimeout(600);
     const i = await wordAt(page, frac);
@@ -88,6 +90,13 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     if (Math.abs(after.y - before.y) > 2) found.push(`margin ${tag}: the word moved ${Math.round(after.y - before.y)} px when it was looked up`);
     inMargin(tag, b);
     if (!b.look) continue;
+    // the text scrolls under the window; the window stays where it is
+    await page.mouse.move(200, h / 2);
+    await page.mouse.wheel(0, 300);
+    await page.waitForTimeout(700);
+    const s2 = await boxes(page);
+    if (!s2.look) found.push(`margin ${tag}: the look-up closed when the text was scrolled`);
+    else if (Math.abs(s2.look.top - b.look.top) > 2 || Math.abs(s2.look.left - b.look.left) > 2) found.push(`margin ${tag}: the look-up moved ${Math.round(s2.look.top - b.look.top)} px when the text was scrolled`);
     const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
     if (await next.count()) { await next.click(); await page.waitForTimeout(900); inMargin(`${tag}, on the next word`, await boxes(page)); }
     else found.push(`margin ${tag}: no Next word button`);
@@ -135,4 +144,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a note at least 280 px wide in the margin beside its line on a computer (with a panel open too), and a low sheet that stops below the line elsewhere");
+console.log("The look-up: a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");

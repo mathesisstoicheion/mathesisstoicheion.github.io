@@ -21,7 +21,7 @@ Spec: `../spec.md`, "First opening". User stories 1, 2, 7
 - [ ] The owner has looked at it and given the go.
 
 ## Comments
-- Added 2026-10-25 (the owner, in the project chat, 04:38 UTC: "Get rid of all random photos, placed everywhere. Photos
+- DONE early, with ticket 04 (2026-10-26). Added 2026-10-25 (the owner, in the project chat, 04:38 UTC: "Get rid of all random photos, placed everywhere. Photos
   should only load where they are relevant"): with this ticket, drop the reader's two decorative photographs as well,
   the title page's frontispiece (`ReaderCover.tsx`, the Plate from WORK_PLATES / AUTHOR_PLATES) and the empty reader's
   head (`Reader.tsx`, PageHead piece "hand-with-scroll"). The rest of the site is done on branch

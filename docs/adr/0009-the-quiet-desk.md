@@ -12,9 +12,10 @@ Context:
 - The spec is `.scratch/reader-redesign/spec.md`, and the tickets are in `.scratch/reader-redesign/issues/`.
 
 Decision (what changes from 0008, for the reader only):
-1. Decision 4 becomes one placement per device. At 1100 px wide or more, the look-up is a note in the margin beside
-   the line, about 300 px wide, with a thin line to the word. Below 1100 px it is a low sheet over about a quarter of
-   the screen. The other placements go.
+1. Decision 4 becomes one placement per device. At 1100 px wide or more, the look-up is a window about 300 px wide
+   over the right margin, fixed to the screen so that the text scrolls while it stays (the owner, 2026-10-26, after
+   trying a note level with the line). Below 1100 px it is a low sheet over about a quarter of the screen. The other
+   placements go.
 2. Decision 5 becomes Greek alone by default. Each passage has "Show the English", and Aa still offers Both.
 3. Decision 7, in the reader: a book opens on its text under a one-line title. The title page and its photograph show
    only the first time that book is opened.
@@ -32,3 +33,5 @@ Consequences:
   fails if a new one is not.
 - Code comments cite "the quiet desk" and a ticket number for these decisions.
 - 0008 still governs the rest of the site, including its photographs, until a later decision changes them.
+- The reader shows no photographs (the owner, 2026-10-26): ADR 0008's frontispiece for each book goes, and with it the
+  red first line of a book (its rubric).

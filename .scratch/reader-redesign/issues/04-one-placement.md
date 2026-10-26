@@ -39,9 +39,6 @@ Spec: `../spec.md`, "Placement". User stories 10 to 15, 22
   The look-up no longer takes the place of the panel beside the text; Find, Vocabulary and the rest stay open beside
   it. With a panel open, the English goes under the Greek, so that the Greek is not squeezed between the note and the
   panel (at 1440 px with Find open the Greek is about 470 px wide; at 1100 px, about 250).
-- A word picked from the Vocabulary list, which is not on the page, is written at the top of the margin in view.
-- The thin line runs from the last word on the tapped line to the note, as in mockup B. It is left out where the
-  English stands between them.
 - The sheet rests at a quarter of the screen (`clamp(calc(2.25 * var(--space-8)), 25dvh, 400px)`, 180 to 400 px): 211 px on a 390 × 844 phone. It still
   drags up for more and down to close; it still never rises over the tapped line.
 - The tapped word: `--word-on`, a soft tone of the paper (#e4d8c2, from mockup B) in Paper and #3a3127 in Night, in
@@ -50,4 +47,16 @@ Spec: `../spec.md`, "Placement". User stories 10 to 15, 22
   46% of the screen tall), and passes now.
 - Found on the way, not changed (older): at 1100 to 1279 px the Find panel's content is about 60 px wider than the
   panel, so its right edge is cut off. For ticket 11.
+- The owner's look, 2026-10-26: "It looks good", with these changes, all made:
+  - "the lookup itself should open from the right side of the page and hold its place, so to let you scroll the text,
+    whilst still having the word look-up". The note is now a window fixed to the screen over the right margin, under
+    the reader's bar; it slides in from the right. It is no longer level with the tapped line, so the thin line to it
+    is gone; the word keeps its highlight. Only the look-up changed: the other panels stay as they were.
+  - "make the word look-up pretty": mockup B's order and type in the window (the tapped form small with its arrows,
+    the dictionary form large, the grammar, the meaning in the reading type, the certainty label unboxed, each part
+    under a hairline, the links as quiet words). The two layers and "More about it" are still ticket 05.
+  - "why is the first sentence red?": the red first line (the printed page's rubric) is gone from the reader.
+  - "no useless photos plastered everywhere": the title page's photograph and the empty reader's are gone now, not
+    with ticket 08. `check-reader` fails on a photograph in the reader (it found both on the old code).
+  - `check-lookup` now fails on a look-up that scrolls away with the text or covers the reader's bar.
 

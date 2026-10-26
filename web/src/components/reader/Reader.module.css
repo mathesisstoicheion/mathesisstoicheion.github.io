@@ -759,7 +759,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tpEd .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; }
 
 /* the passages (the sample's .sec): the number in red in the left margin, the Greek, the English; on a wide screen a margin
-   at the right, kept clear for the look-up. The first lines of a page are red, as a printed book begins a chapter. */
+   at the right, kept clear for the look-up. (The red first line is gone: the quiet desk, the owner 2026-10-26.) */
 .single { position: relative; }   /* the look-up in the margin is placed within it */
 .single .text { padding-block: 0 var(--space-5); margin-top: 0; }
 .single .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(var(--space-5), 3vw, var(--space-6)); padding-block: var(--space-4) var(--space-5); }
@@ -782,8 +782,6 @@ p.translit { margin: -0.3em 0 0.8em; }
   }
   .single.withPanel .tr, .single.withPanel .notes { grid-column: 2; }
 }
-.single .row:first-child .grc > [data-u]:first-child > .p:first-child::first-line { color: var(--rubric); }
-.single .row:first-child .grc > [data-u]:first-child > .line:first-child .lt { color: var(--rubric); }
 @media (max-width: 900px) and (min-width: 761px) {
   .single .tr { grid-column: auto; margin-top: 0; }
 }
@@ -815,34 +813,47 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* ============================================================ the word look-up (WordPanel.tsx), placed by Reader.tsx's
    placeWord (decision 4: it never covers the Greek being read) */
 
-/* in the margin, beside the word's line (one book on a wide screen): a printed note, a red rule down its left, the word in
-   red, its dictionary form, the grammar, the meaning in italic, then the dictionary. It inks in where it stands. */
+/* on a computer: a window over the right margin, fixed to the screen, so that the text scrolls under the eye while it stays
+   (the owner, 2026-10-26). It slides in from the right. Inside, in the order of mockup B: the word tapped, small, with its
+   arrows; the dictionary form, large; the kind of word and its grammar; the meaning in the reading type; then the rest,
+   each part under a hairline. Links are quiet words, not framed buttons. */
 .panel.wordNote {
-  position: absolute; z-index: 6; right: auto; bottom: auto; max-height: calc(100dvh - var(--bar-h, 59px) - var(--space-6));
+  right: auto; bottom: auto; width: var(--margin-note);
+  top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px) + var(--space-4));   /* under the reader's bar */
+  max-height: calc(100dvh - var(--bar-h, var(--space-7)) - env(safe-area-inset-top, 0px) - 2 * var(--space-4));
   overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-  gap: var(--space-3); padding: var(--space-1) var(--space-1) var(--space-1) var(--space-4); background: var(--bg); box-shadow: inset 1px 0 0 var(--rubric);
-  font-size: var(--step--1); line-height: 1.45;
-  animation: note-in 0.7s var(--ease) backwards;
+  gap: var(--space-4); padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--bg); box-shadow: var(--rule-box), -24px 0 48px -40px var(--shadow);
+  font-size: var(--step--1); line-height: 1.5;
+  animation: from-right var(--dur-slow) var(--ease) backwards;
 }
-@keyframes note-in { from { opacity: 0; filter: blur(2px); } }
-/* the thin line from the end of the word's line to its note (mockup B) */
-.lead { position: absolute; height: var(--hair); background: var(--rule); pointer-events: none; animation: note-in var(--dur-slow) var(--ease) backwards; }
-.wordNote .panelHead { align-items: center; gap: var(--space-1); }
-.wordNote .pw { flex: 1; min-width: 0; font-size: var(--step-1); line-height: 1.3; overflow-wrap: anywhere; }
+@keyframes from-right { from { opacity: 0; translate: var(--space-6) 0; } }
+.wordNote .panelHead { align-items: center; gap: var(--space-1); padding-bottom: var(--space-2); box-shadow: var(--rule-under); }
+.wordNote .pw { flex: 1; min-width: 0; font-size: var(--step-sub); line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
 .wordNote .stepBtn {
-  display: grid; place-items: center; flex: none; min-width: 28px; width: 28px; height: 28px; padding: 0; background: transparent; border: 0;
+  display: grid; place-items: center; flex: none; min-width: var(--space-6); width: var(--space-6); height: var(--space-6); padding: 0; background: transparent; border: 0;
   color: var(--ink-3); font-size: var(--step-1); line-height: 1; transition: color var(--dur-quick) var(--ease);
 }
 .wordNote .stepBtn:hover { color: var(--rubric); }
-.wordNote .x { min-width: 28px; width: 28px; height: 28px; font-size: var(--step-1); }
-.wordNote .sec { gap: var(--space-1); }
+.wordNote .x { min-width: var(--space-6); width: var(--space-6); height: var(--space-6); font-size: var(--step-1); }
+.wordNote .sec { gap: var(--space-2); }
+.wordNote .sec + .sec { padding-top: var(--space-4); box-shadow: var(--rule-over); }
 .wordNote .sec h3 { font-size: var(--step--2); letter-spacing: 0.16em; color: var(--ink-3); }
-.wordNote .lemmaBig { font-size: var(--step-0); color: var(--ink-2); }
-.wordNote .parse { font-size: var(--step--1); }
-.wordNote .quick { font: italic 500 var(--step-sub) / 1.3 var(--f-body); color: var(--ink); }
+/* "In this passage": the first part needs no heading, the dictionary form says what it is */
+.wordNote .here { gap: var(--space-2); }
+.wordNote .sec:first-child > h3 { display: none; }
+.wordNote .lemmaBig { font-size: var(--step-3); line-height: 1.1; color: var(--ink); }
+.wordNote .parse { font-size: var(--step--1); color: var(--ink-2); }
+.wordNote .parse b { font-weight: 500; color: var(--ink); }
+.wordNote .quick { font: 400 var(--step-1) / 1.3 var(--f-body); color: var(--ink); }
 .wordNote .gloss { font-size: var(--step--1); }
 .wordNote .lsj { max-height: none; overflow: visible; padding-right: 0; }
-.wordNote .panelLinks :global(.chip) { font-size: var(--step--2); }
+/* the certainty label as a quiet line of small capitals, not a box */
+.wordNote .here :global(.tag) { padding: 0; border: 0; }
+.wordNote .lessonLink { padding: 0; border: 0; margin-top: 0; }
+.wordNote .panelLinks { display: grid; justify-items: start; gap: var(--space-2); padding-top: var(--space-4); box-shadow: var(--rule-over); }
+.wordNote .refs { font-size: var(--step--1); }
+.wordNote .sec > :global(.text-btn) { justify-self: start; }
 
 /* a sheet from the foot of the screen (a phone, a narrower window, two books side by side, the floating window): paper with
    a red rule along its top (the sample's phone look-up). It rises no higher than just below the line being read

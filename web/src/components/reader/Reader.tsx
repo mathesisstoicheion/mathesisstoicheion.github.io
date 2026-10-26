@@ -63,12 +63,11 @@ import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
 // and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
-/** Where the look-up is set (Reader's placeWord; the one rule is lookupPlace): in the margin beside its line, at this place
- *  in the reader, with a thin line from the end of the line to it where nothing stands between; or as a sheet that rises no
+/** Where the look-up is set (Reader's placeWord; the one rule is lookupPlace): a window floating over the right margin, at
+ *  this place across the screen and this wide, which holds its place while the text scrolls; or as a sheet that rises no
  *  higher than this many pixels (so that it stops below the line), or with no limit (null) for a word that is not in the
  *  text. */
-type Box = { top: number; left: number; width: number };
-type WordAt = { note: Box; lead?: Box } | { sheet: number | null };
+type WordAt = { note: { left: number; width: number } } | { sheet: number | null };
 const FindPanel = dynamic(() => import("./FindPanel"), { ssr: false });
 const ComparePanel = dynamic(() => import("./ComparePanel"), { ssr: false });
 const SentencePanel = dynamic(() => import("./SentencePanel"), { ssr: false });
@@ -1077,16 +1076,15 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   };
 
   /** Where the look-up goes (decision 4 and the quiet desk, ticket 04: one place per device, and it never covers the Greek
-   *  being read). lookupPlace decides from the room the reader has. A note: in the margin, level with the word's line (the
-   *  margin is the last column of each passage's row, kept even while a panel is open beside the text), joined to the end
-   *  of the line by a thin line; a word picked from a list, not in the text, is written at the top of the margin in view.
-   *  A sheet: from the foot of the screen, or of the floating window, that rises no higher than just below the line; on
-   *  opening, a line in the lower part is first brought up under the bar. */
+   *  being read). lookupPlace decides from the room the reader has. A note: a window over the right margin (the last column
+   *  of each passage's row, kept even while a panel is open beside the text), fixed to the screen, so that the text scrolls
+   *  while it stays (the owner, 2026-10-26: "open from the right side of the page and hold its place"). A sheet: from the
+   *  foot of the screen, or of the floating window, that rises no higher than just below the line; on opening, a line in
+   *  the lower part is first brought up under the bar. */
   const placeWord = (opening = false) => {
     const box = rootRef.current, w = box?.querySelector<HTMLElement>(`article .${styles.sel}`);
     if (!box) return;
     if (single && lookupPlace(innerWidth) === "note") {
-      const b = box.getBoundingClientRect();
       const top = Math.max(headerVisible(), ...[...box.querySelectorAll<HTMLElement>(`.${styles.rbar}, .${styles.caseKey}`)]
         .filter((el) => getComputedStyle(el).position === "sticky").map((el) => el.getBoundingClientRect().bottom));
       const row = w?.closest<HTMLElement>(`.${styles.row}`)
@@ -1094,17 +1092,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       const tracks = row ? getComputedStyle(row).gridTemplateColumns.split(" ").map(parseFloat) : [];
       const margin = tracks.length >= 3 ? tracks[tracks.length - 1] : 0;
       if (row && margin > 120) {
-        const rr = row.getBoundingClientRect(), left = rr.right - b.left - margin;
-        if (!w) { setWordAt({ note: { top: Math.round(Math.max(rr.top, top + 16) - b.top), left: Math.round(left), width: Math.round(margin) } }); return; }
-        const wr = w.getBoundingClientRect();
-        // the thin line: from the last word on the tapped line to the note, unless the English stands between them
-        const unit = w.closest<HTMLElement>("[data-u]") ?? row;
-        const end = Math.max(wr.right, ...[...unit.querySelectorAll<HTMLElement>("[data-w]")].map((x) => x.getBoundingClientRect())
-          .filter((r) => Math.abs(r.top - wr.top) < 2).map((r) => r.right));
-        const tr = row.querySelector<HTMLElement>("[data-tr]")?.getBoundingClientRect();
-        const from = end - b.left + 12, to = left - 12;
-        const lead = (!tr || !tr.width || tr.left < end) && to - from > 16 ? { top: Math.round(wr.top + wr.height / 2 - b.top), left: Math.round(from), width: Math.round(to - from) } : undefined;
-        setWordAt({ note: { top: Math.round(wr.top - b.top - 4), left: Math.round(left), width: Math.round(margin) }, lead });
+        setWordAt({ note: { left: Math.round(row.getBoundingClientRect().right - margin), width: Math.round(margin) } });
         return;
       }
     }
@@ -1340,7 +1328,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     return (
       <div data-nobook="">
       <PageHead path={trail("reader")} title={workId ? "This work is not in the library" : AREAS.reader.name}
-        piece={{ piece: "hand-with-scroll" }}
+        piece={null}
         purpose={workId
           ? <>There is no work <code>{workId}</code> in the catalogue: the link may be mistyped. Choose something to read in {AREAS.library.name}.</>
           : <>{AREAS.reader.origin} Choose a text in {AREAS.library.name}, and it opens here.</>}
@@ -1855,7 +1843,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           <EchoesPanel q={echo} onJump={echoJump} onMarks={setEchoMarks} onClose={() => setEcho(null)} />
         </PanelGuard>
       )}
-      {word && wordAt && "note" in wordAt && wordAt.lead && <span key={word.w + wordAt.lead.top} className={styles.lead} aria-hidden="true" style={wordAt.lead} />}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
         <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
           onSentence={word?.at ? () => {

@@ -189,7 +189,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   /** a sheet from the foot of the screen (or of the floating window), with heights */
   sheet?: boolean;
   /** one book on a wide screen: written in the margin beside the line, at this place in the reader */
-  note?: { top: number; left: number; width: number } | null;
+  note?: { left: number; width: number } | null;
   /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
   maxH?: number | null;
 }) {
@@ -290,7 +290,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
 
   return (
     <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" label={`Look-up: ${word}`}
-      style={note ? { top: note.top, left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
+      style={note ? { left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
       onClose={onClose} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
         {step && <button type="button" className={`icon-btn ${styles.stepBtn}`} onClick={() => step(-1)} aria-label="Previous word">‹</button>}
@@ -338,24 +338,25 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         )}
       </section>}
 
+      {/* the window on a computer has quiet links in words; the sheet keeps finger-sized framed ones */}
       <p className={styles.panelLinks}>
         {onSentence && (
-          <button type="button" className="chip" onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
+          <button type="button" className={note ? "text-btn" : "chip"} onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
             How the sentence is built
           </button>
         )}
         {onEchoes && (
-          <button type="button" className="chip" onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
+          <button type="button" className={note ? "text-btn" : "chip"} onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
             Echoes · where else it occurs
           </button>
         )}
         {place && (
-          <Link className="chip" href={`/stoa/periplus?p=${place.id}`} transitionTypes={["page-turn"]} title={`${shortName(place)}: where it is, and which works name it most`}>
+          <Link className={note ? "text-btn" : "chip"} href={`/stoa/periplus?p=${place.id}`} transitionTypes={["page-turn"]} title={`${shortName(place)}: where it is, and which works name it most`}>
             On the map · <span lang="grc">{place.grc}</span>
           </Link>
         )}
         {(lemma || l?.value) && (
-          <Link className="chip" href={`/treasury/word?l=${encodeURIComponent(headword)}`} transitionTypes={["page-turn"]}
+          <Link className={note ? "text-btn" : "chip"} href={`/treasury/word?l=${encodeURIComponent(headword)}`} transitionTypes={["page-turn"]}
             title="Every form of the word, where and when it is used, real examples and its family">
             Word Study · <span lang="grc">{headword}</span>
           </Link>
@@ -376,7 +377,7 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         {!l && <p className="muted">Opening the dictionary…</p>}
         {l && !l.value && <p className="muted">{l.error ? `The dictionary could not be loaded (${l.error}).` : "No LSJ entry found under this headword."}</p>}
         {lsjShort.map((e, i) => <LsjEntryView key={i} e={e} full={full} />)}
-        {l?.value && <button type="button" className="chip" onClick={() => { setFull(!full); if (!full && sheet) setSnap("full"); }}>{full ? "Short definition" : "Full entry"}</button>}
+        {l?.value && <button type="button" className={note ? "text-btn" : "chip"} onClick={() => { setFull(!full); if (!full && sheet) setSnap("full"); }}>{full ? "Short definition" : "Full entry"}</button>}
         {l?.value && full && <p className={styles.fine}>{LSJ_CREDIT}</p>}
       </section>
 
