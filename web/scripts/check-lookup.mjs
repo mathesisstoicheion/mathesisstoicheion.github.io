@@ -12,6 +12,15 @@
 // Both lay out the first layer of the look-up (the quiet desk, ticket 05) and fail when, before "More about it" is pressed, it
 // shows a certainty badge, the lesson card, a credit (GLAUx, CC BY, "Analysis:"…) or the dictionary, when it has no meaning line,
 // or when "More about it" does not reveal the dictionary ("Dictionary · LSJ").
+// And they check the second layer (ticket 06). One press of "More about it" shows, in this order, the LSJ entry (with "The whole
+// entry"), where else the word occurs (a button that opens Echoes), "How the sentence is built", the lesson, Word Study and the
+// other dictionaries, under the same small-capitals headings on a computer and a phone; the meaning the first layer gave is not
+// said again; the credits are ONE line, once, at the very foot, naming only what is shown. "‹ Back" or Escape returns to the
+// first layer (on a phone at its resting height, the keyboard on "More about it"), then Escape closes the look-up and gives the
+// keyboard back to the word; × closes it from the second layer. On a computer the same window keeps its left edge and width,
+// grows to the height it may have, and stays fixed while the text scrolls. μῆνιν in the Iliad, 1.1 (on a computer and a phone)
+// is checked in full: "12 times in the Iliad" (the number of words GLAUx analyses as μῆνις in the whole pack), the lesson "Why the
+// accusative?", the credit line "Analysis and treebank: GLAUx (Keersmaekers 2021), CC BY-SA 4.0 · LSJ: Perseus Digital Library, CC BY-SA".
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -93,6 +102,127 @@ async function openMore(page, tag) {
   return true;
 }
 
+/** The meaning line of the first layer, as it stands. */
+const meaningOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP)?.querySelector('[class*="cardMeaning"]')?.textContent?.replace(/\s*\(from [^)]*\)\s*$/, "").trim() ?? "", LOOKUP);
+const layerOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP)?.getAttribute("data-layer") ?? "", LOOKUP);
+const norm = (x) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+
+/**
+ * "More about it", and everything the second layer must be (ticket 06). The look-up stands in its first layer; this presses
+ * More, checks what it then shows and where, calls `during` (the caller's own checks of the open second layer), then goes back
+ * to the first layer by Escape and again by "‹ Back", leaving the look-up open in its first layer.
+ *   opts.sheet   a sheet (a phone, a narrow window, two books) rather than the window over the margin
+ *   opts.exact   the word is μῆνιν in the Iliad: the counted line, the lesson, Word Study and the credits are all checked exactly
+ */
+async function secondLayer(page, tag, opts, during) {
+  const look = page.locator(LOOKUP);
+  const rest = (await boxes(page)).look;
+  const meaning = await meaningOf(page);
+  if (!(await openMore(page, tag))) return;
+  const open = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP);
+    const text = (e) => e.textContent.trim().replace(/\s+/g, " ");
+    const find = (sel, re) => [...el.querySelectorAll(sel)].find((e) => re.test(text(e)));
+    const shown = (e) => !!e && e.checkVisibility() && e.getClientRects().length > 0;
+    const credits = [...el.querySelectorAll("[data-credits]")];
+    let after = "";
+    if (credits.length) { const r = document.createRange(); r.setStartAfter(credits[credits.length - 1]); r.setEndAfter(el.lastChild); after = r.toString().trim(); }
+    return {
+      layer: el.getAttribute("data-layer"),
+      text: text(el),
+      first: !!el.querySelector('[class*="cardMeaning"]'),
+      heads: [...el.querySelectorAll("h3")].map((e) => ({ t: text(e), shown: shown(e) })),
+      // the parts, in the order they must stand
+      parts: [
+        ["the LSJ heading", find("h3", /^Dictionary · LSJ/)],
+        ["“The whole entry”", find("button", /^The whole entry$/)],
+        ["where else it occurs", find("button", /times in the|^Once in the|^Where else it occurs$/)],
+        ["“How the sentence is built”", find("button", /^How the sentence is built$/)],
+        ["the lesson", el.querySelector('a[href^="/academy/lesson/"]')],
+        ["Word Study", el.querySelector('a[href^="/treasury/word"]')],
+        ["the other dictionaries", find("h3", /^More dictionaries$/)],
+        ["the credits", credits[0] ?? null],
+      ].map(([name, node]) => ({ name, found: !!node, shown: shown(node), before: node ? [...el.querySelectorAll("*")].indexOf(node) : -1, text: node ? text(node) : "", href: node?.getAttribute?.("href") ?? "" })),
+      credits: credits.map(text),
+      // the short definitions and senses the second layer gives (LSJ's, Wiktionary's)
+      glosses: [...el.querySelectorAll('[class*="gloss"], [class*="senses"] p')].map(text),
+      creditCount: credits.length,
+      after,
+      focusOnBack: document.activeElement?.textContent?.trim().endsWith("Back") ?? false,
+    };
+  }, LOOKUP);
+  if (open.layer !== "2") found.push(`${tag}: "More about it" did not show the second layer (data-layer ${open.layer})`);
+  if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (the meaning is said again)`);
+  if (!open.focusOnBack) found.push(`${tag}: the keyboard did not move into the second layer when it opened (it belongs on "‹ Back")`);
+  const has = (name) => open.parts.find((x) => x.name === name);
+  // (a word with no LSJ entry or no analysis has no “whole entry” or credit to show, so only μῆνιν is held to all of them)
+  const want = ["the LSJ heading", "where else it occurs", "“How the sentence is built”", "the other dictionaries"];
+  if (opts.exact) want.push("“The whole entry”", "Word Study", "the lesson", "the credits");
+  for (const name of want) if (!has(name).found) found.push(`${tag}: the second layer has no ${name}`);
+  for (const x of open.parts) if (x.found && !x.shown) found.push(`${tag}: ${x.name} is in the second layer but not shown`);
+  const placed = open.parts.filter((x) => x.found);
+  for (let i = 1; i < placed.length; i++) if (placed[i].before < placed[i - 1].before) found.push(`${tag}: ${placed[i].name} comes before ${placed[i - 1].name} (the order is the LSJ entry, where else, the sentence, the lesson, Word Study, the other dictionaries, the credits)`);
+  // the same small-capitals headings on a computer and a phone (none hidden)
+  for (const hd of open.heads) if (!hd.shown) found.push(`${tag}: the heading "${hd.t}" is hidden (the computer and the phone show the same headings)`);
+  if (!open.heads.some((x) => x.t === "Dictionary · LSJ")) found.push(`${tag}: no "Dictionary · LSJ" heading`);
+  // credits: one line, once, at the very foot, and no other credit anywhere in the look-up
+  if (open.creditCount > 1 || (opts.exact && open.creditCount !== 1)) found.push(`${tag}: ${open.creditCount} credit lines in the second layer (there is exactly one, at the foot)`);
+  if (open.after) found.push(`${tag}: "${open.after.slice(0, 40)}" stands below the credits (they are the very foot)`);
+  const once = (re, what) => { const n = (open.text.match(re) ?? []).length; if (n > 1 || (opts.exact && n !== 1)) found.push(`${tag}: ${what} appears ${n} times in the second layer (once, in the credit line)`); };
+  once(/Keersmaekers/g, "GLAUx's credit");
+  once(/Perseus Digital Library/g, "LSJ's credit");
+  if (/Analysis:|Text provided under|Data accessed from/.test(open.text)) found.push(`${tag}: an old credit line is still in the second layer`);
+  if (opts.exact) {
+    const line = open.credits[0] ?? "";
+    if (line !== "Analysis and treebank: GLAUx (Keersmaekers 2021), CC BY-SA 4.0 · LSJ: Perseus Digital Library, CC BY-SA") found.push(`${tag}: the credit line reads "${line}"`);
+    const where = has("where else it occurs").text;
+    if (where !== "12 times in the Iliad") found.push(`${tag}: the where-else line reads "${where}" (12 times in the Iliad)`);
+    if (!/Why the accusative\?/.test(has("the lesson").text) || has("the lesson").href !== "/academy/lesson/case") found.push(`${tag}: the lesson reads "${has("the lesson").text}" at ${has("the lesson").href}`);
+  }
+  // the meaning the first layer gave is not given again
+  if (meaning && open.glosses.some((g) => norm(g) === norm(meaning))) found.push(`${tag}: the second layer says the first layer's meaning ("${meaning.slice(0, 40)}") again`);
+  // the same window, grown in place
+  const now = (await boxes(page)).look;
+  if (now && rest) {
+    if (opts.sheet) { if (now.height <= rest.height + 1) found.push(`${tag}: the sheet did not rise for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after)`); }
+    else {
+      if (Math.abs(now.left - rest.left) > 1 || Math.abs(now.right - rest.right) > 1) found.push(`${tag}: the second layer's window moved or changed width (left ${Math.round(rest.left)} to ${Math.round(now.left)}, right ${Math.round(rest.right)} to ${Math.round(now.right)})`);
+      if (now.height <= rest.height + 1) found.push(`${tag}: the window did not grow for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after)`);
+      const vh = page.viewportSize().height;
+      if (now.bottom > vh + 1) found.push(`${tag}: the second layer reaches ${Math.round(now.bottom - vh)} px below the screen`);
+    }
+  }
+  await during?.();
+  // the text scrolls under the window; on a computer the window with the second layer open stays where it is
+  if (!opts.sheet && now) {
+    await page.mouse.move(200, page.viewportSize().height / 2);
+    await page.mouse.wheel(0, 300);
+    await page.waitForTimeout(700);
+    const s = (await boxes(page)).look;
+    if (!s) found.push(`${tag}: the look-up closed when the text was scrolled with the second layer open`);
+    else if (Math.abs(s.top - now.top) > 2 || Math.abs(s.left - now.left) > 2) found.push(`${tag}: the second layer moved ${Math.round(s.top - now.top)} px when the text was scrolled`);
+  }
+  // Escape goes back to the first layer, and the look-up stays open with the keyboard on "More about it"
+  await look.focus();
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(700);
+  const esc = await page.evaluate((LOOKUP) => ({ open: !!document.querySelector(LOOKUP), layer: document.querySelector(LOOKUP)?.getAttribute("data-layer"), onMore: document.activeElement?.textContent?.trim() === "More about it" }), LOOKUP);
+  if (!esc.open) found.push(`${tag}: Escape in the second layer closed the look-up (it goes back to the first layer)`);
+  else {
+    if (esc.layer !== "1") found.push(`${tag}: Escape in the second layer did not go back to the first layer`);
+    if (!esc.onMore) found.push(`${tag}: after Escape the keyboard is not on "More about it"`);
+  }
+  // and "‹ Back" does the same, to the height it rested at
+  await look.getByRole("button", { name: "More about it" }).click();
+  await page.waitForTimeout(700);
+  await look.getByRole("button", { name: "Back" }).click();
+  await page.waitForTimeout(700);
+  const back = await boxes(page);
+  if ((await layerOf(page)) !== "1") found.push(`${tag}: "‹ Back" did not return to the first layer`);
+  else if (back.look && rest && Math.abs(back.look.height - rest.height) > 2 && opts.sheet) found.push(`${tag}: after "‹ Back" the sheet is ${Math.round(back.look.height)} px tall (it rested at ${Math.round(rest.height)} px)`);
+  if (!(await meaningOf(page))) found.push(`${tag}: after "‹ Back" the first layer has no meaning line`);
+}
+
 // ---- margin: one book on a computer
 const inMargin = (tag, b) => {
   if (!b.look) { found.push(`margin ${tag}: no look-up opened`); return; }
@@ -138,8 +268,8 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
     if (await next.count()) { await next.click(); await page.waitForTimeout(900); inMargin(`${tag}, on the next word`, await boxes(page)); }
     else found.push(`margin ${tag}: no Next word button`);
-    // with the rest opened, the window still stays where it is
-    if (await openMore(page, `margin ${tag}`)) inMargin(`${tag}, with More about it open`, await boxes(page));
+    // with the rest opened, the window still stays where it is (it ends back in the first layer)
+    await secondLayer(page, `margin ${tag}`, { sheet: false }, async () => inMargin(`${tag}, with More about it open`, await boxes(page)));
     await page.locator(LOOKUP).focus();
     await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
@@ -173,10 +303,40 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
   const first = await check("as it opens");
   if (first?.look && first.look.height > h * 0.27 + 1) found.push(`sheet ${label}: it opens ${Math.round(first.look.height)} px tall, ${Math.round(first.look.height / h * 100)}% of the screen (it rests at 27% or less)`);
   await firstLayer(page, `sheet ${label}`);
-  // "More about it" raises the sheet to all the room it has, and reveals the dictionary
-  if (await openMore(page, `sheet ${label}`)) await check("at its full height");
+  // "More about it" raises the sheet to all the room it has, and reveals the dictionary; "‹ Back" brings it down again
+  await secondLayer(page, `sheet ${label}`, { sheet: true }, async () => { await check("at its full height"); });
   const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
   if (await next.count()) { await next.click(); await page.waitForTimeout(900); await check("on the next word"); }
+  await ctx.close();
+}
+
+// ---- the second layer on μῆνιν, Iliad 1.1: a computer (the window over the margin) and a phone (the sheet)
+for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
+  const tag = `μῆνιν in the Iliad, ${label}`;
+  const { ctx, page } = await open(w, h, "light", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
+  const word = page.locator('[data-u="1.1"] [data-w="μῆνιν"]');
+  if (w < 800) await word.tap(); else await word.click();
+  await page.waitForSelector(LOOKUP, { timeout: 10000 });
+  await page.waitForTimeout(900);
+  await firstLayer(page, tag);
+  if (w >= 800) inMargin(tag, await boxes(page));
+  await secondLayer(page, tag, { sheet: w < 800, exact: true });
+  // × closes the look-up from the second layer, not only back to the first
+  await page.locator(LOOKUP).getByRole("button", { name: "More about it" }).click();
+  await page.waitForTimeout(500);
+  await page.locator(LOOKUP).getByRole("button", { name: "Close look-up" }).click();
+  await page.waitForTimeout(500);
+  if (await page.locator(LOOKUP).count()) found.push(`${tag}: × in the second layer did not close the look-up`);
+  // Escape from the first layer closes it and gives the keyboard back to the word
+  await word.focus();
+  await page.keyboard.press("Enter");
+  await page.waitForSelector(LOOKUP, { timeout: 10000 });
+  await page.locator(LOOKUP).focus();
+  await page.keyboard.press("Escape");
+  await page.waitForTimeout(400);
+  const gone = await page.evaluate((LOOKUP) => ({ open: !!document.querySelector(LOOKUP), back: !!document.activeElement?.matches("article [data-w]") }), LOOKUP);
+  if (gone.open) found.push(`${tag}: Escape in the first layer did not close the look-up`);
+  else if (!gone.back) found.push(`${tag}: after Escape the keyboard is not back on the word`);
   await ctx.close();
 }
 
@@ -185,4 +345,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest behind More about it; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");
+console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the LSJ entry, where else, the sentence, the lesson, Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");

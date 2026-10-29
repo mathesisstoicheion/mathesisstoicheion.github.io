@@ -39,7 +39,8 @@ test("Echoes of a line: exact, other forms and near repetitions, and a jump ther
 test("Echoes of a word: this form, or every form of its dictionary word", async ({ page }) => {
   await openAt(page, "1.1");
   await page.locator('[data-u="1.1"] [data-w="μῆνιν"]').click();
-  await page.getByRole("button", { name: "Echoes · where else it occurs" }).click();
+  await page.getByRole("button", { name: "More about it" }).click();   // the quiet desk, ticket 06: 12 times in the Iliad, in the second layer
+  await page.getByRole("button", { name: "12 times in the Iliad" }).click();
   const panel = page.getByRole("complementary", { name: "Echoes" });
   await expect(panel.getByText(/^9$/)).toBeVisible();
   await panel.getByRole("radio", { name: "Every form of μῆνις" }).click();

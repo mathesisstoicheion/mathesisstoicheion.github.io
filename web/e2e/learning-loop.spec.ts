@@ -12,12 +12,15 @@ test("the word look-up names the lesson that explains the form", async ({ page }
   await openIliad(page);
   await page.locator('[data-u="1.1"] [data-w="μῆνιν"]').click();
   const panel = page.getByRole("complementary", { name: "Look-up: μῆνιν" });
+  await panel.getByRole("button", { name: "More about it" }).click();   // the lesson is in the second layer (the quiet desk, ticket 06)
   const lesson = panel.getByRole("link", { name: /Why the accusative\? Lesson 3: Who does what/ });
   await expect(lesson).toBeVisible();
   await expect(lesson).toHaveAttribute("href", "/academy/lesson/case");
   // a present imperative points to the present-tense lesson
   await page.locator('[data-u="1.1"] [data-w="ἄειδε"]').click();
-  await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" }).getByRole("link", { name: /Lesson 8: Verbs: the present tense/ })).toBeVisible();
+  const verb = page.getByRole("complementary", { name: "Look-up: ἄειδε" });
+  await verb.getByRole("button", { name: "More about it" }).click();
+  await expect(verb.getByRole("link", { name: /Lesson 8: Verbs: the present tense/ })).toBeVisible();
 });
 
 test("a lesson's real passages open in the reader, and the lesson says where to ask", async ({ page }) => {

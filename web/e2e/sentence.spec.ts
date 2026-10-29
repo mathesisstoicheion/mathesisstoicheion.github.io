@@ -12,6 +12,7 @@ async function openSentence(page: Page) {
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
   await page.locator('[data-u="1.1"] [data-w="ἄειδε"]').click();
+  await page.getByRole("button", { name: "More about it" }).click();   // the quiet desk, ticket 06: in the second layer
   await page.getByRole("button", { name: "How the sentence is built" }).click();
   const panel = page.getByRole("complementary", { name: "How the sentence is built" });
   await expect(panel.getByRole("list", { name: /The sentence's structure/ })).toBeVisible({ timeout: 30_000 });

@@ -106,15 +106,20 @@ test("the look-up is a sheet: it opens at a peek, grows to half or all it may, s
     const [top, line] = await s.evaluate((e) => [e.getBoundingClientRect().top, document.querySelector("article [data-w][class*='__sel']")!.getBoundingClientRect().bottom]);
     expect(top, "the sheet stops below the line being read").toBeGreaterThanOrEqual(line - 1);
   };
-  const peek = Math.round(Math.min(812 * 0.46, 400));
+  const peek = Math.round(Math.min(Math.max(812 * 0.25, 2.25 * 80), 400));   // about a quarter of the screen (the quiet desk, ticket 04)
   await expect.poll(height).toBe(Math.min(peek, (await room()) - 12));
   await clear();
-  // all it may, by the button: as tall as it can be without reaching the line
+  const rest = await height();
+  // all it may, by the button: the second layer, as tall as it can be without reaching the line
   await sheet.getByRole("button", { name: "More about it" }).click();
   await expect.poll(height).toBeGreaterThan(peek);
   await expect.poll(async () => (await room()) - (await height())).toBeLessThanOrEqual(14);
   await clear();
   const tall = await height();
+  // Back returns to the first layer at its resting height (the quiet desk, ticket 06)
+  await sheet.getByRole("button", { name: "Back" }).click();
+  await expect.poll(height).toBe(rest);
+  await expect(sheet.getByRole("button", { name: "More about it" })).toBeFocused();
   // the next word, by the button and back by a swipe to the right
   await sheet.getByRole("button", { name: "Next word" }).click();
   const next = page.getByRole("complementary", { name: `Look-up: ${second}` });
@@ -127,9 +132,11 @@ test("the look-up is a sheet: it opens at a peek, grows to half or all it may, s
   await page.mouse.move(h.x + 220, h.y + h.height / 2 + 4, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByRole("complementary", { name: `Look-up: ${first}` })).toBeVisible();
-  await expect.poll(height).toBe(tall);   // moving word to word on one line keeps the height
+  await expect.poll(height).toBe(rest);   // moving word to word on one line keeps the height
   await clear();
-  // drag the handle down a little: it settles at half (or as near as the line allows)
+  // the second layer again, then drag the handle down a little: back to the first layer, settled at half (or as near as the line allows)
+  await page.getByRole("complementary", { name: `Look-up: ${first}` }).getByRole("button", { name: "More about it" }).click();
+  await expect.poll(height).toBe(tall);
   const s = page.getByRole("complementary", { name: `Look-up: ${first}` });
   h = (await s.locator("div").first().boundingBox())!;
   await page.mouse.move(h.x + h.width / 2, h.y + 10);

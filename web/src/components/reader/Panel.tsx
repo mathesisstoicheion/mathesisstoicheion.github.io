@@ -33,18 +33,19 @@ function PanelHead({ title, titleClass, titleId, head, headClass, headProps, clo
 }
 
 /**
- * A panel over the page. Escape or × closes it. With focusKey it takes the keyboard when it opens, and again whenever
+ * A panel over the page. Escape or × closes it (onEscape gives Escape another job, as the look-up's second layer does: back to
+ * the first layer, the quiet desk, ticket 06; × still closes it). With focusKey it takes the keyboard when it opens, and again whenever
  * focusKey changes (a new word looked up); without it the keyboard stays where it is (Find puts it in its box).
  */
 export const SidePanel = forwardRef<HTMLElement, Head & Omit<HTMLAttributes<HTMLElement>, "title"> & {
-  label: string; onClose: () => void; focusKey?: unknown; children?: ReactNode;
-}>(function SidePanel({ label, onClose, focusKey, className, children, title, titleClass, head, headClass, headProps, closeLabel, closeClass, onKeyDown, ...rest }, ref) {
+  label: string; onClose: () => void; onEscape?: () => void; focusKey?: unknown; children?: ReactNode;
+}>(function SidePanel({ label, onClose, onEscape, focusKey, className, children, title, titleClass, head, headClass, headProps, closeLabel, closeClass, onKeyDown, ...rest }, ref) {
   const own = useRef<HTMLElement>(null);
   useImperativeHandle(ref, () => own.current!, []);
   useEffect(() => { if (focusKey !== undefined && focusKey !== null && focusKey !== false) own.current?.focus({ preventScroll: true }); }, [focusKey]);
   return (
     <aside ref={own} {...rest} className={className ?? styles.panel} aria-label={label} tabIndex={-1}
-      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } onKeyDown?.(e); }}>
+      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); (onEscape ?? onClose)(); } onKeyDown?.(e); }}>
       <PanelHead {...{ title, titleClass, head, headClass, headProps, closeLabel, closeClass, onClose }} />
       {children}
     </aside>

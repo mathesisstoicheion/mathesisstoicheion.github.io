@@ -105,6 +105,7 @@ test("Word Study shows every form of λόγος, where it is used and real passa
 test("the reader's look-up opens Word Study, where the word can be saved and noted", async ({ page }) => {
   await openIliad(page);
   await page.locator('[data-u="1.1"] [data-w="μῆνιν"]').click();
+  await page.getByRole("button", { name: "More about it" }).click();   // the quiet desk, ticket 06: in the second layer
   await page.getByRole("link", { name: /Word Study · μῆνις/ }).click();
   await expect(page).toHaveURL(/\/treasury\/word\?l=/);
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("μῆνις");

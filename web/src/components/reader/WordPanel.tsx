@@ -2,17 +2,21 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { decapitalise, isElided, lookupForm } from "@/lib/greek";
 import { lookUpWiktionary, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
 import { loadWordPack, analyse, type Analysis } from "@/lib/lookup/words";
-import { lsjEntries, citationHref, LSJ_CREDIT, type LsjEntry, type Seg } from "@/lib/lookup/lsj";
-import { readTag, caseOf } from "@/lib/lookup/postag";
+import { lsjEntries, citationHref, type LsjEntry, type Seg } from "@/lib/lookup/lsj";
+import { caseOf } from "@/lib/lookup/postag";
 import { lookupCard, treeAt, SOURCE_NAMES, type InSentence } from "@/lib/lookup/card";
 import { loadSyntax } from "@/lib/syntax";
 import type { TeiDoc } from "@/lib/tei/types";
 import { lessonFor } from "@/lib/lookup/lesson-link";
-import { coreEntry, CORE_CREDIT, type CoreEntry } from "@/lib/lookup/core";
+import { coreEntry, type CoreEntry } from "@/lib/lookup/core";
+import { countLemma, occursLine } from "@/lib/lookup/occurrences";
+import { sameText, withoutMeaning } from "@/lib/lookup/repeats";
+import { certaintyNote } from "@/lib/lookup/certainty";
+import { creditsFor } from "@/lib/lookup/credits";
 import { placeNamed, shortName, type Place } from "@/lib/map";
 import styles from "./Reader.module.css";
 import { SidePanel } from "./Panel";
@@ -65,7 +69,10 @@ export function Segs({ segs }: { segs: Seg[] }) {
         if (typeof s === "string") return <span key={i}>{s}</span>;
         if ("g" in s) return <span key={i} lang="grc" className={styles.lsjGr}>{s.g}</span>;
         const href = citationHref(s.u);
-        return href ? <Link key={i} href={href} className={styles.cite} onClick={(e) => onCite(e, href)} title="Open this passage in the reader (Shift-click: beside this one)">{s.c}</Link> : <span key={i}>{s.c}</span>;
+        // LSJ's text runs a Greek word straight into the citation after it ("μήνιοςPl. R. 390e"): a space between them
+        const prev = segs[i - 1];
+        const gap = prev && typeof prev !== "string" && "g" in prev ? " " : "";
+        return href ? <Fragment key={i}>{gap}<Link href={href} className={styles.cite} onClick={(e) => onCite(e, href)} title="Open this passage in the reader (Shift-click: beside this one)">{s.c}</Link></Fragment> : <span key={i}>{gap}{s.c}</span>;
       })}
     </>
   );
@@ -183,10 +190,12 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, doc = null, at = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
+export default function WordPanel({ word, ctx, doc = null, at = null, workTitle = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
   word: string | null; ctx: WordContext | null; onClose: () => void; onEchoes?: () => void;
   /** the text on screen and the word's place in it (its passage and its number among the passage's words), to find the word in the treebank */
   doc?: TeiDoc | null; at?: { u: string; i: number } | null;
+  /** the work's title in English, for "12 times in the Iliad" */
+  workTitle?: string | null;
   /** show how the sentence this word is in is built */
   onSentence?: () => void;
   /** the next (1) or previous (-1) word of the passage */
@@ -199,30 +208,55 @@ export default function WordPanel({ word, ctx, doc = null, at = null, onClose, o
   maxH?: number | null;
 }) {
   const ref = useRef<HTMLElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const moreRef = useRef<HTMLButtonElement>(null);
+  const backRef = useRef<HTMLButtonElement>(null);
   const [snap, setSnap] = useState<Snap>("peek");
-  // a look-up opened afresh starts at "peek"; moving word to word keeps the height chosen
-  // and "More about it" is shut again
+  // a look-up opened afresh starts at "peek", with its first layer showing; moving word to word keeps the height chosen
   const [wasOpen, setWasOpen] = useState(false);
-  const [more, setMore] = useState(false);
-  if (!!word !== wasOpen) { setWasOpen(!!word); if (word) { setSnap("peek"); setMore(false); } }
+  // the word that "More about it" was opened for (the quiet desk, ticket 06): another word, or a look-up opened afresh, shows
+  // the first layer again; likewise the whole LSJ entry
+  const [moreFor, setMoreFor] = useState("");
+  const [fullFor, setFullFor] = useState("");
+  if (!!word !== wasOpen) { setWasOpen(!!word); setMoreFor(""); setFullFor(""); if (word) setSnap("peek"); }
+  const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
+  const more = !!word && moreFor === key;
+  const full = !!word && fullFor === key;
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });
-  const gestures = useSheetGestures(ref, { on: sheet, snap, setSnap, onClose, onStep: step, maxH });
+  // the second layer is the sheet at its full height; a drag of its handle to a lower height goes back to the first layer there
+  const snapNow: Snap = more ? "full" : snap;
+  const pickSnap = (s: Snap) => { if (more && s !== "full") setMoreFor(""); setSnap(s); };
+  const gestures = useSheetGestures(ref, { on: sheet, snap: snapNow, setSnap: pickSnap, onClose, onStep: more ? undefined : step, maxH });
+  // Back, or Escape in the second layer: the first layer, at its resting height, with the keyboard on "More about it"
+  const cameBack = useRef(false);
+  const goBack = () => { cameBack.current = true; setMoreFor(""); setSnap("peek"); };
+  useEffect(() => {
+    if (ref.current) ref.current.scrollTop = 0;
+    if (bodyRef.current) bodyRef.current.scrollTop = 0;
+    if (more) backRef.current?.focus({ preventScroll: true });
+    else if (cameBack.current) { cameBack.current = false; moreRef.current?.focus({ preventScroll: true }); }
+  }, [more]);
   const [analysis, setAnalysis] = useState<Loaded<Analysis>>({ key: "", value: null });
+  // how many times the dictionary form stands in this work, counted in its word pack
+  const [occurs, setOccurs] = useState<{ key: string; n: number | null }>({ key: "", n: null });
   const [lsj, setLsj] = useState<Loaded<{ head: string; entries: LsjEntry[] }>>({ key: "", value: null });
   const [wikt, setWikt] = useState<Loaded<WiktResult>>({ key: "", value: null });
-  const [full, setFull] = useState(false);
   const [core, setCore] = useState<Loaded<CoreEntry>>({ key: "", value: null });
   const [tree, setTree] = useState<Loaded<InSentence>>({ key: "", value: null });
   const offline = typeof navigator !== "undefined" && navigator.onLine === false;
-  const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
 
   // 1. this word in this passage (GLAUx)
   useEffect(() => {
     if (!word || !ctx) return;
     let live = true;
     loadWordPack(ctx.work)
-      .then((pack) => { if (live) setAnalysis({ key, value: pack ? analyse(pack, word, ctx.unitKey, ctx.occurrence, ctx.keys, ctx.depth) : null }); })
+      .then((pack) => {
+        if (!live) return;
+        const value = pack ? analyse(pack, word, ctx.unitKey, ctx.occurrence, ctx.keys, ctx.depth) : null;
+        setAnalysis({ key, value });
+        setOccurs({ key, n: pack && value ? countLemma(pack, value.lemma) : null });
+      })
       .catch((e: Error) => { if (live) setAnalysis({ key, value: null, error: e.message }); });
     return () => { live = false; };
   }, [key, word, ctx]);
@@ -293,7 +327,6 @@ export default function WordPanel({ word, ctx, doc = null, at = null, onClose, o
   const w = wikt.key === word ? wikt : null;
   const headword = lemma ?? l?.value?.head ?? w?.value?.title ?? lookupForm(word);
   const enc = encodeURIComponent;
-  const parsing = a ? readTag(a.tag) : null;
   // the first layer (the quiet desk, ticket 05): shown once everything it is made of has come, so that it does not change under the eye
   const ready = !!l && lsjKey !== "" && core.key === lsjKey && treeDone;
   const card = ready ? lookupCard({ analysis: a ?? null, tree: tree.key === key ? tree.value : null, core: core.value, lsj: l.value }) : null;
@@ -306,34 +339,38 @@ export default function WordPanel({ word, ctx, doc = null, at = null, onClose, o
     const i = wcase ? g.toLowerCase().indexOf(wcase) : -1;
     return !wcase || i < 0 ? g : <>{g.slice(0, i)}<span data-case={wcase} title="Its colour and line when Colour by case is on">{g.slice(i, i + wcase.length)}</span>{g.slice(i + wcase.length)}</>;
   };
-  // a meaning is given once (slice 8): LSJ's short definition is left out when it says what is already shown above it
-  const same = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
-  const above = new Set([card?.meaning.source ? card.meaning.text : ""].filter(Boolean).map(same));
-  const lsjShort = l?.value ? l.value.entries.filter((e) => full || !above.has(same(e.s || ""))) : [];
-  // Wiktionary has nothing for this form: the section is left out rather than shown empty
-  const wiktNone = !!w && !w.value && !w.error;
+  // a meaning is given once (slice 8; the quiet desk, ticket 06): neither LSJ's short definition nor Wiktionary says again what the card says
+  const shown = card?.meaning.source ? card.meaning.text : null;
+  // LSJ's short definitions, less the one the card already gives ("The whole entry" shows everything)
+  const lsjShort = l?.value ? l.value.entries.filter((e) => full || !shown || sameText(e.s || "") !== sameText(shown)) : [];
+  const wSenses = w?.value && card ? withoutMeaning(w.value.senses, shown) : [];
+  const wLemmaSenses = w?.value && card && w.value.lemmaSenses && w.value.senses.some((s) => s.lemma) ? withoutMeaning(w.value.lemmaSenses, shown) : [];
+  const wikiShown = wSenses.length > 0 || wLemmaSenses.length > 0;
+  // Wiktionary has nothing for this form, or only the meaning already given: the section is left out rather than shown empty
+  const wiktNone = !!w && !w.error && (!w.value || (!!card && !wikiShown));
+  // the credits: only the sources shown for this word, once, at the foot of the second layer
+  const credits = creditsFor({ glaux: !!a || !!tree.value, lsj: !!l?.value, core: card?.meaning.source === "core", wiktionary: wikiShown ? w!.value!.url : null });
   // Previous and Next, and More about it, under the card; in the sheet they keep to its foot, whatever the card's height
   const cardRow = (
     <div className={styles.cardRow}>
-      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><span aria-hidden="true">‹</span>{"\u00a0"}Previous</button>}
-      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next{"\u00a0"}<span aria-hidden="true">›</span></button>}
-      <button type="button" className={`text-btn ${styles.cardMore}`} aria-expanded={more} onClick={() => { setMore(!more); if (sheet) setSnap(more ? "peek" : "full"); }}>
-        {more ? "Less" : "More about it"}
-      </button>
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><span aria-hidden="true">‹</span>{" "}Previous</button>}
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next{" "}<span aria-hidden="true">›</span></button>}
+      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMoreFor(key)}>More about it</button>
     </div>
   );
 
   return (
-    <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" label={`Look-up: ${word}`}
+    <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snapNow} data-layer={more ? "2" : "1"} data-overlay="" label={`Look-up: ${word}`}
       style={note ? { left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
-      onClose={onClose} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
+      onClose={onClose} onEscape={more ? goBack : undefined} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
-        <div className={styles.pw} lang="grc">{card ? card.lemma ?? lookupForm(word) : ""}</div>
+        {more && <button ref={backRef} type="button" className={`text-btn ${styles.cardStep} ${styles.cardBack}`} onClick={goBack}><span aria-hidden="true">‹</span>{" "}Back</button>}
+        <div className={styles.pw} lang="grc">{more ? headword : card ? card.lemma ?? lookupForm(word) : ""}</div>
       </>}>
-      <div key={word} className={styles.panelBody} data-dir={dir} {...(sheet ? gestures.body : {})}>
+      <div ref={bodyRef} key={word} className={styles.panelBody} data-dir={dir} {...(sheet ? gestures.body : {})}>
 
       {/* ------------------------------------------------ the first layer: the word, one meaning, plain grammar */}
-      <section className={styles.card} aria-busy={!ready}>
+      {!more && <section className={styles.card} aria-busy={!ready}>
         {!card && <p className={`muted ${styles.cardWait}`}>Looking it up…</p>}
         {card && <>
           <p className={styles.cardKind}>{card.kind ? `${card.kind} · you tapped ` : "You tapped "}<span lang="grc">{word}</span></p>
@@ -343,97 +380,66 @@ export default function WordPanel({ word, ctx, doc = null, at = null, onClose, o
           {card.role && <p className={styles.cardRole}>{card.role.lead}{card.role.governor && <> <span lang="grc">{card.role.governor}</span></>}.</p>}
           {card.grammar && <p className={`label ${styles.cardGrammar}`}>{inCase(card.grammar)}</p>}
         </>}
-      </section>
-      {!sheet && cardRow}
-
-      {/* everything else the look-up has, behind "More about it" (until ticket 06 gives it its own design) */}
-      {more && <div className={styles.moreBody}>
-
-      {/* ------------------------------------------------ here */}
-      {ctx && <section className={styles.sec}>
-        <h3 className="label">In this passage</h3>
-        {!analysisDone && ctx && <p className="muted">Finding this word…</p>}
-        {analysisDone && !a && <p className="muted">{analysis.error ? `Word analyses could not be loaded (${analysis.error}).` : "No analysis is available for this text yet."}</p>}
-        {a && parsing && (
-          <div className={styles.here}>
-            <p className={styles.lemmaBig} lang="grc">{a.lemma}</p>
-            <p className={styles.parse}><b>{parsing.pos}</b>{parsing.detail ? " · " : ""}{wcase && parsing.detail.includes(wcase)
-              ? <>{parsing.detail.slice(0, parsing.detail.indexOf(wcase))}<span data-case={wcase} title="Its colour and line when Colour by case is on">{wcase}</span>{parsing.detail.slice(parsing.detail.indexOf(wcase) + wcase.length)}</>
-              : parsing.detail}</p>
-            {a.where === "here" && (a.manual
-              ? <span className="tag well">Checked by hand · treebank</span>
-              : <span className="tag debated">Automatic analysis · about 97% accurate</span>)}
-            {a.where === "passage" && <span className="tag debated">Matched to this passage, not to this exact word</span>}
-            {lesson && (
-              <Link className={styles.lessonLink} href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>
-                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5-9 4.5z" /><path d="M7 10.6v4.6c3 2 7 2 10 0v-4.6" /></svg>
-                <span><b>{lesson.why}</b> <span>Lesson {lesson.n}: {lesson.title}</span></span>
-              </Link>
-            )}
-            {a.where === "work" && (
-              <div className={styles.fine}>
-                <p>This exact place could not be matched. Elsewhere in this work the form is analysed as:</p>
-                <ul>{a.others.slice(0, 4).map((o, i) => { const p = readTag(o.tag); return <li key={i}><span lang="grc">{o.lemma}</span>, {p.pos}{p.detail ? ` · ${p.detail}` : ""} ({o.n}×)</li>; })}</ul>
-              </div>
-            )}
-            <p className={styles.fine}>Analysis: GLAUx (Keersmaekers 2021), CC BY-SA 4.0.</p>
-          </div>
-        )}
       </section>}
+      {!sheet && !more && cardRow}
 
-      {/* the window on a computer has quiet links in words; the sheet keeps finger-sized framed ones */}
-      <p className={styles.panelLinks}>
-        {onSentence && (
-          <button type="button" className={note ? "text-btn" : "chip"} onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
-            How the sentence is built
-          </button>
-        )}
-        {onEchoes && (
-          <button type="button" className={note ? "text-btn" : "chip"} onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
-            Echoes · where else it occurs
-          </button>
-        )}
-        {place && (
-          <Link className={note ? "text-btn" : "chip"} href={`/stoa/periplus?p=${place.id}`} transitionTypes={["page-turn"]} title={`${shortName(place)}: where it is, and which works name it most`}>
-            On the map · <span lang="grc">{place.grc}</span>
-          </Link>
-        )}
-        {(lemma || l?.value) && (
-          <Link className={note ? "text-btn" : "chip"} href={`/treasury/word?l=${encodeURIComponent(headword)}`} transitionTypes={["page-turn"]}
-            title="Every form of the word, where and when it is used, real examples and its family">
-            Word Study · <span lang="grc">{headword}</span>
-          </Link>
-        )}
-      </p>
+      {/* ------------------------------------------------ the second layer, behind "More about it" (the quiet desk, ticket 06):
+          the dictionary, then where to go from the word, the other dictionaries, how sure the grammar is, and the credits */}
+      {more && <div className={styles.second}>
 
-      {core.key === lsjKey && core.value && (
-        <section className={styles.sec}>
-          <h3 className="label">Core vocabulary · one of the commonest words (#{core.value.rank})</h3>
-          <p className={styles.fine}><span lang="grc">{core.value.head}</span> · {core.value.pos}. {CORE_CREDIT}.</p>
-        </section>
-      )}
-
-      {/* ------------------------------------------------ LSJ */}
+      {/* the LSJ entry, abridged: its short definition (left out when the card already says it), and the whole entry in place */}
       <section className={styles.sec}>
-        <h3 className="label">Dictionary · LSJ {l?.value && <span lang="grc" className={styles.lemma}>{l.value.head}</span>}</h3>
+        <h3 className="label">Dictionary · LSJ</h3>
         {!l && <p className="muted">Opening the dictionary…</p>}
         {l && !l.value && <p className="muted">{l.error ? `The dictionary could not be loaded (${l.error}).` : "No LSJ entry found under this headword."}</p>}
         {lsjShort.map((e, i) => <LsjEntryView key={i} e={e} full={full} />)}
-        {l?.value && <button type="button" className={note ? "text-btn" : "chip"} onClick={() => { setFull(!full); if (!full && sheet) setSnap("full"); }}>{full ? "Short definition" : "Full entry"}</button>}
-        {l?.value && full && <p className={styles.fine}>{LSJ_CREDIT}</p>}
+        {l?.value && <button type="button" className="text-btn" aria-expanded={full} onClick={() => setFullFor(full ? "" : key)}>{full ? "The short entry" : "The whole entry"}</button>}
       </section>
 
-      {/* ------------------------------------------------ Wiktionary */}
+      {/* where to go from the word; the window on a computer has quiet links in words, the sheet keeps finger-sized framed ones */}
+      <section className={styles.sec}>
+        <h3 className="label">Go further</h3>
+        <div className={styles.panelLinks}>
+          {onEchoes && (
+            <button type="button" className={note ? "text-btn" : "chip"} onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
+              {occursLine(occurs.key === key ? occurs.n : null, workTitle)}
+            </button>
+          )}
+          {onSentence && (
+            <button type="button" className={note ? "text-btn" : "chip"} onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
+              How the sentence is built
+            </button>
+          )}
+          {lesson && (
+            <Link className={styles.lessonLink} href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 8.5 12 4l9 4.5-9 4.5z" /><path d="M7 10.6v4.6c3 2 7 2 10 0v-4.6" /></svg>
+              <span><b>{lesson.why}</b> <span>Lesson {lesson.n}: {lesson.title}</span></span>
+            </Link>
+          )}
+          {(lemma || l?.value) && (
+            <Link className={note ? "text-btn" : "chip"} href={`/treasury/word?l=${encodeURIComponent(headword)}`} transitionTypes={["page-turn"]}
+              title="Every form of the word, where and when it is used, real examples and its family">
+              Word Study · <span lang="grc">{headword}</span>
+            </Link>
+          )}
+          {place && (
+            <Link className={note ? "text-btn" : "chip"} href={`/stoa/periplus?p=${place.id}`} transitionTypes={["page-turn"]} title={`${shortName(place)}: where it is, and which works name it most`}>
+              On the map · <span lang="grc">{place.grc}</span>
+            </Link>
+          )}
+        </div>
+      </section>
+
+      {/* Wiktionary, live: never the meaning the card already gives */}
       {!wiktNone && <section className={styles.sec}>
         <h3 className="label">Wiktionary · live</h3>
         {offline && <p className="muted">You are offline. Wiktionary needs a connection.</p>}
-        {!offline && !w && <p className="muted">Looking it up…</p>}
+        {!offline && (!w || (w.value && !card)) && <p className="muted">Looking it up…</p>}
         {w && !w.value && w.error && <p className="muted">Wiktionary could not be reached ({w.error}).</p>}
-        {w?.value && (
+        {wikiShown && (
           <>
-            <Senses senses={w.value.senses} />
-            {w.value.lemmaSenses && w.value.senses.some((s) => s.lemma) && <Senses senses={w.value.lemmaSenses} />}
-            <p className={styles.fine}>From <a href={w.value.url} target="_blank" rel="noopener noreferrer">Wiktionary</a>, CC BY-SA 4.0.</p>
+            {wSenses.length > 0 && <Senses senses={wSenses} />}
+            {wLemmaSenses.length > 0 && <Senses senses={wLemmaSenses} />}
           </>
         )}
       </section>}
@@ -446,10 +452,20 @@ export default function WordPanel({ word, ctx, doc = null, at = null, onClose, o
         </ul>
       </section>
 
+      {/* at the foot: how sure the grammar is, in one quiet sentence, and the credits, in one quiet line */}
+      <div className={styles.foot}>
+        {ctx && analysisDone && <p className={styles.fine}>{certaintyNote(a ?? null, analysis.error)}</p>}
+        {credits.length > 0 && (
+          <p className={styles.fine} data-credits="">
+            {credits.map((c, i) => <span key={c.text}>{i > 0 && " · "}{c.href ? <a href={c.href} target="_blank" rel="noopener noreferrer">{c.text}</a> : c.text}</span>)}
+          </p>
+        )}
+      </div>
+
       </div>}
 
       </div>
-      {sheet && cardRow}
+      {sheet && !more && cardRow}
     </SidePanel>
   );
 }

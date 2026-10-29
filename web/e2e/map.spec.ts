@@ -35,6 +35,7 @@ test("looking up a place name in the reader offers it on the map", async ({ page
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.38");
   await page.locator('[data-u="1.38"] [data-w^="Τενέδοι"]').click();
   const panel = page.getByRole("complementary", { name: /^Look-up: Τενέδοι/ });
+  await panel.getByRole("button", { name: "More about it" }).click();   // the quiet desk, ticket 06: in the second layer
   await panel.getByRole("link", { name: /On the map · Τένεδος/ }).click();
   await expect(page).toHaveURL(/\/stoa\/periplus\?p=550912/);
 });

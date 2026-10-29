@@ -33,10 +33,10 @@ test("clicking a word shows its analysis in this passage and its LSJ entry", asy
   const panel = page.getByRole("complementary", { name: "Look-up: ἄειδε" });
   await expect(panel).toContainText("ἀείδω");
   await expect(panel).toContainText("sing");   // the first layer: the meaning
-  await panel.getByRole("button", { name: "More about it" }).click();   // the rest is behind it (the quiet desk, ticket 05)
-  await expect(panel).toContainText("present active imperative");
+  await expect(panel).toContainText(/present active imperative/i);   // and the grammar, in plain words
+  await panel.getByRole("button", { name: "More about it" }).click();   // the rest is behind it (the quiet desk, tickets 05 and 06)
+  await expect(panel).toContainText("Dictionary · LSJ");
   await expect(panel).toContainText("Checked by hand");
-  await expect(panel).toContainText("sing");
 });
 
 test("words can be looked up with the keyboard alone", async ({ page }) => {
