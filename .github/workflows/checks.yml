@@ -58,6 +58,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-choices.mjs http://localhost:3100
+      - name: A button's words wrap as one line of text on a phone, never as columns side by side
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-buttons.mjs http://localhost:3100
       # (the shares of a text need the word packs, which are not served here; the check says so and checks the rest)
       - name: What the Vocabulary page marks as in your lessons, and the texts it offers, are true
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}

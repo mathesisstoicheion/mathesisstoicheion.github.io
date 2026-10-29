@@ -55,7 +55,8 @@ export default function LettersStepView() {
       <footer className={styles.lessonEnd}>
         {done ? <p className={styles.good}>You have read the letters.</p> : <span />}
         <Link className={done ? "btn ghost" : "btn"} href={`/academy/reading/${next.id}`} transitionTypes={["page-turn"]} onClick={() => complete(pathKey(LETTERS_STEP.id))}>
-          {done ? <>Next lesson: {next.title}</> : <>I have read them: on to {next.title}</>} →
+          {/* the words in one piece, so that on a phone they wrap as a line of text, not as columns side by side */}
+          <span>{done ? `Next lesson: ${next.title}` : `I have read them: on to ${next.title}`}</span> <span className="arr" aria-hidden="true">→</span>
         </Link>
       </footer>
     </article>

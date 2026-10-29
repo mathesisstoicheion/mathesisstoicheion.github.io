@@ -251,7 +251,8 @@ export default function LessonView({ lesson }: { lesson: Lesson }) {
       {(done || next) && (
         <footer className={styles.lessonEnd}>
           {done && <p className={styles.good}>You have completed this lesson.</p>}
-          {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}>Next: <GreekText text={next.title} /> →</Link>}
+          {/* the words in one piece, so that on a phone they wrap as a line of text, not as columns side by side */}
+          {next && <Link className="btn ghost" href={`/academy/lesson/${next.id}`} transitionTypes={["page-turn"]}><span>Next: <GreekText text={next.title} /></span> <span className="arr" aria-hidden="true">→</span></Link>}
         </footer>
       )}
       {/* talk where you learn (Phase 11): a question about the lesson goes to the Agora's board for it */}
