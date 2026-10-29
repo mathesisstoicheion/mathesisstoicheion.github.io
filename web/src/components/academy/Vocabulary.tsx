@@ -4,6 +4,9 @@ import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { coreWords, type CoreEntry } from "@/lib/lookup/core";
 import { loadWordPack } from "@/lib/lookup/words";
 import { fold } from "@/lib/catalog";
+import { useAcademy } from "@/lib/academy";
+import { LESSON_INFO } from "@/data/lesson-index";
+import { TRACKS, begun } from "@/data/tracks";
 import styles from "./Academy.module.css";
 
 const TEXTS: [string, string][] = [
@@ -50,6 +53,27 @@ function useCoverage(work: string) {
   return { share, total: f?.total ?? null, failed: f !== null && f.counts === null };
 }
 
+/**
+ * The dictionary forms met in the lessons finished on either track: the grammar course's own word lists, and every
+ * word read on the reading path (data/reading-path.ts wordsRead, as its "Lessons completed" counts them). The path's
+ * lessons are a large file, so they load only for a learner who has read some.
+ */
+function useLessonWords() {
+  const completed = useAcademy((s) => s.completed);
+  const started = begun(completed);
+  const course = useMemo(() => LESSON_INFO.filter((l) => completed[l.id]).flatMap((l) => l.words), [completed]);
+  const [path, setPath] = useState<string[]>([]);
+  useEffect(() => {
+    if (!started.reading) return;
+    let live = true;
+    import("@/data/reading-path").then((m) => { if (live) setPath(m.wordsRead(completed).map((w) => w.lemma)); });
+    return () => { live = false; };
+  }, [completed, started.reading]);
+  const words = useMemo(() => [...new Set([...course, ...(started.reading ? path : [])])], [course, path, started.reading]);
+  const from = started.reading && started.grammar ? "both tracks" : started.reading ? TRACKS.reading.name : TRACKS.grammar.name;
+  return { words, folded: useMemo(() => new Set(words.map(fold)), [words]), from };
+}
+
 export default function Vocabulary() {
   const [words, setWords] = useState<{ lemma: string; entry: CoreEntry }[]>([]);
   const [q, setQ] = useState("");
@@ -59,6 +83,8 @@ export default function Vocabulary() {
   useEffect(() => { coreWords().then(setWords); }, []);
 
   const { share, total, failed } = useCoverage(work);
+  // the learner's own words first: how much of the text the lessons have already given them
+  const mine = useLessonWords();
   const [limit, setLimit] = useState(PAGE);
   const groups = useMemo(() => [...new Set(words.map((w) => w.entry.group))].sort(), [words]);
   const shown = words.filter((w) => (!group || w.entry.group === group) && (!query || fold(w.lemma).includes(query) || w.entry.def.toLowerCase().includes(q.trim().toLowerCase())));
@@ -77,6 +103,7 @@ export default function Vocabulary() {
         </label>
         {failed ? <p className="muted">Not available for this text right now</p> : <div className={styles.covBars}>
           {[
+            ...(mine.words.length ? [[`The ${mine.words.length} word${mine.words.length === 1 ? "" : "s"} from your lessons`, share(mine.words), mine.from]] : []),
             ["The 100 commonest words", share(words.slice(0, 100).map((w) => w.lemma)), "DCC core #1–100"],
             ["The 250 commonest words", share(words.slice(0, 250).map((w) => w.lemma)), "DCC core #1–250"],
             [`All ${words.length} core words`, share(words.map((w) => w.lemma)), "the whole DCC core list"],
@@ -109,7 +136,8 @@ export default function Vocabulary() {
                 return (
                   <tr key={w.lemma}>
                     <td className={styles.rank}>{w.entry.rank}</td>
-                    <td lang="grc" className={styles.inlineGr}>{w.entry.head}</td>
+                    <td lang="grc" className={styles.inlineGr}>{w.entry.head}{mine.folded.has(fold(w.lemma)) && (
+                      <span className={styles.met} lang="en" title="In your lessons">✓<span className="visually-hidden">, in your lessons</span></span>)}</td>
                     <td>{w.entry.def}</td>
                     <td className={styles.small}>{w.entry.pos}</td>
                   </tr>

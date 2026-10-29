@@ -625,6 +625,9 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 /* closed, a translation says what tapping does, in the reader's words, as a link would */
 .revealAsk { align-self: start; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
 
+/* a word of the commonest that the learner's lessons have already given them (the vocabulary page) */
+.met { margin-inline-start: var(--space-2); font: 600 var(--step--1) var(--f-body); color: var(--accent); }
+
 /* a lesson's sheet, stage by stage: the line first, then what to do with it, then the one button that goes on */
 .stage { display: grid; gap: var(--space-3); align-content: start; }
 /* the stages as parts along a rule, counted like Today's session's pages: passed and open in red, the rest faint. Each is

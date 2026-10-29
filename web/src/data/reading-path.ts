@@ -2920,6 +2920,7 @@ export const pathLevel = (index: number) => Math.min(3, Math.floor(index / 3));
 
 /** Progress keys in the academy store, and the lessons' numbers: kept in the light index the other pages load. */
 export { pathKey, passageKey, READING_TOTAL, readingNo, readingLesson } from "./reading-index";
+import { pathKey, passageKey } from "./reading-index";
 
 /** The practice lessons, one after every three lessons. */
 export const PRACTICE: PathPractice[] = [
@@ -3351,6 +3352,18 @@ export const stepWords = (s: PathStep, withPassage = true): PathWord[] => [
   ...s.parts.flatMap((p) => p.words),
   ...(withPassage ? (s.passage?.sentences ?? []).flatMap((st) => st.pieces.flatMap((p) => p.words)) : []),
 ];
+
+/**
+ * Every word read on the path, in order, repeats kept: each finished lesson's line (with its passage, once that is
+ * finished too), then every line of each finished practice lesson. "Lessons completed" counts them and lists their
+ * dictionary forms as the words you know; the vocabulary page measures a text by those forms.
+ */
+export function wordsRead(completed: Record<string, number>): PathWord[] {
+  const ws: PathWord[] = [];
+  for (const s of PATH) if (completed[pathKey(s.id)]) ws.push(...stepWords(s, !!completed[passageKey(s.id)]));
+  for (const p of PRACTICE) if (completed[pathKey(p.id)]) for (const l of p.lines) ws.push(...l.pieces.flatMap((q) => q.words));
+  return ws;
+}
 
 /** The dictionary forms met in lessons before lesson `index` (0-based), lines and passages. */
 export function knownBefore(index: number): Set<string> {

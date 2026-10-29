@@ -1,6 +1,7 @@
 // The lessons check (review fix list, slice 4): the Academy has two tracks, "Learn by reading" and "The grammar course"
 // (data/tracks.ts). Every place that names a lesson must agree with the Academy's own lists:
-//   number - a lesson page's "Lesson N of M" is its place in its track's list on the Academy page, counted from 1
+//   number - a lesson page's "Lesson N of M" is its place in its track's list on the Academy page, counted from 1, and
+//            the reading path's "Lessons completed" numbers each finished lesson the same way
 //   title  - the Academy's next-step button, Your desk on the home page and the lesson pages name the same lesson
 //   unit   - every lesson's length in both lists is in one unit (words); practice and tests are marked the same way, with
 //            the printed page's one mark (◆, from the site's own typefaces: docs/adr/0008-the-printed-page.md)
@@ -97,6 +98,23 @@ if (desk) {
   else if (first && (Number(m[1]) !== 1 || Number(m[2]) !== lists.reading.total)) found.push(`desk: Your desk says lesson ${m[1]} of ${m[2]}, not lesson 1 of ${lists.reading.total} of the reading path`);
   if (first && !desk.includes(first.title)) found.push(`desk: Your desk does not name "${first.title}"`);
   if (/minutes?\b/.test(desk)) found.push("unit: Your desk sizes the lesson in minutes, the lists in words");
+}
+
+// the reading path's "Lessons completed": each finished lesson under the number it has in the path
+const done = lists.reading.filter((r) => r.n).slice(0, 4);   // the letters and the three lessons after it
+await page.evaluate((ids) => localStorage.setItem("mathesis:academy", JSON.stringify({
+  state: { completed: Object.fromEntries(ids.map((id) => [`read:${id}`, Date.now()])), days: [] }, version: 0 })), done.map((r) => r.href.split("/").pop()));
+await page.goto(base + "/academy/reading#completed");
+await page.waitForTimeout(900);
+const finished = await page.evaluate(() => {
+  const head = [...document.querySelectorAll("main .label")].find((e) => /lessons you have finished/i.test(e.textContent));
+  return head ? [...head.parentElement.querySelectorAll("ol > li a")].map((a) => ({ no: a.children[0]?.textContent.trim(), title: a.querySelector("b")?.textContent.trim() })) : null;
+});
+if (!finished?.length) found.push("number: the reading path's Lessons completed lists no finished lesson");
+else for (const f of finished) {
+  const r = lists.reading.find((x) => x.title === f.title);
+  if (!r) found.push(`number: Lessons completed lists "${f.title}", which the Academy's list does not have`);
+  else if (Number(f.no) !== r.n) found.push(`number: Lessons completed numbers "${f.title}" ${f.no}, the path numbers it ${r.n}`);
 }
 
 await browser.close();

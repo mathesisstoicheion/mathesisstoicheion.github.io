@@ -6,9 +6,9 @@
  */
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
-import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, READING_TOTAL, type PathWord } from "@/data/reading-path";
+import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, wordsRead, READING_TOTAL, type PathWord } from "@/data/reading-path";
 import { READING_ITEMS } from "@/data/reading-index";
-import { TRACKS, nextReading, wordsLabel } from "@/data/tracks";
+import { nextReading, wordsLabel } from "@/data/tracks";
 import { useAcademy } from "@/lib/academy";
 import Rich from "./Rich";
 import { AlphabetFold } from "./PathStepView";
@@ -85,14 +85,13 @@ function Completed({ completed }: { completed: Record<string, number> }) {
   const practices = PRACTICE.filter((p) => completed[pathKey(p.id)]);
   // everything read: each finished lesson's line, its passage if finished, and finished practice lines
   const { words, read, grammar } = useMemo(() => {
-    const ws: PathWord[] = [];
+    const ws = wordsRead(completed);
     const g: { title: string; text: string[] }[] = [];
     for (const { s } of lessons) {
       const withPassage = !!completed[passageKey(s.id)];
-      ws.push(...stepWords(s, withPassage));
       g.push(s.learn, ...(withPassage ? (s.passage?.sentences ?? []).flatMap((st) => st.pieces.map((p) => p.learn)) : []));
     }
-    for (const p of practices) for (const l of p.lines) { ws.push(...l.pieces.flatMap((q) => q.words)); g.push(...l.pieces.map((q) => q.learn)); }
+    for (const p of practices) for (const l of p.lines) g.push(...l.pieces.map((q) => q.learn));
     const byLemma = new Map<string, PathWord>();
     for (const x of ws) if (!byLemma.has(x.lemma)) byLemma.set(x.lemma, x);
     const byTitle = new Map<string, { title: string; text: string[] }>();
@@ -100,10 +99,13 @@ function Completed({ completed }: { completed: Record<string, number> }) {
     return { words: [...byLemma.values()], read: ws.length, grammar: [...byTitle.values()] };
   }, [lessons, practices, completed]);
 
+  // nothing read yet but (perhaps) the letters: the way on is the one next step every page offers (data/tracks.ts)
+  const next = nextReading(completed);
   if (lessons.length === 0) return (
     <p className={styles.lp}>
-      Nothing here yet. When you finish a lesson it appears here, with the words and grammar it taught you, and a count of
-      everything you have read. <Link href={TRACKS.reading.first} transitionTypes={["page-turn"]}>Start with lesson 1, {LETTERS_STEP.title.toLowerCase()} →</Link>
+      {completed[pathKey(LETTERS_STEP.id)] ? "You have read the letters. " : "Nothing here yet. "}When you finish a lesson with a real
+      line it appears here, with the words and grammar it taught you, and a count of everything you have read.{" "}
+      {next && <Link href={next.href} transitionTypes={["page-turn"]}>Your next lesson: {next.title} →</Link>}
     </p>
   );
   const outgrown = OUTGROWN.filter((o) => lessons.length >= o.after);
@@ -157,12 +159,13 @@ function Completed({ completed }: { completed: Record<string, number> }) {
       <section style={{ display: "grid", gap: 4 }}>
         <span className="label">The lessons you have finished</span>
         <ol className={styles.path}>
-          {lessons.map(({ s, i }) => {
+          {lessons.map(({ s }) => {
             const taught = [...new Set(stepWords(s, !!completed[passageKey(s.id)]).map((x) => x.lemma))];
             return (
               <li key={s.id}>
                 <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={styles.pathItem}>
-                  <span className={styles.pathNo}>{i + 1}</span>
+                  {/* the number it has on the path, the letters being lesson 1 */}
+                  <span className={styles.pathNo}>{readingNo(s.id)}</span>
                   <span>
                     <b>{s.title}</b> <span lang="grc" className={styles.pathGr}>{s.parts.map(partText).join(" ")}</span>
                     <span className={styles.pathAbout}>

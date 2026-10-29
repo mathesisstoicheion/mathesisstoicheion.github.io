@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { LETTERS_STEP, PATH, PRACTICE, lineWords } from "./reading-path";
+import { LETTERS_STEP, PATH, PRACTICE, lineWords, stepWords, wordsRead } from "./reading-path";
 import { READING_ITEMS, READING_TOTAL, readingNo } from "./reading-index";
 import { LESSON_INFO } from "./lesson-index";
 import { TRACKS, nextGrammar, nextReading, nextSteps } from "./tracks";
@@ -63,5 +63,27 @@ describe("the one next step a page offers", () => {
     const path = READING_ITEMS.map((i) => `read:${i.id}`);
     expect(nextSteps(at(...path))).toMatchObject({ main: { step: { href: `/academy/lesson/${LESSON_INFO[0].id}` }, track: "The grammar course" }, also: null });
     expect(nextSteps(at(...path, ...LESSON_INFO.map((l) => l.id)))).toEqual({ main: null, also: null });
+  });
+});
+
+describe("the words read on the path", () => {
+  const at = (...ids: string[]) => Object.fromEntries(ids.map((id) => [id, 1]));
+  const lemmas = (c: Record<string, number>) => wordsRead(c).map((w) => w.lemma);
+
+  it("are none before a lesson with a line is finished (the letters teach no words)", () => {
+    expect(wordsRead({})).toEqual([]);
+    expect(wordsRead(at("read:letters"))).toEqual([]);
+  });
+
+  it("are a finished lesson's line, and its passage only once that is finished too", () => {
+    const s = PATH.find((x) => x.passage)!;
+    expect(lemmas(at(`read:${s.id}`))).toEqual(s.parts.flatMap((p) => p.words.map((w) => w.lemma)));
+    expect(lemmas(at(`read:${s.id}`, `passage:${s.id}`))).toEqual(stepWords(s, true).map((w) => w.lemma));
+  });
+
+  it("take in every line of a finished practice lesson, after the lessons", () => {
+    const p = PRACTICE[0];
+    const line = p.lines.flatMap((l) => l.pieces.flatMap((q) => q.words.map((w) => w.lemma)));
+    expect(lemmas(at(`read:${PATH[0].id}`, `read:${p.id}`))).toEqual([...stepWords(PATH[0], false).map((w) => w.lemma), ...line]);
   });
 });
