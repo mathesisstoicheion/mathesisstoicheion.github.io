@@ -357,7 +357,7 @@ export function formsOf(cell: string): string[] {
 
 /** How the Endings drill asks for one cell (components/academy/Practice.tsx), in a grammar's own words. */
 export type Ask =
-  | { kind: "form"; what: string; of: string; article?: boolean }   // "the genitive plural of φύλαξ"
+  | { kind: "form"; what: string; of: string; article?: boolean }   // "the genitive plural of φύλαξ", "the dative plural feminine of ὁ"
   | { kind: "person"; tense: string; person: string; of: string };  // "λύω in the aorist, for “we”"
 
 const GENDER: Record<string, string> = { "masc.": "masculine", "fem.": "feminine", "neut.": "neuter" };
@@ -369,7 +369,8 @@ export function askFor(p: Paradigm, r: number, c: number): Ask {
     // a participle is asked for by its own first form (λύων), not by its verb (λύω), which has several
     const of = p.group === "verb" ? formsOf(p.cells[0][0])[0] : p.lemma;
     const g = col.match(/^(masc\.|fem\.|neut\.) (sg|pl)$/);
-    return { kind: "form", what: g ? `${GENDER[g[1]]} ${row} ${NUMBER[g[2]]}` : `${row} ${col}`, of, article: p.group === "article" };
+    // case, number, gender: the order in which the reader's look-up names them ("accusative singular masculine")
+    return { kind: "form", what: g ? `${row} ${NUMBER[g[2]]} ${GENDER[g[1]]}` : `${row} ${col}`, of, article: p.group === "article" };
   }
   // the infinitives: tenses down the side, voices across
   if (!PERSONS.includes(row)) return { kind: "form", what: `${row} ${col} infinitive`, of: p.lemma };
@@ -392,8 +393,8 @@ export function wrongForms(p: Paradigm, r: number, c: number): string[] {
 /**
  * What a wrong answer is in its table, in the drill's own words, so that a mistake teaches something: "the imperfect
  * middle and passive, for “we”", "the nominative or accusative singular", or "τιμάω in the present, for “they”" (another
- * verb than the one asked for). A form that fills several cells names them together ("the masculine or neuter dative
- * singular"); the vocative only when it is nothing else.
+ * verb than the one asked for). A form that fills several cells names them together ("the dative singular masculine or
+ * neuter"); the vocative only when it is nothing else.
  */
 export function whatIs(p: Paradigm, form: string, asked: Ask): string {
   const cells: [number, number][] = [];

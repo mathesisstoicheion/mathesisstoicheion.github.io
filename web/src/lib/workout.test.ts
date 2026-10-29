@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { LESSONS } from "@/data/lessons";
-import { lessonPool, testRound, practiceRound, warmUp, isRightWritten } from "./workout";
+import { lessonPool, testRound, practiceRound, warmUp, isRightWritten, cellName } from "./workout";
+import { PARADIGMS } from "@/data/paradigms";
+import { readTag } from "./lookup/postag";
 import { shortGloss } from "./glosses";
 import { afterTest, refreshDue, passMark, REFRESH_DAYS } from "./mastery";
 
@@ -32,6 +34,15 @@ describe("lesson workouts", () => {
     expect(w).toHaveLength(3);
     expect(w.every((q) => q.lesson !== l.id)).toBe(true);
     expect(warmUp(LESSONS[0], glosses)).toHaveLength(0);
+  });
+
+  it("names case, number and gender in the order the word look-up names them", () => {
+    const differ: string[] = [];
+    for (const p of PARADIGMS.filter((x) => x.cols.some((c) => /^(masc|fem|neut)\. (sg|pl)$/.test(c)))) p.rows.forEach((row, r) => p.cols.forEach((col, c) => {
+      const what = cellName(p, r, c).what.split(", ").at(-1), lookup = readTag(p.tags[r][c]).detail.split(" · ").at(-1);
+      if (what !== lookup) differ.push(`${p.id} ${row} ${col}: "${what}", the look-up says "${lookup}"`);
+    }));
+    expect(differ).toEqual([]);
   });
 
   it("a form question's wrong answers are never also right", () => {

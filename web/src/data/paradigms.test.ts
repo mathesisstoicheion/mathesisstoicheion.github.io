@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { PARADIGMS, askFor, formsOf, whatIs, wrongForms, type Ask } from "./paradigms";
 import { fold } from "@/lib/catalog";
+import { readTag } from "@/lib/lookup/postag";
 
 const table = (id: string) => PARADIGMS.find((p) => p.id === id)!;
 const at = (id: string, row: string, col: string): Ask => {
@@ -16,12 +17,21 @@ describe("the Endings drill asks for a form as a grammar would", () => {
   });
 
   it("spells out gender and number, never masc. or sg", () => {
-    expect(words(at("agathos", "genitive", "masc. sg"))).toBe("the masculine genitive singular of ἀγαθός");
-    expect(words(at("article", "dative", "fem. pl"))).toBe("the feminine dative plural of the article ὁ");
+    expect(words(at("agathos", "genitive", "masc. sg"))).toBe("the genitive singular masculine of ἀγαθός");
+    expect(words(at("article", "dative", "fem. pl"))).toBe("the dative plural feminine of the article ὁ");
+  });
+
+  it("names case, number and gender in the order the reader's look-up names them", () => {
+    const differ: string[] = [];
+    for (const p of PARADIGMS.filter((x) => x.cols.some((c) => /^(masc|fem|neut)\. (sg|pl)$/.test(c)))) p.rows.forEach((row, r) => p.cols.forEach((col, c) => {
+      const a = askFor(p, r, c), lookup = readTag(p.tags[r][c]).detail.split(" · ").at(-1);
+      if (a.kind === "form" && a.what !== lookup) differ.push(`${p.id} ${row} ${col}: "${a.what}", the look-up says "${lookup}"`);
+    }));
+    expect(differ).toEqual([]);
   });
 
   it("asks for a participle by its own first form, not by the verb", () => {
-    expect(words(at("luon", "dative", "fem. pl"))).toBe("the feminine dative plural of λύων");
+    expect(words(at("luon", "dative", "fem. pl"))).toBe("the dative plural feminine of λύων");
   });
 
   it("asks for a verb's form by its tense and person", () => {
@@ -73,8 +83,8 @@ describe("a wrong answer is named for what it is", () => {
   });
 
   it("names every cell a form fills, together, and the vocative only when it is nothing else", () => {
-    expect(whatIs(table("article"), "τοῦ", asked("article", "dative", "fem. sg"))).toBe("the masculine or neuter genitive singular");
-    expect(whatIs(table("luomenos"), "λυομένων", asked("luomenos", "dative", "fem. pl"))).toBe("the masculine, feminine or neuter genitive plural");
+    expect(whatIs(table("article"), "τοῦ", asked("article", "dative", "fem. sg"))).toBe("the genitive singular masculine or neuter");
+    expect(whatIs(table("luomenos"), "λυομένων", asked("luomenos", "dative", "fem. pl"))).toBe("the genitive plural masculine, feminine or neuter");
     expect(whatIs(table("doron"), "δῶρον", asked("doron", "genitive", "plural"))).toBe("the nominative or accusative singular");
     expect(whatIs(table("luo-inf"), "λύεσθαι", asked("luo-inf", "aorist", "active"))).toBe("the present middle or passive infinitive");
     expect(whatIs(table("contract-imperfect"), "ἐποίουν", asked("contract-imperfect", "I", "δηλόω"))).toBe("ποιέω in the imperfect, for “I” or “they”");
