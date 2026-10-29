@@ -1,9 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { openAids } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // Find in this text: a word or phrase through the whole book, in the Greek and in the translation.
 // Needs a connection (the texts come from GitHub).
 test.describe.configure({ timeout: 90_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // these read the English beside the Greek (the quiet desk, ticket 07)
 
 const marked = (page: Page, name: string) =>
   page.evaluate((n) => ((CSS as unknown as { highlights?: Map<string, { size: number }> }).highlights?.get(n)?.size ?? 0), name);

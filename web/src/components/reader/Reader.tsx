@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { createContext, memo, useCallback, useContext, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from "react";
 import {
   loadCatalog, greekEditions, translations, describe, versionOf, OUT_OF_STEP,
-  type CatalogIndex, type CatText, type CatWork,
+  type CatalogIndex, type CatText, type CatWork, type CollectionId,
 } from "@/lib/catalog";
 import { getXml, type From } from "@/lib/texts/source";
 import { readerBusy } from "@/lib/texts/priority";
@@ -107,6 +107,9 @@ function pickTranslation(w: CatWork, tr: string | null, remembered: string | nul
 }
 
 const NO_MARKS: Mark[] = [];
+const NO_KEYS: ReadonlySet<string> = new Set();
+/** The collections the library's texts come from, as the footer names them. */
+const COLLECTION_NAME: Record<CollectionId, string> = { perseus: "the Perseus Digital Library", first1k: "the First Thousand Years of Greek project" };
 const rangeLabel = (a: string, b: string) => (a === b ? a : `${a}–${b}`);
 const blockText = (bs: Block[]) => bs.map((b) => b.c.map((x) => (typeof x === "string" ? x : "")).join("")).join(" ").replace(/\s+/g, " ").trim();
 
@@ -118,7 +121,7 @@ const MARK_ICON: Record<string, React.ReactNode> = {
 };
 
 /** One passage row: reference and your marks in the margin, Greek, translation, and any notes. */
-const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, tryFirst, trGreek }: {
+const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, tryFirst, trGreek, english }: {
   row: Row; marks: Mark[]; openNote: string | null; onCloseNote: () => void; translit: boolean; metre: Map<string, (LineRender | null)[]> | null;
   /** a text cited by verse: the margin shows only the verse number, as in a printed Bible (the chapter is in the bar) */
   verses: boolean;
@@ -126,6 +129,9 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
   tryFirst: boolean;
   /** the second column is another Greek edition, being compared with this one */
   trGreek: boolean;
+  /** the Greek stands alone and the book has a translation: this passage offers "Show the English" (opened or not), and the
+   *  translation's credit; null when it does not (the quiet desk, ticket 07, the owner, 2026-10-29) */
+  english: { open: boolean; credit: string; onToggle: () => void } | null;
 }) {
   const notes = marks.filter((m) => m.kind === "note");
   const [shown, setShown] = useState(false);
@@ -152,6 +158,22 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
       <div className={styles.grc} lang="grc">
         {/* the margin shows the passage's number: the start of its first part does not say it again */}
         {row.greek.map((u, i) => <div key={u.ref.join(".")} data-u={u.ref.join(".")}><Blocks blocks={u.blocks} greek keyPrefix={u.ref.join(".")} translit={translit} metre={metre?.get(u.ref.join("."))} margin={i === 0 ? row.key : undefined} /></div>)}
+        {/* Greek alone: the English of this passage alone, one tap away, under its Greek and in the Greek's column. It is in
+            English (no word of it opens the Greek look-up) and so is set apart from the Greek by lang. */}
+        {english && (
+          <div className={styles.oneBox} lang="en">
+            <button type="button" className={`text-btn ${styles.oneBtn}`} aria-expanded={english.open} onClick={english.onToggle}>{english.open ? "Hide the English" : "Show the English"}</button>
+            {english.open && (
+              <div className={styles.one} data-one="">
+                {row.trans.length
+                  ? <Blocks blocks={row.trans} greek={false} keyPrefix={`o${row.key}`} margin={row.key} />
+                  : row.cont ? <span className={styles.untr}>The English for these lines begins on the page before.</span>
+                  : <span className={styles.untr} data-untranslated=""><b>Not translated.</b> This translation leaves this passage out.</span>}
+                <p className={styles.oneCredit}>{english.credit}</p>
+              </div>
+            )}
+          </div>
+        )}
       </div>
       <div className={styles.tr} data-tr="" data-veiled={veiled || undefined} data-greek={trGreek || undefined} lang={trGreek ? "grc" : undefined}>
         {veiled && <button type="button" className={styles.reveal} onClick={() => setShown(true)}>Tap to see the translation</button>}
@@ -203,9 +225,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const pendingXref = useUI((s) => s.pendingXref);
   const router = useRouter();
   const toast = useUI((s) => s.showToast);
-  // which columns show is chosen for the book being read: every book opens with its Greek and the translation side by side
-  const [colsFor, setColsFor] = useState<{ work: string; c: Columns } | null>(null);
   const setSettings = useSettings((s) => s.set);
+  // which columns show is the reader's saved choice (Aa): a book opens with its Greek alone unless "Both" was chosen (the quiet
+  // desk, ticket 07, the owner, 2026-10-29)
+  const savedColumns = useSettings((s) => s.columns);
   const translit = useSettings((s) => s.translit);
   const cases = useSettings((s) => s.cases);
   const metreOn = useSettings((s) => s.metre);
@@ -298,7 +321,20 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const strict: Strictness = P("cmpx") === "1" ? "spelling" : "readings";
   const second = cmpText ?? trText;
   // with no translation, only the Greek can show (an "English only" choice would leave the page empty)
-  const columns: Columns = !trText ? "greek" : colsFor?.work === workId ? colsFor.c : "both";
+  const columns: Columns = !trText ? "greek" : savedColumns;
+  // "Show the English" (Greek alone, a translation, no comparison): the passages whose English is open now, for this book, this
+  // translation and these columns; it starts over when any of them changes, and is not kept across a reload
+  const oneScope = `${workId}|${trText?.urn ?? ""}|${columns}`;
+  const [oneOpen, setOneOpen] = useState<{ scope: string; keys: ReadonlySet<string> }>({ scope: "", keys: new Set() });
+  const openOnes = oneOpen.scope === oneScope ? oneOpen.keys : NO_KEYS;
+  const toggleOne = (key: string) => setOneOpen((cur) => {
+    const keys = new Set(cur.scope === oneScope ? cur.keys : NO_KEYS);
+    if (!keys.delete(key)) keys.add(key);
+    return { scope: oneScope, keys };
+  });
+  // the translation's own credit, as the editions line names it ("Murray, 1924") and the collection it comes from, under the
+  // site's licence (Footer.tsx); a private book names only its own description
+  const trCredit = trText && work ? `${describe(trText, work.texts)}${trText.urn.startsWith("mine:") ? "" : `, from ${COLLECTION_NAME[trText.col]}. CC BY-SA 4.0.`}` : "";
   const pk = (x: string) => (pane === 1 ? x : `${x}2`);
   const cite = `${author?.name ?? ""}, ${work?.title ?? ""}`;
   const loadKey = grcText && snap?.work === workId ? `${grcText.urn}|${second?.urn ?? ""}|${retry}` : null;
@@ -1413,7 +1449,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   );
   // how many of the modes above are on, for the sign on the Tools button (review fix list, slice 8)
   const modesOn = [translit, cases, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst, hasLines && fitLines].filter(Boolean).length;
-  const setCols = (c: Columns) => setColsFor({ work: workId, c });
+  const setCols = (c: Columns) => setSettings({ columns: c });
   const columnsSeg = (
     <div className={styles.seg} role="radiogroup" aria-label="Columns">
       {([["both", "Both"], ["greek", "Greek"], ["trans", "English"]] as [Columns, string][]).map(([c, l]) => (
@@ -1773,7 +1809,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {/* data-reading: the text being read, sized by the reader's own choices in Settings (scripts/check-design.mjs) */}
           <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
-              tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText} />)}
+              tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText}
+              english={trText && !cmpText && columns === "greek" ? { open: openOnes.has(r.key), credit: trCredit, onToggle: () => toggleOne(r.key) } : null} />)}
           </article>
           {sel && <PassageToolbar sel={sel} onAction={act} onClose={() => { setSel(null); getSelection()?.removeAllRanges(); }}
             xref={split ? (pendingXref && pendingXref.pane !== pane ? "here" : "start") : null}

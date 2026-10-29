@@ -1,9 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { headerButton } from "./header";
 import { openMore } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // The reader reads texts from GitHub, so these need a connection (until the offline part).
 test.describe.configure({ timeout: 90_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // the markers stand along the page as the English beside the Greek makes it (the quiet desk, ticket 07)
 
 const openIliad = async (page: Page, at = "1.1") => {
   await page.goto(`/read?w=tlg0012.tlg001&tr=perseus-eng3&at=${at}`);

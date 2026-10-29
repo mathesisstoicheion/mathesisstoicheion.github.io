@@ -1,9 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { openAids } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // Listen: the English translation read aloud. The device's voice is replaced by a stand-in that "speaks" each
 // piece of text at once, word by word, so the test runs the same everywhere. Needs a connection (texts from GitHub).
 test.describe.configure({ timeout: 60_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // these read the English beside the Greek (the quiet desk, ticket 07)
 
 async function fakeVoice(page: Page) {
   await page.addInitScript(() => {

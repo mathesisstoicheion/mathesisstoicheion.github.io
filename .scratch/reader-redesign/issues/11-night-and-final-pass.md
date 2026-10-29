@@ -20,3 +20,9 @@ Spec: `../spec.md`, "Testing". User stories 9, 22, 23
 - [ ] Nothing is published until the owner says "publish".
 
 ## Comments
+
+## Comment, 2026-10-29: a bug found while building ticket 07
+
+- Choosing "Compare with" in Change sends the reader back to the start of the text. It happens with both columns as well as
+  Greek alone, so it was there before ticket 07. On Aeschylus' Agamemnon, read at line 75, the page jumps to line 0 once
+  the comparison loads. Build a check that catches it, then fix it.

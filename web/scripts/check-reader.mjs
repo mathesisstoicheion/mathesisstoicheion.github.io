@@ -13,6 +13,11 @@
 //             Places…) drawn as switches; nothing on the Tools button to say a mode is on
 //   word    - the look-up: the same meaning twice, a dead-end "No Wiktionary entry", the reader's English hidden behind it
 //   bar     - on a phone, the bar in more than one row, or the work's title cut short
+//   alone   - a book that opens with an English column beside the Greek on a fresh profile (the quiet desk, ticket 07: it opens
+//             on Greek alone); "Show the English" under a passage that does not show its English and credit, that shows it for
+//             other passages too, that is not undone by "Hide the English", that opens the Greek look-up when its English is
+//             tapped, that runs into the margin kept for the look-up or off the side of a phone; a saved "Both" that is lost
+//             (or an old default "Both" that is not changed to Greek alone, once)
 //   photos  - a photograph in the reader: on a book's title page (the Iliad had the Mask of Agamemnon) or on the reader with
 //             no book open (the owner, 2026-10-26: "no useless photos plastered everywhere")
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
@@ -41,6 +46,9 @@ const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1], a[2] - b[2]);
 const rgbOf = (s) => (s.match(/[\d.]+/g) ?? []).slice(0, 3).map((x) => (s.startsWith("color(") ? +x * 255 : +x)).map(Math.round);
 const MIN_APART = 45;   // how far apart (in 0–255 RGB) two case colours must stay, as each kind of colour blindness sees them
 
+// the settings as the browser keeps them (lib/settings.ts): version 3 is the quiet desk's, version 2 the printed page's
+const saved = (version, columns) => JSON.stringify({ state: { columns }, version });
+
 async function reader(ctx, w, h, seed) {
   const page = await ctx.newPage();
   await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
@@ -48,6 +56,8 @@ async function reader(ctx, w, h, seed) {
     try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${path}` }) }); } catch { await route.abort(); }
   });
   await page.route(/wiktionary\.org/, (route) => route.fulfill({ status: 404, contentType: "application/json", body: "{}" }));
+  // the sections below read the English beside the Greek, so these readers have chosen "Both" (the default is Greek alone)
+  await page.addInitScript((v) => { localStorage.setItem("mathesis:settings", v); }, saved(3, "both"));
   if (seed) await page.addInitScript((work) => {
     if (sessionStorage.getItem("seeded")) return;
     sessionStorage.setItem("seeded", "1");
@@ -214,6 +224,89 @@ for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1
     if (bar.cut || bar.width < 60) found.push(`bar ${tag}: the work's title is cut short ("${bar.title}", ${Math.round(bar.width)} px)`);
   }
   await ctx.close();
+}
+
+// ---- alone: a book opens on Greek alone, and "Show the English" opens one passage's English under its Greek
+const ILIAD = "/read?w=tlg0012.tlg001&tr=perseus-eng3";
+async function iliad(ctx, settings) {
+  const page = await ctx.newPage();
+  await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
+    const path = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
+    try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${path}` }) }); } catch { await route.abort(); }
+  });
+  if (settings) await page.addInitScript((v) => { localStorage.setItem("mathesis:settings", v); }, settings);
+  await page.goto(base + ILIAD);
+  await page.waitForSelector('article [data-key="1.5"] [data-u] [data-w]', { timeout: 45000 });
+  await page.waitForTimeout(1500);
+  return page;
+}
+/** how many English columns are on the screen, and how many "Show the English" buttons */
+const columnsShown = (page) => page.evaluate(() => ({
+  tr: [...document.querySelectorAll("article [data-tr]")].filter((e) => e.getBoundingClientRect().width > 0 && getComputedStyle(e).display !== "none").length,
+  buttons: [...document.querySelectorAll("article section[data-key] button")].filter((b) => /^Show the English$/.test(b.textContent.trim())).length,
+}));
+for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
+  const page = await iliad(ctx);
+  const first = await columnsShown(page);
+  if (first.tr) found.push(`alone ${tag}: the Iliad opens on a fresh profile with ${first.tr} English column(s) beside the Greek`);
+  if (!first.buttons) found.push(`alone ${tag}: no passage offers "Show the English"`);
+
+  try {
+    const row = (key) => page.locator(`article section[data-key="${key}"]`);
+    const btn = (key) => row(key).locator("button", { hasText: /the English$/ });
+    await row("1.5").scrollIntoViewIfNeeded();
+    await btn("1.5").click();
+    await page.waitForTimeout(700);
+    const shown = await row("1.5").evaluate((r, w) => {
+      const one = r.querySelector("[data-one]"), b = [...r.querySelectorAll("button")].find((x) => /the English$/.test(x.textContent.trim()));
+      const grc = r.querySelector("[lang=grc]")?.getBoundingClientRect(), lastU = [...r.querySelectorAll("[data-u]")].at(-1)?.getBoundingClientRect(), box = one?.getBoundingClientRect(), rr = r.getBoundingClientRect();
+      const track = getComputedStyle(r).gridTemplateColumns.split(" ").map(parseFloat).at(-1);
+      return {
+        text: one?.textContent.trim() ?? "", visible: !!box && box.width > 0 && box.height > 0,
+        label: b?.textContent.trim(), expanded: b?.getAttribute("aria-expanded"),
+        under: !!box && !!grc && !!lastU && box.top >= lastU.bottom - 2 && box.left >= grc.left - 1 && box.right <= grc.right + 1,
+        margin: !!box && w >= 1100 && box.right > rr.right - track + 1,
+        // the button and the English start where the Greek's words do, not under the line numbers (the quiet desk, ticket 07)
+        lefts: [r.querySelector("[data-w]")?.getBoundingClientRect().left, b?.getBoundingClientRect().left, box?.left].map((x) => Math.round(x ?? -1)),
+        sideways: document.documentElement.scrollWidth > innerWidth + 1,
+      };
+    }, w);
+    if (!shown.visible || shown.text.length < 40) found.push(`show ${tag}: "Show the English" does not show the passage's English ("${shown.text.slice(0, 40)}")`);
+    if (!/Murray/.test(shown.text) || !/Perseus/.test(shown.text)) found.push(`show ${tag}: the English has no credit for the translation ("${shown.text.slice(-70)}")`);
+    if (shown.label !== "Hide the English" || shown.expanded !== "true") found.push(`show ${tag}: the button reads "${shown.label}" with aria-expanded=${shown.expanded}, not "Hide the English" and true`);
+    if (!shown.under) found.push(`show ${tag}: the English is not under the Greek, in its column`);
+    if (Math.abs(shown.lefts[1] - shown.lefts[0]) > 2 || Math.abs(shown.lefts[2] - shown.lefts[0]) > 2) found.push(`show ${tag}: the button (${shown.lefts[1]} px) and the English (${shown.lefts[2]} px) do not start where the Greek's words do (${shown.lefts[0]} px)`);
+    if (shown.margin) found.push(`show ${tag}: the English runs into the margin kept for the look-up`);
+    if (shown.sideways) found.push(`show ${tag}: the page scrolls sideways with the English open`);
+    for (const key of ["1.1", "1.10"]) {
+      const n = await row(key).evaluate((r) => ({ one: r.querySelectorAll("[data-one]").length, label: [...r.querySelectorAll("button")].find((x) => /the English$/.test(x.textContent.trim()))?.textContent.trim() }));
+      if (n.one || n.label !== "Show the English") found.push(`show ${tag}: passage ${key} next to the opened one is not Greek alone (${n.one} English, button "${n.label}")`);
+    }
+
+    // a word tapped in the English does not open the Greek look-up
+    const at = await row("1.5").locator("[data-one] p, [data-one] div").filter({ hasText: /\w{4}/ }).first().boundingBox();
+    if (at) { await page.mouse.click(at.x + at.width / 3, at.y + Math.min(at.height / 2, 12)); await page.waitForTimeout(600); }
+    if (await page.locator('aside[aria-label^="Look-up"]').count()) found.push(`show ${tag}: a word tapped in the English opened the Greek look-up`);
+
+    await btn("1.5").click();
+    await page.waitForTimeout(300);
+    const hid = await row("1.5").evaluate((r) => ({ one: r.querySelectorAll("[data-one]").length, label: [...r.querySelectorAll("button")].find((x) => /the English$/.test(x.textContent.trim()))?.textContent.trim(), expanded: [...r.querySelectorAll("button")].find((x) => /the English$/.test(x.textContent.trim()))?.getAttribute("aria-expanded") }));
+    if (hid.one || hid.label !== "Show the English" || hid.expanded !== "false") found.push(`hide ${tag}: "Hide the English" leaves the English open (${hid.one} shown, button "${hid.label}", aria-expanded=${hid.expanded})`);
+  } catch (e) {
+    found.push(`show ${tag}: "Show the English" could not be used (${String(e.message).split("\n")[0].slice(0, 90)})`);
+  }
+  await ctx.close();
+
+  // a "Both" chosen after the upgrade is kept; the old default "Both" (saved at version 2) becomes Greek alone
+  for (const [version, columns, wantTr, why] of [[3, "both", true, "a saved \"Both\" chosen after the upgrade is not kept"], [2, "both", false, "a \"Both\" saved before the quiet desk is not changed to Greek alone"]]) {
+    const c = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
+    const p = await iliad(c, saved(version, columns));
+    const n = await columnsShown(p);
+    if (!!n.tr !== wantTr) found.push(`alone ${tag}: ${why} (${n.tr} English column(s))`);
+    await c.close();
+  }
 }
 
 // ---- photos: none in the reader

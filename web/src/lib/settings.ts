@@ -33,7 +33,7 @@ export interface Settings {
   greekFace: GreekFace;
 }
 
-export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "both", translit: false, cases: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "gentium" };
+export const DEFAULTS: Settings = { theme: "auto", motion: "auto", greekSize: 1.25, leading: 1.75, columns: "greek", translit: false, cases: false, metre: false, tryFirst: false, fitLines: false, vibrate: true, pron: "attic", markers: MARKER_KINDS, greekFace: "gentium" };
 export const LIMITS = {
   greekSize: { min: 1, max: 2, step: 0.0625 },
   leading: { min: 1.4, max: 2.2, step: 0.1 },
@@ -69,9 +69,10 @@ export const useSettings = create<SettingsStore>()(
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
       partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }),
-      // version 1: the settings of Gold and lamplight; version 2: the printed page's (migrate, below)
-      version: 2,
-      migrate: (saved, version) => (version < 2 ? upgrade(saved) : saved) as SettingsStore,
+      // version 1: the settings of Gold and lamplight; version 2: the printed page's; version 3: the quiet desk's, Greek alone
+      // (migrate, below)
+      version: 3,
+      migrate: (saved, version) => (version < 3 ? greekAlone(version < 2 ? upgrade(saved) : saved) : saved) as SettingsStore,
       skipHydration: true,
     },
   ),
@@ -88,6 +89,16 @@ export function upgrade(saved: unknown): Partial<Settings> {
   const motion: MotionPref = p.motion === "reduce" || p.level === "performance" ? "reduce" : p.motion === "full" ? "full" : "auto";
   delete p.level; delete p.bar; delete p.textFace;
   return { ...(p as Partial<Settings>), theme, greekFace: "gentium", motion };
+}
+
+/**
+ * Settings saved before the quiet desk (version 2 or 1): a saved "both" becomes "greek", once. "Both" was the old default,
+ * not a choice anyone made; it stays one of the choices in Aa, and a "both" chosen after this upgrade is kept (the quiet desk,
+ * ticket 07, the owner, 2026-10-29).
+ */
+export function greekAlone(saved: unknown): Partial<Settings> {
+  const p = { ...((saved ?? {}) as Partial<Settings>) };
+  return p.columns === "both" ? { ...p, columns: "greek" } : p;
 }
 
 /** The colour of the browser's own bar on phones (and of an installed app's title bar): the paper, and the night page. */

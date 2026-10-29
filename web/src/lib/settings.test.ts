@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { useSettings, DEFAULTS, LIMITS, upgrade } from "./settings";
+import { useSettings, DEFAULTS, LIMITS, upgrade, greekAlone, BOOT_SCRIPT } from "./settings";
 
 describe("settings", () => {
   it("starts from the defaults: the page follows the device, Greek in Gentium", () => {
@@ -41,5 +41,42 @@ describe("settings saved before the printed page", () => {
   it("give the old Greek faces (Garamond, saved as \"didot\", and Sans) the new default, Gentium", () => {
     expect(upgrade({ greekFace: "sans" }).greekFace).toBe("gentium");
     expect(upgrade({ greekFace: "didot" }).greekFace).toBe("gentium");
+  });
+});
+
+// the quiet desk, ticket 07: Greek alone is the default, and a saved "both" (the old default) changes to it once
+describe("settings saved before the quiet desk", () => {
+  const migrate = (saved: unknown, version: number) => useSettings.persist.getOptions().migrate!(saved, version) as Record<string, unknown>;
+  it("start with the Greek alone", () => {
+    expect(DEFAULTS.columns).toBe("greek");
+    expect(useSettings.persist.getOptions().version).toBe(3);
+  });
+  it("turn a saved \"both\" into \"greek\", once", () => {
+    expect(migrate({ columns: "both", greekSize: 1.5 }, 2)).toMatchObject({ columns: "greek", greekSize: 1.5 });
+    expect(greekAlone({ columns: "both" }).columns).toBe("greek");
+  });
+  it("leave a saved \"trans\" as it is", () => {
+    expect(migrate({ columns: "trans" }, 2).columns).toBe("trans");
+    expect(migrate({ columns: "greek" }, 2).columns).toBe("greek");
+  });
+  it("still upgrade the theme of version 1 saves, and give them Greek alone as well", () => {
+    expect(migrate({ theme: "light", columns: "both" }, 1)).toMatchObject({ theme: "paper", greekFace: "gentium", columns: "greek" });
+  });
+  it("keep a \"both\" chosen after the upgrade (version 3)", () => {
+    expect(migrate({ columns: "both" }, 3).columns).toBe("both");
+  });
+  it("leave the no-flash script reading the theme upgrade for version 1 only", () => {
+    // it asks whether the save is older than version 2 (the theme), so a version 3 save must not count as old
+    expect(BOOT_SCRIPT).toContain("j.version>=2");
+    const boot = (version: number, theme: string) => {
+      const attrs: Record<string, string> = {};
+      const store = { getItem: () => JSON.stringify({ state: { theme }, version }) };
+      const el = { setAttribute: (k: string, v: string) => { attrs[k] = v; }, style: { setProperty() {} } };
+      new Function("localStorage", "document", BOOT_SCRIPT)(store, { documentElement: el, querySelectorAll: () => [] });
+      return attrs["data-theme"];
+    };
+    expect(boot(3, "night")).toBe("night");   // version 3: the saved theme is used as it is
+    expect(boot(1, "light")).toBe("paper");   // version 1: Daylight becomes Paper
+    expect(boot(3, "light")).toBeUndefined(); // version 3 never holds "light"
   });
 });

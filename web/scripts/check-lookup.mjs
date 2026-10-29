@@ -41,6 +41,9 @@ const found = [];
 async function open(w, h, scheme, path) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, serviceWorkers: "block", hasTouch: w < 800, isMobile: w < 800 });
   const page = await ctx.newPage();
+  // the look-up must keep clear of the English beside the Greek, so this reader has chosen "Both" (a book opens on Greek alone now;
+  // the quiet desk, ticket 07): the saved settings, version 3
+  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { columns: "both" }, version: 3 })); });
   await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
     const p = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
     try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${p}` }) }); } catch { await route.abort(); }

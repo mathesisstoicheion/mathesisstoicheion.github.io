@@ -1,10 +1,12 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { openAids, openChange } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // Comparing two editions in the reader: Aeschylus' Agamemnon, Smyth (1926) against Sidgwick (1902).
 // Needs a connection (the texts come from GitHub).
 test.describe.configure({ timeout: 120_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // the editions are compared in two columns, so the page starts as that layout (the quiet desk, ticket 07)
 
 const AGAM = "/read?w=tlg0085.tlg005&ed=perseus-grc2";
 const marked = (page: Page, name: string) =>

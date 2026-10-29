@@ -1,8 +1,10 @@
 import { test, expect, type Page } from "@playwright/test";
 import { aid, openAids } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // These tests read texts from GitHub, so they need a connection.
 test.describe.configure({ timeout: 60_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // these read the English beside the Greek (the quiet desk, ticket 07)
 
 const openIliad = async (page: Page, extra = "") => {
   await page.goto(`/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1${extra}`);

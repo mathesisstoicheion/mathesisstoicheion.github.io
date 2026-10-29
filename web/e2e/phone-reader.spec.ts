@@ -1,9 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
 import { openAids, openMore } from "./reader-menus";
+import { bothColumns } from "./both-columns";
 
 // The reader on a phone: its own bar along the top of the window (the way back, the book and its page, then the
 // page's settings, Aa; Tools; your marks; More). These read texts from GitHub, so they need a connection.
 test.describe.configure({ timeout: 60_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // these read the English beside the Greek (the quiet desk, ticket 07)
 test.use({ viewport: { width: 375, height: 812 }, isMobile: true, hasTouch: true });
 
 const openIliad = async (page: Page, at = "1.1") => {

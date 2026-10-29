@@ -654,6 +654,26 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 .reveal:hover, .reveal:focus-visible { color: var(--rubric); border-color: var(--rubric); }
 
+/* "Show the English" (Reader.tsx, RowView; the quiet desk, ticket 07, the owner, 2026-10-29): with the Greek alone, one passage's English
+   opens under its Greek, in the Greek's column (so the margin at the right stays clear for the look-up), and leafs in like the other
+   things that appear; the credit under it is the quietest line. The button reads like the look-up's Previous and Next: ink-2, red under the hand. */
+/* in a text set in lines, the button and the English start where the Greek's words do, past the line-number column (.line) */
+.oneBox { margin-top: var(--space-2); }
+.grc:has(.line) > .oneBox { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
+.grc:has(.line) > .oneBox > * { grid-column: 2; }
+@media (max-width: 900px) {
+  .grc:has(.line) > .oneBox { grid-template-columns: 2em minmax(0, 1fr); }
+  .metreOn .grc:has(.line) > .oneBox { grid-template-columns: 3.2em minmax(0, 1fr); }
+}
+.oneBox > * { font-family: var(--f-body); }
+.oneBtn:global(.text-btn) { justify-self: start; color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
+.oneBtn:global(.text-btn):hover { color: var(--rubric); }
+.one { margin-top: var(--space-2); font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); padding-left: var(--space-3); box-shadow: var(--rule-left); animation: leaf-in var(--dur) var(--ease) backwards; }
+.one .lt { padding-left: 0; text-indent: 0; }
+.fitLines .one .lt { white-space: normal; }
+.oneCredit { margin: var(--space-2) 0 0; font-size: var(--step--2); line-height: 1.4; color: var(--ink-2); }
+@media (pointer: coarse) { .oneBtn:global(.text-btn) { display: inline-flex; align-items: center; min-height: var(--tap); } }
+
 /* "Fit lines": whole verse lines, the Greek shrunk to the longest line on the page (--fit, measured in Reader.tsx) */
 .fitLines .grc { font-size: calc(var(--greek-size) * var(--fit, 1)); }
 .fitLines:not([data-fit-wrap]) .lt { white-space: nowrap; }

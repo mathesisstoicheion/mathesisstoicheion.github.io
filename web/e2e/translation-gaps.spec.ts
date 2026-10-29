@@ -1,8 +1,10 @@
 import { test, expect } from "@playwright/test";
+import { bothColumns } from "./both-columns";
 
 // Passages a translation leaves out are said to be untranslated (not a fault), and translations that number or
 // divide their text differently still stand beside the right Greek. Needs a connection (texts from GitHub).
 test.describe.configure({ timeout: 90_000 });
+test.beforeEach(async ({ page }) => { await bothColumns(page); });   // these read the English beside the Greek (the quiet desk, ticket 07)
 
 test("a page the translation does not cover says so, and so does a single verse it leaves out", async ({ page }) => {
   // Ottley's Isaiah stops before chapter 24
