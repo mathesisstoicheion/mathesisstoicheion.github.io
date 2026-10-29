@@ -16,7 +16,8 @@ import { chromium } from "playwright";
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/reading/letters", "/academy/lesson/letters", "/academy/alphabet",
-  "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/checkpoint/first-steps",
+  "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/checkpoint/first-steps", "/academy/today",
+  "/academy/lesson/article/practice", "/academy/lesson/article/test",
   "/academy/guide/looking-up", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001",
   "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/read?w=tlg0003.tlg001", "/search", "/search?q=μῆνιν", "/stoa",
   "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/stoa/kerameikos",

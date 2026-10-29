@@ -37,7 +37,7 @@ export default function PageHead({ path, inscription, inscriptionSays, title, ti
   piece?: { piece: string; why?: string } | null;
   /** inside a column that is already the page's width (no `wrap` of its own) */
   bare?: boolean;
-  /** false on a page that is a tool (a round of questions): on a computer its plate stands beside the tool instead */
+  /** false on a page that is a tool (a round of questions): no plate beside its title on a computer */
   desk?: boolean;
   className?: string;
   children?: ReactNode;

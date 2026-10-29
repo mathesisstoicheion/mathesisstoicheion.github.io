@@ -9,6 +9,8 @@
 //                 the other pages' (every head's photograph has the one frame, as a book's plates of one format)
 //   jump        - a head that moves, or changes height, after it first appears (fonts, photographs or words that arrive
 //                 late must take the room kept for them)
+//   path        - a page whose path runs onto a second line while its head has room for it on one (the measure kept
+//                 for running text is not a path's: "The Academy ·" stood alone over "The grammar course · Checkpoint I")
 // Each page is opened with motion reduced, so what is measured is where things stand, not where they are inking in from;
 // the head is measured on every frame from its first paint until the page has been still for a while.
 // usage: node web/scripts/check-heads.mjs [base-url] [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -88,6 +90,18 @@ for (const [w, h] of WIDTHS) {
     if (!log?.length) { noHead.add(path); continue; }
     const first = log[0].r, last = log.at(-1).r;
     heads.push({ path, where, r: last });
+    // a path on two lines that would stand on one: its steps' widths, the red rule before them and the gaps between them
+    const wrapped = await page.evaluate(() => {
+      const k = document.querySelector(".ph .ph-path");
+      const steps = k ? [...k.children].filter((e) => e.getBoundingClientRect().width > 0) : [];
+      const lines = new Set(steps.map((e) => Math.round(e.getBoundingClientRect().top))).size;
+      if (lines < 2) return null;
+      const room = (k.closest(".ph-text") ?? k.parentElement).getBoundingClientRect().width;
+      const rule = getComputedStyle(k, "::before"), gap = parseFloat(getComputedStyle(k).columnGap) || 0;
+      const need = (parseFloat(rule.width) || 0) + (parseFloat(rule.marginRight) || 0) + steps.reduce((n, e) => n + e.getBoundingClientRect().width + gap, 0);
+      return need + 1 < room ? { lines, need: Math.round(need), room: Math.round(room) } : null;   // (a pixel for rounding)
+    });
+    if (wrapped) found.push(`path: ${where}: the path runs onto ${wrapped.lines} lines in a head ${wrapped.room} px wide, though it needs ${wrapped.need} px on one`);
     // a head that moves after it first appears: its path, its title, its plate, or where it ends
     const moved = [];
     if (Math.abs(first.k - last.k) > TOL) moved.push(`its path from ${first.k} to ${last.k} px`);

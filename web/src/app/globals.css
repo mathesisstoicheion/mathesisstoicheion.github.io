@@ -344,14 +344,12 @@ select:not([multiple]):not([size]) {
 /* the head of a page: its plate at the right of the title on a computer, after the main action on a phone */
 .piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); }
 .piece-foot.piece-wide { width: min(520px, 100%); }
-/* a page that is a tool (a round of questions, the day's cards): on a computer its plate stands beside the tool rather
-   than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
+/* a page that is a tool (a round of questions, today's session, the drills): one column the width of a round of
+   questions, in the middle of a computer's screen with its head, as every such page has it, so that the eye goes from a
+   question to its answers with nothing beside them. (A plate stood at its side until the declutter took the plates away,
+   and left the column kept for it standing empty.) */
 .tool-page { display: grid; grid-template-columns: minmax(0, 1fr); }
-.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; }
-@media (min-width: 761px) {
-  .tool-page { grid-template-columns: minmax(0, 1fr) min(30%, 300px); column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
-  .tool-page > .piece-head { margin: var(--space-6) 0 0; }
-}
+.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; width: 100%; max-width: 760px; margin-inline: auto; }
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
@@ -485,7 +483,9 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 @media (min-width: 761px) { #map-tools { min-height: calc(51px + 2.91rem); } }
 @media (max-width: 760px) { .ph-side { margin-top: var(--space-5); } }
 .ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
-.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; }
+/* (a line of the way back, not running text: the measure kept for reading is not its, and it runs on one line while the
+   head has room) */
+.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; max-width: none; }
 .ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
 .ph-path a { color: inherit; text-decoration: none; }
 .ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); }
@@ -512,9 +512,10 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .ph > .piece-desk { align-self: start; }
   .ph > .piece-desk .plate-ph { aspect-ratio: 3 / 4; }
   .ph > .piece-desk[data-fit="whole"] .plate-ph img { object-fit: contain; object-position: 50% 50%; }
-  /* a head inside a narrower column (a lesson, a checkpoint) still spans the page's own width, so its path and title start
-     at the same left edge as on every other page and its plate is the same size; the column below stays narrow */
-  .ph:not(.wrap):not(.ph-tool) {
+  /* a head inside a narrower column (a lesson, a checkpoint, a round of questions) still spans the page's own width, so
+     its path and title start at the same left edge as on every other page and its plate is the same size; the column
+     below stays narrow */
+  .ph:not(.wrap) {
     --ph-w: min(calc(var(--maxw) - 2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
     width: var(--ph-w); max-width: none; margin-inline: calc((100% - var(--ph-w)) / 2);
   }

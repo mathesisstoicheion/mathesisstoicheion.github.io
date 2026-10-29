@@ -229,8 +229,13 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .check { display: grid; grid-template-columns: minmax(0, 1fr); gap: 18px; padding: 20px; box-shadow: var(--field-edge); border-radius: var(--radius); }
 .q { border: 0; margin: 0; padding: 0; min-width: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
 .q legend { font-size: var(--step-sub); font-weight: 600; margin-bottom: var(--space-2); }
-/* the answers to a question: the same full-width, left-aligned rows as a lesson's practice and test (Workout.module.css) */
-.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: var(--space-3); }
+/* the answers to a question, as in a lesson's practice and test (Workout.module.css): one under another on a phone; on a
+   wider screen two side by side, three in a row and four two by two, so that no answer stands alone under the others */
+.options { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); }
+@media (min-width: 761px) {
+  .options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .options:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 .options button {
   min-height: var(--tap); padding: var(--space-3) var(--space-4); text-align: left; color: var(--ink);
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step-0);
@@ -349,7 +354,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 }
 
 /* ---------------------------------------------------------------- today's session (DailySession.tsx) */
-.session { display: grid; grid-template-rows: auto 1fr auto; gap: 18px; max-width: 760px; margin-inline: auto; }
+.session { display: grid; grid-template-rows: auto 1fr auto; gap: 18px; width: 100%; max-width: 760px; margin-inline: auto; }   /* (without the width, the auto margins shrank it to a strip) */
 .sessionTop { display: flex; align-items: center; gap: 14px; }
 .sessionX {
   display: grid; place-items: center; width: var(--tap); height: var(--tap); flex: none; border: 1px solid var(--rule); border-radius: var(--radius);
@@ -667,5 +672,6 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .realHead .source:hover { color: var(--rubric); }
 .source span[aria-hidden] { color: var(--accent); }
 /* past a lesson not yet read: a quiet line, not a second button beside the lesson's own */
-.skip { margin-left: auto; font-size: var(--step--1); color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
+/* quiet, but a finger's height (as .markRead): it is the one way on before the line is read */
+.skip { display: inline-flex; align-items: center; min-height: var(--tap); margin-left: auto; font-size: var(--step--1); color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
 .skip:hover { color: var(--rubric); }
