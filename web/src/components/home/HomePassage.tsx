@@ -59,7 +59,7 @@ export default function HomePassage() {
   return (
     <section className={h.part} aria-labelledby="pod-title">
       {/* the passage's own title first; what it is, the passage of the day, in small capitals at the end of the rule */}
-      <div className="sh rv"><span className="no" aria-hidden="true">β´</span><h2 id="pod-title">{today.title}</h2><span className="fill" /><span className="src">Passage of the day</span></div>
+      <div className="sh rv"><h2 id="pod-title">{today.title}</h2><span className="fill" /><span className="src">Passage of the day</span></div>
       <p className={`${h.podWhere} rv`}>{today.label}</p>
       {error ? (
         <p className={h.waiting}>Today&apos;s passage could not be loaded ({error}). If you are offline, download the library in <Link href={AREAS.downloads.href}>{AREAS.downloads.name}</Link>.</p>

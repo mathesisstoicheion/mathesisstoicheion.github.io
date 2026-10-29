@@ -16,7 +16,7 @@ import { chromium } from "playwright";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
-  "/academy", "/academy/reading", "/academy/reading/letters", "/academy/reading/desire-to-know", "/academy/lesson/letters",
+  "/", "/academy", "/academy/reading", "/academy/reading/letters", "/academy/reading/desire-to-know", "/academy/lesson/letters",
   "/academy/lesson/prepositions", "/academy/checkpoint/first-steps", "/academy/guide/looking-up", "/academy/alphabet",
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/review", "/academy/today", "/academy/studio",
   "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/work/tlg0656-tlg001", "/search",
@@ -34,8 +34,9 @@ const RECORD = () => {
   const log = (window.__heads = []);
   const y = (r) => Math.round((r.top + scrollY) * 10) / 10;
   const tick = () => {
-    const head = document.querySelector(".ph");
-    const k = head?.querySelector(".ph-path"), t = head?.querySelector(".ph-title");
+    // (the home page's title page is a head too, marked by data-head: its kicker and title start where every head's do)
+    const head = document.querySelector(".ph, [data-head]");
+    const k = head?.querySelector(".ph-path, [data-head-path]"), t = head?.querySelector(".ph-title, [data-head-title]");
     if (head && k && t && t.getBoundingClientRect().height > 0) {
       const hr = head.getBoundingClientRect(), kr = k.getBoundingClientRect(), tr = t.getBoundingClientRect();
       const inscr = head.querySelector(".ph-inscr");

@@ -33,7 +33,6 @@ const ALL_ROOMS: { id: AreaId; text: string }[] = [
   { id: "treasury", text: "Your bookmarks, notes, highlights and words." },
 ];
 const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
-const NUM = ["α´", "β´", "γ´", "δ´", "ε´"];
 
 // a work's Greek title: the first of its Greek editions' names written in Greek (some are catalogued by a Latin name)
 const greekTitle = (w: Catalog["authors"][number]["works"][number]) =>
@@ -56,11 +55,11 @@ export default function Home() {
   return (
     <Page screen="home">
       <div className="wrap">
-        <div className={h.titlePage}>
+        <div className={h.titlePage} data-head="">
           <div className="enter">
             {/* one run of words beside the red rule, so on a phone it wraps as one line does */}
-            <div className={`${h.kicker} label`}><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
-            <h1 className={h.title}>Read the Greeks in <em>their own</em> words</h1>
+            <div className={`${h.kicker} label`} data-head-path=""><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
+            <h1 className={h.title} data-head-title="">Read the Greeks in <em>their own</em> words</h1>
             <p className={h.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
             <div className={h.btns}>
               <Link className="btn" href="/academy/alphabet" transitionTypes={["page-turn"]}>Start with the letters</Link>
@@ -73,7 +72,6 @@ export default function Home() {
         {/* a first visit: where are you starting?; a returning visitor: their desk (lib/visitor.ts) */}
         <section className={h.part} aria-labelledby="start-title">
           <div className="sh rv">
-            <span className="no" aria-hidden="true">α´</span>
             <h2 id="start-title"><span className="first-only">Where are you <em>starting?</em></span><span className="back-only">Your <em>desk</em></span></h2>
             <span className="fill" />
           </div>
@@ -84,19 +82,18 @@ export default function Home() {
         <HomePassage />
 
         <section className={h.part} aria-labelledby="famous-title">
-          <div className="sh rv"><span className="no" aria-hidden="true">γ´</span><h2 id="famous-title">Six famous <em>works</em></h2><span className="fill" /><span className="src">to begin with</span></div>
+          <div className="sh rv"><h2 id="famous-title">Six famous <em>works</em></h2><span className="fill" /><span className="src">to begin with</span></div>
           <div className="rv"><FamousBooks books={BOOKS} /></div>
         </section>
 
         <section className={h.part} aria-labelledby="contents-title">
-          <div className="sh rv"><span className="no" aria-hidden="true">δ´</span><h2 id="contents-title">Contents</h2><span className="fill" /><span className="src">{FORUM_OPEN ? "five rooms" : "four rooms"}</span></div>
+          <div className="sh rv"><h2 id="contents-title">Contents</h2><span className="fill" /><span className="src">{FORUM_OPEN ? "five rooms" : "four rooms"}</span></div>
           <ol className={`${h.toc} rv`}>
-            {ROOMS.map((r, i) => {
+            {ROOMS.map((r) => {
               const a = AREAS[r.id];
               return (
                 <li key={r.id}>
                   <Link href={a.href} transitionTypes={["page-turn"]}>
-                    <span className={h.gn} aria-hidden="true">{NUM[i]}</span>
                     <span className={h.t}>{a.door} <span className="visually-hidden">: {a.name}.</span><i>{r.text}</i></span>
                     <span className={h.lead} aria-hidden="true" />
                     <span className={h.gr} lang="grc">{a.greek}</span>

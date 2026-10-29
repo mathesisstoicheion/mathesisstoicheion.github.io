@@ -3,10 +3,11 @@
    of the day as a two-language spread; the Contents; the credits and the colophon. */
 
 /* ---- the title page ---- */
-.titlePage { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: var(--space-7); align-items: end; }
+/* the title starts where every other page's title starts (globals.css .ph, .ph-title), so it inks in at the same height */
+.titlePage { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(var(--space-6), 7vh, var(--space-8)); padding-bottom: var(--space-7); align-items: end; }
 .kicker { display: flex; gap: 14px; align-items: center; color: var(--ink-2); }
 .kicker::before { content: ""; width: 28px; height: 1px; background: var(--rubric); flex: none; }
-.title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 22px 0 26px; }
+.title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 18px 0 26px; }
 .title em { font-style: italic; color: var(--rubric); }
 .lede { font-size: var(--step-1); max-width: 30em; color: var(--ink-2); margin: 0 0 30px; }
 .btns { display: flex; flex-wrap: wrap; gap: var(--space-3) 22px; align-items: center; }
@@ -94,8 +95,7 @@
 /* ---- contents: the rooms, set like a book's table of contents ---- */
 .toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .toc li { border-bottom: 1px solid var(--rule); }
-.toc a { display: grid; grid-template-columns: 3.2rem minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
-.gn { font: 400 1.25rem var(--face-didot); color: var(--rubric); }
+.toc a { display: grid; grid-template-columns: minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
 .t { font: 500 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur) var(--ease); }
 .t i { display: block; font: 400 var(--step-0) / 1.4 var(--f-body); font-style: normal; color: var(--ink-2); margin-top: 2px; }
 .lead { border-bottom: 1px dotted var(--ink-3); transform: translateY(-7px); min-width: 20px; }
@@ -123,7 +123,11 @@
   .leafR { border-top: 1px solid var(--rule); }
   .podFoot { grid-template-columns: 1fr; }
   .colophon { columns: 1; }
-  .toc a { grid-template-columns: 2.4rem minmax(0, 1fr) auto; }
+  .toc a { grid-template-columns: minmax(0, 1fr) auto; }
   .lead { display: none; }
 }
 @media (max-width: 520px) { .toc .gr { display: none; } }
+/* every page's head starts at one distance under the header (globals.css .ph, --head-top; the owner, 2026-10-29: "load in
+   at the correct height. Just like The Mouseion"): the title page too (scripts/check-heads.mjs measures it) */
+@media (min-width: 761px) { .titlePage { padding-top: var(--head-top); } }
+@media (max-width: 760px) { .titlePage { padding-top: 26px; } }
