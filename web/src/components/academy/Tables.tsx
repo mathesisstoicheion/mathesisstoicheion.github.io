@@ -5,6 +5,7 @@ import { PARADIGMS, formsOf, type Paradigm } from "@/data/paradigms";
 import ATTESTED from "@/data/paradigms-attested.json";
 import { fold } from "@/lib/catalog";
 import { scrollBehavior } from "@/lib/settings";
+import { useMoreRight } from "@/lib/use-more-right";
 import styles from "./Academy.module.css";
 
 const GROUPS: [Paradigm["group"] | "all", string][] = [["all", "All"], ["article", "Article"], ["noun", "Nouns"], ["adjective", "Adjectives"], ["pronoun", "Pronouns"], ["verb", "Verbs"]];
@@ -40,17 +41,7 @@ export function ParadigmTable({ p, query = "", marked = false }: { p: Paradigm; 
   const counts = attested[p.id];
   // while the table can still be scrolled sideways (a phone), its right edge fades: the stylesheet reads data-more
   const scroller = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = scroller.current;
-    if (!el) return;
-    const look = () => el.toggleAttribute("data-more", el.scrollLeft + el.clientWidth < el.scrollWidth - 1);
-    look();
-    el.addEventListener("scroll", look, { passive: true });
-    const watch = new ResizeObserver(look);
-    watch.observe(el);
-    if (el.firstElementChild) watch.observe(el.firstElementChild);
-    return () => { el.removeEventListener("scroll", look); watch.disconnect(); };
-  }, []);
+  useMoreRight(scroller);
   return (
     <section className={`${styles.table} ${p.cols.length > 3 ? styles.tableWide : ""} ${marked ? styles.marked : ""}`} aria-labelledby={`t-${p.id}`}>
       <h2 id={`t-${p.id}`} tabIndex={-1}>{p.title}</h2>
@@ -83,6 +74,8 @@ export default function Tables() {
   const query = fold(q.trim());
   const root = useRef<HTMLDivElement>(null);
   const bar = useRef<HTMLDivElement>(null);
+  const filters = useRef<HTMLDivElement>(null);
+  useMoreRight(filters);
 
   const matches = useMemo(() => {
     if (!query) return [];
@@ -128,7 +121,8 @@ export default function Tables() {
       <div ref={bar} className={styles.tablesTools}>
         <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="tables-search" type="search" value={q} onChange={(e) => setQ(e.target.value)} className={styles.searchInput}
           placeholder="Find a form, e.g. λογου (accents optional)" aria-label="Find a form" />
-        <div className={styles.seg} role="radiogroup" aria-label="Show">
+        {/* on a phone the filters keep to one line and slide sideways; the right edge fades while there are more */}
+        <div ref={filters} className={styles.seg} role="radiogroup" aria-label="Show">
           {GROUPS.map(([g, l]) => <button key={g} type="button" role="radio" aria-checked={group === g} onClick={() => setGroup(g)}>{l}</button>)}
         </div>
       </div>

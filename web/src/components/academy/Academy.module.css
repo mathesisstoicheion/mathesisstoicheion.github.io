@@ -167,12 +167,14 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
   .tableGrid { grid-template-columns: repeat(auto-fill, minmax(460px, 1fr)); }
   .tableWide { grid-column: 1 / -1; }
 }
-/* phones: the filters keep to one line (sliding sideways if they must), and a table keeps its row names in sight */
+/* phones: the filters keep to one line (sliding sideways if they must, the right edge fading while more are hidden
+   there, as a table's does), and a table keeps its row names in sight */
 @media (max-width: 760px) {
   .tables > .tablesTools { gap: var(--space-2); padding-block: var(--space-2); }   /* the bar stays low on a small screen */
   .tables > .tablesTools .seg { flex-wrap: nowrap; max-width: 100%; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; }
   .tables > .tablesTools .seg::-webkit-scrollbar { display: none; }
   .tables > .tablesTools .seg button { flex: none; white-space: nowrap; }
+  .tables > .tablesTools .seg[data-more] { mask-image: linear-gradient(to right, var(--ink) calc(100% - var(--space-6)), transparent); }
   .table thead th:first-child, .table tbody th { position: sticky; left: 0; background: var(--bg); }
 }
 .count { font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); margin-left: 6px; vertical-align: 0.3em; }
