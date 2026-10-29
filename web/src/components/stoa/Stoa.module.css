@@ -54,9 +54,6 @@
 .soonLine { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
 
 /* ------------------------------------------------ works in stone, and why Stoics are called Stoics (StoaPlates.tsx) */
-.plates { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); align-items: start; }
-@media (max-width: 900px) { .plates { grid-template-columns: 1fr 1fr; } .plates > :last-child { grid-column: 1 / -1; } }
-@media (max-width: 520px) { .plates { grid-template-columns: minmax(0, 1fr); } }
 .essay { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; }
 .essay p { margin: 0 0 1em; font-size: var(--step-sub); max-width: 36em; }
 .essay p:first-of-type::first-letter { font: 400 4.1em / 0.8 var(--f-title); float: left; margin: 0.06em 0.1em 0 0; color: var(--rubric); }

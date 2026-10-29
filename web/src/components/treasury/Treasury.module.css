@@ -32,6 +32,11 @@
 /* nothing of a kind kept yet: its count in the faint ink; a Treasury with nothing in it shows dots, not zeros */
 .offer[data-empty] .count { color: var(--ink-3); }
 .offerings[data-bare] .offerLabel { color: var(--ink-2); }
+/* at the right of the page's title (TreasuryKept.tsx): the nine kinds in one column on a computer, read down */
+.kept .ogrid { grid-template-columns: minmax(0, 1fr); grid-template-rows: none; grid-auto-flow: row; }
+.kept .offer { padding-block: var(--space-2); }
+.kept .offerHint { display: inline; margin: 0 0 0 var(--space-1); }
+.keptH { margin: 0 0 var(--space-2); color: var(--ink-2); }
 @media (max-width: 900px) { .ogrid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); } }
 /* a phone: one column, each kind's line with what it holds beside its name */
 @media (max-width: 600px) {

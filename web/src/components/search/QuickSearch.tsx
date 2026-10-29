@@ -113,6 +113,8 @@ function Box({ onClose }: { onClose: () => void }) {
   useScrollLock(true);
   useEffect(() => {
     dialog.current?.showModal();
+    // the dialog gives focus to its first button, now the Greek letters at the left: the search line takes it instead
+    input.current?.focus();
     loadCatalog().then(setIdx, () => undefined);
     loadAbbrevs().then(setAbbrevs);
     Promise.all([import("@/wiki/index"), import("@/data/lesson-index"), import("@/data/guides")]).then(([w, l, g]) => setItems([
@@ -279,6 +281,9 @@ function Box({ onClose }: { onClose: () => void }) {
       <div className={styles.inner}>
         <div className={styles.head}>
         <svg className={styles.glass} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true"><circle cx="11" cy="11" r="7" /><path d="m20 20-4-4" /></svg>
+        {/* the Greek letters on screen, at the left beside the glass; the right end closes the search (the owner, 2026-10-25) */}
+        <button type="button" className={styles.kbdBtn} lang="grc" aria-pressed={kbd} onClick={() => setKbd(!kbd)}
+          onMouseDown={(e) => e.preventDefault()} aria-label="Greek letters on screen" title="Greek letters on screen">αβγ</button>
         <input ref={input} className={styles.input} autoFocus value={q} placeholder="A word, a passage, a subject…" aria-label="Search"
           role="combobox" aria-expanded={options.length > 0} aria-controls="qs-list" aria-activedescendant={options[cur] ? `qs-${cur}` : undefined}
           type="search" enterKeyHint="search" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
@@ -288,10 +293,10 @@ function Box({ onClose }: { onClose: () => void }) {
             else if (e.key === "ArrowUp") { e.preventDefault(); setSel((cur - 1 + options.length) % Math.max(1, options.length)); }
             else if (e.key === "Enter") { e.preventDefault(); choose(options[cur]); }
           }} />
-        {q && <button type="button" className={styles.clear} onClick={() => pick("")} aria-label="Clear the search">×</button>}
-        <button type="button" className={styles.kbdBtn} lang="grc" aria-pressed={kbd} onClick={() => setKbd(!kbd)}
-          onMouseDown={(e) => e.preventDefault()} aria-label="Greek letters on screen" title="Greek letters on screen">αβγ</button>
-        <button type="button" className={styles.close} onClick={onClose}>Close</button>
+        {q && <button type="button" className={styles.clear} onClick={() => pick("")} aria-label="Clear the search">Clear</button>}
+        <button type="button" className={styles.close} onClick={onClose} aria-label="Close the search" title="Close (Esc)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18" /></svg>
+        </button>
         </div>
         <div className={styles.body}>
         {options.length > 0 ? (

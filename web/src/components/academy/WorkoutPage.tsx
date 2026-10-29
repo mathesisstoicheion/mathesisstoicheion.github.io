@@ -1,5 +1,4 @@
 import Page from "@/components/Page";
-import PageWin from "@/components/a/PageWin";
 import PageHead from "@/components/PageHead";
 import Workout, { type Mode } from "./Workout";
 import { LESSONS, type Lesson } from "@/data/lessons";
@@ -21,7 +20,6 @@ export default function WorkoutPage({ lesson, mode }: { lesson: Lesson; mode: Ex
         <div className={`meander ${styles.pageIntro}`} aria-hidden="true" style={{ marginBlock: 6 }} />
         <Workout lesson={lesson} mode={mode} />
         </div>
-        <PageWin className="piece-desk" />
       </div>
     </Page>
   );

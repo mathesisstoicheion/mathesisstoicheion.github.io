@@ -7,7 +7,7 @@ import StoaIndex, { type RefCard } from "@/components/stoa/StoaIndex";
 import { cardOf } from "@/wiki/cards";
 import { ENTRIES } from "@/wiki/index";
 import ExploreLead, { ExploreCredit } from "@/components/stoa/ExploreLead";
-import { StonePlates, WhyStoics } from "@/components/stoa/StoaPlates";
+import { WhyStoics } from "@/components/stoa/StoaPlates";
 import type { Catalog } from "@/lib/catalog";
 import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -35,10 +35,9 @@ export default function StoaPage() {
   return (
     <Page>
       {/* one search box, the colonnade's own, beside what it finds (review fix list, slice 9) */}
-      <Door id="wiki" plate="chrysippos-head" why="Chrysippus was the third head of the Stoic school.">
+      <Door id="wiki">
         <DoorBlock><ExploreLead /></DoorBlock>
         <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} /></DoorBlock>
-        <DoorBlock id="plates" label="Plates: works in stone"><StonePlates /></DoorBlock>
         <DoorBlock id="stoics" label="Why Stoics are called Stoics"><WhyStoics /><ExploreCredit /></DoorBlock>
       </Door>
     </Page>

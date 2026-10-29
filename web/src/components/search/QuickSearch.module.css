@@ -19,21 +19,29 @@
 }
 .input:focus { outline: none; }
 .glass { flex: none; align-self: center; width: 20px; height: 20px; margin-left: 13px; color: var(--ink-2); }
+/* clearing what is typed: a word, so it is never taken for the cross that closes the search */
 .clear {
-  flex: none; align-self: center; width: 36px; height: 36px; margin-right: 6px; border: 0; border-radius: var(--radius-round);
-  background: transparent; color: var(--ink-2); font-size: var(--step-1); line-height: 1; cursor: pointer; transition: color var(--dur-quick) var(--ease);
+  flex: none; align-self: center; min-height: 36px; margin-right: var(--space-1); padding: 0 var(--space-2); border: 0; border-radius: var(--radius);
+  background: transparent; color: var(--ink-2); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
+  cursor: pointer; transition: color var(--dur-quick) var(--ease);
 }
 .clear:hover { color: var(--rubric); }
 .input::-webkit-search-cancel-button { display: none; }
 /* the Greek letters on screen: a hairline frame; while they are shown, filled with ink */
 .kbdBtn {
-  flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-right: 10px; padding: 0 10px; cursor: pointer;
+  flex: none; align-self: center; min-width: var(--tap); height: 36px; margin-left: 10px; padding: 0 10px; cursor: pointer;
   font-family: var(--f-greek); font-size: var(--step-0); color: var(--ink); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
 .kbdBtn:hover { color: var(--rubric); border-color: var(--ink-3); }
 .kbdBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
-.close { display: none; }
+/* the cross that closes the search, at the right end of the line */
+.close {
+  flex: none; align-self: center; display: grid; place-items: center; width: var(--tap); height: var(--tap); margin-right: 6px; padding: 0; cursor: pointer;
+  border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); transition: color var(--dur-quick) var(--ease);
+}
+.close svg { width: 22px; height: 22px; }
+.close:hover, .close:focus-visible { color: var(--rubric); }
 .body { display: grid; align-content: start; }
 .list { margin: 0; padding: var(--space-1) 6px var(--space-2); max-height: 56vh; overflow: auto; }
 .group + .group { margin-top: var(--space-1); padding-top: 6px; border-top: 1px solid var(--rule); }
@@ -71,11 +79,8 @@
   .head { flex: none; margin-inline: 0; padding-top: env(safe-area-inset-top, 0px); padding-inline: env(safe-area-inset-left, 0px) env(safe-area-inset-right, 0px); background: var(--bg); }
   .full { margin: 0; padding-inline: 18px; }
   .input { padding: 14px var(--space-3) 14px var(--space-4); }
-  .kbdBtn { margin-right: var(--space-1); height: var(--tap); }
-  .close {
-    display: block; flex: none; align-self: center; min-height: var(--tap); padding: 0 var(--space-4) 0 10px; cursor: pointer;
-    border: 0; background: transparent; color: var(--rubric); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
-  }
+  .kbdBtn { margin-left: var(--space-2); height: var(--tap); }
+  .close { margin-right: var(--space-1); }
   .body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; align-content: start; }
   .list { max-height: none; overflow: visible; padding: var(--space-1) 6px; }
   .opt { padding: 11px var(--space-3); min-height: var(--tap); }

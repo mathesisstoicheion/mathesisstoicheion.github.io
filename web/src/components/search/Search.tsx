@@ -72,7 +72,7 @@ export default function Search() {
   const [draft, setDraft] = useState<NearDraft>({ of: "", text: "" });
   return (
     // a door of the site (components/a/Door.tsx), with its red window onto an amphora
-    <Door id="search" plate="apollo-bronze" why="Delphi was Apollo’s oracle." carve={CARVE} action={
+    <Door id="search" carve={CARVE} action={
       <Suspense fallback={<div className={styles.boxHold} aria-hidden="true" />}>
         <OracleBox draft={draft} />
       </Suspense>}>

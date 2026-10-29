@@ -51,7 +51,7 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
 
       <AlphabetFold />
 
-      <figure ref={box} className={styles.real} style={{ scrollMarginTop: 90 }}>
+      <figure ref={box} className={`${styles.real} ${styles.cm}`} style={{ scrollMarginTop: 90 }}>
         <figcaption className={styles.realHead}>
           <span className="label">{unit ? unit.label : "Check yourself: the words of these three lessons"}</span>
           {line && <Link className="chip" href={`/read?w=${line.work}&at=${line.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>}

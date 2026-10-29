@@ -1,6 +1,6 @@
 /**
  * One entry of the Painted Stoa: title and its hook, with the entry's own photograph as the page's plate beside them
- * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has the room's plate), the body with
+ * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has none), the body with
  * its quotations and boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
  * sections ("On this page"), the places on the map, the Pnyx and the key to the certainty labels; on a phone the rail
  * gives way to a closed "On this page" above the article, and the other three stand at its end, before "Read it yourself".

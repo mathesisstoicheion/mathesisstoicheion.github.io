@@ -4,21 +4,24 @@
 //   spill - a piece of text, a picture or a box runs out of the box or card it belongs to (the owner, 2026-10-19:
 //           "fix these kinds of overlaps")
 //   clash - two pieces of text drawn over each other
+//   strike - a drawn line (a rule, a border, ruled paper) running through a line of text (the owner, 2026-10-26: "Make
+//           sure that there are no line overlaps with text")
 // Fixed and sticky things (the header, sheets, bars) are left out: they cover the page on purpose. Each screenful is checked
 // while it is on screen, since the reader skips drawing passages out of view (content-visibility) and their places are
 // only right once drawn.
-// usage: node web/scripts/check-overlaps.mjs <base-url> [out.json] [page-filter] [size-filter]   (CHROMIUM=<path> picks the browser)
+// usage: node web/scripts/check-overlaps.mjs <base-url> [out.json] [page-filter] [size-filter]   (CHROMIUM=<path> picks the browser;
+//        PAGES="/a,/b" checks those pages instead of the site's list, e.g. a mock-up page)
 import { chromium } from "playwright";
 import fs from "node:fs";
 
 const [base = "http://localhost:3202", out = "overlaps.json", only = "", sizeOnly = ""] = process.argv.slice(2);
-const PAGES = ["/", "/library", "/library/author?a=tlg0059", "/read", "/read?w=tlg0059.tlg002", "/read?w=tlg0012.tlg001&at=1.1", "/work/tlg0012-tlg001",
+const PAGES = process.env.PAGES ? process.env.PAGES.split(",") : ["/", "/library", "/library/author?a=tlg0059", "/read", "/read?w=tlg0059.tlg002", "/read?w=tlg0012.tlg001&at=1.1", "/work/tlg0012-tlg001",
   "/author/tlg0085", "/academy", "/academy/alphabet", "/academy/lesson/letters", "/academy/lesson/adjectives", "/academy/lesson/adjectives/practice",
   "/academy/reading", "/academy/reading/letters", "/academy/review", "/academy/studio", "/academy/tables", "/academy/today", "/academy/vocabulary",
   "/academy/practice", "/academy/guide/dictionary-form", "/guide", "/stoa", "/stoa/antikythera-mechanism", "/stoa/authors", "/stoa/census",
   "/stoa/editions", "/stoa/eras", "/stoa/kerameikos", "/stoa/lyre", "/stoa/manuscripts", "/stoa/periplus", "/stoa/variants", "/town-hall",
   "/town-hall/pnyx", "/treasury", "/treasury/word?w=%CE%BB%CF%8C%CE%B3%CE%BF%CF%82", "/search", "/search?q=logos", "/about", "/credits",
-  "/downloads", "/account", "/no-such-page"].filter((p) => p.includes(only));
+  "/downloads", "/account", "/no-such-page", "/academy/reading/nothing-too-much"].filter((p) => p.includes(only));
 const SIZES = [[360, 780, "phone 360"], [390, 844, "phone 390"], [412, 915, "phone 412"], [768, 1024, "tablet"], [1280, 800, "computer 1280"], [1440, 900, "computer 1440"]]
   .filter(([, , label]) => label.includes(sizeOnly));
 
@@ -120,6 +123,33 @@ function inspect() {
       if (w * h < 0.2 * Math.min(a.width * a.height, b.width * b.height)) continue;
       found.push({ kind: "clash", what: `"${runs[i].t}" (${path(runs[i].el)}) over "${runs[j].t}" (${path(runs[j].el)})`, at: [Math.round(Math.max(a.left, b.left)), Math.round(Math.max(a.top, b.top) + scrollY)] });
     }
+  }
+  // strike: a line drawn through text. The lines are the top and bottom borders of boxes, <hr>s, boxes 3px tall or less
+  // with a colour, and ruled paper (a repeating gradient down a box); a line strikes a run of text when it passes through
+  // the run's letters (its middle 70%: a run's box is as tall as its letters with their accents and tails), not when it
+  // sits in the space above or below
+  const lines = [];
+  const shown = (c) => c && !/rgba\(\d+, \d+, \d+, 0\)|transparent/.test(c);
+  for (const el of document.querySelectorAll("body *")) {
+    if (pinned(el) || !vis(el)) continue;
+    const cs = getComputedStyle(el); if (cs.display === "contents") continue;
+    const r = el.getBoundingClientRect(); if (r.width < 8 || !onScreen(r) || clippedAway(el, r)) continue;
+    const at = (y) => lines.push({ y, l: r.left, rt: r.right, el });
+    if (parseFloat(cs.borderTopWidth) > 0 && cs.borderTopStyle !== "none" && shown(cs.borderTopColor)) at(r.top + parseFloat(cs.borderTopWidth) / 2);
+    if (parseFloat(cs.borderBottomWidth) > 0 && cs.borderBottomStyle !== "none" && shown(cs.borderBottomColor)) at(r.bottom - parseFloat(cs.borderBottomWidth) / 2);
+    if (r.height <= 3 && r.height > 0 && (shown(cs.backgroundColor) || el.tagName === "HR")) at(r.top + r.height / 2);
+    const bi = cs.backgroundImage, gi = bi.indexOf("repeating-linear-gradient(");
+    const g = gi >= 0 && !/to (left|right)|\b(?!180)\d+deg/.test(bi.slice(gi, gi + 60)) ? [null, bi.slice(gi)] : null;
+    if (g) {
+      const stops = [...g[1].matchAll(/(\d+(?:\.\d+)?)px/g)].map((m) => +m[1]);
+      const period = Math.max(...stops), from = stops.length > 1 ? stops[stops.length - 2] : period - 1;
+      if (period >= 6) for (let y = r.top + (from + period) / 2; y < r.bottom; y += period) at(y);
+    }
+  }
+  for (const run of runs) {
+    const a = run.r, lo = a.top + 0.15 * a.height, hi = a.bottom - 0.15 * a.height;
+    const hit = lines.find((ln) => ln.y > lo && ln.y < hi && Math.min(ln.rt, a.right) - Math.max(ln.l, a.left) > 4 && !run.el.contains(ln.el));
+    if (hit) found.push({ kind: "strike", what: `a line from ${path(hit.el)} runs through "${run.t}" (${path(run.el)})`, at: [Math.round(a.left), Math.round(a.top + scrollY)] });
   }
   // the same finding repeated down a list counts once
   const seen = new Map();

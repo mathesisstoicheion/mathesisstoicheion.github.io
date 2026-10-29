@@ -17,7 +17,6 @@ import {
 import { AuthorLine, canWrite, Composer, DeleteButton, Folded, HideButton, PostText, QuoteBlock, ReportButton, SignInPrompt, StatusTag, VoteButton } from "./parts";
 import PullToRefresh from "@/components/PullToRefresh";
 import styles from "./Community.module.css";
-import PageWin from "@/components/a/PageWin";
 
 export default function ThreadView() {
   const params = useSearchParams();
@@ -85,7 +84,6 @@ function ThreadHead({ t, mine, mod, writer, votes, toggle, reload }: {
   const [title, setTitle] = useState(t.title);
   return (
     <header className={styles.threadHead}>
-      <PageWin />
       <div className={styles.headRow}>
         <VoteButton count={t.score} on={votes.threads.has(t.id)} onToggle={writer ? toggle("thread", t.id) : null} label="This is a good question" />
         <div>
