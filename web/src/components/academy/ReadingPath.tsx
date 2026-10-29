@@ -29,11 +29,11 @@ function PathList({ completed }: { completed: Record<string, number> }) {
     <ol className={styles.path}>
       {ITEMS.map((it) => {
         const lit = `/academy/reading/${it.id}` === next;
-        const style = lit ? { backgroundColor: "var(--slab-lit)" } : undefined;
-        const nextMark = <span className="label" style={{ color: "var(--accent)" }}>Next</span>;
+        const item = `${styles.pathItem} ${lit ? styles.pathLit : ""}`;
+        const nextMark = <span className={`label ${styles.nextMark}`}>Next</span>;
         if (it.kind === "letters") return (
           <li key={it.id}>
-            <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+            <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(it.id)}</span>
               <span>
                 <b>{LETTERS_STEP.title}</b> <span lang="grc" className={styles.pathGr}>{LETTERS_STEP.names.slice(0, 3).map((n) => n.gr).join(" ")}</span>
@@ -47,7 +47,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
           const p = PRACTICE.find((x) => x.id === it.id)!;
           return (
             <li key={it.id}>
-              <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+              <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
                 <span className={styles.pathNo} aria-hidden="true">◆</span>
                 <span><b>{p.title}</b><span className={styles.pathAbout}><Rich text={p.intro} /></span></span>
                 <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Done") : lit ? nextMark : "Practice"}</span>
@@ -58,7 +58,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         const i = PATH.findIndex((s) => s.id === it.id), s = PATH[i];
         return (
           <li key={it.id}>
-            <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+            <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(s.id)}</span>
               <span>
                 <b>{s.title}</b> <span lang="grc" className={styles.pathGr}>{s.parts.map(partText).join(" ")}</span>

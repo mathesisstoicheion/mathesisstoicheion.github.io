@@ -63,8 +63,9 @@ export default function AcademyPage() {
               <h2 id="lessons-title" style={{ marginTop: 8 }}>{TRACKS.grammar.name}</h2>
               <p style={{ marginTop: 8, maxWidth: "64ch" }}>{TRACKS.grammar.who}</p>
               <p className="muted" style={{ marginTop: 8, maxWidth: "64ch" }}>
-                The grammar in full, from the alphabet to Homer, for when you want more than the reading path gives. Read each lesson, practise it, then pass its short test. A passed lesson comes back for a quick refresh
-                after three days, a week, then a month, so what you learn stays with you.
+                The grammar in full, for when you want more than the reading path gives. Read each lesson, practise it, then pass
+                its test. A passed lesson comes back for a quick refresh after three days, a week, then a month, so what you learn
+                stays with you.
               </p>
             </div>
             <LessonPath />

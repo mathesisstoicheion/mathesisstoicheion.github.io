@@ -184,6 +184,9 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .path { list-style: none; margin: 0; padding: 0; box-shadow: var(--cut-over); }
 .pathItem { display: grid; grid-template-columns: 48px 1fr auto; gap: var(--space-4); align-items: center; padding: 14px var(--space-2); text-decoration: none; box-shadow: var(--cut-under); transition: background-color var(--dur-quick) var(--ease); }
 .pathItem:hover { background-color: var(--bg-2); }
+/* the next step in a list, the one the Learn page offers (data/tracks.ts nextSteps): lit, and named */
+.pathLit { background-color: var(--slab-lit); }
+.nextMark { color: var(--accent); }
 .pathNo { font-family: var(--f-title); font-size: var(--step-2); color: var(--accent); text-align: center; }
 .pathItem b { font-size: var(--step-sub); }
 .pathGr { font-family: var(--f-greek); color: var(--ink-2); margin-left: 6px; }

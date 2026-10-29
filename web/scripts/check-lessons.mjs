@@ -130,6 +130,28 @@ const counts = { "the tab": said.tab.match(/\((\d+)\)/)?.[1] ?? "none", "the sen
 if (new Set(Object.values(counts)).size > 1 || counts["the tab"] !== String(done.length))
   found.push(`number: ${done.length} lessons finished are counted ${Object.entries(counts).map(([k, v]) => `${v} by ${k}`).join(", ")}`);
 
+// the lit band means the next step and nothing else: in the Academy's two lists exactly the rows of the steps the Learn
+// page offers are lit (its button, and the grammar course's lesson beside it once that course is begun), for a new
+// learner and for one who has begun both tracks
+const grammarFirst = lists.grammar.find((r) => r.n === 1)?.href.split("/").pop();
+for (const [who, ids] of [["a new learner", []], ["a learner on both tracks", ["read:letters", "read:nothing-too-much", grammarFirst]]]) {
+  await page.evaluate((ks) => localStorage.setItem("mathesis:academy", JSON.stringify({
+    state: { completed: Object.fromEntries(ks.map((k) => [k, Date.now()])), days: [], mastery: {} }, version: 1 })), ids);
+  await page.goto(base + "/academy");
+  await page.waitForTimeout(800);
+  const { lit, steps } = await page.evaluate(() => {
+    const tinted = (e) => !!e && !/^(transparent|rgba\(0, 0, 0, 0\))$/.test(getComputedStyle(e).backgroundColor);
+    const rows = [...document.querySelectorAll('section[aria-labelledby="reading-title"] ol > li, section[aria-labelledby="lessons-title"] ol > li')];
+    const offered = [document.querySelector("section[aria-label='Your progress'] a.btn"), ...document.querySelectorAll("section[aria-label='Your progress'] p.muted a")];
+    return {
+      lit: rows.filter((li) => tinted(li) || tinted(li.querySelector("a"))).map((li) => li.querySelector("a")?.getAttribute("href") ?? li.textContent.trim().slice(0, 40)),
+      steps: offered.map((a) => a?.getAttribute("href")).filter((h) => h && /^\/academy\/(lesson|reading)\/[^/]+$/.test(h)),
+    };
+  });
+  const a = [...lit].sort().join(", "), b = [...steps].sort().join(", ");
+  if (a !== b) found.push(`next: for ${who} the Academy's lists light ${a || "no row"}, but the Learn page offers ${b || "no lesson"}`);
+}
+
 await browser.close();
 for (const f of found) console.log(`✗ ${f}`);
 console.log(found.length ? `\n${found.length} problem(s)` : `the two tracks agree everywhere (${lists.reading.total} and ${lists.grammar.total} lessons)`);

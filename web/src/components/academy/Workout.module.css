@@ -93,9 +93,4 @@
 /* on a phone the questions start on the first screen: the page's introduction gives way */
 @media (max-width: 600px) { .pageIntro { display: none; } }
 
-/* a checkpoint in the lesson list: a band of the paper's shade across the path, its numeral in a ring */
-.cpRow { background: var(--bg-2); }
-.cpRow .cpItem { box-shadow: var(--cut-over), var(--cut-under); }
-.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); border: 1px solid var(--accent); color: var(--accent); font: var(--step-0) var(--f-title); }
-
 .step:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
