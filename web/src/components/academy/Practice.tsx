@@ -50,9 +50,10 @@ export function Endings({ onScore, once = false }: { onScore: (ok: boolean) => v
       {picked && (
         <div className={styles.drillFoot}>
           {/* a wrong answer is named for what it is, so that the mistake teaches the form it was */}
-          <p className={picked === q.answer ? styles.good : styles.bad} role="status">{picked === q.answer ? "Right." : <>It is <span lang="grc" className={styles.inlineGr}>{q.answer}</span>.
+          {/* in the words of the lessons' own practice (Workout.tsx): "Not quite. The answer is …" */}
+          <p className={picked === q.answer ? styles.good : styles.bad} role="status">{picked === q.answer ? "Right." : <>Not quite. The answer is <span lang="grc" className={styles.inlineGr}>{q.answer}</span>.
             {" "}<span lang="grc" className={styles.inlineGr}>{picked}</span> is {whatIs(q.p, picked, q.ask)}.</>}</p>
-          {!once && <button type="button" className="btn" onClick={() => { setQ(makeEndingQ()); setPicked(null); }}>Next</button>}
+          {!once && <button type="button" className="btn" onClick={() => { setQ(makeEndingQ()); setPicked(null); }}>Next <span className="arr" aria-hidden="true">→</span></button>}
         </div>
       )}
     </div>
@@ -150,7 +151,7 @@ export function Parsing({ onScore, once = false }: { onScore: (ok: boolean) => v
         <div className={styles.drillFoot}>
           <p role="status"><span lang="grc" className={styles.inlineGr}>{q.form}</span>: {parse.pos}, {parse.detail}, from <span lang="grc" className={styles.inlineGr}>{q.lemma}</span>.
             <span className={styles.small}> Analysis checked by hand (PROIEL treebank, via GLAUx).</span></p>
-          {!once && <button type="button" className="btn" onClick={() => setRound((r) => r + 1)}>Next sentence</button>}
+          {!once && <button type="button" className="btn" onClick={() => setRound((r) => r + 1)}>Next sentence <span className="arr" aria-hidden="true">→</span></button>}
         </div>
       )}
     </div>
