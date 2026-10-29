@@ -1,8 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PARADIGMS, askFor, formsOf, type Ask } from "@/data/paradigms";
-import { fold } from "@/lib/catalog";
+import { PARADIGMS, askFor, formsOf, whatIs, wrongForms, type Ask, type Paradigm } from "@/data/paradigms";
 import { loadWordPack, type WordPack } from "@/lib/lookup/words";
 import { readTag } from "@/lib/lookup/postag";
 import { loadPassage, type LoadedPassage } from "@/lib/passage";
@@ -15,7 +14,7 @@ import readerStyles from "@/components/reader/Reader.module.css";
 const shuffle = <T,>(a: T[]) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 
 // ------------------------------------------------------------ 1. endings, from the checked tables
-interface EndingQ { ask: Ask; answer: string; options: string[] }
+interface EndingQ { p: Paradigm; ask: Ask; answer: string; options: string[] }
 function makeEndingQ(): EndingQ {
   const pool = PARADIGMS.filter((p) => p.group !== "pronoun");
   const p = pool[Math.floor(Math.random() * pool.length)];
@@ -23,9 +22,8 @@ function makeEndingQ(): EndingQ {
   const r = rows[Math.floor(Math.random() * rows.length)];
   const c = Math.floor(Math.random() * p.cols.length);
   const answer = formsOf(p.cells[r][c])[0];
-  const all = [...new Set(p.cells.flat().flatMap(formsOf))].filter((f) => fold(f) !== fold(answer));
-  const options = shuffle([answer, ...shuffle(all).slice(0, 3)]);
-  return { ask: askFor(p, r, c), answer, options };
+  const options = shuffle([answer, ...shuffle(wrongForms(p, r, c)).slice(0, 3)]);
+  return { p, ask: askFor(p, r, c), answer, options };
 }
 
 /** `once`: a single question with no Next button (the daily session moves on by itself). */
@@ -51,7 +49,9 @@ export function Endings({ onScore, once = false }: { onScore: (ok: boolean) => v
       </div>
       {picked && (
         <div className={styles.drillFoot}>
-          <p className={picked === q.answer ? styles.good : styles.bad} role="status">{picked === q.answer ? "Right." : <>It is <span lang="grc" className={styles.inlineGr}>{q.answer}</span>.</>}</p>
+          {/* a wrong answer is named for what it is, so that the mistake teaches the form it was */}
+          <p className={picked === q.answer ? styles.good : styles.bad} role="status">{picked === q.answer ? "Right." : <>It is <span lang="grc" className={styles.inlineGr}>{q.answer}</span>.
+            {" "}<span lang="grc" className={styles.inlineGr}>{picked}</span> is {whatIs(q.p, picked, q.ask)}.</>}</p>
           {!once && <button type="button" className="btn" onClick={() => { setQ(makeEndingQ()); setPicked(null); }}>Next</button>}
         </div>
       )}
