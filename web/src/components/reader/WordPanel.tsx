@@ -20,6 +20,7 @@ import { creditsFor } from "@/lib/lookup/credits";
 import { placeNamed, shortName, type Place } from "@/lib/map";
 import styles from "./Reader.module.css";
 import { SidePanel } from "./Panel";
+import { useBackSteps } from "./useBackSteps";
 
 export interface WordContext { work: string; unitKey: string; occurrence: number; keys: Set<string>; depth: number }
 
@@ -190,14 +191,16 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, doc = null, at = null, workTitle = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
-  word: string | null; ctx: WordContext | null; onClose: () => void; onEchoes?: () => void;
+export default function WordPanel({ word, ctx, doc = null, at = null, workTitle = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null, startMore = false, backSteps = false }: {
+  word: string | null; ctx: WordContext | null; onClose: () => void;
+  /** show every place the word occurs (Echoes); given the word's dictionary form as shown, for the way back to it */
+  onEchoes?: (headword: string) => void;
   /** the text on screen and the word's place in it (its passage and its number among the passage's words), to find the word in the treebank */
   doc?: TeiDoc | null; at?: { u: string; i: number } | null;
   /** the work's title in English, for "12 times in the Iliad" */
   workTitle?: string | null;
-  /** show how the sentence this word is in is built */
-  onSentence?: () => void;
+  /** show how the sentence this word is in is built; given the word's dictionary form as shown, for the way back to it */
+  onSentence?: (headword: string) => void;
   /** the next (1) or previous (-1) word of the passage */
   onStep?: (dir: 1 | -1) => void;
   /** a sheet from the foot of the screen (or of the floating window), with heights */
@@ -206,6 +209,10 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   note?: { left: number; width: number } | null;
   /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
   maxH?: number | null;
+  /** a look-up opened afresh starts in the second layer (the way back from the sentence or Echoes, to where the reader came from) */
+  startMore?: boolean;
+  /** the phone's back gesture steps back through the layers (the reader's own page only; the quiet desk, back routes, 2026-10-29) */
+  backSteps?: boolean;
 }) {
   const ref = useRef<HTMLElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -218,8 +225,8 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   // the first layer again; likewise the whole LSJ entry
   const [moreFor, setMoreFor] = useState("");
   const [fullFor, setFullFor] = useState("");
-  if (!!word !== wasOpen) { setWasOpen(!!word); setMoreFor(""); setFullFor(""); if (word) setSnap("peek"); }
   const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
+  if (!!word !== wasOpen) { setWasOpen(!!word); setMoreFor(word && startMore ? key : ""); setFullFor(""); if (word) setSnap("peek"); }
   const more = !!word && moreFor === key;
   const full = !!word && fullFor === key;
   const [dir, setDir] = useState<1 | -1>(1);
@@ -231,6 +238,8 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   // Back, or Escape in the second layer: the first layer, at its resting height, with the keyboard on "More about it"
   const cameBack = useRef(false);
   const goBack = () => { cameBack.current = true; setMoreFor(""); setSnap("peek"); };
+  // the browser's Back steps from the second layer to the first, then closes (hooks come before the early return below)
+  useBackSteps(!word ? 0 : more ? 2 : 1, backSteps, (depth) => { if (depth > 0) goBack(); else onClose(); });
   useEffect(() => {
     if (ref.current) ref.current.scrollTop = 0;
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
@@ -401,12 +410,12 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
         <h3 className="label">Go further</h3>
         <div className={styles.panelLinks}>
           {onEchoes && (
-            <button type="button" className={note ? "text-btn" : "chip"} onClick={onEchoes} title="Every place this word occurs in the book, marked along a strip">
+            <button type="button" className={note ? "text-btn" : "chip"} onClick={() => onEchoes(headword)} title="Every place this word occurs in the book, marked along a strip">
               {occursLine(occurs.key === key ? occurs.n : null, workTitle)}
             </button>
           )}
           {onSentence && (
-            <button type="button" className={note ? "text-btn" : "chip"} onClick={onSentence} title="The sentence's structure: the main verb, its subject and object, and what describes what">
+            <button type="button" className={note ? "text-btn" : "chip"} onClick={() => onSentence(headword)} title="The sentence's structure: the main verb, its subject and object, and what describes what">
               How the sentence is built
             </button>
           )}

@@ -258,9 +258,21 @@
 .cardStep:global(.text-btn) { color: var(--ink-2); text-decoration: none; }
 .cardStep:global(.text-btn):hover { color: var(--rubric); }
 .cardMore:global(.text-btn) { margin-left: auto; color: var(--rubric); }
-/* the second layer's head: "‹ Back" beside the word, level with it */
-.cardBack:global(.text-btn) { flex: none; align-self: center; margin-right: var(--space-2); }
-@media (pointer: coarse) { .cardRow :global(.text-btn), .cardBack:global(.text-btn) { min-height: var(--tap); padding-inline: var(--space-1); } }
+/* the second layer's head: "‹ Back" beside the word, level with it; and a panel's "‹ Back to μῆνις" above its title (Panel.tsx).
+   A quiet button at the panel's reading size, with room around it and a finger's height on a touch screen (the quiet desk,
+   back routes, the owner, 2026-10-29: it had been a tiny link crowded against the word) */
+.cardBack:global(.text-btn), .headBack:global(.text-btn) {
+  flex: none; display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--space-6);
+  padding-inline: var(--space-2); margin-left: calc(-1 * var(--space-2)); font-size: var(--step-0); color: var(--ink-2); text-decoration: none;
+}
+.cardBack:global(.text-btn):hover, .headBack:global(.text-btn):hover { color: var(--rubric); }
+.cardBack:global(.text-btn) { align-self: center; margin-right: var(--space-1); }
+.headMain { flex: 1; min-width: 0; display: grid; gap: var(--space-1); }
+.headBack:global(.text-btn) { justify-self: start; }
+@media (pointer: coarse) {
+  .cardRow :global(.text-btn) { min-height: var(--tap); padding-inline: var(--space-1); }
+  .cardBack:global(.text-btn), .headBack:global(.text-btn) { min-height: var(--tap); min-width: var(--tap); padding-inline: var(--space-3); margin-left: calc(-1 * var(--space-3)); }
+}
 
 /* the look-up's second layer (WordPanel.tsx; the quiet desk, ticket 06), behind More about it: the dictionary, where to go from
    the word, the other dictionaries, then at the foot how sure the grammar is and the credits. The same on a computer and a

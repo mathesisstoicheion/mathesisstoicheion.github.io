@@ -4,7 +4,7 @@
  * plain words (subject, object, describes…) and its grammar; choosing one lights up the whole phrase it heads,
  * here and in the text. From GLAUx (lib/syntax.ts), which says whether a person checked the sentence.
  */
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { loadWordPack, type WordPack } from "@/lib/lookup/words";
 import { placeAnalyses, positionsFor, type Placed } from "@/lib/lookup/placed";
 import { readTag } from "@/lib/lookup/postag";
@@ -35,7 +35,7 @@ const inverse = (placed: Placed, n: number) => {
 
 type Ready = { pack: WordPack; syn: Syntax; placed: Placed; forms: string[]; tags: number[]; doc: TeiDoc };
 
-export default function SentencePanel({ work, doc, at, onMarks, onClose, onNotebook }: {
+export default function SentencePanel({ work, doc, at, onMarks, onClose, onNotebook, back }: {
   work: string; doc: TeiDoc;
   /** the word asked about: its passage and its place among the passage's words */
   at: { u: string; i: number };
@@ -43,6 +43,8 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
   onClose: () => void;
   /** add the sentence to a notebook: its first and last passages, and its words */
   onNotebook?: (from: string, to: string, grc: string) => void;
+  /** "‹ Back to the word", when the look-up opened this (the quiet desk, back routes, the owner, 2026-10-29) */
+  back?: { to: ReactNode; onBack: () => void };
 }) {
   const [data, setData] = useState<Ready | { error: string } | null>(null);
   useEffect(() => {
@@ -127,7 +129,7 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
   const total = data && !("error" in data) ? data.syn.raw.s.length : 0;
   return (
     <SidePanel className={`${styles.panel} ${ss.panel}`} label="How the sentence is built" onClose={onClose} focusKey
-      title="How the sentence is built" titleClass={ss.title} closeLabel="Close the sentence">
+      title="How the sentence is built" titleClass={ss.title} closeLabel="Close the sentence" back={back}>
       {!data && <p className="muted">Reading the sentence…</p>}
       {data && "error" in data && <p className="muted">{data.error}</p>}
       {data && !("error" in data) && !s && <p className="muted">This word could not be matched with GLAUx&apos;s analysis here (its edition may differ from the one on screen).</p>}

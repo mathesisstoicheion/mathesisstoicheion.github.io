@@ -233,7 +233,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [catalogError, setCatalogError] = useState<string | null>(null);
   const [result, setResult] = useState<Loaded | null>(null);
   const [step, setStep] = useState<{ key: string; text: string } | null>(null);
-  const [word, setWord] = useState<{ w: string; ctx: WordContext | null; at: Point | null } | null>(null);
+  // `more`: opened in the second layer ("More about it"), as on the way back from the sentence or Echoes
+  const [word, setWord] = useState<{ w: string; ctx: WordContext | null; at: Point | null; more?: boolean } | null>(null);
+  // the word whose look-up opened the sentence panel or Echoes, for their "‹ Back to μῆνις" (the quiet desk, back routes, the
+  // owner, 2026-10-29): where it was tapped and the name to show; empty when they were opened some other way (the Tools menu)
+  const [cameFrom, setCameFrom] = useState<{ to: "sentence" | "echoes"; at: Point; label: string } | null>(null);
   const [wordAt, setWordAt] = useState<WordAt | null>(null);
   const [echo, setEcho] = useState<EchoQuery | null>(null);
   const [echoMarks, setEchoMarks] = useState<EchoMarks | null>(null);
@@ -1057,10 +1061,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   };
 
   // a word opens the look-up (by a click, or Enter on the focused word)
-  const openWord = (w: HTMLElement) => {
+  // (`back`: the way back from the sentence or Echoes, which reopens the second layer on this word)
+  const openWord = (w: HTMLElement, back = false) => {
     // while a sentence's structure is open, a word chosen in the text is shown there, in its own sentence
     const inUnit = w.closest<HTMLElement>("[data-u]");
-    if (sentenceAt && inUnit) { setSentenceAt({ u: inUnit.dataset.u!, i: [...inUnit.querySelectorAll("[data-w]")].indexOf(w) }); return; }
+    if (sentenceAt && inUnit && !back) { setCameFrom(null); setSentenceAt({ u: inUnit.dataset.u!, i: [...inUnit.querySelectorAll("[data-w]")].indexOf(w) }); return; }
     root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
     w.classList.add(styles.sel);
     rove(w);
@@ -1071,8 +1076,19 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       const same = [...unit.querySelectorAll<HTMLElement>("[data-w]")].filter((x) => norm(x.dataset.w!) === norm(w.dataset.w!));
       ctx = { work: lexWork, unitKey: unit.dataset.u!, occurrence: same.indexOf(w), keys: unitKeys, depth: doc.levels.length };
     }
-    setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null });
+    setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null, more: back });
     placeWord(true);
+  };
+
+  /** "‹ Back to μῆνις" in the sentence panel or Echoes: they close, and the look-up opens again on the word it was opened for,
+   *  in the second layer, where the reader came from, and placed as usual. */
+  const backToWord = () => {
+    const from = cameFrom;
+    setCameFrom(null); setSentenceAt(null); setEcho(null);
+    const unit = from ? [...root().querySelectorAll<HTMLElement>("[data-u]")].find((u) => u.dataset.u === from.at.u) : null;
+    const span = unit?.querySelectorAll<HTMLElement>("[data-w]")[from!.at.i];
+    if (span) openWord(span, true);
+    else root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
   };
 
   /** Where the look-up goes (decision 4 and the quiet desk, ticket 04: one place per device, and it never covers the Greek
@@ -1199,12 +1215,14 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   };
 
   // ------------------------------------------------------------ Echoes
-  function openEchoes(start: Point, end: Point) {
+  function openEchoes(start: Point, end: Point, from: { at: Point; label: string } | null = null) {
     if (!doc || !grcText || !work) return;
+    setCameFrom(from && { to: "echoes", ...from });
     setEcho({ work: workId, urn: grcText.urn, doc, title: work.title, start, end });
     setWord(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
   }
   const echoJump = (t: EchoTarget) => {
+    setCameFrom(null);   // it is another passage now: there is no word to go back to
     const q = new URLSearchParams(params.toString());
     const k = (x: string) => (pane === 1 ? x : `${x}2`);
     if (t.work !== workId) q.delete(k("tr"));
@@ -1808,10 +1826,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       )}
       {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
       {sentenceAt && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
-        <PanelGuard name="sentence panel" className={styles.panel} onClose={() => setSentenceAt(null)}>
+        <PanelGuard name="sentence panel" className={styles.panel} onClose={() => { setSentenceAt(null); setCameFrom(null); }}>
           <SentencePanel work={lexWork} doc={doc} at={sentenceAt} onMarks={setSynMarks}
+            back={cameFrom?.to === "sentence" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: backToWord } : undefined}
             onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
-            onClose={() => { setSentenceAt(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
+            onClose={() => { setSentenceAt(null); setCameFrom(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
         </PanelGuard>
       )}
       {listenOpen && trText && !cmpText && work && rows.length > 0 && (
@@ -1839,15 +1858,18 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         );
       })()}
       {echo && !lookSheet && (
-        <PanelGuard name="Echoes panel" className={styles.panel} onClose={() => setEcho(null)}>
-          <EchoesPanel q={echo} onJump={echoJump} onMarks={setEchoMarks} onClose={() => setEcho(null)} />
+        <PanelGuard name="Echoes panel" className={styles.panel} onClose={() => { setEcho(null); setCameFrom(null); }}>
+          <EchoesPanel q={echo} onJump={echoJump} onMarks={setEchoMarks} onClose={() => { setEcho(null); setCameFrom(null); }}
+            back={cameFrom?.to === "echoes" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: backToWord } : undefined} />
         </PanelGuard>
       )}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
-        <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} doc={doc} at={word?.at ?? null} workTitle={work?.title ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
-          onSentence={word?.at ? () => {
+        <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} doc={doc} at={word?.at ?? null} workTitle={work?.title ?? null} onEchoes={word?.at ? (label) => openEchoes(word.at!, word.at!, { at: word.at!, label }) : undefined} onClose={closeWord}
+          startMore={!!word?.more} backSteps={single && !floating}
+          onSentence={word?.at ? (label) => {
             const a = word.at!;
             setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
+            setCameFrom({ to: "sentence", at: a, label });
             setSentenceAt(a);
           } : undefined}
           onStep={word?.at ? stepWord : undefined}

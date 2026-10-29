@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { loadCatalog, versionOf, type CatalogIndex } from "@/lib/catalog";
 import { exactEchoes, NEAR_MAX_WORDS, phraseEchoes, wordEchoes, type Echo, type Kind } from "@/lib/echoes/match";
 import { authorPlan, bookFromDoc, bookFromUrn, lexicon, type AuthorPlan, type Book } from "@/lib/echoes/load";
@@ -30,8 +30,10 @@ const KIND_LABEL: Record<Kind, string> = { exact: "exact", forms: "other forms",
 const PAGE = 60;
 const MAX_WORDS = 200;
 
-export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
+export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
   q: EchoQuery; onJump: (t: EchoTarget) => void; onMarks: (m: EchoMarks | null) => void; onClose: () => void;
+  /** "‹ Back to the word", when the look-up opened this (the quiet desk, back routes, the owner, 2026-10-29) */
+  back?: { to: ReactNode; onBack: () => void };
 }) {
   const [book, setBook] = useState<{ key: EchoQuery; book?: Book; error?: string } | null>(null);
   const [scope, setScope] = useState<Scope>("book");
@@ -150,7 +152,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose }: {
   const where = scope === "book" ? <i>{q.title}</i> : scope === "author" ? `${plan?.author.name ?? "this author"}’s works` : "all the Greek texts";
 
   return (
-    <SidePanel className={`${styles.panel} ${es.panel}`} label="Echoes" onClose={onClose} focusKey={q} closeLabel="Close Echoes" head={
+    <SidePanel className={`${styles.panel} ${es.panel}`} label="Echoes" onClose={onClose} focusKey={q} closeLabel="Close Echoes" back={back} head={
         <div>
           <p className="label">Echoes · where it recurs</p>
           <p className={es.quote} lang="grc">{quote || "…"}</p>

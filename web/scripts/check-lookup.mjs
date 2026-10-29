@@ -21,6 +21,11 @@
 // grows to the height it may have, and stays fixed while the text scrolls. μῆνιν in the Iliad, 1.1 (on a computer and a phone)
 // is checked in full: "12 times in the Iliad" (the number of words GLAUx analyses as μῆνις in the whole pack), the lesson "Why the
 // accusative?", the credit line "Analysis and treebank: GLAUx (Keersmaekers 2021), CC BY-SA 4.0 · LSJ: Perseus Digital Library, CC BY-SA".
+// And the back routes (the quiet desk, the owner, 2026-10-29: "the word lookup in the reader needs a back button"): from the second
+// layer, "How the sentence is built" and "12 times in the Iliad" open the sentence panel and Echoes with a "‹ Back to μῆνις" that
+// closes them and brings the look-up back on the same word with "More about it" open (Escape in them still just closes them); "‹ Back"
+// in the second layer is at least 44 × 44 px under a finger; and on a phone the browser's Back steps second layer, first layer,
+// closed (page.goBack()) without leaving /read or moving the passage, while × and Previous and Next keep the history level.
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -149,10 +154,19 @@ async function secondLayer(page, tag, opts, during) {
       creditCount: credits.length,
       after,
       focusOnBack: document.activeElement?.textContent?.trim().endsWith("Back") ?? false,
+      back: (() => {
+        const b = [...el.querySelectorAll("button")].find((x) => /^‹?\s*Back$/.test(x.textContent.trim()));
+        const r = b?.getBoundingClientRect();
+        return b ? { w: r.width, h: r.height, size: parseFloat(getComputedStyle(b).fontSize), coarse: matchMedia("(pointer: coarse)").matches } : null;
+      })(),
     };
   }, LOOKUP);
   if (open.layer !== "2") found.push(`${tag}: "More about it" did not show the second layer (data-layer ${open.layer})`);
   if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (the meaning is said again)`);
+  // "‹ Back" is a button to find and to hit: a finger's 44 × 44 px on a touch screen, and as large as the panel's reading size
+  if (!open.back) found.push(`${tag}: no "‹ Back" button in the second layer`);
+  else if (open.back.coarse && (open.back.h < 43.5 || open.back.w < 43.5)) found.push(`${tag}: "‹ Back" is ${Math.round(open.back.w)} × ${Math.round(open.back.h)} px under a finger (at least 44 × 44)`);
+  else if (!open.back.coarse && (open.back.h < 32 || open.back.size < 15)) found.push(`${tag}: "‹ Back" is ${Math.round(open.back.h)} px tall in ${Math.round(open.back.size)} px letters (it is a button at the panel's reading size)`);
   if (!open.focusOnBack) found.push(`${tag}: the keyboard did not move into the second layer when it opened (it belongs on "‹ Back")`);
   const has = (name) => open.parts.find((x) => x.name === name);
   // (a word with no LSJ entry or no analysis has no “whole entry” or credit to show, so only μῆνιν is held to all of them)
@@ -310,6 +324,135 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
   await ctx.close();
 }
 
+/** Open the look-up on μῆνιν, Iliad 1.1, with the word tapped on a phone and clicked elsewhere. */
+async function lookUp(page, phone) {
+  const word = page.locator('[data-u="1.1"] [data-w="μῆνιν"]');
+  if (phone) await word.tap(); else await word.click();
+  await page.waitForSelector(LOOKUP, { timeout: 10000 });
+  await page.waitForTimeout(900);
+  await page.locator(LOOKUP).getByText("Looking it up…").waitFor({ state: "detached", timeout: 20000 }).catch(() => {});
+}
+const headOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP)?.querySelector('[class*="pw"]')?.textContent?.trim() ?? "", LOOKUP);
+
+/**
+ * The back routes (from the second layer to the sentence panel or Echoes, and back to the word). The look-up stands in its
+ * first layer, on μῆνιν. Each route: More about it, then the link; the look-up closes and the panel opens with "‹ Back to μῆνις";
+ * Back brings the look-up back on the same word in the second layer. Escape in the panel only closes it. Ends with the look-up
+ * open in its first layer.
+ */
+async function backRoutes(page, tag, phone) {
+  const look = page.locator(LOOKUP);
+  for (const [name, link, panel] of [
+    ["the sentence", /^How the sentence is built$/, 'aside[aria-label="How the sentence is built"]'],
+    ["where else", /times in the|^Once in the|^Where else it occurs$/, 'aside[aria-label="Echoes"]'],
+  ]) {
+    const here = `${tag}, ${name}`;
+    for (const pass of ["escape", "back"]) {
+      if (!(await look.count())) await lookUp(page, phone);
+      if ((await layerOf(page)) !== "2") { await look.getByRole("button", { name: "More about it" }).click(); await page.waitForTimeout(700); }
+      await look.getByRole("button", { name: link }).click();
+      const shown = await page.waitForSelector(panel, { timeout: 20000 }).then(() => true, () => false);
+      if (!shown) { found.push(`${here}: the panel did not open`); return; }
+      await page.waitForTimeout(700);
+      if (await look.count()) found.push(`${here}: the look-up stayed open under the panel`);
+      const back = page.locator(panel).getByRole("button", { name: /^Back to/ });
+      if (!(await back.count())) { found.push(`${here}: the panel has no "Back to" button`); await page.locator(panel).focus(); await page.keyboard.press("Escape"); continue; }
+      const label = ((await back.first().textContent()) ?? "").trim().replace(/\s+/g, " ");
+      if (pass === "escape") {
+        if (!/^‹ Back to μῆνις$/.test(label)) found.push(`${here}: the button reads "${label}" (‹ Back to μῆνις)`);
+        // Escape in the panel closes it, as before, and does not bring the look-up back
+        await page.locator(panel).focus();
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(700);
+        if (await page.locator(panel).count()) found.push(`${here}: Escape did not close the panel`);
+        if (await look.count()) found.push(`${here}: Escape in the panel brought the look-up back (it only closes the panel)`);
+        continue;
+      }
+      await back.first().click();
+      await page.waitForSelector(LOOKUP, { timeout: 10000 }).catch(() => found.push(`${here}: "Back to μῆνις" did not bring the look-up back`));
+      await page.waitForTimeout(1000);
+      if (await page.locator(panel).count()) found.push(`${here}: the panel stayed open after "Back to μῆνις"`);
+      if (!(await look.count())) continue;
+      if ((await layerOf(page)) !== "2") found.push(`${here}: the look-up came back in layer ${await layerOf(page)} (the second layer, "More about it", is where the reader came from)`);
+      if (!/Dictionary · LSJ/.test((await look.textContent()) ?? "")) found.push(`${here}: the look-up came back without "More about it" open`);
+      if ((await headOf(page)) !== "μῆνις") found.push(`${here}: the look-up came back on "${await headOf(page)}" (the same word, μῆνις)`);
+      const marked = await page.evaluate(() => [...document.querySelectorAll("article [data-w][class*='__sel']")].map((e) => e.getAttribute("data-w")));
+      if (marked.join() !== "μῆνιν") found.push(`${here}: the word marked in the text is "${marked.join()}" (μῆνιν)`);
+      // and it is the second layer's own Back that goes on from here
+      await look.focus();
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(600);
+    }
+  }
+}
+
+/**
+ * The phone's back gesture steps back through the look-up: second layer, first layer, closed, with the reader staying on its page
+ * and its passage; and × / Previous and Next keep the history level (they add nothing of their own).
+ */
+async function historySteps(page, tag) {
+  const look = page.locator(LOOKUP);
+  const state = () => page.evaluate(() => ({ step: history.state?.lookupStep ?? 0, len: history.length, path: location.pathname, search: location.search, top: Math.round(document.querySelector('[data-u="1.1"] [data-w="μῆνιν"]')?.getBoundingClientRect().top ?? -9999) }));
+  const wait = () => page.waitForTimeout(800);
+  // (a Back that left the reader leaves nothing more to check)
+  const left = () => { const gone = !new URL(page.url()).pathname.startsWith(new URL(start.url).pathname); if (gone) found.push(`${tag}: the browser's Back left the reader (now at ${page.url()})`); return gone; };
+  const start = { ...(await state()), url: page.url() };
+  await lookUp(page, true);
+  const first = await state();
+  if (first.step !== 1 || first.len !== start.len + 1) found.push(`${tag}: opening the look-up left the history at step ${first.step}, ${first.len - start.len} entries added (one step, one entry)`);
+  const placed = first.top;   // where the line stands with the look-up open (it may have been brought up)
+  await look.getByRole("button", { name: "More about it" }).click();
+  await wait();
+  const second = await state();
+  if (second.step !== 2 || second.len !== start.len + 2) found.push(`${tag}: "More about it" left the history at step ${second.step}, ${second.len - start.len} entries added (two)`);
+  // the browser's Back: the second layer to the first
+  await page.goBack().catch(() => {});
+  await wait();
+  if (left()) return;
+  if (!(await look.count())) found.push(`${tag}: Back from the second layer closed the look-up (it goes to the first layer)`);
+  else if ((await layerOf(page)) !== "1") found.push(`${tag}: Back from the second layer left the look-up in layer ${await layerOf(page)}`);
+  let now = await state();
+  if (now.path !== start.path || now.search !== start.search) found.push(`${tag}: Back changed the page address to ${now.path}${now.search}`);
+  if (now.step !== 1) found.push(`${tag}: Back from the second layer landed on step ${now.step} (1)`);
+  // Next adds no entry
+  const next = look.getByRole("button", { name: "Next word" });
+  if (await next.count()) {
+    await next.click(); await wait();
+    const stepped = await state();
+    if (stepped.len !== now.len || stepped.step !== 1) found.push(`${tag}: Next word changed the history (step ${stepped.step}, ${stepped.len - now.len} entries added)`);
+    await look.getByRole("button", { name: "Previous word" }).click(); await wait();
+  }
+  // the browser's Back again: the first layer closes
+  await page.goBack().catch(() => {});
+  await wait();
+  if (left()) return;
+  if (await look.count()) found.push(`${tag}: a second Back did not close the look-up`);
+  now = await state();
+  if (now.path !== start.path || now.search !== start.search) found.push(`${tag}: Back left or changed the page (${now.path}${now.search})`);
+  if (now.step !== 0) found.push(`${tag}: after the look-up closed the history is at step ${now.step} (0)`);
+  if (!(await page.locator('[data-u="1.1"] [data-w="μῆνιν"]').count())) found.push(`${tag}: after Back the reader no longer shows Iliad 1.1`);
+  else if (Math.abs(now.top - placed) > 40 && Math.abs(now.top - start.top) > 40) found.push(`${tag}: Back moved the passage (the line stood ${placed} px from the top with the look-up open and ${start.top} px before, then ${now.top} px)`);
+  // × from the second layer steps back over both entries, and a new look-up is not stacked on old ones
+  await lookUp(page, true);
+  await look.getByRole("button", { name: "More about it" }).click();
+  await wait();
+  await look.getByRole("button", { name: "Close look-up" }).click();
+  await wait();
+  now = await state();
+  if (await look.count()) found.push(`${tag}: × did not close the look-up`);
+  if (now.step !== 0 || now.path !== start.path || now.search !== start.search) found.push(`${tag}: after × the history is at step ${now.step} on ${now.path}${now.search} (step 0, the reader's page)`);
+  await lookUp(page, true);
+  if ((await state()).step !== 1) found.push(`${tag}: a look-up opened after × is at step ${(await state()).step} (1)`);
+  // Escape closes it too (from the first layer, with the keyboard in the look-up), and a tap in the margin of the text
+  await look.focus();
+  await page.keyboard.press("Escape");
+  await wait();
+  now = await state();
+  if (now.step !== 0) found.push(`${tag}: after Escape the history is at step ${now.step} (0)`);
+  // Back now leaves nothing of the look-up to step through: it must not close or reopen anything
+  if (await look.count()) found.push(`${tag}: Escape did not close the look-up`);
+}
+
 // ---- the second layer on μῆνιν, Iliad 1.1: a computer (the window over the margin) and a phone (the sheet)
 for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
   const tag = `μῆνιν in the Iliad, ${label}`;
@@ -321,6 +464,9 @@ for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
   await firstLayer(page, tag);
   if (w >= 800) inMargin(tag, await boxes(page));
   await secondLayer(page, tag, { sheet: w < 800, exact: true });
+  await backRoutes(page, tag, w < 800);
+  if (!(await page.locator(LOOKUP).count())) await lookUp(page, w < 800);
+  if ((await layerOf(page)) === "2") { await page.locator(LOOKUP).focus(); await page.keyboard.press("Escape"); await page.waitForTimeout(600); }
   // × closes the look-up from the second layer, not only back to the first
   await page.locator(LOOKUP).getByRole("button", { name: "More about it" }).click();
   await page.waitForTimeout(500);
@@ -337,6 +483,13 @@ for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
   const gone = await page.evaluate((LOOKUP) => ({ open: !!document.querySelector(LOOKUP), back: !!document.activeElement?.matches("article [data-w]") }), LOOKUP);
   if (gone.open) found.push(`${tag}: Escape in the first layer did not close the look-up`);
   else if (!gone.back) found.push(`${tag}: after Escape the keyboard is not back on the word`);
+  await ctx.close();
+}
+
+// ---- the phone's back gesture, on a page of its own (so that the entries counted are only this one's)
+{
+  const { ctx, page } = await open(390, 844, "light", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
+  await historySteps(page, "μῆνιν in the Iliad, 390px, the browser's Back");
   await ctx.close();
 }
 

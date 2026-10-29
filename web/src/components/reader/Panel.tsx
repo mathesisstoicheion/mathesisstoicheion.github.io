@@ -21,12 +21,21 @@ type Head = {
   /** what the × says to a screen reader */
   closeLabel?: string;
   closeClass?: string;
+  /** a way back to what the reader came from, at the top-left of the head above the title ("‹ Back to μῆνις": the quiet desk,
+   *  back routes, the owner, 2026-10-29); left out when the panel was opened some other way */
+  back?: { to: ReactNode; onBack: () => void };
 };
 
-function PanelHead({ title, titleClass, titleId, head, headClass, headProps, closeLabel = "Close", closeClass, onClose }: Head & { titleId?: string; onClose: () => void }) {
+function PanelHead({ title, titleClass, titleId, head, headClass, headProps, closeLabel = "Close", closeClass, back, onClose }: Head & { titleId?: string; onClose: () => void }) {
+  const main = head ?? <h2 id={titleId} className={titleClass}>{title}</h2>;
   return (
     <div {...headProps} className={headClass ?? styles.panelHead}>
-      {head ?? <h2 id={titleId} className={titleClass}>{title}</h2>}
+      {back ? (
+        <div className={styles.headMain}>
+          <button type="button" className={`text-btn ${styles.headBack}`} onClick={back.onBack}><span aria-hidden="true">‹</span>{" "}Back to {back.to}</button>
+          {main}
+        </div>
+      ) : main}
       <button type="button" className={`icon-btn ${closeClass ?? styles.x}`} onClick={onClose} aria-label={closeLabel}>×</button>
     </div>
   );
@@ -39,14 +48,14 @@ function PanelHead({ title, titleClass, titleId, head, headClass, headProps, clo
  */
 export const SidePanel = forwardRef<HTMLElement, Head & Omit<HTMLAttributes<HTMLElement>, "title"> & {
   label: string; onClose: () => void; onEscape?: () => void; focusKey?: unknown; children?: ReactNode;
-}>(function SidePanel({ label, onClose, onEscape, focusKey, className, children, title, titleClass, head, headClass, headProps, closeLabel, closeClass, onKeyDown, ...rest }, ref) {
+}>(function SidePanel({ label, onClose, onEscape, focusKey, className, children, title, titleClass, head, headClass, headProps, closeLabel, closeClass, back, onKeyDown, ...rest }, ref) {
   const own = useRef<HTMLElement>(null);
   useImperativeHandle(ref, () => own.current!, []);
   useEffect(() => { if (focusKey !== undefined && focusKey !== null && focusKey !== false) own.current?.focus({ preventScroll: true }); }, [focusKey]);
   return (
     <aside ref={own} {...rest} className={className ?? styles.panel} aria-label={label} tabIndex={-1}
       onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); (onEscape ?? onClose)(); } onKeyDown?.(e); }}>
-      <PanelHead {...{ title, titleClass, head, headClass, headProps, closeLabel, closeClass, onClose }} />
+      <PanelHead {...{ title, titleClass, head, headClass, headProps, closeLabel, closeClass, back, onClose }} />
       {children}
     </aside>
   );

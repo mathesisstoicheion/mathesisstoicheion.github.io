@@ -47,3 +47,14 @@ Spec: `../spec.md`, "Solution", "Placement". User stories 15, 20, 21
   (`src/lib/tours.ts`).
 - All the site's checks pass, apart from the Learn page's older one.
 
+
+## Comment, 2026-10-29: back routes (Noa: "The word lookup in the reader needs a back button", chose "All three")
+
+- "How the sentence is built" and "12 times in the Iliad", opened from the look-up, show "‹ Back to μῆνις" above their
+  title. It closes the panel and reopens the look-up on the same word, in the second layer. Opened from the Tools menu,
+  there is no Back.
+- "‹ Back" in More is now a button at reading size with room around it, 44 px on a touch screen.
+- The phone's back gesture (the browser's Back) steps from the second layer to the first, then closes the look-up,
+  without leaving the reader or moving the text (`useBackSteps.ts`). Not in the floating window or two books side by
+  side. Tested only with Chromium's Back, not on a real phone yet.
+- check-lookup tests all three. All the site's checks pass, apart from the Learn page's older one.
