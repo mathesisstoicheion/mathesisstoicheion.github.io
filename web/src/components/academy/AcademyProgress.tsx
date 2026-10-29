@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
-import { READING_ITEMS, READING_TOTAL, pathKey } from "@/data/reading-index";
+import { READING_TOTAL, lessonsRead } from "@/data/reading-index";
 import { useAcademy, streak } from "@/lib/academy";
 import { dueRefreshes, readyCheckpoint } from "@/lib/refreshes";
 import styles from "./Academy.module.css";
@@ -17,7 +17,7 @@ export default function AcademyProgress() {
   const started = begun(completed);
   const refresh = started.grammar ? dueRefreshes(mastery)[0] : undefined;
   const checkpoint = started.grammar ? readyCheckpoint(completed, mastery) : null;
-  const read = READING_ITEMS.filter((i) => i.kind !== "practice" && completed[pathKey(i.id)]).length;
+  const read = lessonsRead(completed);
   const passed = LESSONS.filter((l) => completed[l.id]).length;
   const s = streak(days);
   // the numbers are for a learner who has begun: a first visit would meet a row of zeros

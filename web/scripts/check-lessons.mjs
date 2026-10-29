@@ -116,6 +116,19 @@ else for (const f of finished) {
   if (!r) found.push(`number: Lessons completed lists "${f.title}", which the Academy's list does not have`);
   else if (Number(f.no) !== r.n) found.push(`number: Lessons completed numbers "${f.title}" ${f.no}, the path numbers it ${r.n}`);
 }
+// ... and they are counted the same everywhere: its tab, its sentence, its list and the Learn page's "lessons read"
+const said = await page.evaluate(() => ({
+  tab: [...document.querySelectorAll("[role=radio]")].map((b) => b.textContent).find((t) => /^Lessons completed/.test(t)) ?? "",
+  sentence: document.querySelector("main")?.innerText.match(/You have finished (\d+) of \d+ lessons/)?.[1] ?? null,
+}));
+await page.goto(base + "/academy");
+await page.waitForTimeout(800);
+const learn = await page.evaluate(() => [...document.querySelectorAll("section[aria-label='Your progress'] div")]
+  .find((d) => d.querySelector("span")?.textContent.trim() === "lessons read")?.querySelector("b")?.firstChild?.textContent ?? null);
+const counts = { "the tab": said.tab.match(/\((\d+)\)/)?.[1] ?? "none", "the sentence under the counts": said.sentence ?? "none",
+  "the list": String(finished?.length ?? 0), "the Learn page": learn ?? "none" };
+if (new Set(Object.values(counts)).size > 1 || counts["the tab"] !== String(done.length))
+  found.push(`number: ${done.length} lessons finished are counted ${Object.entries(counts).map(([k, v]) => `${v} by ${k}`).join(", ")}`);
 
 await browser.close();
 for (const f of found) console.log(`✗ ${f}`);

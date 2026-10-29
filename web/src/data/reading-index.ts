@@ -42,3 +42,6 @@ const LESSONS = READING_ITEMS.filter((i) => i.kind !== "practice");
 export const READING_TOTAL = LESSONS.length;
 export const readingNo = (id: string) => LESSONS.findIndex((i) => i.id === id) + 1;
 export const readingLesson = (id: string) => `Lesson ${readingNo(id)} of ${READING_TOTAL}`;
+/** how many of those lessons a learner has finished, the letters among them: the one count of "lessons read" that the
+ * Learn page and the reading path's Lessons completed both show */
+export const lessonsRead = (completed: Record<string, number>) => LESSONS.filter((i) => completed[pathKey(i.id)]).length;

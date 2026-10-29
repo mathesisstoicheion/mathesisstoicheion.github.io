@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { LETTERS_STEP, PATH, PRACTICE, lineWords, stepWords, wordsRead } from "./reading-path";
-import { READING_ITEMS, READING_TOTAL, readingNo } from "./reading-index";
+import { READING_ITEMS, READING_TOTAL, lessonsRead, pathKey, readingNo } from "./reading-index";
 import { LESSON_INFO } from "./lesson-index";
 import { TRACKS, nextGrammar, nextReading, nextSteps } from "./tracks";
 
@@ -20,6 +20,16 @@ describe("the reading path's light index", () => {
     expect(READING_TOTAL).toBe(PATH.length + 1);
     expect(readingNo(LETTERS_STEP.id)).toBe(1);
     PATH.forEach((s, i) => expect(readingNo(s.id), s.id).toBe(i + 2));
+  });
+});
+
+describe("the lessons read", () => {
+  it("count the letters and every lesson finished, and no practice lesson", () => {
+    const read = (...ids: string[]) => Object.fromEntries(ids.map((id) => [pathKey(id), 1]));
+    expect(lessonsRead({})).toBe(0);
+    expect(lessonsRead(read("letters"))).toBe(1);
+    expect(lessonsRead(read("letters", "nothing-too-much", "know-yourself", "everything-moves", "practice-1"))).toBe(4);
+    expect(lessonsRead(read(...READING_ITEMS.map((i) => i.id)))).toBe(READING_TOTAL);
   });
 });
 
