@@ -218,10 +218,9 @@
 .panelHead { display: flex; justify-content: space-between; gap: var(--space-3); align-items: start; }
 /* wide screens: the look-up's parts sit straight in the panel's grid; phones: they scroll below a fixed head */
 .panelBody { display: contents; }
-.grab, .stepBtn, .moreBtn { display: none; }
-.quick { margin: 0; }
-/* the word looked up, in red (the sample's .lk-f); its × plain, as the sample's */
-.pw { font-family: var(--f-greek); font-size: 2rem; line-height: 1.1; color: var(--rubric); }
+.grab { display: none; }
+/* the dictionary form, large in the Greek face and in ink (the quiet desk, ticket 05; red is kept for numbers and links); its × plain */
+.pw { flex: 1; min-width: 0; min-height: 1.2em; font-family: var(--f-greek); font-size: var(--step-2); line-height: 1.2; color: var(--ink); overflow-wrap: anywhere; }
 /* (the × is an .icon-btn, globals.css; .x only places and sizes it where the look-up needs) */
 .sec { display: grid; gap: var(--space-2); }
 .sec h3 { font-size: var(--step--1); }
@@ -243,6 +242,25 @@
   .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-radius: var(--radius); box-shadow: inset 0 1px 0 var(--rule), 0 -10px 30px -12px var(--shadow); }
   .helpBtn { display: none; }
 }
+
+/* the look-up's first layer (WordPanel.tsx, lib/lookup/card.ts; the quiet desk, ticket 05): the kind of word and the word tapped,
+   quiet; the meaning, the largest English on the screen (about 25 px, and about 22 px on a phone); what the word does here;
+   its grammar in small capitals; then Previous, Next and More about it, the last in red */
+.card { display: grid; gap: var(--space-2); align-content: start; min-height: var(--space-8); }
+.card p { margin: 0; }
+.cardWait { align-self: start; }
+.cardKind { font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.cardMeaning { font: 400 var(--step-2) / 1.25 var(--f-body); color: var(--ink); overflow-wrap: anywhere; }
+.cardRole { font-size: var(--step-0); line-height: 1.4; color: var(--ink); }
+.cardGrammar { color: var(--ink-2); }
+.cardRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); }
+.cardRow :global(.text-btn) { display: inline-flex; align-items: center; }
+.cardStep:global(.text-btn) { color: var(--ink-2); text-decoration: none; }
+.cardStep:global(.text-btn):hover { color: var(--rubric); }
+.cardMore:global(.text-btn) { margin-left: auto; color: var(--rubric); }
+@media (pointer: coarse) { .cardRow :global(.text-btn) { min-height: var(--tap); padding-inline: var(--space-1); } }
+/* everything else the look-up has, behind More about it (until ticket 06) */
+.moreBody { display: grid; gap: var(--space-4); padding-top: var(--space-4); box-shadow: var(--rule-over); }
 
 /* look-up: analysis and dictionary */
 .here { display: grid; gap: var(--space-1); justify-items: start; }
@@ -814,27 +832,23 @@ p.translit { margin: -0.3em 0 0.8em; }
    placeWord (decision 4: it never covers the Greek being read) */
 
 /* on a computer: a window over the right margin, fixed to the screen, so that the text scrolls under the eye while it stays
-   (the owner, 2026-10-26). It slides in from the right. Inside, in the order of mockup B: the word tapped, small, with its
-   arrows; the dictionary form, large; the kind of word and its grammar; the meaning in the reading type; then the rest,
-   each part under a hairline. Links are quiet words, not framed buttons. */
+   (the owner, 2026-10-26). It slides in from the right. Inside, in the order of mockup B (the quiet desk, ticket 05): the
+   dictionary form, large, with the ×; the kind of word and the word tapped; the meaning, the largest English on the screen;
+   what the word does here; its grammar in small capitals; Previous, Next and More about it. Behind More, the rest, each
+   part under a hairline. Links are quiet words, not framed buttons. */
 .panel.wordNote {
   right: auto; bottom: auto; width: var(--margin-note);
   top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px) + var(--space-4));   /* under the reader's bar */
   max-height: calc(100dvh - var(--bar-h, var(--space-7)) - env(safe-area-inset-top, 0px) - 2 * var(--space-4));
   overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;
-  gap: var(--space-4); padding: var(--space-4) var(--space-5) var(--space-5);
+  gap: var(--space-3); padding: var(--space-4) var(--space-5) var(--space-5);
   background: var(--bg); box-shadow: var(--rule-box), -24px 0 48px -40px var(--shadow);
   font-size: var(--step--1); line-height: 1.5;
   animation: from-right var(--dur-slow) var(--ease) backwards;
 }
 @keyframes from-right { from { opacity: 0; translate: var(--space-6) 0; } }
-.wordNote .panelHead { align-items: center; gap: var(--space-1); padding-bottom: var(--space-2); box-shadow: var(--rule-under); }
-.wordNote .pw { flex: 1; min-width: 0; font-size: var(--step-sub); line-height: 1.3; color: var(--ink-2); overflow-wrap: anywhere; }
-.wordNote .stepBtn {
-  display: grid; place-items: center; flex: none; min-width: var(--space-6); width: var(--space-6); height: var(--space-6); padding: 0; background: transparent; border: 0;
-  color: var(--ink-3); font-size: var(--step-1); line-height: 1; transition: color var(--dur-quick) var(--ease);
-}
-.wordNote .stepBtn:hover { color: var(--rubric); }
+.wordNote .panelHead { align-items: start; gap: var(--space-1); }
+.wordNote .pw { font-size: var(--step-3); line-height: 1.1; }
 .wordNote .x { min-width: var(--space-6); width: var(--space-6); height: var(--space-6); font-size: var(--step-1); }
 .wordNote .sec { gap: var(--space-2); }
 .wordNote .sec + .sec { padding-top: var(--space-4); box-shadow: var(--rule-over); }
@@ -845,7 +859,6 @@ p.translit { margin: -0.3em 0 0.8em; }
 .wordNote .lemmaBig { font-size: var(--step-3); line-height: 1.1; color: var(--ink); }
 .wordNote .parse { font-size: var(--step--1); color: var(--ink-2); }
 .wordNote .parse b { font-weight: 500; color: var(--ink); }
-.wordNote .quick { font: 400 var(--step-1) / 1.3 var(--f-body); color: var(--ink); }
 .wordNote .gloss { font-size: var(--step--1); }
 .wordNote .lsj { max-height: none; overflow: visible; padding-right: 0; }
 /* the certainty label as a quiet line of small capitals, not a box */
@@ -874,24 +887,21 @@ p.translit { margin: -0.3em 0 0.8em; }
 .panel.wordSheet.sheetDragging { transition: none; }
 @keyframes sheet-up { from { transform: translateY(30px); opacity: 0; } }
 .wordSheet .panelHead {
-  position: relative; flex: none; align-items: center; gap: var(--space-1); padding: var(--space-5) var(--space-3) var(--space-2) var(--space-4);
-  box-shadow: inset 0 -1px 0 var(--rule-2); touch-action: none;
+  position: relative; flex: none; align-items: center; gap: var(--space-1); padding: var(--space-3) var(--space-3) 0 var(--space-4); touch-action: none;
 }
-.wordSheet .pw { flex: 1; min-width: 0; font-size: var(--step-2); text-align: center; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.wordSheet .stepBtn, .wordSheet .moreBtn {
-  display: grid; place-items: center; flex: none; width: var(--tap); height: var(--tap); padding: 0;
-  background: transparent; color: var(--ink-2); border: 0; border-radius: var(--radius); font-size: 1.9rem; line-height: 1; transition: color var(--dur-quick) var(--ease);
-}
-.wordSheet .stepBtn:hover, .wordSheet .moreBtn:hover { color: var(--rubric); }
-.wordSheet .moreBtn svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
+.wordSheet .pw { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wordSheet .x { width: var(--tap); height: var(--tap); }
 .wordSheet .panelBody {
-  display: grid; align-content: start; gap: var(--space-4); flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
-  padding: var(--space-4) var(--space-4) calc(var(--space-5) + env(safe-area-inset-bottom, 0px)); touch-action: pan-y;
+  display: grid; align-content: start; gap: var(--space-3); flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: var(--space-1) var(--space-4) var(--space-3); touch-action: pan-y;
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
+.wordSheet .card { gap: var(--space-1); min-height: 0; }
+.wordSheet .cardMeaning { font-size: calc((var(--step-1) + var(--step-2)) / 2); }
+.wordSheet .moreBody { padding-top: var(--space-3); }
+/* the buttons keep to the sheet's foot, whatever the card's height */
+.wordSheet .cardRow { flex: none; padding: 0 var(--space-4) calc(var(--space-1) + env(safe-area-inset-bottom, 0px)); box-shadow: var(--rule-over); }
 .wordSheet .lsj { max-height: none; overflow: visible; }
-.wordSheet .quick { font: italic 500 var(--step-sub) / 1.35 var(--f-body); color: var(--ink); }
 /* the handle, where a finger can take the sheet */
 @media (max-width: 1099px) {
   .wordSheet .panelHead { cursor: grab; }
@@ -899,5 +909,5 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 /* a wide sheet keeps its lines to a reading measure, in the middle */
 @media (min-width: 761px) {
-  .wordSheet .panelHead, .wordSheet .panelBody { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
+  .wordSheet .panelHead, .wordSheet .panelBody, .wordSheet .cardRow { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
 }

@@ -1844,7 +1844,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         </PanelGuard>
       )}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
-        <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
+        <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} doc={doc} at={word?.at ?? null} onEchoes={word?.at ? () => openEchoes(word.at!, word.at!) : undefined} onClose={closeWord}
           onSentence={word?.at ? () => {
             const a = word.at!;
             setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);

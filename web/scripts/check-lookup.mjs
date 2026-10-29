@@ -9,6 +9,9 @@
 //   sheet  - a narrower window (1000 × 800), a phone (390 × 844), and two books side by side (1280 × 900): the look-up's sheet
 //            reaches over the word's line, when it opens low on the screen, at its full height, or on the next word; or it
 //            opens higher than 27% of the screen (the quiet desk: it rests at about a quarter)
+// Both lay out the first layer of the look-up (the quiet desk, ticket 05) and fail when, before "More about it" is pressed, it
+// shows a certainty badge, the lesson card, a credit (GLAUx, CC BY, "Analysis:"…) or the dictionary, when it has no meaning line,
+// or when "More about it" does not reveal the dictionary ("Dictionary · LSJ").
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -56,6 +59,40 @@ const boxes = (page) => page.evaluate((LOOKUP) => {
   return { bar: r(document.querySelector("[class*='rbar']")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
 }, LOOKUP);
 
+/**
+ * The first layer holds the card and nothing else: the dictionary form, one meaning, what the word does here and its grammar,
+ * with Previous, Next and More about it. No certainty badge, lesson card, credit or dictionary until More about it is pressed.
+ */
+async function firstLayer(page, tag) {
+  const look = page.locator(LOOKUP);
+  await look.getByText("Looking it up…").waitFor({ state: "detached", timeout: 20000 }).catch(() => found.push(`${tag}: the first layer was still "Looking it up…" after 20 s`));
+  const seen = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP);
+    return {
+      text: el?.textContent ?? "",
+      badges: el?.querySelectorAll(".tag").length ?? 0,
+      lessons: el?.querySelectorAll('a[href^="/academy/lesson/"], [class*="lessonLink"]').length ?? 0,
+      meaning: el?.querySelector('[class*="cardMeaning"]')?.textContent?.trim() ?? "",
+    };
+  }, LOOKUP);
+  if (seen.badges) found.push(`${tag}: the first layer shows a certainty badge before "More about it" is pressed`);
+  if (seen.lessons) found.push(`${tag}: the first layer shows the lesson card before "More about it" is pressed`);
+  const credit = seen.text.match(/GLAUx|CC BY|Analysis:|Keersmaekers|Dickinson College|Perseus Digital/);
+  if (credit) found.push(`${tag}: the first layer shows a credit ("${credit[0]}") before "More about it" is pressed`);
+  if (/Dictionary · LSJ/.test(seen.text)) found.push(`${tag}: the first layer shows the dictionary before "More about it" is pressed`);
+  if (!seen.meaning) found.push(`${tag}: the first layer has no meaning line`);
+}
+
+/** "More about it" reveals the rest, the dictionary included. */
+async function openMore(page, tag) {
+  const more = page.locator(LOOKUP).getByRole("button", { name: "More about it" });
+  if (!(await more.count())) { found.push(`${tag}: no "More about it" button`); return false; }
+  await more.click();
+  await page.waitForTimeout(700);
+  if (!/Dictionary · LSJ/.test((await page.locator(LOOKUP).textContent()) ?? "")) found.push(`${tag}: "More about it" did not reveal the dictionary ("Dictionary · LSJ")`);
+  return true;
+}
+
 // ---- margin: one book on a computer
 const inMargin = (tag, b) => {
   if (!b.look) { found.push(`margin ${tag}: no look-up opened`); return; }
@@ -90,6 +127,7 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     if (Math.abs(after.y - before.y) > 2) found.push(`margin ${tag}: the word moved ${Math.round(after.y - before.y)} px when it was looked up`);
     inMargin(tag, b);
     if (!b.look) continue;
+    await firstLayer(page, `margin ${tag}`);
     // the text scrolls under the window; the window stays where it is
     await page.mouse.move(200, h / 2);
     await page.mouse.wheel(0, 300);
@@ -100,6 +138,8 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
     if (await next.count()) { await next.click(); await page.waitForTimeout(900); inMargin(`${tag}, on the next word`, await boxes(page)); }
     else found.push(`margin ${tag}: no Next word button`);
+    // with the rest opened, the window still stays where it is
+    if (await openMore(page, `margin ${tag}`)) inMargin(`${tag}, with More about it open`, await boxes(page));
     await page.locator(LOOKUP).focus();
     await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
@@ -132,8 +172,9 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
   };
   const first = await check("as it opens");
   if (first?.look && first.look.height > h * 0.27 + 1) found.push(`sheet ${label}: it opens ${Math.round(first.look.height)} px tall, ${Math.round(first.look.height / h * 100)}% of the screen (it rests at 27% or less)`);
-  const more = page.locator(LOOKUP).getByRole("button", { name: "Show all of the look-up" });
-  if (await more.count()) { await more.click(); await page.waitForTimeout(700); await check("at its full height"); }
+  await firstLayer(page, `sheet ${label}`);
+  // "More about it" raises the sheet to all the room it has, and reveals the dictionary
+  if (await openMore(page, `sheet ${label}`)) await check("at its full height");
   const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
   if (await next.count()) { await next.click(); await page.waitForTimeout(900); await check("on the next word"); }
   await ctx.close();
@@ -144,4 +185,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");
+console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest behind More about it; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");

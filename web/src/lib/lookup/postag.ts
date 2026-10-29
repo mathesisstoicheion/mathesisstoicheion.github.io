@@ -38,3 +38,36 @@ export function readTag(tag: string): Parsing {
 
 /** Case, number and gender, e.g. for colour-coding by case (later phases). */
 export const caseOf = (tag: string) => CASE[tag[7]] ?? null;
+
+const capital = (s: string) => s.charAt(0).toLocaleUpperCase("en") + s.slice(1);
+
+/**
+ * The kind of word, as the look-up card says it (the quiet desk, ticket 05): "noun, feminine". Only a noun carries a gender of
+ * its own; an adjective or an article takes the gender of the word it goes with, so none is named for them.
+ */
+export function kindOf(tag: string): string {
+  const { pos } = readTag(tag);
+  const gender = tag[0] === "n" ? GENDER[tag[6]] : undefined;
+  return gender ? `${pos}, ${gender}` : pos;
+}
+
+/**
+ * The grammar of a form in plain words, with a capital to begin and no abbreviations, for the look-up card:
+ * "n-s---fa-" → "Accusative singular" (a noun's gender is in its kind, kindOf), "v2spma---" → "Present active imperative,
+ * 2nd person singular". A word with nothing to say (a particle, a preposition) gives "".
+ */
+export function plainGrammar(tag: string): string {
+  const [p, per, num, ten, moo, voi, gen, cas, deg] = tag.padEnd(9, "-").split("");
+  const join = (...x: (string | undefined)[]) => x.filter(Boolean).join(" ");
+  // a gender is named where it belongs to the form; "common" says only that the form does not tell
+  const gender = p === "n" || gen === "c" ? undefined : GENDER[gen];
+  const ofNoun = join(CASE[cas], NUMBER[num], gender);
+  let parts: string[];
+  if (p === "v") {
+    const verb = join(TENSE[ten], VOICE[voi]);
+    if (moo === "p") parts = [join(verb, "participle"), ofNoun];
+    else if (moo === "n") parts = [join(verb, "infinitive")];
+    else parts = [join(verb, MOOD[moo]), join(PERSON[per], NUMBER[num])];
+  } else parts = [join(ofNoun, DEGREE[deg]), PERSON[per] ?? ""];
+  return capital(parts.filter(Boolean).join(", "));
+}

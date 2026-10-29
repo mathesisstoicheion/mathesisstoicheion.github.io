@@ -8,6 +8,9 @@ import { lookUpWiktionary, type WiktResult, type WiktSense } from "@/lib/lookup/
 import { loadWordPack, analyse, type Analysis } from "@/lib/lookup/words";
 import { lsjEntries, citationHref, LSJ_CREDIT, type LsjEntry, type Seg } from "@/lib/lookup/lsj";
 import { readTag, caseOf } from "@/lib/lookup/postag";
+import { lookupCard, treeAt, SOURCE_NAMES, type InSentence } from "@/lib/lookup/card";
+import { loadSyntax } from "@/lib/syntax";
+import type { TeiDoc } from "@/lib/tei/types";
 import { lessonFor } from "@/lib/lookup/lesson-link";
 import { coreEntry, CORE_CREDIT, type CoreEntry } from "@/lib/lookup/core";
 import { placeNamed, shortName, type Place } from "@/lib/map";
@@ -180,8 +183,10 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
+export default function WordPanel({ word, ctx, doc = null, at = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null }: {
   word: string | null; ctx: WordContext | null; onClose: () => void; onEchoes?: () => void;
+  /** the text on screen and the word's place in it (its passage and its number among the passage's words), to find the word in the treebank */
+  doc?: TeiDoc | null; at?: { u: string; i: number } | null;
   /** show how the sentence this word is in is built */
   onSentence?: () => void;
   /** the next (1) or previous (-1) word of the passage */
@@ -196,18 +201,19 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const ref = useRef<HTMLElement>(null);
   const [snap, setSnap] = useState<Snap>("peek");
   // a look-up opened afresh starts at "peek"; moving word to word keeps the height chosen
+  // and "More about it" is shut again
   const [wasOpen, setWasOpen] = useState(false);
-  if (!!word !== wasOpen) { setWasOpen(!!word); if (word) setSnap("peek"); }
+  const [more, setMore] = useState(false);
+  if (!!word !== wasOpen) { setWasOpen(!!word); if (word) { setSnap("peek"); setMore(false); } }
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });
   const gestures = useSheetGestures(ref, { on: sheet, snap, setSnap, onClose, onStep: step, maxH });
-  // the short meaning near the top: in a sheet's first height and in a margin note, where the dictionary is further down
-  const brief = sheet || !!note;
   const [analysis, setAnalysis] = useState<Loaded<Analysis>>({ key: "", value: null });
   const [lsj, setLsj] = useState<Loaded<{ head: string; entries: LsjEntry[] }>>({ key: "", value: null });
   const [wikt, setWikt] = useState<Loaded<WiktResult>>({ key: "", value: null });
   const [full, setFull] = useState(false);
   const [core, setCore] = useState<Loaded<CoreEntry>>({ key: "", value: null });
+  const [tree, setTree] = useState<Loaded<InSentence>>({ key: "", value: null });
   const offline = typeof navigator !== "undefined" && navigator.onLine === false;
   const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
 
@@ -220,6 +226,18 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       .catch((e: Error) => { if (live) setAnalysis({ key, value: null, error: e.message }); });
     return () => { live = false; };
   }, [key, word, ctx]);
+
+  // 1b. where the word stands in the treebank's sentence, for what it does here (the quiet desk, ticket 05): only a text
+  // the treebank has gives a place, and a work with no sentence analyses gives none
+  useEffect(() => {
+    if (!word || !ctx || !doc || !at) return;
+    let live = true;
+    Promise.all([loadWordPack(ctx.work), loadSyntax(ctx.work)])
+      .then(([pack, syn]) => { if (live) setTree({ key, value: pack ? treeAt(pack, syn, doc, at.u, at.i) : null }); })
+      .catch((e: Error) => { if (live) setTree({ key, value: null, error: e.message }); });
+    return () => { live = false; };
+  }, [key, word, ctx, doc, at]);
+  const treeDone = !ctx || !doc || !at || tree.key === key;
 
   const lemma = analysis.key === key ? analysis.value?.lemma ?? null : null;
   const analysisDone = analysis.key === key;
@@ -276,33 +294,60 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
   const headword = lemma ?? l?.value?.head ?? w?.value?.title ?? lookupForm(word);
   const enc = encodeURIComponent;
   const parsing = a ? readTag(a.tag) : null;
+  // the first layer (the quiet desk, ticket 05): shown once everything it is made of has come, so that it does not change under the eye
+  const ready = !!l && lsjKey !== "" && core.key === lsjKey && treeDone;
+  const card = ready ? lookupCard({ analysis: a ?? null, tree: tree.key === key ? tree.value : null, core: core.value, lsj: l.value }) : null;
   // the lesson that explains this form, only when the analysis is of this very word (Phase 11)
   const lesson = a && a.where === "here" ? lessonFor(a.tag, a.lemma) : null;
-  const quick = (core.key === lsjKey && core.value?.def) || l?.value?.entries[0]?.s || "";
   // its case, in the colour and line that Colour by case gives it in the text (review fix list, slice 8)
   const wcase = a ? caseOf(a.tag) : null;
+  // the grammar, with its case in the colour and line that Colour by case gives it in the text
+  const inCase = (g: string) => {
+    const i = wcase ? g.toLowerCase().indexOf(wcase) : -1;
+    return !wcase || i < 0 ? g : <>{g.slice(0, i)}<span data-case={wcase} title="Its colour and line when Colour by case is on">{g.slice(i, i + wcase.length)}</span>{g.slice(i + wcase.length)}</>;
+  };
   // a meaning is given once (slice 8): LSJ's short definition is left out when it says what is already shown above it
   const same = (x: string) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
-  const above = new Set([brief && a && parsing ? quick : "", core.key === lsjKey ? core.value?.def ?? "" : ""].filter(Boolean).map(same));
+  const above = new Set([card?.meaning.source ? card.meaning.text : ""].filter(Boolean).map(same));
   const lsjShort = l?.value ? l.value.entries.filter((e) => full || !above.has(same(e.s || ""))) : [];
   // Wiktionary has nothing for this form: the section is left out rather than shown empty
   const wiktNone = !!w && !w.value && !w.error;
+  // Previous and Next, and More about it, under the card; in the sheet they keep to its foot, whatever the card's height
+  const cardRow = (
+    <div className={styles.cardRow}>
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><span aria-hidden="true">‹</span>{"\u00a0"}Previous</button>}
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next{"\u00a0"}<span aria-hidden="true">›</span></button>}
+      <button type="button" className={`text-btn ${styles.cardMore}`} aria-expanded={more} onClick={() => { setMore(!more); if (sheet) setSnap(more ? "peek" : "full"); }}>
+        {more ? "Less" : "More about it"}
+      </button>
+    </div>
+  );
 
   return (
     <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snap} data-overlay="" label={`Look-up: ${word}`}
       style={note ? { left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
       onClose={onClose} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
-        {step && <button type="button" className={`icon-btn ${styles.stepBtn}`} onClick={() => step(-1)} aria-label="Previous word">‹</button>}
-        <div className={styles.pw} lang="grc">{word}</div>
-        {step && <button type="button" className={`icon-btn ${styles.stepBtn}`} onClick={() => step(1)} aria-label="Next word">›</button>}
-        {sheet && snap !== "full" && (
-          <button type="button" className={`icon-btn ${styles.moreBtn}`} onClick={() => setSnap("full")} aria-label="Show all of the look-up">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
-          </button>
-        )}
+        <div className={styles.pw} lang="grc">{card ? card.lemma ?? lookupForm(word) : ""}</div>
       </>}>
       <div key={word} className={styles.panelBody} data-dir={dir} {...(sheet ? gestures.body : {})}>
+
+      {/* ------------------------------------------------ the first layer: the word, one meaning, plain grammar */}
+      <section className={styles.card} aria-busy={!ready}>
+        {!card && <p className={`muted ${styles.cardWait}`}>Looking it up…</p>}
+        {card && <>
+          <p className={styles.cardKind}>{card.kind ? `${card.kind} · you tapped ` : "You tapped "}<span lang="grc">{word}</span></p>
+          <p className={styles.cardMeaning} title={card.meaning.source ? `From ${SOURCE_NAMES[card.meaning.source]}` : undefined}>
+            {card.meaning.text}{card.meaning.source && <span className="visually-hidden"> (from {SOURCE_NAMES[card.meaning.source]})</span>}
+          </p>
+          {card.role && <p className={styles.cardRole}>{card.role.lead}{card.role.governor && <> <span lang="grc">{card.role.governor}</span></>}.</p>}
+          {card.grammar && <p className={`label ${styles.cardGrammar}`}>{inCase(card.grammar)}</p>}
+        </>}
+      </section>
+      {!sheet && cardRow}
+
+      {/* everything else the look-up has, behind "More about it" (until ticket 06 gives it its own design) */}
+      {more && <div className={styles.moreBody}>
 
       {/* ------------------------------------------------ here */}
       {ctx && <section className={styles.sec}>
@@ -315,8 +360,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
             <p className={styles.parse}><b>{parsing.pos}</b>{parsing.detail ? " · " : ""}{wcase && parsing.detail.includes(wcase)
               ? <>{parsing.detail.slice(0, parsing.detail.indexOf(wcase))}<span data-case={wcase} title="Its colour and line when Colour by case is on">{wcase}</span>{parsing.detail.slice(parsing.detail.indexOf(wcase) + wcase.length)}</>
               : parsing.detail}</p>
-            {/* phones: the short meaning shows at the sheet's first height too (the dictionary is further down) */}
-            {brief && quick && <p className={styles.quick}>{quick}</p>}
             {a.where === "here" && (a.manual
               ? <span className="tag well">Checked by hand · treebank</span>
               : <span className="tag debated">Automatic analysis · about 97% accurate</span>)}
@@ -366,7 +409,6 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
       {core.key === lsjKey && core.value && (
         <section className={styles.sec}>
           <h3 className="label">Core vocabulary · one of the commonest words (#{core.value.rank})</h3>
-          {!(brief && a && parsing && same(quick) === same(core.value.def)) && <p className={styles.gloss}>{core.value.def}</p>}
           <p className={styles.fine}><span lang="grc">{core.value.head}</span> · {core.value.pos}. {CORE_CREDIT}.</p>
         </section>
       )}
@@ -404,7 +446,10 @@ export default function WordPanel({ word, ctx, onClose, onEchoes, onSentence, on
         </ul>
       </section>
 
+      </div>}
+
       </div>
+      {sheet && cardRow}
     </SidePanel>
   );
 }

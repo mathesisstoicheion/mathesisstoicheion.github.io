@@ -32,6 +32,8 @@ test("clicking a word shows its analysis in this passage and its LSJ entry", asy
   await page.locator('[data-u="1.1"] [data-w="ἄειδε"]').click();
   const panel = page.getByRole("complementary", { name: "Look-up: ἄειδε" });
   await expect(panel).toContainText("ἀείδω");
+  await expect(panel).toContainText("sing");   // the first layer: the meaning
+  await panel.getByRole("button", { name: "More about it" }).click();   // the rest is behind it (the quiet desk, ticket 05)
   await expect(panel).toContainText("present active imperative");
   await expect(panel).toContainText("Checked by hand");
   await expect(panel).toContainText("sing");

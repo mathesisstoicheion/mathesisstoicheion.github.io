@@ -110,7 +110,7 @@ test("the look-up is a sheet: it opens at a peek, grows to half or all it may, s
   await expect.poll(height).toBe(Math.min(peek, (await room()) - 12));
   await clear();
   // all it may, by the button: as tall as it can be without reaching the line
-  await sheet.getByRole("button", { name: "Show all of the look-up" }).click();
+  await sheet.getByRole("button", { name: "More about it" }).click();
   await expect.poll(height).toBeGreaterThan(peek);
   await expect.poll(async () => (await room()) - (await height())).toBeLessThanOrEqual(14);
   await clear();
