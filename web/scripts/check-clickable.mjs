@@ -70,6 +70,9 @@ const LOOK = () => {
   for (const e of document.querySelectorAll("main a[href], main button, main summary, main [role='button'], main [role='link'], main [role='tab'], main [role='radio'], main [role='option'], main [tabindex='0'], footer a[href]")) {
     if (!shown(e) || e.closest("[aria-hidden='true'], .visually-hidden, .skip") || e.matches(":disabled, [aria-disabled='true']")) continue;
     if (e.matches("li[tabindex='0']") && !e.querySelector("a, button")) continue;   // a chart's row, to be read out, not clicked
+    // a word of the text being read: every word opens the look-up, so none is marked out (the quiet desk: the Greek reads as
+    // a printed page; the guide says so); the keyboard's place among them carries tabindex 0
+    if (e.matches("[data-w]") && e.closest("[data-reading]")) continue;
     const ok = framed(e) || underlined(e) || red(e) || marks(e) || drawn(e) || marker(e) || tab(e) || inFrame(e)
       || [...e.querySelectorAll("*")].some((c) => shown(c) && (framed(c) || drawn(c)));
     if (ok) continue;
