@@ -58,3 +58,15 @@ export const begun = (completed: Completed) => ({
   reading: READING_ITEMS.some((i) => completed[pathKey(i.id)]),
   grammar: LESSON_INFO.some((l) => completed[l.id]),
 });
+
+/**
+ * The one next step a page offers (the Learn page, Your desk, the end of Today's session): the reading path's next
+ * lesson, or once the path is finished the grammar course's; and, while the path leads, the grammar course's own next
+ * lesson beside it once that course has been begun. `main` is null when both tracks are finished.
+ */
+export function nextSteps(completed: Completed) {
+  const reading = nextReading(completed), grammar = nextGrammar(completed);
+  const main = reading ? { step: reading, track: TRACKS.reading.name } : grammar ? { step: grammar, track: TRACKS.grammar.name } : null;
+  const also = reading && begun(completed).grammar ? grammar : null;
+  return { main, also };
+}

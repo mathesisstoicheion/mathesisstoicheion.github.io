@@ -6,7 +6,7 @@ import { READING_ITEMS, READING_TOTAL, pathKey } from "@/data/reading-index";
 import { useAcademy, streak } from "@/lib/academy";
 import { dueRefreshes, readyCheckpoint } from "@/lib/refreshes";
 import styles from "./Academy.module.css";
-import { TRACKS, begun, nextGrammar, nextReading } from "@/data/tracks";
+import { TRACKS, begun, nextSteps } from "@/data/tracks";
 
 /**
  * Where the learner stands, and what to do next: the reading path's next lesson first, the way in (data/tracks.ts);
@@ -15,8 +15,6 @@ import { TRACKS, begun, nextGrammar, nextReading } from "@/data/tracks";
 export default function AcademyProgress() {
   const { completed, days, mastery } = useAcademy();
   const started = begun(completed);
-  const reading = nextReading(completed);
-  const grammar = nextGrammar(completed);
   const refresh = started.grammar ? dueRefreshes(mastery)[0] : undefined;
   const checkpoint = started.grammar ? readyCheckpoint(completed, mastery) : null;
   const read = READING_ITEMS.filter((i) => i.kind !== "practice" && completed[pathKey(i.id)]).length;
@@ -25,8 +23,7 @@ export default function AcademyProgress() {
   // the numbers are for a learner who has begun: a first visit would meet a row of zeros
   const any = started.reading || started.grammar;
   // the main step: the path, unless it is finished (then the course, if anything of it is left)
-  const main = reading ? { step: reading, track: TRACKS.reading.name } : grammar ? { step: grammar, track: TRACKS.grammar.name } : null;
-  const also = reading && started.grammar && grammar ? grammar : null;
+  const { main, also } = nextSteps(completed);
 
   return (
     <section className={`${styles.progress} ${any ? "" : styles.progressNew}`} aria-label="Your progress">

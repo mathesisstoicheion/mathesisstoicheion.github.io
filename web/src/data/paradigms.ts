@@ -352,3 +352,27 @@ export const PARADIGMS: Paradigm[] = [
 export function formsOf(cell: string): string[] {
   return cell.split(/,\s*/).flatMap((f) => (f.includes("(ν)") ? [f.replace("(ν)", ""), f.replace("(ν)", "ν")] : [f]));
 }
+
+/** How the Endings drill asks for one cell (components/academy/Practice.tsx), in a grammar's own words. */
+export type Ask =
+  | { kind: "form"; what: string; of: string; article?: boolean }   // "the genitive plural of φύλαξ"
+  | { kind: "person"; tense: string; person: string; of: string };  // "λύω in the aorist, for “we”"
+
+const GENDER: Record<string, string> = { "masc.": "masculine", "fem.": "feminine", "neut.": "neuter" };
+const NUMBER: Record<string, string> = { sg: "singular", pl: "plural" };
+
+export function askFor(p: Paradigm, r: number, c: number): Ask {
+  const row = p.rows[r], col = p.cols[c];
+  if (CASES.includes(row)) {
+    // a participle is asked for by its own first form (λύων), not by its verb (λύω), which has several
+    const of = p.group === "verb" ? formsOf(p.cells[0][0])[0] : p.lemma;
+    const g = col.match(/^(masc\.|fem\.|neut\.) (sg|pl)$/);
+    return { kind: "form", what: g ? `${GENDER[g[1]]} ${row} ${NUMBER[g[2]]}` : `${row} ${col}`, of, article: p.group === "article" };
+  }
+  // the infinitives: tenses down the side, voices across
+  if (!PERSONS.includes(row)) return { kind: "form", what: `${row} ${col} infinitive`, of: p.lemma };
+  // persons down the side, and across the top the tenses, or (the contract verbs) three verbs in the tense of the title
+  const tense = p.colLemmas ? (/imperfect/.test(p.title) ? "imperfect" : "present")
+    : /middle and passive/.test(p.title) && !/middle|passive/.test(col) ? `${col} middle and passive` : col;
+  return { kind: "person", tense, person: row, of: p.colLemmas?.[c] ?? p.lemma };
+}

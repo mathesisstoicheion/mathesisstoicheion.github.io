@@ -13,7 +13,7 @@ import { recentPositions, shownAt } from "@/lib/position";
 import { useAcademy } from "@/lib/academy";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import s from "./Home.module.css";
-import { TRACKS, begun, nextGrammar, nextReading } from "@/data/tracks";
+import { TRACKS, begun, nextSteps } from "@/data/tracks";
 
 const remember = (href: string) => { try { sessionStorage.setItem(RESTORE, pageKey(href)); } catch { /* ignore */ } };
 
@@ -45,9 +45,7 @@ export default function HomeDesk() {
 
   // the next lesson, the same as the Learn page's next step (data/tracks.ts): the reading path's, then the grammar course's
   const started = begun(completed);
-  const reading = nextReading(completed), grammar = nextGrammar(completed);
-  const main = reading ? { step: reading, track: TRACKS.reading.name } : grammar ? { step: grammar, track: TRACKS.grammar.name } : null;
-  const also = reading && started.grammar ? grammar : null;
+  const { main, also } = nextSteps(completed);
   const alsoRecent = (visits ?? []).slice(1).filter((v) => !v.href.startsWith("/read")).slice(0, 3);
   // the lesson "Carry on" already opens is not offered again as the next lesson
   const lastPath = last ? new URL(last.href, "http://x").pathname : undefined;

@@ -6,6 +6,7 @@ import Workout from "@/components/academy/Workout";
 import { CHECKPOINTS, CHECKPOINT_GREEK, checkpointById } from "@/data/checkpoints";
 import { LESSONS, lessonById } from "@/data/lessons";
 import { AREAS, trail } from "@/config/areas";
+import { TRACKS } from "@/data/tracks";
 import styles from "@/components/academy/Workout.module.css";
 
 export function generateStaticParams() {
@@ -27,9 +28,9 @@ export default async function CheckpointPage({ params }: PageProps<"/academy/che
   return (
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(28px, 5vw, 48px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 14, maxWidth: 820 }}>
-        <PageHead bare path={trail("study", `Checkpoint ${c.numeral}`)} title={<>Checkpoint {c.numeral}: {c.title}</>} greek={CHECKPOINT_GREEK}
+        <PageHead bare path={trail("study", { label: TRACKS.grammar.name, href: TRACKS.grammar.href }, `Checkpoint ${c.numeral}`)} title={<>Checkpoint {c.numeral}: {c.title}</>} greek={CHECKPOINT_GREEK}
           purpose={<>Fifteen questions over lessons {first} to {last}, mixed together, one try each. Testing the lessons side by side is what
-            makes them hold: pass it, and the whole stretch comes back for short refreshes like a single lesson.</>} />
+            makes them hold.</>} />
         <div className={`meander ${styles.pageIntro}`} aria-hidden="true" style={{ marginBlock: 6 }} />
         <Workout lesson={lessons.at(-1)!} mode="test" checkpoint={c} />
       </div>

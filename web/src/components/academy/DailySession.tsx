@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { dueRefreshes, type Due } from "@/lib/refreshes";
 import { useAcademy, streak } from "@/lib/academy";
 import { AREAS } from "@/config/areas";
+import { nextSteps } from "@/data/tracks";
 import { Endings, Parsing } from "./Practice";
 import styles from "./Academy.module.css";
 
@@ -40,9 +41,12 @@ export default function DailySession() {
   const ids: StepId[] = refresh ? ["refresh", "ending", "sentence", "done"] : ["ending", "sentence", "done"];
   const STEPS = ids.map((id) => (id === "refresh" && refresh ? { ...STEP.refresh, note: `${refresh.name}, ${refresh.title}, has come round again: a short test to keep it fresh.` } : STEP[id]));
   const markActive = useAcademy((s) => s.markActive);
+  // the last page offers the one next step the Learn page and Your desk offer (data/tracks.ts)
+  const { main } = nextSteps(useAcademy((s) => s.completed));
   const box = useRef<HTMLDivElement>(null);
   const page = useRef<HTMLElement>(null);
-  // the footer's Next or Skip steps back to a ghost button while the page itself shows a gold one (a button on the page itself)
+  // the footer's button is the page's main one only when it goes on from a page that is done ("Next"): "Skip" is always a
+  // quiet one, and either steps back to a quiet one while the page itself shows a main button
   const [gold, setGold] = useState(false);
   useEffect(() => {
     const el = page.current;
@@ -118,8 +122,9 @@ export default function DailySession() {
               <b>{streak(days)}</b> day{streak(days) === 1 ? "" : "s"} in a row. A few minutes each day is the surest way to learn a language.
             </p>
             <div className={styles.row}>
-              <Link className="btn ghost" href="/academy/practice" transitionTypes={["page-turn"]}>More practice</Link>
+              {main && <Link className="btn" href={main.step.href} transitionTypes={["page-turn"]}>Your next lesson: {main.step.title} <span className="arr" aria-hidden="true">→</span></Link>}
               <Link className="btn ghost" href={AREAS.library.href} transitionTypes={["page-turn"]}>Read something</Link>
+              <Link className="btn ghost" href="/academy/practice" transitionTypes={["page-turn"]}>More practice</Link>
             </div>
           </div>
         )}
@@ -128,8 +133,8 @@ export default function DailySession() {
       <div className={styles.sessionFoot}>
         {step > 0 && <button type="button" className="btn ghost" onClick={() => go(step - 1)}>Back</button>}
         {step < last
-          ? <button type="button" className={gold ? "btn ghost" : "btn"} onClick={() => go(step + 1)}>{done[step] ? "Next" : "Skip"} <span className="arr" aria-hidden="true">→</span></button>
-          : <Link className="btn" href={AREAS.study.href} transitionTypes={["page-turn"]}>Back to {AREAS.study.name}</Link>}
+          ? <button type="button" className={done[step] && !gold ? "btn" : "btn ghost"} onClick={() => go(step + 1)}>{done[step] ? "Next" : "Skip"} <span className="arr" aria-hidden="true">→</span></button>
+          : <Link className={gold ? "btn ghost" : "btn"} href={AREAS.study.href} transitionTypes={["page-turn"]}>Back to {AREAS.study.name}</Link>}
       </div>
     </div>
   );

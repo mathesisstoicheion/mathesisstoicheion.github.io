@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { LETTERS_STEP, PATH, PRACTICE, lineWords } from "./reading-path";
 import { READING_ITEMS, READING_TOTAL, readingNo } from "./reading-index";
 import { LESSON_INFO } from "./lesson-index";
-import { TRACKS, nextGrammar, nextReading } from "./tracks";
+import { TRACKS, nextGrammar, nextReading, nextSteps } from "./tracks";
 
 describe("the reading path's light index", () => {
   it("lists the letters, every lesson and every practice lesson, in the path's order, with the same titles and sizes", () => {
@@ -48,5 +48,20 @@ describe("the next step", () => {
     // the path's letters lesson is not the grammar course's first lesson
     expect(nextGrammar(at("read:letters"))?.href).toBe(`/academy/lesson/${LESSON_INFO[0].id}`);
     expect(nextGrammar(at(LESSON_INFO[0].id))?.href).toBe(`/academy/lesson/${LESSON_INFO[1].id}`);
+  });
+});
+
+describe("the one next step a page offers", () => {
+  const at = (...ids: string[]) => Object.fromEntries(ids.map((id) => [id, 1]));
+
+  it("is the reading path's next lesson, with the grammar course's beside it only once that course is begun", () => {
+    expect(nextSteps({})).toMatchObject({ main: { step: { href: "/academy/reading/letters" }, track: "Learn by reading" }, also: null });
+    expect(nextSteps(at(LESSON_INFO[0].id))).toMatchObject({ main: { step: { href: "/academy/reading/letters" } }, also: { href: `/academy/lesson/${LESSON_INFO[1].id}` } });
+  });
+
+  it("is the grammar course's once the path is finished, and nothing once both are", () => {
+    const path = READING_ITEMS.map((i) => `read:${i.id}`);
+    expect(nextSteps(at(...path))).toMatchObject({ main: { step: { href: `/academy/lesson/${LESSON_INFO[0].id}` }, track: "The grammar course" }, also: null });
+    expect(nextSteps(at(...path, ...LESSON_INFO.map((l) => l.id)))).toEqual({ main: null, also: null });
   });
 });

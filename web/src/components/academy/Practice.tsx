@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { PARADIGMS, formsOf } from "@/data/paradigms";
+import { PARADIGMS, askFor, formsOf, type Ask } from "@/data/paradigms";
 import { fold } from "@/lib/catalog";
 import { loadWordPack, type WordPack } from "@/lib/lookup/words";
 import { readTag } from "@/lib/lookup/postag";
@@ -15,7 +15,7 @@ import readerStyles from "@/components/reader/Reader.module.css";
 const shuffle = <T,>(a: T[]) => { const b = [...a]; for (let i = b.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [b[i], b[j]] = [b[j], b[i]]; } return b; };
 
 // ------------------------------------------------------------ 1. endings, from the checked tables
-interface EndingQ { prompt: string; lemma: string; answer: string; options: string[] }
+interface EndingQ { ask: Ask; answer: string; options: string[] }
 function makeEndingQ(): EndingQ {
   const pool = PARADIGMS.filter((p) => p.group !== "pronoun");
   const p = pool[Math.floor(Math.random() * pool.length)];
@@ -25,7 +25,7 @@ function makeEndingQ(): EndingQ {
   const answer = formsOf(p.cells[r][c])[0];
   const all = [...new Set(p.cells.flat().flatMap(formsOf))].filter((f) => fold(f) !== fold(answer));
   const options = shuffle([answer, ...shuffle(all).slice(0, 3)]);
-  return { prompt: `${p.rows[r]}, ${p.cols[c]}`, lemma: p.lemma, answer, options };
+  return { ask: askFor(p, r, c), answer, options };
 }
 
 /** `once`: a single question with no Next button (the daily session moves on by itself). */
@@ -39,7 +39,9 @@ export function Endings({ onScore, once = false }: { onScore: (ok: boolean) => v
   if (!q) return <p className="muted">Choosing a form…</p>;
   return (
     <div className={styles.drill}>
-      <p className={styles.drillQ}>What is the <b>{q.prompt}</b> of <span lang="grc" className={styles.inlineGr}>{q.lemma}</span>?</p>
+      <p className={styles.drillQ}>{q.ask.kind === "form"
+        ? <>What is the <b>{q.ask.what}</b> of {q.ask.article && "the article "}<span lang="grc" className={styles.inlineGr}>{q.ask.of}</span>?</>
+        : <>What is <span lang="grc" className={styles.inlineGr}>{q.ask.of}</span> in the <b>{q.ask.tense}</b>, for “{q.ask.person}”?</>}</p>
       <div className={styles.options}>
         {q.options.map((o) => (
           <button key={o} type="button" lang="grc" disabled={!!picked}
