@@ -9,6 +9,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { greekEditions, hasTranslation, type Catalog } from "@/lib/catalog";
 import { MEDALLIONS } from "@/data/medallions";
+import { TRACKS } from "@/data/tracks";
 import h from "@/components/home/Home.module.css";
 
 /** The cross that closes the page either side of ΤΕΛΟΣ, as the sample sets it ("✠"): drawn, since none of the three typefaces
@@ -62,7 +63,7 @@ export default function Home() {
             <h1 className={h.title} data-head-title="">Read the Greeks in <em>their own</em> words</h1>
             <p className={h.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
             <div className={h.btns}>
-              <Link className="btn" href="/academy/alphabet" transitionTypes={["page-turn"]}>Start with the letters</Link>
+              <Link className="btn" href={TRACKS.reading.first} transitionTypes={["page-turn"]}>Start with the letters</Link>
               <Link className="btn ghost" href="/library" transitionTypes={["page-turn"]}>Open the library</Link>
             </div>
           </div>

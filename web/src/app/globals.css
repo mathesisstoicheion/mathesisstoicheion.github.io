@@ -201,6 +201,9 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
 .btn.small { padding: 9px 13px; gap: var(--space-2); font-size: var(--step--2); min-height: 0; }
+/* Greek on a button keeps its own letters: not spaced out like the capitals beside it, and the size at which its small
+   letters stand as tall as those capitals (the lessons' "Show: μηδὲν") */
+.btn [lang="grc"] { letter-spacing: 0; font-size: var(--step-0); }
 /* buttons side by side, as the page's ways on */
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }

@@ -7,7 +7,8 @@
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
 import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, READING_TOTAL, type PathWord } from "@/data/reading-path";
-import { wordsLabel } from "@/data/tracks";
+import { READING_ITEMS } from "@/data/reading-index";
+import { TRACKS, nextReading, wordsLabel } from "@/data/tracks";
 import { useAcademy } from "@/lib/academy";
 import Rich from "./Rich";
 import { AlphabetFold } from "./PathStepView";
@@ -16,23 +17,18 @@ import w from "./Workout.module.css";
 
 export { pathKey, passageKey };
 
-/** The path in order: the letters, then each lesson, with a practice lesson after every third. */
-const ITEMS = [
-  { id: LETTERS_STEP.id, kind: "letters" as const },
-  ...PATH.flatMap((s) => [
-    { id: s.id, kind: "lesson" as const },
-    ...PRACTICE.filter((p) => p.after === s.id).map((p) => ({ id: p.id, kind: "practice" as const })),
-  ]),
-];
+/** The path in order: the letters, then each lesson, with a practice lesson after every third (data/reading-index.ts). */
+const ITEMS = READING_ITEMS;
 
 const done = (mark: string) => <span className={`${w.mark} ${w.markPassed}`} title={mark}>✓<span className="visually-hidden">{mark}</span></span>;
 
 function PathList({ completed }: { completed: Record<string, number> }) {
-  const nextId = ITEMS.find((it) => !completed[pathKey(it.id)])?.id;
+  // the one next step, the same as the Academy's button and Your desk (data/tracks.ts)
+  const next = nextReading(completed)?.href;
   return (
     <ol className={styles.path}>
       {ITEMS.map((it) => {
-        const lit = it.id === nextId;
+        const lit = `/academy/reading/${it.id}` === next;
         const style = lit ? { backgroundColor: "var(--slab-lit)" } : undefined;
         const nextMark = <span className="label" style={{ color: "var(--accent)" }}>Next</span>;
         if (it.kind === "letters") return (
@@ -107,7 +103,7 @@ function Completed({ completed }: { completed: Record<string, number> }) {
   if (lessons.length === 0) return (
     <p className={styles.lp}>
       Nothing here yet. When you finish a lesson it appears here, with the words and grammar it taught you, and a count of
-      everything you have read. <Link href={`/academy/reading/${PATH[0].id}`} transitionTypes={["page-turn"]}>Start with lesson 1 →</Link>
+      everything you have read. <Link href={TRACKS.reading.first} transitionTypes={["page-turn"]}>Start with lesson 1, {LETTERS_STEP.title.toLowerCase()} →</Link>
     </p>
   );
   const outgrown = OUTGROWN.filter((o) => lessons.length >= o.after);

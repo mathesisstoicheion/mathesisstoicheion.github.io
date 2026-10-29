@@ -10,10 +10,11 @@ import { useEffect } from "react";
 import { useSettings, type Settings } from "@/lib/settings";
 import { markVisitor, saveStart, type StartChoice } from "@/lib/visitor";
 import { inviteSeen } from "@/components/guide/GuideInvite";
+import { TRACKS } from "@/data/tracks";
 import h from "./Home.module.css";
 
 const PATHS: { id: StartChoice; n: string; head: string; text: string; href: string; go: string; settings: Partial<Settings> }[] = [
-  { id: "none", n: "I", head: "I know no Greek.", text: "Begin with the letters and their sounds. In the grammar course, a real line of Homer by the end of lesson 1.", href: "/academy/alphabet", go: "Meet the alphabet",
+  { id: "none", n: "I", head: "I know no Greek.", text: "Begin with the letters, sounding out names you already know. In lesson 2 you read your first real line, a saying carved at Delphi.", href: TRACKS.reading.first, go: "Start the first lesson",
     settings: { translit: true } },
   { id: "some", n: "II", head: "I know a little.", text: "Pick up the lessons where you are, and read real texts with help one tap away.", href: "/academy", go: "Open the Academy",
     settings: { translit: false } },

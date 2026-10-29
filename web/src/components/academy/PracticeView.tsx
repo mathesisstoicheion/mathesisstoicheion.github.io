@@ -10,7 +10,7 @@ import { PATH, pathKey, pathLevel, knownBefore, type PathPractice, type PathWord
 import { useAcademy } from "@/lib/academy";
 import { useSettings, prefersReducedMotion } from "@/lib/settings";
 import Rich from "./Rich";
-import { MatchCheck, UnitView, sentenceUnits, knownByUnit, AlphabetFold } from "./PathStepView";
+import { MatchCheck, UnitHead, UnitView, sentenceUnits, knownByUnit, readerHref, AlphabetFold } from "./PathStepView";
 import styles from "./Academy.module.css";
 
 export default function PracticeView({ practice }: { practice: PathPractice }) {
@@ -24,8 +24,9 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
     return ws.filter((x, i) => ws.findIndex((y) => y.lemma === x.lemma) === i);
   }, [lessons]);
   const all = useMemo(() => sentenceUnits(practice.lines,
-    (si, pi) => `Line ${si + 1} of ${practice.lines.length}: ${practice.lines[si].label}${practice.lines[si].pieces.length > 1 ? `, piece ${pi + 1} of ${practice.lines[si].pieces.length}` : ""}`,
-    (si) => practice.lines[si].translator, "l"), [practice]);
+    (si, pi) => `Line ${si + 1} of ${practice.lines.length}${practice.lines[si].pieces.length > 1 ? `, piece ${pi + 1} of ${practice.lines[si].pieces.length}` : ""}`,
+    (si) => practice.lines[si].translator,
+    (si) => ({ label: practice.lines[si].label, href: readerHref(practice.lines[si].work, practice.lines[si].ref) }), "l"), [practice]);
   const known = useMemo(() => knownByUnit(all, knownBefore(after + 1)), [all, after]);
   const pool = useMemo(() => [...cards, ...all.flatMap((x) => x.words)].map((x: PathWord) => x.here), [cards, all]);
   const [u, setU] = useState(-1); // -1: the check
@@ -52,18 +53,17 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
       <AlphabetFold />
 
       <figure ref={box} className={`${styles.real} ${styles.cm}`} style={{ scrollMarginTop: 90 }}>
-        <figcaption className={styles.realHead}>
-          <span className="label">{unit ? unit.label : "Check yourself: the words of these three lessons"}</span>
-          {line && <Link className="chip" href={`/read?w=${line.work}&at=${line.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>}
-        </figcaption>
+        {unit && !atEnd
+          ? <UnitHead unit={unit} />
+          : <figcaption className={styles.realHead}><span className="label">{atEnd ? "The practice, done" : "Check yourself: the words of these three lessons"}</span></figcaption>}
         {u === -1 ? (
           <MatchCheck cards={cards} pool={pool} onNext={() => setU(0)} nextLabel="On to the lines →" doneText="Now read them in other real lines." />
         ) : atEnd ? (
           <div style={{ display: "grid", gap: "var(--space-3)" }}>
             <p className={styles.good}>You have finished this practice.</p>
             <p className={styles.lp}>Now read each line where it stands, in the reader, with the sentences around it. Tap any word you forget.</p>
-            {practice.lines.map((l) => (
-              <Link key={l.ref + l.work} className="btn ghost" style={{ justifySelf: "start" }} href={`/read?w=${l.work}&at=${l.ref}`} transitionTypes={["page-turn"]}>{l.label} in the reader →</Link>
+            {practice.lines.map((l, i) => (
+              <Link key={l.ref + l.work} className={i === 0 ? "btn" : "btn ghost"} style={{ justifySelf: "start" }} href={readerHref(l.work, l.ref)} transitionTypes={["page-turn"]}>{l.label} in the reader →</Link>
             ))}
           </div>
         ) : (
@@ -75,11 +75,16 @@ export default function PracticeView({ practice }: { practice: PathPractice }) {
         )}
       </figure>
 
+      {/* the way on: a button once the practice is done; before that only a quiet way past (as on a lesson) */}
       <footer className={styles.lessonEnd}>
         {done ? <p className={styles.good}>You have done this practice.</p> : <span />}
-        {next
-          ? <Link className="btn ghost" href={`/academy/reading/${next.id}`} transitionTypes={["page-turn"]}>Next lesson: {next.title} →</Link>
-          : <Link className="btn ghost" href="/academy/reading#completed" transitionTypes={["page-turn"]}>See how far you have come →</Link>}
+        {(() => {
+          const on = next ? { href: `/academy/reading/${next.id}`, text: `Next lesson: ${next.title}`, skip: `Skip to the next lesson: ${next.title}` }
+            : { href: "/academy/reading#completed", text: "See how far you have come", skip: "Skip to how far you have come" };
+          return done || atEnd
+            ? <Link className="btn ghost" href={on.href} transitionTypes={["page-turn"]}>{on.text} →</Link>
+            : <Link className={styles.skip} href={on.href} transitionTypes={["page-turn"]}>{on.skip} →</Link>;
+        })()}
       </footer>
     </article>
   );

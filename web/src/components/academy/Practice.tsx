@@ -30,8 +30,13 @@ function makeEndingQ(): EndingQ {
 
 /** `once`: a single question with no Next button (the daily session moves on by itself). */
 export function Endings({ onScore, once = false }: { onScore: (ok: boolean) => void; once?: boolean }) {
-  const [q, setQ] = useState<EndingQ>(makeEndingQ);
+  // the question is drawn at random, so it is drawn in the browser after the first paint: the page built ahead of time
+  // cannot know it, and a different question there would break the page as it loads
+  const [q, setQ] = useState<EndingQ | null>(null);
   const [picked, setPicked] = useState<string | null>(null);
+  // eslint-disable-next-line react-hooks/set-state-in-effect -- drawn once in this browser after the first paint
+  useEffect(() => { setQ(makeEndingQ()); }, []);
+  if (!q) return <p className="muted">Choosing a form…</p>;
   return (
     <div className={styles.drill}>
       <p className={styles.drillQ}>What is the <b>{q.prompt}</b> of <span lang="grc" className={styles.inlineGr}>{q.lemma}</span>?</p>

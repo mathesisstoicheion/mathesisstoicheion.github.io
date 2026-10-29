@@ -15,6 +15,11 @@
 .seg button:hover:not([aria-checked="true"]) { color: var(--rubric); }
 .seg button:focus-visible { outline-offset: -4px; }  /* the frame clips anything outside it */
 .seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
+/* a small phone: a row of two or three choices stands as one even row, each choice an equal part of it with its words
+   on two lines if need be, rather than two choices and a third alone under them (Classical Attic, Erasmian, Modern Greek) */
+@media (max-width: 560px) {
+  .seg:not(:has(> :nth-child(4))) { display: inline-grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); }
+}
 
 /* stroke drawing */
 .stroke { margin: 0; display: grid; gap: 10px; justify-items: center; }
@@ -211,7 +216,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 }
 
 /* lessons */
-.lesson { display: grid; grid-template-columns: minmax(0, 1fr); gap: 26px; }
+.lesson { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
 .lp { font-size: var(--step-sub); line-height: 1.75; max-width: 70ch; }
 .tipBox { display: grid; gap: 6px; padding: var(--space-1) 0 var(--space-1) 18px; box-shadow: var(--inlay-left); max-width: 70ch; }
 .made { display: grid; gap: var(--space-2); padding: var(--space-4) 18px; box-shadow: var(--field-edge); border-radius: var(--radius); }
@@ -255,7 +260,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
 .revealed .revealAns { color: var(--ink); }
 .revealed .revealText { visibility: visible; animation: ink-in var(--dur) var(--ease) backwards; }
 .realList { display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; }
-.real { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); padding: clamp(var(--space-4), 3vw, 26px); box-shadow: var(--field-edge); }
+.real { margin: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-3); padding: clamp(var(--space-4), 3vw, var(--space-5)); box-shadow: var(--field-edge); }
 .realHead { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-2); align-items: center; }
 .realHead a { text-decoration: none; }
 .realBody { display: grid; grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--space-5); }
@@ -368,7 +373,7 @@ a.card:hover h3, a.card:focus-visible h3 { color: var(--rubric); }
     padding: calc(10px + env(safe-area-inset-top, 0px)) max(var(--space-4), env(safe-area-inset-right, 0px)) 0 max(var(--space-4), env(safe-area-inset-left, 0px));
   }
   .sessionFoot {
-    position: sticky; bottom: 0; margin-inline: -16px; padding: 10px var(--space-4) calc(10px + env(safe-area-inset-bottom, 0px));
+    position: sticky; bottom: 0; margin-inline: calc(-1 * var(--space-4)); padding: 10px var(--space-4) calc(10px + env(safe-area-inset-bottom, 0px));
     background: var(--bg); box-shadow: var(--cut-over);
   }
   .sessionFoot > * { flex: 1; justify-content: center; min-height: 52px; }
@@ -603,7 +608,8 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .cmW { background: none; border: 0; padding: 0 var(--space-1); margin-inline: calc(-1 * var(--space-1)); font: inherit; color: inherit; min-height: var(--tap); }
 .cmW[data-new] { text-decoration: underline dotted var(--ink-3); text-underline-offset: 0.25em; }
 .cmGloss { display: inline-grid; justify-items: center; gap: 2px; }
-.cmGloss > [lang="en"] { font: italic 400 var(--step--1)/1.3 var(--f-body); color: var(--rubric); }
+/* what is written small under a word of the line: its sound in Latin letters (the letters stage), its meaning (building it) */
+.cmUnder { font: italic 400 var(--step--1)/1.3 var(--f-body); color: var(--rubric); }
 .cmAsk { display: grid; gap: var(--space-3); }
 .cmNotes { border-top: 1px solid var(--ink); padding-top: var(--space-3); columns: 2 18em; column-gap: var(--space-6); font-size: var(--step-0); }
 .cmNote { margin: 0 0 var(--space-2); break-inside: avoid; }
@@ -616,3 +622,42 @@ a.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .cm .revealCard { border: 0; border-top: 1px solid var(--rule); border-radius: 0; padding: var(--space-3) 0; }
 .cm .revealed { background: transparent; box-shadow: none; }
 .cm .revealed .revealText { font-style: italic; }
+/* closed, a translation says what tapping does, in the reader's words, as a link would */
+.revealAsk { align-self: start; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; }
+
+/* a lesson's sheet, stage by stage: the line first, then what to do with it, then the one button that goes on */
+.stage { display: grid; gap: var(--space-3); align-content: start; }
+/* the stages as parts along a rule, counted like Today's session's pages: passed and open in red, the rest faint. Each is
+   a finger's height; on a phone the short names, so the four stand in one row */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(var(--n, 4), minmax(0, 1fr)); gap: var(--space-2); }
+.steps li { min-width: 0; }
+.steps button {
+  position: relative; width: 100%; min-height: var(--tap); display: block; padding: var(--space-2) 0 0; border: 0; border-top: 3px solid var(--rule);
+  border-radius: 0; background: none; text-align: start; color: var(--ink-2);
+  font: 500 var(--step--2) / 1.25 var(--f-label); letter-spacing: 0.12em; text-transform: uppercase;
+  transition: color var(--dur-quick) var(--ease);
+}
+.steps [data-done] button, .steps button[aria-current] { border-top-color: var(--accent); }
+.steps button[aria-current] { color: var(--ink); }
+.steps button:disabled { color: var(--ink-3); cursor: default; }
+.steps button:not(:disabled):not([aria-current]):hover { color: var(--rubric); }
+.stepNo { font-family: var(--f-title); letter-spacing: 0; color: var(--accent); }
+.steps button:disabled .stepNo { color: inherit; }
+.stepShort { display: none; }
+/* (the long name is still what a screen reader says: it is only hidden from sight, as .visually-hidden does) */
+@media (max-width: 560px) {
+  .stepLong { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .stepShort { display: inline; }
+}
+/* the line's own letters, in the order they come: the same pieces of type as the alphabet, as many as the line has */
+.lineLetters { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.lineLetters .tile { min-width: 4.5rem; }
+/* a letter a beginner could misread (explained in Good to know): its name in red */
+.tile[data-tricky] .tileName { color: var(--rubric); }
+/* the sheet's source, as a book cites it: a quiet link into the reader */
+.realHead .source { font-size: var(--step--1); color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
+.realHead .source:hover { color: var(--rubric); }
+.source span[aria-hidden] { color: var(--accent); }
+/* past a lesson not yet read: a quiet line, not a second button beside the lesson's own */
+.skip { margin-left: auto; font-size: var(--step--1); color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--ink-3); text-underline-offset: 3px; }
+.skip:hover { color: var(--rubric); }

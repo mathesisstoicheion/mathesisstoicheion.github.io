@@ -6,6 +6,7 @@ import { AREAS, FORUM_OPEN, type AreaId } from "@/config/areas";
 import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/GuideChapters";
 import styles from "@/components/guide/Guide.module.css";
 import { GuideSeen } from "@/components/guide/GuideChapters";
+import { TRACKS } from "@/data/tracks";
 
 export const metadata: Metadata = {
   title: "How to use the site",
@@ -18,10 +19,10 @@ const ALL_CHAPTERS: Chapter[] = [
   {
     id: "learn", title: "Learn Greek", place: place("study"),
     text: [
-      "Start with the alphabet, even if you know no Greek at all: twenty-four letters, each with its name and its sound.",
-      "Then short lessons, each built on real sentences from the texts, and a few minutes' practice a day that brings back the words you are learning just as you would start to forget them.",
+      "Start with the first lesson, even if you know no Greek at all: the twenty-four letters, and six names you already know to sound out. In the next lesson you read your first real line, a saying carved at Delphi.",
+      "Every lesson after it is one real line from the texts: its letters, its words, how it is built, and then you read it yourself, in the reader. A practice lesson comes after every three. The grammar course, the second track, teaches the grammar in order, each lesson with a short test.",
     ],
-    also: { label: "The alphabet", href: "/academy/alphabet" },
+    also: { label: "The first lesson", href: TRACKS.reading.first },
   },
   {
     id: "find", title: "Find a text", place: place("library"),
@@ -70,8 +71,8 @@ const ALL_CHAPTERS: Chapter[] = [
   {
     id: "search", title: "Search everything", place: place("search"),
     text: [
-      "The Oracle searches every text at once: an exact Greek form, a dictionary word in all its forms, or the English translations.",
-      "See the results by work, as a concordance (a list with every match lined up down the middle), or as statistics by author and by century.",
+      "The Oracle searches every text at once: a Greek word as it is printed, a dictionary word in all its forms (narrowed by its grammar if you like), the English translations, or sentences by how they are built, such as the genitive absolute. Type in Greek letters, Latin letters or Beta Code.",
+      "See the results by work, as a concordance (a list with every match lined up down the middle), or as statistics by author and by century. It searches your own notes and bookmarks too.",
     ],
   },
   {
@@ -85,7 +86,7 @@ const ALL_CHAPTERS: Chapter[] = [
   {
     id: "settings", title: "Make it yours",
     text: [
-      "Search from any page. In Settings choose light or dark, the typefaces, the size of the Greek and the spacing of the lines, or less animation.",
+      "Search from any page. In Settings choose the page (Paper, Night, or as your device is set), the Greek typeface, the size of the Greek and the spacing of the lines.",
       "Keep texts on your device to read without a connection, in the Scroll Case. An account is optional: it keeps your notes and progress in step across your devices.",
     ],
     also: { label: "The Scroll Case", href: AREAS.downloads.href },
@@ -103,7 +104,7 @@ export default function GuidePage() {
           purpose={<>{FORUM_OPEN ? "Ten" : "Nine"} short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.</>}
           action={<div className={styles.fork}>
-            <Link className="btn" href="/academy?tour=learn">Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
+            <Link className="btn" href={TRACKS.reading.first}>Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
             <Link className="btn ghost" href="/library?tour=find">Want to read straight away? <span className="arr" aria-hidden="true">→</span></Link>
           </div>}>
           <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>

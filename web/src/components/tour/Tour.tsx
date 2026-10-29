@@ -10,6 +10,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { CHAPTER_ORDER, TOURS, type Target } from "@/lib/tours";
 import { holdBars } from "@/lib/header";
+import { TRACKS } from "@/data/tracks";
 import { markTourDone } from "@/lib/tour-progress";
 import styles from "./Tour.module.css";
 
@@ -258,7 +259,7 @@ export default function Tour() {
                   <div className={styles.acts}>
                     <Link className="btn small ghost" href="/guide">The Guide</Link>
                     <Link className="btn small ghost" href="/read?w=tlg0012.tlg001&at=1.1">Open the Iliad</Link>
-                    <Link className="btn small" href="/academy/alphabet">Begin with the alphabet <span className="arr" aria-hidden="true">→</span></Link>
+                    <Link className="btn small" href={TRACKS.reading.first}>Start the first lesson <span className="arr" aria-hidden="true">→</span></Link>
                   </div>
                 </>
               )}
