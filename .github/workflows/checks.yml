@@ -54,6 +54,15 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-errors.mjs http://localhost:3100
+      - name: A row of choices holds together on a phone, with no choice alone on its line
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-choices.mjs http://localhost:3100
+      # (the shares of a text need the word packs, which are not served here; the check says so and checks the rest)
+      - name: What the Vocabulary page marks as in your lessons, and the texts it offers, are true
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: npx tsx scripts/check-vocabulary.mts http://localhost:3100
       # the reader's four tours (read, word, aids, keep) join this list when the reader redesign brings them up to date
       - name: Every step of the Guide's tours finds its control, on a phone and a computer
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
