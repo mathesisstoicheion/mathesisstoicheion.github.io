@@ -45,3 +45,27 @@
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-0); }
 /* the small print at the foot of the page (ExploreCredit) */
 .credit { margin: 32px 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }
+
+/* Make and play (MakeAndPlay): the lyre and the pot, two cards under a hairline like the three above, each with its
+   picture to the left in the same hairline frame; drawn as a black-figure painter drew, the shapes in the gloss (the
+   page's ink), the lines scratched through it to the clay (the paper), one line in added red. Two side by side; one
+   above the other on a phone, where the picture stays small beside its words. */
+.make { display: grid; gap: 10px; }
+.make ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
+@media (max-width: 760px) { .make ul { grid-template-columns: 1fr; } }
+.makeCard {
+  display: grid; grid-template-columns: clamp(88px, 10vw, 136px) minmax(0, 1fr); align-items: center; gap: var(--space-4);
+  height: 100%; padding-block: 14px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
+}
+.makeCard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.makeCard .txt { padding: 0 2px; }
+.makeCard:hover .txt b, .makeCard:focus-visible .txt b { color: var(--rubric); }
+.fig { display: block; width: 100%; height: auto; aspect-ratio: 1; padding: var(--space-3); border: 1px solid var(--rule); background: var(--bg-2); }
+.gloss { fill: var(--ink); }
+.handle { fill: none; stroke: var(--ink); stroke-width: 0.068; stroke-linecap: round; }
+.clay { fill: var(--bg-2); }
+.scratch, .scratch line { fill: none; stroke: var(--bg-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.addedRed { stroke: var(--rubric); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.strings line { stroke: var(--ink-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+/* the shell's rim of dots, scratched through the gloss */
+.dots { fill: none; stroke: var(--bg-2); stroke-width: 0.012; stroke-linecap: round; stroke-dasharray: 0 0.03; }

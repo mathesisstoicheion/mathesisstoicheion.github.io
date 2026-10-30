@@ -2,7 +2,8 @@
 /**
  * The Painted Stoa's front, set as a printed index: one part per category, each listing its entries (and one more,
  * "Reference", listing the library's own reference pages), with a search across every entry directly on top of it, whose
- * results stand in the index's place while a search is typed, and below it the entry of the day with its photograph.
+ * results stand in the index's place while a search is typed, and below it the entry of the day with its photograph (its
+ * title is the one link to it, with its red arrow).
  * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
  * search also looks through, are fetched only when a search begins, so the page itself stays light.
  */
@@ -78,7 +79,8 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             return (
               <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
                 <div className={styles.panelIn}>
-                  <h2>{c.href ? <Link href={c.href} transitionTypes={["page-turn"]}>{c.title}</Link> : c.title}</h2>
+                  {/* a part's title is not a link: the Archaeology room is the card at the head of the page (ExploreLead) */}
+                  <h2>{c.title}</h2>
                   <p className={styles.blurb}>{c.blurb}</p>
                   {es.length > 0
                     ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
@@ -107,7 +109,6 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             <p className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</p>
             <h2 id="featured-h"><Link href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>{featured.title}</Link></h2>
             <p className={styles.featuredHook}>{text(featured.hook)}</p>
-            <Link className={styles.featuredGo} href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>Read the entry →</Link>
           </div>
           {featured.image && <Plate id={featured.image} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
         </section>

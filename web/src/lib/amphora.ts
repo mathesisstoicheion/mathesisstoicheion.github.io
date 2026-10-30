@@ -63,6 +63,14 @@ export const BARE_DESIGN: Design = {
   v: 1, style: "black", neck: "clay", shoulder: "clay", frieze: "clay", lower: "clay", foot: "clay", words: ["", ""], strokes: [], cracks: [],
 };
 
+/** The neck-amphora's outline, [radius, height] from the middle of its foot (height 0) over the lip into its mouth, which
+ *  is turned on the lathe (components/Amphora.tsx) and drawn in the Painted Stoa (components/stoa/ExploreLead.tsx); and
+ *  the line each handle follows, from the neck down to the shoulder. */
+export const PROFILE: readonly (readonly [number, number])[] = [[0.001, 0], [0.34, 0], [0.35, 0.05], [0.27, 0.11], [0.21, 0.17],
+  [0.26, 0.28], [0.42, 0.5], [0.56, 0.78], [0.63, 1.02], [0.62, 1.2], [0.53, 1.4], [0.38, 1.56], [0.25, 1.64], [0.21, 1.72],
+  [0.21, 1.86], [0.24, 1.97], [0.31, 2.02], [0.32, 2.08], [0.27, 2.1], [0.22, 2.06], [0.2, 1.98]];
+export const HANDLE: readonly (readonly [number, number])[] = [[0.2, 1.82], [0.42, 1.86], [0.58, 1.74], [0.57, 1.56], [0.47, 1.47]];
+
 export const WORD_MAX = 14;
 /** beyond this many stroke points the vase is too big to keep in the browser (about 1.5 MB) */
 export const MAX_POINTS = 240_000;

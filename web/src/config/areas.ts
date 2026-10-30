@@ -88,7 +88,7 @@ export const AREAS: Record<AreaId, Area> = {
   lyre: {
     id: "lyre", parent: "wiki", name: "The lyre", greek: "Λύρα", door: "Lyre", icon: "lyre", href: "/stoa/lyre",
     origin: "The Greeks' stringed instrument for song: strings stretched from a sound box, often a tortoise shell, to a crossbar held up by two arms.",
-    fit: "Play it, and play along with the melodies that survive in the Greeks' own musical notation.", phase: 7,
+    fit: "Play it, play along with the melodies that survive in the Greeks' own musical notation, and share what you play.", phase: 7,
   },
   // the potters': a neck-amphora to turn and paint, on a page of its own so it can be found and shared (the owner,
   // 2026-10-30: "every thought and creation: Shareable, including making a pot")

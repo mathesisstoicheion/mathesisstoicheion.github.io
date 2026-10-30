@@ -9,7 +9,7 @@ import { decodeDesign, fittingCode } from "@/lib/amphora-link";
 import { share, type Shared } from "@/lib/share";
 import { useSettings, prefersReducedMotion } from "@/lib/settings";
 import {
-  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, MAX_CRACKS, MAX_POINTS, MORE_COLOURS, PALETTE, WORD_MAX,
+  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, HANDLE, MAX_CRACKS, MAX_POINTS, MORE_COLOURS, PALETTE, PROFILE, WORD_MAX,
   loadDesign, pointCount, saveDesign, toGreekCaps, type Band, type Crack, type Design, type Frieze, type Stroke,
 } from "@/lib/amphora";
 import { makePainter, TW, TH, type Rect } from "./amphora/paint";
@@ -317,11 +317,8 @@ export default function Amphora() {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
 
-      // Profile of a neck-amphora: [radius, height], foot at y = 0.
-      const prof: [number, number][] = [[0.001, 0], [0.34, 0], [0.35, 0.05], [0.27, 0.11], [0.21, 0.17], [0.26, 0.28], [0.42, 0.5],
-        [0.56, 0.78], [0.63, 1.02], [0.62, 1.2], [0.53, 1.4], [0.38, 1.56], [0.25, 1.64], [0.21, 1.72], [0.21, 1.86], [0.24, 1.97],
-        [0.31, 2.02], [0.32, 2.08], [0.27, 2.1], [0.22, 2.06], [0.2, 1.98]];
-      const spline = new THREE.SplineCurve(prof.map(([x, y]) => new THREE.Vector2(x, y)));
+      // the neck-amphora's outline (lib/amphora.ts), turned on the lathe
+      const spline = new THREE.SplineCurve(PROFILE.map(([x, y]) => new THREE.Vector2(x, y)));
       const pts = spline.getSpacedPoints(360);
       const geo = new THREE.LatheGeometry(pts, 300);
       // the surface pictures are uploaded the right way up (so a part of one can be updated): turn the mapping to match
@@ -359,7 +356,7 @@ export default function Amphora() {
       const hMat = new THREE.MeshStandardMaterial({ color: 0x15100c, roughness: 0.25, envMapIntensity: 0.65 });
       const handles: InstanceType<typeof THREE.TubeGeometry>[] = [];
       for (const s of [1, -1]) {
-        const c = new THREE.CatmullRomCurve3(([[0.2, 1.82], [0.42, 1.86], [0.58, 1.74], [0.57, 1.56], [0.47, 1.47]] as const).map(([x, y]) => new THREE.Vector3(s * x, y, 0)));
+        const c = new THREE.CatmullRomCurve3(HANDLE.map(([x, y]) => new THREE.Vector3(s * x, y, 0)));
         const tg = new THREE.TubeGeometry(c, 120, 0.034, 24);
         handles.push(tg);
         vase.add(new THREE.Mesh(tg, hMat));
