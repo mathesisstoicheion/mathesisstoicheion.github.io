@@ -232,7 +232,7 @@ export default function Tour() {
   return (
     <>
       {box && !done && (
-        <div key={step} className={styles.light} aria-hidden="true"
+        <div key={step} className={styles.light} aria-hidden="true" data-tour-light=""
           style={{ transform: `translate(${box.x - PAD}px, ${box.y - PAD}px)`, width: box.w + PAD * 2, height: box.h + PAD * 2 }} />
       )}
       {(box || done || finding) && (

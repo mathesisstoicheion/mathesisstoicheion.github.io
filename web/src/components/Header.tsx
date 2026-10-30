@@ -90,11 +90,15 @@ export default function Header() {
   const [menuAt, setMenuAt] = useState(pathname);
   if (menuAt !== pathname) { setMenuAt(pathname); setMenu(false); }
   useEffect(() => { showRef.current?.(); }, [pathname]);
-  // the menu closes on Escape or a click outside it
+  // the menu closes on Escape or a click outside it; not on a click on the Guide's tour card, whose steps may be pointing
+  // into the menu (pressing its Next closed the menu its next step was about to show: scripts/check-tours.mts)
   useEffect(() => {
     if (!menu) return;
     const key = (e: KeyboardEvent) => { if (e.key === "Escape") setMenu(false); };
-    const click = (e: MouseEvent) => { if (!ref.current?.contains(e.target as Node)) setMenu(false); };
+    const click = (e: MouseEvent) => {
+      const at = e.target as Element;
+      if (!ref.current?.contains(at) && !at.closest?.("[data-tour-card]")) setMenu(false);
+    };
     addEventListener("keydown", key);
     addEventListener("click", click);
     return () => { removeEventListener("keydown", key); removeEventListener("click", click); };
