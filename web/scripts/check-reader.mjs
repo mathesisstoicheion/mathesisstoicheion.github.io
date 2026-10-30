@@ -18,6 +18,13 @@
 //             other passages too, that is not undone by "Hide the English", that opens the Greek look-up when its English is
 //             tapped, that runs into the margin kept for the look-up or off the side of a phone; a saved "Both" that is lost
 //             (or an old default "Both" that is not changed to Greek alone, once)
+//   first   - a book that opens on a fresh profile without its title page; a second opening (the same profile, reloaded) that shows
+//             the title page again, has no one-line title, or has it where the Greek does not start, or whose first line of Greek is
+//             more than 200 px down (the quiet desk, ticket 08: a book opens on its text, and its title page shows only the first time)
+//   numbers - the margin showing a passage's whole reference ("1.580") where its number in its book ("580") will do, or that whole
+//             reference gone from the button that carries it (data-row, aria-label); a line's own number repeating the margin's
+//   phone   - on a phone, a passage's number above its passage or beside a line other than its first, or wrapped in its column; the
+//             number of every fifth line not in the same column and level with its line; the Greek not starting at one edge down the page
 //   photos  - a photograph in the reader: on a book's title page (the Iliad had the Mask of Agamemnon) or on the reader with
 //             no book open (the owner, 2026-10-26: "no useless photos plastered everywhere")
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
@@ -307,6 +314,86 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
     if (!!n.tr !== wantTr) found.push(`alone ${tag}: ${why} (${n.tr} English column(s))`);
     await c.close();
   }
+}
+
+// ---- first, numbers, phone: a book opens on its text (the quiet desk, ticket 08). The Iliad, on a fresh profile and then opened again
+for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
+  const page = await iliad(ctx);
+  const opening = () => page.evaluate(() => {
+    const shown = (e) => !!e && e.getBoundingClientRect().width > 0 && e.getBoundingClientRect().height > 0;
+    const cover = document.querySelector("[data-cover]"), line = document.querySelector("[data-title-line]");
+    const word = document.querySelector("article section[data-key] [data-u] [data-w]");
+    return {
+      cover: shown(cover), title: shown(line) ? line.innerText.replace(/\s+/g, " ").trim() : "", author: !!line?.querySelector('a[href*="author?a=tlg0012"]'),
+      top: word ? word.getBoundingClientRect().top : -1, titleLeft: shown(line) ? line.getBoundingClientRect().left : -1, wordLeft: word ? word.getBoundingClientRect().left : -1,
+    };
+  });
+  try {
+    // first: the first opening shows the title page, in place of the one-line title
+    const one = await opening();
+    if (!one.cover) found.push(`first ${tag}: the first opening of the Iliad on a fresh profile does not show its title page`);
+    if (one.title) found.push(`first ${tag}: the first opening shows the one-line title as well as the title page ("${one.title}")`);
+    await page.reload();
+    await page.waitForSelector('article [data-key="1.5"] [data-u] [data-w]', { timeout: 45000 });
+    await page.waitForTimeout(1500);
+    const two = await opening();
+    if (two.cover) found.push(`first ${tag}: the second opening of the Iliad shows its title page again`);
+    const want = touch ? "Ἰλιάς · Iliad, Book 1" : "Ἰλιάς · Homer, Iliad, Book 1";
+    if (two.title !== want) found.push(`first ${tag}: the second opening's one-line title reads "${two.title}", not "${want}"`);
+    if (!touch && !two.author) found.push(`first ${tag}: the one-line title has no link to the author's page`);
+    if (two.top < 0 || two.top > 200) found.push(`first ${tag}: on a second opening the first line of Greek is ${Math.round(two.top)} px down, not within 200 px of the top of the screen`);
+    if (Math.abs(two.titleLeft - two.wordLeft) > 2) found.push(`first ${tag}: the one-line title starts ${Math.round(two.titleLeft)} px from the left, where the Greek starts ${Math.round(two.wordLeft)} px`);
+
+    // numbers: each passage's number in its book in the margin, the whole reference still on the button that carries it
+    const nums = await page.evaluate(() => [...document.querySelectorAll("article section[data-key]")].map((r) => {
+      const b = r.querySelector("button[data-row]"), has = (e, n) => [...e.classList].some((c) => c.endsWith(`__${n}`));
+      return { key: r.dataset.key, text: b?.textContent.trim() ?? "", row: b?.getAttribute("data-row"), label: b?.getAttribute("aria-label"),
+        lns: [...r.querySelectorAll("span")].filter((e) => has(e, "ln")).map((e) => e.textContent.trim()).filter(Boolean) };
+    }));
+    const first = nums.find((n) => n.key === "1.1");
+    if (first?.text !== "1" || first?.row !== "1.1") found.push(`numbers ${tag}: the Iliad's first passage shows "${first?.text}" in the margin on a button for "${first?.row}", not "1" for "1.1"`);
+    const long = nums.find((n) => n.text !== n.key.split(".").slice(1).join("."));
+    if (long) found.push(`numbers ${tag}: passage ${long.key} shows "${long.text}" in the margin, not its number in its book ("${long.key.split(".").slice(1).join(".")}")`);
+    const lost = nums.find((n) => n.row !== n.key || n.label !== n.key);
+    if (lost) found.push(`numbers ${tag}: passage ${lost.key}'s number no longer carries the whole reference (data-row "${lost.row}", label "${lost.label}")`);
+    const twice = nums.find((n) => n.lns.includes(n.text));
+    if (twice) found.push(`numbers ${tag}: passage ${twice.key} shows its number ${twice.text} twice, in the margin and beside its first line`);
+
+    // phone: a passage 200 lines in, which has the number of its fifth line (205) as well
+    if (touch) {
+      await page.goto(base + ILIAD + "&at=1.200");
+      await page.waitForSelector('article [data-key="1.200"] [data-u] [data-w]', { timeout: 45000 });
+      await page.waitForTimeout(1500);
+      const lay = await page.evaluate(() => {
+        const r = document.querySelector('article section[data-key="1.200"]');
+        r.scrollIntoView({ block: "start" });
+        const box = (e) => { const b = e.getBoundingClientRect(); return { l: b.left, r: b.right, t: b.top, c: (b.top + b.bottom) / 2, h: b.height }; };
+        const has = (e, n) => [...e.classList].some((c) => c.endsWith(`__${n}`));
+        const spans = [...r.querySelectorAll("span")];
+        const lt = spans.filter((e) => has(e, "lt")), ln = spans.filter((e) => has(e, "ln") && e.textContent.trim());
+        return {
+          num: box(r.querySelector("button[data-row]")), word: box(r.querySelector("[data-u] [data-w]")),
+          lns: ln.map((e) => ({ ...box(e), text: e.textContent.trim(), word: box(e.nextElementSibling.querySelector("[data-w]")) })),
+          lefts: lt.map((e) => e.querySelector("[data-w]")?.getBoundingClientRect().left).filter((x) => x != null),
+        };
+      });
+      // level: the number's middle stands within 6 px of the middle of the first line's words (a small number on the line's baseline, as in print)
+      if (Math.abs(lay.num.c - lay.word.c) > 6 || lay.num.t < lay.word.t - 6) found.push(`phone ${tag}: the passage number is not level with the first line of its passage (its middle ${Math.round(lay.num.c)} px down, the line's ${Math.round(lay.word.c)} px)`);
+      if (lay.num.r > lay.word.l) found.push(`phone ${tag}: the passage number is not in a column of its own to the left of the Greek`);
+      if (lay.num.h > 24) found.push(`phone ${tag}: the passage number wraps in its column (${Math.round(lay.num.h)} px tall)`);
+      if (!lay.lns.length) found.push(`phone ${tag}: no line number (205) shown beside the Iliad's passage 1.200`);
+      for (const n of lay.lns) {
+        if (Math.abs(n.c - n.word.c) > 6) found.push(`phone ${tag}: the number of line ${n.text} is not level with its line (its middle ${Math.round(n.c)} px down, the line's ${Math.round(n.word.c)} px)`);
+        if (n.r > n.word.l || Math.abs(n.r - lay.num.r) > 2) found.push(`phone ${tag}: the number of line ${n.text} is not in the passage number's column (it ends at ${Math.round(n.r)} px, the passage number at ${Math.round(lay.num.r)} px, the Greek starts at ${Math.round(n.word.l)} px)`);
+      }
+      if (lay.lefts.length < 5 || Math.max(...lay.lefts) - Math.min(...lay.lefts) > 1.5) found.push(`phone ${tag}: the Greek does not start at one edge down the page (${lay.lefts.length} lines, from ${Math.round(Math.min(...lay.lefts))} to ${Math.round(Math.max(...lay.lefts))} px)`);
+    }
+  } catch (e) {
+    found.push(`first ${tag}: the Iliad's openings could not be read (${String(e.message).split("\n")[0].slice(0, 90)})`);
+  }
+  await ctx.close();
 }
 
 // ---- photos: none in the reader

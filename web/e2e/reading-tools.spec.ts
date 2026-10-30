@@ -14,6 +14,9 @@ const open = async (page: Page, q: string, first: string) => {
 test("Places lists the places the page names, marks their words, and goes to a passage", async ({ page }) => {
   await open(page, "w=tlg0016.tlg001&at=1.1.1", "1.1.1");
   await aid(page, "Places");
+  // the pointer is left where Places was pressed, which can be over the panel's list, where the place under it is chosen at once and only its words
+  // are marked: it is put out of the way, so that the page's whole list is marked, as it is for a reader who has not moved the pointer
+  await page.mouse.move(5, 5);
   const panel = page.getByRole("complementary", { name: "Places on this page" });
   const items = panel.locator("ol li");
   await expect(items.first()).toContainText("Ἄργος", { timeout: 30_000 });

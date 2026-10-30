@@ -3,7 +3,9 @@
  * The book's title page, as a printed two-language edition sets it (redesign SPEC.md 4.3; the sample printed-photos.html,
  * its .r-title): the author in spaced capitals in red, the Greek title large, the English title in italic under it, a
  * fleuron between two red rules, and the editions in small print. No photograph: the owner, 2026-10-26, wants none that
- * only decorates ("no useless photos plastered everywhere"). Everything inks in once, then nothing moves.
+ * only decorates ("no useless photos plastered everywhere"). Everything inks in once, then nothing moves. It opens a book
+ * only the first time it is opened on this device (lib/opened.ts; the quiet desk, ticket 08, the owner, 2026-10-30); after
+ * that the book opens on the one-line title (ReaderTitle.tsx).
  */
 import { useEffect, useState, type ReactNode } from "react";
 import { loadAuthorNames } from "@/lib/authors-meta";
@@ -11,6 +13,9 @@ import styles from "./Reader.module.css";
 
 /** A Greek name as a title page sets it: capitals, without accents or breathings ("Πλάτων" → "ΠΛΑΤΩΝ"). */
 export const titleCaps = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLocaleUpperCase("el").normalize("NFC");
+
+/** A Greek title the page can set large: the edition's own title, when it is written in Greek letters (else null). */
+export const greekTitle = (greek?: string | null) => (greek && /[Ͱ-Ͽἀ-῿]/.test(greek) ? greek : null);
 
 export default function ReaderCover({ title, greek, author, authorId, orig, seal, editions }: {
   workId: string; title: string; greek?: string | null; author?: string; authorId?: string; orig?: ReactNode;
@@ -20,11 +25,10 @@ export default function ReaderCover({ title, greek, author, authorId, orig, seal
 }) {
   const [authorGr, setAuthorGr] = useState<string | null>(null);
   useEffect(() => { if (authorId) loadAuthorNames().then((n) => setAuthorGr(n[authorId]?.grc ?? null)); }, [authorId]);
-  // a Greek title the page can set large: one written in Greek letters
-  const big = greek && /[Ͱ-Ͽἀ-῿]/.test(greek) ? greek : null;
+  const big = greekTitle(greek);
 
   return (
-    <header className={`${styles.tp} enter`}>
+    <header className={`${styles.tp} enter`} data-cover="">
       {author && (
         <p className={styles.tpAu}>
           {authorGr ? <><span lang="grc" aria-hidden="true">{titleCaps(authorGr)}</span><span className="visually-hidden">{author}</span></> : author}

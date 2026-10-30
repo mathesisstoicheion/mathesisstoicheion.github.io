@@ -37,3 +37,8 @@ Spec: `../spec.md`, "Testing". User stories 9, 22, 23
   with care.
 - Also the Academy's guide "Looking a word up here" (`web/src/data/guides.ts`, id looking-up): its table of the look-up's
   parts lists "In this passage" and "Core vocabulary" and lacks "Go further".
+- From the site-wide thread (2026-10-30), for the tours: on its branch `scripts/check-tours.mts` checks that each step's
+  light (`data-tour-light`, Tour.tsx) stands round a control that is on screen, and phone tours with click steps run five
+  times. A step pointing at the reader's foot bar needs a target that is visible while it is lit. Its Header.tsx keeps
+  the menu open on a click inside `[data-tour-card]`. Merge its globals.css changes (.tool-page, .tool-main, .ph) rather
+  than overwrite them.

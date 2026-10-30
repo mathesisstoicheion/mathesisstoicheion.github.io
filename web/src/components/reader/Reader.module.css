@@ -135,11 +135,12 @@
 .flash { animation: flash 2.4s ease-out; }
 @keyframes flash { 0%, 30% { background: color-mix(in srgb, var(--accent) 16%, transparent); } 100% { background: transparent; } }
 
-/* the passage's number in the left margin, in red Didot (the sample's .mk) */
+/* the passage's number in the left margin, in red Didot (the sample's .mk): the start of each passage, as in a printed edition. In oldstyle
+   figures, as in mockup B (the quiet desk, ticket 08, the owner, 2026-10-30); it is --step-0 here and --step--1 on a phone (below) */
 .ref { text-align: right; }
 .ref button {
   font: 400 var(--step-0) / 1.25 var(--f-title); color: var(--rubric);
-  background: transparent; border: 0; padding: var(--hair-2) 0; cursor: copy; font-variant-numeric: lining-nums tabular-nums;
+  background: transparent; border: 0; padding: var(--hair-2) 0; cursor: copy; font-variant-numeric: oldstyle-nums tabular-nums;
   max-width: 100%; overflow-wrap: anywhere;  /* long references wrap in the margin instead of running into the text */
 }
 .ref button:hover { text-decoration: underline; }
@@ -206,14 +207,15 @@
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
-@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .single.withPanel .caseKey { margin-right: var(--side-panel); margin-left: 0; } }
+@media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .withPanel .rlWrap, .single.withPanel .caseKey { margin-right: var(--side-panel); margin-left: 0; } }
 /* narrower desktops: the panels are a little narrower, and the text makes room for them (review fix list, slice 8) */
 @media (min-width: 901px) and (max-width: 1279px) {
   .single .panel { width: var(--side-panel-narrow); }
-  .single.withPanel .text, .single.withPanel .bottom, .single.withPanel .cover, .single.withPanel .caseKey { margin-right: var(--side-panel-narrow); margin-left: 0; }
+  .single.withPanel .text, .single.withPanel .bottom, .single.withPanel .cover, .single.withPanel .rlWrap, .single.withPanel .caseKey { margin-right: var(--side-panel-narrow); margin-left: 0; }
 }
 @media (min-width: 901px) and (max-width: 1099px) {
-  .single.withPanel .row { grid-template-columns: 3rem minmax(0, 1.1fr) minmax(0, 1fr); column-gap: var(--space-4); }
+  .single.withPanel { --num-w: 3rem; --row-gap: var(--space-4); }
+  .single.withPanel .row { grid-template-columns: var(--num-w) minmax(0, 1.1fr) minmax(0, 1fr); }
 }
 .panelHead { display: flex; justify-content: space-between; gap: var(--space-3); align-items: start; }
 /* wide screens: the look-up's parts sit straight in the panel's grid; phones: they scroll below a fixed head */
@@ -362,7 +364,12 @@
 .previewBox img { width: 100%; height: auto; display: block; }
 
 /* ------------------------------------------------------------ two books side by side */
-.reader { container-type: inline-size; }
+/* (--num-col, --num-gap: on a phone the passage numbers have a column of their own beside the Greek (the quiet desk, ticket 08, the owner,
+   2026-10-30): wide enough for the widest number on the page, three figures at the least (--num-n, which Reader.tsx counts), set at --step--1, a
+   figure being about 0.55em wide, with a quarter of an em to spare; with the metre on it is wider by the rhythm button, whose size follows the
+   Greek's. The book's title line lines up past it. See the container block after the one-book phone rules, below.) */
+.reader { container-type: inline-size; --num-base: calc((0.55 * var(--num-n, 3) + 0.25) * var(--step--1)); --num-col: var(--num-base); --num-gap: var(--space-2); }
+.reader:has(> .metreOn) { --num-col: calc(var(--num-base) + 1.4 * var(--greek-size)); }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 .pane {
   height: calc(100dvh - var(--hdr-h) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain;
@@ -398,20 +405,12 @@
   .pane, .pane + .pane { height: auto; overflow: visible; box-shadow: var(--rule-under); }
   .activePane, .pane + .activePane { box-shadow: var(--rule-under), var(--pane-cap); }
 }
-/* phones and the floating window: the passage number sits above its passage, so the text gets the whole width */
+/* phones and the floating window: the label row has one column (the Greek's); the passage number's column and the lines' numbers are laid
+   out after the one-book phone rules, below (the quiet desk, ticket 08) */
 @container (max-width: 520px) {
-  .cols, .row, .cols-greek .cols, .cols-trans .cols, .cols-greek .row, .cols-trans .row { grid-template-columns: minmax(0, 1fr); }
+  .cols, .cols-greek .cols, .cols-trans .cols { grid-template-columns: minmax(0, 1fr); }
   .cols > :first-child { display: none; }
-  .tr, .notes { grid-column: 1; }
   .row { padding-block: var(--space-2) var(--space-4); }
-  .ref { flex-direction: row; align-items: center; justify-content: flex-start; gap: var(--space-1); margin-bottom: var(--hair-2); }
-  .ref button[data-row] { min-height: 32px; min-width: 32px; padding: var(--hair-2) var(--space-2) var(--hair-2) 0; text-align: left; }
-  .marks { flex-direction: row; }
-  .marks button { width: 32px; height: 32px; padding: var(--space-2); }
-  .line { grid-template-columns: 2em minmax(0, 1fr); }
-  /* the rhythm button moves from the margin into a wider line-number column, left of the number */
-  .metreOn .line { grid-template-columns: 3.2em minmax(0, 1fr); }
-  .beatBtn, .metreQ { left: -4.4em; }
 }
 /* the same, for passages shown outside the reader (the lessons), which have no margin column */
 .metreInset.metreOn .line { grid-template-columns: 3.2em minmax(0, 1fr); }
@@ -657,14 +656,11 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* "Show the English" (Reader.tsx, RowView; the quiet desk, ticket 07, the owner, 2026-10-29): with the Greek alone, one passage's English
    opens under its Greek, in the Greek's column (so the margin at the right stays clear for the look-up), and leafs in like the other
    things that appear; the credit under it is the quietest line. The button reads like the look-up's Previous and Next: ink-2, red under the hand. */
-/* in a text set in lines, the button and the English start where the Greek's words do, past the line-number column (.line) */
+/* in a text set in lines, the button and the English start where the Greek's words do, past the line-number column (.line); on a phone the line
+   numbers stand in the passage number's column and the words start at the Greek's own edge (the container block after the one-book phone rules) */
 .oneBox { margin-top: var(--space-2); }
 .grc:has(.line) > .oneBox { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
 .grc:has(.line) > .oneBox > * { grid-column: 2; }
-@media (max-width: 900px) {
-  .grc:has(.line) > .oneBox { grid-template-columns: 2em minmax(0, 1fr); }
-  .metreOn .grc:has(.line) > .oneBox { grid-template-columns: 3.2em minmax(0, 1fr); }
-}
 .oneBox > * { font-family: var(--f-body); }
 .oneBtn:global(.text-btn) { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
 .oneBtn:global(.text-btn):hover { color: var(--rubric); }
@@ -778,7 +774,8 @@ p.translit { margin: -0.3em 0 0.8em; }
   .rtitle b { letter-spacing: 0.16em; }
   .rbar .wideOnly, .rbar .rtools > .seg { display: none; }
   .phoneMore { display: contents; }
-  .rbar .morePop { max-height: calc(100svh - var(--bar-h, 59px) - 24px); overflow-y: auto; }
+  /* (Tools too: with the edition group first, it is the taller of the two; the quiet desk, ticket 08, the owner, 2026-10-30) */
+  .rbar .morePop, .rbar .aidsPop { max-height: calc(100svh - var(--bar-h, 59px) - 24px); overflow-y: auto; }
 }
 /* its panels: leaves under the bar at the right */
 .rbar .pop {
@@ -797,6 +794,13 @@ p.translit { margin: -0.3em 0 0.8em; }
 .whereGroup { padding-bottom: var(--space-4); box-shadow: var(--rule-under); }
 .whereGroup .goto { flex: 1; min-width: 12rem; }
 .whereGroup .goto input { flex: 1; min-width: 0; width: auto; }
+/* the edition and the translation, the first group of Tools (the quiet desk, ticket 08, the owner, 2026-10-30): each choice on a line of its own, its name
+   at the left and its menu filling the rest, so that the group is no taller than it must be and the aids under it stay in reach; the buttons that open
+   a second book or the private collection after them */
+.editionGroup { display: grid; gap: var(--space-2); padding-bottom: var(--space-4); box-shadow: var(--rule-under); }
+.editionGroup .pick { grid-template-columns: 8rem minmax(0, 1fr); align-items: center; gap: var(--space-2); width: 100%; }
+.editionGroup .pick select { width: 100%; max-width: none; }
+.editionGroup > :global(.chip) { justify-self: start; }
 /* a panel at the side opens under the bar */
 @media (min-width: 901px) { .single .panel { top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px)); } }
 
@@ -819,27 +823,48 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tpEd .edKind { font-size: var(--step--2); letter-spacing: 0.16em; margin-right: 0; }
 .tpEd .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; }
 
+/* the book's one-line title, on every opening but the first (ReaderTitle.tsx; the quiet desk, ticket 08, the owner, 2026-10-30; mockup B): at the top
+   of the text column, in line with the Greek: the Greek title in the Greek face and in ink, then "· Homer, Iliad, Book 1" in the body face and in ink-2,
+   the author's name a quiet link; the first passage follows straight under it. It starts where the Greek's words do, past the passage numbers' column
+   (and, when the first passage is in lines of verse, past the line numbers' column inside the Greek's: 2.4em of the Greek's size, as .line sets it).
+   On a phone it drops the author ("Ἰλιάς · Iliad, Book 1"), and the Greek's words start at the number column's edge. */
+.rlWrap { padding-block: var(--space-6) var(--space-3); }
+.rl { margin: 0 0 0 calc(var(--num-w) + var(--row-gap)); font: 400 var(--step-0) / 1.35 var(--f-body); letter-spacing: 0; color: var(--ink-2); }
+.rl[data-lines] { margin-left: calc(var(--num-w) + var(--row-gap) + 2.4 * var(--greek-size)); }
+.rlGr { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); }
+.rlAuthor a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-quick) var(--ease); }
+.rlAuthor a:hover { color: var(--rubric); }
+@media (max-width: 760px) {
+  .rlWrap { padding-block: var(--space-5) var(--space-2); }
+  .rl { margin-left: 0; }
+  .rl[data-lines] { margin-left: calc(2.4 * var(--greek-size)); }
+  .rlAuthor { display: none; }
+}
+@container (max-width: 520px) {
+  .rl, .rl[data-lines] { margin-left: calc(var(--num-col) + var(--num-gap)); }
+}
+
 /* the passages (the sample's .sec): the number in red in the left margin, the Greek, the English; on a wide screen a margin
    at the right, kept clear for the look-up. (The red first line is gone: the quiet desk, the owner 2026-10-26.) */
-.single { position: relative; }   /* the look-up in the margin is placed within it */
+.single { position: relative; --num-w: 3.5rem; --row-gap: clamp(var(--space-5), 3vw, var(--space-6)); }   /* the look-up in the margin is placed within it; the number's column and the gap after it, past which the book's title line lines up with the Greek (--num-w, --row-gap) */
 .single .text { padding-block: 0 var(--space-5); margin-top: 0; }
-.single .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr); column-gap: clamp(var(--space-5), 3vw, var(--space-6)); padding-block: var(--space-4) var(--space-5); }
+.single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--row-gap); padding-block: var(--space-4) var(--space-5); }
 .single .ref button { padding-top: 0.35em; }
 .single .tr { font-size: calc(var(--greek-size) * 0.9); line-height: 1.62; }
-.single.cols-greek .row { grid-template-columns: 3.5rem minmax(0, 40em); }
-.single.cols-trans .row { grid-template-columns: 3.5rem minmax(0, 38em); }
+.single.cols-greek .row { grid-template-columns: var(--num-w) minmax(0, 40em); }
+.single.cols-trans .row { grid-template-columns: var(--num-w) minmax(0, 38em); }
 .single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
 /* a computer (lib/lookup/placement.ts): the margin at the right is kept clear for the look-up's note, a panel open or not */
 @media (min-width: 1100px) {
-  .single .row { grid-template-columns: 3.5rem minmax(0, 1fr) minmax(0, 1fr) var(--margin-note); }
-  .single.cols-greek .row { grid-template-columns: 3.5rem minmax(0, 40em) 0 var(--margin-note); }
-  .single.cols-trans .row { grid-template-columns: 3.5rem minmax(0, 38em) 0 var(--margin-note); }
+  .single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr) var(--margin-note); }
+  .single.cols-greek .row { grid-template-columns: var(--num-w) minmax(0, 40em) 0 var(--margin-note); }
+  .single.cols-trans .row { grid-template-columns: var(--num-w) minmax(0, 38em) 0 var(--margin-note); }
   .single .notes { grid-column: 2 / 4; }
   /* poetry: the Greek takes more of the width, so that a line of Homer is not broken */
-  .single.poetry.cols-both .row { grid-template-columns: 3.5rem minmax(0, 1.4fr) minmax(0, 1fr) var(--margin-note); }
+  .single.poetry.cols-both .row { grid-template-columns: var(--num-w) minmax(0, 1.4fr) minmax(0, 1fr) var(--margin-note); }
   /* a panel open beside the text as well: the English goes under the Greek, so that neither is squeezed beside the note */
   .single.withPanel .row, .single.withPanel.cols-greek .row, .single.withPanel.cols-trans .row, .single.withPanel.poetry.cols-both .row {
-    grid-template-columns: 3.5rem minmax(0, 40em) var(--margin-note); row-gap: var(--space-4);
+    grid-template-columns: var(--num-w) minmax(0, 40em) var(--margin-note); row-gap: var(--space-4);
   }
   .single.withPanel .tr, .single.withPanel .notes { grid-column: 2; }
 }
@@ -852,6 +877,43 @@ p.translit { margin: -0.3em 0 0.8em; }
   .single .ref { flex-direction: row; justify-content: flex-start; align-items: center; text-align: left; }
   .single .ref button { padding-top: 0; }
   .single .tr { grid-column: auto; margin-top: 0; }
+}
+/* phones, and a pane or the floating window narrower than 520 px (the quiet desk, ticket 08, the owner, 2026-10-30): the passage's number no
+   longer stands on a line of its own above the passage. It keeps a narrow column at the left, level with the first line, and the Greek takes the
+   rest of the width; the marks stack under it. The numbers of every fifth line (.ln) move out of the text into the same column, level with their
+   lines, so the text starts at one edge all the way down. This block comes after the phone rules above, which it takes over from. (Texts cited by
+   verse keep their own layout; a page 521 to 760 px wide keeps the number above its passage.) */
+@container (max-width: 520px) {
+  .reader:not(.verses) .row, .reader:not(.verses).cols-greek .row, .reader:not(.verses).cols-trans .row {
+    grid-template-columns: var(--num-col) minmax(0, 1fr); column-gap: var(--num-gap); row-gap: 0; align-items: baseline;
+  }
+  .reader:not(.verses) .ref { flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 0; text-align: right; }
+  /* the number is small (--step--1) and sits on the first line's baseline; its touch area is a finger tall and reaches into the gap beside it
+     (the page's edge is as far left as a finger can go) */
+  .reader:not(.verses) .ref button[data-row] {
+    position: relative; width: 100%; min-width: 0; min-height: 0; padding: 0; font-size: var(--step--1); text-align: right;
+  }
+  .reader:not(.verses) .ref button[data-row]::after {
+    content: ""; position: absolute; inset: min(0px, calc((100% - var(--tap)) / 2)) calc(-1 * var(--num-gap)) min(0px, calc((100% - var(--tap)) / 2)) 0;
+  }
+  /* the heading before a play's first line has no number: its button keeps a finger's height, and the row's text does not wait on its baseline */
+  .reader:not(.verses) .ref:has(> .front) { align-self: start; }
+  .reader:not(.verses) .ref button.front { min-height: var(--tap); }
+  /* the marks (bookmark, note, favourite) stack under the number, each a finger tall */
+  .reader:not(.verses) .marks { align-self: stretch; gap: 0; }
+  .reader:not(.verses) .marks button { position: relative; display: grid; place-items: center end; width: 100%; height: var(--tap); padding: 0; }
+  .reader:not(.verses) .marks button::after { content: ""; position: absolute; inset: 0 calc(-1 * var(--num-gap)) 0 0; }
+  .reader:not(.verses) .tr, .reader:not(.verses) .notes { grid-column: 2; }
+  .reader:not(.verses) .tr { margin-top: var(--space-2); }
+  .reader:not(.verses).cols-trans .tr { margin-top: 0; }
+  /* the lines' numbers: out of the Greek's column and into the number's, small and quiet, on the line's baseline */
+  .reader:not(.verses) .line { grid-template-columns: 0 minmax(0, 1fr); align-items: baseline; }
+  .reader:not(.verses) .ln { width: var(--num-col); margin-left: calc(-1 * (var(--num-col) + var(--num-gap))); padding: 0; font-size: var(--step--2); }
+  /* with the metre on, the rhythm button stands at the column's far side, the number at the near one */
+  .reader:not(.verses) .beatBtn, .reader:not(.verses) .metreQ { left: calc(-1 * (var(--num-col) + var(--num-gap))); }
+  /* "Show the English" and the English start where the Greek does, which is now the column's edge */
+  .reader:not(.verses) .grc:has(.line) > .oneBox { display: block; }
+  .reader:not(.verses) .cols > :nth-child(2) { padding-left: calc(var(--num-col) + var(--num-gap)); }
 }
 /* the foot of the page: where you are, and the way on */
 .bottomGo { display: contents; }

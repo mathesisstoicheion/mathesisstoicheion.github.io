@@ -20,6 +20,7 @@ import type { SentenceMarks } from "./SentencePanel";
 import type { NewItem } from "@/lib/notebooks";
 import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from "@/lib/tei/compare";
 import { getPosition, savePosition } from "@/lib/position";
+import { firstOpening, markOpened } from "@/lib/opened";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { AREAS, FORUM_OPEN, SITE, trail } from "@/config/areas";
@@ -37,6 +38,7 @@ import PanelGuard from "@/components/PanelGuard";
 import type { EchoMarks, EchoQuery, EchoTarget } from "./EchoesPanel";
 import MetreBar from "./MetreBar";
 import ReaderCover from "./ReaderCover";
+import ReaderTitle from "./ReaderTitle";
 import SiteMark from "@/components/a/Mark";
 import PageHead from "@/components/PageHead";
 import ScrollMarkers, { MarkersLegend, type MarkerItem } from "./ScrollMarkers";
@@ -84,7 +86,7 @@ const MineDialog = dynamic(() => import("./MineDialog"), { ssr: false });
 import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };
-/** The small panel open now, if any: from the bar (Aa, Tools, Your marks, More) or the edition's line under the title (Change). */
+/** The small panel open now, if any: from the bar (Aa, Tools, Your marks, More) or the edition's line on a book's title page (Change). */
 type Dropped = "aa" | "aids" | "marks" | "more" | "change";
 
 type Src = From | "private";
@@ -120,11 +122,18 @@ const MARK_ICON: Record<string, React.ReactNode> = {
   xref: <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />,
 };
 
+/** What the margin shows for a passage: the whole reference, its number in its book ("580", not "1.580") when the page is one book, or the verse's number
+ *  (the whole reference stays in aria-label, data-row and every jump, find, mark and link; the quiet desk, ticket 08, the owner, 2026-10-30). */
+const marginNo = (row: Row, verses: boolean, inBook: boolean) => (verses ? row.key.split(".").pop()! : inBook ? row.greek[0].ref.slice(1).join(".") : row.key);
+
 /** One passage row: reference and your marks in the margin, Greek, translation, and any notes. */
-const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, tryFirst, trGreek, english }: {
+const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, translit, metre, verses, inBook, tryFirst, trGreek, english }: {
   row: Row; marks: Mark[]; openNote: string | null; onCloseNote: () => void; translit: boolean; metre: Map<string, (LineRender | null)[]> | null;
   /** a text cited by verse: the margin shows only the verse number, as in a printed Bible (the chapter is in the bar) */
   verses: boolean;
+  /** the page is one book of a work cited by book and passage: the margin shows the passage's number in its book ("580", not "1.580");
+   *  the title line and the page's name say which book (the quiet desk, ticket 08, the owner, 2026-10-30) */
+  inBook: boolean;
   /** "Try it first": the translation stays hidden until it is tapped */
   tryFirst: boolean;
   /** the second column is another Greek edition, being compared with this one */
@@ -137,13 +146,15 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
   const [shown, setShown] = useState(false);
   const veiled = tryFirst && !shown && row.trans.length > 0;
   const front = /(^|\.)0$/.test(row.key);
+  // what the margin shows: the whole reference, or the shorter number; the whole one stays in aria-label and data-row, and in every jump, find, mark and link
+  const no = marginNo(row, verses, inBook);
   return (
     <section className={styles.row} data-key={row.key}>
       <div className={styles.ref}>
         {/* Perseus's line 0 (only the first speaker's name, before line 1) has no number to show (review fix list, slice 8) */}
         {front
           ? <button type="button" data-row={row.key} className={styles.front} title="Actions for the heading before the first line" aria-label="Before the first line" />
-          : <button type="button" data-row={row.key} title="Actions for this passage" aria-label={verses ? row.key : undefined}>{verses ? row.key.split(".").pop() : row.key}</button>}
+          : <button type="button" data-row={row.key} title="Actions for this passage" aria-label={no !== row.key ? row.key : undefined}>{no}</button>}
         <span className={styles.grip} draggable data-drag={row.key} data-tip="Drag into a note to quote" title="Drag into a note to quote this passage with its citation" aria-hidden="true" />
         {marks.some((m) => m.kind !== "highlight") && (
           <span className={styles.marks}>
@@ -290,6 +301,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [snap, setSnap] = useState<{ work: string; pos: ReturnType<typeof getPosition> } | null>(null);
   if (idx && snap?.work !== workId) setSnap({ work: workId, pos: getPosition(workId) });
   const remembered = snap?.work === workId ? snap.pos : null;
+  // the title page is for a book's first opening on this device (lib/opened.ts; the quiet desk, ticket 08, the owner, 2026-10-30): decided
+  // once, when this pane first shows the book, so that it does not go while the reader is on it, though the book is marked opened as its
+  // text arrives (below). Every other time the book opens on the one-line title.
+  const [opening, setOpening] = useState<{ work: string; first: boolean } | null>(null);
+  if (workId && opening?.work !== workId) setOpening({ work: workId, first: firstOpening(workId) });
+  const showCover = single && opening?.work === workId && opening.first;
 
   // a book of the private collection (lib/mine.ts) comes from the database, not the catalogue
   const mine = useMineBook(workId, retry);
@@ -384,6 +401,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     : current.error ? { state: "error", message: current.error } : { state: "ready" };
   const parsed = current?.parsed ?? null;
   const from = current?.from ?? null;
+  // the book counts as opened once its text is up, and not before: one that did not load has not been read (the page that shows
+  // the title page or the one-line title is the one-book reader's)
+  useEffect(() => { if (single && load.state === "ready") markOpened(workId); }, [single, load.state, workId]);
   const doc = parsed?.doc;
   // the New Testament and the Septuagint are cited by verse: short units that read best as running text
   const verses = doc?.levels.at(-1) === "verse";
@@ -412,6 +432,19 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // a page of poetry (its Greek set in lines of verse): on a wide screen the Greek takes more of the width, so that a line is
   // not broken (Reader.module.css)
   const poetry = useMemo(() => rows.some((r) => r.greek.some((u) => u.blocks.some((b) => b.t === "l"))), [rows]);
+  // a page that is one book of a work cited by book and passage (two or more citation levels, and every passage on the page in the same
+  // book): the margin shows each passage's number in its book ("1", "580"), not the whole reference ("1.1", "1.580"); the one-line title and
+  // the page's name say which book. The whole reference stays in aria-label, data-row and every jump, find, mark and link (the quiet desk,
+  // ticket 08, the owner, 2026-10-30)
+  const inBook = useMemo(() => !!doc && doc.levels.length >= 2 && rows.length > 0 && rows.every((r) => r.greek.every((u) => u.ref[0] === rows[0].greek[0].ref[0])), [doc, rows]);
+  // how many figures the widest number in the margin has (a full stop counts for less), and never fewer than three: on a phone the number's
+  // column is as wide as that needs, so that "92.1" or "1415" does not wrap (Reader.module.css, --num-n)
+  const numFigures = useMemo(() => Math.max(3, Math.ceil(Math.max(0, ...rows.filter((r) => !/(^|\.)0$/.test(r.key)).map((r) => {
+    const s = marginNo(r, verses, inBook), dots = s.length - s.replace(/[.,]/g, "").length;
+    return s.length - dots + 0.45 * dots;
+  })))), [rows, verses, inBook]);
+  // the first passage is set in lines of verse: the title line above it starts where the words of its lines do (past the line numbers' column)
+  const firstInLines = useMemo(() => !!rows[0] && rows[0].greek.some((u) => u.blocks.some((b) => b.t === "l")), [rows]);
   const missing = trText && !cmpText && placed ? untranslated(rows) : [];
   const extraHere = !cmpText && rows.some((r) => r.extra);
   const outOfStep = !cmpText && !!trText && OUT_OF_STEP.has(trText.urn);
@@ -499,10 +532,13 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     const el = row && root().querySelector<HTMLElement>(`[data-key="${CSS.escape(row.key)}"]`);
     if (!el) return;
     if (at || tu) { el.classList.remove(styles.flash); void el.offsetWidth; el.classList.add(styles.flash); }
+    // with the one-line title above the page (no title page), the page's first passage is not scrolled up to the bar: the page stays at its
+    // start, the title in sight over it (the quiet desk, ticket 08, the owner, 2026-10-30)
+    if (single && !showCover && row === rows[0]) { window.scrollTo({ top: 0 }); return; }
     return holdAtTop(el);
     // holdAtTop only reads `contained` and the page as it is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rows, startKey, at, tu, contained]);
+  }, [rows, startKey, at, tu, contained, showCover]);
 
   // words found by a search: ?hl= their positions in the passage (Greek), ?find= the words (translation)
   const hl = P("hl"), find = P("find");
@@ -668,9 +704,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         el.removeAttribute("data-fit-wrap");
         let worst = 0;
         for (const line of el.querySelectorAll<HTMLElement>(`.${styles.line}`)) {
-          const lt = line.querySelector<HTMLElement>(`.${styles.lt}`), ln = line.querySelector<HTMLElement>(`.${styles.ln}`);
+          const lt = line.querySelector<HTMLElement>(`.${styles.lt}`);
           if (!lt) continue;
-          const room = line.clientWidth - (ln?.offsetWidth ?? 0);
+          // the room the words have is their own box (the line's number stands in a column of its own, or on a phone out in the margin)
+          const room = lt.clientWidth;
           if (room > 0) worst = Math.max(worst, lt.scrollWidth / room);
         }
         const fit = worst > 1 ? 1 / worst : 1;
@@ -1477,8 +1514,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       ))}
     </ul>
   );
-  // the edition, the translation, an edition to compare with, and a second book: in the panel that Change opens under
-  // the title (in the floating window, folded away above the text)
+  // the edition, the translation, an edition to compare with, and a second book: in the panel that Change opens on a book's title page,
+  // and, in the one-book reader, always the first group of Tools (the title page and its Change show only the first time a book is
+  // opened; the quiet desk, ticket 08, the owner, 2026-10-30); in the floating window, folded away above the text
   const editionControls = work && grcText && (
     <>
       <label className={styles.pick}><span className="label">Greek text</span>
@@ -1562,6 +1600,14 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           <Drop {...dropOf("aids")} chevron={!single}
             ariaLabel={modesOn > 0 ? `Tools, ${modesOn} on` : undefined}
             label={<>Tools{modesOn > 0 && <span className={styles.onCount} data-on="" aria-hidden="true">{modesOn}</span>}</>} title="Reading aids: help with the Greek, this passage and this work (Find and Listen are here too)" className={styles.dropBtn} panelClass={`${styles.pop} ${styles.aidsPop}`}>
+            {/* the same choices as the title page's Change, here for every opening; shown only while Tools is open, so that the title page's own
+                copy of the selects (hidden in its Change) is never a second one on the page */}
+            {single && drop === "aids" && (
+              <div className={`${styles.aidGroup} ${styles.editionGroup}`} role="group" aria-label="Edition and translation">
+                <span className={styles.aidLabel} aria-hidden="true">Edition and translation</span>
+                {editionControls}
+              </div>
+            )}
             {single && (
               <div className={`${styles.aidGroup} ${styles.whereGroup}`} role="group" aria-label="Where">
                 <span className={styles.aidLabel} aria-hidden="true">Page and passage</span>
@@ -1617,6 +1663,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
   return (
     <div ref={rootRef} className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+      style={{ "--num-n": numFigures } as React.CSSProperties}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
       {split && (
@@ -1645,7 +1692,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           </div>
         </div>
       )}
-      {single ? (
+      {single ? (showCover ? (
         <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id}
           seal={isPrivate ? <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span> : null}
           orig={work?.orig && work.orig !== grcText?.label ? <OrigTitle work={work} full /> : null}
@@ -1659,11 +1706,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       <span className={styles.dot} aria-hidden="true">·</span>
       <Drop {...dropOf("change")} label="Change" chevron={false} className={styles.change} title="Choose the Greek text, the translation, an edition to compare with, or a second book"
         panelClass={`${styles.pop} ${styles.changePop}`} panelLabel="Edition and translation">
-        {editionControls}
+        {drop === "change" && editionControls}
       </Drop>
     </div>
           ) : null} />
-      ) : (
+      ) : null) : (
       <header className={`wrap ${styles.top}`}>
         {!floating && (
           <>
@@ -1724,6 +1771,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           {/* one slim row that stays at the top while reading: the page, go to, Find and Listen; the reading aids, your
               marks and the rest behind a button each (Drop.tsx). One book alone has the reader's own bar at the top instead. */}
           {!single && <div className={`wrap ${styles.bar}`}>{barRow}</div>}
+
+          {/* a book opens on its text, under a one-line title, from the second time it is opened on this device; the page's name is the part of
+              the work it is ("Book 1") */}
+          {single && !showCover && <ReaderTitle title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} page={chunkInfo.label} lines={firstInLines && (!!cmpText || columns !== "trans")} />}
 
           {cases && (
             <p className={`wrap ${styles.legend} ${styles.caseKey}`} aria-label="Case colours" title="From GLAUx's analyses of this text">
@@ -1808,7 +1859,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
           {/* data-reading: the text being read, sized by the reader's own choices in Settings (scripts/check-design.mjs) */}
           <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
-            {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses}
+            {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses} inBook={inBook}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText}
               english={trText && !cmpText && columns === "greek" ? { open: openOnes.has(r.key), credit: trCredit, onToggle: () => toggleOne(r.key) } : null} />)}
           </article>

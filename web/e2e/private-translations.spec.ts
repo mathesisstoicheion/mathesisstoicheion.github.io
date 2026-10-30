@@ -75,8 +75,9 @@ async function pretend(page: Page, o: { role?: "member" | "moderator" | null; lo
 
   await page.addInitScript(([k, s, theme, pub]) => {
     if (s && !localStorage.getItem(k)) localStorage.setItem(k, s);
-    // the look as the printed page saves it (e2e/look.ts)
-    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce" }, version: 2 }));
+    // the look as the printed page saves it (e2e/look.ts), with "Both" columns: a book opens on Greek alone now, and these tests read the
+    // English beside it (the quiet desk, ticket 07; e2e/both-columns.ts); version 3 keeps a "Both" as chosen
+    localStorage.setItem("mathesis:settings", JSON.stringify({ state: { theme, motion: "reduce", columns: "both" }, version: 3 }));
     if (pub && !localStorage.getItem("mathesis:translations-published")) localStorage.setItem("mathesis:translations-published", "1");
   }, [KEY, role ? JSON.stringify(session) : "", o.look ?? "paper", o.pub ? "1" : ""] as const);
 

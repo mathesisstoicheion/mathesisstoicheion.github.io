@@ -59,10 +59,11 @@ function words(text: string, clickable: boolean, key: string, line: LineCtx) {
 type Shown = { m: string; n: string };
 const shown = (x: Inline): x is Shown => typeof x !== "string" && "m" in x && SHOWN.has(x.m) && !!x.n;
 /** Does a marker say what the margin beside it says? The margin's "17" (or "1.20.3"), as "17", "17a" (the page's first
-    section), "3" or "3a". */
+    section), "3" or "3a". It says it too as the number in its book, which is what the one-book reader's margin shows ("20.3",
+    "3": every ending of the reference from a dot on; the quiet desk, ticket 08, the owner, 2026-10-30). */
 const repeats = (n: string, margin: string) => {
-  const last = margin.slice(margin.lastIndexOf(".") + 1);
-  return [margin, last].some((c) => n === c || (/^\d+$/.test(c) && n === `${c}a`));
+  const parts = margin.split(".");
+  return parts.some((_, i) => { const c = parts.slice(i).join("."); return n === c || (/^\d+$/.test(c) && n === `${c}a`); });
 };
 
 /**

@@ -66,6 +66,7 @@ test("the Treasury downloads as one readable file and restores from it in an emp
   await openIliad(page);
   await page.locator('[data-row="1.5"]').click();
   await act(page, "Bookmark");
+  await expect(page.getByText(/Bookmarked 1\.5/)).toBeVisible();   // the mark is written once this shows; leaving the page sooner can lose it
   await page.goto("/treasury?s=bookmarks");
   await expect(page.getByRole("link", { name: "1.5" })).toBeVisible();
   const [download] = await Promise.all([page.waitForEvent("download"), page.getByRole("button", { name: "Download my Treasury" }).click()]);
