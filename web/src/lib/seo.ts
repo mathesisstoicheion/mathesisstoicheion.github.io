@@ -86,6 +86,7 @@ export const PAGE_DESCRIPTIONS = {
   census: "Every word, person, god and place in the Greek texts, counted: what the library mentions most, and where.",
   periplus: "A map of the places named in the Greek texts.",
   lyre: "Play a Greek lyre with your keyboard, fingers or a MIDI keyboard, and play along with the surviving ancient Greek melodies, from the Seikilos song to the Delphic hymns.",
+  pot: "Paint your own Greek vase: turn a neck-amphora, paint it in black-figure or red-figure, write Greek on it, and share it with a link.",
   kerameikos: "The Kerameikos, Athens' potters' quarter and its main cemetery, and what its excavated layers show.",
   townHall: "The community's meeting place: questions from beginners, help with a passage, and discussion of the texts.",
   pnyx: "Weekly debates on the ancient world: argue a motion, then vote on it.",

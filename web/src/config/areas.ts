@@ -20,7 +20,7 @@ import type { IconName } from "@/components/Icon";
  */
 export type AreaId =
   | "home" | "library" | "reader" | "search" | "study" | "wiki" | "archaeology"
-  | "census" | "map" | "lyre" | "forum" | "debates" | "treasury" | "downloads";
+  | "census" | "map" | "lyre" | "pot" | "forum" | "debates" | "treasury" | "downloads";
 
 export interface Area {
   id: AreaId;
@@ -89,6 +89,13 @@ export const AREAS: Record<AreaId, Area> = {
     id: "lyre", parent: "wiki", name: "The lyre", greek: "Λύρα", door: "Lyre", icon: "lyre", href: "/stoa/lyre",
     origin: "The Greeks' stringed instrument for song: strings stretched from a sound box, often a tortoise shell, to a crossbar held up by two arms.",
     fit: "Play it, and play along with the melodies that survive in the Greeks' own musical notation.", phase: 7,
+  },
+  // the potters': a neck-amphora to turn and paint, on a page of its own so it can be found and shared (the owner,
+  // 2026-10-30: "every thought and creation: Shareable, including making a pot")
+  pot: {
+    id: "pot", parent: "wiki", name: "Paint a pot", greek: "Κεραμεύς", english: "The potter", icon: "pots", href: "/stoa/pot",
+    origin: "Κεραμεύς, “potter”. In Athens potters turned their vases on the wheel and painters decorated them: black figures on the red clay, and from about 530 BC red figures on a black ground.",
+    fit: "Turn a neck-amphora, paint it as they did, and share it.", phase: 7,
   },
   forum: {
     id: "forum", name: "The Agora", greek: "Ἀγορά", door: "Talk", icon: "talk", href: "/town-hall",

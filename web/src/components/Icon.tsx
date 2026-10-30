@@ -191,6 +191,16 @@ const ICONS = {
   "undo": [["path", {d: "M9 14 4 9l5-5"}], ["path", {d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],
   // redo (Lucide "redo-2")
   "redo": [["path", {d: "m15 14 5-5-5-5"}], ["path", {d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],
+  // scratch lines through to the clay, with a point (Lucide "pen-tool")
+  "scratch": [["path", {d: "M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"}], ["path", {d: "m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"}], ["path", {d: "m2.3 2.3 7.286 7.286"}], ["circle", {cx: "11", cy: "11", r: "2"}]],
+  // strike a blow (Lucide "hammer")
+  "strike": [["path", {d: "m15 12-8.373 8.373a1 1 0 1 1-3-3L12 9"}], ["path", {d: "m18 15 4-4"}], ["path", {d: "m21.5 11.5-1.914-1.914A2 2 0 0 1 19 8.172V7l-2.26-2.26a6 6 0 0 0-4.202-1.756L9 2.96l.92.82A6.18 6.18 0 0 1 12 8.4V10l2 2h1.172a2 2 0 0 1 1.414.586L18.5 14.5"}]],
+  // turn a thing round to see it from every side (Lucide "rotate-3d")
+  "turn": [["path", {d: "M16.466 7.5C15.643 4.237 13.952 2 12 2 9.239 2 7 6.477 7 12s2.239 10 5 10c.342 0 .677-.069 1-.2"}], ["path", {d: "m15.194 13.707 3.814 1.86-1.86 3.814"}], ["path", {d: "M19 15.57c-1.804.885-4.274 1.43-7 1.43-5.523 0-10-2.239-10-5s4.477-5 10-5c4.838 0 8.873 1.718 9.8 4"}]],
+  // turn it to the left (Lucide "rotate-ccw")
+  "turn-left": [["path", {d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"}], ["path", {d: "M3 3v5h5"}]],
+  // turn it to the right (Lucide "rotate-cw")
+  "turn-right": [["path", {d: "M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"}], ["path", {d: "M21 3v5h-5"}]],
   // music: tunes to play (Lucide "music")
   "music": [["path", {d: "M9 18V5l12-2v13"}], ["circle", {cx: "6", cy: "18", r: "3"}], ["circle", {cx: "18", cy: "16", r: "3"}]],
   // talk with others (Lucide "messages-square")
