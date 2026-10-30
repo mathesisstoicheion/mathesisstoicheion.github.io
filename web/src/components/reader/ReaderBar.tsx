@@ -115,7 +115,7 @@ export function AaStudy({ bar, aa, study, aaMenu, studyMenu, modesOn }: {
   return (
     <>
       <Drop {...aa} chevron={false} className={button} panelClass={menu(styles.aaMenu)} panelLabel="Page and text"
-        label={<><Icon name="type" /><span className={styles.aa}>Aa</span></>} ariaLabel="Aa, page and text"
+        label={<span className={styles.aa} aria-hidden="true">Aa</span>} ariaLabel="Aa, page and text"
         title="The page (Paper or Night), the size of the Greek, the line spacing and the columns">
         {aa.open && aaMenu}
       </Drop>
