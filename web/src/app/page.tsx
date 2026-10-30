@@ -98,6 +98,8 @@ export default function Home() {
                     <span className={h.t}>{a.door} <span className="visually-hidden">: {a.name}.</span><i>{r.text}</i></span>
                     <span className={h.lead} aria-hidden="true" />
                     <span className={h.gr} lang="grc">{a.greek}</span>
+                    {/* the arrow says the row opens the room, now that no red numeral stands before it (scripts/check-clickable.mjs) */}
+                    <span className={h.toGo} aria-hidden="true">→</span>
                   </Link>
                 </li>
               );

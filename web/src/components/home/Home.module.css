@@ -87,6 +87,16 @@
 .hint::before { content: "☞ "; color: var(--rubric); font-style: normal; }
 .sig { margin-top: 28px; font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
 .sig a { color: var(--rubric); }
+/* "Show the English", as the reader has it (Reader.module.css .oneBtn, .one): a quiet button with a small triangle that
+   points on while the English is closed and down while it is open; the English leafs in under the Greek, by a red rule */
+.enBox { margin-top: var(--space-4); }
+.enBtn:global(.text-btn) { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
+.enBtn:global(.text-btn):hover { color: var(--rubric); }
+.enBtn:global(.text-btn)::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
+.enBtn:global(.text-btn)[aria-expanded="true"]::before { clip-path: var(--tri-down); }
+@media (pointer: coarse) { .enBtn:global(.text-btn) { min-height: var(--tap); } }
+.enOpen { margin-top: var(--space-2); padding-left: var(--space-3); box-shadow: var(--rule-left); animation: leaf-in var(--dur) var(--ease) backwards; }
+.enOpen .en { margin-top: 0; }
 .waiting { font-style: italic; color: var(--ink-2); padding: 20px 0; }
 .podFoot { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
 .podFoot .about { color: var(--ink-2); max-width: 40em; }
@@ -95,12 +105,13 @@
 /* ---- contents: the rooms, set like a book's table of contents ---- */
 .toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
 .toc li { border-bottom: 1px solid var(--rule); }
-.toc a { display: grid; grid-template-columns: minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
+.toc a { display: grid; grid-template-columns: minmax(0, auto) 1fr auto auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
 .t { font: 500 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur) var(--ease); }
 .t i { display: block; font: 400 var(--step-0) / 1.4 var(--f-body); font-style: normal; color: var(--ink-2); margin-top: 2px; }
 .lead { border-bottom: 1px dotted var(--ink-3); transform: translateY(-7px); min-width: 20px; }
 .gr { font: italic 400 var(--step-1) var(--f-greek); color: var(--ink-2); transition: color var(--dur) var(--ease); }
-.toc a:hover .gr, .toc a:hover .t, .toc a:focus-visible .t { color: var(--rubric); }
+.toGo { color: var(--ink-3); transition: color var(--dur) var(--ease); }
+.toc a:hover .gr, .toc a:hover .t, .toc a:focus-visible .t, .toc a:hover .toGo, .toc a:focus-visible .toGo { color: var(--rubric); }
 
 /* ---- the end: ΤΕΛΟΣ and the colophon ---- */
 .fin { text-align: center; font: 400 1.6rem var(--face-didot); color: var(--rubric); margin: var(--space-8) 0 0; letter-spacing: 0.4em; }
@@ -123,7 +134,7 @@
   .leafR { border-top: 1px solid var(--rule); }
   .podFoot { grid-template-columns: 1fr; }
   .colophon { columns: 1; }
-  .toc a { grid-template-columns: minmax(0, 1fr) auto; }
+  .toc a { grid-template-columns: minmax(0, 1fr) auto auto; }
   .lead { display: none; }
 }
 @media (max-width: 520px) { .toc .gr { display: none; } }

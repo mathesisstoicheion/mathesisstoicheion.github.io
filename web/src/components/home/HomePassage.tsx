@@ -1,10 +1,10 @@
 "use client";
 /**
- * The home page's passage of the day, set as a two-language spread (the sample's .spread): the Greek on the left leaf, the
- * English on the right, a soft fold between them (one above the other on a phone), and a way on into the reader. The
- * passage's own title comes first, and each leaf opens with a large red initial, as a printed text does (the owner,
- * 2026-10-25). The passage is read live from the library's own files (data/passages.ts, a different famous passage each
- * day); any word can be touched to look it up (the reader's own look-up, WordPanel).
+ * The home page's passage of the day: the Greek alone on one leaf, as the reader opens (the owner, 2026-10-30: "Greek alone,
+ * like the reader"), with the reader's "Show the English" under it, which opens the translation under the Greek, and a way
+ * on into the reader. The passage's own title comes first, and the Greek opens with a large red initial, as a printed text
+ * does (the owner, 2026-10-25). The passage is read live from the library's own files (data/passages.ts, a different
+ * famous passage each day); any word can be touched to look it up (the reader's own look-up, WordPanel).
  */
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -36,6 +36,8 @@ export default function HomePassage() {
   const [data, setData] = useState<Loaded | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [word, setWord] = useState<{ w: string; ctx: WordContext | null } | null>(null);
+  // the English, closed until asked for (Show the English), as in the reader
+  const [english, setEnglish] = useState(false);
   useEffect(() => { loadToday().then(setData, (e: Error) => setError(e.message)); }, []);
   // the Greek's first word carries the large red initial (Home.module.css): marked here, since a verse line and a paragraph
   // of prose are built differently and only the very first word of either should have it
@@ -70,7 +72,7 @@ export default function HomePassage() {
       ) : !data ? (
         <p className={h.waiting} aria-busy="true">Unrolling today&apos;s passage…</p>
       ) : (
-        <div className={`${h.spread} ${data.tr ? "" : h.one} rv`}>
+        <div className={`${h.spread} ${h.one} rv`}>
           <div className={`${h.leaf} ${h.leafV}`}>
             <span className={h.folio}>Greek</span>
             <div ref={greekRef} className={`${h.gk} ${long ? h.long : ""}`} lang="grc" onClick={onClick}>
@@ -79,14 +81,20 @@ export default function HomePassage() {
               ))}
             </div>
             <p className={h.hint}>Touch any Greek word to look it up.</p>
+            {data.tr && (
+              <div className={h.enBox} lang="en">
+                <button type="button" className={`text-btn ${h.enBtn}`} aria-expanded={english} aria-controls="pod-english" onClick={() => setEnglish((o) => !o)}>
+                  {english ? "Hide the English" : "Show the English"}
+                </button>
+                {english && (
+                  <div id="pod-english" className={h.enOpen}>
+                    <div className={`${h.en} ${long ? h.long : ""}`}><Blocks blocks={translation} greek={false} keyPrefix="pdt" /></div>
+                  </div>
+                )}
+              </div>
+            )}
+            <p className={h.sig}>Greek: {describe(data.grc)}.{data.tr && english ? ` English: ${describe(data.tr)}.` : ""}</p>
           </div>
-          {data.tr && (
-            <div className={`${h.leaf} ${h.leafR}`}>
-              <span className={h.folio}>English</span>
-              <div className={`${h.en} ${long ? h.long : ""}`}><Blocks blocks={translation} greek={false} keyPrefix="pdt" /></div>
-              <p className={h.sig}>Greek: {describe(data.grc)}. English: {describe(data.tr)}.</p>
-            </div>
-          )}
         </div>
       )}
       <div className={h.podFoot}>
