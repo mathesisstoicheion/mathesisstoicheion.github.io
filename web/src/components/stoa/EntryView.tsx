@@ -13,6 +13,7 @@ import { entryBySlug, categoryOf } from "@/wiki/index";
 import { Blocks, Inline, CertTag, readHref, greekAware } from "./Markup";
 import Contents from "./Contents";
 import { EntryMarkers, SectionNote } from "./EntryNotes";
+import ShareEntry from "./ShareEntry";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
@@ -67,6 +68,8 @@ export default function EntryView({ e }: { e: Entry }) {
         <div className={styles.entryMain}>
           {heads.length > 1 && <Contents heads={heads} fold />}
           <Blocks bs={body} entry={e} />
+          {/* the entry's one Share, where its reading ends */}
+          <p className={styles.shareLine}><ShareEntry slug={e.slug} title={e.title} /></p>
           <div className={styles.entryExtras}>{extras}</div>
 
           <section className={`${styles.readIt} rv`} aria-labelledby="read-it">

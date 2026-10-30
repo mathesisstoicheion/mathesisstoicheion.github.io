@@ -347,7 +347,7 @@ function Mine({ lemma }: { lemma: string }) {
     <section className={`${styles.sec} ${styles.mine}`} aria-labelledby="ws-mine">
       <h2 id="ws-mine">Yours</h2>
       <h3 className="label">Your note on this word</h3>
-      <PageNoteEditor kind="word" target={lemma} label={`Your note on ${lemma}`} />
+      <PageNoteEditor kind="word" target={lemma} label={`Your note on ${lemma}`} shareAs={{ title: `A note on ${lemma}`, path: `/treasury/word?l=${encodeURIComponent(lemma)}` }} />
     </section>
   );
 }

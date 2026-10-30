@@ -3,71 +3,17 @@
  * creation: Shareable, including making a pot"). The whole design goes after the # of /stoa/pot#v=…, which a browser
  * never sends to the server, so nothing is stored anywhere: the link is the pot.
  *
- * Packed as numbers, smallest first: the style and the five bands as one byte each, the two words, the cracks, then each
+ * Packed as numbers (lib/link-code.ts): the style and the five bands as one byte each, the two words, the cracks, then each
  * stroke as its colour, width and points, every point after the first written as its step from the one before (a brush
- * moves a few texture pixels at a time, so most steps fit in a byte). Then squeezed (deflate, where the browser has it)
- * and written in the 64 letters an address can carry. A link read back is checked at every step: a damaged one, or one
- * that claims more than a browser keeps, is refused rather than drawn.
+ * moves a few texture pixels at a time, so most steps fit in a byte). A link read back is checked at every step: a
+ * damaged one, or one that claims more than a browser keeps, is refused rather than drawn.
  */
 import { BANDS, FRIEZES, MAX_CRACKS, MAX_POINTS, PALETTE, cleanDesign, type Design, type Stroke } from "./amphora";
+import { In, Out, fromCode, toCode } from "./link-code";
 
 const FORMAT = 1;
 /** a link's code longer than this is not read at all; a squeezed design opening larger than this is refused */
 const MAX_CODE = 400_000, MAX_BYTES = 4_000_000, MAX_STROKES = 100_000, MAX_WORD = 64;
-
-// ---------------------------------------------------------------- bytes
-class Out {
-  b = new Uint8Array(1024); n = 0;
-  byte(x: number) { if (this.n === this.b.length) { const g = new Uint8Array(this.b.length * 2); g.set(this.b); this.b = g; } this.b[this.n++] = x & 255; }
-  uint(x: number) { x = Math.max(0, Math.round(x)); while (x >= 128) { this.byte((x % 128) | 128); x = Math.floor(x / 128); } this.byte(x); }
-  int(x: number) { x = Math.round(x); this.uint(x < 0 ? -2 * x - 1 : 2 * x); }
-  text(s: string) { const t = new TextEncoder().encode(s); this.uint(t.length); for (const c of t) this.byte(c); }
-  done() { return this.b.slice(0, this.n); }
-}
-class In {
-  i = 0;
-  constructor(private b: Uint8Array) {}
-  byte() { if (this.i >= this.b.length) throw new Error("short"); return this.b[this.i++]; }
-  uint() { let x = 0, m = 1; for (let k = 0; k < 6; k++) { const c = this.byte(); x += (c & 127) * m; if (c < 128) return x; m *= 128; } throw new Error("long number"); }
-  int() { const z = this.uint(); return z % 2 ? -(z + 1) / 2 : z / 2; }
-  text(max: number) { const n = this.uint(); if (n > max) throw new Error("long words"); const t = new Uint8Array(n); for (let k = 0; k < n; k++) t[k] = this.byte(); return new TextDecoder().decode(t); }
-  get end() { return this.i === this.b.length; }
-}
-
-const toB64 = (b: Uint8Array) => {
-  let s = "";
-  for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode(...b.subarray(i, i + 0x8000));
-  return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-};
-const fromB64 = (s: string) => {
-  const t = atob(s.replace(/-/g, "+").replace(/_/g, "/"));
-  const b = new Uint8Array(t.length);
-  for (let i = 0; i < t.length; i++) b[i] = t.charCodeAt(i);
-  return b;
-};
-
-const squeezes = () => typeof CompressionStream === "function" && typeof DecompressionStream === "function";
-async function squeeze(b: Uint8Array): Promise<Uint8Array> {
-  const s = new Blob([b as BlobPart]).stream().pipeThrough(new CompressionStream("deflate-raw"));
-  return new Uint8Array(await new Response(s).arrayBuffer());
-}
-/** opened a piece at a time, and given up as soon as it grows past what any real pot needs */
-async function unsqueeze(b: Uint8Array): Promise<Uint8Array> {
-  const r = new Blob([b as BlobPart]).stream().pipeThrough(new DecompressionStream("deflate-raw")).getReader();
-  const parts: Uint8Array[] = [];
-  let n = 0;
-  for (;;) {
-    const { done, value } = await r.read();
-    if (done) break;
-    n += value.length;
-    if (n > MAX_BYTES) { await r.cancel(); throw new Error("too large"); }
-    parts.push(value);
-  }
-  const out = new Uint8Array(n);
-  let at = 0;
-  for (const p of parts) { out.set(p, at); at += p.length; }
-  return out;
-}
 
 // ---------------------------------------------------------------- the design
 function pack(d: Design): Uint8Array {
@@ -128,17 +74,14 @@ function unpack(b: Uint8Array): Design | null {
 
 /** The pot as the code that follows #v= in its link. */
 export async function encodeDesign(d: Design): Promise<string> {
-  const raw = pack(d);
-  return squeezes() ? `z${toB64(await squeeze(raw))}` : `r${toB64(raw)}`;
+  return toCode(pack(d));
 }
 
 /** A pot read back from its link's code; null for anything damaged, cut short or larger than a browser keeps. */
 export async function decodeDesign(code: string): Promise<Design | null> {
-  if (!code || code.length > MAX_CODE || !/^[zr][A-Za-z0-9_-]+$/.test(code)) return null;
-  try {
-    const b = fromB64(code.slice(1));
-    return unpack(code[0] === "z" ? (squeezes() ? await unsqueeze(b) : (() => { throw new Error("cannot open"); })()) : b);
-  } catch { return null; }
+  const b = await fromCode(code, MAX_CODE, MAX_BYTES);
+  if (!b) return null;
+  try { return unpack(b); } catch { return null; }
 }
 
 // ---------------------------------------------------------------- fitting it into a link

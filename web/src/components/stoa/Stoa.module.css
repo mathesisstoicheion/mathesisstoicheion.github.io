@@ -232,3 +232,6 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
   /* the timeline as a chronology table: the date in its own column, the event beside it, each row ruled across */
   .timeline li { grid-template-columns: var(--date-col) minmax(0, 1fr); column-gap: var(--space-4); align-items: baseline; padding-bottom: var(--space-2); box-shadow: var(--cut-under); }
 }
+
+/* the entry's Share, under its last paragraph (ShareEntry.tsx) */
+.shareLine { margin: var(--space-6) 0 0; }

@@ -35,7 +35,8 @@ export function SectionNote({ slug, section, title }: { slug: string; section: s
   }
   return (
     <div className={styles.sectionNote} ref={box}>
-      <PageNoteEditor kind="stoa" target={`${slug}#${section}`} label={`Your note on “${title}”`} startOpen={!note} />
+      <PageNoteEditor kind="stoa" target={`${slug}#${section}`} label={`Your note on “${title}”`} startOpen={!note}
+        shareAs={{ title: `A note on “${title}”`, path: `/stoa/${slug}${section === "top" ? "" : `#${section}`}` }} />
     </div>
   );
 }

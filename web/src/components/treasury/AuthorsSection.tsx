@@ -10,9 +10,17 @@ import RichText from "@/components/notes/RichText";
 import notesCss from "@/components/notes/Notes.module.css";
 import { ago, plural, type TreasuryState } from "./data";
 import styles from "./Treasury.module.css";
+import Icon from "@/components/Icon";
+import ShareButton from "@/components/ShareButton";
 
-/** A note on one author, word or wiki section, saved as you type. Used here, on Word Study pages and in the Painted Stoa. */
-export function PageNoteEditor({ kind, target, label, startOpen = false }: { kind: PageNote["kind"]; target: string; label: string; startOpen?: boolean }) {
+/**
+ * A note on one author, word or wiki section, saved as you type. Used here, on Word Study pages and in the Painted Stoa.
+ * `shareAs`: what its Share calls it and the page it belongs to, so the note goes out as its words with that page's link
+ * (lib/share.ts).
+ */
+export function PageNoteEditor({ kind, target, label, startOpen = false, shareAs }: {
+  kind: PageNote["kind"]; target: string; label: string; startOpen?: boolean; shareAs?: { title: string; path: string };
+}) {
   const id = `${kind}:${kind === "word" ? target.normalize("NFC") : target}`;
   const note = usePageNotes((s) => s.notes[id]);
   const save = usePageNotes((s) => s.save);
@@ -33,7 +41,8 @@ export function PageNoteEditor({ kind, target, label, startOpen = false }: { kin
       <div className={styles.pageNote}>
         {note?.text ? <RichText text={note.text} className={notesCss.rich} /> : <p className="muted">No note yet.</p>}
         <p className={styles.pageNoteFoot}>
-          <button type="button" className="chip" onClick={() => setEditing(true)}>{note?.text ? "Edit note" : "Write a note"}</button>
+          <button type="button" className="chip" onClick={() => setEditing(true)}><Icon name="edit" />{note?.text ? "Edit note" : "Write a note"}</button>
+          {note?.text && shareAs && <ShareButton className="chip" what={() => ({ title: shareAs.title, text: note.text, url: `${location.origin}${shareAs.path}` })} />}
           {note && <span className="muted">Last changed {ago(note.updated)}</span>}
         </p>
       </div>
@@ -44,7 +53,7 @@ export function PageNoteEditor({ kind, target, label, startOpen = false }: { kin
       <NoteField label={label} value={text} onChange={setDraft} rows={6} onEscape={() => setEditing(false)}
         placeholder={kind === "author" ? "What you think of this author, what to read next, questions…" : kind === "stoa" ? "Your thoughts on this section, questions, passages to follow up…" : "Where you met this word, a memory aid, a nuance…"} />
       <p className={styles.pageNoteFoot}>
-        <button type="button" className="chip" onClick={() => { if (!synced) save(kind, target, text); setEditing(false); }}>{synced ? "Done" : "Saving…"}</button>
+        <button type="button" className="chip" onClick={() => { if (!synced) save(kind, target, text); setEditing(false); }}><Icon name="check" />{synced ? "Done" : "Saving…"}</button>
         <span className="muted">Saved in this browser as you type. An empty note is deleted.</span>
       </p>
     </div>
@@ -96,7 +105,8 @@ export default function AuthorsSection({ t }: { t: TreasuryState }) {
               <span>{name(id)}</span>
               <Link className={styles.small} href={`/library/author?a=${id}`} transitionTypes={["page-turn"]}>Author page in the Mouseion →</Link>
             </h3>
-            <PageNoteEditor kind="author" target={id} label={`Your note on ${name(id)}`} startOpen={chosen === id && !t.pageNotes[`author:${id}`]} />
+            <PageNoteEditor kind="author" target={id} label={`Your note on ${name(id)}`} startOpen={chosen === id && !t.pageNotes[`author:${id}`]}
+              shareAs={{ title: `A note on ${name(id)}`, path: `/author/${id}` }} />
           </li>
         ))}
       </ol>

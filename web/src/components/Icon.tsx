@@ -191,6 +191,8 @@ const ICONS = {
   "undo": [["path", {d: "M9 14 4 9l5-5"}], ["path", {d: "M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11"}]],
   // redo (Lucide "redo-2")
   "redo": [["path", {d: "m15 14 5-5-5-5"}], ["path", {d: "M20 9H9.5A5.5 5.5 0 0 0 4 14.5A5.5 5.5 0 0 0 9.5 20H13"}]],
+  // record what you do (Lucide "circle-dot")
+  "record": [["circle", {cx: "12", cy: "12", r: "10"}], ["circle", {cx: "12", cy: "12", r: "1"}]],
   // scratch lines through to the clay, with a point (Lucide "pen-tool")
   "scratch": [["path", {d: "M15.707 21.293a1 1 0 0 1-1.414 0l-1.586-1.586a1 1 0 0 1 0-1.414l5.586-5.586a1 1 0 0 1 1.414 0l1.586 1.586a1 1 0 0 1 0 1.414z"}], ["path", {d: "m18 13-1.375-6.874a1 1 0 0 0-.746-.776L3.235 2.028a1 1 0 0 0-1.207 1.207L5.35 15.879a1 1 0 0 0 .776.746L13 18"}], ["path", {d: "m2.3 2.3 7.286 7.286"}], ["circle", {cx: "11", cy: "11", r: "2"}]],
   // strike a blow (Lucide "hammer")
