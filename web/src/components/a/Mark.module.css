@@ -8,8 +8,8 @@
 .words b { font: 400 1.22rem / 1.1 var(--face-didot); letter-spacing: 0.01em; white-space: nowrap; }
 .words i { font: 500 0.62rem / 1.2 var(--face-garamond); font-style: normal; letter-spacing: 0.24em; text-transform: uppercase; color: var(--ink-2); margin-top: 4px; white-space: nowrap; }
 .mark:hover .initials, .mark:focus-visible .initials { fill: var(--rubric); }
-/* a phone: a little smaller, so that Search and Menu stand beside it (Header.tsx) */
-@media (max-width: 430px) { .mark { gap: 10px; } .words b { font-size: 1.12rem; } }
+/* a phone: the seal a little nearer the name, so that Search and Menu stand beside it (Header.tsx) */
+@media (max-width: 430px) { .mark { gap: var(--space-2); } }
 @media (max-width: 380px) { .words b { font-size: 1.05rem; } .words i { letter-spacing: 0.16em; } }
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .bar { position: relative; } .bar::after { content: ""; position: absolute; inset: -4px; } }

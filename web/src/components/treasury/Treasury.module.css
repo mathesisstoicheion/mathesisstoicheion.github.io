@@ -62,7 +62,7 @@
 .privateText { color: var(--ink-2); max-width: 60ch; }
 .privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: var(--space-1); min-width: 5.5rem; }
 .privateCount .count { font-size: clamp(2rem, 3.4vw, 2.6rem); }
-.privateGo { grid-column: 1 / -1; justify-self: end; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
+.privateGo { grid-column: 1 / -1; justify-self: end; font: 400 var(--step--1) / 1.35 var(--f-body); color: var(--rubric); }
 /* the double rule uses the outline, so the link gives the focus ring back */
 .private:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
 @media (max-width: 520px) {
@@ -100,7 +100,7 @@
 .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
 .seg button {
   border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px;
-  font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap;
+  font: 400 var(--step--1) / 1.2 var(--f-body); white-space: nowrap;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .seg button [lang="grc"] { font: 400 var(--step--1) / 1 var(--f-greek); letter-spacing: 0.04em; text-transform: none; }
@@ -161,6 +161,8 @@
 .spine { display: grid; gap: 3px; align-content: start; padding: 14px 2px var(--space-4); text-decoration: none; color: var(--ink); }
 .spine b { font: italic 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .spine:hover b, .spine:focus-visible b { color: var(--rubric); }
+/* a book to open again shows it is a link at every width, as the site's cards do: a red arrow after its title */
+.spine b::after { content: "\00a0→"; color: var(--rubric); }
 .at { margin-top: var(--space-1); font-family: var(--f-label); font-size: var(--step--1); color: var(--rubric); }
 
 /* ------------------------------------------------ latest: entries under hairlines, in columns */
@@ -242,7 +244,7 @@
 /* a Treasury with nothing in it: only "Restore from a file", a small link (KeepSafe.tsx) */
 .keepSmall { display: grid; gap: var(--space-2); justify-items: start; font-size: var(--step--1); color: var(--ink-2); }
 .keepSmall .keepActs { gap: var(--space-2); }
-.linkBtn { font: inherit; color: var(--rubric); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.linkBtn { display: inline-flex; align-items: center; gap: var(--space-1); font: inherit; color: var(--rubric); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (pointer: coarse) { .linkBtn { min-height: var(--tap); } }
 
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
@@ -267,7 +269,5 @@
 .offline b { font: 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
 .offline:hover b, .offline:focus-visible b { color: var(--rubric); }
 .offline > span:last-child { max-width: 64ch; color: var(--ink-2); }
-/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
-@media (min-width: 761px) {
-  .offline b::after { content: "\00a0→"; color: var(--rubric); }
-}
+/* a link shows it at rest at every width: a red arrow after its name (globals.css --link-line; scripts/check-clickable.mjs) */
+.offline b::after { content: "\00a0→"; color: var(--rubric); }

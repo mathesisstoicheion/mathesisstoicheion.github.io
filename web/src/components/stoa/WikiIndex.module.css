@@ -58,10 +58,8 @@
 @media (min-width: 761px) {
   .groupHead { margin-top: var(--part-room); }
 }
-/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
-@media (min-width: 761px) {
-  .name::after { content: "\00a0→"; color: var(--rubric); }
-}
+/* a link shows it at rest at every width: a red arrow after its name (globals.css --link-line; scripts/check-clickable.mjs) */
+.name::after { content: "\00a0→"; color: var(--rubric); }
 /* on a wide screen the long note on where the dates come from runs in columns across the page, as the plate lists do */
 @media (min-width: 1100px) {
   .credit { max-width: none; columns: 3 20em; column-gap: var(--hang-gap); }

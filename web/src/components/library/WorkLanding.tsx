@@ -13,6 +13,7 @@ import { AREAS, trail } from "@/config/areas";
 import type { RelatedEntry } from "@/wiki/related";
 import styles from "./AuthorProfile.module.css";
 import lib from "./Library.module.css";
+import Icon from "@/components/Icon";
 import PageHead from "@/components/PageHead";
 
 const num = (n: number) => n.toLocaleString("en-GB");
@@ -22,6 +23,7 @@ function TextRow({ w, t }: { w: CatWork; t: CatText }) {
   return (
     <li className={lib.work}>
       <Link href={href} transitionTypes={["page-turn"]} className={lib.workLink}>
+        <Icon name="read" />
         <span className={lib.workTitle}>{t.kind === "translation" ? "English translation" : t.kind === "commentary" ? "Commentary" : "Greek text"}</span>
         {/* the collection's own record of the file, in the body type: it is Latin or English, not a Greek title */}
         <span className={styles.record}>{t.desc ?? t.label ?? versionOf(t.urn)}</span>

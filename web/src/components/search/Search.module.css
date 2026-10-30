@@ -183,19 +183,8 @@
    line more or less in it moves what follows (scripts/check-heads.mjs) */
 .boxHold { min-height: 10.5rem; }
 @media (min-width: 761px) { .boxHold, .box { min-height: 13rem; align-content: start; } }
-/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): a leaf in a
-   hairline frame, its name in red small capitals */
-.refine { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius); }
-.refine summary {
-  position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
-  min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4);
-  font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric);
-}
-.refine summary::-webkit-details-marker { display: none; }
-.refine summary::after { content: ""; position: absolute; right: var(--space-4); top: calc(var(--space-3) + 0.4em); width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-down); color: var(--ink-2); }
-.refine[open] summary::after { clip-path: var(--tri-up); }
-.refineOn { font: 400 var(--step--1) / 1.35 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
-.refineBody { display: grid; gap: var(--space-4); padding: var(--space-1) var(--space-4) var(--space-4); }
+/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): the
+   site's .fold-box (app/globals.css) */
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
   .tabs button { min-height: var(--tap); }

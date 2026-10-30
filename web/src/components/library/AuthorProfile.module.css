@@ -33,6 +33,8 @@
 }
 .card:hover { background-color: var(--slab-lit); }
 .card b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.2; }
+/* each card opens its entry: a red arrow after its name, as on the site's other cards (app/globals.css .slab-card) */
+.card b::after { content: "\00a0→"; color: var(--rubric); }
 .card span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 /* the entries past the first four: a plain fold under the cards */
 .allEntries { margin-top: var(--space-3); }

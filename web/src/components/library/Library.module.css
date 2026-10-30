@@ -37,7 +37,7 @@
 .ti { font: italic 400 var(--step-2) / 1.2 var(--f-body); margin: 2px 0; transition: color 0.5s var(--ease); }
 .gt { font: 400 var(--step-sub) / 1.35 var(--f-greek); color: var(--ink-2); }
 .about { margin-top: 6px; font-size: var(--step--1); line-height: 1.45; color: var(--ink-2); max-width: 36em; }
-.bookGo { font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; transition: color 0.5s var(--ease); }
+.bookGo { font: 400 var(--step--1) / 1.2 var(--f-body); color: var(--ink-3); white-space: nowrap; transition: color 0.5s var(--ease); }
 .book:hover .ti, .book:hover .bookGo { color: var(--rubric); }
 @media (max-width: 760px) {
   .famous { margin-top: var(--space-6); }
@@ -104,7 +104,8 @@
   .order { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   .order > button { padding-inline: 6px; letter-spacing: 0.1em; }
 }
-.filters { display: grid; gap: var(--space-4); padding: var(--space-4) 0; border-block: 1px solid var(--rule); }
+/* the filters inside their fold (.fold-body, app/globals.css) */
+.filters { padding-top: var(--space-2); }
 .selects { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); }
 .selects select { font: inherit; font-size: var(--step--1); color: var(--ink); padding: var(--space-2) var(--space-6) var(--space-2) 10px; width: 11rem; }
 .selects select[data-set] { border-color: var(--rubric); color: var(--rubric); }
@@ -244,8 +245,12 @@
 /* ---------------------------------------------------------------- a work as other pages list it (author pages) */
 .works { list-style: none; margin: 18px 0 0; padding: 0; border-top: 1px solid var(--ink); }
 .work { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-4); padding: var(--space-3) 0; border-bottom: 1px solid var(--rule); }
-.workLink { display: grid; text-decoration: none; min-width: 0; }
-.workLink:hover .workTitle { color: var(--rubric); }
+/* a work's title opens it in the reader: an open book before it says so (the owner, 2026-10-30: everything you can press
+   has its sign) */
+.workLink { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-2); text-decoration: none; min-width: 0; }
+.workLink > * { grid-column: 2; }
+.workLink > svg[data-icon] { grid-column: 1; grid-row: 1 / span 3; margin-top: 0.3em; color: var(--ink-3); transition: color var(--dur) var(--ease); }
+.workLink:hover .workTitle, .workLink:hover > svg[data-icon] { color: var(--rubric); }
 .workTitle { font: italic 400 var(--step-sub) / 1.35 var(--f-body); transition: color 0.5s var(--ease); }
 .byline { font-style: normal; color: var(--ink-2); }
 .workGr { font-family: var(--f-greek); color: var(--ink-2); }
@@ -257,7 +262,7 @@
   .meta .genre { display: none; }
 }
 @media (max-width: 760px) { .workLink { align-self: stretch; min-height: var(--tap); align-content: center; } }
-.aboutLink { text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
+.aboutLink { display: inline-flex; align-items: center; gap: var(--space-1); text-decoration: underline; text-underline-offset: 3px; color: var(--ink-2); }
 .aboutLink:hover { color: var(--rubric); }
 @media (pointer: coarse) { .aboutLink { display: inline-flex; align-items: center; justify-content: center; min-height: var(--tap); min-width: var(--tap); } }
 /* the collection's own Latin or Greek title, under an English one (OrigTitle.tsx) */
@@ -277,7 +282,6 @@
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
   .path ol b { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-  .workTitle::after { content: "\00a0→"; color: var(--rubric); }
   .go { opacity: 1; }
 }
 /* the six reading paths in two even rows of three on a wide screen, not four and two (scripts/check-room.mjs) */

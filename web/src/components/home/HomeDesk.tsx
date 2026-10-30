@@ -6,6 +6,7 @@
  * two the home page shows is decided before the first paint (lib/visitor.ts, data-visitor on <html>).
  */
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { trail, clearTrail, pageKey, type Visit } from "@/lib/resume";
@@ -59,10 +60,10 @@ export default function HomeDesk() {
           <span className={s.dlabel}>Carry on</span>
           <div>
             {last && lastD ? (
-              <><Link href={resumeHref(last)} onClick={() => remember(last.href)} transitionTypes={["page-turn"]}><b>{lastD.what}</b></Link>
+              <><Link href={resumeHref(last)} onClick={() => remember(last.href)} transitionTypes={["page-turn"]}><b>{lastD.what}</b> <span aria-hidden="true">→</span></Link>
                 <small>{lastD.where ? `${lastD.where} · ` : ""}{ago(last.t)}</small></>
             ) : books[0] ? (
-              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b></Link>{shownAt(books[0][1].at) && <> <small>at {books[0][1].at}</small></>}</>
+              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b> <span aria-hidden="true">→</span></Link>{shownAt(books[0][1].at) && <> <small>at {books[0][1].at}</small></>}</>
             ) : (
               <>{visits ? "Nothing open yet. " : "… "}<Link href="/library" transitionTypes={["page-turn"]}>Find something to read →</Link></>
             )}
@@ -95,7 +96,7 @@ export default function HomeDesk() {
           {alsoRecent.map((v, i) => (
             <span key={v.href}>{i > 0 && " · "}<Link href={resumeHref(v)} onClick={() => remember(v.href)} transitionTypes={["page-turn"]}>{describe(v, idx).what}</Link></span>
           ))}
-          {" "}<button type="button" onClick={() => { clearTrail(); setVisits([]); }}>Forget these pages</button>
+          {" "}<button type="button" onClick={() => { clearTrail(); setVisits([]); }}><Icon name="erase" />Forget these pages</button>
         </p>
       )}
     </div>

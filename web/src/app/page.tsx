@@ -1,15 +1,12 @@
-import Link from "next/link";
 import Page from "@/components/Page";
 import HomeStarts from "@/components/home/HomeStarts";
 import HomeDesk from "@/components/home/HomeDesk";
 import HomePassage from "@/components/home/HomePassage";
 import FamousBooks, { type Book } from "@/components/library/FamousBooks";
-import { AREAS, FORUM_OPEN, shown, type AreaId } from "@/config/areas";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { greekEditions, hasTranslation, type Catalog } from "@/lib/catalog";
 import { MEDALLIONS } from "@/data/medallions";
-import { TRACKS } from "@/data/tracks";
 import h from "@/components/home/Home.module.css";
 
 /** The cross that closes the page either side of ΤΕΛΟΣ, as the sample sets it ("✠"): drawn, since none of the three typefaces
@@ -20,20 +17,8 @@ const Cross = () => (
   </svg>
 );
 
-// The library's size, counted from the catalogue when the site is built.
+// the catalogue, read when the site is built
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
-const WORKS = CATALOG.authors.flatMap((a) => a.works);
-const n = (x: number) => x.toLocaleString("en-GB");
-
-/** the rooms of the site, as a book's contents; four while the forum is closed (FORUM_OPEN) */
-const ALL_ROOMS: { id: AreaId; text: string }[] = [
-  { id: "study", text: "Lessons from the first letters to reading real texts." },
-  { id: "library", text: `The library: ${n(WORKS.length)} works in Greek, ${n(WORKS.filter(hasTranslation).length)} with English beside them.` },
-  { id: "wiki", text: "People, places and objects of the ancient world." },
-  { id: "forum", text: "The Agora: ask, answer, and read together." },
-  { id: "treasury", text: "Your bookmarks, notes, highlights and words." },
-];
-const ROOMS = ALL_ROOMS.filter((r) => shown(r.id));
 
 // a work's Greek title: the first of its Greek editions' names written in Greek (some are catalogued by a Latin name)
 const greekTitle = (w: Catalog["authors"][number]["works"][number]) =>
@@ -48,9 +33,12 @@ const BOOKS: Book[] = MEDALLIONS.map(({ group, id, about }) => {
 /**
  * The home page, as the printed page sets it (the owner's choice, 2026-10-22; redesign SPEC.md 4.1, decision 7), shorter
  * than before and in this order: the title page; "Where are you starting?" (or, for a visitor coming back, their desk);
- * the passage of the day; six famous books (moved here from the library, the owner, 2026-10-25); the Contents; the end,
- * with the colophon. No photographs (the owner, 2026-10-25: they "take the focus away from the websites main focus:
- * Reading"). "Why Stoics are called Stoics" is in Explore now.
+ * the passage of the day; six famous books (moved here from the library, the owner, 2026-10-25); the end, with the
+ * colophon. No photographs (the owner, 2026-10-25: they "take the focus away from the websites main focus: Reading").
+ * "Why Stoics are called Stoics" is in Explore now. One way to each place (the owner, 2026-10-30: "Nothing should have
+ * multiple buttons that lead to the same place"): the title page has no buttons of its own, as the three starts just under
+ * it (or the desk) are the ways in; the rooms' Contents is gone, the rooms being in the header and along the foot of a
+ * phone; the colophon names the typefaces only, the sources and the pictures' credits being in the foot of the page.
  */
 export default function Home() {
   return (
@@ -62,10 +50,6 @@ export default function Home() {
             <div className={`${h.kicker} label`} data-head-path=""><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
             <h1 className={h.title} data-head-title="">Read the Greeks in <em>their own</em> words</h1>
             <p className={h.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
-            <div className={h.btns}>
-              <Link className="btn" href={TRACKS.reading.first} transitionTypes={["page-turn"]}>Start with the letters</Link>
-              <Link className="btn ghost" href="/library" transitionTypes={["page-turn"]}>Open the library</Link>
-            </div>
           </div>
         </div>
         <div className={h.drawn} aria-hidden="true" />
@@ -87,34 +71,8 @@ export default function Home() {
           <div className="rv"><FamousBooks books={BOOKS} /></div>
         </section>
 
-        <section className={h.part} aria-labelledby="contents-title">
-          <div className="sh rv"><h2 id="contents-title">Contents</h2><span className="fill" /><span className="src">{FORUM_OPEN ? "five rooms" : "four rooms"}</span></div>
-          <ol className={`${h.toc} rv`}>
-            {ROOMS.map((r) => {
-              const a = AREAS[r.id];
-              return (
-                <li key={r.id}>
-                  <Link href={a.href} transitionTypes={["page-turn"]}>
-                    <span className={h.t}>{a.door} <span className="visually-hidden">: {a.name}.</span><i>{r.text}</i></span>
-                    <span className={h.lead} aria-hidden="true" />
-                    <span className={h.gr} lang="grc">{a.greek}</span>
-                    {/* the arrow says the row opens the room, now that no red numeral stands before it (scripts/check-clickable.mjs) */}
-                    <span className={h.toGo} aria-hidden="true">→</span>
-                  </Link>
-                </li>
-              );
-            })}
-          </ol>
-        </section>
-
         <p className={h.fin} aria-hidden="true"><Cross /> ΤΕΛΟΣ <Cross /></p>
-        <div className={h.colophon}>
-          <p><b>Colophon.</b> Set in EB Garamond, GFS Didot and Gentium Book Plus. The Greek texts and their English translations
-            are read from the Perseus Digital Library and the First Thousand Years of Greek project; each passage names its editor
-            and translator beside it.</p>
-          <p><b>Pictures.</b> The site shows photographs only where they teach, as in the Painted Stoa; every one is listed with
-            its full credit on the <Link href="/credits">credits page</Link>.</p>
-        </div>
+        <p className={h.colophon}><b>Colophon.</b> Set in EB Garamond, GFS Didot and Gentium Book Plus.</p>
       </div>
     </Page>
   );

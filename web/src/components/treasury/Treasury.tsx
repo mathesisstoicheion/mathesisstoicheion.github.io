@@ -9,6 +9,7 @@
  */
 import Link from "next/link";
 import { AREAS } from "@/config/areas";
+import Icon from "@/components/Icon";
 import { useSearchParams } from "next/navigation";
 import { useEffect } from "react";
 import { useTreasury, plural } from "./data";
@@ -42,10 +43,9 @@ export default function Treasury() {
       {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
       {empty && (
         <div className={styles.welcome}>
-          <p>Your Treasury is empty so far. Open a text in <Link href="/library" transitionTypes={["page-turn"]}>the Mouseion</Link>, then
-            select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
+          <p>Your Treasury is empty so far. Open a text in the Mouseion, then select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
             Click any word to look it up.</p>
-          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}>Open the Mouseion</Link>
+          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}><Icon name="library" />Open the Mouseion</Link>
         </div>
       )}
 

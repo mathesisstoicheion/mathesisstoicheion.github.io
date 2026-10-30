@@ -6,6 +6,7 @@
  */
 import { addRecentSearch } from "@/lib/recent-searches";
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Door, { DoorBlock } from "@/components/a/Door";
@@ -334,9 +335,9 @@ function Filters({ idx, tab, scope, allEditions, tagStr, go, near, nearWithin, d
           <p className={styles.small}>As analysed in GLAUx: most of it by computer, some checked by hand.</p>
         </fieldset>
       )}
-      <details className={styles.refine} open={byHand || on > 0} onToggle={(e) => setByHand(e.currentTarget.open)}>
-      <summary>Refine{on > 0 && <span className={styles.refineOn}>{on} {on === 1 ? "filter" : "filters"} on</span>}</summary>
-      <div className={styles.refineBody}>
+      <details className="fold-box" open={byHand || on > 0} onToggle={(e) => setByHand(e.currentTarget.open)}>
+      <summary><Icon name="filter" />Refine{on > 0 && <b>{on} {on === 1 ? "filter" : "filters"} on</b>}</summary>
+      <div className="fold-body">
       {tab !== "syntax" && <NearField tab={tab} near={near} within={nearWithin} draft={draft} setDraft={setDraft} go={go} />}
       <fieldset className={styles.fs}>
         <legend>Where</legend>

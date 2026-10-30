@@ -30,7 +30,7 @@
 .featuredText h2 a { color: inherit; text-decoration: none; transition: color var(--dur-quick) var(--ease); }
 .featuredText h2 a:hover { color: var(--rubric); }
 .featuredHook { margin: 0; max-width: var(--measure); font-size: var(--step-sub); }
-.featuredGo { justify-self: start; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+.featuredGo { justify-self: start; font-family: var(--f-label); font-size: var(--step-0); color: var(--accent); text-decoration: none; }
 .featuredGo:hover { text-decoration: underline; text-underline-offset: 3px; }
 .featuredPic { margin: 0; }
 @media (max-width: 760px) {
@@ -57,7 +57,7 @@
 .essay { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; }
 .essay p { margin: 0 0 1em; font-size: var(--step-sub); max-width: 36em; }
 .essay p:first-of-type::first-letter { font: 400 4.1em / 0.8 var(--f-title); float: left; margin: 0.06em 0.1em 0 0; color: var(--rubric); }
-.essayGo a { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.16em; text-transform: uppercase; color: var(--accent); text-decoration: none; }
+.essayGo a { font-family: var(--f-label); font-size: var(--step-0); color: var(--accent); text-decoration: none; }
 .essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; }
 /* the source in the margin, set in from a red rule, and the plate under it */
 .side { align-self: start; padding-left: 14px; border-left: 1px solid var(--rubric); font-size: var(--step--1); color: var(--ink-2); }
@@ -220,8 +220,8 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
 @media (min-width: 761px) {
   .panelIn li a, .contents a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
   .contents a[aria-current="location"] { text-decoration-color: var(--rubric); }
-  .readIt b::after, .related b::after { content: "\00a0→"; color: var(--rubric); }
 }
+.readIt b::after, .related b::after { content: "\00a0→"; color: var(--rubric); }
 /* on a wide screen the margin beside an entry and beside the essay grows with the page and stays beside the text as it is
    read (the owner, 2026-10-23: "doesn't use a lot of the available space"; scripts/check-room.mjs) */
 @media (min-width: 1200px) {

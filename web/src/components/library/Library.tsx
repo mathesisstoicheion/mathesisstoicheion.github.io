@@ -18,6 +18,7 @@ import { AZRail } from "./AZList";
 import { bestMatch, nameMatch } from "./az";
 import { authorKind, kindKey, KIND_ORDER, OTHER_KIND, workKinds } from "./kinds";
 import { useLibQuery } from "./libQuery";
+import Icon from "@/components/Icon";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
@@ -79,6 +80,7 @@ export function WorkItem({ w, author, meta, common, about = false, usual, start 
   return (
     <li className={styles.work}>
       <Link href={readHref(w)} transitionTypes={["page-turn"]} className={styles.workLink}>
+        <Icon name="read" />
         <span className={styles.workTitle}>{author && <span className={styles.byline}>{author.name}, </span>}{w.title}</span>
         {grc?.label && grc.label !== w.title && <span className={styles.workGr} lang="grc">{grc.label}</span>}
         {w.orig && w.orig !== grc?.label && <OrigTitle work={w} className={styles.orig} />}
@@ -89,7 +91,7 @@ export function WorkItem({ w, author, meta, common, about = false, usual, start 
         {tr ? <span className={styles.badge}>English</span> : <span className={`${styles.badge} ${styles.off}`}>Greek only</span>}
         {common !== null && <span title={`${common}% of this text's running words are among the 516 core words, the commonest in Greek`}>{common}% common words</span>}
         {grc && !usual && <span className={styles.size}>{kb(grc.size)}</span>}
-        {about && <Link href={workPath(w.id)} transitionTypes={["page-turn"]} className={styles.aboutLink}>About</Link>}
+        {about && <Link href={workPath(w.id)} transitionTypes={["page-turn"]} className={styles.aboutLink}><Icon name="info" />About</Link>}
       </span>
     </li>
   );
@@ -325,6 +327,8 @@ export default function Library() {
   }, [listed, selected]);
 
   const filtering = !!query.trim() || tr !== "all" || !!period || !!dialect || !!vocab;
+  /** how many of the fold's filters are on (the kind of writing, the period, the dialect, the vocabulary) */
+  const filtersOn = [family, period, dialect, vocab].filter(Boolean).length;
   const clearAll = () => { setQ(""); setTr("all"); setFamily(""); setPeriod(""); setDialect(""); setVocab(""); };
 
   if (error) return <p className={`wrap ${styles.error}`}>{error}</p>;
@@ -344,7 +348,11 @@ export default function Library() {
           {SORTS.map(([id, label]) => <button key={id} type="button" role="radio" aria-checked={sort === id} onClick={() => setSort(id)}>{label}</button>)}
         </div>
       </div>
-      <div id="library-filters" className={styles.filters}>
+      {/* the filters, folded until wanted, so the list comes up under the search (the owner, 2026-10-30: the A to Z list
+          is what the page is for); the fold says how many are on */}
+      <details id="library-filters" className="fold-box">
+        <summary><Icon name="filter" />Filter<small>by kind of writing, period, dialect or vocabulary</small>{filtersOn > 0 && <b>{filtersOn} on</b>}</summary>
+        <div className={`fold-body ${styles.filters}`}>
         <div className={styles.selects} role="group" aria-label="More filters">
           <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>
             <option value="">Every period</option>
@@ -372,7 +380,8 @@ export default function Library() {
           </div>
           <p className={styles.note}>The kinds follow the GLAUx corpus’s classification of each work. A work it leaves unclassified is filed with its author’s usual kind, or by what Wikidata says its author was.</p>
         </div>
-      </div>
+        </div>
+      </details>
 
       {vocab && <p className={styles.note}>Vocabulary is the share of a text&apos;s running words that are among the 516 core words, the commonest in Greek (the Dickinson College Commentaries core list, counted over the GLAUx analysis; texts under 2,000 words are not rated). It measures words only, not grammar, dialect or how hard the ideas are: Aristotle&apos;s words are common, his arguments are not.</p>}
 
