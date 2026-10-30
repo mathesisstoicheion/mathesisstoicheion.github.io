@@ -22,6 +22,8 @@ import { compareAll, readingHunks, wordKey, type RowDiff, type Strictness } from
 import { getPosition, savePosition } from "@/lib/position";
 import { firstOpening, markOpened } from "@/lib/opened";
 import { useSettings, LIMITS, type Columns, scrollBehavior } from "@/lib/settings";
+import { inRem, shownGreekSize } from "@/lib/greekSize";
+import { verseSizeWhere } from "@/lib/verseFit";
 import { useUI } from "@/lib/ui";
 import { AREAS, SITE, trail } from "@/config/areas";
 import { Blocks } from "./Blocks";
@@ -247,7 +249,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const cases = useSettings((s) => s.cases);
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
-  const fitLines = useSettings((s) => s.fitLines);
   const [vocabOpen, setVocabOpen] = useState(false);
   const [placesOpen, setPlacesOpen] = useState(false);
   const [talkOpen, setTalkOpen] = useState(false);
@@ -682,16 +683,20 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   }, [hasRows]);
 
   // Pinch the text with two fingers to change the size of the Greek (remembered in Settings). The passage
-  // between the fingers stays where it is while the lines re-flow around it.
+  // between the fingers stays where it is while the lines re-flow around it. The fingers start from the Greek as it is on the screen (a page of verse is set
+  // a little smaller than the reader's size, and the Greek must not jump under the hand), and take the size in hand: the verse fit is off from the first move
+  // and for the size the pinch ends at, which is saved as a number, a size the reader chose (the quiet desk, ticket 10, the owner, 2026-10-30).
   useEffect(() => {
     const el = textRef.current;
     if (!el || contained) return;
-    let d0 = 0, size0 = 0, live = 0, anchor: HTMLElement | null = null, anchorY = 0, frame = 0;
+    let d0 = 0, size0 = 0, live = 0, moved = false, anchor: HTMLElement | null = null, anchorY = 0, frame = 0;
     const { min, max, step } = LIMITS.greekSize;
     const gap = (t: TouchList) => Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY);
     const start = (e: TouchEvent) => {
       if (e.touches.length !== 2) return;
-      d0 = gap(e.touches); size0 = live = useSettings.getState().greekSize;
+      const shown = el.querySelector<HTMLElement>('[lang="grc"]');
+      size0 = live = inRem(shown ? parseFloat(getComputedStyle(shown).fontSize) : shownGreekSize(el).px);
+      d0 = gap(e.touches); moved = false;
       const mx = (e.touches[0].clientX + e.touches[1].clientX) / 2, my = (e.touches[0].clientY + e.touches[1].clientY) / 2;
       anchor = document.elementFromPoint(mx, my)?.closest<HTMLElement>("[data-key]") ?? null;
       anchorY = anchor?.getBoundingClientRect().top ?? 0;
@@ -699,15 +704,17 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     const move = (e: TouchEvent) => {
       if (!d0 || e.touches.length !== 2) return;
       e.preventDefault();   // the page itself must not zoom
+      if (!moved) { moved = true; rootRef.current?.style.setProperty("--fit", "1"); }
       live = Math.min(max, Math.max(min, size0 * gap(e.touches) / d0));
-      document.documentElement.style.setProperty("--greek-size", `${live}rem`);
+      document.documentElement.style.setProperty("--greek-chosen", `${live}rem`);
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => { if (anchor) scrollBy(0, anchor.getBoundingClientRect().top - anchorY); });
     };
     const end = (e: TouchEvent) => {
       if (!d0 || e.touches.length >= 2) return;
       d0 = 0;
-      useSettings.getState().set({ greekSize: Math.round(live / step) * step });
+      // two fingers that did not move leave the size as it was (a size that suits the device stays so)
+      if (moved) useSettings.getState().set({ greekSize: Math.round(live / step) * step });
     };
     const noZoom = (e: Event) => e.preventDefault();   // Safari's own pinch gesture
     el.addEventListener("touchstart", start, { passive: true });
@@ -722,40 +729,70 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     };
   }, [contained, hasRows]);
 
-
-  // "Fit lines": verse lines stay whole, and the Greek shrinks until the longest line on the page fits
-  // (never below half its size; past that, lines wrap again).
-  const fitOn = useSettings((s) => s.fitLines);
-  const greekSize = useSettings((s) => s.greekSize);
+  // ------------------------------------------------------------ verse fit
+  // A page set in lines of verse is set at the reader's size, made smaller only as far as its widest line needs to stand whole, and never below 16 px: Homer's
+  // lines stand whole on a phone (all but the few that cannot at 16 px, which wrap with a hanging indent) and at 1100 px, and keep the full 26 px where they fit
+  // (lib/verseFit.ts; the quiet desk, ticket 10, the owner, 2026-10-30). Measured when the page is drawn and again when its width, the columns or the size change,
+  // not while it scrolls: the width of the widest line, worked out from the text itself (so that rows drawn only when scrolled to count too, and a window dragged
+  // wider does not set every line out again), and the room the words of a line have, read from the page with the reader's own size. The result is --fit on the
+  // reader's root (the fitted size ÷ the reader's), which the Greek, the English beside it and the title line's start all read (Reader.module.css): one size for
+  // the whole page, never one per passage. A size the reader has chosen is kept exactly as it is, and so is prose.
+  const sizeAuto = useSettings((s) => s.greekSize === "auto");
+  // The Greek typeface is asked for as the reader opens, while the book is being fetched, and not when the first line is drawn: the verse is then measured in the
+  // face it is set in, and the size is settled when the page is first drawn. Measured in the stand-in and again when the face arrives a moment later, the size
+  // would change under the page, the passage held at the top would be moved back, and the header, which returns at any movement up, would return with it.
   useEffect(() => {
-    const el = textRef.current;
-    if (!el || !fitOn) return;
-    let frame = 0;
-    const measure = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        el.style.setProperty("--fit", "1");
-        el.removeAttribute("data-fit-wrap");
-        let worst = 0;
-        for (const line of el.querySelectorAll<HTMLElement>(`.${styles.line}`)) {
-          const lt = line.querySelector<HTMLElement>(`.${styles.lt}`);
-          if (!lt) continue;
-          // the room the words have is their own box (the line's number stands in a column of its own, or on a phone out in the margin)
-          const room = lt.clientWidth;
-          if (room > 0) worst = Math.max(worst, lt.scrollWidth / room);
-        }
-        const fit = worst > 1 ? 1 / worst : 1;
-        el.style.setProperty("--fit", String(Math.max(0.5, fit * 0.99)));
-        if (fit < 0.5) el.setAttribute("data-fit-wrap", "");
-      });
+    const probe = document.createElement("span");
+    probe.style.cssText = "position:absolute;visibility:hidden;font-family:var(--f-greek)";
+    document.body.append(probe);
+    const family = getComputedStyle(probe).fontFamily;
+    probe.remove();
+    void document.fonts?.load(`400 20px ${family}`, "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος").catch(() => undefined);
+  }, []);
+  useLayoutEffect(() => {
+    const root = rootRef.current, art = textRef.current;
+    if (!root || !art) return;
+    // the lines of Greek verse, by the column they stand in: the Greek's own and, when two editions are compared, the second Greek one (English lines are not these)
+    const verse = [`.${styles.grc} [data-u] .${styles.line} .${styles.lt}`, `.${styles.tr}[data-greek] .${styles.line} .${styles.lt}`]
+      .map((q) => [...art.querySelectorAll<HTMLElement>(q)]).filter((lines) => lines.length);
+    const canvas = document.createElement("canvas").getContext("2d");
+    if (!poetry || !sizeAuto || !verse.length || !canvas) { root.style.removeProperty("--fit"); return; }
+    let off = false, face = "", widest: number[] = [];
+    const fit = () => {
+      if (off || !verse[0][0].isConnected) return;
+      // the passage at the top stays where it is while the Greek is set again: a panel opening narrows the text and the size follows it (the passage is kept through the
+      // narrowing above; the new size would move it once more), and so does a window dragged narrower, and the page must not slide from under the reader
+      const key = topKey(), held = key ? root.querySelector<HTMLElement>(`article [data-key="${CSS.escape(key)}"]`) : null;
+      const was = held?.getBoundingClientRect().top ?? 0;
+      root.style.setProperty("--fit", "1");   // the reader's own size, which the room is read at (a smaller size only gives the words more)
+      const cs = getComputedStyle(verse[0][0]), px = parseFloat(cs.fontSize);
+      if (!(px > 0)) return;
+      const now = `${cs.fontStyle} ${cs.fontWeight} ${px}px ${cs.fontFamily}`;
+      if (now !== face) {   // the widths are taken again only when the typeface or the size has changed, not as a window is resized
+        face = canvas.font = now;
+        widest = verse.map((lines) => lines.reduce((w, lt) => Math.max(w, canvas.measureText((lt.textContent ?? "").replace(/\s+/g, " ").trim()).width), 0));
+      }
+      // a page that compares two editions is set in lines in both columns: the one size is the smaller of what each needs. The room is read from the page at each
+      // size tried, since a smaller size gives the words more room on a computer (the column of line numbers is 2.4 em wide; lib/verseFit.ts)
+      const roomAt = (lines: HTMLElement[]) => (size: number) => { root.style.setProperty("--fit", String(size / px)); return lines[0].getBoundingClientRect().width; };
+      const size = verse.reduce((least, lines, i) => Math.min(least, verseSizeWhere(px, widest[i], roomAt(lines))), px);
+      root.style.setProperty("--fit", String(size / px));
+      const moved = held ? held.getBoundingClientRect().top - was : 0;
+      if (Math.abs(moved) > 1) (contained ? root : window).scrollBy({ top: moved, behavior: "instant" });
     };
-    measure();
+    // the web face arriving changes every width: start again from the new face
+    const arrived = () => { face = ""; fit(); };
+    document.fonts?.addEventListener("loadingdone", arrived);
+    void document.fonts?.ready.then(arrived);
     // only a change of width matters (the fitting itself changes the height)
-    let w = el.clientWidth;
-    const ro = new ResizeObserver(() => { if (el.clientWidth !== w) { w = el.clientWidth; measure(); } });
-    ro.observe(el);
-    return () => { cancelAnimationFrame(frame); ro.disconnect(); el.style.removeProperty("--fit"); };
-  }, [fitOn, hasRows, chunk, greekSize, contained]);
+    let w = art.clientWidth;
+    const ro = new ResizeObserver(() => { if (art.clientWidth !== w) { w = art.clientWidth; fit(); } });
+    ro.observe(art);
+    fit();
+    return () => { off = true; ro.disconnect(); document.fonts?.removeEventListener("loadingdone", arrived); };
+    // topKey and contained read the page as it is
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [poetry, sizeAuto, rows, columns, cmpText, metre]);
 
   // ------------------------------------------------------------ navigation
   const query = (o: { ed?: string; tr?: string | null; at?: string }) => {
@@ -1480,9 +1517,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   }
 
   const chunkInfo = doc?.chunks[chunk];
-  const hasLines = rows.some((r) => r.greek.some((u) => u.blocks.some((b) => b.t === "l")));
-  // how many of the reading modes are on, for the sign on the Study button (review fix list, slice 8)
-  const modesOn = [translit, cases, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst, hasLines && fitLines].filter(Boolean).length;
+  // how many of the reading modes are on, for the sign on the Study button (review fix list, slice 8; "Fit lines" is no mode any more: the quiet desk, ticket 10)
+  const modesOn = [translit, cases, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst].filter(Boolean).length;
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
   // the panels a row of Study opens: one at a time, and each one shows "Back to Study"; a row again closes it
   const SETTERS: Record<StudyPanel, (open: boolean) => void> = { find: setFindOpen, vocab: setVocabOpen, places: setPlacesOpen, ms: setMsOpen, talk: setTalkOpen, cmp: setCmpListOpen };
@@ -1502,7 +1538,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // Study: every other tool, in one place (StudyMenu.tsx). The same menu in the foot bar of one book and in the top bar of each of two books.
   const studyMenu = work && grcText ? (
     <StudyMenu bar={single ? "foot" : "pane"} work={work} grcText={grcText} trText={trText} cmpText={cmpText} editions={editions} columns={columns}
-      hasMetre={!!mInfo} hasLines={hasLines} open={{ ...panelsOpen, listen: listenOpen, keys: help }}
+      hasMetre={!!mInfo} open={{ ...panelsOpen, listen: listenOpen, keys: help }}
       onPanel={openPanel} onListen={() => setListenOpen(!listenOpen)} onKeys={() => setHelp((h) => !h)} canDiff={canDiff} onDiff={goDiff}
       onEdition={(v) => nav.go(query({ ed: v, at: topKey() ?? undefined }))} onTranslation={(v) => nav.go(query({ tr: v, at: topKey() ?? undefined }))}
       onCompare={(v) => {
@@ -1556,7 +1592,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // what stands where the foot bar was, for the bar to give way to (ReaderBar.module.css): the look-up's sheet, a panel's sheet, the passage toolbar
   const covers = [lookSheet && "lookup", sideOpen && "panel", sel && "toolbar"].filter(Boolean).join(" ");
   return (
-    <div ref={rootRef} className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} data-reader="" className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       style={{ "--num-n": numFigures } as React.CSSProperties} data-covers={covers || undefined}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}
@@ -1700,7 +1736,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           )}
 
           {/* data-reading: the text being read, sized by the reader's own choices in Settings (scripts/check-design.mjs) */}
-          <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""} ${fitLines && hasLines ? styles.fitLines : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
+          <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses} inBook={inBook}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText}
               english={trText && !cmpText && columns === "greek" ? { open: openOnes.has(r.key), credit: trCredit, onToggle: () => toggleOne(r.key) } : null} />)}

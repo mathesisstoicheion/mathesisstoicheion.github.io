@@ -21,7 +21,8 @@ import { trail, type Visit } from "@/lib/resume";
 import { lsjEntries } from "@/lib/lookup/lsj";
 import { coreEntry } from "@/lib/lookup/core";
 import { loadPlaces, shortName, typeLabel, type Place } from "@/lib/map";
-import { LIMITS, useSettings } from "@/lib/settings";
+import { useSettings } from "@/lib/settings";
+import { shownGreekSize, steppedSize } from "@/lib/greekSize";
 import { startSearch, useUI } from "@/lib/ui";
 import { AREAS, FORUM_OPEN, areaTitle, shown } from "@/config/areas";
 import GreekKeyboard from "./GreekKeyboard";
@@ -229,13 +230,13 @@ function Box({ onClose }: { onClose: () => void }) {
 
   const doAction = (id: ActionId) => {
     const s = useSettings.getState();
-    const step = LIMITS.greekSize.step * 2;
     switch (id) {
       case "theme-dark": s.set({ theme: "night" }); break;
       case "theme-light": s.set({ theme: "paper" }); break;
       case "theme-auto": s.set({ theme: "auto" }); break;
-      case "bigger": s.set({ greekSize: s.greekSize + step }); break;
-      case "smaller": s.set({ greekSize: s.greekSize - step }); break;
+      // two steps (2 px) from the size on the screen now: from the size that suits the device, the first one saves a number (lib/greekSize.ts)
+      case "bigger": s.set({ greekSize: steppedSize(s.greekSize, shownGreekSize().rem, 1, 2) }); break;
+      case "smaller": s.set({ greekSize: steppedSize(s.greekSize, shownGreekSize().rem, -1, 2) }); break;
       case "motion-reduce": s.set({ motion: "reduce" }); break;
       case "motion-auto": s.set({ motion: "auto" }); break;
       case "settings": onClose(); useUI.getState().openSettings(); return;

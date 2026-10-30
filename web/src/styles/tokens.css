@@ -78,6 +78,11 @@
   --step-2: 1.6rem;                           /* h3 */
   --step-3: clamp(1.9rem, 3.4vw, 2.6rem);     /* h2 */
   --step-4: clamp(2.8rem, 6.6vw, 5.6rem);     /* a page's title */
+  /* the Greek being read, when the reader has not chosen a size (the quiet desk, ticket 10, the owner, 2026-10-30): 18 px on a phone 390 px wide, growing with the
+     window to 26 px from 1100 px on, where the look-up's note stands in the margin. The cap is 26 px, in px and not in rem: above 1600 px the rem itself grows,
+     to 18 px (--root-grow, below), and 1.625rem would have set the Greek at 29.25 px on a 1920 px screen. A size the reader chooses is --greek-chosen
+     (lib/settings.ts, applySettings), which wins everywhere; the reader's own rule is in Reader.module.css, and the rest of the site's in globals.css (--greek-size). */
+  --greek-auto: clamp(1.125rem, 0.85rem + 1.13vw, 26px);
 
   /* typefaces, three and no more (SPEC.md 3.2): EB Garamond for English, GFS Didot for titles, Greek room names and the
      logo, Gentium Book Plus for Greek being read. The next/font variables are set in app/layout.tsx. Each list starts with

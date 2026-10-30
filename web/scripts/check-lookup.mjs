@@ -505,7 +505,17 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
   // two books: each pane scrolls in its own box
   await page.evaluate(() => document.querySelectorAll("[data-key]")[0]?.closest("[class*='pane']")?.scrollBy({ top: innerHeight, behavior: "instant" }));
   await page.waitForTimeout(600);
-  const i = await wordAt(page, 0.72);
+  let i = await wordAt(page, 0.72);
+  if (i < 0) {
+    // the Greek of a passage is shorter on a phone now (smaller type, narrower gutters: the quiet desk, ticket 10), so a scroll of a fixed distance can land under it, among
+    // the English, whose words are not tappable: bring a word of the Greek's middle to that height instead
+    await page.evaluate(() => {
+      const ws = [...document.querySelectorAll("article [lang=grc] [data-w]")], w = ws[Math.floor(ws.length / 2)];
+      if (w) scrollBy({ top: w.getBoundingClientRect().top - innerHeight * 0.72, behavior: "instant" });
+    });
+    await page.waitForTimeout(600);
+    i = await wordAt(page, 0.72);
+  }
   if (i < 0) { found.push(`sheet ${label}: no word found low on the screen`); await ctx.close(); continue; }
   const word = page.locator("article [data-w]").nth(i);
   if (w < 800) await word.tap(); else await word.click();

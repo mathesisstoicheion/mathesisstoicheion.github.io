@@ -26,7 +26,6 @@
 .quiet[aria-expanded="true"], .quiet:global(.icon-btn)[aria-expanded="true"] { color: var(--ink); }
 .back { justify-self: start; margin-left: calc(-1 * var(--space-2)); }
 .tools { justify-self: end; display: flex; align-items: center; gap: var(--space-1); margin-right: calc(-1 * var(--space-2)); }
-.aa { font-size: var(--step-1); }
 /* Study says how many modes are on: a lit dot and the number */
 .onCount { color: var(--accent); font-variant-numeric: lining-nums; }
 .onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: var(--space-1); border-radius: var(--radius-round); background: currentColor; }

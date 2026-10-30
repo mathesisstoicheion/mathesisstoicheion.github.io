@@ -3,6 +3,12 @@
    passages, and on a wide screen a margin at the right where the look-up is written beside its line. Paper or Night follows
    the device (styles/tokens.css); there is no separate page for the reader. */
 .reader { padding-bottom: var(--space-6); }
+/* The Greek's size (the quiet desk, ticket 10, the owner, 2026-10-30): the size the reader chose (--greek-chosen, on <html>, from lib/settings.ts), else the one that
+   suits the device (--greek-auto, tokens.css: 26 px on a computer, 18 px on a phone); the rest of the site keeps 20 px (globals.css, --greek-size). Two books side by
+   side and the floating window are not the whole screen, whatever the window's width, so they keep 20 px until a size is chosen. A page of verse is set at --fit of
+   this size (Reader.tsx, lib/verseFit.ts): smaller only as far as its widest line needs to stand whole, never below 16 px; --fit is 1 for prose and for a chosen size. */
+.reader { --greek-size: var(--greek-chosen, var(--greek-auto)); }
+.pane, .floating { --greek-size: var(--greek-chosen, 1.25rem); }
 .page { color: var(--ink); }
 
 .top { position: relative; padding-block: clamp(var(--space-5), 4vw, var(--space-6)) var(--space-4); display: grid; gap: var(--space-3); }
@@ -81,10 +87,10 @@
 }
 .ref button:hover { text-decoration: underline; }
 
-.grc { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); }
+.grc { font-family: var(--f-greek); font-size: calc(var(--greek-size) * var(--fit, 1)); line-height: var(--reading-leading); }
 .tr { font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); }
 /* comparing editions: the second column is Greek too, set like the first */
-.tr[data-greek] { font-family: var(--f-greek); font-size: var(--greek-size); line-height: var(--reading-leading); color: var(--ink); }
+.tr[data-greek] { font-family: var(--f-greek); font-size: calc(var(--greek-size) * var(--fit, 1)); line-height: var(--reading-leading); color: var(--ink); }
 .compare { display: grid; gap: var(--space-2); padding-block: var(--space-3); box-shadow: var(--rule-under); }
 .compareKey { margin: 0; font-size: var(--step-0); line-height: 1.55; }
 .keyA { background: color-mix(in srgb, var(--accent) 22%, transparent); color: inherit; text-decoration: underline wavy 1.5px var(--accent); text-underline-offset: 3px; padding: 0 var(--space-1); }
@@ -108,7 +114,9 @@
 .line { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
 .line .speaker { grid-column: 1 / -1; }
 .ln { font-family: var(--f-label); font-size: 0.62em; color: var(--ink-2); text-align: right; padding-right: 0.9em; padding-top: 0.35em; }
-.lt { padding-left: 1.2em; text-indent: -1.2em; }
+/* a verse line that still does not fit its room wraps with its turnover hanging: the second row starts 1.5 em in from where the line's words start, as printed verse
+   sets a turnover (the quiet desk, ticket 10, the owner, 2026-10-30); the first rows of all lines keep one left edge */
+.lt { padding-left: 1.5em; text-indent: -1.5em; }
 /* the translation reads as ordinary paragraphs, its first line not pulled out to the left (review fix list, slice 8) */
 .tr .lt { padding-left: 0; text-indent: 0; }
 .para { margin-top: 0.7em; }
@@ -189,7 +197,9 @@
 .card p { margin: 0; }
 .cardWait { align-self: start; }
 .cardKind { font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
-.cardMeaning { font: 400 var(--step-2) / 1.25 var(--f-body); color: var(--ink); overflow-wrap: anywhere; }
+/* the meaning is never smaller than the Greek it explains, as the page shows it (the quiet desk, ticket 10, the owner, 2026-10-30: the Greek is 26 px on a computer now, and
+   a size the reader chose can be more; the meaning is 25.6 px). The second layer's recap stays a little smaller than this one. */
+.cardMeaning { font: 400 var(--step-2) / 1.25 var(--f-body); color: var(--ink); overflow-wrap: anywhere; font-size: max(var(--step-2), calc(var(--greek-size) * var(--fit, 1))); }
 .cardRole { font-size: var(--step-0); line-height: 1.4; color: var(--ink); }
 .cardGrammar { color: var(--ink-2); }
 .cardRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); }
@@ -323,7 +333,7 @@
    figure being about 0.55em wide, with a quarter of an em to spare; with the metre on it is wider by the rhythm button, whose size follows the
    Greek's. The book's title line lines up past it. See the container block after the one-book phone rules, below.) */
 .reader { container-type: inline-size; --num-base: calc((0.55 * var(--num-n, 3) + 0.25) * var(--step--1)); --num-col: var(--num-base); --num-gap: var(--space-2); }
-.reader:has(> .metreOn) { --num-col: calc(var(--num-base) + 1.4 * var(--greek-size)); }
+.reader:has(> .metreOn) { --num-col: calc(var(--num-base) + 1.4 * var(--greek-size) * var(--fit, 1)); }
 .split { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
 .pane {
   height: calc(100dvh - var(--hdr-h) - env(safe-area-inset-top, 0px)); overflow-y: auto; overscroll-behavior: contain;
@@ -587,13 +597,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 .oneBtn:global(.text-btn)[aria-expanded="true"]::before { clip-path: var(--tri-down); }
 .one { margin-top: var(--space-2); font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); padding-left: var(--space-3); box-shadow: var(--rule-left); animation: leaf-in var(--dur) var(--ease) backwards; }
 .one .lt { padding-left: 0; text-indent: 0; }
-.fitLines .one .lt { white-space: normal; }
 .oneCredit { margin: var(--space-2) 0 0; font-size: var(--step--2); line-height: 1.4; color: var(--ink-2); }
 @media (pointer: coarse) { .oneBtn:global(.text-btn) { min-height: var(--tap); } }
-
-/* "Fit lines": whole verse lines, the Greek shrunk to the longest line on the page (--fit, measured in Reader.tsx) */
-.fitLines .grc { font-size: calc(var(--greek-size) * var(--fit, 1)); }
-.fitLines:not([data-fit-wrap]) .lt { white-space: nowrap; }
 
 /* phones: the passage numbers (which open the passage's actions) and the breadcrumbs are finger-sized */
 @media (max-width: 760px) {
@@ -671,7 +676,7 @@ p.translit { margin: -0.3em 0 0.8em; }
    start at the number column's edge. A private book's lock follows it. */
 .rlWrap { padding-block: var(--space-6) var(--space-3); }
 .rl { margin: 0 0 0 calc(var(--num-w) + var(--row-gap)); font: 400 var(--step-0) / 1.35 var(--f-body); letter-spacing: 0; color: var(--ink-2); }
-.rl[data-lines] { margin-left: calc(var(--num-w) + var(--row-gap) + 2.4 * var(--greek-size)); }
+.rl[data-lines] { margin-left: calc(var(--num-w) + var(--row-gap) + 2.4 * var(--greek-size) * var(--fit, 1)); }
 .rlGr { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); }
 .rlAuthor a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-quick) var(--ease); }
 .rlAuthor a:hover { color: var(--rubric); }
@@ -684,7 +689,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 @media (max-width: 760px) {
   .rlWrap { padding-block: var(--space-5) var(--space-2); }
   .rl { margin-left: 0; }
-  .rl[data-lines] { margin-left: calc(2.4 * var(--greek-size)); }
+  .rl[data-lines] { margin-left: calc(2.4 * var(--greek-size) * var(--fit, 1)); }
 }
 @container (max-width: 520px) {
   .rl, .rl[data-lines] { margin-left: calc(var(--num-col) + var(--num-gap)); }
@@ -701,7 +706,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single .text { padding-block: 0 var(--space-5); margin-top: 0; }
 .single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--row-gap); padding-block: var(--space-4) var(--space-5); }
 .single .ref button { padding-top: 0.35em; }
-.single .tr { font-size: calc(var(--greek-size) * 0.9); line-height: 1.62; }
+.single .tr { font-size: calc(var(--greek-size) * var(--fit, 1) * 0.9); line-height: 1.62; }   /* the English beside verse follows the fitted Greek: 0.9 of it, never larger */
 .single.cols-greek .row { grid-template-columns: var(--num-w) minmax(0, 40em); }
 .single.cols-trans .row { grid-template-columns: var(--num-w) minmax(0, 38em); }
 .single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
@@ -765,6 +770,21 @@ p.translit { margin: -0.3em 0 0.8em; }
   /* "Show the English" and the English start where the Greek does, which is now the column's edge */
   .reader:not(.verses) .grc:has(.line) > .oneBox { display: block; }
   .reader:not(.verses) .cols > :nth-child(2) { padding-left: calc(var(--num-col) + var(--num-gap)); }
+}
+/* Verse on a phone: more room for the words (the quiet desk, ticket 10, the owner, 2026-10-30: "more room on a phone, for verse only"). A page set in lines of verse has
+   side gutters of 12 px (--space-3, never less) where other pages have 16, and a narrower column for the numbers: set at the small step (--step--2), as the lines' numbers
+   are, in a column as wide as their figures need and no wider (a figure of Didot's oldstyle is about 0.573 em wide), with 3 px between it and the words. At 390 px wide the
+   words have 342 px (they had 323), at 412 px 364: enough for all but a few dozen of the Iliad's 611 lines at 16 px. Only the lines' own text and the title line above them
+   take the narrower gutters; the foot bar keeps its own. (The numbers' variables are set on the reader itself, and used only where a container is narrow: above.) */
+.poetry:not(.verses) { --num-base: calc((0.573 * var(--num-n, 3) + 0.04) * var(--step--2)); --num-gap: calc(var(--space-1) - var(--hair)); }
+@container (max-width: 520px) {
+  .poetry:not(.verses) :is(.rlWrap, .legend, .cols, .text, .bottom) {
+    padding-inline: max(var(--space-3), env(safe-area-inset-left, 0px)) max(var(--space-3), env(safe-area-inset-right, 0px));
+  }
+  .poetry:not(.verses) .ref button[data-row] { font-size: var(--step--2); }
+  /* its touch area (and each mark's under it) reaches left, into the gutter, as far as it reaches right into the gap */
+  .poetry:not(.verses) .ref button[data-row]::after { left: calc(-1 * var(--space-3)); }
+  .poetry:not(.verses) .marks button::after { left: calc(-1 * var(--space-3)); }
 }
 /* the foot of the page: where you are, and the way on */
 .bottomGo { display: contents; }
@@ -849,7 +869,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .wordSheet .secWord { flex: none; padding: var(--space-1) var(--space-4) 0; }
 /* the second layer has no row of buttons at its foot: its last line clears the phone's own bar */
 .wordSheet[data-layer="2"] .panelBody { padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); }
-.wordSheet .cardMeaning { font-size: calc((var(--step-1) + var(--step-2)) / 2); }
+.wordSheet .cardMeaning { font-size: max(calc((var(--step-1) + var(--step-2)) / 2), calc(var(--greek-size) * var(--fit, 1))); }
 /* the buttons keep to the sheet's foot, whatever the card's height */
 .wordSheet .cardRow { flex: none; padding: 0 var(--space-4) calc(var(--space-1) + env(safe-area-inset-bottom, 0px)); box-shadow: var(--rule-over); }
 .wordSheet .lsj { max-height: none; overflow: visible; }

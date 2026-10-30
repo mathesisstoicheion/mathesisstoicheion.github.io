@@ -59,7 +59,7 @@ await check("reader: text size sheet", async () => { await bar().getByRole("butt
 await iliad();
 await check("reader: contents", async () => { await bar().getByRole("button", { name: /^Contents/ }).click(); });
 for (const a of ["Vocabulary", "Places", "Manuscript"]) { await iliad(); await check(`reader: ${a}`, async () => { await aid(a); await p.waitForTimeout(3000); }); }
-for (const a of ["Transliteration", "Colour by case", "Metre", "Fit lines", "Try it first"]) {
+for (const a of ["Transliteration", "Colour by case", "Metre", "Try it first"]) {
   await iliad(); await check(`reader: ${a} on`, async () => { await aid(a); await p.mouse.click(10, 200); await p.waitForTimeout(1500); });
   await aid(a).catch(() => {}); await p.mouse.click(10, 200);
 }

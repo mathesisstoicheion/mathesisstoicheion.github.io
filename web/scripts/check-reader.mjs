@@ -28,6 +28,12 @@
 //             number of every fifth line not in the same column and level with its line; the Greek not starting at one edge down the page
 //   photos  - a photograph in the reader: on a book's title page (the Iliad had the Mask of Agamemnon) or on the reader with
 //             no book open (the owner, 2026-10-26: "no useless photos plastered everywhere")
+// and, for the Greek's size (the quiet desk, ticket 10, the owner, 2026-10-30; Iliad 1, 611 lines, already opened once so that it opens on its text):
+//   verse   - the Greek not 16 to 18 px on a phone (390 and 412 px wide) or not 26 px on a computer (1440, 1920 and 2560, where the page's rem has grown to 18 px and
+//             the size must not grow with it; at least 22 px at 1100, where the widest lines need the room), or Plato's prose at 390 not at the reader's size (18 px); on a phone a line that wraps though it fits its room, a wrapped line whose
+//             second row is not at least 1 em in from its first, more than 5% of the lines wrapped, or the first rows not at one left edge; on a computer any
+//             line wrapped; Aa not naming the size on the screen, or its first step not a step from there that saves a number. The spec's floor ("It never goes
+//             below 16 px") wins over wholeness: the widest lines of the Iliad cannot stand whole in 342 px at 16 px, so a few wrap, hanging
 // and, for the foot bar, Aa and Study (the quiet desk, ticket 09, the owner, 2026-10-30; the Iliad on its second opening, at 1440 and 390 px):
 //   top     - anything fixed or sticky along the top of one book after 800 px of reading (the old top bar), or the paper's
 //             darkened edges on the reader's page
@@ -45,16 +51,20 @@
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, and answers Wiktionary with "no entry" so that case is seen.
 // usage: node web/scripts/check-reader.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
+//        ONLY=verse (or agamemnon, alone, first, foot, compare, photos; several with commas) reads those parts only
 //        PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
 const PACKS = "https://raw.githubusercontent.com/mathesisstoicheion/packs/main";
 const WORK = "tlg0085.tlg005", URL_ = `/read?w=${WORK}&tr=perseus-eng3`;
-const MODES = ["Transliteration", "Colour by case", "Words I know", "Metre", "Try it first", "Fit lines"];
+const MODES = ["Transliteration", "Colour by case", "Words I know", "Metre", "Try it first"];
 const ACTIONS = ["Vocabulary for this page", "Places on this page", "Find in this text", "Listen to the English", "How it was written"];
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
+// ONLY=verse reads that part only (the whole check is slow); with no ONLY, every part
+const ONLY = process.env.ONLY ? new Set(process.env.ONLY.split(",")) : null;
+const runs = (part) => !ONLY || ONLY.has(part);
 // PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it (as check-bar.mjs and check-still.mjs do)
 if (process.env.PROVE_CSS || process.env.PROVE_JS) {
   const newContext = browser.newContext.bind(browser);
@@ -108,7 +118,7 @@ async function reader(ctx, w, h, seed) {
   return page;
 }
 
-for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1280, 900, "dark"]]) {
+for (const [w, h, scheme = "light"] of runs("agamemnon") ? [[1280, 900], [1100, 860], [375, 812], [1280, 900, "dark"]] : []) {
   const tag = `${w}px${scheme === "dark" ? " Night" : ""}`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, serviceWorkers: "block", hasTouch: w < 700 });
   const page = await reader(ctx, w, h, true);
@@ -299,7 +309,7 @@ async function toEnd(page) {
   }
 }
 
-for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+for (const [w, h, touch] of runs("alone") ? [[1440, 900, false], [390, 844, true]] : []) {
   const tag = `${w}px`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
   const page = await iliad(ctx);
@@ -364,7 +374,7 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
 }
 
 // ---- first, numbers, phone: a book opens on its text (the quiet desk, ticket 08). The Iliad, on a fresh profile and then opened again
-for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+for (const [w, h, touch] of runs("first") ? [[1440, 900, false], [390, 844, true]] : []) {
   const tag = `${w}px`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
   const page = await iliad(ctx);
@@ -457,7 +467,7 @@ async function returning(ctx, settings) {
   await page.waitForTimeout(1500);
   return page;
 }
-const STUDY_ROWS = ["Find in this text", "Colour by case", "Metre", "Transliteration", "Try it first", "Fit lines", "Vocabulary for this page", "Your notes and marks",
+const STUDY_ROWS = ["Find in this text", "Colour by case", "Metre", "Transliteration", "Try it first", "Vocabulary for this page", "Your notes and marks",
   "Open a second book beside this one", "Float the reader", "Places on this page", "How it was written", "Listen to the English", "Signs beside the scroll bar"];
 // a panel a row of Study opens: the row's name, and what the panel's own first control is
 const STUDY_PANELS = ["Find in this text", "Vocabulary for this page", "Places on this page", "How it was written"];
@@ -472,7 +482,7 @@ const BAR = { aa: /^Aa\b/, study: /^Study\b/, goto: "Go to a line or book" };
 /** whether the foot bar is out of sight (slipped away: hidden, or stood below the window) */
 const awayNow = (page) => page.evaluate(() => { const f = document.querySelector("[data-foot-bar]"); if (!f) return true; const r = f.getBoundingClientRect(); return getComputedStyle(f).visibility === "hidden" || r.top >= innerHeight - 1; });
 
-for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]] : []) {
   const tag = `${w}px`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
   const page = await returning(ctx, saved(4, "both"));
@@ -678,6 +688,8 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
     const dupes = rowNames.filter((n, i) => rowNames.indexOf(n) !== i);
     for (const d of new Set(dupes)) found.push(`study ${tag}: "${d}" is in Study twice`);
     for (const n of rowNames) if (/^(Go to|About |Echoes|Change$|Tools|More$)/.test(n)) found.push(`study ${tag}: Study has "${n}", which another button of the reader already leads to`);
+    // "Fit lines" is gone: a page of verse is fitted by itself (the quiet desk, ticket 10), so there is nothing to switch on
+    if (rowNames.includes("Fit lines")) found.push(`study ${tag}: Study still has "Fit lines", which the fitting of verse replaced`);
     await page.keyboard.press("Escape");
   });
 
@@ -776,7 +788,7 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
 }
 
 // ---- study: Compare with another edition (a work with two editions), and the shade kept elsewhere on the site
-{
+if (runs("compare")) {
   const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: "block" });
   const page = await ctx.newPage();
   try {
@@ -805,7 +817,7 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
 }
 
 // ---- photos: none in the reader
-for (const path of ["/read?w=tlg0012.tlg001", "/read"]) {
+for (const path of runs("photos") ? ["/read?w=tlg0012.tlg001", "/read"] : []) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
   const page = await ctx.newPage();
   await page.goto(base + path);
@@ -814,6 +826,104 @@ for (const path of ["/read?w=tlg0012.tlg001", "/read"]) {
   const pics = await page.evaluate(() => [...document.querySelectorAll("main img, main picture, [data-nobook] img, header[class*='tp'] img")]
     .filter((i) => i.getBoundingClientRect().width > 40).map((i) => i.getAttribute("src") ?? i.querySelector("img")?.getAttribute("src") ?? "?"));
   for (const p of new Set(pics)) found.push(`photos ${path}: a photograph in the reader (${p.split("/").pop()})`);
+  await ctx.close();
+}
+
+// ---- verse: the Greek's size for a page set in verse (the quiet desk, ticket 10, the owner, 2026-10-30)
+// Iliad 1 has 611 lines; at 20 px the widest are 456, 454 and 452 px, the median 381 px. The spec's rule decides: "It never goes below 16 px. A line that still
+// does not fit wraps with a hanging indent." So a phone is asked for 16 px, for lines that wrap only when they must and then hang, and for few of them (5% at
+// most; 342 px of room at 390 px wide leaves about 4%); a computer for its proper size (26 px, or at 1100 px as much as the widest line leaves) and no wrapped line.
+const VERSE_PAGE = "/read?w=tlg0012.tlg001&tr=perseus-eng3", PROSE_PAGE = "/read?w=tlg0059.tlg030&tr=perseus-eng1";
+const greekPx = (page) => page.evaluate(() => { const w = document.querySelector("article [data-u] [data-w]"); return w ? Math.round(parseFloat(getComputedStyle(w).fontSize) * 100) / 100 : -1; });
+/** a book opened once before, so that it opens on its text and not on its title page; it is read once the Greek's size has stopped changing (the fitting is done
+ *  as the page is drawn and again when the typeface arrives) */
+async function openedBook(ctx, path) {
+  const page = await ctx.newPage();
+  await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
+    const file = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
+    try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${file}` }) }); } catch { await route.abort(); }
+  });
+  await page.addInitScript(() => { localStorage.setItem("mathesis:opened", JSON.stringify(["tlg0012.tlg001", "tlg0059.tlg030"])); });
+  await page.goto(base + path);
+  await page.waitForSelector("article [data-u] [data-w]", { timeout: 45000 });
+  await page.evaluate(() => document.fonts.ready);
+  for (let i = 0, last = -1; i < 40; i++) {
+    await page.waitForTimeout(250);
+    const now = await greekPx(page);
+    if (i > 3 && now === last) break;
+    last = now;
+  }
+  return page;
+}
+/** the Greek's size on the screen and each line of verse as the page sets it: where its words start, whether a second row begins, and how wide the line is on one row.
+ *  (Measured in the page: a line's width is what its words take with wrapping off, not what a canvas would make of the text.) */
+const verseNow = (page) => page.evaluate(() => {
+  const has = (e, n) => [...e.classList].some((c) => c.endsWith(`__${n}`));
+  const lines = [...document.querySelectorAll("article [data-u] span")].filter((e) => has(e, "lt"));
+  const word = document.querySelector("article [data-u] [data-w]");
+  const out = { size: word ? parseFloat(getComputedStyle(word).fontSize) : 0, lines: lines.length, room: 0, lefts: [], wraps: [] };
+  const rooms = [], wrapped = [];
+  for (const lt of lines) {
+    const words = [...lt.querySelectorAll("[data-w]")];
+    if (!words.length) continue;
+    const px = parseFloat(getComputedStyle(lt).fontSize), rects = words.map((x) => x.getBoundingClientRect());
+    out.lefts.push(rects[0].left);
+    rooms.push(lt.getBoundingClientRect().width);
+    const next = rects.findIndex((r) => r.top - rects[0].top > 0.8 * px);   // the first word on a second row, a good part of a size lower than the line's first
+    if (next >= 0) wrapped.push({ lt, px, hang: rects[next].left - rects[0].left, room: lt.getBoundingClientRect().width, ref: lt.closest("[data-u]")?.dataset.u ?? "?" });
+  }
+  // the width on one row of the lines that wrapped: wrapping off for all of them at once, read, and put back
+  for (const x of wrapped) x.lt.style.whiteSpace = "nowrap";
+  for (const x of wrapped) { const r = document.createRange(); r.selectNodeContents(x.lt); x.natural = r.getBoundingClientRect().width; }
+  for (const x of wrapped) x.lt.style.whiteSpace = "";
+  out.wraps = wrapped.map(({ px, hang, room, natural, ref }) => ({ px, hang, room, natural, ref }));
+  rooms.sort((a, b) => a - b);
+  out.room = rooms[rooms.length >> 1] ?? 0;
+  return out;
+});
+// (the last place of each row is the slack the Greek's size may have: a few hundredths for a size the stylesheet works out from the width, 18.007 px at 390 px; none for 22 px)
+for (const [w, h, touch, path, want, name, slack = 0.06] of runs("verse") ? [
+  [390, 844, true, VERSE_PAGE, [16, 18], "Iliad 1"], [412, 915, true, VERSE_PAGE, [16, 18], "Iliad 1"],
+  [1440, 900, false, VERSE_PAGE, [26, 26], "Iliad 1"], [1100, 800, false, VERSE_PAGE, [22, 26], "Iliad 1", 0],
+  // (the page's rem grows with the window above 1600 px, to 18 px from 1920: the cap of 26 px is in px, not in rem, or the Greek would be 29.25 px there)
+  [1920, 1080, false, VERSE_PAGE, [26, 26], "Iliad 1"], [2560, 1440, false, VERSE_PAGE, [26, 26], "Iliad 1"],
+  [390, 844, true, PROSE_PAGE, [18, 18], "Plato's Republic 1"],
+] : []) {
+  const tag = `${w}px`, verse = path === VERSE_PAGE;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
+  try {
+    const page = await openedBook(ctx, path);
+    page.setDefaultTimeout(10000);
+    const m = await verseNow(page);
+    const [lo, hi] = want;
+    if (m.size < lo - slack || m.size > hi + slack) found.push(`verse ${tag}: ${name} has its Greek at ${m.size.toFixed(2)} px, not ${lo === hi ? lo : `${lo} to ${hi}`} px`);
+    if (verse) {
+      const pct = (100 * m.wraps.length) / (m.lines || 1);
+      console.log(`verse ${tag}: ${name}, ${m.lines} lines, the Greek at ${m.size.toFixed(2)} px, room ${m.room.toFixed(1)} px, ${m.wraps.length} line(s) wrap (${pct.toFixed(1)}%)`);
+      if (m.lines !== 611) found.push(`verse ${tag}: ${m.lines} lines of the Iliad's first book were read, not 611`);
+      // a line wraps only if its words are wider than its room, and then its second row hangs 1 em in at least (the stylesheet hangs it 1.5 em)
+      const fits = m.wraps.filter((x) => x.natural <= x.room - 1), flat = m.wraps.filter((x) => x.hang < x.px);
+      if (fits.length) found.push(`verse ${tag}: ${fits.length} line(s) wrap though they fit their room (line ${fits[0].ref}: ${fits[0].natural.toFixed(1)} px in ${fits[0].room.toFixed(1)} px)`);
+      if (flat.length) found.push(`verse ${tag}: ${flat.length} wrapped line(s) whose second row starts less than 1 em in from the first (line ${flat[0].ref}: ${flat[0].hang.toFixed(1)} px at ${flat[0].px.toFixed(1)} px)`);
+      if (Math.max(...m.lefts) - Math.min(...m.lefts) > 1.5) found.push(`verse ${tag}: the first rows of the lines do not start at one left edge (from ${Math.min(...m.lefts).toFixed(1)} to ${Math.max(...m.lefts).toFixed(1)} px)`);
+      if (touch ? m.wraps.length > 0.05 * m.lines : m.wraps.length) found.push(`verse ${tag}: ${m.wraps.length} of ${m.lines} lines wrap${touch ? ` (${pct.toFixed(1)}%, more than 5%)` : "; on a computer none should"}`);
+    }
+    // Aa names the size on the screen, and its first step is one step on from there that saves a number (the size stays "auto" until then)
+    const aa = await openMenu(page, BAR.aa);
+    const more = aa.getByRole("button", { name: "Increase Greek text size" });
+    const said = ((await more.locator("xpath=..").locator("output").innerText()) ?? "").trim();
+    const was = await greekPx(page);
+    if (said !== `${Math.round(was)} px`) found.push(`verse ${tag}: ${name}: Aa names the Greek's size "${said}", but it is ${was.toFixed(2)} px on the screen`);
+    const before = await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings") ?? "{}").state?.greekSize);
+    if (before !== undefined && before !== "auto") found.push(`verse ${tag}: ${name}: the size was ${JSON.stringify(before)} before any step, not "auto"`);
+    await more.click();
+    await page.waitForTimeout(700);
+    const now = await greekPx(page), saved = await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings") ?? "{}").state?.greekSize);
+    if (typeof saved !== "number") found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size saved ${JSON.stringify(saved)}, not a number`);
+    if (Math.abs(now - (Math.round(was) + 1)) > 0.3) found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size took the Greek from ${was.toFixed(2)} to ${now.toFixed(2)} px, not one step (1 px) on`);
+  } catch (e) {
+    found.push(`verse ${tag}: ${name} could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
+  }
   await ctx.close();
 }
 

@@ -31,8 +31,6 @@ export interface StudyProps {
   columns: Columns;
   /** the text has metre to show */
   hasMetre: boolean;
-  /** the page is set in lines of verse */
-  hasLines: boolean;
   /** which panels are open now, and the Listen player and the key list */
   open: Record<StudyPanel | "listen" | "keys", boolean>;
   onPanel: (panel: StudyPanel) => void;
@@ -139,7 +137,7 @@ export default function StudyMenu(p: StudyProps) {
   const pane = p.bar === "pane";
   const [fold, setFold] = useState({ compare: p.cmpText !== null, marks: false, signs: false });
   const toggle = (k: keyof typeof fold) => setFold((f) => ({ ...f, [k]: !f[k] }));
-  const flip = (k: "translit" | "cases" | "metre" | "tryFirst" | "fitLines") => s.set({ [k]: !s[k] });
+  const flip = (k: "translit" | "cases" | "metre" | "tryFirst") => s.set({ [k]: !s[k] });
   const others = p.editions.filter((t) => t.urn !== p.grcText.urn);
   const text = (t: CatText): [string, string] => [versionOf(t.urn), describe(t, p.work.texts)];
 
@@ -158,8 +156,6 @@ export default function StudyMenu(p: StudyProps) {
             mode={s.translit} onClick={() => flip("translit")} />
           {p.trText && !p.cmpText && p.columns === "both" && <Row icon="eye" name="Try it first" note="Hide the translation until you tap it" tool="tryFirst"
             title="Hide each translation until you tap it, so you read the Greek first" mode={s.tryFirst} onClick={() => flip("tryFirst")} />}
-          {p.hasLines && <Row icon="fit-width" name="Fit lines" note="Make each verse line fit the page" tool="fitLines"
-            title="Make each verse line fit the width of the page instead of wrapping" mode={s.fitLines} onClick={() => flip("fitLines")} />}
           <Row icon="vocabulary" name="Vocabulary for this page" note="The words on it, the most used first" tool="vocab" panel={p.open.vocab} closes onClick={() => p.onPanel("vocab")} />
           <Row icon="bookmark" name="Your notes and marks" note="What you have marked in this book" tool="marks" count={p.marks.length} fold={fold.marks} onClick={() => toggle("marks")} />
           {fold.marks && (

@@ -13,6 +13,9 @@ const openIliad = async (page: Page, at = "1.1") => {
   await expect(page.locator(`[data-key="${at}"]`).first()).toBeVisible({ timeout: 30_000 });
 };
 const top = (page: Page, sel: string) => page.locator(sel).first().evaluate((e) => Math.round(e.getBoundingClientRect().top));
+// the Greek's size as the reader sees it, in px, read from a word of the first line (a page of verse is set a little smaller than the reader's size so that
+// its lines stand whole: lib/verseFit.ts), not from a setting
+const greekPx = (page: Page) => page.locator("article [data-u] [data-w]").first().evaluate((e) => parseFloat(getComputedStyle(e).fontSize));
 
 test("the reader's bar is along the foot: the way back, where you are, Aa and Study, all within the phone's width", async ({ page }) => {
   await openIliad(page);
@@ -83,9 +86,13 @@ test("the reading aids are in Study and the text size in Aa, and a tap elsewhere
   // the page's settings (Aa) are a sheet of their own
   const size = await openAa(page);
   await expect(size).toBeVisible();
-  const before = await page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--greek-size"));
+  // the stepper names the Greek as it is on the screen, and its first step goes one step (1 px) on from there and saves a number: a size the reader chose, which
+  // stays as it is (the quiet desk, ticket 10, the owner, 2026-10-30)
+  const before = await greekPx(page);
+  await expect(size.getByText(`${Math.round(before)} px`, { exact: true })).toBeVisible();
   await size.getByRole("button", { name: "Increase Greek text size" }).click();
-  await expect.poll(() => page.evaluate(() => getComputedStyle(document.documentElement).getPropertyValue("--greek-size"))).not.toBe(before);
+  await expect.poll(() => greekPx(page)).toBeCloseTo(Math.round(before) + 1, 0);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings")!).state.greekSize)).toBe((Math.round(before) + 1) / 16);
   await page.keyboard.press("Escape");
   await expect(size).toBeHidden();
 });
@@ -123,7 +130,7 @@ test("pinching the Greek changes its size, and the passage under the fingers sta
   const key = '[data-key="1.20"]';
   await page.waitForTimeout(800);
   const y0 = await top(page, key);
-  const size0 = await page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--greek-size")));
+  const size0 = await greekPx(page);
   // two fingers moving apart over the passage (synthetic touches: Playwright's touchscreen only taps)
   await page.evaluate(async (sel) => {
     const el = document.querySelector<HTMLElement>(sel)!, r = el.getBoundingClientRect(), y = r.top + 30, t = document.querySelector("article")!;
@@ -133,10 +140,10 @@ test("pinching the Greek changes its size, and the passage under the fingers sta
     for (let g = 55; g <= 90; g += 5) { fire("touchmove", touches(g)); await new Promise((f) => requestAnimationFrame(f)); }
     fire("touchend", touches(90));
   }, key);
-  await expect.poll(() => page.evaluate(() => parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--greek-size")))).toBeGreaterThan(size0 * 1.4);
-  // remembered in Settings
+  await expect.poll(() => greekPx(page)).toBeGreaterThan(size0 * 1.4);
+  // remembered in Settings, as a number of rem (the fingers start from the Greek as it is on the screen, and end at a size the reader chose)
   const saved = await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings")!).state.greekSize);
-  expect(saved).toBeGreaterThan(size0 * 1.4);
+  expect(saved * 16).toBeGreaterThan(size0 * 1.4);
   expect(Math.abs((await top(page, key)) - y0)).toBeLessThan(40);
 });
 
@@ -235,7 +242,7 @@ test("press and hold a word: the passage actions dock at the bottom with the wor
   await expect(bar).toBeHidden();
 });
 
-test("Try it first hides each translation until it is tapped; Fit lines keeps every verse line whole", async ({ page }) => {
+test("Try it first hides each translation until it is tapped", async ({ page }) => {
   await openIliad(page);
   let aids = await openStudy(page);
   await aids.getByRole("button", { name: "Try it first" }).click();
@@ -248,21 +255,41 @@ test("Try it first hides each translation until it is tapped; Fit lines keeps ev
   // the next passage is still veiled
   await expect(page.locator('[data-key="1.5"] [data-veiled]')).toBeAttached();
 
+  // and off again: every translation is open
   aids = await openStudy(page);
   await aids.getByRole("button", { name: "Try it first" }).click();
-  if (await aids.isHidden()) aids = await openStudy(page);
-  await aids.getByRole("button", { name: "Fit lines" }).click();
   await page.keyboard.press("Escape");
   await expect(page.locator("[data-veiled]")).toHaveCount(0);
-  const fit = () => page.locator("article").evaluate((a) => parseFloat(getComputedStyle(a).getPropertyValue("--fit")) || 1);
-  await expect.poll(fit).toBeLessThan(1);
-  expect(await fit()).toBeGreaterThanOrEqual(0.5);
-  // every line of the book on this page fits its column, including those drawn only when scrolled to
-  await page.evaluate(async () => { for (let y = 0; y < document.documentElement.scrollHeight; y += 600) { scrollTo(0, y); await new Promise((f) => setTimeout(f, 20)); } });
-  const over = await page.evaluate(() => [...document.querySelectorAll<HTMLElement>("article [class*='_lt_']")].filter((lt) => lt.scrollWidth > lt.clientWidth + 1).length);
-  expect(over).toBe(0);
-  // remembered
-  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings")!).state.fitLines)).toBe(true);
+});
+
+// Homer's lines on a phone (the quiet desk, ticket 10, the owner, 2026-10-30). A page of verse is set at the reader's size, made smaller only as far as its widest line
+// needs to stand whole, and never below 16 px: on a phone that is 16 px, at which the widest lines of the Iliad still do not fit their room, so a few wrap, and the turnover
+// of each hangs. The English beside the verse follows the Greek's size (0.9 of it). scripts/check-reader.mjs "verse" reads the whole book at 390 and 412 px, and at a computer's width.
+test("a page of Homer is set at 16 px on a phone, each line whole but the few that cannot be, which wrap with the turnover hanging; the English beside follows", async ({ page }) => {
+  await openIliad(page);
+  await page.waitForTimeout(1500);   // the fitting is done once the page is drawn and the typeface has arrived
+  expect(await greekPx(page)).toBeCloseTo(16, 1);
+  const m = await page.evaluate(() => {
+    const has = (e: Element, n: string) => [...e.classList].some((c) => c.endsWith(`__${n}`));
+    const lines = [...document.querySelectorAll<HTMLElement>("article [data-u] span")].filter((e) => has(e, "lt"));
+    const hangs: number[] = [];
+    for (const lt of lines) {
+      const px = parseFloat(getComputedStyle(lt).fontSize), at = [...lt.querySelectorAll<HTMLElement>("[data-w]")].map((w) => w.getBoundingClientRect());
+      const next = at.findIndex((r) => r.top - at[0].top > 0.8 * px);   // the first word on a second row
+      if (next >= 0) hangs.push((at[next].left - at[0].left) / px);
+    }
+    const english = document.querySelector<HTMLElement>('[data-key="1.1"] [data-tr]');
+    return { lines: lines.length, hangs, english: english ? parseFloat(getComputedStyle(english).fontSize) : 0, sideways: document.documentElement.scrollWidth - innerWidth };
+  });
+  expect(m.lines).toBe(611);
+  // some wrap, most do not (this phone is 375 px wide, which leaves the words 327 px, and 96 of the 611 lines are wider than that at 16 px; at 390 px it is 26, at 412 px 1);
+  // every wrapped line hangs at least 1 em
+  expect(m.hangs.length).toBeLessThan(0.2 * m.lines);
+  for (const hang of m.hangs) expect(hang).toBeGreaterThanOrEqual(1);
+  // the English beside the Greek is 0.9 of it, never larger
+  expect(m.english).toBeGreaterThan(0);
+  expect(m.english).toBeLessThanOrEqual(16 * 0.9 + 0.1);
+  expect(m.sideways).toBeLessThanOrEqual(0);
 });
 
 test("a reading aid that opens a panel puts Study away, so the panel is not hidden under it", async ({ page }) => {

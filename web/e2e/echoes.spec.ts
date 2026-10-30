@@ -6,6 +6,10 @@ test.describe.configure({ timeout: 90_000 });
 const openAt = async (page: Page, at: string) => {
   await page.goto(`/read?w=tlg0012.tlg001&ed=perseus-grc2&tr=none&at=${at}`);
   await expect(page.locator(`[data-u="${at}"]`)).toBeVisible({ timeout: 30_000 });
+  // the reader holds the page at its start for its first moments, settling it as the lines are drawn (Reader.tsx, holdAtTop): a scroll made in the first
+  // frames is put back. The Greek is 26 px now and its first frames take longer, so the test waits for the page to settle, as reading-tools.spec.ts does
+  // (the quiet desk, ticket 10, the owner, 2026-10-30)
+  await page.waitForTimeout(1500);
 };
 /** Select every word of a line, as a reader would by dragging across it. */
 const selectLine = async (page: Page, at: string) => {

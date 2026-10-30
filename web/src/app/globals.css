@@ -23,8 +23,10 @@
   /* the fine line under a link set in words, at rest (the owner, 2026-10-23: "It's not clear what is a clickable";
      scripts/check-clickable.mjs); under the hand it turns red with the words */
   --link-line: color-mix(in srgb, var(--ink) 45%, transparent);
-  /* reader settings (changed from the Settings panel) */
-  --greek-size: 1.25rem;
+  /* reader settings (changed from the Settings panel): the size of the Greek is the one the reader chose (--greek-chosen, set on <html> by lib/settings.ts) or,
+     for the rest of the site (search results, the private translations, the forum), 20 px. The reader itself sets the Greek at the size that suits the device
+     until a size is chosen (Reader.module.css: --greek-auto, styles/tokens.css; the quiet desk, ticket 10, the owner, 2026-10-30) */
+  --greek-size: var(--greek-chosen, 1.25rem);
   --reading-leading: 1.75;
 }
 

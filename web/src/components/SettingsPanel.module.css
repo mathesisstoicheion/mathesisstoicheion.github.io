@@ -33,8 +33,10 @@
 .seg button:hover:not([aria-checked="true"]) { color: var(--rubric); }
 .seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 
-/* the page as it will read: a few lines of Greek between two rules */
+/* the page as it will read: a few lines of Greek between two rules, each set as the reader sets a line of verse that does not fit its room: the turnover hangs
+   (the quiet desk, ticket 10, the owner, 2026-10-30) */
 .sample { padding: 14px 2px; border-block: 1px solid var(--rule); }
+.sample span { display: block; padding-left: 1.5em; text-indent: -1.5em; }
 .row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
 .stepper { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--radius); }
 .stepper button { width: 38px; height: 36px; background: transparent; border: 0; border-radius: var(--radius); color: var(--ink); font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
