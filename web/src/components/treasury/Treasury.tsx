@@ -39,7 +39,7 @@ export default function Treasury() {
   const empty = t.ready && !marks.length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
 
   return (
-    <div className={styles.treasury}>
+    <div className={styles.treasury} data-empty={empty ? "" : undefined}>
       {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
       {empty && (
         <div className={styles.welcome}>

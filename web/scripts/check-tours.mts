@@ -47,6 +47,12 @@ async function run(page: Page, id: string): Promise<{ shown: string[]; dark: str
   return { shown, dark };
 }
 
+// Without the data packs (NOPACKS=1, as on GitHub, where the Oracle's index is not built) a search finds nothing, so the
+// step about its results has nothing to point at: it is left out there, and said so.
+const AFTER_RESULTS = ["Three ways to see the results"];
+const leftOut = new Set(process.env.NOPACKS ? AFTER_RESULTS : []);
+if (leftOut.size) console.log(`(without the data packs: ${[...leftOut].map((t) => `"${t}"`).join(", ")} left out)`);
+
 // A step that first opens something (a phone's menu) races the tap on Next that brought it: the tap may close what the
 // step opens, and which comes first varies from tap to tap (the Make it yours tour lost a step in 3 runs of 8). Such a
 // tour is run five times on a phone, and a step lost in any run is listed once.
@@ -59,7 +65,7 @@ for (const [view, opts] of Object.entries(VIEWS)) {
   for (const id of ids) {
     const tour = TOURS[id];
     if (!tour) { found.add(`no tour "${id}"`); continue; }
-    const want = tour.steps.filter((s) => !s.only || (s.only === "phone") === (view === "phone")).map((s) => s.title);
+    const want = tour.steps.filter((s) => (!s.only || (s.only === "phone") === (view === "phone")) && !leftOut.has(s.title)).map((s) => s.title);
     const runs = view === "phone" && tour.steps.some((s) => s.click) ? RACES : 1;
     for (let r = 0; r < runs; r++) {
       let seen: { shown: string[]; dark: string[] };

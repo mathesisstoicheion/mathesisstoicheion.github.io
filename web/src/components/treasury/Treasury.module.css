@@ -88,6 +88,18 @@
 .soon > h2 { color: var(--ink); }
 
 .welcome { display: grid; gap: var(--space-4); justify-items: start; max-width: 70ch; }
+/* an empty Treasury: its part for what is kept is empty, so it leaves no gap of its own between what to do first and the rest */
+.treasury[data-empty] > .section:empty { display: none; }
+/* on a computer, what to do first stands at the left, and what can be done meanwhile (keeping it safe, reading without a
+   connection) at the right: side by side across the page, not one under another with the right half empty (check-room
+   found that stretch at 1920 px) */
+@media (min-width: 1200px) {
+  .treasury[data-empty] { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); grid-template-areas: "welcome keep" "welcome offline"; align-items: start; }
+  .treasury[data-empty] > * { grid-column: 1 / -1; }
+  .treasury[data-empty] > .welcome { grid-area: welcome; }
+  .treasury[data-empty] > .keepSmall { grid-area: keep; }
+  .treasury[data-empty] > .offline { grid-area: offline; }
+}
 .welcome p { margin: 0; font-size: var(--step-1); line-height: 1.5; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
