@@ -46,6 +46,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-names.mjs
+      - name: Every icon's address carries the mark of its picture, so no browser or phone keeps an old one
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-icons.mjs
       - name: The two lesson tracks agree everywhere (slice 4)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

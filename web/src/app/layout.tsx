@@ -17,7 +17,8 @@ import { Suspense } from "react";
 import { SITE } from "@/config/areas";
 import { BOOT_SCRIPT, THEME_COLOUR, THEME_COLOUR_NIGHT } from "@/lib/settings";
 import { VISITOR_SCRIPT } from "@/lib/visitor";
-import { SHARE_IMAGE, SITE_URL } from "@/lib/seo";
+import { SITE_URL } from "@/lib/seo";
+import { SHARE_PICTURE, marked } from "@/lib/icons";
 import "../styles/tokens.css";
 import "./globals.css";
 
@@ -62,12 +63,13 @@ export const metadata: Metadata = {
   title: { default: `${SITE.latin} · ${SITE.greek}`, template: `%s · ${SITE.latin}` },
   description: SITE.tagline,
   // what a link to any page looks like when it is shared (a page with its own title and description overrides these)
-  openGraph: { type: "website", siteName: SITE.latin, locale: "en_GB", images: [SHARE_IMAGE] },
-  twitter: { card: "summary_large_image", images: [SHARE_IMAGE.url] },
+  openGraph: { type: "website", siteName: SITE.latin, locale: "en_GB", images: [SHARE_PICTURE] },
+  twitter: { card: "summary_large_image", images: [SHARE_PICTURE.url] },
   // added to an iPhone's home screen, it opens as an app of its own (the manifest says the same for other phones)
   appleWebApp: { capable: true, title: SITE.latin, statusBarStyle: "default" },
-  // the tab icon and the iPhone's home-screen icon: the printer's device (made by scripts/make-logo.mjs)
-  icons: { icon: [{ url: "/favicon.ico", sizes: "16x16 32x32 48x48" }], apple: "/apple-touch-icon.png" },
+  // the tab icon and the iPhone's home-screen icon: the printer's device (made by scripts/make-logo.mjs), each address marked
+  // with its picture, so a browser that kept an older one fetches the new (lib/icons.ts)
+  icons: { icon: [{ url: marked("/favicon.ico"), sizes: "16x16 32x32 48x48" }], apple: marked("/apple-touch-icon.png") },
 };
 
 export const viewport: Viewport = {

@@ -6,7 +6,8 @@ import WorkLanding from "@/components/library/WorkLanding";
 import { siteData } from "@/lib/build-data";
 import { greekEditions, hasTranslation } from "@/lib/catalog";
 import { centuries } from "@/lib/works-meta";
-import { SHARE_IMAGE, absolute, workDescription, workIdOf, workPath, workTitle } from "@/lib/seo";
+import { absolute, workDescription, workIdOf, workPath, workTitle } from "@/lib/seo";
+import { SHARE_PICTURE } from "@/lib/icons";
 import { entriesForWork } from "@/wiki/related";
 
 export const dynamicParams = false;
@@ -35,8 +36,8 @@ export async function generateMetadata({ params }: PageProps<"/work/[id]">): Pro
     title,
     description: f.description,
     alternates: { canonical: url },
-    openGraph: { type: "article", url, title: `${workTitle({ title: f.work.title, author: f.author.name })} · Mathesis Stoicheion`, description: f.description, images: [SHARE_IMAGE] },
-    twitter: { card: "summary_large_image", title: `${workTitle({ title: f.work.title, author: f.author.name })} · Mathesis Stoicheion`, description: f.description, images: [SHARE_IMAGE.url] },
+    openGraph: { type: "article", url, title: `${workTitle({ title: f.work.title, author: f.author.name })} · Mathesis Stoicheion`, description: f.description, images: [SHARE_PICTURE] },
+    twitter: { card: "summary_large_image", title: `${workTitle({ title: f.work.title, author: f.author.name })} · Mathesis Stoicheion`, description: f.description, images: [SHARE_PICTURE.url] },
   };
 }
 
