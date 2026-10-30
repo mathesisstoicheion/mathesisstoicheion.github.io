@@ -248,7 +248,8 @@
 /* the look-up's first layer (WordPanel.tsx, lib/lookup/card.ts; the quiet desk, ticket 05): the kind of word and the word tapped,
    quiet; the meaning, the largest English on the screen (about 25 px, and about 22 px on a phone); what the word does here;
    its grammar in small capitals; then Previous, Next and More about it, the last in red */
-.card { display: grid; gap: var(--space-2); align-content: start; min-height: var(--space-8); }
+/* (while it is found the card is as tall as a typical one, so that the window does not jump when it fills) */
+.card { display: grid; gap: var(--space-2); align-content: start; min-height: calc(1.5 * var(--space-8)); }
 .card p { margin: 0; }
 .cardWait { align-self: start; }
 .cardKind { font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
@@ -276,28 +277,53 @@
   .cardBack:global(.text-btn), .headBack:global(.text-btn) { min-height: var(--tap); min-width: var(--tap); padding-inline: var(--space-3); margin-left: calc(-1 * var(--space-3)); }
 }
 
-/* the look-up's second layer (WordPanel.tsx; the quiet desk, ticket 06), behind More about it: the dictionary, where to go from
-   the word, the other dictionaries, then at the foot how sure the grammar is and the credits. The same on a computer and a
-   phone: each part under a small-capitals heading and a hairline, links in quiet words (framed in the sheet) */
+/* the look-up's second layer (WordPanel.tsx; the quiet desk, ticket 06), behind More about it: under the head, the word's kind and
+   meaning (the look-up's fixes, the owner, 2026-10-30: the first layer's, the meaning a size smaller, a hairline under); then the
+   dictionary, where to go from the word, the other dictionaries, and at the foot how sure the grammar is and the credits. The same
+   on a computer and a phone: each part under a small-capitals heading and a hairline */
+.secWord { display: grid; gap: var(--space-1); animation: leaf-in var(--dur) var(--ease) backwards; }
+.secWord p { margin: 0; }
+.secWord::after { content: ""; height: var(--hair); margin-top: var(--space-2); background: var(--rule); }
+.secKind { font-size: var(--step--1); line-height: 1.4; color: var(--ink-2); }
+.secMeaning { font: 400 var(--step-1) / 1.25 var(--f-body); color: var(--ink); overflow-wrap: anywhere; }
 .second { display: grid; gap: var(--space-3); animation: leaf-in var(--dur) var(--ease) backwards; }
 .second .sec h3 { font-size: var(--step--2); letter-spacing: 0.16em; color: var(--ink-3); }
 .second > * + * { padding-top: var(--space-4); box-shadow: var(--rule-over); }
 .second .fine { margin: 0; }
-.second .sec > :global(.chip), .second .sec > :global(.text-btn) { justify-self: start; }
+.second .sec > :global(.text-btn) { justify-self: start; }
 .foot { display: grid; gap: var(--space-2); }
 .foot a { color: inherit; text-decoration-color: var(--accent); text-underline-offset: 2px; }
 .second > .foot:empty { display: none; }
+/* Wiktionary out of reach: a plain sentence, and "Try again" beside it (it wraps under on a narrow window) */
+.retry { display: flex; flex-wrap: wrap; align-items: center; gap: 0 var(--space-2); margin: 0; }
+/* under a finger a quiet button of the second layer is a finger's height (The whole entry, Try again) */
+@media (pointer: coarse) { .second :global(.text-btn) { display: inline-flex; align-items: center; min-height: var(--tap); } }
 
-/* the lesson that explains this form (lib/lookup/lesson-link.ts), quietly: its icon and two lines, no box */
-.lessonLink {
-  display: flex; gap: var(--space-2); align-items: center; text-decoration: none; transition: color var(--dur-quick) var(--ease);
+/* "Go further": a row for each way on, the same on a computer and a phone (the look-up's fixes, the owner, 2026-10-30; mockup B). Its
+   words on the left in ink, a red › at the right end, a hairline under it (the last is closed by the next part's own rule), and under a
+   finger at least 44 px tall. A button or a link, both with the site's row-btn class; this list draws them. A lesson row has a quiet
+   second line, why the form is explained there. */
+.ways { list-style: none; margin: 0; padding: 0; display: grid; }
+.way {
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); width: 100%; min-height: var(--space-6);
+  padding: var(--space-2) 0; background: none; border: 0; border-radius: var(--radius); box-shadow: var(--rule-under);
+  color: var(--ink); font: inherit; font-size: var(--step-0); line-height: 1.35; text-align: left; text-decoration: none;
+  transition: color var(--dur-quick) var(--ease);
 }
-.lessonLink:hover { color: var(--rubric); }
-.lessonLink svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--accent); stroke-width: 1.8; stroke-linejoin: round; }
-.lessonLink b { display: block; font-size: var(--step-0); }
-.lessonLink b + span { font-size: var(--step--1); color: var(--ink-2); }
+.way:hover { color: var(--rubric); }
+.ways li:last-child > .way { box-shadow: none; }
+.wayText { min-width: 0; overflow-wrap: anywhere; text-wrap: pretty; }
+.wayWhy { display: block; font-size: var(--step--1); color: var(--ink-2); text-wrap: pretty; }
+.wayMark { flex: none; color: var(--rubric); font-size: var(--step-1); line-height: 1; }
+@media (pointer: coarse) { .way { min-height: var(--tap); } }
+
 .gloss { font-size: var(--step-0); }
 .lsj { display: grid; gap: var(--space-2); font-size: var(--step--1); line-height: 1.55; max-height: 50vh; overflow-y: auto; padding-right: var(--space-1); }
+/* the start of LSJ's own entry where there is no short definition to give: about six lines and the gap between two paragraphs, with
+   a soft fade at its foot while there is more under it ("The whole entry" takes the clip away) */
+.lsjPreview { font-size: var(--step--1); line-height: 1.55; }
+.lsjPreview[data-clip] { max-height: calc(6 * 1.55em + var(--space-2)); overflow: hidden; }
+.lsjPreview[data-clip][data-clipped] { mask-image: linear-gradient(to bottom, var(--ink) calc(100% - 2.5em), transparent); }
 .lsjGr { font-family: var(--f-greek); }   /* the size of the entry's line */
 .senseN { font-family: var(--f-label); color: var(--accent); }
 .cite { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 2px; }
@@ -339,8 +365,6 @@
 .noteActs { display: inline-flex; gap: var(--space-1); }
 .noteBox textarea { width: 100%; font: inherit; font-size: var(--step-0); color: var(--ink); border-radius: var(--radius); padding: var(--space-2); resize: vertical; }
 .noteText { white-space: pre-wrap; }
-.panelLinks { display: grid; justify-items: start; gap: var(--space-2); }
-.panelLinks a { text-decoration: none; }
 .noteTags { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); margin: var(--space-1) 0 0; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ochre); }
 
 /* Your marks, in their panel from the bar */
@@ -957,9 +981,12 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 @keyframes from-right { from { opacity: 0; translate: var(--space-6) 0; } }
 .wordNote .panelHead { align-items: start; gap: var(--space-1); }
-.wordNote .pw { font-size: var(--step-3); line-height: 1.1; }
+/* the word is one line: a long one is set smaller to fit (--chars, its letters, from WordPanel: about ten fit at full size, nine beside
+   Back), never broken in two, and its line is as tall as full size makes it, so that the head keeps its height from the first moment
+   (the word tapped) to the ready look-up (its dictionary form), and from word to word (the look-up's fixes, the owner, 2026-10-30) */
+.wordNote .pw { font-size: max(var(--step-1), calc(var(--step-3) * min(1, 9.5 / var(--chars, 1)))); line-height: calc(1.1 * var(--step-3)); }
 .wordNote .x { min-width: var(--space-6); width: var(--space-6); height: var(--space-6); font-size: var(--step-1); }
-.wordNote[data-layer="2"] .pw { font-size: var(--step-2); }   /* the word, smaller, beside Back */
+.wordNote[data-layer="2"] .pw { font-size: max(var(--step-1), calc(var(--step-2) * min(1, 9 / var(--chars, 1)))); line-height: calc(1.1 * var(--step-2)); }   /* the word, smaller, beside Back */
 .wordNote .sec { gap: var(--space-2); }
 .wordNote .gloss { font-size: var(--step--1); }
 .wordNote .lsj { max-height: none; overflow: visible; padding-right: 0; }
@@ -967,7 +994,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 .wordNote .sec > :global(.text-btn) { justify-self: start; }
 
 /* a sheet from the foot of the screen (a phone, a narrower window, two books side by side, the floating window): paper with
-   a red rule along its top (the sample's phone look-up). It rises no higher than just below the line being read
+   a hairline along its top and a soft shadow above it, as mockup B has it (the look-up's fixes, the owner, 2026-10-30: it had been a
+   2 px red rule under a heavy shadow; red is kept for numbers, links and More about it). It rises no higher than just below the line being read
    (--sheet-max, from Reader.tsx), so it never covers it. It has three heights (WordPanel.tsx): peek, half and full, and on
    a phone or a tablet a handle to drag between them; --sheet-h is registered as a length so that WordPanel can read each
    height in pixels. It slides up as it opens (the one movement besides the ink-in, SPEC.md 4.3); a word chosen next inks in. */
@@ -976,7 +1004,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   --sheet-h: clamp(calc(2.25 * var(--space-8)), 25dvh, 400px);   /* it rests at about a quarter of the screen (the quiet desk, ticket 04) */
   top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: none; height: min(var(--sheet-h), var(--sheet-max, 100dvh));
   display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
-  background: var(--bg); border-top: 2px solid var(--rubric); box-shadow: 0 -10px 30px var(--shadow);
+  background: var(--bg); box-shadow: 0 -1px 0 var(--rule), 0 -8px 24px -16px var(--shadow);
   transition: height 0.35s var(--ease), translate var(--dur-quick) var(--ease);
   animation: sheet-up 0.5s var(--ease) backwards;
 }
@@ -995,6 +1023,8 @@ p.translit { margin: -0.3em 0 0.8em; }
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
 .wordSheet .card { gap: var(--space-1); min-height: 0; }
+/* the second layer's kind and meaning stay under the head while the rest scrolls */
+.wordSheet .secWord { flex: none; padding: var(--space-1) var(--space-4) 0; }
 /* the second layer has no row of buttons at its foot: its last line clears the phone's own bar */
 .wordSheet[data-layer="2"] .panelBody { padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); }
 .wordSheet .cardMeaning { font-size: calc((var(--step-1) + var(--step-2)) / 2); }
@@ -1008,5 +1038,5 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 /* a wide sheet keeps its lines to a reading measure, in the middle */
 @media (min-width: 761px) {
-  .wordSheet .panelHead, .wordSheet .panelBody, .wordSheet .cardRow { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
+  .wordSheet .panelHead, .wordSheet .secWord, .wordSheet .panelBody, .wordSheet .cardRow { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
 }

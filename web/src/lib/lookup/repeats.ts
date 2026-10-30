@@ -17,6 +17,15 @@ export function repeatsMeaning(line: string, meaning: string): boolean {
 }
 
 /**
+ * LSJ's entries that have a short definition of their own to show beside the meaning the card gives: not the one the card quotes
+ * word for word, and not an entry with no short definition at all (the quiet desk, the look-up's fixes, the owner, 2026-10-30).
+ * When none is left, "Dictionary · LSJ" shows the start of the entry itself instead, so that it is never an empty heading.
+ */
+export function otherDefinitions<T extends { s: string }>(entries: readonly T[], meaning: string | null | undefined): T[] {
+  return entries.filter((e) => e.s && (!meaning || sameText(e.s) !== sameText(meaning)));
+}
+
+/**
  * Wiktionary's senses without any line that only says the meaning already on the card. A sense left with no lines goes, and
  * so does the list when nothing is left. No meaning shown (the card says there is none) leaves the senses whole.
  */

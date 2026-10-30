@@ -26,6 +26,15 @@
 // closes them and brings the look-up back on the same word with "More about it" open (Escape in them still just closes them); "‹ Back"
 // in the second layer is at least 44 × 44 px under a finger; and on a phone the browser's Back steps second layer, first layer,
 // closed (page.goBack()) without leaving /read or moving the passage, while × and Previous and Next keep the history level.
+// And the look-up's fixes (the quiet desk, the owner, 2026-10-30), on μῆνιν in the Iliad: the second layer keeps the word's context under
+// its head (the kind of word, "noun, feminine", and the meaning, a little smaller than the first layer's); "Dictionary · LSJ" is never an
+// empty heading (some entry text, at least 40 characters, clipped to about six lines with a soft fade, and "The whole entry" lifts the
+// clip, "The short entry" puts it back); "Go further" is rows, the same on a computer and a phone (each as wide as its part, ending in a
+// red ›, a hairline under it, 44 px tall under a finger, in the order where else, the sentence, the lesson, Word Study); the grammar line
+// ("Accusative singular") underlines its case only while Colour by case is on; Wiktionary out of reach is said plainly ("Wiktionary could
+// not be reached.", never the raw error) with a "Try again" that looks it up again; the window's head shows the tapped word at once while
+// the look-up is found, then the dictionary form, at the same height; and the phone sheet's top edge is a hairline, not a 2 px red rule
+// under a heavy shadow, with its handle kept.
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -38,21 +47,28 @@ const LOOKUP = 'aside[aria-label^="Look-up"]';
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
 
-async function open(w, h, scheme, path) {
+/**
+ * A reader's page. opts.settings adds to the saved settings (Colour by case: { cases: true }); opts.slow holds the word packs, LSJ
+ * and the vocabulary back that many milliseconds, so that the look-up's first moments can be seen; opts.wikt is "fail" for Wiktionary
+ * out of reach (otherwise it has no entry). The returned state can change wikt, and counts the requests Wiktionary was asked.
+ */
+async function open(w, h, scheme, path, opts = {}) {
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, colorScheme: scheme, serviceWorkers: "block", hasTouch: w < 800, isMobile: w < 800 });
   const page = await ctx.newPage();
   // the look-up must keep clear of the English beside the Greek, so this reader has chosen "Both" (a book opens on Greek alone now;
   // the quiet desk, ticket 07): the saved settings, version 3
-  await page.addInitScript(() => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { columns: "both" }, version: 3 })); });
+  await page.addInitScript((extra) => { localStorage.setItem("mathesis:settings", JSON.stringify({ state: { columns: "both", ...extra }, version: 3 })); }, opts.settings ?? {});
   await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
     const p = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
     try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${p}` }) }); } catch { await route.abort(); }
   });
-  await page.route(/wiktionary\.org/, (route) => route.fulfill({ status: 404, contentType: "application/json", body: "{}" }));
+  if (opts.slow) await page.route(/\/(?:packs|data)\/(?:words|lsj|lexicon|syntax)\//, async (route) => { await new Promise((r) => setTimeout(r, opts.slow)); await route.fallback(); });
+  const state = { wikt: opts.wikt ?? "none", wiktRequests: 0 };
+  await page.route(/wiktionary\.org/, (route) => { state.wiktRequests++; return state.wikt === "fail" ? route.abort() : route.fulfill({ status: 404, contentType: "application/json", body: "{}" }); });
   await page.goto(base + path);
   await page.waitForSelector("article [data-w]", { timeout: 45000 });
   await page.waitForTimeout(2500);   // everything has inked in
-  return { ctx, page };
+  return { ctx, page, state };
 }
 
 /** The first word whose top is about `frac` of the way down the screen (in the first book). */
@@ -114,6 +130,122 @@ async function openMore(page, tag) {
 const meaningOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP)?.querySelector('[class*="cardMeaning"]')?.textContent?.replace(/\s*\(from [^)]*\)\s*$/, "").trim() ?? "", LOOKUP);
 const layerOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP)?.getAttribute("data-layer") ?? "", LOOKUP);
 const norm = (x) => x.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+/** The kind of word the first layer names ("noun, feminine"), without the word tapped; "" when it names none. */
+const kindOf = (page) => page.evaluate((LOOKUP) => {
+  const t = document.querySelector(LOOKUP)?.querySelector('[class*="cardKind"]')?.textContent?.trim() ?? "";
+  return /^You tapped /.test(t) ? "" : t.replace(/ · you tapped .*$/, "");
+}, LOOKUP);
+/** The size, in px, of the first layer's meaning line. */
+const sizeOf = (page) => page.evaluate((LOOKUP) => parseFloat(getComputedStyle(document.querySelector(LOOKUP).querySelector('[class*="cardMeaning"]')).fontSize), LOOKUP);
+
+/**
+ * The grammar line names its case ("Accusative singular") and draws the case's colour and line under it only while Colour by case is
+ * on, as the text does; with it off the line is plain small capitals (the quiet desk, the look-up's fixes, the owner, 2026-10-30).
+ * Looks at the first layer of μῆνιν in the Iliad, 1.1.
+ */
+async function caseLine(page, tag, on) {
+  const g = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP)?.querySelector('[class*="cardGrammar"]');
+    if (!el) return null;
+    const probe = (v) => { const e = document.createElement("i"); e.style.color = `var(${v})`; document.body.append(e); const c = getComputedStyle(e).color; e.remove(); return c; };
+    const marked = [el, ...el.querySelectorAll("*")].filter((e) => getComputedStyle(e).textDecorationLine.includes("underline"))
+      .map((e) => ({ text: e.textContent.trim(), colour: getComputedStyle(e).textDecorationColor }));
+    return { text: el.textContent.trim(), marked, cased: el.querySelectorAll("[data-case]").length, accusative: probe("--case-acc") };
+  }, LOOKUP);
+  if (!g) { found.push(`${tag}: the first layer has no grammar line`); return; }
+  if (g.text !== "Accusative singular") found.push(`${tag}: the grammar line reads "${g.text}" (Accusative singular)`);
+  if (on) {
+    if (!g.marked.length || g.marked[0].colour !== g.accusative) found.push(`${tag}: with Colour by case on, the grammar line does not underline its case in the case's colour (underlined: ${JSON.stringify(g.marked)}; the accusative is ${g.accusative})`);
+  } else if (g.marked.length || g.cased) found.push(`${tag}: the grammar line underlines "${g.marked.map((m) => m.text).join(", ")}" while Colour by case is off (it is plain small capitals)`);
+}
+
+/**
+ * The phone sheet's top edge is a hairline rule with at most a soft shadow, not a 2 px red rule under a heavy shadow, and the handle to
+ * drag it by stays (the quiet desk, the look-up's fixes, the owner, 2026-10-30; mockup B).
+ */
+async function sheetEdge(page, tag) {
+  const e = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP), s = getComputedStyle(el), g = el.querySelector('[class*="grab"]');
+    return {
+      border: s.borderTopStyle === "none" ? 0 : parseFloat(s.borderTopWidth) || 0, shadow: s.boxShadow,
+      blurs: [...s.boxShadow.matchAll(/(-?[\d.]+)px (-?[\d.]+)px (-?[\d.]+)px/g)].map((m) => +m[3]),
+      grab: g && getComputedStyle(g).display !== "none" ? g.getBoundingClientRect().width : 0,
+      // (a sheet is dragged on a phone or a tablet; two books side by side on a wide screen have no handle to drag it by)
+      draggable: matchMedia("(max-width: 1099px)").matches,
+    };
+  }, LOOKUP);
+  if (e.border > 1) found.push(`${tag}: the sheet's top edge is a ${e.border} px rule (a hairline, 1 px)`);
+  if (e.blurs.some((b) => b > 24)) found.push(`${tag}: the sheet throws a heavy shadow (${e.shadow}); at most a soft one`);
+  if (e.draggable && e.grab < 30) found.push(`${tag}: the sheet has lost its handle`);
+}
+
+/**
+ * "Dictionary · LSJ" is never an empty heading: where LSJ has no short definition but the one the card gives, it shows the start of
+ * the whole entry itself, clipped to about six lines with a soft fade (its citations still links); "The whole entry" lifts the clip
+ * and shows all of it, "The short entry" puts it back (the quiet desk, the look-up's fixes, the owner, 2026-10-30). The look-up
+ * stands in its second layer, on μῆνιν in the Iliad, whose only short definition is the meaning.
+ */
+async function wholeEntry(page, tag) {
+  const look = page.locator(LOOKUP);
+  const read = () => page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP);
+    const h = [...el.querySelectorAll("h3")].find((x) => /^Dictionary · LSJ/.test(x.textContent));
+    const sec = h?.closest("section");
+    const btn = sec && [...sec.querySelectorAll("button")].find((b) => /^The (whole|short) entry$/.test(b.textContent.trim()));
+    if (!sec || !btn) return null;
+    // what stands between the heading and the button is the entry (or its start); a clip leaves the rest of the entry in the page, so
+    // the text shown is the text that begins above the button
+    const kids = [...sec.children].filter((c) => c !== h && c !== btn);
+    const first = kids[0] ? getComputedStyle(kids[0]) : null;
+    const limit = btn.getBoundingClientRect().top;
+    let shown = 0;
+    for (const k of kids) {
+      const walk = document.createTreeWalker(k, NodeFilter.SHOW_TEXT);
+      for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+        const r = document.createRange(); r.selectNodeContents(n);
+        const top = r.getClientRects()[0]?.top;
+        if (top !== undefined && top < limit - 1) shown += n.textContent.trim().length;
+      }
+    }
+    return {
+      text: kids.map((k) => k.textContent.trim()).join(" "), shown,
+      height: limit - h.getBoundingClientRect().bottom,
+      line: first ? parseFloat(first.lineHeight) || parseFloat(first.fontSize) * 1.55 : 22,
+      clipped: kids.some((k) => getComputedStyle(k).overflowY !== "visible" && k.scrollHeight > k.clientHeight + 1),
+      fade: kids.map((k) => getComputedStyle(k).maskImage).find((m) => m && m !== "none") ?? "",
+      links: kids.reduce((n, k) => n + k.querySelectorAll('a[href^="/read"]').length, 0),
+      // a citation under the clip is left out of the keyboard's way (tabindex -1); one the keyboard can still reach would be somewhere
+      // nobody can see
+      strays: kids.reduce((n, k) => { const edge = k.getBoundingClientRect().bottom; return n + (getComputedStyle(k).overflowY === "visible" ? 0 : [...k.querySelectorAll("a")].filter((a) => a.getBoundingClientRect().top >= edge - 1 && a.tabIndex >= 0).length); }, 0),
+      skipped: kids.reduce((n, k) => n + k.querySelectorAll('a[tabindex="-1"]').length, 0),
+      label: btn.textContent.trim(), expanded: btn.getAttribute("aria-expanded"),
+    };
+  }, LOOKUP);
+  const a = await read();
+  if (!a) { found.push(`${tag}: "Dictionary · LSJ" has no "The whole entry" button to check`); return; }
+  if (a.shown < 40) found.push(`${tag}: "Dictionary · LSJ" shows ${a.shown} characters of entry text (at least 40: it is never an empty heading)`);
+  if (!a.clipped) found.push(`${tag}: the start of the entry is not clipped (it is a preview of about six lines)`);
+  else {
+    const lines = (a.height - 8) / a.line;
+    if (lines > 8.5 || lines < 3) found.push(`${tag}: the start of the entry is ${lines.toFixed(1)} lines tall (about six)`);
+    if (!a.fade) found.push(`${tag}: the clipped entry has no soft fade at its foot`);
+  }
+  if (!a.links) found.push(`${tag}: the citations in the start of the entry are not links`);
+  if (a.clipped && (a.strays || !a.skipped)) found.push(`${tag}: ${a.strays ? `${a.strays} citation(s) under the clip can be reached by the keyboard` : "no citation under the clip is left out of the keyboard's way"} (it would stop on something nobody can see)`);
+  if (a.expanded !== "false") found.push(`${tag}: "The whole entry" reads aria-expanded="${a.expanded}" before it is pressed (false)`);
+  await look.getByRole("button", { name: /^The whole entry$/ }).click();
+  await page.waitForTimeout(500);
+  const b = await read();
+  if (!b) { found.push(`${tag}: "The whole entry" took the entry away`); return; }
+  if (b.label !== "The short entry" || b.expanded !== "true") found.push(`${tag}: after "The whole entry" the button reads "${b.label}" with aria-expanded="${b.expanded}" ("The short entry", true)`);
+  if (b.clipped || b.fade) found.push(`${tag}: "The whole entry" left the clip on the entry`);
+  if (b.skipped) found.push(`${tag}: after "The whole entry" ${b.skipped} citation(s) are still left out of the keyboard's way`);
+  if (b.height < a.height + 40 || b.shown <= a.shown) found.push(`${tag}: "The whole entry" did not show more of it (${Math.round(a.height)} px and ${a.shown} characters, then ${Math.round(b.height)} px and ${b.shown})`);
+  await look.getByRole("button", { name: /^The short entry$/ }).click();
+  await page.waitForTimeout(500);
+  const c = await read();
+  if (!c || c.label !== "The whole entry" || c.expanded !== "false" || !c.clipped || Math.abs(c.height - a.height) > 2) found.push(`${tag}: "The short entry" did not put the clip back (${c ? `${c.label}, ${Math.round(c.height)} px, clipped ${c.clipped}` : "no entry"})`);
+}
 
 /**
  * "More about it", and everything the second layer must be (ticket 06). The look-up stands in its first layer; this presses
@@ -126,31 +258,57 @@ async function secondLayer(page, tag, opts, during) {
   const look = page.locator(LOOKUP);
   const rest = (await boxes(page)).look;
   const meaning = await meaningOf(page);
+  const kind = await kindOf(page), meaningSize = await sizeOf(page);
   if (!(await openMore(page, tag))) return;
   const open = await page.evaluate((LOOKUP) => {
     const el = document.querySelector(LOOKUP);
     const text = (e) => e.textContent.trim().replace(/\s+/g, " ");
-    const find = (sel, re) => [...el.querySelectorAll(sel)].find((e) => re.test(text(e)));
+    // (a row of "Go further" ends in a ›, a sign; it is not part of what the row says)
+    const find = (sel, re) => [...el.querySelectorAll(sel)].find((e) => re.test(text(e).replace(/\s*›$/, "")));
     const shown = (e) => !!e && e.checkVisibility() && e.getClientRects().length > 0;
     const credits = [...el.querySelectorAll("[data-credits]")];
     let after = "";
     if (credits.length) { const r = document.createRange(); r.setStartAfter(credits[credits.length - 1]); r.setEndAfter(el.lastChild); after = r.toString().trim(); }
+    // the word's context under the head: the kind of word and the meaning; the head is "‹ Back", the headword and ×
+    const recap = el.querySelector('[class*="secWord"]');
+    const head = el.querySelector('[class*="panelHead"]');
+    const kindEl = recap?.querySelector('[class*="secKind"]'), meaningEl = recap?.querySelector('[class*="secMeaning"]');
+    // "Go further": the rows, each a button or a link, in the order they stand
+    const further = [...el.querySelectorAll("h3")].find((e) => /^Go further/.test(text(e)))?.closest("section");
+    const rubric = (() => { const e = document.createElement("i"); e.style.color = "var(--rubric)"; document.body.append(e); const c = getComputedStyle(e).color; e.remove(); return c; })();
     return {
       layer: el.getAttribute("data-layer"),
       text: text(el),
-      first: !!el.querySelector('[class*="cardMeaning"]'),
+      first: !!el.querySelector('[class*="cardMeaning"], [class*="cardRole"], [class*="cardGrammar"]'),
+      recap: recap ? {
+        kind: kindEl ? text(kindEl) : "",
+        meaning: meaningEl ? text(meaningEl).replace(/\s*\(from [^)]*\)\s*$/, "") : "",
+        size: meaningEl ? parseFloat(getComputedStyle(meaningEl).fontSize) : 0,
+        top: (meaningEl ?? recap).getBoundingClientRect().top, shown: shown(meaningEl),
+      } : null,
+      headBottom: head ? head.getBoundingClientRect().bottom : 0,
+      rubric,
+      coarse: matchMedia("(pointer: coarse)").matches,
+      furtherW: further ? further.getBoundingClientRect().width : 0,
+      rows: further ? [...further.querySelectorAll("a, button")].map((e) => {
+        const r = e.getBoundingClientRect(), mark = e.querySelector('[aria-hidden="true"]');
+        return {
+          text: text(e).replace(/\s*›$/, ""), h: r.height, w: r.width, right: r.right, shadow: getComputedStyle(e).boxShadow, link: e.tagName === "A",
+          mark: mark ? { text: mark.textContent.trim(), right: mark.getBoundingClientRect().right, colour: getComputedStyle(mark).color } : null,
+        };
+      }) : [],
       heads: [...el.querySelectorAll("h3")].map((e) => ({ t: text(e), shown: shown(e) })),
       // the parts, in the order they must stand
       parts: [
         ["the LSJ heading", find("h3", /^Dictionary · LSJ/)],
         ["“The whole entry”", find("button", /^The whole entry$/)],
-        ["where else it occurs", find("button", /times in the|^Once in the|^Where else it occurs$/)],
+        ["where else it occurs", find("button", /^Where else/)],
         ["“How the sentence is built”", find("button", /^How the sentence is built$/)],
         ["the lesson", el.querySelector('a[href^="/academy/lesson/"]')],
         ["Word Study", el.querySelector('a[href^="/treasury/word"]')],
         ["the other dictionaries", find("h3", /^More dictionaries$/)],
         ["the credits", credits[0] ?? null],
-      ].map(([name, node]) => ({ name, found: !!node, shown: shown(node), before: node ? [...el.querySelectorAll("*")].indexOf(node) : -1, text: node ? text(node) : "", href: node?.getAttribute?.("href") ?? "" })),
+      ].map(([name, node]) => ({ name, found: !!node, shown: shown(node), before: node ? [...el.querySelectorAll("*")].indexOf(node) : -1, text: node ? text(node).replace(/\s*›$/, "") : "", href: node?.getAttribute?.("href") ?? "" })),
       credits: credits.map(text),
       // the short definitions and senses the second layer gives (LSJ's, Wiktionary's)
       glosses: [...el.querySelectorAll('[class*="gloss"], [class*="senses"] p')].map(text),
@@ -165,7 +323,38 @@ async function secondLayer(page, tag, opts, during) {
     };
   }, LOOKUP);
   if (open.layer !== "2") found.push(`${tag}: "More about it" did not show the second layer (data-layer ${open.layer})`);
-  if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (the meaning is said again)`);
+  if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (its meaning, what the word does here, or its grammar)`);
+  // the second layer keeps the word's context under its head: the kind of word and the meaning, as the first layer has them, the meaning a
+  // little smaller (the quiet desk, the look-up's fixes, the owner, 2026-10-30)
+  if (!open.recap) found.push(`${tag}: the second layer shows neither the kind of word nor the meaning under its head`);
+  else {
+    if (open.recap.kind !== kind) found.push(`${tag}: the second layer names the kind of word "${open.recap.kind}" (the first layer: "${kind}")`);
+    if (open.recap.meaning !== meaning) found.push(`${tag}: the second layer's meaning line reads "${open.recap.meaning}" (the first layer: "${meaning}")`);
+    if (!open.recap.shown) found.push(`${tag}: the second layer's meaning line is not shown`);
+    if (open.recap.top < open.headBottom - 1) found.push(`${tag}: the second layer's meaning line stands ${Math.round(open.headBottom - open.recap.top)} px over the head (it is under it)`);
+    if (open.recap.size >= meaningSize - 0.5) found.push(`${tag}: the second layer's meaning is ${open.recap.size} px, the first layer's ${meaningSize} px (a little smaller)`);
+  }
+  // "Go further" is rows, the same on a computer and a phone, in the order where else, the sentence, the lesson, Word Study, on the map:
+  // each as wide as its part, its words on the left and a red › at the right end, a hairline under it (the last is closed by the next
+  // part's own rule), and a finger's 44 px tall on a touch screen
+  const ROWS = [["where else", /^Where else/], ["the sentence", /^How the sentence is built$/], ["the lesson", /^Lesson \d+: /], ["Word Study", /^Word Study: every form of /], ["the map", /^On the map: /]];
+  const named = open.rows.map((r) => ({ ...r, name: ROWS.find(([, re]) => re.test(r.text))?.[0] ?? null }));
+  for (const r of named) if (!r.name) found.push(`${tag}: "Go further" has "${r.text}" (not one of its rows: where else, the sentence, the lesson, Word Study, on the map)`);
+  if (!named.length) found.push(`${tag}: "Go further" has no rows`);
+  const order = named.filter((r) => r.name).map((r) => ROWS.findIndex(([n]) => n === r.name));
+  if (order.some((n, i) => i && n < order[i - 1])) found.push(`${tag}: the rows of "Go further" stand in the order ${named.map((r) => r.name ?? "?").join(", ")} (where else, the sentence, the lesson, Word Study, on the map)`);
+  named.forEach((r, i) => {
+    const bad = [];
+    if (open.coarse ? r.h < 43.5 : r.h < 35.5) bad.push(`is ${Math.round(r.h)} px tall${open.coarse ? " under a finger (at least 44)" : ""}`);
+    if (r.w < open.furtherW - 2) bad.push(`is ${Math.round(r.w)} px wide in a part ${Math.round(open.furtherW)} px wide (a row is the full width)`);
+    if (!r.mark || r.mark.text !== "›") bad.push("does not end in a ›");
+    else {
+      if (r.right - r.mark.right > 16) bad.push(`has its › ${Math.round(r.right - r.mark.right)} px short of the row's right end`);
+      if (r.mark.colour !== open.rubric) bad.push(`has its › in ${r.mark.colour} (red, ${open.rubric})`);
+    }
+    if (i < named.length - 1 && !/inset/.test(r.shadow)) bad.push("has no hairline under it");
+    if (bad.length) found.push(`${tag}: the "Go further" row "${r.text.slice(0, 40)}" ${bad.join("; ")}`);
+  });
   // "‹ Back" is a button to find and to hit: a finger's 44 × 44 px on a touch screen, and as large as the panel's reading size
   if (!open.back) found.push(`${tag}: no "‹ Back" button in the second layer`);
   else if (open.back.coarse && (open.back.h < 43.5 || open.back.w < 43.5)) found.push(`${tag}: "‹ Back" is ${Math.round(open.back.w)} × ${Math.round(open.back.h)} px under a finger (at least 44 × 44)`);
@@ -193,8 +382,13 @@ async function secondLayer(page, tag, opts, during) {
     const line = open.credits[0] ?? "";
     if (line !== "Analysis and treebank: GLAUx (Keersmaekers 2021), CC BY-SA 4.0 · LSJ: Perseus Digital Library, CC BY-SA") found.push(`${tag}: the credit line reads "${line}"`);
     const where = has("where else it occurs").text;
-    if (where !== "12 times in the Iliad") found.push(`${tag}: the where-else line reads "${where}" (12 times in the Iliad)`);
-    if (!/Why the accusative\?/.test(has("the lesson").text) || has("the lesson").href !== "/academy/lesson/case") found.push(`${tag}: the lesson reads "${has("the lesson").text}" at ${has("the lesson").href}`);
+    if (where !== "Where else: 12 times in the Iliad") found.push(`${tag}: the where-else row reads "${where}" (Where else: 12 times in the Iliad)`);
+    const lesson = has("the lesson");
+    if (!/^Lesson 3: Who does what: the idea of case/.test(lesson.text) || !/Why the accusative\?/.test(lesson.text) || lesson.href !== "/academy/lesson/case") found.push(`${tag}: the lesson row reads "${lesson.text}" at ${lesson.href} (Lesson 3: Who does what: the idea of case, and why: Why the accusative?)`);
+    const study = has("Word Study").text;
+    if (study !== "Word Study: every form of μῆνις") found.push(`${tag}: the Word Study row reads "${study}" (Word Study: every form of μῆνις)`);
+    // all four rows, in this order
+    for (const n of ["where else", "the sentence", "the lesson", "Word Study"]) if (!named.some((r) => r.name === n)) found.push(`${tag}: "Go further" has no row for ${n}`);
   }
   // the meaning the first layer gave is not given again
   if (meaning && open.glosses.some((g) => norm(g) === norm(meaning))) found.push(`${tag}: the second layer says the first layer's meaning ("${meaning.slice(0, 40)}") again`);
@@ -320,6 +514,7 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
   const first = await check("as it opens");
   if (first?.look && first.look.height > h * 0.27 + 1) found.push(`sheet ${label}: it opens ${Math.round(first.look.height)} px tall, ${Math.round(first.look.height / h * 100)}% of the screen (it rests at 27% or less)`);
   await firstLayer(page, `sheet ${label}`);
+  await sheetEdge(page, `sheet ${label}`);
   // "More about it" raises the sheet to all the room it has, and reveals the dictionary; "‹ Back" brings it down again
   await secondLayer(page, `sheet ${label}`, { sheet: true }, async () => { await check("at its full height"); });
   const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
@@ -347,13 +542,15 @@ async function backRoutes(page, tag, phone) {
   const look = page.locator(LOOKUP);
   for (const [name, link, panel] of [
     ["the sentence", /^How the sentence is built$/, 'aside[aria-label="How the sentence is built"]'],
-    ["where else", /times in the|^Once in the|^Where else it occurs$/, 'aside[aria-label="Echoes"]'],
+    ["where else", /^Where else/, 'aside[aria-label="Echoes"]'],
   ]) {
     const here = `${tag}, ${name}`;
     for (const pass of ["escape", "back"]) {
       if (!(await look.count())) await lookUp(page, phone);
       if ((await layerOf(page)) !== "2") { await look.getByRole("button", { name: "More about it" }).click(); await page.waitForTimeout(700); }
-      await look.getByRole("button", { name: link }).click();
+      const way = look.getByRole("button", { name: link });
+      if (!(await way.count())) { found.push(`${here}: the second layer has no row to open ${name} from`); return; }
+      await way.click();
       const shown = await page.waitForSelector(panel, { timeout: 20000 }).then(() => true, () => false);
       if (!shown) { found.push(`${here}: the panel did not open`); return; }
       await page.waitForTimeout(700);
@@ -465,8 +662,9 @@ for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
   await page.waitForSelector(LOOKUP, { timeout: 10000 });
   await page.waitForTimeout(900);
   await firstLayer(page, tag);
-  if (w >= 800) inMargin(tag, await boxes(page));
-  await secondLayer(page, tag, { sheet: w < 800, exact: true });
+  await caseLine(page, tag, false);
+  if (w >= 800) inMargin(tag, await boxes(page)); else await sheetEdge(page, tag);
+  await secondLayer(page, tag, { sheet: w < 800, exact: true }, () => wholeEntry(page, tag));
   await backRoutes(page, tag, w < 800);
   if (!(await page.locator(LOOKUP).count())) await lookUp(page, w < 800);
   if ((await layerOf(page)) === "2") { await page.locator(LOOKUP).focus(); await page.keyboard.press("Escape"); await page.waitForTimeout(600); }
@@ -489,6 +687,69 @@ for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
   await ctx.close();
 }
 
+const ILIAD = "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1";
+
+// ---- Colour by case on: the grammar line underlines its case in the case's colour and line, as the text does
+{
+  const { ctx, page } = await open(1280, 900, "light", ILIAD, { settings: { cases: true } });
+  await lookUp(page, false);
+  await caseLine(page, "μῆνιν in the Iliad, 1280px, with Colour by case on", true);
+  await ctx.close();
+}
+
+// ---- Wiktionary out of reach: said plainly, never as the raw error, with a "Try again" that looks it up again (the quiet desk,
+// the look-up's fixes, the owner, 2026-10-30)
+for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
+  const tag = `μῆνιν in the Iliad, ${label}, Wiktionary out of reach`;
+  const { ctx, page, state } = await open(w, h, "light", ILIAD, { wikt: "fail" });
+  await lookUp(page, w < 800);
+  const look = page.locator(LOOKUP);
+  await look.getByRole("button", { name: "More about it" }).click();
+  await page.waitForTimeout(900);
+  const part = look.locator("section", { has: page.locator("h3", { hasText: /^Wiktionary · live/ }) });
+  const said = async () => ((await part.count()) ? ((await part.first().textContent()) ?? "").replace(/^Wiktionary · live/, "").replace(/\s+/g, " ").trim() : "");
+  const first = await said();
+  if (!first) { found.push(`${tag}: no "Wiktionary · live" part says that Wiktionary could not be reached`); await ctx.close(); continue; }
+  if (!/^Wiktionary could not be reached\./.test(first) || /Failed|fetch|Error|\(/.test(first)) found.push(`${tag}: the failure reads "${first}" ("Wiktionary could not be reached." and "Try again", not the browser's own error)`);
+  const retry = part.getByRole("button", { name: /^Try again$/ });
+  if (!(await retry.count())) found.push(`${tag}: the failure has no "Try again" button`);
+  else {
+    const asked = state.wiktRequests;
+    await retry.click();
+    await page.waitForTimeout(900);
+    if (state.wiktRequests <= asked) found.push(`${tag}: "Try again" did not ask Wiktionary again`);
+    if (!/^Wiktionary could not be reached\./.test(await said()) || !(await retry.count())) found.push(`${tag}: after a second failure the part does not say so again, with "Try again" (it reads "${await said()}")`);
+    // and once Wiktionary answers (here: no entry for the form), the failure is gone
+    state.wikt = "none";
+    if (await retry.count()) await retry.click();
+    await page.waitForTimeout(1200);
+    if (await part.count()) found.push(`${tag}: after "Try again", with Wiktionary reachable, the part still reads "${await said()}"`);
+  }
+  await ctx.close();
+}
+
+// ---- while the look-up is still being found, its head shows the word that was tapped, then the dictionary form, at the same height
+for (const [w, h, label] of [[1280, 900, "1280px"], [390, 844, "390px"]]) {
+  const tag = `μῆνιν in the Iliad, ${label}, while it loads`;
+  const { ctx, page } = await open(w, h, "light", ILIAD, { slow: 2500 });
+  const word = page.locator('[data-u="1.1"] [data-w="μῆνιν"]');
+  if (w < 800) await word.tap(); else await word.click();
+  await page.waitForSelector(LOOKUP, { timeout: 10000 });
+  const head = () => page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP), pw = el.querySelector('[class*="pw"]'), hd = el.querySelector('[class*="panelHead"]');
+    return { text: pw?.textContent?.trim() ?? "", greek: pw?.getAttribute("lang") === "grc", waiting: /Looking it up/.test(el.textContent), height: hd?.getBoundingClientRect().height ?? 0 };
+  }, LOOKUP);
+  const during = await head();
+  if (!during.waiting) found.push(`${tag}: the look-up was not still loading when its head was read, so its first moment could not be seen`);
+  else if (during.text !== "μῆνιν" || !during.greek) found.push(`${tag}: the head reads "${during.text}" while it loads (the tapped word, μῆνιν, in Greek)`);
+  await page.locator(LOOKUP).getByText("Looking it up…").waitFor({ state: "detached", timeout: 30000 }).catch(() => found.push(`${tag}: the look-up was still "Looking it up…" after 30 s`));
+  await page.waitForTimeout(500);
+  const after = await head();
+  if (after.text !== "μῆνις") found.push(`${tag}: once it is ready the head reads "${after.text}" (the dictionary form, μῆνις)`);
+  if (Math.abs(after.height - during.height) > 1) found.push(`${tag}: the head is ${Math.round(during.height)} px tall while the look-up loads and ${Math.round(after.height)} px once it is ready (the same height)`);
+  await ctx.close();
+}
+
 // ---- the phone's back gesture, on a page of its own (so that the entries counted are only this one's)
 {
   const { ctx, page } = await open(390, 844, "light", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
@@ -501,4 +762,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the LSJ entry, where else, the sentence, the lesson, Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet that stops below the line elsewhere");
+console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the word's kind and meaning under its head, the LSJ entry never an empty heading, Go further as rows of where else, the sentence, the lesson and Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); the case underlined only with Colour by case on; Wiktionary out of reach said plainly with Try again; the tapped word in the head while it loads; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet with a hairline edge that stops below the line elsewhere");

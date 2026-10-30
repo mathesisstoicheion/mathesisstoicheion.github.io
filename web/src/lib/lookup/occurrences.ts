@@ -20,12 +20,24 @@ export function countLemma(pack: WordPack, lemma: string): number {
   return m.get(lemma) ?? 0;
 }
 
+/** What the way into Echoes says when the word cannot be counted */
+const UNCOUNTED = "Where else it occurs";
+
 /**
  * The words of the link that opens Echoes: "12 times in the Iliad". With no count (no analysis of the word, a work with no
  * word pack, or none found) it says "Where else it occurs", never a made-up number.
  */
 export function occursLine(count: number | null | undefined, workTitle: string | null | undefined): string {
-  if (!count || count < 1) return "Where else it occurs";
+  if (!count || count < 1) return UNCOUNTED;
   const times = count === 1 ? "Once" : `${count.toLocaleString("en-GB")} times`;
   return `${times} ${workTitle ? `in the ${workTitle}` : "in this work"}`;
+}
+
+/**
+ * The same, as the row of "Go further" that opens Echoes (the quiet desk, the look-up's fixes, the owner, 2026-10-30): "Where else:
+ * 12 times in the Iliad". Without a count the line already says where else, and stands as it is.
+ */
+export function whereElse(count: number | null | undefined, workTitle: string | null | undefined): string {
+  const line = occursLine(count, workTitle);
+  return line === UNCOUNTED ? line : `Where else: ${line}`;
 }

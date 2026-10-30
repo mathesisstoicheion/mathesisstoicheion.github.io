@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { countLemma, occursLine } from "./occurrences";
-import { withoutMeaning, repeatsMeaning } from "./repeats";
+import { countLemma, occursLine, whereElse } from "./occurrences";
+import { withoutMeaning, repeatsMeaning, otherDefinitions } from "./repeats";
 import { creditsFor, GLAUX_CREDIT, LSJ_CREDIT_SHORT, WIKTIONARY_CREDIT } from "./credits";
 import { certaintyNote } from "./certainty";
 import { LSJ_CREDIT } from "./lsj";
@@ -46,6 +46,15 @@ describe("where else a word occurs", () => {
     expect(occursLine(null, "Iliad")).toBe("Where else it occurs");
     expect(occursLine(0, "Iliad")).toBe("Where else it occurs");
   });
+
+  it("opens the row of Go further with 'Where else:', and leaves the line as it is when it cannot count", () => {
+    // (the quiet desk, the look-up's fixes, the owner, 2026-10-30)
+    expect(whereElse(12, "Iliad")).toBe("Where else: 12 times in the Iliad");
+    expect(whereElse(1, "Iliad")).toBe("Where else: Once in the Iliad");
+    expect(whereElse(12, undefined)).toBe("Where else: 12 times in this work");
+    expect(whereElse(null, "Iliad")).toBe("Where else it occurs");
+    expect(whereElse(0, "Iliad")).toBe("Where else it occurs");
+  });
 });
 
 describe("a meaning is said once", () => {
@@ -74,6 +83,38 @@ describe("a meaning is said once", () => {
     const senses: WiktSense[] = [{ pos: "noun", lines: [meaning], lemma: null }];
     expect(withoutMeaning(senses, null)).toEqual(senses);
     expect(withoutMeaning(null, meaning)).toEqual([]);
+  });
+});
+
+describe("what Dictionary · LSJ shows besides the meaning", () => {
+  // the meaning the card gives: the core list's definition where the word is on it, otherwise LSJ's first short definition
+  const meaningOf = (lemma: string) => core[lemma]?.def ?? lsj[lemma].entries[0].s;
+  const keys = (es: { k?: string }[]) => es.map((e) => e.k);
+
+  it("has no short definition to add for μῆνιν: LSJ's one is the meaning (the entry's own start is shown instead)", () => {
+    expect(otherDefinitions(lsj["μῆνις"].entries, meaningOf("μῆνις"))).toEqual([]);
+  });
+
+  it("adds the short definition of an entry the card does not quote (ὅς has two entries in LSJ)", () => {
+    const entries = lsj["ὅς"].entries as { k: string; s: string }[];
+    expect(entries).toHaveLength(2);
+    expect(keys(otherDefinitions(entries, entries[0].s))).toEqual(["o(/s2"]);
+  });
+
+  it("adds LSJ's own short definition when the card's meaning came from the core list instead", () => {
+    expect(meaningOf("μυρίος")).toBe(core["μυρίος"].def);
+    expect(keys(otherDefinitions(lsj["μυρίος"].entries as { k: string; s: string }[], meaningOf("μυρίος")))).toEqual(["muri/os"]);
+  });
+
+  it("adds nothing for an entry with no short definition at all (Ἀχιλλεύς), whatever the card says", () => {
+    const entries = lsj["Ἀχιλλεύς"].entries;
+    expect(entries[0].s).toBe("");
+    expect(otherDefinitions(entries, null)).toEqual([]);
+    expect(otherDefinitions(entries, "LSJ has no short definition for it. See More about it.")).toEqual([]);
+  });
+
+  it("compares as plain words, without capitals or punctuation", () => {
+    expect(otherDefinitions([{ s: "Wrath; revengeful temper" }], "wrath, revengeful temper")).toEqual([]);
   });
 });
 
