@@ -7,7 +7,7 @@
  * day); any word can be touched to look it up (the reader's own look-up, WordPanel).
  */
 import Link from "next/link";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { describe, versionOf } from "@/lib/catalog";
 import { loadPassage, type LoadedPassage } from "@/lib/passage";
 import { norm } from "@/lib/lookup/words";
@@ -19,6 +19,7 @@ import readerStyles from "@/components/reader/Reader.module.css";
 import h from "./Home.module.css";
 
 interface Loaded extends LoadedPassage { p: DailyPassage }
+const noSubscribe = () => () => {};
 
 /** Load today's passage; if it can't be read (offline and not downloaded), try the next ones. */
 async function loadToday(): Promise<Loaded> {
@@ -43,8 +44,11 @@ export default function HomePassage() {
   const translation = useMemo(() => data?.rows.flatMap((r) => r.trans) ?? [], [data]);
   // most passages are longer than one sentence: a longer one is set a step smaller
   const long = useMemo(() => (JSON.stringify(data?.rows.flatMap((r) => r.greek) ?? []).match(/[Ͱ-Ͽἀ-῿]/g)?.length ?? 0) > 160, [data]);
-  // until the passage is known, the one for today's date
-  const today = data?.p ?? PASSAGES[todaysIndex()];
+  // until the passage is known, the one for today's date; the built page shows the first, as the Painted Stoa's entry of
+  // the day does, since a page built on one day is read on every day after it, and a passage picked for the day of the
+  // build would disagree with the browser's from the second day on (React would then draw the whole page again)
+  const day = useSyncExternalStore(noSubscribe, todaysIndex, () => 0);
+  const today = data?.p ?? PASSAGES[day];
 
   const onClick = (e: React.MouseEvent) => {
     const w = (e.target as HTMLElement).closest<HTMLElement>("[data-w]");

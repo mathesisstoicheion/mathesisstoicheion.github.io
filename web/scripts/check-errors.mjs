@@ -4,6 +4,9 @@
 // differ, React throws the page away and draws it again (its error #418), so Today's session flickered and lost its
 // first paint. This check opens each page and fails on any uncaught error or error in the console, apart from a file
 // the network could not fetch (the packs come from another site and are checked elsewhere).
+// A page is built once and read on every day after: what it shows for "today" (the passage of the day) must agree with
+// what was built on that day too, or from the second day on it is drawn twice, as the home page was (2026-10-30). So each
+// page is opened a third time, on a computer whose clock is a day ahead of the build's.
 // usage: node web/scripts/check-errors.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
 
@@ -13,12 +16,17 @@ const PAGES = [
   "/academy/reading/nothing-too-much", "/academy/reading/practice-1", "/academy/alphabet", "/academy/tables",
   "/academy/vocabulary", "/academy/lesson/letters", "/academy/lesson/case", "/academy/checkpoint/first-steps", "/guide", "/library", "/treasury",
 ];
-const VIEWS = { phone: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true }, computer: { viewport: { width: 1440, height: 900 } } };
+const VIEWS = {
+  phone: { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true },
+  computer: { viewport: { width: 1440, height: 900 } },
+  "computer, the next day": { viewport: { width: 1440, height: 900 }, later: 864e5 },
+};
 
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
-for (const [view, opts] of Object.entries(VIEWS)) {
+for (const [view, { later, ...opts }] of Object.entries(VIEWS)) {
   const ctx = await browser.newContext({ ...opts, serviceWorkers: "block", reducedMotion: "reduce" });
+  if (later) await ctx.clock.install({ time: Date.now() + later });   // the clock runs on from there
   const page = await ctx.newPage();
   let at = "";
   const note = (msg) => found.push(`${view} ${at}: ${String(msg).replace(/\s+/g, " ").slice(0, 200)}`);
@@ -39,4 +47,4 @@ if (found.length) {
   for (const f of found) console.log("  " + f);
   process.exit(1);
 }
-console.log(`check-errors: OK (${PAGES.length} pages, on a phone and a computer, open without an error)`);
+console.log(`check-errors: OK (${PAGES.length} pages, on a phone and a computer, and on a computer the day after, open without an error)`);
