@@ -5,6 +5,7 @@
  * A chapter whose tour has been watched in this browser is ticked.
  */
 import Link from "next/link";
+import Icon, { type IconName } from "@/components/Icon";
 import { TOURS } from "@/lib/tours";
 import { useToursDone } from "@/lib/tour-progress";
 import { useEffect } from "react";
@@ -19,7 +20,8 @@ export interface Chapter {
   place?: { name: string; greek?: string };
   text: string[];
   /** a second place to go, besides the tour's own page */
-  also?: { label: string; href: string };
+  /** one more place the chapter is about, to open without the tour */
+  also?: { label: string; href: string; icon: IconName };
 }
 
 /** how many steps the tour has on a wide screen (a phone may have one more or less) */
@@ -70,9 +72,9 @@ export function GuideChapters({ chapters }: { chapters: Chapter[] }) {
             {c.text.map((p, k) => <p key={k}>{p}</p>)}
             <div className={styles.go}>
               <Link className="btn small" href={showHref(c.id)} transitionTypes={["page-turn"]}>
-                {done.includes(c.id) ? "Show me again" : <>Show me · {stepsOf(c.id)} steps</>} <span className="arr" aria-hidden="true">→</span>
+                <Icon name="tour" />{done.includes(c.id) ? "Show me again" : <>Show me · {stepsOf(c.id)} steps</>} <span className="arr" aria-hidden="true">→</span>
               </Link>
-              {c.also && <Link className="btn small ghost" href={c.also.href} transitionTypes={["page-turn"]}>{c.also.label}</Link>}
+              {c.also && <Link className="btn small ghost" href={c.also.href} transitionTypes={["page-turn"]}><Icon name={c.also.icon} />{c.also.label}</Link>}
               {done.includes(c.id) && <span className={styles.steps}>✓ Shown</span>}
             </div>
           </div>

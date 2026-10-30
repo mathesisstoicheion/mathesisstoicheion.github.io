@@ -18,13 +18,14 @@ const SOFTWARE = [
   { name: "EB Garamond (the English)", by: "Georg Duffner and Octavio Pardo", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/EB+Garamond" },
   { name: "GFS Didot (titles, the Greek names and the logo)", by: "Greek Font Society", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/GFS+Didot" },
   { name: "Gentium Book Plus (the Greek being read)", by: "SIL International", licence: "SIL Open Font License 1.1", href: "https://fonts.google.com/specimen/Gentium+Book+Plus" },
-  { name: "three.js (the Kerameikos's vase)", by: "three.js authors", licence: "MIT", href: "https://threejs.org" },
+  { name: "three.js (the potter's vase)", by: "three.js authors", licence: "MIT", href: "https://threejs.org" },
   { name: "abcjs (the lyre's sheet music)", by: "Paul Rosen", licence: "MIT", href: "https://abcjs.net" },
   { name: "saxes", by: "Louis-Dominique Dubeau and contributors", licence: "ISC", href: "https://github.com/lddubeau/saxes" },
   { name: "Next.js and React", by: "Vercel and Meta", licence: "MIT", href: "https://nextjs.org" },
   { name: "Zustand", by: "Poimandres", licence: "MIT", href: "https://github.com/pmndrs/zustand" },
   { name: "supabase-js (accounts, the Agora and the Pnyx)", by: "Supabase", licence: "MIT", href: "https://github.com/supabase/supabase-js" },
   { name: "OpenSeadragon (the reader's manuscript viewer)", by: "OpenSeadragon contributors", licence: "BSD 3-Clause", href: "https://openseadragon.github.io" },
+  { name: "Lucide (the signs on the buttons; the lyre's is the site's own)", by: "Lucide Contributors, and Cole Bemis as part of Feather", licence: "ISC", href: "https://lucide.dev" },
 ];
 
 /** The sections, in the order of the page, for the line of jumps under the title (Privacy stands second, not last, as the title names it). */

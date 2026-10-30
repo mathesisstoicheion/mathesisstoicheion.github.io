@@ -6,6 +6,7 @@
  * appear at all). Never during a "Show me" tour.
  */
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import styles from "./Guide.module.css";
 
@@ -32,8 +33,8 @@ export default function GuideInvite() {
     <aside className={styles.invite} aria-label="New here?">
       <p><b>New here?</b> A short guide shows you round the site, one thing at a time.</p>
       <div>
-        <Link className="btn small" href="/guide" onClick={inviteSeen} transitionTypes={["page-turn"]}>Show me round <span className="arr" aria-hidden="true">→</span></Link>
-        <button type="button" className="btn small ghost" onClick={close}>No thanks</button>
+        <Link className="btn small" href="/guide" onClick={inviteSeen} transitionTypes={["page-turn"]}><Icon name="tour" />Show me round <span className="arr" aria-hidden="true">→</span></Link>
+        <button type="button" className="btn small ghost" onClick={close}><Icon name="close" />No thanks</button>
       </div>
     </aside>
   );

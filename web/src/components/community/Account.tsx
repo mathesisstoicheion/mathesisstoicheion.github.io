@@ -13,6 +13,7 @@ import { useHidden, useHiddenPeople } from "@/lib/community/hidden";
 import { AREAS, FORUM_OPEN } from "@/config/areas";
 import styles from "./Community.module.css";
 import PageHead from "@/components/PageHead";
+import Icon from "@/components/Icon";
 
 type Mode = "in" | "join" | "forgot";
 
@@ -110,8 +111,8 @@ function SignIn({ next }: { next: string | null }) {
   return (
     <section className={styles.card}>
       <div className={styles.tabs} role="tablist" aria-label="Account">
-        <button type="button" role="tab" aria-selected={mode === "in"} onClick={() => { setMode("in"); setError(null); }}>Sign in</button>
-        <button type="button" role="tab" aria-selected={mode === "join"} onClick={() => { setMode("join"); setError(null); }}>Join</button>
+        <button type="button" role="tab" aria-selected={mode === "in"} onClick={() => { setMode("in"); setError(null); }}><Icon name="sign-in" />Sign in</button>
+        <button type="button" role="tab" aria-selected={mode === "join"} onClick={() => { setMode("join"); setError(null); }}><Icon name="account" />Join</button>
       </div>
       <form onSubmit={submit} className={styles.form}>
         {mode === "join" && (
@@ -139,6 +140,7 @@ function SignIn({ next }: { next: string | null }) {
         )}
         {error && <p className={styles.error} role="alert">{error}</p>}
         <button type="submit" className="btn" disabled={busy}>
+          <Icon name={mode === "in" ? "sign-in" : mode === "join" ? "account" : "mail"} />
           {busy ? "One moment…" : mode === "in" ? "Sign in" : mode === "join" ? "Join" : "Send me a link"}
         </button>
         {mode === "in" && <button type="button" className={styles.linkBtn} onClick={() => { setMode("forgot"); setError(null); }}>I forgot my password</button>}
@@ -170,7 +172,7 @@ function NewPassword({ onDone }: { onDone: () => void }) {
         <label><span>New password <small>at least 10 characters</small></span>
           <input type="password" aria-label="New password" value={password} onChange={(e) => setPassword(e.target.value)} required minLength={10} autoComplete="new-password" /></label>
         {error && <p className={styles.error} role="alert">{error}</p>}
-        <button type="submit" className="btn" disabled={busy}>{busy ? "One moment…" : "Save the new password"}</button>
+        <button type="submit" className="btn" disabled={busy}><Icon name="key" />{busy ? "One moment…" : "Save the new password"}</button>
       </form>
     </section>
   );
@@ -200,9 +202,9 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
         {error && <p className={styles.error} role="alert">{error}</p>}
         {msg && <p className={styles.ok} role="status">{msg}</p>}
         <div className={styles.row}>
-          <button type="submit" className="btn" disabled={!changed}>Save</button>
-          {FORUM_OPEN && <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}>Your page</Link>}
-          <button type="button" className="btn ghost" onClick={() => supabase().auth.signOut()}>Sign out</button>
+          <button type="submit" className="btn" disabled={!changed}><Icon name="check" />Save</button>
+          {FORUM_OPEN && <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}><Icon name="account" />Your page</Link>}
+          <button type="button" className="btn ghost" onClick={() => supabase().auth.signOut()}><Icon name="sign-out" />Sign out</button>
         </div>
       </form>
       <details className={styles.danger}>
@@ -249,7 +251,7 @@ function DeleteAccount() {
     }}>
       <label><span>Type DELETE to confirm</span><input aria-label="Type DELETE to confirm" value={typed} onChange={(e) => setTyped(e.target.value)} autoComplete="off" /></label>
       {error && <p className={styles.error} role="alert">{error}</p>}
-      <button type="submit" className="btn ghost" disabled={typed !== "DELETE"}>Delete my account for ever</button>
+      <button type="submit" className="btn ghost" disabled={typed !== "DELETE"}><Icon name="delete" />Delete my account for ever</button>
     </form>
   );
 }

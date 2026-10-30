@@ -161,6 +161,8 @@ const ICONS = {
   "download": [["path", {d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}], ["polyline", {points: "7 10 12 15 17 10"}], ["line", {x1: "12", x2: "12", y1: "15", y2: "3"}]],
   // add a file (Lucide "upload")
   "upload": [["path", {d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"}], ["polyline", {points: "17 8 12 3 7 8"}], ["line", {x1: "12", x2: "12", y1: "3", y2: "15"}]],
+  // texts already in a folder on this computer (Lucide "folder-open")
+  "folder": [["path", {d: "m6 14 1.5-2.9A2 2 0 0 1 9.24 10H20a2 2 0 0 1 1.94 2.5l-1.54 6a2 2 0 0 1-1.95 1.5H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3.9a2 2 0 0 1 1.69.9l.81 1.2a2 2 0 0 0 1.67.9H18a2 2 0 0 1 2 2v2"}]],
   // keep it for reading offline (Lucide "cloud-download")
   "save-offline": [["path", {d: "M12 13v8l-4-4"}], ["path", {d: "m12 21 4-4"}], ["path", {d: "M4.393 15.269A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.436 8.284"}]],
   // private: only you can open it (Lucide "lock")

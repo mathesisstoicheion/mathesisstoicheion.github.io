@@ -7,6 +7,7 @@ import { planDownload } from "@/lib/texts/download";
 import { useOffline, mb, transferEstimate } from "@/lib/offline";
 import { useUI } from "@/lib/ui";
 import { JobProgress } from "@/components/OfflineActions";
+import Icon from "@/components/Icon";
 import styles from "./ScrollCase.module.css";
 
 const LANGS: [string, string][] = [["grc", "Greek"], ["eng", "English"], ["lat", "Latin"], ["deu", "German"], ["fre", "French"]];
@@ -99,8 +100,8 @@ export default function ScrollCase() {
                       <li key={c.id}>
                         <span><b>{c.name}</b> {b ? `${b.files.toLocaleString("en-GB")} texts, ${mb(b.bytes)}` : ""}{z ? `${b ? " · " : ""}${z.toLocaleString("en-GB")} texts from a ZIP` : ""}</span>
                         {confirm === c.id
-                          ? <span className={styles.confirm}>Remove them? <button type="button" className="chip" onClick={() => { s.removeBrowserCopy(c.id).then(() => toast(`Removed ${c.name} from this browser.`)); setConfirm(null); }}>Remove</button> <button type="button" className="chip" onClick={() => setConfirm(null)}>Keep</button></span>
-                          : <button type="button" className="chip" onClick={() => setConfirm(c.id)}>Remove</button>}
+                          ? <span className={styles.confirm}>Remove them? <button type="button" className="chip" onClick={() => { s.removeBrowserCopy(c.id).then(() => toast(`Removed ${c.name} from this browser.`)); setConfirm(null); }}><Icon name="delete" />Remove</button> <button type="button" className="chip" onClick={() => setConfirm(null)}><Icon name="check" />Keep</button></span>
+                          : <button type="button" className="chip" onClick={() => setConfirm(c.id)}><Icon name="delete" />Remove</button>}
                       </li>
                     );
                   })}
@@ -117,7 +118,7 @@ export default function ScrollCase() {
                   {s.folders.map((f) => (
                     <li key={f.id}>
                       <span><b>{f.name}</b> {f.roots.length ? `· ${f.roots.length} collection${f.roots.length === 1 ? "" : "s"}` : "· no collection found"} · {f.access === "granted" ? "available" : "needs reconnecting"}</span>
-                      <button type="button" className="chip" onClick={() => s.forget(f.id)}>Forget</button>
+                      <button type="button" className="chip" onClick={() => s.forget(f.id)}><Icon name="close" />Forget</button>
                     </li>
                   ))}
                 </ul>
@@ -189,7 +190,7 @@ export default function ScrollCase() {
             {plan ? <><b>{plan.texts.length.toLocaleString("en-GB")} files</b>, {mb(plan.bytes)} on disk, about {mb(transferEstimate(plan.bytes))} to download.</> : "Working out the size…"}
           </p>
           <button type="button" className="btn" disabled={!plan?.texts.length || s.job?.running || !s.online} onClick={start}>
-            {s.job?.running ? "Downloading…" : "Download"}
+            <Icon name="download" />{s.job?.running ? "Downloading…" : "Download"}
           </button>
         </div>
         <JobProgress />
@@ -202,10 +203,10 @@ export default function ScrollCase() {
         <div className={styles.alreadyBody}>
           {!s.supportsFolders && <p className="muted">This browser cannot connect folders (Chrome and Edge can). Use a ZIP file or browser storage instead.</p>}
           <div className={styles.row}>
-            {s.supportsFolders && <button type="button" className="btn ghost" onClick={() => act(s.connect())}>Load from a folder</button>}
-            <button type="button" className="btn ghost" onClick={() => zipInput.current?.click()}>Load a ZIP file</button>
+            {s.supportsFolders && <button type="button" className="btn ghost" onClick={() => act(s.connect())}><Icon name="folder" />Load from a folder</button>}
+            <button type="button" className="btn ghost" onClick={() => zipInput.current?.click()}><Icon name="upload" />Load a ZIP file</button>
             {/* the gold button only when a folder is waiting to be reconnected: it has nothing to do before that */}
-            {s.supportsFolders && waiting > 0 && <button type="button" className="btn" onClick={() => act(s.reconnect())}>Reconnect folders ({waiting})</button>}
+            {s.supportsFolders && waiting > 0 && <button type="button" className="btn" onClick={() => act(s.reconnect())}><Icon name="link" />Reconnect folders ({waiting})</button>}
           </div>
           <input ref={zipInput} type="file" accept=".zip,application/zip" hidden
             onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) act(s.loadZip(f)); }} />

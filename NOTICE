@@ -74,6 +74,9 @@ FONTS AND SOFTWARE
   of EB Garamond and Gentium Book Plus, and of Gentium Book Plus's phonetic letters, are in
   web/src/fonts/, with their licences beside them.
 - three.js, Next.js, React, Zustand, supabase-js: MIT. saxes: ISC. OpenSeadragon: BSD 3-Clause.
+- The icons on the site's buttons are Lucide's (https://lucide.dev), ISC License, Copyright (c) Lucide
+  Contributors 2022, portions Copyright (c) Cole Bemis 2013-2022 as part of Feather (MIT); copied as
+  drawings into web/src/components/Icon.tsx with the licence beside them. The lyre icon is the site's own.
 
 
 WHAT THIS SITE CHANGED

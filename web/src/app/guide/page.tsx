@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Page from "@/components/Page";
+import Icon from "@/components/Icon";
 import PageHead from "@/components/PageHead";
 import { AREAS, FORUM_OPEN, type AreaId } from "@/config/areas";
 import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/GuideChapters";
@@ -22,7 +23,6 @@ const ALL_CHAPTERS: Chapter[] = [
       "Start with the first lesson, even if you know no Greek at all: the twenty-four letters, and six names you already know to sound out. In the next lesson you read your first real line, a saying carved at Delphi.",
       "Every lesson after it is one real line from the texts: its letters, its words, how it is built, and then you read it yourself, in the reader. A practice lesson comes after every three. The grammar course, the second track, teaches the grammar in order, each lesson with a short test.",
     ],
-    also: { label: "The first lesson", href: TRACKS.reading.first },
   },
   {
     id: "find", title: "Find a text", place: place("library"),
@@ -58,7 +58,7 @@ const ALL_CHAPTERS: Chapter[] = [
       "Bookmark a passage, highlight it, write a note on it, or gather passages into a research notebook with their citations.",
       "All of it waits for you in the Treasury, where it can be downloaded, printed or kept safe.",
     ],
-    also: { label: "Open the Treasury", href: AREAS.treasury.href },
+    also: { label: "Open the Treasury", href: AREAS.treasury.href, icon: "mine" },
   },
   {
     id: "explore", title: "Explore the Greek world", place: place("wiki"),
@@ -66,7 +66,7 @@ const ALL_CHAPTERS: Chapter[] = [
       "The Painted Stoa has articles on people, ideas and everyday life, each with its sources and links into the texts.",
       "You will also find every author with their dates, the centuries of Greek, a map of the places the texts name, a count of who and what they mention most, and the Kerameikos, on what archaeology tells us.",
     ],
-    also: { label: "Open the map", href: AREAS.map.href },
+    also: { label: "Open the map", href: AREAS.map.href, icon: "map" },
   },
   {
     id: "search", title: "Search everything", place: place("search"),
@@ -81,7 +81,7 @@ const ALL_CHAPTERS: Chapter[] = [
       "In the Agora you can ask about a passage, share what you are reading, or suggest an idea for the site. In the Pnyx members propose a motion, argue it and vote.",
       "Reading needs no account; to write, sign in or join for free.",
     ],
-    also: { label: "Open the Pnyx", href: AREAS.debates.href },
+    also: { label: "Open the Pnyx", href: AREAS.debates.href, icon: "talk" },
   },
   {
     id: "settings", title: "Make it yours",
@@ -89,7 +89,7 @@ const ALL_CHAPTERS: Chapter[] = [
       "Search from any page. In Settings choose the page (Paper, Night, or as your device is set), the Greek typeface, the size of the Greek and the spacing of the lines.",
       "Keep texts on your device to read without a connection, in the Scroll Case. An account is optional: it keeps your notes and progress in step across your devices.",
     ],
-    also: { label: "The Scroll Case", href: AREAS.downloads.href },
+    also: { label: "The Scroll Case", href: AREAS.downloads.href, icon: "download" },
   },
 ];
 
@@ -104,8 +104,9 @@ export default function GuidePage() {
           purpose={<>{FORUM_OPEN ? "Ten" : "Nine"} short chapters, one for each thing you can do here. Each has <b>Show me</b>: it opens the real page and points
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.</>}
           action={<div className={styles.fork}>
-            <Link className="btn" href={TRACKS.reading.first}>Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
-            <Link className="btn ghost" href="/library?tour=find">Want to read straight away? <span className="arr" aria-hidden="true">→</span></Link>
+            {/* the two ways in, each said once: the chapters below show round (Learn Greek's first lesson is this first one) */}
+            <Link className="btn" href={TRACKS.reading.first}><Icon name="letters" />Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
+            <Link className="btn ghost" href={AREAS.library.href}><Icon name="library" />Read Greek already? Open the Mouseion <span className="arr" aria-hidden="true">→</span></Link>
           </div>}>
           <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>
         </PageHead>
