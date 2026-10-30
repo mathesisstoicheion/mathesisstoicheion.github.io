@@ -6,7 +6,7 @@
  */
 import { addRecentSearch } from "@/lib/recent-searches";
 import Link from "next/link";
-import Icon from "@/components/Icon";
+import Icon, { type IconName } from "@/components/Icon";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import Door, { DoorBlock } from "@/components/a/Door";
@@ -29,12 +29,12 @@ import styles from "./Search.module.css";
 import { stoaLabel, useStoaTitles } from "@/wiki/useTitles";
 
 type Tab = Mode | "syntax" | "library";
-const TABS: { id: Tab; label: string; hint: string }[] = [
-  { id: "forms", label: "Greek words", hint: "Words exactly as printed, accents ignored. Several words find them side by side." },
-  { id: "lemma", label: "Dictionary word", hint: "Every form of a word (λόγος finds λόγου, λόγοις…), as the GLAUx treebank analyses it. Add grammar to narrow it, or search by grammar alone." },
-  { id: "english", label: "Translations", hint: "Words in the English translations." },
-  { id: "syntax", label: "Constructions", hint: "Sentences found by how they are built: the genitive absolute, ἄν with the optative, everything that is the object of λέγω…, from GLAUx's sentence analyses." },
-  { id: "library", label: "The Treasury", hint: "Your notes, bookmarks and highlights, on this device." },
+const TABS: { id: Tab; label: string; icon: IconName; hint: string }[] = [
+  { id: "forms", label: "Greek words", icon: "word", hint: "Words exactly as printed, accents ignored. Several words find them side by side." },
+  { id: "lemma", label: "Dictionary word", icon: "dictionary", hint: "Every form of a word (λόγος finds λόγου, λόγοις…), as the GLAUx treebank analyses it. Add grammar to narrow it, or search by grammar alone." },
+  { id: "english", label: "Translations", icon: "translation", hint: "Words in the English translations." },
+  { id: "syntax", label: "Constructions", icon: "sentence", hint: "Sentences found by how they are built: the genitive absolute, ἄν with the optative, everything that is the object of λέγω…, from GLAUx's sentence analyses." },
+  { id: "library", label: "My notes", icon: "note", hint: "Your notes, bookmarks and highlights, on this device." },
 ];
 const SCRIPTS: { id: Script | "auto"; label: string }[] = [
   { id: "auto", label: "Work it out" }, { id: "greek", label: "Greek letters" }, { id: "translit", label: "Latin letters" }, { id: "beta", label: "Beta Code" },
@@ -60,8 +60,8 @@ const nearText = (d: NearDraft, tab: Tab, near: string | null) => (d.of === near
 /** The Oracle's carving: a line of the Delphic fore-temple, in place of a Greek name of its own, with its source set small beneath. */
 const CARVE = {
   text: "ΓΝΩΘΙ ΣΑΥΤΟΝ",
-  caption: <small className={styles.cap}><span lang="grc">Γνῶθι σαυτόν</span>, “Know thyself”: one of the maxims written in the fore-temple at Delphi
-    (Pausanias, <i>Description of Greece</i> 10.24.1, translated by W. H. S. Jones and H. A. Ormerod).</small>,
+  caption: <small className={styles.cap}>The words above the title, <span lang="grc">Γνῶθι σαυτόν</span>, “Know thyself”, are one of the maxims written in
+    the fore-temple at Delphi (Pausanias, <i>Description of Greece</i> 10.24.1, translated by W. H. S. Jones and H. A. Ormerod).</small>,
 };
 
 /**
@@ -233,7 +233,7 @@ function SearchBox({ tab, initial, script, onTab, onScript, onSubmit }: {
     <section className={styles.box} aria-label="Search">
       <div className={styles.tabs} role="tablist" aria-label="What to search">
         {TABS.map((t) => (
-          <button key={t.id} type="button" role="tab" aria-selected={t.id === tab} onClick={() => onTab(t.id)}>{t.label}</button>
+          <button key={t.id} type="button" role="tab" aria-selected={t.id === tab} onClick={() => onTab(t.id)}><Icon name={t.icon} />{t.label}</button>
         ))}
       </div>
       {tab !== "syntax" && <form className={styles.form} role="search" onSubmit={(e) => { e.preventDefault(); onSubmit(text); }}>
@@ -243,10 +243,10 @@ function SearchBox({ tab, initial, script, onTab, onScript, onSubmit }: {
           placeholder={tab === "english" ? "wrath, rosy-fingered…" : tab === "library" ? "a word from your notes" : "λόγος, logos, lo/gos, or Il. 1.1"} />
         {greekTab && (
           <button type="button" className={styles.kbdBtn} aria-pressed={kbd} onClick={() => setKbd((v) => !v)} title="Greek letters on screen">
-            <span lang="grc" aria-hidden="true">αβγ</span><span className="visually-hidden">Show Greek letters on screen</span>
+            <Icon name="keyboard" /><span lang="grc" aria-hidden="true">αβγ</span><span className="visually-hidden">Show Greek letters on screen</span>
           </button>
         )}
-        <button className="btn" type="submit">Ask</button>
+        <button className="btn" type="submit"><Icon name="search" />Ask</button>
       </form>}
       <p className={styles.hint}>{TABS.find((t) => t.id === tab)!.hint}</p>
       {greekTab && (

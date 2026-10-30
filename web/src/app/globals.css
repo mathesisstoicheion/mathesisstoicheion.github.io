@@ -493,7 +493,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 }
 
 /* an area's head (components/AreaHeader.tsx): the source of a line set in place of its Greek name, and the rule under it */
-.area-carve-cap { max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
+.area-carve-cap { max-width: 70ch; margin: var(--space-7) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--1); color: var(--ink-3); }
 .area-meander { margin-top: var(--space-2); }
 
 /* The one page head (components/PageHead.tsx), as the sample's catalogue head: the kicker (the path, after a short red

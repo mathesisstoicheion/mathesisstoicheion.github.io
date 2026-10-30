@@ -31,6 +31,16 @@ interface UIStore {
 
 let toastTimer: ReturnType<typeof setTimeout> | undefined;
 
+/**
+ * Search, from the header's button or from "/" and Ctrl+K: on the Oracle's own page the words go into its box, so a second
+ * search box never opens over the first; anywhere else the search opens (components/search/QuickSearch.tsx).
+ */
+export function startSearch() {
+  const box = document.getElementById("oracle-q");
+  if (box) { box.focus(); box.scrollIntoView({ block: "center" }); return; }
+  useUI.getState().setSearchOpen(true);
+}
+
 export const useUI = create<UIStore>()((set) => ({
   settingsOpen: false,
   openSettings: () => set({ settingsOpen: true }),

@@ -22,7 +22,7 @@ import { lsjEntries } from "@/lib/lookup/lsj";
 import { coreEntry } from "@/lib/lookup/core";
 import { loadPlaces, shortName, typeLabel, type Place } from "@/lib/map";
 import { LIMITS, useSettings } from "@/lib/settings";
-import { useUI } from "@/lib/ui";
+import { startSearch, useUI } from "@/lib/ui";
 import { AREAS, FORUM_OPEN, areaTitle, shown } from "@/config/areas";
 import GreekKeyboard from "./GreekKeyboard";
 import styles from "./QuickSearch.module.css";
@@ -71,8 +71,8 @@ export default function QuickSearch() {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       const typing = /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable;
-      if ((e.key === "k" || e.key === "K") && (e.ctrlKey || e.metaKey)) { e.preventDefault(); setOpen(!useUI.getState().searchOpen); }
-      else if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); setOpen(true); }
+      if ((e.key === "k" || e.key === "K") && (e.ctrlKey || e.metaKey)) { e.preventDefault(); if (useUI.getState().searchOpen) setOpen(false); else startSearch(); }
+      else if (e.key === "/" && !typing && !e.ctrlKey && !e.metaKey && !e.altKey) { e.preventDefault(); startSearch(); }
     };
     addEventListener("keydown", onKey);
     return () => removeEventListener("keydown", onKey);

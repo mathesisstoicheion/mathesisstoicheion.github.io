@@ -14,7 +14,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { AREAS, FORUM_OPEN, NAV, doorWord, roomOf, type AreaId } from "@/config/areas";
-import { useUI } from "@/lib/ui";
+import { startSearch, useUI } from "@/lib/ui";
 import { status, useConnection } from "@/lib/connection";
 import { barsHeld } from "@/lib/header";
 import { guardOverlayWheel, useScrollLock } from "@/lib/overlay";
@@ -32,7 +32,6 @@ export default function Header() {
   // the reader hides the bar of rooms along the foot of a phone (TabBar.tsx): there the menu holds them
   const reading = under(pathname, AREAS.reader.href);
   const openSettings = useUI((s) => s.openSettings);
-  const setSearchOpen = useUI((s) => s.setSearchOpen);
   const ref = useRef<HTMLElement>(null);
   const showRef = useRef<() => void>(null);
   const menuBtn = useRef<HTMLButtonElement>(null);
@@ -117,7 +116,7 @@ export default function Header() {
         <Mark className={styles.mark} words />
         <nav className={styles.nav} aria-label="The rooms of the site">{NAV.map((id) => door(id, styles.navI))}</nav>
         <div className={styles.utils}>
-          <button className={`${styles.tbtn} ${styles.find}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
+          <button className={`${styles.tbtn} ${styles.find}`} type="button" onClick={startSearch} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
             <Icon name="search" /><span className={styles.txt}>Search</span>
           </button>
           {/* while the forum is closed Mine is a room in the menu, so its small button stands down */}
