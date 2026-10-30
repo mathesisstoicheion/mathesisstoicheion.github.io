@@ -1,40 +1,36 @@
 "use client";
 /**
  * The site's header, as the printed page sets it (redesign SPEC.md 3.5 and 3.6): the printer's device and the name at the
- * left; on a computer the four rooms, Learn, Read, Explore and Mine, each with its Greek name in small italic underneath,
- * the current one in red; Search, your account, Settings and the connection light at the right. A double rule closes it,
- * as on a title page. On a phone (and on a narrow computer screen, for the small buttons) a Menu button opens the same
- * things in a panel. It stands at the top of the page and scrolls away with it; any scroll up brings back what floats at
- * the foot of the screen (lib/header.ts, data-hdr).
+ * left; on a computer the rooms, Learn, Read, Explore, Lyre and Mine, each with its sign, and its Greek name in small
+ * italic underneath, the current one in red; Search, your account, Settings and the connection light at the right, each
+ * with its sign, and its word where the screen has room. A double rule closes it, as on a title page. On a phone and a
+ * narrow computer screen the rooms are along the foot of the screen (TabBar.tsx) or stay in the header, Search keeps its
+ * own button, and a Menu button opens the rest: your account, Settings and offline reading, each with a line on what it is
+ * for. Nothing is in two places at once (the owner, 2026-10-30: "Nothing should have multiple buttons that lead to the
+ * same place"). It stands at the top of the page and scrolls away with it; any scroll up brings back what floats at the
+ * foot of the screen (lib/header.ts, data-hdr).
  */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { AREAS, FORUM_OPEN, TABS, doorWord, shown, type AreaId } from "@/config/areas";
+import { AREAS, FORUM_OPEN, NAV, doorWord, roomOf, type AreaId } from "@/config/areas";
 import { useUI } from "@/lib/ui";
 import { status, useConnection } from "@/lib/connection";
 import { barsHeld } from "@/lib/header";
 import { guardOverlayWheel, useScrollLock } from "@/lib/overlay";
 import Mark from "@/components/a/Mark";
+import Icon from "@/components/Icon";
 import ConnectionLight from "./ConnectionLight";
 import AccountButton from "./AccountButton";
 import styles from "./Header.module.css";
 
-function isActive(pathname: string, href: string) {
-  return href === "/" ? pathname === "/" : pathname === href || pathname.startsWith(href + "/");
-}
-/** a door is also current in the places that belong to it (the reader, work and author pages belong to Read) */
-const current = (pathname: string, id: AreaId) => [AREAS[id].href, ...(TABS.find((t) => t.id === id)?.also ?? [])].some((h) => isActive(pathname, h));
-
-// the rooms, in the order of the sample; Talk only while the forum is open (FORUM_OPEN)
-const DOORS: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] as AreaId[]).filter(shown);
-const MENU_DOORS: AreaId[] = [...DOORS, "search"];
-
-const SearchIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="M10.5 10.5 14 14" /></svg>;
-const SettingsIcon = () => <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><path d="M2.5 5h7M12.5 5h1M2.5 11h2.5M8 11h5.5" /><circle cx="11" cy="5" r="1.5" /><circle cx="6.5" cy="11" r="1.5" /></svg>;
+const under = (pathname: string, href: string) => pathname === href || pathname.startsWith(href + "/");
 
 export default function Header() {
   const pathname = usePathname() ?? "/";
+  const room = roomOf(pathname);
+  // the reader hides the bar of rooms along the foot of a phone (TabBar.tsx): there the menu holds them
+  const reading = under(pathname, AREAS.reader.href);
   const openSettings = useUI((s) => s.openSettings);
   const setSearchOpen = useUI((s) => s.setSearchOpen);
   const ref = useRef<HTMLElement>(null);
@@ -107,7 +103,8 @@ export default function Header() {
   const door = (id: AreaId, cls: string) => {
     const a = AREAS[id];
     return (
-      <Link key={id} className={cls} href={a.href} transitionTypes={["page-turn"]} aria-current={current(pathname, id) ? "page" : undefined}>
+      <Link key={id} className={cls} href={a.href} transitionTypes={["page-turn"]} aria-current={room === id ? "page" : undefined}>
+        {a.icon && <Icon name={a.icon} />}
         <span className={styles.word}>{a.door ?? doorWord(id)}</span>
         {a.greek && <i lang="grc">{a.greek}</i>}
       </Link>
@@ -118,26 +115,26 @@ export default function Header() {
     <header ref={ref} className={styles.site} data-site-header="" style={{ viewTransitionName: "site-header" }}>
       <div className={styles.mast}>
         <Mark className={styles.mark} words />
-        <nav className={styles.nav} aria-label="The rooms of the site">{DOORS.map((id) => door(id, styles.navI))}</nav>
+        <nav className={styles.nav} aria-label="The rooms of the site">{NAV.map((id) => door(id, styles.navI))}</nav>
         <div className={styles.utils}>
-          <button className={styles.tbtn} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
-            <SearchIcon />
+          <button className={`${styles.tbtn} ${styles.find}`} type="button" onClick={() => setSearchOpen(true)} aria-haspopup="dialog" aria-label="Search" title="Search (or press / on any page)">
+            <Icon name="search" /><span className={styles.txt}>Search</span>
           </button>
           {/* while the forum is closed Mine is a room in the menu, so its small button stands down */}
           {FORUM_OPEN && (
             <Link className={styles.tbtn} href={AREAS.treasury.href} transitionTypes={["page-turn"]} aria-label="The Treasury: bookmarks and notes" title="The Treasury: bookmarks and notes"
-              aria-current={current(pathname, "treasury") ? "page" : undefined}>
-              <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.2" aria-hidden="true"><path d="M4 2h8v12l-4-3-4 3z" /></svg>
+              aria-current={room === "treasury" ? "page" : undefined}>
+              <Icon name="bookmark" />
             </Link>
           )}
           <AccountButton />
           <button className={styles.tbtn} type="button" onClick={openSettings} aria-label="Settings" title="Settings">
-            <SettingsIcon />
+            <Icon name="settings" /><span className={styles.txt}>Settings</span>
           </button>
           <ConnectionLight />
         </div>
         <button ref={menuBtn} className={styles.menuBtn} type="button" onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="site-menu" aria-label="Menu">
-          {menu ? "Close" : "Menu"}
+          <Icon name={menu ? "close" : "menu"} /><span className={styles.menuWord}>{menu ? "Close" : "Menu"}</span>
         </button>
       </div>
       <div className={styles.rule2} aria-hidden="true" />
@@ -145,26 +142,15 @@ export default function Header() {
       <OfflineSign />
       {menu && (
         <nav id="site-menu" className={styles.menu} aria-label="Menu" data-overlay="">
-          <ul className={styles.menuDoors}>
-            {MENU_DOORS.map((id) => (
-              <li key={id}>
-                {id === "search" ? (
-                  // the menu closes as the search opens: the keyboard waits on the Menu button, and the search gives it back
-                  // there when it closes (scripts/check-overlays.mjs)
-                  <button type="button" onClick={() => { setMenu(false); menuBtn.current?.focus(); setSearchOpen(true); }} aria-haspopup="dialog">
-                    <span className={styles.word}>Search</span><i lang="grc">{AREAS.search.greek}</i>
-                  </button>
-                ) : door(id, "")}
-              </li>
-            ))}
-          </ul>
+          {/* the rooms only where nothing else shows them: the reader on a phone, which hides the bar along the foot */}
+          {reading && <ul className={styles.menuDoors}>{NAV.map((id) => <li key={id}>{door(id, "")}</li>)}</ul>}
           <div className={styles.menuTools}>
-            <AccountButton />
-            <button className={styles.tbtn} type="button" onClick={() => { setMenu(false); openSettings(); }} aria-label="Settings">
-              <SettingsIcon />
-              <span className={styles.txt}>Settings</span>
+            <AccountButton row />
+            <button className={`${styles.tbtn} ${styles.row}`} type="button" onClick={() => { setMenu(false); openSettings(); }} aria-label="Settings" aria-describedby="menu-settings-hint">
+              <Icon name="settings" />
+              <span className={styles.rowText}><span className={styles.txt}>Settings</span><small id="menu-settings-hint">Paper or night, the Greek typeface and its size</small></span>
             </button>
-            <ConnectionLight />
+            <ConnectionLight row />
           </div>
         </nav>
       )}

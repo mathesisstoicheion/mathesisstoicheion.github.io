@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "About the names", description: PAGE_
 /**
  * The areas under the names of the header's menu (config/areas.ts: the five doors, then the Oracle), each with the places that
  * belong to it: the reader opens from the Mouseion (the phone bar's `also` lists it there), the Kerameikos, the Census and
- * the Periplus are pages of the Painted Stoa (their addresses begin /stoa), the Pnyx is in the Agora (/town-hall/pnyx),
+ * the Periplus are pages of the Painted Stoa (their addresses begin /stoa), the lyre is one too but a room of its own, the Pnyx is in the Agora (/town-hall/pnyx),
  * and the Scroll Case is kept with the Treasury (the Treasury links to it as the place for what is read offline).
  * While the forum is closed (FORUM_OPEN) its group is left out.
  */
@@ -22,6 +22,7 @@ const GROUPS: { heading: string; ids: AreaId[] }[] = ([
   { heading: verb("study"), ids: ["study"] },
   { heading: verb("library"), ids: ["library", "reader"] },
   { heading: verb("wiki"), ids: ["wiki", "archaeology", "census", "map"] },
+  { heading: verb("lyre"), ids: ["lyre"] },
   { heading: verb("forum"), ids: ["forum", "debates"] },
   { heading: verb("treasury"), ids: ["treasury", "downloads"] },
   { heading: verb("search"), ids: ["search"] },

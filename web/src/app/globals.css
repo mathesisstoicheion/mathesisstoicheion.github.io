@@ -46,7 +46,7 @@
    (data-tabbar on <html>), the end of every page and what floats at the foot of the screen stand above it. */
 :root { --tabbar-h: 0px; }
 @media (max-width: 760px) {
-  :root { --tabbar-h: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  :root { --tabbar-h: calc(60px + env(safe-area-inset-bottom, 0px)); }
   body { padding-bottom: var(--tabbar-h); }
   html[data-tabbar="up"] .toast { bottom: calc(20px + var(--tabbar-h)); }
 }
@@ -188,22 +188,30 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .draw { animation: ink var(--ink-in) var(--ease) backwards; }
 
 /* ------------------------------------------------------------- buttons */
-/* The sample's buttons: small capitals spaced wide; the main one in ink with paper letters, turning red under the hand;
-   the second only a hairline frame. Nothing rises or moves. */
+/* The buttons (the owner, 2026-10-30: everything you can press has its sign and normal letters; small capitals are only
+   for labels, which you cannot press): the main one in ink with paper letters, turning red under the hand; the second only
+   a hairline frame; the quiet one only its sign and its words. A button's sign (components/Icon.tsx) goes before its
+   words; a button that takes you on to another page has the sign "next" after them. Nothing rises or moves. */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; min-height: var(--tap);
+  display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 10px 18px; min-height: var(--tap);
   border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
-  font: 500 var(--step--2) / 1.1 var(--f-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font: 500 var(--step-0) / 1.2 var(--f-body); letter-spacing: 0.01em; text-decoration: none; cursor: pointer;
   transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
+.btn > svg[data-icon] { width: 1.1em; height: 1.1em; }
 .btn:hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
 .btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
+/* the quiet button: no frame, its sign and its words in ink, red under the hand (a way on that is not the page's main one) */
+.btn.quiet { background: transparent; color: var(--ink); border-color: transparent; padding-inline: 4px; }
+.btn.quiet:hover { background: transparent; border-color: transparent; color: var(--rubric); }
+.btn.quiet > svg[data-icon] { color: var(--ink-2); }
+.btn.quiet:hover > svg[data-icon] { color: inherit; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 9px 13px; gap: var(--space-2); font-size: var(--step--2); min-height: 0; }
-/* Greek on a button keeps its own letters: not spaced out like the capitals beside it, and the size at which its small
-   letters stand as tall as those capitals (the lessons' "Show: μηδὲν") */
-.btn [lang="grc"] { letter-spacing: 0; font-size: var(--step-0); }
+.btn.small { padding: 6px 12px; gap: 7px; font-size: var(--step--1); min-height: 0; }
+/* Greek on a button keeps its own letters, a touch larger than the English beside it, as on a page (the lessons'
+   "Show: μηδὲν") */
+.btn [lang="grc"] { letter-spacing: 0; font-size: 1.06em; }
 /* buttons side by side, as the page's ways on */
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
@@ -225,10 +233,10 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -5px 0; }
 }
-/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, small
-   capitals in a hairline frame, the chosen one in ink */
+/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, in a
+   hairline frame, the chosen one in ink */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 8px 12px; font: 400 var(--step--1) / 1.2 var(--f-body); white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
@@ -450,8 +458,9 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .site-footer { margin-top: clamp(64px, 10vh, 120px); color: var(--ink-2); }
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 48px; padding-block: 28px var(--space-7); font-size: var(--step--1); border-top: 1px solid var(--ink); }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-didot); color: var(--ink); margin-bottom: 6px; }
-.site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-.site-footer-links a { text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.site-footer-links a { display: inline-flex; align-items: center; gap: 8px; text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.site-footer-links a svg { color: var(--ink-3); }
 .site-footer-links a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-fin { grid-column: 1 / -1; text-align: center; margin-top: var(--space-5); font: 400 1.3rem / 1 var(--face-didot); color: var(--rubric); letter-spacing: 0.4em; }
@@ -485,13 +494,16 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
 /* (a line of the way back, not running text: the measure kept for reading is not its, and it runs on one line while the
    head has room) */
-.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; max-width: none; }
+/* (the owner, 2026-10-30: what you can press looks pressable) It is set in the page's own letters, not in capitals: each
+   place you can go back to underlined, a small › between the places */
+.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; max-width: none; font: 400 var(--step--1) / 1.35 var(--f-body); }
 .ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
-.ph-path a { color: inherit; text-decoration: none; }
-.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); }
-/* the way back is a small line of capitals; under a finger it answers 15 px above and below it (a 44 px target) */
+.ph-path a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
+/* the way back is a small line; under a finger it answers 15 px above and below it (a 44 px target) */
 @media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px -4px; } }
-.ph-sep { color: var(--ink-3); white-space: pre; }
+.ph-sep { color: var(--ink-3); display: inline-flex; margin: 0 3px; }
+.ph-sep svg { width: 0.95em; height: 0.95em; vertical-align: 0; }
 /* a line in Greek over a page's title, in spaced capitals in red, as a book sets a motto */
 .ph-inscr { margin: 18px 0 0; font: 400 clamp(1.1rem, 2vw, 1.6rem) / 1.3 var(--face-didot); letter-spacing: 0.16em; color: var(--rubric); }
 .ph .ph-title { color: var(--ink); font-weight: 400; line-height: 0.98; margin: 18px 0 10px; letter-spacing: -0.015em; }
@@ -659,8 +671,6 @@ select { max-width: 100%; }
 @media (max-width: 600px) { .sh { flex-wrap: wrap; gap: var(--space-1) var(--space-3); } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
 @media (min-width: 761px) {
   /* links on a computer: the path over a title underlined; a card's or a part's name followed by a red arrow */
-  .ph-path a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-  .ph-path a:hover, .ph-path a:focus-visible { text-decoration-color: var(--rubric); }
   .door-part h2 a::after, .slab-card :where(b, h3, strong):first-child::after { content: "\00a0→"; color: var(--rubric); }
   .door-part { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .sh { padding-top: var(--part-pad); border-top: var(--part-rule); }

@@ -1,12 +1,13 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import PageWin from "@/components/a/PageWin";
+import Icon from "@/components/Icon";
 import type { Step } from "@/config/areas";
 
 /**
  * The one head every page opens with, set as the printed page sets a title (redesign SPEC.md 3.7 and 4.4; the sample's
- * catalogue head): the path as a small-capital kicker after a red rule (the menu's word, then the places down to this
- * page), the title, its Greek name in GFS Didot in red, and one line saying what the page is for. At the right stands
+ * catalogue head): the path after a red rule (the room, then the places down to this page, each place to go back to
+ * underlined), the title, its Greek name in GFS Didot in red, and one line saying what the page is for. At the right stands
  * either the page's own plate, the photograph of what the page is about (only where it teaches, a Painted Stoa entry's:
  * components/a/PageWin.tsx), or the page's own `side`, such as what the Treasury holds; most pages have neither (the
  * owner, 2026-10-25: no random photos).
@@ -45,12 +46,12 @@ export default function PageHead({ path, inscription, inscriptionSays, title, ti
   return (
     <header className={`${bare ? "" : "wrap "}page-head ph ph-${size}${desk ? "" : " ph-tool"}${className ? ` ${className}` : ""}`}>
       <div className="ph-text">
-        <p className="ph-path label">
-          {/* each step carries the dot after it, so a path that wraps ends its line with the dot, as a printed one does */}
+        <p className="ph-path">
+          {/* each step carries the sign after it, so a path that wraps ends its line with the sign */}
           {path.map((s, i) => (
             <span key={i}>
               {s.href && i < path.length - 1 ? <Link href={s.href} transitionTypes={["page-turn"]}>{s.label}</Link> : <span>{s.label}</span>}
-              {i < path.length - 1 && <span className="ph-sep" aria-hidden="true"> · </span>}
+              {i < path.length - 1 && <span className="ph-sep" aria-hidden="true"><Icon name="chevron-right" /></span>}
             </span>
           ))}
         </p>

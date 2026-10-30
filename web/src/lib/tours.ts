@@ -178,9 +178,9 @@ export const TOURS: Record<string, Tour> = {
     title: "Make it yours",
     start: "/",
     steps: [
-      { click: [MENU], at: [t('header button[aria-label="Search"]'), t('#site-menu button[aria-haspopup="dialog"]', "Search")], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
-      { click: [MENU], at: [t('header button[aria-label="Settings"]')], title: "Settings", text: "The page (Paper, Night, or as your device is set), the Greek typeface, its size and the line spacing. Offline reading is here too." },
-      { click: [MENU], at: [t('button[aria-label^="Connection:"]')], title: "The connection light", text: "Green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "Green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
+      { at: [t('header button[aria-label="Search"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
+      { click: [MENU], at: [t('header button[aria-label="Settings"]')], title: "Settings", text: "The page (Paper, Night, or as your device is set), the Greek typeface, its size and the line spacing." },
+      { click: [MENU], at: [t('button[aria-label^="Connection:"]')], title: "Offline reading", text: "The light is green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "The light is green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
       { click: [MENU], at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Agora."
         : "Optional. With an account your notes and progress follow you from device to device." },
     ],

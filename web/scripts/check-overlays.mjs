@@ -9,14 +9,14 @@ import { chromium } from "playwright";
 
 const [base = "http://localhost:3100", only = ""] = process.argv.slice(2);
 const READER = "/read?w=tlg0012.tlg001&at=1.1";
-// the search's button: in the header on a wide screen, in the menu (its Search line) on a narrower one
-const SEARCH = 'header button[aria-label="Search"], #site-menu button:has-text("Search")';
+// the search's button: in the header at every width (since 2026-10-30; it was in the menu on narrower screens)
+const SEARCH = 'header button[aria-label="Search"]';
 
 // each overlay: where it lives, how to find its trigger (a visible element) and its panel once open
 const OVERLAYS = [
   { name: "menu", page: "/stoa", trigger: 'header button[aria-label="Menu"]', panel: "#site-menu" },
-  // below 1040 px the search, like Settings, is inside the menu (the printed page's header: redesign SPEC.md 3.5, 3.6)
-  { name: "search", page: "/stoa", trigger: SEARCH, viaMenu: 'header button[aria-label="Menu"]', panel: 'dialog[open], [role="dialog"]' },
+  // below 1040 px Settings is inside the menu (the printed page's header: redesign SPEC.md 3.5, 3.6); Search never is
+  { name: "search", page: "/stoa", trigger: SEARCH, panel: 'dialog[open], [role="dialog"]' },
   { name: "settings", page: "/stoa", trigger: 'header button[aria-label="Settings"]', viaMenu: 'header button[aria-label="Menu"]', panel: 'dialog[open], [role="dialog"]' },
   // on a phone, Aa and your marks are inside More (review fix list, slice 8), which is checked below
   { name: "reader Aa", page: READER, trigger: 'button[aria-label="Page and text"]', panel: "controls", computerOnly: true },

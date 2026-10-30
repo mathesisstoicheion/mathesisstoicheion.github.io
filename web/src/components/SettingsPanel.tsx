@@ -5,8 +5,7 @@ import { useSettings, applySettings } from "@/lib/settings";
 import { useUI } from "@/lib/ui";
 import { useAcademy } from "@/lib/academy";
 import { useDragToClose } from "@/lib/use-drag-close";
-import OfflineActions from "./OfflineActions";
-import Link from "next/link";
+import Icon from "./Icon";
 import styles from "./SettingsPanel.module.css";
 import { useScrollLock } from "@/lib/overlay";
 import ReadingControls, { Segmented } from "./ReadingControls";
@@ -72,7 +71,7 @@ export default function SettingsPanel() {
       <div className={styles.inner}>
         <div className={styles.head} {...dragProps}>
           <h2 id="settings-title">Settings</h2>
-          <button type="button" className={styles.x} onClick={close} aria-label="Close settings">×</button>
+          <button type="button" className={`icon-btn ${styles.x}`} onClick={close} aria-label="Close settings" title="Close (Esc)"><Icon name="close" /></button>
         </div>
 
         <section className={styles.group}>
@@ -86,17 +85,10 @@ export default function SettingsPanel() {
           <p className={styles.hint}>A short buzz when you save a word, bookmark a passage or answer right, on phones that allow it (most Android phones; iPhones do not let websites vibrate).</p>
         </section>
 
-        <section className={styles.group}>
-          <h3 className="label">Offline reading</h3>
-          <p className={styles.hint}>Keep a copy of the text collections on this computer and read without a connection.</p>
-          {/* only while open: it works out download sizes from the whole catalogue (1.3 MB), which no page should pay for unasked */}
-          {open && <OfflineActions compact />}
-        </section>
-
-        <button type="button" className={styles.reset} onClick={s.reset}>
-          Restore default settings
+        {/* (offline reading is the connection light's, and the Scroll Case's: one place each, the owner, 2026-10-30) */}
+        <button type="button" className={`btn ghost small ${styles.reset}`} onClick={s.reset}>
+          <Icon name="again" />Restore default settings
         </button>
-        <p className={styles.guideLink}><Link href="/guide" onClick={close}>How to use the site →</Link></p>
       </div>
     </dialog>
   );

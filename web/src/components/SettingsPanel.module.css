@@ -16,8 +16,8 @@
 .inner { display: flex; flex-direction: column; gap: 28px; padding: var(--space-5) 26px calc(40px + env(safe-area-inset-bottom, 0px)); }
 .head { display: flex; justify-content: space-between; align-items: center; padding-bottom: 14px; border-bottom: 1px solid var(--ink); }
 .head h2 { font-family: var(--f-title); font-size: var(--step-2); }
-.x { width: 40px; height: 40px; font-size: var(--step-2); line-height: 1; background: transparent; color: var(--ink-2); border: 0; border-radius: var(--radius); transition: color var(--dur-quick) var(--ease); }
-.x:hover { color: var(--rubric); }
+/* the close button is an .icon-btn (app/globals.css): here only its size */
+.x { width: 40px; height: 40px; }
 
 .group { display: flex; flex-direction: column; gap: var(--space-3); }
 .group h3 { font-size: var(--step--1); }
@@ -42,12 +42,8 @@
 .stepper button:disabled { opacity: 0.35; cursor: default; }
 .stepper output { min-width: 64px; text-align: center; font-variant-numeric: lining-nums tabular-nums; font-size: var(--step-0); border-inline: 1px solid var(--rule); align-self: stretch; display: grid; place-items: center; }
 
-.reset {
-  align-self: flex-start; padding: var(--space-2) var(--space-4); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius);
-  color: var(--ink-2); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase;
-  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
-}
-.reset:hover { color: var(--rubric); border-color: var(--rubric); }
+/* a .btn.ghost.small (app/globals.css): here only its place */
+.reset { align-self: flex-start; }
 
 .handle { display: none; }
 
@@ -99,9 +95,6 @@
 }
 
 /* the Guide, for anyone looking for help here */
-.guideLink { margin: 14px 0 0; text-align: center; font-family: var(--f-label); }
-.guideLink a { color: var(--ink); text-decoration-color: var(--accent); text-underline-offset: 3px; }
-.guideLink a:hover { color: var(--rubric); }
 
 /* settings that only matter on a phone */
 @media (min-width: 761px) { .phoneOnly { display: none; } }

@@ -4,6 +4,8 @@
  */
 export const FORUM_OPEN = false;
 
+import type { IconName } from "@/components/Icon";
+
 /**
  * Every area of the site and its name from Greek culture.
  * Change names here only; the rest of the site reads from this file.
@@ -18,7 +20,7 @@ export const FORUM_OPEN = false;
  */
 export type AreaId =
   | "home" | "library" | "reader" | "search" | "study" | "wiki" | "archaeology"
-  | "census" | "map" | "forum" | "debates" | "treasury" | "downloads";
+  | "census" | "map" | "lyre" | "forum" | "debates" | "treasury" | "downloads";
 
 export interface Area {
   id: AreaId;
@@ -28,6 +30,7 @@ export interface Area {
   door?: string;       // its one verb, for the rooms: what you do there (Learn, Read…), shown small on its own door page
   menu?: string;       // its plain word in the header's menu, for a place there that is not one of the doors
   parent?: AreaId;     // the door it stands inside, for places that are not doors themselves
+  icon?: IconName;     // its sign beside its word, for the rooms in the header and along the foot of a phone (components/Icon.tsx)
   href: string;
   origin: string;
   fit: string;
@@ -41,7 +44,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "Every visit starts at the gate.", phase: 1,
   },
   library: {
-    id: "library", name: "The Mouseion", greek: "Μουσεῖον", english: "Library", door: "Read", href: "/library",
+    id: "library", name: "The Mouseion", greek: "Μουσεῖον", english: "Library", door: "Read", icon: "library", href: "/library",
     origin: "The \"shrine of the Muses\" at Alexandria, a research institution founded under the first Ptolemies, closely linked to the great Library.",
     fit: "It holds the texts.", phase: 2,
   },
@@ -51,17 +54,17 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "This is where you read.", phase: 2,
   },
   search: {
-    id: "search", name: "The Oracle", greek: "Μαντεῖον", english: "Search", href: "/search",
+    id: "search", name: "The Oracle", greek: "Μαντεῖον", english: "Search", icon: "search", href: "/search",
     origin: "At Delphi, Apollo's priestess, the Pythia, answered the questions of cities and individuals.",
     fit: "Ask a question, get an answer, and a clearer one than Delphi was remembered for.", phase: 4,
   },
   study: {
-    id: "study", name: "The Academy", greek: "Ἀκαδήμεια", english: "Learn Greek", door: "Learn", href: "/academy",
+    id: "study", name: "The Academy", greek: "Ἀκαδήμεια", english: "Learn Greek", door: "Learn", icon: "learn", href: "/academy",
     origin: "Plato's school, founded in the early 4th century BC in the grove of the hero Akademos outside Athens.",
     fit: "This is where you learn.", phase: 3,
   },
   wiki: {
-    id: "wiki", name: "The Painted Stoa", greek: "Στοὰ Ποικίλη", door: "Explore", href: "/stoa",
+    id: "wiki", name: "The Painted Stoa", greek: "Στοὰ Ποικίλη", door: "Explore", icon: "stoa", href: "/stoa",
     origin: "A colonnade on the Athenian Agora hung with great paintings of battles and myths. Zeno taught there, and his followers were named Stoics after it.",
     fit: "Stories, pictures and argument in one place.", phase: 7,
   },
@@ -80,8 +83,15 @@ export const AREAS: Record<AreaId, Area> = {
     origin: "Ancient sailing guides that listed coasts, harbours and distances, such as the Periplus of the Erythraean Sea.",
     fit: "A guide to the places of the Greek world.", phase: 7,
   },
+  // a place of the Painted Stoa that is also a room of its own, in the header and along the foot of a phone (the owner,
+  // 2026-10-30: "give the lyre its own section in the stoa. It needs to be accessible as a main function of the website")
+  lyre: {
+    id: "lyre", parent: "wiki", name: "The lyre", greek: "Λύρα", door: "Lyre", icon: "lyre", href: "/stoa/lyre",
+    origin: "The Greeks' stringed instrument for song: strings stretched from a sound box, often a tortoise shell, to a crossbar held up by two arms.",
+    fit: "Play it, and play along with the melodies that survive in the Greeks' own musical notation.", phase: 7,
+  },
   forum: {
-    id: "forum", name: "The Agora", greek: "Ἀγορά", door: "Talk", href: "/town-hall",
+    id: "forum", name: "The Agora", greek: "Ἀγορά", door: "Talk", icon: "talk", href: "/town-hall",
     // the senses of ἀγορά as LSJ gives them (A, II, II.2)
     origin: "Ἀγορά, from ἀγείρω “to gather”: first an assembly of the people, then the place where it met, and later the market-place (LSJ).",
     fit: "Questions, answers and conversation.", phase: 8,
@@ -92,7 +102,7 @@ export const AREAS: Record<AreaId, Area> = {
     fit: "Argue a motion, then vote on it.", phase: 8,
   },
   treasury: {
-    id: "treasury", name: "The Treasury", greek: "Θησαυρός", door: "Mine", href: "/treasury",
+    id: "treasury", name: "The Treasury", greek: "Θησαυρός", door: "Mine", icon: "mine", href: "/treasury",
     origin: "Cities built small treasuries at Delphi to hold their precious offerings. A thesauros is also a store of words.",
     fit: "Your notes, marks and favourite passages.", phase: 5,
   },
@@ -104,10 +114,11 @@ export const AREAS: Record<AreaId, Area> = {
 };
 
 /**
- * The five doors of the site, in order (Phase 11, owner's decision 2026-10-08): the header's menu on wide screens.
- * Each shows its plain word (`door`) with the area's Greek name beneath. Home is the site's name in the header.
+ * The doors of the site, in order (Phase 11, owner's decision 2026-10-08; the lyre since 2026-10-30): the header's rooms on
+ * wide screens. Each shows its sign and its plain word (`door`) with the area's Greek name beneath. Home is the site's name
+ * in the header.
  */
-export const NAV: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] as AreaId[]).filter((id) => shown(id));
+export const NAV: AreaId[] = (["study", "library", "wiki", "lyre", "forum", "treasury"] as AreaId[]).filter((id) => shown(id));
 
 /**
  * The header's menu on wide screens: the five doors, then the Oracle, so its research tools (concordance,
@@ -116,17 +127,29 @@ export const NAV: AreaId[] = (["study", "library", "wiki", "forum", "treasury"] 
 export const MENU: AreaId[] = [...NAV, "search"];
 
 /**
- * The rooms of the site, in the order of the printed page's menu (redesign decision 8): Learn, Read, Explore, (Talk,) Mine.
- * The header shows them on a computer and the bar along the foot of the screen on a phone (decision 9). `also` lists other
- * paths that belong to a room (the reader, a work's and an author's pages belong to Read).
+ * The rooms of the site, in the order of the printed page's menu (redesign decision 8): Learn, Read, Explore, Lyre, (Talk,)
+ * Mine. The header shows them on a computer and the bar along the foot of the screen on a phone (decision 9). `also` lists
+ * other paths that belong to a room (the reader, a work's and an author's pages belong to Read).
  */
 export const TABS: { id: AreaId; also?: string[] }[] = ([
   { id: "study" },
   { id: "library", also: [AREAS.reader.href, "/work", "/author", "/downloads"] },
   { id: "wiki" },
+  { id: "lyre" },
   { id: "forum" },
   { id: "treasury", also: ["/account"] },
 ] as { id: AreaId; also?: string[] }[]).filter((t) => shown(t.id));
+
+const under = (pathname: string, href: string) => pathname === href || pathname.startsWith(href + "/");
+/**
+ * The room a page belongs to, for the header and the phone's bar to mark: the room with the longest address (or `also`
+ * address) that the page's address begins with, so the lyre (/stoa/lyre) is its own room and not the Painted Stoa's.
+ */
+export function roomOf(pathname: string): AreaId | undefined {
+  let room: AreaId | undefined, best = 0;
+  for (const t of TABS) for (const h of [AREAS[t.id].href, ...(t.also ?? [])]) if (h.length > best && under(pathname, h)) { room = t.id; best = h.length; }
+  return room;
+}
 
 /** Whether an area is offered anywhere on the site: everything but the forum's two while it is closed (FORUM_OPEN). */
 export function shown(id: AreaId): boolean {

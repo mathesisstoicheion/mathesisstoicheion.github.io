@@ -9,70 +9,107 @@
 .rule2 { max-width: var(--maxw); margin: 0 auto; height: 4px; position: relative; }
 .rule2::after { content: ""; position: absolute; left: max(var(--gutter), env(safe-area-inset-left, 0px)); right: max(var(--gutter), env(safe-area-inset-right, 0px)); bottom: 0; border-bottom: 1px solid var(--rule-2); }
 .mark { margin-right: auto; }
-/* the rooms: the English word, its Greek name in small italic beneath; the room you are in, in red */
-.nav { display: flex; gap: clamp(var(--space-3), 2.2vw, 30px); }
-.navI { display: flex; flex-direction: column; align-items: center; line-height: 1.1; padding: var(--space-1) 2px; text-decoration: none; color: var(--ink); font: 400 var(--step-0) / 1.1 var(--face-garamond); transition: color var(--dur) var(--ease); }
-.navI i { font: italic 400 var(--step--2) / 1.2 var(--face-gentium); color: var(--ink-3); margin-top: 3px; transition: color var(--dur) var(--ease); }
-.navI[aria-current="page"], .navI:hover { color: var(--rubric); }
-.navI[aria-current="page"] i, .navI:hover i { color: var(--rubric); }
+/* the rooms: the sign, then the English word with its Greek name in small italic beneath; the room you are in, in red */
+.nav { display: flex; gap: clamp(var(--space-3), 1.8vw, 26px); }
+.navI {
+  display: grid; grid-template-columns: auto auto; align-items: center; column-gap: 7px; padding: var(--space-1) 2px; text-decoration: none;
+  color: var(--ink); font: 400 var(--step-0) / 1.1 var(--face-garamond); transition: color var(--dur) var(--ease);
+}
+.navI svg { grid-row: 1 / span 2; width: 20px; height: 20px; color: var(--ink-2); transition: color var(--dur) var(--ease); }
+.navI .word, .navI i { grid-column: 2; }
+.navI i { font: italic 400 var(--step--2) / 1.2 var(--face-gentium); color: var(--ink-3); margin-top: 2px; transition: color var(--dur) var(--ease); }
+.navI[aria-current="page"], .navI:hover, .navI[aria-current="page"] :is(i, svg), .navI:hover :is(i, svg) { color: var(--rubric); }
 .word { display: block; }
-.utils { display: flex; align-items: center; gap: 2px; margin-left: clamp(var(--space-2), 2vw, var(--space-5)); padding-left: clamp(var(--space-2), 1.6vw, 18px); border-left: 1px solid var(--rule); }
-/* the small tools: a thin line drawing in ink, no box round it */
+.utils { display: flex; align-items: center; gap: 2px; margin-left: clamp(var(--space-2), 1.6vw, var(--space-5)); padding-left: clamp(var(--space-2), 1.4vw, 18px); border-left: 1px solid var(--rule); }
+/* the small tools: a thin line drawing in ink, no box round it, and its word beside it where the screen has room */
 .tbtn {
-  position: relative; min-width: 36px; height: 36px; display: inline-grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius);
-  background: transparent; cursor: pointer; color: var(--ink-2); text-decoration: none; -webkit-tap-highlight-color: transparent;
+  position: relative; min-width: 36px; height: 36px; display: inline-flex; align-items: center; justify-content: center; gap: 7px; padding: 0 6px;
+  border: 0; border-radius: var(--radius); background: transparent; cursor: pointer; color: var(--ink-2); text-decoration: none;
+  font: 400 var(--step--1) / 1.1 var(--face-garamond); white-space: nowrap; -webkit-tap-highlight-color: transparent;
   transition: color var(--dur) var(--ease);
 }
-.tbtn svg { width: 17px; height: 17px; }
+.tbtn svg { width: 18px; height: 18px; }
 @media (pointer: coarse) { .tbtn::before { content: ""; position: absolute; inset: -4px; } }
 .tbtn:hover, .tbtn[aria-current="page"], .tbtn[aria-expanded="true"] { color: var(--rubric); }
 .txt { display: none; }
-/* the Menu button: small capitals in a hairline frame (the sample's .menu) */
+@media (min-width: 1360px) { .utils .txt { display: inline; } .utils { gap: var(--space-1); } }
+/* the Menu button: its sign and its word in a hairline frame */
 .menuBtn {
-  display: none; position: relative; min-height: 40px; padding: 0 14px; background: none; border: 1px solid var(--rule); border-radius: var(--radius);
-  color: var(--ink); font: 500 var(--step--2) / 1 var(--face-garamond); letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+  display: none; position: relative; min-height: 40px; padding: 0 12px 0 10px; background: none; border: 1px solid var(--rule); border-radius: var(--radius);
+  color: var(--ink); font: 400 var(--step-0) / 1 var(--face-garamond); cursor: pointer; align-items: center; gap: 7px;
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
+.menuBtn svg { width: 18px; height: 18px; }
 .menuBtn:hover, .menuBtn[aria-expanded="true"] { border-color: var(--rubric); color: var(--rubric); }
 @media (pointer: coarse) { .menuBtn::before { content: ""; position: absolute; inset: -3px; } }
-/* a narrower computer screen: the rooms stay, the small tools go into the menu */
+/* a narrower computer screen and a phone: Search keeps its button, the other small tools go into the menu */
 @media (max-width: 1040px) {
-  .utils { display: none; }
-  .menuBtn { display: inline-block; margin-left: clamp(var(--space-2), 2vw, 20px); }
+  .utils { border-left: 0; padding-left: 0; margin-left: var(--space-2); }
+  .utils > :not(.find) { display: none; }
+  .find { min-width: 40px; height: 40px; color: var(--ink); }
+  .find svg { width: 20px; height: 20px; }
+  .menuBtn { display: inline-flex; margin-left: var(--space-1); }
 }
-/* a phone: only the device, the name and the Menu button (SPEC.md 3.6); the rooms are along the foot of the screen */
+/* a narrow computer screen: the rooms keep their signs and words, their Greek names wait for a wider one */
+@media (max-width: 1040px) and (min-width: 761px) {
+  .navI i { display: none; }
+  .navI svg { grid-row: auto; }
+}
+/* a phone: only the device, the name, Search and the Menu button (SPEC.md 3.6); the rooms are along the foot of the screen */
 @media (max-width: 760px) {
   .nav { display: none; }
-  .mast { padding-top: 14px; padding-bottom: 10px; }
+  .mast { padding-top: 14px; padding-bottom: 10px; gap: var(--space-2); }
+  .utils { margin-left: 0; }
+  .menuBtn { padding: 0 10px 0 8px; gap: 6px; }
 }
+@media (max-width: 380px) {
+  .mast { gap: 6px; }
+  .find { min-width: 36px; }
+  .menuBtn { padding: 0 8px; gap: 5px; }
+}
+/* the narrowest phones: the Menu button's sign alone (its name is still read out) */
+@media (max-width: 359px) { .menuWord { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); } }
 
 /* while offline, where the light is in the menu: one line under the header */
 .offline { display: none; max-width: var(--maxw); margin: 0 auto; padding: 6px max(var(--gutter), env(safe-area-inset-left, 0px)); font: italic 400 var(--step--1) / 1.4 var(--face-garamond); color: var(--ink-2); }
 .offline::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: var(--space-2); border-radius: var(--radius-round); background: var(--danger); vertical-align: 0.05em; }
 @media (max-width: 1040px) { .offline { display: block; } }
 
-/* the menu (phones and narrower screens): a leaf of paper under the masthead, every room, then your account, Settings
-   and the connection */
+/* the menu (phones and narrower screens): a leaf of paper under the masthead with a row for each of the small tools, its
+   sign, its word and a line on what it is for; in the reader on a phone, the rooms above them */
 .menu {
   position: absolute; right: max(var(--gutter), env(safe-area-inset-right, 0px)); top: calc(100% - 2px); width: min(360px, calc(100vw - 2 * var(--gutter))); z-index: 25;
-  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); padding: 6px 20px 18px; box-shadow: 0 18px 40px -22px var(--shadow);
+  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); padding: 6px 18px 10px; box-shadow: 0 18px 40px -22px var(--shadow);
   animation: ink var(--dur) var(--ease) backwards;
 }
-.menuDoors { list-style: none; margin: 0; padding: 0; }
-.menuDoors :is(a, button) {
-  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); width: 100%; padding: 13px 0; border: 0; border-bottom: 1px solid var(--rule);
-  background: none; text-align: left; text-decoration: none; min-height: var(--tap); color: var(--ink); font: 400 var(--step-1) / 1.2 var(--face-garamond); cursor: pointer;
+.menuDoors { list-style: none; margin: 0 0 6px; padding: 0; }
+.menuDoors a {
+  display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: 11px 0; border-bottom: 1px solid var(--rule);
+  text-decoration: none; min-height: var(--tap); color: var(--ink); font: 400 var(--step-1) / 1.2 var(--face-garamond);
 }
-.menuDoors i { font: italic 400 var(--step-0) / 1.2 var(--face-gentium); color: var(--ink-3); }
-.menuDoors a[aria-current="page"], .menuDoors a[aria-current="page"] i, .menuDoors :is(a, button):hover { color: var(--rubric); }
-.menuTools { display: flex; gap: var(--space-2) 14px; align-items: center; padding-top: 14px; flex-wrap: wrap; }
-.menuTools .tbtn { width: auto; min-width: var(--tap); height: var(--tap); padding: 0 var(--space-1); display: inline-flex; gap: var(--space-2); color: var(--ink); }
-.menuTools .txt { display: inline; font: 500 var(--step--2) / 1 var(--face-garamond); letter-spacing: 0.16em; text-transform: uppercase; }
+.menuDoors a svg { width: 20px; height: 20px; color: var(--ink-2); }
+.menuDoors i { margin-left: auto; font: italic 400 var(--step-0) / 1.2 var(--face-gentium); color: var(--ink-3); }
+.menuDoors a[aria-current="page"], .menuDoors a[aria-current="page"] :is(i, svg), .menuDoors a:hover { color: var(--rubric); }
+@media (min-width: 761px) { .menuDoors { display: none; } }
+.menuTools { display: grid; }
+/* a row of the menu: the sign, then the word over its line */
+.row {
+  width: 100%; height: auto; min-height: 60px; justify-content: flex-start; gap: 14px; padding: 9px 2px; text-align: left; white-space: normal;
+  color: var(--ink); border-bottom: 1px solid var(--rule); border-radius: 0;
+}
+.menuTools > :last-child .row, .menuTools > .row:last-child { border-bottom: 0; }
+.row svg { width: 20px; height: 20px; flex: none; color: var(--ink-2); }
+.rowText { display: grid; gap: 2px; min-width: 0; }
+.row .txt { display: inline; font: 400 var(--step-1) / 1.2 var(--face-garamond); }
+.row small { font: italic 400 var(--step--1) / 1.3 var(--face-garamond); color: var(--ink-3); }
+.row:hover, .row:hover svg { color: var(--rubric); }
 @keyframes ink { from { opacity: 0; } }
 
 /* ------------------------------------------------------------ connection light */
 .conn { position: relative; }
 .light { padding-inline: 0; }
+.dotBox { width: 18px; height: 18px; display: inline-grid; place-items: center; flex: none; }
+.row .dotBox { width: 20px; height: 20px; }
 /* the light: a small round light in a fine ring, green while online, ochre while syncing, red when offline */
 .dot { width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--gem-shine), var(--ok); box-shadow: var(--bezel); flex: none; position: relative; }
 [data-status="offline"] .dot { background: var(--gem-shine), var(--danger); }
@@ -93,7 +130,8 @@
   .conn { position: static; }
   .connPanel { left: var(--space-3); right: var(--space-3); width: auto; top: calc(100% + 6px); }
 }
-.connHead { display: flex; align-items: center; gap: 10px; font-size: var(--step-0); }
+.connHead { display: flex; align-items: center; gap: 10px; font-size: var(--step-0); margin: -6px -6px 0 0; }
+.connHead b { flex: 1; }
 .connList { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; color: var(--ink-2); }
 .connActs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .connReport { display: grid; gap: var(--space-1); padding: 2px 0 2px 14px; box-shadow: var(--inlay-left-ok); font-size: var(--step--1); }
