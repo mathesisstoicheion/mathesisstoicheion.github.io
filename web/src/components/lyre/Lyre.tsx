@@ -11,7 +11,8 @@
  * the audio clock a moment ahead, so its rhythm stays even whatever the page is doing; the roll follows what is heard.
  * "Play along" lets you play it, and with "Wait for me" the roll waits at each note until you play it. What you play
  * rises from the strings as a fading trail of red ink, as on a MIDI visualiser. "Save a recording" writes the melody, played
- * the same way, as a CD-quality WAV file.
+ * the same way, as a CD-quality WAV file. "Record what you play" keeps your own playing, every pluck as you made it, to play
+ * back and to share as a link (lib/lyre/tune-link.ts) that plays it on the same lyre for anyone who opens it.
  *
  * Nothing here waits on React while you play: the strings are rendered in a worker before the first touch (sound.ts),
  * every frame reads one mutable record, and the words, the caption and the score are lit by touching the elements
@@ -31,6 +32,9 @@ import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import { geometry, inkBody, paintRoll, paintStrings, plate, readInks, stringX, type Geom, type NoteLook, type Plate, type Trail } from "./draw";
 import { designFor, type Design } from "./instruments";
 import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
+import Icon from "@/components/Icon";
+import ShareButton from "@/components/ShareButton";
+import { MAX_PLUCKS, decodeTune, encodeTune, type Pluck, type Tune } from "@/lib/lyre/tune-link";
 import styles from "./Lyre.module.css";
 
 type Mode = "listen" | "along";
@@ -142,6 +146,13 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const [vol, setVol] = useState(0.8);
   const [room, setRoom] = useState(0.5);
   const [rec, setRec] = useState<"idle" | "working" | "failed">("idle");
+  // your own playing: being kept now (taking), the last thing kept or a tune opened from a link, and its playing back
+  const [taking, setTaking] = useState(false);
+  const take = useRef<{ t0: number; plucks: Pluck[] } | null>(null);
+  const [tune, setTune] = useState<{ t: Tune; from: "mine" | "link" } | null>(null);
+  const [tuneBad, setTuneBad] = useState(false);
+  const [replaying, setReplaying] = useState(false);
+  const replay = useRef<number[]>([]);
   const [rollH, setRollH] = useState(300);
 
   const stageRef = useRef<HTMLDivElement>(null);
@@ -295,6 +306,8 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const st = S.current, n = st.strings.length;
     sound().pluck(m, s, { pan: i >= 0 && n > 1 ? (i / (n - 1) - 0.5) * 0.5 : 0 });
     const now = performance.now();
+    const k = take.current;
+    if (k && k.plucks.length < MAX_PLUCKS) { if (!k.plucks.length) k.t0 = now; k.plucks.push({ t: Math.round(now - k.t0), m, s: Math.round(s * 100) / 100 }); }
     if (i >= 0) st.vib.set(i, { a: 0.35 + 0.65 * s, t: now });
     const trail: Trail = { x: i >= 0 && st.G ? st.G.top[i] : laneOf(m), start: now, end: holder ? null : now + 140, s };
     st.trails.push(trail);
@@ -660,6 +673,48 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     } catch { setRec("failed"); }
   };
 
+  // ── your own playing ────────────────────────────────────────────────────────────────────────────────────────────
+  const stopReplay = () => { for (const h of replay.current) clearTimeout(h); replay.current = []; setReplaying(false); };
+  useEffect(() => () => { for (const h of replay.current) clearTimeout(h); }, []);
+  const startTake = () => { stopReplay(); take.current = { t0: 0, plucks: [] }; setTaking(true); setTune(null); setTuneBad(false); };
+  const stopTake = () => {
+    const k = take.current;
+    take.current = null; setTaking(false);
+    if (k?.plucks.length) setTune({ t: { song: song?.meta.id ?? null, tuning, plucks: k.plucks }, from: "mine" });
+  };
+  /** the tune played back on the strings it was played on, each pluck at its time and as hard as it was made */
+  const playTune = () => {
+    if (!tune) return;
+    if (replaying) { stopReplay(); return; }
+    sound();
+    const ps = tune.t.plucks;
+    replay.current = ps.map((p) => window.setTimeout(() => pluck(S.current.strings.findIndex((x) => x.midi === p.m), p.m, p.s, null), 300 + p.t));
+    replay.current.push(window.setTimeout(stopReplay, 300 + (ps.at(-1)?.t ?? 0) + 1200));
+    setReplaying(true);
+  };
+  const shareTune = async () => {
+    if (!tune) return null;
+    const on = tune.t.song ? melodies.find((m) => m.id === tune.t.song)?.title : null;
+    return { title: on ? `A tune I played on the lyre of ${on}` : "A tune I played on the lyre", url: `${location.origin}/stoa/lyre#tune=${await encodeTune(tune.t)}` };
+  };
+  // a tune opened from a link: the lyre it was played on is set out, ready to play it
+  useEffect(() => {
+    const read = () => {
+      if (!location.hash.startsWith("#tune=")) return;
+      void decodeTune(location.hash.slice(6)).then((t) => {
+        if (!t) { setTuneBad(true); return; }
+        setTuneBad(false);
+        if (t.song && melodies.some((m) => m.id === t.song)) choose(t.song);
+        else { choose(null); setTuning(t.tuning); }
+        setTune({ t, from: "link" });
+      });
+    };
+    read();
+    addEventListener("hashchange", read);
+    return () => removeEventListener("hashchange", read);
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- read once, and again only when the address's # changes
+  }, []);
+
   const onSheetNote = useCallback((i: number) => {
     const st = S.current, n = st.notes?.[i];
     if (!n) return;
@@ -703,12 +758,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         {song ? (
           <>
             <button type="button" className={`btn small${playing && mode === "listen" ? "" : " ghost"}`} onClick={() => start("listen")}>
-              {playing && mode === "listen" ? "Pause" : "Listen"}
+              <Icon name={playing && mode === "listen" ? "pause" : "play"} />{playing && mode === "listen" ? "Pause" : "Listen"}
             </button>
             <button type="button" className={`btn small${playing && mode === "along" ? "" : " ghost"}`} onClick={() => start("along")}>
-              {playing && mode === "along" ? "Pause" : "Play along"}
+              <Icon name={playing && mode === "along" ? "pause" : "music"} />{playing && mode === "along" ? "Pause" : "Play along"}
             </button>
-            <button type="button" className="btn small ghost" onClick={reset}>From the start</button>
+            <button type="button" className="btn small ghost" onClick={reset}><Icon name="again" />From the start</button>
             <div className="segmented" role="radiogroup" aria-label="Speed">
               {[0.5, 0.75, 1].map((t) => (
                 <button key={t} type="button" role="radio" aria-checked={tempo === t} onClick={() => setTempo(t)}>{t === 1 ? "As written" : `${t * 100}%`}</button>
@@ -760,6 +815,34 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
         <span ref={capNote} className="faint" />
       </p>
 
+      {/* your own playing: record it, play it back, share it (a tune from a link waits here to be played) */}
+      <div className={styles.save}>
+        {taking ? (
+          <>
+            <button type="button" className="btn small" onClick={stopTake}><Icon name="stop" />Stop</button>
+            <span className="faint" role="status">Recording what you play. Press Stop when you have finished.</span>
+          </>
+        ) : tune ? (
+          <>
+            <button type="button" className={`btn small${tune.from === "link" && !replaying ? "" : " ghost"}`} onClick={playTune}>
+              <Icon name={replaying ? "stop" : "play"} />{replaying ? "Stop" : tune.from === "link" ? "Play it" : "Play it back"}
+            </button>
+            {tune.from === "mine" && <ShareButton what={shareTune} />}
+            <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />{tune.from === "link" ? "Record your own" : "Record again"}</button>
+            <span className="faint">
+              {tune.from === "link"
+                ? "A tune someone played on this lyre and shared with you."
+                : `Your tune: ${tune.t.plucks.length} ${tune.t.plucks.length === 1 ? "note" : "notes"}, ${Math.max(1, Math.round((tune.t.plucks.at(-1)?.t ?? 0) / 1000))} s. It is not kept: share it, or it goes when you leave.`}
+            </span>
+          </>
+        ) : (
+          <>
+            <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />Record what you play</button>
+            <span className="faint">{tuneBad ? "That link to a tune is damaged or cut short." : "Then play it back, or share it as a link that plays it for anyone."}</span>
+          </>
+        )}
+      </div>
+
       <p className={styles.instrumentNote}>
         The instrument: a {design.name} (<span lang="grc" className={styles.nowGreek}>{design.greek}</span>), {design.about}
       </p>
@@ -790,7 +873,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
           ) : midi === "denied" ? (
             <p className="muted">The browser was not allowed to use MIDI. You can allow it in the site settings beside the address bar, then try again.</p>
           ) : (
-            <button type="button" className="btn small ghost" onClick={connectMidi} disabled={midi === "asking"}>Use a MIDI keyboard</button>
+            <button type="button" className="btn small ghost" onClick={connectMidi} disabled={midi === "asking"}><Icon name="keyboard" />Use a MIDI keyboard</button>
           )}
           <button type="button" className="chip" aria-pressed={damping} onClick={() => setDamping(!damping)}
             title="Off: strings ring on after you let go, as on a real lyre. On: letting go of a key stops its string (the sustain pedal holds it).">
@@ -827,7 +910,7 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
       {song && (
         <div className={styles.save}>
           <button type="button" className="btn small ghost" onClick={save} disabled={rec === "working"}>
-            {rec === "working" ? "Recording…" : "Save a recording"}
+            <Icon name="download" />{rec === "working" ? "Recording…" : "Save a recording"}
           </button>
           <span className="faint">
             {rec === "failed"

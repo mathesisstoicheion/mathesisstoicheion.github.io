@@ -19,7 +19,13 @@
 .prompt :global([lang="grc"]) { font-size: var(--step-2); }   /* the word asked about, a step up */
 .gr { font-family: var(--f-greek); }   /* the size of the line around it */
 
-.options { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr)); gap: 10px; }
+/* the answers: one under another on a phone; on a wider screen two side by side, three in a row and four two by two, so
+   that no answer stands alone under the others (the same as the Practice tab's, Academy.module.css) */
+.options { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+@media (min-width: 761px) {
+  .options { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .options:has(> :nth-child(3):last-child) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
 .options button {
   min-height: var(--tap); padding: var(--space-3) var(--space-4); text-align: left; color: var(--ink);
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step-0);
@@ -92,10 +98,5 @@
 
 /* on a phone the questions start on the first screen: the page's introduction gives way */
 @media (max-width: 600px) { .pageIntro { display: none; } }
-
-/* a checkpoint in the lesson list: a band of the paper's shade across the path, its numeral in a ring */
-.cpRow { background: var(--bg-2); }
-.cpRow .cpItem { box-shadow: var(--cut-over), var(--cut-under); }
-.cpNo { justify-self: center; display: grid; place-items: center; width: 40px; height: 40px; border-radius: var(--radius-round); border: 1px solid var(--accent); color: var(--accent); font: var(--step-0) var(--f-title); }
 
 .step:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }

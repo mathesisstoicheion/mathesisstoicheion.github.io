@@ -1,6 +1,7 @@
 "use client";
 /** Export everything to one readable file, and restore from it (merging, never deleting). */
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import { useEffect, useRef, useState } from "react";
 import { ImportProblem, exportHtml, parseExport } from "@/lib/treasury-io";
 import { applyIncoming, gather, type ApplyReport } from "@/lib/treasury-apply";
@@ -84,8 +85,8 @@ export default function KeepSafe({ t, summary, compact = false }: { t: TreasuryS
         <Sync t={t} onResult={setResult} lines={reportLines} />
       </div>
       <div className={styles.keepActs}>
-        {!compact && <button type="button" className="btn" onClick={download} disabled={busy}>Download my Treasury</button>}
-        <button type="button" className={compact ? styles.linkBtn : "btn ghost"} onClick={() => file.current?.click()} disabled={busy}>Restore from a file</button>
+        {!compact && <button type="button" className="btn" onClick={download} disabled={busy}><Icon name="download" />Download my Treasury</button>}
+        <button type="button" className={compact ? styles.linkBtn : "btn ghost"} onClick={() => file.current?.click()} disabled={busy}><Icon name="upload" />Restore from a file</button>
         <input ref={file} type="file" accept=".html,.htm,.json,text/html,application/json" hidden aria-label="Choose a Treasury file to restore"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) restore(f); }} />
       </div>

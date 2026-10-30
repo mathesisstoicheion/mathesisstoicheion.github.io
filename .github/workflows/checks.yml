@@ -46,10 +46,39 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-names.mjs
+      - name: Every icon's address carries the mark of its picture, so no browser or phone keeps an old one
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-icons.mjs
       - name: The two lesson tracks agree everywhere (slice 4)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-lessons.mjs http://localhost:3100
+      - name: The learning pages open without an error, on a phone and a computer
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-errors.mjs http://localhost:3100
+      - name: A row of choices holds together on a phone, with no choice alone on its line
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-choices.mjs http://localhost:3100
+      - name: A button's words wrap as one line of text on a phone, never as columns side by side
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-buttons.mjs http://localhost:3100
+      # (the shares of a text need the word packs, which are not served here; the check says so and checks the rest)
+      - name: What the Vocabulary page marks as in your lessons, and the texts it offers, are true
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: npx tsx scripts/check-vocabulary.mts http://localhost:3100
+      # the reader's four tours (read, word, aids, keep) join this list when the reader redesign brings them up to date
+      - name: Every step of the Guide's tours finds its control, on a phone and a computer
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        # (a search finds nothing without the Oracle's index, which is not served here, so its results' step is left out)
+        env:
+          NOPACKS: "1"
+        run: npx tsx scripts/check-tours.mts http://localhost:3100 learn find explore search settings
       - name: Dates in BC and AD, once (slice 6)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

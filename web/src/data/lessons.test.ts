@@ -56,3 +56,12 @@ describe("lessons", () => {
     }
   }, 180_000);
 });
+
+describe("the lessons' words for a form", () => {
+  it("name case, number and gender in the order the word look-up names them (\"accusative singular feminine\")", () => {
+    const text = JSON.stringify(LESSONS);
+    const g = "(?:masculine|feminine|neuter)(?: or (?:masculine|feminine|neuter))*";
+    const k = "(?:nominative|genitive|dative|accusative|vocative)(?: or (?:nominative|genitive|dative|accusative|vocative))*";
+    expect(text.match(new RegExp(`${g} ${k} (?:singular|plural)`, "g")) ?? []).toEqual([]);
+  });
+});

@@ -18,16 +18,14 @@
 .tabs { list-style: none; margin: 0; padding: 0; display: grid; height: 100%; }
 .tabs li { display: flex; min-width: 0; }
 .tab {
-  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px;
-  padding: var(--space-2) 2px 6px; text-decoration: none; color: var(--ink); -webkit-tap-highlight-color: transparent;
+  flex: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px;
+  padding: 9px 2px 5px; text-decoration: none; color: var(--ink); -webkit-tap-highlight-color: transparent;
   transition: color var(--dur) var(--ease);
 }
+.tab svg { width: 21px; height: 21px; color: var(--ink-2); transition: color var(--dur) var(--ease); }
 .word { font: 400 var(--step-0) / 1.15 var(--face-garamond); white-space: nowrap; }
-.tab i { font: italic 400 var(--step--2) / 1.2 var(--face-gentium); color: var(--ink-3); white-space: nowrap; transition: color var(--dur) var(--ease); }
-.tab[aria-current="page"], .tab[aria-current="page"] i { color: var(--rubric); }
+.tab[aria-current="page"], .tab[aria-current="page"] svg { color: var(--rubric); }
 .tab:focus-visible { outline-offset: -4px; }
-/* the room you are in: a short red rule over its word, like a printer's mark in the margin */
-.tab[aria-current="page"] .word { background: linear-gradient(var(--rubric), var(--rubric)) 50% 0 / 18px 1px no-repeat; padding-top: 5px; margin-top: -5px; }
-@media (max-width: 359px) { .word { font-size: var(--step--1); } .tab i { font-size: var(--step--2); } }
+@media (max-width: 359px) { .word { font-size: var(--step--1); } }
 
 @media (prefers-reduced-motion: reduce) { .bar { transition: none; } }

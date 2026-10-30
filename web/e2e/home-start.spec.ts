@@ -16,8 +16,9 @@ test("a first visit is asked where it is starting, and the answer sets up the re
   await expect(page.getByRole("link", { name: /A short guide shows you round/ })).toHaveAttribute("href", "/guide");
   // nothing is set until a way in is followed
   expect((await settings(page)).translit ?? false).toBe(false);
-  await page.getByRole("link", { name: /I know no Greek\..*Meet the alphabet/ }).click();
-  await expect(page).toHaveURL(/\/academy\/alphabet$/);
+  // a beginner starts where every way in leads: the reading path's first lesson (data/tracks.ts)
+  await page.getByRole("link", { name: /I know no Greek\..*Start the first lesson/ }).click();
+  await expect(page).toHaveURL(/\/academy\/reading\/letters$/);
   expect((await settings(page)).translit).toBe(true);
   expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:start") || "{}").choice)).toBe("none");
   // back on the home page, the visitor is returning: the desk instead of the question
@@ -47,14 +48,17 @@ test("a returning visitor's desk: carry on reading, the next lesson", async ({ p
   await page.goto("/");
   await page.evaluate(() => {
     localStorage.setItem("mathesis:positions", JSON.stringify({ "tlg0012.tlg001": { ed: "", tr: null, at: "1.5", t: Date.now() } }));
-    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: { letters: Date.now() }, days: [] }, version: 0 }));
+    localStorage.setItem("mathesis:academy", JSON.stringify({ state: { completed: { letters: Date.now(), "read:letters": Date.now() }, days: [] }, version: 0 }));
   });
   await page.reload();
   const desk = page.getByRole("region", { name: "Your desk" });
   await expect(desk.getByRole("link", { name: /Homer, Iliad/ }).first()).toHaveAttribute("href", "/read?w=tlg0012.tlg001&at=1.5");
-  // lesson 1 is done, so lesson 2 is next
-  await expect(desk.getByText("Breathings, accents and punctuation")).toBeVisible();
-  await expect(desk.getByRole("link", { name: /Open the lesson/ })).toHaveAttribute("href", "/academy/lesson/marks");
+  // the reading path leads: its lesson 1 is read, so its lesson 2 is next (data/tracks.ts nextReading)
+  await expect(desk.getByText("Nothing in excess", { exact: true })).toBeVisible();
+  await expect(desk).toContainText(/Learn by reading · lesson 2 of \d+/);
+  await expect(desk.getByRole("link", { name: /Open the lesson/ })).toHaveAttribute("href", "/academy/reading/nothing-too-much");
+  // the grammar course, begun too, keeps its own next lesson beside it: its lesson 1 is done, so lesson 2
+  await expect(desk.getByRole("link", { name: /Breathings, accents and punctuation/ })).toHaveAttribute("href", "/academy/lesson/marks");
   // the desk stands where the question stood: after the title page, before the passage of the day (redesign SPEC.md 4.1)
   const deskY = (await desk.boundingBox())!.y;
   expect(deskY).toBeGreaterThan(await top(page, "h1"));

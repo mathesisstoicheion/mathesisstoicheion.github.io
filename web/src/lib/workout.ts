@@ -61,7 +61,8 @@ export function cellName(p: Paradigm, r: number, c: number): { what: string; of:
   if (p.id === "ego-sy" || p.id === "tis") return { what: row, of: `*${col}*` };
   if (p.id === "luo-inf") return { what: `${row} ${col} infinitive`, of: lemma };
   if (row === "I" || p.rows.includes("he, she, it")) return { what: p.colLemmas ? "form" : `${col}${q ? ` ${q}` : ""}`, of: `${lemma} for *${row}*` };
-  const n = col.replace("masc.", "masculine").replace("fem.", "feminine").replace("neut.", "neuter").replace(/ sg$/, " singular").replace(/ pl$/, " plural");
+  // case, number, gender: the order in which the word look-up names them ("genitive plural neuter")
+  const n = col.replace(/^(masc|fem|neut)\. (sg|pl)$/, (_, g: string, nb: string) => `${nb === "sg" ? "singular" : "plural"} ${{ masc: "masculine", fem: "feminine", neut: "neuter" }[g]}`);
   return { what: `${q ? `${q}, ` : ""}${row} ${n}`, of: lemma };
 }
 

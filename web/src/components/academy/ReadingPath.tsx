@@ -6,8 +6,9 @@
  */
 import Link from "next/link";
 import { useMemo, useSyncExternalStore } from "react";
-import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, READING_TOTAL, type PathWord } from "@/data/reading-path";
-import { wordsLabel } from "@/data/tracks";
+import { LETTERS_STEP, PATH, PRACTICE, partText, stepWords, pathKey, passageKey, readingNo, lineWords, wordsRead, READING_TOTAL, type PathWord } from "@/data/reading-path";
+import { READING_ITEMS, lessonsRead } from "@/data/reading-index";
+import { nextReading, wordsLabel } from "@/data/tracks";
 import { useAcademy } from "@/lib/academy";
 import Rich from "./Rich";
 import { AlphabetFold } from "./PathStepView";
@@ -16,28 +17,23 @@ import w from "./Workout.module.css";
 
 export { pathKey, passageKey };
 
-/** The path in order: the letters, then each lesson, with a practice lesson after every third. */
-const ITEMS = [
-  { id: LETTERS_STEP.id, kind: "letters" as const },
-  ...PATH.flatMap((s) => [
-    { id: s.id, kind: "lesson" as const },
-    ...PRACTICE.filter((p) => p.after === s.id).map((p) => ({ id: p.id, kind: "practice" as const })),
-  ]),
-];
+/** The path in order: the letters, then each lesson, with a practice lesson after every third (data/reading-index.ts). */
+const ITEMS = READING_ITEMS;
 
 const done = (mark: string) => <span className={`${w.mark} ${w.markPassed}`} title={mark}>✓<span className="visually-hidden">{mark}</span></span>;
 
 function PathList({ completed }: { completed: Record<string, number> }) {
-  const nextId = ITEMS.find((it) => !completed[pathKey(it.id)])?.id;
+  // the one next step, the same as the Academy's button and Your desk (data/tracks.ts)
+  const next = nextReading(completed)?.href;
   return (
     <ol className={styles.path}>
       {ITEMS.map((it) => {
-        const lit = it.id === nextId;
-        const style = lit ? { backgroundColor: "var(--slab-lit)" } : undefined;
-        const nextMark = <span className="label" style={{ color: "var(--accent)" }}>Next</span>;
+        const lit = `/academy/reading/${it.id}` === next;
+        const item = `${styles.pathItem} ${lit ? styles.pathLit : ""}`;
+        const nextMark = <span className={`label ${styles.nextMark}`}>Next</span>;
         if (it.kind === "letters") return (
           <li key={it.id}>
-            <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+            <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(it.id)}</span>
               <span>
                 <b>{LETTERS_STEP.title}</b> <span lang="grc" className={styles.pathGr}>{LETTERS_STEP.names.slice(0, 3).map((n) => n.gr).join(" ")}</span>
@@ -51,7 +47,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
           const p = PRACTICE.find((x) => x.id === it.id)!;
           return (
             <li key={it.id}>
-              <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+              <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
                 <span className={styles.pathNo} aria-hidden="true">◆</span>
                 <span><b>{p.title}</b><span className={styles.pathAbout}><Rich text={p.intro} /></span></span>
                 <span className={styles.pathMin}>{completed[pathKey(it.id)] ? done("Done") : lit ? nextMark : "Practice"}</span>
@@ -62,7 +58,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         const i = PATH.findIndex((s) => s.id === it.id), s = PATH[i];
         return (
           <li key={it.id}>
-            <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={styles.pathItem} style={style} aria-current={lit ? "step" : undefined}>
+            <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(s.id)}</span>
               <span>
                 <b>{s.title}</b> <span lang="grc" className={styles.pathGr}>{s.parts.map(partText).join(" ")}</span>
@@ -89,14 +85,13 @@ function Completed({ completed }: { completed: Record<string, number> }) {
   const practices = PRACTICE.filter((p) => completed[pathKey(p.id)]);
   // everything read: each finished lesson's line, its passage if finished, and finished practice lines
   const { words, read, grammar } = useMemo(() => {
-    const ws: PathWord[] = [];
+    const ws = wordsRead(completed);
     const g: { title: string; text: string[] }[] = [];
     for (const { s } of lessons) {
       const withPassage = !!completed[passageKey(s.id)];
-      ws.push(...stepWords(s, withPassage));
       g.push(s.learn, ...(withPassage ? (s.passage?.sentences ?? []).flatMap((st) => st.pieces.map((p) => p.learn)) : []));
     }
-    for (const p of practices) for (const l of p.lines) { ws.push(...l.pieces.flatMap((q) => q.words)); g.push(...l.pieces.map((q) => q.learn)); }
+    for (const p of practices) for (const l of p.lines) g.push(...l.pieces.map((q) => q.learn));
     const byLemma = new Map<string, PathWord>();
     for (const x of ws) if (!byLemma.has(x.lemma)) byLemma.set(x.lemma, x);
     const byTitle = new Map<string, { title: string; text: string[] }>();
@@ -104,10 +99,13 @@ function Completed({ completed }: { completed: Record<string, number> }) {
     return { words: [...byLemma.values()], read: ws.length, grammar: [...byTitle.values()] };
   }, [lessons, practices, completed]);
 
+  // nothing read yet but (perhaps) the letters: the way on is the one next step every page offers (data/tracks.ts)
+  const next = nextReading(completed);
   if (lessons.length === 0) return (
     <p className={styles.lp}>
-      Nothing here yet. When you finish a lesson it appears here, with the words and grammar it taught you, and a count of
-      everything you have read. <Link href={`/academy/reading/${PATH[0].id}`} transitionTypes={["page-turn"]}>Start with lesson 1 →</Link>
+      {completed[pathKey(LETTERS_STEP.id)] ? "You have read the letters. " : "Nothing here yet. "}When you finish a lesson with a real
+      line it appears here, with the words and grammar it taught you, and a count of everything you have read.{" "}
+      {next && <Link href={next.href} transitionTypes={["page-turn"]}>Your next lesson: {next.title} →</Link>}
     </p>
   );
   const outgrown = OUTGROWN.filter((o) => lessons.length >= o.after);
@@ -128,7 +126,7 @@ function Completed({ completed }: { completed: Record<string, number> }) {
       </section>
 
       <p className={styles.lp}>
-        You have finished {lessons.length + (completed[pathKey(LETTERS_STEP.id)] ? 1 : 0)} of {READING_TOTAL} lessons{practices.length > 0 ? ` and ${practices.length} of ${PRACTICE.length} practice lessons` : ""}.
+        You have finished {lessonsRead(completed)} of {READING_TOTAL} lessons{practices.length > 0 ? ` and ${practices.length} of ${PRACTICE.length} practice lessons` : ""}.
         {lessons.length >= 3 ? " Each three lessons, one kind of help has gone, because you no longer need it." : " After lesson 4 the first kind of help goes: you will be ready for it."}
       </p>
 
@@ -161,12 +159,26 @@ function Completed({ completed }: { completed: Record<string, number> }) {
       <section style={{ display: "grid", gap: 4 }}>
         <span className="label">The lessons you have finished</span>
         <ol className={styles.path}>
-          {lessons.map(({ s, i }) => {
+          {/* the letters too, lesson 1, so that the list counts what the tab and the Learn page count */}
+          {completed[pathKey(LETTERS_STEP.id)] && (
+            <li>
+              <Link href={`/academy/reading/${LETTERS_STEP.id}`} transitionTypes={["page-turn"]} className={styles.pathItem}>
+                <span className={styles.pathNo}>{readingNo(LETTERS_STEP.id)}</span>
+                <span>
+                  <b>{LETTERS_STEP.title}</b> <span lang="grc" className={styles.pathGr}>{LETTERS_STEP.names.slice(0, 3).map((n) => n.gr).join(" ")}</span>
+                  <span className={styles.pathAbout}>Taught you the 24 letters, sounding out {LETTERS_STEP.names.length} names you already know.</span>
+                </span>
+                <span className={styles.pathMin}>{done("Read")}</span>
+              </Link>
+            </li>
+          )}
+          {lessons.map(({ s }) => {
             const taught = [...new Set(stepWords(s, !!completed[passageKey(s.id)]).map((x) => x.lemma))];
             return (
               <li key={s.id}>
                 <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={styles.pathItem}>
-                  <span className={styles.pathNo}>{i + 1}</span>
+                  {/* the number it has on the path, the letters being lesson 1 */}
+                  <span className={styles.pathNo}>{readingNo(s.id)}</span>
                   <span>
                     <b>{s.title}</b> <span lang="grc" className={styles.pathGr}>{s.parts.map(partText).join(" ")}</span>
                     <span className={styles.pathAbout}>
@@ -195,7 +207,7 @@ export default function ReadingPath() {
     window.history.replaceState(null, "", t === "completed" ? "#completed" : window.location.pathname);
     window.dispatchEvent(new HashChangeEvent("hashchange"));
   };
-  const n = PATH.filter((s) => completed[pathKey(s.id)]).length;
+  const n = lessonsRead(completed);
   return (
     <div style={{ display: "grid", gap: 20 }}>
       <div className={styles.seg} role="radiogroup" aria-label="Show" style={{ justifySelf: "start" }}>

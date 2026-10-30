@@ -6,7 +6,8 @@ import { AuthorView } from "@/components/library/AuthorProfile";
 import { siteData } from "@/lib/build-data";
 import { hasTranslation } from "@/lib/catalog";
 import { lifeSpan } from "@/lib/authors-meta";
-import { SHARE_IMAGE, absolute, authorDescription } from "@/lib/seo";
+import { absolute, authorDescription } from "@/lib/seo";
+import { SHARE_PICTURE } from "@/lib/icons";
 import { entriesForAuthor } from "@/wiki/related";
 import { articleFor } from "@/wiki/author-articles-all";
 import type { WorkMeta } from "@/lib/works-meta";
@@ -32,8 +33,8 @@ export async function generateMetadata({ params }: PageProps<"/author/[id]">): P
     title: `${f.author.name}: works in Greek and English`,
     description: f.description,
     alternates: { canonical: url },
-    openGraph: { type: "profile", url, title: `${f.author.name} · Mathesis Stoicheion`, description: f.description, images: [SHARE_IMAGE] },
-    twitter: { card: "summary_large_image", title: `${f.author.name} · Mathesis Stoicheion`, description: f.description, images: [SHARE_IMAGE.url] },
+    openGraph: { type: "profile", url, title: `${f.author.name} · Mathesis Stoicheion`, description: f.description, images: [SHARE_PICTURE] },
+    twitter: { card: "summary_large_image", title: `${f.author.name} · Mathesis Stoicheion`, description: f.description, images: [SHARE_PICTURE.url] },
   };
 }
 

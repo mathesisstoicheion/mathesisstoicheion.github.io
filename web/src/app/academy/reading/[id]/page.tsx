@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Page from "@/components/Page";
 import PathStepView from "@/components/academy/PathStepView";
 import PracticeView from "@/components/academy/PracticeView";
-import { PATH, PRACTICE, pathStep, practice, readingLesson } from "@/data/reading-path";
+import { PATH, PRACTICE, partText, pathStep, practice, readingLesson } from "@/data/reading-path";
 import { TRACKS } from "@/data/tracks";
 import { AREAS, trail } from "@/config/areas";
 import PageHead from "@/components/PageHead";
@@ -29,7 +29,7 @@ export default async function PathStepPage({ params }: PageProps<"/academy/readi
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>
         <PageHead bare path={trail("study", { label: TRACKS.reading.name, href: TRACKS.reading.href }, step ? readingLesson(step.id) : "Practice")}
-          inscription={step ? step.carve : null} title={step ? step.title : p!.title} greek={step ? null : "μελέτη"} purpose={step ? step.who : undefined} />
+          title={step ? step.title : p!.title} greek={step ? step.parts.map(partText).join(" ") : "μελέτη"} purpose={step ? step.who : undefined} />
         <div className="meander" aria-hidden="true" style={{ marginBlock: 8 }} />
         {step ? <PathStepView step={step} /> : <PracticeView practice={p!} />}
       </div>

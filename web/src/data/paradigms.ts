@@ -3,6 +3,8 @@
  * pipeline/check_paradigms.py can confirm it is attested with that analysis in GLAUx.
  * Where two forms are given ("ἐμοῦ, μου"), both are standard.
  */
+import { fold } from "@/lib/catalog";
+
 export interface Paradigm {
   id: string;
   title: string;          // "Second declension: λόγος"
@@ -351,4 +353,77 @@ export const PARADIGMS: Paradigm[] = [
 /** Split a cell into its forms, expanding "(ν)" (movable nu) to both spellings. */
 export function formsOf(cell: string): string[] {
   return cell.split(/,\s*/).flatMap((f) => (f.includes("(ν)") ? [f.replace("(ν)", ""), f.replace("(ν)", "ν")] : [f]));
+}
+
+/** How the Endings drill asks for one cell (components/academy/Practice.tsx), in a grammar's own words. */
+export type Ask =
+  | { kind: "form"; what: string; of: string; article?: boolean }   // "the genitive plural of φύλαξ", "the dative plural feminine of ὁ"
+  | { kind: "person"; tense: string; person: string; of: string };  // "λύω in the aorist, for “we”"
+
+const GENDER: Record<string, string> = { "masc.": "masculine", "fem.": "feminine", "neut.": "neuter" };
+const NUMBER: Record<string, string> = { sg: "singular", pl: "plural" };
+
+export function askFor(p: Paradigm, r: number, c: number): Ask {
+  const row = p.rows[r], col = p.cols[c];
+  if (CASES.includes(row)) {
+    // a participle is asked for by its own first form (λύων), not by its verb (λύω), which has several
+    const of = p.group === "verb" ? formsOf(p.cells[0][0])[0] : p.lemma;
+    const g = col.match(/^(masc\.|fem\.|neut\.) (sg|pl)$/);
+    // case, number, gender: the order in which the reader's look-up names them ("accusative singular masculine")
+    return { kind: "form", what: g ? `${row} ${NUMBER[g[2]]} ${GENDER[g[1]]}` : `${row} ${col}`, of, article: p.group === "article" };
+  }
+  // the infinitives: tenses down the side, voices across
+  if (!PERSONS.includes(row)) return { kind: "form", what: `${row} ${col} infinitive`, of: p.lemma };
+  // persons down the side, and across the top the tenses, or (the contract verbs) three verbs in the tense of the title
+  const tense = p.colLemmas ? (/imperfect/.test(p.title) ? "imperfect" : "present")
+    : /middle and passive/.test(p.title) && !/middle|passive/.test(col) ? `${col} middle and passive` : col;
+  return { kind: "person", tense, person: row, of: p.colLemmas?.[c] ?? p.lemma };
+}
+
+/**
+ * The forms the Endings drill may offer beside a cell's answer: the table's other forms, never one that is right for
+ * this cell too (φύλαξιν as well as φύλαξι, βασιλῆς as well as βασιλεῖς), nor one that differs from such a form only
+ * in its accents.
+ */
+export function wrongForms(p: Paradigm, r: number, c: number): string[] {
+  const right = new Set(formsOf(p.cells[r][c]).map(fold));
+  return [...new Set(p.cells.flat().flatMap(formsOf))].filter((f) => !right.has(fold(f)));
+}
+
+/**
+ * What a wrong answer is in its table, in the drill's own words, so that a mistake teaches something: "the imperfect
+ * middle and passive, for “we”", "the nominative or accusative singular", or "τιμάω in the present, for “they”" (another
+ * verb than the one asked for). A form that fills several cells names them together ("the dative singular masculine or
+ * neuter"); the vocative only when it is nothing else.
+ */
+export function whatIs(p: Paradigm, form: string, asked: Ask): string {
+  const cells: [number, number][] = [];
+  p.cells.forEach((row, r) => row.forEach((cell, c) => { if (formsOf(cell).includes(form)) cells.push([r, c]); }));
+  const plain = cells.filter(([r]) => p.rows[r] !== "vocative");
+  const named = plain.length ? plain : cells;
+  if (!named.length) return "";
+  // each cell as its parts (gender, case, number; tense, voice; or verb, tense, person), then two cells that differ in
+  // one part only made one, with both words in that part
+  const person = askFor(p, ...named[0]).kind === "person";
+  let said = named.map(([r, c]): string[][] => {
+    const a = askFor(p, r, c);
+    return (a.kind === "person" ? [a.of, a.tense, `“${a.person}”`] : a.what.split(" ")).map((w) => [w]);
+  });
+  for (let merged = true; merged;) {
+    merged = false;
+    for (let i = 0; i < said.length && !merged; i++) for (let j = i + 1; j < said.length && !merged; j++) {
+      const a = said[i], b = said[j];
+      const differ = a.map((x, k) => (x.join() === b[k]?.join() ? -1 : k)).filter((k) => k >= 0);
+      if (a.length !== b.length || differ.length !== 1) continue;
+      said[i] = a.map((x, k) => (k === differ[0] ? [...new Set([...x, ...b[k]])] : x));
+      said = said.filter((_, k) => k !== j);
+      merged = true;
+    }
+  }
+  const or = (ws: string[]) => (ws.length < 2 ? ws[0] : `${ws.slice(0, -1).join(", ")} or ${ws.at(-1)}`);
+  return said.map((parts) => {
+    if (!person) return `the ${parts.map(or).join(" ")}`;
+    const [of, tense, who] = parts.map(or);
+    return `${of === asked.of ? "the" : `${of} in the`} ${tense}, for ${who}`;
+  }).join(", or ");
 }

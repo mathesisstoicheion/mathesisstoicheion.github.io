@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: areaTitle("forum"), description: PAGE
 export default function TownHallPage() {
   return (
     <Page>
-      <Door id="forum" plate="themistocles-ostraka">
+      <Door id="forum">
         <DoorBlock>
           <Suspense>
             <TownHall />

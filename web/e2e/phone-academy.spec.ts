@@ -61,8 +61,12 @@ test("today's session: full screen, pages turned by Next or a swipe, and a last 
   await page.mouse.move(h.x + 60, h.y + 16, { steps: 8 });
   await page.mouse.up();
   await expect(page.getByRole("heading", { name: /One real sentence/ })).toBeVisible();
+  // skipping is offered, but quietly: the main button is never the one that skips the work
+  await expect(page.getByRole("button", { name: /^Skip/ })).toHaveClass(/\bghost\b/);
   await page.getByRole("button", { name: /^Skip/ }).click();
   await expect(page.getByRole("heading", { name: /Done for today/ })).toBeVisible();
+  // the last page offers the one next step every page offers: for a beginner, the reading path's first lesson
+  await expect(page.getByRole("link", { name: /Your next lesson: The letters/ })).toHaveAttribute("href", "/academy/reading/letters");
   await expect(page.getByText(/1 day in a row/)).toBeVisible();
   await expect(page.getByText("The ending was skipped")).toBeVisible();
   await expect(page.getByText("The sentence was skipped")).toBeVisible();

@@ -166,18 +166,20 @@ function CensusView({ meta, links }: { meta: CensusMeta; links: Links }) {
  */
 export function CensusTally() {
   const meta = useLoad("meta", loadCensusMeta);
-  return meta.state === "done" && meta.value ? <Tally meta={meta.value} /> : null;
+  return <Tally meta={meta.state === "done" ? meta.value ?? null : null} />;
 }
 
-function Tally({ meta }: { meta: CensusMeta }) {
-  const names = ["person", "god", "place", "people"].reduce((s, k) => s + (meta.sizes[k] ?? 0), 0);
-  const figures: [number, string][] = [[meta.words, "words read"], [meta.works, "works"], [names, "names sorted"], [meta.sizes.phrase ?? 0, "repeated phrases"]];
+/** Until the counts arrive the four figures stand as dots, so the head is its full height from the first paint and nothing
+ *  under it moves when they come (scripts/check-heads.mjs). */
+function Tally({ meta }: { meta: CensusMeta | null }) {
+  const names = meta ? ["person", "god", "place", "people"].reduce((s, k) => s + (meta.sizes[k] ?? 0), 0) : null;
+  const figures: [number | null, string][] = [[meta?.words ?? null, "words read"], [meta?.works ?? null, "works"], [names, "names sorted"], [meta ? meta.sizes.phrase ?? 0 : null, "repeated phrases"]];
   return (
     <dl className={styles.tally}>
       {figures.map(([n, label], i) => (
         <div key={label} style={{ "--i": i } as React.CSSProperties}>
           <dt>{label}</dt>
-          <dd>{fmt(n)}</dd>
+          <dd>{n === null ? "·" : fmt(n)}</dd>
         </div>
       ))}
     </dl>

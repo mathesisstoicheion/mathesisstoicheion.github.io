@@ -6,15 +6,15 @@
  * two the home page shows is decided before the first paint (lib/visitor.ts, data-visitor on <html>).
  */
 import Link from "next/link";
+import Icon from "@/components/Icon";
 import { useEffect, useState } from "react";
 import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { trail, clearTrail, pageKey, type Visit } from "@/lib/resume";
 import { recentPositions, shownAt } from "@/lib/position";
 import { useAcademy } from "@/lib/academy";
-import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import s from "./Home.module.css";
-import { TRACKS, grammarLesson, wordsLabel } from "@/data/tracks";
+import { TRACKS, begun, nextSteps } from "@/data/tracks";
 
 const remember = (href: string) => { try { sessionStorage.setItem(RESTORE, pageKey(href)); } catch { /* ignore */ } };
 
@@ -44,12 +44,13 @@ export default function HomeDesk() {
   const workName = (w: string) => { const wk = idx?.work.get(w), a = idx?.authorOf.get(w); return wk ? `${a ? `${a.name}, ` : ""}${wk.title}` : w; };
   const bookHref = (w: string, at: string) => `/read?w=${w}&at=${encodeURIComponent(at)}`;
 
-  const nextLesson = LESSONS.findIndex((l) => !completed[l.id]);
-  const done = Object.keys(completed).filter((id) => LESSONS.some((l) => l.id === id)).length;
+  // the next lesson, the same as the Learn page's next step (data/tracks.ts): the reading path's, then the grammar course's
+  const started = begun(completed);
+  const { main, also } = nextSteps(completed);
   const alsoRecent = (visits ?? []).slice(1).filter((v) => !v.href.startsWith("/read")).slice(0, 3);
   // the lesson "Carry on" already opens is not offered again as the next lesson
-  const lastLesson = last ? /^\/academy\/lesson\/([^/?#]+)$/.exec(new URL(last.href, "http://x").pathname)?.[1] : undefined;
-  const lessonRow = !(nextLesson >= 0 && lastLesson === LESSONS[nextLesson].id);
+  const lastPath = last ? new URL(last.href, "http://x").pathname : undefined;
+  const lessonRow = !(main && lastPath === main.step.href);
 
   return (
     // (the section it stands in is "Your desk", by its heading: this part is not named again)
@@ -59,10 +60,10 @@ export default function HomeDesk() {
           <span className={s.dlabel}>Carry on</span>
           <div>
             {last && lastD ? (
-              <><Link href={resumeHref(last)} onClick={() => remember(last.href)} transitionTypes={["page-turn"]}><b>{lastD.what}</b></Link>
+              <><Link href={resumeHref(last)} onClick={() => remember(last.href)} transitionTypes={["page-turn"]}><b>{lastD.what}</b> <span aria-hidden="true">→</span></Link>
                 <small>{lastD.where ? `${lastD.where} · ` : ""}{ago(last.t)}</small></>
             ) : books[0] ? (
-              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b></Link>{shownAt(books[0][1].at) && <> <small>at {books[0][1].at}</small></>}</>
+              <><Link href={bookHref(books[0][0], books[0][1].at)} transitionTypes={["page-turn"]}><b>{workName(books[0][0])}</b> <span aria-hidden="true">→</span></Link>{shownAt(books[0][1].at) && <> <small>at {books[0][1].at}</small></>}</>
             ) : (
               <>{visits ? "Nothing open yet. " : "… "}<Link href="/library" transitionTypes={["page-turn"]}>Find something to read →</Link></>
             )}
@@ -76,14 +77,15 @@ export default function HomeDesk() {
           </div>
         </div>
         {lessonRow && <div className={s.drow}>
-          <span className={s.dlabel}>{nextLesson >= 0 ? (done ? "Your next lesson" : "The first lesson") : "The lessons"}</span>
+          <span className={s.dlabel}>{main ? (started.reading || started.grammar ? "Your next lesson" : "The first lesson") : "The lessons"}</span>
           <div>
-            {nextLesson >= 0 ? (
-              <><b>{LESSONS[nextLesson].title}</b>{" "}
-                <Link href={`/academy/lesson/${LESSONS[nextLesson].id}`} transitionTypes={["page-turn"]}>Open the lesson →</Link>
-                <small>{TRACKS.grammar.name} · {grammarLesson(LESSONS[nextLesson].id).toLowerCase()} · {wordsLabel(LESSONS[nextLesson].words.length)}{done ? ` · ${done} done` : ""}</small></>
+            {main ? (
+              <><b>{main.step.title}</b>{" "}
+                <Link href={main.step.href} transitionTypes={["page-turn"]}>Open the lesson →</Link>
+                <small>{main.track} · {main.step.place} · {main.step.size}</small>
+                {also && <small>And in {TRACKS.grammar.name.toLowerCase()}, {also.place}: <Link href={also.href} transitionTypes={["page-turn"]}>{also.title} →</Link></small>}</>
             ) : (
-              <><b>All {LESSONS.length} lessons done</b> <Link href="/academy" transitionTypes={["page-turn"]}>The Academy →</Link></>
+              <><b>Every lesson done</b> <Link href="/library" transitionTypes={["page-turn"]}>Read on in the library →</Link></>
             )}
           </div>
         </div>}
@@ -94,7 +96,7 @@ export default function HomeDesk() {
           {alsoRecent.map((v, i) => (
             <span key={v.href}>{i > 0 && " · "}<Link href={resumeHref(v)} onClick={() => remember(v.href)} transitionTypes={["page-turn"]}>{describe(v, idx).what}</Link></span>
           ))}
-          {" "}<button type="button" onClick={() => { clearTrail(); setVisits([]); }}>Forget these pages</button>
+          {" "}<button type="button" onClick={() => { clearTrail(); setVisits([]); }}><Icon name="erase" />Forget these pages</button>
         </p>
       )}
     </div>

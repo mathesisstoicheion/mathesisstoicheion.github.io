@@ -16,19 +16,26 @@
 /* the kinds of search: words in a row on a hairline, the chosen one in ink over a red rule */
 .tabs { display: flex; flex-wrap: wrap; gap: 0; border-bottom: 1px solid var(--rule); }
 .tabs button {
+  display: inline-flex; align-items: center; gap: var(--space-2);
   background: transparent; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 10px 16px;
   font: 400 var(--step-0) / 1.3 var(--f-body); color: var(--ink-2); cursor: pointer;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .tabs button:hover { color: var(--rubric); }
 .tabs button[aria-selected="true"] { color: var(--ink); border-bottom-color: var(--rubric); }
+/* each kind of search with its sign, in the grey of the words beside it; the chosen one's in red */
+.tabs button > svg { color: var(--ink-3); transition: color var(--dur-quick) var(--ease); }
+.tabs button:hover > svg, .tabs button[aria-selected="true"] > svg { color: var(--rubric); }
 
 .form { display: flex; gap: 10px; align-items: stretch; }
 .input { flex: 1; min-width: 0; font-family: var(--f-greek); font-size: var(--step-2); color: var(--ink); padding: 12px 16px; }
 @media (max-width: 760px) { .input { font-size: var(--step-1); } }   /* a step down on a phone */
+/* on a phone Ask keeps to its sign and its word, so the box keeps the room for what is typed */
+@media (max-width: 760px) { .form :global(.btn) { padding-inline: var(--space-3); } }
 /* the Greek letters on screen: a hairline frame; while they are shown, filled with ink */
 .kbdBtn {
-  font-family: var(--f-greek); font-size: var(--step-0); padding: 0 14px; background: transparent; color: var(--ink);
+  display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--f-greek); font-size: var(--step-0); padding: 0 var(--space-3); background: transparent; color: var(--ink);
   border: 1px solid var(--rule); border-radius: var(--radius); cursor: pointer;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
 }
@@ -94,16 +101,19 @@
 .welcome > p { margin: 0; }
 .examples { display: flex; flex-wrap: wrap; gap: 8px; }
 .examples :global(.chip) { font-size: var(--step-0); }
-/* phones: the five kinds of search in two even rows (three, then two), and the four examples as a two-by-two grid */
+/* phones: the five kinds of search in two even rows, never one alone under the others (scripts/check-choices.mjs): the
+   two searches for Greek words first and wider, then the other three, each sign over its name so every name keeps to
+   one line; and the four examples as a two-by-two grid */
 @media (max-width: 760px) {
   .tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
-  .tabs button { grid-column: span 2; text-align: center; padding-inline: 4px; }
-  .tabs button:nth-child(n + 4) { grid-column: span 3; }
+  .tabs button {
+    grid-column: span 2; flex-direction: column; justify-content: center; gap: var(--space-1);
+    padding: var(--space-2) var(--space-1); font-size: var(--step--1); text-align: center;
+  }
+  .tabs button:nth-child(-n + 2) { grid-column: span 3; }
   .examples { display: grid; grid-template-columns: 1fr 1fr; }
   .examples :global(.chip) { justify-content: center; }
 }
-/* a third of the narrowest phones' width holds "Translations" whole a step smaller */
-@media (max-width: 380px) { .tabs button { font-size: var(--step--1); } }
 .moreTips summary { cursor: pointer; display: list-item; padding-block: var(--space-1); color: var(--ink-2); font-size: var(--step--1); }
 .moreTips summary::marker { color: var(--rubric); }
 @media (pointer: coarse) { .moreTips summary { min-height: var(--tap); padding-block: var(--space-2); } }
@@ -183,25 +193,13 @@
    line more or less in it moves what follows (scripts/check-heads.mjs) */
 .boxHold { min-height: 10.5rem; }
 @media (min-width: 761px) { .boxHold, .box { min-height: 13rem; align-content: start; } }
-/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): a leaf in a
-   hairline frame, its name in red small capitals */
-.refine { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius); }
-.refine summary {
-  position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3);
-  min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4);
-  font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric);
-}
-.refine summary::-webkit-details-marker { display: none; }
-.refine summary::after { content: ""; position: absolute; right: var(--space-4); top: calc(var(--space-3) + 0.4em); width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-down); color: var(--ink-2); }
-.refine[open] summary::after { clip-path: var(--tri-up); }
-.refineOn { font: 400 var(--step--1) / 1.35 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink-2); }
-.refineBody { display: grid; gap: var(--space-4); padding: var(--space-1) var(--space-4) var(--space-4); }
+/* "Refine": the near word and where to look, folded away until wanted (open by itself when one of them is set): the
+   site's .fold-box (app/globals.css) */
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
   .tabs button { min-height: var(--tap); }
 }
 @media (prefers-reduced-motion: reduce) { .kbd, .refs, .group { animation: none; } }
-/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
-@media (min-width: 761px) {
-  .tabs button:not([aria-selected="true"]) { border-bottom-color: var(--rule); }
-}
+/* everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css
+   --link-line; scripts/check-clickable.mjs); on a phone the rule under each tab also sets the two rows apart */
+.tabs button:not([aria-selected="true"]) { border-bottom-color: var(--rule); }

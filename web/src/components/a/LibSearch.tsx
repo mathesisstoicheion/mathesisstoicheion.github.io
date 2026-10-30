@@ -1,7 +1,7 @@
 "use client";
 /**
  * The library's search, first on the page (redesign decision 11: "search first"), set as the sample's catalogue sets it: one
- * line to write on, in italic, ruled in ink, with what to show (All, With English, Greek only) beside it in small capitals,
+ * line to write on, in italic, ruled in ink, with what to show (All, With English, Greek only) beside it in plain words,
  * the chosen one underlined in red. Typing puts the famous books aside, so the catalogue's answers come up right under it.
  */
 import { useLibQuery, type Tr } from "@/components/library/libQuery";

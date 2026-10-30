@@ -13,11 +13,11 @@ export const metadata: Metadata = { title: `The lyre · ${AREAS.wiki.name}`, des
 export default function LyrePage() {
   return (
     <Page>
-      <RefHead title="The lyre" greek="λύρα">
+      <RefHead title={AREAS.lyre.name} greek={AREAS.lyre.greek}>
         Play the lyre with your keyboard, your fingers or a MIDI keyboard, and play along with the melodies that survive
         from ancient Greece, written in the Greeks&apos; own musical notation.
       </RefHead>
-      <div className="wrap" style={{ paddingBottom: "clamp(32px, 5vw, 56px)" }}>
+      <div className="wrap" style={{ paddingBottom: "var(--page-foot)" }}>
         <Lyre melodies={MELODIES} first={seikilos as MelodyNotes} />
       </div>
     </Page>

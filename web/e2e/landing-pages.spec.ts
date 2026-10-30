@@ -9,7 +9,8 @@ test("an author has a page of its own that search engines and link previews can 
   await expect(page).toHaveTitle(/^Sophocles: works in Greek and English · Mathesis Stoicheion$/);
   expect(await meta(page, "meta[name=description]")).toMatch(/^Sophocles: Ancient Greek playwright \(5th c\. BC\)\. 8 works/);
   await expect(page.locator("link[rel=canonical]")).toHaveAttribute("href", "https://mathesisstoicheion.com/author/tlg0011");
-  expect(await meta(page, "meta[property='og:image']")).toBe("https://mathesisstoicheion.com/og-card.png");
+  // the share picture, with the mark of its picture after its address (lib/icons.ts)
+  expect(await meta(page, "meta[property='og:image']")).toMatch(/^https:\/\/mathesisstoicheion\.com\/og-card\.png\?v=[0-9a-f]{8}$/);
   expect(await meta(page, "meta[property='og:title']")).toBe("Sophocles · Mathesis Stoicheion");
   const ld = JSON.parse((await page.locator("script[type='application/ld+json']").first().textContent())!);
   expect(ld["@type"]).toBe("Person");

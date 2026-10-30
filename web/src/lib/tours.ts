@@ -40,6 +40,9 @@ export interface Tour {
 const t = (sel: string, text?: string): Target => (text ? { sel, text } : { sel });
 const LOOKUP = t('aside[aria-label^="Look-up:"]');
 const ACTIONS = t('[role=toolbar][aria-label="Passage actions"]');
+/** the small tools stand in the header on a wide screen and in the menu on a narrower one: a step that points at one opens
+ *  the menu first, and where the Menu button is not showing the click does nothing */
+const MENU = t('header button[aria-label="Menu"][aria-expanded="false"]');
 
 export const TOURS: Record<string, Tour> = {
   learn: {
@@ -47,9 +50,10 @@ export const TOURS: Record<string, Tour> = {
     title: "Learn Greek",
     start: "/academy",
     steps: [
-      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/alphabet"]')], title: "The Academy: begin with the letters", text: "Twenty-four letters. Open the alphabet to see each one's name and hear it. You need no Greek at all to start here." },
+      { at: [t('a.btn[href^="/academy/reading/"]'), t('a.btn[href^="/academy/lesson/"]')], title: "The Academy: your next lesson", text: "Your next lesson is always here. If you know no Greek, it is the first: the twenty-four letters, and six names you already know to sound out." },
+      { at: [t('section[aria-labelledby="reading-title"] ol')], title: "Learn by reading", text: "Each lesson is one real line, from the sayings carved at Delphi to the first sentence of Aristotle's Metaphysics: its letters, its words, how it is built, then you read it yourself. A practice lesson comes after every three." },
       { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session brings back a lesson when it is due for a refresh, then one question on endings and one real sentence." },
-      { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "Start with lesson 1", text: "Each lesson teaches one thing with real sentences from the texts, then checks it with a few questions." },
+      { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "The grammar course", text: "The second track teaches the grammar in order, from the alphabet to Homer. Each lesson explains one thing with real sentences, then checks it with a short test." },
       { at: [t('section[aria-labelledby="guides-title"] a[href^="/academy/guide/"]')], title: "Practical guides", text: "Which Greek is which, how a dictionary lists a word, and which dictionary to use." },
     ],
   },
@@ -60,10 +64,9 @@ export const TOURS: Record<string, Tour> = {
     start: "/library",
     steps: [
       { at: [t("#library-search")], title: "The Mouseion: search the library", text: "Type an author or a title. Titles can be typed in Greek too, and accents and capitals don't matter: «iliad», «ιλιας» or Ἰλιάς all find the Iliad." },
-      { at: [t('[role=group][aria-label="Show"]')], title: "With or without English", text: "Show every work, only the ones with an English translation beside the Greek, or only Greek." },
+      { at: [t('[role=radiogroup][aria-label="Show"]')], title: "With or without English", text: "Show every work, only the ones with an English translation beside the Greek, or only Greek." },
       { at: [t("details summary", "Not sure where to begin")], title: "Not sure where to begin?", text: "Our suggestions, from the easiest Greek to the hardest. Beside each work, a small meter shows how hard its words are: one bar for easy words, three for many rare ones." },
-      // open "Order and filters" so the step can point inside it
-      { click: [t('button[aria-controls="library-filters"][aria-expanded="false"]')], at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
+      { click: [t("#library-filters:not([open]) > summary")], at: [t('[role=group][aria-label="Kind of writing"]')], title: "Kinds of writing", text: "Narrow the shelves to epic, drama, history, philosophy and the rest. More filters choose a period, a dialect, or how hard the vocabulary is." },
       { at: [t('#author-tlg0012 a[href^="/read?w="]'), t("#author-tlg0012")], title: "Open a work", text: "Click an author to see their works, those with English first. Click a title and it opens in the reader, with the Greek and the English side by side.", phoneText: "Tap an author to see their works, those with English first. Tap a title and it opens in the reader, with the Greek and the English side by side." },
     ],
   },
@@ -178,9 +181,9 @@ export const TOURS: Record<string, Tour> = {
     start: "/",
     steps: [
       { at: [t('header button[aria-label="Search"]')], title: "Search from anywhere", text: "Find a work, an author, a page of the site or a Greek word. Ctrl+K opens it on any page.", phoneText: "Find a work, an author, a page of the site or a Greek word, from any page." },
-      { at: [t('header button[aria-label="Settings"]'), t('header button[aria-label="Menu"]')], title: "Settings", text: "Light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too.", phoneText: "In the menu: light or dark (Auto follows your device), the Greek and English typefaces, text size and line spacing, and how much animation you want. Offline reading is here too." },
-      { at: [t('button[aria-label^="Connection:"]')], title: "The connection light", text: "Green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "Green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
-      { at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Agora."
+      { click: [MENU], at: [t('header button[aria-label="Settings"]')], title: "Settings", text: "The page (Paper, Night, or as your device is set), the size of the Greek and the line spacing." },
+      { click: [MENU], at: [t('button[aria-label^="Connection:"]')], title: "Offline reading", text: "The light is green when you are online. Click it for offline reading: keeping texts on this device so they open without a connection.", phoneText: "The light is green when you are online. Tap it for offline reading: keeping texts on this device so they open without a connection." },
+      { click: [MENU], at: [t('header a[href="/account"]')], title: "Your account", text: FORUM_OPEN ? "Optional. With an account your notes and progress follow you from device to device, and you can join in at the Agora."
         : "Optional. With an account your notes and progress follow you from device to device." },
     ],
   },

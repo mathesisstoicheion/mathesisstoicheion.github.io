@@ -145,7 +145,7 @@
   .thumb { width: 80px; height: 80px; }
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
+.card b::after { content: "\00a0→"; color: var(--rubric); }
 @media (min-width: 761px) {
-  .card b::after { content: "\00a0→"; color: var(--rubric); }
   .sites b { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 }

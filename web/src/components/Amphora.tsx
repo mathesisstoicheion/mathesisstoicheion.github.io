@@ -2,9 +2,14 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
+import Icon, { type IconName } from "@/components/Icon";
+import ShareButton from "@/components/ShareButton";
+import { AREAS } from "@/config/areas";
+import { decodeDesign, fittingCode } from "@/lib/amphora-link";
+import { share, type Shared } from "@/lib/share";
 import { useSettings, prefersReducedMotion } from "@/lib/settings";
 import {
-  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, MAX_CRACKS, MAX_POINTS, MORE_COLOURS, PALETTE, WORD_MAX,
+  BANDS, BAND_NAMES, BARE_DESIGN, DEFAULT_DESIGN, FRIEZES, FRIEZE_NAMES, HANDLE, MAX_CRACKS, MAX_POINTS, MORE_COLOURS, PALETTE, PROFILE, WORD_MAX,
   loadDesign, pointCount, saveDesign, toGreekCaps, type Band, type Crack, type Design, type Frieze, type Stroke,
 } from "@/lib/amphora";
 import { makePainter, TW, TH, type Rect } from "./amphora/paint";
@@ -18,8 +23,9 @@ import styles from "./Amphora.module.css";
  * clay, with added red. It stands still until a hand turns it (on the printed page nothing moves by itself): it can
  * be dragged, and on phones it also turns as the phone is tilted, where the phone allows it (an iPhone asks first).
  * "Paint it yourself" opens a studio: brush, scratch and rub out straight onto the pot, choose its patterns and
- * style, write its words. The visitor's vase is kept in this browser (lib/amphora.ts). three.js is loaded only
- * when the vase comes into view.
+ * style, write its words. The visitor's vase is kept in this browser (lib/amphora.ts). Share packs it into a link
+ * (lib/amphora-link.ts) that opens it for anyone, here, without touching their own vase. three.js is loaded only when the
+ * vase comes into view.
  */
 
 type Tool = "brush" | "scratch" | "rub" | "strike" | "turn";
@@ -30,12 +36,12 @@ const SIZES = [{ name: "Fine", w: 3 }, { name: "Medium", w: 9 }, { name: "Broad"
 /** a blow's strength from how long it was held: a tap is light, about a second and a half is the hardest */
 const forceOf = (ms: number) => Math.max(0.12, Math.min(1, 0.12 + ms / 1500));
 const SCRATCH_W = 1.6;
-const TOOLS: { id: Tool; name: string; hint: string }[] = [
-  { id: "brush", name: "Paint", hint: "Paint straight onto the vase. To turn it, use Turn, the arrows on the vase, or two fingers (on a trackpad or a phone); pinch to come closer." },
-  { id: "scratch", name: "Scratch", hint: "Scratch fine lines through to the clay, as black-figure painters did for muscles, folds of cloth and feathers." },
-  { id: "rub", name: "Rub out", hint: "Rub out your own brushwork. The patterns underneath come back." },
-  { id: "strike", name: "Strike", hint: "Tap the vase to strike it; press and hold for a harder blow. Cracks run out from the blow, split as they go, and stop where they meet another crack. In antiquity a cracked pot was often mended with lead clamps set in drilled holes." },
-  { id: "turn", name: "Turn", hint: "Drag to turn the vase, and up or down to move along it; on a trackpad, two fingers do the same. Pinch, or the mouse wheel, to come closer." },
+const TOOLS: { id: Tool; name: string; icon: IconName; hint: string }[] = [
+  { id: "brush", name: "Paint", icon: "paint", hint: "Paint straight onto the vase. To turn it, use Turn, the arrows on the vase, or two fingers (on a trackpad or a phone); pinch to come closer." },
+  { id: "scratch", name: "Scratch", icon: "scratch", hint: "Scratch fine lines through to the clay, as black-figure painters did for muscles, folds of cloth and feathers." },
+  { id: "rub", name: "Rub out", icon: "erase", hint: "Rub out your own brushwork. The patterns underneath come back." },
+  { id: "strike", name: "Strike", icon: "strike", hint: "Tap the vase to strike it; press and hold for a harder blow. Cracks run out from the blow, split as they go, and stop where they meet another crack. In antiquity a cracked pot was often mended with lead clamps set in drilled holes." },
+  { id: "turn", name: "Turn", icon: "turn", hint: "Drag to turn the vase, and up or down to move along it; on a trackpad, two fingers do the same. Pinch, or the mouse wheel, to come closer." },
 ];
 const ZONES: { key: "neck" | "shoulder" | "lower" | "foot"; name: string }[] = [
   { key: "neck", name: "Neck" }, { key: "shoulder", name: "Shoulder" }, { key: "lower", name: "Lower band" }, { key: "foot", name: "Foot" },
@@ -47,18 +53,11 @@ const describe = (d: Design) =>
   (d.words.some(Boolean) ? ` Its painted words read ${d.words.filter(Boolean).join(" and ")}.` : "");
 const clamp = (x: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, x));
 
-function Icon({ d }: { d: string }) {
-  return <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={d} /></svg>;
-}
-const ICON = {
-  brush: "M14.5 4.5l5 5-8.2 8.2a3 3 0 01-2.1.9H6.5v-2.7a3 3 0 01.9-2.1zM4 21c1.5 0 2.5-1 2.5-2.4",
-  left: "M9 7H4V2M4.6 7A8.5 8.5 0 1112 20.5",
-  right: "M15 7h5V2M19.4 7A8.5 8.5 0 1012 20.5",
-  plus: "M12 5v14M5 12h14",
-  minus: "M5 12h14",
-  undo: "M9 14L4 9l5-5M4 9h10a6 6 0 010 12h-3",
-  redo: "M15 14l5-5-5-5M20 9H10a6 6 0 000 12h3",
-};
+/** a link's code longer than this is too long to send comfortably; a pot that will not fit even simplified goes as a picture */
+const LINK_MAX = 24_000;
+/** the code of a pot shared by link (/stoa/pot#v=…), if the page was opened from one */
+const linkCode = () => (location.hash.startsWith("#v=") ? location.hash.slice(3) : null);
+const dropLink = () => history.replaceState(history.state, "", location.pathname + location.search);
 
 export default function Amphora() {
   const stageRef = useRef<HTMLDivElement>(null);
@@ -97,6 +96,9 @@ export default function Amphora() {
   const [design, setDesign] = useState<Design>(DEFAULT_DESIGN);
   const designRef = useRef(design);
   const [custom, setCustom] = useState(false);
+  // a vase opened from someone's link: shown, and never saved over the visitor's own until they choose to paint one like it
+  const [shared, setShared] = useState(false);
+  const sharedRef = useRef(false);
   const [noGL, setNoGL] = useState(false);
   const [studio, setStudio] = useState(false);
   const studioRef = useRef(false);
@@ -131,6 +133,7 @@ export default function Amphora() {
     setHist({ undo: undoRef.current.length, redo: redoRef.current.length });
     setCustom(!isDefault(next));
     clearTimeout(saveTimer.current);
+    if (sharedRef.current) return;
     saveTimer.current = setTimeout(() => {
       const d = designRef.current;
       if (!saveDesign(isDefault(d) ? null : d)) setNote("This browser would not keep your vase (it may be too detailed, or storage is switched off). Save a picture to keep it.");
@@ -217,6 +220,61 @@ export default function Amphora() {
     a.href = url; a.download = "my-vase.png"; a.click();
   };
 
+  // ---- sharing ------------------------------------------------------------------------------------
+  // the vase packed into its link while it is only being looked at (so Share answers at once), and again when pressed if
+  // it has changed since
+  const packed = useRef<{ d: Design; code: string | null } | null>(null);
+  useEffect(() => {
+    if (shared || studio) return;
+    const d = design;
+    const h = setTimeout(() => { void fittingCode(d, LINK_MAX).then((code) => { packed.current = { d, code }; }); }, 900);
+    return () => clearTimeout(h);
+  }, [design, shared, studio]);
+  const shareIt = async (): Promise<Shared | null> => {
+    const d = designRef.current;
+    const code = packed.current?.d === d ? packed.current.code : await fittingCode(d, LINK_MAX);
+    const page = `${location.origin}${AREAS.pot.href}`;
+    if (code) return { title: "A vase I painted", url: `${page}#v=${code}` };
+    // too much brushwork for any link: a picture of it instead
+    const png = api.current?.picture();
+    if (!png) return null;
+    const file = new File([await (await fetch(png)).blob()], "my-vase.png", { type: "image/png" });
+    if (await share({ title: "A vase I painted", url: page, files: [file] }) === "failed") {
+      savePicture();
+      setNote("This vase has too much brushwork to fit in a link, so a picture of it was saved for you to send instead.");
+    }
+    return null;
+  };
+  // the shared vase becomes the visitor's own to paint on (asked first, if they have painted one of their own already)
+  const paintLikeIt = () => {
+    const own = loadDesign();
+    if (own && !isDefault(own) && !confirm("Painting this one takes the place of the vase you painted before. Go on?")) return;
+    sharedRef.current = false; setShared(false); dropLink();
+    saveDesign(designRef.current);
+    open();
+  };
+  // back to the visitor's own vase, leaving the shared one
+  const backToOwn = () => {
+    sharedRef.current = false; setShared(false); dropLink(); setNote("");
+    undoRef.current = []; redoRef.current = [];
+    apply(loadDesign() ?? DEFAULT_DESIGN, "all");
+  };
+  // another shared vase followed while this page is open
+  useEffect(() => {
+    const on = () => {
+      const code = linkCode();
+      if (!code || !api.current) return;
+      void decodeDesign(code).then((d) => {
+        if (!d) { setNote("This link to a vase is damaged or cut short."); return; }
+        sharedRef.current = true; setShared(true); setNote("");
+        undoRef.current = []; redoRef.current = [];
+        apply(d, "all");
+      });
+    };
+    addEventListener("hashchange", on);
+    return () => removeEventListener("hashchange", on);
+  });
+
   // ---- the vase -----------------------------------------------------------------------------------
   useEffect(() => {
     const stage = stageRef.current;
@@ -224,11 +282,17 @@ export default function Amphora() {
     let disposed = false;
     let cleanup = () => {};
 
-    const begin = () => import("three").then((THREE) => {
+    const fromLink = async () => { const code = linkCode(); return code ? { d: await decodeDesign(code) } : null; };
+    const begin = () => Promise.all([import("three"), fromLink()]).then(([THREE, link]) => {
       if (disposed) return;
-      // the visitor's own vase, if they have painted one (read here, after the page has been drawn as built)
-      const saved = loadDesign();
-      if (saved) { designRef.current = saved; setDesign(saved); setCustom(!isDefault(saved)); }
+      // a vase shared by link, or else the visitor's own if they have painted one (read here, after the page has been
+      // drawn as built)
+      if (link?.d) { sharedRef.current = true; setShared(true); designRef.current = link.d; setDesign(link.d); setCustom(!isDefault(link.d)); }
+      else {
+        if (link) setNote("This link to a vase is damaged or cut short, so your own vase is shown instead.");
+        const saved = loadDesign();
+        if (saved) { designRef.current = saved; setDesign(saved); setCustom(!isDefault(saved)); }
+      }
       let renderer: InstanceType<typeof THREE.WebGLRenderer>;
       try { renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" }); } catch { setNoGL(true); return; }
       // sharp on every screen, but never more pixels than the device can draw smoothly (see the frame loop)
@@ -253,11 +317,8 @@ export default function Amphora() {
       const scene = new THREE.Scene();
       const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 50);
 
-      // Profile of a neck-amphora: [radius, height], foot at y = 0.
-      const prof: [number, number][] = [[0.001, 0], [0.34, 0], [0.35, 0.05], [0.27, 0.11], [0.21, 0.17], [0.26, 0.28], [0.42, 0.5],
-        [0.56, 0.78], [0.63, 1.02], [0.62, 1.2], [0.53, 1.4], [0.38, 1.56], [0.25, 1.64], [0.21, 1.72], [0.21, 1.86], [0.24, 1.97],
-        [0.31, 2.02], [0.32, 2.08], [0.27, 2.1], [0.22, 2.06], [0.2, 1.98]];
-      const spline = new THREE.SplineCurve(prof.map(([x, y]) => new THREE.Vector2(x, y)));
+      // the neck-amphora's outline (lib/amphora.ts), turned on the lathe
+      const spline = new THREE.SplineCurve(PROFILE.map(([x, y]) => new THREE.Vector2(x, y)));
       const pts = spline.getSpacedPoints(360);
       const geo = new THREE.LatheGeometry(pts, 300);
       // the surface pictures are uploaded the right way up (so a part of one can be updated): turn the mapping to match
@@ -295,7 +356,7 @@ export default function Amphora() {
       const hMat = new THREE.MeshStandardMaterial({ color: 0x15100c, roughness: 0.25, envMapIntensity: 0.65 });
       const handles: InstanceType<typeof THREE.TubeGeometry>[] = [];
       for (const s of [1, -1]) {
-        const c = new THREE.CatmullRomCurve3(([[0.2, 1.82], [0.42, 1.86], [0.58, 1.74], [0.57, 1.56], [0.47, 1.47]] as const).map(([x, y]) => new THREE.Vector3(s * x, y, 0)));
+        const c = new THREE.CatmullRomCurve3(HANDLE.map(([x, y]) => new THREE.Vector3(s * x, y, 0)));
         const tg = new THREE.TubeGeometry(c, 120, 0.034, 24);
         handles.push(tg);
         vase.add(new THREE.Mesh(tg, hMat));
@@ -623,10 +684,10 @@ export default function Amphora() {
           <div className={styles.shadow} aria-hidden="true" />
           {studio && (
             <div className={styles.view} role="group" aria-label="Turn and come closer">
-              <button type="button" onClick={() => api.current?.nudge(-0.5, 1)} aria-label="Turn left" title="Turn left"><Icon d={ICON.left} /></button>
-              <button type="button" onClick={() => api.current?.nudge(0.5, 1)} aria-label="Turn right" title="Turn right"><Icon d={ICON.right} /></button>
-              <button type="button" onClick={() => api.current?.nudge(0, 1.3)} aria-label="Come closer" title="Come closer"><Icon d={ICON.plus} /></button>
-              <button type="button" onClick={() => api.current?.nudge(0, 1 / 1.3)} aria-label="Step back" title="Step back"><Icon d={ICON.minus} /></button>
+              <button type="button" onClick={() => api.current?.nudge(-0.5, 1)} aria-label="Turn left" title="Turn left"><Icon name="turn-left" /></button>
+              <button type="button" onClick={() => api.current?.nudge(0.5, 1)} aria-label="Turn right" title="Turn right"><Icon name="turn-right" /></button>
+              <button type="button" onClick={() => api.current?.nudge(0, 1.3)} aria-label="Come closer" title="Come closer"><Icon name="zoom-in" /></button>
+              <button type="button" onClick={() => api.current?.nudge(0, 1 / 1.3)} aria-label="Step back" title="Step back"><Icon name="zoom-out" /></button>
             </div>
           )}
         </div>
@@ -635,22 +696,33 @@ export default function Amphora() {
           <figcaption className={styles.cap}>
             {noGL
               ? "This browser cannot draw the vase in 3D."
-              : <>{custom ? "Your own vase, painted here and kept in this browser." : "A neck-amphora in the black-figure style: black gloss painted on orange clay."} Drag to turn it{tilt === "on" ? ", or tilt your phone" : ""}.</>}
+              : <>{shared ? "A vase someone painted and shared with you." : custom ? "Your own vase, painted here and kept in this browser." : "A neck-amphora in the black-figure style: black gloss painted on orange clay."} Drag to turn it{tilt === "on" ? ", or tilt your phone" : ""}.</>}
+            {note && <span className={styles.capNote} role="status">{note}</span>}
             <span className={styles.capBtns}>
-              {!noGL && <button ref={openBtnRef} type="button" className={`btn small ${styles.paintBtn}`} onClick={open}><Icon d={ICON.brush} /> Paint it yourself</button>}
-              {tilt === "ask" && <button type="button" className={styles.tiltBtn} onClick={askTilt}>Turn it by tilting the phone</button>}
+              {!noGL && (shared ? (
+                <>
+                  <button type="button" className={`btn small ${styles.paintBtn}`} onClick={paintLikeIt}><Icon name="paint" />Paint one like it</button>
+                  <button type="button" className="btn small ghost" onClick={backToOwn}><Icon name="back" />Your own vase</button>
+                </>
+              ) : (
+                <>
+                  <button ref={openBtnRef} type="button" className={`btn small ${styles.paintBtn}`} onClick={open}><Icon name="paint" />Paint it yourself</button>
+                  {custom && <ShareButton what={shareIt} />}
+                </>
+              ))}
+              {tilt === "ask" && <button type="button" className={styles.tiltBtn} onClick={askTilt}><Icon name="phone" />Turn it by tilting the phone</button>}
             </span>
           </figcaption>
         ) : (
           <div className={styles.tools}>
             <div className={styles.toolsHead}>
               <h2 id="studio-title" className={styles.toolsTitle}>Paint your own vase</h2>
-              <button type="button" className="btn small" data-first onClick={close}>Done</button>
+              <button type="button" className="btn small" data-first onClick={close}><Icon name="check" />Done</button>
             </div>
 
             <section className={styles.group} aria-label="Brush">
               <div className={styles.seg} role="group" aria-label="Tool">
-                {TOOLS.map((t) => <button key={t.id} type="button" aria-pressed={tool === t.id} onClick={() => setTool(t.id)}>{t.name}</button>)}
+                {TOOLS.map((t) => <button key={t.id} type="button" aria-pressed={tool === t.id} onClick={() => setTool(t.id)}><Icon name={t.icon} />{t.name}</button>)}
               </div>
               <p className={styles.hint}>{toolInfo.hint}</p>
               {tool === "brush" && (
@@ -680,8 +752,8 @@ export default function Amphora() {
               )}
               {tool === "strike" && (
                 <div className={styles.row}>
-                  <button type="button" className={styles.plain} onClick={() => commit({ ...designRef.current, cracks: [] }, "all")} disabled={!design.cracks.length}>Mend all cracks</button>
-                  <button type="button" className={styles.plain} aria-pressed={sound} onClick={() => setSound(!sound)}>{sound ? "Sound on" : "Sound off"}</button>
+                  <button type="button" className={styles.plain} onClick={() => commit({ ...designRef.current, cracks: [] }, "all")} disabled={!design.cracks.length}><Icon name="again" />Mend all cracks</button>
+                  <button type="button" className={styles.plain} aria-pressed={sound} onClick={() => setSound(!sound)}><Icon name="listen" />{sound ? "Sound on" : "Sound off"}</button>
                 </div>
               )}
               {(tool === "brush" || tool === "rub") && (
@@ -694,8 +766,8 @@ export default function Amphora() {
                 </div>
               )}
               <div className={styles.row}>
-                <button type="button" className={styles.plain} onClick={undo} disabled={!hist.undo}><Icon d={ICON.undo} /> Undo</button>
-                <button type="button" className={styles.plain} onClick={redo} disabled={!hist.redo}><Icon d={ICON.redo} /> Redo</button>
+                <button type="button" className={styles.plain} onClick={undo} disabled={!hist.undo}><Icon name="undo" />Undo</button>
+                <button type="button" className={styles.plain} onClick={redo} disabled={!hist.redo}><Icon name="redo" />Redo</button>
               </div>
             </section>
 
@@ -751,13 +823,14 @@ export default function Amphora() {
               </p>
             </section>
 
-            <section className={styles.group} aria-label="Start again or keep it">
+            <section className={styles.group} aria-label="Start again, keep it or share it">
               <div className={styles.row}>
-                <button type="button" className="btn small ghost" onClick={() => commit(BARE_DESIGN, "all")}>Bare clay</button>
-                <button type="button" className="btn small ghost" onClick={() => commit(DEFAULT_DESIGN, "all")} disabled={!custom}>The site&apos;s design</button>
-                <button type="button" className="btn small" onClick={savePicture}>Save a picture</button>
+                <button type="button" className="btn small ghost" onClick={() => commit(BARE_DESIGN, "all")}><Icon name="again" />Bare clay</button>
+                <button type="button" className="btn small ghost" onClick={() => commit(DEFAULT_DESIGN, "all")} disabled={!custom}><Icon name="again" />The site&apos;s design</button>
+                <button type="button" className="btn small ghost" onClick={savePicture}><Icon name="image" />Save a picture</button>
+                <ShareButton what={shareIt} className="btn small" />
               </div>
-              <p className={styles.hint}>Your vase is kept in this browser and shown on the home page. Nothing is sent anywhere.</p>
+              <p className={styles.hint}>Your vase is kept in this browser. Share makes a link that opens it for anyone; nothing is stored on the site.</p>
             </section>
             {note && <p className={styles.note} role="status">{note}</p>}
           </div>

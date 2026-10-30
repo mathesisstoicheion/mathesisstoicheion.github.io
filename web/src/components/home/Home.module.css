@@ -3,14 +3,13 @@
    of the day as a two-language spread; the Contents; the credits and the colophon. */
 
 /* ---- the title page ---- */
-.titlePage { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(40px, 8vh, 96px); padding-bottom: var(--space-7); align-items: end; }
+/* the title starts where every other page's title starts (globals.css .ph, .ph-title), so it inks in at the same height */
+.titlePage { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 5vw, 72px); padding-top: clamp(var(--space-6), 7vh, var(--space-8)); padding-bottom: var(--space-7); align-items: end; }
 .kicker { display: flex; gap: 14px; align-items: center; color: var(--ink-2); }
 .kicker::before { content: ""; width: 28px; height: 1px; background: var(--rubric); flex: none; }
-.title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 22px 0 26px; }
+.title { font: 400 clamp(3rem, 7.4vw, 6.6rem) / 0.96 var(--f-display); letter-spacing: -0.015em; margin: 18px 0 26px; }
 .title em { font-style: italic; color: var(--rubric); }
 .lede { font-size: var(--step-1); max-width: 30em; color: var(--ink-2); margin: 0 0 30px; }
-.btns { display: flex; flex-wrap: wrap; gap: var(--space-3) 22px; align-items: center; }
-.titlePlate { max-width: 460px; justify-self: end; width: 100%; }
 /* the rule under the title page, drawn in red from the left as it inks in */
 .drawn { position: relative; height: 1px; }
 .drawn::after { content: ""; position: absolute; left: 0; top: 0; height: 1px; width: 100%; background: var(--rubric); transform-origin: left; animation: drawn 2.4s var(--ease) 0.3s backwards; }
@@ -25,12 +24,8 @@
 .rn { font: 400 2.2rem / 1 var(--face-didot); color: var(--rubric); display: block; margin-bottom: 10px; }
 .start h3 { font: 500 var(--step-1) / 1.2 var(--f-display); margin: 0 0 var(--space-2); transition: color var(--dur) var(--ease); }
 .start p { margin: 0; color: var(--ink-2); font-size: var(--step-0); }
-.start .go { display: inline-block; margin-top: var(--space-3); font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); transition: color var(--dur) var(--ease); }
+.start .go { display: inline-block; margin-top: var(--space-3); font: 400 var(--step--1) / 1.2 var(--f-body); color: var(--ink-3); transition: color var(--dur) var(--ease); }
 .start:hover h3, .start:focus-visible h3, .start:hover .go, .start:focus-visible .go { color: var(--rubric); }
-.guide { margin-top: 26px; color: var(--ink-2); font-size: var(--step--1); }
-.guide::before { content: "☞ "; color: var(--rubric); }
-.guide a { color: var(--ink); text-underline-offset: 3px; text-decoration-color: var(--rule); }
-.guide a:hover { color: var(--rubric); }
 
 /* ---- coming back: your desk, set as a short table ---- */
 .desk { max-width: 860px; }
@@ -45,7 +40,7 @@
 .drow ul small { display: inline; }
 .dalso { margin: 14px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .dalso a { color: var(--ink); }
-.dalso button { border: 0; background: none; padding: 0; color: var(--ink-3); font: inherit; font-style: italic; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.dalso button { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; padding: 0; color: var(--ink-3); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .dalso button:hover { color: var(--rubric); }
 @media (max-width: 560px) { .drow { grid-template-columns: 1fr; } }
 /* under a finger each of the desk's links, and its button, answers over 44 px (scripts/check-a11y.mjs): a link alone in its
@@ -73,39 +68,44 @@
 .en { margin-top: 22px; font: italic 400 var(--step-1) / 1.6 var(--f-body); color: var(--ink-2); }
 .en :is(h1, h2, h3, h4, h5, [class*="head"], [class*="title"]) { text-align: start; font-size: 1em; }
 .gk.long { font-size: var(--step-1); }
+/* where the passage is, under its title */
+.podWhere { margin: calc(-1 * var(--space-3)) 0 var(--space-4); font: italic 400 var(--step-0) / 1.4 var(--f-body); color: var(--ink-2); }
+/* each leaf opens with a large initial in the red of the headings, as a printed text opens: the English two lines deep; the
+   Greek's first word (HomePassage.tsx marks it) with its first letter raised, so a verse line keeps its place and its number */
+.en > :first-child::first-letter {
+  float: left; font-size: 3.1em; line-height: 0.82; margin: 0 var(--space-1) 0 0; color: var(--rubric); font-style: normal;
+}
+.gk [data-initial] { display: inline-block; text-indent: 0; }
+.gk [data-initial]::first-letter { font-size: 1.9em; line-height: 0.9; color: var(--rubric); }
 .en.long { font-size: var(--step-text); }
 .hint { font-size: var(--step--1); color: var(--ink-3); margin-top: 18px; font-style: italic; }
 .hint::before { content: "☞ "; color: var(--rubric); font-style: normal; }
 .sig { margin-top: 28px; font-size: var(--step--1); color: var(--ink-3); line-height: 1.5; }
 .sig a { color: var(--rubric); }
+/* "Show the English", as the reader has it (Reader.module.css .oneBtn, .one): a quiet button with a small triangle that
+   points on while the English is closed and down while it is open; the English leafs in under the Greek, by a red rule */
+.enBox { margin-top: var(--space-4); }
+.enBtn:global(.text-btn) { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
+.enBtn:global(.text-btn):hover { color: var(--rubric); }
+.enBtn:global(.text-btn)::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
+.enBtn:global(.text-btn)[aria-expanded="true"]::before { clip-path: var(--tri-down); }
+@media (pointer: coarse) { .enBtn:global(.text-btn) { min-height: var(--tap); } }
+.enOpen { margin-top: var(--space-2); padding-left: var(--space-3); box-shadow: var(--rule-left); animation: leaf-in var(--dur) var(--ease) backwards; }
+.enOpen .en { margin-top: 0; }
 .waiting { font-style: italic; color: var(--ink-2); padding: 20px 0; }
-.podFoot { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
+.podFoot { display: grid; grid-template-columns: minmax(0, 1fr); gap: clamp(var(--space-5), 4vw, var(--space-7)); margin-top: 28px; align-items: start; }
 .podFoot .about { color: var(--ink-2); max-width: 40em; }
 .podFoot .about a { color: var(--rubric); }
-
-/* ---- contents: the rooms, set like a book's table of contents ---- */
-.toc { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--ink); }
-.toc li { border-bottom: 1px solid var(--rule); }
-.toc a { display: grid; grid-template-columns: 3.2rem minmax(0, auto) 1fr auto; align-items: baseline; gap: 14px; padding: 18px var(--space-1); text-decoration: none; color: var(--ink); }
-.gn { font: 400 1.25rem var(--face-didot); color: var(--rubric); }
-.t { font: 500 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur) var(--ease); }
-.t i { display: block; font: 400 var(--step-0) / 1.4 var(--f-body); font-style: normal; color: var(--ink-2); margin-top: 2px; }
-.lead { border-bottom: 1px dotted var(--ink-3); transform: translateY(-7px); min-width: 20px; }
-.gr { font: italic 400 var(--step-1) var(--f-greek); color: var(--ink-2); transition: color var(--dur) var(--ease); }
-.toc a:hover .gr, .toc a:hover .t, .toc a:focus-visible .t { color: var(--rubric); }
 
 /* ---- the end: ΤΕΛΟΣ and the colophon ---- */
 .fin { text-align: center; font: 400 1.6rem var(--face-didot); color: var(--rubric); margin: var(--space-8) 0 0; letter-spacing: 0.4em; }
 .cross { display: inline-block; width: 0.62em; height: 0.62em; vertical-align: 0.02em; fill: currentColor; }
-.colophon { margin-top: 40px; padding: 28px 0 0; border-top: 1px solid var(--ink); font-size: var(--step--1); color: var(--ink-3); columns: 2; column-gap: 48px; }
-.colophon p { margin: 0 0 0.8em; break-inside: avoid; }
+.colophon { margin: 40px 0 0; padding: 28px 0 0; border-top: 1px solid var(--ink); font-size: var(--step--1); color: var(--ink-3); }
 .colophon b { color: var(--ink-2); font-weight: 500; }
-.colophon a { color: inherit; }
 
 /* ---- phones ---- */
 @media (max-width: 900px) {
   .titlePage { grid-template-columns: 1fr; align-items: start; padding-bottom: 40px; }
-  .titlePlate { max-width: 420px; justify-self: start; }
   .starts { grid-template-columns: 1fr; gap: 26px; }
   .spread { grid-template-columns: 1fr; }
   .spread::after { display: none; }
@@ -115,8 +115,8 @@
   .en.long { font-size: var(--step-0); }
   .leafR { border-top: 1px solid var(--rule); }
   .podFoot { grid-template-columns: 1fr; }
-  .colophon { columns: 1; }
-  .toc a { grid-template-columns: 2.4rem minmax(0, 1fr) auto; }
-  .lead { display: none; }
 }
-@media (max-width: 520px) { .toc .gr { display: none; } }
+/* every page's head starts at one distance under the header (globals.css .ph, --head-top; the owner, 2026-10-29: "load in
+   at the correct height. Just like The Mouseion"): the title page too (scripts/check-heads.mjs measures it) */
+@media (min-width: 761px) { .titlePage { padding-top: var(--head-top); } }
+@media (max-width: 760px) { .titlePage { padding-top: 26px; } }

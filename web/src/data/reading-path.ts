@@ -58,8 +58,6 @@ export interface PathLink { href: string; label: string; note?: string }
 
 export interface PathStep {
   id: string;
-  /** a few words of the line, carved at the top of the page (capitals, as Greek was carved) */
-  carve: string;
   title: string;
   /** who said it, as a short line under the title */
   who: string;
@@ -89,7 +87,6 @@ const map = (id: string) => `/stoa/periplus?p=${id}`;
 export const PATH: PathStep[] = [
   {
     id: "nothing-too-much",
-    carve: "ΜΗΔΕΝΑΓΑΝ",
     title: "Nothing in excess",
     who: "Carved at Delphi, as Socrates tells it in Plato's Protagoras",
     work: "tlg0059.tlg022", ref: "343b", label: "Plato, Protagoras 343b",
@@ -291,7 +288,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "know-yourself",
-    carve: "ΓΝΩΘΙΣΑΥΤΟΝ",
     title: "Know yourself",
     who: "Carved at Delphi, as Socrates tells it in Plato's Protagoras",
     work: "tlg0059.tlg022", ref: "343b", label: "Plato, Protagoras 343b",
@@ -493,7 +489,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "everything-moves",
-    carve: "ΠΑΝΤΑΧΩΡΕΙ",
     title: "Everything moves on",
     who: "Heraclitus of Ephesus, as Socrates reports him in Plato's Cratylus",
     work: "tlg0059.tlg005", ref: "402a", label: "Plato, Cratylus 402a",
@@ -616,7 +611,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "life-is-short",
-    carve: "ΟΒΙΟΣΒΡΑΧΥΣ",
     title: "Life is short",
     who: "Hippocrates of Cos, the first of the Aphorisms",
     work: "tlg0627.tlg012", ref: "1.1", label: "Hippocrates, Aphorisms 1.1",
@@ -794,7 +788,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "the-art-is-long",
-    carve: "ΗΤΕΧΝΗΜΑΚΡΗ",
     title: "The art is long",
     who: "Hippocrates of Cos, the first of the Aphorisms, continued",
     work: "tlg0627.tlg012", ref: "1.1", label: "Hippocrates, Aphorisms 1.1",
@@ -971,7 +964,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "measure-of-all-things",
-    carve: "ΠΑΝΤΩΝΜΕΤΡΟΝ",
     title: "The measure of all things",
     who: "Protagoras of Abdera, the first words of his book",
     work: "tlg0004.tlg001", ref: "9.8.51", label: "Diogenes Laertius, Lives 9.51",
@@ -1194,7 +1186,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "what-i-do-not-know",
-    carve: "ΟΥΚΟΙΔΑ",
     title: "I do not think I know",
     who: "Socrates at his trial, in Plato's Apology",
     work: "tlg0059.tlg002", ref: "21d", label: "Plato, Apology 21d",
@@ -1464,7 +1455,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "the-unexamined-life",
-    carve: "ΒΙΟΣΒΙΩΤΟΣ",
     title: "The unexamined life",
     who: "Socrates at his trial, in Plato's Apology",
     work: "tlg0059.tlg002", ref: "38a", label: "Plato, Apology 38a",
@@ -1693,7 +1683,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "political-animal",
-    carve: "ΠΟΛΙΤΙΚΟΝΖΩΙΟΝ",
     title: "An animal of the city",
     who: "Aristotle, Politics, Book 1",
     work: "tlg0086.tlg035", ref: "1.1253a", label: "Aristotle, Politics 1.1253a",
@@ -1934,7 +1923,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "full-of-gods",
-    carve: "ΘΕΩΝΠΛΗΡΗ",
     title: "Full of gods",
     who: "Thales' idea, in Plato's Laws",
     work: "tlg0059.tlg034", ref: "10.899", label: "Plato, Laws 10.899b",
@@ -2254,7 +2242,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "they-say-fine-things",
-    carve: "ΛΕΓΟΥΣΙΚΑΛΑ",
     title: "They say many fine things",
     who: "Socrates on the poets and prophets, in Plato's Apology",
     work: "tlg0059.tlg002", ref: "22c", label: "Plato, Apology 22c",
@@ -2578,7 +2565,6 @@ export const PATH: PathStep[] = [
   },
   {
     id: "desire-to-know",
-    carve: "ΤΟΥΕΙΔΕΝΑΙ",
     title: "All human beings desire to know",
     who: "Aristotle, the first sentence of the Metaphysics",
     work: "tlg0086.tlg025", ref: "1.1", label: "Aristotle, Metaphysics 1.1 (980a)",
@@ -2899,7 +2885,6 @@ export const PATH: PathStep[] = [
 /** Step 0, before the first line: the letters, read on names the learner already knows. */
 export const LETTERS_STEP = {
   id: "letters",
-  carve: "ΓΡΑΜΜΑΤΑ",
   title: "The letters",
   who: "Before the first line: sounding out names you already know",
   /** three things to know about reading the letters */
@@ -2933,9 +2918,9 @@ export function firstMet(lemma: string, before: number): number | null {
  */
 export const pathLevel = (index: number) => Math.min(3, Math.floor(index / 3));
 
-/** Progress keys in the academy store: a lesson's line (or a practice lesson) read, and its passage read to the end. */
-export const pathKey = (id: string) => `read:${id}`;
-export const passageKey = (id: string) => `passage:${id}`;
+/** Progress keys in the academy store, and the lessons' numbers: kept in the light index the other pages load. */
+export { pathKey, passageKey, READING_TOTAL, readingNo, readingLesson } from "./reading-index";
+import { pathKey, passageKey } from "./reading-index";
 
 /** The practice lessons, one after every three lessons. */
 export const PRACTICE: PathPractice[] = [
@@ -3368,6 +3353,18 @@ export const stepWords = (s: PathStep, withPassage = true): PathWord[] => [
   ...(withPassage ? (s.passage?.sentences ?? []).flatMap((st) => st.pieces.flatMap((p) => p.words)) : []),
 ];
 
+/**
+ * Every word read on the path, in order, repeats kept: each finished lesson's line (with its passage, once that is
+ * finished too), then every line of each finished practice lesson. "Lessons completed" counts them and lists their
+ * dictionary forms as the words you know; the vocabulary page measures a text by those forms.
+ */
+export function wordsRead(completed: Record<string, number>): PathWord[] {
+  const ws: PathWord[] = [];
+  for (const s of PATH) if (completed[pathKey(s.id)]) ws.push(...stepWords(s, !!completed[passageKey(s.id)]));
+  for (const p of PRACTICE) if (completed[pathKey(p.id)]) for (const l of p.lines) ws.push(...l.pieces.flatMap((q) => q.words));
+  return ws;
+}
+
 /** The dictionary forms met in lessons before lesson `index` (0-based), lines and passages. */
 export function knownBefore(index: number): Set<string> {
   const k = new Set<string>();
@@ -3378,9 +3375,5 @@ export function knownBefore(index: number): Set<string> {
 /** The line as printed: the words with their punctuation. */
 export const partText = (p: PathPart) => p.words.map((w) => w.form + (w.after ?? "")).join(" ");
 
-/** Learn by reading, counted from 1 (data/tracks.ts): the letters are lesson 1, the first line lesson 2 */
-export const READING_TOTAL = PATH.length + 1;
-export const readingNo = (id: string) => (id === LETTERS_STEP.id ? 1 : PATH.findIndex((s) => s.id === id) + 2);
-export const readingLesson = (id: string) => `Lesson ${readingNo(id)} of ${READING_TOTAL}`;
 /** the words a line teaches (each lesson is fresh: every word in its line gets its card) */
 export const lineWords = (s: PathStep) => new Set(s.parts.flatMap((p) => p.words.map((w) => w.lemma))).size;

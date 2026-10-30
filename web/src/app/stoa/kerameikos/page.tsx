@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Page from "@/components/Page";
 import AreaHeader from "@/components/AreaHeader";
 import Kerameikos, { KERAMEIKOS_PLATES } from "@/components/stoa/Kerameikos";
 import { PlateList } from "@/components/plate/Plate";
-import Amphora from "@/components/Amphora";
-import { areaTitle } from "@/config/areas";
+import { AREAS, areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 
 export const metadata: Metadata = { title: areaTitle("archaeology"), description: PAGE_DESCRIPTIONS.kerameikos };
@@ -14,12 +14,12 @@ export default function StoaKerameikosPage() {
     <Page>
       <AreaHeader id="archaeology" />
       <Kerameikos />
-      {/* the potters' quarter: a neck-amphora to turn and paint yourself (it stood on the home page before design B) */}
+      {/* the potters' quarter: the vase to turn and paint has a page of its own (/stoa/pot); this is the way there */}
       <section className="wrap" aria-labelledby="paint-title" style={{ paddingBlock: "var(--space-7)" }}>
         <div className="part-top">
           <span className="label">The potters&apos; quarter</span>
-          <h2 id="paint-title">Paint a pot</h2>
-          <Amphora />
+          <h2 id="paint-title"><Link href={AREAS.pot.href} transitionTypes={["page-turn"]}>{AREAS.pot.name} <span aria-hidden="true">→</span></Link></h2>
+          <p>{AREAS.pot.fit}</p>
         </div>
       </section>
       {/* the finds' photographs and their credits, as a book lists its plates at the end */}

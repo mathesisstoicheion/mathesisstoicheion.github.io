@@ -8,7 +8,9 @@ import Link from "next/link";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { AREAS } from "@/config/areas";
+import { HANDLE, PROFILE } from "@/lib/amphora";
 import { project, shortName, type Base, type Place } from "@/lib/map";
+import { designFor, shapeOf, stringTops } from "@/components/lyre/instruments";
 import { IMAGES, srcSet } from "@/wiki/images";
 import styles from "./ExploreLead.module.css";
 
@@ -106,6 +108,119 @@ export default function ExploreLead() {
               <span className={styles.gr} lang="grc">{AREAS.archaeology.greek}</span>
               <b>Archaeology</b>
               <span>How we know: digs, dating, pottery, and the great sites and finds.</span>
+            </span>
+          </Link>
+        </li>
+      </ul>
+    </nav>
+  );
+}
+
+// ---------------------------------------------------------------- the lyre and the pot, as a black-figure painter drew them
+type Pt = readonly [number, number];
+const f4 = (n: number) => Math.round(n * 1e4) / 1e4;
+const pts = (p: Pt[]) => p.map(([x, y]) => `${f4(x)} ${f4(y)}`).join("L");
+/** The viewBox of the square centred on a drawing's box: the card's picture is square, and a drawing is framed in its
+ *  box's own shape (scripts/check-svg-fill.mjs), so the paper either side of a tall drawing is part of its frame. */
+const square = (x: number, y: number, w: number, h: number) => {
+  const s = Math.max(w, h);
+  return [x + (w - s) / 2, y + (h - s) / 2, s, s].map((v) => f4(v)).join(" ");
+};
+/** A smooth line through the points (Catmull-Rom, the curve the pot is turned on), as cubic Béziers. */
+function through(p: Pt[], start: "M" | "L" = "M"): string {
+  let d = `${start}${f4(p[0][0])} ${f4(p[0][1])}`;
+  for (let i = 0; i < p.length - 1; i++) {
+    const a = p[Math.max(0, i - 1)], b = p[i], c = p[i + 1], e = p[Math.min(p.length - 1, i + 2)];
+    d += `C${f4(b[0] + (c[0] - a[0]) / 6)} ${f4(b[1] + (c[1] - a[1]) / 6)} ${f4(c[0] - (e[0] - b[0]) / 6)} ${f4(c[1] - (e[1] - b[1]) / 6)} ${f4(c[0])} ${f4(c[1])}`;
+  }
+  return d;
+}
+/** A cubic Bézier, as points. */
+const bez = (a: Pt, b: Pt, c: Pt, e: Pt, n: number): Pt[] => Array.from({ length: n + 1 }, (_, k) => {
+  const t = k / n, u = 1 - t;
+  return [u * u * u * a[0] + 3 * u * u * t * b[0] + 3 * u * t * t * c[0] + t * t * t * e[0], u * u * u * a[1] + 3 * u * u * t * b[1] + 3 * u * t * t * c[1] + t * t * t * e[1]];
+});
+
+// the pot: the very outline the pot is turned on (lib/amphora.ts), seen from the side, up to the top of its lip
+const RIM = PROFILE.reduce((top, p, i) => (p[1] > PROFILE[top][1] ? i : top), 0);
+const LIP = PROFILE[RIM][1];
+const SIDE: Pt[] = PROFILE.slice(0, RIM + 1).map(([r, y]) => [r, LIP - y]);
+const POT = `${through(SIDE)}${through([...SIDE].reverse().map(([x, y]) => [-x, y] as const), "L")}Z`;
+const HANDLES = [1, -1].map((s) => through(HANDLE.map(([x, y]) => [s * x, LIP - y] as const)));
+/** the rays that rise above the foot, painted on a band of the clay left bare (from 0.21 to 0.5 of the pot's height) */
+const RAYS = Array.from({ length: 11 }, (_, k) => -0.45 + k * 0.09)
+  .map((x) => `M${f4(x - 0.034)} ${f4(LIP - 0.21)}L${f4(x)} ${f4(LIP - 0.48)}L${f4(x + 0.034)} ${f4(LIP - 0.21)}Z`).join("");
+
+// the lyre: the tortoise-shell lyre (χέλυς) of the lyre page, at its own proportions (components/lyre/instruments.ts),
+// with seven strings: its arms drawn as paintChelys draws them, rising from the shell, leaning out and in to the yoke, the
+// tips curling outwards, each narrowing from the shell to its tip
+const LYRE = shapeOf(designFor("seikilos", 7));
+const STRINGS = stringTops(LYRE, 7).map((x, i) => [x, -LYRE.botSpan / 2 + (i * LYRE.botSpan) / 6] as const);
+const SHELL = { rx: Math.max(0.22, LYRE.topSpan / 2 + 0.075), ry: 0.175, cy: 0.81 };
+const ARMS = ([-1, 1] as const).map((s) => {
+  const { rx, ry, cy } = SHELL, y = LYRE.barY, xb = s * rx * 0.5, xt = s * LYRE.barX * 0.88;
+  const c = [...bez([xb, cy - ry * 0.7], [s * (rx * 0.5 + 0.13), 0.5], [s * LYRE.barX * 1.04, 0.3], [xt, y], 24),
+    ...bez([xt, y], [xt + s * 0.004, y - 0.035], [xt + s * 0.03, y - 0.07], [xt + s * 0.066, y - 0.086], 8).slice(1)];
+  const left: Pt[] = [], right: Pt[] = [];
+  c.forEach((p, i) => {
+    const q = c[Math.min(c.length - 1, i + 1)], o = c[Math.max(0, i - 1)];
+    const dx = q[0] - o[0], dy = q[1] - o[1], len = Math.hypot(dx, dy) || 1, w = (0.05 - 0.032 * (i / (c.length - 1))) / 2;
+    left.push([p[0] - (dy / len) * w, p[1] + (dx / len) * w]);
+    right.push([p[0] + (dy / len) * w, p[1] - (dx / len) * w]);
+  });
+  return `M${pts([...left, ...right.reverse()])}Z`;
+});
+
+/**
+ * Make and play: the lyre and the potter, each a card with its picture, drawn as a black-figure painter drew: the
+ * shapes in the black gloss (the page's ink), the lines scratched through it to the clay (the paper), and one line of
+ * added red. Below the three places to explore, above the index of entries.
+ */
+export function MakeAndPlay() {
+  const { rx, ry, cy } = SHELL;
+  return (
+    <nav className={styles.make} aria-labelledby="make-h">
+      <h2 id="make-h" className="label">Make and play</h2>
+      <ul>
+        <li>
+          <Link href={AREAS.lyre.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+            <svg className={styles.fig} viewBox={square(-LYRE.w / 2, 0, LYRE.w, 1)} aria-hidden="true">
+              <defs><clipPath id="make-shell"><ellipse cx="0" cy={cy} rx={rx} ry={ry} /></clipPath></defs>
+              <g className={styles.gloss}>
+                {ARMS.map((d) => <path key={d} d={d} />)}
+                <ellipse cx="0" cy={cy} rx={rx} ry={ry} />
+                <rect x={f4(-LYRE.barX)} y={f4(LYRE.barY - LYRE.barH / 2)} width={f4(2 * LYRE.barX)} height={f4(LYRE.barH)} rx={f4(LYRE.barH / 2)} />
+              </g>
+              <ellipse className={styles.dots} cx="0" cy={cy} rx={f4(rx - 0.014)} ry={f4(ry - 0.013)} />
+              <line className={styles.scratch} x1={f4(-LYRE.botSpan / 2 - 0.03)} x2={f4(LYRE.botSpan / 2 + 0.03)} y1={LYRE.bridgeY} y2={LYRE.bridgeY} />
+              <g className={styles.strings}>{STRINGS.map(([t, b]) => <line key={t} x1={f4(t)} y1={f4(LYRE.barY)} x2={f4(b)} y2={LYRE.tailY} />)}</g>
+              <g className={styles.scratch} clipPath="url(#make-shell)">{STRINGS.map(([t, b]) => <line key={t} x1={f4(t)} y1={f4(LYRE.barY)} x2={f4(b)} y2={LYRE.tailY} />)}</g>
+            </svg>
+            <span className={styles.txt}>
+              <span className={styles.gr} lang="grc">{AREAS.lyre.greek}</span>
+              <b>{AREAS.lyre.name}</b>
+              <span>{AREAS.lyre.fit}</span>
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link href={AREAS.pot.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+            <svg className={styles.fig} viewBox={square(-0.7, -0.06, 1.4, LIP + 0.12)} aria-hidden="true">
+              <defs><clipPath id="make-pot"><path d={POT} /></clipPath></defs>
+              <path className={styles.gloss} d={POT} />
+              {HANDLES.map((d) => <path key={d} className={styles.handle} d={d} />)}
+              <g clipPath="url(#make-pot)">
+                <rect className={styles.clay} x="-0.7" y={f4(LIP - 0.5)} width="1.4" height="0.29" />
+                <path className={styles.gloss} d={RAYS} />
+                <line className={styles.scratch} x1="-0.7" x2="0.7" y1={f4(LIP - 1.66)} y2={f4(LIP - 1.66)} />
+                <line className={styles.addedRed} x1="-0.7" x2="0.7" y1={f4(LIP - 1.42)} y2={f4(LIP - 1.42)} />
+                <line className={styles.scratch} x1="-0.7" x2="0.7" y1={f4(LIP - 1.37)} y2={f4(LIP - 1.37)} />
+              </g>
+            </svg>
+            <span className={styles.txt}>
+              <span className={styles.gr} lang="grc">{AREAS.pot.greek}</span>
+              <b>{AREAS.pot.name}</b>
+              <span>{AREAS.pot.fit}</span>
             </span>
           </Link>
         </li>

@@ -9,6 +9,8 @@
 //                 the other pages' (every head's photograph has the one frame, as a book's plates of one format)
 //   jump        - a head that moves, or changes height, after it first appears (fonts, photographs or words that arrive
 //                 late must take the room kept for them)
+//   path        - a page whose path runs onto a second line while its head has room for it on one (the measure kept
+//                 for running text is not a path's: "The Academy ·" stood alone over "The grammar course · Checkpoint I")
 // Each page is opened with motion reduced, so what is measured is where things stand, not where they are inking in from;
 // the head is measured on every frame from its first paint until the page has been still for a while.
 // usage: node web/scripts/check-heads.mjs [base-url] [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
@@ -16,7 +18,7 @@ import { chromium } from "playwright";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
-  "/academy", "/academy/reading", "/academy/reading/letters", "/academy/reading/desire-to-know", "/academy/lesson/letters",
+  "/", "/academy", "/academy/reading", "/academy/reading/letters", "/academy/reading/desire-to-know", "/academy/lesson/letters",
   "/academy/lesson/prepositions", "/academy/checkpoint/first-steps", "/academy/guide/looking-up", "/academy/alphabet",
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/review", "/academy/today", "/academy/studio",
   "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/work/tlg0656-tlg001", "/search",
@@ -34,8 +36,9 @@ const RECORD = () => {
   const log = (window.__heads = []);
   const y = (r) => Math.round((r.top + scrollY) * 10) / 10;
   const tick = () => {
-    const head = document.querySelector(".ph");
-    const k = head?.querySelector(".ph-path"), t = head?.querySelector(".ph-title");
+    // (the home page's title page is a head too, marked by data-head: its kicker and title start where every head's do)
+    const head = document.querySelector(".ph, [data-head]");
+    const k = head?.querySelector(".ph-path, [data-head-path]"), t = head?.querySelector(".ph-title, [data-head-title]");
     if (head && k && t && t.getBoundingClientRect().height > 0) {
       const hr = head.getBoundingClientRect(), kr = k.getBoundingClientRect(), tr = t.getBoundingClientRect();
       const inscr = head.querySelector(".ph-inscr");
@@ -87,6 +90,18 @@ for (const [w, h] of WIDTHS) {
     if (!log?.length) { noHead.add(path); continue; }
     const first = log[0].r, last = log.at(-1).r;
     heads.push({ path, where, r: last });
+    // a path on two lines that would stand on one: its steps' widths, the red rule before them and the gaps between them
+    const wrapped = await page.evaluate(() => {
+      const k = document.querySelector(".ph .ph-path");
+      const steps = k ? [...k.children].filter((e) => e.getBoundingClientRect().width > 0) : [];
+      const lines = new Set(steps.map((e) => Math.round(e.getBoundingClientRect().top))).size;
+      if (lines < 2) return null;
+      const room = (k.closest(".ph-text") ?? k.parentElement).getBoundingClientRect().width;
+      const rule = getComputedStyle(k, "::before"), gap = parseFloat(getComputedStyle(k).columnGap) || 0;
+      const need = (parseFloat(rule.width) || 0) + (parseFloat(rule.marginRight) || 0) + steps.reduce((n, e) => n + e.getBoundingClientRect().width + gap, 0);
+      return need + 1 < room ? { lines, need: Math.round(need), room: Math.round(room) } : null;   // (a pixel for rounding)
+    });
+    if (wrapped) found.push(`path: ${where}: the path runs onto ${wrapped.lines} lines in a head ${wrapped.room} px wide, though it needs ${wrapped.need} px on one`);
     // a head that moves after it first appears: its path, its title, its plate, or where it ends
     const moved = [];
     if (Math.abs(first.k - last.k) > TOL) moved.push(`its path from ${first.k} to ${last.k} px`);

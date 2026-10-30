@@ -4,6 +4,7 @@
  * so and can be closed, and the page around it, the text being read, carries on.
  */
 import { Component, type ReactNode } from "react";
+import Icon from "@/components/Icon";
 
 interface Props { name: string; className?: string; onClose?: () => void; children: ReactNode }
 
@@ -18,7 +19,7 @@ export default class PanelGuard extends Component<Props, { failed: string | null
         <p><b>The {this.props.name} could not be shown.</b> The rest of the page still works.</p>
         <p className="muted" style={{ fontSize: "var(--step--1)", overflowWrap: "anywhere" }}>{this.state.failed}</p>
         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
-          <button type="button" className="btn small" onClick={() => this.setState({ failed: null })}>Try again</button>
+          <button type="button" className="btn small" onClick={() => this.setState({ failed: null })}><Icon name="again" />Try again</button>
           {this.props.onClose && <button type="button" className="btn small ghost" onClick={() => { this.setState({ failed: null }); this.props.onClose!(); }}>Close</button>}
         </div>
       </aside>

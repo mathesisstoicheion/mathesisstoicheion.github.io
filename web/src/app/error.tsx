@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { useEffect } from "react";
 import PageHead from "@/components/PageHead";
+import Icon from "@/components/Icon";
 import ReportBugLink from "@/components/ReportBugLink";
 import { FORUM_OPEN } from "@/config/areas";
 
@@ -18,8 +19,8 @@ export default function PageError({ error, reset }: { error: Error & { digest?: 
         purpose={<>Part of this page failed while it was working. Your notes and marks are safe: they are kept in this
           browser. Try again, or go back to the home page.</>}
         action={<div className="btn-row">
-          <button type="button" className="btn" onClick={reset}>Try again</button>
-          <Link className="btn ghost" href="/">The Propylaea (home)</Link>
+          <button type="button" className="btn" onClick={reset}><Icon name="again" />Try again</button>
+          <Link className="btn ghost" href="/"><Icon name="home" />The Propylaea (home)</Link>
           {FORUM_OPEN && <ReportBugLink className="btn ghost" err={error.message}>Tell us about it</ReportBugLink>}
         </div>}>
         <details className="muted" style={{ fontSize: "var(--step--1)" }}>

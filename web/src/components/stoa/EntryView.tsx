@@ -1,6 +1,6 @@
 /**
  * One entry of the Painted Stoa: title and its hook, with the entry's own photograph as the page's plate beside them
- * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has the room's plate), the body with
+ * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has none), the body with
  * its quotations and boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
  * sections ("On this page"), the places on the map, the Pnyx and the key to the certainty labels; on a phone the rail
  * gives way to a closed "On this page" above the article, and the other three stand at its end, before "Read it yourself".
@@ -13,6 +13,7 @@ import { entryBySlug, categoryOf } from "@/wiki/index";
 import { Blocks, Inline, CertTag, readHref, greekAware } from "./Markup";
 import Contents from "./Contents";
 import { EntryMarkers, SectionNote } from "./EntryNotes";
+import ShareEntry from "./ShareEntry";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
 import styles from "./Stoa.module.css";
@@ -67,6 +68,8 @@ export default function EntryView({ e }: { e: Entry }) {
         <div className={styles.entryMain}>
           {heads.length > 1 && <Contents heads={heads} fold />}
           <Blocks bs={body} entry={e} />
+          {/* the entry's one Share, where its reading ends */}
+          <p className={styles.shareLine}><ShareEntry slug={e.slug} title={e.title} /></p>
           <div className={styles.entryExtras}>{extras}</div>
 
           <section className={`${styles.readIt} rv`} aria-labelledby="read-it">

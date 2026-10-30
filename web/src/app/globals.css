@@ -46,7 +46,7 @@
    (data-tabbar on <html>), the end of every page and what floats at the foot of the screen stand above it. */
 :root { --tabbar-h: 0px; }
 @media (max-width: 760px) {
-  :root { --tabbar-h: calc(56px + env(safe-area-inset-bottom, 0px)); }
+  :root { --tabbar-h: calc(60px + env(safe-area-inset-bottom, 0px)); }
   body { padding-bottom: var(--tabbar-h); }
   /* (the rooms' bar never stands in the reader, so its room under the page is not kept there) */
   html:has(main[data-screen="reader"]) body { padding-bottom: 0; }
@@ -192,19 +192,29 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 .draw { animation: ink var(--ink-in) var(--ease) backwards; }
 
 /* ------------------------------------------------------------- buttons */
-/* The sample's buttons: small capitals spaced wide; the main one in ink with paper letters, turning red under the hand;
-   the second only a hairline frame. Nothing rises or moves. */
+/* The buttons (the owner, 2026-10-30: everything you can press has its sign and normal letters; small capitals are only
+   for labels, which you cannot press): the main one in ink with paper letters, turning red under the hand; the second only
+   a hairline frame; the quiet one only its sign and its words. A button's sign (components/Icon.tsx) goes before its
+   words; a button that takes you on to another page has the sign "next" after them. Nothing rises or moves. */
 .btn {
-  display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 14px 22px; min-height: var(--tap);
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2); padding: var(--space-2) var(--space-5); min-height: var(--tap);
   border: 1px solid var(--btn-bg); border-radius: var(--radius); background: var(--btn-bg); color: var(--btn-ink);
-  font: 500 var(--step--2) / 1.1 var(--f-body); letter-spacing: 0.2em; text-transform: uppercase; text-decoration: none; cursor: pointer;
+  font: 500 var(--step-0) / 1.2 var(--f-body); letter-spacing: 0.01em; text-decoration: none; cursor: pointer;
   transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
+.btn > svg[data-icon] { width: 1.1em; height: 1.1em; }
 .btn:hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
 .btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
+/* the quiet button: no frame, its sign and its words in ink, red under the hand (a way on that is not the page's main one) */
+.btn.quiet { background: transparent; color: var(--ink); border-color: transparent; padding-inline: var(--space-1); }
+.btn.quiet:hover { background: transparent; border-color: transparent; color: var(--rubric); }
+.btn.quiet > svg[data-icon] { color: var(--ink-2); }
+.btn.quiet:hover > svg[data-icon] { color: inherit; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
-.btn.small { padding: 9px 13px; gap: var(--space-2); font-size: var(--step--2); min-height: 0; }
+.btn.small { padding: var(--space-2) var(--space-3); gap: var(--space-2); font-size: var(--step--1); min-height: 0; }
+/* Greek on a button keeps its own letters (the lessons' "Show: μηδὲν") */
+.btn [lang="grc"] { letter-spacing: 0; }
 /* buttons side by side, as the page's ways on */
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
@@ -226,10 +236,10 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -5px 0; }
 }
-/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, small
-   capitals in a hairline frame, the chosen one in ink */
+/* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, in a
+   hairline frame, the chosen one in ink */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
-.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: 9px 11px; font: 500 var(--step--2) / 1.2 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
+.segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: var(--space-2) var(--space-3); font: 400 var(--step--1) / 1.2 var(--f-body); white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
 .segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
@@ -292,6 +302,29 @@ select:not([multiple]):not([size]) {
 /* a "more" disclosure keeps its small triangle, in red like a printer's mark, not the browser's grey */
 :where(summary)::marker { color: var(--accent); }
 :where(summary)::-webkit-details-marker { color: var(--accent); }
+/* a fold in a hairline frame for what narrows a list (the search's Refine, the library's Filter): its opener a row with
+   its sign, its name and how many are on, a small triangle at its right that turns as it opens. One look for both (the
+   owner, 2026-10-30: the same thing looks the same everywhere). */
+.fold-box { width: 100%; border: 1px solid var(--rule); border-radius: var(--radius); }
+.fold-box > summary {
+  position: relative; list-style: none; cursor: pointer; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-3);
+  min-height: var(--tap); padding: var(--space-3) calc(var(--space-4) + var(--space-5)) var(--space-3) var(--space-4);
+  font: 400 var(--step-0) / 1.35 var(--f-body); color: var(--ink); transition: color var(--dur) var(--ease);
+}
+.fold-box > summary::-webkit-details-marker { display: none; }
+.fold-box > summary::after { content: ""; position: absolute; right: var(--space-4); top: 50%; margin-top: calc(var(--tri-size) / -2); width: var(--tri-size); height: var(--tri-size); background: var(--ink-2); clip-path: var(--tri-down); }
+.fold-box[open] > summary::after { clip-path: var(--tri-up); }
+.fold-box > summary:hover { color: var(--rubric); }
+.fold-box > summary > svg[data-icon] { color: var(--ink-2); }
+/* the line's words stay one sentence beside the sign, wrapping within themselves on a phone rather than dropping under it
+   (Library.tsx; scripts/check-split-sentences.mjs) */
+.fold-box > summary > span { flex: 1 1 0; min-width: 0; }
+.fold-box > summary small { font-size: var(--step--1); color: var(--ink-3); }
+.fold-box > summary b { font-weight: 400; font-size: var(--step--1); color: var(--rubric); }
+.fold-body { display: grid; gap: var(--space-4); padding: var(--space-1) var(--space-4) var(--space-4); }
+/* the line that opens a folded section is something you press: in the page's own letters, never in small capitals, even
+   where it wears the label's class (the owner, 2026-10-30: small capitals are only for labels, which you cannot press) */
+summary.label { font: 400 var(--step-0) / 1.4 var(--f-body); letter-spacing: 0; text-transform: none; color: var(--ink); cursor: pointer; }
 /* under a finger the line that opens a folded section is a finger's height (a summary styled with its own padding keeps it) */
 @media (pointer: coarse) { :where(summary) { padding-block: var(--tap-pad); } }
 
@@ -345,14 +378,12 @@ select:not([multiple]):not([size]) {
 /* the head of a page: its plate at the right of the title on a computer, after the main action on a phone */
 .piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); }
 .piece-foot.piece-wide { width: min(520px, 100%); }
-/* a page that is a tool (a round of questions, the day's cards): on a computer its plate stands beside the tool rather
-   than above it, so the first question is on the first screen; on a phone it stands under the title as usual */
+/* a page that is a tool (a round of questions, today's session, the drills): one column the width of a round of
+   questions, in the middle of a computer's screen with its head, as every such page has it, so that the eye goes from a
+   question to its answers with nothing beside them. (A plate stood at its side until the declutter took the plates away,
+   and left the column kept for it standing empty.) */
 .tool-page { display: grid; grid-template-columns: minmax(0, 1fr); }
-.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; }
-@media (min-width: 761px) {
-  .tool-page { grid-template-columns: minmax(0, 1fr) min(30%, 300px); column-gap: clamp(var(--space-6), 5vw, var(--space-8)); align-items: start; }
-  .tool-page > .piece-head { margin: var(--space-6) 0 0; }
-}
+.tool-main { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-content: start; min-width: 0; width: 100%; max-width: 760px; margin-inline: auto; }
 .piece-phone { display: none; }
 @media (max-width: 760px) {
   .piece-desk { display: none; }
@@ -386,6 +417,9 @@ select:not([multiple]):not([size]) {
 .slab-card :where(b, h3, strong) { color: var(--ink); font-weight: 500; font-size: var(--step-sub); transition: color var(--dur) var(--ease); }
 a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3, strong), .slab-card:has(a:hover) :where(b, h3, strong) { color: var(--rubric); }
 .slab-card :where(.muted, p, small) { color: var(--ink-2); font-size: var(--step--1); margin: 0; }
+/* a card that is a link, and a part's name that is one, end their name with a red arrow: each takes you to another page
+   (at every width since 2026-10-30, when the owner asked for a sign on everything you can press; it was on computers only) */
+.door-part h2 a::after, a.slab-card :where(h3, b, strong):first-of-type::after { content: "\00a0→"; color: var(--rubric); }
 :where(input, textarea)::placeholder { color: var(--ink-3); font-style: italic; }
 
 /* certainty labels */
@@ -453,8 +487,9 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .site-footer { margin-top: clamp(64px, 10vh, 120px); color: var(--ink-2); }
 .site-footer-in { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) 48px; padding-block: 28px var(--space-7); font-size: var(--step--1); border-top: 1px solid var(--ink); }
 .site-footer-name { display: flex; align-items: center; gap: var(--space-4); font: 400 var(--step-1) / 1.2 var(--face-didot); color: var(--ink); margin-bottom: 6px; }
-.site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-.site-footer-links a { text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.site-footer-links a { display: inline-flex; align-items: center; gap: var(--space-2); text-decoration-color: var(--rule); text-underline-offset: 3px; }
+.site-footer-links a svg { color: var(--ink-3); }
 .site-footer-links a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-fin { grid-column: 1 / -1; text-align: center; margin-top: var(--space-5); font: 400 1.3rem / 1 var(--face-didot); color: var(--rubric); letter-spacing: 0.4em; }
@@ -465,7 +500,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 }
 
 /* an area's head (components/AreaHeader.tsx): the source of a line set in place of its Greek name, and the rule under it */
-.area-carve-cap { max-width: 70ch; font-size: var(--step--1); color: var(--ink-3); }
+.area-carve-cap { max-width: 70ch; margin: var(--space-7) 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--1); color: var(--ink-3); }
 .area-meander { margin-top: var(--space-2); }
 
 /* The one page head (components/PageHead.tsx), as the sample's catalogue head: the kicker (the path, after a short red
@@ -474,14 +509,31 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph { display: grid; grid-template-columns: minmax(0, 1fr) min(32%, 320px); column-gap: clamp(28px, 5vw, 64px); align-items: end; padding-block: clamp(var(--space-6), 7vh, var(--space-8)) var(--space-6); }
 .ph-short { padding-block: clamp(28px, 5vh, var(--space-7)) var(--space-5); }
 .ph.ph-tool { grid-template-columns: minmax(0, 1fr); }
+/* a head with no plate and nothing at its side has the page's width to itself (the owner, 2026-10-25: no random photos) */
+.ph:not(:has(> .piece-desk, > .ph-side)) { grid-template-columns: minmax(0, 1fr); }
+/* a head with its own side (the Treasury's contents): on a computer the side as wide as the title's column; on a phone
+   it follows the title and the purpose line */
+@media (min-width: 761px) { .ph:has(> .ph-side) { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } }
+.ph-side { min-width: 0; }
+/* the map's search and layer chips arrive in its head after the first paint (components/map/Periplus.tsx): their room is kept
+   from the start, so the head does not grow under the reader's eyes (its height: a fixed part and a part that grows with the
+   type, measured at 16 and 18 px; scripts/check-heads.mjs) */
+@media (min-width: 761px) { #map-tools { min-height: calc(51px + 2.91rem); } }
+@media (max-width: 760px) { .ph-side { margin-top: var(--space-5); } }
 .ph > .ph-more { grid-column: 1 / -1; margin-top: var(--space-4); }
-.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; }
+/* (a line of the way back, not running text: the measure kept for reading is not its, and it runs on one line while the
+   head has room) */
+/* (the owner, 2026-10-30: what you can press looks pressable) It is set in the page's own letters, not in capitals: each
+   place you can go back to underlined, a small › between the places */
+.ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; max-width: none; font: 400 var(--step--1) / 1.35 var(--f-body); }
 .ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
-.ph-path a { color: inherit; text-decoration: none; }
-.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); }
-/* the way back is a small line of capitals; under a finger it answers 15 px above and below it (a 44 px target) */
-@media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px -4px; } }
-.ph-sep { color: var(--ink-3); white-space: pre; }
+.ph-path a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
+/* the way back is a small line; under a finger each place answers 15 px above and below it, and at least 44 px across
+   however short its name ("Words") (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px min(-4px, calc((100% - var(--tap)) / 2)); } }
+.ph-sep { color: var(--ink-3); display: inline-flex; margin: 0 var(--space-1); }
+.ph-sep svg { width: 0.95em; height: 0.95em; vertical-align: 0; }
 /* a line in Greek over a page's title, in spaced capitals in red, as a book sets a motto */
 .ph-inscr { margin: 18px 0 0; font: 400 clamp(1.1rem, 2vw, 1.6rem) / 1.3 var(--face-didot); letter-spacing: 0.16em; color: var(--rubric); }
 .ph .ph-title { color: var(--ink); font-weight: 400; line-height: 0.98; margin: 18px 0 10px; letter-spacing: -0.015em; }
@@ -502,9 +554,10 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .ph > .piece-desk { align-self: start; }
   .ph > .piece-desk .plate-ph { aspect-ratio: 3 / 4; }
   .ph > .piece-desk[data-fit="whole"] .plate-ph img { object-fit: contain; object-position: 50% 50%; }
-  /* a head inside a narrower column (a lesson, a checkpoint) still spans the page's own width, so its path and title start
-     at the same left edge as on every other page and its plate is the same size; the column below stays narrow */
-  .ph:not(.wrap):not(.ph-tool) {
+  /* a head inside a narrower column (a lesson, a checkpoint, a round of questions) still spans the page's own width, so
+     its path and title start at the same left edge as on every other page and its plate is the same size; the column
+     below stays narrow */
+  .ph:not(.wrap) {
     --ph-w: min(calc(var(--maxw) - 2 * var(--gutter)), calc(100vw - 2 * var(--gutter)));
     width: var(--ph-w); max-width: none; margin-inline: calc((100% - var(--ph-w)) / 2);
   }
@@ -539,7 +592,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .find-show { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .find-show > button {
   min-height: var(--tap); padding: 10px; background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
-  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);
+  font: 400 var(--step-0) / 1.2 var(--f-body); color: var(--ink-2);   /* in plain words, as every other choice (no small capitals) */
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .find-show > button:hover { color: var(--rubric); }
@@ -550,7 +603,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .find-field { border-bottom: 1px solid var(--ink); }
   .find:focus-within .find-field { border-bottom-color: var(--rubric); }
   .find-show { width: 100%; justify-content: space-between; }
-  .find-show > button { padding-inline: var(--space-1); letter-spacing: 0.12em; }
+  .find-show > button { padding-inline: var(--space-1); }
 }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */
@@ -647,10 +700,6 @@ select { max-width: 100%; }
 .sh .src { font-size: var(--step--1); color: var(--ink-3); font-style: italic; }
 @media (max-width: 600px) { .sh { flex-wrap: wrap; gap: var(--space-1) var(--space-3); } .sh .fill { display: none; } .sh .src { flex-basis: 100%; } }
 @media (min-width: 761px) {
-  /* links on a computer: the path over a title underlined; a card's or a part's name followed by a red arrow */
-  .ph-path a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-  .ph-path a:hover, .ph-path a:focus-visible { text-decoration-color: var(--rubric); }
-  .door-part h2 a::after, .slab-card :where(b, h3, strong):first-child::after { content: "\00a0→"; color: var(--rubric); }
   .door-part { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .sh { padding-top: var(--part-pad); border-top: var(--part-rule); }
   .door-part > .sh:first-child { padding-top: 0; border-top: 0; }   /* the part's own rule is enough: never two */

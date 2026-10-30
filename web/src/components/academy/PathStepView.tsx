@@ -9,6 +9,10 @@
  * each sentence ending with the whole of it read together. Everything shown is in data/reading-path.ts.
  * The help fades every three lessons (pathLevel): the letters stage goes, then you guess each meaning and build
  * the sentence yourself, then words you have met get no card and you put the English in order before it shows.
+ *
+ * Its look is the commentary (Noa's choice, 2026-10-25): set as a school edition sets a Greek text, the line large, the
+ * notes on its words beneath it keyed to each word as a commentary prints them («word] note»), the grammar as a § and
+ * what it means as a ¶, and the English last, in italic. It is the way a reader then reads in the reader.
  */
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -29,7 +33,10 @@ const AlphabetGlance = dynamic(() => import("./AlphabetGlance"));
 /** One thing taught in the five stages: the line itself, or one piece of a passage sentence. */
 export interface Unit {
   key: string;
+  /** where it stands in the lesson: "The line", "The passage: sentence 1 of 3, piece 2 of 5" */
   label: string;
+  /** where it comes from, said as a book cites it, and its place in the reader */
+  source: { label: string; href: string };
   words: PathWord[];
   learn: { title: string; text: string[]; at?: number };
   /** what ends it: the whole line or sentence, its English and its meaning (none for a piece mid-sentence) */
@@ -37,32 +44,40 @@ export interface Unit {
 }
 
 /** The units of a run of sentences, each piece one unit, the last piece of each ending with the whole sentence. */
-export function sentenceUnits(ss: PathSentence[], label: (si: number, pi: number) => string, translator: (si: number) => string, prefix = "s"): Unit[] {
+export function sentenceUnits(ss: PathSentence[], label: (si: number, pi: number) => string, translator: (si: number) => string,
+  source: (si: number) => Unit["source"], prefix = "s"): Unit[] {
   const out: Unit[] = [];
   ss.forEach((s, si) => s.pieces.forEach((p, pi) => {
     const last = pi === s.pieces.length - 1;
     const whole = s.pieces.map((q) => partText({ words: q.words, en: "" })).join(" ");
     out.push({
-      key: `${prefix}${si}p${pi}`, label: label(si, pi), words: p.words, learn: p.learn,
+      key: `${prefix}${si}p${pi}`, label: label(si, pi), source: source(si), words: p.words, learn: p.learn,
       end: last ? { whole: s.pieces.length > 1 ? whole : undefined, parts: [{ gr: whole, en: s.en }], translator: translator(si), meaning: s.meaning } : undefined,
     });
   }));
   return out;
 }
 
+export const readerHref = (work: string, at: string) => `/read?w=${work}&at=${encodeURIComponent(at)}`;
+
 function units(step: PathStep): Unit[] {
   const ss = step.passage?.sentences ?? [];
+  const passage = step.passage;
+  const passageSource = passage ? { label: passage.label ?? step.label, href: readerHref(passage.work ?? step.work, passage.ref ?? step.ref) } : null;
   return [
     {
-      key: "line", label: step.label, words: step.parts.flatMap((p) => p.words), learn: step.learn,
+      key: "line", label: "The line", source: { label: step.label, href: readerHref(step.work, step.ref) },
+      words: step.parts.flatMap((p) => p.words), learn: step.learn,
       end: { parts: step.parts.map((p) => ({ gr: partText(p), en: p.en })), translator: step.translator, meaning: step.meaning },
     },
     ...sentenceUnits(ss, (si, pi) => `The passage: sentence ${si + 1} of ${ss.length}${ss[si].pieces.length > 1 ? `, piece ${pi + 1} of ${ss[si].pieces.length}` : ""}`,
-      () => step.passage!.translator ?? step.translator),
+      () => step.passage!.translator ?? step.translator, () => passageSource!),
   ];
 }
 
+/** the four stages, with the short names a phone's row has room for */
 const STAGES = ["The letters", "The words", "Build the sentence", "Read it yourself"];
+const STAGES_SHORT = ["Letters", "Words", "Build", "Read"];
 /** what each level of help asks of the learner, said once at the top of the lesson */
 export const LEVEL_NOTE = [
   "",
@@ -88,14 +103,19 @@ const TRICKY: Record<string, string> = {
   ζ: "one letter for two sounds.",
 };
 const bare = (s: string) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase().replace(/ς/g, "σ");
+/** a note that begins mid-sentence ("the 'it' form…"), set after a full stop: its first letter a capital */
+const sentenceCase = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
-/* 1 · the letters this line uses, and sounding out each word */
+/* 1 · the letters: the line, each word tapped once it has been sounded out, to check it; under it only the letters the line
+   uses, each tapped for its sound, and the ones a beginner could misread explained. The whole alphabet is in the fold above. */
 function LettersStage({ words, onNext }: { words: PathWord[]; onNext: () => void }) {
   const pron = useSettings((s) => s.pron);
-  const [sel, setSel] = useState<number | null>(null);
+  const [sel, setSel] = useState<string | null>(null);
   const [said, setSaid] = useState<Set<number>>(new Set());
   const forms = words.map((x) => x.form);
   const text = forms.join(" ");
+  // the letters of this line, in the order they first come in it
+  const used = useMemo(() => [...new Set(bare(text))].map((ch) => LETTERS.find((L) => L.lower === ch)).filter((L): L is (typeof LETTERS)[number] => !!L), [text]);
   const notes = useMemo(() => {
     const nfd = text.normalize("NFD"), b = bare(text), n: string[] = [];
     // the letters of this line a beginner could misread, each with a word of the line it is in
@@ -112,36 +132,31 @@ function LettersStage({ words, onNext }: { words: PathWord[]; onNext: () => void
     if (text.includes("ς")) n.push("«σ» is written «ς» at the end of a word.");
     return n;
   }, [text, forms, pron]);
-  const L = sel === null ? null : LETTERS[sel];
+  const L = sel === null ? null : used.find((x) => x.lower === sel) ?? null;
   return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <p className={styles.small}>The 24 letters. {tap} one to see how it sounds. Below, the letters of this line to watch out for.</p>
-      <div className={styles.alphaGrid} role="listbox" aria-label="The 24 letters">
-        {LETTERS.map((L, i) => (
-          <button key={L.name} type="button" role="option" aria-selected={i === sel} onClick={() => setSel(i === sel ? null : i)}
-            className={`${styles.tile} ${L.vowel ? styles.vowelTile : ""}`}>
-            <span className={styles.tileGlyph} lang="grc">{L.upper}{L.lower}{L.final ?? ""}</span>
-            <span className={styles.tileName}>{L.name}</span>
+    <section className={styles.stage}>
+      <p lang="grc" className={styles.cmGr}>
+        {words.map((x, i) => (
+          <span key={i} className={styles.cmGloss}>
+            <button type="button" className={`${readerStyles.w} ${styles.cmW}`} aria-expanded={said.has(i)}
+              onClick={() => setSaid((t) => new Set(t).add(i))}>{x.form}{x.after}</button>
+            <span lang="grc-Latn" className={styles.cmUnder} style={{ visibility: said.has(i) ? "visible" : "hidden" }}>{transliterate(x.form)}</span>
+          </span>
+        ))}
+      </p>
+      <p className={styles.small}>Sound out each word, letter by letter, then {tapLc} it to check yourself. These are the letters it uses: {tapLc} one to see how it sounds.</p>
+      <div className={styles.lineLetters} role="listbox" aria-label="The letters of this line">
+        {used.map((x) => (
+          <button key={x.name} type="button" role="option" aria-selected={x.lower === sel} onClick={() => setSel(x.lower === sel ? null : x.lower)}
+            className={`${styles.tile} ${x.vowel ? styles.vowelTile : ""}`} data-tricky={TRICKY[x.lower] ? "" : undefined}>
+            <span className={styles.tileGlyph} lang="grc">{x.upper}{x.lower}{x.final && text.includes(x.final) ? x.final : ""}</span>
+            <span className={styles.tileName}>{x.name}</span>
           </button>
         ))}
       </div>
       {L && <p className={styles.tipBox} aria-live="polite"><span><b>{L.name}</b> <span lang="grc" className={styles.inlineGr}>{L.lower}</span>: {L.sounds[pron].say}</span></p>}
       {notes.length > 0 && <aside className={styles.tipBox}><span className="label">Good to know</span>{notes.map((t, i) => <p key={i}><Rich text={t} /></p>)}</aside>}
-      <span className="label">Sound out each word</span>
-      <p className={styles.small}>Say each word aloud, letter by letter, then {tapLc} it to check yourself.</p>
-      <div className={styles.revealGrid} style={{ gridTemplateColumns: "repeat(auto-fill, minmax(min(100%, 160px), 1fr))" }}>
-        {forms.map((f, i) => (
-          <button key={i} type="button" className={`${styles.revealCard} ${said.has(i) ? styles.revealed : ""}`}
-            onClick={() => setSaid((s) => new Set(s).add(i))} aria-expanded={said.has(i)}>
-            <span lang="grc" className={styles.revealGr}>{f}</span>
-            <span className={styles.revealAns}>
-              <span className={styles.revealText} aria-hidden={!said.has(i)}>{transliterate(f)}</span>
-              {!said.has(i) && <span className={styles.revealMark} aria-hidden="true">?</span>}
-            </span>
-          </button>
-        ))}
-      </div>
-      <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>On to the words →</button>
+      <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onNext}>On to the words →</button>
     </section>
   );
 }
@@ -194,50 +209,54 @@ function WordsStage({ words, level, known, pool, onNext }: { words: PathWord[]; 
   if (checking) return <MatchCheck cards={toLearn} pool={pool} onNext={onNext} />;
   const c = sel === null ? null : words[sel];
   const open = !!c && (!guess || !fresh[sel!] || seen.has(id(c)));
+  // the notes beneath the line: every word looked at so far, in the line's order, the one chosen lit in red
+  const noted = dedupe(words.filter((x) => seen.has(id(x)) || (open && c && id(c) === id(x))));
   return (
-    <section style={{ display: "grid", gap: 14 }}>
+    <section className={styles.stage}>
+      <p lang="grc" className={styles.cmGr}>
+        {words.map((x, i) => (
+          <button key={i} type="button" className={`${readerStyles.w} ${styles.cmW} ${sel === i ? readerStyles.sel : ""}`} aria-pressed={sel === i}
+            onClick={() => setSel(sel === i ? null : i)} data-new={fresh[i] && !seen.has(id(x)) ? "" : undefined}>
+            {x.form}{x.after}
+          </button>
+        ))}
+      </p>
       <p className={styles.small}>
         {tap} a word to see what it means here, as you would in the reader.{" "}
         {toLearn.length > 0
           ? <>The words with a dotted line are new: {guess ? "pick what you think each one means, then it opens" : "sound each one out and guess its meaning before you look"}.</>
           : "You have met every word here before: look up only the ones you forget."}
       </p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.4 }}>
-        {words.map((x, i) => (
-          <button key={i} type="button" className={`${readerStyles.w} ${sel === i ? readerStyles.sel : ""}`} aria-pressed={sel === i}
-            onClick={() => setSel(sel === i ? null : i)}
-            style={{ background: "none", border: 0, padding: 0, font: "inherit", color: sel === i ? undefined : "inherit",
-              textDecoration: fresh[i] && !seen.has(id(x)) ? "underline dotted" : "none", textUnderlineOffset: "0.25em" }}>
-            {x.form}{x.after}
-          </button>
-        ))}
-      </p>
-      {c && (
-        <div className={w.card} aria-live="polite" style={{ display: "grid", gap: "var(--space-2)" }}>
-          <p lang="grc" className={styles.revealGr} style={{ fontSize: "clamp(1.8rem, 6vw, 2.6rem)" }}>{c.form}</p>
-          {!open && <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />}
-          {open && (
-            <SeenOnce onSeen={() => setSeen((t) => (t.has(id(c)) ? t : new Set(t).add(id(c))))}>
-              <p style={{ fontSize: "var(--step-1)" }}><b>{c.here}</b></p>
-              <p className="muted">{c.form_note}.</p>
-              <p className={styles.small}>In the dictionary: <span lang="grc" className={styles.inlineGr}>{c.lemma}</span>, “{c.dict}” ({c.src === "DCC" ? "DCC core list" : "LSJ"}).</p>
-            </SeenOnce>
-          )}
+      {/* a new word chosen before its meaning is known (level 2 on): which meaning, first */}
+      {c && !open && (
+        <div className={styles.cmAsk} aria-live="polite">
+          <p className={styles.cmNote} data-on=""><span lang="grc" className={styles.cmLem}>{c.form}</span>which meaning?</p>
+          <Choices key={sel} c={c} pool={pool} k={sel!} onRight={() => setTimeout(() => setSeen((t) => new Set(t).add(id(c))), 500)} />
+        </div>
+      )}
+      {c && open && <SeenOnce onSeen={() => setSeen((t) => (t.has(id(c)) ? t : new Set(t).add(id(c))))} />}
+      {noted.length > 0 && (
+        <div className={styles.cmNotes} aria-live="polite">
+          {noted.map((x) => (
+            <p key={id(x)} className={styles.cmNote} data-on={c && open && id(c) === id(x) ? "" : undefined}>
+              <span lang="grc" className={styles.cmLem}>{x.form}</span><b>{x.here}</b>. {sentenceCase(x.form_note)}. In the dictionary <span lang="grc" className={styles.inlineGr}>{x.lemma}</span>, <i>{x.dict}</i> ({x.src === "DCC" ? "DCC core list" : "LSJ"}).
+            </p>
+          ))}
         </div>
       )}
       {left > 0
         ? <p className={styles.small}>{left} new {left === 1 ? "word" : "words"} still to look at.</p>
         : toLearn.length === 0 || guess
-          ? <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>On to the sentence →</button>
-          : <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setChecking(true)}>Check yourself →</button>}
+          ? <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onNext}>On to the sentence →</button>
+          : <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={() => setChecking(true)}>Check yourself →</button>}
     </section>
   );
 }
 
-/** Its children, and a call to `onSeen` once they have been shown. */
-function SeenOnce({ onSeen, children }: { onSeen: () => void; children: React.ReactNode }) {
+/** A call to `onSeen` once a word's note has been shown. */
+function SeenOnce({ onSeen }: { onSeen: () => void }) {
   useEffect(() => { onSeen(); }, [onSeen]);
-  return <div style={{ display: "grid", gap: "var(--space-2)" }}>{children}</div>;
+  return null;
 }
 
 /** Match each word to its meaning, in a fixed shuffled order (the same each visit); distractors come from `pool`. */
@@ -246,14 +265,14 @@ export function MatchCheck({ cards, pool, onNext, nextLabel = "On to the sentenc
   const order = useMemo(() => cards.map((_, i) => i).sort((a, b) => ((a * 7 + 3) % 11) - ((b * 7 + 3) % 11)), [cards]);
   const [k, setK] = useState(0);
   if (k >= order.length) return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <p className={`${w.feedback} ${w.fbGood}`}><b>All {cards.length} words matched.</b> {doneText}</p>
-      <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>{nextLabel}</button>
+    <section className={styles.stage}>
+      <p className={`${w.feedback} ${w.fbGood}`}><b>{cards.length === 1 ? "Matched." : cards.length === 2 ? "Both words matched." : `All ${cards.length} words matched.`}</b> {doneText}</p>
+      <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onNext}>{nextLabel}</button>
     </section>
   );
   const c = cards[order[k]];
   return (
-    <section style={{ display: "grid", gap: 14 }}>
+    <section className={styles.stage}>
       <p className={styles.small}>Check yourself: {k + 1} of {order.length}.</p>
       <div className={w.card}>
         <p className={w.prompt}><span lang="grc">{c.form}</span> means…</p>
@@ -270,45 +289,39 @@ function BuildStage({ unit, level, onNext }: { unit: Unit; level: number; onNext
   const [peek, setPeek] = useState<Set<number>>(new Set()); // words looked up (on your own)
   const [gram, setGram] = useState(false);
   const at = unit.learn.at ?? ws.length - 1;
-  const grammar = (
-    <aside className={styles.tipBox} aria-live="polite">
-      <span className="label">The grammar: {unit.learn.title}</span>
-      {unit.learn.text.map((t, i) => <p key={i}><Rich text={t} /></p>)}
-    </aside>
-  );
+  const grammar = <Section mark="§" title={unit.learn.title} text={unit.learn.text} />;
   if (level >= 2) return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <p className={styles.small}>Work out what it says yourself, word by word. If you forget a word, {tapLc} it for its meaning.</p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.3 }}>
+    <section className={styles.stage}>
+      <p lang="grc" className={styles.cmGr}>
         {ws.map((x, i) => (
-          <span key={i} style={{ display: "inline-grid", justifyItems: "center", gap: 2 }}>
-            <button type="button" className={readerStyles.w} aria-expanded={peek.has(i)}
-              onClick={() => setPeek((s) => { const t = new Set(s); if (t.has(i)) t.delete(i); else t.add(i); return t; })}
-              style={{ background: "none", border: 0, padding: 0, font: "inherit", color: "inherit" }}>{x.form}{x.after}</button>
-            <span lang="en" className={styles.small} style={{ visibility: peek.has(i) ? "visible" : "hidden", fontFamily: "var(--f-body)" }}>{x.here}</span>
+          <span key={i} className={styles.cmGloss}>
+            <button type="button" className={`${readerStyles.w} ${styles.cmW}`} aria-expanded={peek.has(i)}
+              onClick={() => setPeek((s) => { const t = new Set(s); if (t.has(i)) t.delete(i); else t.add(i); return t; })}>{x.form}{x.after}</button>
+            <span lang="en" className={styles.cmUnder} style={{ visibility: peek.has(i) ? "visible" : "hidden" }}>{x.here}</span>
           </span>
         ))}
       </p>
+      <p className={styles.small}>Work out what it says yourself, word by word. If you forget a word, {tapLc} it for its meaning.</p>
       {gram ? grammar : <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setGram(true)}>Stuck? The grammar here: {unit.learn.title}</button>}
-      <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>Now read it yourself →</button>
+      <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onNext}>Now read it yourself →</button>
     </section>
   );
   return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <p className={styles.small}>One word at a time: say what the lit word means, then {tapLc} <i>Show</i> to check.</p>
-      <p lang="grc" className={styles.realGr} style={{ display: "flex", flexWrap: "wrap", gap: "6px 14px", lineHeight: 1.3 }}>
+    <section className={styles.stage}>
+      <p lang="grc" className={styles.cmGr}>
         {ws.map((x, i) => (
-          <span key={i} style={{ display: "inline-grid", justifyItems: "center", gap: 2, opacity: i > n ? 0.45 : 1 }}>
+          <span key={i} className={styles.cmGloss} style={{ opacity: i > n ? 0.45 : 1 }}>
             <span className={`${readerStyles.w} ${i === n ? readerStyles.sel : ""}`}>{x.form}{x.after}</span>
-            <span lang="en" className={styles.small} style={{ visibility: i < n ? "visible" : "hidden", fontFamily: "var(--f-body)" }}>{x.here}</span>
+            <span lang="en" className={styles.cmUnder} style={{ visibility: i < n ? "visible" : "hidden" }}>{x.here}</span>
           </span>
         ))}
       </p>
+      <p className={styles.small}>One word at a time: say what the lit word means, then {tapLc} <i>Show</i> to check.</p>
       {n < ws.length
-        ? <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setN(n + 1)}>Show: <span lang="grc">{ws[n].form}</span></button>
+        ? <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={() => setN(n + 1)}>Show: <span lang="grc">{ws[n].form}</span></button>
         : null}
       {n > at && grammar}
-      {n >= ws.length && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onNext}>Now read it yourself →</button>}
+      {n >= ws.length && <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onNext}>Now read it yourself →</button>}
     </section>
   );
 }
@@ -341,7 +354,7 @@ function OrderEnglish({ en, onDone }: { en: string; onDone: () => void }) {
     if (placed + 1 === pieces.length) setTimeout(onDone, 500);
   };
   return (
-    <section style={{ display: "grid", gap: 14 }}>
+    <section className={styles.stage}>
       <p className={styles.small}>Here is the published English, in pieces. {tap} them in the order that matches the Greek.</p>
       <p className={styles.lp} style={{ minHeight: "1.6em" }} aria-live="polite">{pieces.slice(0, placed).join(" ")}{placed < pieces.length && <span className="muted"> …</span>}</p>
       <div className={w.options} role="group" aria-label="Pieces of the English">
@@ -362,14 +375,14 @@ function ReadStage({ unit, level, onDone, doneLabel }: { unit: Unit; level: numb
   const [ordered, setOrdered] = useState(false);
   const all = !!end && open.size === end.parts.length;
   return (
-    <section style={{ display: "grid", gap: 14 }}>
-      <p lang="grc" className={`${styles.realGr} ${styles.revealGr}`} style={{ lineHeight: 1.6 }}>{partText({ words: unit.words, en: "" })}</p>
-      <p className={styles.small}>Read it in your head from start to end, without help. If you get stuck, go back a stage with the buttons above.</p>
-      {end?.whole && !whole && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={() => setWhole(true)}>That was the last piece: now the whole sentence →</button>}
+    <section className={styles.stage}>
+      <p lang="grc" className={styles.cmGr}>{partText({ words: unit.words, en: "" })}</p>
+      <p className={styles.small}>Read it in your head from start to end, without help. If you get stuck, go back a stage: {tapLc} its name above.</p>
+      {end?.whole && !whole && <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={() => setWhole(true)}>That was the last piece: now the whole sentence →</button>}
       {end?.whole && whole && (
         <>
           <span className="label">The whole sentence</span>
-          <p lang="grc" className={`${styles.realGr} ${styles.revealGr}`} style={{ lineHeight: 1.6 }}>{end.whole}</p>
+          <p lang="grc" className={styles.cmGr}>{end.whole}</p>
           <p className={styles.small}>Every piece of it is one you have just read. Read it through.</p>
         </>
       )}
@@ -383,25 +396,46 @@ function ReadStage({ unit, level, onDone, doneLabel }: { unit: Unit; level: numb
             {end.parts.map((p, i) => (
               <button key={i} type="button" className={`${styles.revealCard} ${open.has(i) ? styles.revealed : ""}`}
                 onClick={() => setOpen((s) => new Set(s).add(i))} aria-expanded={open.has(i)}>
-                <span className="label">{end.parts.length > 1 ? <>Part {i + 1}: <span lang="grc" style={{ textTransform: "none", letterSpacing: 0 }}>{p.gr}</span></> : "The English"}</span>
+                {/* one part: closed, it says only "Show the English"; open, the English under its name */}
+                {(end.parts.length > 1 || open.has(i)) && <span className="label">{end.parts.length > 1 ? <>Part {i + 1}: <span lang="grc" style={{ textTransform: "none", letterSpacing: 0 }}>{p.gr}</span></> : "The English"}</span>}
                 <span className={styles.revealAns}>
                   <span className={styles.revealText} aria-hidden={!open.has(i)}>{p.en}</span>
-                  {!open.has(i) && <span className={styles.revealMark} aria-hidden="true">?</span>}
+                  {/* the same words as the reader's own, for the same thing: the English, after the Greek */}
+                  {!open.has(i) && <span className={styles.revealAsk}>Show the English</span>}
                 </span>
               </button>
             ))}
           </div>
           {all && <p className={styles.small}>Translation by {end.translator}, as the library gives it.</p>}
-          {all && (
-            <aside className={styles.tipBox} aria-live="polite">
-              <span className="label">What it means</span>
-              {end.meaning.map((t, i) => <p key={i}><Rich text={t} /></p>)}
-            </aside>
-          )}
+          {all && <Section mark="¶" title="What it means" text={end.meaning} />}
         </>
       )}
-      {(!end || all) && <button type="button" className="btn ghost" style={{ justifySelf: "start" }} onClick={onDone}>{doneLabel}</button>}
+      {(!end || all) && <button type="button" className="btn" style={{ justifySelf: "start" }} onClick={onDone}>{doneLabel}</button>}
     </section>
+  );
+}
+
+/** A paragraph of the commentary under the line: the grammar as a §, what the line means as a ¶. */
+function Section({ mark, title, text }: { mark: string; title: string; text: string[] }) {
+  return (
+    <aside className={styles.cmSec} aria-live="polite">
+      <span className={styles.cmSecNo} aria-hidden="true">{mark}</span>
+      <div>
+        {text.map((t, i) => <p key={i}>{i === 0 && <b>{title}. </b>}<Rich text={t} /></p>)}
+      </div>
+    </aside>
+  );
+}
+
+/** The top of a lesson's sheet: where the unit stands in the lesson, and, as a book cites it, where it comes from, which opens it in the reader. */
+export function UnitHead({ unit }: { unit: Unit }) {
+  return (
+    <figcaption className={styles.realHead}>
+      <span className="label">{unit.label}</span>
+      <Link className={styles.source} href={unit.source.href} transitionTypes={["page-turn"]}>
+        {unit.source.label}<span className="visually-hidden">, in the reader</span> <span aria-hidden="true">→</span>
+      </Link>
+    </figcaption>
   );
 }
 
@@ -419,12 +453,18 @@ export function UnitView({ unit, level, known, pool, onDone, doneLabel }:
   };
   return (
     <div ref={top} style={{ display: "grid", gap: "var(--space-4)", scrollMarginTop: 90 }}>
-      <div className={styles.seg} role="radiogroup" aria-label="Stages of this lesson" style={{ justifySelf: "start" }}>
+      {/* the stages as a row of parts along a rule, as Today's session and the checkpoints count their pages: those passed
+          and the one open marked in red, the rest faint; a stage reached can be opened again */}
+      <ol className={styles.steps} aria-label="Stages of this lesson" style={{ "--n": stages.length } as React.CSSProperties}>
         {stages.map((i, j) => (
-          <button key={i} type="button" role="radio" aria-checked={stage === i} disabled={i > reached} onClick={() => go(i)}
-            style={i > reached ? { opacity: 0.45 } : undefined}>{j + 1} · {STAGES[i]}</button>
+          <li key={i} data-done={i < reached ? "" : undefined}>
+            <button type="button" aria-current={stage === i ? "step" : undefined} disabled={i > reached} onClick={() => go(i)}>
+              <span className={styles.stepNo}>{j + 1}</span>{" "}
+              <span className={styles.stepLong}>{STAGES[i]}</span><span className={styles.stepShort} aria-hidden="true">{STAGES_SHORT[i]}</span>
+            </button>
+          </li>
         ))}
-      </div>
+      </ol>
       {stage === 0 && <LettersStage words={unit.words} onNext={() => go(1)} />}
       {stage === 1 && <WordsStage words={unit.words} level={level} known={known} pool={pool} onNext={() => go(2)} />}
       {stage === 2 && <BuildStage unit={unit} level={level} onNext={() => go(3)} />}
@@ -479,11 +519,8 @@ export default function PathStepView({ step }: { step: PathStep }) {
 
       <AlphabetFold />
 
-      <figure ref={box} className={styles.real} style={{ scrollMarginTop: 90 }}>
-        <figcaption className={styles.realHead}>
-          <span className="label">{unit.label}</span>
-          <Link className="chip" href={u > 0 && step.passage?.work ? `/read?w=${step.passage.work}&at=${step.passage.ref}` : `/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>In the reader →</Link>
-        </figcaption>
+      <figure ref={box} className={`${styles.real} ${styles.cm}`} style={{ scrollMarginTop: 90 }}>
+        <UnitHead unit={unit} />
         {atEnd ? (
           <div style={{ display: "grid", gap: 14 }}>
             {u === 0 && step.passage ? (
@@ -498,8 +535,7 @@ export default function PathStepView({ step }: { step: PathStep }) {
                   Now use it where you will really read: open the passage in the reader and read it there, from the line on.
                   {tap} any word you forget, just as you did here; the reader shows what it means.
                 </p>
-                <Link className="btn" style={{ justifySelf: "start" }} transitionTypes={["page-turn"]}
-                  href={u > 0 ? `/read?w=${step.passage?.work ?? step.work}&at=${step.passage?.ref ?? step.ref}` : `/read?w=${step.work}&at=${step.ref}`}>Read it in the reader →</Link>
+                <Link className="btn" style={{ justifySelf: "start" }} transitionTypes={["page-turn"]} href={unit.source.href}>Read it in the reader →</Link>
               </>
             )}
           </div>
@@ -509,13 +545,19 @@ export default function PathStepView({ step }: { step: PathStep }) {
         )}
       </figure>
 
+      {/* the way on: a button once the line is read; before that only a quiet way past, so the lesson's own next step is
+          the one button on the page */}
       <footer className={styles.lessonEnd}>
         {done ? <p className={styles.good}>You have read this lesson.</p> : <span />}
-        {practiceNext
-          ? <Link className="btn ghost" href={`/academy/reading/${practiceNext.id}`} transitionTypes={["page-turn"]}>Next: {practiceNext.title} →</Link>
-          : next
-            ? <Link className="btn ghost" href={`/academy/reading/${next.id}`} transitionTypes={["page-turn"]}>Next lesson: {next.title} →</Link>
-            : <Link className="btn ghost" href={`/read?w=${step.work}&at=${step.ref}`} transitionTypes={["page-turn"]}>Read on in the Metaphysics →</Link>}
+        {(() => {
+          const on = practiceNext
+            ? { href: `/academy/reading/${practiceNext.id}`, text: `Next: ${practiceNext.title}`, skip: `Know this line already? Skip to ${practiceNext.title}` }
+            : next ? { href: `/academy/reading/${next.id}`, text: `Next lesson: ${next.title}`, skip: `Know this line already? Skip to the next lesson, ${next.title}` }
+              : { href: readerHref(step.work, step.ref), text: "Read on in the Metaphysics", skip: "Know this line already? Read on in the Metaphysics" };
+          return done || atEnd
+            ? <Link className="btn ghost" href={on.href} transitionTypes={["page-turn"]}>{on.text} →</Link>
+            : <Link className={styles.skip} href={on.href} transitionTypes={["page-turn"]}>{on.skip} →</Link>;
+        })()}
       </footer>
 
       <details>
