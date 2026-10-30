@@ -2,7 +2,8 @@
    in as it opens; nothing rises, breathes or grows (decision 3). */
 .bar {
   position: fixed; z-index: 45; left: 50%; translate: -50% 0;
-  bottom: calc(var(--space-3) + env(safe-area-inset-bottom, 0px));
+  bottom: calc(var(--space-3) + var(--foot-now, env(safe-area-inset-bottom, 0px)));   /* above the reader's foot bar while it stands in the window (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  transition: bottom var(--dur) var(--ease);
   width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: var(--space-1) var(--space-2);
   padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3); border-radius: var(--radius); overflow: hidden;
   background: var(--inv-bg); color: var(--inv-fg); box-shadow: 0 10px 30px var(--shadow);

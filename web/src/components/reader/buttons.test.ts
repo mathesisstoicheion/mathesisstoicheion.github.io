@@ -15,8 +15,10 @@ const SET = ["btn", "chip", "icon-btn", "text-btn", "row-btn"];
 // buttons that are the text itself, tapped: the passage number, a beat of the metre, a word to pick, a place on the map
 // (and your marks beside a passage, and its number: a button with data-row)
 const TEXT = new Set(["styles.front", "styles.beatBtn", "hl.has(i) ? styles.picked : \"\"", "ss.node", "ss.word", "styles.dot", "styles.name", "styles.marker", "styles.book", "e.self ? es.self : undefined", "styles[`mk-${m.kind}`]"]);
-// the bar, the Tools, Aa and More menus, and the passage actions: replaced by the bar at the foot and Study (ticket 09)
-const TICKET_09 = new Set(["styles.floatBtn", "`${styles.floatBtn} ${styles.findBtn}`", "`${styles.floatBtn} ${styles.listenBtn}`", "styles.helpBtn", "styles.crumbBtn", "styles.legendBtn", "styles.reveal", "className"]);
+// what has not yet been brought into the set, each in a place that is not the bar, Aa or Study (those were: the quiet desk, ticket 09, the owner,
+// 2026-10-30): the title page's "Private collection", Try it first's "Tap to see the translation", the scroll-bar signs button the Stoa still uses,
+// and Drop's button, whose class comes from where it stands (always a button of the set)
+const LATER = new Set(["styles.crumbBtn", "styles.legendBtn", "styles.reveal", "className"]);
 
 const DIR = join(__dirname);
 const NOT_HERE = new Set(["FloatingReader.tsx"]);   // a second reader in its own window (as in panels.test.ts)
@@ -49,11 +51,8 @@ function kinds(file: string): { at: string; cls: string | null; role: string | n
 }
 
 const inSet = (cls: string) => SET.some((k) => new RegExp(`(^|[\\s\`"'{])${k}($|[\\s\`"'}])`).test(cls));
-// in a file or with a class that ticket 09 replaces, or in a menu that closes as a panel opens (the Tools menu)
-const later = (b: { at: string; cls: string | null; tag: string }) =>
-  b.at.startsWith("PassageToolbar.tsx") || TICKET_09.has((b.cls ?? "").trim()) || /data-closes-sheet/.test(b.tag)
-  // the Tools menu's page arrows and Go
-  || (b.at.startsWith("Reader.tsx") && /goChunk\(|type="submit"/.test(b.tag));
+// in the passage actions (PassageToolbar.tsx, which has a ticket of its own) or with a class that waits (above)
+const later = (b: { at: string; cls: string | null; tag: string }) => b.at.startsWith("PassageToolbar.tsx") || LATER.has((b.cls ?? "").trim());
 
 describe("the reader's buttons", () => {
   const files = readdirSync(DIR).filter((f) => f.endsWith(".tsx") && !NOT_HERE.has(f));
@@ -61,7 +60,7 @@ describe("the reader's buttons", () => {
 
   it("finds the reader's buttons", () => expect(all.length).toBeGreaterThan(100));
 
-  it("each is one of the set, a choice in a group, the text itself, or waits for ticket 09", () => {
+  it("each is one of the set, a choice in a group, the text itself, or waits for its own ticket", () => {
     const stray = all.filter((b) => {
       if (b.cls && inSet(b.cls)) return false;
       if (!b.cls && (b.role === "radio" || b.role === "tab" || /data-row=/.test(b.tag))) return false;

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { openAids, openChange } from "./reader-menus";
+import { openCompare, openStudy } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // Comparing two editions in the reader: Aeschylus' Agamemnon, Smyth (1926) against Sidgwick (1902).
@@ -17,8 +17,8 @@ const total = async (page: Page) =>
 test("choose an edition to compare with, and the readings that differ are marked on both sides", async ({ page }) => {
   await page.goto(`${AGAM}&at=80`);
   await expect(page.locator('[data-u="80"]').first()).toBeVisible({ timeout: 60_000 });
-  await openChange(page);
-  await page.getByLabel("Compare with").selectOption("1st1K-grc1");
+  // Compare is in Study (Go deeper): its row unfolds the choice of edition
+  await (await openCompare(page)).getByRole("combobox", { name: "Compare with" }).selectOption("1st1K-grc1");
   const bar = page.getByRole("region", { name: "Comparing two editions" });
   await expect(bar).toContainText("in the whole text", { timeout: 60_000 });
   // line 87: Smyth prints πειθοῖ, Sidgwick πευθοῖ
@@ -26,13 +26,13 @@ test("choose an edition to compare with, and the readings that differ are marked
   await expect.poll(() => marked(page, "diff-b-1")).toContain("πευθοῖ");
   // the second column is Greek, the translation is set aside, and Listen (English only) is not offered
   await expect(page.getByText(/^Greek · Sidgwick/)).toBeVisible();
-  await openChange(page);
-  await expect(page.getByRole("combobox", { name: "Translation" })).toBeDisabled();
+  const study = await openStudy(page);
+  await expect(study.getByRole("combobox", { name: "Translation" })).toBeDisabled();
   await expect(page.getByRole("button", { name: "Listen" })).toHaveCount(0);
 
-  // the next difference, from the bar that stays on screen
+  // the next difference, from Study (Compare, under Go deeper); the strip above the text has one too
   await page.locator('[data-key="80"]').first().scrollIntoViewIfNeeded();
-  await page.getByRole("group", { name: "Differences between the editions" }).getByRole("button", { name: "Next difference" }).click();
+  await (await openCompare(page)).getByRole("button", { name: "Next difference", exact: true }).click();
   await expect.poll(() => page.locator('[data-key="87"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(300);
 
   // the list, like an apparatus; a line of it goes to its passage
@@ -54,12 +54,12 @@ test("choose an edition to compare with, and the readings that differ are marked
   await expect(page).not.toHaveURL(/cmp=/);
 });
 
-test("on a phone, the differences are reached from the reader's bar", async ({ page }) => {
+test("on a phone, the differences are reached from Study", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto(`${AGAM}&cmp=1st1K-grc1&at=80`);
   await expect(page.getByRole("region", { name: "Comparing two editions" })).toContainText("in the whole text", { timeout: 60_000 });
-  // on a phone they wait under Tools, with this passage's other aids (the reader's bar has no room for them)
-  await (await openAids(page)).getByRole("button", { name: "Next difference →" }).click();
+  // on a phone they wait under Study, in Compare with another edition (the bar along the foot has no room for them)
+  await (await openCompare(page)).getByRole("button", { name: "Next difference", exact: true }).click();
   await expect.poll(() => page.locator('[data-key="87"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(400);
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });

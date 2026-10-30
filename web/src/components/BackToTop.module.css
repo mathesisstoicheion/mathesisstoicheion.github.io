@@ -2,11 +2,12 @@
    hairline frame, a red arrow over "Top" in capitals spaced wide. It inks in when it appears; nothing rises or bounces. */
 .btt {
   position: fixed; right: var(--space-4); z-index: 30;
-  bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+  /* above the reader's foot bar while it stands in the window (--foot-now, Reader.module.css; the quiet desk, ticket 09, the owner, 2026-10-30) */
+  bottom: calc(20px + var(--foot-now, env(safe-area-inset-bottom, 0px)));
   display: grid; justify-items: center; align-content: center; gap: 2px; width: 48px; height: 48px; padding: 0;
   background: var(--bg); color: var(--ink-2); border: 1px solid var(--rule); border-radius: var(--radius);
   cursor: pointer; animation: bttIn var(--dur) var(--ease) backwards;
-  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), opacity var(--dur) var(--ease);
+  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), opacity var(--dur) var(--ease), bottom var(--dur) var(--ease);
 }
 .btt:hover { color: var(--rubric); border-color: var(--rubric); }
 .btt:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }

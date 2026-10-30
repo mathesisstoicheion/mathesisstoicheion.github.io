@@ -10,7 +10,7 @@ import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
 const MAX_WORDS = 90;
 
@@ -37,13 +37,15 @@ function Src({ n, sep }: { n: number; sep?: boolean }) {
  * The passage at the top of the screen as a scribe would have written it, in four steps, and the
  * page of a real manuscript of the work: photographs shown from the library's own image server.
  */
-export default function ManuscriptPanel({ work, units, label, book, onClose }: {
+export default function ManuscriptPanel({ work, units, label, book, onClose, back }: {
   work: string; units: Unit[]; label: string; book: string | null; onClose: () => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const witnesses = witnessesOf(work);
 
   return (
-    <SidePanel label="The manuscript" onClose={onClose} focusKey title="How it was written" titleClass={styles.title} closeLabel="Close the manuscript panel">
+    <SidePanel label="The manuscript" onClose={onClose} back={back} onEscape={back?.onBack} focusKey title="How it was written" titleClass={styles.title} closeLabel="Close the manuscript panel">
       <Stages units={units} label={label} />
       {witnesses.map((w) => <Photos key={w.id} w={w} work={work} line={units[0]?.ref.join(".") ?? null} book={book} />)}
       {!witnesses.length && (

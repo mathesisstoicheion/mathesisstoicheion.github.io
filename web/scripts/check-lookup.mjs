@@ -71,12 +71,15 @@ async function open(w, h, scheme, path, opts = {}) {
   return { ctx, page, state };
 }
 
-/** The first word whose top is about `frac` of the way down the screen (in the first book). */
+/** The first word whose top is about `frac` of the way down the screen (in the first book), and which stands clear of the reader's foot bar. */
 async function wordAt(page, frac) {
   return page.evaluate((frac) => {
     const ws = [...document.querySelectorAll("article [data-w]")];
     const y = innerHeight * frac;
-    const w = ws.find((e) => { const r = e.getBoundingClientRect(); return r.top >= y && r.bottom < innerHeight - 8 && r.width > 0; });
+    // (the reader's bar stands along the foot of the window: a word under it cannot be clicked, the quiet desk, ticket 09)
+    const foot = document.querySelector("[data-foot-bar]"), fr = foot?.getBoundingClientRect();
+    const floor = foot && fr && fr.top < innerHeight - 1 && getComputedStyle(foot).visibility !== "hidden" ? fr.top : innerHeight;
+    const w = ws.find((e) => { const r = e.getBoundingClientRect(); return r.top >= y && r.bottom < floor - 8 && r.width > 0; });
     if (!w) return -1;
     w.setAttribute("data-check", "");
     return ws.indexOf(w);
@@ -89,7 +92,7 @@ const boxes = (page) => page.evaluate((LOOKUP) => {
   const row = sel?.closest("section[data-key]");
   const r = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height }; };
   const side = [...document.querySelectorAll("aside")].find((a) => a !== look && getComputedStyle(a).position === "fixed");
-  return { bar: r(document.querySelector("[class*='rbar']")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
+  return { bar: r(document.querySelector("[data-foot-bar]")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
 }, LOOKUP);
 
 /**
@@ -439,7 +442,8 @@ const inMargin = (tag, b) => {
   if (!b.look) { found.push(`margin ${tag}: no look-up opened`); return; }
   const over = Math.max(b.tr?.right ?? 0, b.grc?.right ?? 0);
   if (b.look.left < over - 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(over - b.look.left)} px over the text (it belongs in the margin)`);
-  if (b.bar && b.look.top < b.bar.bottom - 1) found.push(`margin ${tag}: the look-up covers the reader's bar by ${Math.round(b.bar.bottom - b.look.top)} px`);
+  // (the reader's bar stands along the foot: the look-up ends above it, and may start near the top of the window, the quiet desk, ticket 09)
+  if (b.bar && b.look.bottom > b.bar.top + 1) found.push(`margin ${tag}: the look-up covers the reader's bar by ${Math.round(b.look.bottom - b.bar.top)} px`);
   if (b.look.right - b.look.left < 280) found.push(`margin ${tag}: the look-up is ${Math.round(b.look.right - b.look.left)} px wide (at least 280)`);
   if (b.side && b.look.right > b.side.left + 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(b.look.right - b.side.left)} px under the panel beside the text`);
   if (b.lookPos !== "fixed") found.push(`margin ${tag}: the look-up is not fixed to the screen (it scrolls away with the text)`);
@@ -456,7 +460,10 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
   for (const frac of find ? [0.3, 0.5] : [0.3, 0.75]) {
     await page.evaluate(() => scrollTo({ top: innerHeight * 1.4, behavior: "instant" }));
     await page.waitForTimeout(600);
-    const i = await wordAt(page, frac);
+    let i = await wordAt(page, frac);
+    // (where the Greek stands on the screen is the page's layout to decide: with no word at this height the page is read on a little at a
+    // time, 250 px, until one stands there; the quiet desk, ticket 09, took the bar from the top and moved every line up)
+    for (let k = 0; i < 0 && k < 8; k++) { await page.evaluate(() => scrollBy({ top: 250, behavior: "instant" })); await page.waitForTimeout(300); i = await wordAt(page, frac); }
     if (i < 0) { found.push(`margin ${tag}: no word found ${Math.round(frac * 100)}% down the screen`); continue; }
     const word = page.locator("article [data-w]").nth(i);
     const before = await word.boundingBox();
@@ -534,7 +541,7 @@ const headOf = (page) => page.evaluate((LOOKUP) => document.querySelector(LOOKUP
 
 /**
  * The back routes (from the second layer to the sentence panel or Echoes, and back to the word). The look-up stands in its
- * first layer, on μῆνιν. Each route: More about it, then the link; the look-up closes and the panel opens with "‹ Back to μῆνις";
+ * first layer, on μῆνιν. Each route: More about it, then the link; the look-up closes and the panel opens with a back sign and "Back to μῆνις";
  * Back brings the look-up back on the same word in the second layer. Escape in the panel only closes it. Ends with the look-up
  * open in its first layer.
  */
@@ -559,7 +566,9 @@ async function backRoutes(page, tag, phone) {
       if (!(await back.count())) { found.push(`${here}: the panel has no "Back to" button`); await page.locator(panel).focus(); await page.keyboard.press("Escape"); continue; }
       const label = ((await back.first().textContent()) ?? "").trim().replace(/\s+/g, " ");
       if (pass === "escape") {
-        if (!/^‹ Back to μῆνις$/.test(label)) found.push(`${here}: the button reads "${label}" (‹ Back to μῆνις)`);
+        // (the back sign is the site's shared icon, drawn before the words: the quiet desk, ticket 09, the owner, 2026-10-30)
+        const sign = await back.first().locator("svg[data-icon]").count();
+        if (!/^Back to μῆνις$/.test(label) || !sign) found.push(`${here}: the button reads "${label}"${sign ? "" : " with no back sign"} (a back sign, then "Back to μῆνις")`);
         // Escape in the panel closes it, as before, and does not bring the look-up back
         await page.locator(panel).focus();
         await page.keyboard.press("Escape");

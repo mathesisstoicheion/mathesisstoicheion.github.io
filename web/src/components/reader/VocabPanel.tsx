@@ -7,13 +7,15 @@ import type { TeiDoc } from "@/lib/tei/types";
 import { lsjEntries } from "@/lib/lookup/lsj";
 import { coreEntry } from "@/lib/lookup/core";
 import styles from "./Reader.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
 interface Entry { lemma: string; n: number; gloss: string | null; core: number | null }
 
 /** Dictionary words used on this page, most frequent first, with a short LSJ definition. */
-export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
+export default function VocabPanel({ work, doc, pageKeys, onClose, onPick, back }: {
   work: string; doc: TeiDoc; pageKeys: Set<string>; onClose: () => void; onPick: (lemma: string) => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const [list, setList] = useState<Entry[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -45,7 +47,7 @@ export default function VocabPanel({ work, doc, pageKeys, onClose, onPick }: {
   }, [work, doc, pageKeys]);
 
   return (
-    <SidePanel label="Vocabulary for this page" onClose={onClose} focusKey title="Vocabulary for this page" titleClass={styles.vocabTitle} closeLabel="Close vocabulary">
+    <SidePanel label="Vocabulary for this page" onClose={onClose} back={back} onEscape={back?.onBack} focusKey title="Vocabulary for this page" titleClass={styles.vocabTitle} closeLabel="Close vocabulary">
       <p className={styles.fine}>Dictionary words used on this page, most frequent first, counted from GLAUx&apos;s analyses. Definitions from the DCC Greek Core Vocabulary for the commonest words (marked with their rank), otherwise from LSJ.</p>
       {error && <p className="muted">{error}</p>}
       {!list && !error && <p className="muted">Counting the words…</p>}

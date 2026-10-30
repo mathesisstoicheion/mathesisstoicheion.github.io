@@ -67,12 +67,17 @@ test("finds a word's meaning, a place, a lesson, and does what is asked", async 
   await expect(box).toBeVisible();
 });
 
-test("the Greek typeface can be chosen and is remembered; English is always in EB Garamond", async ({ page }) => {
+test("the Greek is always set in Gentium and the English in EB Garamond: Settings has no typeface to choose, and a saved Didot becomes Gentium", async ({ page }) => {
+  // (the quiet desk, ticket 09, the owner, 2026-10-30: GFS Didot leaves the reading choices; titles keep it through their own variable)
   await page.goto("/");
   await (await headerButton(page, "Settings")).click();
   const settings = page.getByRole("dialog", { name: "Settings" });
-  // the printed page has three typefaces and no fourth (redesign SPEC.md 3.2): only the Greek one is a choice
+  // the printed page has three typefaces and no fourth (redesign SPEC.md 3.2): neither the English nor the Greek is a choice
   await expect(settings.getByRole("radiogroup", { name: "English typeface" })).toHaveCount(0);
+  await expect(settings.getByRole("radiogroup", { name: "Greek typeface" })).toHaveCount(0);
+  // the page and the sizes are still there, with a sample of the Greek
+  await expect(settings.getByRole("radiogroup", { name: "Page" })).toBeVisible();
+  await expect(settings.locator("[lang=grc]").first()).toBeVisible();
   // the face a piece of Greek and the English around it are set in
   const faces = () => page.evaluate(() => {
     const g = document.createElement("span");
@@ -83,19 +88,13 @@ test("the Greek typeface can be chosen and is remembered; English is always in E
     g.remove();
     return out;
   });
-  expect((await faces())[0]).toMatch(/gentium/i);
-  await settings.getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Didot/ }).click();
-  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "didot");
-  expect(await faces()).toEqual([expect.stringMatching(/didot/i), expect.stringMatching(/garamond/i)]);
-  // before the first paint after a reload too (the boot script)
+  expect(await faces()).toEqual([expect.stringMatching(/gentium/i), expect.stringMatching(/garamond/i)]);
+  // a Didot saved before the quiet desk (settings version 3) is read as Gentium, before the first paint and after
+  await page.evaluate(() => localStorage.setItem("mathesis:settings", JSON.stringify({ state: { greekFace: "didot", greekSize: 1.5 }, version: 3 })));
   await page.reload();
-  await expect(page.locator("html")).toHaveAttribute("data-greek-face", "didot");
-  expect((await faces())[0]).toMatch(/didot/i);
-  // and back to Gentium, the default
-  await (await headerButton(page, "Settings")).click();
-  await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "Greek typeface" }).getByRole("radio", { name: /Gentium/ }).click();
   await expect(page.locator("html")).not.toHaveAttribute("data-greek-face");
   expect((await faces())[0]).toMatch(/gentium/i);
+  expect(await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings")!).state.greekFace)).toBe("gentium");
 });
 
 test("an unknown address shows the not-found page, with a way into the search", async ({ page }) => {

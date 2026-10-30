@@ -1,12 +1,14 @@
 "use client";
 /**
- * A button that opens a small stone panel beneath it: the reader's Aids, Your marks and More (⋯) in its bar, and
- * Change beside the edition's name under the title. The panel fades in as it rises a few pixels into place (the CSS);
- * it closes on its button, on Escape, on a press anywhere outside it, and when something in it that opens a side panel
- * or leaves the page is chosen (marked data-closes-sheet, as in the phone's aids sheet). It is a disclosure: the panel
- * follows its button, so Tab goes from the button into it.
+ * A button that opens a small stone panel beside it: the reader's Aa, Study and Go to (the foot bar, ReaderBar.tsx, and the top bar
+ * of each of two books side by side or of the floating window; the quiet desk, ticket 09, the owner, 2026-10-30). The panel fades in
+ * as it rises a few pixels into place (the CSS); it closes on its button, on Escape, on a press anywhere outside it, on its own
+ * close button (marked data-drop-close), and when something in it that opens a side panel or leaves the page is chosen (marked
+ * data-closes-sheet, as in the phone's sheet). It is a disclosure: the panel follows its button, so Tab goes from the button into it.
+ * When it closes from inside (Escape, its close button) the keyboard goes back to the button.
  */
 import { useEffect, useRef, type ReactNode } from "react";
+import Icon from "@/components/Icon";
 
 interface Props {
   /** the panel's id, which the button names in aria-controls */
@@ -16,8 +18,10 @@ interface Props {
   /** what the button shows; a chevron follows it unless `chevron` is false */
   label: ReactNode;
   chevron?: boolean;
-  /** the button's name, when what it shows is only a sign (⋯) */
+  /** the button's name, when what it shows is only a sign, or says less than the button does */
   ariaLabel?: string;
+  /** the id of what describes the button (the place the Go to button names, "line 25 of 611") */
+  describedBy?: string;
   title?: string;
   className?: string;
   panelClass?: string;
@@ -26,7 +30,7 @@ interface Props {
   children: ReactNode;
 }
 
-export default function Drop({ id, open, onOpen, label, chevron = true, ariaLabel, title, className, panelClass, panelLabel, children }: Props) {
+export default function Drop({ id, open, onOpen, label, chevron = true, ariaLabel, describedBy, title, className, panelClass, panelLabel, children }: Props) {
   const btn = useRef<HTMLButtonElement>(null), panel = useRef<HTMLDivElement>(null);
   const set = useRef(onOpen);
   useEffect(() => { set.current = onOpen; });
@@ -51,13 +55,17 @@ export default function Drop({ id, open, onOpen, label, chevron = true, ariaLabe
   }, [open]);
   return (
     <>
-      <button ref={btn} type="button" className={className} aria-expanded={open} aria-controls={id} aria-label={ariaLabel} title={title}
+      <button ref={btn} type="button" className={className} aria-expanded={open} aria-controls={id} aria-label={ariaLabel} aria-describedby={describedBy} title={title}
         onClick={() => onOpen(!open)}>
         {label}
-        {chevron && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>}
+        {chevron && <Icon name="chevron-down" />}
       </button>
       <div ref={panel} id={id} className={panelClass} hidden={!open} data-overlay="" role={panelLabel ? "group" : undefined} aria-label={panelLabel}
-        onClick={(e) => { if ((e.target as Element).closest?.("[data-closes-sheet]")) onOpen(false); }}>
+        onClick={(e) => {
+          const t = e.target as Element;
+          if (t.closest?.("[data-drop-close]")) { onOpen(false); btn.current?.focus({ preventScroll: true }); }
+          else if (t.closest?.("[data-closes-sheet]")) onOpen(false);
+        }}>
         {children}
       </div>
     </>

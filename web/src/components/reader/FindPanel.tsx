@@ -13,14 +13,14 @@ import { englishSnippet, findInText, FIND_MAX, greekIndex, pieceText, type FindH
 import { snippet } from "@/lib/search/context";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
 export interface FindMarks { hits: FindHit[]; cur: FindHit | null; seq: number; engSource: string | null }
 
 const LIST_MAX = 200;
 const num = (n: number) => n.toLocaleString("en-GB");
 
-export default function FindPanel({ doc, placed, initial, here, onQuery, onJump, onMarks, onClose }: {
+export default function FindPanel({ doc, placed, initial, here, onQuery, onJump, onMarks, onClose, back }: {
   doc: TeiDoc; placed: Placed[] | null;
   initial: string;
   /** the passage at the top of the page now (an index into doc.units): stepping starts from there */
@@ -29,6 +29,8 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
   onJump: (h: FindHit) => void;
   onMarks: (m: FindMarks | null) => void;
   onClose: () => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const [q, setQ] = useState(initial);
   const dq = useDeferredValue(q);
@@ -75,7 +77,7 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
     : `${i >= 0 ? `${num(i + 1)} of ` : ""}${num(hits.length)}${res.capped ? "+" : ""} ${sc === "grc" ? "in the Greek" : "in the translation"}`;
 
   return (
-    <SidePanel className={`${styles.panel} ${fs.panel}`} data-compact={compact || undefined} label="Find in this text" onClose={onClose}
+    <SidePanel className={`${styles.panel} ${fs.panel}`} data-compact={compact || undefined} label="Find in this text" onClose={onClose} back={back} onEscape={back?.onBack}
       title="Find in this text" titleClass={fs.title} closeLabel="Close find">
 
       <form className={fs.row} role="search" onSubmit={(e) => { e.preventDefault(); step(1); }}>

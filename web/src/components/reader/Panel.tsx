@@ -8,7 +8,11 @@
  *   back to the button that opened it.
  */
 import { forwardRef, useEffect, useImperativeHandle, useRef, type HTMLAttributes, type ReactNode } from "react";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
+
+/** The way back a panel can offer (see Head.back). */
+export type Back = { to: ReactNode; onBack: () => void };
 
 type Head = {
   /** the heading, set as the panel's title */
@@ -21,9 +25,12 @@ type Head = {
   /** what the × says to a screen reader */
   closeLabel?: string;
   closeClass?: string;
-  /** a way back to what the reader came from, at the top-left of the head above the title ("‹ Back to μῆνις": the quiet desk,
-   *  back routes, the owner, 2026-10-29); left out when the panel was opened some other way */
-  back?: { to: ReactNode; onBack: () => void };
+  /** a way back to what the reader came from, at the top-left of the head above the title (the back sign and "Back to μῆνις": the
+   *  quiet desk, back routes, the owner, 2026-10-29; "Back to Study" for a panel opened from the Study menu, ticket 09, 2026-10-30);
+   *  left out when the panel was opened some other way. Where it is given, Escape does what it does (the panel passes onEscape; the
+   *  owner's rule, 2026-10-30), and × closes to the text. (The phone's back gesture is not joined to it yet: only the look-up has
+   *  steps in the browser's history, useBackSteps.ts.) */
+  back?: Back;
 };
 
 function PanelHead({ title, titleClass, titleId, head, headClass, headProps, closeLabel = "Close", closeClass, back, onClose }: Head & { titleId?: string; onClose: () => void }) {
@@ -32,11 +39,11 @@ function PanelHead({ title, titleClass, titleId, head, headClass, headProps, clo
     <div {...headProps} className={headClass ?? styles.panelHead}>
       {back ? (
         <div className={styles.headMain}>
-          <button type="button" className={`text-btn ${styles.headBack}`} onClick={back.onBack}><span aria-hidden="true">‹</span>{" "}Back to {back.to}</button>
+          <button type="button" className={`text-btn ${styles.headBack}`} onClick={back.onBack}><Icon name="back" />Back to {back.to}</button>
           {main}
         </div>
       ) : main}
-      <button type="button" className={`icon-btn ${closeClass ?? styles.x}`} onClick={onClose} aria-label={closeLabel}>×</button>
+      <button type="button" className={`icon-btn ${closeClass ?? styles.x}`} onClick={onClose} aria-label={closeLabel}><Icon name="close" /></button>
     </div>
   );
 }
@@ -74,6 +81,7 @@ export function ModalDialog({ titleId, onClose, className, innerClass, children,
   const close = () => ref.current?.close();
   return (
     <dialog ref={ref} className={className ?? styles.share} aria-labelledby={titleId} onClose={onClose}
+      onCancel={(e) => { if (head.back) { e.preventDefault(); head.back.onBack(); } }}
       onClick={(e) => { if (e.target === ref.current) close(); }}>
       <div className={innerClass ?? styles.shareIn}>
         <PanelHead {...head} titleId={titleId} onClose={close} />

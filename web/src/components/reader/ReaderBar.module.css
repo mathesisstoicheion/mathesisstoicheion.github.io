@@ -1,0 +1,178 @@
+/* The reader's foot bar, and the menus that rise from it (ReaderBar.tsx, AaMenu.tsx, StudyMenu.tsx; the quiet desk, ticket 09, the owner,
+   2026-10-30; mockup B). One book has nothing along its top: the way back, where you are, Aa and Study stand along the foot, the same on a
+   computer and a phone. Paper, a hairline along its top, 56 px tall (the safe area under it as well). On a phone it slips down out of sight as you
+   read on and comes back when you scroll up or tap the paper (ReaderBar.tsx), and stays away while the look-up, a panel's sheet or the passage
+   toolbar stands where it was. Two books side by side and the floating window keep a bar along their top, with the same Aa and Study in it
+   (the .pane* rules below). Spacing, type and layers are the site's tokens only (spacing.test.ts, scripts/check-tokens.mjs). */
+
+/* ------------------------------------------------------------ the bar */
+.foot {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: var(--z-foot);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+  background: var(--bg); box-shadow: var(--rule-over);
+  transition: translate var(--dur) var(--ease), visibility 0s;
+}
+/* the way back at the left, where you are in the middle, Aa and Study at the right */
+.barIn { display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr); align-items: center; column-gap: var(--space-3); min-height: var(--space-7); }
+
+/* the bar's buttons and its link: no frame, ink-2 in the body face, red under the hand (the site's icon-btn, placed and sized here) */
+.quiet, .quiet:global(.icon-btn) {
+  display: inline-flex; align-items: center; gap: var(--space-2); height: auto; min-height: 36px; min-width: 36px; padding: 0 var(--space-2);
+  color: var(--ink-2); font: 400 var(--step-0) / 1 var(--f-body); letter-spacing: 0; text-decoration: none; white-space: nowrap;
+  transition: color var(--dur-quick) var(--ease);
+}
+.quiet:hover, .quiet:global(.icon-btn):hover:not(:disabled) { color: var(--rubric); }
+.quiet[aria-expanded="true"] { color: var(--ink); }
+.back { justify-self: start; margin-left: calc(-1 * var(--space-2)); }
+.tools { justify-self: end; display: flex; align-items: center; gap: var(--space-1); margin-right: calc(-1 * var(--space-2)); }
+.aa { font-size: var(--step-1); }
+/* Study says how many modes are on: a lit dot and the number */
+.onCount { color: var(--accent); font-variant-numeric: lining-nums; }
+.onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: var(--space-1); border-radius: var(--radius-round); background: currentColor; }
+
+/* where you are: the page's name, a thin rule with a short red mark at the place, "line 25 of 611" (the whole is the button for Go to) */
+.where { justify-self: center; gap: var(--space-3); max-width: 100%; min-width: 0; }
+.part { min-width: 0; max-width: 14rem; overflow: hidden; text-overflow: ellipsis; }
+/* (a width, not a flex-basis: the bar's middle is sized by what is in it, and a basis counts for nothing there) */
+.rule { position: relative; flex: 0 1 auto; width: 180px; min-width: var(--space-6); height: var(--hair); background: var(--rule); }
+.mark {
+  position: absolute; top: 50%; left: calc((100% - var(--space-4)) * var(--p, 0)); width: var(--space-4); height: var(--hair-2); translate: 0 -50%;
+  background: var(--rubric); transition: left var(--dur-quick) var(--ease);
+}
+.at { font-size: var(--step--1); font-variant-numeric: oldstyle-nums tabular-nums; }
+
+/* a phone (and a narrow screen under a finger): every control a finger's height, only the place in words, and the bar goes when it is not wanted */
+@media (max-width: 760px), (pointer: coarse) and (max-width: 900px) {
+  .quiet, .quiet:global(.icon-btn) { min-height: var(--tap); min-width: var(--tap); }
+  .part, .rule { display: none; }
+  .at { font-size: var(--step-0); }
+  :global([data-foot="away"]) .foot { translate: 0 100%; visibility: hidden; transition: translate var(--dur) var(--ease), visibility 0s var(--ease) var(--dur); }
+}
+/* the narrower phones: the same four buttons, a little closer, the place in a smaller size; from 380 px down the place has no sign beside it, and
+   from 340 px down the way back is its arrow alone (its name, "Back to the library", is still its label) */
+@media (max-width: 400px) {
+  .barIn { column-gap: var(--space-2); }
+  .quiet, .quiet:global(.icon-btn) { padding-inline: var(--space-1); }
+  .back { margin-left: calc(-1 * var(--space-1)); }
+  .tools { margin-right: calc(-1 * var(--space-1)); }
+  .at { font-size: var(--step--1); }
+}
+@media (max-width: 380px) { .where > :global([data-icon]) { display: none; } }
+@media (max-width: 340px) { .libWord { display: none; } }
+/* the look-up's sheet stands where the bar was, at any width; a panel's sheet on a tablet and a phone; the passage toolbar on a phone */
+:global([data-covers~="lookup"]) .foot { translate: 0 100%; visibility: hidden; }
+@media (max-width: 900px) { :global([data-covers~="panel"]) .foot { translate: 0 100%; visibility: hidden; } }
+@media (max-width: 760px) { :global([data-covers~="toolbar"]) .foot { translate: 0 100%; visibility: hidden; } }
+
+/* ------------------------------------------------------------ the menus: Aa, Study and Go to */
+/* a computer: a leaf of paper rising from the bar (its right end for Aa and Study, its middle for Go to), a hairline frame and a soft shadow under it;
+   a phone: a sheet from the foot of the screen with a handle, no taller than it needs, and the Study sheet scrolls */
+.menu {
+  position: absolute; display: flex; flex-direction: column; overflow: hidden; text-align: left;
+  background: var(--bg); color: var(--ink); box-shadow: var(--rule-box), var(--shadow-leaf);
+  animation: menu-in var(--dur) var(--ease) backwards;
+}
+.menu[hidden] { display: none; }
+@keyframes menu-in { from { opacity: 0; } }
+@keyframes sheet-in { from { opacity: 0; translate: 0 var(--space-5); } }
+.footMenu {
+  right: max(var(--gutter), env(safe-area-inset-right, 0px)); bottom: calc(100% + var(--space-2)); width: min(26rem, calc(100vw - 2 * var(--gutter)));
+  max-height: calc(100dvh - var(--foot-h, var(--space-7)) - var(--space-6));
+}
+.aaMenu { width: min(22rem, calc(100vw - 2 * var(--gutter))); }
+.gotoMenu { right: auto; left: 50%; translate: -50% 0; width: min(22rem, calc(100vw - 2 * var(--gutter))); }
+/* the name, and the close: in the head of every menu, whichever way it opened */
+.head { position: relative; flex: none; display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-1) var(--space-2) var(--space-1) var(--space-4); box-shadow: var(--rule-under); }
+.title { margin: 0; font: 400 var(--step-sub) / 1.2 var(--f-body); letter-spacing: 0; color: var(--ink); }
+.close:global(.icon-btn) { font-size: var(--step-1); }
+.grab { display: none; position: absolute; top: var(--space-2); left: 50%; width: var(--space-7); height: var(--space-1); translate: -50% 0; background: var(--ink-3); opacity: 0.5; pointer-events: none; }
+.body { flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: var(--space-3); padding: var(--space-4); }
+/* a phone: the sheet (after the rules above, which it adjusts) */
+@media (max-width: 760px), (pointer: coarse) and (max-width: 900px) {
+  .footMenu, .aaMenu, .gotoMenu {
+    left: 0; right: 0; bottom: 0; translate: none; width: auto; max-height: 82dvh; padding-bottom: env(safe-area-inset-bottom, 0px);
+    box-shadow: var(--rule-over), var(--shadow-sheet); animation: sheet-in var(--dur) var(--ease) backwards;
+  }
+  .head { padding-top: var(--space-4); }
+  .grab { display: block; }
+}
+
+/* Go to: the page, and a reference to type */
+.field { display: grid; gap: var(--space-1); }
+.field > :global(.label) { display: inline-flex; align-items: center; gap: var(--space-2); }
+.field select { width: 100%; max-width: none; }
+.gotoRow { display: flex; gap: var(--space-2); align-items: center; }
+.gotoRow input { flex: 1; min-width: 0; }
+
+/* ------------------------------------------------------------ Study: groups of rows */
+.study { padding: 0 0 var(--space-3); gap: 0; }
+.group { display: grid; }
+.groupLabel { margin: 0; padding: var(--space-4) var(--space-4) var(--space-1); }
+.group:first-child > .groupLabel { padding-top: var(--space-3); }
+/* a row: the tool's sign and name (and, under it, one quiet line) at the left, its state at the right, a hairline under it; a button or a link */
+.row {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3); width: 100%;
+  min-height: calc(var(--space-6) + var(--space-1)); padding: var(--space-2) var(--space-4); background: none; border: 0; border-radius: var(--radius);
+  box-shadow: var(--rule-under); color: var(--ink); font: inherit; font-size: var(--step-0); line-height: 1.3; text-align: left; text-decoration: none;
+  transition: color var(--dur-quick) var(--ease);
+}
+.row:hover { color: var(--rubric); }
+.row[aria-expanded="true"], .row[aria-pressed="true"] { color: var(--ink); }
+.row[aria-expanded="true"]:hover, .row[aria-pressed="true"]:hover { color: var(--rubric); }
+.rowSign { color: var(--ink-2); }
+.rowText { min-width: 0; display: grid; gap: var(--hair-2); overflow-wrap: anywhere; text-wrap: pretty; }
+.rowNote { font-size: var(--step--1); line-height: 1.35; color: var(--ink-2); }
+.rowState { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-3); font-size: var(--step--1); }
+.row:hover .rowState { color: var(--rubric); }
+.count { color: var(--ink-2); font-variant-numeric: lining-nums tabular-nums; }
+@media (pointer: coarse) { .row { min-height: var(--tap); } }
+/* a mode is a switch that stays on or off, its knob across and lit when on */
+.switch {
+  position: relative; flex: none; width: 26px; height: 15px; border-radius: var(--radius-round); border: 1px solid var(--rule);
+  transition: background-color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
+}
+.switch::before {
+  content: ""; position: absolute; top: var(--hair-2); left: var(--hair-2); width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--ink-2);
+  transition: background-color var(--dur-quick) var(--ease), translate var(--dur-quick) var(--ease);
+}
+.row[aria-pressed="true"] .switch { background: var(--accent); border-color: var(--accent); }
+.row[aria-pressed="true"] .switch::before { translate: 11px 0; background: var(--bg); }
+/* what a row opens in place, under it */
+.fold { display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-4); background: var(--bg-2); box-shadow: var(--rule-under); }
+.fold > .row { padding-inline: 0; }
+.fold > .row:last-child { box-shadow: none; }
+/* the edition and the translation: each a name and its menu on a line */
+.pick { display: grid; grid-template-columns: minmax(0, 7rem) minmax(0, 1fr); align-items: center; gap: var(--space-2); padding: var(--space-2) var(--space-4); box-shadow: var(--rule-under); }
+.fold .pick { padding: 0; box-shadow: none; grid-template-columns: minmax(0, 1fr); }
+.pick select { width: 100%; max-width: none; min-width: 0; font-size: var(--step--1); padding: var(--space-2); }
+/* your notes and marks, in place */
+.marksList { list-style: none; margin: 0; padding: 0; display: grid; }
+.marksList li > button {
+  width: 100%; display: grid; gap: var(--hair-2); text-align: left; padding: var(--space-2) 0; background: transparent; border: 0; border-radius: var(--radius);
+  box-shadow: var(--rule-under); color: var(--ink);
+}
+.marksList li:last-child > button { box-shadow: none; }
+.marksList li > button:hover { color: var(--rubric); }
+.marksEmpty { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
+/* the keys are for a keyboard: not on a narrow screen, where the old Keys button was not either */
+@media (max-width: 900px) { .keys { display: none; } }
+
+/* ------------------------------------------------------------ the top bar of each book when two stand side by side, and of the floating window */
+/* Find and Listen are buttons in that bar on a wide screen, so their rows are left out of its Study (they were a chip in the phone's sheet only) */
+@media (min-width: 761px) { .inBar { display: none; } }
+.paneBtn:global(.chip) { min-height: 36px; font-size: var(--step--1); }
+.paneMenu { top: calc(100% + var(--space-1)); right: max(var(--gutter), env(safe-area-inset-right, 0px)); width: min(26rem, calc(100% - 2 * var(--gutter))); max-height: min(70vh, 40rem); }
+.paneMenu.aaMenu { width: min(22rem, calc(100% - 2 * var(--gutter))); }
+/* the page and Go to, in a book's own bar */
+.whereRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2) var(--space-3); }
+.pager { display: flex; align-items: center; gap: var(--space-1); }
+.pager select { font: inherit; font-size: var(--step--1); color: var(--ink); border-radius: var(--radius); padding: var(--space-2); max-width: min(360px, 90vw); }
+.goto { display: flex; gap: var(--space-1); align-items: center; }
+.goto input { width: 150px; font: inherit; font-size: var(--step--1); color: var(--ink); border-radius: var(--radius); padding: var(--space-2); }
+/* a narrow bar: the page and Go to share the first row */
+@media (max-width: 680px) {
+  .pager select { max-width: 42vw; }
+  .goto { flex: 1; min-width: 0; }
+  .goto input { flex: 1; min-width: 0; width: auto; }
+}
+@media (pointer: coarse) { .goto input { min-height: var(--tap); } }

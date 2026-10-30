@@ -3,7 +3,7 @@
 //   close - close on Escape
 //   focus - give the keyboard back to the button that opened it
 // It opens each one at a computer and a phone size: the site's menu, the search, the settings, and in the reader the
-// Aa panel, Tools, Marks, More (⋯) and the word panel.
+// Aa panel, Study, Go to (all three rise from the foot bar: the quiet desk, ticket 09, the owner, 2026-10-30) and the word panel.
 // usage: node web/scripts/check-overlays.mjs <base-url> [filter]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
 
@@ -18,11 +18,10 @@ const OVERLAYS = [
   // below 1040 px the search, like Settings, is inside the menu (the printed page's header: redesign SPEC.md 3.5, 3.6)
   { name: "search", page: "/stoa", trigger: SEARCH, viaMenu: 'header button[aria-label="Menu"]', panel: 'dialog[open], [role="dialog"]' },
   { name: "settings", page: "/stoa", trigger: 'header button[aria-label="Settings"]', viaMenu: 'header button[aria-label="Menu"]', panel: 'dialog[open], [role="dialog"]' },
-  // on a phone, Aa and your marks are inside More (review fix list, slice 8), which is checked below
-  { name: "reader Aa", page: READER, trigger: 'button[aria-label="Page and text"]', panel: "controls", computerOnly: true },
-  { name: "reader Tools", page: READER, trigger: 'button:text-matches("^Tools")', panel: "controls" },
-  { name: "reader Marks", page: READER, trigger: 'button:text-matches("^(Marks|Your marks)")', panel: "controls", computerOnly: true },
-  { name: "reader More", page: READER, trigger: 'button[aria-label="More"]', panel: "controls" },
+  // the reader's one bar stands along the foot (ReaderBar.tsx): Aa, Study and Go to rise from it as a leaf on a computer and a sheet on a phone
+  { name: "reader Aa", page: READER, trigger: 'button[aria-label="Aa, page and text"]', panel: "controls" },
+  { name: "reader Study", page: READER, trigger: 'button:text-matches("^Study")', panel: "controls" },
+  { name: "reader Go to", page: READER, trigger: 'button[aria-label="Go to a line or book"]', panel: "controls" },
   { name: "word panel", page: READER, trigger: '[data-u="1.1"] [data-w]:nth-child(2)', panel: 'aside[aria-label^="Look-up"]' },
 ].filter((o) => o.name.includes(only));
 const SIZES = [[1024, 768, "computer"], [375, 812, "phone"]];
@@ -45,6 +44,8 @@ for (const [w, h, size] of SIZES) {
       await page.waitForTimeout(800);
       await page.evaluate(() => scrollTo(0, Math.min(500, document.documentElement.scrollHeight - innerHeight)));
       await page.waitForTimeout(300);
+      // (on a phone the foot bar slips away as the page is read on and comes back with a scroll up, as it does for a reader)
+      if (o.page.startsWith("/read")) { await page.evaluate(() => scrollBy(0, -30)); await page.waitForTimeout(500); }
       let trigger = await firstVisible(page, o.trigger);
       let returnTo = trigger;
       if (!trigger && o.viaMenu) {   // a phone keeps it inside the menu

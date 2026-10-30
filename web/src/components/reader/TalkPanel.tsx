@@ -8,10 +8,12 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { threadsAbout, quoteStart, type PassageThread } from "@/lib/community/data";
 import styles from "./Reader.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
-export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
+export default function TalkPanel({ work, pageKeys, onJump, onClose, back }: {
   work: string; pageKeys: Set<string>; onJump: (ref: string) => void; onClose: () => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const [all, setAll] = useState<PassageThread[] | null>(null);
   const [error, setError] = useState(false);
@@ -25,7 +27,7 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose }: {
   const elsewhere = (all?.length ?? 0) - here.length;
 
   return (
-    <SidePanel label="Talk about this passage" onClose={onClose} focusKey title="Talk about this passage" titleClass={styles.vocabTitle} closeLabel="Close talk about this passage">
+    <SidePanel label="Talk about this passage" onClose={onClose} back={back} onEscape={back?.onBack} focusKey title="Talk about this passage" titleClass={styles.vocabTitle} closeLabel="Close talk about this passage">
       <p className={styles.fine}>Questions asked in the Agora about the passages on this page.</p>
       {error && <p className="muted">The Agora could not be reached just now. Try again in a moment.</p>}
       {!all && !error && <p className="muted">Looking in the Agora…</p>}

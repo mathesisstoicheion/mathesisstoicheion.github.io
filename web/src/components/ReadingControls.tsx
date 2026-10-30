@@ -1,41 +1,31 @@
 "use client";
 /**
- * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the page (Paper or Night), the
- * Greek typeface, the size of the Greek and the line spacing. Settings shows it under Reading and the
- * reader's Aa panel shows the same controls, so a change in either is the same change, made the same way.
+ * How the Greek is read, in one place (review fixes, slice 5: "use one component for both"): the page (Paper or Night), the size of
+ * the Greek and the line spacing. Settings shows it under Reading, with a sample of the Greek (`sample`), and the reader's Aa shows
+ * the same controls, with the columns after them (`children`), so a change in either is the same change, made the same way. The Greek
+ * typeface is not a choice here any more (the quiet desk, ticket 09, the owner, 2026-10-30): the Greek is Gentium, and GFS Didot is the
+ * face of titles only. Each choice is named in the site's small label style, with its sign.
  */
-import { useSettings, LIMITS, type ThemePref, type GreekFace } from "@/lib/settings";
+import type { ReactNode } from "react";
+import Icon, { type IconName } from "@/components/Icon";
+import { useSettings, LIMITS, type ThemePref } from "@/lib/settings";
 import styles from "./SettingsPanel.module.css";
 
 // the page follows the device's light or dark mode, unless Paper or Night is chosen for good (redesign decision 2)
 export const PAGES: [ThemePref, string][] = [["auto", "Follow device"], ["paper", "Paper"], ["night", "Night"]];
-/** Each choice shown in its own typeface (the font variables come from layout.tsx). */
-const GREEK_FACES: { v: GreekFace; name: string; about: string; font: string }[] = [
-  { v: "gentium", name: "Gentium", about: "A book face made for scholarly Greek", font: "var(--font-gentium)" },
-  { v: "didot", name: "Didot", about: "The Greek of the old Didot editions", font: "var(--font-didot)" },
-];
 
-export function FacePicker<T extends string>({ label, value, options, sample, lang, onChange }:
-  { label: string; value: T; options: { v: T; name: string; about?: string; font: string }[]; sample: string; lang?: string; onChange: (v: T) => void }) {
-  return (
-    <div className={styles.faces} role="radiogroup" aria-label={label}>
-      {options.map((o) => (
-        <button key={o.v} type="button" role="radio" aria-checked={value === o.v} onClick={() => onChange(o.v)} className={styles.face}>
-          <span className={styles.faceSample} lang={lang} style={{ fontFamily: o.font }}>{sample}</span>
-          <span className={styles.faceName}>{o.name}</span>
-          {o.about && <span className={styles.faceAbout}>{o.about}</span>}
-        </button>
-      ))}
-    </div>
-  );
+/** The name of a choice, in the small spaced capitals the site's other labels are set in, with its sign. */
+export function Choice({ icon, children }: { icon: IconName; children: ReactNode }) {
+  return <span className={`label ${styles.choice}`}><Icon name={icon} />{children}</span>;
 }
 
-export function Segmented<T extends string>({ label, value, options, onChange }:
-  { label: string; value: T; options: [T, string][]; onChange: (v: T) => void }) {
+/** A row of choices, one of them chosen; a choice that cannot be made now is greyed (`unavailable`). */
+export function Segmented<T extends string>({ label, value, options, onChange, unavailable }:
+  { label: string; value: T; options: [T, string][]; onChange: (v: T) => void; unavailable?: (v: T) => boolean }) {
   return (
     <div className={styles.seg} role="radiogroup" aria-label={label}>
       {options.map(([v, text]) => (
-        <button key={v} type="button" role="radio" aria-checked={value === v} onClick={() => onChange(v)}>{text}</button>
+        <button key={v} type="button" role="radio" aria-checked={value === v} disabled={unavailable?.(v)} onClick={() => onChange(v)}>{text}</button>
       ))}
     </div>
   );
@@ -52,27 +42,33 @@ export function Stepper({ label, value, display, onChange, step, min, max }:
   );
 }
 
-export default function ReadingControls() {
+export default function ReadingControls({ sample = false, children }: {
+  /** Settings: a few lines of Greek between the page and the sizes, as it will read */
+  sample?: boolean;
+  /** the reader's Aa: what comes after (the columns) */
+  children?: ReactNode;
+}) {
   const s = useSettings();
   return (
     <>
-      <span className={styles.subLabel}>The page</span>
-      <Segmented label="The page" value={s.theme} options={PAGES} onChange={(theme) => s.set({ theme })} />
-      <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
-        μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
-      </p>
-      <span className={styles.subLabel}>Greek typeface</span>
-      <FacePicker label="Greek typeface" value={s.greekFace} options={GREEK_FACES} sample="Ἀχιλλεύς" lang="grc" onChange={(greekFace) => s.set({ greekFace })} />
+      <Choice icon="contrast">Page</Choice>
+      <Segmented label="Page" value={s.theme} options={PAGES} onChange={(theme) => s.set({ theme })} />
+      {sample && (
+        <p className={styles.sample} lang="grc" style={{ fontSize: `${s.greekSize}rem`, lineHeight: s.leading }}>
+          μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος<br />οὐλομένην, ἣ μυρίʼ Ἀχαιοῖς ἄλγεʼ ἔθηκε
+        </p>
+      )}
       <div className={styles.row}>
-        <span>Greek text size</span>
+        <Choice icon="text-size">Greek size</Choice>
         <Stepper label="Greek text size" value={s.greekSize} display={`${Math.round(s.greekSize * 16)} px`}
           onChange={(greekSize) => s.set({ greekSize })} {...LIMITS.greekSize} />
       </div>
       <div className={styles.row}>
-        <span>Line spacing</span>
+        <Choice icon="line-height">Line spacing</Choice>
         <Stepper label="line spacing" value={s.leading} display={s.leading.toFixed(1)}
           onChange={(leading) => s.set({ leading: Math.round(leading * 10) / 10 })} {...LIMITS.leading} />
       </div>
+      {children}
     </>
   );
 }

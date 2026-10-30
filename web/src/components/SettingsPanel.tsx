@@ -77,7 +77,7 @@ export default function SettingsPanel() {
 
         <section className={styles.group}>
           <h3 className="label">Reading</h3>
-          <ReadingControls />
+          <ReadingControls sample />
         </section>
 
         <section className={styles.group}>

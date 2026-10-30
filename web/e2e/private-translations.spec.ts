@@ -1,7 +1,7 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
-import { openAids, openChange } from "./reader-menus";
+import { openGoto, openStudy } from "./reader-menus";
 import { FORUM_OPEN } from "../src/config/areas";
 import { expectLook, LOOKS, type Look } from "./look";
 
@@ -391,18 +391,19 @@ test("a private translation opens in the reader, with the reading aids and its t
   await expect(text.getByText("1a10")).toBeVisible();
   await expect(text.getByText("Placeholder sentence one.")).toBeVisible();
   await expect(text.getByText("Placeholder heading one")).toBeVisible();
-  await expect((await openAids(page)).getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
-  // the two Englishes, as the translation menu's choices
-  await openChange(page);
+  await expect((await openGoto(page)).getByRole("combobox", { name: "Page" })).toContainText("1. Placeholder heading one");
+  await page.keyboard.press("Escape");
+  // the two Englishes, as the translation menu's choices (under Edition and translation in Study)
+  await openStudy(page);
   const tr = page.getByRole("combobox", { name: "Translation" });
   await expect(tr.locator("option")).toHaveText(["None", "Our English", "Published English"]);
   await tr.selectOption({ label: "Published English" });
   await expect(text.getByText("Published placeholder one.")).toBeVisible();
   await expect(text.getByText("Placeholder sentence one.")).toHaveCount(0);
   // the forum and the manuscripts are not offered; the notes are a step away
-  await openAids(page);
+  await openStudy(page);
   await expect(page.getByRole("button", { name: "Talk about it" })).toHaveCount(0);
-  await expect(page.getByRole("button", { name: "Manuscript" })).toHaveCount(0);
+  await expect(page.getByRole("button", { name: "How it was written" })).toHaveCount(0);
   await expect(page.getByRole("link", { name: "Notes and comparison" }).first()).toHaveAttribute("href", "/treasury/translations?id=placeholder-one");
   await text.locator("[data-row]").first().click();
   await expect(page.getByRole("toolbar", { name: "Passage actions" })).toBeVisible();
@@ -439,9 +440,8 @@ test("the private collection button lists the shelf, and a book chosen there ope
   await dialog.getByRole("button", { name: /Placeholder Work One/ }).click();
   await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-one$/);
   await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
-  // from inside a book, too (under Change, beside the edition's name), with the book being read marked
-  await openChange(page);
-  await page.getByRole("button", { name: "Private collection" }).first().click();
+  // from inside a book, too (under Edition and translation in Study), with the book being read marked
+  await (await openStudy(page)).getByRole("button", { name: "Private collection" }).click();
   await expect(dialog.getByRole("button", { name: /Placeholder Work One/ })).toContainText("Reading now");
   await dialog.getByRole("button", { name: /Placeholder Work Three/ }).click();
   await expect(page).toHaveURL(/\/read\?w=mine(:|%3A)placeholder-three$/);
@@ -469,7 +469,7 @@ test("a text typed in is checked, saved in the private collection and opened in 
   expect(db.saved[0].id).toBe("placeholder-import");
   expect((db.saved[0].doc as { status: string; passages: unknown[] }).status).toBe("imported");
   await expect(page.locator("article").getByText("Placeholder two.")).toBeVisible();
-  await openChange(page);
+  await openStudy(page);
   await expect(page.getByRole("combobox", { name: "Translation" }).locator("option")).toHaveText(["None", "English"]);
 });
 
@@ -509,8 +509,7 @@ for (const look of LOOKS) {
     await page.goto("/read?w=mine:placeholder-one");
     await expect(page.locator("article").getByText("Placeholder sentence one.")).toBeVisible();
     await check();
-    await openChange(page);
-    await page.getByRole("button", { name: "Private collection" }).first().click();
+    await (await openStudy(page)).getByRole("button", { name: "Private collection" }).click();
     await expect(page.getByRole("dialog", { name: "Private collection" }).getByRole("button", { name: /Placeholder Work Three/ })).toBeVisible();
     await check();
     await page.getByRole("tab", { name: "Import a text" }).click();

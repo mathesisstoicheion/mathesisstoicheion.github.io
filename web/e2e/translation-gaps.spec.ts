@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { openAa } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // Passages a translation leaves out are said to be untranslated (not a fault), and translations that number or
@@ -17,8 +18,8 @@ test("a page the translation does not cover says so, and so does a single verse 
   await page.goto("/read?w=tlg0031.tlg003&at=17.36");
   await expect(page.getByRole("note", { name: "About the translation on this page" })).toContainText("Some passages on this page have no English.", { timeout: 30_000 });
   await expect(page.locator('[data-key="17.36"] [data-untranslated]')).toBeVisible();
-  // English only: the left-out verse still says why it is empty
-  await page.getByRole("radio", { name: "English", exact: true }).click();
+  // English only (a choice in Aa, the quiet desk, ticket 09): the left-out verse still says why it is empty
+  await (await openAa(page)).getByRole("radio", { name: "English", exact: true }).click();
   await expect(page.locator('[data-key="17.36"] [data-untranslated]')).toBeVisible();
 });
 

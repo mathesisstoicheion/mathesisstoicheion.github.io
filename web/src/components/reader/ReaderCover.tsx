@@ -5,9 +5,11 @@
  * fleuron between two red rules, and the editions in small print. No photograph: the owner, 2026-10-26, wants none that
  * only decorates ("no useless photos plastered everywhere"). Everything inks in once, then nothing moves. It opens a book
  * only the first time it is opened on this device (lib/opened.ts; the quiet desk, ticket 08, the owner, 2026-10-30); after
- * that the book opens on the one-line title (ReaderTitle.tsx).
+ * that the book opens on the one-line title (ReaderTitle.tsx). The editions stand under it as plain words; the choices are in Study.
  */
+import Link from "next/link";
 import { useEffect, useState, type ReactNode } from "react";
+import { AREAS } from "@/config/areas";
 import { loadAuthorNames } from "@/lib/authors-meta";
 import styles from "./Reader.module.css";
 
@@ -26,12 +28,14 @@ export default function ReaderCover({ title, greek, author, authorId, orig, seal
   const [authorGr, setAuthorGr] = useState<string | null>(null);
   useEffect(() => { if (authorId) loadAuthorNames().then((n) => setAuthorGr(n[authorId]?.grc ?? null)); }, [authorId]);
   const big = greekTitle(greek);
+  const name = authorGr ? <><span lang="grc" aria-hidden="true">{titleCaps(authorGr)}</span><span className="visually-hidden">{author}</span></> : author;
 
   return (
     <header className={`${styles.tp} enter`} data-cover="">
       {author && (
         <p className={styles.tpAu}>
-          {authorGr ? <><span lang="grc" aria-hidden="true">{titleCaps(authorGr)}</span><span className="visually-hidden">{author}</span></> : author}
+          {/* the author's name is a link to the author's page, as in the one-line title (the quiet desk, ticket 09, the owner, 2026-10-30) */}
+          {authorId ? <Link href={`${AREAS.library.href}/author?a=${authorId}`} transitionTypes={["page-turn"]}>{name}</Link> : name}
         </p>
       )}
       {/* the Greek title, large; the heading also carries the English one for screen readers and search engines, shown under it */}

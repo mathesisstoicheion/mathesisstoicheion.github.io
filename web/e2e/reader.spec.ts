@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { aid, openAids } from "./reader-menus";
+import { aid, openGoto } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // These tests read texts from GitHub, so they need a connection.
@@ -21,12 +21,12 @@ test("the reader shows the Iliad with Murray's translation beside it", async ({ 
 
 test("going to a reference opens the right book", async ({ page }) => {
   await openIliad(page);
-  const tools = await openAids(page);   // the page and Go to wait in Tools (the reader's own bar)
-  await tools.getByLabel("Go to reference").fill("2.1");
-  await tools.getByRole("button", { name: "Go", exact: true }).click();
+  const goto = await openGoto(page);   // the middle of the foot bar says where you are, and opens Go to: the page, and a reference to type
+  await goto.getByLabel("Go to reference").fill("2.1");
+  await goto.getByRole("button", { name: "Go", exact: true }).click();
   await expect(page.locator('[data-u="2.1"]')).toBeVisible();
-  // Go puts Tools away; the page shown there is the second book's
-  await expect((await openAids(page)).getByRole("combobox", { name: "Page" })).toHaveValue("1");
+  // Go puts the menu away; the page shown there is the second book's
+  await expect((await openGoto(page)).getByRole("combobox", { name: "Page" })).toHaveValue("1");
 });
 
 test("clicking a word shows its analysis in this passage and its LSJ entry", async ({ page }) => {

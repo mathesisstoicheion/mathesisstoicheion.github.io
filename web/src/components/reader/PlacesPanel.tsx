@@ -11,7 +11,7 @@ import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import type { TeiDoc } from "@/lib/tei/types";
 import styles from "./Places.module.css";
 import rs from "./Reader.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
 type Marks = Map<string, Set<string>>;
 interface ViewBox { x: number; y: number; w: number; h: number }
@@ -62,9 +62,11 @@ function fit(base: Base, pts: [number, number][]): ViewBox {
  * Places named on this page of Greek: a small map of them (the Periplus's own sea, no outside tiles)
  * and a list, each with the passages that name it. The words themselves are marked in the text.
  */
-export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onClose }: {
+export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onClose, back }: {
   work: string; doc: TeiDoc; pageKeys: Set<string>;
   onJump: (ref: string) => void; onMarks: (m: Marks | null) => void; onClose: () => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const [list, setList] = useState<PagePlace[] | null>(null);
   const [base, setBase] = useState<Base | null>(null);
@@ -150,7 +152,7 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
   const shown = useMemo(() => (list && byCount ? [...list].sort((a, b) => b.n - a.n) : list), [list, byCount]);
 
   return (
-    <SidePanel label="Places on this page" onClose={onClose} focusKey title="Places on this page" titleClass={styles.title} closeLabel="Close places">
+    <SidePanel label="Places on this page" onClose={onClose} back={back} onEscape={back?.onBack} focusKey title="Places on this page" titleClass={styles.title} closeLabel="Close places">
 
       {base && view && (
         <div ref={setMapBox} className={styles.map} data-empty={list && !list.length ? "" : undefined} data-many={list && list.length > 20 ? "" : undefined}>

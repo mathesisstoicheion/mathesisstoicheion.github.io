@@ -39,7 +39,7 @@ export function rank<T>(items: T[], query: string, texts: (x: T) => { main: stri
 /** Something the search can do rather than a page it can open. */
 export type ActionId =
   | "theme-dark" | "theme-light" | "theme-auto" | "settings" | "bigger" | "smaller"
-  | "face-didot" | "face-gentium" | "motion-reduce" | "motion-auto";
+  | "motion-reduce" | "motion-auto";
 
 export interface Action { id: ActionId; label: string; words: string[] }
 
@@ -50,8 +50,7 @@ export const ACTIONS: Action[] = [
   { id: "theme-auto", label: "The page: follow this device", words: ["auto", "system", "device", "follow", "theme"] },
   { id: "bigger", label: "Bigger Greek text", words: ["bigger", "larger", "zoom in", "text size", "font size", "size"] },
   { id: "smaller", label: "Smaller Greek text", words: ["smaller", "zoom out", "text size", "font size", "size"] },
-  { id: "face-gentium", label: "Greek typeface: Gentium", words: ["gentium", "typeface", "font"] },
-  { id: "face-didot", label: "Greek typeface: Didot", words: ["didot", "typeface", "font"] },
+  // (no choice of Greek typeface: the Greek is Gentium, and GFS Didot is for titles; the quiet desk, ticket 09, the owner, 2026-10-30)
   { id: "motion-reduce", label: "Movement: off (nothing inks in)", words: ["reduce motion", "animation", "motion", "still", "performance", "slow", "lag"] },
   { id: "motion-auto", label: "Movement: ink-in, as this device allows", words: ["animation", "motion", "ink"] },
   { id: "settings", label: "Open Settings", words: ["settings", "preferences", "options", "line spacing", "vibration", "offline"] },

@@ -113,6 +113,12 @@
   /* layers: just above the header */
   --z-over-header: 31;
   --z-bar: 5;
+  /* the reader's foot bar and the menus that rise from it (the quiet desk, ticket 09, the owner, 2026-10-30): above the side panels (40) and
+     Listen's player (45), under the passage toolbar (55) */
+  --z-foot: 46;
+  /* a small leaf of paper laid over the page, and a sheet rising from the foot of the screen (the reader's Aa, Study and Go to) */
+  --shadow-leaf: 0 18px 40px -22px var(--shadow);
+  --shadow-sheet: 0 -8px 24px -16px var(--shadow);
 
   /* layout. The type area fills a computer's screen as it fills a sheet, inside a margin of a twentieth of the window
      either side (the owner, 2026-10-23: "the pc version also doesn't use a lot of the available space on the page";

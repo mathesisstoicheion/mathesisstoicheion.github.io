@@ -37,6 +37,24 @@ export function holdBars(ms = 3000) {
 }
 
 /**
+ * The reader's foot bar has a hold and a "bring it back" of its own (the quiet desk, ticket 09, the owner, 2026-10-30), so that what keeps it
+ * showing does not change what the site's header does: a jump the reader asked for (Go to, Find, a mark, a page turn) keeps the foot bar
+ * showing through the scrolling that follows, a tap on the paper brings it back, and the header goes on tucking itself away as before.
+ * ReaderBar.tsx listens.
+ */
+let footHeldUntil = 0;
+export const footHeld = () => performance.now() < footHeldUntil;
+export const showFoot = () => dispatchEvent(new CustomEvent("mathesis:foot", { detail: false }));
+export function holdFoot(ms = 3000) {
+  footHeldUntil = performance.now() + ms;
+  showFoot();
+  const USER = ["wheel", "touchstart", "pointerdown", "keydown"] as const;
+  const release = () => { footHeldUntil = 0; USER.forEach((e) => removeEventListener(e, release, true)); };
+  // after this click has finished: its own pointer events must not end the hold at once
+  setTimeout(() => USER.forEach((e) => addEventListener(e, release, { capture: true, passive: true, once: true })), 0);
+}
+
+/**
  * Scroll the window so `el` sits `gap` pixels below the top, clear of the header. Scrolling down
  * past the header tucks it away and scrolling up brings it back, so the place to scroll to depends
  * on which way the jump goes: plain scrollIntoView with a fixed scroll-margin would leave a gap

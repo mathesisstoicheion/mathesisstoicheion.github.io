@@ -3,10 +3,10 @@
 import { useDeferredValue, useEffect, useMemo, useState } from "react";
 import { loadCatalog, fold, greekEditions, hasTranslation, type CatalogIndex } from "@/lib/catalog";
 import styles from "./Reader.module.css";
-import { ModalDialog } from "./Panel";
+import { ModalDialog, type Back } from "./Panel";
 
 /** Choose a work to open in the second pane. */
-export default function WorkPicker({ onPick, onClose }: { onPick: (work: string) => void; onClose: () => void }) {
+export default function WorkPicker({ onPick, onClose, back }: { onPick: (work: string) => void; onClose: () => void; back?: Back }) {
   const [idx, setIdx] = useState<CatalogIndex | null>(null);
   const [q, setQ] = useState("");
   const query = useDeferredValue(q);
@@ -26,7 +26,7 @@ export default function WorkPicker({ onPick, onClose }: { onPick: (work: string)
   }, [idx, query]);
 
   return (
-    <ModalDialog titleId="picker-title" title="Open a second book" onClose={onClose}>
+    <ModalDialog titleId="picker-title" title="Open a second book" onClose={onClose} back={back}>
         <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} id="picker-search" type="search" className={styles.pickerInput} value={q} onChange={(e) => setQ(e.target.value)}
           placeholder="Search authors and works (English or Greek)" aria-label="Search for a work" autoFocus />
         <ul className={styles.pickerList}>

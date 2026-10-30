@@ -69,10 +69,16 @@ export const useSettings = create<SettingsStore>()(
       name: STORAGE_KEY,
       storage: createJSONStorage(() => safeStorage),
       partialize: ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }) => ({ theme, motion, greekSize, leading, columns, translit, cases, metre, tryFirst, fitLines, vibrate, pron, markers, greekFace }),
-      // version 1: the settings of Gold and lamplight; version 2: the printed page's; version 3: the quiet desk's, Greek alone
-      // (migrate, below)
-      version: 3,
-      migrate: (saved, version) => (version < 3 ? greekAlone(version < 2 ? upgrade(saved) : saved) : saved) as SettingsStore,
+      // version 1: the settings of Gold and lamplight; version 2: the printed page's; version 3: the quiet desk's, Greek alone;
+      // version 4: the quiet desk's, no typeface to choose (migrate, below)
+      version: 4,
+      migrate: (saved, version) => {
+        let s: unknown = saved;
+        if (version < 2) s = upgrade(s);
+        if (version < 3) s = greekAlone(s);
+        if (version < 4) s = gentiumOnly(s);
+        return s as SettingsStore;
+      },
       skipHydration: true,
     },
   ),
@@ -99,6 +105,16 @@ export function upgrade(saved: unknown): Partial<Settings> {
 export function greekAlone(saved: unknown): Partial<Settings> {
   const p = { ...((saved ?? {}) as Partial<Settings>) };
   return p.columns === "both" ? { ...p, columns: "greek" } : p;
+}
+
+/**
+ * Settings saved before the typeface left the reading choices (version 3 or earlier): a saved GFS Didot becomes Gentium, the
+ * Greek's one face (the quiet desk, ticket 09, the owner, 2026-10-30: "no typeface choice in Aa"). Didot stays the face of titles,
+ * through its own font variable; nothing else of it is touched.
+ */
+export function gentiumOnly(saved: unknown): Partial<Settings> {
+  const p = { ...((saved ?? {}) as Partial<Settings>) };
+  return p.greekFace === "didot" ? { ...p, greekFace: "gentium" } : p;
 }
 
 /** The colour of the browser's own bar on phones (and of an installed app's title bar): the paper, and the night page. */
@@ -140,4 +156,4 @@ var t=o?(s.theme==="light"?"paper":""):s.theme;if(t==="paper"||t==="night"){e.se
 if(s.motion==="reduce"||(o&&s.level==="performance"))e.setAttribute("data-motion","reduce");else if(s.motion==="full")e.setAttribute("data-motion","full");
 if(s.greekSize)e.style.setProperty("--greek-size",s.greekSize+"rem");
 if(s.leading)e.style.setProperty("--reading-leading",String(s.leading));
-if(!o&&s.greekFace==="didot")e.setAttribute("data-greek-face","didot");}catch(_){}})();`;
+if(j.version>=4&&s.greekFace==="didot")e.setAttribute("data-greek-face","didot");}catch(_){}})();`;

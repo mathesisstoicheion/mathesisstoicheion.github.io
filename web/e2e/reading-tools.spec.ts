@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
-import { aid, openAids } from "./reader-menus";
+import { aid, openStudy } from "./reader-menus";
 
 // The reader's Places and Manuscript panels. Texts come from GitHub and the photographs from the
 // libraries' image servers, so these tests need a connection.
@@ -89,7 +89,7 @@ test.describe("Manuscript panel on a phone", () => {
   test("Watch it change plays through to the letters without spaces, and the words stay inside the panel", async ({ page }) => {
     await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
     await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-    await (await openAids(page)).getByRole("button", { name: "Manuscript", exact: true }).click();
+    await (await openStudy(page)).getByRole("button", { name: "How it was written", exact: true }).click();
     const panel = page.getByRole("complementary", { name: "The manuscript" });
     // no word may be drawn outside the panel at any moment
     await page.evaluate(() => {
@@ -117,7 +117,7 @@ test.describe("Manuscript panel on a phone", () => {
   test("one finger scrolls the panel past the photograph; two fingers and a tap leave the panel where it is", async ({ page, context }) => {
     await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
     await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-    await (await openAids(page)).getByRole("button", { name: "Manuscript", exact: true }).click();
+    await (await openStudy(page)).getByRole("button", { name: "How it was written", exact: true }).click();
     const panel = page.getByRole("complementary", { name: "The manuscript" });
     await expect(panel.getByText("f. 12r")).toBeVisible({ timeout: 30_000 });
     const top = () => panel.evaluate((a) => a.scrollTop);

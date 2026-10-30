@@ -180,7 +180,7 @@ test("the browser's bar is the page's own colour: Paper or Night as the device h
   const bar = () => page.evaluate(() => [...document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]')].find((m) => !m.media || matchMedia(m.media).matches)?.content);
   const choose = async (name: string) => {
     await (await headerButton(page, "Settings")).click();
-    await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "The page" }).getByRole("radio", { name }).click();
+    await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "Page", exact: true }).getByRole("radio", { name }).click();
     await page.keyboard.press("Escape");
   };
   await page.emulateMedia({ colorScheme: "light" });

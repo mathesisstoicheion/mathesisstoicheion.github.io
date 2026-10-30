@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { openAids } from "./reader-menus";
+import { openStudy } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // Find in this text: a word or phrase through the whole book, in the Greek and in the translation.
@@ -51,7 +51,7 @@ test("Ctrl+F finds a phrase typed in Latin letters through the whole book, and g
 
 test("Latin letters also search the translation, and Greek letters ignore accents", async ({ page }) => {
   await openIliad(page);
-  await (await openAids(page)).getByRole("button", { name: "Find in this text" }).click();   // Find waits in Tools (or press /)
+  await (await openStudy(page)).getByRole("button", { name: "Find in this text" }).click();   // Find waits in Study (or press /)
   const panel = page.getByRole("complementary", { name: "Find in this text" });
   const box = panel.getByRole("searchbox");
   await box.fill("wrath");
@@ -68,10 +68,10 @@ test("Latin letters also search the translation, and Greek letters ignore accent
   await expect(panel.getByRole("status")).toContainText("Not found");
 });
 
-test("on a phone, Find is in Tools, and shrinks to its search row once a match is chosen", async ({ page }) => {
+test("on a phone, Find is in Study, and shrinks to its search row once a match is chosen", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await openIliad(page);
-  await (await openAids(page)).getByRole("button", { name: "Find in this text" }).click();
+  await (await openStudy(page)).getByRole("button", { name: "Find in this text" }).click();
   const panel = page.getByRole("complementary", { name: "Find in this text" });
   await expect(panel).toBeVisible();
   await panel.getByRole("searchbox").fill("menin");

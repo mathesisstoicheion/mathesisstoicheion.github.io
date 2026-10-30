@@ -33,9 +33,10 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
   const out = [];
   const shown = (e) => e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
   const cls = (e) => `${e.tagName.toLowerCase()}${typeof e.className === "string" && e.className ? "." + e.className.split(" ")[0].replace(/^[A-Z][A-Za-z]+-module__\w+__/, "") : ""}`;
-  // the column: the header's line from its first mark to its last (the reader has its own bar in its place)
+  // the column: the header's line from its first mark to its last (the reader has its own bar, along the foot, in its place: it is looked at first,
+  // since a title page's own <header> may hold a link of its own, the author's, and is not the column's line)
   let L = Infinity, R = -Infinity;
-  for (const bar of document.querySelectorAll("[class*='rbarIn'], [data-site-header], body > header, header")) {
+  for (const bar of [...document.querySelectorAll("[data-foot-bar]"), ...document.querySelectorAll("[data-site-header], body > header, header")]) {
     for (const e of bar.querySelectorAll("a, button, img, svg")) {
       if (!shown(e)) continue;
       const r = e.getBoundingClientRect();
@@ -58,7 +59,7 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
     for (const b of r.getClientRects()) if (b.width > 1 && b.height > 1) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el });
   }
   for (const e of main.querySelectorAll("img, svg, canvas, video, input, select, textarea, button, iframe, [class*='bar' i]")) {
-    if (!shown(e) || e.closest("svg") !== e && e.closest("svg") || e.closest("[data-overlay], .visually-hidden, dialog")) continue;
+    if (!shown(e) || e.closest("svg") !== e && e.closest("svg") || e.closest("[data-overlay], [data-foot-bar], .visually-hidden, dialog")) continue;
     const b = e.getBoundingClientRect();
     if (b.width > 4 && b.height > 4) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el: e });
   }
@@ -79,6 +80,14 @@ const MEASURE = ({ GAP, BAND, CHARS }) => {
     const ruled = ["Top", "Bottom"].some((k) => parseFloat(s[`border${k}Width`]) > 0 && s[`border${k}Style`] !== "none" && s[`border${k}Color`] !== "rgba(0, 0, 0, 0)")
       || /0px -?[1-9][\d.]*px 0px( 0px)? inset/.test(s.boxShadow);
     if (ruled) boxes.push({ l: b.left, r: b.right, t: b.top + scrollY, b: b.bottom + scrollY, el: e });
+  }
+  // the reader keeps a margin at the right of its text, where the look-up is written as a note beside its line (--margin-note; the quiet desk,
+  // ticket 04): it stands beside all of the text, as a sticky margin does. (Until ticket 09 the reader's sticky top bar, as wide as the column,
+  // was counted as standing beside all of it, so the check never saw the reader's empty room.)
+  const reader = main.querySelector("[class*='__single']");
+  if (reader && shown(reader)) {
+    const note = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--margin-note")) || 300, rb = reader.getBoundingClientRect();
+    boxes.push({ l: R - note, r: R, t: rb.top + scrollY, b: rb.bottom + scrollY, el: reader, beside: true });
   }
   // a margin that stays beside the text as it is read (position: sticky) stands beside all of the part it belongs to
   for (const e of main.querySelectorAll("*")) {

@@ -9,17 +9,19 @@ import { lemmaOf, type RowDiff } from "@/lib/tei/compare";
 import { toCsv } from "@/lib/search/kwic";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
-import { SidePanel } from "./Panel";
+import { SidePanel, type Back } from "./Panel";
 
 const SHOW = 300;
 const num = (n: number) => n.toLocaleString("en-GB");
 /** a long stretch (a whole added introduction, say) is shortened in the list, never in the spreadsheet */
 const short = (s: string, n = 9) => { const w = s.split(" "); return w.length > n ? `${w.slice(0, n).join(" ")} … (${num(w.length)} words)` : s; };
 
-export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNotebook }: {
+export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNotebook, back }: {
   diffs: RowDiff[]; a: string; b: string; title: string; onJump: (d: RowDiff) => void; onClose: () => void;
   /** add differences (passage, first edition's words, second's) to a notebook */
   onNotebook?: (ds: { key: string; a: string; b: string }[], what: string) => void;
+  /** opened from the Study menu: the way back to it, which Escape also takes (the quiet desk, ticket 09, the owner, 2026-10-30) */
+  back?: Back;
 }) {
   const entries = useMemo(() => diffs.flatMap((d) => d.hunks.map((h, j) => ({ d, j, ...lemmaOf(d, h) }))), [diffs]);
   const [shown, setShown] = useState(SHOW);
@@ -32,7 +34,7 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
     setTimeout(() => URL.revokeObjectURL(link.href), 1000);
   };
   return (
-    <SidePanel className={`${styles.panel} ${fs.panel}`} label="Differences between the editions" onClose={onClose}
+    <SidePanel className={`${styles.panel} ${fs.panel}`} label="Differences between the editions" onClose={onClose} back={back} onEscape={back?.onBack}
       title="Differences" titleClass={fs.title} closeLabel="Close the differences">
       <p className={styles.fine}>
         Each line gives the passage, then the words of <b>{a}</b>, a bracket ], and the words of <b>{b}</b>. A dash means one edition has no word there.

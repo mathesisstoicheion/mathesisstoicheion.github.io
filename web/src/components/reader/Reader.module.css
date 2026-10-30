@@ -13,48 +13,14 @@
 .title::first-letter { color: var(--accent); }
 .titleGr { display: block; font-size: 0.5em; color: var(--accent); margin-top: var(--space-1); }
 
-.controls { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-5); align-items: end; }
-.pick { display: grid; gap: var(--space-1); }
-
-/* the edition named once under the title, quietly ("Greek Monro, 1908 · English Murray, 1924 · Change"); the columns at
-   the end of the same line */
+/* the edition named once under the title, quietly ("Greek Monro, 1908 · English Murray, 1924"), as plain words: the choices are in Study */
 .editions { position: relative; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--space-3) var(--space-5); }
 .edLine { display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-2); font-size: var(--step--1); color: var(--ink-2); }
 .edKind { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); margin-right: var(--space-1); }
 .dot { color: var(--ink-3); }
-.change {
-  padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; color: var(--accent); cursor: pointer;
-  text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 0.25em;
-  transition: color var(--dur-quick) var(--ease), text-decoration-color var(--dur-quick) var(--ease);
-}
-.change:hover, .change[aria-expanded="true"] { color: var(--rubric); text-decoration-color: currentColor; }
-@media (pointer: coarse) { .change { min-height: var(--tap); padding-inline: var(--space-2); margin-inline: calc(-1 * var(--space-2)); } }
 
-/* The small panels (Drop.tsx): Aids, Your marks and More from the bar, Change from the edition's line. A leaf of the same
-   paper laid over the page: a hairline frame and a soft shadow under it. It inks in where it stands; nothing rises. */
-.pop {
-  position: absolute; z-index: 20; top: calc(100% + var(--space-1)); right: max(var(--gutter), env(safe-area-inset-right, 0px));
-  width: max-content; max-width: calc(100% - 2 * var(--gutter)); max-height: min(70vh, 40rem); overflow-y: auto; overscroll-behavior: contain;
-  display: grid; align-content: start; gap: var(--space-3); padding: var(--space-4);
-  background: var(--bg); color: var(--ink); border: 1px solid var(--rule); box-shadow: 0 18px 40px -22px var(--shadow);
-  animation: leaf-in var(--dur) var(--ease) backwards;
-}
-.pop[hidden] { display: none; }
-/* a leaf laid over the page, or a panel beside it, inks in where it stands (decision 3) */
+/* a leaf of the same paper laid over the page, or a panel beside it, inks in where it stands (decision 3) */
 @keyframes leaf-in { from { opacity: 0; } }
-.changePop { left: 0; right: auto; top: calc(100% + var(--space-2)); max-width: min(100%, 26rem); justify-items: start; }
-.changePop .pick, .changePop .pick select { width: 100%; max-width: none; }
-.aidsPop { width: min(40rem, calc(100% - 2 * var(--gutter))); }
-.morePop { width: min(19rem, calc(100% - 2 * var(--gutter))); }
-.marksPop { width: min(24rem, calc(100% - 2 * var(--gutter))); padding: var(--space-2); }
-.moreActs { display: flex; flex-wrap: wrap; gap: var(--space-2); padding-top: var(--space-3); box-shadow: var(--rule-over); }
-.moreActs > :global(.label) { flex-basis: 100%; margin: 0; }
-.pick select, .pager select {
-  font: inherit; font-size: var(--step--1); color: var(--ink);
-  border-radius: var(--radius); padding: var(--space-2) var(--space-2); max-width: min(360px, 90vw);
-}
-/* a row of choices (Both / Greek / English): capitals spaced wide in a hairline frame, the chosen one in ink with paper
-   letters (the sample's .seg) */
 .seg { display: inline-flex; border: 1px solid var(--rule); }
 .seg button {
   border: 0; border-radius: 0; background: transparent; padding: var(--space-2) var(--space-2); cursor: pointer;
@@ -78,40 +44,10 @@
   box-shadow: var(--rule-under);
 }
 :global(html[data-hdr="hidden"]) .bar { --hdr-vis: 0px; }
-.pager { display: flex; align-items: center; gap: var(--space-1); }
-/* the reader's buttons, as the printed page sets them: a hairline frame, the label red under the hand */
-.pager button, .goto button, .helpBtn {
-  min-width: 38px; height: 36px; padding: 0 var(--space-2); background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
-  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
-}
-.pager button:not(:disabled):hover, .goto button:hover, .helpBtn:hover { color: var(--rubric); border-color: var(--rubric); }
-.pager button:disabled { opacity: 0.35; cursor: default; }
-.goto { display: flex; gap: var(--space-1); }
-.goto input { width: 150px; font: inherit; font-size: var(--step--1); color: var(--ink); border-radius: var(--radius); padding: var(--space-2) var(--space-2); }
-.helpBtn { font-size: var(--step--1); }
-/* the bar's end: the buttons that open its panels */
+/* the bar's end: Aa and Study (ReaderBar.tsx, Tools) */
 .barEnd { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
-.dropBtn {
-  display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3);
-  background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
-  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase;
-  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
-}
-.dropBtn:hover { color: var(--rubric); border-color: var(--rubric); }
-.dropBtn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; }
-.dropBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
-.dropBtn[aria-expanded="true"] svg { transform: rotate(180deg); }
-.moreDrop { min-width: 40px; justify-content: center; }
-.moreDrop svg, .moreDrop[aria-expanded="true"] svg { width: 18px; height: 18px; fill: currentColor; stroke: none; transform: none; }
-.findBtn svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
-.findBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
+/* Find in the top bar of each of two books: on a phone it is a row of Study (the chip draws its own pressed look) */
 @media (max-width: 760px) { .findBtn { display: none !important; } }
-/* a narrow bar (two books on a phone, or the floating window there): the page and Go to share the first row */
-@media (max-width: 680px) {
-  .pager select { max-width: 42vw; }
-  .goto { flex: 1; min-width: 0; }
-  .goto input { flex: 1; min-width: 0; width: auto; }
-}
 .help { padding-block: var(--space-2); font-size: var(--step--1); color: var(--ink-2); }
 .cover { font-size: var(--step--1); color: var(--ink-2); padding-block: var(--space-3) 0; max-width: 90ch; }
 .cover p { margin: 0 0 var(--space-1); padding: var(--space-2) var(--space-3); background: transparent; box-shadow: var(--red-left), var(--rule-box); }
@@ -156,7 +92,6 @@
 .compareTools { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-2); align-items: center; }
 .compareCount { font: 600 var(--step--1) var(--f-label); margin-right: var(--space-1); font-variant-numeric: tabular-nums; }
 .diffNav { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--step--1); font-variant-numeric: tabular-nums; }
-.diffNav .floatBtn { padding: 0 var(--space-2); }
 @media (max-width: 760px) { .diffNav { display: none !important; } }
 .compareCheck { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--step--1); }
 .none { color: var(--ink-3); }   /* the quietest ink: a dash where the other edition has nothing */
@@ -207,6 +142,8 @@
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
 :global(html[data-hdr="hidden"]) .panel { --hdr-vis: 0px; }
+/* one book on a computer: the side panels run from the top of the window down to the foot bar, so that Aa and Study stay in reach (on a phone and a tablet they are sheets) */
+@media (min-width: 901px) { .single .panel { bottom: var(--foot-h); } }
 @media (min-width: 1280px) { .withPanel .text, .withPanel .cols, .withPanel .bar, .withPanel .bottom, .withPanel .compare, .withPanel .cover, .withPanel .rlWrap, .single.withPanel .caseKey { margin-right: var(--side-panel); margin-left: 0; } }
 /* narrower desktops: the panels are a little narrower, and the text makes room for them (review fix list, slice 8) */
 @media (min-width: 901px) and (max-width: 1279px) {
@@ -242,7 +179,6 @@
   .cols-trans .tr { margin-top: 0; }
   /* a panel is a leaf across the foot of the screen, a hairline along its top */
   .panel { top: auto; left: 0; width: 100%; max-height: 62vh; border-radius: var(--radius); box-shadow: inset 0 1px 0 var(--rule), 0 -10px 30px -12px var(--shadow); }
-  .helpBtn { display: none; }
 }
 
 /* the look-up's first layer (WordPanel.tsx, lib/lookup/card.ts; the quiet desk, ticket 05): the kind of word and the word tapped,
@@ -367,12 +303,6 @@
 .noteText { white-space: pre-wrap; }
 .noteTags { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); margin: var(--space-1) 0 0; font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ochre); }
 
-/* Your marks, in their panel from the bar */
-.marksList { list-style: none; margin: 0; padding: 0; display: grid; }
-.marksList li > button { width: 100%; display: grid; gap: var(--space-1); text-align: left; padding: var(--space-2) var(--space-3); background: transparent; border: 0; border-radius: var(--radius); }
-.marksList li > button:hover { background: var(--bg-2); }
-.marksList li:global(.muted) { padding: var(--space-3); font-size: var(--step--1); }
-
 /* ------------------------------------------------------------ share */
 .share { width: min(760px, calc(100vw - 32px)); padding: 0; border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: 0 30px 60px -30px var(--shadow); }
 .share::backdrop { background: var(--veil); }
@@ -461,33 +391,7 @@
   .verses.cols-trans .tr { font-size: var(--step-0); margin-top: 0; }
 }
 
-/* ------------------------------------------------------------ reading aids */
-/* the reading aids, in three labelled groups (Phase 11), stacked: in the bar's Aids panel, the phone's sheet and the
-   floating window alike */
-.aids { display: flex; flex-direction: column; align-items: stretch; gap: var(--space-4); }
-.aidGroup { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); }
-.aids a:global(.chip) { text-decoration: none; }
-.aidGroup:not(:has(> :not(.aidLabel))) { display: none; }
-/* the Tools menu (review fix list, slice 8): a mode (Transliteration, Colour by case…) is a switch that stays on or off, its
-   knob across and lit when on; an action (Vocabulary, Places…) is a button that opens a panel, a raised stone like the bar's */
-.mode { gap: var(--space-2); }
-.switch {
-  position: relative; flex: none; width: 26px; height: 15px; border-radius: var(--radius-round); border: 1px solid var(--rule);
-  transition: background-color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
-}
-.switch::before {
-  content: ""; position: absolute; top: var(--hair-2); left: var(--hair-2); width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--ink-2);
-  transition: background-color var(--dur-quick) var(--ease);
-}
-.mode[aria-pressed="true"] .switch { background: var(--accent); border-color: var(--accent); }
-.mode[aria-pressed="true"] .switch::before { transform: translateX(11px); background: var(--bg); }
-.act { background: transparent; border-color: var(--rule); }
-.act:hover { color: var(--rubric); border-color: var(--rubric); }
-.act[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
-/* the Tools button says when a mode is on: a lit dot and how many */
-.onCount { color: var(--accent); }
-.onCount::before { content: ""; display: inline-block; vertical-align: 0.1em; width: 6px; height: 6px; margin-right: var(--space-1); border-radius: var(--radius-round); background: currentColor; }
-.aidLabel { flex-basis: 100%; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.08em; color: var(--ink-2); }
+/* ------------------------------------------------------------ reading aids (their switches are Study's: ReaderBar.module.css) */
 .translit { display: block; grid-column: 2; font-family: var(--f-body); font-style: italic; font-size: 0.72em; line-height: 1.4; color: var(--ink-2); margin: -0.1em 0 0.35em 1.2em; }
 p.translit { margin: -0.3em 0 0.8em; }
 /* words I know (the "Words I know" aid): a soft wash of green, under any case colour */
@@ -503,9 +407,10 @@ p.translit { margin: -0.3em 0 0.8em; }
 .reader [data-case="accusative"] { text-decoration-color: var(--case-acc); text-decoration-style: double; text-decoration-thickness: 1.5px; }
 .reader [data-case="vocative"] { text-decoration-color: var(--case-voc); text-decoration-style: wavy; text-decoration-thickness: 1.5px; }
 .legend { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; font-size: var(--step--1); padding-block: var(--space-2) 0; }
-/* one book: the key stays in sight under the bar while you read, in one quiet line */
+/* one book: the key stays in sight at the top of the window while you read, in one quiet line (the only thing stuck there, and only while Colour by
+   case is on: the quiet desk, ticket 09, the owner, 2026-10-30) */
 .single .caseKey {
-  position: sticky; top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px)); z-index: 15; margin: 0; padding-block: var(--space-1);
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 15; margin: 0; padding-block: var(--space-1);
   gap: var(--space-1) var(--space-3); font-size: var(--step--1);
   background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule);
 }
@@ -601,13 +506,6 @@ p.translit { margin: -0.3em 0 0.8em; }
 .floating .panel { top: 0; width: min(100%, 360px); }
 .floating.withPanel .text, .floating.withPanel .cols, .floating.withPanel .bar, .floating.withPanel .bottom { margin-right: 0; }
 .floating .row, .pane .row { scroll-margin-top: calc(var(--bar-h, var(--space-7)) + var(--space-3)); }
-.floating .helpBtn { display: none; }
-.floatBtn {
-  display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); background: transparent; color: var(--ink);
-  border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
-}
-.floatBtn:hover:not(:disabled) { color: var(--rubric); border-color: var(--rubric); }
-.floatBtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 /* a grip beside each passage number: drag it into a note to quote the passage */
 .grip { display: block; width: 10px; height: 16px; margin: var(--space-1) 0 0 auto; cursor: grab; opacity: 0; transition: opacity 0.2s;
   background: radial-gradient(circle, var(--ink-2) 1.3px, transparent 1.7px) 0 0 / 5px 5px; }
@@ -624,10 +522,6 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* the margin of Perseus's line 0 (the first speaker's name): no number, the passage's actions still to hand */
 .ref button.front { min-width: 24px; min-height: 24px; }
 @media (hover: none) { .grip { display: none; } }
-.floatFold { font-size: var(--step--1); }
-.floatFold summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.05em; color: var(--ink-2); padding: var(--hair-2) 0; }
-.floatFold[open] summary { margin-bottom: var(--space-2); }
-.floatFoldIn { display: grid; gap: var(--space-3); animation: leaf-in var(--dur) var(--ease) backwards; }
 .floatTitle { font-family: var(--f-title); font-size: var(--step-sub); }
 
 /* ------------------------------------------------------------ phones (Phase 10) */
@@ -635,7 +529,6 @@ p.translit { margin: -0.3em 0 0.8em; }
   /* two fingers on the text resize the Greek (Reader.tsx) instead of zooming the page */
   .reader:not(.floating):not(.pane) .text { touch-action: pan-x pan-y; }
   .seg button { min-height: var(--tap); padding-inline: var(--space-4); }
-  .floatBtn { min-height: var(--tap); height: auto; padding: var(--space-2) var(--space-3); border-radius: var(--radius); text-align: left; }
 }
 
 /* The passage toolbar: a × and the quick meaning of one word are for phones, where it docks along the bottom
@@ -718,9 +611,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
 
-/* Listen: a button beside "Float the reader" on wide screens, a chip in the aids sheet on phones */
-.listenBtn[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-bg); }
-@media (min-width: 761px) { .reader:not(.single) .listenChip { display: none !important; } }
+/* Listen: a button in the top bar of each of two books on wide screens; on phones, and in the foot bar's Study, a row (StudyMenu.tsx) */
 @media (max-width: 760px) { .listenBtn { display: none !important; } }
 
 /* Talk about this passage (TalkPanel.tsx): the Town Hall's threads on this page */
@@ -742,91 +633,14 @@ p.translit { margin: -0.3em 0 0.8em; }
   font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric);
   border: 1px solid var(--rubric); border-radius: var(--radius); white-space: nowrap;
 }
-/* in the reader's bar, the lock alone, in red */
-.privateLock { flex: none; display: inline-flex; align-self: center; color: var(--rubric); }
-.privateLock svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-.privateTag svg, .mineChip svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-.mineChip { display: inline-flex; align-items: center; gap: var(--space-1); }
+.privateTag svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 .mineProblems { margin: 0; padding-left: 1.2em; color: var(--ink-2); }
 
 /* ============================================================ one book on its page: the printed-page reader
-   Its own bar along the top (the site's header stands aside: globals.css), the title page (ReaderCover.tsx), then the
+   Nothing along its top (the site's header stands aside: globals.css, and the bar is along the foot: ReaderBar.tsx), the title page (ReaderCover.tsx), then the
    passages as a two-language edition: on a wide screen the Greek and the English side by side, with a margin at the right
    where the look-up is written; on a phone the English under each Greek paragraph. Two books side by side and the floating
    window keep the reader's own layout above. */
-
-/* the bar: the device, the way back, the running head (the book and its page), then Both / Greek / English, Aa, Tools, your
-   marks and More (the sample's .r-bar) */
-.rbar {
-  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; display: block; padding: 0;
-  background: color-mix(in srgb, var(--bg) 92%, transparent); -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--rule); box-shadow: none;
-}
-.withPanel .rbar { margin-right: 0; }
-/* while one of its menus is open, the bar and the menu stand above a panel open at the side (the menu was asked for last) */
-.rbar:has(.pop:not([hidden])) { z-index: 45; }
-.rbarIn { display: flex; align-items: center; gap: var(--space-3); min-height: 56px; flex-wrap: wrap; padding-block: var(--space-2); position: relative; }
-.rmark { color: var(--ink); }
-.back {
-  padding: var(--space-1) var(--space-1); color: var(--ink-2); text-decoration: none; white-space: nowrap;
-  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; transition: color var(--dur-quick) var(--ease);
-}
-.back:hover { color: var(--rubric); }
-/* the running head: the author and the book in capitals spaced wide, in the middle of the bar, the page after them */
-.rtitle { flex: 1; min-width: 0; display: flex; gap: var(--space-3); align-items: baseline; justify-content: center; overflow: hidden; white-space: nowrap; }
-.rtitle b { font: 500 var(--step--2) / 1.3 var(--f-label); letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-2); overflow: hidden; text-overflow: ellipsis; }
-.rtitle b a { color: inherit; text-decoration: none; transition: color var(--dur-quick) var(--ease); }
-.rtitle b a:hover { color: var(--rubric); }
-@media (min-width: 761px) { .rtitle b a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; } }   /* a link shows itself at rest (scripts/check-clickable.mjs) */
-.rtitle :global(.label) { flex: none; font-size: var(--step--2); letter-spacing: 0.18em; color: var(--ink-3); }
-/* the controls flow in the bar itself: on a phone, what does not fit goes into ⋯ */
-.rtools, .rbar .barEnd { display: contents; }
-.rbar .dropBtn { height: auto; padding: var(--space-2) var(--space-3); gap: var(--space-1); }
-.rbar .moreDrop { padding-block: var(--space-1); }
-.rbar .moreDrop svg { width: 16px; height: 16px; }
-.rbar .seg button { min-height: 0; }
-@media (pointer: coarse) { .rbar .seg button, .rbar .dropBtn { min-height: 32px; } }
-/* a narrower bar: the book's title alone in the running head, so it is read whole */
-@media (max-width: 1099px) { .rauthor { display: none; } }
-@media (max-width: 640px) { .rtitle :global(.label), .bl { display: none; } }
-/* phones: one row (review fix list, slice 8): the device, the way back, the book's title, Tools and ⋯; Both / Greek /
-   English, Aa and your marks are in ⋯ */
-.phoneMore { display: none; }
-@media (max-width: 640px) {
-  .rbarIn { flex-wrap: nowrap; gap: var(--space-2); }
-  .rtitle { justify-content: flex-start; }
-  .rtitle b { letter-spacing: 0.16em; }
-  .rbar .wideOnly, .rbar .rtools > .seg { display: none; }
-  .phoneMore { display: contents; }
-  /* (Tools too: with the edition group first, it is the taller of the two; the quiet desk, ticket 08, the owner, 2026-10-30) */
-  .rbar .morePop, .rbar .aidsPop { max-height: calc(100svh - var(--bar-h, 59px) - 24px); overflow-y: auto; }
-}
-/* its panels: leaves under the bar at the right */
-.rbar .pop {
-  right: max(var(--space-4), env(safe-area-inset-right, 0px)); top: 100%; margin-top: var(--space-1); max-width: none; width: min(370px, calc(100vw - 32px));
-  padding: var(--space-4); z-index: 25;
-}
-.rbar .aidsPop { width: min(30rem, calc(100vw - 32px)); }
-.rbar .marksPop { width: min(24rem, calc(100vw - 32px)); padding: var(--space-2); }
-.rbar .morePop { width: min(19rem, calc(100vw - 32px)); }
-.aaPop { gap: 0; }
-.aa { display: grid; justify-items: start; }
-.aa > :global(.label) { margin: var(--space-3) 0 var(--space-2); }
-.aa > :global(.label):first-child { margin-top: 0; }
-.aa > :global(.muted) { font-size: var(--step--2); margin: var(--space-3) 0 0; }
-.rbar .aidLabel { font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; }
-.whereGroup { padding-bottom: var(--space-4); box-shadow: var(--rule-under); }
-.whereGroup .goto { flex: 1; min-width: 12rem; }
-.whereGroup .goto input { flex: 1; min-width: 0; width: auto; }
-/* the edition and the translation, the first group of Tools (the quiet desk, ticket 08, the owner, 2026-10-30): each choice on a line of its own, its name
-   at the left and its menu filling the rest, so that the group is no taller than it must be and the aids under it stay in reach; the buttons that open
-   a second book or the private collection after them */
-.editionGroup { display: grid; gap: var(--space-2); padding-bottom: var(--space-4); box-shadow: var(--rule-under); }
-.editionGroup .pick { grid-template-columns: 8rem minmax(0, 1fr); align-items: center; gap: var(--space-2); width: 100%; }
-.editionGroup .pick select { width: 100%; max-width: none; }
-.editionGroup > :global(.chip) { justify-self: start; }
-/* a panel at the side opens under the bar */
-@media (min-width: 901px) { .single .panel { top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px)); } }
 
 /* the title page (ReaderCover.tsx; the sample's .r-title): the author in red capitals spaced wide, the Greek title large,
    the English in italic under it, a fleuron between two red rules, the editions in small print. A book with its own picture
@@ -834,6 +648,9 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tp { display: grid; justify-items: center; text-align: center; padding: clamp(var(--space-7), 10vh, calc(1.5 * var(--space-8))) var(--gutter) clamp(var(--space-6), 7vh, var(--space-8)); }
 .tpPlate { width: min(240px, 56vw); margin: 0 0 var(--space-6); text-align: left; }
 .tpAu { margin: 0; font: 400 1.05rem / 1.3 var(--f-title); letter-spacing: 0.42em; color: var(--rubric); }
+/* the author's name is a link to the author's page (the quiet desk, ticket 09, the owner, 2026-10-30): underlined at rest, as the title line's is */
+.tpAu a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: var(--hair); text-underline-offset: 0.3em; transition: color var(--dur-quick) var(--ease), text-decoration-color var(--dur-quick) var(--ease); }
+.tpAu a:hover { color: var(--ink); text-decoration-color: currentColor; }
 .tpTitle { margin: var(--space-4) 0 var(--space-2); max-width: 16ch; font: 400 clamp(2.6rem, 7vw, 5.4rem) / 1.05 var(--f-title); letter-spacing: 0; }
 .tpTitle [lang="grc"] { font-family: var(--f-title); }
 .tpEn { margin: 0; max-width: 32ch; font: italic 400 clamp(1.3rem, 2.4vw, 1.8rem) / 1.3 var(--f-body); color: var(--ink-2); }
@@ -845,24 +662,29 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tpEd { position: relative; margin-top: var(--space-5); display: flex; justify-content: center; }
 .tpEd .edLine { justify-content: center; font-size: var(--step--1); color: var(--ink-3); }
 .tpEd .edKind { font-size: var(--step--2); letter-spacing: 0.16em; margin-right: 0; }
-.tpEd .changePop { left: 50%; right: auto; translate: -50% 0; text-align: left; }
 
 /* the book's one-line title, on every opening but the first (ReaderTitle.tsx; the quiet desk, ticket 08, the owner, 2026-10-30; mockup B): at the top
    of the text column, in line with the Greek: the Greek title in the Greek face and in ink, then "· Homer, Iliad, Book 1" in the body face and in ink-2,
    the author's name a quiet link; the first passage follows straight under it. It starts where the Greek's words do, past the passage numbers' column
    (and, when the first passage is in lines of verse, past the line numbers' column inside the Greek's: 2.4em of the Greek's size, as .line sets it).
-   On a phone it drops the author ("Ἰλιάς · Iliad, Book 1"), and the Greek's words start at the number column's edge. */
+   On a phone too the author's name stands in the line ("Ἰλιάς · Homer, Iliad, Book 1": the quiet desk, ticket 09, the owner, 2026-10-30), and the Greek's words
+   start at the number column's edge. A private book's lock follows it. */
 .rlWrap { padding-block: var(--space-6) var(--space-3); }
 .rl { margin: 0 0 0 calc(var(--num-w) + var(--row-gap)); font: 400 var(--step-0) / 1.35 var(--f-body); letter-spacing: 0; color: var(--ink-2); }
 .rl[data-lines] { margin-left: calc(var(--num-w) + var(--row-gap) + 2.4 * var(--greek-size)); }
 .rlGr { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); }
 .rlAuthor a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-quick) var(--ease); }
 .rlAuthor a:hover { color: var(--rubric); }
+/* the author's name is a small target: under a finger it answers 12 px above and below it (a 44 px target; scripts/check-a11y.mjs), here and on the title page */
+@media (pointer: coarse) {
+  .tpAu a, .rlAuthor a { position: relative; }
+  .tpAu a::after, .rlAuthor a::after { content: ""; position: absolute; inset: calc(-1 * var(--space-3)) calc(-1 * var(--space-1)); }
+}
+.rlLock { display: inline-flex; margin-left: var(--space-2); color: var(--rubric); }
 @media (max-width: 760px) {
   .rlWrap { padding-block: var(--space-5) var(--space-2); }
   .rl { margin-left: 0; }
   .rl[data-lines] { margin-left: calc(2.4 * var(--greek-size)); }
-  .rlAuthor { display: none; }
 }
 @container (max-width: 520px) {
   .rl, .rl[data-lines] { margin-left: calc(var(--num-col) + var(--num-gap)); }
@@ -871,6 +693,11 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* the passages (the sample's .sec): the number in red in the left margin, the Greek, the English; on a wide screen a margin
    at the right, kept clear for the look-up. (The red first line is gone: the quiet desk, the owner 2026-10-26.) */
 .single { position: relative; --num-w: 3.5rem; --row-gap: clamp(var(--space-5), 3vw, var(--space-6)); }   /* the look-up in the margin is placed within it; the number's column and the gap after it, past which the book's title line lines up with the Greek (--num-w, --row-gap) */
+/* the foot bar (ReaderBar.tsx): its height, and how much of it stands in the window now (a phone's slips away, and the bar says so on the reader's root).
+   What clears the bar reads these: the text's last lines and "Continue to Book 2" (the padding here), Back to top, Listen's player, the signs beside the
+   scroll bar, the side panels and the look-up's window on a computer (the quiet desk, ticket 09, the owner, 2026-10-30). No bar along the top: --bar-h is 0. */
+.single { --foot-h: calc(var(--space-7) + env(safe-area-inset-bottom, 0px)); --foot-now: var(--foot-h); --bar-h: 0px; padding-bottom: calc(var(--foot-h) + var(--space-6)); }
+.single[data-foot="away"] { --foot-now: env(safe-area-inset-bottom, 0px); }
 .single .text { padding-block: 0 var(--space-5); margin-top: 0; }
 .single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--row-gap); padding-block: var(--space-4) var(--space-5); }
 .single .ref button { padding-top: 0.35em; }
@@ -945,17 +772,6 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single .bottomGo { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-left: auto; }
 .single .bottom button:disabled { display: none; }
 .hint { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; }
-/* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
-@media (pointer: coarse) {
-  .back { position: relative; min-width: var(--tap); padding-inline: 0; text-align: center; }
-  .back::after { content: ""; position: absolute; inset: calc(-1 * var(--space-2)) 0; }
-  .rbar .dropBtn { position: relative; min-width: var(--tap); justify-content: center; }
-  /* the bar clips below its buttons: their finger-sized area reaches up */
-  .rbar .dropBtn::before { content: ""; position: absolute; inset: calc(-1 * var(--space-2)) 0 calc(-1 * var(--hair-2)); }
-  /* each book's own bar when two are open (and the page and Go to, wherever they stand): finger-sized buttons */
-  .pager button, .goto button, .goto input, .helpBtn, .bar:not(.rbar) .dropBtn { min-height: var(--tap); }
-  .pager button, .goto button { min-width: var(--tap); }
-}
 
 /* ============================================================ the word look-up (WordPanel.tsx), placed by Reader.tsx's
    placeWord (decision 4: it never covers the Greek being read) */
@@ -964,13 +780,13 @@ p.translit { margin: -0.3em 0 0.8em; }
    (the owner, 2026-10-26). It slides in from the right. Inside, in the order of mockup B (the quiet desk, ticket 05): the
    dictionary form, large, with the ×; the kind of word and the word tapped; the meaning, the largest English on the screen;
    what the word does here; its grammar in small capitals; Previous, Next and More about it. More about it (the quiet desk,
-   ticket 06) grows this same window in place, at the same left edge and width, to all the height it may have (from under
-   the reader's bar to the foot of the screen), and it scrolls inside itself: no new panel, and the text does not move.
+   ticket 06) grows this same window in place, at the same left edge and width, to all the height it may have (from near the top of the window
+   to above the foot bar), and it scrolls inside itself: no new panel, and the text does not move.
    Links are quiet words, not framed buttons. */
 .panel.wordNote {
   right: auto; bottom: auto; width: var(--margin-note);
-  top: calc(var(--bar-h, var(--space-7)) + env(safe-area-inset-top, 0px) + var(--space-4));   /* under the reader's bar */
-  --note-room: calc(100dvh - var(--bar-h, var(--space-7)) - env(safe-area-inset-top, 0px) - 2 * var(--space-4));
+  top: calc(env(safe-area-inset-top, 0px) + var(--space-4));   /* near the top of the window: no bar above it */
+  --note-room: calc(100dvh - env(safe-area-inset-top, 0px) - var(--foot-h) - 2 * var(--space-4));   /* and it ends above the foot bar */
   max-height: var(--note-room);
   interpolate-size: allow-keywords; transition: height var(--dur) var(--ease);   /* (where a browser cannot, it grows at once) */
   overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin;

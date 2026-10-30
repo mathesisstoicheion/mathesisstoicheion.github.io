@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
+import Icon from "@/components/Icon";
 import { decapitalise, isElided, lookupForm } from "@/lib/greek";
 import { lookUpWiktionary, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
 import { loadWordPack, analyse, type Analysis } from "@/lib/lookup/words";
@@ -414,7 +415,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
       style={note ? { left: note.left, width: note.width } : sheet && maxH !== null ? ({ "--sheet-max": `${maxH}px` } as React.CSSProperties) : undefined}
       onClose={onClose} onEscape={more ? goBack : undefined} focusKey={word} closeLabel="Close look-up" headProps={sheet ? gestures.head : undefined} head={<>
         {sheet && <span className={styles.grab} aria-hidden="true" />}
-        {more && <button ref={backRef} type="button" className={`text-btn ${styles.cardStep} ${styles.cardBack}`} onClick={goBack}><span aria-hidden="true">‹</span>{" "}Back</button>}
+        {more && <button ref={backRef} type="button" className={`text-btn ${styles.cardStep} ${styles.cardBack}`} onClick={goBack}><Icon name="back" />Back</button>}
         {/* the word tapped, in Greek, until the dictionary form is known (the quiet desk, the look-up's fixes, the owner, 2026-10-30);
             --chars is its length, for the window on a computer to set a long word smaller rather than break it */}
         <div className={styles.pw} lang="grc" style={{ "--chars": headText.normalize("NFC").length } as React.CSSProperties}>{headText}</div>

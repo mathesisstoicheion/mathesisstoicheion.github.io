@@ -1,6 +1,6 @@
 import { test, expect, type Page } from "@playwright/test";
 import { headerButton } from "./header";
-import { openMore } from "./reader-menus";
+import { openStudy } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // The reader reads texts from GitHub, so these need a connection (until the offline part).
@@ -58,11 +58,12 @@ test("markers beside the scroll bar show notes and bookmarks, preview them and j
   const note = markers.getByRole("listitem", { name: /^Note at 1\.30/ });
   await note.hover();
   await expect(page.getByRole("tooltip")).toContainText("Agamemnon refuses the ransom.");
-  // the legend switches a kind off
-  await openMore(page);
+  // the legend switches a kind off: it is folded behind a row at the foot of Study (the quiet desk, ticket 09)
+  await (await openStudy(page)).getByRole("button", { name: "Signs beside the scroll bar" }).click();
   await page.getByRole("group", { name: "Scroll-bar signs" }).getByLabel("Bookmarks").uncheck();
   await expect(markers.getByRole("listitem", { name: /^Bookmark at/ })).toHaveCount(0);
   await page.getByRole("group", { name: "Scroll-bar signs" }).getByLabel("Bookmarks").check();
+  await page.keyboard.press("Escape");
   // jump: the note's passage comes to the top
   await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight }));
   await note.click();
@@ -74,13 +75,12 @@ test("the floating reader follows the reader around the site, snaps, minimises a
   // the visit is remembered once the page settles (lib/resume.ts): wait for that, however busy the test browser is
   await expect.poll(() => page.evaluate(() => localStorage.getItem("mathesis:resume") ?? "")).toContain('"/treasury"');
   await openIliad(page, "1.40");
-  // wait until the reader has brought 1.40 to the top and the header has finished sliding away: a click on
-  // the sticky bar while it still moves makes the test browser scroll the page first
+  // wait until the reader has brought 1.40 to the top and the header has finished sliding away: a click while the page still
+  // moves makes the test browser scroll the page first
   await expect.poll(() => page.locator('[data-key="1.40"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(260);
   await expect(page.locator("html")).toHaveAttribute("data-hdr", "hidden");
-  await expect.poll(() => page.getByRole("button", { name: "More", exact: true }).evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(60);
-  await openMore(page);
-  await page.getByRole("button", { name: /Float the reader/ }).click();
+  await expect(page.getByRole("button", { name: /^Study\b/ })).toBeVisible();
+  await (await openStudy(page)).getByRole("button", { name: "Float the reader" }).click();
   // back to the page before the reader, with the book in a window
   await expect(page).toHaveURL(/\/treasury$/);
   const win = page.getByRole("dialog", { name: /Floating reader: Iliad/ });

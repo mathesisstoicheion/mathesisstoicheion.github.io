@@ -48,6 +48,8 @@
 @media (max-width: 760px) {
   :root { --tabbar-h: calc(56px + env(safe-area-inset-bottom, 0px)); }
   body { padding-bottom: var(--tabbar-h); }
+  /* (the rooms' bar never stands in the reader, so its room under the page is not kept there) */
+  html:has(main[data-screen="reader"]) body { padding-bottom: 0; }
   html[data-tabbar="up"] .toast { bottom: calc(20px + var(--tabbar-h)); }
 }
 ::view-transition-group(site-tabbar) { animation: none; z-index: 100; }
@@ -85,7 +87,9 @@ body::after {
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
   background: radial-gradient(120% 80% at 50% 0%, transparent 55%, var(--paper-shade)), radial-gradient(90% 60% at 50% 110%, var(--paper-shade), transparent 70%);
 }
-/* the reader with one book open: its own bar along the top is the way home and back to the library, so the site's
+/* the reader's page has no darkening at its edges: the paper there is plain (the quiet desk, ticket 09, the owner, 2026-10-30) */
+html:has(main[data-screen="reader"]) body::after { display: none; }
+/* the reader with one book open: its own bar along the foot is the way back to the library, so the site's
    header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
 html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing

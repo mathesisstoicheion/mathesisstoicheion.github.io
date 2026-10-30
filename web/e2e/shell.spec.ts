@@ -26,6 +26,8 @@ test("moving between areas does not reload the page", async ({ page }) => {
 test("the header is the printed page's rooms beside the device, each its English name over its Greek name; Read is current in the reader", async ({ page }) => {
   await page.goto("/read");
   const rooms = page.locator("header").first().getByRole("navigation", { name: "The rooms of the site" }).getByRole("link");
+  // (wait for the rooms to be on the page before reading them: straight after the page loads they can still be unlaid, and the list is empty)
+  await expect(rooms).toHaveCount(FORUM_OPEN ? 5 : 4);
   expect(await rooms.evaluateAll((as) => as.map((a) => a.firstElementChild?.textContent))).toEqual(FORUM_OPEN ? ["Learn", "Read", "Explore", "Talk", "Mine"] : ["Learn", "Read", "Explore", "Mine"]);
   expect(await rooms.evaluateAll((as) => as.map((a) => a.querySelector("i[lang='grc']")?.textContent))).toEqual(FORUM_OPEN ? ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Ἀγορά", "Θησαυρός"] : ["Ἀκαδήμεια", "Μουσεῖον", "Στοὰ Ποικίλη", "Θησαυρός"]);
   // the reader belongs to Read, which is the current room, in red
@@ -39,7 +41,7 @@ test("the page chosen in Settings (Paper or Night) is remembered after a reload,
   await expect(page.locator("html")).not.toHaveAttribute("data-theme");
   const choose = async (name: string) => {
     await (await headerButton(page, "Settings")).click();
-    await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "The page" }).getByRole("radio", { name }).click();
+    await page.getByRole("dialog", { name: "Settings" }).getByRole("radiogroup", { name: "Page", exact: true }).getByRole("radio", { name }).click();
     await page.keyboard.press("Escape");
   };
   await choose("Night");

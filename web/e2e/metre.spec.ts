@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { aid, openAids } from "./reader-menus";
+import { aid, openGoto } from "./reader-menus";
 
 // These tests read texts from GitHub, so they need a connection.
 test.describe.configure({ timeout: 90_000 });
@@ -26,7 +26,7 @@ test("in a tragedy, spoken lines are scanned and sung ones labelled", async ({ p
   await aid(page, "Metre");
   await expect(page.getByRole("note", { name: "Metre" })).toContainText("Iambic trimeter in the spoken parts");
   await expect(page.locator('[data-u="1"] [data-metre="scanned"] [data-q]').first()).toBeVisible();
-  await (await openAids(page)).getByRole("combobox", { name: "Page" }).selectOption({ index: 1 });
+  await (await openGoto(page)).getByRole("combobox", { name: "Page" }).selectOption({ index: 1 });
   await expect(page.getByText(/sung or chanted; not scanned/).first()).toBeVisible({ timeout: 30_000 });
 });
 

@@ -2,17 +2,18 @@
 // on Paper, and once more at Night (the printed-page redesign: the case colours are chosen for each).
 // It lists:
 //   cover   - a reader coming back to the book (a saved position) who lands on its title page, not on the text
-//   zero    - "Lines 0–103" in the bar, or a passage numbered 0 in the margin (Perseus's line 0 is only the first speaker's name)
+//   zero    - "line 0" where the foot bar says where you are, or a passage numbered 0 in the margin (Perseus's line 0 is only the
+//             first speaker's name)
 //   indent  - English set with a hanging indent (its first line pulled out to the left)
 //   breaks  - a stretch of English that stops in the middle of a sentence ("…news from Troy and") with the rest beside the
 //             next lines; English is cut only where a sentence or clause ends
 //   grip    - the drag grip beside a passage number with nothing that says what it is for when it is pointed at
 //   legend  - Colour by case with no key on screen as you read; two cases told apart by colour alone, or by colours that
 //             look alike to a reader with red-green or blue-yellow colour blindness; a word's case not shown in its look-up
-//   tools   - the Tools menu: the modes (Transliteration, Colour by case…) not drawn as switches, the actions (Vocabulary,
-//             Places…) drawn as switches; nothing on the Tools button to say a mode is on
+//   tools   - the Study menu: the modes (Transliteration, Colour by case…) not drawn as switches, the actions (Vocabulary,
+//             Places…) drawn as switches; nothing on the Study button to say a mode is on
 //   word    - the look-up: the same meaning twice, a dead-end "No Wiktionary entry", the reader's English hidden behind it
-//   bar     - on a phone, the bar in more than one row, or the work's title cut short
+//   bar     - on a phone, the foot bar in more than one row, or its place in words cut short
 //   alone   - a book that opens with an English column beside the Greek on a fresh profile (the quiet desk, ticket 07: it opens
 //             on Greek alone); "Show the English" under a passage that does not show its English and credit, that shows it for
 //             other passages too, that is not undone by "Hide the English", that opens the Greek look-up when its English is
@@ -27,18 +28,43 @@
 //             number of every fifth line not in the same column and level with its line; the Greek not starting at one edge down the page
 //   photos  - a photograph in the reader: on a book's title page (the Iliad had the Mask of Agamemnon) or on the reader with
 //             no book open (the owner, 2026-10-26: "no useless photos plastered everywhere")
+// and, for the foot bar, Aa and Study (the quiet desk, ticket 09, the owner, 2026-10-30; the Iliad on its second opening, at 1440 and 390 px):
+//   top     - anything fixed or sticky along the top of one book after 800 px of reading (the old top bar), or the paper's
+//             darkened edges on the reader's page
+//   foot    - the foot bar not saying "← Library", where you are, Aa and Study from the left in that order, a control under
+//             44 px on a phone or 36 px tall on a computer, the place not moving as the page is read, Go to with page arrows;
+//             the end of the text, Back to top, Listen's player or (on a computer) a side panel standing under the bar
+//   slips   - on a phone, the bar not slipping away after 600 px read on, not back after 200 px read back or a tap on the paper,
+//             or still standing under the look-up sheet, a panel's sheet or the passage toolbar (or not back when they are put away);
+//             its movement not stopped by reduced motion
+//   study   - a tool, a mode or a choice that is not in Study (or Aa, for the page, the size, the spacing and the columns), that
+//             is there twice, or a button that leads to the same place as another; the Study button not showing the modes on
+//   close   - a menu or a panel without a visible close; Escape not closing it and returning to its button; a panel opened from
+//             Study without "Back to Study", or whose way back (Escape too) does not bring Study back; a panel opened some other
+//             way with one
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, and answers Wiktionary with "no entry" so that case is seen.
 // usage: node web/scripts/check-reader.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
+//        PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
 const PACKS = "https://raw.githubusercontent.com/mathesisstoicheion/packs/main";
 const WORK = "tlg0085.tlg005", URL_ = `/read?w=${WORK}&tr=perseus-eng3`;
 const MODES = ["Transliteration", "Colour by case", "Words I know", "Metre", "Try it first", "Fit lines"];
-const ACTIONS = ["Vocabulary", "Places", "Find in this text", "Listen", "Manuscript"];
+const ACTIONS = ["Vocabulary for this page", "Places on this page", "Find in this text", "Listen to the English", "How it was written"];
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
+// PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it (as check-bar.mjs and check-still.mjs do)
+if (process.env.PROVE_CSS || process.env.PROVE_JS) {
+  const newContext = browser.newContext.bind(browser);
+  browser.newContext = async (...a) => {
+    const c = await newContext(...a);
+    if (process.env.PROVE_CSS) await c.addInitScript((css) => addEventListener("load", () => document.head.append(Object.assign(document.createElement("style"), { textContent: css }))), process.env.PROVE_CSS);
+    if (process.env.PROVE_JS) await c.addInitScript(process.env.PROVE_JS);
+    return c;
+  };
+}
 
 // what a colour looks like to a reader with protanopia, deuteranopia or tritanopia (Machado, Oliveira and Fernandes 2009, severity 1)
 const CVD = {
@@ -56,6 +82,12 @@ const MIN_APART = 45;   // how far apart (in 0–255 RGB) two case colours must 
 // the settings as the browser keeps them (lib/settings.ts): version 3 is the quiet desk's, version 2 the printed page's
 const saved = (version, columns) => JSON.stringify({ state: { columns }, version });
 
+/** a button of the foot bar by its name: on a phone the bar has slipped away once the page is read on, so the page is scrolled up a little to bring it back, as a reader does */
+async function barButton(page, name) {
+  const b = page.getByRole("button", { name }).first();
+  if (!(await b.isVisible())) { await page.evaluate(() => scrollBy(0, -40)); await b.waitFor({ state: "visible" }); }
+  return b;
+}
 async function reader(ctx, w, h, seed) {
   const page = await ctx.newPage();
   await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
@@ -91,13 +123,12 @@ for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1
   if (w !== 1100) {
     // ---- zero: the bar's page, and the margin
     const zero = await page.evaluate(() => {
-      const bar = document.querySelector('a[aria-label="Back to the library"]')?.parentElement;
-      const label = [...(bar?.querySelectorAll(".label") ?? [])].map((e) => e.textContent).join(" ");
+      const label = document.querySelector('[data-foot-bar] button[aria-label="Go to a line or book"]')?.textContent ?? "";
       const zeros = [...document.querySelectorAll("article button[data-row], article [data-u] span, article [data-tr] span")]
         .filter((e) => !e.children.length && e.textContent.trim() === "0" && e.getBoundingClientRect().width > 0 && getComputedStyle(e).visibility !== "hidden");
       return { label, zeros: zeros.length };
     });
-    if (/(^|\s)0\s*[–-]/.test(zero.label)) found.push(`zero ${tag}: the bar says "${zero.label.trim()}"`);
+    if (/(^|\s)0(\s|$)/.test(zero.label)) found.push(`zero ${tag}: the bar says "${zero.label.trim()}"`);
     if (zero.zeros) found.push(`zero ${tag}: ${zero.zeros} passage or line number(s) "0" on the page`);
 
     // ---- indent and breaks: the English
@@ -139,27 +170,29 @@ for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1
     }
   }
 
-  // ---- tools: modes as switches, actions as buttons, and a sign on Tools when a mode is on
-  const toolsBtn = page.getByRole("button", { name: /^Tools\b/ }).first();
+  // ---- tools: modes as switches, actions as buttons, and a sign on Study when a mode is on
+  const toolsBtn = await barButton(page, /^Study\b/);
   await toolsBtn.click();
   const panelId = await toolsBtn.getAttribute("aria-controls");
   const kinds = await page.evaluate(({ id, MODES, ACTIONS }) => {
     const p = document.getElementById(id);
+    // a row's name is the first of the elements its aria-labelledby names (its quiet line is its description)
+    const nameOf = (b) => (b.getAttribute("aria-labelledby") ?? "").split(" ").slice(0, 1).map((i) => document.getElementById(i)?.textContent ?? "").join("").trim() || b.textContent.trim().replace(/\s+/g, " ");
     const look = (b) => {
       const sw = b.querySelector("[data-switch]");
       return { pressed: b.getAttribute("aria-pressed"), switch: !!sw && sw.getBoundingClientRect().width >= 14 };
     };
-    const get = (names) => names.map((n) => [n, [...p.querySelectorAll("button")].find((b) => b.textContent.trim().replace(/\s+/g, " ") === n || b.getAttribute("aria-label") === n)]).filter(([, b]) => b).map(([n, b]) => ({ n, ...look(b) }));
+    const get = (names) => names.map((n) => [n, [...(p?.querySelectorAll("button") ?? [])].find((b) => nameOf(b) === n)]).filter(([, b]) => b).map(([n, b]) => ({ n, ...look(b) }));
     return { modes: get(MODES), actions: get(ACTIONS) };
   }, { id: panelId, MODES, ACTIONS });
-  if (kinds.modes.length < 3 || kinds.actions.length < 3) found.push(`tools ${tag}: the Tools menu's modes and actions were not found (${kinds.modes.length} and ${kinds.actions.length})`);
+  if (kinds.modes.length < 3 || kinds.actions.length < 3) found.push(`tools ${tag}: the Study menu's modes and actions were not found (${kinds.modes.length} and ${kinds.actions.length})`);
   for (const m of kinds.modes) if (m.pressed === null || !m.switch) found.push(`tools ${tag}: "${m.n}" is a mode but is not drawn as a switch`);
   for (const a of kinds.actions) if (a.switch || a.pressed !== null) found.push(`tools ${tag}: "${a.n}" opens a panel but is drawn as an on/off switch`);
   const before = await toolsBtn.evaluate((b) => b.innerText + "|" + (b.querySelector("[data-on]") ? 1 : 0));
-  await page.locator(`#${panelId}`).getByRole("button", { name: "Colour by case", exact: true }).click();
+  await page.locator(`[id="${panelId}"]`).getByRole("button", { name: "Colour by case", exact: true }).click();
   await page.waitForTimeout(300);
   const after = await toolsBtn.evaluate((b) => b.innerText + "|" + (b.querySelector("[data-on]") ? 1 : 0));
-  if (before === after) found.push(`tools ${tag}: nothing on the Tools button changes when a mode is turned on`);
+  if (before === after) found.push(`tools ${tag}: nothing on the Study button changes when a mode is turned on`);
   await page.keyboard.press("Escape");
 
   // ---- legend: Colour by case, read some way down the page
@@ -215,20 +248,23 @@ for (const [w, h, scheme = "light"] of [[1280, 900], [1100, 860], [375, 812], [1
     await page.keyboard.press("Escape");
   } else found.push(`legend ${tag}: no word was coloured by case`);
   // leave the setting as it was
-  await (await page.getByRole("button", { name: /^Tools\b/ }).first()).click();
-  await page.locator(`#${panelId}`).getByRole("button", { name: "Colour by case", exact: true }).click();
+  await (await barButton(page, /^Study\b/)).click();
+  await page.locator(`[id="${panelId}"]`).getByRole("button", { name: "Colour by case", exact: true }).click();
   await page.keyboard.press("Escape");
 
-  // ---- bar: one row on a phone, the title whole
+  // ---- bar: one row on a phone, the place in words whole (the foot bar, ReaderBar.tsx)
   if (w < 700) {
     const bar = await page.evaluate(() => {
-      const back = document.querySelector('a[aria-label="Back to the library"]');
-      const inner = back?.parentElement, b = inner?.querySelector("b");
-      const tops = new Set([...(inner?.children ?? [])].flatMap((c) => (getComputedStyle(c).display === "contents" ? [...c.children] : [c])).filter((c) => c.getBoundingClientRect().width).map((c) => Math.round(c.getBoundingClientRect().top / 20)));
-      return { h: inner?.getBoundingClientRect().height ?? 0, rows: tops.size, title: b?.innerText ?? "", cut: b ? b.scrollWidth > b.clientWidth + 1 : true, width: b?.getBoundingClientRect().width ?? 0 };
+      const foot = document.querySelector("[data-foot-bar]");
+      const inner = foot?.firstElementChild;
+      const at = foot?.querySelector('[id$="-at"]');
+      const tops = new Set([...(inner?.querySelectorAll("a, button") ?? [])].filter((c) => c.getBoundingClientRect().width).map((c) => Math.round(c.getBoundingClientRect().top / 20)));
+      return { h: inner?.getBoundingClientRect().height ?? 0, rows: tops.size, place: at?.textContent ?? "", cut: at ? at.scrollWidth > at.clientWidth + 1 : true, width: at?.getBoundingClientRect().width ?? 0, sideways: document.documentElement.scrollWidth > innerWidth + 1 };
     });
     if (bar.h > 64) found.push(`bar ${tag}: the reader's bar is ${Math.round(bar.h)} px tall (in more than one row)`);
-    if (bar.cut || bar.width < 60) found.push(`bar ${tag}: the work's title is cut short ("${bar.title}", ${Math.round(bar.width)} px)`);
+    if (bar.rows > 1) found.push(`bar ${tag}: the reader's bar has its buttons in ${bar.rows} rows`);
+    if (bar.cut || bar.width < 40) found.push(`bar ${tag}: the place the bar names is cut short ("${bar.place}", ${Math.round(bar.width)} px)`);
+    if (bar.sideways) found.push(`bar ${tag}: the page scrolls sideways`);
   }
   await ctx.close();
 }
@@ -252,6 +288,17 @@ const columnsShown = (page) => page.evaluate(() => ({
   tr: [...document.querySelectorAll("article [data-tr]")].filter((e) => e.getBoundingClientRect().width > 0 && getComputedStyle(e).display !== "none").length,
   buttons: [...document.querySelectorAll("article section[data-key] button")].filter((b) => /^Show the English$/.test(b.textContent.trim())).length,
 }));
+/** scroll to the true end of the page: the text grows as the rest of a long book is drawn, so it goes on until the height has stopped changing */
+async function toEnd(page) {
+  for (let i = 0, last = -1; i < 40; i++) {
+    await page.evaluate(() => scrollTo({ top: document.documentElement.scrollHeight, behavior: "instant" }));
+    await page.waitForTimeout(450);
+    const m = await page.evaluate(() => ({ h: document.documentElement.scrollHeight, end: scrollY + innerHeight >= document.documentElement.scrollHeight - 2 }));
+    if (m.end && m.h === last) return;
+    last = m.h;
+  }
+}
+
 for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
   const tag = `${w}px`;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
@@ -327,6 +374,7 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
     const word = document.querySelector("article section[data-key] [data-u] [data-w]");
     return {
       cover: shown(cover), title: shown(line) ? line.innerText.replace(/\s+/g, " ").trim() : "", author: !!line?.querySelector('a[href*="author?a=tlg0012"]'),
+      coverAuthor: !!cover?.querySelector('a[href*="author?a=tlg0012"]'), change: [...(cover?.querySelectorAll("button") ?? [])].some((b) => /^Change$/.test(b.textContent.trim())),
       top: word ? word.getBoundingClientRect().top : -1, titleLeft: shown(line) ? line.getBoundingClientRect().left : -1, wordLeft: word ? word.getBoundingClientRect().left : -1,
     };
   });
@@ -335,14 +383,18 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
     const one = await opening();
     if (!one.cover) found.push(`first ${tag}: the first opening of the Iliad on a fresh profile does not show its title page`);
     if (one.title) found.push(`first ${tag}: the first opening shows the one-line title as well as the title page ("${one.title}")`);
+    // the author's name on the title page leads to the author's page, as the one-line title's does; "Change" is gone (Study's Edition and translation holds the choices)
+    if (one.cover && !one.coverAuthor) found.push(`first ${tag}: the author's name on the title page is not a link to the author's page`);
+    if (one.change) found.push(`first ${tag}: the title page still has a "Change" button, which Study's Edition and translation replaces`);
     await page.reload();
     await page.waitForSelector('article [data-key="1.5"] [data-u] [data-w]', { timeout: 45000 });
     await page.waitForTimeout(1500);
     const two = await opening();
     if (two.cover) found.push(`first ${tag}: the second opening of the Iliad shows its title page again`);
-    const want = touch ? "Ἰλιάς · Iliad, Book 1" : "Ἰλιάς · Homer, Iliad, Book 1";
+    // the author is on the phone's line too (the quiet desk, ticket 09, the owner, 2026-10-30: the author's page is reached from this line)
+    const want = "Ἰλιάς · Homer, Iliad, Book 1";
     if (two.title !== want) found.push(`first ${tag}: the second opening's one-line title reads "${two.title}", not "${want}"`);
-    if (!touch && !two.author) found.push(`first ${tag}: the one-line title has no link to the author's page`);
+    if (!two.author) found.push(`first ${tag}: the one-line title has no link to the author's page`);
     if (two.top < 0 || two.top > 200) found.push(`first ${tag}: on a second opening the first line of Greek is ${Math.round(two.top)} px down, not within 200 px of the top of the screen`);
     if (Math.abs(two.titleLeft - two.wordLeft) > 2) found.push(`first ${tag}: the one-line title starts ${Math.round(two.titleLeft)} px from the left, where the Greek starts ${Math.round(two.wordLeft)} px`);
 
@@ -396,6 +448,362 @@ for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
   await ctx.close();
 }
 
+// ---- top, foot, slips, study, close: the foot bar, Aa and Study (the quiet desk, ticket 09). The Iliad on its second opening, reading Greek and English together
+/** the Iliad opened once and then again, so that it opens on its text under the one-line title */
+async function returning(ctx, settings) {
+  const page = await iliad(ctx, settings);
+  await page.reload();
+  await page.waitForSelector('article [data-key="1.5"] [data-u] [data-w]', { timeout: 45000 });
+  await page.waitForTimeout(1500);
+  return page;
+}
+const STUDY_ROWS = ["Find in this text", "Colour by case", "Metre", "Transliteration", "Try it first", "Fit lines", "Vocabulary for this page", "Your notes and marks",
+  "Open a second book beside this one", "Float the reader", "Places on this page", "How it was written", "Listen to the English", "Signs beside the scroll bar"];
+// a panel a row of Study opens: the row's name, and what the panel's own first control is
+const STUDY_PANELS = ["Find in this text", "Vocabulary for this page", "Places on this page", "How it was written"];
+/** open a menu of the bar by its button's name (unless open), and give back its panel */
+async function openMenu(page, name) {
+  const b = await barButton(page, name);
+  if ((await b.getAttribute("aria-expanded")) !== "true") await b.click();
+  await page.waitForTimeout(450);
+  return page.locator(`[id="${await b.getAttribute("aria-controls")}"]`);
+}
+const BAR = { aa: /^Aa\b/, study: /^Study\b/, goto: "Go to a line or book" };
+/** whether the foot bar is out of sight (slipped away: hidden, or stood below the window) */
+const awayNow = (page) => page.evaluate(() => { const f = document.querySelector("[data-foot-bar]"); if (!f) return true; const r = f.getBoundingClientRect(); return getComputedStyle(f).visibility === "hidden" || r.top >= innerHeight - 1; });
+
+for (const [w, h, touch] of [[1440, 900, false], [390, 844, true]]) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
+  const page = await returning(ctx, saved(4, "both"));
+  const bar = page.locator("[data-foot-bar]");
+  page.setDefaultTimeout(10000);
+  // each part is read on its own: one that cannot be read (a menu that is not there) is listed as a problem, and the others are still read
+  const section = async (name, fn) => {
+    try { await fn(); } catch (e) { found.push(`${name} ${tag}: could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`); }
+  };
+  await section("foot", async () => {
+    // ---- foot: "← Library", where you are, Aa, Study, from the left; the sizes; the place moving with the reading; Go to without arrows
+    if (!(await bar.count())) found.push(`foot ${tag}: no bar along the foot of the reader`);
+    else {
+      const parts = [["← Library", bar.getByRole("link", { name: /library/i })], ["where you are", bar.getByRole("button", { name: BAR.goto })],
+        ["Aa", bar.getByRole("button", { name: BAR.aa })], ["Study", bar.getByRole("button", { name: BAR.study })]];
+      const boxes = [];
+      for (const [n, loc] of parts) {
+        const b = (await loc.count()) ? await loc.first().boundingBox() : null;
+        if (!b) found.push(`foot ${tag}: the foot bar has no "${n}"`); else boxes.push([n, b]);
+      }
+      for (let i = 1; i < boxes.length; i++) if (boxes[i][1].x <= boxes[i - 1][1].x) found.push(`foot ${tag}: "${boxes[i][0]}" is not to the right of "${boxes[i - 1][0]}" in the foot bar`);
+      for (const [n, b] of boxes) {
+        if (touch && (b.width < 43.5 || b.height < 43.5)) found.push(`foot ${tag}: "${n}" is ${Math.round(b.width)} × ${Math.round(b.height)} px, under 44 × 44 for a finger`);
+        if (!touch && b.height < 35.5) found.push(`foot ${tag}: "${n}" is ${Math.round(b.height)} px tall, under 36`);
+      }
+      const fb = await bar.boundingBox();
+      if (!fb || Math.abs(fb.y + fb.height - h) > 1.5 || fb.width < w - 2) found.push(`foot ${tag}: the bar does not stand along the foot of the window across its whole width`);
+      if (fb && (fb.height < 50 || fb.height > 72)) found.push(`foot ${tag}: the bar is ${Math.round(fb.height)} px tall, not about 56`);
+      const link = parts[0][1];
+      if ((await link.count()) && !/\/library\/?$/.test((await link.first().getAttribute("href")) ?? "")) found.push(`foot ${tag}: "Library" does not lead to the library`);
+      // where you are: "Book 1", a rule with a mark, "line 25 of 611" on a computer; only "line 25 of 611" on a phone
+      // (by its name in the page, not its role: a bar that has slipped away is hidden from the roles, and still says where you are)
+      const where = bar.locator('button[aria-label="Go to a line or book"]');
+      const said = async (words = false) => ((await where.count()) ? ((await (words ? where.first().innerText() : where.first().textContent())) ?? "").replace(/\s+/g, " ").trim() : "");
+      const first = await said(true);
+      const n1 = +(first.match(/line (\d+) of 611/)?.[1] ?? -1);
+      if (n1 < 0) found.push(`foot ${tag}: where you are reads "${first}", not "line N of 611"`);
+      if (touch && /Book/.test(first)) found.push(`foot ${tag}: a phone's bar also names the book ("${first}"), not only the line`);
+      if (!touch && !/Book 1/.test(first)) found.push(`foot ${tag}: a computer's bar does not name the book where you are ("${first}")`);
+      const mark = bar.locator('[class$="__mark"]');
+      const markAt = async () => ((await mark.count()) ? (await mark.first().boundingBox())?.x ?? -1 : -1);
+      if (!touch && !(await mark.count())) found.push(`foot ${tag}: a computer's bar has no progress rule with a mark`);
+      const m1 = await markAt();
+      await page.evaluate(() => scrollTo({ top: innerHeight * 3, behavior: "instant" }));
+      await page.waitForTimeout(900);
+      const n2 = +((await said()).match(/line (\d+) of 611/)?.[1] ?? -1);
+      if (n2 <= n1) found.push(`foot ${tag}: the place stays at line ${n1} after reading on (now line ${n2})`);
+      if (!touch && (await markAt()) <= m1) found.push(`foot ${tag}: the progress mark does not move on as the page is read`);
+      await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForTimeout(500);
+      // clear: the end of the text ("Continue to Book 2"), Back to top, Listen's player, and (on a computer) the side panels stand clear of the bar
+      await toEnd(page);
+      const fbEnd = await bar.boundingBox();
+      const above = async (name, loc) => {
+        const b = (await loc.count()) ? await loc.first().boundingBox() : null;
+        if (!b) { found.push(`foot ${tag}: ${name} was not found near the end of the page`); return; }
+        if (fbEnd && b.y + b.height > fbEnd.y + 1) found.push(`foot ${tag}: ${name} stands ${Math.round(b.y + b.height - fbEnd.y)} px under the bar`);
+      };
+      await above('"Continue to Book 2"', page.getByRole("button", { name: /^Continue to Book 2/ }));
+      await above("Back to top", page.getByRole("button", { name: "Back to top" }));
+      await (await openMenu(page, BAR.study)).getByRole("button", { name: "Listen to the English", exact: true }).click();
+      await page.waitForTimeout(900);
+      await above("Listen's player", page.getByRole("region", { name: "Listen to the translation" }));
+      await page.getByRole("region", { name: "Listen to the translation" }).getByRole("button", { name: "Stop and close" }).click().catch(() => null);
+      if (!touch) {
+        // (Ctrl+F: the "/" key also opens the site's own search, which takes the keyboard away from Find, on the old bar as well)
+        await page.keyboard.press("Control+f");
+        await page.waitForTimeout(900);
+        const side = page.locator('aside[aria-label="Find in this text"]');
+        const sb = (await side.count()) ? await side.boundingBox() : null;
+        if (!sb) found.push(`foot ${tag}: Find did not open beside the text`);
+        else {
+          if (fbEnd && sb.y + sb.height > fbEnd.y + 1) found.push(`foot ${tag}: a side panel stands ${Math.round(sb.y + sb.height - fbEnd.y)} px under the bar (it runs down to the bar's top)`);
+          if (sb.y > 8) found.push(`foot ${tag}: a side panel starts ${Math.round(sb.y)} px down, not at the top of the window`);
+        }
+        await page.keyboard.press("Escape");
+      }
+      await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForTimeout(500);
+      // Go to: the page and a reference to type, no arrows, and the only button of its kind
+      const goto = await openMenu(page, BAR.goto);
+      if (!(await goto.getByRole("combobox", { name: "Page" }).count())) found.push(`foot ${tag}: Go to has no page to choose`);
+      if (!(await goto.locator("#reader-goto").count())) found.push(`foot ${tag}: Go to has no field for a reference`);
+      if (await goto.getByRole("button", { name: /^(Previous|Next) page$/ }).count()) found.push(`foot ${tag}: Go to has ← → page arrows (the foot of each page has the way on and back)`);
+      await page.keyboard.press("Escape");
+    }
+    if (await page.getByRole("button", { name: /^(Tools|Marks|More)\b/ }).count()) found.push(`foot ${tag}: the old bar's Tools, Marks or More button is still on the page`);
+    if (await page.getByRole("button", { name: BAR.goto }).count() !== 1) found.push(`foot ${tag}: Go to is not one button (${await page.getByRole("button", { name: BAR.goto }).count()})`);
+  });
+
+  await section("top", async () => {
+    // ---- top: nothing fixed or sticky along the top of one book after 800 px of reading; the paper's darkened edges are gone on the reader
+    await page.evaluate(() => scrollTo({ top: 800, behavior: "instant" }));
+    await page.waitForTimeout(800);
+    const pinned = await page.evaluate(() => [...document.querySelectorAll("body *")].filter((e) => {
+      const st = getComputedStyle(e);
+      if ((st.position !== "fixed" && st.position !== "sticky") || st.display === "none" || st.visibility === "hidden") return false;
+      const r = e.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.top <= 8 && r.top >= -8 && r.bottom > 8;
+    }).map((e) => `${e.tagName.toLowerCase()}${typeof e.className === "string" && e.className ? "." + e.className.split(" ")[0].replace(/^.*__([^_]+)__/, "") : ""}`));
+    for (const p of pinned) found.push(`top ${tag}: ${p} is fixed or sticky along the top of one book after reading 800 px`);
+    const shade = await page.evaluate(() => getComputedStyle(document.body, "::after").display);
+    if (shade !== "none") found.push(`top ${tag}: the paper's darkened edges are still drawn on the reader's page`);
+    await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+    await page.waitForTimeout(500);
+  });
+
+  await section("slips", async () => {
+    // ---- slips: on a phone the bar goes as the page is read on and returns as it is read back; the look-up sheet stands where it was; no movement under reduced motion
+    if (touch) {
+      await page.waitForTimeout(3500);   // (a jump the reader asked for holds the bar for a few seconds)
+      if (await awayNow(page)) found.push(`slips ${tag}: the bar is out of sight at the top of the page`);
+      const dur = () => bar.evaluate((e) => getComputedStyle(e).transitionDuration);
+      if (/^0s(, 0s)*$/.test(await dur())) found.push(`slips ${tag}: the bar's slipping has no motion even without reduced motion`);
+      await page.evaluate(() => scrollBy({ top: 600, behavior: "instant" }));
+      await page.waitForTimeout(1300);
+      if (!(await awayNow(page))) found.push(`slips ${tag}: the bar does not slip away after the page is read on 600 px`);
+      await page.evaluate(() => scrollBy({ top: -200, behavior: "instant" }));
+      await page.waitForTimeout(1300);
+      if (await awayNow(page)) found.push(`slips ${tag}: the bar is not back after the page is read back 200 px`);
+      // a tap on the paper, away from any word, brings it back too
+      await page.evaluate(() => scrollBy({ top: 600, behavior: "instant" }));
+      await page.waitForTimeout(1300);
+      if (!(await awayNow(page))) found.push(`slips ${tag}: the bar does not slip away when the page is read on again`);
+      else {
+        await page.touchscreen.tap(6, Math.round(h / 2));
+        await page.waitForTimeout(900);
+        if (await awayNow(page)) found.push(`slips ${tag}: a tap on the paper does not bring the bar back`);
+      }
+      // the look-up sheet stands where the bar was
+      const wordAt = await page.evaluate(() => {
+        const e = [...document.querySelectorAll("article [data-u] [data-w]")].find((x) => { const r = x.getBoundingClientRect(); return r.top > 120 && r.bottom < innerHeight - 260 && r.width > 8; });
+        if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      });
+      if (!wordAt) found.push(`slips ${tag}: no word in view to look up`);
+      else {
+        await page.mouse.click(wordAt.x, wordAt.y);
+        await page.locator('aside[aria-label^="Look-up"]').waitFor({ timeout: 15000 });
+        await page.waitForTimeout(900);
+        if (!(await awayNow(page))) found.push(`slips ${tag}: the bar still stands under the look-up sheet`);
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(900);
+        if (await awayNow(page)) found.push(`slips ${tag}: the bar does not come back when the look-up sheet is closed`);
+      }
+      // a panel's sheet (Find in this text, opened from Study) stands where the bar was too, and the bar is back when it is put away
+      const fromStudy = await openMenu(page, BAR.study);
+      await fromStudy.getByRole("button", { name: "Find in this text", exact: true }).click();
+      const sheet = page.locator("aside").filter({ has: page.getByRole("button", { name: "Back to Study" }) });
+      await sheet.waitFor({ timeout: 15000 });
+      await page.waitForTimeout(900);
+      if (!(await awayNow(page))) found.push(`slips ${tag}: the bar still stands under a panel's sheet (Find in this text)`);
+      await sheet.focus();
+      await page.keyboard.press("Escape");   // back to Study
+      await page.waitForTimeout(500);
+      await page.keyboard.press("Escape");   // and to the text
+      await page.waitForTimeout(900);
+      if (await awayNow(page)) found.push(`slips ${tag}: the bar does not come back when the panel's sheet is put away`);
+      // the passage toolbar, docked at the foot, stands where the bar was as well
+      const numberAt = await page.evaluate(() => {
+        const e = [...document.querySelectorAll("article button[data-row]")].find((x) => { const r = x.getBoundingClientRect(); return r.top > 100 && r.bottom < innerHeight - 200 && r.width > 8; });
+        if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+      });
+      if (!numberAt) found.push(`slips ${tag}: no passage number in view to tap`);
+      else {
+        await page.touchscreen.tap(numberAt.x, numberAt.y);
+        await page.getByRole("toolbar", { name: "Passage actions" }).waitFor({ timeout: 15000 });
+        await page.waitForTimeout(900);
+        if (!(await awayNow(page))) found.push(`slips ${tag}: the bar still stands under the passage toolbar`);
+        await page.keyboard.press("Escape");
+        await page.waitForTimeout(900);
+        if (await awayNow(page)) found.push(`slips ${tag}: the bar does not come back when the passage toolbar is put away`);
+      }
+      await page.emulateMedia({ reducedMotion: "reduce" });
+      await page.waitForTimeout(200);
+      if (!/^0s(, 0s)*$/.test(await dur())) found.push(`slips ${tag}: the bar's slipping still moves under reduced motion (${await dur()})`);
+      await page.emulateMedia({ reducedMotion: "no-preference" });
+      await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
+      await page.waitForTimeout(800);
+    }
+  });
+
+  await section("study", async () => {
+    // ---- study: every tool in Study, or in Aa; each once
+    const study = await openMenu(page, BAR.study);
+    // (only what is drawn counts: a row hidden by a rule of the style sheet is a tool the reader cannot reach)
+    const rowNames = await study.evaluate((p) => [...p.querySelectorAll("button, a")].filter((b) => b.getBoundingClientRect().width > 0 && getComputedStyle(b).visibility !== "hidden").map((b) => {
+      const l = (b.getAttribute("aria-labelledby") ?? "").split(" ").slice(0, 1).map((i) => document.getElementById(i)?.textContent ?? "").join("").trim();
+      return l || (b.getAttribute("aria-label") ?? b.textContent.trim().replace(/\s+/g, " "));
+    }));
+    for (const n of STUDY_ROWS) if (!rowNames.includes(n)) found.push(`study ${tag}: "${n}" is not in Study`);
+    if (w > 900 && !rowNames.includes("Keys")) found.push(`study ${tag}: "Keys" is not in Study`);
+    for (const n of ["Greek text", "Translation"]) if (!(await study.getByRole("combobox", { name: n }).count())) found.push(`study ${tag}: the "${n}" choice is not in Study`);
+    for (const n of ["Edition and translation", "Reading help", "Go deeper"]) if (!(await study.getByRole("heading", { name: n }).count())) found.push(`study ${tag}: Study has no group "${n}"`);
+    // in order: Reading help, then Go deeper, then Edition and translation
+    const heads = await study.getByRole("heading", { level: 3 }).allInnerTexts();
+    const order = ["Reading help", "Go deeper", "Edition and translation"].map((n) => heads.findIndex((t) => t.toLowerCase() === n.toLowerCase()));
+    if (order.some((i, k) => i < 0 || (k && i < order[k - 1]))) found.push(`study ${tag}: the groups of Study are not in order (${heads.join(", ")})`);
+    // nothing twice, and nothing that Study should not have
+    const dupes = rowNames.filter((n, i) => rowNames.indexOf(n) !== i);
+    for (const d of new Set(dupes)) found.push(`study ${tag}: "${d}" is in Study twice`);
+    for (const n of rowNames) if (/^(Go to|About |Echoes|Change$|Tools|More$)/.test(n)) found.push(`study ${tag}: Study has "${n}", which another button of the reader already leads to`);
+    await page.keyboard.press("Escape");
+  });
+
+  await section("study", async () => {
+    // ---- study: Aa holds the page, the size, the spacing and the columns, and nothing else
+    const aa = await openMenu(page, BAR.aa);
+    for (const g of ["Page", "Columns"]) if (!(await aa.getByRole("radiogroup", { name: g }).count())) found.push(`study ${tag}: Aa has no "${g}" choice`);
+    for (const n of ["Follow device", "Paper", "Night"]) if (!(await aa.getByRole("radio", { name: n }).count())) found.push(`study ${tag}: Aa's page has no "${n}"`);
+    for (const n of ["Greek", "Both", "English"]) if (!(await aa.getByRole("radio", { name: n, exact: true }).count())) found.push(`study ${tag}: Aa's columns have no "${n}"`);
+    for (const n of ["Decrease Greek text size", "Increase Greek text size", "Decrease line spacing", "Increase line spacing"]) if (!(await aa.getByRole("button", { name: n }).count())) found.push(`study ${tag}: Aa has no "${n}"`);
+    if (await aa.getByText(/typeface/i).count()) found.push(`study ${tag}: Aa still offers a choice of Greek typeface`);
+    if (await aa.locator("[lang=grc]").count()) found.push(`study ${tag}: Aa shows a sample of the Greek (the sample is on the Settings page only)`);
+    await page.keyboard.press("Escape");
+
+    // ---- study: the author's page from the title line
+    if (!(await page.locator('[data-title-line] a[href*="author?a=tlg0012"]:visible').count())) found.push(`study ${tag}: the author's page is not reached from the one-line title`);
+  });
+
+  await section("close", async () => {
+    // ---- close: every menu has a visible close, and Escape; Tab goes from its button into it
+    for (const [name, key] of [[BAR.aa, "Aa"], [BAR.study, "Study"], [BAR.goto, "Go to"]]) {
+      const btn = page.getByRole("button", { name }).first();
+      const menu = await openMenu(page, name);
+      const close = menu.getByRole("button", { name: "Close", exact: true });
+      const cb = (await close.count()) ? await close.first().boundingBox() : null;
+      if (!cb || cb.width < 24 || cb.height < 24 || cb.y < 0 || cb.y + cb.height > h) found.push(`close ${tag}: ${key} has no visible close button`);
+      else {
+        await close.first().click();
+        await page.waitForTimeout(300);
+        if ((await btn.getAttribute("aria-expanded")) !== "false") found.push(`close ${tag}: ${key}'s close button leaves it open`);
+        if (!(await btn.evaluate((e) => document.activeElement === e))) found.push(`close ${tag}: after ${key}'s close button the keyboard is not back on its button`);
+      }
+      await btn.focus();
+      await page.keyboard.press("Enter");
+      await page.waitForTimeout(300);
+      await page.keyboard.press("Tab");
+      if (!(await menu.evaluate((m) => m.contains(document.activeElement)))) found.push(`close ${tag}: Tab does not go from ${key}'s button into its menu`);
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(300);
+      if ((await btn.getAttribute("aria-expanded")) !== "false") found.push(`close ${tag}: Escape does not close ${key}`);
+      if (!(await btn.evaluate((e) => document.activeElement === e))) found.push(`close ${tag}: after Escape the keyboard is not back on ${key}'s button`);
+    }
+  });
+
+  await section("close", async () => {
+    // ---- close: a panel opened from a row of Study has "Back to Study" and a close; its way back (and Escape) bring Study back; × closes to the text
+    for (const row of STUDY_PANELS) {
+      const sbtn = page.getByRole("button", { name: BAR.study }).first();
+      const panel = page.locator("aside").filter({ has: page.getByRole("button", { name: "Back to Study" }) });
+      for (const how of ["back", "Escape", "close"]) {
+        await openMenu(page, BAR.study);
+        await page.locator(`[id="${await sbtn.getAttribute("aria-controls")}"]`).getByRole("button", { name: row, exact: true }).click();
+        await page.waitForTimeout(900);
+        if ((await panel.count()) !== 1) { found.push(`close ${tag}: the panel "${row}" opens from Study without "Back to Study"`); await page.keyboard.press("Escape"); continue; }
+        const x = await panel.getByRole("button", { name: /^Close/ }).first().boundingBox().catch(() => null);
+        if (!x || x.width < 24 || x.x + x.width > w + 1 || x.y < 0) found.push(`close ${tag}: the panel "${row}" has no visible close button`);
+        if (how === "back") await panel.getByRole("button", { name: "Back to Study" }).click();
+        else if (how === "Escape") { await panel.focus(); await page.keyboard.press("Escape"); }
+        else await panel.getByRole("button", { name: /^Close/ }).first().click();
+        await page.waitForTimeout(700);
+        const open = (await sbtn.getAttribute("aria-expanded")) === "true";
+        const gone = (await page.locator("aside").filter({ has: page.getByRole("button", { name: "Back to Study" }) }).count()) === 0;
+        if (!gone) found.push(`close ${tag}: "${how === "back" ? "Back to Study" : how}" does not close the panel "${row}"`);
+        if (how !== "close" && !open) found.push(`close ${tag}: "${how === "back" ? "Back to Study" : how}" in the panel "${row}" does not bring Study back`);
+        if (how === "close" && open) found.push(`close ${tag}: the close button of the panel "${row}" brings Study back (it closes to the text)`);
+        if (open) await page.keyboard.press("Escape");
+        await page.waitForTimeout(300);
+      }
+    }
+    // the list of books for a second one is a window, and has the same way back (and Escape does what it does)
+    for (const how of ["back", "Escape"]) {
+      const sbtn = page.getByRole("button", { name: BAR.study }).first();
+      const dlg = page.getByRole("dialog", { name: "Open a second book" });
+      await openMenu(page, BAR.study);
+      await page.locator(`[id="${await sbtn.getAttribute("aria-controls")}"]`).getByRole("button", { name: "Open a second book beside this one", exact: true }).click();
+      await page.waitForTimeout(900);
+      if (!(await dlg.getByRole("button", { name: "Back to Study" }).count())) { found.push(`close ${tag}: the list of books for a second one opens from Study without "Back to Study"`); await page.keyboard.press("Escape"); continue; }
+      if (how === "back") await dlg.getByRole("button", { name: "Back to Study" }).click(); else await page.keyboard.press("Escape");
+      await page.waitForTimeout(700);
+      if ((await sbtn.getAttribute("aria-expanded")) !== "true" || (await dlg.count())) found.push(`close ${tag}: ${how === "back" ? '"Back to Study"' : "Escape"} in the list of books for a second one does not bring Study back`);
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(300);
+    }
+    // a panel opened another way (Find, by the key) has a close but no way back to Study
+    await page.locator("body").click({ position: { x: 4, y: 300 } }).catch(() => null);
+    await page.keyboard.press("Control+f");
+    await page.waitForTimeout(900);
+    const found2 = page.locator('aside[aria-label*="Find" i]');
+    if (await found2.count()) {
+      if (await found2.getByRole("button", { name: /^Back to/ }).count()) found.push(`close ${tag}: Find, opened by the key, has a way back to Study`);
+      if (!(await found2.getByRole("button", { name: /^Close/ }).count())) found.push(`close ${tag}: Find, opened by the key, has no close button`);
+      await page.keyboard.press("Escape");
+    }
+  });
+  await ctx.close();
+}
+
+// ---- study: Compare with another edition (a work with two editions), and the shade kept elsewhere on the site
+{
+  const ctx = await browser.newContext({ viewport: { width: 1440, height: 900 }, serviceWorkers: "block" });
+  const page = await ctx.newPage();
+  try {
+    await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
+      const path = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
+      try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${path}` }) }); } catch { await route.abort(); }
+    });
+    await page.goto(base + "/read?w=tlg0085.tlg005&tr=perseus-eng3&at=80");
+    await page.waitForSelector('[data-u="80"]', { timeout: 45000 });
+    await page.waitForTimeout(1500);
+    const study = await openMenu(page, BAR.study);
+    const cmpRow = study.getByRole("button", { name: "Compare with another edition", exact: true });
+    if (!(await cmpRow.count())) found.push("study Agamemnon: Compare with another edition is not in Study");
+    else {
+      await cmpRow.click();
+      const pick = study.getByRole("combobox", { name: "Compare with" });
+      if (!(await pick.count()) || (await pick.locator("option").count()) < 2) found.push("study Agamemnon: Compare with another edition shows no other edition to choose");
+    }
+    await page.goto(base + "/library");
+    await page.waitForTimeout(800);
+    if ((await page.evaluate(() => getComputedStyle(document.body, "::after").display)) === "none") found.push("top: the paper's darkened edges are gone from the library too (only the reader's page loses them)");
+  } catch (e) {
+    found.push(`study Agamemnon: could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
+  }
+  await ctx.close();
+}
+
 // ---- photos: none in the reader
 for (const path of ["/read?w=tlg0012.tlg001", "/read"]) {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block" });
@@ -410,6 +818,8 @@ for (const path of ["/read?w=tlg0012.tlg001", "/read"]) {
 }
 
 await browser.close();
-for (const f of found) console.log(`✗ ${f}`);
-console.log(found.length ? `\n${found.length} problem(s)` : "the reader is in order");
-process.exit(found.length ? 1 : 0);
+// (a fault found by each of the ways a menu or a panel is left is told once)
+const problems = [...new Set(found)];
+for (const f of problems) console.log(`✗ ${f}`);
+console.log(problems.length ? `\n${problems.length} problem(s)` : "the reader is in order");
+process.exit(problems.length ? 1 : 0);

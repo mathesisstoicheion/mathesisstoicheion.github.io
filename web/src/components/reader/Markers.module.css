@@ -56,10 +56,8 @@
 .legend[data-to-right] { right: auto; left: 0; }
 .legend label, .legendInline label { display: grid; grid-template-columns: auto 18px 1fr auto; gap: var(--space-2); align-items: center; font-size: var(--step--1); }
 .legend small, .legendInline small { color: var(--ink-2); font-variant-numeric: tabular-nums; }
-/* in the reader's More menu (Reader.tsx), which is already a panel: the legend set straight in it */
+/* in the reader's Study menu (StudyMenu.tsx), folded under the row that names it: the legend set straight in it */
 .legendInline { display: grid; gap: var(--space-2); }
-.legendInline :global(.label) { display: flex; align-items: center; gap: var(--space-2); margin: 0; }
-.legendSub { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 .sample { position: relative; justify-self: center; display: block; width: 12px; height: 6px; border-radius: var(--radius); }
 .sample[data-kind="echo"] { width: 6px; }
 .sample[data-kind="highlight"] { background: var(--pen-ochre); }

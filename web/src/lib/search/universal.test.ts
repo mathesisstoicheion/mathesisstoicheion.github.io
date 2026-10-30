@@ -32,7 +32,9 @@ describe("universal search matching", () => {
     expect(matchActions("dark mode")[0].id).toBe("theme-dark");
     expect(matchActions("daylight")[0].id).toBe("theme-light");
     expect(matchActions("bigger")[0].id).toBe("bigger");
-    expect(matchActions("gentium").map((a) => a.id)).toEqual(["face-gentium"]);
+    // no choice of Greek typeface is offered: the Greek is Gentium (the quiet desk, ticket 09, the owner, 2026-10-30)
+    expect(matchActions("didot")).toEqual([]);
+    expect(matchActions("gentium")).toEqual([]);
     expect(matchActions("font").length).toBeGreaterThan(1);
     expect(matchActions("d")).toEqual([]);
     expect(matchActions("λογος")).toEqual([]);

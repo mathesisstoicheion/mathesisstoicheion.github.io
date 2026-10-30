@@ -39,9 +39,11 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
       const root = rootRef.current;
       if (!root) return;
       const scroller = contained ? root : document.documentElement;
-      // page mode: the track starts below the site header (which slides away on scroll; see lib/header.ts)
+      // page mode: the track starts below the site header (which slides away on scroll; see lib/header.ts) and ends above the reader's foot bar,
+      // whether it is showing or not (the quiet desk, ticket 09, the owner, 2026-10-30)
       const offset = contained ? 0 : headerHeight();
-      const viewH = contained ? root.clientHeight : innerHeight - offset;
+      const foot = contained ? 0 : root.querySelector<HTMLElement>("[data-foot-bar]")?.offsetHeight ?? 0;
+      const viewH = contained ? root.clientHeight : innerHeight - offset - foot;
       const total = scroller.scrollHeight - (contained ? 0 : offset);
       const base = contained ? root.getBoundingClientRect().top - root.scrollTop : -scrollY + offset;
       const out: Placed[] = [];
@@ -93,7 +95,7 @@ export default function ScrollMarkers({ rootRef, contained, items, onJump, depKe
 
 /**
  * The legend: what each marker means, with a switch for each kind. Behind a "Markers" button of its own, or `inline`
- * (in the reader's More menu, which is already a panel).
+ * (folded under its row in the reader's Study menu, which is already a panel, and names it).
  */
 export function MarkersLegend({ counts, inline = false }: { counts: Partial<Record<MarkerKind, number>>; inline?: boolean }) {
   const shown = useSettings((s) => s.markers);
@@ -120,8 +122,6 @@ export function MarkersLegend({ counts, inline = false }: { counts: Partial<Reco
   if (inline) {
     return (
       <div className={styles.legendInline} role="group" aria-label="Scroll-bar signs">
-        <p className="label"><span className={styles.legendIcon} aria-hidden="true" /> Scroll-bar signs</p>
-        <p className={styles.legendSub}>Beside the scroll bar, on this page</p>
         {kinds}
       </div>
     );

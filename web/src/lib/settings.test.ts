@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { useSettings, DEFAULTS, LIMITS, upgrade, greekAlone, BOOT_SCRIPT } from "./settings";
+import { useSettings, DEFAULTS, LIMITS, upgrade, greekAlone, gentiumOnly, BOOT_SCRIPT } from "./settings";
 
 describe("settings", () => {
   it("starts from the defaults: the page follows the device, Greek in Gentium", () => {
@@ -49,7 +49,7 @@ describe("settings saved before the quiet desk", () => {
   const migrate = (saved: unknown, version: number) => useSettings.persist.getOptions().migrate!(saved, version) as Record<string, unknown>;
   it("start with the Greek alone", () => {
     expect(DEFAULTS.columns).toBe("greek");
-    expect(useSettings.persist.getOptions().version).toBe(3);
+    expect(useSettings.persist.getOptions().version).toBe(4);
   });
   it("turn a saved \"both\" into \"greek\", once", () => {
     expect(migrate({ columns: "both", greekSize: 1.5 }, 2)).toMatchObject({ columns: "greek", greekSize: 1.5 });
@@ -64,6 +64,7 @@ describe("settings saved before the quiet desk", () => {
   });
   it("keep a \"both\" chosen after the upgrade (version 3)", () => {
     expect(migrate({ columns: "both" }, 3).columns).toBe("both");
+    expect(migrate({ columns: "both" }, 4).columns).toBe("both");
   });
   it("leave the no-flash script reading the theme upgrade for version 1 only", () => {
     // it asks whether the save is older than version 2 (the theme), so a version 3 save must not count as old
@@ -78,5 +79,37 @@ describe("settings saved before the quiet desk", () => {
     expect(boot(3, "night")).toBe("night");   // version 3: the saved theme is used as it is
     expect(boot(1, "light")).toBe("paper");   // version 1: Daylight becomes Paper
     expect(boot(3, "light")).toBeUndefined(); // version 3 never holds "light"
+  });
+});
+
+// the quiet desk, ticket 09: GFS Didot leaves the reading choices (Aa and Settings), so a saved Didot becomes Gentium, once
+describe("settings saved before the typeface left the reading choices", () => {
+  const migrate = (saved: unknown, version: number) => useSettings.persist.getOptions().migrate!(saved, version) as Record<string, unknown>;
+  it("turn a saved Didot into Gentium", () => {
+    expect(migrate({ greekFace: "didot", greekSize: 1.5 }, 3)).toMatchObject({ greekFace: "gentium", greekSize: 1.5 });
+    expect(gentiumOnly({ greekFace: "didot" }).greekFace).toBe("gentium");
+  });
+  it("leave Gentium, and every other setting, as it is", () => {
+    expect(migrate({ greekFace: "gentium", theme: "night", leading: 2 }, 3)).toEqual({ greekFace: "gentium", theme: "night", leading: 2 });
+    expect(gentiumOnly(undefined)).toEqual({});
+  });
+  it("carry a Didot from the printed page's settings (version 2) and the first ones (version 1) through every step to Gentium", () => {
+    expect(migrate({ greekFace: "didot", columns: "both" }, 2)).toMatchObject({ greekFace: "gentium", columns: "greek" });
+    expect(migrate({ greekFace: "didot", theme: "light" }, 1)).toMatchObject({ greekFace: "gentium", theme: "paper" });
+  });
+  it("leave a Didot saved from version 4 on alone (it can still be set from the search box, which is not a reading choice in Aa)", () => {
+    expect(migrate({ greekFace: "didot" }, 4).greekFace).toBe("didot");
+  });
+  it("keep the no-flash script from putting a version 3 save's Didot on the page", () => {
+    const boot = (version: number, greekFace: string) => {
+      const attrs: Record<string, string> = {};
+      const store = { getItem: () => JSON.stringify({ state: { greekFace }, version }) };
+      const el = { setAttribute: (k: string, v: string) => { attrs[k] = v; }, style: { setProperty() {} } };
+      new Function("localStorage", "document", BOOT_SCRIPT)(store, { documentElement: el, querySelectorAll: () => [] });
+      return attrs["data-greek-face"];
+    };
+    expect(boot(3, "didot")).toBeUndefined();   // it is Gentium once the settings load
+    expect(boot(4, "didot")).toBe("didot");
+    expect(boot(4, "gentium")).toBeUndefined();
   });
 });

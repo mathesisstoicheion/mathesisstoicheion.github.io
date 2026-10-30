@@ -233,8 +233,6 @@ function Box({ onClose }: { onClose: () => void }) {
       case "theme-auto": s.set({ theme: "auto" }); break;
       case "bigger": s.set({ greekSize: s.greekSize + step }); break;
       case "smaller": s.set({ greekSize: s.greekSize - step }); break;
-      case "face-didot": s.set({ greekFace: "didot" }); break;
-      case "face-gentium": s.set({ greekFace: "gentium" }); break;
       case "motion-reduce": s.set({ motion: "reduce" }); break;
       case "motion-auto": s.set({ motion: "auto" }); break;
       case "settings": onClose(); useUI.getState().openSettings(); return;

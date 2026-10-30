@@ -16,19 +16,21 @@ import { listTranslations, saveTranslation, trouble, type StoredSummary } from "
 import { scrollBehavior } from "@/lib/settings";
 import { StatusTag } from "@/components/admin/parts";
 import styles from "./Mine.module.css";
-import { ModalDialog } from "./Panel";
+import { ModalDialog, type Back } from "./Panel";
 
 export type Tab = "shelf" | "import";
 
-export default function MineDialog({ current, onOpen, onClose, start = "shelf" }: {
+export default function MineDialog({ current, onOpen, onClose, start = "shelf", back }: {
   current: string | null; onOpen: (id: string) => void; onClose: () => void;
   /** the tab it opens on: the shelf, or "Import a text" */
   start?: Tab;
+  /** the way back to the menu that opened it (Study), if one did */
+  back?: Back;
 }) {
   const [tab, setTab] = useState<Tab>(start);
 
   return (
-    <ModalDialog titleId="mine-title" onClose={onClose} className={styles.dialog} innerClass={styles.inner} headClass={styles.head} closeClass={styles.x} head={
+    <ModalDialog titleId="mine-title" onClose={onClose} className={styles.dialog} innerClass={styles.inner} headClass={styles.head} closeClass={styles.x} back={back} head={
       <div>
         <span className={styles.seal}>{LOCK} Private · only you can see this</span>
         <h2 id="mine-title" className={styles.title}>Private collection</h2>

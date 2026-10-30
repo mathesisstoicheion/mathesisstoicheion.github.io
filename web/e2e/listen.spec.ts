@@ -1,5 +1,5 @@
 import { test, expect, type Page } from "@playwright/test";
-import { openAids } from "./reader-menus";
+import { openStudy } from "./reader-menus";
 import { bothColumns } from "./both-columns";
 
 // Listen: the English translation read aloud. The device's voice is replaced by a stand-in that "speaks" each
@@ -41,7 +41,7 @@ test("Listen reads the English translation aloud, marking the passage and the wo
   await fakeVoice(page);
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  await (await openAids(page)).getByRole("button", { name: "Listen", exact: true }).click();   // Listen waits in Tools
+  await (await openStudy(page)).getByRole("button", { name: "Listen to the English", exact: true }).click();   // Listen waits in Study (Go deeper)
   const bar = page.getByRole("region", { name: "Listen to the translation" });
   await expect(bar).toBeVisible();
   await expect(bar).toContainText("The Greek is not read aloud");
@@ -68,13 +68,13 @@ test("Listen reads the English translation aloud, marking the passage and the wo
   await expect(page.locator("article [data-listening]")).toHaveCount(0);
 });
 
-test("on a phone, Listen is in Tools and its player sits within the screen", async ({ page }) => {
+test("on a phone, Listen is in Study and its player sits within the screen, above the foot bar", async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 812 });
   await fakeVoice(page);
   await page.goto("/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1");
   await expect(page.locator('[data-key="1.1"]').first()).toBeVisible({ timeout: 30_000 });
-  const tools = await openAids(page);
-  await tools.getByRole("button", { name: "Listen", exact: true }).click();
+  const tools = await openStudy(page);
+  await tools.getByRole("button", { name: "Listen to the English", exact: true }).click();
   const bar = page.getByRole("region", { name: "Listen to the translation" });
   await expect(bar).toBeVisible();
   await expect(tools).toBeHidden();
@@ -83,4 +83,7 @@ test("on a phone, Listen is in Tools and its player sits within the screen", asy
   const b = (await bar.boundingBox())!;
   expect(b.x).toBeGreaterThanOrEqual(0);
   expect(b.x + b.width).toBeLessThanOrEqual(375);
+  // and it stands clear of the foot bar (the quiet desk, ticket 09)
+  const foot = (await page.locator("[data-foot-bar]").boundingBox())!;
+  expect(b.y + b.height).toBeLessThanOrEqual(foot.y + 1);
 });

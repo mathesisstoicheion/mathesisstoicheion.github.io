@@ -74,10 +74,11 @@ export const TOURS: Record<string, Tour> = {
     start: "/read?w=tlg0012.tlg001&at=1.1",
     steps: [
       { at: [t('section[data-key="1.1"]')], title: "The reader: Greek beside English", text: "Each row is one passage: the Greek on the left, the translation of the same lines on the right. The number at the start is its reference, here Iliad book 1, line 1.", phoneText: "Each row is one passage: the Greek, then the translation of the same lines. The number at the start is its reference, here Iliad book 1, line 1." },
-      { at: [t('[role=radiogroup][aria-label="Columns"]')], title: "One column or two", text: "Read the Greek and the English together, or only one of them. The choice is kept for this book." },
-      { click: [t('button[aria-controls$="-change"][aria-expanded="false"]')], at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them here; the site remembers your choice." },
-      { esc: true, at: [t("#reader-goto"), t("button[aria-controls]", "Tools")], title: "Go to a passage", text: "Tools holds the page you are on and a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go." },
-      { at: [t('button[aria-label="Next page"]'), t("button", "Continue to")], title: "Turn the page", text: "Long works come a book or a chapter at a time. The arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next." },
+      // the quiet desk, ticket 09 (the owner, 2026-10-30): the bar is at the foot of the page: Aa holds the page and the type, Study the rest, and the middle says where you are
+      { click: [t('button[aria-controls$="-aa"][aria-expanded="false"]')], at: [t('[role=radiogroup][aria-label="Columns"]')], title: "One column or two", text: "Read the Greek and the English together, or only one of them. This is under Aa, at the foot of the page, with the colour of the page, the size of the Greek and the space between lines. The choice is kept for this book." },
+      { esc: true, click: [t('button[aria-controls$="-study"][aria-expanded="false"]')], at: [t("label", "Greek text")], with: [t("label", "Translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Choose them under Study; the site remembers your choice." },
+      { esc: true, click: [t('button[aria-label="Go to a line or book"][aria-expanded="false"]')], at: [t("#reader-goto")], title: "Go to a passage", text: "The middle of the bar says where you are, and opens a box to go to any passage: type a reference, like 6.237 for book 6, line 237, and press Go. A list of the books lets you turn to one." },
+      { esc: true, at: [t("button", "Continue to")], title: "Turn the page", text: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next one, and the arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next." },
     ],
   },
 
@@ -106,15 +107,15 @@ export const TOURS: Record<string, Tour> = {
     title: "Reading aids",
     start: "/read?w=tlg0012.tlg001&at=1.1",
     steps: [
-      { at: [t('[role=group][aria-label="Reading aids"]'), t('button[aria-controls$="-aids"]')], title: "Reading aids", text: "Help for when the Greek is hard, under Tools, in three groups: the Greek itself, this passage, and this work. Each one switches on and off." },
-      // open Tools so the next steps can point inside it (it stays open while the tour steps through)
-      { click: [t('button[aria-controls$="-aids"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
+      { at: [t('button[aria-controls$="-study"]')], title: "Reading aids", text: "Study, at the foot of the page, holds the help for when the Greek is hard, and the tools for going deeper. The ones that are modes switch on and off." },
+      // open Study so the next steps can point inside it (it stays open while the tour steps through)
+      { click: [t('button[aria-controls$="-study"][aria-expanded="false"]')], at: [t("button[aria-pressed]", "Transliteration")], title: "Transliteration", text: "Shows each Greek word in Latin letters beneath it, so you can sound it out." },
       { at: [t("button[aria-pressed]", "Colour by case")], title: "Colour by case", text: "A Greek word's ending shows its job in the sentence (its case): who acts, who or what is acted on, whose it is. This colours each word by its case, so you can see who does what to whom." },
       { at: [t("button[aria-pressed]", "Try it first")], title: "Try it first", text: "Hides each translation until you ask for it, so you read the Greek yourself first. A good way to learn." },
-      { at: [t("button[aria-pressed]", "Vocabulary")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
-      { at: [t('button[title^="Find a word or phrase"]'), t('[id$="-aids"] button', "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
-      { at: [t('button[title^="Hear the English translation"]'), t('[id$="-aids"] button', "Listen")], title: "Listen", text: "Hear the English read aloud, passage by passage, with each passage marked as it is read." },
-      { at: [t("button[aria-pressed]", "Places")], with: [t("button[aria-pressed]", "Manuscript")], title: "Places and manuscripts", text: "Places puts the places on the page on a map. Manuscript shows the passage as it would have been written by hand, in capitals without spaces, and for some works on a real medieval manuscript page." },
+      { at: [t("button[data-tool=vocab]")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
+      { at: [t('button[title^="Find a word or phrase"]'), t('[id$="-study"] button', "Find")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press / or Ctrl+F.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
+      { at: [t('button[title^="Hear the English translation"]'), t('[id$="-study"] button', "Listen")], title: "Listen", text: "Hear the English read aloud, passage by passage, with each passage marked as it is read." },
+      { at: [t("button[data-tool=places]")], with: [t("button[data-tool=ms]")], title: "Places and manuscripts", text: "Places on this page puts the places the page names on a map. How it was written shows the passage as it would have been written by hand, in capitals without spaces, and for some works on a real medieval manuscript page." },
     ],
   },
 
@@ -130,7 +131,8 @@ export const TOURS: Record<string, Tour> = {
         title: "Keep what you find",
         text: "Bookmark it, highlight it in one of four colours, write a note on it, or add it to a research notebook with its citation.",
       },
-      { esc: true, at: [t('header a[href="/treasury"]'), t("button[aria-controls]", "Marks")], title: "The Treasury", text: "Marks lists what you have kept in this book. Everything you keep also goes to the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      // (one book has no site header: the light falls on the row of Study that lists your marks; two books keep the header, and the light falls on its Treasury link)
+      { esc: true, click: [t('button[aria-controls$="-study"][aria-expanded="false"]')], at: [t('header a[href="/treasury"]'), t("button[data-tool=marks]")], title: "The Treasury", text: "Your notes and marks, under Study at the foot of the page, lists what you have kept in this book. Everything you keep also goes to the Treasury: notes, bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 

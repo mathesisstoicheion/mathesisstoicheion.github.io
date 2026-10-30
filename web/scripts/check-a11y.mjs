@@ -8,7 +8,7 @@
 //              WCAG 2.5.8 allows); a hit area widened by the CSS (a ::after) counts, since the area is found by touching it, unless
 //              another link or button lies over it. The library's A to Z rail (data-touch-strip) is exempt: a finger slides along it
 //              and a bubble beside the finger names the letter, so it works as one control the height of the list; so are the reader's
-//              signs beside the scroll bar (data-touch-strip too), a map of the page: its marks are listed full size under Marks, and the reader opens at the place it left off
+//              signs beside the scroll bar (data-touch-strip too), a map of the page: its marks are listed full size under Your notes and marks in Study, and the reader opens at the place it left off
 //   online   - the header shows the word "Online" with nothing to say what it means
 // usage: node web/scripts/check-a11y.mjs <base-url> [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
