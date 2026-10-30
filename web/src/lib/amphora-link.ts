@@ -29,7 +29,7 @@ function pack(d: Design): Uint8Array {
   for (const s of d.strokes) {
     o.byte(s.c + 2);
     o.uint(s.w * 10);
-    if (s.c === -2) { const h = parseInt((s.h ?? "#000000").slice(1), 16); o.byte(h >> 16); o.byte(h >> 8); o.byte(h); }
+    if (s.c === -2) { const h = s.h ? parseInt(s.h.slice(1), 16) : 0; o.byte(h >> 16); o.byte(h >> 8); o.byte(h); }
     const n = s.p.length / 3;
     o.uint(n);
     for (let i = 0; i < n; i++) {

@@ -2,8 +2,8 @@
    figures: each under a hairline, its picture in a hairline frame (the map drawn on the paper, the counts as red bars, the
    photograph in its real colours), its Greek name in red and its title in Didot, red under the hand. The towns and bars
    ink in; nothing grows or zooms (decision 3). */
-.lead { display: grid; gap: 10px; }
-.lead ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
+.lead, .make { display: grid; gap: 10px; }
+.lead ul, .make ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
 @media (max-width: 900px) { .lead ul { grid-template-columns: 1fr 1fr; } .lead li:first-child { grid-column: 1 / -1; } }
 @media (max-width: 560px) { .lead ul { grid-template-columns: 1fr; } }
 
@@ -50,15 +50,15 @@
    picture to the left in the same hairline frame; drawn as a black-figure painter drew, the shapes in the gloss (the
    page's ink), the lines scratched through it to the clay (the paper), one line in added red. Two side by side; one
    above the other on a phone, where the picture stays small beside its words. */
-.make { display: grid; gap: 10px; }
-.make ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
+.make ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.make li { max-width: none; }   /* a card fills its column (a list's items keep to the measure elsewhere) */
 @media (max-width: 760px) { .make ul { grid-template-columns: 1fr; } }
 .makeCard {
-  display: grid; grid-template-columns: clamp(88px, 10vw, 136px) minmax(0, 1fr); align-items: center; gap: var(--space-4);
-  height: 100%; padding-block: 14px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
+  display: grid; grid-template-columns: clamp(96px, 11vw, 160px) minmax(0, 1fr); align-items: center; gap: var(--space-4);
+  height: 100%; padding-block: var(--space-3); text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
 }
 .makeCard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-.makeCard .txt { padding: 0 2px; }
+.makeCard .txt { padding: 0; }
 .makeCard:hover .txt b, .makeCard:focus-visible .txt b { color: var(--rubric); }
 .fig { display: block; width: 100%; height: auto; aspect-ratio: 1; padding: var(--space-3); border: 1px solid var(--rule); background: var(--bg-2); }
 .gloss { fill: var(--ink); }

@@ -522,8 +522,9 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
 .ph-path a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 .ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
-/* the way back is a small line; under a finger it answers 15 px above and below it (a 44 px target) */
-@media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px -4px; } }
+/* the way back is a small line; under a finger each place answers 15 px above and below it, and at least 44 px across
+   however short its name ("Words") (scripts/check-a11y.mjs) */
+@media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px min(-4px, calc((100% - var(--tap)) / 2)); } }
 .ph-sep { color: var(--ink-3); display: inline-flex; margin: 0 var(--space-1); }
 .ph-sep svg { width: 0.95em; height: 0.95em; vertical-align: 0; }
 /* a line in Greek over a page's title, in spaced capitals in red, as a book sets a motto */
@@ -584,7 +585,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .find-show { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .find-show > button {
   min-height: var(--tap); padding: 10px; background: none; border: 0; border-bottom: 2px solid transparent; border-radius: 0;
-  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; color: var(--ink-2);
+  font: 400 var(--step-0) / 1.2 var(--f-body); color: var(--ink-2);   /* in plain words, as every other choice (no small capitals) */
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
 .find-show > button:hover { color: var(--rubric); }
@@ -595,7 +596,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   .find-field { border-bottom: 1px solid var(--ink); }
   .find:focus-within .find-field { border-bottom-color: var(--rubric); }
   .find-show { width: 100%; justify-content: space-between; }
-  .find-show > button { padding-inline: var(--space-1); letter-spacing: 0.12em; }
+  .find-show > button { padding-inline: var(--space-1); }
 }
 
 /* the title of a page inside an area (a lesson, an author, the alphabet…): one size everywhere */

@@ -130,6 +130,7 @@
      a narrower margin to the right (scripts/check-room.mjs) */
   --hang-cols: minmax(11rem, 1fr) minmax(0, 46rem) minmax(0, 0.5fr);
   --hang-gap: clamp(32px, 4vw, 72px);
+  --page-foot: clamp(32px, 5vw, 56px);        /* the room under a page's last part, above the footer (the lyre, the potter) */
   --tap: 44px;
   /* the reader's side panel (vocabulary, find, places…), and its width on a narrower computer */
   --side-panel: 400px;

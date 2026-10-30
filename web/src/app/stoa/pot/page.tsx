@@ -20,7 +20,7 @@ export default function PotPage() {
         Turn a neck-amphora and paint it as the painters of Athens did: black gloss on the red clay, lines scratched through
         it, touches of added red and white. Your vase is kept in this browser, and Share makes a link that opens it for anyone.
       </RefHead>
-      <div className="wrap" style={{ paddingBottom: "clamp(32px, 5vw, 56px)" }}>
+      <div className="wrap" style={{ paddingBottom: "var(--page-foot)" }}>
         <Amphora />
         <p className="muted" style={{ marginTop: "var(--space-5)" }}>
           How the real ones were made: <Link href="/stoa/black-and-red-figure" transitionTypes={["page-turn"]}>Black-figure and red-figure</Link>.
