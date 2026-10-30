@@ -70,8 +70,8 @@ import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
 // and the Talk panel's connection to the forum (the Supabase library) is not loaded for every reader.
-/** Where the look-up is set (Reader's placeWord; the one rule is lookupPlace): a window floating over the right margin, at
- *  this place across the screen and this wide, which holds its place while the text scrolls; or as a sheet that rises no
+/** Where the look-up is set (Reader's placeWord; the one rule is lookupPlace): a window floating over the right margin (or, with a side
+ *  panel open, in the panel's own box), at this place across the screen and this wide, which holds its place while the text scrolls; or as a sheet that rises no
  *  higher than this many pixels (so that it stops below the line), or with no limit (null) for a word that is not in the
  *  text. */
 type WordAt = { note: { left: number; width: number } } | { sheet: number | null };
@@ -469,8 +469,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   const [cmpListOpen, setCmpListOpen] = useState(false);
   // a panel open at the side (they all give way to the look-up while a word is open, and come back when it closes)
   const sideOpen = !!(echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt);
-  // a look-up in a sheet stands in for the panel beside the text, which waits behind it; a note in the margin leaves it open
+  // a look-up in a sheet stands in for the panel beside the text, which is put away for the while and comes back with the sheet closed; a note in the margin leaves it open;
+  // a note with a panel open takes the panel's box and the panel waits wholly behind it, kept as it is (what it holds stays), and out of the keyboard's reach (Reader.module.css, lookOver)
   const lookSheet = !!word && !(wordAt && "note" in wordAt);
+  const lookOver = !!word && !!wordAt && "note" in wordAt && sideOpen;
   // the panels a row of the Study menu opens (the one open now, if it was opened from Study, has "Back to Study"; once it is closed, the way back is forgotten)
   const panelsOpen: Record<StudyPanel, boolean> = { find: findOpen, vocab: vocabOpen, places: placesOpen, ms: msOpen, talk: talkOpen, cmp: cmpListOpen && canDiff };
   if (studyFor && !panelsOpen[studyFor]) setStudyFor(null);
@@ -745,9 +747,10 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     const probe = document.createElement("span");
     probe.style.cssText = "position:absolute;visibility:hidden;font-family:var(--f-greek)";
     document.body.append(probe);
-    const family = getComputedStyle(probe).fontFamily;
+    // (read before the probe is taken away; the size asked for is the page's own, which the face does not depend on)
+    const { fontFamily, fontSize } = getComputedStyle(probe);
     probe.remove();
-    void document.fonts?.load(`400 20px ${family}`, "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος").catch(() => undefined);
+    void document.fonts?.load(`400 ${fontSize} ${fontFamily}`, "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος").catch(() => undefined);
   }, []);
   useLayoutEffect(() => {
     const root = rootRef.current, art = textRef.current;
@@ -1235,14 +1238,26 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
   /** Where the look-up goes (decision 4 and the quiet desk, ticket 04: one place per device, and it never covers the Greek
    *  being read). lookupPlace decides from the room the reader has. A note: a window over the right margin (the last column
-   *  of each passage's row, kept even while a panel is open beside the text), fixed to the screen, so that the text scrolls
-   *  while it stays (the owner, 2026-10-26: "open from the right side of the page and hold its place"). A sheet: from the
-   *  foot of the screen, or of the floating window, that rises no higher than just below the line; on opening, a line in
-   *  the lower part is first brought up under the bar. */
+   *  of each passage's row), fixed to the screen, so that the text scrolls while it stays (the owner, 2026-10-26: "open from
+   *  the right side of the page and hold its place"). While a side panel is open beside the text the margin's room is not
+   *  kept (the quiet desk, ticket 10, the owner, 2026-10-30: the Greek would lose a third of its size): the same window takes
+   *  the panel's box instead, its left edge and width here and its top and foot in the stylesheet (.withPanel .wordNote), so
+   *  that the panel is wholly behind it and nothing of it shows; closing it shows the panel again. A sheet: from the foot of
+   *  the screen, or of the floating window, that rises no higher than just below the line; on opening, a line in the lower
+   *  part is first brought up under the bar. */
   const placeWord = (opening = false) => {
     const box = rootRef.current, w = box?.querySelector<HTMLElement>(`article .${styles.sel}`);
     if (!box) return;
     if (single && lookupPlace(innerWidth) === "note") {
+      // a panel stands beside the text: its width is the text's right margin (the very figure that keeps the text clear of it), so
+      // a window of that width from that edge is the panel's own place, and never over the text. Read from the page as it is, since
+      // a panel may be opening or closing now.
+      const text = box.querySelector<HTMLElement>(`article.${styles.text}`);
+      const side = box.classList.contains(styles.withPanel) && text ? parseFloat(getComputedStyle(text).marginRight) : 0;
+      if (side > 120) {
+        setWordAt({ note: { left: Math.round(document.documentElement.clientWidth - side), width: Math.round(side) } });
+        return;
+      }
       const top = topEdge();
       const row = w?.closest<HTMLElement>(`.${styles.row}`)
         ?? [...box.querySelectorAll<HTMLElement>(`article .${styles.row}`)].find((r) => r.getBoundingClientRect().bottom > top + 40);
@@ -1271,6 +1286,13 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   };
   const placeWordRef = useRef(placeWord);
   useEffect(() => { placeWordRef.current = placeWord; });
+  // a side panel opening or closing while the look-up stands (a panel that gives itself up, say): the window goes between the margin and the
+  // panel's box, before the page is drawn, since the room under it has changed (the quiet desk, ticket 10)
+  useLayoutEffect(() => {
+    if (word && wordAt && "note" in wordAt) placeWord();
+    // only when a panel opens or closes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sideOpen]);
 
   // The keyboard in the text. Tab reaches it as one stop (the first word, or the word last used);
   // there ← → move word by word, ↑ ↓ line by line, Home / End to the first / last word, Enter or Space looks up.
@@ -1592,7 +1614,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // what stands where the foot bar was, for the bar to give way to (ReaderBar.module.css): the look-up's sheet, a panel's sheet, the passage toolbar
   const covers = [lookSheet && "lookup", sideOpen && "panel", sel && "toolbar"].filter(Boolean).join(" ");
   return (
-    <div ref={rootRef} data-reader="" className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
+    <div ref={rootRef} data-reader="" className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${lookOver ? styles.lookOver : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       style={{ "--num-n": numFigures } as React.CSSProperties} data-covers={covers || undefined}
       onPointerDown={() => useUI.getState().setActivePane(pane)} onFocusCapture={() => useUI.getState().setActivePane(pane)}>
       {load.state === "ready" && <ScrollMarkers rootRef={rootRef} contained={contained} items={markerItems} onJump={jumpToRow} depKey={`${chunk}|${rows.length}|${columns}|${translit}|${!!metre}|${word ? 1 : 0}`} />}

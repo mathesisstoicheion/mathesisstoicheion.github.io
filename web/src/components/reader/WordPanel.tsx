@@ -233,7 +233,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   onStep?: (dir: 1 | -1) => void;
   /** a sheet from the foot of the screen (or of the floating window), with heights */
   sheet?: boolean;
-  /** one book on a wide screen: written in the margin beside the line, at this place in the reader */
+  /** one book on a wide screen: written in the margin beside the line, at this place in the reader (with a side panel open, in the panel's own box: its left edge and width) */
   note?: { left: number; width: number } | null;
   /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
   maxH?: number | null;

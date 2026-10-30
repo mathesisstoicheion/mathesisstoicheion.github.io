@@ -1,11 +1,14 @@
 // The word look-up never covers the line being read (redesign SPEC.md 4.3 and 7; decision 4), on Plato's Apology with
 // Fowler's English. It lists:
-//   margin - one book on a computer (1280 × 900 on Paper, 1440 × 900 on Night, and 1440 × 900 with Find open beside the
+//   margin - one book on a computer (1280 × 900 on Paper, 1440 × 900 on Night, and 1440 and 1200 × 900 with Find open beside the
 //            text): the look-up is not a window floating over the right margin (fixed to the screen, its left edge clear
 //            of the text, the owner, 2026-10-26: "a floating window that opens on the right"), it moves when the text is
-//            scrolled, it covers the reader's bar, it is narrower than 280 px (the quiet desk, ticket 04: about 300), it
-//            reaches under the panel beside it, the word moves when it is looked up, Next does not keep it in place, or
-//            Escape does not close it and give the keyboard back to the word
+//            scrolled, it covers the reader's bar or the tapped word, it is narrower than 280 px (the quiet desk, ticket 04: about 300),
+//            the word moves when it is looked up, Next does not keep it in place, or Escape does not close it and give the
+//            keyboard back to the word. With Find open the margin's room is not kept for it (the quiet desk, ticket 10, the owner,
+//            2026-10-30: the Greek would lose a third of its size): it takes the panel's place instead, the panel's box exactly (its four
+//            edges on the panel's, within 1 px, so that nothing of the panel shows beside or below it; not over the text or the tapped
+//            word), with the panel under it out of the keyboard's reach, and closing it shows the panel again as it was
 //   sheet  - a narrower window (1000 × 800), a phone (390 × 844), and two books side by side (1280 × 900): the look-up's sheet
 //            reaches over the word's line, when it opens low on the screen, at its full height, or on the next word; or it
 //            opens higher than 27% of the screen (the quiet desk: it rests at about a quarter)
@@ -18,7 +21,7 @@
 // said again; the credits are ONE line, once, at the very foot, naming only what is shown. "‹ Back" or Escape returns to the
 // first layer (on a phone at its resting height, the keyboard on "More about it"), then Escape closes the look-up and gives the
 // keyboard back to the word; × closes it from the second layer. On a computer the same window keeps its left edge and width,
-// grows to the height it may have, and stays fixed while the text scrolls. μῆνιν in the Iliad, 1.1 (on a computer and a phone)
+// grows to the height it may have (with a panel open it is the panel's whole box from the first layer, and stays that), and stays fixed while the text scrolls. μῆνιν in the Iliad, 1.1 (on a computer and a phone)
 // is checked in full: "12 times in the Iliad" (the number of words GLAUx analyses as μῆνις in the whole pack), the lesson "Why the
 // accusative?", the credit line "Analysis and treebank: GLAUx (Keersmaekers 2021), CC BY-SA 4.0 · LSJ: Perseus Digital Library, CC BY-SA".
 // And the back routes (the quiet desk, the owner, 2026-10-29: "the word lookup in the reader needs a back button"): from the second
@@ -38,6 +41,7 @@
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
+//        ONLY=margin reads the margin part only (the whole check takes minutes)
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
@@ -92,7 +96,9 @@ const boxes = (page) => page.evaluate((LOOKUP) => {
   const row = sel?.closest("section[data-key]");
   const r = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top, bottom: b.bottom, left: b.left, right: b.right, height: b.height }; };
   const side = [...document.querySelectorAll("aside")].find((a) => a !== look && getComputedStyle(a).position === "fixed");
-  return { bar: r(document.querySelector("[data-foot-bar]")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "" };
+  // (what stands at the look-up's middle, near its top: the look-up itself, or the panel under it)
+  const lb = look?.getBoundingClientRect(), hit = lb ? document.elementFromPoint(lb.left + lb.width / 2, lb.top + 40) : null;
+  return { bar: r(document.querySelector("[data-foot-bar]")), word: r(sel), look: r(look), tr: r(row?.querySelector("[data-tr]")), grc: r(row?.querySelector("[lang='grc']")), side: r(side), lookPos: look ? getComputedStyle(look).position : "", lookOnTop: !!hit && !!look && look.contains(hit) };
 }, LOOKUP);
 
 /**
@@ -401,7 +407,9 @@ async function secondLayer(page, tag, opts, during) {
     if (opts.sheet) { if (now.height <= rest.height + 1) found.push(`${tag}: the sheet did not rise for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after)`); }
     else {
       if (Math.abs(now.left - rest.left) > 1 || Math.abs(now.right - rest.right) > 1) found.push(`${tag}: the second layer's window moved or changed width (left ${Math.round(rest.left)} to ${Math.round(now.left)}, right ${Math.round(rest.right)} to ${Math.round(now.right)})`);
-      if (now.height <= rest.height + 1) found.push(`${tag}: the window did not grow for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after)`);
+      // (with a panel open the window is the panel's whole box from its first layer, so it has nothing to grow into: opts.whole)
+      if (opts.whole) { if (Math.abs(now.height - rest.height) > 1) found.push(`${tag}: the window changed height for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after; it is the panel's whole box)`); }
+      else if (now.height <= rest.height + 1) found.push(`${tag}: the window did not grow for the second layer (${Math.round(rest.height)} px before, ${Math.round(now.height)} px after)`);
       const vh = page.viewportSize().height;
       if (now.bottom > vh + 1) found.push(`${tag}: the second layer reaches ${Math.round(now.bottom - vh)} px below the screen`);
     }
@@ -438,17 +446,29 @@ async function secondLayer(page, tag, opts, during) {
 }
 
 // ---- margin: one book on a computer
-const inMargin = (tag, b) => {
+// (`panel`: a side panel is open beside the text. The margin's room is not kept for the look-up then, so that the Greek keeps its size; the look-up takes the
+// panel's box exactly, so that the panel is wholly behind it, and is never over the text; the quiet desk, ticket 10, the owner, 2026-10-30)
+const inMargin = (tag, b, panel = false) => {
   if (!b.look) { found.push(`margin ${tag}: no look-up opened`); return; }
   const over = Math.max(b.tr?.right ?? 0, b.grc?.right ?? 0);
-  if (b.look.left < over - 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(over - b.look.left)} px over the text (it belongs in the margin)`);
+  if (b.look.left < over - 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(over - b.look.left)} px over the text (it belongs ${panel ? "over the panel's place" : "in the margin"})`);
+  if (b.word && b.word.right > b.look.left + 1 && b.word.left < b.look.right - 1 && b.word.bottom > b.look.top + 1 && b.word.top < b.look.bottom - 1) found.push(`margin ${tag}: the look-up covers the tapped word`);
   // (the reader's bar stands along the foot: the look-up ends above it, and may start near the top of the window, the quiet desk, ticket 09)
   if (b.bar && b.look.bottom > b.bar.top + 1) found.push(`margin ${tag}: the look-up covers the reader's bar by ${Math.round(b.look.bottom - b.bar.top)} px`);
   if (b.look.right - b.look.left < 280) found.push(`margin ${tag}: the look-up is ${Math.round(b.look.right - b.look.left)} px wide (at least 280)`);
-  if (b.side && b.look.right > b.side.left + 1) found.push(`margin ${tag}: the look-up reaches ${Math.round(b.look.right - b.side.left)} px under the panel beside the text`);
   if (b.lookPos !== "fixed") found.push(`margin ${tag}: the look-up is not fixed to the screen (it scrolls away with the text)`);
+  if (panel) {
+    if (!b.side) found.push(`margin ${tag}: no panel stands beside the text`);
+    else {
+      for (const [edge, got, want] of [["left", b.look.left, b.side.left], ["right", b.look.right, b.side.right], ["top", b.look.top, b.side.top], ["bottom", b.look.bottom, b.side.bottom]]) {
+        if (Math.abs(got - want) > 1) found.push(`margin ${tag}: the look-up's ${edge} edge is at ${Math.round(got)} px, the panel's at ${Math.round(want)} px (it takes the panel's box, so that nothing of the panel shows)`);
+      }
+      if (!b.lookOnTop) found.push(`margin ${tag}: the panel stands over the look-up`);
+    }
+  }
 };
-for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [1440, 900, "light", true]]) {
+// (Find's panel is 340 px wide below 1280 px, 400 px from there: the look-up takes the one or the other)
+for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [1440, 900, "light", true], [1200, 900, "light", true]]) {
   const tag = `${w}px ${scheme === "dark" ? "Night" : "Paper"}${find ? " with Find open" : ""}`;
   const { ctx, page } = await open(w, h, scheme, `/read?w=${WORK}`);
   if (find) {
@@ -467,15 +487,31 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     if (i < 0) { found.push(`margin ${tag}: no word found ${Math.round(frac * 100)}% down the screen`); continue; }
     const word = page.locator("article [data-w]").nth(i);
     const before = await word.boundingBox();
+    const panelBefore = find ? (await boxes(page)).side : null;   // (the panel as it stands before the look-up opens over it)
     await word.click();
     await page.waitForSelector(LOOKUP, { timeout: 10000 });
     await page.waitForTimeout(900);
     const b = await boxes(page);
     const after = await word.boundingBox();
     if (Math.abs(after.y - before.y) > 2) found.push(`margin ${tag}: the word moved ${Math.round(after.y - before.y)} px when it was looked up`);
-    inMargin(tag, b);
+    if (find && !panelBefore) found.push(`margin ${tag}: no panel stood beside the text before the look-up opened`);
+    inMargin(tag, b, find);
     if (!b.look) continue;
     await firstLayer(page, `margin ${tag}`);
+    if (find) {
+      // the panel under the look-up is out of the keyboard's reach: a control that is covered must not take it (and the keyboard goes back where it was)
+      const reached = await page.evaluate(() => {
+        const c = document.querySelector('aside[aria-label^="Find"]')?.querySelector("input, button");
+        if (!c) return null;
+        const was = document.activeElement;
+        c.focus();
+        const took = document.activeElement === c;
+        if (was instanceof HTMLElement) was.focus();
+        return took;
+      });
+      if (reached === null) found.push(`margin ${tag}: the panel under the look-up has no control to try`);
+      else if (reached) found.push(`margin ${tag}: a control of the panel under the look-up takes the keyboard (it is covered, and should be out of reach)`);
+    }
     // the text scrolls under the window; the window stays where it is
     await page.mouse.move(200, h / 2);
     await page.mouse.wheel(0, 300);
@@ -484,18 +520,41 @@ for (const [w, h, scheme, find] of [[1280, 900, "light"], [1440, 900, "dark"], [
     if (!s2.look) found.push(`margin ${tag}: the look-up closed when the text was scrolled`);
     else if (Math.abs(s2.look.top - b.look.top) > 2 || Math.abs(s2.look.left - b.look.left) > 2) found.push(`margin ${tag}: the look-up moved ${Math.round(s2.look.top - b.look.top)} px when the text was scrolled`);
     const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
-    if (await next.count()) { await next.click(); await page.waitForTimeout(900); inMargin(`${tag}, on the next word`, await boxes(page)); }
+    if (await next.count()) { await next.click(); await page.waitForTimeout(900); inMargin(`${tag}, on the next word`, await boxes(page), find); }
     else found.push(`margin ${tag}: no Next word button`);
     // with the rest opened, the window still stays where it is (it ends back in the first layer)
-    await secondLayer(page, `margin ${tag}`, { sheet: false }, async () => inMargin(`${tag}, with More about it open`, await boxes(page)));
+    await secondLayer(page, `margin ${tag}`, { sheet: false, whole: !!find }, async () => inMargin(`${tag}, with More about it open`, await boxes(page), find));
     await page.locator(LOOKUP).focus();
     await page.keyboard.press("Escape");
     await page.waitForTimeout(400);
     const after2 = await page.evaluate((LOOKUP) => ({ open: !!document.querySelector(LOOKUP), back: !!document.activeElement?.matches("article [data-w]") }), LOOKUP);
     if (after2.open) found.push(`margin ${tag}: Escape did not close the look-up`);
     else if (!after2.back) found.push(`margin ${tag}: after Escape the keyboard is not back on the word`);
+    if (find && panelBefore) {
+      // closing the look-up shows the panel again, where it was and as wide, with nothing over it
+      const now = await page.evaluate(() => {
+        const p = document.querySelector('aside[aria-label^="Find"]');
+        if (!p) return null;
+        const r = p.getBoundingClientRect(), hit = document.elementFromPoint(r.left + r.width / 2, r.top + 40), c = p.querySelector("input, button");
+        c?.focus();
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom, shown: !!hit && p.contains(hit), reachable: !!c && document.activeElement === c };
+      });
+      if (!now) found.push(`margin ${tag}: closing the look-up closed Find too (the panel is not there)`);
+      else {
+        if (!now.shown) found.push(`margin ${tag}: after the look-up is closed the panel is still covered`);
+        if (!now.reachable) found.push(`margin ${tag}: after the look-up is closed the panel's controls do not take the keyboard again`);
+        if (Math.abs(now.left - panelBefore.left) > 1 || Math.abs(now.right - panelBefore.right) > 1) found.push(`margin ${tag}: the panel is not where it was after the look-up was closed (left ${Math.round(now.left)} px, was ${Math.round(panelBefore.left)} px)`);
+      }
+    }
   }
   await ctx.close();
+}
+// (ONLY=margin stops here: the parts after it take minutes)
+if (process.env.ONLY === "margin") {
+  await browser.close();
+  if (found.length) { console.error(`The look-up, margin part only: ${found.length} problem(s)\n  ` + found.join("\n  ")); process.exit(1); }
+  console.log("The look-up, margin part only: in order");
+  process.exit(0);
 }
 
 // ---- sheet: a narrower window, a phone, two books side by side
@@ -781,4 +840,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the word's kind and meaning under its head, the LSJ entry never an empty heading, Go further as rows of where else, the sentence, the lesson and Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); the case underlined only with Colour by case on; Wiktionary out of reach said plainly with Try again; the tapped word in the head while it loads; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls (with a panel open too), and a low sheet with a hairline edge that stops below the line elsewhere");
+console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the word's kind and meaning under its head, the LSJ entry never an empty heading, Go further as rows of where else, the sentence, the lesson and Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); the case underlined only with Colour by case on; Wiktionary out of reach said plainly with Try again; the tapped word in the head while it loads; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls, and with a panel open beside the text the panel's own box instead, the panel wholly behind it (closing it shows the panel again), and a low sheet with a hairline edge that stops below the line elsewhere");

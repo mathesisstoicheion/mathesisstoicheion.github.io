@@ -33,7 +33,9 @@
 //             the size must not grow with it; at least 22 px at 1100, where the widest lines need the room), or Plato's prose at 390 not at the reader's size (18 px); on a phone a line that wraps though it fits its room, a wrapped line whose
 //             second row is not at least 1 em in from its first, more than 5% of the lines wrapped, or the first rows not at one left edge; on a computer any
 //             line wrapped; Aa not naming the size on the screen, or its first step not a step from there that saves a number. The spec's floor ("It never goes
-//             below 16 px") wins over wholeness: the widest lines of the Iliad cannot stand whole in 342 px at 16 px, so a few wrap, hanging
+//             below 16 px") wins over wholeness: the widest lines of the Iliad cannot stand whole in 342 px at 16 px, so a few wrap, hanging;
+//             and, with a side panel open (Find, the manuscript) at 1280 and 1440 px, the Greek not within 10% of its size without it (the margin's room is not
+//             kept for the look-up then: it floats over the panel's place), not back to its size when the panel is closed, or the passage at the top (1.200) moved
 // and, for the foot bar, Aa and Study (the quiet desk, ticket 09, the owner, 2026-10-30; the Iliad on its second opening, at 1440 and 390 px):
 //   top     - anything fixed or sticky along the top of one book after 800 px of reading (the old top bar), or the paper's
 //             darkened edges on the reader's page
@@ -51,7 +53,7 @@
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, and answers Wiktionary with "no entry" so that case is seen.
 // usage: node web/scripts/check-reader.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
-//        ONLY=verse (or agamemnon, alone, first, foot, compare, photos; several with commas) reads those parts only
+//        ONLY=verse (or agamemnon, alone, first, foot, compare, photos; several with commas) reads those parts only; ONLY=panel is the last of verse's checks alone (a side panel open)
 //        PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it
 import { chromium } from "playwright";
 
@@ -923,6 +925,43 @@ for (const [w, h, touch, path, want, name, slack = 0.06] of runs("verse") ? [
     if (Math.abs(now - (Math.round(was) + 1)) > 0.3) found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size took the Greek from ${was.toFixed(2)} to ${now.toFixed(2)} px, not one step (1 px) on`);
   } catch (e) {
     found.push(`verse ${tag}: ${name} could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
+  }
+  await ctx.close();
+}
+
+// ---- verse with a side panel open (the quiet desk, ticket 10, the owner, 2026-10-30): a panel narrows the text, but the margin's room is not kept for the look-up
+// while it is open (the look-up floats over the panel's place; check-lookup), so the Greek keeps its size. At 1280 px it had gone from 26 px to 16 with a panel open,
+// at 1440 px to about 21. Opening Find, and the manuscript from Study, changes the size by 10% at most; closing the panel brings the size back; the passage at the top stays.
+for (const [w, h] of runs("verse") || runs("panel") ? [[1440, 900], [1280, 800]] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block" });
+  try {
+    const page = await openedBook(ctx, `${VERSE_PAGE}&at=1.200`);
+    page.setDefaultTimeout(10000);
+    await page.waitForTimeout(2800);   // (the reader holds the passage it was asked for at the top for a moment after the page is drawn)
+    const row = page.locator('article [data-key="1.200"]').first();
+    const topOf = () => row.evaluate((e) => Math.round(e.getBoundingClientRect().top));
+    const settled = async () => { for (let i = 0, last = -1; i < 20; i++) { await page.waitForTimeout(250); const now = await greekPx(page); if (i > 2 && now === last) break; last = now; } return greekPx(page); };
+    const size0 = await settled(), top0 = await topOf();
+    for (const [name, label, open] of [
+      ["Find", "Find in this text", () => page.keyboard.press("Control+f")],
+      ["the manuscript", "The manuscript", async () => (await openMenu(page, BAR.study)).getByRole("button", { name: "How it was written", exact: true }).click()],
+    ]) {
+      await open();
+      const panel = page.locator(`aside[aria-label="${label}"]`);
+      await panel.waitFor({ state: "visible", timeout: 10000 });
+      const size1 = await settled(), top1 = await topOf();
+      console.log(`verse ${tag} with ${name} open: the Greek ${size0.toFixed(2)} px without it, ${size1.toFixed(2)} px with it; the passage at the top moved ${top1 - top0} px`);
+      if (Math.abs(size1 - size0) > 0.1 * size0) found.push(`verse ${tag} with ${name} open: the Greek goes from ${size0.toFixed(2)} to ${size1.toFixed(2)} px (more than 10% smaller or larger)`);
+      if (Math.abs(top1 - top0) >= 4) found.push(`verse ${tag} with ${name} open: the passage at the top (1.200) moved ${top1 - top0} px`);
+      await panel.getByRole("button", { name: /^Close/ }).first().click();
+      await panel.waitFor({ state: "detached", timeout: 10000 });
+      const size2 = await settled(), top2 = await topOf();
+      if (Math.abs(size2 - size0) > 0.3) found.push(`verse ${tag} with ${name} closed again: the Greek is ${size2.toFixed(2)} px, not back at ${size0.toFixed(2)} px`);
+      if (Math.abs(top2 - top0) >= 4) found.push(`verse ${tag} with ${name} closed again: the passage at the top (1.200) moved ${top2 - top0} px`);
+    }
+  } catch (e) {
+    found.push(`verse ${tag} with a panel open could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
   }
   await ctx.close();
 }

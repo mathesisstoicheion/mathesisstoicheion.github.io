@@ -145,7 +145,8 @@
 .panel {
   position: fixed; z-index: 40; top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); right: 0; bottom: 0;
   width: min(var(--side-panel), 100vw); overflow-y: auto; padding: var(--space-4) var(--space-5) var(--space-6);
-  background: var(--bg); box-shadow: inset 1px 0 0 var(--rule), -24px 0 48px -40px var(--shadow);
+  --edge: inset 1px 0 0 var(--rule), -24px 0 48px -40px var(--shadow);   /* a hairline at its edge and a soft shadow beside it; the look-up takes the same edge when it takes a panel's place */
+  background: var(--bg); box-shadow: var(--edge);
   display: grid; align-content: start; gap: var(--space-4); outline: none;
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
@@ -710,7 +711,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .single.cols-greek .row { grid-template-columns: var(--num-w) minmax(0, 40em); }
 .single.cols-trans .row { grid-template-columns: var(--num-w) minmax(0, 38em); }
 .single.cols-trans .tr { font-size: var(--greek-size); color: var(--ink); }
-/* a computer (lib/lookup/placement.ts): the margin at the right is kept clear for the look-up's note, a panel open or not */
+/* a computer (lib/lookup/placement.ts): the margin at the right is kept clear for the look-up's note, until a panel is open */
 @media (min-width: 1100px) {
   .single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr) var(--margin-note); }
   .single.cols-greek .row { grid-template-columns: var(--num-w) minmax(0, 40em) 0 var(--margin-note); }
@@ -718,9 +719,11 @@ p.translit { margin: -0.3em 0 0.8em; }
   .single .notes { grid-column: 2 / 4; }
   /* poetry: the Greek takes more of the width, so that a line of Homer is not broken */
   .single.poetry.cols-both .row { grid-template-columns: var(--num-w) minmax(0, 1.4fr) minmax(0, 1fr) var(--margin-note); }
-  /* a panel open beside the text as well: the English goes under the Greek, so that neither is squeezed beside the note */
+  /* a panel open beside the text: the margin's room is not kept then (the quiet desk, ticket 10, the owner, 2026-10-30: with the margin kept as well, a panel
+     at 1280 px took the Greek from 26 px down to 16). A look-up opened then takes the panel's box instead (below, and Reader.tsx's placeWord), and closing it shows
+     the panel again. The English goes under the Greek, so that neither is squeezed beside the panel */
   .single.withPanel .row, .single.withPanel.cols-greek .row, .single.withPanel.cols-trans .row, .single.withPanel.poetry.cols-both .row {
-    grid-template-columns: var(--num-w) minmax(0, 40em) var(--margin-note); row-gap: var(--space-4);
+    grid-template-columns: var(--num-w) minmax(0, 40em); row-gap: var(--space-4);
   }
   .single.withPanel .tr, .single.withPanel .notes { grid-column: 2; }
 }
@@ -816,6 +819,17 @@ p.translit { margin: -0.3em 0 0.8em; }
   animation: from-right var(--dur-slow) var(--ease) backwards;
 }
 @keyframes from-right { from { opacity: 0; translate: var(--space-6) 0; } }
+/* with a side panel open (the quiet desk, ticket 10, the owner, 2026-10-30) the margin's room is not kept, and the window takes the panel's box: the panel's own top (under
+   the header when that is showing) down to the foot bar, and the panel's width and left edge, which Reader.tsx's placeWord gives from the very figure that keeps the text
+   clear of the panel. The panel is then wholly behind it and nothing of it shows beside or below. The window keeps its own look, with the panel's edge for its frame; its ×
+   puts it away, and the panel is there again, as it was. */
+.withPanel .panel.wordNote {
+  top: calc(var(--hdr-vis) + env(safe-area-inset-top, 0px)); bottom: var(--foot-h); max-height: none;
+  box-shadow: var(--edge);
+}
+/* the panel it covers waits behind it with what it holds (Find's words and its place in the list), but is not left under it for the keyboard and a screen reader to find:
+   it is put out of reach once the window has inked in (the window fades over it first, so that the one is seen to take the place of the other); it is back at once when the window closes */
+.lookOver .panel:not(.wordNote) { visibility: hidden; transition: visibility var(--dur-slow); }
 /* the head (Back, the word, ×) stays at the top of the window while the second layer scrolls under it, so the way back and the way
    out are always in reach (the look-up's fixes, the owner, 2026-10-30); it reaches up into the window's top padding, painted (a sticky
    box stops at the window's padding, so it is held one padding higher, at the window's own edge) */

@@ -37,7 +37,8 @@ Spec: `../spec.md`, "Placement". User stories 10 to 15, 22
   those always use the sheet.
 - Computer: the margin is 300 px (`--margin-note` in tokens.css), at 1100 px and wider, whether a panel is open or not.
   The look-up no longer takes the place of the panel beside the text; Find, Vocabulary and the rest stay open beside
-  it. With a panel open, the English goes under the Greek, so that the Greek is not squeezed between the note and the
+  it. (Changed by ticket 10, the owner, 2026-10-30: with a panel open the margin's room is no longer kept, and a look-up
+  opened then takes the panel's box exactly, the panel wholly behind it; see ticket 10.) With a panel open, the English goes under the Greek, so that the Greek is not squeezed between the note and the
   panel (at 1440 px with Find open the Greek is about 470 px wide; at 1100 px, about 250).
 - The sheet rests at a quarter of the screen (`clamp(calc(2.25 * var(--space-8)), 25dvh, 400px)`, 180 to 400 px): 211 px on a 390 × 844 phone. It still
   drags up for more and down to close; it still never rises over the tapped line.
