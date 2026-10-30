@@ -351,7 +351,7 @@ export default function Library() {
       {/* the filters, folded until wanted, so the list comes up under the search (the owner, 2026-10-30: the A to Z list
           is what the page is for); the fold says how many are on */}
       <details id="library-filters" className="fold-box">
-        <summary><Icon name="filter" />Filter<small>by kind of writing, period, dialect or vocabulary</small>{filtersOn > 0 && <b>{filtersOn} on</b>}</summary>
+        <summary><Icon name="filter" /><span>Filter <small>by kind of writing, period, dialect or vocabulary</small></span>{filtersOn > 0 && <b>{filtersOn} on</b>}</summary>
         <div className={`fold-body ${styles.filters}`}>
         <div className={styles.selects} role="group" aria-label="More filters">
           <select id="library-period" aria-label="Period" value={period} onChange={(e) => setPeriod(e.target.value)} data-set={period ? "" : undefined}>

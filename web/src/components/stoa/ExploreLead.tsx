@@ -120,6 +120,12 @@ export default function ExploreLead() {
 type Pt = readonly [number, number];
 const f4 = (n: number) => Math.round(n * 1e4) / 1e4;
 const pts = (p: Pt[]) => p.map(([x, y]) => `${f4(x)} ${f4(y)}`).join("L");
+/** The viewBox of the square centred on a drawing's box: the card's picture is square, and a drawing is framed in its
+ *  box's own shape (scripts/check-svg-fill.mjs), so the paper either side of a tall drawing is part of its frame. */
+const square = (x: number, y: number, w: number, h: number) => {
+  const s = Math.max(w, h);
+  return [x + (w - s) / 2, y + (h - s) / 2, s, s].map((v) => f4(v)).join(" ");
+};
 /** A smooth line through the points (Catmull-Rom, the curve the pot is turned on), as cubic Béziers. */
 function through(p: Pt[], start: "M" | "L" = "M"): string {
   let d = `${start}${f4(p[0][0])} ${f4(p[0][1])}`;
@@ -178,7 +184,7 @@ export function MakeAndPlay() {
       <ul>
         <li>
           <Link href={AREAS.lyre.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
-            <svg className={styles.fig} viewBox={`${f4(-LYRE.w / 2)} 0 ${f4(LYRE.w)} 1`} aria-hidden="true">
+            <svg className={styles.fig} viewBox={square(-LYRE.w / 2, 0, LYRE.w, 1)} aria-hidden="true">
               <defs><clipPath id="make-shell"><ellipse cx="0" cy={cy} rx={rx} ry={ry} /></clipPath></defs>
               <g className={styles.gloss}>
                 {ARMS.map((d) => <path key={d} d={d} />)}
@@ -199,7 +205,7 @@ export function MakeAndPlay() {
         </li>
         <li>
           <Link href={AREAS.pot.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
-            <svg className={styles.fig} viewBox={`-0.7 -0.06 1.4 ${f4(LIP + 0.12)}`} aria-hidden="true">
+            <svg className={styles.fig} viewBox={square(-0.7, -0.06, 1.4, LIP + 0.12)} aria-hidden="true">
               <defs><clipPath id="make-pot"><path d={POT} /></clipPath></defs>
               <path className={styles.gloss} d={POT} />
               {HANDLES.map((d) => <path key={d} className={styles.handle} d={d} />)}
