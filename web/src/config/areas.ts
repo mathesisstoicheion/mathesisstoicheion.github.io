@@ -93,7 +93,7 @@ export const AREAS: Record<AreaId, Area> = {
   // the potters': a neck-amphora to turn and paint, on a page of its own so it can be found and shared (the owner,
   // 2026-10-30: "every thought and creation: Shareable, including making a pot")
   pot: {
-    id: "pot", parent: "wiki", name: "Paint a pot", greek: "Κεραμεύς", english: "The potter", icon: "pots", href: "/stoa/pot",
+    id: "pot", parent: "wiki", name: "The potter", greek: "Κεραμεύς", english: "Paint a pot", icon: "pots", href: "/stoa/pot",
     origin: "Κεραμεύς, “potter”. In Athens potters turned their vases on the wheel and painters decorated them: black figures on the red clay, and from about 530 BC red figures on a black ground.",
     fit: "Turn a neck-amphora, paint it as they did, and share it.", phase: 7,
   },

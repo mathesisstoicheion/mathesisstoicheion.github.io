@@ -1,6 +1,6 @@
 // The choices check (whole-site pass, 2026-10-29): a row of choices of which one is picked (a radiogroup, a row of tabs)
 // reads as one control only when it holds together on a phone. On a narrow screen such a row may run onto a second line
-// as even rows (the Oracle's five kinds of search, three then two), but not leave one choice alone on its line under
+// as even rows (the Oracle's five kinds of search, two then three), but not leave one choice alone on its line under
 // the others (the alphabet's Classical Attic and Erasmian, with Modern Greek under them), and no choice's words may be
 // cut off. A row that slides sideways (the Tables of forms' filters) stands on one line and is left alone.
 // The answers to a question are held to the same rule, on a computer too: four answers stand two by two, not three in a

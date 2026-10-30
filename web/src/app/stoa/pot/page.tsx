@@ -9,7 +9,7 @@ import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 export const metadata: Metadata = { title: `${AREAS.pot.name} · ${AREAS.wiki.name}`, description: PAGE_DESCRIPTIONS.pot };
 
 /**
- * Paint a pot: the neck-amphora to turn and paint (components/Amphora.tsx), on a page of its own in the Painted Stoa, so
+ * The potter (Paint a pot): the neck-amphora to turn and paint (components/Amphora.tsx), on a page of its own in the Painted Stoa, so
  * it can be found, come back to and shared (it stood at the foot of the Kerameikos until 2026-10-30). A shared pot opens
  * here from its link (/stoa/pot#v=…).
  */

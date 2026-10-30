@@ -101,11 +101,16 @@
 .welcome > p { margin: 0; }
 .examples { display: flex; flex-wrap: wrap; gap: 8px; }
 .examples :global(.chip) { font-size: var(--step-0); }
-/* phones: the five kinds of search two to a row, each with its sign and its name on one line, and the four examples as a
-   two-by-two grid */
+/* phones: the five kinds of search in two even rows, never one alone under the others (scripts/check-choices.mjs): the
+   two searches for Greek words first and wider, then the other three, each sign over its name so every name keeps to
+   one line; and the four examples as a two-by-two grid */
 @media (max-width: 760px) {
-  .tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .tabs button { text-align: start; padding-inline: var(--space-2); }
+  .tabs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); }
+  .tabs button {
+    grid-column: span 2; flex-direction: column; justify-content: center; gap: var(--space-1);
+    padding: var(--space-2) var(--space-1); font-size: var(--step--1); text-align: center;
+  }
+  .tabs button:nth-child(-n + 2) { grid-column: span 3; }
   .examples { display: grid; grid-template-columns: 1fr 1fr; }
   .examples :global(.chip) { justify-content: center; }
 }
@@ -195,7 +200,6 @@
   .tabs button { min-height: var(--tap); }
 }
 @media (prefers-reduced-motion: reduce) { .kbd, .refs, .group { animation: none; } }
-/* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
-@media (min-width: 761px) {
-  .tabs button:not([aria-selected="true"]) { border-bottom-color: var(--rule); }
-}
+/* everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css
+   --link-line; scripts/check-clickable.mjs); on a phone the rule under each tab also sets the two rows apart */
+.tabs button:not([aria-selected="true"]) { border-bottom-color: var(--rule); }
