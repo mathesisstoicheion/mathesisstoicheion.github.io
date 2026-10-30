@@ -666,13 +666,17 @@ p.translit { margin: -0.3em 0 0.8em; }
   .metreOn .grc:has(.line) > .oneBox { grid-template-columns: 3.2em minmax(0, 1fr); }
 }
 .oneBox > * { font-family: var(--f-body); }
-.oneBtn:global(.text-btn) { justify-self: start; color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
+.oneBtn:global(.text-btn) { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
 .oneBtn:global(.text-btn):hover { color: var(--rubric); }
+/* a small triangle before the words says it opens (pointing on) and is open (pointing down), as the site's other
+   disclosures do (tokens.css --tri-*; scripts/check-clickable.mjs: what can be clicked looks it) */
+.oneBtn:global(.text-btn)::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
+.oneBtn:global(.text-btn)[aria-expanded="true"]::before { clip-path: var(--tri-down); }
 .one { margin-top: var(--space-2); font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); padding-left: var(--space-3); box-shadow: var(--rule-left); animation: leaf-in var(--dur) var(--ease) backwards; }
 .one .lt { padding-left: 0; text-indent: 0; }
 .fitLines .one .lt { white-space: normal; }
 .oneCredit { margin: var(--space-2) 0 0; font-size: var(--step--2); line-height: 1.4; color: var(--ink-2); }
-@media (pointer: coarse) { .oneBtn:global(.text-btn) { display: inline-flex; align-items: center; min-height: var(--tap); } }
+@media (pointer: coarse) { .oneBtn:global(.text-btn) { min-height: var(--tap); } }
 
 /* "Fit lines": whole verse lines, the Greek shrunk to the longest line on the page (--fit, measured in Reader.tsx) */
 .fitLines .grc { font-size: calc(var(--greek-size) * var(--fit, 1)); }

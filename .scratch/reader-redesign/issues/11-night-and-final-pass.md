@@ -26,3 +26,14 @@ Spec: `../spec.md`, "Testing". User stories 9, 22, 23
 - Choosing "Compare with" in Change sends the reader back to the start of the text. It happens with both columns as well as
   Greek alone, so it was there before ticket 07. On Aeschylus' Agamemnon, read at line 75, the page jumps to line 0 once
   the comparison loads. Build a check that catches it, then fix it.
+
+## Comment, 2026-10-29: the guide and tours still describe the old reader
+
+- Rewrite, once the reader has settled:
+  - in `/guide` (`web/src/app/guide/page.tsx`), the chapters "Read a text", "Look up a word" and "Reading aids";
+  - in `web/src/lib/tours.ts`, the "read", "word", "aids" and "keep" tours, and the last step of "find" (which says the Greek
+    and English open side by side).
+- The site-wide thread (branch claude/project-thread-e4p0ft) is rewriting the other chapters and the "learn" tour. Merge
+  with care.
+- Also the Academy's guide "Looking a word up here" (`web/src/data/guides.ts`, id looking-up): its table of the look-up's
+  parts lists "In this passage" and "Core vocabulary" and lacks "Go further".
