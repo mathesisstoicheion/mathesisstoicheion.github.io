@@ -25,6 +25,7 @@ import BarChart from "./BarChart";
 import { wordHref } from "./data";
 import { useLoad } from "@/lib/use-load";
 import styles from "./WordStudy.module.css";
+import Icon from "@/components/Icon";
 import PageHead from "@/components/PageHead";
 import { trail } from "@/config/areas";
 
@@ -123,7 +124,7 @@ function Meaning({ lemma }: { lemma: string }) {
       {lsj.state === "error" && <p className={styles.warn}>The dictionary could not be loaded ({lsj.message}).</p>}
       {lsj.state === "done" && !l && <p className="muted">No LSJ entry under this headword.</p>}
       {l && l.entries.map((e: LsjEntry, i) => <LsjEntryView key={i} e={e} full={full} tall />)}
-      {l && <button type="button" className="chip" onClick={() => setFull(!full)} aria-expanded={full}>{full ? "Short definition" : "The full entry"}</button>}
+      {l && <button type="button" className="chip" onClick={() => setFull(!full)} aria-expanded={full}>{full ? <><Icon name="chevron-up" />Short definition</> : <><Icon name="chevron-down" />The full entry</>}</button>}
       {l && full && <p className={styles.fine}>{LSJ_CREDIT}</p>}
       <p className={styles.fine}>
         Also in <a href={`https://logeion.uchicago.edu/${encodeURIComponent(lemma)}`} target="_blank" rel="noopener noreferrer">Logeion</a> (LSJ, Middle Liddell, Autenrieth and more).
@@ -224,7 +225,7 @@ function Forms({ entry, meta }: { entry: LexEntry; meta: LexMeta }) {
               </li>
             ))}
           </ol>
-          {list.length > shown && <button type="button" className="chip" onClick={() => setShown((n) => n + 80)}>More forms ({(list.length - shown).toLocaleString("en-GB")} left)</button>}
+          {list.length > shown && <button type="button" className="chip" onClick={() => setShown((n) => n + 80)}><Icon name="chevron-down" />More forms ({(list.length - shown).toLocaleString("en-GB")} left)</button>}
         </>
       )}
       <p className={styles.fine}>Forms and grammar: GLAUx (Keersmaekers 2021), CC BY-SA 4.0: about 16 million words analysed, partly by hand (treebanks), mostly automatically (lemma 98.8%, grammar 97.2% accurate). Accents are shown as in a dictionary: a grave written as an acute.</p>
@@ -316,7 +317,7 @@ function Examples({ lemma }: { lemma: string }) {
     <section className={styles.sec} aria-labelledby="ws-examples">
       <div className={styles.secHead}>
         <h2 id="ws-examples">In real texts</h2>
-        <Link className="chip" href={`/search?m=lemma&q=${encodeURIComponent(lemma)}&lem=${encodeURIComponent(canonLemma(lemma))}`} transitionTypes={["page-turn"]}>Every occurrence in the Oracle →</Link>
+        <Link className="chip" href={`/search?m=lemma&q=${encodeURIComponent(lemma)}&lem=${encodeURIComponent(canonLemma(lemma))}`} transitionTypes={["page-turn"]}>Every occurrence in the Oracle<Icon name="next" /></Link>
       </div>
       <p className={styles.lead}>One passage from each period, where the word is used, opened straight from the original files.</p>
       {ex.state === "loading" && <p className="muted">Finding passages and opening the texts…</p>}
@@ -386,7 +387,7 @@ function Family({ lemma }: { lemma: string }) {
               <p className={styles.kin}>
                 {(all ? greek : greek.slice(0, 24)).map((w) => <Link key={w} href={wordHref(w)} lang="grc">{w}</Link>)}
               </p>
-              {greek.length > 24 && <button type="button" className="chip" onClick={() => setAll(!all)}>{all ? "Fewer" : `All ${greek.length.toLocaleString("en-GB")}`}</button>}
+              {greek.length > 24 && <button type="button" className="chip" onClick={() => setAll(!all)}>{all ? <><Icon name="chevron-up" />Fewer</> : <><Icon name="chevron-down" />All {greek.length.toLocaleString("en-GB")}</>}</button>}
             </div>
           )}
           {!f.etymology.length && !f.english.length && !greek.length && <p className="muted">Wiktionary&apos;s entry lists no etymology, derived words or descendants yet.</p>}

@@ -41,7 +41,8 @@
   transition: color var(--dur-quick) var(--ease);
 }
 .head .close { margin-left: 2px; }
-.close:hover, .close:focus-visible { color: var(--rubric); }
+.close:focus-visible { color: var(--rubric); }
+@media (hover: hover) { .close:hover { color: var(--rubric); } }
 .acts { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2); justify-content: flex-end; }
 .acts .close { margin: 0 0 0 auto; }
 .hint { font-size: var(--step--1) !important; color: var(--ink-2); font-style: italic; margin-top: -6px !important; }

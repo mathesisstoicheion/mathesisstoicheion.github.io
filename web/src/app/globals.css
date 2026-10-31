@@ -205,14 +205,10 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   transition: border-color var(--dur) var(--ease), background-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .btn > svg[data-icon] { width: 1.1em; height: 1.1em; }
-.btn:hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
 .btn.ghost { background: transparent; color: var(--ink); border-color: var(--rule); }
-.btn.ghost:hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
 /* the quiet button: no frame, its sign and its words in ink, red under the hand (a way on that is not the page's main one) */
 .btn.quiet { background: transparent; color: var(--ink); border-color: transparent; padding-inline: var(--space-1); }
-.btn.quiet:hover { background: transparent; border-color: transparent; color: var(--rubric); }
 .btn.quiet > svg[data-icon] { color: var(--ink-2); }
-.btn.quiet:hover > svg[data-icon] { color: inherit; }
 /* the small button, for tools inside a panel; still a full touch target on touch screens */
 .btn.small { padding: var(--space-2) var(--space-3); gap: var(--space-2); font-size: var(--step--1); min-height: 0; }
 /* Greek on a button keeps its own letters (the lessons' "Show: μηδὲν") */
@@ -220,8 +216,17 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
 /* buttons side by side, as the page's ways on */
 .btn-row { display: flex; flex-wrap: wrap; gap: var(--space-3); margin: 0; }
 @media (pointer: coarse) { .btn.small { min-height: var(--tap); } }
+/* a button that cannot be pressed now is faded, and does not turn red under the hand */
 .btn[aria-disabled="true"], .btn:disabled { opacity: 0.45; cursor: not-allowed; }
-.btn[aria-disabled="true"]:hover, .btn:disabled:hover { background: var(--btn-bg); border-color: var(--btn-bg); color: var(--btn-ink); }
+/* Red under the hand only where there is a hand, a mouse: a phone takes a tap for the hand arriving and would leave a
+   button red after it, as if it were still pressed (scripts/check-hover.mjs, scripts/check-controls.mjs). The same holds
+   for every :hover below. */
+@media (hover: hover) {
+  .btn:where(:not(:disabled, [aria-disabled="true"])):hover { background: var(--rubric); border-color: var(--rubric); color: var(--bg); }
+  .btn.ghost:where(:not(:disabled, [aria-disabled="true"])):hover { border-color: var(--rubric); color: var(--rubric); background: transparent; }
+  .btn.quiet:where(:not(:disabled, [aria-disabled="true"])):hover { background: transparent; border-color: transparent; color: var(--rubric); }
+  .btn.quiet:where(:not(:disabled, [aria-disabled="true"])):hover > svg[data-icon] { color: inherit; }
+}
 
 /* a chip: a hairline frame; pressed, it is filled with ink and its words are paper (the sample's .seg) */
 .chip {
@@ -230,7 +235,7 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   text-decoration: none;
   transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.chip:hover { border-color: var(--ink-3); color: var(--rubric); }
+@media (hover: hover) { .chip:where(:not(:disabled, [aria-disabled="true"])):hover { border-color: var(--ink-3); color: var(--rubric); } }
 /* (what is set quieter inside it, a count or a gloss, takes the colours that read on its ink) */
 .chip[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 /* touch screens: a chip is drawn at least 36 px tall, and a finger may land up to 5 px beyond its edge (a 44 px target) */
@@ -238,13 +243,17 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   .chip { position: relative; min-height: 36px; min-width: var(--tap); justify-content: center; }
   .chip::after { content: ""; position: absolute; inset: -5px 0; }
 }
+/* a chip that cannot be pressed now (Create, before the new collection has a name) is faded like a button */
+.chip:disabled, .chip[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
 /* a row of choices, one of which is chosen (role="radiogroup" with role="radio" buttons): the sample's .seg, in a
    hairline frame, the chosen one in ink */
 .segmented { display: inline-flex; border: 1px solid var(--rule); border-radius: var(--radius); }
 .segmented > button { border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); padding: var(--space-2) var(--space-3); font: 400 var(--step--1) / 1.2 var(--f-body); white-space: nowrap; transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease); }
-.segmented > button:hover:not([aria-checked="true"]) { color: var(--rubric); }
+@media (hover: hover) { .segmented > button:hover:not([aria-checked="true"], :disabled) { color: var(--rubric); } }
 .segmented > button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); --ink-2: var(--ink-2-on-ink); --ink-3: var(--ink-2-on-ink); --accent: var(--accent-on-ink); }
 @media (pointer: coarse) { .segmented > button { min-height: var(--tap); } }
+/* a choice that does not apply now (the reader's Echoes: Close match, for a selection too long) is faded like a button */
+.segmented > button:disabled { opacity: 0.45; cursor: not-allowed; }
 .chip .dot { width: 8px; height: 8px; border-radius: var(--radius-round); background: currentColor; opacity: 0.5; }
 .chip[aria-pressed="true"] .dot { opacity: 1; }
 
@@ -258,13 +267,14 @@ html[data-hdr="hidden"] .pull { --hdr-vis: 0px; }
   border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); font-size: var(--step-2); line-height: 1; cursor: pointer;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.icon-btn:hover:not(:disabled) { color: var(--rubric); }
+@media (hover: hover) { .icon-btn:hover:not(:disabled) { color: var(--rubric); } }
 .icon-btn:disabled { opacity: 0.35; cursor: default; }
 .icon-btn.framed { border: 1px solid var(--rule); color: var(--ink); }
-.icon-btn.framed:hover:not(:disabled) { border-color: var(--rubric); }
+@media (hover: hover) { .icon-btn.framed:hover:not(:disabled) { border-color: var(--rubric); } }
 @media (pointer: coarse) { .icon-btn { min-width: var(--tap); min-height: var(--tap); } }
 /* a button that reads as a link, inside a line of text */
 .text-btn { padding: 0; border: 0; background: none; color: var(--accent); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.text-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 /* a whole entry of a list (a match, a word, a book, a passage's number among others): its list draws it */
 .row-btn { cursor: pointer; }
 
@@ -316,7 +326,7 @@ select:not([multiple]):not([size]) {
 .fold-box > summary::-webkit-details-marker { display: none; }
 .fold-box > summary::after { content: ""; position: absolute; right: var(--space-4); top: 50%; margin-top: calc(var(--tri-size) / -2); width: var(--tri-size); height: var(--tri-size); background: var(--ink-2); clip-path: var(--tri-down); }
 .fold-box[open] > summary::after { clip-path: var(--tri-up); }
-.fold-box > summary:hover { color: var(--rubric); }
+@media (hover: hover) { .fold-box > summary:hover { color: var(--rubric); } }
 .fold-box > summary > svg[data-icon] { color: var(--ink-2); }
 /* the line's words stay one sentence beside the sign, wrapping within themselves on a phone rather than dropping under it
    (Library.tsx; scripts/check-split-sentences.mjs) */
@@ -355,7 +365,7 @@ summary.label { font: 400 var(--step-0) / 1.4 var(--f-body); letter-spacing: 0; 
 .plate figcaption i { color: var(--ink-2); }
 .plate-credit { color: var(--ink-3); }
 .plate figcaption a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
-.plate figcaption a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .plate figcaption a:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 /* a photograph inks in as it arrives (the one movement there is), then never moves */
 .plate-ph img { animation: ink var(--ink-in) var(--ease) backwards; }
 /* a plate in the margin that changes with what is pointed at (components/plate/MarginPlate.tsx): one shape, 3 by 4, each
@@ -376,7 +386,7 @@ summary.label { font: 400 var(--step-0) / 1.4 var(--f-body); letter-spacing: 0; 
 .plate-list-no { color: var(--rubric); font-variant-numeric: lining-nums; }
 .plate-list .plate-credit { color: inherit; }
 .plate-list a { color: inherit; text-decoration-color: var(--rule); text-underline-offset: 3px; }
-.plate-list a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .plate-list a:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 /* the head of a page: its plate at the right of the title on a computer, after the main action on a phone */
 .piece-foot { width: min(340px, 74vw); margin: var(--space-7) auto var(--space-5); }
 .piece-foot.piece-wide { width: min(520px, 100%); }
@@ -417,7 +427,8 @@ summary.label { font: 400 var(--step-0) / 1.4 var(--f-body); letter-spacing: 0; 
   transition: color var(--dur) var(--ease);
 }
 .slab-card :where(b, h3, strong) { color: var(--ink); font-weight: 500; font-size: var(--step-sub); transition: color var(--dur) var(--ease); }
-a.slab-card:hover :where(b, h3, strong), a.slab-card:focus-visible :where(b, h3, strong), .slab-card:has(a:hover) :where(b, h3, strong) { color: var(--rubric); }
+a.slab-card:focus-visible :where(b, h3, strong) { color: var(--rubric); }
+@media (hover: hover) { a.slab-card:hover :where(b, h3, strong), .slab-card:has(a:hover) :where(b, h3, strong) { color: var(--rubric); } }
 .slab-card :where(.muted, p, small) { color: var(--ink-2); font-size: var(--step--1); margin: 0; }
 /* a card that is a link, and a part's name that is one, end their name with a red arrow: each takes you to another page
    (at every width since 2026-10-30, when the owner asked for a sign on everything you can press; it was on computers only) */
@@ -492,7 +503,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .site-footer-links { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
 .site-footer-links a { display: inline-flex; align-items: center; gap: var(--space-2); text-decoration-color: var(--rule); text-underline-offset: 3px; }
 .site-footer-links a svg { color: var(--ink-3); }
-.site-footer-links a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .site-footer-links a:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 .site-footer-src { grid-column: 1 / -1; max-width: 70ch; color: var(--ink-3); font-size: var(--step--1); }
 .site-footer-fin { grid-column: 1 / -1; text-align: center; margin-top: var(--space-5); font: 400 1.3rem / 1 var(--face-didot); color: var(--rubric); letter-spacing: 0.4em; }
 @media (max-width: 680px) {
@@ -530,7 +541,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-path { color: var(--ink-2); display: flex; flex-wrap: wrap; align-items: center; gap: 0 2px; min-height: 1.6em; max-width: none; font: 400 var(--step--1) / 1.35 var(--f-body); }
 .ph-path::before { content: ""; width: 28px; height: 1px; background: var(--rubric); margin-right: 14px; }
 .ph-path a { color: var(--ink); text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
-.ph-path a:hover, .ph-path a:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
+.ph-path a:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .ph-path a:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 /* the way back is a small line; under a finger each place answers 15 px above and below it, and at least 44 px across
    however short its name ("Words") (scripts/check-a11y.mjs) */
 @media (pointer: coarse) { .ph-path a { position: relative; } .ph-path a::after { content: ""; position: absolute; inset: -15px min(-4px, calc((100% - var(--tap)) / 2)); } }
@@ -579,7 +591,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   padding: var(--space-2) 0; cursor: text;
 }
 .find-jump svg { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 1.4; stroke-linecap: round; }
-.find-jump:hover, .find-jump:focus-visible { outline: none; border-bottom-color: var(--rubric); color: var(--ink-2); }
+.find-jump:focus-visible { outline: none; border-bottom-color: var(--rubric); color: var(--ink-2); }
+@media (hover: hover) { .find-jump:hover { outline: none; border-bottom-color: var(--rubric); color: var(--ink-2); } }
 
 /* a search set as the sample's catalogue sets it (components/a/LibSearch.tsx): one line to write on, in italic, ruled in
    ink, its name in small capitals over it, and beside it what to show, in small capitals, the chosen one underlined in red */
@@ -597,7 +610,7 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
   font: 400 var(--step-0) / 1.2 var(--f-body); color: var(--ink-2);   /* in plain words, as every other choice (no small capitals) */
   transition: color var(--dur) var(--ease), border-color var(--dur) var(--ease);
 }
-.find-show > button:hover { color: var(--rubric); }
+@media (hover: hover) { .find-show > button:hover { color: var(--rubric); } }
 .find-show > button[aria-checked="true"] { color: var(--rubric); border-bottom-color: var(--rubric); }
 @media (max-width: 760px) {
   /* the line ruled under the field itself, and what to show under the line */
@@ -694,7 +707,7 @@ select { max-width: 100%; }
 .door-part { margin-top: clamp(var(--space-6), 6vh, 72px); padding-top: clamp(var(--space-5), 4vh, 40px); border-top: 1px solid var(--rule); }
 .door-part h2 { font-size: var(--step-3); }
 .door-part h2 a { text-decoration: none; }
-.door-part h2 a:hover { color: var(--rubric); }
+@media (hover: hover) { .door-part h2 a:hover { color: var(--rubric); } }
 .sh { display: flex; align-items: baseline; gap: var(--space-4); margin: 0 0 30px; }
 .sh .no { font: 400 1.05rem var(--face-didot); color: var(--rubric); }
 .sh h2 { font: 400 clamp(1.7rem, 3.2vw, 2.5rem) / 1.1 var(--f-display); margin: 0; }

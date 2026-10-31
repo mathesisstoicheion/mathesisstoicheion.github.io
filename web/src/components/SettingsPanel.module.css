@@ -30,7 +30,7 @@
   font: 400 var(--step--1) / 1.2 var(--f-body);
   transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
 }
-.seg button:hover:not([aria-checked="true"]) { color: var(--rubric); }
+@media (hover: hover) { .seg button:hover:not([aria-checked="true"]) { color: var(--rubric); } }
 .seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
 
 /* the page as it will read: a few lines of Greek between two rules, each set as the reader sets a line of verse that does not fit its room: the turnover hangs
@@ -40,7 +40,7 @@
 .row { display: flex; justify-content: space-between; align-items: center; gap: var(--space-3); }
 .stepper { display: inline-flex; align-items: center; border: 1px solid var(--rule); border-radius: var(--radius); }
 .stepper button { width: 38px; height: 36px; background: transparent; border: 0; border-radius: var(--radius); color: var(--ink); font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
-.stepper button:hover:not(:disabled) { color: var(--rubric); }
+@media (hover: hover) { .stepper button:hover:not(:disabled) { color: var(--rubric); } }
 .stepper button:disabled { opacity: 0.35; cursor: default; }
 .stepper output { min-width: 64px; text-align: center; font-variant-numeric: lining-nums tabular-nums; font-size: var(--step-0); border-inline: 1px solid var(--rule); align-self: stretch; display: grid; place-items: center; }
 

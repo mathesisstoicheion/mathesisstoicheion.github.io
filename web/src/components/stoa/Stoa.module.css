@@ -15,7 +15,7 @@
 .found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
 .found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 10px 2px; text-decoration: none; box-shadow: var(--cut-under); }
 .found b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
-.found a:hover b { color: var(--rubric); }
+@media (hover: hover) { .found a:hover b { color: var(--rubric); } }
 .found span { color: var(--ink-2); font-size: var(--step-0); }
 
 /* the entry of the day: the words on the left, its photograph as a plate on the right, between an ink rule and a hairline */
@@ -28,7 +28,7 @@
 .featuredText :global(.label) { color: var(--accent); margin: 0; }
 .featuredText h2 { margin: 0; font-family: var(--f-title); font-weight: 400; font-size: clamp(2rem, 4.4vw, 3.2rem); line-height: 1.05; }
 .featuredText h2 a { color: inherit; text-decoration: none; transition: color var(--dur-quick) var(--ease); }
-.featuredText h2 a:hover { color: var(--rubric); }
+@media (hover: hover) { .featuredText h2 a:hover { color: var(--rubric); } }
 .featuredHook { margin: 0; max-width: var(--measure); font-size: var(--step-sub); }
 .featuredPic { margin: 0; }
 @media (max-width: 760px) {
@@ -46,7 +46,7 @@
 .panelIn ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
 .panelIn li a { text-decoration: none; font-size: var(--step-0); }
 .panelIn li a::before { content: "— "; color: var(--accent); }
-.panelIn li a:hover { color: var(--rubric); }
+@media (hover: hover) { .panelIn li a:hover { color: var(--rubric); } }
 .soonLine { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
 
 /* ------------------------------------------------ works in stone, and why Stoics are called Stoics (StoaPlates.tsx) */
@@ -54,7 +54,7 @@
 .essay p { margin: 0 0 1em; font-size: var(--step-sub); max-width: 36em; }
 .essay p:first-of-type::first-letter { font: 400 4.1em / 0.8 var(--f-title); float: left; margin: 0.06em 0.1em 0 0; color: var(--rubric); }
 .essayGo a { font-family: var(--f-label); font-size: var(--step-0); color: var(--accent); text-decoration: none; }
-.essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; } }
 /* the source in the margin, set in from a red rule, and the plate under it */
 .side { align-self: start; padding-left: 14px; border-left: 1px solid var(--rubric); font-size: var(--step--1); color: var(--ink-2); }
 .side :global(.plate) { margin-top: 14px; }
@@ -64,7 +64,7 @@
 .entry { padding-bottom: 20px; }
 .crumbs { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.05em; color: var(--ink-2); }
 .crumbs a { text-decoration: none; }
-.crumbs a:hover { color: var(--rubric); }
+@media (hover: hover) { .crumbs a:hover { color: var(--rubric); } }
 .kicker { font-size: var(--step-sub); color: var(--ink-2); max-width: 60ch; font-style: italic; }
 
 .lead { margin: 0 0 12px; display: grid; gap: 8px; }
@@ -111,7 +111,7 @@
 .h3 { font-size: var(--step-1); }
 .inGr { font-family: var(--f-greek); }   /* Greek inside an English line is the size of the line */
 .cite { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-.cite:hover { color: var(--rubric); }
+@media (hover: hover) { .cite:hover { color: var(--rubric); } }
 .wikiLink { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--blue); text-underline-offset: 3px; }
 .list { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
 .list li::marker { color: var(--accent); }
@@ -127,7 +127,7 @@
 .quoteTr { margin: 0; font-style: italic; color: var(--ink-2); }
 .quote figcaption { font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; color: var(--ink-2); }
 .quote figcaption a { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent); text-underline-offset: 3px; }
-.quote figcaption a:hover { text-decoration-color: var(--accent); }
+@media (hover: hover) { .quote figcaption a:hover { text-decoration-color: var(--accent); } }
 
 /* "Did you know?": a note between two hairlines, a small red amphora in its margin as a printer's ornament */
 .dyk { margin: 8px 0; padding: 16px 0 16px 40px; position: relative; border-block: 1px solid var(--rule); display: grid; gap: 6px; font-size: var(--step-0); }
@@ -151,7 +151,7 @@
 .readIt ul, .related ul { list-style: none; margin: 10px 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 0 24px; }
 .readIt a, .related a { display: grid; gap: 4px; height: 100%; padding: 14px 2px 16px; text-decoration: none; box-shadow: var(--cut-over); font-size: var(--step-0); line-height: 1.45; }
 .readIt b, .related b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
-.readIt a:hover b, .related a:hover b { color: var(--rubric); }
+@media (hover: hover) { .readIt a:hover b, .related a:hover b { color: var(--rubric); } }
 .readIt small { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.04em; margin-top: auto; }
 .related span:last-child { color: var(--ink-2); }
 
@@ -165,7 +165,7 @@
 
 .contents ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; }
 .contents a { display: block; padding: 4px 0 4px 12px; margin-left: 0; border-left: 2px solid transparent; text-decoration: none; font-size: var(--step-0); color: var(--ink-2); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
-.contents a:hover { color: var(--rubric); }
+@media (hover: hover) { .contents a:hover { color: var(--rubric); } }
 .contents a[aria-current="location"] { color: var(--ink); border-left-color: var(--accent); }
 .certKey { display: grid; gap: 8px; font-size: var(--step--1); color: var(--ink-2); }
 .certKey p { margin: 0; display: grid; gap: 4px; justify-items: start; }
@@ -174,14 +174,15 @@
 /* the note button is faint until the hand is on it (or it has focus); on a phone it is just the pencil (its label is read out) */
 /* quiet, in the captions' ink (not the ink made faint, which fell under 4.5 : 1 on the paper); red under the hand */
 button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink-2); transition: color var(--dur-quick) var(--ease); }
-button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
+button.noteBtn:focus-visible { color: var(--rubric); }
+@media (hover: hover) { button.noteBtn:hover { color: var(--rubric); } }
 @media (max-width: 760px) { .noteWord { display: none; } }
 .sectionNote { padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); font-size: var(--step-0); animation: ink-in var(--dur) var(--ease) backwards; }
 @media (prefers-reduced-motion: reduce) { .sectionNote { animation: none; } }
 .markersKey { position: fixed; right: 26px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
 .onMap { display: grid; gap: 4px; }
 .onMap a { color: var(--accent); text-decoration: none; }
-.onMap a:hover { text-decoration: underline; }
+@media (hover: hover) { .onMap a:hover { text-decoration: underline; } }
 .onMap span { font-family: var(--f-greek); }
 
 /* phones: the contents and the "on the map" links are finger-sized rows (Phase 10) */
@@ -194,7 +195,8 @@ button.noteBtn:hover, button.noteBtn:focus-visible { color: var(--rubric); }
 .srcMark { font-family: var(--f-label); font-size: var(--step--2); line-height: 0; margin-left: 1px; }   /* the smallest step, whatever the line around it */
 .srcMark a { text-decoration: none; color: var(--accent); padding: 0 1px; }
 .srcSep { color: var(--accent); margin-right: 1px; }
-.srcMark a:hover, .srcMark a:focus-visible { text-decoration: underline; }
+.srcMark a:focus-visible { text-decoration: underline; }
+@media (hover: hover) { .srcMark a:hover { text-decoration: underline; } }
 
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {

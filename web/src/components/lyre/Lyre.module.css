@@ -8,7 +8,7 @@
   display: grid; gap: 6px; align-content: start; text-align: left; padding: var(--space-4) 2px;
   background: transparent; box-shadow: inset 0 1px 0 var(--rule); border: 0; border-radius: 0; color: var(--ink); cursor: pointer;
 }
-.song:hover .songTitle { color: var(--rubric); }
+@media (hover: hover) { .song:hover .songTitle { color: var(--rubric); } }
 .song[aria-checked="true"] { box-shadow: inset 0 2px 0 var(--rubric); }
 .song[aria-checked="true"] .songTitle { color: var(--rubric); }
 .song:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

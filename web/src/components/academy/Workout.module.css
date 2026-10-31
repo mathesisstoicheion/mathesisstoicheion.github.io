@@ -31,7 +31,7 @@
   background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step-0);
   transition: border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease), opacity var(--dur-quick) var(--ease);
 }
-.options button:hover:not(:disabled) { border-color: var(--ink-3); }
+@media (hover: hover) { .options button:hover:not(:disabled) { border-color: var(--ink-3); } }
 .options button:disabled { cursor: default; }
 .optGr { font-family: var(--f-greek); font-size: var(--step-1) !important; }
 .right { background: color-mix(in srgb, var(--ok) 12%, var(--bg)) !important; border-color: var(--ok) !important; box-shadow: var(--inlay-left-ok) !important; }
@@ -44,7 +44,7 @@
 .writeInput:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
 .writeTools { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; align-items: center; }
 .dunno { background: none; border: 0; padding: 6px 0; color: var(--ink-2); text-decoration: underline; text-decoration-color: var(--accent); text-underline-offset: 3px; font-size: var(--step-0); min-height: var(--tap); }
-.dunno:hover { color: var(--rubric); }
+@media (hover: hover) { .dunno:hover { color: var(--rubric); } }
 .hint { font-size: var(--step--1); color: var(--ink-2); }
 
 /* what the answer was: set in from a green rule, or a red one */
@@ -78,9 +78,9 @@
   display: grid; gap: 6px; align-content: start; padding: 18px 20px; border: 1px solid var(--rule); border-radius: var(--radius);
   text-decoration: none; color: inherit; transition: border-color var(--dur-quick) var(--ease);
 }
-.step:hover { border-color: var(--ink-3); }
+@media (hover: hover) { .step:hover { border-color: var(--ink-3); } }
 .step b { font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
-.step:hover b { color: var(--rubric); }
+@media (hover: hover) { .step:hover b { color: var(--rubric); } }
 .stepGr { font-family: var(--f-greek); color: var(--accent); }
 .stepMain { border-color: var(--ink); box-shadow: inset 0 2px 0 var(--accent); }
 .standing { font-size: var(--step-0); }

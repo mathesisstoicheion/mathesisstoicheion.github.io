@@ -6,6 +6,7 @@ import { useMemo, useState } from "react";
 import { toGreek } from "@/components/notes/NoteField";
 import { plural, wordHref, type TreasuryState } from "./data";
 import styles from "./Treasury.module.css";
+import Icon from "@/components/Icon";
 
 export default function WordsSection({ t }: { t: TreasuryState }) {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function WordsSection({ t }: { t: TreasuryState }) {
         <span className={styles.inlineForm}>
           <input value={look} onChange={(e) => setLook(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") study(); }}
             placeholder="Study any word: λόγος, or lo/gos in Beta Code" aria-label="Study any dictionary word" lang="grc" />
-          <button type="button" className="chip" onClick={study} disabled={!look.trim()}>Word Study</button>
+          <button type="button" className="chip" onClick={study} disabled={!look.trim()}><Icon name="word" />Word Study</button>
         </span>
         <span className={styles.seg} role="group" aria-label="Order">
           <button type="button" aria-pressed={order === "new"} onClick={() => setOrder("new")}>Newest</button>

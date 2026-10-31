@@ -40,7 +40,8 @@
 
 .txt { display: grid; gap: 2px; padding: var(--space-3) 2px 18px; }
 .txt b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
-.card:hover .txt b, .card:focus-visible .txt b { color: var(--rubric); }
+.card:focus-visible .txt b { color: var(--rubric); }
+@media (hover: hover) { .card:hover .txt b { color: var(--rubric); } }
 .txt > span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-0); }
 /* the small print at the foot of the page (ExploreCredit) */
@@ -59,7 +60,8 @@
 }
 .makeCard:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .makeCard .txt { padding: 0; }
-.makeCard:hover .txt b, .makeCard:focus-visible .txt b { color: var(--rubric); }
+.makeCard:focus-visible .txt b { color: var(--rubric); }
+@media (hover: hover) { .makeCard:hover .txt b { color: var(--rubric); } }
 .fig { display: block; width: 100%; height: auto; aspect-ratio: 1; padding: var(--space-3); border: 1px solid var(--rule); background: var(--bg-2); }
 .gloss { fill: var(--ink); }
 .handle { fill: none; stroke: var(--ink); stroke-width: 0.068; stroke-linecap: round; }

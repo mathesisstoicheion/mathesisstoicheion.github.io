@@ -18,7 +18,8 @@
 .navI svg { grid-row: 1 / span 2; width: 20px; height: 20px; color: var(--ink-2); transition: color var(--dur) var(--ease); }
 .navI .word, .navI i { grid-column: 2; }
 .navI i { font: italic 400 var(--step--2) / 1.2 var(--face-gentium); color: var(--ink-3); margin-top: 2px; transition: color var(--dur) var(--ease); }
-.navI[aria-current="page"], .navI:hover, .navI[aria-current="page"] :is(i, svg), .navI:hover :is(i, svg) { color: var(--rubric); }
+.navI[aria-current="page"], .navI[aria-current="page"] :is(i, svg) { color: var(--rubric); }
+@media (hover: hover) { .navI:hover, .navI:hover :is(i, svg) { color: var(--rubric); } }
 .word { display: block; }
 .utils { display: flex; align-items: center; gap: 2px; margin-left: clamp(var(--space-2), 1.6vw, var(--space-5)); padding-left: clamp(var(--space-2), 1.4vw, 18px); border-left: 1px solid var(--rule); }
 /* the small tools: a thin line drawing in ink, no box round it, and its word beside it where the screen has room */
@@ -30,7 +31,8 @@
 }
 .tbtn svg { width: 18px; height: 18px; }
 @media (pointer: coarse) { .tbtn::before { content: ""; position: absolute; inset: -4px; } }
-.tbtn:hover, .tbtn[aria-current="page"], .tbtn[aria-expanded="true"] { color: var(--rubric); }
+.tbtn[aria-current="page"], .tbtn[aria-expanded="true"] { color: var(--rubric); }
+@media (hover: hover) { .tbtn:hover { color: var(--rubric); } }
 .txt { display: none; }
 @media (min-width: 1360px) { .utils .txt { display: inline; } .utils { gap: var(--space-1); } }
 /* the Menu button: its sign and its word in a hairline frame */
@@ -40,7 +42,8 @@
   transition: border-color var(--dur) var(--ease), color var(--dur) var(--ease);
 }
 .menuBtn svg { width: 18px; height: 18px; }
-.menuBtn:hover, .menuBtn[aria-expanded="true"] { border-color: var(--rubric); color: var(--rubric); }
+.menuBtn[aria-expanded="true"] { border-color: var(--rubric); color: var(--rubric); }
+@media (hover: hover) { .menuBtn:hover { border-color: var(--rubric); color: var(--rubric); } }
 @media (pointer: coarse) { .menuBtn::before { content: ""; position: absolute; inset: -3px; } }
 /* a narrower computer screen and a phone: Search keeps its button, the other small tools go into the menu */
 @media (max-width: 1040px) {
@@ -85,7 +88,8 @@
 }
 .menuDoors a svg { width: 20px; height: 20px; color: var(--ink-2); }
 .menuDoors i { margin-left: auto; font: italic 400 var(--step-0) / 1.2 var(--face-gentium); color: var(--ink-3); }
-.menuDoors a[aria-current="page"], .menuDoors a[aria-current="page"] :is(i, svg), .menuDoors a:hover { color: var(--rubric); }
+.menuDoors a[aria-current="page"], .menuDoors a[aria-current="page"] :is(i, svg) { color: var(--rubric); }
+@media (hover: hover) { .menuDoors a:hover { color: var(--rubric); } }
 @media (min-width: 761px) { .menuDoors { display: none; } }
 .menuTools { display: grid; }
 /* a row of the menu: the sign, then the word over its line */
@@ -98,7 +102,7 @@
 .rowText { display: grid; min-width: 0; }
 .row .txt { display: inline; font: 400 var(--step-1) / 1.2 var(--face-garamond); }
 .row small { font: italic 400 var(--step--1) / 1.3 var(--face-garamond); color: var(--ink-3); }
-.row:hover, .row:hover svg { color: var(--rubric); }
+@media (hover: hover) { .row:hover, .row:hover svg { color: var(--rubric); } }
 @keyframes ink { from { opacity: 0; } }
 
 /* ------------------------------------------------------------ connection light */

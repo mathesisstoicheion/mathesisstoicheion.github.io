@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { fold } from "@/lib/catalog";
 import { useMarks, type Colour, type Mark } from "@/lib/annotations";
+import Icon from "@/components/Icon";
 import { rangeText } from "@/lib/treasury-io";
 import NoteEditor from "@/components/reader/NoteEditor";
 import RichText from "@/components/notes/RichText";
@@ -36,8 +37,8 @@ function RemoveButton({ m, what, also }: { m: Mark; what: string; also?: Mark })
   const [sure, setSure] = useState(false);
   const remove = () => { useMarks.getState().remove(m.id); if (also) useMarks.getState().remove(also.id); };
   return sure
-    ? <span className={styles.confirm}><button type="button" className="chip" onClick={remove}>Remove {what}</button><button type="button" className="chip" onClick={() => setSure(false)}>Keep</button></span>
-    : <button type="button" className={styles.x} onClick={() => setSure(true)} aria-label={`Remove this ${what}`} title={`Remove this ${what}`}>×</button>;
+    ? <span className={styles.confirm}><button type="button" className="chip" onClick={remove}><Icon name="delete" />Remove {what}</button><button type="button" className="chip" onClick={() => setSure(false)}><Icon name="check" />Keep</button></span>
+    : <button type="button" className={styles.x} onClick={() => setSure(true)} aria-label={`Remove this ${what}`} title={`Remove this ${what}`}><Icon name="delete" /></button>;
 }
 
 function Empty({ children }: { children: React.ReactNode }) {

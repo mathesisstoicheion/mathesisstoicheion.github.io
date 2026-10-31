@@ -9,7 +9,7 @@
 }
 .list > .item:first-child { border-top-color: var(--ink); }
 button.item b { transition: color var(--dur-quick) var(--ease); }
-button.item:hover:not(:disabled) b { color: var(--rubric); }
+@media (hover: hover) { button.item:hover:not(:disabled) b { color: var(--rubric); } }
 button.item:disabled { opacity: 0.6; cursor: default; }
 .item svg { width: 24px; height: 24px; color: var(--accent); margin-top: 2px; }
 .item b { display: block; font-size: var(--step-0); font-weight: 500; }

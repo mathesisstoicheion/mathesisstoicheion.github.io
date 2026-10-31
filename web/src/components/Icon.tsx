@@ -145,6 +145,10 @@ const ICONS = {
   "bookmark": [["path", {d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v16z"}]],
   // your place is kept (Lucide "bookmark-check")
   "bookmarked": [["path", {d: "m19 21-7-4-7 4V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2Z"}], ["path", {d: "m9 10 2 2 4-4"}]],
+  // a favourite passage, kept in your anthology (Lucide "star")
+  "favourite": [["path", {d: "M11.525 2.295a.53.53 0 0 1 .95 0l2.31 4.679a2.123 2.123 0 0 0 1.595 1.16l5.166.756a.53.53 0 0 1 .294.904l-3.736 3.638a2.123 2.123 0 0 0-.611 1.878l.882 5.14a.53.53 0 0 1-.771.56l-4.618-2.428a2.122 2.122 0 0 0-1.973 0L6.396 21.01a.53.53 0 0 1-.77-.56l.881-5.139a2.122 2.122 0 0 0-.611-1.879L2.16 9.795a.53.53 0 0 1 .294-.906l5.165-.755a2.122 2.122 0 0 0 1.597-1.16z"}]],
+  // put it in a collection of your own, such as the anthology's (Lucide "tag")
+  "collection": [["path", {d: "M12.586 2.586A2 2 0 0 0 11.172 2H4a2 2 0 0 0-2 2v7.172a2 2 0 0 0 .586 1.414l8.704 8.704a2.426 2.426 0 0 0 3.42 0l6.58-6.58a2.426 2.426 0 0 0 0-3.42z"}], ["circle", {cx: "7.5", cy: "7.5", r: ".5", fill: "currentColor"}]],
   // a note of your own (Lucide "notebook-pen")
   "note": [["path", {d: "M13.4 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-7.4"}], ["path", {d: "M2 6h4"}], ["path", {d: "M2 10h4"}], ["path", {d: "M2 14h4"}], ["path", {d: "M2 18h4"}], ["path", {d: "M21.378 5.626a1 1 0 1 0-3.004-3.004l-5.01 5.012a2 2 0 0 0-.506.854l-.837 2.87a.5.5 0 0 0 .62.62l2.87-.837a2 2 0 0 0 .854-.506z"}]],
   // change it (Lucide "pencil")
@@ -249,6 +253,14 @@ const ICONS = {
   "a-z": [["path", {d: "m3 16 4 4 4-4"}], ["path", {d: "M7 20V4"}], ["path", {d: "M20 8h-5"}], ["path", {d: "M15 10V6.5a2.5 2.5 0 0 1 5 0V10"}], ["path", {d: "M15 14h5l-5 6h5"}]],
   // narrow the list (Lucide "list-filter")
   "filter": [["path", {d: "M3 6h18"}], ["path", {d: "M7 12h10"}], ["path", {d: "M10 18h4"}]],
+  // move it up the list (Lucide "arrow-up")
+  "move-up": [["path", {d: "m5 12 7-7 7 7"}], ["path", {d: "M12 19V5"}]],
+  // move it down the list (Lucide "arrow-down")
+  "move-down": [["path", {d: "M12 5v14"}], ["path", {d: "m19 12-7 7-7-7"}]],
+  // print it, or save it as a PDF (Lucide "printer")
+  "print": [["path", {d: "M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"}], ["path", {d: "M6 9V3a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v6"}], ["rect", {x: "6", y: "14", width: "12", height: "8", rx: "1"}]],
+  // keep it in step between your devices (Lucide "refresh-cw")
+  "sync": [["path", {d: "M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"}], ["path", {d: "M21 3v5h-5"}], ["path", {d: "M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"}], ["path", {d: "M8 16H3v5"}]],
   // add (Lucide "plus")
   "plus": [["path", {d: "M5 12h14"}], ["path", {d: "M12 5v14"}]],
   // less (Lucide "minus")

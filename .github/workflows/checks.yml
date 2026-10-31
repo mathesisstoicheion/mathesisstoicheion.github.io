@@ -178,6 +178,14 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-clickable.mjs http://localhost:3100
+      - name: Red under the hand only where there is a mouse, so a tap on a phone leaves no button red after it
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-hover.mjs
+      - name: The shared buttons, after a tap on a phone and when they cannot be pressed
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-controls.mjs http://localhost:3100
       - name: Grey words read clearly in Paper and Night
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

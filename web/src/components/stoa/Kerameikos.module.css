@@ -24,7 +24,8 @@
 .drawing figcaption b { color: var(--ink); font-weight: 600; }
 .legend { grid-column: 2; grid-row: 1 / span 2; list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .legend a { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 8px 0; text-decoration: none; color: var(--ink); }
-.legend a:hover b, .legend a:focus-visible b { color: var(--rubric); }
+.legend a:focus-visible b { color: var(--rubric); }
+@media (hover: hover) { .legend a:hover b { color: var(--rubric); } }
 .legend b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .legend small { grid-column: 2; color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; font-size: var(--step--2); }
 .legend li[aria-hidden] { display: grid; grid-template-columns: 34px 1fr; column-gap: 12px; align-items: center; padding: 4px 0; }
@@ -69,8 +70,10 @@
 .ctx .ctxHit { fill: transparent; stroke: none; }
 .ctx circle:not(.ctxHit) { fill: var(--bg); stroke: var(--ink); stroke-width: 1.4; transition: fill var(--dur-quick) var(--ease), stroke var(--dur-quick) var(--ease); }
 .ctx text { font-family: var(--f-title); font-size: var(--step-0); fill: var(--ink); pointer-events: none; }
-.ctx:hover circle:not(.ctxHit), .ctx:focus-visible circle:not(.ctxHit) { fill: var(--rubric); stroke: var(--rubric); }
-.ctx:hover text, .ctx:focus-visible text { fill: var(--bg); }
+.ctx:focus-visible circle:not(.ctxHit) { fill: var(--rubric); stroke: var(--rubric); }
+@media (hover: hover) { .ctx:hover circle:not(.ctxHit) { fill: var(--rubric); stroke: var(--rubric); } }
+.ctx:focus-visible text { fill: var(--bg); }
+@media (hover: hover) { .ctx:hover text { fill: var(--bg); } }
 .ctx { cursor: pointer; outline: none; }
 
 /* ------------------------------------------------ the trench: one section per layer, from the topsoil down */
@@ -95,7 +98,8 @@
   display: grid; grid-template-columns: 104px 1fr; gap: 16px; align-items: center; height: 100%;
   padding: 14px 0; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
 }
-.card:hover b, .card:focus-visible b { color: var(--rubric); }
+.card:focus-visible b { color: var(--rubric); }
+@media (hover: hover) { .card:hover b { color: var(--rubric); } }
 .thumb { width: 104px; height: 104px; overflow: hidden; background: var(--bg-2); border: 1px solid var(--rule); display: grid; place-items: center; }
 .thumb img { width: 100%; height: 100%; object-fit: cover; }
 .thumb img.tallImg { object-fit: contain; padding: 4px; }
@@ -116,7 +120,8 @@
   box-shadow: var(--cut-over);
 }
 .sites a::before { content: ""; position: absolute; left: 4px; top: 50%; width: 9px; height: 9px; margin-top: -5px; border-radius: var(--radius-round); border: 1px solid var(--rubric); }
-.sites a:hover b, .sites a:focus-visible b { color: var(--rubric); }
+.sites a:focus-visible b { color: var(--rubric); }
+@media (hover: hover) { .sites a:hover b { color: var(--rubric); } }
 .sites b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 .sites span { font-size: var(--step--1); }
 .sites small { font-family: var(--f-label); letter-spacing: 0.04em; font-size: var(--step--2); color: var(--ink-2); }
