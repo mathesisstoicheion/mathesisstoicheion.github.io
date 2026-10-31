@@ -15,11 +15,14 @@ Use these names in code, docs and messages to the owner. One word for one thing.
 
 ## Reading
 
-- **Reader**: the page that shows a text, Greek with its translation beside it.
+- **Reader**: the page that shows a text. It opens on the Greek alone; "Show the English" opens a passage's translation under it, and Text (Aa) can set the two side by side.
+- **Foot bar**: the reader's one bar, along the foot of the page: Library, where you are (it opens Go to), Text (Aa: the columns, Paper or Night, the size of the Greek, the line spacing) and Study.
+- **Study**: the reader's menu of every reading tool, in groups: Reading help, Go deeper, Edition and translation, More.
+- **Passage strip**: the strip that opens on a passage's number or selected words: Bookmark, Favourite, Note, the four highlight colours, Notebook, Share, Echoes.
 - **Look-up**: what opens when a word is clicked: meaning, form and LSJ entry, in place. The site's core.
 - **Passage**: a citable piece of a text (a line, a section, a Stephanus page).
 - **Floating reader**: the reader in a small window that stays open while moving around the site.
-- **Reading aids**: the switchable helps in the reader (translation, word shading, metre).
+- **Reading aids**: the helps under Reading help in Study (Transliteration, Colour by case, Metre, Try it first, the page's vocabulary, Find in this text).
 
 ## Finding and counting
 

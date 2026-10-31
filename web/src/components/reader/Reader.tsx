@@ -898,7 +898,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
         e.preventDefault(); openFindRef.current(); return;
       }
       if (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable || e.ctrlKey || e.metaKey || e.altKey) return;
-      if (e.key === "/") { e.preventDefault(); openFindRef.current(); return; }
+      // "/" is the site's own search on every page (QuickSearch.tsx), the reader's too; Find in this text is Ctrl+F (the reader's tools, the owner,
+      // 2026-10-31: one key, one meaning: here both opened at once)
       if (e.key === "ArrowRight") { e.preventDefault(); goChunkRef.current(chunk + 1); }
       else if (e.key === "ArrowLeft") { e.preventDefault(); goChunkRef.current(chunk - 1); }
       else if (e.key === "g") { e.preventDefault(); if (!contained) setDrop("goto"); setGotoWant((n) => n + 1); }
@@ -1639,7 +1640,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const barRow = load.state === "ready" && doc && chunkInfo && !single ? (
     <>
       <Where doc={doc} chunk={chunk} layout="row" onPage={goChunk} onGoto={goTo} inputRef={gotoRef} focusSignal={gotoWant} />
-      <button type="button" className={`chip ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (/ or Ctrl+F)">
+      <button type="button" className={`chip ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (Ctrl+F)">
         <Icon name="search" /> Find
       </button>
       {canDiff && (
@@ -1757,7 +1758,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
           {translit && <p className={`wrap ${styles.legend}`}><span className="muted">Transliteration uses a simple scheme: η ē, ω ō, rough breathing h, υ y (u in diphthongs), χ ch, φ ph, θ th, iota subscript i; accents are left out.</span></p>}
           {help && (
             <div className={`wrap ${styles.help}`} role="note">
-              <p><kbd>←</kbd> <kbd>→</kbd> previous / next page · <kbd>g</kbd> go to a reference · <kbd>/</kbd> or <kbd>Ctrl</kbd>+<kbd>F</kbd> find in this text · click a word to look it up (or <kbd>Tab</kbd> into the text, move with the arrow keys, <kbd>Enter</kbd> to look up) · select words or click a passage number for bookmarks, notes, highlights, sharing and Echoes · <kbd>Esc</kbd> close</p>
+              <p><kbd>←</kbd> <kbd>→</kbd> previous / next page · <kbd>g</kbd> go to a reference · <kbd>Ctrl</kbd>+<kbd>F</kbd> find in this text · <kbd>/</kbd> search the whole site · click a word to look it up (or <kbd>Tab</kbd> into the text, move with the arrow keys, <kbd>Enter</kbd> to look up) · select words or click a passage number for bookmarks, notes, highlights, sharing and Echoes · <kbd>Esc</kbd> close</p>
             </div>
           )}
 

@@ -150,7 +150,7 @@ export default function StudyMenu(p: StudyProps) {
       <MenuHead title="Study" />
       <div className={`${styles.body} ${styles.study}`}>
         <Group name="Reading help">
-          <Row icon="search" name="Find in this text" note="A word or phrase, anywhere in the book" tool="find" title="Find a word or phrase anywhere in this text (/ or Ctrl+F)"
+          <Row icon="search" name="Find in this text" note="A word or phrase, anywhere in the book" tool="find" title="Find a word or phrase anywhere in this text (Ctrl+F)"
             panel={p.open.find} closes className={pane ? styles.inBar : undefined} onClick={() => p.onPanel("find")} />
           <Row icon="palette" name="Colour by case" note="Underline each word in the colour of its case" tool="cases" title="Underline nouns, adjectives and participles in the colour of their case"
             mode={s.cases} onClick={() => flip("cases")} />

@@ -33,30 +33,34 @@ const ALL_CHAPTERS: Chapter[] = [
   },
   {
     id: "read", title: "Read a text", place: place("reader"),
+    // the quiet desk, the guide (the owner, 2026-10-31): a book opens on the Greek alone; one bar along the foot of the page; the phone's Back button closes what is open first
     text: [
-      "A work opens in the reader with the Greek on one side and the English on the other, passage by passage. You can read one column alone, choose another edition or translation, and go straight to any passage by its reference.",
-      "If a translation leaves a passage out, the reader says so: it is not a fault in the site.",
+      "A book opens on the Greek alone. Under each passage, Show the English opens its translation, or says that the translation leaves that passage out.",
+      "One bar runs along the foot of the page. Library goes back to the library, the middle (it says where you are) goes to any line, Text sets the columns and the look of the page, and Study holds every other tool. On a phone, the Back button first closes whatever is open over the text, newest first, and then leaves the book.",
     ],
   },
   {
     id: "word", title: "Look up a word",
+    // the quiet desk, the guide (the owner, 2026-10-31): the look-up's first view, then "More about it" (the whole LSJ entry and Go further)
     text: [
-      "Click or tap any Greek word to see what it is: its dictionary form, its grammar here, and its meaning from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary.",
-      "From there you can see how the sentence is built, or find the word everywhere else it appears.",
+      "Click or tap any Greek word and the look-up opens: beside the text on a computer, as a sheet at the foot of the screen on a phone. It shows the word's dictionary form, what kind of word it is, its meaning, its job in this sentence and its form.",
+      "More about it opens the whole entry from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary. Go further, below it, leads on: where else the word comes in the book, how the sentence is built, a lesson on its form, and Word Study.",
     ],
   },
   {
     id: "aids", title: "Reading aids",
+    // the quiet desk, the guide (the owner, 2026-10-31): every tool is a row of Study, in groups (Reading help, Go deeper, Edition and translation, More)
     text: [
-      "When the Greek is hard, switch on some help: Latin letters under the Greek, words coloured by their case (the ending that shows a word's job in the sentence), the page's vocabulary, or the English read aloud.",
-      "Try it first hides the English until you ask for it, so you read the Greek yourself. The Find button searches the whole book; Places and Manuscript show the page on a map and as it was once written by hand.",
+      "When the Greek is hard, open Study, at the foot of the page, and look under Reading help. Transliteration puts Latin letters under the Greek, Colour by case underlines each word in the colour of its case (the ending that shows its job in the sentence), and Metre marks the long and short syllables of verse.",
+      "Vocabulary for this page lists its words, and Find in this text searches the whole book. With the English beside the Greek, Try it first hides each translation until you tap it. Under Go deeper, Listen reads the English aloud, and Places on this page and How it was written show a map and a scribe's page.",
     ],
   },
   {
     id: "keep", title: "Keep what you find", place: place("treasury"),
+    // the quiet desk, the guide (the owner, 2026-10-31): the passage strip, and Study's row for your notes and marks
     text: [
-      "Bookmark a passage, highlight it, write a note on it, or gather passages into a research notebook with their citations.",
-      "All of it waits for you in the Treasury, where it can be downloaded, printed or kept safe.",
+      "Click or tap a passage's number, or select some words (on a phone, press and hold one), and a strip of buttons opens: Bookmark, Favourite, Note, four highlight colours, and Notebook, which gathers passages, with their citations, into a research notebook.",
+      "Your notes and marks, under Study, lists what you have kept in this book. All of it waits for you in the Treasury, where it can be downloaded, printed or kept safe.",
     ],
     also: { label: "Open the Treasury", href: AREAS.treasury.href, icon: "mine" },
   },

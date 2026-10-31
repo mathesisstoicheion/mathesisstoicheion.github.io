@@ -145,17 +145,27 @@ export const GUIDES: Guide[] = [
     id: "looking-up", title: "Looking a word up here", greek: "ζήτησις", minutes: 6,
     summary: "The reader's look-up and the Word Study page, step by step, and how to keep the words you meet.",
     sections: [
-      { kind: "p", text: "Every Greek word in the reader is a button. Click it (or press **Tab** to reach the text, move with the arrow keys and press **Enter**; on a phone, tap it) and the look-up opens beside the text." },
-      { kind: "grid", title: "What the look-up shows", head: ["Part", "What it tells you"], rows: [
-        ["**In this passage**", "The dictionary form and the grammar of the word in this very place, from GLAUx. “Checked by hand” means the analysis comes from a treebank checked by scholars; “Automatic analysis” means GLAUx's program made it (about 97% accurate)"],
-        ["**Core vocabulary**", "For the 500 or so commonest words, a short definition and how common the word is"],
-        ["**Dictionary · LSJ**", "The first meanings, and “Full entry” for all of LSJ's article"],
+      // the quiet desk, the guide (the owner, 2026-10-31): written from the look-up as it is now: a first view (the dictionary form, the kind of word, one meaning, the word's
+      // job in this sentence, its form, Previous and Next), and "More about it" behind it (the LSJ entry, Go further, Wiktionary, more dictionaries, how sure the grammar is)
+      { kind: "p", text: "Every Greek word in the reader is a button. Click it and the look-up opens beside the text; on a phone, tap it and the look-up opens as a sheet at the foot of the screen. With a keyboard, press **Tab** until you reach the Greek, move from word to word with the arrow keys, press **Enter** to open the look-up and **Escape** to close it." },
+      { kind: "grid", title: "The first view", head: ["Part", "What it tells you"], rows: [
+        ["**The word at the top**", "The dictionary form: the word as a dictionary lists it («μῆνις» for «μῆνιν»)"],
+        ["**The kind of word**", "Noun, verb, adjective and so on, with the word you tapped: “noun, feminine · you tapped «μῆνιν»”"],
+        ["**The meaning**", "One short meaning: the definition from the core vocabulary for the 500 or so commonest words, otherwise LSJ's short definition"],
+        ["**Its job here**", "What the word does in this very sentence, such as “Here it is the object of «ἄειδε».” It shows only for texts whose sentences have been analysed"],
+        ["**Its form**", "Its case, number, tense and so on, in plain words: “Accusative singular”"],
+        ["**Previous and Next**", "Step to the word before or the word after, without closing the look-up"],
+        ["**More about it**", "Opens the second view"],
+      ], note: "The × at the top right closes the look-up." },
+      { kind: "grid", title: "More about it", head: ["Part", "What it tells you"], rows: [
+        ["**Dictionary · LSJ**", "The first meanings, and “The whole entry” for all of LSJ's article"],
+        ["**Go further**", "Rows that lead on from the word: where else it comes in this book (Echoes), how the sentence is built, a lesson on this form when there is one, Word Study, and, for a place, its map"],
         ["**Wiktionary · live**", "Wiktionary's entry, when you are online"],
         ["**More dictionaries**", "Links to Logeion and Perseus"],
-        ["**Word Study**", "A page for the word: every form, where it is used, examples from every period, its family"],
-      ] },
-      { kind: "p", text: "**Word Study** gathers everything about one word: its meaning (the core definition and LSJ), every form laid out as a grammar prints it, how often it is used in each period and by which authors, one passage from each period with the word marked, its family (the words built on it and the English words that come from it, from Wiktionary), and your own note on it." },
-      { kind: "tip", text: "Select several words, or click a passage number, for more: bookmarks, notes, highlights, sharing and Echoes, which finds where else the words occur." },
+        ["**At the foot**", "How sure the grammar is. “Checked by hand” means the analysis comes from a treebank checked by scholars; “Automatic analysis” means GLAUx's program made it (about 97% accurate). Then the credits"],
+      ], note: "Back, at the top left, returns to the first view; Escape does the same." },
+      { kind: "p", text: "**Word Study**, one of the rows under Go further, gathers everything about one word: its meaning (the core definition and LSJ), every form laid out as a grammar prints it, how often it is used in each period and by which authors, one passage from each period with the word marked, its family (the words built on it and the English words that come from it, from Wiktionary), and your own note on it." },
+      { kind: "tip", text: "Click a passage's number, or select several words (on a phone, press and hold a word), for more: the passage strip offers Bookmark, Favourite, Note, four highlight colours, Notebook, Share and Echoes, which finds where else the words occur." },
       { kind: "links", items: [
         { href: "/read?w=tlg0012.tlg001&at=1.1", label: "Try it: Iliad 1.1 in the reader", note: "click «μῆνιν»" },
         { href: "/treasury/word?l=%CE%BB%CF%8C%CE%B3%CE%BF%CF%82", label: "Word Study: «λόγος»", note: "an example page" },

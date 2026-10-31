@@ -38,13 +38,15 @@ function Drawing({ id }: { id: string }) {
       );
     case "read":
       return (
-        <Frame label="The reader: the first line of the Iliad in Greek, with Murray's English beside it.">
+        <Frame label="The reader: the first line of the Iliad in Greek alone, with Show the English under it, and the columns Text offers: Greek, Both or English.">
           <div className={styles.rRow}>
             <span className={styles.rNo}>1.1</span>
-            <span className={styles.rGr} lang="grc">μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος</span>
-            <span className={styles.rEn}>The wrath sing, goddess, of Peleus&apos; son, Achilles…</span>
+            <span>
+              <span className={styles.rGr} lang="grc">μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος</span>
+              <span className={styles.rShow}>▸ Show the English</span>
+            </span>
           </div>
-          <div className={styles.rCols}><i>Both</i><i>Greek</i><i>English</i></div>
+          <div className={styles.rCols}><i>Greek</i><i>Both</i><i>English</i></div>
         </Frame>
       );
     case "word":
@@ -54,7 +56,7 @@ function Drawing({ id }: { id: string }) {
           <div className={styles.wCard}>
             <b lang="grc">μῆνις</b>
             <span>noun · accusative singular</span>
-            <span className={styles.wMean}>wrath <small>(LSJ)</small></span>
+            <span className={styles.wMean}>wrath</span>
           </div>
           <span className={styles.wPointer} />
         </Frame>

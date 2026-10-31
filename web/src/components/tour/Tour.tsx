@@ -119,13 +119,17 @@ export default function Tour() {
       // a short way glides; a long way (far down a long list) jumps, rather than scrolling for seconds
       const far = Math.abs(target.getBoundingClientRect().top - innerHeight / 2) > innerHeight * 2;
       target.scrollIntoView({ block: "center", inline: "nearest", behavior: reduced() || far ? "auto" : "smooth" });
-      // the page may still be settling as the step begins (the reader opening at its cover scrolls to the top): if that
-      // undid the glide, go to the control again
-      setTimeout(() => {
-        if (!live || !target.isConnected) return;
-        const r = target.getBoundingClientRect();
-        if (r.top < 0 || r.bottom > innerHeight) target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
-      }, 900);
+      // the page may still be settling as the step begins (the reader opening at its cover scrolls to the top; a long book lays out the
+      // passages it has just jumped to, and the control moves a few hundred pixels): if that undid the glide, go to the control again,
+      // soon and then twice more. On the Iliad the "Turn the page" step stood off the screen for most of a second with one look at 900 ms,
+      // because the page grew 280 px 40 ms after the jump (the quiet desk, the guide, the owner, 2026-10-31)
+      for (const ms of [200, 450, 900]) {
+        setTimeout(() => {
+          if (!live || !target.isConnected) return;
+          const r = target.getBoundingClientRect();
+          if (r.top < 0 || r.bottom > innerHeight) target.scrollIntoView({ block: "center", inline: "nearest", behavior: "auto" });
+        }, ms);
+      }
     })();
     return () => { live = false; };
   }, [tour, step, done]);
