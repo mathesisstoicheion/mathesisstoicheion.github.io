@@ -15,7 +15,7 @@ import { recentPositions, shownAt } from "@/lib/position";
 import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import { AZRail } from "./AZList";
-import { bestMatch, nameMatch } from "./az";
+import { bestMatch, groupAZ, nameMatch } from "./az";
 import { authorKind, kindKey, KIND_ORDER, OTHER_KIND, workKinds } from "./kinds";
 import { useLibQuery } from "./libQuery";
 import Icon from "@/components/Icon";
@@ -235,10 +235,11 @@ export default function Library() {
     const rest = best ? rows.filter((r) => r !== best) : rows;
     const lead: Group[] = best ? [{ key: BEST, label: "Best match", short: "Best match", rows: [{ ...best, key: `${BEST}:${best.a.id}` }] }] : [];
     if (sort === "title") {
-      const all = rows.flatMap(({ a, works }) => works.map((w) => ({ w, a }))).sort((x, y) => byName(x.w.title, y.w.title));
-      const by = new Map<string, Group>();
-      for (const t of all) { const k = initial(t.w.title); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, titles: [] }); by.get(k)!.titles!.push(t); }
-      return [...by.values()];
+      // az.ts files each title (passing over "The", "A", numbers and brackets) and puts the letters in order, "#" last;
+      // works with the same title stand in the order of their authors
+      const all = rows.flatMap(({ a, works }) => works.map((w) => ({ w, a, title: w.title })));
+      return groupAZ(all, (x, y) => byName(x.a.name, y.a.name) || (x.w.id < y.w.id ? -1 : x.w.id > y.w.id ? 1 : 0))
+        .map((g) => ({ key: g.key, label: g.key, short: g.key, titles: g.items }));
     }
     if (sort === "period") {
       const by = new Map<string, Group>();
