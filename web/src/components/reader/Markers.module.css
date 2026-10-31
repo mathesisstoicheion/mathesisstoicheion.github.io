@@ -44,7 +44,7 @@
   display: inline-flex; align-items: center; gap: var(--space-2); height: 36px; padding: 0 var(--space-3); background: transparent; color: var(--ink);
   border: 1px solid var(--rule); border-radius: var(--radius); font-size: var(--step--1); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.legendBtn:hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .legendBtn:hover { color: var(--rubric); border-color: var(--rubric); } }
 .legendBtn[aria-expanded="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 .legendIcon { width: 6px; height: 16px; background: linear-gradient(var(--accent) 0 3px, transparent 3px 6px, var(--ink) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); border-radius: var(--radius); }
 .legendBtn[aria-expanded="true"] .legendIcon { background: linear-gradient(var(--accent-on-ink) 0 3px, transparent 3px 6px, var(--sel-fg) 6px 9px, transparent 9px 12px, var(--ochre) 12px 16px); }

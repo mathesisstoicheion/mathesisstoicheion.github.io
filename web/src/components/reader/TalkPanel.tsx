@@ -7,6 +7,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { threadsAbout, quoteStart, type PassageThread } from "@/lib/community/data";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import { SidePanel, type Back } from "./Panel";
 
@@ -38,7 +39,7 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose, back }: {
               <Link href={`/town-hall/thread?id=${t.id}`} transitionTypes={["page-turn"]}><b>{t.title}</b></Link>
               <span className="muted">
                 {t.reply_count} {t.reply_count === 1 ? "reply" : "replies"}{t.answered_post_id ? " · answered" : ""} ·{" "}
-                <button type="button" className="text-btn" onClick={() => onJump(quoteStart(t.quote!))}>{t.quote!.ref}</button>
+                <button type="button" className="text-btn" onClick={() => onJump(quoteStart(t.quote!))}><Icon name="goto" />{t.quote!.ref}</button>
               </span>
             </li>
           ))}
@@ -49,7 +50,7 @@ export default function TalkPanel({ work, pageKeys, onJump, onClose, back }: {
       <div className={styles.talkAsk}>
         <b>Ask about a passage</b>
         <p>Tap or click a passage number in the margin, or select some Greek words, then choose <i>Ask in the Agora</i>. The passage goes with your question, and the question shows up here.</p>
-        <Link className="chip" href="/town-hall" transitionTypes={["page-turn"]}>The Agora →</Link>
+        <Link className="chip" href="/town-hall" transitionTypes={["page-turn"]}><Icon name="talk" />The Agora</Link>
       </div>
     </SidePanel>
   );

@@ -15,6 +15,7 @@ import { fileTooBig, plainText, readTranslationFile, sizeOf, type Checked } from
 import { listTranslations, saveTranslation, trouble, type StoredSummary } from "@/lib/private-translations-db";
 import { scrollBehavior } from "@/lib/settings";
 import { StatusTag } from "@/components/admin/parts";
+import Icon from "@/components/Icon";
 import styles from "./Mine.module.css";
 import { ModalDialog, type Back } from "./Panel";
 
@@ -65,16 +66,16 @@ export function Collection({ current, onOpen, tab, onTab }: {
     <>
       <div className={styles.tabs} role="tablist" aria-label="Private collection">
         <button type="button" role="tab" id="mine-tab-shelf" aria-controls="mine-shelf" aria-selected={tab === "shelf"} onClick={() => onTab("shelf")}>
-          On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
+          <Icon name="library" />On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
         </button>
-        <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => onTab("import")}>Import a text</button>
+        <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => onTab("import")}><Icon name="upload" />Import a text</button>
       </div>
 
       {tab === "shelf" ? (
         <section id="mine-shelf" role="tabpanel" aria-labelledby="mine-tab-shelf" className={styles.panel}>
-          {error && <p className={styles.error} role="alert">{error} <button type="button" className={`text-btn ${styles.link}`} onClick={() => setRound(round + 1)}>Try again</button></p>}
+          {error && <p className={styles.error} role="alert">{error} <button type="button" className={`text-btn ${styles.link}`} onClick={() => setRound(round + 1)}><Icon name="again" />Try again</button></p>}
           {!rows && !error && <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
-          {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={`text-btn ${styles.link}`} onClick={() => onTab("import")}>Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
+          {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={`text-btn ${styles.link}`} onClick={() => onTab("import")}><Icon name="upload" />Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
           {rows && rows.length > 0 && (
             <ul className={styles.books}>
               {rows.map((r, i) => (
@@ -85,7 +86,7 @@ export function Collection({ current, onOpen, tab, onTab }: {
                     <span className={styles.bookBy}>{r.author ? plainText(r.author) : "No author given"}</span>
                     <span className={styles.bookFoot}>
                       <StatusTag status={r.status} />
-                      {r.id === here ? <span className={styles.now}>Reading now</span> : <span className={styles.go} aria-hidden="true">Read →</span>}
+                      {r.id === here ? <span className={styles.now}>Reading now</span> : <span className={styles.go} aria-hidden="true"><Icon name="read" />Read</span>}
                     </span>
                   </button>
                 </li>
@@ -197,7 +198,7 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
       </p>
 
       <div className={styles.drop}>
-        <button type="button" className="btn small" onClick={() => grcInput.current?.click()}>Choose a file</button>
+        <button type="button" className="btn small" onClick={() => grcInput.current?.click()}><Icon name="upload" />Choose a file</button>
         <span className={styles.quiet}>or drop it here: a TEI file (.xml) like those of Perseus and First1K, a plain text (.txt), or a translation file (.json)</span>
         <input ref={grcInput} type="file" accept=".xml,.txt,.json,text/xml,application/xml,text/plain,application/json" hidden aria-label="Choose a text file"
           onChange={(e) => { const f = e.target.files?.[0]; e.target.value = ""; if (f) void takeGreek(f); }} />
@@ -215,7 +216,7 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
           <span className="label">The Greek</span>
           {teiGrc ? (
             <p className={styles.file}><b>{teiGrc.name}</b> <span className={styles.quiet}>(TEI)</span>
-              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiGrc(null); setTeiEng(null); setUrn(undefined); setResult(null); }}>Take it away</button></p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiGrc(null); setTeiEng(null); setUrn(undefined); setResult(null); }}><Icon name="close" />Take it away</button></p>
           ) : (
             <textarea lang="grc" value={greek} onChange={(e) => { setGreek(e.target.value); setResult(null); }} rows={8} aria-label="The Greek text"
               placeholder="Paste or type the Greek. Leave a blank line between passages." spellCheck={false} />
@@ -225,15 +226,15 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
           <span className="label">The English <span className={styles.opt}>(if you have one)</span></span>
           {teiEng ? (
             <p className={styles.file}><b>{teiEng.name}</b> <span className={styles.quiet}>(TEI)</span>
-              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiEng(null); setResult(null); }}>Take it away</button></p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => { setTeiEng(null); setResult(null); }}><Icon name="close" />Take it away</button></p>
           ) : teiGrc ? (
             <p className={styles.quiet}>With a TEI Greek text, the English comes from its own TEI file:{" "}
-              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}>choose the English file</button>.</p>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}><Icon name="upload" />choose the English file</button>.</p>
           ) : (
             <>
               <textarea value={english} onChange={(e) => { setEnglish(e.target.value); setResult(null); }} rows={8} aria-label="The English translation"
                 placeholder="Paste the English, a blank line between passages, in the same order as the Greek." />
-              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}>or choose a file</button>
+              <button type="button" className={`text-btn ${styles.link}`} onClick={() => engInput.current?.click()}><Icon name="upload" />or choose a file</button>
             </>
           )}
           <input ref={engInput} type="file" accept=".xml,.txt,text/xml,application/xml,text/plain" hidden aria-label="Choose the English file"
@@ -244,7 +245,7 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
       {error && <p className={styles.error} role="alert">{error}</p>}
       {!result && (
         <div className={styles.row}>
-          <button type="button" className="btn" onClick={check} disabled={busy || (!teiGrc && !greek.trim())}>{busy ? "Reading…" : "Check it"}</button>
+          <button type="button" className="btn" onClick={check} disabled={busy || (!teiGrc && !greek.trim())}><Icon name="check" />{busy ? "Reading…" : "Check it"}</button>
         </div>
       )}
 
@@ -265,8 +266,8 @@ function Importer({ taken, stored, onSaved }: { taken: string[]; stored: StoredS
           {existing && <p className={styles.warn}>This <b>replaces</b> “{existing.title ? plainText(existing.title) : existing.id}”, already on the shelf with the same id.</p>}
           {ok.warnings.map((w, i) => <p key={i} className={styles.warn}>{w}</p>)}
           <div className={styles.row}>
-            <button type="button" className="btn" onClick={save} disabled={busy}>{busy ? "Saving…" : existing ? "Replace it and read" : "Save and read"}</button>
-            <button type="button" className="btn ghost" onClick={() => setResult(null)} disabled={busy}>Change something</button>
+            <button type="button" className="btn" onClick={save} disabled={busy}><Icon name="read" />{busy ? "Saving…" : existing ? "Replace it and read" : "Save and read"}</button>
+            <button type="button" className="btn ghost" onClick={() => setResult(null)} disabled={busy}><Icon name="edit" />Change something</button>
           </div>
         </div>
       )}

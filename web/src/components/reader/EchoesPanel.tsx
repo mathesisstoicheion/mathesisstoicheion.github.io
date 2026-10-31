@@ -10,6 +10,7 @@ import { echoContext } from "@/lib/echoes/context";
 import { canonLemma, runSearch, type Outcome } from "@/lib/search/run";
 import type { Point } from "@/lib/annotations";
 import type { TeiDoc } from "@/lib/tei/types";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import es from "./Echoes.module.css";
 import { SidePanel } from "./Panel";
@@ -23,8 +24,9 @@ export type EchoMarks = Map<string, Map<string, { i: number; self: boolean }[]>>
 type Scope = "book" | "author" | "corpus";
 const LIKENESS: { v: number; label: string; hint: string }[] = [
   { v: 1, label: "Exact wording", hint: "The same forms in the same order" },
-  { v: 0.75, label: "Close", hint: "Likeness 75% or more" },
-  { v: 0.5, label: "Loose", hint: "Likeness 50% or more" },
+  // "Close match", not "Close", which beside the panel's × read as a way to shut it (the reader's tools, the owner, 2026-10-30: "what does each button do")
+  { v: 0.75, label: "Close match", hint: "Likeness 75% or more" },
+  { v: 0.5, label: "Loose match", hint: "Likeness 50% or more" },
 ];
 const KIND_LABEL: Record<Kind, string> = { exact: "exact", forms: "other forms", near: "near" };
 const PAGE = 60;
@@ -161,7 +163,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
 
       {away && (
         <button type="button" className={`chip ${es.back}`} onClick={() => { setAway(false); onJump(origin); }}>
-          ← Back to {q.title} {q.start.u}
+          <Icon name="back" />Back to {q.title} {q.start.u}
         </button>
       )}
 
@@ -174,7 +176,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
         <>
           <div className={es.controls}>
             {isWord ? (
-              <div className={styles.seg} role="radiogroup" aria-label="Match">
+              <div className="segmented" role="radiogroup" aria-label="Match">
                 <button type="button" role="radio" aria-checked={wordBy === "form"} onClick={() => setBy("form")}>This form</button>
                 <button type="button" role="radio" aria-checked={wordBy === "lemma"} disabled={!lemma} onClick={() => setBy("lemma")}
                   title={lemma ? `Every form of ${lemma}` : "No dictionary-word analysis for this word"}>
@@ -182,7 +184,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
                 </button>
               </div>
             ) : (
-              <div className={styles.seg} role="radiogroup" aria-label="How alike">
+              <div className="segmented" role="radiogroup" aria-label="How alike">
                 {LIKENESS.map((l) => (
                   <button key={l.v} type="button" role="radio" aria-checked={(local && n <= NEAR_MAX_WORDS ? min : 1) === l.v} title={l.hint}
                     disabled={l.v < 1 && (n > NEAR_MAX_WORDS || !local)} onClick={() => setMin(l.v)}>{l.label}</button>
@@ -190,13 +192,13 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
               </div>
             )}
             <div className={es.scopes} role="group" aria-label="Where to look">
-              <button type="button" className="chip" aria-pressed={scope === "book"} onClick={() => setScope("book")}>This book</button>
+              <button type="button" className="chip" aria-pressed={scope === "book"} onClick={() => setScope("book")}><Icon name="read" />This book</button>
               {plan && plan.works.length > 1 && (
                 <button type="button" className="chip" aria-pressed={scope === "author"} onClick={() => setScope("author")}>
-                  All {plan.author.name} <span className="muted">({plan.works.length} works)</span>
+                  <Icon name="authors" />All {plan.author.name} <span className="muted">({plan.works.length} works)</span>
                 </button>
               )}
-              <button type="button" className="chip" aria-pressed={scope === "corpus"} onClick={() => setScope("corpus")}>All Greek texts</button>
+              <button type="button" className="chip" aria-pressed={scope === "corpus"} onClick={() => setScope("corpus")}><Icon name="library" />All Greek texts</button>
             </div>
           </div>
 
@@ -242,7 +244,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
                   );
                 })}
               </ol>
-              {echoes.length > shown && <button type="button" className="chip" onClick={() => setMore({ of: echoes, n: shown + 200 })}>Show more ({echoes.length - shown} left)</button>}
+              {echoes.length > shown && <button type="button" className="chip" onClick={() => setMore({ of: echoes, n: shown + 200 })}><Icon name="chevron-down" />Show more ({echoes.length - shown} left)</button>}
             </>
           )}
 
@@ -259,7 +261,7 @@ export default function EchoesPanel({ q, onJump, onMarks, onClose, back }: {
               <ul>
                 <li><b>Exact</b>: the same forms (as for a single word) in the same order. A line or section break in between does not matter.</li>
                 <li><b>Other forms</b>: the same dictionary words in the same order, nothing added or left out, but not all in the same form (ῥοδοδάκτυλος Ἠώς, ῥοδοδάκτυλον Ἠῶ).</li>
-                <li><b>Near</b>: most of the phrase again, in the same order, within a stretch at most a quarter longer than it. Words count as the same when they are forms of the same dictionary word. Rarer words count for more, so sharing καί or δέ counts for little. The <b>likeness</b> is the share of the phrase found again, weighted this way. Close means 75% or more; Loose, 50% or more.</li>
+                <li><b>Near</b>: most of the phrase again, in the same order, within a stretch at most a quarter longer than it. Words count as the same when they are forms of the same dictionary word. Rarer words count for more, so sharing καί or δέ counts for little. The <b>likeness</b> is the share of the phrase found again, weighted this way. A close match means 75% or more; a loose match, 50% or more.</li>
                 <li>In the list, matching words are <span className={es.hit}>marked</span>; words inside the match that differ are <span className={es.odd}>pale</span>.</li>
                 {n > NEAR_MAX_WORDS && <li>Near repetitions are looked for in selections of up to {NEAR_MAX_WORDS} words; this one has {n}.</li>}
               </ul>
@@ -378,7 +380,7 @@ function IndexResults({ ix, idx, words, lemma, scope, plan, isWord }: {
         </ol>
       )}
       {o.works.length > top.length && <p className={styles.fine}>The {top.length} works where it occurs most, of {o.works.length.toLocaleString("en-GB")}.</p>}
-      <Link className="btn ghost" href={oracle()} transitionTypes={["page-turn"]}>See every place in the Oracle</Link>
+      <Link className="btn ghost" href={oracle()} transitionTypes={["page-turn"]}><Icon name="search" />See every place in the Oracle</Link>
     </>
   );
 }

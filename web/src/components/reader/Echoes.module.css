@@ -2,9 +2,10 @@
    ink in as they arrive, and nothing moves (decision 3). */
 .panel { gap: var(--space-4); }
 .quote { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.25; margin-top: var(--space-1); }
-.back { justify-self: start; color: var(--accent); }
+.back { justify-self: start; }
 
 .controls { display: grid; gap: var(--space-2); justify-items: start; }
+.controls :global(.segmented) > button:disabled { opacity: 0.4; cursor: default; }   /* (a choice that is not there for this word) */
 .scopes { display: flex; flex-wrap: wrap; gap: var(--space-1); }
 .progress { font-size: var(--step--1); }
 
@@ -45,7 +46,7 @@
   padding: var(--space-2) var(--space-1); background: transparent; border: 0; box-shadow: var(--rule-under);
 }
 .list li:last-child button { box-shadow: none; }
-.list button:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .list button:hover { background-color: var(--bg-2); } }
 .ref { font-family: var(--f-title); font-size: var(--step--1); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 .kind { justify-self: end; font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--ink-2); }
 .k-forms { color: var(--accent); }
@@ -60,13 +61,13 @@
 /* ------------------------------------------------------------ across the library */
 .works { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--hair-2); }
 .works a { display: grid; grid-template-columns: 1fr auto; gap: var(--hair-2) var(--space-2); padding: var(--space-1) var(--space-1); text-decoration: none; border-radius: var(--radius); }
-.works a:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .works a:hover { background-color: var(--bg-2); } }
 .wName { font-size: var(--step--1); }
 .wN { font-family: var(--f-title); font-size: var(--step--1); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 .wBar { grid-column: 1 / -1; height: 4px; background: var(--rule-2); box-shadow: var(--rule-box); }
 .wBar span { display: block; height: 100%; background: var(--red-fill); animation: ink-in var(--dur-slow) var(--ease) both; }
 
 .rules { font-size: var(--step--1); box-shadow: var(--rule-over); padding-top: var(--space-3); }
-.rules summary { cursor: pointer; font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
+.rules summary { cursor: pointer; font: 400 var(--step--1) var(--f-body); letter-spacing: 0; color: var(--ink-2); }
 .rules ul { margin: var(--space-2) 0; padding-left: 1.1em; display: grid; gap: var(--space-2); }
 .rules li::marker { color: var(--accent); }

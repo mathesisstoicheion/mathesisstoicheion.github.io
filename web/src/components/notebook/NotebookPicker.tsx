@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { notebookList, useNotebooks, type NewItem } from "@/lib/notebooks";
 import { useUI } from "@/lib/ui";
+import Icon from "@/components/Icon";
 import styles from "./Notebook.module.css";
 
 export default function NotebookPicker({ items, what, onClose }: {
@@ -46,7 +47,7 @@ export default function NotebookPicker({ items, what, onClose }: {
         onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); onClose(); } }}>
         <div className={styles.pickHead}>
           <h2 id="nb-pick-title" className={styles.pickTitle}>Add {what} to a notebook</h2>
-          <button type="button" className={styles.x} onClick={onClose} aria-label="Close">×</button>
+          <button type="button" className={`icon-btn ${styles.x}`} onClick={onClose} title="Close (Esc)"><Icon name="close" label="Close" /></button>
         </div>
         {list.length > 0 && (
           <ul className={styles.books}>
@@ -64,7 +65,7 @@ export default function NotebookPicker({ items, what, onClose }: {
           <label htmlFor="nb-new">{list.length ? "Or start a new notebook" : "Start your first notebook"}</label>
           <div>
             <input id="nb-new" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Justice in the orators" autoComplete="off" maxLength={120} />
-            <button type="submit" className="btn small">Create and add</button>
+            <button type="submit" className="btn small"><Icon name="plus" />Create and add</button>
           </div>
         </form>
         <p className={styles.fine}>Your notebooks are in <Link href="/treasury?s=notebooks" onClick={onClose}>the Treasury</Link>, with citations and downloads.</p>

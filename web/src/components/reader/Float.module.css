@@ -28,7 +28,7 @@
 .title b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-0); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .title small { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-3); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .btn { flex: none; width: 32px; height: 32px; display: grid; place-items: center; padding: 0; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); font-size: var(--step-1); line-height: 1; transition: color var(--dur-quick) var(--ease); }
-.btn:hover { color: var(--rubric); }
+@media (hover: hover) { .btn:hover { color: var(--rubric); } }
 .btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 .body { flex: 1; min-height: 0; position: relative; }
@@ -63,14 +63,14 @@
 }
 .tab[data-snap="left"], .tab[data-snap="tl"], .tab[data-snap="bl"] { right: auto; left: var(--space-4); }
 .tabMain { display: flex; align-items: center; gap: var(--space-2); min-width: 0; padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2); border: 0; background: transparent; color: inherit; border-radius: var(--radius); text-align: left; transition: color var(--dur-quick) var(--ease); }
-.tabMain:hover { color: var(--rubric); }
+@media (hover: hover) { .tabMain:hover { color: var(--rubric); } }
 .tabIcon { width: 22px; height: 22px; flex: none; border-radius: var(--radius-round); background: var(--rubric);
   -webkit-mask: radial-gradient(circle at 50% 50%, #000 5px, transparent 5.5px, transparent 7px, #000 7.5px); mask: radial-gradient(circle at 50% 50%, #000 5px, transparent 5.5px, transparent 7px, #000 7.5px); }
 .tabText { display: grid; min-width: 0; line-height: 1.2; }
 .tabText b { font-family: var(--f-title); font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .tabText small { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-3); }
 .tabBtn { width: 34px; height: 34px; flex: none; display: grid; place-items: center; border: 0; border-radius: var(--radius); background: transparent; color: var(--ink-2); font-size: var(--step-1); transition: color var(--dur-quick) var(--ease); }
-.tabBtn:hover { color: var(--rubric); }
+@media (hover: hover) { .tabBtn:hover { color: var(--rubric); } }
 .tabBtn svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; }
 
 @media (max-width: 640px) {

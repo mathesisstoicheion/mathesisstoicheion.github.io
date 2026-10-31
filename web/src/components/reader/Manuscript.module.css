@@ -6,8 +6,11 @@
 
 .stages { display: grid; gap: var(--space-3); }
 .passage { margin: 0; }
-.steps { justify-self: stretch; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); overflow: visible; }
-.steps > button { padding: var(--space-2) var(--space-1); font-size: var(--step--1); white-space: normal; line-height: 1.15; }
+/* the four steps stay on one line at any width the panel takes (a sheet on a phone, 340 or 400 px beside the text): short names, each as wide as its name
+   needs and the rest shared out; a finger's height on a touch screen (the shared .segmented sets that) */
+.steps { justify-self: stretch; display: flex; overflow: visible; }
+.steps > button { flex: 1 1 auto; padding-inline: var(--space-1); white-space: nowrap; line-height: 1.15; }
+.steps > button:disabled { opacity: 0.4; cursor: default; }
 .steps > button:first-child { border-radius: var(--radius) 0 0 var(--radius); }
 .steps > button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
 
@@ -25,6 +28,7 @@
 .page[data-stage="3"] { word-break: break-all; }
 .more { color: var(--ink-2); }
 .say { margin: 0; font-size: var(--step--1); line-height: 1.55; min-height: 4.6em; }
+.watch { justify-self: start; }
 
 
 /* the manuscript: a plate on its mount */
@@ -38,24 +42,18 @@
 @media (pointer: coarse) { .viewer, .viewer * { touch-action: pan-y !important; } }
 .touchHint {
   position: absolute; z-index: 5; left: 50%; top: 42%; translate: -50% -50%; margin: 0; padding: var(--space-2) var(--space-4); border-radius: var(--radius); pointer-events: none;
-  background: var(--inv-bg); color: var(--inv-fg); font-family: var(--f-label); letter-spacing: 0.03em; white-space: nowrap;
+  background: var(--bg); color: var(--ink); box-shadow: var(--rule-box), var(--shadow-leaf); font-family: var(--f-label); letter-spacing: 0.03em; white-space: nowrap;
   animation: ink-in var(--dur) var(--ease) both;
 }
 @media (max-width: 760px) { .viewer { height: 44vh; } }
 .wait { position: absolute; inset: 0; margin: 0; display: grid; place-items: center; color: var(--ink-2); font-family: var(--f-label); font-style: italic; }
-/* the viewer's tools: a slip of ink along the plate's foot, paper letters on it */
+/* the viewer's tools: a strip of paper along the plate's foot (the quiet desk, the reader's tools, the owner, 2026-10-30: paper, never a black slip), in a hairline frame;
+   the buttons are the site's icon buttons */
 .tools {
   position: absolute; left: var(--space-2); right: var(--space-2); bottom: var(--space-2); display: flex; align-items: center; gap: var(--space-1);
-  padding: var(--space-1); border-radius: var(--radius); background: var(--inv-bg); color: var(--inv-fg);
+  padding: var(--space-1); border-radius: var(--radius); background: var(--bg); color: var(--ink); box-shadow: var(--rule-box), var(--shadow-leaf);
 }
-.tools button {
-  min-width: 36px; height: 36px; padding: 0 var(--space-2); border: 0; border-radius: var(--radius);
-  background: transparent; color: inherit; font-size: var(--step-sub); cursor: pointer; transition: color var(--dur-quick) var(--ease);
-}
-.tools button:hover:not(:disabled) { color: var(--accent-on-ink); }
-.tools button:disabled { opacity: 0.35; cursor: default; }
-.tools button:focus-visible { outline: 2px solid var(--accent-on-ink); outline-offset: 1px; }
-@media (pointer: coarse) { .tools button { min-width: 44px; height: 44px; } }
+.tools :global(.icon-btn) { font-size: var(--step-1); }
 .folio { font-family: var(--f-label); font-size: var(--step-0); min-width: 5.5em; text-align: center; font-variant-numeric: lining-nums tabular-nums; }
 .gap { flex: 1; }
 /* the line on the photograph: ringed in red, as an editor marks a page; the photograph itself is left as it is */

@@ -30,7 +30,7 @@
   padding: var(--space-1) var(--space-2); text-align: left; color: var(--ink); background: transparent; cursor: pointer;
   border: 1px solid transparent; border-left: 3px solid var(--k); border-radius: var(--radius); transition: background-color var(--dur-quick) var(--ease), border-color var(--dur-quick);
 }
-.node:hover { background: color-mix(in srgb, var(--k) 8%, transparent); }
+@media (hover: hover) { .node:hover { background: color-mix(in srgb, var(--k) 8%, transparent); } }
 .node[data-in] { background: color-mix(in srgb, var(--k) 10%, transparent); }
 .node[aria-current] { background: color-mix(in srgb, var(--k) 20%, transparent); border-color: color-mix(in srgb, var(--k) 45%, transparent); }
 .form { font-family: var(--f-greek); font-size: var(--step-sub); }
@@ -38,7 +38,8 @@
 .role { font: 600 var(--step--1) var(--f-label); color: var(--ink); letter-spacing: 0.01em; }
 .gram { grid-column: 1 / -1; font-size: var(--step--2); color: var(--ink-2); }
 .steps { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.key summary { cursor: pointer; font: 500 var(--step--2) var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
+/* what you can press is in sentence case and ink, not small capitals or red (the quiet desk, the reader's tools, the owner, 2026-10-30) */
+.key summary { cursor: pointer; font: 400 var(--step--1) var(--f-body); letter-spacing: 0; color: var(--ink-2); }
 .key dl { margin: var(--space-2) 0 0; display: grid; gap: var(--space-1); }
 .key dl > div { display: grid; grid-template-columns: 9.5em minmax(0, 1fr); gap: var(--space-2); font-size: var(--step--1); border-left: 3px solid var(--k); padding-left: var(--space-2); }
 .key dt { font-weight: 600; }

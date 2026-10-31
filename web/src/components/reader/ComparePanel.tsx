@@ -7,6 +7,7 @@
 import { useMemo, useState } from "react";
 import { lemmaOf, type RowDiff } from "@/lib/tei/compare";
 import { toCsv } from "@/lib/search/kwic";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
 import { SidePanel, type Back } from "./Panel";
@@ -42,9 +43,9 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
       <p className={fs.status}>{num(entries.length)} {entries.length === 1 ? "difference" : "differences"} in {num(diffs.length)} {diffs.length === 1 ? "passage" : "passages"}</p>
       {entries.length > 0 && (
         <p className={fs.row}>
-          <button type="button" className="btn small ghost" onClick={download}>Download the list (spreadsheet)</button>
+          <button type="button" className="btn small ghost" onClick={download}><Icon name="download" />Download the list (spreadsheet)</button>
           {onNotebook && entries.length <= 500 && (
-            <button type="button" className="btn small ghost" onClick={() => onNotebook(entries.map((e) => ({ key: e.d.key, a: e.a, b: e.b })), `${num(entries.length)} differences`)}>Add all to a notebook</button>
+            <button type="button" className="btn small ghost" onClick={() => onNotebook(entries.map((e) => ({ key: e.d.key, a: e.a, b: e.b })), `${num(entries.length)} differences`)}><Icon name="plus" />Add all to a notebook</button>
           )}
         </p>
       )}
@@ -53,7 +54,7 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
           <li key={`${e.d.key}-${e.j}`} className={onNotebook ? fs.withAdd : undefined}>
             {onNotebook && (
               <button type="button" className={`icon-btn framed ${fs.add}`} onClick={() => onNotebook([{ key: e.d.key, a: e.a, b: e.b }], "this difference")}
-                aria-label={`Add ${e.d.key} to a notebook`} title="Add to a notebook">+</button>
+                title="Add to a notebook"><Icon name="plus" label={`Add ${e.d.key} to a notebook`} /></button>
             )}
             <button type="button" className="row-btn" onClick={() => onJump(e.d)}>
               <span className={fs.ref}>{e.d.key}</span>
@@ -62,7 +63,7 @@ export default function ComparePanel({ diffs, a, b, title, onJump, onClose, onNo
           </li>
         ))}
       </ol>
-      {entries.length > shown && <button type="button" className="chip" onClick={() => setShown((n) => n + SHOW)}>Show {num(Math.min(SHOW, entries.length - shown))} more</button>}
+      {entries.length > shown && <button type="button" className="chip" onClick={() => setShown((n) => n + SHOW)}><Icon name="chevron-down" />Show {num(Math.min(SHOW, entries.length - shown))} more</button>}
     </SidePanel>
   );
 }

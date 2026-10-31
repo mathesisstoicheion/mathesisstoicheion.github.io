@@ -36,7 +36,7 @@ test("choose an edition to compare with, and the readings that differ are marked
   await expect.poll(() => page.locator('[data-key="87"]').first().evaluate((el) => el.getBoundingClientRect().top)).toBeLessThan(300);
 
   // the list, like an apparatus; a line of it goes to its passage
-  await bar.getByRole("button", { name: "List them all" }).click();
+  await bar.getByRole("button", { name: "List of differences" }).click();
   const list = page.getByRole("complementary", { name: "Differences between the editions" });
   await expect(list.getByRole("button", { name: /^87\s*πειθοῖ\s*\]\s*πευθοῖ/ })).toBeVisible();
   await list.getByRole("button", { name: /^106\s/ }).click();
@@ -76,7 +76,7 @@ for (const scheme of ["light", "dark"] as const) {
     await page.goto(`${AGAM}&cmp=1st1K-grc1&at=80`);
     const bar = page.getByRole("region", { name: "Comparing two editions" });
     await expect(bar).toContainText("in the whole text", { timeout: 60_000 });
-    await bar.getByRole("button", { name: "List them all" }).click();
+    await bar.getByRole("button", { name: "List of differences" }).click();
     await expect(page.getByRole("complementary", { name: "Differences between the editions" })).toBeVisible();
     await page.waitForTimeout(500);
     const r = await new AxeBuilder({ page }).include("main").exclude("article").withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"]).analyze();

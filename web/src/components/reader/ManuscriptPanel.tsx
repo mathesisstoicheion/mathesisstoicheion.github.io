@@ -8,15 +8,17 @@ import { stageWord, unitLines, type Stage } from "@/lib/scripts";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import { onGesture, pinchFactor, wheelReader } from "@/lib/wheel";
 import type { Unit } from "@/lib/tei/types";
+import Icon from "@/components/Icon";
 import styles from "./Manuscript.module.css";
 import rs from "./Reader.module.css";
 import { SidePanel, type Back } from "./Panel";
 
 const MAX_WORDS = 90;
 
-/** What each step shows, and where the facts come from. */
+/** What each step shows, and where the facts come from. The four names are short so that the row of steps keeps to one line at any width the panel takes
+ *  (the quiet desk, the reader's tools, the owner, 2026-10-30: "Printed today" wrapped onto two lines in the narrow panel). */
 const STAGES: { label: string; say: React.ReactNode }[] = [
-  { label: "Printed today", say: <>The edition&apos;s Greek as modern books print it, with spaces, punctuation, accents and breathings.</> },
+  { label: "Printed", say: <>The edition&apos;s Greek as modern books print it, with spaces, punctuation, accents and breathings.</> },
   { label: "No accents", say: <>Accents and breathings were introduced by Aristophanes of Byzantium in the third century BC. They turn up only now and then in papyri from the second century AD, and became standard in the Middle Ages.<Src n={1} /></> },
   { label: "Capitals", say: <>Books were written in capital letters until minuscule, a smaller, joined-up hand, replaced them in the ninth and tenth centuries.<Src n={2} /> Sigma is the C-shaped Ϲ, the usual form from late antiquity on.<Src n={3} /> The mute iota is written beside its vowel (ΩΙ): the iota under the letter (ῳ) was invented by Byzantine scholars in the twelfth century.<Src n={4} /></> },
   { label: "No spaces", say: <>And no spaces: Greek was written as one continuous run of letters, <i>scriptio continua</i>, and the oldest books in capitals do not separate words.<Src n={5} /><Src n={6} sep /></> },
@@ -132,7 +134,8 @@ function Stages({ units, label }: { units: Unit[]; label: string }) {
         {cut && <p className={styles.more} aria-hidden="true">…</p>}
       </div>
       <p className={styles.say}>{STAGES[stage].say}</p>
-      <button type="button" className="btn small" onClick={play} disabled={playing}>{playing ? "Watching…" : <><span className="tri" aria-hidden="true" /> Watch it change</>}</button>
+      {/* a quiet button, not a heavy black band (the quiet desk, the reader's tools, the owner, 2026-10-30) */}
+      <button type="button" className={`btn ghost small ${styles.watch}`} onClick={play} disabled={playing}><Icon name="play" />{playing ? "Watching…" : "Watch it change"}</button>
     </section>
   );
 }
@@ -278,13 +281,13 @@ function Photos({ w, work, line, book }: { w: Witness; work: string; line: strin
         {!page && !error && <p className={styles.wait}>Opening the manuscript…</p>}
         {hint && <p className={styles.touchHint} role="status">Use two fingers to move the page</p>}
         <div className={styles.tools}>
-          <button type="button" className="icon-btn" onClick={() => turn(-1)} disabled={!page || at === 0} aria-label="Previous page">‹</button>
+          <button type="button" className="icon-btn" onClick={() => turn(-1)} disabled={!page || at === 0}><Icon name="chevron-left" label="Previous page" /></button>
           <span className={styles.folio} aria-live="polite">{page ? `f. ${page.folio}` : "…"}</span>
-          <button type="button" className="icon-btn" onClick={() => turn(1)} disabled={!page || !pages || at === pages.length - 1} aria-label="Next page">›</button>
+          <button type="button" className="icon-btn" onClick={() => turn(1)} disabled={!page || !pages || at === pages.length - 1}><Icon name="chevron-right" label="Next page" /></button>
           <span className={styles.gap} />
-          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1.6)} aria-label="Zoom in">+</button>
-          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1 / 1.6)} aria-label="Zoom out">−</button>
-          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.goHome()} aria-label="The whole page"><svg viewBox="0 0 16 16" width="15" height="15" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" aria-hidden="true"><path d="M2.5 8 8 2.5 13.5 8M4 6.8v6.7h8V6.8" /></svg></button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1.6)}><Icon name="zoom-in" label="Zoom in" /></button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.zoomBy(1 / 1.6)}><Icon name="zoom-out" label="Zoom out" /></button>
+          <button type="button" className="icon-btn" onClick={() => viewer.current?.viewport.goHome()}><Icon name="shrink" label="The whole page" /></button>
         </div>
       </div>
       {error && <p className={styles.err}>{error}</p>}

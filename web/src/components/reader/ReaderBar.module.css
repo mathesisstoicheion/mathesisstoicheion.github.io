@@ -1,8 +1,8 @@
 /* The reader's foot bar, and the menus that rise from it (ReaderBar.tsx, AaMenu.tsx, StudyMenu.tsx; the quiet desk, ticket 09, the owner,
-   2026-10-30; mockup B). One book has nothing along its top: the way back, where you are, Aa and Study stand along the foot, the same on a
+   2026-10-30; mockup B). One book has nothing along its top: the way back, where you are, Text and Study stand along the foot, the same on a
    computer and a phone. Paper, a hairline along its top, 56 px tall (the safe area under it as well). On a phone it slips down out of sight as you
    read on and comes back when you scroll up or tap the paper (ReaderBar.tsx), and stays away while the look-up, a panel's sheet or the passage
-   toolbar stands where it was. Two books side by side and the floating window keep a bar along their top, with the same Aa and Study in it
+   toolbar stands where it was. Two books side by side and the floating window keep a bar along their top, with the same Text and Study in it
    (the .pane* rules below). Spacing, type and layers are the site's tokens only (spacing.test.ts, scripts/check-tokens.mjs). */
 
 /* ------------------------------------------------------------ the bar */
@@ -12,7 +12,7 @@
   background: var(--bg); box-shadow: var(--rule-over);
   transition: translate var(--dur) var(--ease), visibility 0s;
 }
-/* the way back at the left, where you are in the middle, Aa and Study at the right */
+/* the way back at the left, where you are in the middle, Text (the Aa sign and the word: the page and the type) and Study at the right */
 .barIn { display: grid; grid-template-columns: minmax(max-content, 1fr) minmax(0, auto) minmax(max-content, 1fr); align-items: center; column-gap: var(--space-3); min-height: var(--space-7); }
 
 /* the bar's buttons and its link: no frame, ink-2 in the body face, red under the hand (the site's icon-btn, placed and sized here) */
@@ -49,7 +49,8 @@
   :global([data-foot="away"]) .foot { translate: 0 100%; visibility: hidden; transition: translate var(--dur) var(--ease), visibility 0s var(--ease) var(--dur); }
 }
 /* the narrower phones: the same four buttons, a little closer, the place in a smaller size; from 380 px down the place has no sign beside it, and
-   from 340 px down the way back is its arrow alone (its name, "Back to the library", is still its label) */
+   from 340 px down the place is a size smaller again and the buttons stand a little closer still. No word is dropped: "Library" and "Text" stay
+   down to 320 px (the bar is measured at 320, 360, 375, 390 and 412, scripts/check-reader.mjs). */
 @media (max-width: 400px) {
   .barIn { column-gap: var(--space-2); }
   .quiet, .quiet:global(.icon-btn) { padding-inline: var(--space-1); }
@@ -58,7 +59,7 @@
   .at { font-size: var(--step--1); }
 }
 @media (max-width: 380px) { .where > :global([data-icon]) { display: none; } }
-@media (max-width: 340px) { .libWord { display: none; } }
+@media (max-width: 340px) { .barIn { column-gap: var(--space-1); } .at { font-size: var(--step--2); } }
 /* the look-up's sheet stands where the bar was, at any width; a panel's sheet on a tablet and a phone; the passage toolbar on a phone */
 :global([data-covers~="lookup"]) .foot { translate: 0 100%; visibility: hidden; }
 @media (max-width: 900px) { :global([data-covers~="panel"]) .foot { translate: 0 100%; visibility: hidden; } }

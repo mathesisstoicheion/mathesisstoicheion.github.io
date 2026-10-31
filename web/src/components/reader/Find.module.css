@@ -1,5 +1,7 @@
 /* Find in this text (FindPanel.tsx): it uses the reader's side panel (a sheet on phones), with its own insides. */
-.panel { gap: var(--space-3); }
+/* (one column that may be narrower than what is in it: without minmax(0, 1fr) the grid's column took the width of its widest part, 398 px in a
+   340 px panel at 1100 to 1279 px, and the panel scrolled sideways under the text; the quiet desk, the reader's tools, the owner, 2026-10-30) */
+.panel { gap: var(--space-3); grid-template-columns: minmax(0, 1fr); }
 .title { margin: 0; font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); }
 
 .row { position: relative; display: flex; align-items: center; gap: var(--space-1); }
@@ -8,15 +10,15 @@
   border-radius: var(--radius);
   transition: box-shadow 0.2s var(--ease);
 }
-.glass { position: absolute; left: var(--space-3); width: 18px; height: 18px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
+.glass { position: absolute; left: var(--space-3); width: 18px; height: 18px; color: var(--ink-2); pointer-events: none; }
 /* the arrows beside the box: framed .icon-btn (globals.css), a finger's size everywhere */
 .step { width: 44px; height: 44px; }
-.step svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
 .status { margin: 0; min-height: 1.4em; font-size: var(--step--1); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .scope { display: flex; flex: none; overflow: visible; }   /* (clipped, the panel's grid would squeeze it under a long list) */
 .scope button:first-child { border-radius: var(--radius) 0 0 var(--radius); } .scope button:last-child { border-radius: 0 var(--radius) var(--radius) 0; }
 .scope button { flex: 1 1 auto; display: inline-flex; justify-content: center; gap: var(--space-1); align-items: baseline; }
+.scope button:disabled { opacity: 0.4; cursor: default; }
 .n { font-size: var(--step--2); opacity: 0.75; font-variant-numeric: tabular-nums; }
 
 .help { display: grid; gap: var(--space-2); font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
@@ -36,7 +38,7 @@
   transition: background 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 .list li:last-child button { box-shadow: none; }
-.list button:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .list button:hover { background-color: var(--bg-2); } }
 .list button[aria-current] { background: color-mix(in srgb, var(--accent) 13%, transparent); box-shadow: var(--red-left), var(--rule-under); }
 .list li:last-child button[aria-current] { box-shadow: var(--red-left); }
 .ref { font: 400 var(--step--1) var(--f-title); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; overflow-wrap: anywhere; }
@@ -59,5 +61,5 @@
 .list .add {
   position: absolute; right: var(--space-1); top: 50%; translate: 0 -50%; z-index: 1; min-width: 30px; width: 30px; height: 30px; min-height: 0; padding: 0;
   display: grid; place-items: center; grid-template-columns: none; border-radius: var(--radius-round); background: transparent; box-shadow: none;
-  font-size: var(--step-sub); line-height: 1;
+  font-size: var(--step-0); line-height: 1;
 }

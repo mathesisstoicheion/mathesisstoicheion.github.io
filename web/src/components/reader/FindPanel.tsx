@@ -11,6 +11,7 @@ import type { TeiDoc } from "@/lib/tei/types";
 import type { Placed } from "@/lib/tei/align";
 import { englishSnippet, findInText, FIND_MAX, greekIndex, pieceText, type FindHit } from "@/lib/find";
 import { snippet } from "@/lib/search/context";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import fs from "./Find.module.css";
 import { SidePanel, type Back } from "./Panel";
@@ -81,20 +82,16 @@ export default function FindPanel({ doc, placed, initial, here, onQuery, onJump,
       title="Find in this text" titleClass={fs.title} closeLabel="Close find">
 
       <form className={fs.row} role="search" onSubmit={(e) => { e.preventDefault(); step(1); }}>
-        <svg className={fs.glass} viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="m15.5 15.5 5 5" /></svg>
+        <Icon name="search" className={fs.glass} />
         <input ref={inputRef} type="search" value={q} onChange={(e) => setQ(e.target.value)} aria-label="Find a word or phrase in this text"
           placeholder="A word or phrase" enterKeyHint="search" autoComplete="off" autoCorrect="off" autoCapitalize="off" spellCheck={false}
           onKeyDown={(e) => { if (e.key === "Enter" && e.shiftKey) { e.preventDefault(); step(-1); } }} />
-        <button type="button" className={`icon-btn framed ${fs.step}`} onClick={() => step(-1)} disabled={!hits.length} aria-label="Previous match" title="Previous match (Shift+Enter)">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6" /></svg>
-        </button>
-        <button type="submit" className={`icon-btn framed ${fs.step}`} disabled={!hits.length} aria-label="Next match" title="Next match (Enter)">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
-        </button>
+        <button type="button" className={`icon-btn framed ${fs.step}`} onClick={() => step(-1)} disabled={!hits.length} title="Previous match (Shift+Enter)"><Icon name="chevron-up" label="Previous match" /></button>
+        <button type="submit" className={`icon-btn framed ${fs.step}`} disabled={!hits.length} title="Next match (Enter)"><Icon name="chevron-down" label="Next match" /></button>
       </form>
       <p className={fs.status} role="status" aria-live="polite">
         {status}
-        {compact && hits.length > 0 && <> · <button type="button" className="text-btn" onClick={() => setCompact(false)}>Show the list</button></>}
+        {compact && hits.length > 0 && <> · <button type="button" className="text-btn" onClick={() => setCompact(false)}><Icon name="list" />Show the list</button></>}
       </p>
 
       {both && (

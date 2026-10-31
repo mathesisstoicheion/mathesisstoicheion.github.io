@@ -50,10 +50,26 @@
 //   close   - a menu or a panel without a visible close; Escape not closing it and returning to its button; a panel opened from
 //             Study without "Back to Study", or whose way back (Escape too) does not bring Study back; a panel opened some other
 //             way with one
+// and, for the reader's tools (the quiet desk, the reader's tools, the owner, 2026-10-30; the Iliad in Paper, at 1440 and 390 px; Agamemnon for the last two):
+//   tools   - (the second "tools": the first, above, is the Study menu) the passage toolbar (and, on a phone, for one word), Listen's player, the look-up and its whole
+//             entry, the sentence, Echoes, the note editor, Share, the notebook picker, Find, Vocabulary, Places, the manuscript, the list of books for a second one and the
+//             list of differences: a button without its sign (a highlight colour, a choice, a word of the text, a figure, a list entry and the shared note field's four faces
+//             are not), a button set in capitals, a strip or panel (or a wide part of one) dark in Paper, a panel without Close at its top right or, from Study, "Back to Study"
+//             at its top left (and the look-up's, the sentence's and Share's way back), the toolbar's or Listen's Close not the last button at the end of its row, a button not
+//             wholly on the screen, a phone's button under a finger's size or its toolbar not standing along the foot, a count in Vocabulary in red, the manuscript's "Watch it
+//             change" a heavy band, two buttons of one name on one panel. (Talk is closed with the forum, and the private collection's window needs the owner's sign-in:
+//             neither can be opened here.)
+//   steps   - (also read with tools) the manuscript's four steps wrapping onto two lines, running past their row or the panel, or on a phone under a finger's height, at 320 to 1440 px
+//   find    - Find's panel at 1100, 1180 and 1279 px not as wide as Vocabulary's, with its results wider than it, anything in it past its edge, or the Greek under it
+//   place   - Compare with another edition (Agamemnon, scrolled to about line 80, at 1440 and 390 px) moving the reader from the passage at the top (or the one before it);
+//             "Next difference" not going on from there, twice, or going back to the first passage
+//   nt      - the New Testament (John) and the Septuagint (Genesis) on a phone: a verse's number not level with its first line or not beside its Greek, or the verses'
+//             Greek not starting at one edge
 // The word packs and the dictionary are served from their own site (config/packs.ts); this check fetches them from the
 // packs repository, and answers Wiktionary with "no entry" so that case is seen.
 // usage: node web/scripts/check-reader.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
-//        ONLY=verse (or agamemnon, alone, first, foot, compare, photos; several with commas) reads those parts only; ONLY=panel is the last of verse's checks alone (a side panel open)
+//        ONLY=verse (or agamemnon, alone, first, foot, compare, photos, tools, find, place, nt; several with commas) reads those parts only; ONLY=panel is the last of verse's checks alone (a side panel open)
+//        SURFACE=<words> reads only the strips and panels of `tools` whose names match (SURFACE='toolbar|Listen')
 //        PROVE_CSS=<css> or PROVE_JS=<script> adds a fault to every page, to show the check catches it
 import { chromium } from "playwright";
 
@@ -480,7 +496,7 @@ async function openMenu(page, name) {
   await page.waitForTimeout(450);
   return page.locator(`[id="${await b.getAttribute("aria-controls")}"]`);
 }
-const BAR = { aa: /^Aa\b/, study: /^Study\b/, goto: "Go to a line or book" };
+const BAR = { aa: /^Text: page and size$/, study: /^Study\b/, goto: "Go to a line or book" };
 /** whether the foot bar is out of sight (slipped away: hidden, or stood below the window) */
 const awayNow = (page) => page.evaluate(() => { const f = document.querySelector("[data-foot-bar]"); if (!f) return true; const r = f.getBoundingClientRect(); return getComputedStyle(f).visibility === "hidden" || r.top >= innerHeight - 1; });
 
@@ -499,7 +515,7 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
     if (!(await bar.count())) found.push(`foot ${tag}: no bar along the foot of the reader`);
     else {
       const parts = [["← Library", bar.getByRole("link", { name: /library/i })], ["where you are", bar.getByRole("button", { name: BAR.goto })],
-        ["Aa", bar.getByRole("button", { name: BAR.aa })], ["Study", bar.getByRole("button", { name: BAR.study })]];
+        ["Text (Aa)", bar.getByRole("button", { name: BAR.aa })], ["Study", bar.getByRole("button", { name: BAR.study })]];
       const boxes = [];
       for (const [n, loc] of parts) {
         const b = (await loc.count()) ? await loc.first().boundingBox() : null;
@@ -963,6 +979,360 @@ for (const [w, h] of runs("verse") || runs("panel") ? [[1440, 900], [1280, 800]]
   } catch (e) {
     found.push(`verse ${tag} with a panel open could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
   }
+  await ctx.close();
+}
+
+// ---- tools: the reader's tools (the quiet desk, the reader's tools, the owner, 2026-10-30: "fix the reader, the reader tools and the word lookup … functionally, ux and ui
+// wise and visually"; for every button "an icon and the right order"; "nothing should have multiple buttons that lead to the same place"). The Iliad in Paper, at 1440 × 900 and
+// 390 × 844: the passage toolbar (for a passage, and on a phone for one word), Listen's player, the look-up and its whole entry, the sentence, Echoes, the note editor, Share (and its
+// words), the notebook picker, Find, Vocabulary, Places, the manuscript and the list of books for a second one; and, on Agamemnon compared with another edition, the list of
+// differences. Not reachable from here: Talk (the forum is closed) and the private collection's window (the owner's sign-in).
+/** What is wrong with one strip or panel, read in the page (sent to the browser whole: it uses nothing outside itself): { problems, buttons: how many it read }. `opt`: close (the source of a pattern for the name of its
+ *  Close, which must stand at its top right), back (the same for its way back, at its top left), last (Close must be its last button, at the end of its row), strip (a strip over
+ *  the page: its buttons wholly on the screen), tap (on a phone every button a finger's height), counts (Vocabulary: no red count), watch (the manuscript's Watch it change is no
+ *  black band), dock (a phone: it stands along the foot of the screen). */
+function INSPECT(root, opt) {
+  const out = [];
+  const nm = (e) => ((e.getAttribute("aria-label") || e.querySelector("[aria-label]")?.getAttribute("aria-label") || e.textContent || e.getAttribute("title") || "").trim().replace(/\s+/g, " ")).slice(0, 40);
+  const shown = (e) => {
+    const r = e.getBoundingClientRect();
+    if (r.width < 1 || r.height < 1) return false;
+    for (let p = e; p && p !== document.body; p = p.parentElement) { const cs = getComputedStyle(p); if (cs.display === "none" || cs.visibility === "hidden" || +cs.opacity === 0) return false; }
+    return true;
+  };
+  const rgba = (c) => { const m = (c.match(/[\d.]+/g) ?? []).map(Number); return { r: m[0] ?? 0, g: m[1] ?? 0, b: m[2] ?? 0, a: m[3] ?? 1 }; };
+  const lum = (c) => (0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b) / 255;
+  const R = root.getBoundingClientRect();
+  const kind = (e) => String(e.getAttribute("class") ?? "").replace(/\S*__/g, "").trim().split(/\s+/)[0] || e.tagName.toLowerCase();
+  // no strip or panel, nor a wide part of one, is dark in Paper (a black slip); a button's own face, a chosen choice and a marked word are not strips
+  for (const e of [root, ...root.querySelectorAll("*")]) {
+    if (e !== root && (!shown(e) || e.closest("button, [role=radio], [role=tab], .btn, .chip, svg, mark, [data-hl], img, canvas, video"))) continue;
+    const c = rgba(getComputedStyle(e).backgroundColor), b = e.getBoundingClientRect();
+    if (c.a >= 0.6 && lum(c) < 0.3 && (e === root || (b.width >= 0.4 * R.width && b.height >= 20))) out.push(e === root ? "it is dark in Paper (a black slip)" : `a wide part of it ("${kind(e)}") is dark in Paper (a black slip)`);
+  }
+  const buttons = [...root.querySelectorAll("button, [role=button], a.btn, a.chip, a.text-btn, a.icon-btn, summary")].filter(shown);
+  // a button has its sign (svg[data-icon]) unless it is a highlight colour, a choice in a segmented control, a word or line of the text (Greek letters), a figure alone (1×, 241), an entry of a list,
+  // a plain disclosure (a <details> that is not a .fold-box: its summary keeps the site's small red triangle), or one of the four faces of the shared note field's toolbar
+  // (B, I, a list sign drawn as text, "Ελ Greek"; the forum and the Treasury use it too)
+  const exempt = (b) => /^Highlight in /.test(b.getAttribute("aria-label") ?? "") || (b.tagName === "SUMMARY" && !b.parentElement?.classList.contains("fold-box")) || ["radio", "tab", "option", "menuitemradio"].includes(b.getAttribute("role") ?? "")
+    || !!b.closest("[lang=grc], [data-w]") || /[Ͱ-Ͽἀ-῿]/.test(b.textContent ?? "") || /^[\d.,]+\s*[×x]?$/.test((b.textContent ?? "").trim())
+    || !!b.closest("li, [role=listitem], [role=row], tr") || !!b.closest('[role=toolbar][aria-label="Formatting"]');
+  for (const b of buttons) if (!b.querySelector("svg[data-icon]") && !exempt(b)) out.push(`the button "${nm(b)}" has no sign`);
+  // sentence case: a button's words are never set in capitals (small capitals are for labels that cannot be pressed)
+  for (const b of buttons) {
+    const bad = [b, ...b.querySelectorAll("*")].find((x) => { const cs = getComputedStyle(x); return /^(uppercase|capitalize)$/.test(cs.textTransform) || /caps/.test(cs.fontVariantCaps); });
+    if (bad && (b.textContent ?? "").trim()) out.push(`the button "${nm(b)}" is set in capitals (text-transform ${getComputedStyle(bad).textTransform})`);
+  }
+  // nothing twice: two buttons of one name on one panel lead to the same place
+  const names = new Map();
+  for (const b of buttons) if (!exempt(b)) names.set(nm(b), (names.get(nm(b)) ?? 0) + 1);
+  for (const [n, k] of names) if (k > 1 && n) out.push(`${k} buttons are all named "${n}"`);
+  // the head: Close at the top right, the way back at the top left
+  const at = (b) => ({ cx: b.left + b.width / 2 - R.left, cy: b.top + b.height / 2 - R.top });
+  if (opt.close) {
+    const c = buttons.find((b) => new RegExp(opt.close).test(nm(b)));
+    if (!c) out.push("it has no visible Close");
+    else {
+      const b = c.getBoundingClientRect(), p = at(b);
+      if (b.width < 28 || b.height < 28) out.push(`its Close is only ${Math.round(b.width)} × ${Math.round(b.height)} px`);
+      if (p.cx < 0.7 * R.width || p.cy > Math.min(110, 0.3 * R.height)) out.push(`its Close is not at its top right (at ${Math.round(p.cx)}, ${Math.round(p.cy)} in a box ${Math.round(R.width)} × ${Math.round(R.height)})`);
+      if (b.right > innerWidth + 1 || b.top < -1) out.push("its Close is off the screen");
+    }
+  }
+  if (opt.back) {
+    const c = buttons.find((b) => new RegExp(opt.back).test(nm(b)));
+    if (!c) out.push("it has no visible way back");
+    else { const p = at(c.getBoundingClientRect()); if (p.cx > 0.4 * R.width || p.cy > 110) out.push(`its way back ("${nm(c)}") is not at its top left (at ${Math.round(p.cx)}, ${Math.round(p.cy)})`); }
+  }
+  // a strip over the page: Close is its last button, at the end of its row, and every button is wholly on the screen
+  if (opt.last) {
+    const c = buttons.at(-1);
+    if (!c || !new RegExp(opt.last).test(nm(c))) out.push(`its last button is "${c ? nm(c) : "none"}", not Close`);
+    else {
+      const b = c.getBoundingClientRect();
+      for (const o of buttons) { const ob = o.getBoundingClientRect(); if (o !== c && ((Math.abs(ob.top + ob.height / 2 - (b.top + b.height / 2)) < 16 && ob.right > b.right + 1) || ob.bottom > b.bottom + 2)) out.push(`its Close is not the last button: "${nm(o)}" stands after it`); }
+    }
+  }
+  if (opt.strip) {
+    for (const b of buttons) { const r = b.getBoundingClientRect(); if (r.left < -0.5 || r.right > innerWidth + 0.5 || r.top < -0.5 || r.bottom > innerHeight + 0.5) out.push(`the button "${nm(b)}" is not wholly on the screen`); }
+    if (root.scrollWidth > root.clientWidth + 1) out.push(`it is wider than its box (${root.scrollWidth} px of content in ${root.clientWidth})`);
+    // nothing on top of another: no two buttons overlap, and no box has words running out of it (a name that is cut short with an ellipsis is meant to be)
+    for (let i = 0; i < buttons.length; i++) for (let j = i + 1; j < buttons.length; j++) {
+      const a = buttons[i].getBoundingClientRect(), b = buttons[j].getBoundingClientRect();
+      if (Math.min(a.right, b.right) - Math.max(a.left, b.left) > 2 && Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top) > 2) out.push(`the buttons "${nm(buttons[i])}" and "${nm(buttons[j])}" overlap`);
+    }
+    for (const e of root.querySelectorAll("*")) {
+      if (!shown(e) || e.matches("select, input, textarea, svg, svg *")) continue;
+      const cs = getComputedStyle(e);
+      if (cs.display === "inline" || cs.display === "contents") continue;
+      if (cs.overflowX === "visible" && e.clientWidth > 0 && e.scrollWidth > e.clientWidth + 1) out.push(`"${kind(e)}" has its content running out of its box (${e.scrollWidth} px in ${e.clientWidth})`);
+    }
+  }
+  if (opt.tap) for (const b of buttons) { const r = b.getBoundingClientRect(); if (r.height < 43.5 || r.width < 31.5) out.push(`the button "${nm(b)}" is ${Math.round(r.width)} × ${Math.round(r.height)} px, under a finger's size`); }
+  if (opt.dock && (Math.abs(R.bottom - innerHeight) > 2 || R.left > 1 || R.right < innerWidth - 1)) out.push(`it does not stand along the foot of the screen (its box is ${Math.round(R.left)}–${Math.round(R.right)} across, ends ${Math.round(R.bottom)} of ${innerHeight} down)`);
+  // Vocabulary: no count or rank is red
+  if (opt.counts) {
+    const probe = document.createElement("i");
+    document.body.append(probe);
+    const tone = (v) => { probe.style.color = `var(${v})`; return getComputedStyle(probe).color; };
+    const reds = new Set([tone("--accent"), tone("--rubric")]);
+    probe.remove();
+    const counts = [...root.querySelectorAll('[class*="vocabN"]')].filter(shown);
+    if (!counts.length) out.push("it shows no counts to read");
+    for (const x of counts) { const c = getComputedStyle(x).color, v = rgba(c); if (reds.has(c) || (v.r > 140 && v.g < 110 && v.b < 110)) out.push(`the count "${(x.textContent ?? "").trim()}" is red`); }
+  }
+  // the manuscript: "Watch it change" is a quiet button, not a heavy black band
+  if (opt.watch) {
+    const w = buttons.find((b) => /^Watch it change/.test(nm(b)));
+    if (!w) out.push('it has no "Watch it change"');
+    else { const c = rgba(getComputedStyle(w).backgroundColor), b = w.getBoundingClientRect(); if ((c.a >= 0.6 && lum(c) < 0.5) || b.width > 0.7 * R.width) out.push(`"Watch it change" is a heavy band (${Math.round(b.width)} px wide of ${Math.round(R.width)}, background ${getComputedStyle(w).backgroundColor})`); }
+  }
+  return { problems: out, buttons: buttons.length };
+}
+const FAKE_VOICE = () => {   // headless Chrome has no voices: a stand-in English one, so that Listen's player shows its buttons
+  class Utterance { constructor(t) { this.text = t; this.voice = null; this.lang = ""; this.rate = 1; this.onboundary = null; this.onend = null; this.onerror = null; } }
+  const synth = { getVoices: () => [{ name: "Test English", lang: "en-GB", localService: true, default: true, voiceURI: "test" }], speak() {}, cancel() {}, pause() {}, resume() {}, addEventListener() {}, removeEventListener() {} };
+  Object.defineProperty(window, "speechSynthesis", { value: synth, configurable: true });
+  Object.defineProperty(window, "SpeechSynthesisUtterance", { value: Utterance, configurable: true });
+};
+/** a book already opened once (so that it opens on its text), with the English beside the Greek; the packs and the dictionary from the packs repository */
+async function bookOpened(ctx, path, works = ["tlg0012.tlg001"], ready = "article [data-u] [data-w]") {
+  const page = await ctx.newPage();
+  await page.route("**/data/{words,lsj,lexicon,syntax}/**", async (route) => {
+    const file = new URL(route.request().url()).pathname.replace(/^\/data\//, "");
+    try { await route.fulfill({ response: await route.fetch({ url: `${PACKS}/${file}` }) }); } catch { await route.abort(); }
+  });
+  await page.route(/wiktionary\.org/, (route) => route.fulfill({ status: 404, contentType: "application/json", body: "{}" }));
+  await page.addInitScript((a) => { localStorage.setItem("mathesis:opened", JSON.stringify(a.works)); localStorage.setItem("mathesis:settings", a.settings); }, { works, settings: saved(5, "both") });
+  await page.goto(base + path);
+  await page.waitForSelector(ready, { timeout: 60000 });
+  await page.waitForTimeout(2000);
+  return page;
+}
+const settle = async (page) => { for (let i = 0; i < 3; i++) { await page.keyboard.press("Escape"); await page.waitForTimeout(250); } await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" })); await page.waitForTimeout(350); };
+const tapOrClick = async (page, loc, touch) => { await loc.scrollIntoViewIfNeeded(); await page.waitForTimeout(300); if (touch) { const b = await loc.boundingBox(); await page.touchscreen.tap(b.x + b.width / 2, b.y + b.height / 2); } else await loc.click(); };
+const MSG = (e) => String(e.message).split("\n")[0].slice(0, 130);
+
+// (the narrower phones read the two strips that stand over the page, the toolbar and Listen's player, for what must fit in the width)
+for (const [w, h, touch, only] of runs("tools") ? [[1440, 900, false], [390, 844, true], [320, 700, true, "toolbar|Listen"], [360, 780, true, "toolbar|Listen"], [412, 915, true, "toolbar|Listen"]] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch, colorScheme: "light" });
+  await ctx.addInitScript(FAKE_VOICE);
+  let page;
+  try { page = await bookOpened(ctx, ILIAD); } catch (e) { found.push(`tools ${tag}: the Iliad could not be opened (${MSG(e)})`); await ctx.close(); continue; }
+  page.setDefaultTimeout(10000);
+  const bar = () => page.getByRole("toolbar", { name: "Passage actions" });
+  const toolbarOn = async (row = "1.5") => { await tapOrClick(page, page.locator(`article button[data-row="${row}"]`).first(), touch); await bar().waitFor(); };
+  const study = async (row) => { const s = await openMenu(page, BAR.study); await s.getByRole("button", { name: row, exact: true }).click(); };
+  const lookUp = async () => { await tapOrClick(page, page.locator('[data-u="1.1"] [data-w="μῆνιν"]').first(), touch); await page.locator('aside[aria-label^="Look-up"]').waitFor(); await page.waitForTimeout(2000); };
+  const CLOSE = "^Close\\b", BACK_STUDY = "^Back to Study$";
+  /** each surface on its own: opened from a clean page, read, and put away; one that cannot be opened is a problem, and the others are still read */
+  const surface = async (name, open, root, opt) => {
+    if ((process.env.SURFACE && !new RegExp(process.env.SURFACE, "i").test(name)) || (only && !new RegExp(only, "i").test(name))) return;
+    try {
+      await settle(page);
+      await open();
+      const loc = page.locator(root).first();
+      await loc.waitFor({ state: "visible" });
+      await page.waitForTimeout(900);
+      const read = await loc.evaluate(INSPECT, opt);
+      console.log(`tools ${tag} ${name}: ${read.buttons} buttons read, ${read.problems.length} problem(s)`);
+      for (const p of read.problems) found.push(`tools ${tag} ${name}: ${p}`);
+    } catch (e) { found.push(`tools ${tag} ${name}: could not be read (${MSG(e)})`); }
+  };
+  const TB = '[role=toolbar][aria-label="Passage actions"]', LISTEN = '[role=region][aria-label="Listen to the translation"]';
+  await surface("the passage toolbar", () => toolbarOn(), TB, { last: "^Close passage actions$", strip: true, ...(touch ? { tap: true, dock: true } : {}) });
+  if (touch) {
+    // press and hold one word: the toolbar docks with its dictionary form and meaning, and "Look up" (a sign and the word) opens the look-up
+    await surface("the passage toolbar for one word", async () => {
+      const word = page.locator('[data-u="1.1"] [data-w="ἄειδε"]');
+      await page.touchscreen.tap(3, Math.round(h * 0.75));   // (a touch on the bare paper at the left edge, then the word selected by script, as phone-reader.spec.ts does)
+      await word.evaluate((el) => getSelection().selectAllChildren(el));
+      await bar().waitFor();
+      if (!(await bar().getByRole("button", { name: "Look up" }).count())) throw new Error("no Look up button");
+    }, TB, { last: "^Close passage actions$", strip: true, tap: true, dock: true });
+  }
+  await surface("Listen's player", () => study("Listen to the English"), LISTEN, { last: "^Stop and close$", strip: true, ...(touch ? { tap: true } : {}) });
+  await surface("the look-up", lookUp, 'aside[aria-label^="Look-up"]', { close: "^Close look-up$" });
+  await surface("the look-up's whole entry", async () => { await lookUp(); await page.locator('aside[aria-label^="Look-up"]').getByRole("button", { name: "More about it" }).click(); await page.waitForTimeout(1500); },
+    'aside[aria-label^="Look-up"]', { close: "^Close look-up$", back: "^Back$" });
+  await surface("the sentence", async () => {
+    await lookUp();
+    const look = page.locator('aside[aria-label^="Look-up"]');
+    await look.getByRole("button", { name: "More about it" }).click();
+    await page.waitForTimeout(1500);
+    await look.getByRole("button", { name: /How the sentence is built/ }).click();
+    await page.waitForTimeout(1500);
+  }, 'aside[aria-label="How the sentence is built"]', { close: "^Close the sentence$", back: "^Back to " });
+  await surface("Echoes", async () => { await toolbarOn(); await bar().getByRole("button", { name: "Echoes" }).click(); await page.waitForTimeout(2500); }, 'aside[aria-label="Echoes"]', { close: "^Close Echoes$" });
+  await surface("the note editor", async () => { await toolbarOn(); await bar().getByRole("button", { name: "Note", exact: true }).click(); await page.waitForTimeout(800); },
+    '[class*="noteBox"]', {});
+  await surface("Share", async () => { await toolbarOn(); await bar().getByRole("button", { name: "Share", exact: true }).click(); }, "dialog[open]", { close: CLOSE });
+  await surface("Share (the words to mark)", async () => {
+    await toolbarOn(); await bar().getByRole("button", { name: "Share", exact: true }).click();
+    await page.getByRole("dialog").getByRole("button", { name: "Copy as image" }).click(); await page.waitForTimeout(800);
+  }, "dialog[open]", { close: CLOSE, back: "^Back to Share$" });
+  await surface("the notebook picker", async () => { await toolbarOn(); await bar().getByRole("button", { name: "Notebook", exact: true }).click(); }, '[role=dialog][aria-labelledby="nb-pick-title"]', { close: CLOSE });
+  await surface("Find", async () => { await study("Find in this text"); await page.keyboard.type("ανδρ"); await page.waitForTimeout(1200); }, 'aside[aria-label="Find in this text"]', { close: CLOSE, back: BACK_STUDY });
+  await surface("Vocabulary", () => study("Vocabulary for this page"), 'aside[aria-label="Vocabulary for this page"]', { close: CLOSE, back: BACK_STUDY, counts: true });
+  await surface("Places", () => study("Places on this page"), 'aside[aria-label="Places on this page"]', { close: CLOSE, back: BACK_STUDY });
+  await surface("the manuscript", () => study("How it was written"), 'aside[aria-label="The manuscript"]', { close: CLOSE, back: BACK_STUDY, watch: true });
+  await surface("the list of books for a second one", () => study("Open a second book beside this one"), "dialog[open]", { close: CLOSE, back: BACK_STUDY });
+  await ctx.close();
+}
+// the list of differences between two editions (Agamemnon, Smyth against Sidgwick), opened from "List of differences" in the strip above the text
+for (const [w, h, touch] of runs("tools") ? [[1440, 900, false], [390, 844, true]] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch, colorScheme: "light" });
+  try {
+    const page = await bookOpened(ctx, "/read?w=tlg0085.tlg005&ed=perseus-grc2&cmp=1st1K-grc1&at=80", ["tlg0085.tlg005"], '[data-u="80"]');
+    page.setDefaultTimeout(20000);
+    await page.getByRole("region", { name: "Comparing two editions" }).getByText(/in the whole text/).waitFor({ timeout: 60000 });
+    await page.getByRole("region", { name: "Comparing two editions" }).getByRole("button", { name: "List of differences" }).click();
+    const list = page.locator('aside[aria-label="Differences between the editions"]');
+    await list.waitFor({ state: "visible" });
+    await page.waitForTimeout(900);
+    const read = await list.evaluate(INSPECT, { close: "^Close\\b" });
+    console.log(`tools ${tag} the list of differences: ${read.buttons} buttons read, ${read.problems.length} problem(s)`);
+    for (const p of read.problems) found.push(`tools ${tag} the list of differences: ${p}`);
+  } catch (e) { found.push(`tools ${tag} the list of differences: could not be read (${MSG(e)})`); }
+  await ctx.close();
+}
+
+// ---- steps: the manuscript's four steps (Printed, No accents, Capitals, No spaces) on one line at every width the panel takes (a sheet on a phone and a tablet, 340 px at 1100 to 1279,
+// 400 px beside the text), each one line of words and, on a phone, a finger's height; the row not wider than the panel
+for (const [w, h, touch] of runs("tools") || runs("steps") ? [[320, 700, true], [360, 780, true], [390, 844, true], [430, 900, true], [820, 1000, false], [1100, 860, false], [1279, 860, false], [1440, 900, false]] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch, colorScheme: "light" });
+  try {
+    const page = await bookOpened(ctx, ILIAD);
+    page.setDefaultTimeout(10000);
+    await (await openMenu(page, BAR.study)).getByRole("button", { name: "How it was written", exact: true }).click();
+    const panel = page.locator('aside[aria-label="The manuscript"]');
+    await panel.waitFor({ state: "visible" });
+    await page.waitForTimeout(900);
+    const m = await panel.evaluate((a) => {
+      const g = a.querySelector('[role=radiogroup][aria-label="Step"]'), gb = g.getBoundingClientRect(), pb = a.getBoundingClientRect();
+      const steps = [...g.querySelectorAll("button")].map((b) => {
+        const r = b.getBoundingClientRect(), range = document.createRange();
+        range.selectNodeContents(b);
+        return { name: b.textContent, top: Math.round(r.top), left: r.left, right: r.right, height: Math.round(r.height), lines: new Set([...range.getClientRects()].map((q) => Math.round(q.top))).size };
+      });
+      return { steps, gLeft: gb.left, gRight: gb.right, pRight: pb.right, scrollW: a.scrollWidth, clientW: a.clientWidth };
+    });
+    console.log(`steps ${tag}: ` + m.steps.map((x) => `${x.name} ${Math.round(x.right - x.left)}×${x.height}`).join(", ") + ` in ${Math.round(m.gRight - m.gLeft)} px`);
+    if (m.steps.length !== 4) found.push(`steps ${tag}: the manuscript has ${m.steps.length} steps, not four`);
+    for (const x of m.steps) {
+      if (x.lines > 1) found.push(`steps ${tag}: the step "${x.name}" wraps onto ${x.lines} lines`);
+      if (Math.abs(x.top - m.steps[0].top) > 2) found.push(`steps ${tag}: the step "${x.name}" is not on the first step's row`);
+      if (x.left < m.gLeft - 1 || x.right > m.gRight + 1) found.push(`steps ${tag}: the step "${x.name}" runs past the edge of its row`);
+      if (touch && x.height < 43.5) found.push(`steps ${tag}: the step "${x.name}" is ${x.height} px tall, under a finger's size`);
+    }
+    if (m.gRight > m.pRight + 1 || m.scrollW > m.clientW + 1) found.push(`steps ${tag}: the row of steps is wider than the panel (${m.scrollW} px of content in ${m.clientW})`);
+  } catch (e) { found.push(`steps ${tag}: could not be read (${MSG(e)})`); }
+  await ctx.close();
+}
+
+// ---- find: Find's panel at 1100 to 1279 px (a computer with a narrower window, where the side panels are 340 px): as wide as the other side panels (Vocabulary), with nothing in it
+// wider than it (it was a grid track of 398 px, so the panel scrolled sideways and its results ran under the edge), and the Greek not under it
+for (const w of runs("find") ? [1100, 1180, 1279] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: 860 }, serviceWorkers: "block", colorScheme: "light" });
+  try {
+    const page = await bookOpened(ctx, ILIAD);
+    page.setDefaultTimeout(10000);
+    const read = (label) => page.evaluate((label) => {
+      const a = document.querySelector(`aside[aria-label="${label}"]`);
+      if (!a) return null;
+      const r = a.getBoundingClientRect();
+      const words = [...document.querySelectorAll("article [data-u] [data-w]")].filter((x) => { const b = x.getBoundingClientRect(); return b.width && b.bottom > 0 && b.top < innerHeight; });
+      return { width: Math.round(r.width), scrollW: a.scrollWidth, clientW: a.clientWidth, left: Math.round(r.left), textRight: Math.round(Math.max(...words.map((x) => x.getBoundingClientRect().right))),
+        out: [...a.querySelectorAll("*")].filter((e) => { const b = e.getBoundingClientRect(); return b.width && b.right > r.right + 1; }).length };
+    }, label);
+    await page.keyboard.press("Control+f");
+    await page.locator('aside[aria-label="Find in this text"]').waitFor({ state: "visible" });
+    await page.keyboard.type("ανδρ");
+    await page.waitForTimeout(1500);
+    const f = await read("Find in this text");
+    await page.getByRole("button", { name: /^Close find$/ }).click();
+    await page.locator('aside[aria-label="Find in this text"]').waitFor({ state: "detached" });
+    await (await openMenu(page, BAR.study)).getByRole("button", { name: "Vocabulary for this page", exact: true }).click();
+    await page.locator('aside[aria-label="Vocabulary for this page"]').waitFor({ state: "visible" });
+    await page.waitForTimeout(900);
+    const v = await read("Vocabulary for this page");
+    console.log(`find ${tag}: Find ${f.width} px wide (content ${f.scrollW} of ${f.clientW}), Vocabulary ${v.width} px`);
+    if (f.width !== v.width) found.push(`find ${tag}: Find's panel is ${f.width} px wide, the other side panels ${v.width}`);
+    if (f.scrollW > f.clientW + 1) found.push(`find ${tag}: Find's results are wider than its panel (${f.scrollW} px of content in ${f.clientW}), so it scrolls sideways`);
+    if (f.out) found.push(`find ${tag}: ${f.out} thing(s) in Find's panel run past its edge`);
+    if (f.textRight > f.left + 1) found.push(`find ${tag}: the Greek runs under Find's panel (to ${f.textRight} px, the panel starts at ${f.left})`);
+  } catch (e) { found.push(`find ${tag}: could not be read (${MSG(e)})`); }
+  await ctx.close();
+}
+
+// ---- place: "Compare with" keeps the reader's place (Agamemnon: scrolled to about line 80, Study, Compare with, the other edition): the passage at the top is the same one, or the one
+// before; then "Next difference" goes on from there (to line 87), never back to the first passage. (Before the quiet desk's ticket 09 the comparison started again at the top.)
+for (const [w, h, touch] of runs("place") ? [[1440, 900, false], [390, 844, true]] : []) {
+  const tag = `${w}px`;
+  const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch, colorScheme: "light" });
+  try {
+    const page = await bookOpened(ctx, "/read?w=tlg0085.tlg005&tr=perseus-eng3", ["tlg0085.tlg005"], '[data-u="1"]');
+    page.setDefaultTimeout(20000);
+    // the passages in the order of the page, and the one at the top of the screen (the first with a line below the top edge, as the reader reckons it)
+    const keys = () => page.evaluate(() => [...document.querySelectorAll("article [data-key]")].map((r) => r.dataset.key));
+    const topKey = () => page.evaluate(() => [...document.querySelectorAll("article [data-key]")].find((r) => r.getBoundingClientRect().bottom - parseFloat(getComputedStyle(r).paddingBottom) > 24)?.dataset.key ?? null);
+    // (the page's first passage at or after line 80 is brought to the top by scrolling, not by the address, so that the address still says where the page began)
+    await page.evaluate(() => [...document.querySelectorAll("article [data-key]")].find((r) => parseFloat(r.dataset.key) >= 80).scrollIntoView({ block: "start", behavior: "instant" }));
+    await page.waitForTimeout(1500);
+    const study = await openMenu(page, BAR.study);   // (on a phone this scrolls up a little to bring the bar back, so the passage at the top is read once Study is open)
+    await study.getByRole("button", { name: "Compare with another edition", exact: true }).click();
+    const before = await topKey();
+    await study.getByRole("combobox", { name: "Compare with" }).selectOption("1st1K-grc1");
+    await page.getByRole("region", { name: "Comparing two editions" }).getByText(/in the whole text/).waitFor({ timeout: 60000 });
+    await page.waitForTimeout(2500);
+    const after = await topKey(), order = await keys();
+    console.log(`place ${tag}: the passage at the top was ${before}, with the comparison open it is ${after}`);
+    const i0 = order.indexOf(before), i1 = order.indexOf(after);
+    if (!before || parseFloat(before) < 60) found.push(`place ${tag}: the page could not be scrolled to about line 80 (it stands at ${before})`);
+    else if (i1 < 0 || i1 < i0 - 1 || i1 > i0 + 1) found.push(`place ${tag}: choosing an edition to compare with moves the reader from ${before} to ${after} (it must keep the passage, or the one before)`);
+    // the next difference, from Study (Compare, under Go deeper): on from here, twice, and never back to the first passage
+    let last = parseFloat(before ?? "0");   // (on from where the reader was, even if the comparison has lost the place)
+    for (const n of [1, 2]) {
+      const s = await openMenu(page, BAR.study);
+      if (!(await s.getByRole("button", { name: "Next difference", exact: true }).count())) await s.getByRole("button", { name: "Compare with another edition", exact: true }).click();
+      await s.getByRole("button", { name: "Next difference", exact: true }).click();
+      await page.waitForTimeout(1800);
+      const k = await topKey();
+      console.log(`place ${tag}: Next difference ${n} -> ${k}`);
+      if (!(parseFloat(k ?? "0") > last)) found.push(`place ${tag}: "Next difference" (${n}) goes to ${k}, not on from ${last}${parseFloat(k ?? "0") < parseFloat(before ?? "0") ? ", back towards the first passage" : ""}`);
+      last = parseFloat(k ?? "0");
+      await page.keyboard.press("Escape");
+      await page.waitForTimeout(400);
+    }
+  } catch (e) { found.push(`place ${tag}: could not be read (${MSG(e)})`); }
+  await ctx.close();
+}
+
+// ---- nt: the verse numbers of the New Testament (John) and the Septuagint (Genesis) on a phone (390 × 844): each number at the left edge level with its verse's first line, the
+// Greek of every verse starting at one edge, the verses running on as text. (The one-book phone rules, later in the stylesheet, overrode the .verses rules: the numbers hung level
+// with the last lines and the verses stood far apart, some set in from the left.)
+for (const [work, name] of runs("nt") ? [["tlg0031.tlg004", "John"], ["tlg0527.tlg001", "Genesis"]] : []) {
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block", hasTouch: true, colorScheme: "light" });
+  try {
+    const page = await bookOpened(ctx, `/read?w=${work}`, [work], "article section[data-key] [data-w]");
+    // (the first verse has the book's heading above its Greek, so the reading starts at the second)
+    const rows = await page.evaluate(() => [...document.querySelectorAll("article section[data-key]")].slice(1, 7).map((s) => {
+      const n = s.querySelector("button[data-row]")?.getBoundingClientRect(), f = s.querySelector("[data-u] [data-w]")?.getBoundingClientRect();
+      return { key: s.dataset.key, numMid: n ? n.top + n.height / 2 : -1, numRight: n?.right ?? -1, wordMid: f ? f.top + f.height / 2 : -1, wordLeft: f?.left ?? -1 };
+    }));
+    console.log(`nt ${name}: ` + rows.map((r) => `${r.key} number ${Math.round(r.numMid)} / first line ${Math.round(r.wordMid)}, Greek from ${Math.round(r.wordLeft)}`).join("; "));
+    if (rows.length < 4) found.push(`nt ${name}: too few verses on the page to read (${rows.length})`);
+    for (const r of rows) {
+      if (Math.abs(r.numMid - r.wordMid) > 10) found.push(`nt ${name} 390px: the number of verse ${r.key} is ${Math.round(r.numMid - r.wordMid)} px from its first line (it must be level with it)`);
+      if (r.numRight > r.wordLeft) found.push(`nt ${name} 390px: the number of verse ${r.key} is not beside its Greek`);
+    }
+    const lefts = rows.map((r) => r.wordLeft);
+    if (Math.max(...lefts) - Math.min(...lefts) > 3) found.push(`nt ${name} 390px: the verses do not start at one edge (their Greek starts from ${Math.round(Math.min(...lefts))} to ${Math.round(Math.max(...lefts))} px)`);
+  } catch (e) { found.push(`nt ${name} 390px: could not be read (${MSG(e)})`); }
   await ctx.close();
 }
 

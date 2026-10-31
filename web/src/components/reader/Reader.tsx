@@ -184,7 +184,7 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
                   ? <Blocks blocks={row.trans} greek={false} keyPrefix={`o${row.key}`} margin={row.key} />
                   : row.cont ? <span className={styles.untr}>The English for these lines begins on the page before.</span>
                   : <span className={styles.untr} data-untranslated=""><b>Not translated.</b> This translation leaves this passage out.</span>}
-                <p className={styles.oneCredit}>{english.credit}</p>
+                <p className={styles.oneCredit} data-silent="">{english.credit}</p>
               </div>
             )}
           </div>
@@ -362,6 +362,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     if (!keys.delete(key)) keys.add(key);
     return { scope: oneScope, keys };
   });
+  // Listen, with the Greek alone, opens the English of the passage it is reading and closes it when it moves on; what the reader opened by hand
+  // (openOnes) it never closes (the quiet desk, the reader's tools, the owner, 2026-10-30)
+  const [listenOne, setListenOne] = useState<string | null>(null);
   // the translation's own credit, as the editions line names it ("Murray, 1924") and the collection it comes from, under the
   // site's licence (Footer.tsx); a private book names only its own description
   const trCredit = trText && work ? `${describe(trText, work.texts)}${trText.urn.startsWith("mine:") ? "" : `, from ${COLLECTION_NAME[trText.col]}. CC BY-SA 4.0.`}` : "";
@@ -1707,7 +1710,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
                     </span>
                     <button type="button" className="chip" onClick={() => goDiff(-1)} disabled={!allDiffs.length}><Icon name="back" />Previous difference</button>
                     <button type="button" className="chip" onClick={() => goDiff(1)} disabled={!allDiffs.length}>Next difference<Icon name="next" /></button>
-                    <button type="button" className="chip" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); }}><Icon name="list" />List them all</button>
+                    <button type="button" className="chip" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); }}><Icon name="variants" />List of differences</button>
                     <label className={styles.compareCheck}>
                       <input type="checkbox" checked={strict === "spelling"} onChange={(e) => nav.go(setParam("cmpx", e.target.checked ? "1" : null))} /> Spelling too
                     </label>
@@ -1761,7 +1764,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
           <article ref={textRef} data-reading="" className={`wrap ${styles.text} ${metre ? styles.metreOn : ""}`} onClick={onTextClick} onKeyDown={onTextKey} onMouseUp={onTextMouseUp} onDragStart={onDragStart} aria-label={`${cite}, ${chunkInfo.label}`}>
             {rows.map((r) => <RowView key={r.key} row={r} marks={marksByRow.get(r.key) ?? noMarks} openNote={openNote} onCloseNote={() => setOpenNote(null)} translit={translit} metre={metre} verses={verses} inBook={inBook}
               tryFirst={tryFirst && !!trText && !cmpText && columns === "both"} trGreek={!!cmpText}
-              english={trText && !cmpText && columns === "greek" ? { open: openOnes.has(r.key), credit: trCredit, onToggle: () => toggleOne(r.key) } : null} />)}
+              english={trText && !cmpText && columns === "greek" ? { open: openOnes.has(r.key) || listenOne === r.key, credit: trCredit, onToggle: () => (listenOne === r.key && !openOnes.has(r.key) ? setListenOne(null) : toggleOne(r.key)) } : null} />)}
           </article>
           {sel && <PassageToolbar sel={sel} onAction={act} onClose={() => { setSel(null); getSelection()?.removeAllRanges(); }}
             xref={split ? (pendingXref && pendingXref.pane !== pane ? "here" : "start") : null}
@@ -1830,7 +1833,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
         </PanelGuard>
       )}
       {listenOpen && trText && !cmpText && work && rows.length > 0 && (
-        <Listen rows={rows} root={root} startKey={topRow} title={work.title}
+        <Listen rows={rows} root={root} startKey={topRow} title={work.title} alone={columns === "greek"} onShowEnglish={setListenOne}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
       )}
       {talkOpen && !isPrivate && !lookSheet && !echo && (

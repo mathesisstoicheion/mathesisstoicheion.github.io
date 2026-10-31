@@ -36,7 +36,7 @@ test("Echoes of a line: exact, other forms and near repetitions, and a jump ther
   await panel.getByRole("button", { name: /^16\.48/ }).click();
   await expect(page).toHaveURL(/at=16\.48/);
   await expect(page.locator('[data-u="16.48"]')).toBeVisible();
-  await panel.getByRole("button", { name: "← Back to Iliad 1.84" }).click();
+  await panel.getByRole("button", { name: "Back to Iliad 1.84" }).click();
   await expect(page).toHaveURL(/at=1\.84/);
 });
 

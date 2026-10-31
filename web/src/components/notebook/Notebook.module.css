@@ -17,9 +17,8 @@
 }
 .pickHead { display: flex; justify-content: space-between; gap: var(--space-3); align-items: start; }
 .pickTitle { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
-.x { width: 36px; height: 36px; flex: none; font-size: var(--step-1); line-height: 1; background: transparent; border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
-.x:hover, .x:focus-visible { color: var(--rubric); border-color: var(--ink-3); }
-@media (pointer: coarse) { .x { width: var(--tap); height: var(--tap); } }
+/* (the × is an .icon-btn, globals.css, a size smaller here: the quiet desk, the reader's tools, the owner, 2026-10-30) */
+.x { font-size: var(--step-1); }
 /* the notebooks to choose from: entries under hairlines, the name turning red under the hand */
 .books, .bookList { list-style: none; margin: 0; padding: 0; display: grid; }
 .books button, .bookList button {
@@ -27,7 +26,8 @@
   background: transparent; box-shadow: var(--cut-over); color: var(--ink); cursor: pointer;
 }
 .books b, .bookList b { font: 400 var(--step-sub) / 1.25 var(--f-display); transition: color var(--dur-quick) var(--ease); }
-.books button:hover b, .bookList button:hover b, .books button:focus-visible b, .bookList button:focus-visible b { color: var(--rubric); }
+@media (hover: hover) { .books button:hover b, .bookList button:hover b { color: var(--rubric); } }
+.books button:focus-visible b, .bookList button:focus-visible b { color: var(--rubric); }
 .books span, .bookList span { font-size: var(--step--1); color: var(--ink-2); }
 .newBook { display: grid; gap: 6px; }
 .newBook label { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
@@ -58,7 +58,8 @@
 .itemHead { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); }
 .itemBtns { display: inline-flex; gap: var(--space-1); }
 .itemBtns button { width: 32px; height: 32px; border: 1px solid var(--rule); border-radius: var(--radius); background: transparent; color: var(--ink); cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
-.itemBtns button:not(:disabled):hover, .itemBtns button:not(:disabled):focus-visible { color: var(--rubric); border-color: var(--ink-3); }
+.itemBtns button:not(:disabled):focus-visible { color: var(--rubric); border-color: var(--ink-3); }
+@media (hover: hover) { .itemBtns button:not(:disabled):hover { color: var(--rubric); border-color: var(--ink-3); } }
 .itemBtns button:disabled { opacity: 0.35; cursor: default; }
 @media (pointer: coarse) { .itemBtns button { width: var(--tap); height: var(--tap); } }
 .body { display: grid; gap: var(--space-1); }

@@ -9,6 +9,7 @@ import { placeMarks, placesOnPage, type PagePlace } from "@/lib/page-places";
 import { simplifyRing } from "@/components/map/draw";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import type { TeiDoc } from "@/lib/tei/types";
+import Icon from "@/components/Icon";
 import styles from "./Places.module.css";
 import rs from "./Reader.module.css";
 import { SidePanel, type Back } from "./Panel";
@@ -208,7 +209,7 @@ export default function PlacesPanel({ work, doc, pageKeys, onJump, onMarks, onCl
                 <p className={styles.refs}>
                   {(allRefs === p.place.id ? p.refs : p.refs.slice(0, 8)).map((r) => <button key={r} type="button" className="row-btn" onClick={() => onJump(r)} aria-label={`Go to ${r}`}>{r}</button>)}
                   {p.refs.length > 8 && allRefs !== p.place.id && <button type="button" className={`row-btn ${styles.more}`} onClick={() => setAllRefs(p.place.id)} aria-label={`Show all ${p.refs.length} passages`}>+{p.refs.length - 8}</button>}
-                  <Link href={`/stoa/periplus?p=${p.place.id}`} transitionTypes={["page-turn"]}>On the big map →</Link>
+                  <Link href={`/stoa/periplus?p=${p.place.id}`} transitionTypes={["page-turn"]}><Icon name="map" />On the big map</Link>
                 </p>
               </div>
             </li>

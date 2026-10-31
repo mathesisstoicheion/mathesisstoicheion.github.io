@@ -6,6 +6,7 @@ import NoteField, { type NoteFieldHandle } from "@/components/notes/NoteField";
 import RichText from "@/components/notes/RichText";
 import TagInput from "@/components/notes/TagInput";
 import notes from "@/components/notes/Notes.module.css";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 
 /** Every tag used on any note loaded so far, for suggestions. */
@@ -43,11 +44,11 @@ export default function NoteEditor({ mark, startOpen, onClose, head }: { mark: M
         {head ?? <span className="label">Your note · <span lang="grc">{mark.quote.length > 60 ? mark.quote.slice(0, 60) + "…" : mark.quote}</span></span>}
         <span className={styles.noteActs}>
           {editing
-            ? <button type="button" className="chip" onClick={done}>{saved ? "Done" : "Saving…"}</button>
-            : <button type="button" className="chip" onClick={() => setEditing(true)}>Edit</button>}
+            ? <button type="button" className="chip" onClick={done}><Icon name="check" />{saved ? "Done" : "Saving…"}</button>
+            : <button type="button" className="chip" onClick={() => setEditing(true)}><Icon name="edit" />Edit</button>}
           {confirm
-            ? <><button type="button" className="chip" onClick={() => remove(mark.id)}>Delete note</button><button type="button" className="chip" onClick={() => setConfirm(false)}>Keep</button></>
-            : <button type="button" className="chip" onClick={() => setConfirm(true)}>Delete</button>}
+            ? <><button type="button" className="chip" onClick={() => remove(mark.id)}><Icon name="delete" />Delete note</button><button type="button" className="chip" onClick={() => setConfirm(false)}><Icon name="undo" />Keep</button></>
+            : <button type="button" className="chip" onClick={() => setConfirm(true)}><Icon name="delete" />Delete</button>}
         </span>
       </div>
       {editing ? (

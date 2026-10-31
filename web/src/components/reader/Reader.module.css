@@ -14,7 +14,7 @@
 .top { position: relative; padding-block: clamp(var(--space-5), 4vw, var(--space-6)) var(--space-4); display: grid; gap: var(--space-3); }
 .crumbs { display: flex; flex-wrap: wrap; gap: var(--space-2); font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.06em; color: var(--ink-2); }
 .crumbs a { text-decoration: none; padding-block: var(--space-1); }  /* taller than the words, for a finger */
-.crumbs a:hover { color: var(--accent); }
+@media (hover: hover) { .crumbs a:hover { color: var(--accent); } }
 .title { font-family: var(--f-title); font-size: clamp(2.2rem, 4.6vw, 3.6rem); }
 .title::first-letter { color: var(--accent); }
 .titleGr { display: block; font-size: 0.5em; color: var(--accent); margin-top: var(--space-1); }
@@ -27,15 +27,6 @@
 
 /* a leaf of the same paper laid over the page, or a panel beside it, inks in where it stands (decision 3) */
 @keyframes leaf-in { from { opacity: 0; } }
-.seg { display: inline-flex; border: 1px solid var(--rule); }
-.seg button {
-  border: 0; border-radius: 0; background: transparent; padding: var(--space-2) var(--space-2); cursor: pointer;
-  font: 500 var(--step--2) / 1 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2);
-  transition: color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
-}
-.seg button:hover:not([aria-checked="true"]):not(:disabled) { color: var(--rubric); }
-.seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
-.seg button:disabled { opacity: 0.4; cursor: default; }
 
 .status { padding-block: var(--space-7); display: grid; gap: var(--space-4); justify-items: start; }
 .loadingBand { width: 220px; }
@@ -85,7 +76,7 @@
   background: transparent; border: 0; padding: var(--hair-2) 0; cursor: copy; font-variant-numeric: oldstyle-nums tabular-nums;
   max-width: 100%; overflow-wrap: anywhere;  /* long references wrap in the margin instead of running into the text */
 }
-.ref button:hover { text-decoration: underline; }
+@media (hover: hover) { .ref button:hover { text-decoration: underline; } }
 
 .grc { font-family: var(--f-greek); font-size: calc(var(--greek-size) * var(--fit, 1)); line-height: var(--reading-leading); }
 .tr { font-size: var(--step-0); line-height: 1.62; color: var(--ink-2); }
@@ -131,7 +122,8 @@
 
 /* a word: red under the hand; the word being looked up sits on a soft tone of the paper (the quiet desk, ticket 04) */
 .w { cursor: pointer; transition: color var(--dur-quick) var(--ease); }
-.w:hover, .w:focus-visible { color: var(--rubric); }
+.w:focus-visible { color: var(--rubric); }
+@media (hover: hover) { .w:hover { color: var(--rubric); } }
 .w:focus-visible { outline: 1px solid var(--rubric); outline-offset: 2px; }
 .sel { color: var(--ink); background: var(--word-on); outline: var(--hair-2) solid var(--word-on); }
 
@@ -204,9 +196,9 @@
 .cardRole { font-size: var(--step-0); line-height: 1.4; color: var(--ink); }
 .cardGrammar { color: var(--ink-2); }
 .cardRow { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-4); }
-.cardRow :global(.text-btn) { display: inline-flex; align-items: center; }
+.cardRow :global(.text-btn) { display: inline-flex; align-items: center; gap: var(--space-1); }
 .cardStep:global(.text-btn) { color: var(--ink-2); text-decoration: none; }
-.cardStep:global(.text-btn):hover { color: var(--rubric); }
+@media (hover: hover) { .cardStep:global(.text-btn):hover { color: var(--rubric); } }
 .cardMore:global(.text-btn) { margin-left: auto; color: var(--rubric); }
 /* the second layer's head: "‹ Back" beside the word, level with it; and a panel's "‹ Back to μῆνις" above its title (Panel.tsx).
    A quiet button at the panel's reading size, with room around it and a finger's height on a touch screen (the quiet desk,
@@ -215,7 +207,7 @@
   flex: none; display: inline-flex; align-items: center; gap: var(--space-1); min-height: var(--space-6);
   padding-inline: var(--space-2); margin-left: calc(-1 * var(--space-2)); font-size: var(--step-0); color: var(--ink-2); text-decoration: none;
 }
-.cardBack:global(.text-btn):hover, .headBack:global(.text-btn):hover { color: var(--rubric); }
+@media (hover: hover) { .cardBack:global(.text-btn):hover, .headBack:global(.text-btn):hover { color: var(--rubric); } }
 .cardBack:global(.text-btn) { align-self: center; margin-right: var(--space-1); }
 .headMain { flex: 1; min-width: 0; display: grid; gap: var(--space-1); }
 .headBack:global(.text-btn) { justify-self: start; }
@@ -257,9 +249,11 @@
   color: var(--ink); font: inherit; font-size: var(--step-0); line-height: 1.35; text-align: left; text-decoration: none;
   transition: color var(--dur-quick) var(--ease);
 }
-.way:hover { color: var(--rubric); }
+@media (hover: hover) { .way:hover { color: var(--rubric); } }
 .ways li:last-child > .way { box-shadow: none; }
-.wayText { min-width: 0; overflow-wrap: anywhere; text-wrap: pretty; }
+/* the sign of where the row goes, before its words (the quiet desk, the reader's tools, the owner, 2026-10-30: icons only, the rows keep their looks) */
+.way > :global([data-icon]) { flex: none; color: var(--ink-2); }
+.wayText { flex: 1 1 auto; min-width: 0; overflow-wrap: anywhere; text-wrap: pretty; }
 .wayWhy { display: block; font-size: var(--step--1); color: var(--ink-2); text-wrap: pretty; }
 .wayMark { flex: none; color: var(--rubric); font-size: var(--step-1); line-height: 1; }
 @media (pointer: coarse) { .way { min-height: var(--tap); } }
@@ -274,23 +268,29 @@
 .lsjGr { font-family: var(--f-greek); }   /* the size of the entry's line */
 .senseN { font-family: var(--f-label); color: var(--accent); }
 .cite { color: var(--ink-2); text-decoration-color: var(--accent); text-underline-offset: 2px; }
-.cite:hover { color: var(--accent); }
+@media (hover: hover) { .cite:hover { color: var(--accent); } }
 .fine ul { margin: var(--space-1) 0 0; padding-left: 1.1em; }
 
 /* ------------------------------------------------------------ passage tools */
+/* The passage toolbar (PassageToolbar.tsx; the quiet desk, the reader's tools, the owner, 2026-10-30: paper, never a black slip): a leaf of the
+   page's paper with a hairline frame and the bar's soft shadow. The site's quiet buttons stand in it (a sign and a short word), the four colours
+   are dots, and Close is the last button. A computer floats it by the words, in one row; a phone docks it where the foot bar stands (below). */
 .toolbar {
   position: fixed; z-index: 55; opacity: 0; transition: opacity 0.15s;
-  display: flex; flex-wrap: wrap; align-items: center; gap: var(--hair-2); max-width: calc(100vw - 24px);
-  padding: var(--space-1); background: var(--inv-bg); --accent: var(--accent-on-ink); --accent-ink: var(--accent-ink-on-ink); --ink-2: var(--ink-2-on-ink); color: var(--inv-fg); border-radius: var(--radius); box-shadow: 0 16px 36px -14px var(--shadow);
+  display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1); max-width: calc(100vw - 24px);
+  padding: var(--space-1); background: var(--bg); color: var(--ink); border-radius: var(--radius); box-shadow: var(--rule-box), var(--shadow-leaf);
 }
-.toolbar button { display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-2) var(--space-2); background: transparent; border: 0; border-radius: var(--radius); font-size: var(--step--1); color: inherit; }
-.toolbar button:hover:not(:disabled) { background: color-mix(in srgb, var(--inv-fg) 16%, transparent); }
-.toolbar button:disabled { opacity: 0.45; cursor: default; }
-.toolbar svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; }
-.swatches { display: inline-flex; gap: var(--space-1); padding: 0 var(--space-2); box-shadow: var(--rule-left); }
-.swatches + button { box-shadow: var(--rule-left); }   /* (there is no cut for a right-hand edge, so the group's far side is the next button's left edge) */
-.swatches button { width: 20px; height: 20px; padding: 0; border-radius: var(--radius-round); border: 2px solid var(--inv-fg); }
-.sw-red { background: var(--pen-red) !important; } .sw-ochre { background: var(--pen-ochre) !important; } .sw-blue { background: var(--pen-blue) !important; } .sw-green { background: var(--pen-green) !important; }
+/* the two groups: keeping the place (a mark, a favourite, a note, a colour), then taking it elsewhere (a notebook, someone, other texts) */
+.tbRow { display: flex; align-items: center; gap: var(--space-1); }
+.tbRow + .tbRow { padding-left: var(--space-1); box-shadow: var(--rule-left); }
+.toolbar :global(.btn.small) { padding-inline: var(--space-2); gap: var(--space-1); }
+.tbClose:global(.icon-btn) { font-size: var(--step-1); box-shadow: var(--rule-left); }
+/* the four colours: a dot in the pen's colour inside a button the size of a finger's touch (the site's icon-btn, placed and sized here) */
+.swatches { display: inline-flex; align-items: center; gap: 0; padding-left: var(--space-1); margin-left: var(--space-1); box-shadow: var(--rule-left); }
+.swatch:global(.icon-btn) { min-width: 28px; width: 28px; }
+.swatch::before { content: ""; width: 18px; height: 18px; border-radius: var(--radius-round); background: var(--pen); box-shadow: var(--rule-round); transition: box-shadow var(--dur-quick) var(--ease); }
+@media (hover: hover) { .swatch:hover::before { box-shadow: 0 0 0 var(--hair-2) var(--ink-2); } }
+.sw-red { --pen: var(--pen-red); } .sw-ochre { --pen: var(--pen-ochre); } .sw-blue { --pen: var(--pen-blue); } .sw-green { --pen: var(--pen-green); }
 
 .w[data-hl] { border-radius: var(--radius); }
 .w[data-hl="red"] { background: color-mix(in srgb, var(--pen-red) 32%, transparent); }
@@ -320,9 +320,11 @@
 .shareIn { display: grid; gap: var(--space-4); padding: var(--space-5) var(--space-5); }
 .shareIn h2 { font-size: var(--step-1); }
 .shareMenu { display: flex; flex-wrap: wrap; gap: var(--space-2); justify-content: flex-end; }
+/* a phone: the buttons one under another, the one to press last, rather than two and a lone third */
+@media (max-width: 520px) { .shareMenu { flex-direction: column; align-items: stretch; } }
 .pickWords { display: flex; flex-wrap: wrap; gap: var(--space-1); font-family: var(--f-greek); font-size: var(--step-1); }
 .pickWords button { padding: var(--hair-2) var(--space-1); background: transparent; border: 1px solid transparent; border-radius: var(--radius); font: inherit; }
-.pickWords button:hover { background: var(--bg-2); }
+@media (hover: hover) { .pickWords button:hover { background: var(--bg-2); } }
 .picked { background: color-mix(in srgb, var(--accent) 22%, transparent) !important; color: var(--accent); }
 .shareOpts { display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-4); align-items: center; }
 .previewBox { max-height: 55vh; overflow: auto; box-shadow: var(--rule-round); border-radius: var(--radius); background: var(--bg-2); display: grid; place-items: center; min-height: 120px; }
@@ -347,13 +349,12 @@
 .activePane { --pane-cap: inset 0 2px 0 var(--accent); box-shadow: var(--pane-cap); }
 .pane + .activePane { box-shadow: var(--rule-left), var(--pane-cap); }
 .paneBar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; padding: var(--space-2) clamp(var(--space-3), 2vw, var(--space-5)) 0; }
-.linkHere { background: var(--accent) !important; color: var(--accent-ink) !important; }
 
 .pickerInput { font: inherit; font-size: var(--step-0); color: var(--ink); border-radius: var(--radius); padding: var(--space-2) var(--space-3); }
 .pickerList { list-style: none; margin: 0; padding: 0; max-height: 50vh; overflow-y: auto; box-shadow: var(--rule-over); }
 .pickerList button { width: 100%; display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline; text-align: left; padding: var(--space-2) var(--space-1); background: transparent; border: 0; box-shadow: var(--rule-under); }
 .pickerList li:last-child button { box-shadow: none; }
-.pickerList button:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .pickerList button:hover { background-color: var(--bg-2); } }
 .enBadge { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.05em; color: var(--blue); border: 1px solid transparent; background: var(--rule-2); box-shadow: var(--rule-box); border-radius: var(--radius); padding: 0 var(--space-2); }
 
 /* each pane adapts to its own width */
@@ -390,16 +391,20 @@
 .verses .row:last-child > * { padding-bottom: var(--space-3); }
 .verses .ref button[data-row] { font-size: var(--step--2); padding-top: 0.5em; }
 .verses .grc .p, .verses .tr .p { margin-bottom: 0; }
+/* On a phone (and a pane narrower than 520 px) the verse number keeps a narrow column at the left, level with the verse's first line, and the verses run on
+   as text. This block is written with `.reader.verses` so that it wins over the one-book phone rules further down (`.single .row`, `.single .ref`,
+   `.single .tr`, equal in weight and later in the file), which had put each verse number at the page's left edge level with the verse's last lines and
+   the verses far apart (found with ticket 08; the quiet desk, the reader's tools, the owner, 2026-10-30). */
 @container (max-width: 520px) {
-  .verses .row, .verses.cols-greek .row, .verses.cols-trans .row { grid-template-columns: 1.8em minmax(0, 1fr); column-gap: var(--space-2); padding-block: var(--space-1) var(--space-3); }
-  .verses .ref, .verses .grc, .verses .tr, .verses .row:first-child > *, .verses .row:last-child > * { padding-block: 0; }
-  .verses .ref { grid-row: 1 / span 2; flex-direction: column; align-items: stretch; gap: var(--hair-2); margin: 0; }
-  .verses .ref button[data-row] { min-height: 30px; min-width: 0; padding: 0.55em 0 0; text-align: left; }
-  .verses .marks button { width: 26px; height: 26px; padding: var(--space-1); }
-  .verses .grc, .verses .tr, .verses .notes { grid-column: 2; }
+  .reader.verses .row, .reader.verses.cols-greek .row, .reader.verses.cols-trans .row { grid-template-columns: 1.8em minmax(0, 1fr); column-gap: var(--space-2); row-gap: 0; padding-block: var(--space-1) var(--space-3); }
+  .reader.verses .ref, .reader.verses .grc, .reader.verses .tr, .reader.verses .row:first-child > *, .reader.verses .row:last-child > * { padding-block: 0; }
+  .reader.verses .ref { grid-row: 1 / span 2; flex-direction: column; justify-content: flex-start; align-items: stretch; gap: var(--hair-2); margin: 0; text-align: left; }
+  .reader.verses .ref button[data-row] { min-height: 30px; min-width: 0; padding: 0.55em 0 0; text-align: left; }
+  .reader.verses .marks button { width: 26px; height: 26px; padding: var(--space-1); }
+  .reader.verses .grc, .reader.verses .tr, .reader.verses .notes { grid-column: 2; }
   /* the English sits right under its verse, set smaller, so each pair reads as one */
-  .verses .tr { margin-top: var(--space-1); padding-top: 0; box-shadow: none; font-size: var(--step-0); line-height: 1.6; }
-  .verses.cols-trans .tr { font-size: var(--step-0); margin-top: 0; }
+  .reader.verses .tr { margin-top: var(--space-1); padding-top: 0; box-shadow: none; font-size: var(--step-0); line-height: 1.6; }
+  .reader.verses.cols-trans .tr { font-size: var(--step-0); margin-top: 0; }
 }
 
 /* ------------------------------------------------------------ reading aids (their switches are Study's: ReaderBar.module.css) */
@@ -431,9 +436,10 @@ p.translit { margin: -0.3em 0 0.8em; }
 .vocab { list-style: none; margin: 0; padding: 0; display: grid; }
 .vocab button { width: 100%; display: grid; grid-template-columns: auto auto 1fr; gap: var(--space-1) var(--space-2); align-items: baseline; text-align: left; padding: var(--space-2) var(--space-1); background: transparent; border: 0; box-shadow: var(--rule-under); }
 .vocab li:last-child button { box-shadow: none; }
-.vocab button:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .vocab button:hover { background-color: var(--bg-2); } }
 .vocabLemma { font-family: var(--f-greek); font-size: var(--step-sub); }
-.vocabN { font-family: var(--f-label); font-size: var(--step--2); color: var(--accent); font-variant-numeric: tabular-nums; }
+/* a count and a rank are ink-2, not red: red is for numbers that are links, the progress mark and "More about it" (the quiet desk, the reader's tools, the owner, 2026-10-30) */
+.vocabN { font-family: var(--f-label); font-size: var(--step--2); color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .vocabGloss { grid-column: 1 / -1; font-size: var(--step--1); color: var(--ink-2); }
 
 /* ------------------------------------------------------------ metre */
@@ -480,7 +486,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .metreQ::before { content: "?"; }
 .beatBtn { border: 1px solid var(--rule); background: var(--bg); color: var(--accent); opacity: 0.25; transition: opacity var(--dur-quick), border-color var(--dur-quick); }
 .line:hover .beatBtn, .beatBtn:focus-visible, .playing .beatBtn { opacity: 1; }
-.beatBtn:hover { border-color: var(--rubric); }
+@media (hover: hover) { .beatBtn:hover { border-color: var(--rubric); } }
 @media (hover: none) { .beatBtn { opacity: 0.6; } }
 @media (pointer: coarse) { .beatBtn, .metreQ { width: 1.8em; height: 1.8em; top: 1.45em; } }
 .metreQ { font-family: var(--f-label); color: var(--ochre); border: 1px solid var(--rule); background: var(--bg); cursor: help; }
@@ -539,36 +545,42 @@ p.translit { margin: -0.3em 0 0.8em; }
 @media (max-width: 760px) {
   /* two fingers on the text resize the Greek (Reader.tsx) instead of zooming the page */
   .reader:not(.floating):not(.pane) .text { touch-action: pan-x pan-y; }
-  .seg button { min-height: var(--tap); padding-inline: var(--space-4); }
 }
 
-/* The passage toolbar: a × and the quick meaning of one word are for phones, where it docks along the bottom
-   with finger-sized buttons (PassageToolbar.tsx). */
-.tbClose, .quickRow { display: none; }
+/* The passage toolbar on a phone (PassageToolbar.tsx): docked along the bottom where the foot bar stands (the bar steps aside for it,
+   ReaderBar.module.css), paper with a hairline along its top as the bar has, in two rows of finger-sized buttons, each a sign over its
+   word: keeping the place first, then taking it elsewhere with Close at the end. The quick meaning of one word, and "Look up", are above. */
+.quickRow { display: none; }
 @media (max-width: 760px) {
   .reader:not(.floating) .toolbar {
-    left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; border-radius: var(--radius);
-    flex-wrap: wrap; justify-content: center; gap: var(--hair-2) var(--space-1);
-    padding: var(--space-2) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-2) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
+    left: 0 !important; right: 0; top: auto !important; bottom: 0; max-width: none; gap: 0;
+    /* four columns shared by both rows, so each button stands over the one below it: Bookmark over Notebook, Favourite over Share, Note over
+       Echoes, and the four colours over Close at the right end */
+    display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)) auto; justify-items: center;
+    padding: var(--space-2) max(var(--space-2), env(safe-area-inset-right, 0px)) calc(var(--space-1) + env(safe-area-inset-bottom, 0px)) max(var(--space-2), env(safe-area-inset-left, 0px));
+    box-shadow: var(--rule-over), var(--shadow-sheet);
     animation: sheet-up var(--dur) var(--ease) backwards;
   }
-  .reader:not(.floating) .toolbar button { flex: none; min-height: var(--tap); padding: var(--space-1) var(--space-3); flex-direction: column; gap: var(--hair-2); font-size: var(--step--2); }
-  .reader:not(.floating) .toolbar svg { width: 20px; height: 20px; }
-  .reader:not(.floating) .swatches { align-self: center; gap: var(--space-2); padding: 0 var(--space-2); }
-  .reader:not(.floating) .swatches button { width: 30px; height: 30px; min-height: 30px; padding: 0; }
-  .reader:not(.floating) .swatches button::after { content: ""; position: absolute; inset: calc(-1 * var(--space-2)) calc(-1 * var(--space-1)); }
-  .reader:not(.floating) .swatches button { position: relative; }
-  .reader:not(.floating) .toolbar .tbClose { display: grid; place-items: center; order: 99; width: var(--tap); font-size: var(--step-2); line-height: 1; }
+  .reader:not(.floating) .tbRow { display: contents; }
+  .reader:not(.floating) .tbRow > :global(.btn.small) { flex: none; flex-direction: column; gap: var(--hair-2); min-height: var(--tap); padding: var(--space-1) var(--space-2); font-size: var(--step--2); white-space: nowrap; }
+  .reader:not(.floating) .tbRow > :global(.btn.small) > svg { width: 20px; height: 20px; }
+  .reader:not(.floating) .swatches { margin-left: 0; padding-left: 0; box-shadow: none; }
+  .reader:not(.floating) .swatch:global(.icon-btn) { min-width: 36px; width: 36px; min-height: var(--tap); }
+  .reader:not(.floating) .swatch::before { width: 24px; height: 24px; }
+  .reader:not(.floating) .tbClose:global(.icon-btn) { grid-column: -2 / -1; justify-self: end; min-width: var(--tap); min-height: var(--tap); box-shadow: none; }
   .quickRow {
-    display: flex; flex-basis: 100%; align-items: center; justify-content: space-between; gap: var(--space-2);
-    padding: var(--space-1) var(--space-1) var(--space-2); box-shadow: var(--rule-under); margin-bottom: var(--space-1);
+    display: flex; grid-column: 1 / -1; align-items: center; justify-content: space-between; gap: var(--space-2);
+    padding: 0 var(--space-1) var(--space-2); box-shadow: var(--rule-under); margin-bottom: var(--space-1);
   }
-  .quickRow p { margin: 0; font-size: var(--step-0); line-height: 1.35; }
-  .quickRow b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-1); color: var(--accent); margin-right: var(--space-1); }
-  /* on the ink slip, a frame of paper colour faintly (the sample's switcher buttons) */
-  .quickRow button { flex-direction: row !important; font-size: var(--step--1) !important; background: transparent; border: 1px solid color-mix(in srgb, var(--inv-fg) 30%, transparent) !important; }
-  .quickRow button:hover:not(:disabled) { border-color: var(--inv-fg) !important; }
-  .quickNone { opacity: 0.7; font-style: italic; }
+  .quickRow :global(.btn.small) { flex: none; min-height: var(--tap); }
+  .quickRow p { margin: 0; font-size: var(--step-0); line-height: 1.35; color: var(--ink-2); }
+  .quickRow b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-1); color: var(--ink); margin-right: var(--space-1); }
+  .quickNone { font-style: italic; }
+}
+/* the narrowest phones (320 px): the keeping row, with its four colours, would stand 27 px wider than the screen; a little closer and the colours a little slimmer */
+@media (max-width: 340px) {
+  .reader:not(.floating) .tbRow > :global(.btn.small) { padding-inline: var(--space-1); }
+  .reader:not(.floating) .swatch:global(.icon-btn) { min-width: 32px; width: 32px; }
 }
 
 /* "Try it first": each translation waits under a veil until tapped (Reader.tsx, RowView) */
@@ -579,7 +591,8 @@ p.translit { margin: -0.3em 0 0.8em; }
   background: var(--bg-2); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink-2); font-family: var(--f-label); font-size: var(--step--1); font-style: italic;
   text-align: center; cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.reveal:hover, .reveal:focus-visible { color: var(--rubric); border-color: var(--rubric); }
+.reveal:focus-visible { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .reveal:hover { color: var(--rubric); border-color: var(--rubric); } }
 
 /* "Show the English" (Reader.tsx, RowView; the quiet desk, ticket 07, the owner, 2026-10-29): with the Greek alone, one passage's English
    opens under its Greek, in the Greek's column (so the margin at the right stays clear for the look-up), and leafs in like the other
@@ -591,7 +604,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .grc:has(.line) > .oneBox > * { grid-column: 2; }
 .oneBox > * { font-family: var(--f-body); }
 .oneBtn:global(.text-btn) { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
-.oneBtn:global(.text-btn):hover { color: var(--rubric); }
+@media (hover: hover) { .oneBtn:global(.text-btn):hover { color: var(--rubric); } }
 /* a small triangle before the words says it opens (pointing on) and is open (pointing down), as the site's other
    disclosures do (tokens.css --tri-*; scripts/check-clickable.mjs: what can be clicked looks it) */
 .oneBtn:global(.text-btn)::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
@@ -610,7 +623,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* the collection's own Latin or Greek title under an English one */
 .titleOrig { margin: var(--space-1) 0 0; font-size: var(--step--1); color: var(--ink-2); }
 
-/* Listen: the passage being read aloud, marked along its translation */
+/* Listen: the passage being read aloud, marked along its translation (with the Greek alone, along the English that Listen has opened under the Greek) */
+.row[data-listening] .one { box-shadow: inset var(--hair-2) 0 0 var(--accent); }
 .row[data-listening] .tr { position: relative; }
 .row[data-listening] .tr::before {
   content: ""; position: absolute; left: calc(-1 * var(--space-3)); top: var(--hair-2); bottom: var(--hair-2); width: 2px; background: var(--accent);
@@ -625,14 +639,14 @@ p.translit { margin: -0.3em 0 0.8em; }
 .talk li { display: grid; gap: var(--hair-2); padding: var(--space-2) 0; box-shadow: var(--rule-over); }
 .talk li:first-child { box-shadow: none; }
 .talk a { text-decoration: none; }
-.talk a:hover b { color: var(--accent); }
+@media (hover: hover) { .talk a:hover b { color: var(--accent); } }
 .talk .muted { font-size: var(--step--1); }
 .talkAsk { display: grid; gap: var(--space-1); justify-items: start; margin-top: var(--space-4); padding: var(--space-3) var(--space-4); background: transparent; box-shadow: var(--rule-box); border-radius: var(--radius); }
 .talkAsk p { margin: 0; color: var(--ink-2); font-size: var(--step--1); }
 
 /* ------------------------------------------------ a book of the private collection (lib/mine.ts) */
 .crumbBtn { background: transparent; border: 0; padding: var(--space-1) 0; font: inherit; letter-spacing: inherit; color: inherit; cursor: pointer; }
-.crumbBtn:hover { color: var(--accent); }
+@media (hover: hover) { .crumbBtn:hover { color: var(--accent); } }
 /* a private book's mark: small capitals in red in a red hairline frame, as the private translations' seal (PrivateTranslations.module.css) */
 .privateTag {
   display: inline-flex; align-items: center; gap: var(--space-2); margin-left: var(--space-1); padding: var(--space-1) var(--space-3) var(--hair-2) var(--space-2); align-self: center;
@@ -656,7 +670,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .tpAu { margin: 0; font: 400 1.05rem / 1.3 var(--f-title); letter-spacing: 0.42em; color: var(--rubric); }
 /* the author's name is a link to the author's page (the quiet desk, ticket 09, the owner, 2026-10-30): underlined at rest, as the title line's is */
 .tpAu a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: var(--hair); text-underline-offset: 0.3em; transition: color var(--dur-quick) var(--ease), text-decoration-color var(--dur-quick) var(--ease); }
-.tpAu a:hover { color: var(--ink); text-decoration-color: currentColor; }
+@media (hover: hover) { .tpAu a:hover { color: var(--ink); text-decoration-color: currentColor; } }
 .tpTitle { margin: var(--space-4) 0 var(--space-2); max-width: 16ch; font: 400 clamp(2.6rem, 7vw, 5.4rem) / 1.05 var(--f-title); letter-spacing: 0; }
 .tpTitle [lang="grc"] { font-family: var(--f-title); }
 .tpEn { margin: 0; max-width: 32ch; font: italic 400 clamp(1.3rem, 2.4vw, 1.8rem) / 1.3 var(--f-body); color: var(--ink-2); }
@@ -680,7 +694,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .rl[data-lines] { margin-left: calc(var(--num-w) + var(--row-gap) + 2.4 * var(--greek-size) * var(--fit, 1)); }
 .rlGr { font-family: var(--f-greek); font-size: var(--step-1); color: var(--ink); }
 .rlAuthor a { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; transition: color var(--dur-quick) var(--ease); }
-.rlAuthor a:hover { color: var(--rubric); }
+@media (hover: hover) { .rlAuthor a:hover { color: var(--rubric); } }
 /* the author's name is a small target: under a finger it answers 12 px above and below it (a 44 px target; scripts/check-a11y.mjs), here and on the title page */
 @media (pointer: coarse) {
   .tpAu a, .rlAuthor a { position: relative; }

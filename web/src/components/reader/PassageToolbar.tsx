@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Colour } from "@/lib/annotations";
+import Icon from "@/components/Icon";
 import { useQuickGloss, type WordContext } from "./WordPanel";
 import styles from "./Reader.module.css";
 import { scrollBehavior } from "@/lib/settings";
@@ -20,9 +21,12 @@ export interface Selection {
 const COLOURS: [Colour, string][] = [["red", "Red"], ["ochre", "Ochre"], ["blue", "Blue"], ["green", "Green"]];
 
 /**
- * Floating toolbar for a selected passage. On phones it docks along the bottom of the screen instead
- * (the phone's own Copy and Share menu sits by the words), with finger-sized buttons; when one word is
- * selected (press and hold it) it starts with the word's dictionary form and one-line meaning.
+ * Floating toolbar for a selected passage, on the page's paper (the quiet desk, the reader's tools, the owner, 2026-10-30: "paper, never a
+ * black slip"). Each action is its sign and a short word, in the order of what you do with a place: keep it (Bookmark, Favourite, Note, the
+ * four colours), then take it elsewhere (Notebook, Share, Echoes, Ask), and Close last, at the right end, on a computer and a phone alike.
+ * On phones it docks along the bottom of the screen instead, where the foot bar stands (the phone's own Copy and Share menu sits by the
+ * words), with finger-sized buttons in two rows; when one word is selected (press and hold it) it starts with the word's dictionary form
+ * and one-line meaning, and "Look up" opens the look-up.
  */
 export default function PassageToolbar({ sel, onAction, onClose, xref = null, word = null, onLookUp, ask = true }: {
   sel: Selection;
@@ -68,40 +72,32 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
       {word && (
         <div className={styles.quickRow}>
           <p><b lang="grc">{quick.lemma ?? word.w}</b> {quick.done ? (quick.gloss || <span className={styles.quickNone}>no short definition</span>) : "…"}</p>
-          {onLookUp && <button type="button" onClick={onLookUp}>More</button>}
+          {onLookUp && <button type="button" className="btn ghost small" onClick={onLookUp}><Icon name="dictionary" />Look up</button>}
         </div>
       )}
-      <button type="button" className={styles.tbClose} onClick={onClose} aria-label="Close passage actions">×</button>
-      <button type="button" onClick={() => onAction("bookmark")} title="Bookmark this place">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z" /></svg><span>Bookmark</span>
-      </button>
-      <button type="button" onClick={() => onAction("favourite")} title="Add to your favourite passages">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z" /></svg><span>Favourite</span>
-      </button>
-      <button type="button" onClick={() => onAction("note")} title="Write a note on this passage">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H8l-4 4z" /></svg><span>Note</span>
-      </button>
-      <span className={styles.swatches} role="group" aria-label="Highlight">
-        {COLOURS.map(([c, name]) => (
-          <button key={c} type="button" className={styles[`sw-${c}`]} onClick={() => onAction({ highlight: c })} title={`Highlight in ${name.toLowerCase()}`} aria-label={`Highlight in ${name.toLowerCase()}`} />
-        ))}
-      </span>
-      <button type="button" onClick={() => onAction("notebook")} title="Add this passage to a research notebook, with its citation">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h11a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6zM6 3v18M10 8h6M10 12h6" /></svg><span>Notebook</span>
-      </button>
-      <button type="button" onClick={() => onAction("share")} title="Share this passage">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 12h8M14 8l4 4-4 4M4 4v16" /></svg><span>Share</span>
-      </button>
-      {xref === "start" && <button type="button" onClick={() => onAction("xref")} title="Link this passage to one in the other book"><span>Cross-reference</span></button>}
-      {xref === "here" && <button type="button" className={styles.linkHere} onClick={() => onAction("xref-here")} title="Finish the cross-reference with this passage"><span>Link here</span></button>}
-      <button type="button" onClick={() => onAction("echoes")} title="Where these words recur, in this book and beyond">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h2M9 7v10M13 4v16M17 8v8M21 11v2" /></svg><span>Echoes</span>
-      </button>
-      {ask && FORUM_OPEN && (
-        <button type="button" onClick={() => onAction("ask")} title="Ask the Agora about this passage">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4zM12 13v.01M12 7.5a2 2 0 0 1 1 3.7c-.6.3-1 .8-1 1.3" /></svg><span>Ask in the Agora</span>
-        </button>
-      )}
+      {/* keep this place: a mark, a favourite, a note of your own, a colour */}
+      <div className={`${styles.tbRow} ${styles.tbKeep}`}>
+        <button type="button" className="btn quiet small" onClick={() => onAction("bookmark")} title="Bookmark this place"><Icon name="bookmark" />Bookmark</button>
+        <button type="button" className="btn quiet small" onClick={() => onAction("favourite")} title="Add to your favourite passages"><Icon name="mine" />Favourite</button>
+        <button type="button" className="btn quiet small" onClick={() => onAction("note")} title="Write a note on this passage"><Icon name="note" />Note</button>
+        <span className={styles.swatches} role="group" aria-label="Highlight">
+          {COLOURS.map(([c, name]) => (
+            <button key={c} type="button" className={`icon-btn ${styles.swatch} ${styles[`sw-${c}`]}`} onClick={() => onAction({ highlight: c })} title={`Highlight in ${name.toLowerCase()}`} aria-label={`Highlight in ${name.toLowerCase()}`} />
+          ))}
+        </span>
+      </div>
+      {/* take it elsewhere: a notebook, someone else, other texts, the Agora; then Close, last */}
+      <div className={styles.tbRow}>
+        <button type="button" className="btn quiet small" onClick={() => onAction("notebook")} title="Add this passage to a research notebook, with its citation"><Icon name="plus" />Notebook</button>
+        <button type="button" className="btn quiet small" onClick={() => onAction("share")} title="Share this passage"><Icon name="share" />Share</button>
+        {xref === "start" && <button type="button" className="btn quiet small" onClick={() => onAction("xref")} title="Link this passage to one in the other book"><Icon name="link" />Cross-reference</button>}
+        {xref === "here" && <button type="button" className="btn small" onClick={() => onAction("xref-here")} title="Finish the cross-reference with this passage"><Icon name="link" />Link here</button>}
+        <button type="button" className="btn quiet small" onClick={() => onAction("echoes")} title="Where these words recur, in this book and beyond"><Icon name="echoes" />Echoes</button>
+        {ask && FORUM_OPEN && (
+          <button type="button" className="btn quiet small" onClick={() => onAction("ask")} title="Ask the Agora about this passage"><Icon name="talk" />Ask in the Agora</button>
+        )}
+      </div>
+      <button type="button" className={`icon-btn ${styles.tbClose}`} onClick={onClose} title="Close (Esc)"><Icon name="close" label="Close passage actions" /></button>
     </div>
   );
 }

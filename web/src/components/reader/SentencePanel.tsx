@@ -11,6 +11,7 @@ import { readTag } from "@/lib/lookup/postag";
 import { unitWords } from "@/lib/search/codec";
 import { loadSyntax, packForms, phraseOf, readSentence, roleOf, ROLES, sentenceOf, type Sentence, type Syntax } from "@/lib/syntax";
 import type { TeiDoc } from "@/lib/tei/types";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import ss from "./Sentence.module.css";
 import { SidePanel } from "./Panel";
@@ -150,13 +151,13 @@ export default function SentencePanel({ work, doc, at, onMarks, onClose, onNoteb
             {s.roots.map(branch)}
           </ul>
           <div className={ss.steps}>
-            <button type="button" className="chip" disabled={s.n <= 0} onClick={() => setStep({ from: askedKey, n: s.n - 1 })}>← Previous sentence</button>
-            <button type="button" className="chip" disabled={s.n >= total - 1} onClick={() => setStep({ from: askedKey, n: s.n + 1 })}>Next sentence →</button>
+            <button type="button" className="chip" disabled={s.n <= 0} onClick={() => setStep({ from: askedKey, n: s.n - 1 })}><Icon name="chevron-left" />Previous sentence</button>
+            <button type="button" className="chip" disabled={s.n >= total - 1} onClick={() => setStep({ from: askedKey, n: s.n + 1 })}>Next sentence<Icon name="chevron-right" /></button>
             {onNotebook && (
               <button type="button" className="chip" onClick={() => {
                 const words = s.nodes.filter((x) => x.p !== null).map((x) => x.form).join(" ");
                 onNotebook(span.current?.from ?? at.u, span.current?.to ?? at.u, words);
-              }}>Add to a notebook</button>
+              }}><Icon name="plus" />Add to a notebook</button>
             )}
           </div>
           <details className={ss.key}>

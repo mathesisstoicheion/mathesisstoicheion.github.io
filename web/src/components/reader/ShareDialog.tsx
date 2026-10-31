@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { renderPassageImage } from "@/lib/share-image";
 import { useUI } from "@/lib/ui";
+import Icon from "@/components/Icon";
 import styles from "./Reader.module.css";
 import { ModalDialog } from "./Panel";
 
@@ -53,19 +54,21 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
   }
 
   return (
-    <ModalDialog titleId="share-title" title={`Share ${data.cite}`} onClose={onClose}>
+    <ModalDialog titleId="share-title" title={`Share ${data.cite}`} onClose={onClose}
+      /* its steps have the way back at the top left, as the panels have (the quiet desk, the reader's tools, the owner, 2026-10-30), and Escape takes it */
+      back={step === "pick" ? { to: "Share", onBack: () => setStep("menu") } : step === "preview" ? { to: "highlighting", onBack: () => setStep("pick") } : undefined}>
 
         {step === "menu" && (
           <div className={styles.shareMenu}>
-            <button type="button" className="btn ghost" onClick={() => copy(data.link, "Link copied.")}>Copy link</button>
-            <button type="button" className="btn ghost" onClick={() => copy(text, "Text copied.")}>Copy text</button>
-            <button type="button" className="btn" onClick={() => setStep("pick")}>Copy as image</button>
+            <button type="button" className="btn ghost" onClick={() => copy(data.link, "Link copied.")}><Icon name="link" />Copy link</button>
+            <button type="button" className="btn ghost" onClick={() => copy(text, "Text copied.")}><Icon name="copy" />Copy text</button>
+            <button type="button" className="btn" onClick={() => setStep("pick")}><Icon name="image" />Copy as image</button>
           </div>
         )}
 
         {step === "pick" && (
           <>
-            <p className="muted">Click the words you want highlighted in the image, or skip this step.</p>
+            <p className="muted">Click the words you want highlighted in the image, or go straight on.</p>
             <p className={styles.pickWords} lang="grc">
               {data.words.map((w, i) => (
                 <button key={i} type="button" aria-pressed={hl.has(i)} className={hl.has(i) ? styles.picked : ""}
@@ -73,8 +76,7 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
               ))}
             </p>
             <div className={styles.shareMenu}>
-              <button type="button" className="btn ghost" onClick={() => { setHl(new Set()); setStep("preview"); }}>Skip</button>
-              <button type="button" className="btn" onClick={() => setStep("preview")}>Next</button>
+              <button type="button" className="btn" onClick={() => setStep("preview")}>Next<Icon name="next" /></button>
             </div>
           </>
         )}
@@ -82,7 +84,7 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
         {step === "preview" && (
           <>
             <div className={styles.shareOpts}>
-              <div className={styles.seg} role="radiogroup" aria-label="Image theme">
+              <div className="segmented" role="radiogroup" aria-label="Image theme">
                 <button type="button" role="radio" aria-checked={!dark} onClick={() => setDark(false)}>Light</button>
                 <button type="button" role="radio" aria-checked={dark} onClick={() => setDark(true)}>Dark</button>
               </div>
@@ -92,8 +94,7 @@ export default function ShareDialog({ data, onClose }: { data: ShareData; onClos
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {png ? <img src={png.url} alt={`Image of ${data.cite}`} /> : <p className="muted">Drawing…</p>}</div>
             <div className={styles.shareMenu}>
-              <button type="button" className="btn ghost" onClick={() => setStep("pick")}>Back</button>
-              <button type="button" className="btn" disabled={!png} onClick={copyImage}>Copy image</button>
+              <button type="button" className="btn" disabled={!png} onClick={copyImage}><Icon name="copy" />Copy image</button>
             </div>
           </>
         )}

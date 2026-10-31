@@ -300,10 +300,13 @@ async function secondLayer(page, tag, opts, during) {
       coarse: matchMedia("(pointer: coarse)").matches,
       furtherW: further ? further.getBoundingClientRect().width : 0,
       rows: further ? [...further.querySelectorAll("a, button")].map((e) => {
-        const r = e.getBoundingClientRect(), mark = e.querySelector('[aria-hidden="true"]');
+        // (the row's › is the hidden mark whose text it is: the row's sign, before the words, is hidden from a screen reader too)
+        const r = e.getBoundingClientRect(), mark = [...e.querySelectorAll('[aria-hidden="true"]')].find((x) => x.textContent.trim() === "›"), sign = e.querySelector("svg[data-icon]");
+        const words = [...e.children].find((x) => x !== sign && x !== mark);
         return {
           text: text(e).replace(/\s*›$/, ""), h: r.height, w: r.width, right: r.right, shadow: getComputedStyle(e).boxShadow, link: e.tagName === "A",
           mark: mark ? { text: mark.textContent.trim(), right: mark.getBoundingClientRect().right, colour: getComputedStyle(mark).color } : null,
+          signBeforeWords: !!sign && !!words && sign.getBoundingClientRect().right <= words.getBoundingClientRect().left + 1,
         };
       }) : [],
       heads: [...el.querySelectorAll("h3")].map((e) => ({ t: text(e), shown: shown(e) })),
@@ -344,7 +347,7 @@ async function secondLayer(page, tag, opts, during) {
     if (open.recap.size >= meaningSize - 0.5) found.push(`${tag}: the second layer's meaning is ${open.recap.size} px, the first layer's ${meaningSize} px (a little smaller)`);
   }
   // "Go further" is rows, the same on a computer and a phone, in the order where else, the sentence, the lesson, Word Study, on the map:
-  // each as wide as its part, its words on the left and a red › at the right end, a hairline under it (the last is closed by the next
+  // each as wide as its part, its sign (the icon of where it goes) and its words on the left and a red › at the right end, a hairline under it (the last is closed by the next
   // part's own rule), and a finger's 44 px tall on a touch screen
   const ROWS = [["where else", /^Where else/], ["the sentence", /^How the sentence is built$/], ["the lesson", /^Lesson \d+: /], ["Word Study", /^Word Study: every form of /], ["the map", /^On the map: /]];
   const named = open.rows.map((r) => ({ ...r, name: ROWS.find(([, re]) => re.test(r.text))?.[0] ?? null }));
@@ -356,6 +359,7 @@ async function secondLayer(page, tag, opts, during) {
     const bad = [];
     if (open.coarse ? r.h < 43.5 : r.h < 35.5) bad.push(`is ${Math.round(r.h)} px tall${open.coarse ? " under a finger (at least 44)" : ""}`);
     if (r.w < open.furtherW - 2) bad.push(`is ${Math.round(r.w)} px wide in a part ${Math.round(open.furtherW)} px wide (a row is the full width)`);
+    if (!r.signBeforeWords) bad.push("has no sign (the icon of where it goes) before its words");
     if (!r.mark || r.mark.text !== "›") bad.push("does not end in a ›");
     else {
       if (r.right - r.mark.right > 16) bad.push(`has its › ${Math.round(r.right - r.mark.right)} px short of the row's right end`);

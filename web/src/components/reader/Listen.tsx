@@ -4,11 +4,15 @@
  * passage being read marked and the word being spoken lit, the page following along and going on to the
  * next page at the end. Only the English is read (the owner's decision, 2026-10-02: no voice speaks
  * Ancient Greek as it sounded, and a modern Greek voice would mislead). Free, and on most devices offline.
+ * With the Greek alone (no English column) the passage being read opens its English under its Greek while it is read, and that is
+ * what is read and marked; it closes again when Listen moves on, unless the reader had opened it (the quiet desk, the reader's tools,
+ * the owner, 2026-10-30).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { Row } from "@/lib/tei/align";
 import { englishVoices, pieces, speakable, wordAt, type Speakable } from "@/lib/listen";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
+import Icon from "@/components/Icon";
 import styles from "./Listen.module.css";
 
 const PREFS = "mathesis:listen";
@@ -24,7 +28,7 @@ type Highlights = { set: (n: string, h: unknown) => void; delete: (n: string) =>
 const registry = () => (typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Highlights }).highlights : undefined);
 const HighlightCtor = () => (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
 
-export default function Listen({ rows, root, startKey, title, onNextPage, onClose }: {
+export default function Listen({ rows, root, startKey, title, onNextPage, onClose, alone = false, onShowEnglish }: {
   rows: Row[];
   /** the reader pane, to find each passage on the page */
   root: () => ParentNode;
@@ -34,6 +38,10 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
   /** go on to the next page at the end of this one (null on the last page) */
   onNextPage: (() => void) | null;
   onClose: () => void;
+  /** the Greek stands alone: the English column is not on the page, so the passage being read opens its own English under its Greek */
+  alone?: boolean;
+  /** asks the reader to open the English of the passage with this key (null: Listen has none open now); the reader keeps what it opened itself */
+  onShowEnglish?: (key: string | null) => void;
 }) {
   const supported = typeof window !== "undefined" && "speechSynthesis" in window && typeof SpeechSynthesisUtterance !== "undefined";
   const [status, setStatus] = useState<Status>("idle");
@@ -51,6 +59,8 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
   const wake = useRef<{ release: () => Promise<void> } | null>(null);
   const rowsRef = useRef(rows);
   useEffect(() => { rowsRef.current = rows; }, [rows]);
+  const aloneRef = useRef(alone), showRef = useRef(onShowEnglish);
+  useEffect(() => { aloneRef.current = alone; showRef.current = onShowEnglish; }, [alone, onShowEnglish]);
 
   // the device's English voices (they arrive a moment after the page loads)
   useEffect(() => {
@@ -82,8 +92,8 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
 
   const stopSpeech = () => { gen.current++; if (supported) speechSynthesis.cancel(); };
 
-  /** Read from row `i`, piece `p`, on to the end of the page (and on to the next page). */
-  const speak = useCallback((i: number, p: number) => {
+  /** Read from row `i`, piece `p`, on to the end of the page (and on to the next page). `waited` counts the frames spent waiting for a passage's English to open. */
+  const speak = useCallback((i: number, p: number, waited = 0) => {
     const g = ++gen.current;
     speechSynthesis.cancel();
     const rs = rowsRef.current;
@@ -91,13 +101,24 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
     while (i < rs.length && !rs[i].trans.length) { i++; p = 0; }
     if (i >= rs.length) {
       unmark();
+      showRef.current?.(null);
       if (onNextPage) { continuing.current = true; onNextPage(); }
       else { setStatus("idle"); pos.current = { row: 0, piece: 0 }; setRowIdx(0); }
       return;
     }
-    const el = rowEl(i), tr = el?.querySelector<HTMLElement>("[data-tr]");
+    const el = rowEl(i);
+    // with the Greek alone the translation's column is not on the page: the passage opens its English under its Greek, and that is read and marked
+    const alone = aloneRef.current;
+    const tr = el?.querySelector<HTMLElement>(alone ? "[data-one]" : "[data-tr]") ?? null;
+    if (el && alone && !tr && waited < 30) {
+      showRef.current?.(rs[i].key);
+      requestAnimationFrame(() => { if (g === gen.current) speak(i, p, waited + 1); });
+      return;
+    }
     if (!el || !tr) { speak(i + 1, 0); return; }
-    if (current.current?.el !== el) {
+    // (the words kept for this passage may be those of an English the reader has since closed: they are taken again)
+    const kept = current.current;
+    if (!kept || kept.el !== el || !kept.sp.at.find(Boolean)?.node.isConnected) {
       const sp = speakable(tr);
       current.current = { el, sp, ps: pieces(sp.text) };
     }
@@ -156,7 +177,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
 
   // stop when Listen closes or the reader goes away
   useEffect(() => () => { gen.current++; if ("speechSynthesis" in window) speechSynthesis.cancel(); registry()?.delete(HL); }, []);
-  useEffect(() => () => unmark(), []);   // eslint-disable-line react-hooks/exhaustive-deps
+  useEffect(() => () => { unmark(); showRef.current?.(null); }, []);   // eslint-disable-line react-hooks/exhaustive-deps
 
   const play = () => { setStatus("playing"); speak(pos.current.row, pos.current.piece); };
   const pause = () => { stopSpeech(); setStatus("paused"); registry()?.delete(HL); };
@@ -166,7 +187,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
     pos.current = { row: n, piece: 0 };
     setRowIdx(n);
     if (status === "playing") speak(n, 0);
-    else { unmark(); const el = rowEl(n); el?.setAttribute("data-listening", ""); el?.scrollIntoView({ block: "start", behavior: prefersReducedMotion(motion) ? "auto" : "smooth" }); }
+    else { unmark(); showRef.current?.(null); const el = rowEl(n); el?.setAttribute("data-listening", ""); el?.scrollIntoView({ block: "start", behavior: prefersReducedMotion(motion) ? "auto" : "smooth" }); }
   };
   // a new voice or speed takes effect at once, from the start of the sentence being read
   useEffect(() => {
@@ -174,7 +195,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [voice?.name, rate]);
 
-  const close = () => { stopSpeech(); unmark(); onClose(); };
+  const close = () => { stopSpeech(); unmark(); showRef.current?.(null); onClose(); };
   const progress = rows.length > 1 ? rowIdx / (rows.length - 1) : 0;
   const ref = rows[rowIdx]?.key ?? "";
 
@@ -188,22 +209,17 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
       ) : (
         <>
           <div className={styles.transport}>
-            <button type="button" className="icon-btn" onClick={() => step(-1)} disabled={rowIdx === 0} aria-label="Previous passage">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5v14M18 6l-8 6 8 6z" /></svg>
+            <button type="button" className="icon-btn" onClick={() => step(-1)} disabled={rowIdx === 0} title="The passage before"><Icon name="chevron-left" label="Previous passage" /></button>
+            <button type="button" className={`icon-btn framed ${styles.play}`} onClick={status === "playing" ? pause : play} title={status === "playing" ? "Pause" : "Read aloud"}>
+              <Icon name={status === "playing" ? "pause" : "play"} label={status === "playing" ? "Pause" : status === "paused" ? "Resume reading" : "Read aloud"} />
             </button>
-            <button type="button" className={`icon-btn ${styles.play}`} onClick={status === "playing" ? pause : play} aria-label={status === "playing" ? "Pause" : status === "paused" ? "Resume reading" : "Read aloud"}>
-              {status === "playing"
-                ? <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z" /></svg>
-                : <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>}
-            </button>
-            <button type="button" className="icon-btn" onClick={() => step(1)} disabled={rowIdx >= rows.length - 1} aria-label="Next passage">
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 5v14M6 6l8 6-8 6z" /></svg>
-            </button>
+            <button type="button" className="icon-btn" onClick={() => step(1)} disabled={rowIdx >= rows.length - 1} title="The passage after"><Icon name="chevron-right" label="Next passage" /></button>
           </div>
           <p className={styles.where} aria-live="polite">
             <span className="label">{status === "playing" ? "Reading" : status === "paused" ? "Paused" : "Listen"}</span>
-            <span className={styles.what}>{title} <b>{ref}</b></span>
+            <span className={styles.what}><span className={styles.whatTitle}>{title}</span> <b>{ref}</b></span>
           </p>
+          {/* the speed is a figure alone (1×): Icon.tsx has no sign for it, so its name is said by its label */}
           <button type="button" className={`icon-btn ${styles.rate}`} onClick={() => { const r = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; setRate(r); writePrefs({ rate: r }); }}
             aria-label={`Speed ${rate} times; change`} title="Speed">{rate}×</button>
           <select className={styles.voice} value={voice?.name} aria-label="English voice"
@@ -212,7 +228,7 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
           </select>
         </>
       )}
-      <button type="button" className={`icon-btn ${styles.x}`} onClick={close} aria-label="Stop and close">×</button>
+      <button type="button" className={`icon-btn ${styles.x}`} onClick={close} title="Stop and close"><Icon name="close" label="Stop and close" /></button>
       <p className={styles.fine}>The English translation, read by your device&apos;s voice{voice && !voice.localService ? " (an online voice: the passage is sent to your browser's maker to be spoken)" : ""}. The Greek is not read aloud: no voice speaks it as it sounded.</p>
     </div>
   );

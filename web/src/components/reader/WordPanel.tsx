@@ -400,9 +400,10 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   // Previous and Next, and More about it, under the card; in the sheet they keep to its foot, whatever the card's height
   const cardRow = (
     <div className={styles.cardRow}>
-      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><span aria-hidden="true">‹</span>{" "}Previous</button>}
-      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next{" "}<span aria-hidden="true">›</span></button>}
-      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMoreFor(key)}>More about it</button>
+      {/* each with its sign (the quiet desk, the reader's tools, the owner, 2026-10-30): the one before has its arrow first, the one after has its arrow last, as the site's "next" does */}
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><Icon name="chevron-left" />Previous</button>}
+      {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next<Icon name="chevron-right" /></button>}
+      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMoreFor(key)}><Icon name="info" />More about it</button>
     </div>
   );
   // the red › at the right end of each row of "Go further" (a sign, not read out: the row's words say what it does)
@@ -465,7 +466,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
             {l.value.entries.map((e, i) => <LsjEntryView key={i} e={e} full />)}
           </div>
         )}
-        {l?.value && (full || lsjShort.length > 0 || clipped) && <button type="button" className="text-btn" aria-expanded={full} onClick={() => setFullFor(full ? "" : key)}>{full ? "The short entry" : "The whole entry"}</button>}
+        {l?.value && (full || lsjShort.length > 0 || clipped) && <button type="button" className="text-btn" aria-expanded={full} onClick={() => setFullFor(full ? "" : key)}><Icon name={full ? "chevron-up" : "chevron-down"} />{full ? "The short entry" : "The whole entry"}</button>}
       </section>
 
       {/* where to go from the word: a row for each, the same on a computer and a phone, its words on the left and a red › at the right
@@ -475,28 +476,28 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
         <ul className={styles.ways} role="list">
           {onEchoes && (
             <li><button type="button" className={`row-btn ${styles.way}`} onClick={() => onEchoes(headword)} title="Every place this word occurs in the book, marked along a strip">
-              <span className={styles.wayText}>{whereElse(occurs.key === key ? occurs.n : null, workTitle)}</span>{wayMark}
+              <Icon name="echoes" /><span className={styles.wayText}>{whereElse(occurs.key === key ? occurs.n : null, workTitle)}</span>{wayMark}
             </button></li>
           )}
           {onSentence && (
             <li><button type="button" className={`row-btn ${styles.way}`} onClick={() => onSentence(headword)} title="The sentence's structure: the main verb, its subject and object, and what describes what">
-              <span className={styles.wayText}>How the sentence is built</span>{wayMark}
+              <Icon name="sentence" /><span className={styles.wayText}>How the sentence is built</span>{wayMark}
             </button></li>
           )}
           {lesson && (
             <li><Link className={`row-btn ${styles.way}`} href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>
-              <span className={styles.wayText}>Lesson {lesson.n}: {lesson.title}{" "}<span className={styles.wayWhy}>{lesson.why}</span></span>{wayMark}
+              <Icon name="learn" /><span className={styles.wayText}>Lesson {lesson.n}: {lesson.title}{" "}<span className={styles.wayWhy}>{lesson.why}</span></span>{wayMark}
             </Link></li>
           )}
           {(lemma || l?.value) && (
             <li><Link className={`row-btn ${styles.way}`} href={`/treasury/word?l=${encodeURIComponent(headword)}`} transitionTypes={["page-turn"]}
               title="Every form of the word, where and when it is used, real examples and its family">
-              <span className={styles.wayText}>Word Study: every form of <span lang="grc">{headword}</span></span>{wayMark}
+              <Icon name="word" /><span className={styles.wayText}>Word Study: every form of <span lang="grc">{headword}</span></span>{wayMark}
             </Link></li>
           )}
           {place && (
             <li><Link className={`row-btn ${styles.way}`} href={`/stoa/periplus?p=${place.id}`} transitionTypes={["page-turn"]} title={`${shortName(place)}: where it is, and which works name it most`}>
-              <span className={styles.wayText}>On the map: <span lang="grc">{place.grc}</span></span>{wayMark}
+              <Icon name="places" /><span className={styles.wayText}>On the map: <span lang="grc">{place.grc}</span></span>{wayMark}
             </Link></li>
           )}
         </ul>
@@ -509,7 +510,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
         {!offline && (!w || (w.value && !card)) && <p className="muted">Looking it up…</p>}
         {w && !w.value && w.error && (
           <p className={`muted ${styles.retry}`}>Wiktionary could not be reached.{" "}
-            <button type="button" className="text-btn" onClick={() => { setWikt({ key: "", value: null }); setWiktTry((n) => n + 1); }}>Try again</button>
+            <button type="button" className="text-btn" onClick={() => { setWikt({ key: "", value: null }); setWiktTry((n) => n + 1); }}><Icon name="again" />Try again</button>
           </p>
         )}
         {wikiShown && (

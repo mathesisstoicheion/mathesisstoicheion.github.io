@@ -30,7 +30,7 @@ test("gather from the reader, the concordance and a comparison, then cite and do
   await page.goto("/read?w=tlg0085.tlg005&ed=perseus-grc2&cmp=1st1K-grc1&at=80");
   const bar = page.getByRole("region", { name: "Comparing two editions" });
   await expect(bar).toContainText("in the whole text", { timeout: 60_000 });
-  await bar.getByRole("button", { name: "List them all" }).click();
+  await bar.getByRole("button", { name: "List of differences" }).click();
   await page.getByRole("complementary", { name: "Differences between the editions" }).getByRole("button", { name: "Add 87 to a notebook" }).click();
   await page.getByRole("dialog", { name: /Add this difference/ }).getByRole("button", { name: /Wrath and justice/ }).click();
   await expect(page.getByText("Added 1 thing to “Wrath and justice”.")).toBeVisible();

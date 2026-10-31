@@ -1,8 +1,8 @@
 import type { Locator, Page } from "@playwright/test";
 
 // The reader's one bar stands along the foot of the page (ReaderBar.tsx, Drop.tsx; the quiet desk, ticket 09, the owner, 2026-10-30): "Library" at
-// the left, where you are in the middle (a button that opens Go to: the page and a reference to type), and Aa (the page and the type) and Study
-// (every other tool) at the right. Two books side by side, and the floating window, have the same Aa and Study in the top bar of each book.
+// the left, where you are in the middle (a button that opens Go to: the page and a reference to type), and Text (the Aa sign and the word), which holds the page and the type, and
+// Study (every other tool) at the right. Two books side by side, and the floating window, have the same Text and Study in the top bar of each book.
 // Each helper opens its menu unless it is already open and returns the menu's panel.
 async function open(page: Page, name: string | RegExp) {
   const button = (typeof name === "string" ? page.getByRole("button", { name, exact: true }) : page.getByRole("button", { name })).first();
@@ -20,8 +20,8 @@ async function open(page: Page, name: string | RegExp) {
 }
 // Study says how many modes are on ("Study, 2 on")
 export const openStudy = (page: Page) => open(page, /^Study(, \d+ on)?$/);
-// Aa is named "Aa, page and text"
-export const openAa = (page: Page) => open(page, /^Aa\b/);
+// Aa is the sign and the word "Text", and is named "Text: page and size" (the reader's tools, the owner, 2026-10-30: its name starts with the word it shows)
+export const openAa = (page: Page) => open(page, /^Text: page and size$/);
 // the middle of the bar is named for what it opens; what it says (the place) is its description
 export const openGoto = (page: Page) => open(page, "Go to a line or book");
 /** The edition, the translation, Compare with, a second book and the private collection: the groups of Study, with the reading help. */

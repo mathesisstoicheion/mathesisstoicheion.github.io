@@ -3,7 +3,7 @@
  * The reader's foot bar (the quiet desk, ticket 09, the owner, 2026-10-30; mockup B). One book has nothing along its top: the page starts with
  * the book's one-line title (or its title page), and the bar stands along the foot, the same on a computer and a phone. Left, "Library", the
  * way back; in the middle where you are, "Book 1", a thin rule with a short red mark at the place, "line 25 of 611", which is the button for
- * Go to (the page, and a reference to type); right, Aa (the page and the type) and Study (every other tool). Each menu rises from the bar:
+ * Go to (the page, and a reference to type); right, Text (the Aa sign and the word: the page and the type) and Study (every other tool). Each menu rises from the bar:
  * a leaf on a computer, a sheet on a phone (ReaderBar.module.css), and shows its own close.
  *
  * On a phone the bar slips away as the text is read on and comes back when the reader scrolls up or taps the paper (a tap on a word looks it
@@ -11,7 +11,7 @@
  * the reader when it is away (data-foot on the reader's root), so that Back to top, Listen's player and the signs beside the scroll bar
  * stand clear of it (--foot-now, --foot-h in Reader.module.css).
  *
- * Two books side by side and the floating window keep a bar along their top, with the same Aa and Study in it (AaStudy below, bar="pane"; the
+ * Two books side by side and the floating window keep a bar along their top, with the same Text and Study in it (AaStudy below, bar="pane"; the
  * page and Go to are Where, in a row).
  */
 import Link from "next/link";
@@ -103,7 +103,7 @@ export function GotoMenu({ doc, chunk, onPage, onGoto, onDone, inputRef, focusSi
   );
 }
 
-/** Aa and Study, with the menus that open under (above) them. `bar` says where they stand: the foot bar of one book, or the top bar of a book among two. */
+/** Text (the Aa sign and the word) and Study, with the menus that open under (above) them. `bar` says where they stand: the foot bar of one book, or the top bar of a book among two. */
 export function AaStudy({ bar, aa, study, aaMenu, studyMenu, modesOn }: {
   bar: "foot" | "pane"; aa: DropState; study: DropState; aaMenu: ReactNode; studyMenu: ReactNode;
   /** how many of the reading modes (Transliteration, Colour by case…) are on, for the sign on Study */
@@ -114,8 +114,10 @@ export function AaStudy({ bar, aa, study, aaMenu, studyMenu, modesOn }: {
   const menu = (own?: string) => `${styles.menu} ${foot ? styles.footMenu : styles.paneMenu} ${own ?? ""}`;
   return (
     <>
+      {/* its sign and its word, as Library and Study have theirs (the quiet desk, the reader's tools, the owner, 2026-10-30: the sign alone was smaller and
+          fainter than the buttons beside it, and the owner might not know what it opens); its name starts with the word it shows, and its menu is still "Page and text" */}
       <Drop {...aa} chevron={false} className={button} panelClass={menu(styles.aaMenu)} panelLabel="Page and text"
-        label={<Icon name="text-size" />} ariaLabel="Aa, page and text"
+        label={<><Icon name="text-size" />Text</>} ariaLabel="Text: page and size"
         title="The page (Paper or Night), the size of the Greek, the line spacing and the columns">
         {aa.open && aaMenu}
       </Drop>
@@ -200,7 +202,7 @@ export default function ReaderBar({ rootRef, book }: {
   return (
     <nav className={styles.foot} aria-label="Reader controls" data-foot-bar="">
       <div className={`wrap ${styles.barIn}`}>
-        <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"><Icon name="back" /><span className={styles.libWord}>Library</span></Link>
+        <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"><Icon name="back" />Library</Link>
         {book && place ? (
           <Drop {...book.goto} chevron={false} className={`icon-btn ${styles.quiet} ${styles.where}`} panelClass={`${styles.menu} ${styles.footMenu} ${styles.gotoMenu}`} panelLabel="Go to"
             ariaLabel="Go to a line or book" describedBy={`${id}-at`} title="Go to a line, or to another part of the book"

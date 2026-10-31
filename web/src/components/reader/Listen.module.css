@@ -1,13 +1,13 @@
-/* Listen: a small player along the bottom of the reader, a slip of ink with paper letters (as the sample's switcher). It inks
-   in as it opens; nothing rises, breathes or grows (decision 3). */
+/* Listen: a small player along the bottom of the reader, on the page's paper (the quiet desk, the reader's tools, the owner, 2026-10-30: paper, never a
+   black slip): a hairline frame, the bar's soft shadow, and a thin red line along its top for how far through the page. It stands just above the foot
+   bar. It inks in as it opens; nothing rises, breathes or grows (decision 3). The buttons are the site's icon buttons, placed and sized here. */
 .bar {
   position: fixed; z-index: 45; left: 50%; translate: -50% 0;
   bottom: calc(var(--space-3) + var(--foot-now, env(safe-area-inset-bottom, 0px)));   /* above the reader's foot bar while it stands in the window (the quiet desk, ticket 09, the owner, 2026-10-30) */
   transition: bottom var(--dur) var(--ease);
   width: min(640px, calc(100vw - 24px)); display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto auto; align-items: center; gap: var(--space-1) var(--space-2);
   padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3); border-radius: var(--radius); overflow: hidden;
-  background: var(--inv-bg); color: var(--inv-fg); box-shadow: 0 10px 30px var(--shadow);
-  --accent: var(--accent-on-ink);
+  background: var(--bg); color: var(--ink); box-shadow: var(--rule-box), var(--shadow-leaf);
   animation: ink-in var(--dur) var(--ease) backwards;
 }
 @keyframes ink-in { from { opacity: 0; } }
@@ -15,40 +15,43 @@
 /* how far through the page: a thin red line along the top, as long as the part already read */
 .progress { position: absolute; left: 0; right: 0; top: 0; height: 2px; background: var(--accent); transform-origin: left; }
 
+/* the passage before, play or pause, the passage after: the play button is framed, as the one to press */
 .transport { display: flex; align-items: center; gap: var(--hair-2); }
-.transport button, .x, .rate {
-  display: grid; place-items: center; min-width: 40px; height: 40px; padding: 0 var(--space-1); border: 0; border-radius: var(--radius);
-  background: transparent; color: inherit; cursor: pointer;
-}
-.transport button:hover:not(:disabled), .x:hover, .rate:hover { color: var(--accent); }
-.transport button:disabled { opacity: 0.35; cursor: default; }
-.transport svg { width: 20px; height: 20px; fill: currentColor; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
-.play { width: 48px; height: 48px !important; border-radius: var(--radius) !important; background: var(--accent) !important; color: var(--inv-bg) !important; }
-.play:hover { color: var(--inv-bg) !important; }
-.play svg { width: 22px; height: 22px; stroke: none; }
+.transport :global(.icon-btn) { font-size: var(--step-1); }
+.play:global(.icon-btn) { min-width: var(--space-7); }
 
 .where { margin: 0; min-width: 0; display: grid; gap: var(--hair); line-height: 1.2; }
-.where :global(.label) { color: var(--accent); font-size: var(--step--2); }
-.what { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: var(--step-0); }
-.what b { font-family: var(--f-label); font-weight: 500; }
-.rate { font: 600 var(--step--1)/1 var(--f-label); font-variant-numeric: tabular-nums; }
+.where :global(.label) { color: var(--ink-2); font-size: var(--step--2); }
+.what { display: flex; gap: var(--space-1); min-width: 0; font-size: var(--step-0); white-space: nowrap; }
+.whatTitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+.what b { flex: none; font-family: var(--f-label); font-weight: 500; }
+/* the speed is a figure (1×), not a sign */
+.rate:global(.icon-btn) { padding: 0 var(--space-2); font: 500 var(--step-0) / 1 var(--f-body); font-variant-numeric: lining-nums tabular-nums; }
 .voice {
   max-width: 150px; height: 36px; padding: 0 var(--space-2); border-radius: var(--radius); border: 1px solid transparent;
-  background: transparent; box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--inv-fg) 50%, transparent); color: inherit; font: var(--step--1) var(--f-body);
+  background: transparent; box-shadow: var(--rule-under); color: inherit; font: var(--step--1) var(--f-body);
 }
 .voice:focus-visible { box-shadow: inset 0 -2px 0 var(--accent); }
 .voice option { color: var(--ink); background: var(--bg); }
-.x { font-size: var(--step-1); line-height: 1; }
+.x:global(.icon-btn) { font-size: var(--step-1); }
 .note { margin: 0; grid-column: 1 / 5; font-size: var(--step--1); }
-/* the small print, on the bar's ink (scripts/check-on-ink.mjs wants that said in the selector) */
-.bar .fine { grid-column: 1 / -1; margin: var(--hair-2) 0 0; font-size: var(--step--2); color: color-mix(in srgb, var(--inv-fg) 70%, var(--inv-bg)); }
+.bar .fine { grid-column: 1 / -1; margin: var(--hair-2) 0 0; font-size: var(--step--2); color: var(--ink-2); }
 
+/* a phone: the buttons, the passage being read, the speed and Close in one row; the voice under them, then the small print */
 @media (max-width: 560px) {
-  .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; }
-  .voice { grid-column: 1 / -1; grid-row: 3; max-width: none; width: 100%; }
-  .fine { grid-row: 4; }
+  .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; padding-left: var(--space-2); gap: var(--space-1); }
+  .transport { grid-column: 1; grid-row: 1; }
+  .where { grid-column: 2; grid-row: 1; }
+  .rate { grid-column: 3; grid-row: 1; }
+  .x { grid-column: 4; grid-row: 1; }
+  .note { grid-column: 1 / 4; grid-row: 1; }
+  .voice { grid-column: 1 / -1; grid-row: 2; max-width: none; width: 100%; }
+  .fine { grid-row: 3; }
+  .play:global(.icon-btn) { min-width: var(--tap); }
 }
-@media (pointer: coarse) { .transport button, .x, .rate { min-width: 44px; height: 44px; } }
+@media (pointer: coarse) { .voice { height: var(--tap); } }
+/* the narrowest phones (320 px): the passage before and after a little slimmer, so that "Listen" and the passage being read keep their room in the row */
+@media (max-width: 340px) { .transport > :global(.icon-btn):not(.play) { min-width: 36px; padding-inline: 0; } }
 
 /* on a phone, above the bottom bar while it shows (TabBar.tsx) */
 @media (max-width: 760px) { :global(html[data-tabbar="up"]) .bar { bottom: calc(var(--space-3) + var(--tabbar-h)); } }

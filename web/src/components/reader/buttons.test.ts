@@ -51,8 +51,8 @@ function kinds(file: string): { at: string; cls: string | null; role: string | n
 }
 
 const inSet = (cls: string) => SET.some((k) => new RegExp(`(^|[\\s\`"'{])${k}($|[\\s\`"'}])`).test(cls));
-// in the passage actions (PassageToolbar.tsx, which has a ticket of its own) or with a class that waits (above)
-const later = (b: { at: string; cls: string | null; tag: string }) => b.at.startsWith("PassageToolbar.tsx") || LATER.has((b.cls ?? "").trim());
+// with a class that waits (above); the passage actions (PassageToolbar.tsx) are of the set since the reader's tools, the owner, 2026-10-30
+const later = (b: { at: string; cls: string | null; tag: string }) => LATER.has((b.cls ?? "").trim());
 
 describe("the reader's buttons", () => {
   const files = readdirSync(DIR).filter((f) => f.endsWith(".tsx") && !NOT_HERE.has(f));

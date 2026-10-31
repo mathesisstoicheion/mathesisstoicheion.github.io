@@ -4,7 +4,7 @@
 .dialog {
   width: min(820px, calc(100vw - 32px)); max-height: calc(100dvh - 48px); padding: 0;
   border: 1px solid var(--rule); border-radius: var(--radius); background: var(--bg); color: var(--ink);
-  box-shadow: 0 40px 80px -30px var(--shadow);
+  box-shadow: var(--shadow-leaf);
 }
 .dialog[open] { animation: ink-in var(--dur) var(--ease); }
 .dialog::backdrop { background: var(--veil); animation: ink-in var(--dur) var(--ease); }
@@ -16,23 +16,23 @@
 .title::first-letter { color: var(--accent); }
 /* (the × is an .icon-btn, globals.css, a size smaller here) */
 .x { font-size: var(--step-1); }
-/* "Private": small red capitals in a hairline frame, as a printer's notice */
+/* "Private": small capitals in a hairline frame, as a printer's notice (ink-2, not red: red is for numbers and links; the quiet desk, the reader's tools, the owner, 2026-10-30) */
 .seal {
   display: inline-flex; align-items: center; gap: var(--space-1); padding: var(--space-1) var(--space-3) var(--space-1) var(--space-2);
-  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+  font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2);
   border: 1px solid currentColor; background: transparent; border-radius: var(--radius);
   animation: ink-in var(--dur-slow) var(--ease) 0.15s backwards;
 }
 .seal svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linejoin: round; }
 
-/* two tabs in spaced capitals, the chosen one in ink with a red rule under it */
+/* two tabs in sentence case with their signs, the chosen one in ink with a red rule under it (what you can press is not set in capitals: the quiet desk, the reader's tools, the owner, 2026-10-30) */
 .tabs { display: flex; gap: var(--space-1); padding-bottom: var(--space-1); box-shadow: var(--rule-under); }
 .tabs button {
   position: relative; background: transparent; border: 0; color: var(--ink-2); padding: var(--space-2) var(--space-3) var(--space-3);
-  font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.14em; text-transform: uppercase; display: inline-flex; align-items: center; gap: var(--space-2);
+  font-family: var(--f-body); font-size: var(--step-0); letter-spacing: 0; display: inline-flex; align-items: center; gap: var(--space-2);
   transition: color var(--dur-quick) var(--ease);
 }
-.tabs button:hover { color: var(--rubric); }
+@media (hover: hover) { .tabs button:hover { color: var(--rubric); } }
 .tabs button[aria-selected="true"] { color: var(--ink); }
 .tabs button[aria-selected="true"]::after { content: ""; position: absolute; left: var(--space-2); right: var(--space-2); bottom: calc(-1 * var(--space-1)); height: 2px; background: var(--accent); }
 .n { font-size: var(--step--2); min-width: 1.6em; padding: 0 var(--space-1); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink-2); text-align: center; letter-spacing: 0; font-variant-numeric: lining-nums tabular-nums; }
@@ -57,11 +57,11 @@
 .book[aria-current] { box-shadow: inset 0 2px 0 var(--rubric); }
 .bookGr { color: var(--accent); font-family: var(--f-greek); font-size: var(--step-0); }
 .bookTitle { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
-.book:hover .bookTitle, .book:focus-visible .bookTitle { color: var(--rubric); }
+@media (hover: hover) { .book:hover .bookTitle { color: var(--rubric); } }
+.book:focus-visible .bookTitle { color: var(--rubric); }
 .bookBy { color: var(--ink-2); font-size: var(--step--1); font-style: italic; }
 .bookFoot { display: flex; justify-content: space-between; align-items: center; gap: var(--space-2); margin-top: var(--space-2); }
-.go, .now { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); }
-.now { color: var(--ink-2); }
+.go, .now { display: inline-flex; align-items: center; gap: var(--space-1); font-family: var(--f-body); font-size: var(--step--1); letter-spacing: 0; color: var(--ink-2); }
 
 /* importing */
 .importer { display: grid; gap: var(--space-4); border-radius: var(--radius); transition: background-color var(--dur-quick), outline-color var(--dur-quick); outline: 1px dashed transparent; outline-offset: 6px; }

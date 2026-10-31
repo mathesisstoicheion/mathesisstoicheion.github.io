@@ -36,7 +36,7 @@ test("a word opens its sentence's structure: roles in plain words, phrases marke
   expect(await marked(page, "syn-p-1")).not.toContain("ἄειδε");
   // the next sentence
   const first = await panel.locator("p[lang=grc] button").first().innerText();
-  await panel.getByRole("button", { name: "Next sentence →" }).click();
+  await panel.getByRole("button", { name: "Next sentence", exact: true }).click();
   await expect.poll(() => panel.locator("p[lang=grc] button").first().innerText()).not.toBe(first);
   // a word clicked in the text while the panel is open is shown in its own sentence
   await page.locator('[data-u="1.1"] [data-w="μῆνιν"]').click();

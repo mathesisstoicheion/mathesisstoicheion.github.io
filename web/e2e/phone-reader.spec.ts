@@ -20,7 +20,7 @@ const greekPx = (page: Page) => page.locator("article [data-u] [data-w]").first(
 test("the reader's bar is along the foot: the way back, where you are, Aa and Study, all within the phone's width", async ({ page }) => {
   await openIliad(page);
   await expect(page.getByRole("link", { name: "Back to the library" })).toBeAttached();
-  for (const name of ["Go to a line or book", /^Aa\b/, /^Study\b/]) await expect(page.getByRole("button", { name }).first()).toBeVisible();
+  for (const name of ["Go to a line or book", /^Text: page and size$/, /^Study\b/]) await expect(page.getByRole("button", { name }).first()).toBeVisible();
   const foot = page.locator("[data-foot-bar]");
   await expect.poll(() => foot.evaluate((e) => Math.round(e.getBoundingClientRect().bottom))).toBe(812);
   expect(await page.evaluate(() => document.documentElement.scrollWidth - innerWidth)).toBeLessThanOrEqual(0);
@@ -213,7 +213,7 @@ test("the look-up is a sheet: it opens at a peek, grows to half or all it may, s
   await expect(s).toBeHidden();
 });
 
-test("press and hold a word: the passage actions dock at the bottom with the word's meaning, and More opens the look-up", async ({ page }) => {
+test("press and hold a word: the passage actions dock at the bottom with the word's meaning, and Look up opens the look-up", async ({ page }) => {
   await openIliad(page);
   const word = page.locator('[data-u="1.1"] [data-w="ἄειδε"]');
   // a finger selects the word (the phone's own press-and-hold selection, made here by script after a touch)
@@ -229,7 +229,7 @@ test("press and hold a word: the passage actions dock at the bottom with the wor
     const r = (await b.boundingBox())!;
     if (!(await b.getAttribute("aria-label"))?.startsWith("Highlight")) expect(r.height, await b.textContent() ?? "").toBeGreaterThanOrEqual(44);
   }
-  await bar.getByRole("button", { name: "More" }).click();
+  await bar.getByRole("button", { name: "Look up" }).click();
   await expect(page.getByRole("complementary", { name: "Look-up: ἄειδε" })).toBeVisible();
   await expect(bar).toBeHidden();
 
@@ -237,7 +237,7 @@ test("press and hold a word: the passage actions dock at the bottom with the wor
   await page.getByRole("button", { name: "Close look-up" }).click();
   await page.locator('[data-key="1.1"] button[data-row]').first().click();
   await expect(bar).toBeVisible();
-  await expect(bar).not.toContainText("More");
+  await expect(bar).not.toContainText("Look up");
   await bar.getByRole("button", { name: "Close passage actions" }).click();
   await expect(bar).toBeHidden();
 });
