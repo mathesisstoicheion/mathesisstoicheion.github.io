@@ -66,6 +66,7 @@ import AaMenu from "./AaMenu";
 import StudyMenu, { type StudyPanel } from "./StudyMenu";
 import { rangeLabel } from "./refs";
 import type { Back } from "./Panel";
+import { afterBack, afterSteps, stackOf, useBackSteps, type Layer } from "./useBackSteps";
 import styles from "./Reader.module.css";
 
 // The panels open only when asked for, so each is fetched then, not with the reader: the page comes up sooner,
@@ -208,7 +209,11 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
 });
 
 /** (a window opened from a row of Study says so, with `true`, and has "Back to Study": the quiet desk, ticket 09, the owner, 2026-10-30) */
-export interface PaneProps { pane: 1 | 2; split: boolean; onOpenSecond: (fromStudy?: boolean) => void; onOpenMine: (fromStudy?: boolean) => void }
+export interface PaneProps { pane: 1 | 2; split: boolean; onOpenSecond: (fromStudy?: boolean) => void; onOpenMine: (fromStudy?: boolean) => void; books?: BooksOpen }
+
+/** The windows ReaderBooks opens over the first book (the list of books for a second one, the private collection), told to the pane so that the phone's
+ *  Back can close them with the rest (the quiet desk, ticket 11, the owner, 2026-10-30); `fromStudy`: the window was opened from a row of Study. */
+export interface BooksOpen { picking: boolean; mine: boolean; fromStudy: boolean; close: (which: "books" | "mine") => void }
 
 /**
  * Where the reader keeps what it shows. On the reader's page that is the address bar (/read?w=…);
@@ -227,7 +232,7 @@ const paneTops: Record<1 | 2, string | null> = { 1: null, 2: null };
 const useNav = () => useContext(ReaderNavContext)!;
 
 /** One reading pane. With two panes, pane 2 uses the same query keys with a "2" on the end. */
-function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
+function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps) {
   const nav = useNav();
   const params = nav.params;
   const floating = nav.floating;
@@ -479,6 +484,58 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
   // the panels a row of the Study menu opens (the one open now, if it was opened from Study, has "Back to Study"; once it is closed, the way back is forgotten)
   const panelsOpen: Record<StudyPanel, boolean> = { find: findOpen, vocab: vocabOpen, places: placesOpen, ms: msOpen, talk: talkOpen, cmp: cmpListOpen && canDiff };
   if (studyFor && !panelsOpen[studyFor]) setStudyFor(null);
+
+  // ------------------------------------------------------------ the phone's Back (the quiet desk, ticket 11, the owner, 2026-10-30)
+  // What is open over the text in a book read alone, oldest first: each is one step in the browser's history, and Back closes the newest
+  // (useBackSteps.ts). Study waits under a panel opened from one of its rows, and the look-up under the Echoes or the sentence it opened, so that
+  // Back shows them again, as the panel's own "Back to …" does, and the next Back closes them.
+  const layersOpen = ([
+    ["aa", drop === "aa"], ["study", drop === "study"], ["goto", drop === "goto"],
+    ["find", findOpen], ["vocab", vocabOpen], ["places", placesOpen], ["ms", msOpen], ["talk", talkOpen], ["cmp", cmpListOpen && canDiff],
+    ["echoes", !!echo], ["sentence", !!sentenceAt], ["books", !!books?.picking], ["mine", !!books?.mine],
+    ["note", openNote !== null], ["share", !!share], ["notebook", !!nbPick], ["toolbar", !!sel],
+    ["look", !!word], ["more", !!word?.more],
+  ] as [Layer, boolean][]).filter(([, on]) => on).map(([layer]) => layer);
+  const cameBack = !!cameFrom && (cameFrom.to === "echoes" ? !!echo : !!sentenceAt);
+  const layersWaiting: Layer[] = [
+    ...(studyFor || (books?.fromStudy && (books.picking || books.mine)) ? ["study" as const] : []),
+    ...(cameBack ? ["word" as const, "word+" as const] : []),
+  ];
+  const [stack, setStack] = useState<Layer[]>([]);
+  const nextStack = stackOf(stack, layersOpen, layersWaiting);
+  if (nextStack.length !== stack.length || nextStack.some((l, i) => l !== stack[i])) setStack(nextStack);
+  /** Close one layer, the way its own × does. */
+  const shut = (layer: Layer) => {
+    switch (layer) {
+      case "aa": case "study": case "goto": setDrop((cur) => (cur === layer ? null : cur)); break;
+      case "find": setFindOpen(false); break;
+      case "vocab": setVocabOpen(false); break;
+      case "places": setPlacesOpen(false); break;
+      case "ms": setMsOpen(false); break;
+      case "talk": setTalkOpen(false); break;
+      case "cmp": setCmpListOpen(false); break;
+      case "echoes": setEcho(null); setCameFrom(null); break;
+      case "sentence": setSentenceAt(null); setCameFrom(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); break;
+      case "books": case "mine": books?.close(layer); break;
+      case "note": setOpenNote(null); break;
+      case "share": setShare(null); break;
+      case "notebook": setNbPick(null); break;
+      case "toolbar": setSel(null); getSelection()?.removeAllRanges(); break;
+      case "more": setWord((w) => (w ? { ...w, more: false } : w)); break;
+      case "look": closeWord(); break;
+      default: break;   // "word" and "word+" are shut already: they wait under what covers them
+    }
+  };
+  /** The layer now on top was shut under what has just closed: show it again (Study, with the keyboard on the row that opened the panel; the look-up on its word). */
+  const reveal = (layer: Layer, above: Layer | undefined) => {
+    if (layer === "study") { setDrop("study"); setStudyRow(above === "books" ? "second" : above ?? null); }
+    else if (layer === "word" || layer === "word+") backToWord(layer === "word+");
+  };
+  useBackSteps(nextStack.length, single, (landed) => {
+    const { close, show } = afterBack(nextStack, landed, (l) => layersOpen.includes(l));
+    close.forEach(shut);
+    if (show) reveal(show, close[close.length - 1]);
+  }, params.toString());
   // a window opened from a row of Study (the list of books for a second one, the private collection) has "Back to Study", and asks for it here (ReaderBooks)
   useEffect(() => {
     const on = (e: Event) => {
@@ -1161,7 +1218,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       const quote = { work: workId, ref: where, grc: sel.quote, eng: tr ? tr.slice(0, 1500) : undefined, cite: `${cite} ${where}`, href: href({ at: sel.start.u }) };
       try { sessionStorage.setItem(ASK_KEY, JSON.stringify(quote)); } catch { /* private mode: the page opens without it */ }
       window.getSelection()?.removeAllRanges(); setSel(null);
-      router.push("/town-hall/new?ask=1");
+      afterSteps(() => router.push("/town-hall/new?ask=1"));
       return;
     }
     if (a === "share") {
@@ -1210,7 +1267,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
 
   // a word opens the look-up (by a click, or Enter on the focused word)
   // (`back`: the way back from the sentence or Echoes, which reopens the second layer on this word)
-  const openWord = (w: HTMLElement, back = false) => {
+  const openWord = (w: HTMLElement, back = false, more = back) => {
     // while a sentence's structure is open, a word chosen in the text is shown there, in its own sentence
     const inUnit = w.closest<HTMLElement>("[data-u]");
     if (sentenceAt && inUnit && !back) { setCameFrom(null); setSentenceAt({ u: inUnit.dataset.u!, i: [...inUnit.querySelectorAll("[data-w]")].indexOf(w) }); return; }
@@ -1224,18 +1281,18 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       const same = [...unit.querySelectorAll<HTMLElement>("[data-w]")].filter((x) => norm(x.dataset.w!) === norm(w.dataset.w!));
       ctx = { work: lexWork, unitKey: unit.dataset.u!, occurrence: same.indexOf(w), keys: unitKeys, depth: doc.levels.length };
     }
-    setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null, more: back });
+    setWord({ w: w.dataset.w!, ctx, at: unit ? { u: unit.dataset.u!, i: [...unit.querySelectorAll("[data-w]")].indexOf(w) } : null, more });
     placeWord(true);
   };
 
   /** "‹ Back to μῆνις" in the sentence panel or Echoes: they close, and the look-up opens again on the word it was opened for,
    *  in the second layer, where the reader came from, and placed as usual. */
-  const backToWord = () => {
+  const backToWord = (more = true) => {
     const from = cameFrom;
     setCameFrom(null); setSentenceAt(null); setEcho(null);
     const unit = from ? [...root().querySelectorAll<HTMLElement>("[data-u]")].find((u) => u.dataset.u === from.at.u) : null;
     const span = unit?.querySelectorAll<HTMLElement>("[data-w]")[from!.at.i];
-    if (span) openWord(span, true);
+    if (span) openWord(span, true, more);
     else root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel));
   };
 
@@ -1472,7 +1529,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
     useFloat.getState().float(q.toString());
     if (which === "this" && pane === 2) { closePane(); return; }
     // back to the page you came from (never off the site); the Mouseion if the reader was the first page
-    router.push(lastOtherPage() ?? AREAS.library.href);
+    afterSteps(() => router.push(lastOtherPage() ?? AREAS.library.href));
   };
 
 
@@ -1658,6 +1715,16 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       </header>
       )}
 
+      {/* one book: the foot bar (the way back, where you are, Aa and Study); until the text is up, the way back alone. It stands along the foot of the screen
+          whatever its place here, and its place is before the text: the keyboard reaches it in four presses of Tab, not after every word and button of the page
+          (the quiet desk, ticket 11, user story 22, the owner, 2026-10-30) */}
+      {single && (
+        <ReaderBar rootRef={rootRef} book={load.state === "ready" && doc && chunkInfo ? {
+          doc, chunk, topRow, order, modesOn, aa: dropOf("aa"), aaMenu, study: dropOf("study"), studyMenu,
+          goto: dropOf("goto"), gotoMenu: <GotoMenu doc={doc} chunk={chunk} onPage={goChunk} onGoto={goTo} onDone={() => setDrop(null)} inputRef={gotoRef} focusSignal={gotoWant} />,
+        } : null} />
+      )}
+
       {load.state === "loading" && <div className={`wrap ${styles.status}`}><span className={`meander ${styles.loadingBand}`} aria-hidden="true" /><p>{load.step}</p></div>}
       {load.state === "error" && (
         <div className={`wrap ${styles.status}`}>
@@ -1796,14 +1863,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {/* in a pane that scrolls in its own box the button scrolls that pane; otherwise the page (one button, not one per book) */}
       {doc && <BackToTop paneRef={contained ? rootRef : undefined} page={pane === 1} />}
 
-      {/* one book: the foot bar (the way back, where you are, Aa and Study); until the text is up, the way back alone */}
-      {single && (
-        <ReaderBar rootRef={rootRef} book={load.state === "ready" && doc && chunkInfo ? {
-          doc, chunk, topRow, order, modesOn, aa: dropOf("aa"), aaMenu, study: dropOf("study"), studyMenu,
-          goto: dropOf("goto"), gotoMenu: <GotoMenu doc={doc} chunk={chunk} onPage={goChunk} onGoto={goTo} onDone={() => setDrop(null)} inputRef={gotoRef} focusSignal={gotoWant} />,
-        } : null} />
-      )}
-
       {/* each panel keeps its own failures to itself: the text stays readable */}
       {vocabOpen && doc && !lookSheet && (
         <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
@@ -1827,7 +1886,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {sentenceAt && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => { setSentenceAt(null); setCameFrom(null); }}>
           <SentencePanel work={lexWork} doc={doc} at={sentenceAt} onMarks={setSynMarks}
-            back={cameFrom?.to === "sentence" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: backToWord } : undefined}
+            back={cameFrom?.to === "sentence" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: () => backToWord() } : undefined}
             onNotebook={grcText ? (from, to, grc) => setNbPick({ what: "this sentence", items: [{ kind: "passage", work: workId, urn: grcText.urn, from, to, grc }] }) : undefined}
             onClose={() => { setSentenceAt(null); setCameFrom(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); }} />
         </PanelGuard>
@@ -1859,12 +1918,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine }: PaneProps) {
       {echo && !lookSheet && (
         <PanelGuard name="Echoes panel" className={styles.panel} onClose={() => { setEcho(null); setCameFrom(null); }}>
           <EchoesPanel q={echo} onJump={echoJump} onMarks={setEchoMarks} onClose={() => { setEcho(null); setCameFrom(null); }}
-            back={cameFrom?.to === "echoes" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: backToWord } : undefined} />
+            back={cameFrom?.to === "echoes" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: () => backToWord() } : undefined} />
         </PanelGuard>
       )}
       <PanelGuard name="word look-up" className={word ? styles.panel : undefined} onClose={closeWord}>
         <WordPanel word={word?.w ?? null} ctx={word?.ctx ?? null} doc={doc} at={word?.at ?? null} workTitle={work?.title ?? null} onEchoes={word?.at ? (label) => openEchoes(word.at!, word.at!, { at: word.at!, label }) : undefined} onClose={closeWord}
-          startMore={!!word?.more} backSteps={single && !floating}
+          more={!!word?.more} onMore={(on) => setWord((w) => (w ? { ...w, more: on } : w))}
           onSentence={word?.at ? (label) => {
             const a = word.at!;
             setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
@@ -1941,9 +2000,10 @@ export function ReaderBooks() {
     nav.go(q);
     setPicking(false);
   };
+  const books: BooksOpen = { picking, mine: mineFor === 1, fromStudy: fromStudy === 1, close: (which) => { if (which === "books") setPicking(false); else setMineFor(null); } };
   return (
     <div className={`${split ? styles.split : ""} ${nav.floating ? styles.floatBooks : ""} ${styles.page}`} data-split={split ? "" : undefined}>
-      <ReaderPane pane={1} split={split} onOpenSecond={(s) => { setPicking(true); setFromStudy(s ? 1 : null); }} onOpenMine={(s) => { setMineFor(1); setFromStudy(s ? 1 : null); }} />
+      <ReaderPane pane={1} split={split} books={books} onOpenSecond={(s) => { setPicking(true); setFromStudy(s ? 1 : null); }} onOpenMine={(s) => { setMineFor(1); setFromStudy(s ? 1 : null); }} />
       {split && <ReaderPane pane={2} split onOpenSecond={() => undefined} onOpenMine={(s) => { setMineFor(2); setFromStudy(s ? 2 : null); }} />}
       {picking && <WorkPicker onPick={open} onClose={() => setPicking(false)} back={backFor("second", () => setPicking(false))} />}
       {mineFor && <MineDialog current={nav.params.get(mineFor === 1 ? "w" : "w2")} onOpen={(id) => openMine(mineFor, id)} onClose={() => setMineFor(null)} back={backFor("mine", () => setMineFor(null))} />}
@@ -1957,7 +2017,8 @@ export default function Reader() {
   const router = useRouter();
   const nav = useMemo<ReaderNav>(() => ({
     params: new URLSearchParams(params.toString()),
-    go: (q, how = "replace") => router[how](`/read?${q}`, { scroll: false }),
+    // a page turned first takes the history back over the steps added for what is open (useBackSteps.ts, afterSteps)
+    go: (q, how = "replace") => afterSteps(() => router[how](`/read?${q}`, { scroll: false })),
     floating: false,
   }), [params, router]);
   return (

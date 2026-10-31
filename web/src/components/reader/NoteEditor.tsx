@@ -28,15 +28,20 @@ export default function NoteEditor({ mark, startOpen, onClose, head }: { mark: M
   const [confirm, setConfirm] = useState(false);
   const [saved, setSaved] = useState(true);
   const field = useRef<NoteFieldHandle>(null);
+  // what was last written, and what has gone to the database: a note put away by the phone's Back (or any way but "Done") with the last words not yet
+  // saved keeps them (the quiet desk, ticket 11, the owner, 2026-10-30)
+  const written = useRef(text), sent = useRef(mark.text ?? ""), deleted = useRef(false);
+  useEffect(() => { written.current = text; });
 
   useEffect(() => { if (editing) field.current?.focus(); }, [editing]);
   useEffect(() => {
     if (text === (mark.text ?? "")) return;
-    const t = setTimeout(() => update(mark.id, { text }).then(() => setSaved(true)), 600);
+    const t = setTimeout(() => { sent.current = text; update(mark.id, { text }).then(() => setSaved(true)); }, 600);
     return () => clearTimeout(t);
   }, [text, mark.id, mark.text, update]);
+  useEffect(() => () => { if (!deleted.current && written.current !== sent.current) update(mark.id, { text: written.current }); }, [mark.id, update]);
 
-  const done = () => { if (text !== (mark.text ?? "")) update(mark.id, { text }); setEditing(false); onClose(); };
+  const done = () => { if (text !== (mark.text ?? "")) { sent.current = text; update(mark.id, { text }); } setEditing(false); onClose(); };
 
   return (
     <div className={styles.noteBox} id={`note-${mark.id}`}>
@@ -47,7 +52,7 @@ export default function NoteEditor({ mark, startOpen, onClose, head }: { mark: M
             ? <button type="button" className="chip" onClick={done}><Icon name="check" />{saved ? "Done" : "Saving…"}</button>
             : <button type="button" className="chip" onClick={() => setEditing(true)}><Icon name="edit" />Edit</button>}
           {confirm
-            ? <><button type="button" className="chip" onClick={() => remove(mark.id)}><Icon name="delete" />Delete note</button><button type="button" className="chip" onClick={() => setConfirm(false)}><Icon name="undo" />Keep</button></>
+            ? <><button type="button" className="chip" onClick={() => { deleted.current = true; remove(mark.id); }}><Icon name="delete" />Delete note</button><button type="button" className="chip" onClick={() => setConfirm(false)}><Icon name="undo" />Keep</button></>
             : <button type="button" className="chip" onClick={() => setConfirm(true)}><Icon name="delete" />Delete</button>}
         </span>
       </div>

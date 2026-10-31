@@ -12,6 +12,7 @@ import { CHAPTER_ORDER, TOURS, type Target } from "@/lib/tours";
 import { holdBars } from "@/lib/header";
 import { TRACKS } from "@/data/tracks";
 import { markTourDone } from "@/lib/tour-progress";
+import { afterSteps } from "@/components/reader/useBackSteps";
 import styles from "./Tour.module.css";
 
 const showing = (el: Element) => {
@@ -72,7 +73,10 @@ export default function Tour() {
     q.delete("tour");
     el.current = null;
     setBox(null);
-    router.replace(`${pathname}${q.size ? `?${q}` : ""}`, { scroll: false });
+    // In the reader, Esc ends the tour and puts away what is open (Study) in the same moment, and the phone's Back steps are taken back
+    // over for that: the address is changed once the history stands level, or the step back lands after it and brings the tour's address
+    // back (the quiet desk, ticket 11, the owner, 2026-10-30).
+    afterSteps(() => router.replace(`${pathname}${q.size ? `?${q}` : ""}`, { scroll: false }));
   }, [params, pathname, router]);
 
   // leaving the page ends the tour (a link followed while trying a control)

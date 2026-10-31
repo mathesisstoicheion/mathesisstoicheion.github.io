@@ -10,6 +10,7 @@
  * Nothing is here twice: Go to is the bar's centre; the author's page is the title line's link; Echoes are in the look-up and the passage bar.
  */
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useId, useState, type ReactNode } from "react";
 import Icon, { type IconName } from "@/components/Icon";
 import { FORUM_OPEN } from "@/config/areas";
@@ -19,6 +20,7 @@ import { useSettings, type Columns, type MarkerKind } from "@/lib/settings";
 import { MarkersLegend } from "./ScrollMarkers";
 import { MenuHead } from "./ReaderBar";
 import { rangeLabel } from "./refs";
+import { leaveBy } from "./useBackSteps";
 import styles from "./ReaderBar.module.css";
 
 /** The panels a row opens at the side (each with "Back to Study" in its head). */
@@ -99,8 +101,10 @@ function Row({ icon, name, note, title, tool, mode, panel, fold, toggled, count,
 
 /** A row that leaves for a page of the site (the home page, a private book's notes). */
 function LinkRow({ icon, name, note, title, href, tool }: { icon: IconName; name: string; note?: string; title?: string; href: string; tool: string }) {
+  const router = useRouter();
   return (
-    <Link className={`row-btn ${styles.row}`} href={href} transitionTypes={["page-turn"]} data-tool={tool} title={title} data-closes-sheet="">
+    <Link className={`row-btn ${styles.row}`} href={href} transitionTypes={["page-turn"]} data-tool={tool} title={title} data-closes-sheet=""
+      onClick={(e) => leaveBy(e, () => router.push(href, { transitionTypes: ["page-turn"] }))}>
       <span className={styles.rowSign}><Icon name={icon} /></span>
       <span className={styles.rowText}><span>{name}</span>{note && <span className={styles.rowNote}>{note}</span>}</span>
       <span className={styles.rowState}><Icon name="chevron-right" /></span>

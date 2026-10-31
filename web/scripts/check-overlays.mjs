@@ -21,7 +21,7 @@ const OVERLAYS = [
   // the reader's one bar stands along the foot (ReaderBar.tsx): Aa, Study and Go to rise from it as a leaf on a computer and a sheet on a phone
   { name: "reader Aa", page: READER, trigger: 'button[aria-label="Text: page and size"]', panel: "controls" },
   { name: "reader Study", page: READER, trigger: 'button:text-matches("^Study")', panel: "controls" },
-  { name: "reader Go to", page: READER, trigger: 'button[aria-label="Go to a line or book"]', panel: "controls" },
+  { name: "reader Go to", page: READER, trigger: 'button[aria-controls$="-goto"]', panel: "controls" },
   { name: "word panel", page: READER, trigger: '[data-u="1.1"] [data-w]:nth-child(2)', panel: 'aside[aria-label^="Look-up"]' },
 ].filter((o) => o.name.includes(only));
 const SIZES = [[1024, 768, "computer"], [375, 812, "phone"]];

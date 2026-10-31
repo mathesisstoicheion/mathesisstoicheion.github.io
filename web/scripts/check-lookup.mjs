@@ -674,7 +674,7 @@ async function backRoutes(page, tag, phone) {
  */
 async function historySteps(page, tag) {
   const look = page.locator(LOOKUP);
-  const state = () => page.evaluate(() => ({ step: history.state?.lookupStep ?? 0, len: history.length, path: location.pathname, search: location.search, top: Math.round(document.querySelector('[data-u="1.1"] [data-w="μῆνιν"]')?.getBoundingClientRect().top ?? -9999) }));
+  const state = () => page.evaluate(() => ({ step: history.state?.readerStep ?? 0, len: history.length, path: location.pathname, search: location.search, top: Math.round(document.querySelector('[data-u="1.1"] [data-w="μῆνιν"]')?.getBoundingClientRect().top ?? -9999) }));
   const wait = () => page.waitForTimeout(800);
   // (a Back that left the reader leaves nothing more to check)
   const left = () => { const gone = !new URL(page.url()).pathname.startsWith(new URL(start.url).pathname); if (gone) found.push(`${tag}: the browser's Back left the reader (now at ${page.url()})`); return gone; };

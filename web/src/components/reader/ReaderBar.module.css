@@ -74,6 +74,8 @@
   animation: menu-in var(--dur) var(--ease) backwards;
 }
 .menu[hidden] { display: none; }
+/* the menu itself takes the keyboard when it opens (Drop.tsx), so that it is announced; the ring belongs to the controls in it, as for the side panels */
+.menu:focus { outline: none; }
 @keyframes menu-in { from { opacity: 0; } }
 @keyframes sheet-in { from { opacity: 0; translate: 0 var(--space-5); } }
 .footMenu {
@@ -176,3 +178,7 @@
   .goto input { flex: 1; min-width: 0; width: auto; }
 }
 @media (pointer: coarse) { .goto input { min-height: var(--tap); } }
+/* on a touch screen every button of a book's bar is a finger tall (Text, Study, Go; Find and Listen in Reader.module.css), not a chip's 36 px with 5 px of reach above and
+   below: where two rows of them stand close at 375 px those reaches lie on one another, and the check of touch areas finds the chip's middle covered by its neighbour's
+   (the quiet desk, ticket 11, the owner, 2026-10-30; the site's checks on another machine, where the rows wrap a little differently) */
+@media (pointer: coarse) { .paneBtn:global(.chip), .goto :global(.chip), .gotoRow :global(.chip) { min-height: var(--tap); } }

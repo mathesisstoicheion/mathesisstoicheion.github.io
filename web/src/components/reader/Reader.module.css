@@ -45,6 +45,7 @@
 .barEnd { display: flex; align-items: center; gap: var(--space-2); margin-left: auto; }
 /* Find in the top bar of each of two books: on a phone it is a row of Study (the chip draws its own pressed look) */
 @media (max-width: 760px) { .findBtn { display: none !important; } }
+@media (pointer: coarse) { .findBtn:global(.chip) { min-height: var(--tap); } }   /* a finger tall, as every button of a book's bar (ReaderBar.module.css) */
 .help { padding-block: var(--space-2); font-size: var(--step--1); color: var(--ink-2); }
 .cover { font-size: var(--step--1); color: var(--ink-2); padding-block: var(--space-3) 0; max-width: 90ch; }
 .cover p { margin: 0 0 var(--space-1); padding: var(--space-2) var(--space-3); background: transparent; box-shadow: var(--red-left), var(--rule-box); }
@@ -633,6 +634,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 
 /* Listen: a button in the top bar of each of two books on wide screens; on phones, and in the foot bar's Study, a row (StudyMenu.tsx) */
 @media (max-width: 760px) { .listenBtn { display: none !important; } }
+@media (pointer: coarse) { .listenBtn:global(.chip) { min-height: var(--tap); } }
 
 /* Talk about this passage (TalkPanel.tsx): the Town Hall's threads on this page */
 .talk { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; }
@@ -761,13 +763,16 @@ p.translit { margin: -0.3em 0 0.8em; }
     grid-template-columns: var(--num-col) minmax(0, 1fr); column-gap: var(--num-gap); row-gap: 0; align-items: baseline;
   }
   .reader:not(.verses) .ref { flex-direction: column; justify-content: flex-start; align-items: flex-end; gap: 0; text-align: right; }
-  /* the number is small (--step--1) and sits on the first line's baseline; its touch area is a finger tall and reaches into the gap beside it
-     (the page's edge is as far left as a finger can go) */
+  /* the number is small (--step--1) and sits on the first line's baseline; its box is a finger tall (44 px) and reaches right into the gap beside it
+     (the quiet desk, ticket 11, the owner, 2026-10-30: it was 21 × 15 px). Padding with equal negative margins makes the box taller and moves nothing: the
+     room above the passage (the row's own padding) and the lines beside it hold it, and the figures keep their place at the column's edge. The box stops
+     where the Greek's column starts, so a tap on the first word is the word's. (It cannot reach left: a row clips what leaves it, and the page's gutter
+     is outside the row.) Its width is at least 24 px, and a half pixel more: the check of touch areas shifts its 44 px square up to 12 px, and with the box just
+     24 px wide the square's left point stands on the box's very edge, where a rounding decides; the extra half pixel (under the first word's own 0.5) puts it inside. */
   .reader:not(.verses) .ref button[data-row] {
-    position: relative; width: 100%; min-width: 0; min-height: 0; padding: 0; font-size: var(--step--1); text-align: right;
-  }
-  .reader:not(.verses) .ref button[data-row]::after {
-    content: ""; position: absolute; inset: min(0px, calc((100% - var(--tap)) / 2)) calc(-1 * var(--num-gap)) min(0px, calc((100% - var(--tap)) / 2)) 0;
+    --num-pad: calc((var(--tap) - 1lh) / 2);
+    position: relative; align-self: flex-start; width: max(24.5px, calc(100% + var(--num-gap))); min-width: 0; max-width: none; min-height: 0;
+    padding: var(--num-pad) var(--num-gap) var(--num-pad) 0; margin-block: calc(-1 * var(--num-pad)); font-size: var(--step--1); text-align: right;
   }
   /* the heading before a play's first line has no number: its button keeps a finger's height, and the row's text does not wait on its baseline */
   .reader:not(.verses) .ref:has(> .front) { align-self: start; }
@@ -799,8 +804,7 @@ p.translit { margin: -0.3em 0 0.8em; }
     padding-inline: max(var(--space-3), env(safe-area-inset-left, 0px)) max(var(--space-3), env(safe-area-inset-right, 0px));
   }
   .poetry:not(.verses) .ref button[data-row] { font-size: var(--step--2); }
-  /* its touch area (and each mark's under it) reaches left, into the gutter, as far as it reaches right into the gap */
-  .poetry:not(.verses) .ref button[data-row]::after { left: calc(-1 * var(--space-3)); }
+  /* each mark's touch area, under the number, reaches left, into the gutter, as far as it reaches right into the gap */
   .poetry:not(.verses) .marks button::after { left: calc(-1 * var(--space-3)); }
 }
 /* the foot of the page: where you are, and the way on */

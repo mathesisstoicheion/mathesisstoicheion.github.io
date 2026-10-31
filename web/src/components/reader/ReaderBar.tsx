@@ -15,13 +15,15 @@
  * page and Go to are Where, in a row).
  */
 import Link from "next/link";
-import { useEffect, useId, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode, type RefObject } from "react";
 import Icon from "@/components/Icon";
 import { AREAS } from "@/config/areas";
 import { barsHeld, footHeld } from "@/lib/header";
 import type { TeiDoc } from "@/lib/tei/types";
 import Drop from "./Drop";
 import { placeOf } from "./place";
+import { leaveBy } from "./useBackSteps";
 import styles from "./ReaderBar.module.css";
 
 /** One of the bar's small panels: its id (for aria-controls), whether it is open now, and the way to open or close it (Reader.tsx keeps one open at a time). */
@@ -150,8 +152,8 @@ export default function ReaderBar({ rootRef, book }: {
   /** null until the text is up: the bar is then the way back alone (the site's header stands aside on this page) */
   book: BarBook | null;
 }) {
-  const id = useId();
   const phone = usePhone();
+  const router = useRouter();
   const menuOpen = !!book && (book.aa.open || book.study.open || book.goto.open);
   const [away, setAway] = useState(false);
   // what the scroll listener below reads: whether the bar is away now, and whether a menu is open
@@ -202,15 +204,18 @@ export default function ReaderBar({ rootRef, book }: {
   return (
     <nav className={styles.foot} aria-label="Reader controls" data-foot-bar="">
       <div className={`wrap ${styles.barIn}`}>
-        <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"><Icon name="back" />Library</Link>
+        <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"
+          onClick={(e) => leaveBy(e, () => router.push(AREAS.library.href, { transitionTypes: ["page-turn"] }))}><Icon name="back" />Library</Link>
         {book && place ? (
           <Drop {...book.goto} chevron={false} className={`icon-btn ${styles.quiet} ${styles.where}`} panelClass={`${styles.menu} ${styles.footMenu} ${styles.gotoMenu}`} panelLabel="Go to"
-            ariaLabel="Go to a line or book" describedBy={`${id}-at`} title="Go to a line, or to another part of the book"
+            title="Go to a line, or to another part of the book"
             label={<>
               <Icon name="goto" />
               <span className={styles.part}>{place.part}</span>
               <span className={styles.rule} aria-hidden="true"><span className={styles.mark} style={{ "--p": place.progress } as CSSProperties} /></span>
-              <span id={`${id}-at`} className={styles.at}>{place.level} {place.num}{place.of !== null ? ` of ${place.of}` : ""}</span>
+              <span className={styles.at}>{place.level} {place.num}{place.of !== null ? ` of ${place.of}` : ""}</span>
+              {/* its name is the words it shows and then what it does (the quiet desk, ticket 11, user story 23, the owner, 2026-10-30: a name must start with the words shown) */}
+              <span className="visually-hidden">, go to a line or book</span>
             </>}>
             {book.goto.open && book.gotoMenu}
           </Drop>

@@ -22,7 +22,6 @@ import { placeNamed, shortName, type Place } from "@/lib/map";
 import { useSettings } from "@/lib/settings";
 import styles from "./Reader.module.css";
 import { SidePanel } from "./Panel";
-import { useBackSteps } from "./useBackSteps";
 
 export interface WordContext { work: string; unitKey: string; occurrence: number; keys: Set<string>; depth: number }
 
@@ -219,7 +218,7 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
   return { head: { onPointerDown: down(true), ...common }, body: { onPointerDown: down(false), ...common } };
 }
 
-export default function WordPanel({ word, ctx, doc = null, at = null, workTitle = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null, startMore = false, backSteps = false }: {
+export default function WordPanel({ word, ctx, doc = null, at = null, workTitle = null, onClose, onEchoes, onSentence, onStep, sheet = false, note = null, maxH = null, more: moreOn = false, onMore }: {
   word: string | null; ctx: WordContext | null; onClose: () => void;
   /** show every place the word occurs (Echoes); given the word's dictionary form as shown, for the way back to it */
   onEchoes?: (headword: string) => void;
@@ -237,10 +236,10 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   note?: { left: number; width: number } | null;
   /** how tall the sheet may rise, in pixels, so that it stops below the line being read */
   maxH?: number | null;
-  /** a look-up opened afresh starts in the second layer (the way back from the sentence or Echoes, to where the reader came from) */
-  startMore?: boolean;
-  /** the phone's back gesture steps back through the layers (the reader's own page only; the quiet desk, back routes, 2026-10-29) */
-  backSteps?: boolean;
+  /** the second layer ("More about it") is open: the reader keeps it, with the word, so that the phone's Back can close it (the quiet desk, ticket 11, the owner, 2026-10-30);
+   *  a look-up opened afresh starts in the second layer when it is the way back from the sentence or Echoes, to where the reader came from */
+  more?: boolean;
+  onMore?: (open: boolean) => void;
 }) {
   const ref = useRef<HTMLElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
@@ -249,25 +248,23 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   const [snap, setSnap] = useState<Snap>("peek");
   // a look-up opened afresh starts at "peek", with its first layer showing; moving word to word keeps the height chosen
   const [wasOpen, setWasOpen] = useState(false);
-  // the word that "More about it" was opened for (the quiet desk, ticket 06): another word, or a look-up opened afresh, shows
-  // the first layer again; likewise the whole LSJ entry
-  const [moreFor, setMoreFor] = useState("");
+  // the word that the whole LSJ entry was opened for (the quiet desk, ticket 06): another word, or a look-up opened afresh, shows
+  // the first layer again, and so does "More about it", which the reader keeps (more, onMore)
   const [fullFor, setFullFor] = useState("");
   const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
-  if (!!word !== wasOpen) { setWasOpen(!!word); setMoreFor(word && startMore ? key : ""); setFullFor(""); if (word) setSnap("peek"); }
-  const more = !!word && moreFor === key;
+  if (!!word !== wasOpen) { setWasOpen(!!word); setFullFor(""); if (word) setSnap("peek"); }
+  const more = !!word && moreOn;
+  const setMore = (open: boolean) => onMore?.(open);
   const full = !!word && fullFor === key;
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });
   // the second layer is the sheet at its full height; a drag of its handle to a lower height goes back to the first layer there
   const snapNow: Snap = more ? "full" : snap;
-  const pickSnap = (s: Snap) => { if (more && s !== "full") setMoreFor(""); setSnap(s); };
+  const pickSnap = (s: Snap) => { if (more && s !== "full") setMore(false); setSnap(s); };
   const gestures = useSheetGestures(ref, { on: sheet, snap: snapNow, setSnap: pickSnap, onClose, onStep: more ? undefined : step, maxH });
   // Back, or Escape in the second layer: the first layer, at its resting height, with the keyboard on "More about it"
   const cameBack = useRef(false);
-  const goBack = () => { cameBack.current = true; setMoreFor(""); setSnap("peek"); };
-  // the browser's Back steps from the second layer to the first, then closes (hooks come before the early return below)
-  useBackSteps(!word ? 0 : more ? 2 : 1, backSteps, (depth) => { if (depth > 0) goBack(); else onClose(); });
+  const goBack = () => { cameBack.current = true; setMore(false); setSnap("peek"); };
   useEffect(() => {
     if (ref.current) ref.current.scrollTop = 0;
     if (bodyRef.current) bodyRef.current.scrollTop = 0;
@@ -403,7 +400,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
       {/* each with its sign (the quiet desk, the reader's tools, the owner, 2026-10-30): the one before has its arrow first, the one after has its arrow last, as the site's "next" does */}
       {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><Icon name="chevron-left" />Previous</button>}
       {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next<Icon name="chevron-right" /></button>}
-      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMoreFor(key)}><Icon name="info" />More about it</button>
+      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMore(true)}><Icon name="info" />More about it</button>
     </div>
   );
   // the red › at the right end of each row of "Go further" (a sign, not read out: the row's words say what it does)

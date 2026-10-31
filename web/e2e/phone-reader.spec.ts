@@ -32,8 +32,8 @@ test("the reader's bar is along the foot: the way back, where you are, Aa and St
     expect(r.width, await b.getAttribute("aria-label") ?? "").toBeGreaterThanOrEqual(43.5);
     expect(r.height, await b.getAttribute("aria-label") ?? "").toBeGreaterThanOrEqual(43.5);
   }
-  // (what is drawn: the page's name and the rule are left out on a phone, though they are in the button)
-  await expect(page.getByRole("button", { name: "Go to a line or book" })).toContainText(/^line \d+ of 611$/, { useInnerText: true });
+  // (what is drawn: the page's name and the rule are left out on a phone, though they are in the button; its name says the line first and then what it does, as a screen reader reads it, user story 23)
+  await expect(page.getByRole("button", { name: "Go to a line or book" })).toContainText(/^line \d+ of 611\s*, go to a line or book$/, { useInnerText: true });
   // Aa holds the page and the columns; Study holds your marks
   const aa = await openAa(page);
   for (const name of ["Page", "Columns"]) await expect(aa.getByRole("radiogroup", { name })).toBeVisible();

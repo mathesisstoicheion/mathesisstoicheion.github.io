@@ -28,8 +28,8 @@ type Head = {
   /** a way back to what the reader came from, at the top-left of the head above the title (the back sign and "Back to μῆνις": the
    *  quiet desk, back routes, the owner, 2026-10-29; "Back to Study" for a panel opened from the Study menu, ticket 09, 2026-10-30);
    *  left out when the panel was opened some other way. Where it is given, Escape does what it does (the panel passes onEscape; the
-   *  owner's rule, 2026-10-30), and × closes to the text. (The phone's back gesture is not joined to it yet: only the look-up has
-   *  steps in the browser's history, useBackSteps.ts.) */
+   *  owner's rule, 2026-10-30), and × closes to the text. (The phone's back gesture does the same: Back from a panel opened from
+   *  Study shows Study, from Echoes or the sentence shows the look-up, and the next Back closes that; useBackSteps.ts, ticket 11.) */
   back?: Back;
 };
 
