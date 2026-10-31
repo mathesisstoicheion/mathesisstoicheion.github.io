@@ -43,7 +43,8 @@ function Drawing({ id }: { id: string }) {
             <span className={styles.rNo}>1.1</span>
             <span>
               <span className={styles.rGr} lang="grc">μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος</span>
-              <span className={styles.rShow}>▸ Show the English</span>
+              {/* the real button's words alone, as Reader.tsx sets them (a "▸" before them was drawn in a fallback font: none of the three has it) */}
+              <span className={styles.rShow}>Show the English</span>
             </span>
           </div>
           <div className={styles.rCols}><i>Greek</i><i>Both</i><i>English</i></div>
