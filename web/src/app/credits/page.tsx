@@ -115,16 +115,18 @@ export default function CreditsPage() {
           </> : <>
             <li>
               <b>Accounts</b> are kept by <a href="https://supabase.com" rel="noopener">Supabase</a>, on servers in the European Union
-              (Ireland). Your browser contacts Supabase on your account page and when you are signed in; the home page, reading, study
-              and the Painted Stoa never do. An account holds your email address (used only to sign you in and to send the confirmation and
+              (Ireland). Your browser contacts Supabase on your account page, on the Painted Stoa&apos;s board, and when you are signed in;
+              the home page, reading, study and the rest of the Painted Stoa never do. An account holds your email address (used only to sign you in and to send the confirmation and
               password-reset letters; never shown to anyone), your password (stored by Supabase in scrambled form, never readable), your
               display name and what you write about yourself.
             </li>
             <li>The Agora and the Pnyx are closed for now. What was written there is kept, and is no longer shown.</li>
+            <li>What you put on the Painted Stoa&apos;s board (a thought, a picture of a pot you painted and its link, a tune&apos;s link) is seen
+              first by the site&apos;s keeper, and once approved by everyone, under your display name. You can delete it at any time.</li>
           </>}
           <li>If you choose to keep your Treasury in step between devices, a copy of it is stored in your account, readable only by you.</li>
           <li>You can delete your account at any time from your account page: this removes your account, your profile, everything you
-            wrote in the Agora and the Pnyx, your votes and your stored Treasury.</li>
+            wrote in the Agora and the Pnyx, everything you put on the board, your votes and your stored Treasury.</li>
         </ul>
 
         <h2 id="words">Words and dictionaries</h2>

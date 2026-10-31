@@ -34,6 +34,7 @@ import { designFor, type Design } from "./instruments";
 import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
 import Icon from "@/components/Icon";
 import ShareButton from "@/components/ShareButton";
+import PutOnBoard from "@/components/board/PutOnBoard";
 import { MAX_PLUCKS, decodeTune, encodeTune, type Pluck, type Tune } from "@/lib/lyre/tune-link";
 import styles from "./Lyre.module.css";
 
@@ -697,6 +698,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
     const on = tune.t.song ? melodies.find((m) => m.id === tune.t.song)?.title : null;
     return { title: on ? `A tune I played on the lyre of ${on}` : "A tune I played on the lyre", url: `${location.origin}/stoa/lyre#tune=${await encodeTune(tune.t)}` };
   };
+  // the tune put on the Painted Stoa's board (components/board/PutOnBoard.tsx), as its link; the melody's name suggests a title
+  const boardTune = async () => {
+    if (!tune) return null;
+    const on = tune.t.song ? melodies.find((m) => m.id === tune.t.song)?.title : null;
+    return { kind: "tune" as const, title: on ? `On the lyre of ${on}` : "", link: `/stoa/lyre#tune=${await encodeTune(tune.t)}` };
+  };
   // a tune opened from a link: the lyre it was played on is set out, ready to play it
   useEffect(() => {
     const read = () => {
@@ -828,11 +835,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
               <Icon name={replaying ? "stop" : "play"} />{replaying ? "Stop" : tune.from === "link" ? "Play it" : "Play it back"}
             </button>
             {tune.from === "mine" && <ShareButton what={shareTune} />}
+            {tune.from === "mine" && <PutOnBoard what={boardTune} />}
             <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />{tune.from === "link" ? "Record your own" : "Record again"}</button>
             <span className="faint">
               {tune.from === "link"
                 ? "A tune someone played on this lyre and shared with you."
-                : `Your tune: ${tune.t.plucks.length} ${tune.t.plucks.length === 1 ? "note" : "notes"}, ${Math.max(1, Math.round((tune.t.plucks.at(-1)?.t ?? 0) / 1000))} s. It is not kept: share it, or it goes when you leave.`}
+                : `Your tune: ${tune.t.plucks.length} ${tune.t.plucks.length === 1 ? "note" : "notes"}, ${Math.max(1, Math.round((tune.t.plucks.at(-1)?.t ?? 0) / 1000))} s. It is not kept: share it or put it on the board, or it goes when you leave.`}
             </span>
           </>
         ) : (

@@ -232,4 +232,4 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 }
 
 /* the entry's Share, under its last paragraph (ShareEntry.tsx) */
-.shareLine { margin: var(--space-6) 0 0; }
+.shareLine { margin: var(--space-6) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-3); }

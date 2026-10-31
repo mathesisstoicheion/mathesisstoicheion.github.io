@@ -171,8 +171,15 @@ const ARMS = ([-1, 1] as const).map((s) => {
   return `M${pts([...left, ...right.reverse()])}Z`;
 });
 
+// the board: a board hung from a nail by a cord, in the gloss, with three panels of clay put up on it (a pot, a tune's
+// plucks along its strings, lines of writing), and a frieze of added red and a scratched line beneath them
+const PANELS = [0.12, 0.39, 0.66];
+const PANEL = { y: 0.35, w: 0.22, h: 0.3 };
+const MINI = 0.22 / LIP;   // the pot, made small to stand in its panel
+const PLUCKS: Pt[] = [[0.03, 0.22], [0.06, 0.14], [0.09, 0.18], [0.12, 0.08], [0.15, 0.14], [0.18, 0.22]];
+
 /**
- * Make and play: the lyre and the potter, each a card with its picture, drawn as a black-figure painter drew: the
+ * Make and play: the lyre, the potter and the board, each a card with its picture, drawn as a black-figure painter drew: the
  * shapes in the black gloss (the page's ink), the lines scratched through it to the clay (the paper), and one line of
  * added red. Below the three places to explore, above the index of entries.
  */
@@ -180,7 +187,7 @@ export function MakeAndPlay() {
   const { rx, ry, cy } = SHELL;
   return (
     <nav className={styles.make} aria-labelledby="make-h">
-      <h2 id="make-h" className="label">Make and play</h2>
+      <h2 id="make-h" className="label">Make, play and share</h2>
       <ul>
         <li>
           <Link href={AREAS.lyre.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
@@ -221,6 +228,37 @@ export function MakeAndPlay() {
               <span className={styles.gr} lang="grc">{AREAS.pot.greek}</span>
               <b>{AREAS.pot.name}</b>
               <span>{AREAS.pot.fit}</span>
+            </span>
+          </Link>
+        </li>
+        <li>
+          <Link href={AREAS.board.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+            <svg className={styles.fig} viewBox="0 0 1 1" aria-hidden="true">
+              <path className={styles.cord} d="M0.3 0.26L0.5 0.1L0.7 0.26" />
+              <circle className={styles.gloss} cx="0.5" cy="0.1" r="0.018" />
+              <rect className={styles.gloss} x="0.05" y="0.26" width="0.9" height="0.66" rx="0.012" />
+              <rect className={styles.scratch} x="0.075" y="0.285" width="0.85" height="0.61" />
+              {PANELS.map((x, i) => (
+                <g key={x}>
+                  <rect className={styles.clay} x={x} y={PANEL.y} width={PANEL.w} height={PANEL.h} />
+                  {i === 0 && <g transform={`translate(${f4(x + PANEL.w / 2)} ${f4(PANEL.y + 0.04)}) scale(${f4(MINI)})`}>
+                    <path className={styles.gloss} d={POT} />
+                    {HANDLES.map((d) => <path key={d} className={styles.handle} d={d} />)}
+                  </g>}
+                  {i === 1 && <g transform={`translate(${f4(x + 0.005)} ${f4(PANEL.y)})`}>
+                    {[0.08, 0.14, 0.18, 0.22].map((y) => <line key={y} className={styles.panelLine} x1="0.02" x2="0.2" y1={y} y2={y} />)}
+                    {PLUCKS.map(([px, py]) => <circle key={px} className={styles.gloss} cx={px} cy={py} r="0.012" />)}
+                  </g>}
+                  {i === 2 && [0.07, 0.12, 0.17, 0.22].map((y, k) => <line key={y} className={styles.panelInk} x1={f4(x + 0.03)} x2={f4(x + PANEL.w - 0.03 - (k === 3 ? 0.07 : 0))} y1={f4(PANEL.y + y)} y2={f4(PANEL.y + y)} />)}
+                </g>
+              ))}
+              <line className={styles.addedRed} x1="0.075" x2="0.925" y1="0.76" y2="0.76" />
+              <line className={styles.scratch} x1="0.075" x2="0.925" y1="0.8" y2="0.8" />
+            </svg>
+            <span className={styles.txt}>
+              <span className={styles.gr} lang="grc">{AREAS.board.greek}</span>
+              <b>{AREAS.board.name}</b>
+              <span>{AREAS.board.fit}</span>
             </span>
           </Link>
         </li>

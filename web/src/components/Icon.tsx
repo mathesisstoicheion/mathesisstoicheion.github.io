@@ -6,7 +6,7 @@
 //   <Icon name="close" label="Close" />  alone: the label names it
 // Every svg carries data-icon, so a check can find which buttons have one.
 //
-// The drawings are Lucide's (https://lucide.dev), except the lyre, which is this site's own. Lucide's licence:
+// The drawings are Lucide's (https://lucide.dev), except the lyre and the board, which are this site's own. Lucide's licence:
 // ISC License. Copyright (c) for portions of Lucide are held by Cole Bemis 2013-2022 as part of Feather (MIT). All other
 // copyright (c) for Lucide are held by Lucide Contributors 2022.
 // Permission to use, copy, modify, and/or distribute this software for any purpose with or without fee is hereby
@@ -277,6 +277,8 @@ const ICONS = {
   "flag": [["path", {d: "M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"}], ["line", {x1: "4", x2: "4", y1: "22", y2: "15"}]],
   // send (Lucide "send")
   "send": [["path", {d: "M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z"}], ["path", {d: "m21.854 2.147-10.94 10.939"}]],
+  // the board: what readers put up (the site's own drawing: a board hung from a nail, a picture and lines of writing on it)
+  "board": [["path", {d: "m8 7 4-4 4 4"}], ["rect", {width: "18", height: "14", x: "3", y: "7", rx: "1"}], ["path", {d: "M7 11h4v6H7z"}], ["path", {d: "M14 12h3"}], ["path", {d: "M14 16h3"}]],
   // the lyre: play it (the site's own drawing)
   "lyre": [["path", {d: "M8 19C3.6 16.4 2.4 9.6 5 4.5c.4-.8 1.2-1.3 2-1.2"}], ["path", {d: "M16 19c4.4-2.6 5.6-9.4 3-14.5-.4-.8-1.2-1.3-2-1.2"}], ["path", {d: "M4.4 7h15.2"}], ["path", {d: "M6.5 19h11c-1.2 2.4-9.8 2.4-11 0"}], ["path", {d: "M9 7v12"}], ["path", {d: "M12 7v12"}], ["path", {d: "M15 7v12"}]],
 } satisfies Record<string, Drawing>;

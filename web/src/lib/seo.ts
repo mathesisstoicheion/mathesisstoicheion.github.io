@@ -87,6 +87,7 @@ export const PAGE_DESCRIPTIONS = {
   periplus: "A map of the places named in the Greek texts.",
   lyre: "Play a Greek lyre with your keyboard, fingers or a MIDI keyboard, and play along with the surviving ancient Greek melodies, from the Seikilos song to the Delphic hymns.",
   pot: "Paint your own Greek vase: turn a neck-amphora, paint it in black-figure or red-figure, write Greek on it, and share it with a link.",
+  board: "The Painted Stoa's board: thoughts, painted Greek vases and tunes played on the lyre, put up by readers of Ancient Greek.",
   kerameikos: "The Kerameikos, Athens' potters' quarter and its main cemetery, and what its excavated layers show.",
   townHall: "The community's meeting place: questions from beginners, help with a passage, and discussion of the texts.",
   pnyx: "Weekly debates on the ancient world: argue a motion, then vote on it.",
