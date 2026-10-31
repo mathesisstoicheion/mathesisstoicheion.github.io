@@ -1,8 +1,10 @@
 /**
  * Putting a list in alphabetical order, for the "A to Z" lists (AZList.tsx; the owner asked for them on 2026-10-16).
- * A title is filed under the first letter of its first word, accents ignored: "Ἀγησίλαος" would go under #, "1 Corinthians"
- * under C, "The Gospel of John" under T. (The library already files its titles this way; no word such as "The" is skipped.)
- * Titles that do not start with a Latin letter, such as Greek ones, go together at the end, under "#".
+ * A title is filed the way a library catalogue files it, accents ignored: a leading "The", "A" or "An" is passed over
+ * ("The Trojan Women" under T for Trojan, "A True Story" under T for True, "The Deipnosophists" under D), and so are
+ * leading numbers and a leading part in brackets ("1 Corinthians" under C, "(Sophonias) Commentary on the Parva
+ * Naturalia" under C). The title itself is shown as it is. Titles that do not start with a Latin letter, such as Greek
+ * ones, go together at the end, under "#". (The owner, 2026-10-31: the titles A to Z "starts on S and is all messed up".)
  */
 import type { ReactNode } from "react";
 import { fold } from "@/lib/catalog";
@@ -24,8 +26,10 @@ export const AZ_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** The heading for everything that does not start with a Latin letter. */
 export const AZ_OTHER = "#";
 
-/** The title with its accents and capitals folded away, and any leading digits, brackets or spaces dropped. */
-const filed = (title: string) => fold(title).replace(/^[^\p{L}]+/u, "");
+/** The words a title is filed by: accents and capitals folded away; a leading part in brackets, leading digits or
+ *  marks, and a leading "the", "a" or "an" dropped. */
+export const filed = (title: string) =>
+  fold(title).replace(/^\s*\([^)]*\)\s*/u, "").replace(/^[^\p{L}]+/u, "").replace(/^(?:the|an?)\s+(?=\p{L})/u, "");
 
 /** The letter a title is filed under: A to Z, or "#" when it does not start with a Latin letter. */
 export function azKey(title: string): string {
@@ -41,10 +45,11 @@ export function compareAZ(a: string, b: string): number {
   return filed(a).localeCompare(filed(b), "en", opts) || fold(a).localeCompare(fold(b), "en", opts);
 }
 
-/** The items in alphabetical order, in one group for each letter that has any. */
-export function groupAZ<T extends { title: string }>(items: readonly T[]): { key: string; items: T[] }[] {
+/** The items in alphabetical order, in one group for each letter that has any. `tie` orders items with the same title
+ *  (the library's titles list puts them in the order of their authors). */
+export function groupAZ<T extends { title: string }>(items: readonly T[], tie?: (x: T, y: T) => number): { key: string; items: T[] }[] {
   const out: { key: string; items: T[] }[] = [];
-  for (const it of [...items].sort((x, y) => compareAZ(x.title, y.title))) {
+  for (const it of [...items].sort((x, y) => compareAZ(x.title, y.title) || (tie ? tie(x, y) : 0))) {
     const key = azKey(it.title);
     const last = out[out.length - 1];
     if (last && last.key === key) last.items.push(it);
