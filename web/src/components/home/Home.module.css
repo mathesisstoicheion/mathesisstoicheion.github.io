@@ -25,7 +25,8 @@
 .start h3 { font: 500 var(--step-1) / 1.2 var(--f-display); margin: 0 0 var(--space-2); transition: color var(--dur) var(--ease); }
 .start p { margin: 0; color: var(--ink-2); font-size: var(--step-0); }
 .start .go { display: inline-block; margin-top: var(--space-3); font: 400 var(--step--1) / 1.2 var(--f-body); color: var(--ink-3); transition: color var(--dur) var(--ease); }
-.start:hover h3, .start:focus-visible h3, .start:hover .go, .start:focus-visible .go { color: var(--rubric); }
+.start:focus-visible h3, .start:focus-visible .go { color: var(--rubric); }
+@media (hover: hover) { .start:hover h3, .start:hover .go { color: var(--rubric); } }
 
 /* ---- coming back: your desk, set as a short table ---- */
 .desk { max-width: 860px; }
@@ -34,14 +35,14 @@
 .dlabel { font: 500 var(--step--2) / 1.6 var(--f-label); letter-spacing: 0.2em; text-transform: uppercase; color: var(--ink-3); padding-top: 0.2em; }
 .drow b { font-weight: 500; }
 .drow a { color: var(--ink); text-underline-offset: 3px; text-decoration-color: var(--rule); }
-.drow a:hover { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .drow a:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 .drow small { display: block; color: var(--ink-3); font-size: var(--step--1); }
 .drow ul { list-style: none; margin: 6px 0 0; padding: 0; font-size: var(--step--1); }
 .drow ul small { display: inline; }
 .dalso { margin: 14px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .dalso a { color: var(--ink); }
 .dalso button { display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; padding: 0; color: var(--ink-3); font: inherit; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
-.dalso button:hover { color: var(--rubric); }
+@media (hover: hover) { .dalso button:hover { color: var(--rubric); } }
 @media (max-width: 560px) { .drow { grid-template-columns: 1fr; } }
 /* under a finger each of the desk's links, and its button, answers over 44 px (scripts/check-a11y.mjs): a link alone in its
    row reaches above and below its line; the lines of a list are made a finger's height */
@@ -86,7 +87,7 @@
    points on while the English is closed and down while it is open; the English leafs in under the Greek, by a red rule */
 .enBox { margin-top: var(--space-4); }
 .enBtn:global(.text-btn) { display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
-.enBtn:global(.text-btn):hover { color: var(--rubric); }
+@media (hover: hover) { .enBtn:global(.text-btn):hover { color: var(--rubric); } }
 .enBtn:global(.text-btn)::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
 .enBtn:global(.text-btn)[aria-expanded="true"]::before { clip-path: var(--tri-down); }
 @media (pointer: coarse) { .enBtn:global(.text-btn) { min-height: var(--tap); } }

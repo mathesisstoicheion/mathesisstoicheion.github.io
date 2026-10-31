@@ -40,7 +40,7 @@
 }
 .shelf b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.05; transition: color var(--dur-quick) var(--ease); }
 .shelf span { font-size: var(--step--1); color: var(--ink-2); }
-.shelf:hover b { color: var(--rubric); }
+@media (hover: hover) { .shelf:hover b { color: var(--rubric); } }
 .shelf[aria-pressed="true"] { box-shadow: inset 0 2px 0 var(--rubric); }
 .shelf[aria-pressed="true"] b { color: var(--rubric); }
 .shelf:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -95,7 +95,7 @@
 }
 .comparing .row { grid-template-columns: 1.8em minmax(6em, 44%) 1fr; gap: var(--space-2); }
 .rows li:last-child .row { box-shadow: none; }
-.row:hover .word b { color: var(--rubric); }
+@media (hover: hover) { .row:hover .word b { color: var(--rubric); } }
 .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
 .rankN { font-family: var(--f-title); color: var(--ink-2); text-align: right; font-variant-numeric: lining-nums tabular-nums; }
 .word { display: grid; min-width: 0; }
@@ -136,7 +136,7 @@
   position: absolute; top: 10px; right: 10px; width: 30px; height: 30px; border: 1px solid var(--rule); border-radius: var(--radius-round);
   background: transparent; color: var(--ink); cursor: pointer; transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.close:hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .close:hover { color: var(--rubric); border-color: var(--rubric); } }
 .panelWord { font-family: var(--f-greek); font-weight: 400; font-size: clamp(2rem, 3.4vw, 2.6rem); line-height: 1.05; margin: 0; padding-right: 34px; overflow-wrap: anywhere; }
 .panelSub { color: var(--ink-2); font-style: italic; }
 .stats { margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: var(--space-3) 0; }
@@ -169,7 +169,7 @@
   width: 100%; height: 100%; text-align: left; display: grid; gap: 6px; align-content: start; padding: var(--space-4) 2px; cursor: pointer;
   font: inherit; color: inherit; background: transparent; border: 0; border-radius: 0; box-shadow: var(--cut-over);
 }
-.facts button:hover .factText b { color: var(--rubric-2); }
+@media (hover: hover) { .facts button:hover .factText b { color: var(--rubric-2); } }
 .facts button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .factText { font-size: var(--step-0); line-height: 1.45; }
 .factText b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-sub); color: var(--rubric); transition: color var(--dur-quick) var(--ease); }

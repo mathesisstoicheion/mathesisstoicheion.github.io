@@ -42,7 +42,7 @@
 .h2::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
 .lede { margin: 0; color: var(--ink-2); max-width: 70ch; }
 .bookList { grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); gap: 0 28px; }
-.back { padding: 0; border: 0; background: none; color: var(--rubric); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+.back { display: inline-flex; align-items: center; gap: var(--space-1); padding: 0; border: 0; background: none; color: var(--rubric); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
 /* the notebook's title: it reads as a heading until the pointer or the keyboard is on it, then it is a line to write on */
 .titleInput { font: 400 clamp(1.5rem, 3vw, 2.1rem) / 1.2 var(--f-display); min-height: 54px; }
 .titleInput:not(:hover):not(:focus-visible) { border-bottom-color: transparent; }

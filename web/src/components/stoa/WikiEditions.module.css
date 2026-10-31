@@ -6,7 +6,7 @@
 .group > summary::-webkit-details-marker { display: none; }
 .group > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--accent); margin-right: 10px; }
 .group[open] > summary::before { clip-path: var(--tri-down); }
-.group > summary:hover .gname { color: var(--rubric); }
+@media (hover: hover) { .group > summary:hover .gname { color: var(--rubric); } }
 .gname { flex: 1; font-family: var(--f-title); font-size: var(--step-1); line-height: 1.25; transition: color var(--dur-quick) var(--ease); }
 .gcount { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); }
 .list { list-style: none; margin: 0 0 0 22px; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
@@ -15,7 +15,8 @@
   box-shadow: var(--cut-under);
 }
 .list li:last-child .row { box-shadow: none; }
-.row:hover .title, .row:focus-visible .title { color: var(--rubric); }
+.row:focus-visible .title { color: var(--rubric); }
+@media (hover: hover) { .row:hover .title { color: var(--rubric); } }
 .what { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 12px; }
 .title { font-weight: 600; transition: color var(--dur-quick) var(--ease); }
 .kind { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--blue); }

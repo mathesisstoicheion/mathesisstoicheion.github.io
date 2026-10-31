@@ -9,7 +9,7 @@
   cursor: pointer; animation: bttIn var(--dur) var(--ease) backwards;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), opacity var(--dur) var(--ease), bottom var(--dur) var(--ease);
 }
-.btt:hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .btt:hover { color: var(--rubric); border-color: var(--rubric); } }
 .btt:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
 .btt svg { width: 18px; height: 18px; fill: none; stroke: var(--rubric); stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 .btt span { font: 400 var(--step--1) / 1 var(--f-body); }

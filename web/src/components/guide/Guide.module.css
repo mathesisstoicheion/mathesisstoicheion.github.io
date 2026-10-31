@@ -18,7 +18,8 @@
   display: flex; height: 100%; align-items: baseline; gap: 12px; padding: 11px 2px 12px; color: var(--ink); text-decoration: none; font-size: var(--step-0);
   transition: color var(--dur-quick) var(--ease);
 }
-.contents a:hover, .contents a:focus-visible { color: var(--rubric); }
+.contents a:focus-visible { color: var(--rubric); }
+@media (hover: hover) { .contents a:hover { color: var(--rubric); } }
 .no { flex: none; min-width: 1.4em; font: 400 1.25rem / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
 .contents a[data-done] .no { font-family: var(--f-body); }
 

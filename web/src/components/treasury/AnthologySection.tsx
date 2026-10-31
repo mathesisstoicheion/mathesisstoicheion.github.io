@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMemo, useState } from "react";
 import { useMarks, type Mark } from "@/lib/annotations";
+import Icon from "@/components/Icon";
 import { rangeText } from "@/lib/treasury-io";
 import { plural, readHref, workName, type TreasuryState } from "./data";
 import styles from "./Treasury.module.css";
@@ -79,10 +80,10 @@ export default function AnthologySection({ t }: { t: TreasuryState }) {
           ? <span className={styles.inlineForm}>
               <input autoFocus value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="Name, e.g. Similes" aria-label="Name of the new collection"
                 onKeyDown={(e) => { if (e.key === "Enter") create(); if (e.key === "Escape") setMaking(false); }} />
-              <button type="button" className="chip" onClick={create} disabled={!cleanName(newName)}>Create</button>
-              <button type="button" className="chip" onClick={() => setMaking(false)}>Cancel</button>
+              <button type="button" className="chip" onClick={create} disabled={!cleanName(newName)}><Icon name="check" />Create</button>
+              <button type="button" className="chip" onClick={() => setMaking(false)}><Icon name="close" />Cancel</button>
             </span>
-          : <button type="button" className={`chip ${styles.add}`} onClick={() => setMaking(true)}>+ New collection</button>}
+          : <button type="button" className={`chip ${styles.add}`} onClick={() => setMaking(true)}><Icon name="plus" />New collection</button>}
       </div>
 
       {current && current !== UNSORTED && (
@@ -91,19 +92,19 @@ export default function AnthologySection({ t }: { t: TreasuryState }) {
             ? <span className={styles.inlineForm}>
                 <input autoFocus value={renaming} onChange={(e) => setRenaming(e.target.value)} aria-label="New name"
                   onKeyDown={(e) => { if (e.key === "Enter") rename(current, renaming); if (e.key === "Escape") setRenaming(null); }} />
-                <button type="button" className="chip" onClick={() => rename(current, renaming)}>Rename</button>
-                <button type="button" className="chip" onClick={() => setRenaming(null)}>Cancel</button>
+                <button type="button" className="chip" onClick={() => rename(current, renaming)}><Icon name="check" />Rename</button>
+                <button type="button" className="chip" onClick={() => setRenaming(null)}><Icon name="close" />Cancel</button>
               </span>
             : <h3 className={styles.collectionName}>{current}</h3>}
-          {renaming === null && <button type="button" className="chip" onClick={() => setRenaming(current)}>Rename</button>}
+          {renaming === null && <button type="button" className="chip" onClick={() => setRenaming(current)}><Icon name="edit" />Rename</button>}
           {confirmDrop
-            ? <><button type="button" className="chip" onClick={() => drop(current)}>Remove the collection (the passages stay in your anthology)</button><button type="button" className="chip" onClick={() => setConfirmDrop(false)}>Keep it</button></>
-            : <button type="button" className="chip" onClick={() => setConfirmDrop(true)}>Remove collection</button>}
+            ? <><button type="button" className="chip" onClick={() => drop(current)}><Icon name="delete" />Remove the collection (the passages stay in your anthology)</button><button type="button" className="chip" onClick={() => setConfirmDrop(false)}><Icon name="check" />Keep it</button></>
+            : <button type="button" className="chip" onClick={() => setConfirmDrop(true)}><Icon name="delete" />Remove collection</button>}
         </div>
       )}
 
-      {!favs.length && <p className={styles.empty}>No favourite passages yet. In the reader, select some Greek or click a passage number and choose <b>Favourite</b>.</p>}
-      {favs.length > 0 && !shown.length && <p className={styles.empty}>Nothing in this collection yet. Open <b>All</b> and use <b>Collections</b> on a passage to add it here.</p>}
+      {!favs.length && <p className={styles.empty}>No favourite passages yet. In the reader, select some Greek or click a passage number and choose <b><Icon name="favourite" /> Favourite</b>.</p>}
+      {favs.length > 0 && !shown.length && <p className={styles.empty}>Nothing in this collection yet. Open <b>All</b> and use <b><Icon name="collection" /> Collections</b> on a passage to add it here.</p>}
 
       <ol className={styles.anthology}>
         {shown.map((m, i) => <Leaf key={m.id} m={m} i={i} t={t} names={names} onToggle={toggle} />)}
@@ -121,17 +122,17 @@ function Leaf({ m, i, t, names, onToggle }: { m: Mark; i: number; t: TreasurySta
   return (
     <li className={styles.leaf} style={{ "--i": Math.min(i, 12) } as React.CSSProperties}>
       <blockquote lang="grc" className={styles.leafGreek}>{long && !more ? `${m.quote.slice(0, 420)}…` : m.quote}</blockquote>
-      {long && <button type="button" className={styles.more} onClick={() => setMore(!more)}>{more ? "Less" : "The whole passage"}</button>}
+      {long && <button type="button" className={styles.more} onClick={() => setMore(!more)}>{more ? <><Icon name="chevron-up" />Less</> : <><Icon name="chevron-down" />The whole passage</>}</button>}
       <p className={styles.leafCite}>
         <Link href={readHref(m)} transitionTypes={["page-turn"]}>{w.author ? `${w.author}, ` : ""}<i>{w.title}</i> {rangeText(m)}</Link>
       </p>
       <div className={styles.leafFoot}>
         {m.collections?.map((c) => <span key={c} className={styles.colTag}>{c}</span>)}
         <span className={styles.menuWrap}>
-          <button type="button" className="chip" aria-expanded={menu} onClick={() => setMenu(!menu)}>Collections</button>
+          <button type="button" className="chip" aria-expanded={menu} onClick={() => setMenu(!menu)}><Icon name="collection" />Collections</button>
           {menu && (
             <span className={styles.menu} role="group" aria-label="Collections for this passage">
-              {!names.length && <span className="muted">Make a collection first, with “+ New collection”.</span>}
+              {!names.length && <span className="muted">Make a collection first, with “New collection”.</span>}
               {names.map((c) => (
                 <label key={c}><input type="checkbox" checked={!!m.collections?.includes(c)} onChange={() => onToggle(m, c)} /> {c}</label>
               ))}
@@ -139,8 +140,8 @@ function Leaf({ m, i, t, names, onToggle }: { m: Mark; i: number; t: TreasurySta
           )}
         </span>
         {sure
-          ? <><button type="button" className="chip" onClick={() => useMarks.getState().remove(m.id)}>Remove from anthology</button><button type="button" className="chip" onClick={() => setSure(false)}>Keep</button></>
-          : <button type="button" className={styles.x} onClick={() => setSure(true)} aria-label="Remove from anthology" title="Remove from anthology">×</button>}
+          ? <><button type="button" className="chip" onClick={() => useMarks.getState().remove(m.id)}><Icon name="delete" />Remove from anthology</button><button type="button" className="chip" onClick={() => setSure(false)}><Icon name="check" />Keep</button></>
+          : <button type="button" className={styles.x} onClick={() => setSure(true)} aria-label="Remove from anthology" title="Remove from anthology"><Icon name="delete" /></button>}
       </div>
     </li>
   );

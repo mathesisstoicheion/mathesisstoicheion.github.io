@@ -22,7 +22,7 @@
 .row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .linkBtn { background: none; border: 0; padding: 4px 0; min-height: 28px; font: inherit; color: var(--accent); text-decoration: underline; text-underline-offset: 3px; cursor: pointer; font-size: var(--step--1); }
 .modBtn { font: inherit; font-size: var(--step--1); padding: 3px 10px; border: 1px solid transparent; border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); color: var(--accent); cursor: pointer; }
-.modBtn:hover { background: var(--slab-lit); }
+@media (hover: hover) { .modBtn:hover { background: var(--slab-lit); } }
 .modBtn:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .narrow { max-width: 820px; padding-top: 36px; padding-bottom: 72px; display: grid; gap: 22px; }
 /* the account's form, held in the page head's place for its main thing */
@@ -70,13 +70,14 @@
   display: grid; gap: 4px; padding: 16px 20px; text-decoration: none; color: var(--ink);
   border-radius: var(--radius); box-shadow: var(--inlay-left), var(--slab-edge); transition: background-color var(--dur-quick) var(--ease);
 }
-.featured:hover { background-color: var(--bg-2); }
+@media (hover: hover) { .featured:hover { background-color: var(--bg-2); } }
 .featured :global(.label) { color: var(--rubric); }
 .featured b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
 .featured span:last-child { font-size: var(--step--1); color: var(--ink-2); }
 
 .pnyxCard { display: grid; gap: 3px; padding: 14px 18px; text-decoration: none; color: var(--ink); border-radius: var(--radius); background: var(--slab); box-shadow: var(--slab-edge); transition: background-color var(--dur) ease; }
-.pnyxCard:hover, .pnyxCard:focus-visible { background-color: var(--slab-lit); }
+.pnyxCard:focus-visible { background-color: var(--slab-lit); }
+@media (hover: hover) { .pnyxCard:hover { background-color: var(--slab-lit); } }
 .pnyxCard b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-1); }
 .pnyxCard span:last-child { font-size: var(--step--1); color: var(--ink-2); }
 .pnyxCard [lang="grc"] { font-family: var(--f-greek); text-transform: none; letter-spacing: 0; }
@@ -91,7 +92,7 @@
 .cat > * { position: relative; }
 .cat b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); }
 .cat span { font-size: var(--step--1); color: var(--ink-2); }
-.cat:hover { transform: translateY(-2px); }
+@media (hover: hover) { .cat:hover { transform: translateY(-2px); } }
 .cat:active { background: var(--field); box-shadow: var(--field-edge); }
 .cat[aria-pressed="true"] { color: var(--ink); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .cat:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
@@ -123,7 +124,7 @@
 .threadScore small, .threadReplies small { font-size: var(--step--2); color: var(--ink-2); }
 .threadMain { min-width: 0; display: grid; gap: 4px; }
 .threadTitle { font-family: var(--f-display); font-size: var(--step-sub); line-height: 1.2; text-decoration: none; color: var(--ink); }
-.threadTitle:hover { color: var(--accent); }
+@media (hover: hover) { .threadTitle:hover { color: var(--accent); } }
 .threadMeta { margin: 0; display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; font-size: var(--step--1); color: var(--ink-2); }
 .answered { color: var(--ok); margin-right: 6px; }
 .catTag, .tag {
@@ -131,7 +132,7 @@
   color: var(--ink-2); cursor: pointer; text-decoration: none;
 }
 .catTag { font-family: var(--f-label); letter-spacing: 0.04em; }
-.tag:hover, .catTag:hover { color: var(--accent); background: var(--slab-lit); }
+@media (hover: hover) { .tag:hover, .catTag:hover { color: var(--accent); background: var(--slab-lit); } }
 button.tag:active, button.catTag:active { background: var(--field); box-shadow: var(--field-edge); }
 .tagRow { display: flex; flex-wrap: wrap; gap: 6px; margin: 4px 0 0; }
 .quoteMark { font-style: italic; }
@@ -148,7 +149,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
 .headRow { display: grid; grid-template-columns: 44px 1fr; gap: 14px; align-items: start; }
 .byline { display: flex; flex-wrap: wrap; gap: 4px 10px; align-items: baseline; margin: 4px 0 0; font-size: var(--step--1); color: var(--ink-2); }
 .author { font-weight: 600; color: var(--ink); text-decoration: none; }
-.author:hover { color: var(--accent); }
+@media (hover: hover) { .author:hover { color: var(--accent); } }
 .modTag, .answerTag, .cites { font-family: var(--f-label); letter-spacing: 0.05em; font-size: var(--step--2); padding: 0 7px; border-radius: var(--radius); }
 .modTag { border: 1px solid transparent; background: var(--channel); box-shadow: var(--channel-edge); color: var(--accent); }
 .answerTag { background: var(--ok); color: var(--bg); }
@@ -167,7 +168,7 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
   transition: color var(--dur) var(--ease), background-color var(--dur) var(--ease), box-shadow var(--dur) var(--ease), transform 0.15s;
 }
 .vote svg { width: 14px; height: 14px; fill: currentColor; }
-.vote:hover:not(:disabled) { color: var(--accent); background: var(--slab-lit); }
+@media (hover: hover) { .vote:hover:not(:disabled) { color: var(--accent); background: var(--slab-lit); } }
 .vote[aria-pressed="true"] { color: var(--accent); background: var(--slab-lit); box-shadow: var(--slab-edge), var(--chosen-foot); }
 .vote:active:not(:disabled) { transform: scale(0.94); background: var(--field); box-shadow: var(--field-edge); }
 .vote[aria-pressed="true"] svg { animation: pop 0.35s var(--ease); }
@@ -205,17 +206,17 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
   background: var(--slab); box-shadow: var(--slab-edge); border-radius: var(--radius); text-align: center;
   transition: background-color var(--dur) ease;
 }
-.motionHero:hover { background-color: var(--slab-lit); }
+@media (hover: hover) { .motionHero:hover { background-color: var(--slab-lit); } }
 .motionHero b { font-family: var(--f-display); font-weight: 400; font-size: clamp(1.6rem, 3.4vw, 2.5rem); line-height: 1.12; }
 .motionHero span:last-child { color: var(--accent); }
-.motionHero:hover b { color: var(--accent); }
+@media (hover: hover) { .motionHero:hover b { color: var(--accent); } }
 .motions h2, .proposed h2, .proposeBox h2 { font-size: var(--step-1); margin: 0 0 8px; }
 .motions ul, .proposed ul { list-style: none; margin: 0; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .motions li, .proposed li { padding: 12px 2px; box-shadow: var(--cut-under); display: grid; gap: 4px; }
 .motions li:last-child, .proposed li:last-child { box-shadow: none; }
 .motions li a { text-decoration: none; color: var(--ink); }
 .motions li b { font-family: var(--f-display); font-weight: 400; font-size: var(--step-sub); }
-.motions li a:hover b { color: var(--accent); }
+@media (hover: hover) { .motions li a:hover b { color: var(--accent); } }
 .proposeBox { padding: 20px 22px; background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); display: grid; gap: 10px; }
 .result { display: grid; gap: 6px; }
 .resultBar { height: 12px; border-radius: var(--radius); overflow: hidden; background: var(--accent); box-shadow: var(--channel-edge); }   /* the two colours stay: they say For and Against */

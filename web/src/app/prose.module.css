@@ -22,7 +22,7 @@
 /* a line of jumps to the sections of a long page */
 .prose .jump { display: flex; flex-wrap: wrap; gap: 0 var(--space-4); font-family: var(--f-label); font-size: var(--step--1); letter-spacing: 0.04em; }
 .prose .jump a { display: inline-flex; align-items: center; min-height: var(--tap); text-decoration: none; color: var(--ink-2); }
-.prose .jump a:hover { color: var(--accent); }
+@media (hover: hover) { .prose .jump a:hover { color: var(--accent); } }
 /* a long list folded away under a line that says what is in it */
 .fold { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
 .fold summary { cursor: pointer; display: list-item; list-style-position: inside; min-height: var(--tap); padding: var(--space-3) var(--space-4); font-weight: 600; }

@@ -14,6 +14,7 @@ import { notebookList, useNotebooks, type NbItem, type Notebook } from "@/lib/no
 import { useUI } from "@/lib/ui";
 import { loadAbbrevs } from "@/lib/search/refs";
 import styles from "../notebook/Notebook.module.css";
+import Icon from "@/components/Icon";
 
 const STYLE_KEY = "mathesis:cite-style";
 const save = (name: string, text: string, type: string) => {
@@ -73,7 +74,7 @@ function NewNotebook({ onMade }: { onMade: (id: string) => void }) {
       <label htmlFor="nb-make">Start a notebook</label>
       <div>
         <input id="nb-make" value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Justice in the orators" autoComplete="off" maxLength={120} />
-        <button type="submit" className="btn small">Create</button>
+        <button type="submit" className="btn small"><Icon name="plus" />Create</button>
       </div>
     </form>
   );
@@ -109,7 +110,7 @@ function NotebookView({ nb, onBack }: { nb: Notebook; onBack: () => void }) {
 
   return (
     <div className={styles.section}>
-      <p><button type="button" className={styles.back} onClick={onBack}>← All notebooks</button></p>
+      <p><button type="button" className={styles.back} onClick={onBack}><Icon name="back" />All notebooks</button></p>
       <input className={styles.titleInput} value={nb.title} aria-label="The notebook's title"
         onChange={(e) => st.rename(nb.id, e.target.value)} maxLength={120} />
       <div className={styles.tools} role="group" aria-label="Citations and downloads">
@@ -119,11 +120,11 @@ function NotebookView({ nb, onBack }: { nb: Notebook; onBack: () => void }) {
             {CITE_STYLES.map((s) => <option key={s.id} value={s.id}>{s.label}</option>)}
           </select>
         </label>
-        <button type="button" className="btn small ghost" onClick={copy} disabled={!ctx || !nb.items.some((x) => x.kind !== "text")}>Copy the citations</button>
-        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.html`, toHtml(nb, ctx), "text/html;charset=utf-8")}>Download a document</button>
-        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.md`, toMarkdown(nb, ctx), "text/markdown;charset=utf-8")}>Markdown</button>
-        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.csv`, toSheet(nb, ctx), "text/csv;charset=utf-8")}>Spreadsheet</button>
-        <button type="button" className="btn small ghost" disabled={!ctx} onClick={print}>Print or save as PDF</button>
+        <button type="button" className="btn small ghost" onClick={copy} disabled={!ctx || !nb.items.some((x) => x.kind !== "text")}><Icon name="copy" />Copy the citations</button>
+        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.html`, toHtml(nb, ctx), "text/html;charset=utf-8")}><Icon name="download" />Download a document</button>
+        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.md`, toMarkdown(nb, ctx), "text/markdown;charset=utf-8")}><Icon name="download" />Markdown</button>
+        <button type="button" className="btn small ghost" disabled={!ctx} onClick={() => ctx && save(`${fileName(nb.title)}.csv`, toSheet(nb, ctx), "text/csv;charset=utf-8")}><Icon name="download" />Spreadsheet</button>
+        <button type="button" className="btn small ghost" disabled={!ctx} onClick={print}><Icon name="print" />Print or save as PDF</button>
       </div>
 
       {!nb.items.length && <p className={styles.lede}>Nothing here yet. In the reader, select some Greek and choose <b>Notebook</b>; in the Oracle, a concordance line&apos;s <b>+</b> adds it.</p>}
@@ -133,9 +134,9 @@ function NotebookView({ nb, onBack }: { nb: Notebook; onBack: () => void }) {
             <div className={styles.itemHead}>
               <span className="label">{{ passage: "Passage", line: "Concordance line", variant: "Difference between editions", text: "Your paragraph" }[it.kind]}</span>
               <span className={styles.itemBtns}>
-                <button type="button" onClick={() => st.move(nb.id, it.id, -1)} disabled={i === 0} aria-label="Move up" title="Move up">↑</button>
-                <button type="button" onClick={() => st.move(nb.id, it.id, 1)} disabled={i === nb.items.length - 1} aria-label="Move down" title="Move down">↓</button>
-                <button type="button" onClick={() => st.drop(nb.id, it.id)} aria-label="Remove from the notebook" title="Remove">×</button>
+                <button type="button" onClick={() => st.move(nb.id, it.id, -1)} disabled={i === 0} aria-label="Move up" title="Move up"><Icon name="move-up" /></button>
+                <button type="button" onClick={() => st.move(nb.id, it.id, 1)} disabled={i === nb.items.length - 1} aria-label="Move down" title="Move down"><Icon name="move-down" /></button>
+                <button type="button" onClick={() => st.drop(nb.id, it.id)} aria-label="Remove from the notebook" title="Remove"><Icon name="delete" /></button>
               </span>
             </div>
             <ItemBody it={it} ctx={ctx} />
@@ -146,12 +147,12 @@ function NotebookView({ nb, onBack }: { nb: Notebook; onBack: () => void }) {
         ))}
       </ol>
       <p className={styles.addRow}>
-        <button type="button" className="btn small ghost" onClick={() => st.add(nb.id, [{ kind: "text", text: "" }])}>Add a paragraph of your own</button>
+        <button type="button" className="btn small ghost" onClick={() => st.add(nb.id, [{ kind: "text", text: "" }])}><Icon name="plus" />Add a paragraph of your own</button>
       </p>
       <p className={styles.danger}>
         {!confirm
-          ? <button type="button" className={styles.back} onClick={() => setConfirm(true)}>Delete this notebook…</button>
-          : <>Delete “{nb.title}” and everything in it? <button type="button" className="btn small" onClick={() => { st.remove(nb.id); onBack(); }}>Delete</button> <button type="button" className="btn small ghost" onClick={() => setConfirm(false)}>Keep it</button></>}
+          ? <button type="button" className={styles.back} onClick={() => setConfirm(true)}><Icon name="delete" />Delete this notebook…</button>
+          : <>Delete “{nb.title}” and everything in it? <button type="button" className="btn small" onClick={() => { st.remove(nb.id); onBack(); }}><Icon name="delete" />Delete</button> <button type="button" className="btn small ghost" onClick={() => setConfirm(false)}><Icon name="check" />Keep it</button></>}
       </p>
     </div>
   );

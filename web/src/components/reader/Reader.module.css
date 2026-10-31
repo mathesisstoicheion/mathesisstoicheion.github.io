@@ -486,7 +486,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 .beatBtn::before { content: ""; width: var(--tri-size); height: var(--tri-size); margin-left: 0.12em; background: currentColor; clip-path: var(--tri-right); }
 .metreQ::before { content: "?"; }
 .beatBtn { border: 1px solid var(--rule); background: var(--bg); color: var(--accent); opacity: 0.25; transition: opacity var(--dur-quick), border-color var(--dur-quick); }
-.line:hover .beatBtn, .beatBtn:focus-visible, .playing .beatBtn { opacity: 1; }
+.beatBtn:focus-visible, .playing .beatBtn { opacity: 1; }
+@media (hover: hover) { .line:hover .beatBtn { opacity: 1; } }
 @media (hover: hover) { .beatBtn:hover { border-color: var(--rubric); } }
 @media (hover: none) { .beatBtn { opacity: 0.6; } }
 @media (pointer: coarse) { .beatBtn, .metreQ { width: 1.8em; height: 1.8em; top: 1.45em; } }
@@ -527,7 +528,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* a grip beside each passage number: drag it into a note to quote the passage */
 .grip { display: block; width: 10px; height: 16px; margin: var(--space-1) 0 0 auto; cursor: grab; opacity: 0; transition: opacity 0.2s;
   background: radial-gradient(circle, var(--ink-2) 1.3px, transparent 1.7px) 0 0 / 5px 5px; }
-.row:hover .grip, .grip:focus-visible { opacity: 0.7; }
+.grip:focus-visible { opacity: 0.7; }
+@media (hover: hover) { .row:hover .grip { opacity: 0.7; } }
 /* pointed at, the grip says what it is for at once (review fix list, slice 8), rather than after the browser's slow title */
 .grip { position: relative; }
 .grip::after {
@@ -535,8 +537,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   padding: var(--space-1) var(--space-2); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); color: var(--ink);
   font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.04em; opacity: 0; transition: opacity var(--dur-quick);
 }
-.grip:hover { opacity: 1; }
-.grip:hover::after { opacity: 1; }
+@media (hover: hover) { .grip:hover, .grip:hover::after { opacity: 1; } }
 /* the margin of Perseus's line 0 (the first speaker's name): no number, the passage's actions still to hand */
 .ref button.front { min-width: 24px; min-height: 24px; }
 @media (hover: none) { .grip { display: none; } }

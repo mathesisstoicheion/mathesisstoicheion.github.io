@@ -78,7 +78,7 @@ export default function PassageToolbar({ sel, onAction, onClose, xref = null, wo
       {/* keep this place: a mark, a favourite, a note of your own, a colour */}
       <div className={`${styles.tbRow} ${styles.tbKeep}`}>
         <button type="button" className="btn quiet small" onClick={() => onAction("bookmark")} title="Bookmark this place"><Icon name="bookmark" />Bookmark</button>
-        <button type="button" className="btn quiet small" onClick={() => onAction("favourite")} title="Add to your favourite passages"><Icon name="mine" />Favourite</button>
+        <button type="button" className="btn quiet small" onClick={() => onAction("favourite")} title="Add to your favourite passages"><Icon name="favourite" />Favourite</button>
         <button type="button" className="btn quiet small" onClick={() => onAction("note")} title="Write a note on this passage"><Icon name="note" />Note</button>
         <span className={styles.swatches} role="group" aria-label="Highlight">
           {COLOURS.map(([c, name]) => (

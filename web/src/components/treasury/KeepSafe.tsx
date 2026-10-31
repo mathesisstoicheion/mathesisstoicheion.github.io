@@ -124,7 +124,7 @@ function Sync({ t, onResult, lines }: { t: TreasuryState; onResult: (r: { ok: bo
   const changes = brought ? brought.marks.added + brought.marks.updated + brought.notes.added + brought.notes.updated + brought.removed : 0;
   return (
     <p className={styles.small}>
-      <button type="button" className="chip" onClick={run} disabled={busy || auto.state === "loading"}>{busy || auto.state === "loading" ? "Keeping in step…" : "Keep in step now"}</button>{" "}
+      <button type="button" className="chip" onClick={run} disabled={busy || auto.state === "loading"}><Icon name="sync" />{busy || auto.state === "loading" ? "Keeping in step…" : "Keep in step now"}</button>{" "}
       {auto.state === "error" ? `Could not keep in step: ${problem(auto.message)}. ` : ""}
       Kept in step with your account{shown ? `, last on ${new Date(shown).toLocaleString("en-GB")}` : ""}{changes ? ` (${changes} changes from your other devices)` : ""}.
       A deletion here is deleted on your other devices too.

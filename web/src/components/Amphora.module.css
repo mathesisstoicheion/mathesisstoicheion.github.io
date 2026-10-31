@@ -28,7 +28,7 @@
   background: transparent; color: var(--ink); font: inherit; font-style: normal;
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.tiltBtn:hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .tiltBtn:hover { color: var(--rubric); border-color: var(--rubric); } }
 /* phones: a smaller vase, so the first screen shows more than the hero */
 @media (max-width: 760px) {
   .slot { --stage-h: 250px; }
@@ -58,7 +58,7 @@
   display: grid; place-items: center; width: var(--tap); height: var(--tap); border: 0; border-radius: var(--radius);
   background: transparent; color: var(--ink); cursor: pointer; transition: color var(--dur-quick) var(--ease);
 }
-.view button:hover { color: var(--rubric); }
+@media (hover: hover) { .view button:hover { color: var(--rubric); } }
 
 .tools {
   display: grid; gap: 22px; align-content: start; overflow-y: auto; overscroll-behavior: contain;
@@ -83,7 +83,7 @@
   transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
 }
 .seg button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); }
-.seg button:not([aria-pressed="true"]):hover { color: var(--rubric); }
+@media (hover: hover) { .seg button:not([aria-pressed="true"]):hover { color: var(--rubric); } }
 .dot { display: inline-block; border-radius: var(--radius-round); background: currentColor; }
 @media (pointer: coarse) { .seg button { min-height: var(--tap); } }
 
@@ -93,7 +93,7 @@
   width: 38px; height: 38px; border-radius: var(--radius-round); border: 1px solid var(--rule); background: var(--sw); cursor: pointer;
   transition: box-shadow var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.swatch:hover { border-color: var(--ink-3); }
+@media (hover: hover) { .swatch:hover { border-color: var(--ink-3); } }
 .swatch[aria-pressed="true"] { box-shadow: 0 0 0 3px var(--bg), 0 0 0 4px var(--ink); }
 /* more colours: a grid of small swatches, the ones picked with the colour picker, and the picker itself */
 .colours { display: grid; gap: 10px; }
@@ -102,7 +102,7 @@
   aspect-ratio: 1; width: 100%; min-width: 26px; border-radius: var(--radius); border: 1px solid var(--rule);
   background: var(--sw); cursor: pointer; padding: 0; transition: box-shadow var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.chipSwatch:hover { border-color: var(--ink-3); }
+@media (hover: hover) { .chipSwatch:hover { border-color: var(--ink-3); } }
 .chipSwatch[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--bg), 0 0 0 3px var(--ink); }
 /* any colour at all: the four pens of the margin in a round, a plus in its middle */
 .anyColour {
@@ -132,7 +132,7 @@
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
 .plain:disabled { opacity: 0.4; cursor: default; }
-.plain:not(:disabled):hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .plain:not(:disabled):hover { color: var(--rubric); border-color: var(--rubric); } }
 @media (pointer: coarse) { .plain { min-height: var(--tap); } }
 
 .fields { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px var(--space-3); }

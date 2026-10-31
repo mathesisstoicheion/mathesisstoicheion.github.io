@@ -61,7 +61,7 @@
 .card:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .when { font-family: var(--f-label); font-size: var(--step--2); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
 .card b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
-.card:hover b { color: var(--rubric); }
+@media (hover: hover) { .card:hover b { color: var(--rubric); } }
 /* the accounts are cut to four lines, so the entries in a row are alike; the whole account is one click away */
 .text { color: var(--ink); line-height: 1.6; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; line-clamp: 4; overflow: hidden; }
 .go { margin-top: var(--space-1); font-size: var(--step--1); color: var(--accent); white-space: nowrap; }

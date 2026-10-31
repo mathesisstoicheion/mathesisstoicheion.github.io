@@ -13,7 +13,7 @@
   background: transparent; color: var(--ink); font-size: var(--step--1);
   transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease);
 }
-.tools button:hover { color: var(--rubric); border-color: var(--rubric); }
+@media (hover: hover) { .tools button:hover { color: var(--rubric); border-color: var(--rubric); } }
 .tools button[aria-pressed="true"] { background: var(--sel-bg); color: var(--sel-fg); border-color: var(--sel-edge); }
 
 /* typing Greek with Latin letters: the box, and the Greek it makes beside it, set in from a red rule */
@@ -34,7 +34,7 @@
   font-family: var(--f-label); font-size: var(--step--1); animation: ink-in var(--dur) var(--ease) backwards;
 }
 .tag button { border: 0; background: transparent; color: var(--ink-2); width: 20px; height: 20px; border-radius: var(--radius); line-height: 1; transition: color var(--dur-quick) var(--ease); }
-.tag button:hover { color: var(--rubric); }
+@media (hover: hover) { .tag button:hover { color: var(--rubric); } }
 .tags input { flex: 1 1 120px; min-width: 100px; font: inherit; font-size: var(--step--1); padding: 3px var(--space-2); border-radius: var(--radius); color: var(--ink); }
 
 .rich p { margin: 0 0 0.5em; }

@@ -70,7 +70,7 @@
 /* the sources, folded away until a footnote or the reader asks for them (SourcesFold.tsx) */
 .sourcesFold { max-width: var(--measure); }
 .sourcesFold summary { cursor: pointer; display: list-item; width: fit-content; min-height: var(--tap); padding-block: var(--space-2); font-family: var(--f-label); letter-spacing: 0.06em; color: var(--accent); }
-.sourcesFold summary:hover { text-decoration: underline; text-underline-offset: 3px; }
+@media (hover: hover) { .sourcesFold summary:hover { text-decoration: underline; text-underline-offset: 3px; } }
 .sources { margin: 4px 0 0; padding-left: 1.6em; display: grid; gap: 8px; max-width: var(--measure); line-height: 1.55; }
 .sources li::marker { font-family: var(--f-label); color: var(--accent); }
 .sources li:target { background: color-mix(in srgb, var(--accent) 14%, transparent); outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius); }
