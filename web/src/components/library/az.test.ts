@@ -3,12 +3,17 @@ import { fold } from "@/lib/catalog";
 import { azKey, bestMatch, compareAZ, groupAZ, nameMatch } from "./az";
 
 describe("A to Z order", () => {
-  it("files a title under its first Latin letter, skipping numbers, brackets and accents", () => {
+  it("files a title under its first Latin letter, skipping numbers, brackets, accents and a leading article", () => {
     expect(azKey("Iliad")).toBe("I");
     expect(azKey("éloge")).toBe("E");
     expect(azKey("1 Corinthians")).toBe("C");
-    expect(azKey("(Sophonias) Commentary on the Parva Naturalia")).toBe("S");
-    expect(azKey("The Gospel of John")).toBe("T");
+    expect(azKey("(Sophonias) Commentary on the Parva Naturalia")).toBe("C");
+    expect(azKey("The Gospel of John")).toBe("G");
+    expect(azKey("A True Story")).toBe("T");
+    expect(azKey("An Ethiopian Story")).toBe("E");
+    expect(azKey("Theogony")).toBe("T");
+    expect(azKey("Anabasis")).toBe("A");
+    expect(azKey("Against Timarchus")).toBe("A");
   });
 
   it("puts titles that do not start with a Latin letter under #", () => {
@@ -20,6 +25,22 @@ describe("A to Z order", () => {
   it("sorts A to Z, then #, ignoring capitals and putting numbers in order of size", () => {
     const titles = ["Ἰλιάς", "oration 10", "Oration 2", "Against Timarchus", "1 Corinthians", "Apology"];
     expect([...titles].sort(compareAZ)).toEqual(["Against Timarchus", "Apology", "1 Corinthians", "Oration 2", "oration 10", "Ἰλιάς"]);
+  });
+
+  it("orders titles by the words they are filed by", () => {
+    const titles = ["The Trojan Women", "Theogony", "A True Story", "Thebaid", "The Deipnosophists", "2 Peter", "1 Peter", "Peace"];
+    expect([...titles].sort(compareAZ)).toEqual(["The Deipnosophists", "Peace", "1 Peter", "2 Peter", "Thebaid", "Theogony", "The Trojan Women", "A True Story"]);
+  });
+
+  it("groups the whole catalogue's titles into one part per letter, A to Z in order", async () => {
+    const { readFileSync } = await import("node:fs");
+    const { join } = await import("node:path");
+    const cat = JSON.parse(readFileSync(join(__dirname, "../../../public/data/catalog.json"), "utf8")) as { authors: { works: { title: string }[] }[] };
+    const items = cat.authors.flatMap((a) => a.works.map((w) => ({ title: w.title })));
+    const keys = groupAZ(items).map((g) => g.key);
+    expect(keys[0]).toBe("A");
+    expect(new Set(keys).size).toBe(keys.length);            // no letter twice
+    expect([...keys].sort((a, b) => (a === "#" ? 1 : b === "#" ? -1 : a < b ? -1 : 1))).toEqual(keys);
   });
 
   it("groups the sorted items by letter, leaving out letters with nothing", () => {
