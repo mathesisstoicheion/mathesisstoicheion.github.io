@@ -95,6 +95,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-reader.mjs http://localhost:3100
+      - name: A book reopens at the line where the reader left it, on a phone and a computer
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-resume.mjs http://localhost:3100
       - name: The other rooms (slice 9)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

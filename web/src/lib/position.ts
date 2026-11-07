@@ -1,5 +1,9 @@
 /** Where the reader stopped in each work, kept on this device (localStorage). */
-export interface Position { ed: string; tr: string | null; at: string; t: number }
+export interface Position {
+  ed: string; tr: string | null; at: string; t: number;
+  /** how far into that passage the top of the screen was, as a share of its height (0 at its first line); kept for older saves without it */
+  f?: number;
+}
 const KEY = "mathesis:positions";
 
 function all(): Record<string, Position> {

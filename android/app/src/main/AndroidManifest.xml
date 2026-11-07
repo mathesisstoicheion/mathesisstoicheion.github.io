@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- the Academy's Studio records the reader's voice, once they allow it -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <!-- beta updates: the app downloads the next beta and hands it to Android's installer (BetaUpdates.java) -->
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 

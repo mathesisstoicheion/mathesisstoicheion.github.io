@@ -583,14 +583,23 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     const stuck = [...root().querySelectorAll<HTMLElement>(`.${styles.bar}, .${styles.caseKey}`)].find((el) => el.offsetHeight && getComputedStyle(el).position === "sticky");
     return stuck ? stuck.getBoundingClientRect().bottom : contained ? rootRef.current!.getBoundingClientRect().top : headerVisible();
   };
-  /** Bring a passage to the top, just below what is stuck there (and the site header, if it will be showing). */
-  const bringToTop = (el: HTMLElement, smooth = false) => {
+  /** The share of a passage's height (without its padding below) that is above the top edge: 0 at its first line. */
+  const into = (el: HTMLElement) => {
+    const r = el.getBoundingClientRect(), h = r.height - parseFloat(getComputedStyle(el).paddingBottom);
+    return h > 0 ? Math.min(0.98, Math.max(0, (topEdge() - r.top) / h)) : 0;
+  };
+  /**
+   * Bring a passage to the top, just below what is stuck there (and the site header, if it will be showing). `f` brings that
+   * share of the way into it to the top instead (where the reader was, read back from lib/position.ts).
+   */
+  const bringToTop = (el: HTMLElement, smooth = false, f = 0) => {
+    const down = f > 0 ? f * (el.getBoundingClientRect().height - parseFloat(getComputedStyle(el).paddingBottom)) : 0;
     if (contained) {
       // measured, not scroll-margin: the bar's height changes as the window is resized
-      rootRef.current!.scrollBy({ top: el.getBoundingClientRect().top - topEdge() - 12, behavior: smooth ? "smooth" : "auto" });
+      rootRef.current!.scrollBy({ top: el.getBoundingClientRect().top + down - topEdge() - (f > 0 ? 0 : 12), behavior: smooth ? "smooth" : "auto" });
       return;
     }
-    scrollBelowHeader(el, topEdge() + 12, smooth);
+    scrollBelowHeader(el, topEdge() - down + (f > 0 ? 0 : 12), smooth);
   };
   /**
    * Passages away from the screen are drawn only when reached (content-visibility in the CSS), with a
@@ -598,13 +607,13 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
    * top would drift (under the sticky bar, or far away). Keep it in place until the page stops changing
    * size, or the reader scrolls, taps, selects or presses a key. Returns the function that stops it.
    */
-  const holdAtTop = (el: HTMLElement) => {
+  const holdAtTop = (el: HTMLElement, f = 0) => {
     // the foot bar stays showing through the jump (it would slip away as the page moves; holdFoot in lib/header.ts)
     if (single) holdFoot();
     // anything the reader does, including starting to select words, ends the hold
     const USER = ["wheel", "touchstart", "pointerdown", "keydown", "selectionchange"] as const;
     let done = false, frame = 0;
-    const again = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => { if (!done) bringToTop(el); }); };
+    const again = () => { cancelAnimationFrame(frame); frame = requestAnimationFrame(() => { if (!done) bringToTop(el, false, f); }); };
     const ro = new ResizeObserver(again);
     if (textRef.current) ro.observe(textRef.current);
     const stop = () => {
@@ -633,7 +642,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     // with the one-line title above the page (no title page), the page's first passage is not scrolled up to the bar: the page stays at its
     // start, the title in sight over it (the quiet desk, ticket 08, the owner, 2026-10-30)
     if (single && !showCover && row === rows[0]) { window.scrollTo({ top: 0 }); return; }
-    return holdAtTop(el);
+    // coming back to a book (no passage asked for): the line that was at the top, part of the way into its passage
+    const f = !at && !tu && remembered?.at && row?.key === remembered.at ? remembered.f ?? 0 : 0;
+    return holdAtTop(el, f);
     // holdAtTop only reads `contained` and the page as it is
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [rows, startKey, at, tu, contained, showCover]);
@@ -696,17 +707,23 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   useEffect(() => {
     if (!rows.length || !edV) return;
     const scroller: HTMLElement | Window = contained ? rootRef.current! : window;
-    let frame = 0, last: string | null = null;
+    let frame = 0, last: string | null = null, lastF = 0;
     const check = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
         const key = topKey();
         const el = key ? root().querySelector<HTMLElement>(`article [data-key="${CSS.escape(key)}"]`) : null;
         topAnchor.current = key && el ? { key, top: el.getBoundingClientRect().top } : null;
-        if (!key || key === last) return;
-        last = key;
+        if (!key || !el) return;
+        // how far into the passage the reader is, so that a long passage (a section of prose can run over two screens on a phone)
+        // reopens at the line that was at the top, not at its start (scripts/check-resume.mjs)
+        const f = Math.round(into(el) * 1000) / 1000;
+        if (key === last && Math.abs(f - lastF) < 0.01) return;
+        const moved = key !== last;
+        last = key; lastF = f;
+        savePosition(workId, { ed: edV, tr: trV, at: key, f });
+        if (!moved) return;
         setTopRow(key);
-        savePosition(workId, { ed: edV, tr: trV, at: key });
         if (pane === 1) onPosition.current?.(key);
         if (!floating) paneTops[pane] = key;
       });
