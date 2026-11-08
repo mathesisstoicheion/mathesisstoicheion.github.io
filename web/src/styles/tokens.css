@@ -118,6 +118,8 @@
   /* layers: just above the header */
   --z-over-header: 31;
   --z-bar: 5;
+  /* a button laid on a card that opens as a whole when pressed (the board's cards): just above the card's own link */
+  --z-lift: 1;
   /* the reader's foot bar and the menus that rise from it (the quiet desk, ticket 09, the owner, 2026-10-30): above the side panels (40) and
      Listen's player (45), under the passage toolbar (55) */
   --z-foot: 46;

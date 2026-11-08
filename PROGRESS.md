@@ -4,6 +4,21 @@ Condensed on 2026-10-18. The full history is in `_archive/PROGRESS-to-2026-10-17
 
 On 2026-10-20 the laptop clean-up (branch `cleanup-from-laptop`) was merged with the online `main` on branch `claude/project-thread-ska87k`. It went live on the owner's "Publish" at 20:59 UTC that day. The online log of 2026-10-11 to 2026-10-20 (the redesign rounds, the lyre, the reading path) is kept whole in `_archive/PROGRESS-online-to-2026-10-20.md`.
 
+## The Painted Stoa's board (2026-10-31; on branch `claude/project-thread-4qlfps`, not live)
+The owner, 2026-10-30: "community driven, with every thought and creation: Shareable, including making a pot", each post
+approved by her first. Built on 2026-10-31 after her go.
+- **The board** (/stoa/board, "The board · Πίναξ"): thoughts, painted pots and tunes played on the lyre, as cards, newest
+  first, narrowed by kind. Each item has its own page to share. A pot shows its picture and opens in 3D; a tune is drawn
+  as dots on its strings and opens on the lyre; a thought can be about an entry or a passage.
+- **Getting there**: "Put it on the board" beside Share in the potter and on the lyre, "Write about it on the board" on
+  every entry, and a third card, the board, under "Make, play and share" on the Painted Stoa's page.
+- **Approval**: nothing a member puts up shows to anyone else until the moderator approves it ("Waiting for you" at the
+  top of the board for her). The rules live in the database (`supabase/migrations/20261101120000_stoa_board.sql`) and
+  are tested on a throwaway Postgres (`supabase/tests/run.sh`). **Still to do**: that file must be run once in the real
+  Supabase (the owner's permission), before the board works on the live site.
+- Checks: e2e/board.spec.ts (6) and src/lib/board.test.ts pass; the site's own checks pass. Thirteen older browser tests
+  fail the same way on the live version (the vase studio's tests still look for it in the Kerameikos, and others).
+
 ## The printed page: the whole site and the app redesigned (2026-10-22 and 23; LIVE on the owner's "Publish", 2026-10-23 20:05 UTC)
 The owner, 2026-10-22 19:31 UTC: "Now, do the full redesign for the whole website/app. No corners missed." Their twelve
 decisions are in `docs/adr/0008-the-printed-page.md`. Built on the branch `claude/project-thread-5hod76`, merged into `main`

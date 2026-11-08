@@ -33,14 +33,14 @@
 @media (min-width: 761px) { .signedOutHead { padding-top: 0; } }
 /* the room the sign-in box takes, kept while the page reads its address and opens the account, so nothing under the head
    moves when the box arrives (scripts/check-heads.mjs) */
-.boxWait { min-height: calc(468px + 13 * (1rem - 16px)); align-items: flex-start; }   /* 468 px at 16 px to the rem; the box grows with the type above 1600 px (13 px for each px the rem grows) */
+.boxWait { min-height: calc(490px + 14 * (1rem - 16px)); align-items: flex-start; }   /* 490 px at 16 px to the rem (the signed-out box with its two lines of fine print); the box grows with the type above 1600 px (14 px for each px the rem grows) */
 .signedOutHead + .narrow { padding-top: var(--space-5); }
 .signIn { display: grid; gap: var(--space-3); justify-items: start; }
 
 /* ------------------------------------------------ cards and forms */
 .card {
   padding: clamp(20px, 3vw, 32px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius);
-  display: grid; gap: 14px; animation: rise 0.5s var(--ease) backwards;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 14px; animation: rise 0.5s var(--ease) backwards;
 }
 .card h2 { margin: 0; font-size: var(--step-2); }
 .card p { margin: 0; }
@@ -56,6 +56,7 @@
 .form small, .tagField small { font-family: var(--f-body); letter-spacing: 0; color: var(--ink-2); font-size: var(--step--1); margin-left: 6px; }
 .form input:not([type="checkbox"]), .form select, .form textarea, .titleInput {
   font: inherit; padding: 9px 11px; border-radius: var(--radius); color: var(--ink);
+  min-width: 0;   /* a field's own width (its 20 letters) must not widen the card: at 320 px the sign-in card ran 14 px past the page (check-overlaps) */
 }
 .check { display: flex !important; gap: 10px; align-items: flex-start; }
 .check input { margin-top: 5px; }

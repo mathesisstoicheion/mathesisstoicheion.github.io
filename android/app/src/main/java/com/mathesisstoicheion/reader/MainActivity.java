@@ -1,32 +1,45 @@
 package com.mathesisstoicheion.reader;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
+import android.util.Base64;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.WindowInsetsController;
 import android.view.WindowManager;
 import android.webkit.JavascriptInterface;
+import android.webkit.PermissionRequest;
 import android.webkit.ServiceWorkerClient;
 import android.webkit.ServiceWorkerController;
+import android.webkit.ValueCallback;
+import android.webkit.WebChromeClient;
 import android.webkit.WebResourceRequest;
 import android.webkit.WebResourceResponse;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.Toast;
 
 import androidx.webkit.WebViewAssetLoader;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -97,9 +110,32 @@ public class MainActivity extends Activity {
             public void onPageFinished(WebView view, String url) {
                 checkSafeAreas();
                 followLook();
+                catchDownloads();
+            }
+        });
+        // without this a WebView shows no file picker, no "Are you sure?" and no microphone: Restore from a file, a Scroll Case
+        // ZIP, the potter's "Go on?" and the Studio's recording did nothing in the app
+        web.setWebChromeClient(new WebChromeClient() {
+            @Override
+            public boolean onShowFileChooser(WebView view, ValueCallback<Uri[]> callback, FileChooserParams params) {
+                if (picking != null) picking.onReceiveValue(null);
+                picking = callback;
+                try {
+                    startActivityForResult(params.createIntent(), PICK);
+                } catch (ActivityNotFoundException e) {
+                    picking = null;
+                    return false;
+                }
+                return true;
+            }
+
+            @Override
+            public void onPermissionRequest(PermissionRequest request) {
+                runOnUiThread(() -> hear(request));
             }
         });
         web.addJavascriptInterface(new Look(), "MathesisApp");
+        web.addJavascriptInterface(new Files(), "MathesisFiles");
         frame = new FrameLayout(this);
         frame.addView(web);
         frame.setOnApplyWindowInsetsListener((v, insets) -> {
@@ -219,6 +255,102 @@ public class MainActivity extends Activity {
                 + "q=matchMedia('(prefers-color-scheme: dark)');function s(){var t=e.getAttribute('data-theme');"
                 + "MathesisApp.look(t==='night'||(t!=='paper'&&q.matches)?'night':'paper')}s();"
                 + "new MutationObserver(s).observe(e,{attributes:true,attributeFilter:['data-theme']});q.addEventListener('change',s)})()", null);
+    }
+
+    // ---- files: choosing one to open, and saving one the page makes (a backup, a spreadsheet, a recording, a picture) ----
+
+    private static final int PICK = 41, MIC = 42;
+    private ValueCallback<Uri[]> picking;
+    private PermissionRequest hearing;
+
+    @Override
+    protected void onActivityResult(int code, int result, Intent data) {
+        super.onActivityResult(code, result, data);
+        if (code != PICK || picking == null) return;
+        picking.onReceiveValue(WebChromeClient.FileChooserParams.parseResult(result, data));
+        picking = null;
+    }
+
+    /** The Studio asks for the microphone: given once Android has the reader's yes, and only to the site itself. */
+    private void hear(PermissionRequest request) {
+        boolean audio = false;
+        for (String r : request.getResources()) if (PermissionRequest.RESOURCE_AUDIO_CAPTURE.equals(r)) audio = true;
+        if (!audio || !HOST.equals(request.getOrigin().getHost())) {
+            request.deny();
+            return;
+        }
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED) {
+            request.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+            return;
+        }
+        if (hearing != null) hearing.deny();
+        hearing = request;
+        requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, MIC);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int code, String[] permissions, int[] results) {
+        super.onRequestPermissionsResult(code, permissions, results);
+        if (code != MIC || hearing == null) return;
+        if (results.length > 0 && results[0] == PackageManager.PERMISSION_GRANTED) hearing.grant(new String[]{PermissionRequest.RESOURCE_AUDIO_CAPTURE});
+        else hearing.deny();
+        hearing = null;
+    }
+
+    /**
+     * A WebView saves nothing when the page makes a file and "clicks" a link to it (a blob: or data: address with a download name).
+     * The page's links of that kind hand the file to the app instead, which puts it in the phone's Downloads.
+     */
+    private void catchDownloads() {
+        web.evaluateJavascript("(function(){if(window.__appSave)return;window.__appSave=1;"
+                + "function send(a){var h=a.href||'',n=a.getAttribute('download')||'download';if(!/^(blob|data):/.test(h))return false;"
+                + "fetch(h).then(function(r){return r.blob()}).then(function(b){var f=new FileReader();f.onload=function(){var s=String(f.result);"
+                + "MathesisFiles.save(n,b.type||'',s.slice(s.indexOf(',')+1))};f.onerror=function(){MathesisFiles.failed()};f.readAsDataURL(b)})"
+                + "['catch'](function(){MathesisFiles.failed()});return true}"
+                + "var c=HTMLAnchorElement.prototype.click;HTMLAnchorElement.prototype.click=function(){if(this.hasAttribute('download')&&send(this))return;return c.call(this)};"
+                + "document.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.target.closest('a[download]');if(a&&send(a))e.preventDefault()},true)})()", null);
+    }
+
+    public class Files {
+        @JavascriptInterface
+        public void save(String name, String type, String base64) {
+            String safe = name == null ? "" : name.replaceAll("[\\\\/:*?\"<>|]", "_").trim();
+            if (safe.isEmpty()) safe = "download";
+            String mime = type == null || type.isEmpty() ? "application/octet-stream" : type.split(";")[0].trim();
+            try {
+                byte[] bytes = Base64.decode(base64, Base64.DEFAULT);
+                if (Build.VERSION.SDK_INT >= 29) {
+                    ContentValues v = new ContentValues();
+                    v.put(MediaStore.Downloads.DISPLAY_NAME, safe);
+                    v.put(MediaStore.Downloads.MIME_TYPE, mime);
+                    Uri u = getContentResolver().insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, v);
+                    if (u == null) throw new IOException("no room in Downloads");
+                    try (OutputStream out = getContentResolver().openOutputStream(u)) {
+                        if (out == null) throw new IOException("Downloads could not be opened");
+                        out.write(bytes);
+                    }
+                    told("Saved in Downloads: " + safe);
+                } else {
+                    File dir = getExternalFilesDir(Environment.DIRECTORY_DOWNLOADS);
+                    File f = new File(dir, safe);
+                    try (FileOutputStream out = new FileOutputStream(f)) {
+                        out.write(bytes);
+                    }
+                    told("Saved: " + f.getPath());
+                }
+            } catch (IOException | IllegalArgumentException | SecurityException e) {
+                failed();
+            }
+        }
+
+        @JavascriptInterface
+        public void failed() {
+            told("This file could not be saved.");
+        }
+    }
+
+    private void told(String words) {
+        runOnUiThread(() -> Toast.makeText(this, words, Toast.LENGTH_LONG).show());
     }
 
     @Override

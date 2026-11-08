@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import Icon, { type IconName } from "@/components/Icon";
 import ShareButton from "@/components/ShareButton";
+import PutOnBoard from "@/components/board/PutOnBoard";
+import { smallPicture, type BoardDraft } from "@/lib/board";
 import { AREAS } from "@/config/areas";
 import { decodeDesign, fittingCode } from "@/lib/amphora-link";
 import { share, type Shared } from "@/lib/share";
@@ -30,7 +32,7 @@ import styles from "./Amphora.module.css";
 
 type Tool = "brush" | "scratch" | "rub" | "strike" | "turn";
 type Repaint = "base" | "hand" | "all";
-type Api = { repaint(what: Repaint): void; picture(): string; nudge(turn: number, zoomBy: number): void; resetView(): void };
+type Api = { repaint(what: Repaint): void; picture(): string; portrait(): string; nudge(turn: number, zoomBy: number): void; resetView(): void };
 
 const SIZES = [{ name: "Fine", w: 3 }, { name: "Medium", w: 9 }, { name: "Broad", w: 20 }, { name: "Huge", w: 40 }] as const;
 /** a blow's strength from how long it was held: a tap is light, about a second and a half is the hardest */
@@ -244,6 +246,16 @@ export default function Amphora() {
       setNote("This vase has too much brushwork to fit in a link, so a picture of it was saved for you to send instead.");
     }
     return null;
+  };
+  // the vase put on the Painted Stoa's board (components/board/PutOnBoard.tsx): a small picture of it as it is seen now, and
+  // its link where it fits in one, so others can turn it and paint one like it; the words painted on it suggest a title
+  const boardIt = async (): Promise<BoardDraft | null> => {
+    const d = designRef.current;
+    const code = packed.current?.d === d ? packed.current.code : await fittingCode(d, LINK_MAX);
+    const png = api.current?.portrait();
+    const picture = png ? await smallPicture(png) : null;
+    if (!picture) { setNote("A picture of this vase could not be made in this browser, so it cannot go on the board."); return null; }
+    return { kind: "pot", title: d.words.filter((w) => w.trim()).join(" "), body: "", link: code ? `${AREAS.pot.href}#v=${code}` : null, picture };
   };
   // the shared vase becomes the visitor's own to paint on (asked first, if they have painted one of their own already)
   const paintLikeIt = () => {
@@ -593,6 +605,19 @@ export default function Amphora() {
           canvas.setAttribute("aria-label", describe(d));
         },
         picture() { renderer.render(scene, camera); return canvas.toDataURL("image/png"); },
+        // the whole vase, upright and a little back, as it stands now, on a ground of its own (for the board): drawn once in
+        // a portrait frame, then the view is put back as it was before the screen shows it
+        portrait() {
+          const was = renderer.getSize(new THREE.Vector2());
+          renderer.setSize(720, 900, false); camera.aspect = 0.8; camera.zoom = 0.92;
+          camera.position.set(0, PAN + 0.13, 6.4); camera.lookAt(0, PAN, 0); camera.updateProjectionMatrix();
+          renderer.render(scene, camera);
+          const url = canvas.toDataURL("image/png");
+          renderer.setSize(was.x, was.y, false); camera.aspect = was.x / was.y; camera.zoom = zoom;
+          camera.position.set(0, pan + 0.13, 6.4); camera.lookAt(0, pan, 0); camera.updateProjectionMatrix();
+          renderer.render(scene, camera);
+          return url;
+        },
         nudge(turn, zoomBy) { rot += turn; vel = 0; zoomT = clamp(zoomT * zoomBy, 1, 3.2); wake = true; },
         resetView() { zoomT = 1; panT = PAN; wake = true; },
       };
@@ -708,6 +733,7 @@ export default function Amphora() {
                 <>
                   <button ref={openBtnRef} type="button" className={`btn small ${styles.paintBtn}`} onClick={open}><Icon name="paint" />Paint it yourself</button>
                   {custom && <ShareButton what={shareIt} />}
+                  {custom && <PutOnBoard what={boardIt} />}
                 </>
               ))}
               {tilt === "ask" && <button type="button" className={styles.tiltBtn} onClick={askTilt}><Icon name="phone" />Turn it by tilting the phone</button>}
@@ -829,8 +855,9 @@ export default function Amphora() {
                 <button type="button" className="btn small ghost" onClick={() => commit(DEFAULT_DESIGN, "all")} disabled={!custom}><Icon name="again" />The site&apos;s design</button>
                 <button type="button" className="btn small ghost" onClick={savePicture}><Icon name="image" />Save a picture</button>
                 <ShareButton what={shareIt} className="btn small" />
+                <PutOnBoard what={boardIt} />
               </div>
-              <p className={styles.hint}>Your vase is kept in this browser. Share makes a link that opens it for anyone; nothing is stored on the site.</p>
+              <p className={styles.hint}>Your vase is kept in this browser. Share makes a link that opens it for anyone; Put it on the board shows it to everyone on the Painted Stoa&apos;s board, once the site&apos;s keeper has looked at it.</p>
             </section>
             {note && <p className={styles.note} role="status">{note}</p>}
           </div>

@@ -13,7 +13,7 @@ import { FORUM_OPEN } from "@/config/areas";
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
   "/academy", "/academy/reading", "/academy/reading/letters", "/academy/today", "/academy/alphabet", "/academy/tables", "/academy/vocabulary", "/academy/practice",
-  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/manuscripts", "/stoa/variants", "/stoa/kerameikos", "/stoa/lyre", "/stoa/pot", "/stoa/census", "/stoa/periplus",
+  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/manuscripts", "/stoa/variants", "/stoa/kerameikos", "/stoa/lyre", "/stoa/pot", "/stoa/board", "/stoa/board/new", "/stoa/board/item", "/stoa/census", "/stoa/periplus",
   "/town-hall", "/town-hall/pnyx", "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation",
   "/town-hall/pnyx/debate", "/account",
   "/about", "/credits", "/guide",
@@ -29,6 +29,8 @@ export const PRIVATE_PAGES = [
   "/account", "/treasury", "/treasury/word", "/read", "/search", "/library/author",
   "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation", "/town-hall/pnyx/debate",
   "/academy/today",
+  // the board's form, and its items' query-address page (whose words come from the database once the page is open)
+  "/stoa/board/new", "/stoa/board/item",
   // while the forum is closed its two front pages show only a notice: not for search engines either
   ...(FORUM_OPEN ? [] : ["/town-hall", "/town-hall/pnyx"]),
 ];

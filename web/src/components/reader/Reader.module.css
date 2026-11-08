@@ -102,7 +102,10 @@
 
 .p { margin: 0 0 0.6em; }
 .p:last-child { margin-bottom: 0; }
-.head { margin: 0.4em 0 0.6em; font-family: var(--f-title); font-size: 1.4em; color: var(--accent); text-align: center; }
+.head { margin: 0.4em 0 0.6em; font-family: var(--f-title); font-size: 1.4em; line-height: 1.25; word-spacing: -0.08em; color: var(--accent); text-align: center; text-wrap: balance; }
+/* a phone: a chapter's heading a step above its text, not a poster over it (the owner's phone, 2026-11-08: three loose lines at 1.4 times the text;
+   GFS Didot's word spaces are wide, so they are drawn in a little at every width; scripts/check-chapter-heads.mjs) */
+@media (max-width: 760px) { .head { font-size: 1.2em; } }
 .line { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
 .line .speaker { grid-column: 1 / -1; }
 .ln { font-family: var(--f-label); font-size: 0.62em; color: var(--ink-2); text-align: right; padding-right: 0.9em; padding-top: 0.35em; }
@@ -720,6 +723,9 @@ p.translit { margin: -0.3em 0 0.8em; }
    What clears the bar reads these: the text's last lines and "Continue to Book 2" (the padding here), Back to top, Listen's player, the signs beside the
    scroll bar, the side panels and the look-up's window on a computer (the quiet desk, ticket 09, the owner, 2026-10-30). No bar along the top: --bar-h is 0. */
 .single { --foot-h: calc(var(--space-7) + env(safe-area-inset-bottom, 0px)); --foot-now: var(--foot-h); --bar-h: 0px; padding-bottom: calc(var(--foot-h) + var(--space-6)); }
+/* nothing along its top, so in the phone app (drawn under the status bar) the title page and the one-line title start below the clock's strip, not half under it
+   (the owner, 2026-11-08, beta 12: "the title is cut off when loading a text"; scripts/check-status-bar.mjs) */
+.single { padding-top: env(safe-area-inset-top, 0px); }
 .single[data-foot="away"] { --foot-now: env(safe-area-inset-bottom, 0px); }
 .single .text { padding-block: 0 var(--space-5); margin-top: 0; }
 .single .row { grid-template-columns: var(--num-w) minmax(0, 1fr) minmax(0, 1fr); column-gap: var(--row-gap); padding-block: var(--space-4) var(--space-5); }

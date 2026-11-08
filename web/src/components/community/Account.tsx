@@ -30,7 +30,7 @@ export default function Account() {
       <div className={`wrap ${styles.signedOutHead}`}>
         <PageHead bare path={[{ label: AREAS.treasury.name, href: AREAS.treasury.href }, { label: "Account" }]} title={title}
           purpose={FORUM_OPEN ? "Your membership of the Agora: sign in or join to write there, and choose the name others see."
-            : "Sign in or join to keep your Treasury in step between devices."}
+            : "Sign in or join to put what you make on the Painted Stoa's board, and to keep your Treasury in step between devices."}
           // the form first (review fix list, slice 9): in the head's place for its main thing, beside the portrait on a
           // computer and before it on a phone
           action={<Suspense fallback={<div className={styles.boxWait} aria-hidden="true" />}><AccountBox /></Suspense>} />
@@ -148,7 +148,7 @@ function SignIn({ next }: { next: string | null }) {
       </form>
       <p className={styles.fine}>
         {FORUM_OPEN ? "An account is needed only to write in the Agora and the Pnyx, and to keep your Treasury in step between devices."
-          : "An account is needed only to keep your Treasury in step between devices."}{" "}
+          : "An account is needed only to put things on the Painted Stoa's board and to keep your Treasury in step between devices."}{" "}
         Accounts are kept by Supabase, in the European Union; see <Link href="/credits#privacy">Privacy</Link>.
       </p>
     </section>
@@ -209,7 +209,7 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
       </form>
       <details className={styles.danger}>
         <summary>Delete my account</summary>
-        <p>This removes your account, your profile, {FORUM_OPEN ? "everything you wrote in the Agora and the Pnyx, your votes" : "everything you wrote in the Agora"} and your stored Treasury.
+        <p>This removes your account, your profile, {FORUM_OPEN ? "everything you wrote in the Agora and the Pnyx, your votes" : "everything you wrote in the Agora"}, everything you put on the board and your stored Treasury.
           It cannot be undone. Your notes and marks in this browser stay here.</p>
         <DeleteAccount />
       </details>

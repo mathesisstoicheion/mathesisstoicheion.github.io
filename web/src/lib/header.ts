@@ -11,6 +11,17 @@ const px = (name: string) => parseFloat(getComputedStyle(document.documentElemen
  *  (--hdr-vis, app/globals.css). */
 export const headerHeight = () => px("--hdr-vis");
 
+/** How tall the phone's status bar is where the page is drawn under it (the phone app draws edge to edge: env(safe-area-inset-top),
+ *  painted over by a strip of paper, globals.css body::before), in pixels; 0 in a browser that draws below it. */
+export const safeTop = () => {
+  const probe = document.createElement("div");
+  probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
+  document.body.append(probe);
+  const h = probe.getBoundingClientRect().height;
+  probe.remove();
+  return h;
+};
+
 /** How many pixels of the header are showing at the top of the window now. */
 export const headerVisible = () => (document.documentElement.dataset.hdr === "hidden" ? 0 : headerHeight());
 

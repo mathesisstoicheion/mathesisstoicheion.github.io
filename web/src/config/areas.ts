@@ -20,7 +20,7 @@ import type { IconName } from "@/components/Icon";
  */
 export type AreaId =
   | "home" | "library" | "reader" | "search" | "study" | "wiki" | "archaeology"
-  | "census" | "map" | "lyre" | "pot" | "forum" | "debates" | "treasury" | "downloads";
+  | "census" | "map" | "lyre" | "pot" | "board" | "forum" | "debates" | "treasury" | "downloads";
 
 export interface Area {
   id: AreaId;
@@ -96,6 +96,14 @@ export const AREAS: Record<AreaId, Area> = {
     id: "pot", parent: "wiki", name: "The potter", greek: "Κεραμεύς", english: "Paint a pot", icon: "pots", href: "/stoa/pot",
     origin: "Κεραμεύς, “potter”. In Athens potters turned their vases on the wheel and painters decorated them: black figures on the red clay, and from about 530 BC red figures on a black ground.",
     fit: "Turn a neck-amphora, paint it as they did, and share it.", phase: 7,
+  },
+  // the readers' own: what they thought and made, put up for everyone once the moderator has looked at it (the owner,
+  // 2026-10-30: "community driven, with every thought and creation: Shareable, including making a pot"; each post approved
+  // first). πίναξ in LSJ: a board or plank, a writing-tablet, a picture painted on a board
+  board: {
+    id: "board", parent: "wiki", name: "The board", greek: "Πίναξ", english: "Shared by readers", icon: "board", href: "/stoa/board",
+    origin: "Πίναξ, a board: a plank, a writing-tablet, or a picture painted on a board. The Painted Stoa's own paintings were probably on wooden boards along its back wall.",
+    fit: "Readers put up what they thought and made: a thought, a painted pot, a tune played on the lyre.", phase: 7,
   },
   forum: {
     id: "forum", name: "The Agora", greek: "Ἀγορά", door: "Talk", icon: "talk", href: "/town-hall",

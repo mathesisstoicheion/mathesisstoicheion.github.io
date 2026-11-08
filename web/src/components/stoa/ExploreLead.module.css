@@ -47,11 +47,12 @@
 /* the small print at the foot of the page (ExploreCredit) */
 .credit { margin: 32px 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }
 
-/* Make and play (MakeAndPlay): the lyre and the pot, two cards under a hairline like the three above, each with its
-   picture to the left in the same hairline frame; drawn as a black-figure painter drew, the shapes in the gloss (the
-   page's ink), the lines scratched through it to the clay (the paper), one line in added red. Two side by side; one
-   above the other on a phone, where the picture stays small beside its words. */
-.make ul { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Make, play and share (MakeAndPlay): the lyre, the pot and the board, three cards under a hairline like the three above,
+   each with its picture to the left in the same hairline frame; drawn as a black-figure painter drew, the shapes in the
+   gloss (the page's ink), the lines scratched through it to the clay (the paper), one line in added red. Three side by
+   side (two on a narrower screen); one above the other on a phone, where the picture stays small beside its words. */
+.make ul { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 1100px) and (min-width: 761px) { .make ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .make li { max-width: none; }   /* a card fills its column (a list's items keep to the measure elsewhere) */
 @media (max-width: 760px) { .make ul { grid-template-columns: 1fr; } }
 .makeCard {
@@ -68,6 +69,9 @@
 .clay { fill: var(--bg-2); }
 .scratch, .scratch line { fill: none; stroke: var(--bg-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
 .addedRed { stroke: var(--rubric); stroke-width: 2px; vector-effect: non-scaling-stroke; }
+.cord { fill: none; stroke: var(--ink); stroke-width: 1.5px; vector-effect: non-scaling-stroke; }
+.panelLine { stroke: var(--rule); stroke-width: 1px; vector-effect: non-scaling-stroke; }
+.panelInk { stroke: var(--ink); stroke-width: 2px; stroke-linecap: round; vector-effect: non-scaling-stroke; }
 .strings line { stroke: var(--ink-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
 /* the shell's rim of dots, scratched through the gloss */
 .dots { fill: none; stroke: var(--bg-2); stroke-width: 0.012; stroke-linecap: round; stroke-dasharray: 0 0.03; }
