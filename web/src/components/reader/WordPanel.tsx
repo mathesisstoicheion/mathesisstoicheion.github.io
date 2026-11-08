@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import { decapitalise, isElided, lookupForm } from "@/lib/greek";
-import { lookUpWiktionary, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
+import { isHeading, lookUpWiktionary, type WiktItem, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
 import { loadWordPack, analyse, type Analysis } from "@/lib/lookup/words";
 import { lsjEntries, citationHref, type LsjEntry, type Seg } from "@/lib/lookup/lsj";
 import { caseOf } from "@/lib/lookup/postag";
@@ -38,11 +38,25 @@ export function candidates(word: string): string[] {
   return out;
 }
 
+/** A sense's words with every sense under it, on one line: "out of (materials…); through, by". */
+const oneLine = (it: WiktItem): string => [it.text, it.sub.map(oneLine).join("; ")].filter(Boolean).join(it.text && it.sub.length ? ": " : "");
+
+/**
+ * Wiktionary's senses as its editors group them: a sense with senses under it ("[with genitive]") heads them, in italics without
+ * its brackets, and each group under it (Wiktionary's "of place", "of time"…) is one line, its senses parted by semicolons.
+ */
 function Senses({ senses }: { senses: WiktSense[] }) {
   return (
     <ol className={styles.senses}>
       {senses.map((s, i) => (
-        <li key={i}><span className="label">{s.pos}</span>{s.lines.map((l, j) => <p key={j}>{l}</p>)}</li>
+        <li key={i}><span className="label">{s.pos}</span>
+          {s.items.map((it, j) => !it.sub.length ? <p key={j}>{it.text}</p> : (
+            <div key={j} className={styles.senseGroup}>
+              {it.text && <p className={styles.senseHead}>{isHeading(it.text) ? it.text.trim().slice(1, -1) : it.text}</p>}
+              <div className={styles.senseLines}>{it.sub.map((x, k) => <p key={k}>{oneLine(x)}</p>)}</div>
+            </div>
+          ))}
+        </li>
       ))}
     </ol>
   );
@@ -271,6 +285,17 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
     if (more) backRef.current?.focus({ preventScroll: true });
     else if (cameBack.current) { cameBack.current = false; moreRef.current?.focus({ preventScroll: true }); }
   }, [more]);
+  // the second layer on a sheet: as its body is scrolled, what scrolls up fades out before the hairline under the meaning, so that
+  // a part's own hairline never lies just under that one as a second line (the owner's phone, 2026-11-08). The fade grows with the
+  // first 56 px of scrolling (--fade, Reader.module.css), so that at the top nothing fades and nothing changes at once.
+  useEffect(() => {
+    const el = bodyRef.current;
+    if (!el || !sheet || !more) return;
+    const mark = () => el.style.setProperty("--fade", `${Math.min(Math.max(el.scrollTop, 0), 56)}px`);
+    mark();
+    el.addEventListener("scroll", mark, { passive: true });
+    return () => { el.removeEventListener("scroll", mark); el.style.removeProperty("--fade"); };
+  }, [sheet, more, word]);
   const [analysis, setAnalysis] = useState<Loaded<Analysis>>({ key: "", value: null });
   // how many times the dictionary form stands in this work, counted in its word pack
   const [occurs, setOccurs] = useState<{ key: string; n: number | null }>({ key: "", n: null });

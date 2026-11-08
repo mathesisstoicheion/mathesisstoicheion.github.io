@@ -70,17 +70,26 @@ describe("a meaning is said once", () => {
     expect(repeatsMeaning("", meaning)).toBe(false);
   });
 
+  const leaf = (text: string) => ({ text, sub: [] });
   it("leaves Wiktionary's senses without the lines that repeat it, and without a sense left empty", () => {
     const senses: WiktSense[] = [
-      { pos: "noun", lines: ["wrath, revengeful temper", "anger, rage"], lemma: null },
-      { pos: "noun", lines: [meaning], lemma: null },
+      { pos: "noun", items: [leaf("wrath, revengeful temper"), leaf("anger, rage")], lemma: null },
+      { pos: "noun", items: [leaf(meaning)], lemma: null },
     ];
-    expect(withoutMeaning(senses, meaning)).toEqual([{ pos: "noun", lines: ["anger, rage"], lemma: null }]);
+    expect(withoutMeaning(senses, meaning)).toEqual([{ pos: "noun", items: [leaf("anger, rage")], lemma: null }]);
     expect(withoutMeaning([senses[1]], meaning)).toEqual([]);
   });
 
+  it("keeps a group's heading over what is left under it, and drops a heading left with nothing under it", () => {
+    const senses: WiktSense[] = [{ pos: "noun", items: [
+      { text: "[with genitive]", sub: [leaf("wrath"), leaf("anger, rage")] },
+      { text: "[with dative]", sub: [leaf("wrath")] },
+    ], lemma: null }];
+    expect(withoutMeaning(senses, meaning)).toEqual([{ pos: "noun", items: [{ text: "[with genitive]", sub: [leaf("anger, rage")] }], lemma: null }]);
+  });
+
   it("keeps everything when the card shows no meaning, and copes with none", () => {
-    const senses: WiktSense[] = [{ pos: "noun", lines: [meaning], lemma: null }];
+    const senses: WiktSense[] = [{ pos: "noun", items: [leaf(meaning)], lemma: null }];
     expect(withoutMeaning(senses, null)).toEqual(senses);
     expect(withoutMeaning(null, meaning)).toEqual([]);
   });

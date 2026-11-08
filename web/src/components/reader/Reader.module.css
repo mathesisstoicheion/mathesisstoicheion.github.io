@@ -172,6 +172,11 @@
 .senses { margin: 0; padding-left: 1.2em; display: grid; gap: var(--space-2); }
 .senses li::marker { color: var(--accent); font-family: var(--f-label); }
 .senses p { margin: var(--hair-2) 0 0; }
+/* Wiktionary's senses as its editors group them (WordPanel.tsx): "with genitive" in italics heads its lines, which stand a step in,
+   along a hairline, so that the groups read as groups and not as one flat run of lines */
+.senseGroup { margin-top: var(--space-1); }
+.senses .senseHead { font-style: italic; color: var(--ink-2); }
+.senseLines { margin-top: var(--hair-2); padding-left: 0.8em; box-shadow: inset var(--hair) 0 0 var(--rule); }
 .fine { font-size: var(--step--2); color: var(--ink-2); }
 .refs { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-1); font-size: var(--step-0); }
 .refs a { font-weight: 600; text-decoration-color: var(--accent); text-underline-offset: 3px; }
@@ -907,6 +912,13 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* the second layer's kind and meaning stay under the head while the rest scrolls */
 .wordSheet .secWord { flex: none; padding: var(--space-1) var(--space-4) 0; }
 /* the second layer has no row of buttons at its foot: its last line clears the phone's own bar */
+/* the second layer's body fades out over its top edge, under the hairline below the meaning, as much as it is scrolled (--fade, from
+   WordPanel.tsx; none at the top): a part's hairline scrolling up thins away there instead of standing as a second line under that
+   one, and words pass under the meaning without a hard cut (the owner's phone, 2026-11-08) */
+.wordSheet[data-layer="2"] .panelBody {
+  -webkit-mask-image: linear-gradient(to bottom, transparent calc(var(--fade, 0px) / 2), var(--ink) var(--fade, 0px));
+  mask-image: linear-gradient(to bottom, transparent calc(var(--fade, 0px) / 2), var(--ink) var(--fade, 0px));
+}
 .wordSheet[data-layer="2"] .panelBody { padding-bottom: calc(var(--space-4) + env(safe-area-inset-bottom, 0px)); }
 .wordSheet .cardMeaning { font-size: max(calc((var(--step-1) + var(--step-2)) / 2), calc(var(--greek-size) * var(--fit, 1))); }
 /* the buttons keep to the sheet's foot, whatever the card's height */
