@@ -2,6 +2,9 @@
    the text under it keeps a reading measure, set from the same left edge. */
 .prose { padding-block: 0 clamp(40px, 6vw, 72px); display: grid; gap: 18px; }   /* the head brings its own space above */
 .prose > :not(header) { max-width: var(--measure); }
+/* a long web address breaks where it must instead of widening the page ("https://github.com/PerseusDL/lexica/." on the credits page at 320 px; check-spill) */
+.prose > :not(header) { overflow-wrap: anywhere; }
+.prose li { min-width: 0; }
 .prose h2 { font-size: var(--step-2); margin-top: 18px; }
 .prose h2 { scroll-margin-top: var(--space-7); }
 .prose ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; }
