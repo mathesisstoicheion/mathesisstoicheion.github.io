@@ -107,6 +107,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-narrow-menus.mjs http://localhost:3100
+      - name: Nothing opens under the phone's status bar in the app (the reader's title, a book reopened)
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-status-bar.mjs http://localhost:3100
       - name: The other rooms (slice 9)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

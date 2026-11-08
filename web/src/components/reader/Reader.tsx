@@ -59,7 +59,7 @@ import { loadWordPack } from "@/lib/lookup/words";
 import { caseOf } from "@/lib/lookup/postag";
 import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
 import { lookupPlace } from "@/lib/lookup/placement";
-import { headerVisible, holdFoot, scrollBelowHeader, showFoot } from "@/lib/header";
+import { headerVisible, holdFoot, safeTop, scrollBelowHeader, showFoot } from "@/lib/header";
 import { buzz } from "@/lib/haptics";
 import ReaderBar, { AaStudy, GotoMenu, Where } from "./ReaderBar";
 import AaMenu from "./AaMenu";
@@ -581,7 +581,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
    *  of the window or of the pane. One book has no bar along its top (the quiet desk, ticket 09, the owner, 2026-10-30). */
   const topEdge = () => {
     const stuck = [...root().querySelectorAll<HTMLElement>(`.${styles.bar}, .${styles.caseKey}`)].find((el) => el.offsetHeight && getComputedStyle(el).position === "sticky");
-    return stuck ? stuck.getBoundingClientRect().bottom : contained ? rootRef.current!.getBoundingClientRect().top : headerVisible();
+    // with nothing along the top, the top edge is under the phone's status bar strip (the phone app; scripts/check-status-bar.mjs)
+    return stuck ? stuck.getBoundingClientRect().bottom : contained ? rootRef.current!.getBoundingClientRect().top : headerVisible() + safeTop();
   };
   /** The share of a passage's height (without its padding below) that is above the top edge: 0 at its first line. */
   const into = (el: HTMLElement) => {
@@ -592,8 +593,25 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
    * Bring a passage to the top, just below what is stuck there (and the site header, if it will be showing). `f` brings that
    * share of the way into it to the top instead (where the reader was, read back from lib/position.ts).
    */
+  /** How far down a passage the line through `down` starts (px from the passage's top), so that a place read back comes to the top
+   *  at the start of a line, never with a line cut through by the top edge (the phone's status bar strip; scripts/check-status-bar.mjs). */
+  const lineStart = (el: HTMLElement, down: number) => {
+    const top = el.getBoundingClientRect().top;
+    const tw = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
+    const range = document.createRange();
+    let best = down;
+    for (let n; (n = tw.nextNode());) {
+      if (!n.textContent?.trim()) continue;
+      range.selectNodeContents(n);
+      for (const r of range.getClientRects()) {
+        const a = r.top - top, b = r.bottom - top;
+        if (a <= down && b > down && a < best) best = a;
+      }
+    }
+    return Math.max(0, best);
+  };
   const bringToTop = (el: HTMLElement, smooth = false, f = 0) => {
-    const down = f > 0 ? f * (el.getBoundingClientRect().height - parseFloat(getComputedStyle(el).paddingBottom)) : 0;
+    const down = f > 0 ? lineStart(el, f * (el.getBoundingClientRect().height - parseFloat(getComputedStyle(el).paddingBottom))) : 0;
     if (contained) {
       // measured, not scroll-margin: the bar's height changes as the window is resized
       rootRef.current!.scrollBy({ top: el.getBoundingClientRect().top + down - topEdge() - (f > 0 ? 0 : 12), behavior: smooth ? "smooth" : "auto" });
