@@ -35,7 +35,8 @@ import Sheet, { SHEET_SIZES, type SheetHandle, type SheetSize } from "./Sheet";
 import Icon from "@/components/Icon";
 import ShareButton from "@/components/ShareButton";
 import PutOnBoard from "@/components/board/PutOnBoard";
-import { MAX_PLUCKS, decodeTune, encodeTune, type Pluck, type Tune } from "@/lib/lyre/tune-link";
+import { MAX_PLUCKS, decodeTune, encodeTune, type Pluck } from "@/lib/lyre/tune-link";
+import { EMPTY, openedLink, record, replaying as replayingOn, stopRecording, type Own } from "@/lib/lyre/own";
 import styles from "./Lyre.module.css";
 
 type Mode = "listen" | "along";
@@ -147,12 +148,12 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   const [vol, setVol] = useState(0.8);
   const [room, setRoom] = useState(0.5);
   const [rec, setRec] = useState<"idle" | "working" | "failed">("idle");
-  // your own playing: being kept now (taking), the last thing kept or a tune opened from a link, and its playing back
-  const [taking, setTaking] = useState(false);
+  // your own playing (lib/lyre/own.ts): nothing yet, being recorded, or kept (yours, or a tune opened from a link) and maybe
+  // playing back; the plucks of a recording are gathered in `take`, outside React
+  const [own, setOwn] = useState<Own>(EMPTY);
   const take = useRef<{ t0: number; plucks: Pluck[] } | null>(null);
-  const [tune, setTune] = useState<{ t: Tune; from: "mine" | "link" } | null>(null);
-  const [tuneBad, setTuneBad] = useState(false);
-  const [replaying, setReplaying] = useState(false);
+  const kept = own.state === "kept" ? own : null;
+  const replaying = !!kept?.replaying;
   const replay = useRef<number[]>([]);
   const [rollH, setRollH] = useState(300);
 
@@ -675,45 +676,46 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
   };
 
   // ── your own playing ────────────────────────────────────────────────────────────────────────────────────────────
-  const stopReplay = () => { for (const h of replay.current) clearTimeout(h); replay.current = []; setReplaying(false); };
+  const stopReplay = () => { for (const h of replay.current) clearTimeout(h); replay.current = []; setOwn((o) => replayingOn(o, false)); };
   useEffect(() => () => { for (const h of replay.current) clearTimeout(h); }, []);
-  const startTake = () => { stopReplay(); take.current = { t0: 0, plucks: [] }; setTaking(true); setTune(null); setTuneBad(false); };
+  const startTake = () => { stopReplay(); take.current = { t0: 0, plucks: [] }; setOwn(record()); };
   const stopTake = () => {
     const k = take.current;
-    take.current = null; setTaking(false);
-    if (k?.plucks.length) setTune({ t: { song: song?.meta.id ?? null, tuning, plucks: k.plucks }, from: "mine" });
+    take.current = null;
+    setOwn((o) => stopRecording(o, k ? { song: song?.meta.id ?? null, tuning, plucks: k.plucks } : null));
   };
   /** the tune played back on the strings it was played on, each pluck at its time and as hard as it was made */
   const playTune = () => {
-    if (!tune) return;
+    if (!kept) return;
     if (replaying) { stopReplay(); return; }
     sound();
-    const ps = tune.t.plucks;
+    const ps = kept.tune.plucks;
     replay.current = ps.map((p) => window.setTimeout(() => pluck(S.current.strings.findIndex((x) => x.midi === p.m), p.m, p.s, null), 300 + p.t));
     replay.current.push(window.setTimeout(stopReplay, 300 + (ps.at(-1)?.t ?? 0) + 1200));
-    setReplaying(true);
+    setOwn((o) => replayingOn(o, true));
   };
   const shareTune = async () => {
-    if (!tune) return null;
-    const on = tune.t.song ? melodies.find((m) => m.id === tune.t.song)?.title : null;
-    return { title: on ? `A tune I played on the lyre of ${on}` : "A tune I played on the lyre", url: `${location.origin}/stoa/lyre#tune=${await encodeTune(tune.t)}` };
+    if (!kept) return null;
+    const on = kept.tune.song ? melodies.find((m) => m.id === kept.tune.song)?.title : null;
+    return { title: on ? `A tune I played on the lyre of ${on}` : "A tune I played on the lyre", url: `${location.origin}/stoa/lyre#tune=${await encodeTune(kept.tune)}` };
   };
   // the tune put on the Painted Stoa's board (components/board/PutOnBoard.tsx), as its link; the melody's name suggests a title
   const boardTune = async () => {
-    if (!tune) return null;
-    const on = tune.t.song ? melodies.find((m) => m.id === tune.t.song)?.title : null;
-    return { kind: "tune" as const, title: on ? `On the lyre of ${on}` : "", link: `/stoa/lyre#tune=${await encodeTune(tune.t)}` };
+    if (!kept) return null;
+    const on = kept.tune.song ? melodies.find((m) => m.id === kept.tune.song)?.title : null;
+    return { kind: "tune" as const, title: on ? `On the lyre of ${on}` : "", link: `/stoa/lyre#tune=${await encodeTune(kept.tune)}` };
   };
   // a tune opened from a link: the lyre it was played on is set out, ready to play it
   useEffect(() => {
     const read = () => {
       if (!location.hash.startsWith("#tune=")) return;
       void decodeTune(location.hash.slice(6)).then((t) => {
-        if (!t) { setTuneBad(true); return; }
-        setTuneBad(false);
+        if (!t) { setOwn((o) => openedLink(o, null)); return; }
+        // the tune opened takes the place of a recording under way, and of one playing back
+        take.current = null; stopReplay();
         if (t.song && melodies.some((m) => m.id === t.song)) choose(t.song);
         else { choose(null); setTuning(t.tuning); }
-        setTune({ t, from: "link" });
+        setOwn((o) => openedLink(o, t));
       });
     };
     read();
@@ -824,29 +826,29 @@ export default function Lyre({ melodies, first }: { melodies: Melody[]; first: M
 
       {/* your own playing: record it, play it back, share it (a tune from a link waits here to be played) */}
       <div className={styles.save}>
-        {taking ? (
+        {own.state === "recording" ? (
           <>
             <button type="button" className="btn small" onClick={stopTake}><Icon name="stop" />Stop</button>
             <span className="faint" role="status">Recording what you play. Press Stop when you have finished.</span>
           </>
-        ) : tune ? (
+        ) : kept ? (
           <>
-            <button type="button" className={`btn small${tune.from === "link" && !replaying ? "" : " ghost"}`} onClick={playTune}>
-              <Icon name={replaying ? "stop" : "play"} />{replaying ? "Stop" : tune.from === "link" ? "Play it" : "Play it back"}
+            <button type="button" className={`btn small${kept.from === "link" && !replaying ? "" : " ghost"}`} onClick={playTune}>
+              <Icon name={replaying ? "stop" : "play"} />{replaying ? "Stop" : kept.from === "link" ? "Play it" : "Play it back"}
             </button>
-            {tune.from === "mine" && <ShareButton what={shareTune} />}
-            {tune.from === "mine" && <PutOnBoard what={boardTune} />}
-            <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />{tune.from === "link" ? "Record your own" : "Record again"}</button>
+            {kept.from === "mine" && <ShareButton what={shareTune} />}
+            {kept.from === "mine" && <PutOnBoard what={boardTune} />}
+            <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />{kept.from === "link" ? "Record your own" : "Record again"}</button>
             <span className="faint">
-              {tune.from === "link"
+              {kept.from === "link"
                 ? "A tune someone played on this lyre and shared with you."
-                : `Your tune: ${tune.t.plucks.length} ${tune.t.plucks.length === 1 ? "note" : "notes"}, ${Math.max(1, Math.round((tune.t.plucks.at(-1)?.t ?? 0) / 1000))} s. It is not kept: share it or put it on the board, or it goes when you leave.`}
+                : `Your tune: ${kept.tune.plucks.length} ${kept.tune.plucks.length === 1 ? "note" : "notes"}, ${Math.max(1, Math.round((kept.tune.plucks.at(-1)?.t ?? 0) / 1000))} s. It is not kept: share it or put it on the board, or it goes when you leave.`}
             </span>
           </>
         ) : (
           <>
             <button type="button" className="btn small ghost" onClick={startTake}><Icon name="record" />Record what you play</button>
-            <span className="faint">{tuneBad ? "That link to a tune is damaged or cut short." : "Then play it back, or share it as a link that plays it for anyone."}</span>
+            <span className="faint">{own.state === "empty" && own.badLink ? "That link to a tune is damaged or cut short." : "Then play it back, or share it as a link that plays it for anyone."}</span>
           </>
         )}
       </div>
