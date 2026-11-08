@@ -20,16 +20,20 @@ import { Byline, Decide, KindLabel, Plate, StatusLine, TakeDown } from "./parts"
 import { tuneLength, useTune } from "./TuneRoll";
 import styles from "./Board.module.css";
 
+/** The item, as the page has it: still being asked for, not on the board (or no such item), the database unreachable, or here. */
+type Got = { state: "loading" } | { state: "missing" } | { state: "error"; message: string } | { state: "ready"; item: BoardItem };
+
 export default function ItemView() {
   const { start, session, profile } = useAccount();
   useEffect(() => { start(); }, [start]);
   const id = Number(useSearchParams().get("id"));
   const router = useRouter();
-  const [item, setItem] = useState<BoardItem | null | undefined>(undefined);
-  const [error, setError] = useState<string | null>(null);
+  // asked again (after a decision, or once the session is known), the item already here stays on the page while it comes
+  const [got, setGot] = useState<Got>({ state: "loading" });
   const load = useCallback(async () => {
-    if (!Number.isInteger(id) || id <= 0) { setItem(null); return; }
-    try { setItem(await boardItem(id)); setError(null); } catch (e) { setError(problem(e)); }
+    if (!Number.isInteger(id) || id <= 0) { setGot({ state: "missing" }); return; }
+    try { const it = await boardItem(id); setGot(it ? { state: "ready", item: it } : { state: "missing" }); }
+    catch (e) { setGot({ state: "error", message: problem(e) }); }
   }, [id]);
   // asked again once the session is known, so an author or the moderator also finds what is not on the board yet
   // eslint-disable-next-line react-hooks/set-state-in-effect -- the item is asked of the database once the page is open
@@ -37,9 +41,9 @@ export default function ItemView() {
 
   const head = (title: string) => <PageHead path={trail("board", title)} title={title} piece={null} />;
   if (!ACCOUNTS_ON) return <>{head("Not here")}<div className="wrap"><p className={styles.note}>The board needs the site&apos;s accounts, which this copy of the site was built without.</p></div></>;
-  if (error) return <>{head("The board")}<div className="wrap"><p className={styles.note} role="alert">The board could not be reached: {error}</p></div></>;
-  if (item === undefined) return <div className="wrap"><p className={styles.status} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening…</p></div>;
-  if (item === null) return (
+  if (got.state === "error") return <>{head("The board")}<div className="wrap"><p className={styles.note} role="alert">The board could not be reached: {got.message}</p></div></>;
+  if (got.state === "loading") return <div className="wrap"><p className={styles.status} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> Opening…</p></div>;
+  if (got.state === "missing") return (
     <>
       {head("Not on the board")}
       <div className={`wrap ${styles.page}`}>
@@ -49,6 +53,7 @@ export default function ItemView() {
     </>
   );
 
+  const { item } = got;
   const mine = session?.user.id === item.author_id;
   const mod = isModerator(profile);
   return (

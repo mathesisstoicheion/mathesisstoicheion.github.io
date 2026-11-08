@@ -11,7 +11,8 @@ import { useEffect, useMemo, useState } from "react";
 import Icon from "@/components/Icon";
 import { AREAS } from "@/config/areas";
 import { ACCOUNTS_ON } from "@/config/supabase";
-import { isBanned, isModerator, problem, useAccount } from "@/lib/community/account";
+import { isBanned, isModerator, useAccount } from "@/lib/community/account";
+import { useTask } from "@/lib/task";
 import { putUp, type BoardItem } from "@/lib/community/board-data";
 import { aboutWords, BODY_MAX, draftProblem, dropHandOver, itemHref, KINDS, takeOver, TITLE_MAX, type BoardDraft, type BoardKind } from "@/lib/board";
 import { SignInPrompt } from "@/components/community/parts";
@@ -39,9 +40,9 @@ export default function NewItem() {
     setDraft({ kind, title: d?.title ?? "", body: d?.body ?? "", link: d?.link ?? null, picture: d?.picture ?? null, aboutTitle: d?.aboutTitle });
   }, [asked]);
 
+  // what was put up, once it is; and the putting up itself (lib/task.ts)
   const [done, setDone] = useState<BoardItem | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
+  const { busy, error, run, fail, reset } = useTask();
 
   if (!ACCOUNTS_ON) return <p className={styles.note}>The board needs the site&apos;s accounts, which this copy of the site was built without.</p>;
   if (!ready || !draft) return <p className={styles.status} aria-busy="true"><span className={styles.spinner} aria-hidden="true" /> One moment…</p>;
@@ -49,7 +50,7 @@ export default function NewItem() {
   if (isBanned(profile)) return <SignInPrompt what="put something on the board" />;
   if (done) return <Done item={done} />;
 
-  const set = (p: Partial<BoardDraft>) => { setDraft({ ...draft, ...p }); setError(null); };
+  const set = (p: Partial<BoardDraft>) => { setDraft({ ...draft, ...p }); reset(); };
   const switchTo = (kind: BoardKind) => {
     // a pot or a tune comes only from where it was made; a thought keeps only what it is about
     const from = handed?.kind === kind ? handed : null;
@@ -60,11 +61,8 @@ export default function NewItem() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     const why = draftProblem(draft);
-    if (why) { setError(why); return; }
-    setBusy(true); setError(null);
-    try { const it = await putUp(draft); dropHandOver(); setDone(it); }
-    catch (err) { setError(problem(err)); }
-    setBusy(false);
+    if (why) { fail(why); return; }
+    await run(async () => { const it = await putUp(draft); dropHandOver(); setDone(it); });
   };
 
   return (

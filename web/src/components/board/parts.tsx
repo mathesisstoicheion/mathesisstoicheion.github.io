@@ -5,9 +5,9 @@
  */
 import Link from "next/link";
 import { useState, type ReactNode } from "react";
+import { useTask } from "@/lib/task";
 import Icon from "@/components/Icon";
 import { ago } from "@/lib/community/ago";
-import { problem } from "@/lib/community/account";
 import type { BoardItem } from "@/lib/community/board-data";
 import { itemHref, KINDS, safePicture } from "@/lib/board";
 import TuneRoll, { useTune } from "./TuneRoll";
@@ -75,13 +75,8 @@ export function Card({ item, children }: { item: BoardItem; children?: ReactNode
 
 /** The moderator's two buttons on an item that waits: put it on the board, or decline it. */
 export function Decide({ onDecide, shown = false }: { onDecide: (show: boolean) => Promise<void>; shown?: boolean }) {
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const run = async (show: boolean) => {
-    setBusy(true); setError(null);
-    try { await onDecide(show); } catch (e) { setError(problem(e)); }
-    setBusy(false);
-  };
+  const { busy, error, run: go } = useTask();
+  const run = (show: boolean) => go(() => onDecide(show));
   return (
     <>
       <div className="btn-row">
@@ -96,16 +91,13 @@ export function Decide({ onDecide, shown = false }: { onDecide: (show: boolean) 
 /** Take down one's own item (or, for the moderator, any), asked once inline. */
 export function TakeDown({ onDelete, label = "Delete" }: { onDelete: () => Promise<void>; label?: string }) {
   const [open, setOpen] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  // once deleted it stays disabled ("done"): the item goes from the page, or the page changes
+  const { task, error, run } = useTask();
   if (!open) return <button type="button" className="btn small quiet" onClick={() => setOpen(true)}><Icon name="delete" />{label}</button>;
   return (
     <div className={styles.ask} role="group" aria-label="Delete it?">
       <span>Delete it for good?</span>
-      <button type="button" className="btn small" disabled={busy} autoFocus onClick={async () => {
-        setBusy(true); setError(null);
-        try { await onDelete(); } catch (e) { setError(problem(e)); setBusy(false); }
-      }}><Icon name="delete" />Yes, delete it</button>
+      <button type="button" className="btn small" disabled={task.state === "busy" || task.state === "done"} autoFocus onClick={() => run(onDelete)}><Icon name="delete" />Yes, delete it</button>
       <button type="button" className="btn small quiet" onClick={() => setOpen(false)}>Keep it</button>
       {error && <p className={styles.error} role="alert">{error}</p>}
     </div>

@@ -12,7 +12,8 @@ import { useCallback, useEffect, useState } from "react";
 import Icon from "@/components/Icon";
 import { AREAS } from "@/config/areas";
 import { ACCOUNTS_ON } from "@/config/supabase";
-import { isModerator, problem, useAccount } from "@/lib/community/account";
+import { isModerator, useAccount } from "@/lib/community/account";
+import { useTask } from "@/lib/task";
 import { decide, notYetShown, shownItems, takeDown, type BoardItem } from "@/lib/community/board-data";
 import { KINDS, NEW_ITEM, type BoardKind } from "@/lib/board";
 import { Card, Decide, TakeDown } from "./parts";
@@ -37,17 +38,13 @@ function Wall() {
   const [items, setItems] = useState<BoardItem[] | null>(null);
   const [more, setMore] = useState(false);
   const [page, setPage] = useState(0);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-  const load = useCallback(async (k: BoardKind | null, p: number) => {
-    setBusy(true); setError(null);
-    try {
-      const r = await shownItems({ kind: k, page: p });
-      setItems((was) => (p === 0 ? r.rows : [...(was ?? []), ...r.rows]));
-      setMore(r.more); setPage(p);
-    } catch (e) { setError(problem(e)); }
-    setBusy(false);
-  }, []);
+  // asking for a page (lib/task.ts): busy while it comes, or what went wrong, with "Try again"
+  const { busy, error, run } = useTask();
+  const load = useCallback((k: BoardKind | null, p: number) => run(async () => {
+    const r = await shownItems({ kind: k, page: p });
+    setItems((was) => (p === 0 ? r.rows : [...(was ?? []), ...r.rows]));
+    setMore(r.more); setPage(p);
+  }), [run]);
   // eslint-disable-next-line react-hooks/set-state-in-effect -- the database is asked again when the filter changes
   useEffect(() => { setItems(null); void load(kind, 0); }, [kind, load]);
 
