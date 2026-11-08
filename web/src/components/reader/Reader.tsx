@@ -64,6 +64,7 @@ import { buzz } from "@/lib/haptics";
 import ReaderBar, { AaStudy, GotoMenu, Where } from "./ReaderBar";
 import AaMenu from "./AaMenu";
 import StudyMenu, { type StudyPanel } from "./StudyMenu";
+import { TOOLS, closeTool, toggleTool, underEchoes, type Tool, type ToolSlot } from "./tool";
 import { rangeLabel } from "./refs";
 import type { Back } from "./Panel";
 import { afterBack, afterSteps, stackOf, useBackSteps, type Layer } from "./useBackSteps";
@@ -254,12 +255,11 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const cases = useSettings((s) => s.cases);
   const metreOn = useSettings((s) => s.metre);
   const tryFirst = useSettings((s) => s.tryFirst);
-  const [vocabOpen, setVocabOpen] = useState(false);
-  const [placesOpen, setPlacesOpen] = useState(false);
-  const [talkOpen, setTalkOpen] = useState(false);
-  const [msOpen, setMsOpen] = useState(false);
+  // the one tool open at the side of the text, if any (tool.ts): Find, Vocabulary, Places, Manuscripts, Talk or the list of differences
+  const [tool, setTool] = useState<ToolSlot>(null);
+  /** A tool's own × : it closes, if it is still the one open. */
+  const shutTool = (t: Tool) => setTool((now) => closeTool(now, t));
   const [listenOpen, setListenOpen] = useState(false);
-  const [findOpen, setFindOpen] = useState(false);
   const [findQ, setFindQ] = useState("");
   const [findMarks, setFindMarks] = useState<FindMarks | null>(null);
   // how a sentence is built: the word asked about (its passage and place there), and its words to mark on the page
@@ -305,7 +305,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const [studyRow, setStudyRow] = useState<string | null>(null);
   /** Open Find in this text (or, if open, go back to its box). */
   const openFind = (fromStudy = false) => {
-    setFindOpen(true); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
+    setTool("find"); setWord(null); setEcho(null);
     setStudyFor(fromStudy ? "find" : null);
     // already open: back to its box
     requestAnimationFrame(() => (rootRef.current ?? document).querySelector<HTMLInputElement>("[aria-label='Find in this text'] input")?.focus());
@@ -474,15 +474,16 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const cmpFit = useMemo(() => (comparing ? new Set(placed!.map((p) => p.at)).size / Math.max(1, doc!.units.length) : 0), [comparing, placed, doc]);
   const canDiff = comparing && cmpFit >= 0.5;
   const allDiffs = useMemo<RowDiff[]>(() => (canDiff ? compareAll(doc!, placed!, strict) : []), [canDiff, doc, placed, strict]);
-  const [cmpListOpen, setCmpListOpen] = useState(false);
+  // the tool that shows: the list of differences only while the two editions line up word by word
+  const toolShown: ToolSlot = tool === "cmp" && !canDiff ? null : tool;
   // a panel open at the side (they all give way to the look-up while a word is open, and come back when it closes)
-  const sideOpen = !!(echo || vocabOpen || placesOpen || talkOpen || msOpen || findOpen || (cmpListOpen && canDiff) || sentenceAt);
+  const sideOpen = !!(echo || toolShown || sentenceAt);
   // a look-up in a sheet stands in for the panel beside the text, which is put away for the while and comes back with the sheet closed; a note in the margin leaves it open;
   // a note with a panel open takes the panel's box and the panel waits wholly behind it, kept as it is (what it holds stays), and out of the keyboard's reach (Reader.module.css, lookOver)
   const lookSheet = !!word && !(wordAt && "note" in wordAt);
   const lookOver = !!word && !!wordAt && "note" in wordAt && sideOpen;
   // the panels a row of the Study menu opens (the one open now, if it was opened from Study, has "Back to Study"; once it is closed, the way back is forgotten)
-  const panelsOpen: Record<StudyPanel, boolean> = { find: findOpen, vocab: vocabOpen, places: placesOpen, ms: msOpen, talk: talkOpen, cmp: cmpListOpen && canDiff };
+  const panelsOpen = Object.fromEntries(TOOLS.map((t) => [t, toolShown === t])) as Record<StudyPanel, boolean>;
   if (studyFor && !panelsOpen[studyFor]) setStudyFor(null);
 
   // ------------------------------------------------------------ the phone's Back (the quiet desk, ticket 11, the owner, 2026-10-30)
@@ -491,7 +492,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   // Back shows them again, as the panel's own "Back to …" does, and the next Back closes them.
   const layersOpen = ([
     ["aa", drop === "aa"], ["study", drop === "study"], ["goto", drop === "goto"],
-    ["find", findOpen], ["vocab", vocabOpen], ["places", placesOpen], ["ms", msOpen], ["talk", talkOpen], ["cmp", cmpListOpen && canDiff],
+    ...TOOLS.map((t) => [t, toolShown === t]),
     ["echoes", !!echo], ["sentence", !!sentenceAt], ["books", !!books?.picking], ["mine", !!books?.mine],
     ["note", openNote !== null], ["share", !!share], ["notebook", !!nbPick], ["toolbar", !!sel],
     ["look", !!word], ["more", !!word?.more],
@@ -508,12 +509,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const shut = (layer: Layer) => {
     switch (layer) {
       case "aa": case "study": case "goto": setDrop((cur) => (cur === layer ? null : cur)); break;
-      case "find": setFindOpen(false); break;
-      case "vocab": setVocabOpen(false); break;
-      case "places": setPlacesOpen(false); break;
-      case "ms": setMsOpen(false); break;
-      case "talk": setTalkOpen(false); break;
-      case "cmp": setCmpListOpen(false); break;
+      case "find": case "vocab": case "places": case "ms": case "talk": case "cmp": shutTool(layer); break;
       case "echoes": setEcho(null); setCameFrom(null); break;
       case "sentence": setSentenceAt(null); setCameFrom(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); break;
       case "books": case "mine": books?.close(layer); break;
@@ -980,7 +976,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     goToDiff(dir === 1 ? allDiffs.find((x) => x.first > h) ?? allDiffs[0] : allDiffs.findLast((x) => x.first < h) ?? allDiffs[allDiffs.length - 1]);
   };
   const setParam = (k: string, v: string | null) => { const q = new URLSearchParams(params.toString()); if (v) q.set(pk(k), v); else q.delete(pk(k)); return q; };
-  const stopCompare = () => { const q = setParam("cmp", null); q.delete(pk("cmpx")); setCmpListOpen(false); nav.go(q); };
+  const stopCompare = () => { const q = setParam("cmp", null); q.delete(pk("cmpx")); shutTool("cmp"); nav.go(q); };
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
     const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
@@ -1480,7 +1476,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     if (!doc || !grcText || !work) return;
     setCameFrom(from && { to: "echoes", ...from });
     setEcho({ work: workId, urn: grcText.urn, doc, title: work.title, start, end });
-    setWord(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false);
+    setWord(null); setTool(underEchoes);
   }
   const echoJump = (t: EchoTarget) => {
     setCameFrom(null);   // it is another passage now: there is no word to go back to
@@ -1517,6 +1513,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   }, [echoMarks, rows, grcText?.urn, pane]);
 
   // the words that name places, marked while the Places panel is open
+  const placesOpen = tool === "places";
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
     const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
@@ -1639,18 +1636,16 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const modesOn = [translit, cases, !!mInfo && metreOn, !!trText && !cmpText && columns === "both" && tryFirst].filter(Boolean).length;
   const sortedMarks = [...allMarks].sort((a, b) => cmp(a.start, b.start, order));
   // the panels a row of Study opens: one at a time, and each one shows "Back to Study"; a row again closes it
-  const SETTERS: Record<StudyPanel, (open: boolean) => void> = { find: setFindOpen, vocab: setVocabOpen, places: setPlacesOpen, ms: setMsOpen, talk: setTalkOpen, cmp: setCmpListOpen };
   const openPanel = (p: StudyPanel) => {
     const was = panelsOpen[p];
-    (Object.keys(SETTERS) as StudyPanel[]).forEach((k) => SETTERS[k](false));
     setWord(null); setEcho(null);
-    if (was) { setStudyFor(null); return; }
+    if (was) { setTool(null); setStudyFor(null); return; }
     if (p === "find") { openFind(true); return; }
-    SETTERS[p](true);
+    setTool(p);
     setStudyFor(p);
   };
   /** Back to Study, from a panel it opened: the panel closes, Study opens again, and the keyboard returns to the row that opened the panel. */
-  const backToStudy = (p: StudyPanel) => { SETTERS[p](false); setStudyFor(null); setStudyRow(p); setDrop("study"); };
+  const backToStudy = (p: StudyPanel) => { shutTool(p); setStudyFor(null); setStudyRow(p); setDrop("study"); };
   const studyBack = (p: StudyPanel): Back | undefined => (studyFor === p ? { to: "Study", onBack: () => backToStudy(p) } : undefined);
   const aaMenu = <AaMenu columns={columns} onColumns={(c) => setSettings({ columns: c })} hasTranslation={!!trText} comparing={!!cmpText} />;
   // Study: every other tool, in one place (StudyMenu.tsx). The same menu in the foot bar of one book and in the top bar of each of two books.
@@ -1675,7 +1670,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const barRow = load.state === "ready" && doc && chunkInfo && !single ? (
     <>
       <Where doc={doc} chunk={chunk} layout="row" onPage={goChunk} onGoto={goTo} inputRef={gotoRef} focusSignal={gotoWant} />
-      <button type="button" className={`chip ${styles.findBtn}`} aria-pressed={findOpen} onClick={() => (findOpen ? setFindOpen(false) : openFind())} title="Find a word or phrase anywhere in this text (Ctrl+F)">
+      <button type="button" className={`chip ${styles.findBtn}`} aria-pressed={tool === "find"} onClick={() => (tool === "find" ? setTool(null) : openFind())} title="Find a word or phrase anywhere in this text (Ctrl+F)">
         <Icon name="search" /> Find
       </button>
       {canDiff && (
@@ -1813,7 +1808,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
                     </span>
                     <button type="button" className="chip" onClick={() => goDiff(-1)} disabled={!allDiffs.length}><Icon name="back" />Previous difference</button>
                     <button type="button" className="chip" onClick={() => goDiff(1)} disabled={!allDiffs.length}>Next difference<Icon name="next" /></button>
-                    <button type="button" className="chip" aria-pressed={cmpListOpen} onClick={() => { setCmpListOpen(!cmpListOpen); setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); }}><Icon name="variants" />List of differences</button>
+                    <button type="button" className="chip" aria-pressed={tool === "cmp"} onClick={() => { setTool(toggleTool(tool, "cmp")); setWord(null); setEcho(null); }}><Icon name="variants" />List of differences</button>
                     <label className={styles.compareCheck}>
                       <input type="checkbox" checked={strict === "spelling"} onChange={(e) => nav.go(setParam("cmpx", e.target.checked ? "1" : null))} /> Spelling too
                     </label>
@@ -1900,26 +1895,26 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
       {doc && <BackToTop paneRef={contained ? rootRef : undefined} page={pane === 1} />}
 
       {/* each panel keeps its own failures to itself: the text stays readable */}
-      {vocabOpen && doc && !lookSheet && (
-        <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => setVocabOpen(false)}>
+      {tool === "vocab" && doc && !lookSheet && (
+        <PanelGuard name="vocabulary list" className={styles.panel} onClose={() => shutTool("vocab")}>
           <VocabPanel work={lexWork} doc={doc} pageKeys={pageKeys} back={studyBack("vocab")}
-            onClose={() => setVocabOpen(false)} onPick={(lemma) => { root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); setWord({ w: lemma, ctx: null, at: null }); placeWord(); }} />
+            onClose={() => shutTool("vocab")} onPick={(lemma) => { root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); setWord({ w: lemma, ctx: null, at: null }); placeWord(); }} />
         </PanelGuard>
       )}
-      {findOpen && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && (
-        <PanelGuard name="find panel" className={styles.panel} onClose={() => setFindOpen(false)}>
+      {tool === "find" && doc && !lookSheet && !echo && (
+        <PanelGuard name="find panel" className={styles.panel} onClose={() => shutTool("find")}>
           <FindPanel doc={doc} placed={cmpText ? null : placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks} back={studyBack("find")}
-            onClose={() => { setFindOpen(false); requestAnimationFrame(() => root().querySelector<HTMLElement>(single ? `[aria-controls="${dropOf("study").id}"]` : `.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
+            onClose={() => { shutTool("find"); requestAnimationFrame(() => root().querySelector<HTMLElement>(single ? `[aria-controls="${dropOf("study").id}"]` : `.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
-      {cmpListOpen && canDiff && grcText && cmpText && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && (
-        <PanelGuard name="list of differences" className={styles.panel} onClose={() => setCmpListOpen(false)}>
-          <ComparePanel diffs={allDiffs} a={describe(grcText, work?.texts)} b={describe(cmpText, work?.texts)} title={work?.title ?? workId} onJump={goToDiff} back={studyBack("cmp")} onClose={() => setCmpListOpen(false)}
+      {toolShown === "cmp" && grcText && cmpText && !lookSheet && !echo && (
+        <PanelGuard name="list of differences" className={styles.panel} onClose={() => shutTool("cmp")}>
+          <ComparePanel diffs={allDiffs} a={describe(grcText, work?.texts)} b={describe(cmpText, work?.texts)} title={work?.title ?? workId} onJump={goToDiff} back={studyBack("cmp")} onClose={() => shutTool("cmp")}
             onNotebook={(ds, what) => setNbPick({ what, items: ds.map((x) => ({ kind: "variant" as const, work: workId, urn: grcText.urn, other: cmpText.urn, from: x.key, a: x.a, b: x.b })) })} />
         </PanelGuard>
       )}
       {nbPick && <NotebookPicker items={nbPick.items} what={nbPick.what} onClose={() => setNbPick(null)} />}
-      {sentenceAt && doc && !lookSheet && !echo && !vocabOpen && !placesOpen && !talkOpen && !msOpen && !findOpen && !(cmpListOpen && canDiff) && (
+      {sentenceAt && doc && !lookSheet && !echo && !toolShown && (
         <PanelGuard name="sentence panel" className={styles.panel} onClose={() => { setSentenceAt(null); setCameFrom(null); }}>
           <SentencePanel work={lexWork} doc={doc} at={sentenceAt} onMarks={setSynMarks}
             back={cameFrom?.to === "sentence" ? { to: <span lang="grc">{cameFrom.label}</span>, onBack: () => backToWord() } : undefined}
@@ -1931,23 +1926,23 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
         <Listen rows={rows} root={root} startKey={topRow} title={work.title} alone={columns === "greek"} onShowEnglish={setListenOne}
           onNextPage={doc && chunk < doc.chunks.length - 1 ? () => goChunkRef.current(chunk + 1) : null} onClose={() => setListenOpen(false)} />
       )}
-      {talkOpen && !isPrivate && !lookSheet && !echo && (
-        <PanelGuard name="talk panel" className={styles.panel} onClose={() => setTalkOpen(false)}>
-          <TalkPanel work={workId} pageKeys={pageKeys} onJump={jumpToRef} back={studyBack("talk")} onClose={() => setTalkOpen(false)} />
+      {tool === "talk" && !isPrivate && !lookSheet && !echo && (
+        <PanelGuard name="talk panel" className={styles.panel} onClose={() => shutTool("talk")}>
+          <TalkPanel work={workId} pageKeys={pageKeys} onJump={jumpToRef} back={studyBack("talk")} onClose={() => shutTool("talk")} />
         </PanelGuard>
       )}
-      {placesOpen && doc && !lookSheet && !echo && (
-        <PanelGuard name="places panel" className={styles.panel} onClose={() => setPlacesOpen(false)}>
-          <PlacesPanel work={lexWork} doc={doc} pageKeys={pageKeys} onJump={jumpToRef} onMarks={setPlaceMarks} back={studyBack("places")} onClose={() => setPlacesOpen(false)} />
+      {tool === "places" && doc && !lookSheet && !echo && (
+        <PanelGuard name="places panel" className={styles.panel} onClose={() => shutTool("places")}>
+          <PlacesPanel work={lexWork} doc={doc} pageKeys={pageKeys} onJump={jumpToRef} onMarks={setPlaceMarks} back={studyBack("places")} onClose={() => shutTool("places")} />
         </PanelGuard>
       )}
-      {msOpen && !isPrivate && doc && !lookSheet && !echo && (() => {
+      {tool === "ms" && !isPrivate && doc && !lookSheet && !echo && (() => {
         const row = rows.find((r) => r.key === topRow) ?? rows[0];
         const units = row?.greek ?? [];
         return (
-          <PanelGuard name="manuscript panel" className={styles.panel} onClose={() => setMsOpen(false)}>
+          <PanelGuard name="manuscript panel" className={styles.panel} onClose={() => shutTool("ms")}>
             <ManuscriptPanel work={workId} units={units} label={`${work?.title ?? ""} ${row ? rangeLabel(units[0]?.ref.join(".") ?? row.key, units[units.length - 1]?.ref.join(".") ?? row.key) : ""}`}
-              book={doc.levels.length > 1 && units[0] ? units[0].ref[0] : null} back={studyBack("ms")} onClose={() => setMsOpen(false)} />
+              book={doc.levels.length > 1 && units[0] ? units[0].ref[0] : null} back={studyBack("ms")} onClose={() => shutTool("ms")} />
           </PanelGuard>
         );
       })()}
@@ -1962,7 +1957,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
           more={!!word?.more} onMore={(on) => setWord((w) => (w ? { ...w, more: on } : w))}
           onSentence={word?.at ? (label) => {
             const a = word.at!;
-            setWord(null); setEcho(null); setVocabOpen(false); setPlacesOpen(false); setTalkOpen(false); setMsOpen(false); setFindOpen(false); setCmpListOpen(false);
+            setWord(null); setEcho(null); setTool(null);
             setCameFrom({ to: "sentence", at: a, label });
             setSentenceAt(a);
           } : undefined}
