@@ -58,6 +58,13 @@
   .navI i { display: none; }
   .navI svg { grid-row: auto; }
 }
+/* a tablet: six rooms (the Lyre has its own) and the device's name leave no room for the Menu button, which ran off the screen at 768 px
+   (check-overlaps, 2026-11-08), so each room's sign stands over its word, a size smaller, and the rooms close up */
+@media (max-width: 1040px) and (min-width: 761px) {
+  .nav { gap: var(--space-2); }
+  .navI { grid-template-columns: auto; justify-items: center; row-gap: var(--hair-2); padding-inline: var(--space-1); font-size: var(--step--1); }
+  .navI .word, .navI i { grid-column: 1; }
+}
 /* a phone: only the device, the name, Search and the Menu button (SPEC.md 3.6); the rooms are along the foot of the screen */
 @media (max-width: 760px) {
   .nav { display: none; }

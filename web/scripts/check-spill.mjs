@@ -24,7 +24,7 @@ const PAGES = only.length ? only.map((p) => [p]) : [
   ["/stoa/census", "census-word"], ["/stoa/census?c=place", "census-word"], ["/treasury"], ["/treasury/word?l=λόγος"],
   ["/downloads"], ["/account"], ["/about"], ["/credits"], ["/guide"], ["/no-such-page"],
 ];
-const WIDTHS = (process.env.WIDTHS ?? "390,1280").split(",").map(Number);
+const WIDTHS = (process.env.WIDTHS ?? "320,390,1280").split(",").map(Number);
 const STEPS = {
   // the census: the first word in the list, so its panel opens with its counts and charts
   "census-word": async (page) => {

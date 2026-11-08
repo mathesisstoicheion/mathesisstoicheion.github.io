@@ -102,7 +102,10 @@
 
 .p { margin: 0 0 0.6em; }
 .p:last-child { margin-bottom: 0; }
-.head { margin: 0.4em 0 0.6em; font-family: var(--f-title); font-size: 1.4em; color: var(--accent); text-align: center; }
+.head { margin: 0.4em 0 0.6em; font-family: var(--f-title); font-size: 1.4em; line-height: 1.25; word-spacing: -0.08em; color: var(--accent); text-align: center; text-wrap: balance; }
+/* a phone: a chapter's heading a step above its text, not a poster over it (the owner's phone, 2026-11-08: three loose lines at 1.4 times the text;
+   GFS Didot's word spaces are wide, so they are drawn in a little at every width; scripts/check-chapter-heads.mjs) */
+@media (max-width: 760px) { .head { font-size: 1.2em; } }
 .line { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
 .line .speaker { grid-column: 1 / -1; }
 .ln { font-family: var(--f-label); font-size: 0.62em; color: var(--ink-2); text-align: right; padding-right: 0.9em; padding-top: 0.35em; }

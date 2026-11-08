@@ -115,10 +115,12 @@
 .sConc b { font-weight: 700; color: var(--ink); border-bottom: 2px solid var(--rubric); }
 
 /* learn: four letter cards */
-.lTiles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+.lTiles { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 10px; }
 .lTile { display: grid; place-items: center; gap: 4px; aspect-ratio: 3 / 4; border: 1px solid var(--rule); border-radius: var(--radius); }
 .lTile b { font-family: var(--f-greek); font-weight: 400; font-size: 1.7em; }
 .lTile span { font: 500 0.7em / 1.35 var(--f-label); letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-2); }
+/* the narrowest phones (320 px): the cards closer and their names tighter, and the concordance's lines a little smaller, so that nothing runs past a frame (check-spill at 320) */
+@media (max-width: 340px) { .lTiles { gap: var(--space-1); } .lTile span { letter-spacing: 0.06em; } .sConc { font-size: var(--step--1); } .sConc li { grid-template-columns: 4.6em auto 1fr; gap: var(--space-1); } }
 
 /* explore: a coast, three places and a road between two of them */
 .eMap { width: 100%; height: auto; }

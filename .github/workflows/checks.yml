@@ -99,6 +99,14 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-resume.mjs http://localhost:3100
+      - name: A chapter's heading reads as a heading on a phone, not a poster
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-chapter-heads.mjs http://localhost:3100
+      - name: The reader's Text, Study and Go to sheets fit a narrow phone
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-narrow-menus.mjs http://localhost:3100
       - name: The other rooms (slice 9)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

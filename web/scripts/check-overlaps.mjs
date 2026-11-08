@@ -22,7 +22,7 @@ const PAGES = process.env.PAGES ? process.env.PAGES.split(",") : ["/", "/library
   "/stoa/editions", "/stoa/eras", "/stoa/kerameikos", "/stoa/lyre", "/stoa/manuscripts", "/stoa/periplus", "/stoa/variants", "/town-hall",
   "/town-hall/pnyx", "/treasury", "/treasury/word?w=%CE%BB%CF%8C%CE%B3%CE%BF%CF%82", "/search", "/search?q=logos", "/about", "/credits",
   "/downloads", "/account", "/no-such-page", "/academy/reading/nothing-too-much"].filter((p) => p.includes(only));
-const SIZES = [[360, 780, "phone 360"], [390, 844, "phone 390"], [412, 915, "phone 412"], [768, 1024, "tablet"], [1280, 800, "computer 1280"], [1440, 900, "computer 1440"]]
+const SIZES = [[320, 700, "phone 320"], [360, 780, "phone 360"], [390, 844, "phone 390"], [412, 915, "phone 412"], [768, 1024, "tablet"], [1280, 800, "computer 1280"], [1440, 900, "computer 1440"]]
   .filter(([, , label]) => label.includes(sizeOnly));
 
 // runs inside the page
