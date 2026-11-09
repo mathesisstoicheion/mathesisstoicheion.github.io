@@ -16,7 +16,7 @@ const STEP_MS = 1800;
 
 interface Dot { place: Place; grc: string; count: number; rate: number; xy: [number, number] }
 interface Age { p: number; label: string; dates: string; dots: Dot[]; centre: [number, number] | null }
-interface Data { w: number; h: number; sea: string; lakes: string; ages: Age[]; nearest: (xy: [number, number]) => Place | null; all: Place[] }
+interface Data { x: number; y: number; w: number; h: number; sea: string; lakes: string; ages: Age[]; nearest: (xy: [number, number]) => Place | null; all: Place[] }
 
 async function build(meta: CensusMeta): Promise<Data> {
   const [{ base }, byName] = await Promise.all([loadMap(), placesByName()]);
@@ -33,8 +33,12 @@ async function build(meta: CensusMeta): Promise<Data> {
       const xy = project(base, place.lon, place.lat);
       if (!inside(xy)) continue;
       const count = Number(row[1]);
+      // two names of one place (Ἴλιος and Τροία are both Troy) count together, under the more frequent name
+      const same = dots.find((d) => d.place.id === place.id);
+      if (same) { same.count += count; same.rate = words ? (same.count * 10000) / words : 0; continue; }
       dots.push({ place, grc: String(row[0]), count, rate: words ? (count * 10000) / words : 0, xy });
     }
+    dots.sort((a, b) => b.count - a.count);
     let centre: [number, number] | null = null;
     const total = dots.reduce((s, d) => s + d.count, 0);
     if (total > 0) centre = [dots.reduce((s, d) => s + d.xy[0] * d.count, 0) / total, dots.reduce((s, d) => s + d.xy[1] * d.count, 0) / total];
@@ -48,7 +52,12 @@ async function build(meta: CensusMeta): Promise<Data> {
     for (const { pl, xy } of pts) { const d = (xy[0] - c[0]) ** 2 + (xy[1] - c[1]) ** 2; if (d < bd) { bd = d; best = pl; } }
     return best;
   };
-  return { w, h, sea: ringsPath(base, base.water), lakes: ringsPath(base, base.lakes), ages, nearest, all };
+  // the map is cut to the places it shows (with a margin), so the crowded Aegean is not a speck in a wide sea
+  const xs = ages.flatMap((a) => a.dots.map((d) => d.xy[0])), ys = ages.flatMap((a) => a.dots.map((d) => d.xy[1]));
+  const pad = 0.08 * (Math.max(...xs) - Math.min(...xs));
+  const x = Math.max(0, Math.min(...xs) - pad), y = Math.max(0, Math.min(...ys) - pad);
+  const vw = Math.min(w, Math.max(...xs) + pad) - x, vh = Math.min(h, Math.max(...ys) + pad) - y;
+  return { x, y, w: vw, h: vh, sea: ringsPath(base, base.water), lakes: ringsPath(base, base.lakes), ages, nearest, all };
 }
 
 export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: (changes: [string, string | null][], label: string) => void }) {
@@ -76,7 +85,14 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
   const radius = (rate: number) => rScale * (0.2 + 0.8 * Math.sqrt(rate / maxRate));
   const fs = data.w * 0.018;
   const top3 = new Set(cur.dots.slice(0, 3).map((d) => d.place.id));
-  const labelled = new Set(cur.dots.slice(0, 5).map((d) => d.place.id));
+  // the top five are named, unless a name would sit on top of one already placed
+  const labelled = new Set<string>();
+  const placed: [number, number][] = [];
+  for (const d of cur.dots.slice(0, 5)) {
+    if (placed.some(([x, y]) => Math.abs(x - d.xy[0]) < data.w * 0.09 && Math.abs(y - d.xy[1]) < data.w * 0.025)) continue;
+    labelled.add(d.place.id);
+    placed.push(d.xy);
+  }
   const near = cur.centre ? data.nearest(cur.centre) : null;
   // every place that appears in any age keeps its circle, so it grows or shrinks between ages
   const ids = new Map<string, { place: Place; grc: string; xy: [number, number] }>();
@@ -107,8 +123,8 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
           <p className={styles.movingInfo} aria-live="polite">
             {hover ? <><b lang="grc">{hover.grc}</b> <span>{shortName(hover.place)}</span> · {fmt(hover.count)} mentions · {hover.rate.toFixed(1)} per 10,000 words</> : <span className={styles.movingHint}>Hover a place for its numbers; choose it to open its list.</span>}
           </p>
-          <svg viewBox={`0 0 ${data.w} ${data.h}`} role="img" aria-label={`A map of the Mediterranean world: the places mentioned most in the ${cur.label} age, and the centre of those mentions`} className={styles.movingSvg}>
-            <rect width={data.w} height={data.h} className={styles.movingLand} />
+          <svg viewBox={`${data.x} ${data.y} ${data.w} ${data.h}`} role="img" aria-label={`A map of the Mediterranean world: the places mentioned most in the ${cur.label} age, and the centre of those mentions`} className={styles.movingSvg}>
+            <rect x={data.x} y={data.y} width={data.w} height={data.h} className={styles.movingLand} />
             <path d={data.sea} className={styles.movingSea} />
             <path d={data.lakes} className={styles.movingSea} />
             {[...ids.entries()].map(([id, g]) => {
