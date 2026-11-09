@@ -249,4 +249,4 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 .landMore a { color: var(--ink); }
 @media (max-width: 760px) { .landList { gap: 0 var(--space-3); } }
 /* the index's own title, now that the entry of the day stands above it */
-.entriesH { margin: var(--space-6) 0 0; }
+.entriesH { margin: var(--space-6) 0 0; padding-top: var(--part-pad); border-top: var(--part-rule); }
