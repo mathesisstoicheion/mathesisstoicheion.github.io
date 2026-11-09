@@ -143,10 +143,10 @@
   },
   "src/components/census/Census.module.css": {
     "font-size": 5,
-    "spacing": 79,
-    "shadow": 8,
-    "z-index": 2,
-    "motion": 11
+    "spacing": 89,
+    "shadow": 11,
+    "z-index": 3,
+    "motion": 12
   },
   "src/components/community/Community.module.css": {
     "font-size": 2,

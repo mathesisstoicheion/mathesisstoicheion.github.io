@@ -28,6 +28,8 @@ import Icon from "@/components/Icon";
 import ItemPanel, { worksInScope } from "./ItemPanel";
 import Facts from "./Facts";
 import Analyses from "./Analyses";
+import Duels from "./Duels";
+import Catchphrases from "./Catchphrases";
 import Method from "./Method";
 import Finder, { listLabel } from "./Finder";
 import { phraseList, wordList, type ListOutput } from "./rows";
@@ -186,6 +188,8 @@ function CensusView({ meta, reg, links }: { meta: CensusMeta; reg: Register; lin
       {narrow && <Sheet open={!!picked} onClose={() => go([["i", null]])} label={picked ? `${picked.text}: ${cat.label}` : ""}>{panel}</Sheet>}
 
       <Facts meta={meta} reg={reg} cats={cats} onOpen={(changes, label) => jumpToList(changes, label)} />
+      <Duels meta={meta} reg={reg} />
+      <Catchphrases meta={meta} onOpen={(changes, label) => jumpToList(changes, label)} />
       <Analyses meta={meta} reg={reg} scope={scope} counts={countsA.state === "done" ? countsA.value : undefined}
         onScope={(s, label) => jumpToList([...scopeParams(s), ["i", null], ["o", s === EMPTY_SCOPE ? null : params.get("o")]], label)}
         onBand={(h, label) => jumpToList([["h", h], ["c", "words"], ["i", null]], label)} />

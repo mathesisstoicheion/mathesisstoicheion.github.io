@@ -425,3 +425,65 @@
   .analyses, .facts { margin-top: var(--space-6); }
 }
 @media (max-width: 480px) { .what { grid-template-columns: minmax(0, 1fr); } .shape { grid-template-columns: minmax(5.5em, 1.3fr) repeat(5, minmax(0, 1fr)); } }
+
+/* ------------------------------------------------ word duels: the first word in ink, the second in red */
+.duels, .catch { display: grid; gap: 10px; }
+.duels h2, .catch h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
+.readyDuels { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.readyDuels :global(.chip) { cursor: pointer; }
+.duelers { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); margin-top: var(--space-2); }
+.dueler { position: relative; display: grid; gap: var(--space-2); padding: var(--space-3) var(--space-4); box-shadow: var(--field-edge); }
+.duelerA { box-shadow: var(--field-edge), inset 0 3px 0 var(--ink); }
+.duelerB { box-shadow: var(--field-edge), inset 0 3px 0 var(--rubric); }
+.duelWord { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-1) var(--space-3); }
+.duelWord b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-3); line-height: 1.1; }
+.duelerB .duelWord b { color: var(--rubric); }
+.duelWord i { color: var(--ink-2); }
+.duelWord small { flex-basis: 100%; color: var(--ink-2); font-size: var(--step--1); }
+.dueler input { font: inherit; font-size: var(--step--1); padding: 7px var(--space-2); border: 0; box-shadow: var(--rule-under); background: transparent; color: var(--ink); }
+.duelHits { list-style: none; margin: 0; padding: 0; position: absolute; z-index: 5; top: 100%; left: 0; right: 0; background: var(--bg); box-shadow: var(--field-edge), 0 10px 30px var(--shadow); }
+.duelHits button { width: 100%; text-align: left; font: inherit; background: transparent; border: 0; padding: var(--space-2) var(--space-3); cursor: pointer; color: var(--ink); min-height: var(--tap); box-shadow: var(--rule-under); }
+.duelHits b { font-family: var(--f-greek); font-weight: 400; }
+.duelHits small { color: var(--ink-2); }
+@media (hover: hover) { .duelHits button:hover b { color: var(--rubric); } }
+.duelCharts { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: clamp(18px, 3vw, 36px); margin-top: var(--space-3); }
+.duelTime, .duelKinds { margin: 0; display: grid; gap: var(--space-2); align-content: start; min-width: 0; }
+.duelTime svg { width: 100%; height: 200px; display: block; }
+.duelA, .duelB { fill: none; stroke-width: 2.4; vector-effect: non-scaling-stroke; stroke-linejoin: round; }
+.duelA { stroke: var(--ink); }
+.duelB { stroke: var(--rubric); }
+.duelAges { position: relative; height: 1.3em; font-size: var(--step--2); color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
+.duelAges span { position: absolute; transform: translateX(-50%); white-space: nowrap; }
+.duelAges span:first-child { transform: none; }
+.duelAges span:last-child { transform: translateX(-100%); }
+.duelAges span[data-on] { color: var(--rubric); }
+.duelTable { width: 100%; border-collapse: collapse; font-size: var(--step--1); font-variant-numeric: lining-nums tabular-nums; }
+.duelTable th, .duelTable td { padding: var(--space-1) var(--space-2); text-align: right; box-shadow: var(--rule-under); font-weight: 400; }
+.duelTable th[scope="row"], .duelTable thead th:first-child { text-align: left; color: var(--ink-2); }
+.duelTable thead th { font-family: var(--f-greek); font-size: var(--step-0); }
+.duelTable thead th:last-child, .duelTable td:last-child { color: var(--rubric); }
+.duelTable tr[data-on] { background: var(--paper-2, transparent); }
+.duelKinds ol { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
+.duelKinds li { display: grid; grid-template-columns: minmax(7em, 34%) 1fr auto; gap: var(--space-3); align-items: center; font-size: var(--step--1); }
+.dkLabel { color: var(--ink-2); }
+.dkBars { display: grid; gap: 2px; }
+.dkBars i { display: block; height: 6px; width: var(--w); min-width: 1px; }
+.duelBarA { background: var(--ink); }
+.duelBarB { background: var(--rubric); }
+.dkN { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); white-space: nowrap; }
+
+/* ------------------------------------------------ catchphrases: a row of printed slips */
+.catch ul { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 15rem), 1fr)); gap: 0 clamp(18px, 2.6vw, 32px); }
+.catch li { animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i, 0) * 70ms); }
+.catch button {
+  width: 100%; height: 100%; text-align: left; display: grid; gap: 3px; align-content: start; padding: var(--space-4) 2px; cursor: pointer;
+  font: inherit; color: inherit; background: transparent; border: 0; box-shadow: var(--cut-over);
+}
+.catch button b { font-family: var(--f-greek); font-weight: 400; font-size: var(--step-1); line-height: 1.25; color: var(--rubric); margin-top: var(--space-1); }
+.catch button i { color: var(--ink-2); font-size: var(--step--1); }
+.catchEn { font-size: var(--step-0); }
+.catch button small { color: var(--ink-2); font-size: var(--step--2); font-family: var(--f-label); letter-spacing: 0.06em; }
+@media (hover: hover) { .catch button:hover b { color: var(--rubric-2); } }
+.catch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+@media (min-width: 761px) { .duels, .catch { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
+@media (max-width: 760px) { .duels, .catch { margin-top: var(--space-6); } .duelers, .duelCharts { grid-template-columns: minmax(0, 1fr); } }
