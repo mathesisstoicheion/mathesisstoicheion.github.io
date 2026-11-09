@@ -13,6 +13,8 @@ import { loadWorksMeta, familyOf, periodOf, PERIODS, type WorkMeta } from "@/lib
 import { placeNamed } from "@/lib/map";
 import { loadWordPack, type WordPack } from "@/lib/lookup/words";
 import BarChart from "@/components/treasury/BarChart";
+import { loadFamilyCounts, loadPeriodCounts, periodWords, familyWords, trend, type Register } from "@/lib/census-register";
+import { fmtRatio } from "./rows";
 import { wordHref } from "@/components/treasury/data";
 import { fmt, useLoad, type Links, type Shown } from "./shared";
 import styles from "./Census.module.css";
@@ -38,9 +40,10 @@ function censusWorks(meta: CensusMeta): LexMeta {
   return { works: meta.authors.flatMap((a) => a[3].map(([w, , n]) => [w, n] as [string, number])), tags: [], lemmas: 0, forms: 0 };
 }
 
-export default function ItemPanel({ meta, cat, item, listed, scope, links, onClose }: {
-  meta: CensusMeta; cat: Category; item: Shown; listed: number | null; scope: Scope; links: Links; onClose: () => void;
+export default function ItemPanel({ meta, reg, cat, item, listed, scope, links, onClose }: {
+  meta: CensusMeta; reg: Register; cat: Category; item: Shown; listed: number | null; scope: Scope; links: Links; onClose: () => void;
 }) {
+  const id = item.id !== undefined && item.id >= 0 ? item.id : undefined;
   const phrase = cat.id === "phrase";
   // a word's counts per work come from the Word Study index; a phrase's from the Census's own files
   const lex = useLoad(`lex|${item.text}`, () => Promise.all([lexEntry(item.text), loadLexMeta()]), !phrase);
@@ -94,15 +97,16 @@ export default function ItemPanel({ meta, cat, item, listed, scope, links, onClo
           <dt>{group === "all" ? "In the whole library" : `In ${info.label}`}</dt>
           <dd>{inScope === null ? "…" : fmt(inScope)}<small>{inScope !== null && info.words > 0 && `${fmtRate(rate(inScope, info.words))} per 10,000 words`}</small></dd>
         </div>
-        {group !== "all" && !noIndex && (
+        {group !== "all" && (id !== undefined || !noIndex) && (
           <div>
             <dt>In the whole library</dt>
-            <dd>{entry ? fmt(entry.n) : "…"}<small>{entry && `in ${fmt(entry.w.length)} works`}</small></dd>
+            <dd>{id !== undefined ? fmt(reg.n[id]) : entry ? fmt(entry.n) : "…"}<small>{id !== undefined ? `in ${fmt(reg.nw[id])} works` : entry && `in ${fmt(entry.w.length)} works`}</small></dd>
           </div>
         )}
+        {id !== undefined && <RegisterStats reg={reg} id={id} meta={meta} />}
       </dl>
       {failed && <p className={styles.warn}>The counts per work could not be loaded. Check the connection, then try again.</p>}
-      {noIndex && <p className={styles.note}>How this word spreads over the periods and the works comes from the Word Study index, which this copy of the site does not have yet, so the charts cannot be shown here.</p>}
+      {noIndex && id === undefined && <p className={styles.note}>How this word spreads over the periods and the works comes from the Word Study index, which this copy of the site does not have yet, so the charts cannot be shown here.</p>}
       {!failed && !noIndex && lex.state === "done" && !lex.value[0] && <p className={styles.warn}>Word Study has no entry for this word, so its spread cannot be shown.</p>}
 
       <nav className={styles.go} aria-label="More about it">
@@ -114,7 +118,8 @@ export default function ItemPanel({ meta, cat, item, listed, scope, links, onClo
         <p className={styles.stoa}>In the Painted Stoa: {entries.map((e, i) => <span key={e.slug}>{i > 0 && " · "}<Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></span>)}</p>
       )}
 
-      {entry && lexMeta && wm.state === "done" && <Spread entry={entry} lexMeta={lexMeta} wm={wm.value} />}
+      {id !== undefined && <RegisterSpread reg={reg} id={id} meta={meta} />}
+      {entry && lexMeta && wm.state === "done" && <Spread entry={entry} lexMeta={lexMeta} wm={wm.value} periods={id === undefined} />}
       {entry && lexMeta && wm.state === "done" && (
         <Clusters entry={entry} lexMeta={lexMeta} meta={meta} scope={scope} wm={wm.value} item={item} phrase={phrase}
           occ={occ.state === "done" ? occ.value : null} />
@@ -128,7 +133,7 @@ export default function ItemPanel({ meta, cat, item, listed, scope, links, onClo
 }
 
 // ------------------------------------------------------------ over time, and who
-function Spread({ entry, lexMeta, wm }: { entry: LexEntry; lexMeta: LexMeta; wm: Record<string, WorkMeta> }) {
+function Spread({ entry, lexMeta, wm, periods: showPeriods }: { entry: LexEntry; lexMeta: LexMeta; wm: Record<string, WorkMeta>; periods: boolean }) {
   const idx = useLoad("catalog", loadCatalog);
   const periods = useMemo(() => {
     const f = groupFreq(entry, lexMeta, (w) => { const p = periodOf(wm[w]?.from ?? null); return p ? { key: p, label: p } : null; });
@@ -141,14 +146,56 @@ function Spread({ entry, lexMeta, wm }: { entry: LexEntry; lexMeta: LexMeta; wm:
   }, [entry, lexMeta, idx]);
   return (
     <section className={styles.charts} aria-label="Over time, and who">
-      <BarChart caption="Over time · per 10,000 words" unit="per 10,000 words" bars={periods.map((p) => ({
+      {showPeriods && <BarChart caption="Over time · per 10,000 words" unit="per 10,000 words" bars={periods.map((p) => ({
         key: p.key, label: p.label.split(" · ")[0], sub: p.label.split(" · ")[1], value: p.rate, valueText: fmtRate(p.rate),
         tip: `${fmt(p.n)} mentions in ${fmt(p.words)} words of this period`,
-      }))} />
+      }))} />}
       {authors && authors.length > 0 && <BarChart caption="Who mentions it most" unit="mentions" bars={authors.map((a) => ({
         key: a.key, label: a.label, value: a.n,
         tip: `${fmt(a.n)} mentions; ${fmtRate(a.rate)} per 10,000 of the ${fmt(a.words)} words of ${a.label} that GLAUx analyses`,
       }))} />}
+    </section>
+  );
+}
+
+// ------------------------------------------------------------ from the register: its place, its spread, its change
+function RegisterStats({ reg, id, meta }: { reg: Register; id: number; meta: CensusMeta }) {
+  const pe = useLoad("reg-pe", loadPeriodCounts);
+  const t = pe.state === "done" && pe.value ? trend(pe.value, id, periodWords(meta, reg)) : null;
+  // its place among every dictionary word: ties share the best place
+  const place = reg.n.findIndex((n) => n === reg.n[id]) + 1;
+  return (
+    <>
+      <div>
+        <dt>Its place in the library</dt>
+        <dd>{fmt(place)}<small>of {fmt(reg.n.length)} words, by use{reg.na[id] === 1 ? " · used by one author only" : ` · used by ${fmt(reg.na[id])} authors`}</small></dd>
+      </div>
+      {t !== null && (
+        <div>
+          <dt>Classical to Roman age</dt>
+          <dd>{t >= 1 ? `×${fmtRatio(t)}` : `÷${fmtRatio(1 / t)}`}<small>{t >= 1 ? "times as often, for the size of each" : "times less often, for the size of each"}</small></dd>
+        </div>
+      )}
+    </>
+  );
+}
+
+function RegisterSpread({ reg, id, meta }: { reg: Register; id: number; meta: CensusMeta }) {
+  const pe = useLoad("reg-pe", loadPeriodCounts);
+  const fa = useLoad("reg-fa", loadFamilyCounts);
+  const pw = periodWords(meta, reg), fw = familyWords(meta, reg);
+  const p = pe.state === "done" && pe.value ? pe.value[id] : null;
+  const f = fa.state === "done" && fa.value ? fa.value[id] : null;
+  return (
+    <section className={styles.charts} aria-label="Over time, and in which kinds of writing">
+      {p && <BarChart caption="Over time · per 10,000 words" unit="per 10,000 words" bars={reg.periods.map((label, i) => ({
+        key: label, label: label.split(" · ")[0], sub: label.split(" · ")[1], value: (p[i] * 10000) / pw[i], valueText: fmtRate((p[i] * 10000) / pw[i]),
+        tip: `${fmt(p[i])} mentions in ${fmt(pw[i])} words of this period`,
+      }))} />}
+      {f && <BarChart caption="In each kind of writing · per 10,000 words" unit="per 10,000 words" bars={reg.families.map((label, i) => ({
+        key: label, label, value: (f[i] * 10000) / fw[i], valueText: fmtRate((f[i] * 10000) / fw[i]),
+        tip: `${fmt(f[i])} mentions in ${fmt(fw[i])} words of ${label.toLowerCase()}`,
+      })).filter((b) => b.value > 0).sort((a, b) => b.value - a.value)} />}
     </section>
   );
 }

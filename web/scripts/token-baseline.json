@@ -3,7 +3,7 @@
     "spacing": 3
   },
   "src/app/academy/checkpoint/[id]/page.tsx": {
-    "spacing": 4
+    "spacing": 3
   },
   "src/app/academy/guide/[id]/page.tsx": {
     "spacing": 4
@@ -43,7 +43,7 @@
   },
   "src/app/globals.css": {
     "font-size": 16,
-    "spacing": 60,
+    "spacing": 53,
     "shadow": 1,
     "z-index": 6,
     "motion": 7
@@ -54,9 +54,6 @@
   "src/app/prose.module.css": {
     "font-size": 1,
     "spacing": 9
-  },
-  "src/app/stoa/lyre/page.tsx": {
-    "spacing": 2
   },
   "src/app/stoa/periplus/page.tsx": {
     "spacing": 1
@@ -76,7 +73,7 @@
     "z-index": 2
   },
   "src/components/Header.module.css": {
-    "spacing": 31,
+    "spacing": 23,
     "shadow": 2,
     "z-index": 3
   },
@@ -92,12 +89,12 @@
     "spacing": 3
   },
   "src/components/SettingsPanel.module.css": {
-    "spacing": 17,
+    "spacing": 14,
     "shadow": 2,
     "z-index": 1
   },
   "src/components/TabBar.module.css": {
-    "spacing": 5,
+    "spacing": 4,
     "z-index": 1,
     "motion": 2
   },
@@ -107,7 +104,7 @@
   },
   "src/components/academy/Academy.module.css": {
     "font-size": 9,
-    "spacing": 145,
+    "spacing": 144,
     "shadow": 1,
     "z-index": 1,
     "motion": 20
@@ -116,8 +113,7 @@
     "spacing": 2
   },
   "src/components/academy/PathStepView.tsx": {
-    "font-size": 1,
-    "spacing": 19
+    "spacing": 3
   },
   "src/components/academy/PracticeView.tsx": {
     "spacing": 1
@@ -146,10 +142,11 @@
     "colour": 11
   },
   "src/components/census/Census.module.css": {
-    "font-size": 2,
-    "spacing": 55,
-    "shadow": 3,
-    "motion": 3
+    "font-size": 5,
+    "spacing": 79,
+    "shadow": 8,
+    "z-index": 2,
+    "motion": 11
   },
   "src/components/community/Community.module.css": {
     "font-size": 2,
@@ -166,8 +163,8 @@
     "motion": 3
   },
   "src/components/home/Home.module.css": {
-    "font-size": 8,
-    "spacing": 39,
+    "font-size": 7,
+    "spacing": 32,
     "motion": 2
   },
   "src/components/home/HomePassage.tsx": {
@@ -188,8 +185,8 @@
     "motion": 1
   },
   "src/components/library/Library.module.css": {
-    "font-size": 4,
-    "spacing": 50,
+    "font-size": 3,
+    "spacing": 47,
     "motion": 8
   },
   "src/components/library/WorkLanding.tsx": {
@@ -251,7 +248,7 @@
     "motion": 2
   },
   "src/components/reader/Listen.module.css": {
-    "shadow": 3,
+    "shadow": 1,
     "z-index": 1
   },
   "src/components/reader/Manuscript.module.css": {
@@ -266,25 +263,25 @@
   "src/components/reader/Mine.module.css": {
     "font-size": 2,
     "spacing": 1,
-    "shadow": 2,
+    "shadow": 1,
     "motion": 4
   },
   "src/components/reader/Places.module.css": {
-    "shadow": 3,
+    "shadow": 2,
     "z-index": 4
   },
   "src/components/reader/Reader.module.css": {
-    "font-size": 18,
+    "font-size": 17,
     "spacing": 37,
-    "shadow": 10,
-    "z-index": 11,
-    "motion": 9
+    "shadow": 9,
+    "z-index": 7,
+    "motion": 8
   },
   "src/components/search/Constructions.module.css": {
     "spacing": 21
   },
   "src/components/search/QuickSearch.module.css": {
-    "spacing": 30
+    "spacing": 29
   },
   "src/components/search/Research.module.css": {
     "spacing": 18,
@@ -293,7 +290,7 @@
   },
   "src/components/search/Search.module.css": {
     "font-size": 2,
-    "spacing": 73,
+    "spacing": 70,
     "motion": 3
   },
   "src/components/stoa/ExploreLead.module.css": {
@@ -307,7 +304,7 @@
   },
   "src/components/stoa/Stoa.module.css": {
     "font-size": 3,
-    "spacing": 108,
+    "spacing": 106,
     "z-index": 1,
     "motion": 1
   },

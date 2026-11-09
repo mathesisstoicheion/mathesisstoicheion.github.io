@@ -62,7 +62,15 @@ export default function Method({ meta }: { meta: CensusMeta }) {
             <h3>Kinds of writing and periods</h3>
             <p>
               As in the library&apos;s filters: GLAUx&apos;s own description of each work, and its date by century of the author&apos;s life.
-              Lists show up to 100 items, 50 for an author and 20 for a single work.
+              Every list holds everything counted there, down to the words used once.
+            </p>
+            <h3>Rising, falling and typical</h3>
+            <p>
+              Rising and falling compare a word&apos;s rate per 10,000 words in the Roman age (1st–3rd c. AD) with the Classical age
+              (5th–4th c. BC), the two largest periods, for words used at least 50 times in the two (half a use is added to each,
+              so a word missing from one has a finite ratio). “Most typical” ranks the words used here more often than in the rest
+              of the library by Dunning&apos;s log-likelihood, for words used at least 10 times here. Richness is the average number of
+              different dictionary words in each full stretch of 1,000 running words of an author.
             </p>
             <h3>Meanings</h3>
             <p>
