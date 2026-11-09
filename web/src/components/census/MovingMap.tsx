@@ -123,7 +123,7 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
           <p className={styles.movingInfo} aria-live="polite">
             {hover ? <><b lang="grc">{hover.grc}</b> <span>{shortName(hover.place)}</span> · {fmt(hover.count)} mentions · {hover.rate.toFixed(1)} per 10,000 words</> : <span className={styles.movingHint}>Hover a place for its numbers; choose it to open its list.</span>}
           </p>
-          <svg viewBox={`${data.x} ${data.y} ${data.w} ${data.h}`} role="img" aria-label={`A map of the Mediterranean world: the places mentioned most in the ${cur.label} age, and the centre of those mentions`} className={styles.movingSvg}>
+          <svg viewBox={`${data.x} ${data.y} ${data.w} ${data.h}`} role="group" aria-label={`A map of the Mediterranean world: the places mentioned most in the ${cur.label} age, and the centre of those mentions`} className={styles.movingSvg}>
             <rect x={data.x} y={data.y} width={data.w} height={data.h} className={styles.movingLand} />
             <path d={data.sea} className={styles.movingSea} />
             <path d={data.lakes} className={styles.movingSea} />
@@ -137,7 +137,7 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
                   onMouseEnter={() => d && setHover(d)} onMouseLeave={() => setHover(null)}
                   onFocus={() => d && setHover(d)} onBlur={() => setHover(null)}
                   onClick={() => d && open(d)} onKeyDown={(e) => { if (d && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); open(d); } }}>
-                  <circle cx={g.xy[0]} cy={g.xy[1]} r={d ? radius(d.rate) : 0} className={rank ? styles.movingTop : styles.movingPlace}
+                  <circle cx={g.xy[0]} cy={g.xy[1]} r={d ? radius(d.rate) : 0} className={`${rank ? styles.movingTop : styles.movingPlace} ${styles.iconDot}`}
                     style={{ opacity: d ? undefined : 0, transition: tx }} />
                   {d && labelled.has(id) && <text x={g.xy[0] + radius(d.rate) + fs * 0.3} y={g.xy[1] + fs * 0.35} style={{ fontSize: fs, strokeWidth: fs * 0.3 }}>{shortName(d.place)}</text>}
                 </g>

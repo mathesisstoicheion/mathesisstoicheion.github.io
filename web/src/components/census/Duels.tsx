@@ -73,7 +73,7 @@ export default function Duels({ meta, reg }: { meta: CensusMeta; reg: Register }
             <table className={styles.duelTable}>
               <thead><tr><th scope="col">Age</th><th scope="col" lang="grc">{reg.w[pair[0]]}</th><th scope="col" lang="grc">{reg.w[pair[1]]}</th></tr></thead>
               <tbody>{reg.periods.map((p, k) => (
-                <tr key={p} data-on={hover === k ? "" : undefined} onMouseEnter={() => setHover(k)}>
+                <tr key={p} tabIndex={0} data-on={hover === k ? "" : undefined} onMouseEnter={() => setHover(k)} onFocus={() => setHover(k)} onBlur={() => setHover(null)} onMouseLeave={() => setHover(null)}>
                   <th scope="row">{p.split(" · ")[0]}</th><td>{fmtRate(pr[0][k])}</td><td>{fmtRate(pr[1][k])}</td>
                 </tr>
               ))}</tbody>
@@ -85,7 +85,7 @@ export default function Duels({ meta, reg }: { meta: CensusMeta; reg: Register }
               {famOrder.map((k) => (
                 <li key={k}>
                   <span className={styles.dkLabel}>{reg.families[k]}</span>
-                  <span className={styles.dkBars}>
+                  <span className={styles.dkBars} aria-hidden="true">
                     <i className={styles.duelBarA} style={{ "--w": `${(fr[0][k] / fmax) * 100}%` } as React.CSSProperties} title={`${reg.w[pair[0]]}: ${fmtRate(fr[0][k])} per 10,000 words`} />
                     <i className={styles.duelBarB} style={{ "--w": `${(fr[1][k] / fmax) * 100}%` } as React.CSSProperties} title={`${reg.w[pair[1]]}: ${fmtRate(fr[1][k])} per 10,000 words`} />
                   </span>

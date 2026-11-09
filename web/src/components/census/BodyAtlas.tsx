@@ -119,7 +119,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
                   onFocus={() => setHover(r)} onBlur={() => setHover(null)}
                   onClick={() => open(r)}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(r); } }}>
-                  <circle cx={x} cy={y} r={rad} style={still ? { transition: "none" } : undefined} />
+                  <circle className={styles.iconDot} cx={x} cy={y} r={rad} style={still ? { transition: "none" } : undefined} />
                   {top3.has(r.part.grc) && (
                     <text x={left ? x - rad - 3 : x + rad + 3} y={y + 3} textAnchor={left ? "end" : "start"}>{r.part.en}</text>
                   )}
