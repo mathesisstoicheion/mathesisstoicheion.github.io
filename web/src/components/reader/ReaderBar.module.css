@@ -71,8 +71,8 @@
 }
 @media (max-width: 380px) { .where > :global([data-icon]) { display: none; } .foot .tools .quiet { min-width: var(--tap); } }
 @media (max-width: 340px) { .barIn { column-gap: var(--space-1); } .at { font-size: var(--step--2); } }
-/* the narrowest phones: the place is its number alone */
-@media (max-width: 370px) { .of { display: none; } }
+/* a phone: the place is its number alone (at 390 px "327 of 335" was cut to "327 of …") */
+@media (max-width: 420px) { .of { display: none; } }
 /* 320 px: seven buttons a finger wide do not fit beside the place; they stand 40 px apart there, the place keeping its number */
 @media (max-width: 340px) { .foot .tools .quiet, .foot .back { min-width: 40px; padding-inline: 0; } }
 /* the look-up's sheet stands where the bar was, at any width; a panel's sheet on a tablet and a phone; the passage toolbar on a phone */
