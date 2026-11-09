@@ -8,7 +8,7 @@ import { EMPTY_SCOPE, fmtRate, scopeParams, type CensusMeta } from "@/lib/census
 import { familyWords, loadFamilyCounts, type Register } from "@/lib/census-register";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 import { transliterate } from "@/lib/translit";
-import { fmt, useLoad } from "./shared";
+import { fmt, useHitRadius, useLoad } from "./shared";
 import styles from "./Census.module.css";
 
 interface Part { grc: string; en: string; x?: number; y?: number }
@@ -49,6 +49,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
   const [hover, setHover] = useState<Row | null>(null);
   const still = prefersReducedMotion(useSettings((s) => s.motion));
   const load = useLoad<Data>("census-body-atlas", async () => ({ counts: await loadFamilyCounts() }));
+  const svgRef = useHitRadius(280, 486, load.state === "done");
   const fw = useMemo(() => familyWords(meta, reg), [meta, reg]);
 
   const rows = useMemo<Row[]>(() => {
@@ -101,7 +102,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
               </>
             ) : <span className={styles.bodyHint}>Point at a part of the body</span>}
           </p>
-          <svg className={styles.bodySvg} viewBox="-40 -6 280 486" role="group" aria-label="A human figure with dots on the body parts named in the chosen writing">
+          <svg ref={svgRef} className={styles.bodySvg} viewBox="-40 -6 280 486" role="group" aria-label="A human figure with dots on the body parts named in the chosen writing">
             <g className={styles.bodyLines}>
               <path d={FIGURE} />
               <path d={ARM_L} />
@@ -119,6 +120,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
                   onFocus={() => setHover(r)} onBlur={() => setHover(null)}
                   onClick={() => open(r)}
                   onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(r); } }}>
+                  <circle className={styles.hit} cx={x} cy={y} />
                   <circle className={styles.iconDot} cx={x} cy={y} r={rad} style={still ? { transition: "none" } : undefined} />
                   {top3.has(r.part.grc) && (
                     <text x={left ? x - rad - 3 : x + rad + 3} y={y + 3} textAnchor={left ? "end" : "start"}>{r.part.en}</text>

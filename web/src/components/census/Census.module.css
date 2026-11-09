@@ -570,3 +570,29 @@
 .stack span:focus-visible, .duelTable tr:focus-visible, .curve:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
 .movingDot:focus-visible, .bodyDot:focus-visible { outline: none; }
 .movingDot:focus-visible circle, .bodyDot:focus-visible circle { stroke: var(--rubric); stroke-width: 3; }
+
+/* ------------------------------------------------ fingers: every census control reaches 44 x 44 px (--tap) on a touch screen
+   Nothing is drawn differently: a hit area widens past the drawn control (an invisible ::after, or a transparent circle in
+   the svg maps), or a row is simply given the height the moving centre's list rows already have. */
+@media (pointer: coarse) {
+  /* the global chip's hit area is 5px beyond the frame, so two wrapped rows 8px apart touch; as in the Finder's .cats above,
+     the rows stand 10px apart (a 44 px target each, side by side but not overlapping) */
+  .bodyTabs, .readyDuels { row-gap: calc(var(--space-2) * 1.25); }
+  /* the era headings above the table: their hit area reaches upward, over the card's own text, not down onto the cells */
+  .shapeHead { position: relative; }
+  .shapeHead::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; top: calc(var(--tap) * -0.4); }
+  .bodyTabs :global(.chip)::after, .readyDuels :global(.chip)::after { inset: auto 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .seg button { position: relative; }
+  .seg button::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .linkBtn { position: relative; }
+  .linkBtn::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .dueler input { min-height: var(--tap); box-sizing: border-box; }
+  .bodyRow, .movingList button { min-height: var(--tap); box-sizing: border-box; }
+  .movingList button { align-content: center; }
+  .bodyRow { align-content: center; }
+  /* the scatter's dots: the drawn dot (the ::after) stays 7 px and in the middle of a 44 px button */
+  .dots2 button { width: var(--tap); height: var(--tap); margin: calc(var(--tap) / -2) 0 0 calc(var(--tap) / -2); }
+  /* the maps' places: a transparent circle (its size set from the map's scale by useHitRadius) before the drawn one */
+  g:is(.movingDot, .bodyDot) circle.hit { display: inline; fill: transparent; fill-opacity: 1; stroke: none; pointer-events: all; r: calc(var(--hit, 0) * 1px); transition: none; }
+}
+circle.hit { display: none; }
