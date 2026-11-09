@@ -106,8 +106,8 @@ export function GotoMenu({ doc, chunk, onPage, onGoto, onDone, inputRef, focusSi
 }
 
 /** Text (the Aa sign and the word) and Study, with the menus that open under (above) them. `bar` says where they stand: the foot bar of one book, or the top bar of a book among two. */
-export function AaStudy({ bar, aa, study, aaMenu, studyMenu, modesOn }: {
-  bar: "foot" | "pane"; aa: DropState; study: DropState; aaMenu: ReactNode; studyMenu: ReactNode;
+export function AaStudy({ bar, aa, study, more, aaMenu, studyMenu, moreMenu, modesOn }: {
+  bar: "foot" | "pane"; aa: DropState; study: DropState; more: DropState; aaMenu: ReactNode; studyMenu: ReactNode; moreMenu: ReactNode;
   /** how many of the reading modes (Transliteration, Colour by case…) are on, for the sign on Study */
   modesOn: number;
 }) {
@@ -126,8 +126,14 @@ export function AaStudy({ bar, aa, study, aaMenu, studyMenu, modesOn }: {
       <Drop {...study} chevron={false} className={button} panelClass={menu()} panelLabel="Study"
         label={<><Icon name="study" />Study{modesOn > 0 && <span className={styles.onCount} data-on="" aria-hidden="true">{modesOn}</span>}</>}
         ariaLabel={modesOn > 0 ? `Study, ${modesOn} on` : undefined}
-        title="Reading help, ways to go deeper, and the edition and translation">
+        title="Reading help, and ways to go deeper">
         {study.open && studyMenu}
+      </Drop>
+      {/* everything that is not reading or studying (the owner, 2026-11-09): a second book, the private collection, the signs, Keys */}
+      <Drop {...more} chevron={false} className={`${button} ${foot ? styles.iconOnly : ""}`} panelClass={menu()} panelLabel="More"
+        label={<><Icon name="more" /><span className={foot ? styles.word : undefined}>More</span></>} ariaLabel={foot ? "More" : undefined}
+        title="A second book, your private collection, the signs beside the scroll bar, keys">
+        {more.open && moreMenu}
       </Drop>
     </>
   );
@@ -142,8 +148,38 @@ export interface BarBook {
   goto: DropState; gotoMenu: ReactNode;
   aa: DropState; aaMenu: ReactNode;
   study: DropState; studyMenu: ReactNode;
+  more: DropState; moreMenu: ReactNode;
   /** how many of the reading modes are on, for the sign on Study */
   modesOn: number;
+  /** the main tools, buttons of their own (the owner, 2026-11-09): Find, Listen (when there is English to hear), and Float beside Library */
+  find: { open: boolean; onClick: () => void };
+  listen: { open: boolean; onClick: () => void } | null;
+  onFloat: (() => void) | null;
+}
+
+/** A main tool in the bar: its sign, and its word on a computer (a phone shows the sign alone, the word being its name). */
+function Tool({ icon, word, pressed, title, onClick, className }: { icon: Parameters<typeof Icon>[0]["name"]; word: string; pressed?: boolean; title: string; onClick: () => void; className?: string }) {
+  return (
+    <button type="button" className={`icon-btn ${styles.quiet} ${styles.iconOnly}${className ? ` ${className}` : ""}`} aria-pressed={pressed} aria-label={word} title={title} onClick={onClick}>
+      <Icon name={icon} /><span className={styles.word}>{word}</span>
+    </button>
+  );
+}
+
+/**
+ * Your notes and marks: a small round button at the top right of the page with their number, which opens into the list (the owner, 2026-11-09:
+ * "a floating button that sits on the top right of the page that should expand into notes"). On a phone it goes with the foot bar as you read on.
+ */
+export function NotesButton({ drop, count, children }: { drop: DropState; count: number; children: ReactNode }) {
+  return (
+    <div className={styles.notesFab} data-notes-fab="">
+      <Drop {...drop} chevron={false} className={`icon-btn ${styles.notesBtn}`} panelClass={`${styles.menu} ${styles.notesMenu}`} panelLabel="Your notes and marks"
+        label={<><Icon name="bookmark" />{count > 0 && <span className={styles.notesN}>{count}</span>}</>}
+        ariaLabel={`Your notes and marks${count ? `, ${count}` : ""}`} title="Your notes and marks in this book">
+        {drop.open && <><MenuHead title="Your notes and marks" /><div className={styles.body}>{children}</div></>}
+      </Drop>
+    </div>
+  );
 }
 
 export default function ReaderBar({ rootRef, book }: {
@@ -154,7 +190,7 @@ export default function ReaderBar({ rootRef, book }: {
 }) {
   const phone = usePhone();
   const router = useRouter();
-  const menuOpen = !!book && (book.aa.open || book.study.open || book.goto.open);
+  const menuOpen = !!book && (book.aa.open || book.study.open || book.goto.open || book.more.open);
   const [away, setAway] = useState(false);
   // what the scroll listener below reads: whether the bar is away now, and whether a menu is open
   const awayRef = useRef(false), menuRef = useRef(menuOpen);
@@ -204,8 +240,13 @@ export default function ReaderBar({ rootRef, book }: {
   return (
     <nav className={styles.foot} aria-label="Reader controls" data-foot-bar="">
       <div className={`wrap ${styles.barIn}`}>
-        <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"
-          onClick={(e) => leaveBy(e, () => router.push(AREAS.library.href, { transitionTypes: ["page-turn"] }))}><Icon name="back" />Library</Link>
+        <div className={styles.left}>
+          <Link className={`${styles.quiet} ${styles.back}`} href={AREAS.library.href} transitionTypes={["page-turn"]} aria-label="Back to the library"
+            onClick={(e) => leaveBy(e, () => router.push(AREAS.library.href, { transitionTypes: ["page-turn"] }))}><Icon name="back" /><span className={styles.libWord}>Library</span></Link>
+          {/* Float, beside the way out (the owner, 2026-11-09); a phone has it in More, its bar being full */}
+          {book?.onFloat && <Tool icon="float" word="Float" className={styles.wideOnly} onClick={book.onFloat}
+            title="Shrink the reader into a small window that follows you around the site, at the passage you are reading" />}
+        </div>
         {book && place ? (
           <Drop {...book.goto} chevron={false} className={`icon-btn ${styles.quiet} ${styles.where}`} panelClass={`${styles.menu} ${styles.footMenu} ${styles.gotoMenu}`} panelLabel="Go to"
             title="Go to a line, or to another part of the book"
@@ -213,7 +254,7 @@ export default function ReaderBar({ rootRef, book }: {
               <Icon name="goto" />
               <span className={styles.part}>{place.part}</span>
               <span className={styles.rule} aria-hidden="true"><span className={styles.mark} style={{ "--p": place.progress } as CSSProperties} /></span>
-              <span className={styles.at}>{place.level} {place.num}{place.of !== null ? ` of ${place.of}` : ""}</span>
+              <span className={styles.at}><span className={styles.lvl}>{place.level} </span>{place.num}{place.of !== null ? ` of ${place.of}` : ""}</span>
               {/* its name is the words it shows and then what it does (the quiet desk, ticket 11, user story 23, the owner, 2026-10-30: a name must start with the words shown) */}
               <span className="visually-hidden">, go to a line or book</span>
             </>}>
@@ -222,7 +263,11 @@ export default function ReaderBar({ rootRef, book }: {
         ) : <span />}
         {book && (
           <div className={styles.tools}>
-            <AaStudy bar="foot" aa={book.aa} study={book.study} aaMenu={book.aaMenu} studyMenu={book.studyMenu} modesOn={book.modesOn} />
+            {/* the main tools first (the owner, 2026-11-09): Find in this text, and Listen to the English */}
+            <Tool icon="search" word="Find" pressed={book.find.open} onClick={book.find.onClick} title="Find a word or phrase anywhere in this text (Ctrl+F)" />
+            {book.listen && <Tool icon="listen" word="Listen" pressed={book.listen.open} onClick={book.listen.onClick} title="Hear the English translation read aloud, passage by passage" />}
+            <span className={styles.sep} aria-hidden="true" />
+            <AaStudy bar="foot" aa={book.aa} study={book.study} more={book.more} aaMenu={book.aaMenu} studyMenu={book.studyMenu} moreMenu={book.moreMenu} modesOn={book.modesOn} />
           </div>
         )}
       </div>
