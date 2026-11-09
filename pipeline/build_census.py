@@ -85,8 +85,17 @@ ATTR = re.compile(r'(\w+)="([^"]*)"')
 
 
 def works_of_packs() -> dict[str, str]:
-    """GLAUx text id -> our work id, from the head of each word pack."""
+    """GLAUx text id -> our work id, from the head of each word pack (or, on a copy without the word
+    packs, from the GLAUx files themselves, which build_words.py names by their TLG number)."""
     out = {}
+    if not PACKS.exists():
+        catalog = json.loads((ROOT / "web" / "public" / "data" / "catalog.json").read_text(encoding="utf-8"))
+        ours = {w["id"] for a in catalog["authors"] for w in a["works"]}
+        for p in sorted(GLAUX.glob("*-*.xml")):
+            a, w = p.stem.split("-")
+            if f"tlg{a}.tlg{w}" in ours:
+                out[p.stem] = f"tlg{a}.tlg{w}"
+        return out
     for p in sorted(PACKS.glob("*.json")):
         if p.name.startswith("_"):
             continue
@@ -181,7 +190,8 @@ def scan() -> None:
     lemmas: dict[str, list] = {}
     works: dict[str, int] = {}
     with multiprocessing.Pool() as pool:
-        for i, (wid, stats) in enumerate(pool.imap_unordered(scan_one, jobs, chunksize=4)):
+        # in a fixed order, so that ties (a name tagged as often a person as a place) fall the same way in every build
+        for i, (wid, stats) in enumerate(pool.imap(scan_one, jobs, chunksize=4)):
             works[wid] = sum(s[0] for s in stats.values())
             for lemma, s in stats.items():
                 e = lemmas.get(lemma)
@@ -204,6 +214,9 @@ def load_scan() -> dict:
 
 def check_against_lexicon(data: dict) -> None:
     """Every dictionary word's total must equal the Word Study index's, or the site would disagree with itself."""
+    if not LEXICON.exists():
+        print("the Word Study index is not built here, so the counts are not checked against it", flush=True)
+        return
     bad = 0
     n = 0
     for p in LEXICON.glob("*.json"):
@@ -617,11 +630,12 @@ def build(data: dict) -> None:
     size += dump(OUT / "glosses.json", gl)
     # where each listed phrase occurs: [work, [unit of each occurrence]], sharded like the search index
     shards: dict[str, dict] = collections.defaultdict(dict)
-    listed = {row[0] for g in ranked.values() for row in g.get("phrase", [])}
-    for g in sorted(listed):
+    for g in sorted(phrases):
         shards[greek_key(g)[:2] or "_"][g] = [[wid, us] for wid, us in sorted(phrases[g].items(), key=lambda x: (-len(x[1]), x[0]))]
     for s, body in shards.items():
         size += dump(OUT / "ph" / f"{s}.json", body)
+
+    size += write_register(lemmas, names, objects, phrases, works, work_words, groups_of, core_groups, author_rows, display, dump)
 
     left_rows = sorted(([raw, why, n] for raw, why, n in left.values()), key=lambda r: -r[2])
     counts = collections.Counter(c for c, _, _ in names.values())
@@ -642,6 +656,122 @@ def build(data: dict) -> None:
         "leftOut": left_rows,
     })
     print(f"census: {len(gl):,} meanings, {len(author_rows)} authors, {size / 1e6:.1f} MB in {OUT}", flush=True)
+
+
+# ------------------------------------------------------------------ the register: everything, not only the top
+POS_KIND = {"n": "noun", "v": "verb", "a": "adj", "d": "adv", "p": "pron", "l": "art", "r": "prep",
+            "c": "conj", "b": "conj", "g": "part", "m": "num", "i": "intj"}
+WINDOW = 1000            # vocabulary richness: different dictionary words in each stretch of this many words
+
+
+def packed(counts: dict[int, int]) -> list[int]:
+    """{id: count} as one flat list of [gap from the previous id, count], ids ascending: small numbers, a small file."""
+    out, last = [], 0
+    for i in sorted(counts):
+        out += [i - last, counts[i]]
+        last = i
+    return out
+
+
+def write_register(lemmas, names, objects, phrases, works, work_words, groups_of, core_groups, author_rows, display, dump) -> int:
+    """
+    Every dictionary word and every repeated phrase, with its count everywhere, so the Census can list all of them, the
+    rarest too, and work out its analyses (spread over time, words only one author uses, richness) in the browser:
+      reg.json        the register: every dictionary word, most used first (its place in the list is its id): spelling,
+                      count, part of speech, name or thing group, in how many works and authors
+      reg-pe.json     its counts per period; reg-fa.json, per kind of writing
+      gl.json         a short English meaning for every word that has one ({id: meaning})
+      full/<g>.json   every word's count in one group of works, packed (see packed()); full/a/<author>.json for an author
+                      and each of its works
+      phr.json        every repeated phrase, with its count in each work
+      authors.json    per author: words, different words, words no other author uses, words used once, richness
+    """
+    size = 0
+    ids = sorted(lemmas, key=lambda k: (-sum(lemmas[k][0].values()), display[k]))
+    idx = {k: i for i, k in enumerate(ids)}
+    fam_of = {w: next((int(g[1:]) for g in groups_of[w] if re.fullmatch(r"f\d+", g)), None) for w in works}
+    per_of = {w: next((int(g[1:]) for g in groups_of[w] if re.fullmatch(r"p\d+", g)), None) for w in works}
+    author_of = {w: w.split(".")[0] for w in works}
+    kinds, groups = [], []
+    reg = {"w": [], "n": [], "k": [], "g": [], "auto": [], "nw": [], "na": [], "pe": [], "fa": []}
+    for i, k in enumerate(ids):
+        e = lemmas[k]
+        raw = display[k]
+        pos = e[4].most_common(1)[0][0]
+        kind = "other" if is_capital(raw) else POS_KIND.get(pos, "other")
+        sorted_as = names.get(k) or objects.get(k)
+        group = (sorted_as[0] if k in names else f"obj:{sorted_as[0]}") if sorted_as else ""
+        for lst, v in ((kinds, kind), (groups, group)):
+            if v not in lst:
+                lst.append(v)
+        pe, fa = [0] * len(PERIODS), [0] * len(FAMILIES)
+        for w, n in e[0].items():
+            if per_of.get(w) is not None:
+                pe[per_of[w]] += n
+            if fam_of.get(w) is not None:
+                fa[fam_of[w]] += n
+        reg["w"].append(raw)
+        reg["n"].append(sum(e[0].values()))
+        reg["k"].append(kinds.index(kind))
+        reg["g"].append(groups.index(group))
+        if sorted_as and not sorted_as[2]:
+            reg["auto"].append(i)
+        reg["nw"].append(len(e[0]))
+        reg["na"].append(len({author_of[w] for w in e[0]}))
+        reg["pe"].append(pe if any(pe) else 0)
+        reg["fa"].append(fa if any(fa) else 0)
+    # the counts per period and per kind of writing are a file each, fetched only when they are drawn
+    size += dump(OUT / "reg.json", {"kinds": kinds, "groups": groups, "periods": [p for p, _ in PERIODS], "families": [f for f, _ in FAMILIES],
+                                    **{k: v for k, v in reg.items() if k not in ("pe", "fa")}})
+    size += dump(OUT / "reg-pe.json", reg["pe"])
+    size += dump(OUT / "reg-fa.json", reg["fa"])
+
+    gl = glosses({k: display[k] for k in ids if k not in names}, {k: lemmas[k][3].most_common(1)[0][0] for k in ids if k not in names and lemmas[k][3]})
+    size += dump(OUT / "gl.json", {str(idx[k]): v for k, v in gl.items()})
+
+    # counts per group of works
+    per_group: dict[str, dict[int, int]] = collections.defaultdict(dict)
+    for k, e in lemmas.items():
+        i = idx[k]
+        for w, n in e[0].items():
+            for g in groups_of[w]:
+                if g != "all":
+                    d = per_group[g]
+                    d[i] = d.get(i, 0) + n
+    (OUT / "full" / "a").mkdir(parents=True)
+    for g in core_groups:
+        if g in per_group and g != "all":
+            size += dump(OUT / "full" / f"{g}.json", packed(per_group[g]))
+    for aid, _, _, aw in author_rows:
+        size += dump(OUT / "full" / "a" / f"{aid}.json", {f"a:{aid}": packed(per_group[f"a:{aid}"]), **{f"w:{w}": packed(per_group[f"w:{w}"]) for w, _, _ in aw}})
+
+    # every repeated phrase, most repeated first, with its count per work
+    wi = {w: i for i, w in enumerate(works)}
+    ph = sorted(phrases.items(), key=lambda x: (-sum(len(u) for u in x[1].values()), x[0]))
+    size += dump(OUT / "phr.json", {"works": works, "p": [g for g, _ in ph], "n": [sum(len(u) for u in w.values()) for _, w in ph],
+                                   "w": [[x for wid, us in sorted(w.items(), key=lambda y: wi[y[0]]) for x in (wi[wid], len(us))] for _, w in ph]})
+
+    # authors: how many different words, and how many no one else uses
+    owners: dict[int, set] = collections.defaultdict(set)
+    for k, e in lemmas.items():
+        for w in e[0]:
+            owners[idx[k]].add(author_of[w])
+    rows = []
+    for aid, name, words, aw in author_rows:
+        mine = per_group[f"a:{aid}"]
+        only = sum(1 for i in mine if len(owners[i]) == 1)
+        once = sum(1 for n in mine.values() if n == 1)
+        # richness: the average number of different dictionary words in each full stretch of WINDOW words, work by work
+        stretches = []
+        for w, _, _ in aw:
+            lem = [x for x in load_tokens(w)["lemmas"] if greek_key(x)]
+            for s0 in range(0, len(lem) - WINDOW + 1, WINDOW):
+                stretches.append(len(set(lem[s0:s0 + WINDOW])))
+        rich = round(sum(stretches) / len(stretches), 1) if stretches else None
+        rows.append([aid, words, len(mine), only, once, rich, len(stretches)])
+    size += dump(OUT / "authors.json", {"window": WINDOW, "cols": ["author", "words", "different", "only", "once", "richness", "stretches"], "rows": rows})
+    print(f"register: {len(ids):,} words, {len(gl):,} meanings, {len(ph):,} phrases", flush=True)
+    return size
 
 
 def main() -> None:
