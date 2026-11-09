@@ -19,6 +19,8 @@ const Cross = () => (
 
 // the catalogue, read when the site is built
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
+const WORKS = CATALOG.authors.reduce((t, a) => t + a.works.length, 0);
+const n = (x: number) => x.toLocaleString("en-GB");
 
 // a work's Greek title: the first of its Greek editions' names written in Greek (some are catalogued by a Latin name)
 const greekTitle = (w: Catalog["authors"][number]["works"][number]) =>
@@ -44,27 +46,41 @@ export default function Home() {
   return (
     <Page screen="home">
       <div className="wrap">
-        <div className={h.titlePage} data-head="">
-          <div className="enter">
-            {/* one run of words beside the red rule, so on a phone it wraps as one line does */}
-            <div className={`${h.kicker} label`} data-head-path=""><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
-            <h1 className={h.title} data-head-title="">Read the Greeks in <em>their own</em> words</h1>
-            <p className={h.lede}>Learn to read Ancient Greek, and meet the world that wrote it.</p>
+        {/* 2026-11-09, the owner: the app needs a home (it is a main button now), and landing on a page should be
+            "visually interesting, intuitive, informative and useful", on 16:9, 16:10 and phones; reading stays the main
+            focus. So the gate holds the three things a reader comes for, all in view on landing: the title with a search
+            of the library (find a text), where to start or your desk, and at its right the passage of the day, real
+            Greek to read and look up at once. */}
+        <div className={h.gate}>
+          <div className={h.gateMain}>
+            <div className={h.titlePage} data-head="">
+              <div className="enter">
+                {/* one run of words beside the red rule, so on a phone it wraps as one line does */}
+                <div className={`${h.kicker} label`} data-head-path=""><span><span lang="grc">ΜΑΘΗΣΙΣ ΣΤΟΙΧΕΙΩΝ</span> · learning the letters</span></div>
+                <h1 className={h.title} data-head-title="">Read the Greeks in <em>their own</em> words</h1>
+                <p className={h.lede}>{n(WORKS)} Greek works, from Homer to the Byzantine scholars, with every word explained where it stands.</p>
+                {/* finding a text: the library's own search, opened with the words written here */}
+                <form className={h.find} action="/library" method="get" role="search">
+                  <label className="label" htmlFor="home-find">Find a text</label>
+                  <span className={h.findRow}>
+                    <input id="home-find" name="q" type="search" enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false}
+                      placeholder="Homer, Plato, the Iliad, Ἰλιάς…" />
+                    <button type="submit" className="btn">Search</button>
+                  </span>
+                </form>
+              </div>
+            </div>
+
+            {/* a first visit: where are you starting?; a returning visitor: their desk (lib/visitor.ts) */}
+            <section className={h.startPart} aria-labelledby="start-title">
+              <h2 id="start-title" className="label"><span className="first-only">Where are you starting?</span><span className="back-only">Your desk</span></h2>
+              <div className="first-only"><HomeStarts /></div>
+              <div className="back-only"><HomeDesk /></div>
+            </section>
           </div>
+          <div className={h.gateSide}><HomePassage /></div>
         </div>
         <div className={h.drawn} aria-hidden="true" />
-
-        {/* a first visit: where are you starting?; a returning visitor: their desk (lib/visitor.ts) */}
-        <section className={h.part} aria-labelledby="start-title">
-          <div className="sh rv">
-            <h2 id="start-title"><span className="first-only">Where are you <em>starting?</em></span><span className="back-only">Your <em>desk</em></span></h2>
-            <span className="fill" />
-          </div>
-          <div className="first-only"><HomeStarts /></div>
-          <div className="back-only"><HomeDesk /></div>
-        </section>
-
-        <HomePassage />
 
         <section className={h.part} aria-labelledby="famous-title">
           <div className="sh rv"><h2 id="famous-title">Six famous <em>works</em></h2><span className="fill" /><span className="src">to begin with</span></div>
