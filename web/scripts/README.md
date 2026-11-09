@@ -9,3 +9,6 @@
   "SETUP:" and skip only those parts; the GitHub run covers them.
 - While lessons are off (`LESSONS_SHOWN` in `src/config/lessons.ts`), the lesson pages show "not found", so the
   checks that use `scripts/lib/pages.mjs` leave them out and say how many.
+
+Two unit test files (`src/lib/syntax.test.ts`, `src/lib/echoes/echoes.test.ts`) need data that is not in a fresh cloud
+copy (a syntax pack and the pipeline's text cache). "No such file" from those two is a setup message, not a bug.
