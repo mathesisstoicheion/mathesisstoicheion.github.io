@@ -1,3 +1,4 @@
+import { LESSONS_SHOWN } from "@/config/lessons";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Page from "@/components/Page";
@@ -20,6 +21,7 @@ export async function generateMetadata({ params }: PageProps<"/academy/checkpoin
 }
 
 export default async function CheckpointPage({ params }: PageProps<"/academy/checkpoint/[id]">) {
+  if (!LESSONS_SHOWN) notFound();
   const { id } = await params;
   const c = checkpointById(id);
   if (!c) notFound();

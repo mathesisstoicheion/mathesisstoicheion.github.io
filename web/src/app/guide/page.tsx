@@ -7,7 +7,6 @@ import { AREAS, FORUM_OPEN, type AreaId } from "@/config/areas";
 import { GuideChapters, GuideContents, type Chapter } from "@/components/guide/GuideChapters";
 import styles from "@/components/guide/Guide.module.css";
 import { GuideSeen } from "@/components/guide/GuideChapters";
-import { TRACKS } from "@/data/tracks";
 
 export const metadata: Metadata = {
   title: "How to use the site",
@@ -20,8 +19,8 @@ const ALL_CHAPTERS: Chapter[] = [
   {
     id: "learn", title: "Learn Greek", place: place("study"),
     text: [
-      "Start with the first lesson, even if you know no Greek at all: the twenty-four letters, and six names you already know to sound out. In the next lesson you read your first real line, a saying carved at Delphi.",
-      "Every lesson after it is one real line from the texts: its letters, its words, how it is built, and then you read it yourself, in the reader. A practice lesson comes after every three. The grammar course, the second track, teaches the grammar in order, each lesson with a short test.",
+      "If you know no Greek at all, start with the alphabet: every letter, how to write it, its name and how it sounded. Then open a text and read: every word can be looked up where it stands.",
+      "The Academy keeps the tools beside your reading: the tables of every ending, the commonest words first, quick practice on endings, and a few minutes a day in Today's session.",
     ],
   },
   {
@@ -44,7 +43,7 @@ const ALL_CHAPTERS: Chapter[] = [
     // the quiet desk, the guide (the owner, 2026-10-31): the look-up's first view, then "More about it" (the whole LSJ entry and Go further)
     text: [
       "Click or tap any Greek word and the look-up opens: beside the text on a computer, as a sheet at the foot of the screen on a phone. It shows the word's dictionary form, what kind of word it is, its meaning, its job in this sentence and its form.",
-      "More about it opens the whole entry from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary. Go further, below it, leads on: where else the word comes in the book, how the sentence is built, a lesson on its form, and Word Study.",
+      "More about it opens the whole entry from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary. Go further, below it, leads on: where else the word comes in the book, how the sentence is built, and Word Study.",
     ],
   },
   {
@@ -109,7 +108,7 @@ export default function GuidePage() {
             at its controls one at a time, so you learn by trying them. A chapter takes a minute or two.</>}
           action={<div className={styles.fork}>
             {/* the two ways in, each said once: the chapters below show round (Learn Greek's first lesson is this first one) */}
-            <Link className="btn" href={TRACKS.reading.first}><Icon name="letters" />Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
+            <Link className="btn" href="/academy/alphabet"><Icon name="letters" />Know no Greek yet? Start with the letters <span className="arr" aria-hidden="true">→</span></Link>
             <Link className="btn ghost" href={AREAS.library.href}><Icon name="library" />Read Greek already? Open the Mouseion <span className="arr" aria-hidden="true">→</span></Link>
           </div>}>
           <p className={styles.small}><i>Hodēgos</i>, «ὁδηγός», is the Greek for a guide, one who leads the way.</p>

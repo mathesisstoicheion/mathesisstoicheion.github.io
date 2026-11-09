@@ -1,3 +1,4 @@
+import { LESSONS_SHOWN } from "@/config/lessons";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Page from "@/components/Page";
@@ -21,6 +22,7 @@ export async function generateMetadata({ params }: PageProps<"/academy/reading/[
 }
 
 export default async function PathStepPage({ params }: PageProps<"/academy/reading/[id]">) {
+  if (!LESSONS_SHOWN) notFound();
   const { id } = await params;
   const p = practice(id);
   const step = pathStep(id);

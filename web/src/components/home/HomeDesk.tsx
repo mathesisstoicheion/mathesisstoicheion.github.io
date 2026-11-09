@@ -15,6 +15,7 @@ import { useAcademy } from "@/lib/academy";
 import { RESTORE, ago, describe, resumeHref } from "@/components/Resume";
 import s from "./Home.module.css";
 import { TRACKS, begun, nextSteps } from "@/data/tracks";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 const remember = (href: string) => { try { sessionStorage.setItem(RESTORE, pageKey(href)); } catch { /* ignore */ } };
 
@@ -50,7 +51,7 @@ export default function HomeDesk() {
   const alsoRecent = (visits ?? []).slice(1).filter((v) => !v.href.startsWith("/read")).slice(0, 3);
   // the lesson "Carry on" already opens is not offered again as the next lesson
   const lastPath = last ? new URL(last.href, "http://x").pathname : undefined;
-  const lessonRow = !(main && lastPath === main.step.href);
+  const lessonRow = LESSONS_SHOWN && !(main && lastPath === main.step.href);   // no lessons while they are off the site (config/lessons.ts)
 
   return (
     // (the section it stands in is "Your desk", by its heading: this part is not named again)

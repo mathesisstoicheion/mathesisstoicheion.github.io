@@ -1,3 +1,5 @@
+import { LESSONS_SHOWN } from "@/config/lessons";
+import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Page from "@/components/Page";
 import LettersStepView from "@/components/academy/LettersStepView";
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 export default function LettersStepPage() {
+  if (!LESSONS_SHOWN) notFound();
   return (
     <Page>
       <div className="wrap" style={{ paddingBlock: "0 clamp(32px, 5vw, 56px)", display: "grid", gridTemplateColumns: "minmax(0, 1fr)", gap: 16, maxWidth: 980 }}>

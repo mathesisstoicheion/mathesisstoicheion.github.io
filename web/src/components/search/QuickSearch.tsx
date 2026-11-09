@@ -28,6 +28,7 @@ import { AREAS, FORUM_OPEN, areaTitle, shown } from "@/config/areas";
 import GreekKeyboard from "./GreekKeyboard";
 import styles from "./QuickSearch.module.css";
 import { useScrollLock } from "@/lib/overlay";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 /** What the search needs of each wiki entry, lesson and guide; loaded only when the box opens. */
 type Item = { href: string; title: string; greek?: string; about: string; words?: string[]; kind: string };
@@ -120,7 +121,7 @@ function Box({ onClose }: { onClose: () => void }) {
     loadCatalog().then(setIdx, () => undefined);
     loadAbbrevs().then(setAbbrevs);
     Promise.all([import("@/wiki/index"), import("@/data/lesson-index"), import("@/data/guides")]).then(([w, l, g]) => setItems([
-      ...l.LESSON_INFO.map((x, i) => ({ href: `/academy/lesson/${x.id}`, title: x.title, greek: x.greek, about: x.summary, words: x.words, kind: `Lesson ${i + 1}` })),
+      ...(LESSONS_SHOWN ? l.LESSON_INFO : []).map((x, i) => ({ href: `/academy/lesson/${x.id}`, title: x.title, greek: x.greek, about: x.summary, words: x.words, kind: `Lesson ${i + 1}` })),
       ...g.GUIDES.map((x) => ({ href: `/academy/guide/${x.id}`, title: x.title, greek: x.greek, about: x.summary, kind: "Guide" })),
       ...w.ENTRIES.map((x) => ({ href: `/stoa/${x.slug}`, title: x.title, greek: x.greek, about: x.kicker, kind: "Painted Stoa" })),
     ]), () => undefined);

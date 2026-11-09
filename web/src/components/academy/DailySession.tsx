@@ -14,6 +14,7 @@ import { AREAS } from "@/config/areas";
 import { nextSteps } from "@/data/tracks";
 import { Endings, Parsing } from "./Practice";
 import styles from "./Academy.module.css";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 // the refresh carries the lessons with it, so it loads only when one is due
 const SessionRefresh = dynamic(() => import("./SessionRefresh"), { loading: () => <p className="muted">Setting out the questions…</p> });
@@ -122,7 +123,7 @@ export default function DailySession() {
               <b>{streak(days)}</b> day{streak(days) === 1 ? "" : "s"} in a row. A few minutes each day is the surest way to learn a language.
             </p>
             <div className={styles.row}>
-              {main && <Link className="btn" href={main.step.href} transitionTypes={["page-turn"]}>Your next lesson: {main.step.title} <span className="arr" aria-hidden="true">→</span></Link>}
+              {main && LESSONS_SHOWN && <Link className="btn" href={main.step.href} transitionTypes={["page-turn"]}>Your next lesson: {main.step.title} <span className="arr" aria-hidden="true">→</span></Link>}
               <Link className="btn ghost" href={AREAS.library.href} transitionTypes={["page-turn"]}>Read something</Link>
               <Link className="btn ghost" href="/academy/practice" transitionTypes={["page-turn"]}>More practice</Link>
             </div>

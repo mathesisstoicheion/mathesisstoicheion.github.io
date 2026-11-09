@@ -9,10 +9,11 @@ import { PATH } from "@/data/reading-path";
 import { ENTRIES } from "@/wiki/index";
 import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD } from "./admin";
 import { FORUM_OPEN } from "@/config/areas";
+import { LESSONS_SHOWN } from "./lessons";
 
 export const STATIC_PAGES = [
   "/", "/library", "/library/author", "/read", "/search", "/downloads", "/treasury", "/treasury/word",
-  "/academy", "/academy/reading", "/academy/reading/letters", "/academy/today", "/academy/alphabet", "/academy/tables", "/academy/vocabulary", "/academy/practice",
+  "/academy", ...(LESSONS_SHOWN ? ["/academy/reading", "/academy/reading/letters"] : []), "/academy/today", "/academy/alphabet", "/academy/tables", "/academy/vocabulary", "/academy/practice",
   "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/editions", "/stoa/manuscripts", "/stoa/variants", "/stoa/kerameikos", "/stoa/lyre", "/stoa/pot", "/stoa/board", "/stoa/board/new", "/stoa/board/item", "/stoa/census", "/stoa/periplus",
   "/town-hall", "/town-hall/pnyx", "/town-hall/thread", "/town-hall/new", "/town-hall/member", "/town-hall/moderation",
   "/town-hall/pnyx/debate", "/account",
@@ -46,7 +47,7 @@ export const DEV_PAGES = ["/academy/studio"];
  */
 export const ADMIN_PAGES = [PRIVATE_TRANSLATIONS, PRIVATE_TRANSLATIONS_OLD, PRIVATE_COLLECTION];
 
-export const offlinePages = () => [...STATIC_PAGES, ...LESSONS.flatMap((l) => [`/academy/lesson/${l.id}`, `/academy/lesson/${l.id}/practice`, `/academy/lesson/${l.id}/test`]), ...CHECKPOINTS.map((c) => `/academy/checkpoint/${c.id}`), ...PATH.map((s) => `/academy/reading/${s.id}`), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
+export const offlinePages = () => [...STATIC_PAGES, ...(LESSONS_SHOWN ? [...LESSONS.flatMap((l) => [`/academy/lesson/${l.id}`, `/academy/lesson/${l.id}/practice`, `/academy/lesson/${l.id}/test`]), ...CHECKPOINTS.map((c) => `/academy/checkpoint/${c.id}`), ...PATH.map((s) => `/academy/reading/${s.id}`)] : []), ...GUIDES.map((g) => `/academy/guide/${g.id}`), ...ENTRIES.map((e) => `/stoa/${e.slug}`)];
 
 /** Small data files every page may need, kept offline with the pages. */
 export const OFFLINE_DATA = [

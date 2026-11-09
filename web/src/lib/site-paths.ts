@@ -5,6 +5,7 @@ import { PATH } from "@/data/reading-path";
 import { ENTRIES } from "@/wiki/index";
 import { siteData } from "./build-data";
 import { workPath } from "./seo";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 /** Every page a search engine should know: the public pages, each lesson and wiki entry, and a page for every author and work. */
 export function sitePaths(): string[] {
@@ -12,8 +13,7 @@ export function sitePaths(): string[] {
   const { idx } = siteData();
   return [...new Set([
     ...STATIC_PAGES.filter((p) => !priv.has(p)),
-    ...LESSONS.map((l) => `/academy/lesson/${l.id}`),
-    ...PATH.map((s) => `/academy/reading/${s.id}`),
+    ...(LESSONS_SHOWN ? [...LESSONS.map((l) => `/academy/lesson/${l.id}`), ...PATH.map((s) => `/academy/reading/${s.id}`)] : []),
     ...GUIDES.map((g) => `/academy/guide/${g.id}`),
     ...ENTRIES.map((e) => `/stoa/${e.slug}`),
     ...idx.catalog.authors.map((a) => `/author/${a.id}`),

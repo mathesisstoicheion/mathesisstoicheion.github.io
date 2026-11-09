@@ -22,6 +22,7 @@ import { placeNamed, shortName, type Place } from "@/lib/map";
 import { useSettings } from "@/lib/settings";
 import styles from "./Reader.module.css";
 import { SidePanel } from "./Panel";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 export interface WordContext { work: string; unitKey: string; occurrence: number; keys: Set<string>; depth: number }
 
@@ -539,7 +540,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
               <Icon name="sentence" /><span className={styles.wayText}>How the sentence is built</span>{wayMark}
             </button></li>
           )}
-          {lesson && (
+          {lesson && LESSONS_SHOWN && (
             <li><Link className={`row-btn ${styles.way}`} href={`/academy/lesson/${lesson.id}`} transitionTypes={["page-turn"]}>
               <Icon name="learn" /><span className={styles.wayText}>Lesson {lesson.n}: {lesson.title}{" "}<span className={styles.wayWhy}>{lesson.why}</span></span>{wayMark}
             </Link></li>

@@ -61,10 +61,7 @@ export const TOURS: Record<string, Tour> = {
     title: "Learn Greek",
     start: "/academy",
     steps: [
-      { at: [t('a.btn[href^="/academy/reading/"]'), t('a.btn[href^="/academy/lesson/"]')], title: "The Academy: your next lesson", text: "Your next lesson is always here. If you know no Greek, it is the first: the twenty-four letters, and six names you already know to sound out." },
-      { at: [t('section[aria-labelledby="reading-title"] ol')], title: "Learn by reading", text: "Each lesson is one real line, from the sayings carved at Delphi to the first sentence of Aristotle's Metaphysics: its letters, its words, how it is built, then you read it yourself. A practice lesson comes after every three." },
-      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session brings back a lesson when it is due for a refresh, then one question on endings and one real sentence." },
-      { at: [t('section[aria-labelledby="lessons-title"] a[href^="/academy/lesson/"]')], title: "The grammar course", text: "The second track teaches the grammar in order, from the alphabet to Homer. Each lesson explains one thing with real sentences, then checks it with a short test." },
+      { at: [t('section[aria-labelledby="tools-title"] a[href="/academy/today"]'), t('a[href="/academy/today"]')], title: "A little every day", text: "Today's session: one question on endings and one real sentence, a few minutes a day." },
       { at: [t('section[aria-labelledby="guides-title"] a[href^="/academy/guide/"]')], title: "Practical guides", text: "Which Greek is which, how a dictionary lists a word, and which dictionary to use." },
     ],
   },

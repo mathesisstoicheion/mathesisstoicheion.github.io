@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { KIND_LABEL, type MetreAbout, type TextMetre } from "@/lib/metre/text";
 import styles from "./Reader.module.css";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 const pct = (a: number, b: number) => `${Math.round((1000 * a) / Math.max(1, b)) / 10}%`;
 const HYPOTACTIC = <><a href="https://hypotactic.com" target="_blank" rel="noopener noreferrer">David Chamberlain, hypotactic.com</a> (CC BY 4.0)</>;
@@ -34,7 +35,7 @@ export default function MetreBar({ info, about }: { info: TextMetre; about: Metr
       </p>
       <p className={styles.metreLinks}>
         <button type="button" className="chip" aria-expanded={open} onClick={() => setOpen(!open)}>How this metre works</button>
-        <Link className="chip" href="/academy/lesson/metre" transitionTypes={["page-turn"]}>Lesson: hearing Homer&apos;s rhythm</Link>
+        {LESSONS_SHOWN && <Link className="chip" href="/academy/lesson/metre" transitionTypes={["page-turn"]}>Lesson: hearing Homer&apos;s rhythm</Link>}
       </p>
       {open && (
         <div className={styles.metreHelp}>

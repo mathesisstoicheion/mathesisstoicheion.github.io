@@ -97,7 +97,6 @@ export const GUIDES: Guide[] = [
       ] },
       { kind: "links", items: [
         { href: "/academy/tables", label: "Tables of forms", note: "every ending, checked against real texts" },
-        { href: "/academy/lesson/past-tenses", label: "The past: imperfect and aorist", note: "the lesson on the augment" },
       ] },
     ],
     sources: [

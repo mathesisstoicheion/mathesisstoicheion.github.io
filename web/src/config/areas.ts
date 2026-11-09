@@ -39,7 +39,7 @@ export interface Area {
 
 export const AREAS: Record<AreaId, Area> = {
   home: {
-    id: "home", name: "The Propylaea", greek: "Προπύλαια", english: "Home", href: "/",
+    id: "home", name: "The Propylaea", greek: "Προπύλαια", english: "Home", door: "Home", icon: "home", href: "/",
     origin: "The monumental gateway to the Acropolis of Athens, built in the 430s BC under Pericles.",
     fit: "Every visit starts at the gate.", phase: 1,
   },
@@ -133,7 +133,9 @@ export const AREAS: Record<AreaId, Area> = {
  * wide screens. Each shows its sign and its plain word (`door`) with the area's Greek name beneath. Home is the site's name
  * in the header.
  */
-export const NAV: AreaId[] = (["study", "library", "wiki", "lyre", "forum", "treasury"] as AreaId[]).filter((id) => shown(id));
+// 2026-11-09, the owner: "Remove the lyre button from the main buttons. Just put it into the explore page. Then give that
+// button to the home button. The app needs a home."
+export const NAV: AreaId[] = (["home", "study", "library", "wiki", "forum", "treasury"] as AreaId[]).filter((id) => shown(id));
 
 /**
  * The header's menu on wide screens: the five doors, then the Oracle, so its research tools (concordance,
@@ -147,10 +149,10 @@ export const MENU: AreaId[] = [...NAV, "search"];
  * other paths that belong to a room (the reader, a work's and an author's pages belong to Read).
  */
 export const TABS: { id: AreaId; also?: string[] }[] = ([
+  { id: "home" },
   { id: "study" },
   { id: "library", also: [AREAS.reader.href, "/work", "/author", "/downloads"] },
   { id: "wiki" },
-  { id: "lyre" },
   { id: "forum" },
   { id: "treasury", also: ["/account"] },
 ] as { id: AreaId; also?: string[] }[]).filter((t) => shown(t.id));

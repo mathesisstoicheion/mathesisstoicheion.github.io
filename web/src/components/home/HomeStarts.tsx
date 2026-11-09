@@ -10,13 +10,12 @@ import Link from "next/link";
 import { useEffect } from "react";
 import { useSettings, type Settings } from "@/lib/settings";
 import { markVisitor, saveStart, type StartChoice } from "@/lib/visitor";
-import { TRACKS } from "@/data/tracks";
 import h from "./Home.module.css";
 
 const PATHS: { id: StartChoice; n: string; head: string; text: string; href: string; go: string; settings: Partial<Settings> }[] = [
-  { id: "none", n: "I", head: "I know no Greek.", text: "Begin with the letters, sounding out names you already know. In lesson 2 you read your first real line, a saying carved at Delphi.", href: TRACKS.reading.first, go: "Start the first lesson",
+  { id: "none", n: "I", head: "I know no Greek.", text: "Begin with the letters: how each is written, its name and how it sounded. Then read real Greek with every word explained on the line.", href: "/academy/alphabet", go: "Learn the letters",
     settings: { translit: true } },
-  { id: "some", n: "II", head: "I know a little.", text: "Pick up the lessons where you are, and read real texts with help one tap away.", href: "/academy", go: "Open the Academy",
+  { id: "some", n: "II", head: "I know a little.", text: "Read real texts with help one tap away, and keep the tables of endings and the commonest words beside you.", href: "/academy", go: "Open the Academy",
     settings: { translit: false } },
   { id: "read", n: "III", head: "I just want to read.", text: "Greek and English side by side. Read the English, glance at the Greek, dig in when you like.", href: "/library", go: "Open the library",
     settings: { translit: false, columns: "both" } },

@@ -5,11 +5,13 @@
 import { LESSON_INFO as LESSONS } from "@/data/lesson-index";
 import { CHECKPOINTS, checkpointKey } from "@/data/checkpoints";
 import { refreshDue, type Mastery } from "./mastery";
+import { LESSONS_SHOWN } from "@/config/lessons";
 
 export interface Due { kind: "lesson" | "checkpoint"; id: string; name: string; title: string; href: string; due: number }
 
 export function dueRefreshes(mastery: Record<string, Mastery>, now = Date.now()): Due[] {
   const out: Due[] = [];
+  if (!LESSONS_SHOWN) return out;   // the lessons are off the site (config/lessons.ts): nothing comes round again
   LESSONS.forEach((l, i) => {
     const m = mastery[l.id];
     if (refreshDue(m, now)) out.push({ kind: "lesson", id: l.id, name: `Lesson ${i + 1}`, title: l.title, href: `/academy/lesson/${l.id}/test`, due: m.due });

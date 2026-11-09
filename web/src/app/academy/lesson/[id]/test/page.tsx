@@ -1,3 +1,4 @@
+import { LESSONS_SHOWN } from "@/config/lessons";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import WorkoutPage from "@/components/academy/WorkoutPage";
@@ -14,6 +15,7 @@ export async function generateMetadata({ params }: PageProps<"/academy/lesson/[i
 }
 
 export default async function LessonPage({ params }: PageProps<"/academy/lesson/[id]/test">) {
+  if (!LESSONS_SHOWN) notFound();
   const { id } = await params;
   const lesson = lessonById(id);
   if (!lesson) notFound();
