@@ -556,6 +556,8 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-greek { display: block; font: 400 0.46em / 1.2 var(--face-didot); color: var(--rubric); margin-top: var(--space-3); letter-spacing: 0.01em; }
 .ph-purpose { max-width: 31em; font-size: var(--step-sub); line-height: 1.5; color: var(--ink-2); margin-top: var(--space-3); }
 .ph-short .ph-purpose { font-size: var(--step-0); }
+/* a room's short introduction to what it holds, after what its name means (components/a/Door.tsx) */
+.door-intro { display: block; margin-top: var(--space-2); color: var(--ink); }
 .ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
 /* On a computer every head stands at one height (the owner, 2026-10-23: "the heros load at different heights";

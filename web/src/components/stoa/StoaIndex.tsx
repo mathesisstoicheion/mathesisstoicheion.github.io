@@ -57,7 +57,7 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
   const featured = entries.length ? [...entries].sort((a, b) => a.slug.localeCompare(b.slug))[day % entries.length] : null;
 
   return (
-    <div className={`wrap ${styles.index}`}>
+    <div className={styles.index}>
       <Suspense fallback={null}><QueryFromUrl onQuery={fromUrl} /></Suspense>
       {lead}
 
@@ -72,6 +72,20 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
         </section>
       )}
 
+      {featured && !n && (
+        // the entry of the day: its title and opening on the left, its photograph as a plate with its credit on the right
+        <section className={styles.featured} aria-labelledby="featured-h" data-pic={featured.image && photo(featured.image) ? "" : undefined}>
+          <div className={styles.featuredText}>
+            <p className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</p>
+            <h2 id="featured-h"><Link href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>{featured.title}</Link></h2>
+            <p className={styles.featuredHook}>{text(featured.hook)}</p>
+          </div>
+          {featured.image && <Plate id={featured.image} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
+        </section>
+      )}
+
+
+      <h2 id="entries" className={`label ${styles.entriesH}`}>The entries, by subject</h2>
       {!n && (
         <ol className={styles.colonnade}>
           {CATEGORIES.map((c, i) => {
@@ -100,18 +114,6 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
             </li>
           )}
         </ol>
-      )}
-
-      {featured && !n && (
-        // the entry of the day: its title and opening on the left, its photograph as a plate with its credit on the right
-        <section className={styles.featured} aria-labelledby="featured-h" data-pic={featured.image && photo(featured.image) ? "" : undefined}>
-          <div className={styles.featuredText}>
-            <p className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</p>
-            <h2 id="featured-h"><Link href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>{featured.title}</Link></h2>
-            <p className={styles.featuredHook}>{text(featured.hook)}</p>
-          </div>
-          {featured.image && <Plate id={featured.image} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
-        </section>
       )}
 
       {foot}

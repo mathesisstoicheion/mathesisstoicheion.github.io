@@ -5,7 +5,7 @@
    turns (decision 3); a photograph is never tinted (SPEC.md 3.7). */
 
 /* ------------------------------------------------ the front: an index of the categories */
-.index { display: grid; gap: 28px; padding-block: var(--after-head) 12px; }
+.index { display: grid; gap: 28px; padding-block: 0 12px; }   /* inside the room's part, which gives it its margin and its rule */
 .searchRow { position: relative; scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 .searchRow svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .searchRow input {
@@ -233,3 +233,20 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 
 /* the entry's Share, under its last paragraph (ShareEntry.tsx) */
 .shareLine { margin: var(--space-6) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-3); }
+
+/* ---------------------------------------------------------------- the page's contents, at the right of its head (the owner,
+   2026-11-09: a short introduction under the head, the page's contents at its top right). The subjects with how many
+   entries each holds, under hairlines, as a book's contents; then the rest of the Stoa in one line. */
+.landContents { display: grid; gap: var(--space-2); align-content: start; }
+.landList { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-5); box-shadow: var(--rule-over); padding-top: var(--space-1); }
+.landList a {
+  display: flex; align-items: baseline; gap: var(--space-1); min-height: var(--tap); padding-block: 6px; text-decoration: none; color: var(--ink);
+  font-size: var(--step-0); box-shadow: var(--rule-under);
+}
+.landList a > b { margin-left: auto; font: 400 var(--step-0) / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+@media (hover: hover) { .landList a:hover span { color: var(--rubric); } }
+.landMore { margin: 0; font-size: var(--step--1); color: var(--ink-2); line-height: 1.9; }
+.landMore a { color: var(--ink); }
+@media (max-width: 760px) { .landList { gap: 0 var(--space-3); } }
+/* the index's own title, now that the entry of the day stands above it */
+.entriesH { margin: var(--space-6) 0 0; }
