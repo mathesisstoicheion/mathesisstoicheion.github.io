@@ -142,11 +142,11 @@
     "colour": 11
   },
   "src/components/census/Census.module.css": {
-    "font-size": 5,
-    "spacing": 90,
+    "font-size": 6,
+    "spacing": 91,
     "shadow": 12,
     "z-index": 3,
-    "motion": 16
+    "motion": 17
   },
   "src/components/community/Community.module.css": {
     "font-size": 2,

@@ -532,3 +532,33 @@
   .movingTab { padding: var(--space-2) var(--space-1); font-size: var(--step--2); }
   .movingTab small { display: none; }
 }
+
+/* ------------------------------------------------ the body atlas */
+.body { display: grid; gap: var(--space-3); }
+.body h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
+@media (min-width: 761px) { .body { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
+@media (max-width: 760px) { .body { margin-top: var(--space-6); } }
+.bodyTabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.bodyMain { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .bodyMain { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.bodyFig { margin: 0; display: grid; gap: var(--space-2); justify-items: center; }
+.bodyInfo { margin: 0; min-height: 1.6em; font-size: var(--step--1); color: var(--ink-2); text-align: center; }
+.bodyInfo b { font-family: var(--f-greek); font-weight: 400; color: var(--ink); }
+.bodyHint { color: var(--ink-3); }
+.bodySvg { max-height: 520px; width: auto; height: 520px; max-width: 100%; display: block; margin: 0 auto; }
+.bodyLines path { fill: var(--bg); stroke: var(--ink-2); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.bodyLines path:nth-child(n+2) { fill: none; }
+.bodyDot { cursor: pointer; outline: none; }
+.bodyDot circle { fill: var(--rubric); fill-opacity: 0.75; transition: r 0.6s var(--ease); }
+.bodyDot text { font-family: var(--f-label); font-size: 9px; fill: var(--ink); pointer-events: none; }
+.bodyDot:hover circle, .bodyDot:focus-visible circle { stroke: var(--ink); stroke-width: 1; }
+.bodyList { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.bodyRow { display: grid; grid-template-columns: 1.6em minmax(0, 11em) minmax(0, 1fr) 3.2em; align-items: center; gap: var(--space-2); width: 100%; padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; font-size: var(--step--1); color: var(--ink-2); text-align: left; cursor: pointer; }
+.bodyRow:hover { color: var(--ink); }
+.bodyRank { color: var(--ink-3); font-size: var(--step--2); }
+.bodyWord [lang="grc"] { font-family: var(--f-greek); color: var(--ink); }
+.bodyWord small { color: var(--ink-3); font-size: var(--step--2); }
+.bodyBar { display: block; height: 6px; }
+.bodyBar i { display: block; height: 100%; background: var(--ink-3); }
+.bodyBar i.bodyTop { background: var(--rubric); }
+.bodyRate { text-align: right; font-variant-numeric: tabular-nums; }
