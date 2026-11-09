@@ -1709,7 +1709,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     </div>
   ) : null;
   // what stands where the foot bar was, for the bar to give way to (ReaderBar.module.css): the look-up's sheet, a panel's sheet, the passage toolbar
-  const covers = [lookSheet && "lookup", sideOpen && "panel", sel && "toolbar"].filter(Boolean).join(" ");
+  const covers = [lookSheet && "lookup", !!word && !lookSheet && "note", sideOpen && "panel", sel && "toolbar"].filter(Boolean).join(" ");
   return (
     <div ref={rootRef} data-reader="" className={`${styles.reader} ${single ? styles.single : ""} ${styles["cols-" + (cmpText ? "both" : columns)] ?? ""} ${verses ? styles.verses : ""} ${poetry ? styles.poetry : ""} ${sideOpen ? styles.withPanel : ""} ${lookOver ? styles.lookOver : ""} ${split ? styles.pane : ""} ${split && active ? styles.activePane : ""} ${floating ? styles.floating : ""}`}
       style={{ "--num-n": numFigures } as React.CSSProperties} data-covers={covers || undefined}
