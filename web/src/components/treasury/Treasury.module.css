@@ -94,10 +94,10 @@
 .treasury[data-empty] > .section:empty { display: none; }
 /* an empty Treasury opens with "How the Treasury fills": three numbered steps, each with a small specimen of the action */
 .fills { display: grid; gap: var(--space-5); }
-.treasury .fillsH { margin: 0; display: flex; align-items: baseline; gap: 14px; font: 400 var(--step-2) / 1.15 var(--f-display); }
+.treasury .fillsH { margin: 0; display: flex; align-items: baseline; gap: var(--space-3); font: 400 var(--step-2) / 1.15 var(--f-display); }
 .fillsH::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
 .steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
-@media (min-width: 761px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, 48px); } }
+@media (min-width: 761px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, var(--space-6)); } }
 .step { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; align-content: start; column-gap: var(--space-4); row-gap: var(--space-1); padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
 .stepNo { grid-row: 1 / span 2; min-width: 2.4ch; font: 400 var(--step-3) / 1 var(--face-didot); color: var(--rubric); }
 .step h3 { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
@@ -111,7 +111,7 @@
 /* what can be done meanwhile: keeping it safe and reading offline, two equal parts under one hairline on a computer */
 .foot { display: grid; gap: var(--space-5); }
 .treasury[data-empty] .foot { border-top: 1px solid var(--ink); padding-top: var(--space-4); }
-@media (min-width: 761px) { .treasury[data-empty] .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, 48px); align-items: start; } }
+@media (min-width: 761px) { .treasury[data-empty] .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, var(--space-6)); align-items: start; } }
 .treasury[data-empty] .offline { border-top: 0; padding-top: 0; }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
@@ -194,7 +194,7 @@
 .at { margin-top: var(--space-1); font-family: var(--f-label); font-size: var(--step--1); color: var(--rubric); }
 
 /* ------------------------------------------------ latest: entries under hairlines, in columns */
-.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 clamp(var(--space-5), 3vw, 40px); }
+.cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 clamp(var(--space-5), 3vw, var(--space-6)); }
 @media (min-width: 761px) { .cards { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (min-width: 1100px) { .cards { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 .card { display: grid; gap: 6px; align-content: start; padding: 14px 0 20px; border-top: 1px solid var(--ink); overflow-wrap: anywhere; min-width: 0; }
