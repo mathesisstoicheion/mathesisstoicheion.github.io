@@ -487,3 +487,41 @@
 .catch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (min-width: 761px) { .duels, .catch { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
 @media (max-width: 760px) { .duels, .catch { margin-top: var(--space-6); } .duelers, .duelCharts { grid-template-columns: minmax(0, 1fr); } }
+
+/* ------------------------------------------------ the moving centre of the world */
+.moving { display: grid; gap: var(--space-3); }
+.moving h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
+@media (min-width: 761px) { .moving { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
+@media (max-width: 760px) { .moving { margin-top: var(--space-6); } }
+.movingAges { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); }
+.movingTabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.movingTab { display: grid; gap: 2px; text-align: left; padding: var(--space-2) var(--space-3); background: transparent; color: var(--ink-2); border: 0; box-shadow: var(--rule-under); cursor: pointer; font: inherit; font-size: var(--step--1); }
+.movingTab small { font-size: var(--step--2); color: var(--ink-3); }
+.movingTab[aria-pressed="true"] { color: var(--ink); box-shadow: inset 0 -3px 0 var(--rubric); }
+.movingPlay { display: inline-flex; align-items: center; }
+.movingBody { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .movingBody { grid-template-columns: minmax(0, 760px) minmax(0, 1fr); align-items: start; } }
+.movingFig { margin: 0; display: grid; gap: var(--space-2); max-width: 760px; }
+.movingInfo { margin: 0; min-height: 1.6em; font-size: var(--step--1); color: var(--ink-2); }
+.movingInfo b { font-family: var(--f-greek); font-weight: 400; color: var(--ink); }
+.movingHint { color: var(--ink-3); }
+.movingSvg { width: 100%; height: auto; display: block; }
+.movingLand { fill: var(--bg); stroke: var(--rule); stroke-width: 2; }
+.movingSea { fill: var(--rule); fill-opacity: 0.45; stroke: none; }
+.movingDot { cursor: pointer; outline: none; }
+.movingDot circle { transition: r 0.6s ease, opacity 0.6s ease; }
+.movingPlace { fill: var(--ink-3); fill-opacity: 0.55; }
+.movingTop { fill: var(--rubric); fill-opacity: 0.7; }
+.movingDot:hover circle, .movingDot:focus-visible circle { stroke: var(--ink); stroke-width: 3; }
+.movingDot text { font-family: var(--f-label); fill: var(--ink); stroke: var(--bg); paint-order: stroke; pointer-events: none; }
+.movingTrail { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingRing { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingNow { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingCaption { font-size: var(--step--1); color: var(--ink-2); }
+.movingList { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.movingList button { display: grid; grid-template-columns: 2ch auto 1fr auto; align-items: baseline; gap: var(--space-3); width: 100%; text-align: left; padding: var(--space-2) 0; background: transparent; border: 0; box-shadow: var(--rule-under); color: var(--ink); font: inherit; cursor: pointer; }
+.movingList button:hover { color: var(--rubric); }
+.movingRank { color: var(--ink-3); font-size: var(--step--2); }
+.movingList b { font-family: var(--f-greek); font-weight: 400; }
+.movingEn { color: var(--ink-2); }
+.movingList small { color: var(--ink-3); }

@@ -30,6 +30,7 @@ import Facts from "./Facts";
 import Analyses from "./Analyses";
 import Duels from "./Duels";
 import Catchphrases from "./Catchphrases";
+import MovingMap from "./MovingMap";
 import Method from "./Method";
 import Finder, { listLabel } from "./Finder";
 import { phraseList, wordList, type ListOutput } from "./rows";
@@ -190,6 +191,7 @@ function CensusView({ meta, reg, links }: { meta: CensusMeta; reg: Register; lin
       <Facts meta={meta} reg={reg} cats={cats} onOpen={(changes, label) => jumpToList(changes, label)} />
       <Duels meta={meta} reg={reg} />
       <Catchphrases meta={meta} onOpen={(changes, label) => jumpToList(changes, label)} />
+      <MovingMap meta={meta} onOpen={(changes, label) => jumpToList(changes, label)} />
       <Analyses meta={meta} reg={reg} scope={scope} counts={countsA.state === "done" ? countsA.value : undefined}
         onScope={(s, label) => jumpToList([...scopeParams(s), ["i", null], ["o", s === EMPTY_SCOPE ? null : params.get("o")]], label)}
         onBand={(h, label) => jumpToList([["h", h], ["c", "words"], ["i", null]], label)} />
