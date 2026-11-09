@@ -13,9 +13,9 @@ import styles from "./Census.module.css";
 
 interface Part { grc: string; en: string; x?: number; y?: number }
 const PARTS: Part[] = [
-  { grc: "κόμη", en: "hair", x: 100, y: 14 }, { grc: "κεφαλή", en: "head", x: 100, y: 34 },
-  { grc: "ὀφθαλμός", en: "eye", x: 91, y: 44 }, { grc: "οὖς", en: "ear", x: 121, y: 46 },
-  { grc: "στόμα", en: "mouth", x: 100, y: 62 }, { grc: "τράχηλος", en: "neck", x: 100, y: 86 },
+  { grc: "κόμη", en: "hair", x: 100, y: 8 }, { grc: "κεφαλή", en: "head", x: 100, y: 34 },
+  { grc: "ὀφθαλμός", en: "eye", x: 88, y: 42 }, { grc: "οὖς", en: "ear", x: 125, y: 44 },
+  { grc: "στόμα", en: "mouth", x: 100, y: 60 }, { grc: "τράχηλος", en: "neck", x: 100, y: 86 },
   { grc: "ὦμος", en: "shoulder", x: 64, y: 104 }, { grc: "στῆθος", en: "chest", x: 100, y: 124 },
   { grc: "πνεύμων", en: "lung", x: 84, y: 136 }, { grc: "καρδία", en: "heart", x: 112, y: 144 },
   { grc: "ἧπαρ", en: "liver", x: 86, y: 172 }, { grc: "νεφρός", en: "kidney", x: 116, y: 184 },
@@ -101,7 +101,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
               </>
             ) : <span className={styles.bodyHint}>Point at a part of the body</span>}
           </p>
-          <svg className={styles.bodySvg} viewBox="0 0 200 480" role="group" aria-label="A human figure with dots on the body parts named in the chosen writing">
+          <svg className={styles.bodySvg} viewBox="-40 -6 280 486" role="group" aria-label="A human figure with dots on the body parts named in the chosen writing">
             <g className={styles.bodyLines}>
               <path d={FIGURE} />
               <path d={ARM_L} />
@@ -110,8 +110,8 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
             </g>
             {placed.map((r) => {
               const x = r.part.x!, y = r.part.y!;
-              const rad = 2 + 16 * Math.sqrt(r.rate / maxPlaced);
-              const left = x < 100;
+              const rad = 2 + 12 * Math.sqrt(r.rate / maxPlaced);
+              const left = x < 100 || r.part.grc === "κεφαλή";   // the head is named on the left, clear of the ear
               return (
                 <g key={r.part.grc} className={styles.bodyDot} role="button" tabIndex={0}
                   aria-label={`${r.part.en}: ${fmtRate(r.rate)} per 10,000 words in ${tabName}`}
