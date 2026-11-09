@@ -24,7 +24,10 @@
 /* red under the hand only where there is a hand: a finger's tap would leave it red (a phone keeps :hover on what was last tapped) */
 @media (hover: hover) { .quiet:hover, .quiet:global(.icon-btn):hover:not(:disabled) { color: var(--rubric); } }
 .quiet[aria-expanded="true"], .quiet:global(.icon-btn)[aria-expanded="true"] { color: var(--ink); }
-.back { justify-self: start; margin-left: calc(-1 * var(--space-2)); }
+.left { justify-self: start; display: flex; align-items: center; gap: var(--space-1); margin-left: calc(-1 * var(--space-2)); }
+/* a thin upright rule between the main tools (Find, Listen) and the menus (Text, Study, More) */
+.sep { width: var(--hair); height: var(--space-5); margin-inline: var(--space-1); background: var(--rule); }
+.quiet[aria-pressed="true"] { color: var(--rubric); }
 .tools { justify-self: end; display: flex; align-items: center; gap: var(--space-1); margin-right: calc(-1 * var(--space-2)); }
 /* Study says how many modes are on: a lit dot and the number */
 .onCount { color: var(--accent); font-variant-numeric: lining-nums; }
@@ -46,6 +49,9 @@
   .quiet, .quiet:global(.icon-btn) { min-height: var(--tap); min-width: var(--tap); }
   .part, .rule { display: none; }
   .at { font-size: var(--step-0); }
+  /* a phone: a row of signs, each with its word small under it, as a tab bar has; Library is its arrow alone, and Float is in More */
+  .foot .tools .quiet { flex-direction: column; justify-content: center; gap: var(--hair-2); min-width: var(--space-6); padding-inline: var(--space-1); font-size: var(--step--2); }
+  .foot .libWord, .foot .wideOnly, .sep, .lvl { display: none; }
   :global([data-foot="away"]) .foot { translate: 0 100%; visibility: hidden; transition: translate var(--dur) var(--ease), visibility 0s var(--ease) var(--dur); }
 }
 /* the narrower phones: the same four buttons, a little closer, the place in a smaller size; from 380 px down the place has no sign beside it, and
@@ -54,11 +60,11 @@
 @media (max-width: 400px) {
   .barIn { column-gap: var(--space-2); }
   .quiet, .quiet:global(.icon-btn) { padding-inline: var(--space-1); }
-  .back { margin-left: calc(-1 * var(--space-1)); }
+  .left { margin-left: calc(-1 * var(--space-1)); }
   .tools { margin-right: calc(-1 * var(--space-1)); }
   .at { font-size: var(--step--1); }
 }
-@media (max-width: 380px) { .where > :global([data-icon]) { display: none; } }
+@media (max-width: 380px) { .where > :global([data-icon]) { display: none; } .foot .tools .quiet { min-width: var(--tap); } }
 @media (max-width: 340px) { .barIn { column-gap: var(--space-1); } .at { font-size: var(--step--2); } }
 /* the look-up's sheet stands where the bar was, at any width; a panel's sheet on a tablet and a phone; the passage toolbar on a phone */
 :global([data-covers~="lookup"]) .foot { translate: 0 100%; visibility: hidden; }
@@ -109,9 +115,27 @@
 
 /* ------------------------------------------------------------ Study: groups of rows */
 .study { padding: 0 0 var(--space-3); gap: 0; }
-.group { display: grid; }
-.groupLabel { margin: 0; padding: var(--space-4) var(--space-4) var(--space-1); }
-.group:first-child > .groupLabel { padding-top: var(--space-3); }
+/* each group has its own colour (a band along its head, a rule down its left side) and its own sign, and folds away under its head
+   (the owner, 2026-11-09: "make those visually distinguishable and then give them a collapse button") */
+.group { --g: var(--ink-3); display: grid; margin-top: var(--space-3); }
+.group:first-child { margin-top: 0; }
+.group[data-kind="help"] { --g: var(--verdigris); }
+.group[data-kind="deeper"] { --g: var(--rubric); }
+.group[data-kind="book"] { --g: var(--pen-ochre); }
+.groupHead { margin: 0; }
+.groupBtn:global(.row-btn) {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3); width: 100%;
+  min-height: var(--space-6); padding: var(--space-2) var(--space-4) var(--space-2) var(--space-3); border: 0; border-left: var(--space-1) solid var(--g); border-radius: 0;
+  background: color-mix(in srgb, var(--g) 12%, var(--bg)); box-shadow: var(--rule-under);
+  color: var(--ink); font: 400 var(--step--1) / 1.2 var(--f-body); letter-spacing: 0.14em; text-transform: uppercase; text-align: left;
+}
+@media (pointer: coarse) { .groupBtn:global(.row-btn) { min-height: var(--tap); } }
+.groupSign { color: var(--g); display: inline-flex; }
+.groupFold { color: var(--ink-2); display: inline-flex; transition: rotate var(--dur-quick) var(--ease); }
+.groupBtn[aria-expanded="false"] .groupFold { rotate: -90deg; }
+@media (hover: hover) { .groupBtn:global(.row-btn):hover { color: var(--rubric); } }
+.groupBody { display: grid; border-left: var(--hair-2) solid color-mix(in srgb, var(--g) 55%, transparent); }
+.groupBody[hidden] { display: none; }
 /* a row: the tool's sign and name (and, under it, one quiet line) at the left, its state at the right, a hairline under it; a button or a link */
 .row {
   display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3); width: 100%;
@@ -158,6 +182,33 @@
 .marksEmpty { margin: 0; font-size: var(--step--1); color: var(--ink-2); }
 /* the keys are for a keyboard: not on a narrow screen, where the old Keys button was not either */
 @media (max-width: 900px) { .keys { display: none; } }
+/* Float as a row of More on a phone only: a computer has it beside Library */
+@media (min-width: 761px) and (not ((pointer: coarse) and (max-width: 900px))) { .phoneOnly { display: none; } }
+
+/* the edition and the translation, at the top of Text */
+.picks { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); box-shadow: var(--rule-under); }
+.picks .pick { padding: 0; box-shadow: none; }
+
+/* ------------------------------------------------------------ your notes and marks: a round button at the top right, opening into the list */
+.notesFab { position: fixed; z-index: var(--z-foot); top: calc(env(safe-area-inset-top, 0px) + var(--space-3)); right: max(calc(var(--gutter) + var(--space-4)), env(safe-area-inset-right, 0px)); transition: opacity var(--dur) var(--ease), visibility 0s; }
+.notesBtn:global(.icon-btn) {
+  position: relative; width: var(--tap); height: var(--tap); border-radius: var(--radius-round); color: var(--ink-2);
+  background: var(--bg); box-shadow: var(--rule-box), var(--shadow-leaf);
+}
+@media (hover: hover) { .notesBtn:global(.icon-btn):hover { color: var(--rubric); } }
+.notesBtn[aria-expanded="true"] { color: var(--ink); }
+.notesN {
+  position: absolute; top: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); min-width: var(--space-4); padding: 0 var(--space-1);
+  border-radius: var(--radius-round); background: var(--rubric); color: var(--bg); font: 400 var(--step--2) / 1.5 var(--f-body); font-variant-numeric: lining-nums;
+}
+.notesMenu { top: calc(100% + var(--space-2)); right: 0; width: min(22rem, calc(100vw - 2 * var(--gutter))); max-height: min(70dvh, 36rem); }
+/* it stands aside for what covers that corner (the look-up, a side panel), and on a phone it goes with the foot bar as you read on */
+:global([data-covers~="lookup"]) .notesFab, :global([data-covers~="panel"]) .notesFab { opacity: 0; visibility: hidden; transition: opacity var(--dur) var(--ease), visibility 0s var(--dur); }
+@media (max-width: 760px), (pointer: coarse) and (max-width: 900px) {
+  .notesFab { right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
+  :global([data-foot="away"]) .notesFab { opacity: 0; visibility: hidden; transition: opacity var(--dur) var(--ease), visibility 0s var(--dur); }
+  .notesMenu { position: fixed; top: calc(env(safe-area-inset-top, 0px) + var(--tap) + var(--space-4)); left: var(--gutter); right: var(--gutter); width: auto; }
+}
 
 /* ------------------------------------------------------------ the top bar of each book when two stand side by side, and of the floating window */
 /* Find and Listen are buttons in that bar on a wide screen, so their rows are left out of its Study (they were a chip in the phone's sheet only) */
@@ -185,3 +236,7 @@
    below: where two rows of them stand close at 375 px those reaches lie on one another, and the check of touch areas finds the chip's middle covered by its neighbour's
    (the quiet desk, ticket 11, the owner, 2026-10-30; the site's checks on another machine, where the rows wrap a little differently) */
 @media (pointer: coarse) { .paneBtn:global(.chip), .goto :global(.chip), .gotoRow :global(.chip) { min-height: var(--tap); } }
+/* the notes drop down from their button: no handle, as a sheet from the foot has */
+.notesMenu .grab { display: none; }
+.notesMenu .head { padding-top: var(--space-1); }
+.pick > :global(.label) { display: inline-flex; align-items: center; gap: var(--space-2); }

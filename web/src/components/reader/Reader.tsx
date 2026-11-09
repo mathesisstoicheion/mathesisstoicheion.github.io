@@ -61,9 +61,9 @@ import { placeAnalyses, positionsFor } from "@/lib/lookup/placed";
 import { lookupPlace } from "@/lib/lookup/placement";
 import { headerVisible, holdFoot, safeTop, scrollBelowHeader, showFoot } from "@/lib/header";
 import { buzz } from "@/lib/haptics";
-import ReaderBar, { AaStudy, GotoMenu, Where } from "./ReaderBar";
+import ReaderBar, { AaStudy, GotoMenu, NotesButton, Where } from "./ReaderBar";
 import AaMenu from "./AaMenu";
-import StudyMenu, { type StudyPanel } from "./StudyMenu";
+import StudyMenu, { EditionPicks, MarksList, MoreMenu, type StudyPanel, type StudyProps } from "./StudyMenu";
 import { TOOLS, closeTool, toggleTool, underEchoes, type Tool, type ToolSlot } from "./tool";
 import { rangeLabel } from "./refs";
 import type { Back } from "./Panel";
@@ -94,7 +94,7 @@ import BackToTop from "@/components/BackToTop";
 
 type Load = { state: "loading"; step: string } | { state: "error"; message: string } | { state: "ready" };
 /** The small menu open now, if any: from the foot bar of one book, or the top bar of each of two books (Aa, Study, and Go to in the foot bar's middle). */
-type Dropped = "aa" | "study" | "goto";
+type Dropped = "aa" | "study" | "goto" | "desk" | "notes";
 
 type Src = From | "private";
 /** A book's texts as loaded and parsed, or why they could not be. */
@@ -491,7 +491,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   // (useBackSteps.ts). Study waits under a panel opened from one of its rows, and the look-up under the Echoes or the sentence it opened, so that
   // Back shows them again, as the panel's own "Back to …" does, and the next Back closes them.
   const layersOpen = ([
-    ["aa", drop === "aa"], ["study", drop === "study"], ["goto", drop === "goto"],
+    ["aa", drop === "aa"], ["study", drop === "study"], ["goto", drop === "goto"], ["desk", drop === "desk"], ["notes", drop === "notes"],
     ...TOOLS.map((t) => [t, toolShown === t]),
     ["echoes", !!echo], ["sentence", !!sentenceAt], ["books", !!books?.picking], ["mine", !!books?.mine],
     ["note", openNote !== null], ["share", !!share], ["notebook", !!nbPick], ["toolbar", !!sel],
@@ -499,7 +499,9 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   ] as [Layer, boolean][]).filter(([, on]) => on).map(([layer]) => layer);
   const cameBack = !!cameFrom && (cameFrom.to === "echoes" ? !!echo : !!sentenceAt);
   const layersWaiting: Layer[] = [
-    ...(studyFor || (books?.fromStudy && (books.picking || books.mine)) ? ["study" as const] : []),
+    ...(studyFor ? ["study" as const] : []),
+    // the list of books and the private collection are opened from More (the owner, 2026-11-09), which waits under them
+    ...(books?.fromStudy && (books.picking || books.mine) ? ["desk" as const] : []),
     ...(cameBack ? ["word" as const, "word+" as const] : []),
   ];
   const [stack, setStack] = useState<Layer[]>([]);
@@ -508,7 +510,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   /** Close one layer, the way its own × does. */
   const shut = (layer: Layer) => {
     switch (layer) {
-      case "aa": case "study": case "goto": setDrop((cur) => (cur === layer ? null : cur)); break;
+      case "aa": case "study": case "goto": case "desk": case "notes": setDrop((cur) => (cur === layer ? null : cur)); break;
       case "find": case "vocab": case "places": case "ms": case "talk": case "cmp": shutTool(layer); break;
       case "echoes": setEcho(null); setCameFrom(null); break;
       case "sentence": setSentenceAt(null); setCameFrom(null); root().querySelectorAll(`.${styles.sel}`).forEach((x) => x.classList.remove(styles.sel)); break;
@@ -524,7 +526,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   };
   /** The layer now on top was shut under what has just closed: show it again (Study, with the keyboard on the row that opened the panel; the look-up on its word). */
   const reveal = (layer: Layer, above: Layer | undefined) => {
-    if (layer === "study") { setDrop("study"); setStudyRow(above === "books" ? "second" : above ?? null); }
+    if (layer === "study") { setDrop("study"); setStudyRow(above ?? null); }
+    else if (layer === "desk") { setDrop("desk"); setStudyRow(above === "books" ? "second" : above ?? null); }
     else if (layer === "word" || layer === "word+") backToWord(layer === "word+");
   };
   useBackSteps(nextStack.length, single, (landed) => {
@@ -536,13 +539,13 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   useEffect(() => {
     const on = (e: Event) => {
       const d = (e as CustomEvent<{ pane: number; tool: string }>).detail;
-      if (d.pane === pane) { setDrop("study"); setStudyRow(d.tool); }
+      if (d.pane === pane) { setDrop("desk"); setStudyRow(d.tool); }
     };
     addEventListener("mathesis:study", on);
     return () => removeEventListener("mathesis:study", on);
   }, [pane]);
   useEffect(() => {
-    if (!studyRow || drop !== "study") return;
+    if (!studyRow || (drop !== "study" && drop !== "desk")) return;
     const id = requestAnimationFrame(() => { root().querySelector<HTMLElement>(`[data-tool="${studyRow}"]`)?.focus({ preventScroll: true }); setStudyRow(null); });
     return () => cancelAnimationFrame(id);
   }, [studyRow, drop]);
@@ -1647,23 +1650,26 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   /** Back to Study, from a panel it opened: the panel closes, Study opens again, and the keyboard returns to the row that opened the panel. */
   const backToStudy = (p: StudyPanel) => { shutTool(p); setStudyFor(null); setStudyRow(p); setDrop("study"); };
   const studyBack = (p: StudyPanel): Back | undefined => (studyFor === p ? { to: "Study", onBack: () => backToStudy(p) } : undefined);
-  const aaMenu = <AaMenu columns={columns} onColumns={(c) => setSettings({ columns: c })} hasTranslation={!!trText} comparing={!!cmpText} />;
-  // Study: every other tool, in one place (StudyMenu.tsx). The same menu in the foot bar of one book and in the top bar of each of two books.
-  const studyMenu = work && grcText ? (
-    <StudyMenu bar={single ? "foot" : "pane"} work={work} grcText={grcText} trText={trText} cmpText={cmpText} editions={editions} columns={columns}
-      hasMetre={!!mInfo} open={{ ...panelsOpen, listen: listenOpen, keys: help }}
-      onPanel={openPanel} onListen={() => setListenOpen(!listenOpen)} onKeys={() => setHelp((h) => !h)} canDiff={canDiff} onDiff={goDiff}
-      onEdition={(v) => nav.go(query({ ed: v, at: topKey() ?? undefined }))} onTranslation={(v) => nav.go(query({ tr: v, at: topKey() ?? undefined }))}
-      onCompare={(v) => {
-        const q = query({ at: topKey() ?? undefined });
-        if (v) q.set(pk("cmp"), v); else { q.delete(pk("cmp")); q.delete(pk("cmpx")); }
-        nav.go(q);
-      }}
-      marks={sortedMarks} onMark={(m) => nav.go(query({ at: m.start.u }))} markerCounts={markerCounts}
-      split={split} canFloat={!floating && pane === 1} onFloat={() => floatAway("all")} onSecond={() => onOpenSecond(true)}
-      isPrivate={isPrivate} notesHref={isPrivate && mineDoc && mineDoc.status !== "imported" ? `${PRIVATE_TRANSLATIONS}?id=${encodeURIComponent(mineDoc.id)}` : null}
-      moderator={moderator && !floating} onMine={() => onOpenMine(true)} />
-  ) : null;
+  // Study (the helps for studying) and More (the rest), StudyMenu.tsx: the same menus in the foot bar of one book and in the top bar of each of two books
+  const menuProps: StudyProps | null = work && grcText ? {
+    bar: single ? "foot" : "pane", work, grcText, trText, cmpText, editions, columns,
+    hasMetre: !!mInfo, open: { ...panelsOpen, listen: listenOpen, keys: help },
+    onPanel: openPanel, onListen: () => setListenOpen(!listenOpen), onKeys: () => setHelp((h) => !h), canDiff, onDiff: goDiff,
+    onEdition: (v) => nav.go(query({ ed: v, at: topKey() ?? undefined })), onTranslation: (v) => nav.go(query({ tr: v, at: topKey() ?? undefined })),
+    onCompare: (v) => {
+      const q = query({ at: topKey() ?? undefined });
+      if (v) q.set(pk("cmp"), v); else { q.delete(pk("cmp")); q.delete(pk("cmpx")); }
+      nav.go(q);
+    },
+    marks: sortedMarks, onMark: (m) => nav.go(query({ at: m.start.u })), markerCounts,
+    split, canFloat: !floating && pane === 1, onFloat: () => floatAway("all"), onSecond: () => onOpenSecond(true),
+    isPrivate, notesHref: isPrivate && mineDoc && mineDoc.status !== "imported" ? `${PRIVATE_TRANSLATIONS}?id=${encodeURIComponent(mineDoc.id)}` : null,
+    moderator: moderator && !floating, onMine: () => onOpenMine(true),
+  } : null;
+  const studyMenu = menuProps ? <StudyMenu {...menuProps} /> : null;
+  const moreMenu = menuProps ? <MoreMenu {...menuProps} /> : null;
+  const aaMenu = <AaMenu columns={columns} onColumns={(c) => setSettings({ columns: c })} hasTranslation={!!trText} comparing={!!cmpText}
+    texts={menuProps ? <EditionPicks {...menuProps} /> : null} />;
 
   // two books side by side, and the floating window: a bar along the top of each book (the page and Go to, Find, Listen, then Aa and Study); one
   // book has its bar along the foot instead (ReaderBar.tsx)
@@ -1687,7 +1693,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
         </button>
       )}
       <div className={styles.barEnd}>
-        <AaStudy bar="pane" aa={dropOf("aa")} study={dropOf("study")} aaMenu={aaMenu} studyMenu={studyMenu} modesOn={modesOn} />
+        <AaStudy bar="pane" aa={dropOf("aa")} study={dropOf("study")} more={dropOf("desk")} aaMenu={aaMenu} studyMenu={studyMenu} moreMenu={moreMenu} modesOn={modesOn} />
       </div>
     </>
   ) : null;
@@ -1751,9 +1757,17 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
           (the quiet desk, ticket 11, user story 22, the owner, 2026-10-30) */}
       {single && (
         <ReaderBar rootRef={rootRef} book={load.state === "ready" && doc && chunkInfo ? {
-          doc, chunk, topRow, order, modesOn, aa: dropOf("aa"), aaMenu, study: dropOf("study"), studyMenu,
+          doc, chunk, topRow, order, modesOn, aa: dropOf("aa"), aaMenu, study: dropOf("study"), studyMenu, more: dropOf("desk"), moreMenu,
+          find: { open: tool === "find", onClick: () => (tool === "find" ? setTool(null) : openFind()) },
+          listen: trText && !cmpText ? { open: listenOpen, onClick: () => setListenOpen(!listenOpen) } : null,
+          onFloat: !floating && pane === 1 ? () => floatAway("all") : null,
           goto: dropOf("goto"), gotoMenu: <GotoMenu doc={doc} chunk={chunk} onPage={goChunk} onGoto={goTo} onDone={() => setDrop(null)} inputRef={gotoRef} focusSignal={gotoWant} />,
         } : null} />
+      )}
+      {single && load.state === "ready" && doc && (
+        <NotesButton drop={dropOf("notes")} count={sortedMarks.length}>
+          <MarksList marks={sortedMarks} onMark={(m) => { setDrop(null); nav.go(query({ at: m.start.u })); }} />
+        </NotesButton>
       )}
 
       {load.state === "loading" && <div className={`wrap ${styles.status}`}><span className={`meander ${styles.loadingBand}`} aria-hidden="true" /><p>{load.step}</p></div>}
@@ -1904,7 +1918,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
       {tool === "find" && doc && !lookSheet && !echo && (
         <PanelGuard name="find panel" className={styles.panel} onClose={() => shutTool("find")}>
           <FindPanel doc={doc} placed={cmpText ? null : placed} initial={findQ} here={findHere} onQuery={setFindQ} onJump={findJump} onMarks={setFindMarks} back={studyBack("find")}
-            onClose={() => { shutTool("find"); requestAnimationFrame(() => root().querySelector<HTMLElement>(single ? `[aria-controls="${dropOf("study").id}"]` : `.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
+            onClose={() => { shutTool("find"); requestAnimationFrame(() => root().querySelector<HTMLElement>(single ? `[data-foot-bar] button[aria-label="Find"]` : `.${styles.findBtn}`)?.focus({ preventScroll: true })); }} />
         </PanelGuard>
       )}
       {toolShown === "cmp" && grcText && cmpText && !lookSheet && !echo && (
@@ -2014,7 +2028,7 @@ export function ReaderBooks() {
   // which closes it and opens Study there again (the quiet desk, ticket 09, the owner, 2026-10-30)
   const [fromStudy, setFromStudy] = useState<1 | 2 | null>(null);
   const backFor = (tool: string, close: () => void): Back | undefined => (fromStudy
-    ? { to: "Study", onBack: () => { close(); setFromStudy(null); dispatchEvent(new CustomEvent("mathesis:study", { detail: { pane: fromStudy, tool } })); } }
+    ? { to: "More", onBack: () => { close(); setFromStudy(null); dispatchEvent(new CustomEvent("mathesis:study", { detail: { pane: fromStudy, tool } })); } }
     : undefined);
   const openMine = (pane: 1 | 2, id: string) => {
     const q = new URLSearchParams(nav.params.toString());

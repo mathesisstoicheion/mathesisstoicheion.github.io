@@ -24,7 +24,7 @@ const MARK = "readerStep";
  * from one of its rows.
  */
 export type Layer =
-  | "aa" | "study" | "goto"
+  | "aa" | "study" | "goto" | "desk" | "notes"
   | "find" | "vocab" | "places" | "ms" | "talk" | "cmp" | "echoes" | "sentence"
   | "note" | "share" | "notebook" | "books" | "mine" | "toolbar"
   | "look" | "more" | "word" | "word+";
