@@ -52,3 +52,25 @@ test("the Census searches, counts phrases, and pages through its findings in a w
   expect(Math.abs((await page.evaluate(() => window.scrollY)) - y)).toBeLessThan(5);
   await expect(page.getByRole("heading", { name: "How the counting was done" })).toBeVisible();
 });
+
+test("the Census charts can be used from the keyboard alone", async ({ page }) => {
+  await page.goto("/stoa/census");
+  // the Coverage curve is a slider: reach it by focus, then move it with the arrow keys
+  const slider = page.getByRole("slider", { name: "How many of the commonest words" });
+  await slider.scrollIntoViewIfNeeded();
+  await slider.focus();
+  await expect(slider).toBeFocused();
+  const before = Number(await slider.getAttribute("aria-valuenow"));
+  await page.keyboard.press("ArrowRight");
+  expect(Number(await slider.getAttribute("aria-valuenow"))).toBeGreaterThan(before);
+  await page.keyboard.press("Home");
+  await expect(slider).toHaveAttribute("aria-valuenow", "1");
+
+  // a Moving map age button is operated with Enter, and says which age is chosen
+  const second = page.getByRole("group", { name: "Age" }).getByRole("button").nth(1);
+  await second.scrollIntoViewIfNeeded();
+  await second.focus();
+  await expect(second).toHaveAttribute("aria-pressed", "false");
+  await page.keyboard.press("Enter");
+  await expect(second).toHaveAttribute("aria-pressed", "true");
+});

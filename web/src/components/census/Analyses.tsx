@@ -76,19 +76,23 @@ function Coverage({ values, where, onBand }: { values: number[] | null; where: s
         onKeyDown={(e) => {
           if (e.key === "ArrowRight" || e.key === "ArrowUp") { e.preventDefault(); setK(Math.min(N, Math.ceil(at * 1.25) + (at < 4 ? 1 : 0))); }
           if (e.key === "ArrowLeft" || e.key === "ArrowDown") { e.preventDefault(); setK(Math.max(1, Math.floor(at / 1.25))); }
+          if (e.key === "PageUp") { e.preventDefault(); setK(Math.min(N, at * 10)); }
+          if (e.key === "PageDown") { e.preventDefault(); setK(Math.max(1, Math.floor(at / 10))); }
+          if (e.key === "Home") { e.preventDefault(); setK(1); }
+          if (e.key === "End") { e.preventDefault(); setK(N); }
         }}>
         {[25, 50, 75].map((y) => <line key={y} className={styles.grid} x1="0" x2="100" y1={100 - y} y2={100 - y} />)}
         <polygon className={styles.area} points={`0,100 ${pts.join(" ")} 100,100`} />
-        <polyline className={styles.line} points={pts.join(" ")} />
+        <polyline className={`${styles.line} ${styles.iconDot}`} points={pts.join(" ")} />
         <line className={styles.cursor} x1={lx(at)} x2={lx(at)} y1="0" y2="100" />
         <line className={styles.cursor} x1="0" x2={lx(at)} y1={100 - share * 100} y2={100 - share * 100} />
-        <circle className={styles.dot} cx={lx(at)} cy={100 - share * 100} r="1.8" />
+        <circle className={`${styles.dot} ${styles.iconDot}`} cx={lx(at)} cy={100 - share * 100} r="1.8" />
       </svg>
       <div className={styles.axis} aria-hidden="true">
         {ticks.map((t) => <span key={t} style={{ left: `${lx(t)}%` }}>{t >= 1000 ? `${t / 1000}k` : t}</span>)}
       </div>
       <p className={styles.anNote}>
-        Drag along the curve. Different dictionary words, commonest first (left), on a scale of tens. {fmt(curve.once)} of the {fmt(N)} are used only once here:{" "}
+        Drag along the curve, or use the arrow keys. Different dictionary words, commonest first (left), on a scale of tens. {fmt(curve.once)} of the {fmt(N)} are used only once here:{" "}
         <button type="button" className={styles.linkBtn} onClick={() => onBand("1", "Looking closer")}>see them</button>.
       </p>
     </figure>
@@ -121,8 +125,8 @@ function MadeOf({ reg, counts, where }: { reg: Register; counts: Map<number, num
       <p className={styles.anLead}><b>{top.label}</b> are <b className={styles.anBig}>{((top.n / parts.all) * 100).toFixed(1)}%</b> of the running words in {where} ({fmt(top.n)}).</p>
       <div className={styles.stack} onMouseLeave={() => setHover(null)}>
         {parts.rows.map((r, i) => (
-          <span key={r.id} tabIndex={0} style={{ "--w": `${(r.n / parts.all) * 100}%`, "--i": i } as React.CSSProperties} data-on={(hover ?? parts.rows[0].id) === r.id ? "" : undefined}
-            onMouseEnter={() => setHover(r.id)} onFocus={() => setHover(r.id)} aria-label={`${r.label}: ${((r.n / parts.all) * 100).toFixed(1)}%`} />
+          <span key={r.id} tabIndex={0} role="img" style={{ "--w": `${(r.n / parts.all) * 100}%`, "--i": i } as React.CSSProperties} data-on={(hover ?? parts.rows[0].id) === r.id ? "" : undefined}
+            onMouseEnter={() => setHover(r.id)} onFocus={() => setHover(r.id)} onBlur={() => setHover(null)} aria-label={`${r.label}: ${((r.n / parts.all) * 100).toFixed(1)}%`} />
         ))}
       </div>
       <ul className={styles.legend}>
@@ -150,17 +154,17 @@ function Shape({ meta, scope, onScope }: { meta: CensusMeta; scope: Scope; onSco
       <p className={styles.anLead}>
         {shown ? <><b>{shown[0]}</b>: <b className={styles.anBig}>{fmt(shown[1])}</b> words, {((shown[1] / meta.words) * 100).toFixed(1)}% of the library.</> : <>Where the {fmt(meta.words)} words come from: each square is a kind of writing in one period, larger for more words.</>}
       </p>
-      <div className={styles.shape} role="grid" aria-label="Words by kind of writing and period" onMouseLeave={() => setHover(null)}>
+      <div className={styles.shape} role="group" aria-label="Words by kind of writing and period" onMouseLeave={() => setHover(null)}>
         <span />
         {pers.map(([p, [label]]) => (
-          <button key={p} type="button" className={styles.shapeHead} onMouseEnter={() => setHover(p)} onFocus={() => setHover(p)} title={label}
+          <button key={p} type="button" className={styles.shapeHead} onMouseEnter={() => setHover(p)} onFocus={() => setHover(p)} onBlur={() => setHover(null)} title={label}
             aria-pressed={scope.p === +p.slice(1) && scope.f === null && !scope.a} onClick={() => onScope({ ...EMPTY_SCOPE, p: +p.slice(1) }, "Looking closer")}>
             {label.split(" · ")[0]}
           </button>
         ))}
         {fams.map(([f, [flabel]]) => (
-          <div key={f} role="row" style={{ display: "contents" }}>
-            <button type="button" className={styles.shapeRow} onMouseEnter={() => setHover(f)} onFocus={() => setHover(f)}
+          <div key={f} style={{ display: "contents" }}>
+            <button type="button" className={styles.shapeRow} onMouseEnter={() => setHover(f)} onFocus={() => setHover(f)} onBlur={() => setHover(null)}
               aria-pressed={scope.f === +f.slice(1) && scope.p === null && !scope.a} onClick={() => onScope({ ...EMPTY_SCOPE, f: +f.slice(1) }, "Looking closer")}>
               {flabel}
             </button>
@@ -168,7 +172,7 @@ function Shape({ meta, scope, onScope }: { meta: CensusMeta; scope: Scope; onSco
               const id = `${f}${p}`, n = meta.groups[id]?.[1] ?? 0;
               const on = scope.f === +f.slice(1) && scope.p === +p.slice(1) && !scope.a;
               return n ? (
-                <button key={id} type="button" className={styles.cell} aria-pressed={on} onMouseEnter={() => setHover(id)} onFocus={() => setHover(id)}
+                <button key={id} type="button" className={styles.cell} aria-pressed={on} onMouseEnter={() => setHover(id)} onFocus={() => setHover(id)} onBlur={() => setHover(null)}
                   aria-label={`${meta.groups[id][0]}: ${fmt(n)} words`} onClick={() => onScope({ ...EMPTY_SCOPE, f: +f.slice(1), p: +p.slice(1) }, "Looking closer")}>
                   <i style={{ "--s": `${Math.max(8, Math.sqrt(n / max) * 100)}%` } as React.CSSProperties} />
                 </button>
@@ -221,7 +225,7 @@ function Authors({ meta, scope, onScope }: { meta: CensusMeta; scope: Scope; onS
           {pts.map((p) => (
             <button key={p.id} type="button" style={{ left: `${X(p.words)}%`, top: `${Y(p.y)}%` }} aria-pressed={scope.a === p.id}
               data-on={h.id === p.id ? "" : undefined} aria-label={`${p.name}: ${fmtY(p.y)}, ${fmt(p.words)} words`}
-              onMouseEnter={() => setHover(p.id)} onFocus={() => setHover(p.id)} onClick={() => onScope({ ...EMPTY_SCOPE, a: p.id }, "Looking closer")} />
+              onMouseEnter={() => setHover(p.id)} onFocus={() => setHover(p.id)} onBlur={() => setHover(null)} onClick={() => onScope({ ...EMPTY_SCOPE, a: p.id }, "Looking closer")} />
           ))}
         </div>
         <span className={styles.yLab}>{measure === "rich" ? `different words per ${fmt(win)}` : "share of words no one else uses"}</span>

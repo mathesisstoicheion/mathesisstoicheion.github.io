@@ -392,7 +392,7 @@
 .legend li[data-on] i { background: var(--rubric); opacity: 1; }
 .legend small { color: var(--ink-2); font-variant-numeric: tabular-nums; }
 .shape { display: grid; grid-template-columns: minmax(7em, 1.6fr) repeat(5, minmax(0, 1fr)); gap: 2px; align-items: stretch; }
-.shapeHead, .shapeRow { font: inherit; font-size: var(--step--2); color: var(--ink-2); background: transparent; border: 0; cursor: pointer; padding: 2px; text-align: center; font-family: var(--f-label); letter-spacing: 0.03em; line-height: 1.2; }
+.shapeHead, .shapeRow { text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 3px; font: inherit; font-size: var(--step--2); color: var(--ink-2); background: transparent; border: 0; cursor: pointer; padding: 2px; text-align: center; font-family: var(--f-label); letter-spacing: 0.03em; line-height: 1.2; }
 .shapeRow { text-align: left; font-family: var(--f-body); font-size: var(--step--1); letter-spacing: 0; color: var(--ink); }
 .shapeHead[aria-pressed="true"], .shapeRow[aria-pressed="true"] { color: var(--rubric); }
 .cell, .cellEmpty { aspect-ratio: 1.6; display: grid; place-items: center; background: transparent; border: 0; padding: 0; box-shadow: var(--rule-box); }
@@ -408,7 +408,7 @@
 .scatter { position: absolute; inset: 0; width: 100%; height: 100%; }
 .dots2 { position: absolute; inset: 0; }
 .dots2 button { position: absolute; width: 18px; height: 18px; margin: -9px 0 0 -9px; border: 0; padding: 0; background: transparent; cursor: pointer; display: grid; place-items: center; }
-.dots2 button::after { content: ""; width: 7px; height: 7px; border-radius: var(--radius-round); background: var(--ink-3); opacity: 0.7; transition: transform var(--dur-quick) var(--ease); }
+.dots2 button::after { content: ""; clip-path: circle(50%); width: 7px; height: 7px; border-radius: var(--radius-round); background: var(--ink-3); opacity: 0.7; transition: transform var(--dur-quick) var(--ease); }
 .dots2 button[data-on]::after, .dots2 button[aria-pressed="true"]::after { background: var(--rubric); opacity: 1; transform: scale(1.6); }
 .scatterBox .axis { position: absolute; left: 0; right: 0; bottom: -1.4em; }
 .yLab { position: absolute; top: -2px; left: 0; font-size: var(--step--2); color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
@@ -487,3 +487,112 @@
 .catch button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 @media (min-width: 761px) { .duels, .catch { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
 @media (max-width: 760px) { .duels, .catch { margin-top: var(--space-6); } .duelers, .duelCharts { grid-template-columns: minmax(0, 1fr); } }
+
+/* ------------------------------------------------ the moving centre of the world */
+.moving { display: grid; gap: var(--space-3); }
+.moving h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
+@media (min-width: 761px) { .moving { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
+@media (max-width: 760px) { .moving { margin-top: var(--space-6); } }
+.movingAges { display: flex; flex-wrap: wrap; align-items: stretch; gap: var(--space-2); }
+.movingTabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.movingTab { display: grid; gap: 2px; text-align: left; padding: var(--space-2) var(--space-3); background: transparent; color: var(--ink-2); border: 0; border-bottom: 1px solid var(--rule); box-shadow: none; cursor: pointer; font: inherit; font-size: var(--step--1); }
+.movingTab small { font-size: var(--step--2); color: var(--ink-3); }
+.movingTab[aria-pressed="true"] { color: var(--ink); box-shadow: inset 0 -3px 0 var(--rubric); }
+.movingPlay { display: inline-flex; align-items: center; }
+.movingBody { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 1000px) { .movingBody { grid-template-columns: minmax(0, 760px) minmax(0, 1fr); align-items: start; } }
+.movingFig { margin: 0; display: grid; gap: var(--space-2); max-width: 760px; }
+.movingInfo { margin: 0; min-height: 1.6em; font-size: var(--step--1); color: var(--ink-2); }
+.movingInfo b { font-family: var(--f-greek); font-weight: 400; color: var(--ink); }
+.movingHint { color: var(--ink-3); }
+.movingSvg { width: 100%; height: auto; display: block; }
+.movingLand { fill: var(--bg); stroke: var(--rule); stroke-width: 2; }
+.movingSea { fill: var(--rule); fill-opacity: 0.45; stroke: none; }
+.movingDot { cursor: pointer; outline: none; }
+.movingDot circle { transition: r 0.6s ease, opacity 0.6s ease; }
+.movingPlace { fill: var(--ink-3); fill-opacity: 0.55; }
+.movingTop { fill: var(--rubric); fill-opacity: 0.7; }
+.movingDot:hover circle, .movingDot:focus-visible circle { stroke: var(--ink); stroke-width: 3; }
+.movingDot text { font-family: var(--f-label); fill: var(--ink); stroke: var(--bg); paint-order: stroke; pointer-events: none; }
+.movingTrail { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingRing { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingNow { fill: none; stroke: var(--rubric); pointer-events: none; }
+.movingCaption { font-size: var(--step--1); color: var(--ink-2); }
+.movingList { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
+.movingList button { display: grid; grid-template-columns: 2ch auto 1fr auto; align-items: baseline; gap: var(--space-3); width: 100%; text-align: left; padding: var(--space-2) 0; background: transparent; border: 0; box-shadow: var(--rule-under); color: var(--ink); font: inherit; cursor: pointer; }
+.movingList button:hover { color: var(--rubric); }
+.movingRank { color: var(--ink-3); font-size: var(--step--2); }
+.movingList b { font-family: var(--f-greek); font-weight: 400; text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.movingEn { color: var(--ink-2); }
+.movingList small { color: var(--ink-3); }
+
+@media (max-width: 760px) {
+  .movingAges { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--space-2); align-items: end; }
+  .movingTabs { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 0; }
+  .movingTab { padding: var(--space-2) var(--space-1); font-size: var(--step--2); }
+  .movingTab small { display: none; }
+}
+
+/* ------------------------------------------------ the body atlas */
+.body { display: grid; gap: var(--space-3); }
+.body h2 { font-family: var(--f-title); font-size: var(--step-3); margin: 0; }
+@media (min-width: 761px) { .body { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
+@media (max-width: 760px) { .body { margin-top: var(--space-6); } }
+.bodyTabs { display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.bodyMain { display: grid; gap: var(--space-4); grid-template-columns: minmax(0, 1fr); }
+@media (min-width: 900px) { .bodyMain { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; } }
+.bodyFig { margin: 0; display: grid; gap: var(--space-2); justify-items: center; }
+.bodyInfo { margin: 0; min-height: 1.6em; font-size: var(--step--1); color: var(--ink-2); text-align: center; }
+.bodyInfo b { font-family: var(--f-greek); font-weight: 400; color: var(--ink); }
+.bodyHint { color: var(--ink-3); }
+.bodySvg { max-height: 520px; width: auto; height: 520px; max-width: 100%; display: block; margin: 0 auto; }
+.bodyLines path { fill: var(--bg); stroke: var(--ink-2); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
+.bodyLines path:nth-child(n+2) { fill: none; }
+.bodyDot { cursor: pointer; outline: none; }
+.bodyDot circle { fill: var(--rubric); fill-opacity: 0.75; transition: r 0.6s var(--ease); }
+.bodyDot text { font-family: var(--f-label); font-size: 13px; fill: var(--ink); stroke: var(--bg); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; pointer-events: none; }
+.bodyDot:hover circle, .bodyDot:focus-visible circle { stroke: var(--ink); stroke-width: 1; }
+.bodyList { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+.bodyRow { display: grid; grid-template-columns: 1.6em minmax(0, 11em) minmax(0, 1fr) 3.2em; align-items: center; gap: var(--space-2); width: 100%; padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; font-size: var(--step--1); color: var(--ink-2); text-align: left; cursor: pointer; }
+.bodyRow:hover { color: var(--ink); }
+.bodyRank { color: var(--ink-3); font-size: var(--step--2); }
+.bodyWord [lang="grc"] { font-family: var(--f-greek); color: var(--ink); }
+.bodyWord small { color: var(--ink-3); font-size: var(--step--2); }
+.bodyBar { display: block; height: 6px; }
+.bodyBar i { display: block; height: 100%; background: var(--ink-3); }
+.bodyBar i.bodyTop { background: var(--rubric); }
+.bodyRate { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* one visible keyboard focus for every census control (the same ring for a mouse-less reader as the hover gives a mouse) */
+.iconDot { cursor: pointer; }
+.shapeHead:focus-visible, .shapeRow:focus-visible, .cell:focus-visible, .seg button:focus-visible, .dots2 button:focus-visible,
+.movingTab:focus-visible, .movingList button:focus-visible, .bodyRow:focus-visible, .bands button:focus-visible,
+.stack span:focus-visible, .duelTable tr:focus-visible, .curve:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }
+.movingDot:focus-visible, .bodyDot:focus-visible { outline: none; }
+.movingDot:focus-visible circle, .bodyDot:focus-visible circle { stroke: var(--rubric); stroke-width: 3; }
+
+/* ------------------------------------------------ fingers: every census control reaches 44 x 44 px (--tap) on a touch screen
+   Nothing is drawn differently: a hit area widens past the drawn control (an invisible ::after, or a transparent circle in
+   the svg maps), or a row is simply given the height the moving centre's list rows already have. */
+@media (pointer: coarse) {
+  /* the global chip's hit area is 5px beyond the frame, so two wrapped rows 8px apart touch; as in the Finder's .cats above,
+     the rows stand 10px apart (a 44 px target each, side by side but not overlapping) */
+  .bodyTabs, .readyDuels { row-gap: calc(var(--space-2) * 1.25); }
+  /* the era headings above the table: their hit area reaches upward, over the card's own text, not down onto the cells */
+  .shapeHead { position: relative; }
+  .shapeHead::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; top: calc(var(--tap) * -0.4); }
+  .bodyTabs :global(.chip)::after, .readyDuels :global(.chip)::after { inset: auto 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .seg button { position: relative; }
+  .seg button::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .linkBtn { position: relative; }
+  .linkBtn::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
+  .dueler input { min-height: var(--tap); box-sizing: border-box; }
+  .bodyRow, .movingList button { min-height: var(--tap); box-sizing: border-box; }
+  .movingList button { align-content: center; }
+  .bodyRow { align-content: center; }
+  /* the scatter's dots: the drawn dot (the ::after) stays 7 px and in the middle of a 44 px button */
+  .dots2 button { width: var(--tap); height: var(--tap); margin: calc(var(--tap) / -2) 0 0 calc(var(--tap) / -2); }
+  /* the maps' places: a transparent circle (its size set from the map's scale by useHitRadius) before the drawn one */
+  g:is(.movingDot, .bodyDot) circle.hit { display: inline; fill: transparent; fill-opacity: 1; stroke: none; pointer-events: all; r: calc(var(--hit, 0) * 1px); transition: none; }
+}
+circle.hit { display: none; }
