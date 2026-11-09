@@ -1,0 +1,1 @@
+The word look-up's Wiktionary part is clean: no page code, and meanings grouped by case (with genitive, with accusative).

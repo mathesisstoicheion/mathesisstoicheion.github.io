@@ -1,0 +1,32 @@
+name: Publish the phone app
+
+# The signed phone app arrives here in parts (signed privately, see android.yml on the app's branch). This joins
+# them and puts the app on a download page (a GitHub release). This branch is never merged.
+on:
+  push:
+    branches: [android-beta-signed]
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Join the parts and check them
+        run: |
+          cat mathesis.apk.part* > mathesis.apk
+          echo "$(cat mathesis.sha256)  mathesis.apk" | sha256sum -c
+          N=$(cat build-number)
+          cp mathesis.apk "mathesis-beta-$N.apk"
+          echo "N=$N" >> "$GITHUB_ENV"
+      # what's new: shown by the app when it offers this beta (android/.../BetaUpdates.java)
+      - name: Publish
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "app-beta-$N" mathesis.apk "mathesis-beta-$N.apk" \
+            --target "$GITHUB_SHA" --latest \
+            --title "Phone app, beta $N" \
+            --notes-file notes.txt
