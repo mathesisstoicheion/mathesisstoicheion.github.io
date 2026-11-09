@@ -42,11 +42,40 @@ export default function Treasury() {
     <div className={styles.treasury} data-empty={empty ? "" : undefined}>
       {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
       {empty && (
-        <div className={styles.welcome}>
-          <p>Your Treasury is empty so far. Open a text in the Mouseion, then select some Greek words, or click a passage number, to bookmark it, add it to your anthology, highlight it or write a note.
-            Click any word to look it up.</p>
-          <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}><Icon name="library" />Open the Mouseion</Link>
-        </div>
+        <section className={styles.fills} aria-labelledby="fills-h">
+          <h2 id="fills-h" className={styles.fillsH}>How the Treasury fills</h2>
+          <ol className={styles.steps}>
+            <li className={styles.step}>
+              <span className={styles.stepNo} aria-hidden="true">I</span>
+              <h3>Open a text</h3>
+              <p>Choose any work in the Mouseion and open it in the reader.</p>
+              <div className={styles.specimen}>
+                <Link className="btn" href={AREAS.library.href} transitionTypes={["page-turn"]}><Icon name="library" />Open the Mouseion</Link>
+              </div>
+            </li>
+            <li className={styles.step}>
+              <span className={styles.stepNo} aria-hidden="true">II</span>
+              <h3>Tap a word or a line</h3>
+              <p>A word opens its meaning; a line&rsquo;s number opens what you can keep.</p>
+              <div className={styles.specimen}>
+                <span className={styles.verse} lang="grc">μῆνιν <span className={styles.picked}>ἄειδε</span> θεὰ Πηληϊάδεω Ἀχιλῆος</span>
+              </div>
+            </li>
+            <li className={styles.step}>
+              <span className={styles.stepNo} aria-hidden="true">III</span>
+              <h3>Keep it</h3>
+              <p>Bookmark it, highlight it, add it to your anthology or write a note. It appears here.</p>
+              <div className={styles.specimen}>
+                <ul className={styles.kinds}>
+                  <li><Icon name="bookmark" />Bookmark</li>
+                  <li>Highlight</li>
+                  <li><Icon name="favourite" />Anthology</li>
+                  <li><Icon name="note" />Note</li>
+                </ul>
+              </div>
+            </li>
+          </ol>
+        </section>
       )}
 
       {/* the moderator's private translations: shown to the moderator alone */}
@@ -66,6 +95,7 @@ export default function Treasury() {
         {section === "notebooks" && <NotebooksSection />}
       </section>
 
+      <div className={styles.foot}>
       <KeepSafe t={t} compact={empty} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
 
       {/* the Mine door also keeps what you download for reading offline (Phase 11: Downloads moved here from the footer) */}
@@ -74,6 +104,7 @@ export default function Treasury() {
         <b>Read without a connection</b>
         <span>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</span>
       </Link>
+      </div>
     </div>
   );
 }
