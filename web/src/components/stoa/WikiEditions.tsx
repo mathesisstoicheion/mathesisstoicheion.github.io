@@ -51,11 +51,19 @@ export default function WikiEditions() {
       {shown.length === 0 && <p className={idx.empty}>Nothing matches. Try a shorter search.</p>}
 
       {groups.map((g) => {
+        // a publisher's city, when its name ends with it, "Teubner (Leipzig)", is set beneath the name as an imprint's place
+        const at = /^(.*) \(([A-Z][\p{L}]+(?: [A-Z][\p{L}]+)?)\)$/u.exec(g.name);
+        const most = Math.max(...groups.map((x) => x.rows.length));
         const full = terms.length > 0 || all.has(g.id);
         const list = full ? g.rows : g.rows.slice(0, FIRST);
         return (
           <details key={g.id} className={styles.group} open={terms.length > 0}>
-            <summary><span className={styles.gname}>{g.name}</span><span className={styles.gcount}>{num(g.rows.length)}</span></summary>
+            <summary>
+              <span className={styles.gname}>{at ? at[1] : g.name}{at && <span className={styles.gcity}>{at[2]}</span>}</span>
+              {/* how many texts it gave the library, against the most any publisher gave */}
+              <span className={styles.gbar} aria-hidden="true"><i style={{ width: `${Math.max(1.5, (g.rows.length / most) * 100)}%` }} /></span>
+              <span className={styles.gcount}>{num(g.rows.length)}</span>
+            </summary>
             <ul className={styles.list}>
               {list.map((r) => (
                 <li key={r.text.urn}>

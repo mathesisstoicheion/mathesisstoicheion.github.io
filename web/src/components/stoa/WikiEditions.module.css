@@ -9,6 +9,21 @@
 @media (hover: hover) { .group > summary:hover .gname { color: var(--rubric); } }
 .gname { flex: 1; font-family: var(--f-title); font-size: var(--step-1); line-height: 1.25; transition: color var(--dur-quick) var(--ease); }
 .gcount { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); }
+/* each publisher as an imprint (the owner, 2026-11-09: each page its own design): the city in red small capitals beneath the
+   name, as a title page sets its place of printing, and a rule of ink as long as its share of the library's texts */
+.group > summary { align-items: center; }
+.gname { display: grid; }
+.gcity { font: 500 var(--step--2) / 1.4 var(--f-label); letter-spacing: 0.18em; text-transform: uppercase; color: var(--rubric); }
+.gbar { flex: 0 0 clamp(120px, 26%, 360px); height: 6px; box-shadow: inset 0 -1px 0 var(--rule); }
+.gbar i { display: block; height: 100%; background: var(--ink); }
+.group[open] .gbar i { background: var(--rubric); }
+@media (hover: hover) { .group > summary:hover .gbar i { background: var(--rubric); } }
+.gcount { min-width: 3.5ch; text-align: right; font: 400 var(--step-1) / 1 var(--f-title); color: var(--ink); }
+@media (max-width: 760px) {
+  .group > summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-1) 0; }
+  .gcount { font-size: var(--step-sub); padding-left: var(--space-3); }
+  .gbar { grid-column: 2 / -1; grid-row: 2; }
+}
 .list { list-style: none; margin: 0 0 0 22px; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .row {
   display: grid; grid-template-columns: minmax(0, 1fr); gap: 2px 20px; padding: 10px 2px; text-decoration: none; color: inherit;
