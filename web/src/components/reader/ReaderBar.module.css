@@ -213,7 +213,7 @@
 }
 .notesMenu { top: calc(100% + var(--space-2)); right: 0; width: min(22rem, calc(100vw - 2 * var(--gutter))); max-height: min(70dvh, 36rem); }
 /* it stands aside for what covers that corner (the look-up, a side panel), and on a phone it goes with the foot bar as you read on */
-:global([data-covers~="lookup"]) .notesFab, :global([data-covers~="panel"]) .notesFab { opacity: 0; visibility: hidden; transition: opacity var(--dur) var(--ease), visibility 0s var(--dur); }
+:global([data-covers~="lookup"]) .notesFab, :global([data-covers~="note"]) .notesFab, :global([data-covers~="panel"]) .notesFab { opacity: 0; visibility: hidden; transition: opacity var(--dur) var(--ease), visibility 0s var(--dur); }
 @media (max-width: 760px), (pointer: coarse) and (max-width: 900px) {
   .notesFab { right: max(var(--gutter), env(safe-area-inset-right, 0px)); }
   :global([data-foot="away"]) .notesFab { opacity: 0; visibility: hidden; transition: opacity var(--dur) var(--ease), visibility 0s var(--dur); }

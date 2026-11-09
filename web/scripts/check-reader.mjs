@@ -524,10 +524,13 @@ async function returning(ctx, settings) {
   await page.waitForTimeout(1500);
   return page;
 }
-const STUDY_ROWS = ["Find in this text", "Colour by case", "Metre", "Transliteration", "Try it first", "Vocabulary for this page", "Your notes and marks",
-  "Open a second book beside this one", "Float the reader", "Places on this page", "How it was written", "Listen to the English", "Signs beside the scroll bar"];
+// Study holds the reading helps and the ways deeper only; Find and Listen are buttons of the bar (rows of Study only in the two-book bar), and the rest of the book's and the page's ways are in More
+const STUDY_ROWS = ["Colour by case", "Metre", "Transliteration", "Try it first", "Vocabulary for this page", "Places on this page", "How it was written"];
+const MORE_ROWS = ["Open a second book beside this one", "Signs beside the scroll bar"];   // (Float: a bar button on a computer, a row of More on a phone)
+// rows that are no longer in Study, whatever the screen
+const GONE_FROM_STUDY = ["Find in this text", "Listen to the English", "Your notes and marks", "Open a second book beside this one", "Float the reader", "Signs beside the scroll bar", "Keys", "Home"];
 // a panel a row of Study opens: the row's name, and what the panel's own first control is
-const STUDY_PANELS = ["Find in this text", "Vocabulary for this page", "Places on this page", "How it was written"];
+const STUDY_PANELS = ["Vocabulary for this page", "Places on this page", "How it was written"];
 /** open a menu of the bar by its button's name (unless open), and give back its panel */
 async function openMenu(page, name) {
   const b = await barButton(page, name);
@@ -535,7 +538,7 @@ async function openMenu(page, name) {
   await page.waitForTimeout(450);
   return page.locator(`[id="${await b.getAttribute("aria-controls")}"]`);
 }
-const BAR = { aa: /^Text: page and size$/, study: /^Study\b/, goto: "Go to a line or book" };
+const BAR = { aa: /^Text: page and size$/, study: /^Study\b/, more: /^More\b/, goto: "Go to a line or book" };
 /** whether the foot bar is out of sight (slipped away: hidden, or stood below the window) */
 const awayNow = (page) => page.evaluate(() => { const f = document.querySelector("[data-foot-bar]"); if (!f) return true; const r = f.getBoundingClientRect(); return getComputedStyle(f).visibility === "hidden" || r.top >= innerHeight - 1; });
 
@@ -554,7 +557,8 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
     if (!(await bar.count())) found.push(`foot ${tag}: no bar along the foot of the reader`);
     else {
       const parts = [["← Library", bar.getByRole("link", { name: /library/i })], ["where you are", bar.getByRole("button", { name: BAR.goto })],
-        ["Text (Aa)", bar.getByRole("button", { name: BAR.aa })], ["Study", bar.getByRole("button", { name: BAR.study })]];
+        ["Find", bar.getByRole("button", { name: "Find", exact: true })], ["Listen", bar.getByRole("button", { name: "Listen", exact: true })],
+        ["Text (Aa)", bar.getByRole("button", { name: BAR.aa })], ["Study", bar.getByRole("button", { name: BAR.study })], ["More", bar.getByRole("button", { name: BAR.more })]];
       const boxes = [];
       for (const [n, loc] of parts) {
         const b = (await loc.count()) ? await loc.first().boundingBox() : null;
@@ -570,14 +574,23 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
       if (fb && (fb.height < 50 || fb.height > 72)) found.push(`foot ${tag}: the bar is ${Math.round(fb.height)} px tall, not about 56`);
       const link = parts[0][1];
       if ((await link.count()) && !/\/library\/?$/.test((await link.first().getAttribute("href")) ?? "")) found.push(`foot ${tag}: "Library" does not lead to the library`);
-      // where you are: "Book 1", a rule with a mark, "line 25 of 611" on a computer; only "line 25 of 611" on a phone
+      // where you are: "Book 1", a rule with a mark, "line 25 of 611" on a computer; on a phone (420 px and under) the number alone, whole, the level word and "of 611" left to its accessible name
       // (by its name in the page, not its role: a bar that has slipped away is hidden from the roles, and still says where you are)
       const where = bar.locator('button[aria-controls$="-goto"]');
       const said = async (words = false) => ((await where.count()) ? ((await (words ? where.first().innerText() : where.first().textContent())) ?? "").replace(/\s+/g, " ").trim() : "");
       const first = await said(true);
-      const n1 = +(first.match(/line (\d+) of 611/)?.[1] ?? -1);
-      if (n1 < 0) found.push(`foot ${tag}: where you are reads "${first}", not "line N of 611"`);
-      if (touch && /Book/.test(first)) found.push(`foot ${tag}: a phone's bar also names the book ("${first}"), not only the line`);
+      // (the name stays whole for the screen reader: "<number>, go to a line or book", with the level word and the total heard)
+      const num = (t) => +((touch ? t.match(/(\d+)/) : t.match(/line (\d+) of 611/))?.[1] ?? -1);
+      const n1 = num(first);
+      if (n1 < 0) found.push(`foot ${tag}: where you are reads "${first}", not ${touch ? "its number" : '"line N of 611"'}`);
+      if (touch && /Book/.test(first)) found.push(`foot ${tag}: a phone's bar also names the book ("${first}"), not only the number`);
+      if (touch) {
+        const at = await where.first().evaluate((b) => { const e = [...b.querySelectorAll("span")].find((x) => [...x.classList].some((c) => c.endsWith("__at"))); if (!e) return null; const r = e.getBoundingClientRect(); const br = b.getBoundingClientRect(); return { w: r.width, cut: e.scrollWidth > e.clientWidth + 0.5, inside: r.left >= br.left - 0.5 && r.right <= br.right + 0.5, level: [...e.querySelectorAll("span")].some((x) => x.getBoundingClientRect().width > 0 && /[a-z]/i.test(x.textContent)) }; });
+        if (!at || at.w < 3) found.push(`foot ${tag}: the number of the place is not drawn on the bar`);
+        else if (at.cut || !at.inside) found.push(`foot ${tag}: the number of the place is cut short or runs out of its button`);
+        else if (at.level) found.push(`foot ${tag}: a phone's bar still draws the level word or "of N" beside the number`);
+        if (!/line|book|go to/i.test((await where.first().getAttribute("aria-label")) ?? first)) found.push(`foot ${tag}: the place's full name ("line N of 611, go to a line or book") is not kept for the screen reader`);
+      }
       if (!touch && !/Book 1/.test(first)) found.push(`foot ${tag}: a computer's bar does not name the book where you are ("${first}")`);
       const mark = bar.locator('[class$="__mark"]');
       const markAt = async () => ((await mark.count()) ? (await mark.first().boundingBox())?.x ?? -1 : -1);
@@ -585,7 +598,7 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
       const m1 = await markAt();
       await page.evaluate(() => scrollTo({ top: innerHeight * 3, behavior: "instant" }));
       await page.waitForTimeout(900);
-      const n2 = +((await said()).match(/line (\d+) of 611/)?.[1] ?? -1);
+      const n2 = num(((await where.first().locator('[class*="__at"]').first().textContent()) ?? "").replace(/\s+/g, " ").trim());
       if (n2 <= n1) found.push(`foot ${tag}: the place stays at line ${n1} after reading on (now line ${n2})`);
       if (!touch && (await markAt()) <= m1) found.push(`foot ${tag}: the progress mark does not move on as the page is read`);
       await page.evaluate(() => scrollTo({ top: 0, behavior: "instant" }));
@@ -600,7 +613,7 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
       };
       await above('"Continue to Book 2"', page.getByRole("button", { name: /^Continue to Book 2/ }));
       await above("Back to top", page.getByRole("button", { name: "Back to top" }));
-      await (await openMenu(page, BAR.study)).getByRole("button", { name: "Listen to the English", exact: true }).click();
+      await (await barButton(page, /^Listen$/)).click();
       await page.waitForTimeout(900);
       await above("Listen's player", page.getByRole("region", { name: "Listen to the translation" }));
       await page.getByRole("region", { name: "Listen to the translation" }).getByRole("button", { name: "Stop and close" }).click().catch(() => null);
@@ -626,7 +639,7 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
       if (await goto.getByRole("button", { name: /^(Previous|Next) page$/ }).count()) found.push(`foot ${tag}: Go to has ← → page arrows (the foot of each page has the way on and back)`);
       await page.keyboard.press("Escape");
     }
-    if (await page.getByRole("button", { name: /^(Tools|Marks|More)\b/ }).count()) found.push(`foot ${tag}: the old bar's Tools, Marks or More button is still on the page`);
+    if (await page.getByRole("button", { name: /^(Tools|Marks)\b/ }).count()) found.push(`foot ${tag}: the old bar's Tools, Marks or More button is still on the page`);
     if (await page.getByRole("button", { name: BAR.goto }).count() !== 1) found.push(`foot ${tag}: Go to is not one button (${await page.getByRole("button", { name: BAR.goto }).count()})`);
   });
 
@@ -686,13 +699,13 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
         await page.waitForTimeout(900);
         if (await awayNow(page)) found.push(`slips ${tag}: the bar does not come back when the look-up sheet is closed`);
       }
-      // a panel's sheet (Find in this text, opened from Study) stands where the bar was too, and the bar is back when it is put away
+      // a panel's sheet (Vocabulary, opened from Study) stands where the bar was too, and the bar is back when it is put away
       const fromStudy = await openMenu(page, BAR.study);
-      await fromStudy.getByRole("button", { name: "Find in this text", exact: true }).click();
+      await fromStudy.getByRole("button", { name: "Vocabulary for this page", exact: true }).click();
       const sheet = page.locator("aside").filter({ has: page.getByRole("button", { name: "Back to Study" }) });
       await sheet.waitFor({ timeout: 15000 });
       await page.waitForTimeout(900);
-      if (!(await awayNow(page))) found.push(`slips ${tag}: the bar still stands under a panel's sheet (Find in this text)`);
+      if (!(await awayNow(page))) found.push(`slips ${tag}: the bar still stands under a panel's sheet (Vocabulary)`);
       await sheet.focus();
       await page.keyboard.press("Escape");   // back to Study
       await page.waitForTimeout(500);
@@ -734,12 +747,16 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
       return l || (b.getAttribute("aria-label") ?? b.textContent.trim().replace(/\s+/g, " "));
     }));
     for (const n of STUDY_ROWS) if (!rowNames.includes(n)) found.push(`study ${tag}: "${n}" is not in Study`);
-    if (w > 900 && !rowNames.includes("Keys")) found.push(`study ${tag}: "Keys" is not in Study`);
-    for (const n of ["Greek text", "Translation"]) if (!(await study.getByRole("combobox", { name: n }).count())) found.push(`study ${tag}: the "${n}" choice is not in Study`);
-    for (const n of ["Edition and translation", "Reading help", "Go deeper"]) if (!(await study.getByRole("heading", { name: n }).count())) found.push(`study ${tag}: Study has no group "${n}"`);
-    // in order: Reading help, then Go deeper, then Edition and translation
+    // what moved out: Find and Listen to the bar, the book's and the page's ways to More, the editions to Text; the one-book Study has none of them
+    for (const n of GONE_FROM_STUDY) if (rowNames.includes(n)) found.push(`study ${tag}: "${n}" is still in Study (it has its own button or menu now)`);
+    for (const n of ["Greek text", "Translation"]) if (await study.getByRole("combobox", { name: n }).count()) found.push(`study ${tag}: the "${n}" choice is still in Study (it is in Text)`);
+    for (const n of ["Reading help", "Go deeper"]) if (!(await study.getByRole("heading", { name: n }).count())) found.push(`study ${tag}: Study has no group "${n}"`);
+    if (await study.getByRole("heading", { name: "Edition and translation" }).count()) found.push(`study ${tag}: Study still has the group "Edition and translation"`);
+    // the groups fold: each head is a button that says whether it is open
+    for (const b of await study.getByRole("heading", { level: 3 }).getByRole("button").all()) if (!["true", "false"].includes((await b.getAttribute("aria-expanded")) ?? "")) found.push(`study ${tag}: a group head of Study does not say whether it is open (aria-expanded)`);
+    // in order: Reading help, then Go deeper
     const heads = await study.getByRole("heading", { level: 3 }).allInnerTexts();
-    const order = ["Reading help", "Go deeper", "Edition and translation"].map((n) => heads.findIndex((t) => t.toLowerCase() === n.toLowerCase()));
+    const order = ["Reading help", "Go deeper"].map((n) => heads.findIndex((t) => t.toLowerCase() === n.toLowerCase()));
     if (order.some((i, k) => i < 0 || (k && i < order[k - 1]))) found.push(`study ${tag}: the groups of Study are not in order (${heads.join(", ")})`);
     // nothing twice, and nothing that Study should not have
     const dupes = rowNames.filter((n, i) => rowNames.indexOf(n) !== i);
@@ -751,8 +768,24 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
   });
 
   await section("study", async () => {
+    // ---- study: More holds the book's ways and the page's, once each
+    const more = await openMenu(page, BAR.more);
+    const names = await more.evaluate((p) => [...p.querySelectorAll("button, a")].filter((b) => b.getBoundingClientRect().width > 0 && getComputedStyle(b).visibility !== "hidden").map((b) => {
+      const l = (b.getAttribute("aria-labelledby") ?? "").split(" ").slice(0, 1).map((i) => document.getElementById(i)?.textContent ?? "").join("").trim();
+      return l || (b.getAttribute("aria-label") ?? b.textContent.trim().replace(/\s+/g, " "));
+    }));
+    for (const n of MORE_ROWS) if (!names.includes(n)) found.push(`study ${tag}: "${n}" is not in More`);
+    if (w < 900 && !names.includes("Float the reader")) found.push(`study ${tag}: "Float the reader" is not in More (a phone's bar has no Float button)`);
+    if (w > 900 && !names.includes("Keys")) found.push(`study ${tag}: "Keys" is not in More`);
+    for (const n of ["This book", "The page"]) if (!(await more.getByRole("heading", { name: n }).count())) found.push(`study ${tag}: More has no group "${n}"`);
+    for (const d of new Set(names.filter((n, i) => names.indexOf(n) !== i))) found.push(`study ${tag}: "${d}" is in More twice`);
+    await page.keyboard.press("Escape");
+  });
+
+  await section("study", async () => {
     // ---- study: Aa holds the page, the size, the spacing and the columns, and nothing else
     const aa = await openMenu(page, BAR.aa);
+    for (const n of ["Greek text", "Translation"]) if (!(await aa.getByRole("combobox", { name: n }).count())) found.push(`study ${tag}: Text has no "${n}" choice`);
     for (const g of ["Page", "Columns"]) if (!(await aa.getByRole("radiogroup", { name: g }).count())) found.push(`study ${tag}: Aa has no "${g}" choice`);
     for (const n of ["Follow device", "Paper", "Night"]) if (!(await aa.getByRole("radio", { name: n }).count())) found.push(`study ${tag}: Aa's page has no "${n}"`);
     for (const n of ["Greek", "Both", "English"]) if (!(await aa.getByRole("radio", { name: n, exact: true }).count())) found.push(`study ${tag}: Aa's columns have no "${n}"`);
@@ -767,7 +800,7 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
 
   await section("close", async () => {
     // ---- close: every menu has a visible close, and Escape; Tab goes from its button into it
-    for (const [name, key] of [[BAR.aa, "Aa"], [BAR.study, "Study"], [BAR.goto, "Go to"]]) {
+    for (const [name, key] of [[BAR.aa, "Aa"], [BAR.study, "Study"], [BAR.more, "More"], [BAR.goto, "Go to"]]) {
       const btn = page.getByRole("button", { name }).first();
       const menu = await openMenu(page, name);
       const close = menu.getByRole("button", { name: "Close", exact: true });
@@ -818,15 +851,15 @@ for (const [w, h, touch] of runs("foot") ? [[1440, 900, false], [390, 844, true]
     }
     // the list of books for a second one is a window, and has the same way back (and Escape does what it does)
     for (const how of ["back", "Escape"]) {
-      const sbtn = page.getByRole("button", { name: BAR.study }).first();
+      const sbtn = page.getByRole("button", { name: BAR.study }).first(), mbtn = page.getByRole("button", { name: BAR.more }).first();
       const dlg = page.getByRole("dialog", { name: "Open a second book" });
-      await openMenu(page, BAR.study);
-      await page.locator(`[id="${await sbtn.getAttribute("aria-controls")}"]`).getByRole("button", { name: "Open a second book beside this one", exact: true }).click();
+      await openMenu(page, BAR.more);
+      await page.locator(`[id="${await mbtn.getAttribute("aria-controls")}"]`).getByRole("button", { name: "Open a second book beside this one", exact: true }).click();
       await page.waitForTimeout(900);
-      if (!(await dlg.getByRole("button", { name: "Back to Study" }).count())) { found.push(`close ${tag}: the list of books for a second one opens from Study without "Back to Study"`); await page.keyboard.press("Escape"); continue; }
-      if (how === "back") await dlg.getByRole("button", { name: "Back to Study" }).click(); else await page.keyboard.press("Escape");
+      if (!(await dlg.getByRole("button", { name: /^Back to (Study|More)$/ }).count())) { found.push(`close ${tag}: the list of books for a second one opens from More without "Back to Study"`); await page.keyboard.press("Escape"); continue; }
+      if (how === "back") await dlg.getByRole("button", { name: /^Back to (Study|More)$/ }).click(); else await page.keyboard.press("Escape");
       await page.waitForTimeout(700);
-      if ((await sbtn.getAttribute("aria-expanded")) !== "true" || (await dlg.count())) found.push(`close ${tag}: ${how === "back" ? '"Back to Study"' : "Escape"} in the list of books for a second one does not bring Study back`);
+      if ((await mbtn.getAttribute("aria-expanded")) !== "true" || (await dlg.count())) found.push(`close ${tag}: ${how === "back" ? '"Back to Study"' : "Escape"} in the list of books for a second one does not bring More back`);
       await page.keyboard.press("Escape");
       await page.waitForTimeout(300);
     }
