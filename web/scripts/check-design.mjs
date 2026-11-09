@@ -26,15 +26,16 @@
 // Proved 2026-10-23: Back to top filled with a yellow of its own was listed (PROVE_CSS='[class*="__btt"] { background:
 // #c8b428 !important }' on the reader opened at Iliad 1.200, which shows the button).
 import { chromium } from "playwright";
+import { withoutAccountPages } from "./lib/pages.mjs";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 // (the reader opens part-way down the Iliad, so its Back to top shows too)
-const PAGES = only.length ? only : [
+const PAGES = await withoutAccountPages(base, only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/tables", "/academy/vocabulary",
   "/academy/practice", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/stoa/kerameikos", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.200", "/search?q=μῆνιν",
   "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/treasury",
   "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall", "/no-such-page",
-];
+]);
 const THREE = ["EB Garamond", "GFS Didot", "Gentium Book Plus"];
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];

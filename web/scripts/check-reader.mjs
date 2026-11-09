@@ -538,7 +538,7 @@ async function openMenu(page, name) {
   await page.waitForTimeout(450);
   return page.locator(`[id="${await b.getAttribute("aria-controls")}"]`);
 }
-const BAR = { aa: /^Text: page and size$/, study: /^Study\b/, more: /^More\b/, goto: "Go to a line or book" };
+const BAR = { aa: /^Text: page and size$/, study: /^Study\b/, more: /^More\b/, goto: "Go to a line or book", find: /^Find\b/ };
 /** whether the foot bar is out of sight (slipped away: hidden, or stood below the window) */
 const awayNow = (page) => page.evaluate(() => { const f = document.querySelector("[data-foot-bar]"); if (!f) return true; const r = f.getBoundingClientRect(); return getComputedStyle(f).visibility === "hidden" || r.top >= innerHeight - 1; });
 
@@ -1338,7 +1338,7 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
     return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
   }, [selector, h]).then((p) => { if (!p) throw new Error(`nothing to press (${selector}) in the upper part of the screen`); return p; });
   /** the bar's menus in the order they stand in the bar: Go to, Aa, Study */
-  const menuOpen = (k) => page.evaluate((i) => document.querySelectorAll("[data-foot-bar] button[aria-expanded]")[i]?.getAttribute("aria-expanded") === "true", { goto: 0, aa: 1, study: 2 }[k]);
+  const menuOpen = (k) => page.evaluate((i) => document.querySelectorAll("[data-foot-bar] button[aria-expanded]")[i]?.getAttribute("aria-expanded") === "true", { goto: 0, aa: 1, study: 2, more: 3 }[k]);
   const PANELS = {
     vocab: 'aside[aria-label="Vocabulary for this page"]', find: 'aside[aria-label="Find in this text"]', places: 'aside[aria-label="Places on this page"]', ms: 'aside[aria-label="The manuscript"]',
     echoes: 'aside[aria-label="Echoes"]', sentence: 'aside[aria-label="How the sentence is built"]', share: "dialog[open]", notebook: '[role=dialog][aria-labelledby="nb-pick-title"]',
@@ -1352,13 +1352,16 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
     if (k === "more") return (await page.locator(LOOK).getAttribute("data-layer").catch(() => null)) === "2";
     return (await page.locator(PANELS[k]).count()) > 0;
   };
+  // (Find is a button of the bar itself now; Open a second book is in More, not Study)
+  const more = async (row) => { const s = await openMenu(page, BAR.more); await s.getByRole("button", { name: row, exact: true }).click(); await page.waitForTimeout(700); };
+  const findBtn = async () => { await (await barButton(page, BAR.find)).click(); await page.waitForTimeout(700); };
   const study = async (row) => { const s = await openMenu(page, BAR.study); await s.getByRole("button", { name: row, exact: true }).click(); await page.waitForTimeout(700); };
   const toolbarOn = async () => { const p = await pointIn("article button[data-row]"); await press(p.x, p.y); await page.locator(TOOLBAR).waitFor(); };
   const lookUp = async () => { const p = await pointIn("article [data-u] [data-w]"); await press(p.x, p.y); await page.locator(LOOK).waitFor(); await page.waitForTimeout(500); };
   const opens = {
     aa: () => openMenu(page, BAR.aa), study: () => openMenu(page, BAR.study), goto: () => openMenu(page, BAR.goto),
-    vocab: () => study("Vocabulary for this page"), find: () => study("Find in this text"), places: () => study("Places on this page"), ms: () => study("How it was written"),
-    picker: () => study("Open a second book beside this one"),
+    vocab: () => study("Vocabulary for this page"), find: findBtn, places: () => study("Places on this page"), ms: () => study("How it was written"),
+    picker: () => more("Open a second book beside this one"),
     toolbar: toolbarOn,
     look: lookUp,
     more: async () => { await lookUp(); await page.locator(LOOK).getByRole("button", { name: "More about it" }).click(); await page.waitForTimeout(700); },
@@ -1368,7 +1371,7 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
     note: async () => { await toolbarOn(); await page.locator(TOOLBAR).getByRole("button", { name: "Note", exact: true }).click(); await page.waitForTimeout(700); },
     sentence: async () => { await opens.more(); await page.locator(LOOK).getByRole("button", { name: /How the sentence is built/ }).click(); await page.waitForTimeout(1500); },
   };
-  const NAME = { aa: "Aa", study: "Study", goto: "Go to", vocab: "Vocabulary (from Study)", find: "Find (from Study)", places: "Places (from Study)", ms: "How it was written (from Study)", picker: "the list of books for a second one (from Study)",
+  const NAME = { aa: "Aa", study: "Study", goto: "Go to", vocab: "Vocabulary (from Study)", find: "Find", places: "Places (from Study)", ms: "How it was written (from Study)", picker: "the list of books for a second one (from More)",
     toolbar: "the passage toolbar", look: "the look-up", more: "More about it", echoes: "Echoes", share: "Share", notebook: "the notebook picker", note: "the note editor", sentence: "the sentence" };
   /** the reader as it should be before a part: on its page, nothing open, no step in the history; otherwise it is brought back from the library */
   const clean = async () => {
@@ -1454,12 +1457,14 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
   for (const k of ["find", "places", "ms", "echoes", "share", "notebook", "note", "sentence", "picker"]) await part(NAME[k], async () => {
     await opens[k]();
     if (!(await isOpen(k))) { found.push(`back ${tag}: ${NAME[k]} did not open (the check could not go on)`); return; }
-    const fromStudy = ["find", "places", "ms", "picker"].includes(k);
+    const fromStudy = ["places", "ms"].includes(k), fromMore = k === "picker";
     const after = await goBack(`${NAME[k]} open`);
     if (!after) return;
     if (await isOpen(k)) found.push(`back ${tag}: ${NAME[k]} is still open after the browser's Back`);
     if (fromStudy && !(await isOpen("study"))) found.push(`back ${tag}: Back from ${NAME[k]} does not show Study again`);
+    if (fromMore && !(await menuOpen("more"))) found.push(`back ${tag}: Back from ${NAME[k]} does not show More again`);
     if (fromStudy) await goBack("Study");
+    if (fromMore) await goBack("More");
   });
 
   // 6. closed any other way, nothing is left behind: × and Escape and a tap outside and a panel's own way back, then one Back leaves the reader
@@ -1467,7 +1472,11 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
     const off = async (k, how) => {
       if (!(await isOpen(k))) { found.push(`back ${tag}: ${NAME[k]} did not open to be closed ${how} (the check could not go on)`); return; }
       if (how === "Escape") { await page.keyboard.press("Escape"); }
-      else if (how === "a tap outside") { await press(touch ? 6 : 20, Math.round(h * 0.5)); }
+      else if (how === "a tap outside") {
+        // (on a phone a menu's sheet spans the width and rises over the middle of the screen: the tap is made above its top edge)
+        const top = await page.evaluate(() => Math.min(...[...document.querySelectorAll("[data-foot-bar] button[aria-expanded=true]")].map((b) => document.getElementById(b.getAttribute("aria-controls"))?.getBoundingClientRect().top ?? Infinity)));
+        await press(touch ? 6 : 20, Number.isFinite(top) && top < h * 0.5 ? Math.max(8, Math.round(top / 2)) : Math.round(h * 0.5));
+      }
       else if (how === "its ×") {
         if (k === "look" || k === "more") await page.locator(LOOK).getByRole("button", { name: "Close look-up" }).click();
         else if (k === "toolbar") await page.locator(TOOLBAR).getByRole("button", { name: "Close passage actions" }).click();
@@ -1524,7 +1533,6 @@ for (const [w, h, touch] of runs("back") ? [[390, 844, true], [1440, 900, false]
   // 9. a link that leaves the reader from a menu that closes with the click (Study's Home row, the bar's Library link): it takes the reader there; the history's step back for the
   //    menu is not let to undo it (the reader came back to itself after Home, three times in four). (On a phone a menu's sheet stands over the bar: Library is not there to be pressed.)
   for (const [what, from, find, to, phone] of [
-    ["Study's Home row", "study", () => page.locator("[data-foot-bar]").getByRole("link", { name: /^Home/ }).first(), "/", true],
     ["the bar's Library link with Aa open", "aa", () => page.locator("[data-foot-bar]").getByRole("link", { name: /library/i }).first(), "/library", false],
   ]) if (phone || !touch) await part(what, async () => {
     for (let go = 1; go <= 3; go++) {

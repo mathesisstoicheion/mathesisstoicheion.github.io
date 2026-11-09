@@ -15,9 +15,10 @@
 // the head is measured on every frame from its first paint until the page has been still for a while.
 // usage: node web/scripts/check-heads.mjs [base-url] [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
+import { withoutAccountPages } from "./lib/pages.mjs";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
-const PAGES = only.length ? only : [
+const PAGES = await withoutAccountPages(base, only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/reading/letters", "/academy/reading/desire-to-know", "/academy/lesson/letters",
   "/academy/lesson/prepositions", "/academy/checkpoint/first-steps", "/academy/guide/looking-up", "/academy/alphabet",
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/review", "/academy/today", "/academy/studio",
@@ -26,7 +27,7 @@ const PAGES = only.length ? only : [
   "/stoa/kerameikos", "/stoa/ostracism", "/stoa/delphi", "/stoa/troy", "/stoa/periplus", "/stoa/census", "/treasury",
   "/treasury/word?l=λόγος", "/treasury/translations", "/library/private", "/downloads", "/account", "/about", "/credits",
   "/guide", "/no-such-page",
-];
+]);
 const WIDTHS = [[1280, 800], [1440, 900], [1920, 1080]];
 const TOL = 1.5;   // px: what rounding to 64ths of a pixel and a browser's text metrics may move a box by
 

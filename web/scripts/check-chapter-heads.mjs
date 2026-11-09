@@ -9,6 +9,7 @@
 // usage: node web/scripts/check-chapter-heads.mjs [base-url]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        Proved 2026-11-08: before the fix it listed all three at every phone width (25.2 px over 18 px, lines 1.62 apart, spaces 0.35).
 import { chromium } from "playwright";
+import { accountsOff, SETUP_LINE } from "./lib/pages.mjs";
 
 const base = process.argv[2] ?? "http://localhost:3100";
 const KEY = "sb-kxwppdhbvlamcmgckqpg-auth-token";
@@ -33,6 +34,7 @@ const VIEWS = [
   ["computer", { viewport: { width: 1440, height: 900 } }, 1.45],
 ];
 
+if (await accountsOff(process.argv[2] ?? "http://localhost:3100")) { console.log(SETUP_LINE); process.exit(0); }
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
 for (const [label, opts, most] of VIEWS) {

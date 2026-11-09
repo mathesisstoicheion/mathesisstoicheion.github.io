@@ -8,9 +8,12 @@
 // usage: node web/scripts/check-rooms.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        PROVE_CSS=<css> adds a fault to every page, to show the check catches it. Proved 2026-10-23: the Stoa's
 //        photographs turned sepia were each listed.
+import { accountsOff, SETUP_LINE } from "./lib/pages.mjs";
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
+const noAccounts = await accountsOff(base);
+if (noAccounts) console.log(SETUP_LINE);
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];
 
@@ -73,7 +76,8 @@ for (const [w, h] of [[1280, 900], [375, 812]]) {
     const era = (document.querySelector("main")?.innerText ?? "").match(/\b\d+(?:st|nd|rd|th)? (?:century )?B?CE\b|\bB?CE \d+/);
     return { form: top(form), pic: top(pic), era: era?.[0] ?? null };
   });
-  if (acct.form === Infinity) found.push(`account ${tag}: the sign-in was not found`);
+  if (noAccounts) { /* no sign-in settings in this build: the account part is skipped */ }
+  else if (acct.form === Infinity) found.push(`account ${tag}: the sign-in was not found`);
   else if (w < 700 && acct.pic < acct.form) found.push(`account ${tag}: the sign-in comes after the portrait (${Math.round(acct.form)} px down, the portrait at ${Math.round(acct.pic)} px)`);
   else if (w >= 700 && acct.form > h * 0.85) found.push(`account ${tag}: the sign-in starts ${Math.round(acct.form)} px down, below the first screen`);
   if (acct.era) found.push(`account ${tag}: the page says "${acct.era}" (BC and AD on this site)`);

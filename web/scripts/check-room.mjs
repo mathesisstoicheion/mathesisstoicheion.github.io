@@ -12,9 +12,10 @@
 //   verse   - a line of Greek verse in the reader broken in two, while the window has room for it whole
 // usage: node web/scripts/check-room.mjs [base-url] [path…]   (WIDTHS=1440,1920 picks the widths; exits with 1 on a problem)
 import { chromium } from "playwright";
+import { withoutLessons, withoutAccountPages } from "./lib/pages.mjs";
 
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
-const PAGES = only.length ? only : [
+const PAGES = await withoutAccountPages(base, withoutLessons(only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/reading/letters", "/academy/lesson/letters", "/academy/alphabet",
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/checkpoint/first-steps", "/academy/today",
   "/academy/lesson/article/practice", "/academy/lesson/article/test",
@@ -23,7 +24,7 @@ const PAGES = only.length ? only : [
   "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/stoa/kerameikos",
   "/stoa/ostracism", "/stoa/census", "/stoa/troy", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account",
   "/about", "/credits", "/guide", "/no-such-page",
-];
+]));
 // (a word's Word Study page is filled by the word packs; where they are not served, as on GitHub, its main column is
 // nearly empty by design of the data, not the page, so NOPACKS=1 leaves it out)
 if (process.env.NOPACKS) { const i = PAGES.indexOf("/treasury/word?l=λόγος"); if (i >= 0) { PAGES.splice(i, 1); console.log("(without the word packs: /treasury/word?l=λόγος left out)"); } }
@@ -207,6 +208,7 @@ for (const w of WIDTHS) {
     }
     await page.waitForTimeout(500);
     n++;
+    if (process.env.DEBUGROOM) console.log(where);
     const { frame, out } = await page.evaluate(MEASURE, { GAP, BAND, CHARS });
     if (frame && frame < w * FRAME) found.push(`margin: ${where}: the page's column is ${Math.round(frame)} px, ${Math.round((frame / w) * 100)}% of the window`);
     for (const p of out) found.push(`${p.split(":")[0]}: ${where}: ${p.slice(p.indexOf(":") + 2)}`);
