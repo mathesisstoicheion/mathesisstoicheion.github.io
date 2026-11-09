@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useLayoutEffect, useRef, useState } from "react";
 import Icon from "@/components/Icon";
 import { decapitalise, isElided, lookupForm } from "@/lib/greek";
 import { isHeading, lookUpWiktionary, type WiktItem, type WiktResult, type WiktSense } from "@/lib/lookup/wiktionary";
@@ -174,9 +174,10 @@ const PHONE = "(max-width: 1099px)";
  * grammar and short meaning); drag the handle up for half or all of the room it has (the dictionary),
  * down to close. It never rises over the line being read (maxH, from the reader). Swipe sideways, on the
  * handle or the text, for the next or previous word; the arrow buttons do the same. Returns the handlers
- * for the head and for the body.
+ * for the head and for the body. At "peek" the whole sheet takes a finger, and a drag up shows what "More about it" has
+ * under the card as the sheet grows (onGrow); let go at half or full height, and that is where it stays.
  */
-function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: boolean; snap: Snap; setSnap: (s: Snap) => void; onClose: () => void; onStep?: (dir: 1 | -1) => void; maxH: number | null }) {
+function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: boolean; snap: Snap; setSnap: (s: Snap) => void; onClose: () => void; onStep?: (dir: 1 | -1) => void; maxH: number | null; onGrow?: (on: boolean) => void }) {
   const g = useRef<{ id: number; x: number; y: number; h: number; axis: "" | "x" | "y"; lastY: number; lastT: number; v: number; head: boolean } | null>(null);
   const o = useRef(opts);
   useEffect(() => { o.current = opts; });
@@ -197,9 +198,11 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
     if (!s.axis) {
       if (Math.max(Math.abs(dx), Math.abs(dy)) < 10) return;
       s.axis = Math.abs(dx) > Math.abs(dy) * 1.5 ? "x" : "y";
-      if (s.axis === "y" && !s.head) { g.current = null; return; }   // the body scrolls itself
+      // the body scrolls itself, except at "peek", where the whole sheet is the handle (the owner, 2026-11-09: drag the look-up up for more)
+      // (and except a card too tall for half the screen, which scrolls at "peek" too: data-overflows, below)
+      if (s.axis === "y" && !s.head && (o.current.snap !== "peek" || el.hasAttribute("data-overflows"))) { g.current = null; return; }
       e.currentTarget.setPointerCapture(e.pointerId);
-      if (s.axis === "y") el.classList.add(styles.sheetDragging);
+      if (s.axis === "y") { el.classList.add(styles.sheetDragging); if (o.current.snap === "peek") o.current.onGrow?.(true); }
     }
     if (s.axis === "y") {
       s.v = (e.clientY - s.lastY) / Math.max(1, e.timeStamp - s.lastT); s.lastY = e.clientY; s.lastT = e.timeStamp;
@@ -217,6 +220,7 @@ function useSheetGestures(ref: React.RefObject<HTMLElement | null>, opts: { on: 
     const h = el.offsetHeight, hs = heights(el);
     el.classList.remove(styles.sheetDragging);
     el.style.height = "";
+    o.current.onGrow?.(false);
     if (cancelled) return;
     // a flick carries on in its direction; otherwise the nearest height wins; well below "peek" closes it
     const order: Snap[] = ["peek", "half", "full"];
@@ -272,10 +276,14 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   const full = !!word && fullFor === key;
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });
-  // the second layer is the sheet at its full height; a drag of its handle to a lower height goes back to the first layer there
-  const snapNow: Snap = more ? "full" : snap;
-  const pickSnap = (s: Snap) => { if (more && s !== "full") setMore(false); setSnap(s); };
-  const gestures = useSheetGestures(ref, { on: sheet, snap: snapNow, setSnap: pickSnap, onClose, onStep: more ? undefined : step, maxH });
+  // On a sheet (the owner, 2026-11-09) the second layer is the same sheet grown: it rests at "peek" with the card, and a drag up shows
+  // what "More about it" has, under the card, as it grows (growing: a finger is on it); let go at half or full height and it stays
+  // there, in the second layer; a drag back to "peek" is the first layer again. "More about it" grows it to its full height.
+  const [growing, setGrowing] = useState(false);
+  const snapNow: Snap = more ? (snap === "half" ? "half" : "full") : "peek";
+  const pickSnap = (s: Snap) => { if (s === "peek") { if (more) setMore(false); } else if (!more) setMore(true); setSnap(s); };
+  const gestures = useSheetGestures(ref, { on: sheet, snap: snapNow, setSnap: pickSnap, onClose, onStep: more ? undefined : step, maxH, onGrow: setGrowing });
+  const open2 = more || (sheet && growing);
   // Back, or Escape in the second layer: the first layer, at its resting height, with the keyboard on "More about it"
   const cameBack = useRef(false);
   const goBack = () => { cameBack.current = true; setMore(false); setSnap("peek"); };
@@ -285,6 +293,30 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
     if (more) backRef.current?.focus({ preventScroll: true });
     else if (cameBack.current) { cameBack.current = false; moreRef.current?.focus({ preventScroll: true }); }
   }, [more]);
+  // the first layer on a sheet is as tall as what it holds (the owner's phone, 2026-11-09: a long meaning ran under the buttons, a short
+  // one left the sheet half empty): the head, the card with its own room under it, and the buttons, measured whenever any of them
+  // changes size (the card filling in, Next to a longer word, a larger size of Greek). --sheet-fit carries it to Reader.module.css, which
+  // keeps it under half the screen; past that the card scrolls.
+  useLayoutEffect(() => {
+    const el = ref.current, body = bodyRef.current;
+    if (!el || !body || !sheet || more) return;
+    const fit = () => {
+      // the card alone: what "More about it" has may already stand under it while a finger draws the sheet up
+      const card = body.firstElementChild as HTMLElement | null;
+      if (!card) return;
+      const cs = getComputedStyle(body);
+      const content = card.offsetHeight + parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom);
+      const want = Math.ceil(el.offsetHeight - body.clientHeight + content);
+      el.style.setProperty("--sheet-fit", `${want}px`);
+      // taller than the sheet may rest (half the screen, or what leaves the word in view): the card scrolls, and only the head drags
+      el.toggleAttribute("data-overflows", want > Math.min(innerHeight / 2, maxH ?? Infinity) + 1);
+    };
+    fit();
+    const ro = new ResizeObserver(fit);
+    if (body.firstElementChild) ro.observe(body.firstElementChild);
+    ro.observe(el);
+    return () => { ro.disconnect(); el.style.removeProperty("--sheet-fit"); el.removeAttribute("data-overflows"); };
+  }, [sheet, more, word, maxH]);
   // the second layer on a sheet: as its body is scrolled, what scrolls up fades out before the hairline under the meaning, so that
   // a part's own hairline never lies just under that one as a second line (the owner's phone, 2026-11-08). The fade grows with the
   // first 56 px of scrolling (--fade, Reader.module.css), so that at the top nothing fades and nothing changes at once.
@@ -425,13 +457,13 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
       {/* each with its sign (the quiet desk, the reader's tools, the owner, 2026-10-30): the one before has its arrow first, the one after has its arrow last, as the site's "next" does */}
       {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(-1)} aria-label="Previous word"><Icon name="chevron-left" />Previous</button>}
       {step && <button type="button" className={`text-btn ${styles.cardStep}`} onClick={() => step(1)} aria-label="Next word">Next<Icon name="chevron-right" /></button>}
-      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => setMore(true)}><Icon name="info" />More about it</button>
+      <button ref={moreRef} type="button" className={`text-btn ${styles.cardMore}`} onClick={() => { setSnap("full"); setMore(true); }}><Icon name="info" />More about it</button>
     </div>
   );
   // the red › at the right end of each row of "Go further" (a sign, not read out: the row's words say what it does)
   const wayMark = <span className={styles.wayMark} aria-hidden="true">›</span>;
   // the head's word: the dictionary form in the second layer and once the card is ready; until then the word as it was tapped
-  const headText = more ? headword : card ? card.lemma ?? lookupForm(word) : word;
+  const headText = open2 ? headword : card ? card.lemma ?? lookupForm(word) : word;
 
   return (
     <SidePanel ref={ref} className={`${styles.panel} ${sheet ? styles.wordSheet : ""} ${note ? styles.wordNote : ""}`} data-snap={snapNow} data-layer={more ? "2" : "1"} data-overlay="" label={`Look-up: ${word}`}
@@ -447,7 +479,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
       {/* ------------------------------------------------ the second layer keeps the word's context under its head: the kind of word and
           the meaning, as the first layer has them, the meaning a size smaller (the quiet desk, the look-up's fixes, the owner, 2026-10-30).
           It stands outside the body, so that on a sheet it stays while the rest scrolls. */}
-      {more && <div className={styles.secWord} aria-busy={!card}>
+      {more && !sheet && <div className={styles.secWord} aria-busy={!card}>
         {!card && <p className="muted">Looking it up…</p>}
         {card?.kind && <p className={styles.secKind}>{card.kind}</p>}
         {card && <p className={styles.secMeaning} title={card.meaning.source ? `From ${SOURCE_NAMES[card.meaning.source]}` : undefined}>
@@ -457,8 +489,9 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
 
       <div ref={bodyRef} key={word} className={styles.panelBody} data-dir={dir} {...(sheet ? gestures.body : {})}>
 
-      {/* ------------------------------------------------ the first layer: the word, one meaning, plain grammar */}
-      {!more && <section className={styles.card} aria-busy={!ready}>
+      {/* ------------------------------------------------ the first layer: the word, one meaning, plain grammar; on a sheet it stays at
+          the top when the sheet grows, with the second layer under it */}
+      {(!more || sheet) && <section className={styles.card} aria-busy={!ready}>
         {!card && <p className={`muted ${styles.cardWait}`}>Looking it up…</p>}
         {card && <>
           <p className={styles.cardKind}>{card.kind ? `${card.kind} · you tapped ` : "You tapped "}<span lang="grc">{word}</span></p>
@@ -473,7 +506,7 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
 
       {/* ------------------------------------------------ the second layer, behind "More about it" (the quiet desk, ticket 06):
           the dictionary, then where to go from the word, the other dictionaries, how sure the grammar is, and the credits */}
-      {more && <div className={styles.second}>
+      {open2 && <div className={styles.second}>
 
       {/* the LSJ entry: its other short definitions, when it has any besides the meaning the card gives; otherwise the start of the entry
           itself, clipped to a few lines with a soft fade, so that the heading is never empty. "The whole entry" lifts the clip, or shows

@@ -289,6 +289,7 @@ async function secondLayer(page, tag, opts, during) {
       layer: el.getAttribute("data-layer"),
       text: text(el),
       first: !!el.querySelector('[class*="cardMeaning"], [class*="cardRole"], [class*="cardGrammar"]'),
+      cardMeaning: (() => { const m = el.querySelector('[class*="cardMeaning"]'); return m ? text(m).replace(/\s*\(from [^)]*\)\s*$/, "") : ""; })(),
       recap: recap ? {
         kind: kindEl ? text(kindEl) : "",
         meaning: meaningEl ? text(meaningEl).replace(/\s*\(from [^)]*\)\s*$/, "") : "",
@@ -335,10 +336,17 @@ async function secondLayer(page, tag, opts, during) {
     };
   }, LOOKUP);
   if (open.layer !== "2") found.push(`${tag}: "More about it" did not show the second layer (data-layer ${open.layer})`);
-  if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (its meaning, what the word does here, or its grammar)`);
+  if (opts.sheet) {
+    // on a sheet the second layer is the first grown: the card stays at its top, the rest under it (the owner, 2026-11-09), so the
+    // word's meaning is not said again under the head
+    if (!open.first) found.push(`${tag}: the second layer on a sheet has lost the card (it stays at the top, the rest under it)`);
+    else if (open.cardMeaning !== meaning) found.push(`${tag}: the second layer's card reads "${open.cardMeaning}" (the first layer: "${meaning}")`);
+    if (open.recap) found.push(`${tag}: the second layer on a sheet says the kind and meaning twice (the card, and again under the head)`);
+  } else if (open.first) found.push(`${tag}: the second layer still shows the card of the first layer (its meaning, what the word does here, or its grammar)`);
   // the second layer keeps the word's context under its head: the kind of word and the meaning, as the first layer has them, the meaning a
   // little smaller (the quiet desk, the look-up's fixes, the owner, 2026-10-30)
-  if (!open.recap) found.push(`${tag}: the second layer shows neither the kind of word nor the meaning under its head`);
+  if (opts.sheet) { /* the card above holds them */ }
+  else if (!open.recap) found.push(`${tag}: the second layer shows neither the kind of word nor the meaning under its head`);
   else {
     if (open.recap.kind !== kind) found.push(`${tag}: the second layer names the kind of word "${open.recap.kind}" (the first layer: "${kind}")`);
     if (open.recap.meaning !== meaning) found.push(`${tag}: the second layer's meaning line reads "${open.recap.meaning}" (the first layer: "${meaning}")`);
@@ -591,15 +599,81 @@ for (const [w, h, path, label] of [[1000, 800, `/read?w=${WORK}`, "1000px"], [39
     else if (b.look.top < b.word.bottom - 1) found.push(`sheet ${label}: ${when}: the look-up reaches ${Math.round(b.word.bottom - b.look.top)} px over the word's line`);
     return b;
   };
-  const first = await check("as it opens");
-  if (first?.look && first.look.height > h * 0.27 + 1) found.push(`sheet ${label}: it opens ${Math.round(first.look.height)} px tall, ${Math.round(first.look.height / h * 100)}% of the screen (it rests at 27% or less)`);
+  await check("as it opens");
   await firstLayer(page, `sheet ${label}`);
+  await sheetFits(page, `sheet ${label}`, h);
   await sheetEdge(page, `sheet ${label}`);
   // "More about it" raises the sheet to all the room it has, and reveals the dictionary; "‹ Back" brings it down again
   await secondLayer(page, `sheet ${label}`, { sheet: true }, async () => { await check("at its full height"); });
   const next = page.locator(LOOKUP).getByRole("button", { name: "Next word" });
-  if (await next.count()) { await next.click(); await page.waitForTimeout(900); await check("on the next word"); }
+  if (await next.count()) { await next.click(); await page.waitForTimeout(900); await check("on the next word"); await sheetFits(page, `sheet ${label}, the next word`, h); }
+  if (w < 800) await dragUp(page, `sheet ${label}`);
   await ctx.close();
+}
+
+/**
+ * At rest the sheet is as tall as its card (the owner's phone, 2026-11-09: γάρ's meaning ran down to the buttons' edge, ἕκαστος left
+ * the sheet half empty): the card's last line keeps at least 12 px of paper above the buttons' hairline, no more than 40 px of it, and
+ * the sheet is never taller than half the screen, where the card scrolls instead.
+ */
+async function sheetFits(page, tag, h) {
+  await page.waitForTimeout(500);
+  const f = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP), body = el?.querySelector('[class*="panelBody"]'), row = el?.querySelector('[class*="cardRow"]');
+    const card = body?.firstElementChild;
+    if (!el || !body || !row || !card) return null;
+    // the bottom of the card's last line of text, wherever it is drawn
+    let last = -Infinity;
+    const walk = document.createTreeWalker(card, NodeFilter.SHOW_TEXT);
+    for (let n = walk.nextNode(); n; n = walk.nextNode()) {
+      if (!n.textContent.trim()) continue;
+      const r = document.createRange(); r.selectNodeContents(n);
+      for (const b of r.getClientRects()) if (b.height) last = Math.max(last, b.bottom);
+    }
+    return { sheet: el.getBoundingClientRect().height, last, rowTop: row.getBoundingClientRect().top, scrolls: body.scrollHeight > body.clientHeight + 1, snap: el.dataset.snap };
+  }, LOOKUP);
+  if (!f) { found.push(`${tag}: no card or no row of buttons in the sheet at rest`); return; }
+  if (f.snap !== "peek") return;
+  if (f.sheet > h * 0.5 + 1) found.push(`${tag}: it rests ${Math.round(f.sheet)} px tall, ${Math.round(f.sheet / h * 100)}% of the screen (at most half)`);
+  if (f.scrolls && f.sheet < h * 0.5 - 2) found.push(`${tag}: the card is cut off and scrolls in a sheet only ${Math.round(f.sheet / h * 100)}% of the screen tall (it grows to fit, up to half)`);
+  if (!f.scrolls) {
+    const band = f.rowTop - f.last;
+    if (band < 12) found.push(`${tag}: the card's last line comes ${Math.round(band)} px from the buttons' hairline${band < 0 ? " (under it)" : ""} (at least 12)`);
+    else if (band > 40) found.push(`${tag}: ${Math.round(band)} px of empty paper under the card (the sheet is as tall as what it holds)`);
+  }
+}
+
+/**
+ * A finger drawing the resting sheet up grows it and shows, under the card, what "More about it" has (the owner, 2026-11-09: "when you
+ * drag the lookup to expand, the information in 'More about it' should show up there"); let go high, it stays in the second layer with
+ * the card on top; "‹ Back" brings it down to the card again.
+ */
+async function dragUp(page, tag) {
+  const look = page.locator(LOOKUP);
+  if ((await look.getAttribute("data-layer")) !== "1") { found.push(`${tag}: the look-up is not in its first layer before the drag`); return; }
+  const b = await look.locator('[class*="panelBody"]').first().boundingBox();
+  const x = b.x + b.width / 2, y0 = b.y + Math.min(30, b.height / 2);
+  await page.mouse.move(x, y0); await page.mouse.down();
+  for (let i = 1; i <= 20; i++) { await page.mouse.move(x, y0 - i * 12); await page.waitForTimeout(16); }
+  await page.waitForTimeout(400);
+  const mid = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP);
+    return { h: el.getBoundingClientRect().height, card: !!el.querySelector('[class*="cardMeaning"]'), dict: [...el.querySelectorAll("h3")].some((x) => /^Dictionary · LSJ/.test(x.textContent.trim()) && x.checkVisibility()) };
+  }, LOOKUP);
+  for (let i = 21; i <= 34; i++) { await page.mouse.move(x, y0 - i * 12); await page.waitForTimeout(16); }
+  await page.mouse.up();
+  await page.waitForTimeout(1200);
+  const end = await page.evaluate((LOOKUP) => {
+    const el = document.querySelector(LOOKUP);
+    return { layer: el.dataset.layer, snap: el.dataset.snap, h: el.getBoundingClientRect().height, card: !!el.querySelector('[class*="cardMeaning"]'), dict: [...el.querySelectorAll("h3")].some((x) => /^Dictionary · LSJ/.test(x.textContent.trim())) };
+  }, LOOKUP);
+  if (!mid.card || !mid.dict) found.push(`${tag}: drawn up by a finger, the sheet does not show ${!mid.card ? "the card" : "the dictionary"} (the card, and under it what "More about it" has)`);
+  if (end.layer !== "2" || end.snap === "peek") found.push(`${tag}: let go after a drag up, the sheet is in layer ${end.layer} at "${end.snap}" (the second layer, grown)`);
+  if (!end.card || !end.dict) found.push(`${tag}: grown by a drag, the sheet ${!end.card ? "has lost the card at its top" : "has no dictionary under the card"}`);
+  const back = look.getByRole("button", { name: /Back$/ });
+  if (await back.count()) { await back.first().click(); await page.waitForTimeout(900); }
+  const after = await look.getAttribute("data-layer");
+  if (after !== "1") found.push(`${tag}: "‹ Back" after a drag up left the sheet in layer ${after} (the card again)`);
 }
 
 /** Open the look-up on μῆνιν, Iliad 1.1, with the word tapped on a phone and clicked elsewhere. */
@@ -844,4 +918,4 @@ if (found.length) {
   console.error(`The look-up: ${found.length} problem(s)\n  ` + found.join("\n  "));
   process.exit(1);
 }
-console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the word's kind and meaning under its head, the LSJ entry never an empty heading, Go further as rows of where else, the sentence, the lesson and Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); the case underlined only with Colour by case on; Wiktionary out of reach said plainly with Try again; the tapped word in the head while it loads; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls, and with a panel open beside the text the panel's own box instead, the panel wholly behind it (closing it shows the panel again), and a low sheet with a hairline edge that stops below the line elsewhere");
+console.log("The look-up: a first layer with no badge, lesson card or credit, and the rest in a second layer behind More about it (the word's kind and meaning under its head, the LSJ entry never an empty heading, Go further as rows of where else, the sentence, the lesson and Word Study, the other dictionaries, one credit line at the foot; ‹ Back and Escape return); the case underlined only with Colour by case on; Wiktionary out of reach said plainly with Try again; the tapped word in the head while it loads; a window at least 280 px wide floating over the right margin on a computer, still while the text scrolls, and with a panel open beside the text the panel's own box instead, the panel wholly behind it (closing it shows the panel again), and elsewhere a sheet with a hairline edge that stops below the line, rests as tall as its card (at most half the screen) and grows into the second layer when drawn up");

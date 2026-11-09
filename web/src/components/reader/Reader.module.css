@@ -887,7 +887,9 @@ p.translit { margin: -0.3em 0 0.8em; }
    height in pixels. It slides up as it opens (the one movement besides the ink-in, SPEC.md 4.3); a word chosen next inks in. */
 @property --sheet-h { syntax: "<length>"; inherits: false; initial-value: 0px; }
 .panel.wordSheet {
-  --sheet-h: clamp(calc(2.25 * var(--space-8)), 25dvh, 400px);   /* it rests at about a quarter of the screen (the quiet desk, ticket 04) */
+  /* it rests as tall as what it holds (--sheet-fit, from WordPanel.tsx: the head, the card, the buttons; the owner's phone, 2026-11-09), never more
+     than half the screen, where the card scrolls; until it is measured, at about a quarter (the quiet desk, ticket 04) */
+  --sheet-h: min(var(--sheet-fit, clamp(calc(2.25 * var(--space-8)), 25dvh, 400px)), 50dvh);
   top: auto; left: 0; right: 0; bottom: 0; width: 100%; max-height: none; height: min(var(--sheet-h), var(--sheet-max, 100dvh));
   display: flex; flex-direction: column; gap: 0; overflow: hidden; padding: 0;
   background: var(--bg); box-shadow: 0 -1px 0 var(--rule), 0 -8px 24px -16px var(--shadow);
@@ -896,7 +898,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 }
 .panel.wordSheet[data-snap="half"] { --sheet-h: 70dvh; }
 .panel.wordSheet[data-snap="full"] { --sheet-h: calc(100dvh - env(safe-area-inset-top, 0px) - 10px); }
-.panel.wordSheet.sheetDragging { transition: none; }
+.panel.wordSheet.sheetDragging { transition: none; user-select: none; -webkit-user-select: none; }
 @keyframes sheet-up { from { transform: translateY(30px); opacity: 0; } }
 .wordSheet .panelHead {
   position: relative; flex: none; align-items: center; gap: var(--space-1); padding: var(--space-3) var(--space-3) 0 var(--space-4); touch-action: none;
@@ -904,11 +906,22 @@ p.translit { margin: -0.3em 0 0.8em; }
 .wordSheet .pw { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .wordSheet .x { width: var(--tap); height: var(--tap); }
 .wordSheet .panelBody {
-  display: grid; align-content: start; gap: var(--space-3); flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  display: grid; align-content: start; grid-auto-rows: max-content; gap: var(--space-3); flex: 1; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
   padding: var(--space-1) var(--space-4) var(--space-3); touch-action: pan-y;
   animation: leaf-in var(--dur) var(--ease) backwards;
 }
 .wordSheet .card { gap: var(--space-1); min-height: 0; }
+/* the first layer's last line keeps a clear band of paper above the buttons' hairline */
+.wordSheet[data-layer="1"] .panelBody { padding-bottom: var(--space-4); }
+/* at "peek" the whole sheet is its handle (WordPanel.tsx): its body does not scroll, a drag up grows the sheet and shows the second
+   layer under the card; grown, the card heads it, a hairline between (the owner, 2026-11-09). A card taller than the sheet may rest
+   (data-overflows) scrolls instead, the head its handle, its foot fading into its own bottom room so that the cut shows there is more. */
+.wordSheet[data-snap="peek"]:not([data-overflows]) .panelBody { overflow-y: hidden; touch-action: none; }
+.wordSheet[data-overflows][data-layer="1"] .panelBody {
+  -webkit-mask-image: linear-gradient(to bottom, var(--ink) calc(100% - var(--space-4)), transparent);
+  mask-image: linear-gradient(to bottom, var(--ink) calc(100% - var(--space-4)), transparent);
+}
+.wordSheet .card + .second { padding-top: var(--space-4); box-shadow: var(--rule-over); }
 /* the second layer's kind and meaning stay under the head while the rest scrolls */
 .wordSheet .secWord { flex: none; padding: var(--space-1) var(--space-4) 0; }
 /* the second layer has no row of buttons at its foot: its last line clears the phone's own bar */
