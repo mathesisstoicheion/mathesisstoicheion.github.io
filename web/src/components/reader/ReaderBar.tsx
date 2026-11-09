@@ -254,7 +254,7 @@ export default function ReaderBar({ rootRef, book }: {
               <Icon name="goto" />
               <span className={styles.part}>{place.part}</span>
               <span className={styles.rule} aria-hidden="true"><span className={styles.mark} style={{ "--p": place.progress } as CSSProperties} /></span>
-              <span className={styles.at}><span className={styles.lvl}>{place.level} </span>{place.num}{place.of !== null ? ` of ${place.of}` : ""}</span>
+              <span className={styles.at}><span className={styles.lvl}>{place.level} </span>{place.num}{place.of !== null && <span className={styles.of}> of {place.of}</span>}</span>
               {/* its name is the words it shows and then what it does (the quiet desk, ticket 11, user story 23, the owner, 2026-10-30: a name must start with the words shown) */}
               <span className="visually-hidden">, go to a line or book</span>
             </>}>

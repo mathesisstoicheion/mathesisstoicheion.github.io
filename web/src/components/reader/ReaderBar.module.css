@@ -50,8 +50,13 @@
   .part, .rule { display: none; }
   .at { font-size: var(--step-0); }
   /* a phone: a row of signs, each with its word small under it, as a tab bar has; Library is its arrow alone, and Float is in More */
-  .foot .tools .quiet { flex-direction: column; justify-content: center; gap: var(--hair-2); min-width: var(--space-6); padding-inline: var(--space-1); font-size: var(--step--2); }
+  .foot .tools .quiet { flex-direction: column; justify-content: center; gap: var(--hair-2); min-width: var(--tap); padding-inline: var(--space-1); font-size: var(--step--2); }
   .foot .libWord, .foot .wideOnly, .sep, .lvl { display: none; }
+  /* the place takes the room the buttons leave, and never runs under them (it ran under Find at 390 px; the owner, 2026-11-09) */
+  .barIn { grid-template-columns: auto minmax(0, 1fr) auto; }
+  .where { justify-self: start; overflow: hidden; }
+  .at { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .tools { gap: 0; }
   :global([data-foot="away"]) .foot { translate: 0 100%; visibility: hidden; transition: translate var(--dur) var(--ease), visibility 0s var(--ease) var(--dur); }
 }
 /* the narrower phones: the same four buttons, a little closer, the place in a smaller size; from 380 px down the place has no sign beside it, and
@@ -66,6 +71,10 @@
 }
 @media (max-width: 380px) { .where > :global([data-icon]) { display: none; } .foot .tools .quiet { min-width: var(--tap); } }
 @media (max-width: 340px) { .barIn { column-gap: var(--space-1); } .at { font-size: var(--step--2); } }
+/* the narrowest phones: the place is its number alone */
+@media (max-width: 370px) { .of { display: none; } }
+/* 320 px: seven buttons a finger wide do not fit beside the place; they stand 40 px apart there, the place keeping its number */
+@media (max-width: 340px) { .foot .tools .quiet, .foot .back { min-width: 40px; padding-inline: 0; } }
 /* the look-up's sheet stands where the bar was, at any width; a panel's sheet on a tablet and a phone; the passage toolbar on a phone */
 :global([data-covers~="lookup"]) .foot { translate: 0 100%; visibility: hidden; }
 @media (max-width: 900px) { :global([data-covers~="panel"]) .foot { translate: 0 100%; visibility: hidden; } }
@@ -187,7 +196,8 @@
 
 /* the edition and the translation, at the top of Text */
 .picks { display: grid; gap: var(--space-2); padding-bottom: var(--space-3); box-shadow: var(--rule-under); }
-.picks .pick { padding: 0; box-shadow: none; }
+/* each name above its menu: side by side, "Translation" ran under its menu (the owner, 2026-11-09) */
+.picks .pick { padding: 0; box-shadow: none; grid-template-columns: minmax(0, 1fr); gap: var(--space-1); }
 
 /* ------------------------------------------------------------ your notes and marks: a round button at the top right, opening into the list */
 .notesFab { position: fixed; z-index: var(--z-foot); top: calc(env(safe-area-inset-top, 0px) + var(--space-3)); right: max(calc(var(--gutter) + var(--space-4)), env(safe-area-inset-right, 0px)); transition: opacity var(--dur) var(--ease), visibility 0s; }
