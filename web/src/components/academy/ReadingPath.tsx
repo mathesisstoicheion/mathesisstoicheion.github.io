@@ -26,13 +26,13 @@ function PathList({ completed }: { completed: Record<string, number> }) {
   // the one next step, the same as the Academy's button and Your desk (data/tracks.ts)
   const next = nextReading(completed)?.href;
   return (
-    <ol className={styles.path}>
+    <ol className={`${styles.path} ${styles.road}`}>
       {ITEMS.map((it) => {
         const lit = `/academy/reading/${it.id}` === next;
         const item = `${styles.pathItem} ${lit ? styles.pathLit : ""}`;
         const nextMark = <span className={`label ${styles.nextMark}`}>Next</span>;
         if (it.kind === "letters") return (
-          <li key={it.id}>
+          <li key={it.id} data-done={completed[pathKey(it.id)] ? "" : undefined}>
             <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(it.id)}</span>
               <span>
@@ -46,7 +46,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         if (it.kind === "practice") {
           const p = PRACTICE.find((x) => x.id === it.id)!;
           return (
-            <li key={it.id}>
+            <li key={it.id} data-done={completed[pathKey(it.id)] ? "" : undefined}>
               <Link href={`/academy/reading/${it.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
                 <span className={styles.pathNo} aria-hidden="true">◆</span>
                 <span><b>{p.title}</b><span className={styles.pathAbout}><Rich text={p.intro} /></span></span>
@@ -57,7 +57,7 @@ function PathList({ completed }: { completed: Record<string, number> }) {
         }
         const i = PATH.findIndex((s) => s.id === it.id), s = PATH[i];
         return (
-          <li key={it.id}>
+          <li key={it.id} data-done={completed[pathKey(it.id)] ? "" : undefined}>
             <Link href={`/academy/reading/${s.id}`} transitionTypes={["page-turn"]} className={item} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{readingNo(s.id)}</span>
               <span>

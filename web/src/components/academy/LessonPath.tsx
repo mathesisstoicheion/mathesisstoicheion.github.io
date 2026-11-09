@@ -25,7 +25,7 @@ export default function LessonPath() {
   const { main, also } = nextSteps(completed);
   const next = (main?.track === TRACKS.grammar.name ? main.step : also)?.href;
   return (
-    <ol className={styles.path}>
+    <ol className={`${styles.path} ${styles.road}`}>
       {LESSONS.map((l, i) => {
         const m = mastery[l.id];
         const due = refreshDue(m);
@@ -33,7 +33,7 @@ export default function LessonPath() {
         const lit = `/academy/lesson/${l.id}` === next;
         return (
           <Fragment key={l.id}>
-          <li>
+          <li data-done={m?.passed || completed[l.id] ? "" : undefined}>
             <Link href={`/academy/lesson/${l.id}`} transitionTypes={["page-turn"]} className={`${styles.pathItem} ${lit ? styles.pathLit : ""}`} aria-current={lit ? "step" : undefined}>
               <span className={styles.pathNo}>{i + 1}</span>
               <span>
@@ -64,7 +64,7 @@ function CheckpointRow({ id }: { id: string }) {
   const due = refreshDue(m);
   const first = LESSONS.findIndex((l) => l.id === c.lessons[0]) + 1, last = first + c.lessons.length - 1;
   return (
-    <li>
+    <li data-done={m?.passed ? "" : undefined}>
       <Link href={`/academy/checkpoint/${c.id}`} transitionTypes={["page-turn"]} className={styles.pathItem}>
         {/* the same marker as the practice lessons of Learn by reading (review fixes, slice 4), and like them no band:
             the lit band is the next step's alone */}
