@@ -13,7 +13,7 @@
 import { chromium } from "playwright";
 
 const base = process.argv[2] ?? "http://localhost:3100";
-const PAGES = ["/", "/library", "/academy", "/academy/alphabet", "/stoa", "/stoa/kerameikos", "/treasury", "/guide", "/credits"];
+const PAGES = ["/", "/library", "/academy/vocabulary", "/academy/alphabet", "/stoa", "/stoa/kerameikos", "/treasury", "/guide", "/credits"];
 const READER = ["/read?w=tlg0012.tlg001", "/read?w=tlg0059.tlg002"];
 
 /** the bar as a reader sees it: true when some of it is inside the window and it is not see-through */

@@ -3,6 +3,7 @@ import Link from "next/link";
 import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
 import { areaTitle } from "@/config/areas";
+import AlphabetGlance from "@/components/academy/AlphabetGlance";
 import { GUIDES } from "@/data/guides";
 import styles from "@/components/academy/Academy.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -21,7 +22,9 @@ export default function AcademyPage() {
   return (
     <Page>
       {/* the lessons, both tracks, are off the site since 2026-11-09 (config/lessons.ts): the Academy holds the tools */}
-      <Door id="study">
+      {/* 2026-11-09: landing on Learn shows the letters at once, beside a short introduction: tap one to hear it */}
+      <Door id="study" intro={<>Learn here what you need while you read: the letters, the endings, the commonest words. Start with the 24 letters: tap one to see its name and hear how it sounded.</>}
+        side={<AlphabetGlance headingLevel={2} />}>
         <DoorBlock>
           <section style={{ display: "grid", gap: 18 }} aria-labelledby="tools-title">
             <h2 id="tools-title">Practice and reference</h2>
