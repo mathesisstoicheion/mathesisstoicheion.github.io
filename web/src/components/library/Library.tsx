@@ -16,7 +16,7 @@ import { scrollBelowHeader } from "@/lib/header";
 import { workPath } from "@/lib/seo";
 import { AZRail } from "./AZList";
 import { bestMatch, groupAZ, nameMatch } from "./az";
-import { authorKind, kindKey, KIND_ORDER, OTHER_KIND, workKinds } from "./kinds";
+import { authorKind, KIND_GREEK, kindKey, KIND_ORDER, OTHER_KIND, workKinds } from "./kinds";
 import { useLibQuery } from "./libQuery";
 import Icon from "@/components/Icon";
 import styles from "./Library.module.css";
@@ -418,6 +418,19 @@ export default function Library() {
 
       {listed && !groups.length && <p className={styles.nothing}>Nothing matches. Try fewer letters, search in English, or <button type="button" onClick={clearAll}>clear the filters</button>.</p>}
 
+      {/* by kind: the shelves, each kind's label with its Greek name and how many works it holds, a link to its part of the list */}
+      {listed && sort === "kind" && groups.length > 1 && (
+        <nav className={styles.shelves} aria-label="The shelves">
+          {groups.filter((g) => g.kind).map((g) => (
+            <a key={g.key} href={`#lib-${g.key}`} className={styles.shelf}>
+              <span className={styles.shelfGr} lang="grc">{KIND_GREEK[g.kind!] ?? ""}</span>
+              <span className={styles.shelfEn}>{g.label}</span>
+              <span className={styles.shelfN}>{n(g.rows!.reduce((s, r) => s + r.works.length, 0))}</span>
+            </a>
+          ))}
+        </nav>
+      )}
+
       {/* the catalogue: the list, and the rail of letters at its right (none by kind or by period) */}
       {listed && groups.length > 0 && (
         <div className={styles.cat} data-rail={railOn ? "" : undefined}>
@@ -435,9 +448,11 @@ export default function Library() {
               all[to].scrollIntoView({ block: "nearest" });
             }}>
             {groups.map((g) => (
-              <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}>
+              <section key={`${sort}-${g.key}`} id={`lib-${g.key}`} className={styles.group} aria-labelledby={`lib-h-${g.key}`}
+                data-cols={g.rows && g.rows.length > 3 ? "" : undefined} style={g.rows ? { ["--rows" as string]: Math.ceil(g.rows.length / 2) } : undefined}>
                 <h3 id={`lib-h-${g.key}`} className={styles.groupHead} tabIndex={-1}
                   data-kind={g.kind} data-letter={!g.kind && sort !== "period" && g.key !== BEST ? "" : undefined} data-best={g.key === BEST ? "" : undefined}>
+                  {g.kind && KIND_GREEK[g.kind] && <span className={styles.groupGr} lang="grc" aria-hidden="true">{KIND_GREEK[g.kind]}</span>}
                   <span className={styles.groupName}>{g.label}</span>
                   {g.kind && <span className={styles.groupCount}>{n(g.rows!.reduce((s, r) => s + r.works.length, 0))} works · {n(g.rows!.length)} {g.rows!.length === 1 ? "author" : "authors"}</span>}
                 </h3>

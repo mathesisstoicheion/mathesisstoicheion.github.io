@@ -65,3 +65,24 @@ export function authorKind(a: CatAuthor, kinds: Map<string, string>): string {
 
 /** The address of a kind's part of the list: "Lyric and elegy" is "lyric-and-elegy". */
 export const kindKey = (k: string) => k.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
+
+/**
+ * Each kind's name in Greek, set above its part of the list and on its shelf label (the owner, 2026-11-09: each page its own
+ * design, matched to what it holds). The words are the Greeks' own names for these kinds of writing: γραμματική was their
+ * word for the study of texts, τὰ θεῖα "things divine", τὰ λοιπά "the rest".
+ */
+export const KIND_GREEK: Record<string, string> = {
+  "Epic": "Ἔπος",
+  "Lyric and elegy": "Μέλος καὶ ἐλεγεία",
+  "Drama": "Δρᾶμα",
+  "History and biography": "Ἱστορία καὶ βίοι",
+  "Philosophy": "Φιλοσοφία",
+  "Oratory and rhetoric": "Ῥητορική",
+  "Letters": "Ἐπιστολαί",
+  "Medicine": "Ἰατρική",
+  "Science and mathematics": "Μαθήματα",
+  "Novels, myths and marvels": "Μῦθοι καὶ θαυμάσια",
+  "Religion": "Τὰ θεῖα",
+  "Scholarship": "Γραμματική",
+  [OTHER_KIND]: "Τὰ λοιπά",
+};
