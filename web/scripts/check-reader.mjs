@@ -305,7 +305,8 @@ for (const [w, h, scheme = "light"] of runs("agamemnon") ? [[1280, 900], [1100, 
     });
     if (bar.h > 64) found.push(`bar ${tag}: the reader's bar is ${Math.round(bar.h)} px tall (in more than one row)`);
     if (bar.rows > 1) found.push(`bar ${tag}: the reader's bar has its buttons in ${bar.rows} rows`);
-    if (bar.cut || bar.width < 40) found.push(`bar ${tag}: the place the bar names is cut short ("${bar.place}", ${Math.round(bar.width)} px)`);
+    // (at 420 px and under the place is its number alone, by design since 2026-11-09, so it may be a few px wide; it must still be whole)
+    if (bar.cut || bar.width < (w <= 420 ? 4 : 40)) found.push(`bar ${tag}: the place the bar names is cut short ("${bar.place}", ${Math.round(bar.width)} px)`);
     if (bar.sideways) found.push(`bar ${tag}: the page scrolls sideways`);
   }
   await ctx.close();
