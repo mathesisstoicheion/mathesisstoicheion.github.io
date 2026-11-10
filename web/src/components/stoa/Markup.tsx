@@ -12,6 +12,7 @@ import { photo } from "@/lib/photos";
 // into each page that shows an author article
 import HINTS from "@/wiki/entry-hints.json";
 import { SectionNote } from "./EntryNotes";
+import CertCard from "./CertCard";
 import styles from "./Stoa.module.css";
 
 const GREEK_RUN = /((?:[Ͱ-Ͽἀ-῿][̀-ͯͰ-Ͽἀ-῿’ʼ]*[\s,·;.]*)+)/u;
@@ -32,7 +33,9 @@ export function emphAware(s: string, key: string | number): ReactNode {
 
 export const readHref = (c: { work: string; ref: string }) => `/read?w=${c.work}&at=${encodeURIComponent(c.ref)}`;
 
-export function CertTag({ c }: { c: Certainty }) {
+/** A certainty label. With `card` (inside an entry) it is a button that opens the label's meaning under it (CertCard.tsx). */
+export function CertTag({ c, card = false }: { c: Certainty; card?: boolean }) {
+  if (card) return <CertCard c={c} />;
   return <span className={`tag ${CERTAINTY[c].cls}`} title={CERTAINTY[c].about}>{CERTAINTY[c].label}</span>;
 }
 
@@ -45,14 +48,14 @@ export function SourceMark({ n }: { n: number[] }) {
   );
 }
 
-export function Inline({ xs }: { xs: Inl[] }) {
+export function Inline({ xs, card = false }: { xs: Inl[]; card?: boolean }) {
   return (
     <>
       {xs.map((x, i) => {
         if (typeof x === "string") return greekAware(x, i);
-        if ("b" in x) return <b key={i}><Inline xs={x.b} /></b>;
-        if ("i" in x) return <i key={i}><Inline xs={x.i} /></i>;
-        if ("cert" in x) return <CertTag key={i} c={x.cert} />;
+        if ("b" in x) return <b key={i}><Inline xs={x.b} card={card} /></b>;
+        if ("i" in x) return <i key={i}><Inline xs={x.i} card={card} /></i>;
+        if ("cert" in x) return <CertTag key={i} c={x.cert} card={card} />;
         if ("src" in x) return <SourceMark key={i} n={x.src} />;
         if ("cite" in x) return <Link key={i} className={styles.cite} href={readHref(x.cite)} transitionTypes={["page-turn"]} title="Read this passage in the reader">{emphAware(x.text, "t")}</Link>;
         if ("wiki" in x) {
@@ -82,20 +85,20 @@ export function Figure({ id }: { id: string }) {
   return photo(id) ? <Plate id={id} className={`${styles.figure} rv`} sizes="(max-width: 980px) 92vw, 736px" /> : null;
 }
 
-/** The dated timeline that ends an entry, under a small heading of its own so it does not read as part of the last section. */
+/** The entry's dates, under a heading of their own ("Dates", with an anchor the contents link to), placed after Share. */
 export function Timeline({ items }: { items: NonNullable<Entry["timeline"]> }) {
   return (
-    <div className={`${styles.timelineBlock} rv`}>
-      <h3 id="timeline-h" className="label">Timeline</h3>
-      <ol className={styles.timeline} aria-labelledby="timeline-h">
+    <section className={`${styles.dates} rv`} aria-labelledby="dates">
+      <h2 id="dates" className={styles.h2}>Dates</h2>
+      <ol className={styles.timeline}>
         {items.map((t, i) => (
           <li key={i}>
             <span className={styles.when}>{t.when}</span>
-            <span className={styles.what}>{greekAware(t.what, i)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} />}</span>
+            <span className={styles.what}>{greekAware(t.what, i)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} card />}</span>
           </li>
         ))}
       </ol>
-    </div>
+    </section>
   );
 }
 
@@ -113,17 +116,17 @@ export function Blocks({ bs, entry }: { bs: Blk[]; entry: Entry }) {
         if ("h3" in b) return <h3 key={i} className={styles.h3}>{emphAware(b.h3, "h")}</h3>;
         if ("quote" in b) return <Quote key={i} q={entry.quotes![b.quote]} />;
         if ("figure" in b) return <Figure key={i} id={b.figure} />;
-        if ("timeline" in b) return entry.timeline ? <Timeline key={i} items={entry.timeline} /> : null;
+        if ("timeline" in b) return null;   // the dates stand after Share (EntryView)
         if ("dyk" in b) return (
           <aside key={i} className={`${styles.dyk} rv`}>
             <span className="label">Did you know?</span>
-            {b.dyk.map((p, j) => <p key={j}><Inline xs={p} /></p>)}
+            {b.dyk.map((p, j) => <p key={j}><Inline xs={p} card /></p>)}
           </aside>
         );
-        if ("list" in b) return <ul key={i} className={styles.list}>{b.list.map((it, j) => <li key={j}><Inline xs={it} /></li>)}</ul>;
+        if ("list" in b) return <ul key={i} className={styles.list}>{b.list.map((it, j) => <li key={j}><Inline xs={it} card /></li>)}</ul>;
         return (
           <p key={i} className={b.cert ? styles.claim : undefined} data-cert={b.cert}>
-            {b.cert && <CertTag c={b.cert} />} <Inline xs={b.p} />
+            {b.cert && <CertTag c={b.cert} card />} <Inline xs={b.p} card />
           </p>
         );
       })}

@@ -18,7 +18,7 @@ const useNotesLoaded = () => {
   useEffect(() => { if (!loaded) usePageNotes.getState().load(); }, [loaded]);
 };
 
-/** At the right end of a section heading's line: a faint note button (just the pencil on a phone), or, beneath it, the note itself once written. */
+/** At the right end of a section heading's line: a small pencil in pale ink (its name, "Note", is read out), or, beneath it, the note itself once written. */
 export function SectionNote({ slug, section, title }: { slug: string; section: string; title: string }) {
   useNotesLoaded();
   const note = usePageNotes((s) => s.notes[`stoa:${slug}#${section}`]);
@@ -28,8 +28,8 @@ export function SectionNote({ slug, section, title }: { slug: string; section: s
   useEffect(() => { if (open) box.current?.querySelector("textarea")?.focus(); }, [open]);
   if (!note && !open) {
     return (
-      <button type="button" className={`chip ${styles.noteBtn}`} onClick={() => setOpen(true)} aria-label={`Write a note on “${title}”`}>
-        <svg viewBox="0 0 16 16" width="14" height="14" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" aria-hidden="true"><path d="M2.8 13.2 3.6 10l7.6-7.6 2.4 2.4L6 12.4z M9.9 3.7l2.4 2.4" /></svg><span className={styles.noteWord}>Note</span>
+      <button type="button" className={styles.noteBtn} onClick={() => setOpen(true)} aria-label={`Write a note on “${title}”`}>
+        <svg viewBox="0 0 16 16" width="16" height="16" fill="none" stroke="currentColor" strokeWidth="1.3" strokeLinejoin="round" aria-hidden="true"><path d="M2.8 13.2 3.6 10l7.6-7.6 2.4 2.4L6 12.4z M9.9 3.7l2.4 2.4" /></svg><span className="visually-hidden">Note</span>
       </button>
     );
   }
