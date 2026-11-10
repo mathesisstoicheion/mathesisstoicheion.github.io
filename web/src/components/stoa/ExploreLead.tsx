@@ -55,11 +55,9 @@ const GOD_EN: Record<string, string> = { "Ζεύς": "Zeus", "Ἡρακλῆς":
 
 const KER = IMAGES["kerameikos-street"];
 
-export default function ExploreLead() {
+function ExploreCards() {
   return (
-    <nav className={styles.lead} aria-labelledby="explore-h">
-      <h2 id="explore-h" className="label">Explore the Greek world</h2>
-      <ul>
+    <>
         <li>
           <Link href={AREAS.map.href} transitionTypes={["page-turn"]} className={styles.card}>
             <svg className={styles.map} viewBox={`${x0} ${y0} ${x1 - x0} ${y1 - y0}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
@@ -111,8 +109,7 @@ export default function ExploreLead() {
             </span>
           </Link>
         </li>
-      </ul>
-    </nav>
+    </>
   );
 }
 
@@ -179,18 +176,16 @@ const MINI = 0.22 / LIP;   // the pot, made small to stand in its panel
 const PLUCKS: Pt[] = [[0.03, 0.22], [0.06, 0.14], [0.09, 0.18], [0.12, 0.08], [0.15, 0.14], [0.18, 0.22]];
 
 /**
- * Make and play: the lyre, the potter and the board, each a card with its picture, drawn as a black-figure painter drew: the
+ * The lyre, the potter and the board, each a card with its picture, drawn as a black-figure painter drew: the
  * shapes in the black gloss (the page's ink), the lines scratched through it to the clay (the paper), and one line of
  * added red. Below the three places to explore, above the index of entries.
  */
-export function MakeAndPlay() {
+function MakeCards() {
   const { rx, ry, cy } = SHELL;
   return (
-    <nav className={styles.make} aria-labelledby="make-h">
-      <h2 id="make-h" className="label">Make, play and share</h2>
-      <ul>
+    <>
         <li>
-          <Link href={AREAS.lyre.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+          <Link href={AREAS.lyre.href} transitionTypes={["page-turn"]} className={styles.card}>
             <svg className={styles.fig} viewBox={square(-LYRE.w / 2, 0, LYRE.w, 1)} aria-hidden="true">
               <defs><clipPath id="make-shell"><ellipse cx="0" cy={cy} rx={rx} ry={ry} /></clipPath></defs>
               <g className={styles.gloss}>
@@ -211,7 +206,7 @@ export function MakeAndPlay() {
           </Link>
         </li>
         <li>
-          <Link href={AREAS.pot.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+          <Link href={AREAS.pot.href} transitionTypes={["page-turn"]} className={styles.card}>
             <svg className={styles.fig} viewBox={square(-0.7, -0.06, 1.4, LIP + 0.12)} aria-hidden="true">
               <defs><clipPath id="make-pot"><path d={POT} /></clipPath></defs>
               <path className={styles.gloss} d={POT} />
@@ -232,7 +227,7 @@ export function MakeAndPlay() {
           </Link>
         </li>
         <li>
-          <Link href={AREAS.board.href} transitionTypes={["page-turn"]} className={styles.makeCard}>
+          <Link href={AREAS.board.href} transitionTypes={["page-turn"]} className={styles.card}>
             <svg className={styles.fig} viewBox="0 0 1 1" aria-hidden="true">
               <path className={styles.cord} d="M0.3 0.26L0.5 0.1L0.7 0.26" />
               <circle className={styles.gloss} cx="0.5" cy="0.1" r="0.018" />
@@ -262,6 +257,18 @@ export function MakeAndPlay() {
             </span>
           </Link>
         </li>
+    </>
+  );
+}
+
+/** "Beyond the entries": the six places the entries do not hold, six matching cards, each wholly a link. */
+export default function Beyond() {
+  return (
+    <nav className={styles.beyond} aria-labelledby="beyond-h">
+      <h2 id="beyond-h" className={`label ${styles.beyondH}`}>Beyond the entries</h2>
+      <ul>
+        <ExploreCards />
+        <MakeCards />
       </ul>
     </nav>
   );
