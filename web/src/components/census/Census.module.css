@@ -512,7 +512,8 @@
 .movingDot circle { transition: r 0.6s ease, opacity 0.6s ease; }
 .movingPlace { fill: var(--ink-3); fill-opacity: 0.55; }
 .movingTop { fill: var(--rubric); fill-opacity: 0.7; }
-.movingDot:hover circle, .movingDot:focus-visible circle { stroke: var(--ink); stroke-width: 3; }
+.movingDot:focus-visible circle { stroke: var(--ink); stroke-width: 3; }
+@media (hover: hover) { .movingDot:hover circle { stroke: var(--ink); stroke-width: 3; } }
 .movingDot text { font-family: var(--f-label); fill: var(--ink); stroke: var(--bg); paint-order: stroke; pointer-events: none; }
 .movingTrail { fill: none; stroke: var(--rubric); pointer-events: none; }
 .movingRing { fill: none; stroke: var(--rubric); pointer-events: none; }
@@ -520,7 +521,7 @@
 .movingCaption { font-size: var(--step--1); color: var(--ink-2); }
 .movingList { list-style: none; margin: 0; padding: 0; display: grid; gap: 0; }
 .movingList button { display: grid; grid-template-columns: 2ch auto 1fr auto; align-items: baseline; gap: var(--space-3); width: 100%; text-align: left; padding: var(--space-2) 0; background: transparent; border: 0; box-shadow: var(--rule-under); color: var(--ink); font: inherit; cursor: pointer; }
-.movingList button:hover { color: var(--rubric); }
+@media (hover: hover) { .movingList button:hover { color: var(--rubric); } }
 .movingRank { color: var(--ink-3); font-size: var(--step--2); }
 .movingList b { font-family: var(--f-greek); font-weight: 400; text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 3px; }
 .movingEn { color: var(--ink-2); }
@@ -551,10 +552,11 @@
 .bodyDot { cursor: pointer; outline: none; }
 .bodyDot circle { fill: var(--rubric); fill-opacity: 0.75; transition: r 0.6s var(--ease); }
 .bodyDot text { font-family: var(--f-label); font-size: 13px; fill: var(--ink); stroke: var(--bg); stroke-width: 3px; paint-order: stroke; stroke-linejoin: round; pointer-events: none; }
-.bodyDot:hover circle, .bodyDot:focus-visible circle { stroke: var(--ink); stroke-width: 1; }
+.bodyDot:focus-visible circle { stroke: var(--ink); stroke-width: 1; }
+@media (hover: hover) { .bodyDot:hover circle { stroke: var(--ink); stroke-width: 1; } }
 .bodyList { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
 .bodyRow { display: grid; grid-template-columns: 1.6em minmax(0, 11em) minmax(0, 1fr) 3.2em; align-items: center; gap: var(--space-2); width: 100%; padding: var(--space-1) 0; background: transparent; border: 0; font: inherit; font-size: var(--step--1); color: var(--ink-2); text-align: left; cursor: pointer; }
-.bodyRow:hover { color: var(--ink); }
+@media (hover: hover) { .bodyRow:hover { color: var(--ink); } }
 .bodyRank { color: var(--ink-3); font-size: var(--step--2); }
 .bodyWord [lang="grc"] { font-family: var(--f-greek); color: var(--ink); }
 .bodyWord small { color: var(--ink-3); font-size: var(--step--2); }
