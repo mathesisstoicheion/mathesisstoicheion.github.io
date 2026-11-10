@@ -5,14 +5,15 @@
  * marks of each article's timeline; every claim rests on that article's numbered sources, one click away. An author
  * joins these pages when their article is checked and added to ARTICLES.
  */
-import Link from "next/link";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ARTICLES } from "@/wiki/author-articles-all";
 import { PIN_KINDS, type AuthorArticle, type PinKind } from "@/wiki/author-articles";
 import { blocks, plain } from "@/wiki/markup";
 import type { Catalog } from "@/lib/catalog";
+import Ledger, { type LedgerItem } from "./Ledger";
 import SideScroll from "./SideScroll";
+import idx from "./WikiIndex.module.css";
 import styles from "./Transmission.module.css";
 
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
@@ -29,15 +30,13 @@ const century = (y: number) => {
   return `${c}${th} century ${y < 0 ? "BC" : "AD"}`;
 };
 
-/** The opening of a section, as plain text: its first paragraph, cut at a sentence near 330 characters. */
+/** The opening of a section, as plain text: its first paragraph, whole. */
 function opening(src: string): string {
   const p = blocks(src).find((b) => "p" in b);
-  const t = p && "p" in p ? plain(p.p).replace(/\*+/g, "").replace(/\s+/g, " ").trim() : "";
-  if (t.length <= 360) return t;
-  const cut = t.slice(0, 360);
-  const end = Math.max(cut.lastIndexOf(". "), cut.lastIndexOf("; "));
-  return (end > 160 ? cut.slice(0, end + 1) : cut.replace(/\s+\S*$/, "")) + " …";
+  return p && "p" in p ? plain(p.p).replace(/\*+/g, "").replace(/\s+/g, " ").trim() : "";
 }
+/** The account's opening words up to the first full stop, when they are under 40 characters ("Wild papyri."). */
+const lead = (t: string) => { const m = /^[^.]*\./.exec(t); return m && m[0].length < 40 ? m[0] : null; };
 
 // ---------------------------------------------------------------- the roads of the texts
 // One row per author, the name beside its own track, so the two cannot drift apart; each mark is placed by its year,
@@ -65,10 +64,10 @@ function Roads() {
       <figcaption>
         <ul className={styles.legend}>
           {(Object.keys(PIN_KINDS) as PinKind[]).map((k) => (
-            <li key={k}><i className={`${styles.mark} ${styles.key} ${styles[k]}`} aria-hidden="true" /><b>{PIN_KINDS[k].label}</b> <span>{PIN_KINDS[k].about}</span></li>
+            <li key={k}><i className={`${styles.mark} ${styles.key} ${styles[k]}`} aria-hidden="true" /><span><b>{PIN_KINDS[k].label}</b> <span className={styles.about}>{PIN_KINDS[k].about}</span></span></li>
           ))}
         </ul>
-        <p>The marks of each author article&apos;s own timeline, drawn on one scale. Look for the gaps: between an author&apos;s own time and the copies of their words, and between the last copies made by hand and the first printed books. Point at a mark for its year; the article tells what happened.</p>
+        <p>The marks of each author article&apos;s own timeline, drawn on one scale. Look for the gaps: between an author&apos;s own time and the copies of their words, and between the last copies made by hand and the first printed books. Point at a mark for its year; choose an author&apos;s name to read the account below; the article tells what happened.</p>
       </figcaption>
       <SideScroll className={styles.scroller} label="The timelines, side by side">
       <div className={styles.chart}>
@@ -78,7 +77,7 @@ function Roads() {
             const ys = a.timeline.map((p) => p.year);
             return (
               <li key={a.id} style={{ "--i": i } as React.CSSProperties}>
-                <span className={`${styles.who} ${styles.pin}`} title={NAME.get(a.id) ?? a.id}>{NAME.get(a.id) ?? a.id}</span>
+                <a href={`#ledger-${a.id}`} className={`${styles.who} ${styles.pin}`} title={NAME.get(a.id) ?? a.id}>{NAME.get(a.id) ?? a.id}</a>
                 <span className={styles.track}>
                   {TICKS.map((t) => <i key={t} className={styles.grid} style={{ left: `${pct(t)}%` }} aria-hidden="true" />)}
                   <i className={styles.road} style={{ left: `${pct(Math.min(...ys))}%`, width: `${pct(Math.max(...ys)) - pct(Math.min(...ys))}%` }} aria-hidden="true" />
@@ -99,28 +98,27 @@ function Roads() {
 }
 
 export default function Transmission({ part }: { part: "transmission" | "variants" }) {
-  return (
-    <div className={`wrap ${styles.page}`}>
-      {part === "transmission" && <Roads />}
-      <section aria-labelledby="tr-list">
-        <h2 id="tr-list" className="label">{ALL.length} authors, in time order</h2>
-        <ol className={styles.list}>
-          {ALL.map((a, i) => (
-            <li key={a.id} className="rv" style={{ "--i": i } as React.CSSProperties}>
-              <Link href={`/author/${a.id}#survive-title`} transitionTypes={["page-turn"]} className={styles.card}>
-                <span className={styles.when}>{century(firstYear(a))}</span>
-                <b>{NAME.get(a.id) ?? a.id}</b>
-                <span className={styles.text}>{opening(a[part])}</span>
-                <span className={styles.go}>The whole account <span aria-hidden="true">→</span></span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </section>
-      <p className={styles.more}>
+  const items: LedgerItem[] = ALL.map((a) => {
+    const text = opening(a[part]);
+    return { id: a.id, name: NAME.get(a.id) ?? a.id, group: century(firstYear(a)), lead: lead(text), text, href: `/author/${a.id}#survive-title` };
+  });
+  const note = (
+    <section className={idx.made} aria-labelledby="tr-made">
+      <h2 id="tr-made" className="label">How this page is made</h2>
+      <p>
         These come from the author articles, each checked claim by claim against the sources listed with it.
         More authors join as their articles are checked.
       </p>
+    </section>
+  );
+  return (
+    <div className={`wrap ${styles.page}`}>
+      {part === "transmission" && <><Roads />{note}</>}
+      <section aria-labelledby="tr-list">
+        <h2 id="tr-list" className="label">{ALL.length} authors, in time order</h2>
+        <Ledger items={items} />
+      </section>
+      {part === "variants" && note}
     </div>
   );
 }

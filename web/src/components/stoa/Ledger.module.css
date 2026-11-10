@@ -1,0 +1,32 @@
+/* The ledger of the author articles' accounts (Ledger.tsx): a list of authors under century headings, each a ruled line, the
+   chosen one marked with a red rule at its left; the account itself set in full beside it (a computer) or under its row (a phone). */
+.stack, .fold { display: grid; gap: var(--space-4); }
+.group { display: grid; gap: var(--space-1); align-content: start; }
+.groupH { margin: var(--space-3) 0 0; padding-bottom: var(--space-1); border-bottom: 1px solid var(--ink); }
+.list { list-style: none; margin: 0; padding: 0; }
+.row {
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; width: 100%; min-height: var(--tap); align-content: center; padding: var(--space-2) var(--space-2) var(--space-2) var(--space-3);
+  font: inherit; color: var(--ink); text-align: left; background: none; border: 0; border-left: 2px solid transparent; box-shadow: var(--cut-under); cursor: pointer;
+}
+.list li:last-child .row { box-shadow: none; }
+.row b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-0); line-height: 1.25; transition: color var(--dur-quick) var(--ease); }
+.row span { color: var(--ink-2); font-size: var(--step--1); font-style: italic; }
+.row[aria-current="true"], .row[aria-expanded="true"] { border-left-color: var(--rubric); }
+.row[aria-current="true"] b { color: var(--rubric); }
+.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+@media (hover: hover) { .row:hover b { color: var(--rubric); } }
+.text { margin: 0; color: var(--ink); line-height: 1.6; max-width: var(--measure); }
+.go { display: inline-flex; gap: var(--space-1); align-items: center; min-height: var(--tap); font-size: var(--step--1); color: var(--accent); }
+.name { margin: 0; font-family: var(--f-title); font-weight: 400; font-size: var(--step-2); line-height: 1.15; }
+.account { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-3) var(--space-1) var(--space-2); box-shadow: var(--cut-over); scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
+.account .name { font-size: var(--step-1); }
+.panel { display: grid; gap: var(--space-1); padding: var(--space-2) var(--space-3) var(--space-3); border-left: 2px solid var(--rubric); box-shadow: var(--cut-under); }
+.panel[hidden] { display: none; }
+.list li { scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
+.ledger { display: grid; grid-template-columns: minmax(16rem, 22rem) minmax(0, 1fr); gap: var(--hang-gap); align-items: start; }
+.index { min-width: 0; }
+/* each row shows at rest that it can be pressed: a red arrow after the name on a computer, a small red triangle before it on the folding rows */
+.index .row b::after { content: "\00a0→"; color: var(--rubric); }
+.fold .row b::before { content: ""; display: inline-block; width: var(--tri-size); height: var(--tri-size); margin-right: var(--space-2); background: var(--rubric); clip-path: var(--tri-right); }
+.fold .row[aria-expanded="true"] b::before { clip-path: var(--tri-down); }
+.chosen { position: sticky; top: calc(var(--hdr-vis) + var(--space-4)); display: grid; gap: var(--space-3); align-content: start; padding-top: var(--space-4); border-top: 1px solid var(--ink); }
