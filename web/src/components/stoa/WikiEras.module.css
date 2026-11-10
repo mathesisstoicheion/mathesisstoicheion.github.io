@@ -22,7 +22,6 @@
 }
 .col[data-era="1"] .bar { background: var(--ink-3); }
 @media (hover: hover) { .col:hover .value { color: var(--ink); } }
-.axis { display: none; }
 .tick { grid-row: 3; font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; align-self: center; font-variant-numeric: lining-nums; }
 /* each period's bracket under its columns, and its name under the bracket (a link to its entry below) */
 .bands { display: grid; gap: var(--space-1); min-width: 780px; margin-top: 2px; }
@@ -76,24 +75,12 @@
 
 @media (max-width: 900px) { .eras { grid-template-columns: minmax(0, 1fr); } }
 @media (max-width: 760px) {
-  /* the whole chart fits the screen, all the centuries sharing its width (the shape of two thousand years is its point): no
-     sideways scroll. Each column's number is turned to stand above it; only every third century is named on the axis, and
-     the periods' names stand sideways under their brackets. */
-  .chartBox { --axis: 18px; }
-  .chart { height: 240px; min-width: 0; gap: calc(var(--space-1) / 2); }
-  .bands { min-width: 0; gap: calc(var(--space-1) / 2); }
-  .scroll { padding-inline: var(--space-2); }
-  .col { min-width: 0; grid-template-rows: 32px 1fr var(--axis); }
-  .value { writing-mode: vertical-rl; rotate: 180deg; padding-bottom: 0; padding-top: var(--space-1); }
-  /* the centuries' names: their own row under the axis (WikiEras.tsx), a little smaller, each centred under its column, clear of the next name and inside the chart's edges (check-overlaps at 320 to 390 px, 2026-11-08) */
-  .chart { --axis: 0px; }
-  .tick { display: none; }
-  .axis { display: grid; gap: calc(var(--space-1) / 2); margin-top: var(--space-1); font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; font-variant-numeric: lining-nums; }
-  .axis > span { grid-row: 1; min-width: 0; }
-  .bands a { writing-mode: vertical-rl; text-align: start; font-size: var(--step--2); letter-spacing: 0.04em; padding: var(--space-3) 0 0; overflow: visible; text-overflow: clip; min-width: 24px; }
+  /* the chart keeps a width of 640 px and scrolls sideways inside its frame (SideScroll), its right edge fading while there is more;
+     the periods' names under the brackets stay level */
+  .chart, .bands { min-width: 640px; }
+  .bands a { min-height: var(--tap); }
+  .scroll[data-more] { -webkit-mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); }
 }
-/* the narrowest phones (320 px): the columns closer, so that each turned number keeps within its column */
-@media (max-width: 340px) { .chart, .axis, .bands { gap: var(--hair); } .scroll { padding-inline: 0; } }
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {

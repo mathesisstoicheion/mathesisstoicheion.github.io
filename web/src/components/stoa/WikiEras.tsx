@@ -10,6 +10,7 @@ import { loadCatalog, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, type WorkMeta } from "@/lib/works-meta";
 import { ERAS, KINDS, authorRows, eraOfYear, loadAuthorsMeta, type AuthorMeta } from "@/lib/authors-meta";
 import { centuryBars, eraStats } from "@/lib/eras";
+import SideScroll from "./SideScroll";
 import styles from "./WikiEras.module.css";
 import idx from "./WikiIndex.module.css";
 
@@ -46,7 +47,7 @@ export default function WikiEras() {
           One column for each century: how many works the library holds by the authors placed in it. The number above a column is that count.
           {" "}{num(undated.length)} authors ({num(undated.reduce((n, r) => n + r.works, 0))} works) are left out because no source dates them: anonymous works, collections and the like.
         </p>
-        <div className={styles.scroll} tabIndex={0} role="group" aria-label="Works by century">
+        <SideScroll className={styles.scroll} label="Works by century">
           <ol className={styles.chart}>
             {bars.map((b, i) => (
               <li key={b.key} className={styles.col} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2}
@@ -57,21 +58,21 @@ export default function WikiEras() {
               </li>
             ))}
           </ol>
-          {/* a phone: every third century named under the axis in a row of its own, each name in a box three columns wide centred on its
-              column (the first and the last kept inside the chart's edges), so that no name is cut off at an edge or hangs out of its column */}
-          <div className={styles.axis} aria-hidden="true" style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}>
-            {bars.map((b, i) => {
-              if (i % 3) return null;
-              const from = Math.min(Math.max(i - 1, 0), Math.max(bars.length - 3, 0));
-              const side = from === i ? "start" : from + 2 === i ? "end" : "center";
-              return <span key={b.key} style={{ gridColumn: `${from + 1} / span ${Math.min(3, bars.length)}`, textAlign: side }}>{short(b.label)}</span>;
-            })}
-          </div>
           {/* each period's bracket under its columns is a link to its card below */}
           <div className={styles.bands} style={{ gridTemplateColumns: bands.map((b) => `minmax(44px, ${b.n}fr)`).join(" ") }}>
             {bands.map((b) => <a key={b.era.id} href={`#${b.era.id}`} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2} title={`${b.era.name}, ${b.era.span}`}>{b.era.name}</a>)}
           </div>
-        </div>
+        </SideScroll>
+      </section>
+
+      <section className={idx.made} aria-labelledby="eras-made">
+        <h2 id="eras-made" className="label">How this page is made</h2>
+        <p>
+        Counts are made from the library&apos;s catalogue. An author is placed in a period by the middle of their adult life (from age 25 to death), or by their floruit where
+        <a href="https://www.wikidata.org" target="_blank" rel="noreferrer noopener"> Wikidata</a> (CC0) gives one; where Wikidata has no date, by the span GLAUx gives for their works.
+        The periods are the usual conventions and their edges are not sharp: a language does not change on a set day. A period can hold fewer authors than you might expect only because the library holds
+        just what survives in the Perseus and First1KGreek collections.
+        </p>
       </section>
 
       <ol className={styles.eras}>
@@ -121,13 +122,6 @@ export default function WikiEras() {
           </li>
         ))}
       </ol>
-
-      <p className={idx.credit}>
-        Counts are made from the library&apos;s catalogue. An author is placed in a period by the middle of their adult life (from age 25 to death), or by their floruit where
-        <a href="https://www.wikidata.org" target="_blank" rel="noreferrer noopener"> Wikidata</a> (CC0) gives one; where Wikidata has no date, by the span GLAUx gives for their works.
-        The periods are the usual conventions and their edges are not sharp: a language does not change on a set day. A period can hold fewer authors than you might expect only because the library holds
-        just what survives in the Perseus and First1KGreek collections.
-      </p>
     </div>
   );
 }

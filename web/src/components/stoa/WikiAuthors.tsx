@@ -16,6 +16,7 @@ import { undated } from "@/lib/bc-ad";
 
 type Row = AuthorRow;
 const NONE = "none";
+const FIRST = 8;
 const num = (n: number) => n.toLocaleString("en-GB");
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 
@@ -40,6 +41,8 @@ export default function WikiAuthors() {
     if (k) p.set("k", k);
     history.replaceState(null, "", p.size ? `?${p}` : location.pathname);
   };
+  // a period shows its first few authors and a row to open the rest; a search, a chosen kind or a chosen period shows every match
+  const [opened, setOpened] = useState<Set<string>>(new Set());
   const pickEra = (v: string) => { const n = era === v ? "" : v; setEra(n); keep(n, kind); };
   const pickKind = (v: string) => { setKind(v); keep(era, v); };
 
@@ -57,6 +60,9 @@ export default function WikiAuthors() {
     ...ERAS.map((e) => ({ id: e.id, era: e, rows: shown.filter((r) => eraKey(r) === e.id).sort((x, y) => (x.year ?? 0) - (y.year ?? 0) || x.a.name.localeCompare(y.a.name)) })),
     { id: NONE, era: null, rows: shown.filter((r) => eraKey(r) === NONE).sort((x, y) => x.a.name.localeCompare(y.a.name)) },
   ].filter((g) => g.rows.length);
+
+  const everyMatch = terms.length > 0 || !!kind || !!era;
+  const open = (id: string, rest: boolean) => rest || everyMatch || opened.has(id);
 
   if (failed) return <div className="wrap"><p className={styles.empty} role="alert">The catalogue could not be opened. Check your connection and try again.</p></div>;
   if (!idx) return <div className="wrap"><p className={styles.empty}>Opening the catalogue…</p></div>;
@@ -94,11 +100,11 @@ export default function WikiAuthors() {
       {groups.map((g) => (
         <section key={g.id} className={styles.group} aria-labelledby={`ah-${g.id}`}>
           <div className={styles.groupHead}>
-            <h2 id={`ah-${g.id}`}>{g.era ? g.era.name : "Not dated"}</h2>
+            <h2 id={`ah-${g.id}`} className="label">{g.era ? g.era.name : "Not dated"}</h2>
             <span>{g.era ? g.era.span : "Anonymous works, collections and authors that no source dates"} · {num(g.rows.length)}</span>
           </div>
           <ul className={styles.list}>
-            {g.rows.map((r) => (
+            {(open(g.id, g.rows.length <= FIRST) ? g.rows : g.rows.slice(0, FIRST)).map((r) => (
               <li key={r.a.id}>
                 <Link className={styles.row} href={`/library/author?a=${r.a.id}`} transitionTypes={["page-turn"]}>
                   <span className={styles.who}>
@@ -116,15 +122,23 @@ export default function WikiAuthors() {
               </li>
             ))}
           </ul>
+          {!open(g.id, g.rows.length <= FIRST) && (
+            <button type="button" className={styles.openRest} aria-expanded="false" onClick={() => setOpened(new Set([...opened, g.id]))}>
+              All {num(g.rows.length)} {g.era ? g.era.name : "undated"} authors <span aria-hidden="true">▾</span>
+            </button>
+          )}
         </section>
       ))}
 
-      <p className={styles.credit}>
+      <section className={styles.made} aria-labelledby="ah-made">
+        <h2 id="ah-made" className="label">How this page is made</h2>
+        <p>
         Dates, birthplaces and descriptions are from <a href="https://www.wikidata.org" target="_blank" rel="noreferrer noopener">Wikidata</a> (CC0), matched to each author by their TLG number.
         An author is placed in a period by the middle of their adult life (from age 25 to death), or by their floruit (the time they were active) where Wikidata gives one; ancient dates are often approximate, so only centuries are shown.
         † marks a span taken from GLAUx&apos;s dating of the author&apos;s works, where Wikidata has none. The periods are the usual conventions:
         {" "}{ERAS.map((e) => `${e.name} ${e.span}`).join("; ")}.
-      </p>
+        </p>
+      </section>
     </div>
   );
 }

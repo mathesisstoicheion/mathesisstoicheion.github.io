@@ -20,9 +20,11 @@
 @media (hover: hover) { .group > summary:hover .gbar i { background: var(--rubric); } }
 .gcount { min-width: 3.5ch; text-align: right; font: 400 var(--step-1) / 1 var(--f-title); color: var(--ink); }
 @media (max-width: 760px) {
+  /* the name in ordinary letters (no spacing) across the row, then the bar and the number side by side under it */
   .group > summary { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: var(--space-1) 0; }
-  .gcount { font-size: var(--step-sub); padding-left: var(--space-3); }
-  .gbar { grid-column: 2 / -1; grid-row: 2; }
+  .gname { grid-column: 2 / -1; letter-spacing: normal; }
+  .gcount { grid-column: 3; grid-row: 2; font-size: var(--step-sub); padding-left: var(--space-3); }
+  .gbar { grid-column: 2; grid-row: 2; align-self: center; flex: none; }
 }
 .list { list-style: none; margin: 0 0 0 22px; padding: var(--space-1) 0 0; box-shadow: var(--cut-over); }
 .row {

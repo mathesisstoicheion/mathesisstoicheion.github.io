@@ -50,6 +50,7 @@ export default function WikiEditions() {
       <p className={idx.count} aria-live="polite">{num(shown.length)} {shown.length === 1 ? "text" : "texts"} in {num(groups.length)} {groups.length === 1 ? "group" : "groups"}</p>
       {shown.length === 0 && <p className={idx.empty}>Nothing matches. Try a shorter search.</p>}
 
+      {groups.length > 0 && <h2 id="ed-publishers" className={`label ${idx.groupLabel}`}>Publishers</h2>}
       {groups.map((g) => {
         // a publisher's city, when its name ends with it, "Teubner (Leipzig)", is set beneath the name as an imprint's place
         const at = /^(.*) \(([A-Z][\p{L}]+(?: [A-Z][\p{L}]+)?)\)$/u.exec(g.name);
@@ -84,11 +85,14 @@ export default function WikiEditions() {
         );
       })}
 
-      <p className={idx.credit}>
+      <section className={idx.made} aria-labelledby="ed-made">
+        <h2 id="ed-made" className="label">How this page is made</h2>
+        <p>
         Each description is the one in the text&apos;s own file, in the Perseus Digital Library&apos;s collection of Greek texts or the First Thousand Years of Greek project (Open Greek and Latin), shown as written, including any slips.
         The grouping is by the publisher named in it; texts whose description names none of the publishers above are under &ldquo;Other&rdquo;.
         A row opens that exact text in the reader. Nothing here is edited: when a description is wrong, the fix belongs at the source.
-      </p>
+        </p>
+      </section>
     </div>
   );
 }
