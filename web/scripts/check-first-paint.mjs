@@ -14,10 +14,12 @@
 // It exits with 1 when anything is listed, so it can stand in the checks.
 import { chromium } from "playwright";
 import fs from "node:fs";
+import { withoutLessons } from "./lib/pages.mjs";
 
 const [base = "http://localhost:3100", out = "", only = ""] = process.argv.slice(2);
 export const PAGES = ["/", "/academy", "/academy/lesson/letters", "/library", "/stoa", "/stoa/ostracism", "/town-hall", "/treasury",
   "/account", "/guide", "/read?w=tlg0085.tlg005"].filter((p) => p.includes(only));
+const PAGES_NOW = withoutLessons(PAGES);
 const SIZES = [[1024, 768, "computer"], [375, 812, "phone"]];
 const AT_MS = 500;
 
@@ -128,7 +130,7 @@ let problems = 0;
 for (const [w, h, size] of SIZES) {
   for (const slow of [false, true]) {
     const ctx = await browser.newContext({ viewport: { width: w, height: h }, deviceScaleFactor: 1, isMobile: size === "phone", hasTouch: size === "phone", serviceWorkers: "block" });
-    for (const path of PAGES) {
+    for (const path of PAGES_NOW) {
       if (slow && path.startsWith("/read")) continue;   // the reader builds its text from the book in the browser: it needs its scripts
       const page = await ctx.newPage();
       const reqs = [];
