@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: `Textual variants · ${AREAS.wiki.nam
 export default function VariantsPage() {
   return (
     <Page>
-      <RefHead title="Textual variants" greek="Γραφαί">Where the copies disagree about the words, and how editors choose between them. The accounts from the author articles, side by side.</RefHead>
+      <RefHead here="variants">Where the copies disagree about the words, and how editors choose between them. The accounts from the author articles, side by side.</RefHead>
       <Transmission part="variants" />
     </Page>
   );

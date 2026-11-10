@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: `Manuscripts & transmission · ${AREA
 export default function ManuscriptsPage() {
   return (
     <Page>
-      <RefHead title="Manuscripts & transmission" greek="Παράδοσις">How each author&apos;s words reached us: copied by hand on papyrus and parchment, edited, and at last printed. The accounts from the author articles, side by side.</RefHead>
+      <RefHead here="manuscripts">How each author&apos;s words reached us: copied by hand on papyrus and parchment, edited, and at last printed. The accounts from the author articles, side by side.</RefHead>
       <Transmission part="transmission" />
     </Page>
   );
