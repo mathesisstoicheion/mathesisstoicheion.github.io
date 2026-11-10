@@ -395,7 +395,7 @@
 .shapeHead, .shapeRow { text-decoration: underline; text-decoration-color: var(--rule); text-decoration-thickness: 1px; text-underline-offset: 3px; font: inherit; font-size: var(--step--2); color: var(--ink-2); background: transparent; border: 0; cursor: pointer; padding: 2px; text-align: center; font-family: var(--f-label); letter-spacing: 0.03em; line-height: 1.2; }
 .shapeRow { text-align: left; font-family: var(--f-body); font-size: var(--step--1); letter-spacing: 0; color: var(--ink); }
 .shapeHead[aria-pressed="true"], .shapeRow[aria-pressed="true"] { color: var(--rubric); }
-.cell, .cellEmpty { aspect-ratio: 1.6; display: grid; place-items: center; background: transparent; border: 0; padding: 0; box-shadow: var(--rule-box); }
+.cell, .cellEmpty { aspect-ratio: 1.6; min-width: 0; width: 100%; display: grid; place-items: center; background: transparent; border: 0; padding: 0; box-shadow: var(--rule-box); }
 .cell { cursor: pointer; }
 .cell i { display: block; width: var(--s); height: var(--s); background: var(--ink-3); transition: background var(--dur-quick) var(--ease); }
 @media (hover: hover) { .cell:hover i { background: var(--ink); } .shapeHead:hover, .shapeRow:hover { color: var(--rubric); } }
