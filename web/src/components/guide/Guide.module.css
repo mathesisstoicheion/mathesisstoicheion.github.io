@@ -7,25 +7,29 @@
 .page { padding-block: var(--after-head, 28px) 72px; }
 /* on a computer the page's head stands where every page's head stands (globals.css .ph; scripts/check-heads.mjs) */
 @media (min-width: 761px) { .page { padding-top: 0; } }
-.small { color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
+.small { font-size: var(--step--1); color: var(--ink-2); margin: var(--space-2) 0 var(--space-4); }
 .small a { color: var(--ink); text-decoration-color: var(--rubric); text-underline-offset: 3px; }
 
-/* the chapters as a book's contents: entries under hairlines, each number in red figures; a chapter already shown is ticked */
-.contents ol { list-style: none; margin: 0 0 22px; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 28px; border-top: 1px solid var(--ink); }
+/* the contents as a ledger, as the Stoa's: a row for each chapter under hairlines, its number in red, its title, a one-line hint, and at the right its
+   "Show me"; three columns on a computer, one on a phone. The title's link covers the whole row; "Show me" stands above it. */
+.contents { border-top: 1px solid var(--ink); margin: 0 0 var(--space-6); }
+.contents ol { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); column-gap: var(--space-5); }
 @media (min-width: 900px) { .contents ol { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
-.contents li { border-bottom: 1px solid var(--rule); }
-.contents a {
-  display: flex; height: 100%; align-items: baseline; gap: 12px; padding: 11px 2px 12px; color: var(--ink); text-decoration: none; font-size: var(--step-0);
-  transition: color var(--dur-quick) var(--ease);
-}
-.contents a:focus-visible { color: var(--rubric); }
-@media (hover: hover) { .contents a:hover { color: var(--rubric); } }
-.no { flex: none; min-width: 1.4em; font: 400 1.25rem / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
-.contents a[data-done] .no { font-family: var(--f-body); }
+.row { position: relative; display: grid; grid-template-columns: 1.6rem minmax(0, 1fr); column-gap: var(--space-3); align-content: start; padding: var(--space-3) 2px var(--space-1); border-bottom: 1px solid var(--rule); transition: border-color var(--dur-quick) var(--ease); }
+.no { grid-row: 1; font: 400 1.25rem / 1.2 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
+.rowTitle { grid-column: 2; font: 400 var(--step-sub) / 1.25 var(--f-display); color: var(--ink); text-decoration: underline; text-decoration-color: var(--rubric); text-underline-offset: 3px; transition: color var(--dur-quick) var(--ease); }
+.rowTitle::after { content: ""; position: absolute; inset: 0; }
+.rowTitle:focus-visible { color: var(--rubric); }
+.hint { grid-column: 2; margin-top: var(--space-1); color: var(--ink-2); font-size: var(--step--1); line-height: 1.4; }
+.rowGo { grid-column: 2; position: relative; justify-self: start; }
+.rowGo a { display: inline-flex; align-items: center; min-height: var(--tap); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); text-decoration: none; transition: color var(--dur-quick) var(--ease); }
+.rowGo a:focus-visible, .row[data-done] .rowGo a { color: var(--rubric); }
+@media (hover: hover) { .row:hover { border-bottom-color: var(--ink); } .row:hover .rowTitle, .rowGo a:hover { color: var(--rubric); } }
 
 .chapters { list-style: none; margin: 34px 0 0; padding: 0; display: grid; gap: clamp(44px, 7vw, 84px); }
-.chapter { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(22px, 4vw, 56px); align-items: center; scroll-margin-top: calc(var(--hdr-vis, 64px) + 20px); }
+.chapter { display: grid; grid-template-columns: minmax(0, 38fr) minmax(0, 54fr); justify-content: space-between; gap: clamp(22px, 4vw, 56px); align-items: center; scroll-margin-top: calc(var(--hdr-vis, 64px) + 20px); }
 :global(html[data-hdr="hidden"]) .chapter { --hdr-vis: 0px; }
+.chapter:nth-child(even) { grid-template-columns: minmax(0, 54fr) minmax(0, 38fr); }
 .chapter:nth-child(even) > :first-child { order: 2; }
 .say h2 { font-family: var(--f-display); font-weight: 400; font-size: var(--step-3); margin: 2px 0 10px; line-height: 1.1; }
 .say p { margin: 0 0 10px; line-height: 1.6; max-width: 56ch; }
@@ -38,7 +42,7 @@
 .fork { display: flex; flex-wrap: wrap; gap: 12px; margin: var(--space-4) 0 var(--space-5); }
 
 @media (max-width: 760px) {
-  .chapter { grid-template-columns: 1fr; }
+  .chapter, .chapter:nth-child(even) { grid-template-columns: minmax(0, 1fr); }
   .chapter:nth-child(even) > :first-child { order: 0; }
   .big { font-size: 2rem; }
   /* the start buttons: one under the other, each the full width */
@@ -55,7 +59,7 @@
 /* a figure: the drawing in a hairline frame, then its number in red small capitals and what it shows (as the plates' captions) */
 .pic { margin: 0; display: grid; gap: 10px; }
 .picBody {
-  position: relative; aspect-ratio: 16 / 10; display: grid; align-content: center; gap: 12px; padding: clamp(14px, 3vw, 26px);
+  position: relative; display: grid; align-content: center; gap: 12px; padding: clamp(14px, 3vw, 26px);
   border: 1px solid var(--rule); outline: 1px solid var(--rule-2); outline-offset: -6px; border-radius: var(--radius); overflow: hidden;
   font-size: clamp(0.82rem, 1.6vw, 1rem);
 }
@@ -83,12 +87,16 @@
 
 /* word: the word chosen, under a red rule, and its meaning on a slip under it */
 .wLine { margin: 10px 0 0; font-size: 1.6em; text-align: center; }
-.wHit { border-bottom: 2px solid var(--rubric); }
+.wHit { font: inherit; color: inherit; background: none; border: 0; border-bottom: 2px solid var(--rubric); padding: 0 var(--space-1); min-height: var(--tap); cursor: pointer; transition: color var(--dur-quick) var(--ease); }
+.wHit:focus-visible { color: var(--rubric); }
+@media (hover: hover) { .wHit:hover { color: var(--rubric); } }
+/* the look-up card fades in under the word; its room is kept, so nothing moves */
+[data-demo] .wCard { opacity: 0; visibility: hidden; transition: opacity var(--dur-quick) var(--ease), visibility 0s var(--ease) var(--dur-quick); }
+[data-demo] .wCard[data-open] { opacity: 1; visibility: visible; transition: opacity var(--dur-quick) var(--ease); }
 .wCard { justify-self: center; display: grid; gap: 2px; padding: 10px 14px 10px 16px; border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: var(--inlay-top); }
 .wCard b { font-family: var(--f-greek); font-weight: 400; font-size: 1.25em; }
 .wCard span { color: var(--ink-2); font-size: 0.9em; }
 .wCard .wMean { color: var(--ink); font-size: 1em; }
-.wPointer { display: none; }
 
 /* aids: Transliteration on, and the Latin letters under the Greek */
 .aChips { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
@@ -165,3 +173,24 @@
 /* on a computer a chapter's words open under its rule, as a chapter's first page does, whatever the height of the figure
    beside them (scripts/check-parts.mjs) */
 @media (min-width: 761px) { .chapter { align-items: start; } }
+
+/* a figure is small and fits its drawing: no tall empty band; on a phone it sits under the heading, at most 180px tall */
+.chapter .picBody { padding: var(--space-3); font-size: var(--step--1); align-content: start; }
+@media (max-width: 760px) { .chapter .picBody { max-height: 180px; } }
+/* Look up a word has no figure (its drawing is in the head): a red rule and a line in its place */
+.tryIt { margin: 0; padding-top: var(--space-3); border-top: 2px solid var(--rubric); color: var(--ink-2); font-style: italic; }
+
+/* the head: on a computer two columns (the title's, then the first card); on a phone the card comes before the two buttons */
+.first { display: grid; gap: var(--space-3); padding: var(--space-4); border: 1px solid var(--rule); outline: 1px solid var(--rule-2); outline-offset: -6px; border-radius: var(--radius); }
+.firstKicker { margin: 0; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
+.first .picBody { border: 0; outline: 0; padding: 0; justify-items: center; font-size: var(--step-0); }
+.firstSay { margin: 0; line-height: 1.5; }
+.first .go { margin-top: 0; }
+@media (max-width: 760px) {
+  .head { display: flex; flex-direction: column; align-items: stretch; }
+  .head > :global(.ph-text) { display: contents; }
+  .head > :global(.ph-side) { order: 1; margin-top: var(--space-4); }
+  .head :global(.ph-action) { order: 2; }
+}
+/* on a computer a short figure stands level with the middle of its words, so the room beside them is shared above and below it */
+@media (min-width: 761px) { .chapter > .pic { align-self: center; } }

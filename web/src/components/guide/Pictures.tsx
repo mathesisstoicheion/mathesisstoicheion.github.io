@@ -24,6 +24,22 @@ export function Picture({ id, n = 0 }: { id: string; n?: number }) {
   return <FigNo.Provider value={n}><Drawing id={id} /></FigNo.Provider>;
 }
 
+/** The Look up a word drawing, in the Guide's head: the line's first word is a real button, and the look-up card fades in under it. */
+export function WordDemo({ open, onToggle, id }: { open: boolean; onToggle: () => void; id: string }) {
+  return (
+    <div className={styles.picBody} data-demo="">
+      <p className={styles.wLine} lang="grc">
+        <button type="button" className={styles.wHit} aria-expanded={open} aria-controls={id} onClick={onToggle}>μῆνιν</button> ἄειδε θεὰ
+      </p>
+      <div className={styles.wCard} id={id} data-open={open || undefined} role="region" aria-label="The look-up card">
+        <b lang="grc">μῆνις</b>
+        <span>noun · accusative singular</span>
+        <span className={styles.wMean}>wrath</span>
+      </div>
+    </div>
+  );
+}
+
 function Drawing({ id }: { id: string }) {
   switch (id) {
     case "find":
@@ -48,18 +64,6 @@ function Drawing({ id }: { id: string }) {
             </span>
           </div>
           <div className={styles.rCols}><i>Greek</i><i>Both</i><i>English</i></div>
-        </Frame>
-      );
-    case "word":
-      return (
-        <Frame label="The word μῆνιν, chosen, and its meaning: wrath.">
-          <p className={styles.wLine} lang="grc"><span className={styles.wHit}>μῆνιν</span> ἄειδε θεὰ</p>
-          <div className={styles.wCard}>
-            <b lang="grc">μῆνις</b>
-            <span>noun · accusative singular</span>
-            <span className={styles.wMean}>wrath</span>
-          </div>
-          <span className={styles.wPointer} />
         </Frame>
       );
     case "aids":

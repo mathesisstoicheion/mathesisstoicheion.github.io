@@ -52,8 +52,9 @@ const OPEN_STUDY = t('button[aria-controls$="-study"][aria-expanded="false"]');
 const OPEN_GOTO = t('button[aria-controls$="-goto"][aria-expanded="false"]');
 const TEXT_MENU = t('[id$="-aa"]');
 const GOTO_MENU = t('[id$="-goto"]');
-/** a group of Study's rows, by its heading ("Edition and translation") */
-const STUDY_GROUP = (heading: string) => t('[id$="-study"] section', heading);
+/** the Greek text and translation lists, in the Text menu */
+const TEXT_PICKS = t('[id$="-aa"] label', "Greek text");
+const TEXT_PICKS_TR = t('[id$="-aa"] label', "Translation");
 
 export const TOURS: Record<string, Tour> = {
   learn: {
@@ -88,9 +89,9 @@ export const TOURS: Record<string, Tour> = {
       // the quiet desk, the guide (the owner, 2026-10-31): a book opens on the Greek alone, with "Show the English" under each passage; one bar along the foot
       // holds Library, where you are (Go to), Text (the columns, the page, the size of the Greek, the space between lines) and Study (every other tool)
       { at: [t('section[data-key="1.1"]')], title: "A book opens on the Greek alone", text: "Each block is one passage. The number at its start is its reference, here Iliad book 1, line 1. Under the Greek, Show the English opens that passage's translation, and Hide the English puts it away." },
-      { at: [FOOT], title: "One bar at the foot of the page", text: "Library goes back to the library. The middle says where you are. Text sets the look of the page. Study holds every other tool.", phoneText: "Library goes back to the library. The middle says where you are. Text sets the look of the page. Study holds every other tool. As you read on, the bar slips away; it comes back when you scroll up or tap the page." },
+      { at: [FOOT], title: "One bar at the foot of the page", text: "Library goes back to the library, and on a computer Float beside it shrinks the reader into a small window that follows you round the site. The middle says where you are and goes to any line. Find searches the whole book, Listen reads the English aloud, Text sets the look of the page, Study holds the reading helps, and More holds the rest.", phoneText: "Library goes back to the library. The middle says where you are and goes to any line. Find searches the whole book, Listen reads the English aloud, Text sets the look of the page, Study holds the reading helps, and More holds the rest. As you read on, the bar slips away; it comes back when you scroll up or tap the page." },
       { click: [OPEN_TEXT], at: [TEXT_MENU], title: "Text: the columns and the look of the page", text: "Text holds the columns: Greek, Both (the English beside the Greek) or English. It also holds the page (Follow device, Paper or Night), the size of the Greek and the line spacing. Your choices are kept on this device, for every book." },
-      { esc: true, click: [OPEN_STUDY], at: [STUDY_GROUP("Edition and translation")], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Under Study, Edition and translation has a list for the Greek text and one for the translation. The site remembers your choice for each book." },
+      { click: [OPEN_TEXT], at: [TEXT_PICKS], with: [TEXT_PICKS_TR], title: "Editions and translations", text: "Many works have more than one Greek edition or translation. Under Text, Greek text and Translation each have a list to choose from. The site remembers your choice for each book." },
       { esc: true, click: [OPEN_GOTO], at: [GOTO_MENU], title: "Go to a passage", text: "The middle of the bar says where you are, and opens this box. Page lists the parts of the book, so you can turn to one. Or type a reference, like 6.237 for book 6, line 237, and press Go." },
       { esc: true, at: [t("button", "Continue to")], title: "Turn the page", text: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next one, and the arrow keys turn the pages too.", phoneText: "Long works come a book or a chapter at a time. Continue, at the foot of the page, turns to the next." },
     ],
@@ -116,7 +117,7 @@ export const TOURS: Record<string, Tour> = {
         click: [t(`${LOOKUP.sel} button`, "More about it")],
         at: [t(`${LOOKUP.sel} ul[class*="ways"]`)],
         title: "Go further",
-        text: "More about it opens the whole entry from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary. Go further, below it, leads on from the word: where else it comes in the book, how the sentence is built, a lesson on its form when there is one, and Word Study, every form of the word. Back returns to the first view; × closes the look-up.",
+        text: "More about it opens the whole entry from LSJ (Liddell–Scott–Jones), the great Greek–English dictionary. Go further, below it, leads on from the word: where else it comes in the book, how the sentence is built, and Word Study, every form of the word. Back returns to the first view; × closes the look-up.",
       },
     ],
   },
@@ -128,14 +129,14 @@ export const TOURS: Record<string, Tour> = {
     steps: [
       // the quiet desk, the guide (the owner, 2026-10-31): Study holds every tool in groups (Reading help, Go deeper, Edition and translation, More). The steps point only at rows
       // the Iliad shows: "Try it first" is there only with the Greek and the English side by side, so it is in the chapter and not in the tour
-      { at: [t('button[aria-controls$="-study"]')], title: "Reading aids", text: "Study, at the foot of the page, holds every reading tool, in groups: Reading help, then Go deeper, then Edition and translation. Some rows have a switch at the right: press the row to turn it on, and press it again to turn it off. A number beside Study says how many switches are on." },
+      { at: [t('button[aria-controls$="-study"]')], title: "Reading aids", text: "Study, at the foot of the page, holds the reading helps, in two groups, Reading help and Go deeper. Some rows have a switch at the right: press the row to turn it on, and press it again to turn it off. A number beside Study says how many switches are on." },
       // open Study so the next steps can point inside it (it stays open while the tour steps through)
       { click: [OPEN_STUDY], at: [t("button[data-tool=translit]")], title: "Transliteration", text: "Shows each line in Latin letters, under the Greek, so you can sound it out." },
       { at: [t("button[data-tool=cases]")], title: "Colour by case", text: "A Greek word's ending shows its job in the sentence: its case. This underlines each word in the colour of its case, so you can see who does what to whom. A key to the colours appears at the top of the page." },
       { at: [t("button[data-tool=metre]")], title: "Metre", text: "Marks which syllables of a line of verse are long and which are short, and where its beats (feet) and its pause (caesura) fall, so you can see its rhythm. Only books of verse have it. A key to the marks appears at the top of the page." },
       { at: [t("button[data-tool=vocab]")], title: "The page's vocabulary", text: "Lists the words on this page, the ones used most first, with their meanings." },
-      { at: [t("button[data-tool=find]")], title: "Find in this text", text: "Search the whole book for a word or a phrase, in Greek or in English. Press Ctrl+F to open it from the keyboard.", phoneText: "Search the whole book for a word or a phrase, in Greek or in English." },
-      { at: [t("button[data-tool=listen]")], title: "Listen", text: "Hear the English read aloud, passage by passage, the word being read lit as it goes. With the Greek alone, each passage's English opens as it is read." },
+      { at: [t('[data-foot-bar] button[aria-label="Find"]')], title: "Find in this text", text: "Find, in the bar, searches the whole book for a word or a phrase, in Greek or in English. Press Ctrl+F to open it from the keyboard.", phoneText: "Find, in the bar, searches the whole book for a word or a phrase, in Greek or in English." },
+      { at: [t('[data-foot-bar] button[aria-label="Listen"]')], title: "Listen", text: "Listen, in the bar, reads the English aloud, passage by passage, the word being read lit as it goes. With the Greek alone, each passage's English opens as it is read." },
       { at: [t("button[data-tool=places]")], with: [t("button[data-tool=ms]")], title: "Places and manuscripts", text: "Places on this page shows the places the page names on a map. How it was written shows the passage as a scribe would have written it by hand, in capitals without spaces, and for some works on a real medieval manuscript page." },
     ],
   },
@@ -154,8 +155,8 @@ export const TOURS: Record<string, Tour> = {
         title: "The passage strip",
         text: "Bookmark marks the place. Favourite adds it to your favourite passages. Note lets you write on it, and the four colours highlight it. Notebook adds it, with its citation, to a research notebook. Share copies it as a link, as text or as an image. Echoes shows where else these words come. × closes the strip.",
       },
-      // (one book has no site header: the light falls on the row of Study that lists your marks; two books keep the header, and the light falls on its Treasury link)
-      { esc: true, click: [OPEN_STUDY], at: [t('header a[href="/treasury"]'), t("button[data-tool=marks]")], title: "The Treasury", text: "Your notes and marks, under Study at the foot of the page, lists what you have kept in this book. Everything you keep also goes to the Treasury: notes, favourite passages (your anthology), bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
+      // the round notes button at the top right of the reader (ReaderBar.tsx NotesButton) lists what you have kept in this book
+      { esc: true, at: [t("[data-notes-fab] button")], title: "The Treasury", text: "The round button at the top right of the page, with its number, lists what you have kept in this book. Everything you keep also goes to the Treasury: notes, favourite passages (your anthology), bookmarks, highlights, words and notebooks, ready to download or print. It is kept in this browser; sign in to keep it in step across your devices." },
     ],
   },
 
@@ -164,11 +165,14 @@ export const TOURS: Record<string, Tour> = {
     title: "Explore the Greek world",
     start: "/stoa",
     steps: [
-      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/periplus"]')], title: "The Periplus: the map", text: "The places the texts name, on a map you can pan and zoom, with the passages that mention each one." },
-      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/census"]')], title: "The Census", text: "The people, gods, places and things in the texts, counted: who is mentioned most, and where." },
-      { at: [t('nav[aria-labelledby="explore-h"] a[href="/stoa/kerameikos"]')], title: "The Kerameikos", text: "Archaeology: what digging, broken pots and graves tell us about the Greeks." },
+      // the Stoa's front (components/stoa): the head's subject chips, the entry of the day and the cards of the index, then "Beyond the entries" and the Reference card
+      { at: [t('ul[aria-label="Show one subject"]')], title: "Choose a subject", text: "The chips at the top narrow the Painted Stoa to one subject: its articles on people, ideas and everyday life, each with its sources and links into the texts.", phoneText: "The chips at the top narrow the Painted Stoa to one subject: its articles on people, ideas and everyday life, each with its sources and links into the texts. Slide them sideways to see them all." },
       { at: [t('main a[class*="featured"]'), t('input[aria-label="Search the Painted Stoa"]')], title: "The Painted Stoa", text: "Articles on the Greek world, its people, ideas and everyday life, each with its sources and links into the texts. Here is one of them." },
-      { at: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/authors"]')], with: [t('nav[aria-labelledby="ref-h"] a[href="/stoa/eras"]'), t('nav[aria-labelledby="ref-h"] a[href="/stoa/editions"]')], title: "Authors, eras and editions", text: "Every author with their works and dates, the centuries of Greek, and the printed editions behind the texts." },
+      { at: [t('section[aria-labelledby="entries"] li[class*="card"]')], title: "The entries, by subject", text: "Each subject has a card listing its entries. The number is how many it holds, and +more opens the rest." },
+      { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/periplus"]')], title: "The Periplus: the map", text: "The places the texts name, on a map you can pan and zoom, with the passages that mention each one." },
+      { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/census"]')], title: "The Census", text: "The people, gods, places and things in the texts, counted: who is mentioned most, and where." },
+      { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/kerameikos"]')], title: "The Kerameikos", text: "Archaeology: what digging, broken pots and graves tell us about the Greeks." },
+      { at: [t('li#reference a[href="/stoa/authors"]')], with: [t('li#reference a[href="/stoa/eras"]')], title: "Authors and eras", text: "The Reference card: every author with their works and dates, and the centuries of Greek. Its other entries cover manuscripts, textual variants and the printed editions behind the texts." },
     ],
   },
 
@@ -210,5 +214,5 @@ export const TOURS: Record<string, Tour> = {
 };
 
 /** The Guide's chapters, in order, with the tour each one shows. */
-export const CHAPTER_ORDER = (["learn", "find", "read", "word", "aids", "keep", "explore", "search", "talk", "settings"] as const)
+export const CHAPTER_ORDER = (["word", "read", "aids", "keep", "find", "search", "explore", "learn", "talk", "settings"] as const)
   .filter((id) => FORUM_OPEN || id !== "talk");
