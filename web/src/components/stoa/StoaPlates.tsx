@@ -12,21 +12,16 @@ import Link from "next/link";
 import Plate from "@/components/plate/Plate";
 import styles from "./Stoa.module.css";
 
+/** At the right of the page's head (on a computer; after the search on a phone): the fresco and the story in two lines. */
 export function WhyStoics() {
   return (
-    <>
-      <div className="sh rv"><h2 id="stoics-h">Why Stoics are called <em>Stoics</em></h2><span className="fill" /></div>
-      <div className={styles.essay}>
-        <div className="rv">
-          <p>The Stoa Poikile, the “Painted Colonnade”, stood on the north side of the Athenian Agora, hung with famous paintings such as the Battle of Marathon. Around 300 BC Zeno of Citium began to teach there, walking up and down the colonnade.</p>
-          <p>His followers were first called Zenonians, then Stoics, “the people of the Stoa”.</p>
-          <p className={styles.essayGo}><Link href="/read?w=tlg0004.tlg001&at=7.1.5" transitionTypes={["page-turn"]}>Read it in Diogenes Laertius →</Link></p>
-        </div>
-        <aside className={`${styles.side} rv`}>
-          Diogenes Laertius, <i>Lives of Eminent Philosophers</i> 7.5.
-          <Plate id="crates-hipparchia" n={1} frame={false} why="Zeno was a pupil of the Cynic Crates (Diogenes Laertius 7.2–3)." sizes="(min-width: 1200px) 560px, 260px" />
-        </aside>
+    <aside className={styles.why} id="stoics" aria-labelledby="stoics-h">
+      <h2 id="stoics-h" className="label">Why Stoics are called <em>Stoics</em></h2>
+      <Plate id="crates-hipparchia" n={1} frame={false} why="Zeno was a pupil of the Cynic Crates (Diogenes Laertius 7.2–3)." sizes="(min-width: 1200px) 560px, (min-width: 761px) 40vw, 92vw" />
+      <div className={styles.whyText}>
+        <p>The Stoa Poikile, the “Painted Colonnade”, stood on the north side of the Athenian Agora, hung with famous paintings such as the Battle of Marathon. Around 300 BC Zeno of Citium began to teach there, walking up and down the colonnade. His followers were first called Zenonians, then Stoics, “the people of the Stoa”.</p>
+        <p className={styles.essayGo}><Link href="/read?w=tlg0004.tlg001&at=7.1.5" transitionTypes={["page-turn"]}>Read it in Diogenes Laertius →</Link> <span>Lives of Eminent Philosophers 7.5.</span></p>
       </div>
-    </>
+    </aside>
   );
 }

@@ -1,11 +1,13 @@
 "use client";
 /**
- * The Painted Stoa's front, set as a printed index: one part per category, each listing its entries (and one more,
- * "Reference", listing the library's own reference pages), with a search across every entry directly on top of it, whose
- * results stand in the index's place while a search is typed, and below it the entry of the day with its photograph (its
- * title is the one link to it, with its red arrow).
- * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the
- * search also looks through, are fetched only when a search begins, so the page itself stays light.
+ * The Painted Stoa's front, set as one printed index: a card for each subject (and one more, "Reference", for the
+ * library's own reference pages) with its count, its line, its first few entries and the rest behind "+N more".
+ *
+ * Two parts share one small store (a search typed, a subject chosen): `StoaFinder` stands in the page's head under the
+ * introduction (the search box and a row of subject chips, which on a phone swipes sideways), and `StoaIndex` is the
+ * body (the entry of the day, then the cards, or the search's results in their place while one is typed).
+ * The page gets each entry's card from the server (title, hook, picture); the entries' whole texts, which the search
+ * also looks through, are fetched only when a search begins, so the page itself stays light.
  */
 import Link from "next/link";
 import { Suspense, useCallback, useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
@@ -16,6 +18,7 @@ import { CATEGORIES, type CategoryId } from "@/wiki/types";
 import type { EntryCard } from "@/wiki/cards";
 import Plate from "@/components/plate/Plate";
 import { photo } from "@/lib/photos";
+import SideScroll from "./SideScroll";
 import styles from "./Stoa.module.css";
 
 const text = (s: string) => plain(inline(s));
@@ -28,6 +31,17 @@ const loadHaystack = () => (haystack ??= import("@/wiki/index").then(({ ENTRIES 
 
 /** A reference page the Wiki offers besides its entries (Authors, Eras, Editions). */
 export interface RefCard { href: string; title: string; greek: string; blurb: string }
+/** A subject in the chip row: a category's id, or "reference". */
+export interface Subject { id: string; title: string; count: number }
+
+// ---------------------------------------------------------------- the search and the chosen subject, shared by head and body
+interface Front { q: string; subject: string }
+const START: Front = { q: "", subject: "all" };
+let front = START;
+const listeners = new Set<() => void>();
+const setFront = (patch: Partial<Front>) => { front = { ...front, ...patch }; listeners.forEach((l) => l()); };
+const watch = (l: () => void) => { listeners.add(l); return () => { listeners.delete(l); }; };
+const useFront = () => useSyncExternalStore(watch, () => front, () => START);
 
 /** A search handed over from Quick search (/stoa?q=…), also when this page is already open. */
 function QueryFromUrl({ onQuery }: { onQuery: (q: string) => void }) {
@@ -36,35 +50,83 @@ function QueryFromUrl({ onQuery }: { onQuery: (q: string) => void }) {
   return null;
 }
 
-/**
- * `lead`: what opens the page above the search (the map, the Census and Archaeology); it stays while searching, so the
- * search does not move under the finger. `foot`: the small print that ends the page, above the footer.
- */
-export default function StoaIndex({ entries, reference = [], lead, foot }: { entries: EntryCard[]; reference?: RefCard[]; lead?: React.ReactNode; foot?: React.ReactNode }) {
-  const [q, setQ] = useState("");
-  const searchRow = useRef<HTMLDivElement>(null);
+/** The head's own part: the one search box under the introduction, then the subjects as chips (a swipeable row on a phone). */
+export function StoaFinder({ total, subjects }: { total: number; subjects: Subject[] }) {
+  const { q, subject } = useFront();
+  const row = useRef<HTMLDivElement>(null);
   // a search handed over from Quick search: the page opens at the top, so bring the search and its results into view
-  const fromUrl = useCallback((v: string) => { setQ(v); searchRow.current?.scrollIntoView({ block: "start" }); }, []);
+  const fromUrl = useCallback((v: string) => { setFront({ q: v }); row.current?.scrollIntoView({ block: "start" }); }, []);
+  useEffect(() => () => { front = START; }, []);   // leaving the page, the next visit opens fresh
+  return (
+    <div className={styles.finder}>
+      <Suspense fallback={null}><QueryFromUrl onQuery={fromUrl} /></Suspense>
+      <div className={styles.searchRow} role="search" ref={row}>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
+        <input id="stoa-search" enterKeyHint="search" type="search" value={q} onChange={(e) => setFront({ q: e.target.value })} placeholder={`Search all ${total} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
+      </div>
+      <SideScroll className={styles.chips}>
+        <ul aria-label="Show one subject">
+          {[{ id: "all", title: "All", count: 0 }, ...subjects].map((s) => (
+            <li key={s.id}>
+              <button type="button" className="chip" aria-pressed={subject === s.id} onClick={() => setFront({ subject: s.id })}>
+                {s.title}{s.count > 0 && <b>{s.count}</b>}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </SideScroll>
+    </div>
+  );
+}
+
+/** Entries not shown on a subject's card until it is opened: the first few stay; the rest open in place, under the button. */
+const SHOWN = 2;
+
+function Card({ id, title, blurb, items, whole, i }: { id: string; title: string; blurb: string; items: { href: string; label: string; hint?: string }[]; whole: boolean; i: number }) {
+  const first = whole ? items : items.slice(0, SHOWN), rest = whole ? [] : items.slice(SHOWN);
+  const link = (e: { href: string; label: string; hint?: string }) => <li key={e.href}><Link href={e.href} title={e.hint} transitionTypes={["page-turn"]}>{e.label}</Link></li>;
+  return (
+    <li id={id} className={styles.card} style={{ "--i": i } as React.CSSProperties}>
+      <div className={styles.cardHead}><h3>{title}</h3><b aria-label={`${items.length} entries`}>{items.length}</b></div>
+      <p className={styles.blurb}>{blurb}</p>
+      {items.length > 0 ? <ul>{first.map(link)}</ul> : <p className={styles.soonLine}>Entries in preparation.</p>}
+      {rest.length > 0 && (
+        // a real disclosure: the button stays where it is and the rest opens beneath it, so closing moves nothing under the finger
+        <details className={styles.more}>
+          <summary><span className={styles.moreOpen}>+{rest.length} more</span><span className={styles.moreShut}>Show fewer</span></summary>
+          <ul>{rest.map(link)}</ul>
+        </details>
+      )}
+    </li>
+  );
+}
+
+/** Subjects whose entries are never the entry of the day's picture: photographs the page already holds elsewhere (the fresco
+ *  at its head, the Kerameikos wall on the Archaeology card), so no photograph stands twice. */
+const PICTURE_TAKEN = new Set(["crates-hipparchia", "kerameikos-street"]);
+
+export default function StoaIndex({ entries, reference = [] }: { entries: EntryCard[]; reference?: RefCard[] }) {
+  const { q, subject } = useFront();
   const n = fold(q).trim();
   // until the whole texts arrive (a moment, on the first search), the cards alone are searched
   const [full, setFull] = useState<Map<string, string> | null>(null);
   useEffect(() => { if (n && !full) loadHaystack().then(setFull, () => undefined); }, [n, full]);
   const cards = useMemo(() => new Map(entries.map((e) => [e.slug, hayOf(e)])), [entries]);
   const found = useMemo(() => (n ? entries.filter((e) => (full?.get(e.slug) ?? cards.get(e.slug)!).includes(n)) : []), [n, entries, full, cards]);
-  const entriesIn = (c: CategoryId) => entries.filter((e) => e.category === c).sort((a, b) => a.title.localeCompare(b.title));
+  const entriesIn = (c: CategoryId) => entries.filter((e) => e.category === c).sort((a, b) => a.title.localeCompare(b.title)).map((e) => ({ href: `/stoa/${e.slug}`, label: e.title }));
   // one entry featured each day, the same for everyone (by date, not at random); the built page shows the first
   const day = useSyncExternalStore(noSubscribe, () => Math.floor(Date.now() / 864e5), () => 0);
   const featured = entries.length ? [...entries].sort((a, b) => a.slug.localeCompare(b.slug))[day % entries.length] : null;
+  // its picture only if it is a real picture of the subject that the page does not already show; otherwise a typographic card
+  const pic = featured?.image && photo(featured.image) && !PICTURE_TAKEN.has(featured.image) ? featured.image : null;
+  const shown = [
+    ...CATEGORIES.filter((c) => subject === "all" || subject === c.id).map((c) => ({ id: c.id, title: c.title, blurb: c.blurb, items: entriesIn(c.id) })),
+    ...(reference.length && (subject === "all" || subject === "reference")
+      ? [{ id: "reference", title: "Reference", blurb: "Who wrote the texts, when, and how they reached us.", items: reference.map((r) => ({ href: r.href, label: r.title, hint: r.blurb })) }] : []),
+  ];
 
   return (
     <div className={styles.index}>
-      <Suspense fallback={null}><QueryFromUrl onQuery={fromUrl} /></Suspense>
-      {lead}
-
-      <div className={styles.searchRow} role="search" ref={searchRow}>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" /><path d="M15.5 15.5L21 21" /></svg>
-        <input id="stoa-search" enterKeyHint="search" type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={`Search all ${entries.length} entries: Melos, plague…`} aria-label="Search the Painted Stoa" />
-      </div>
       {n && (
         <section className={styles.found} aria-live="polite">
           <p className="label">{found.length} {found.length === 1 ? "entry" : "entries"}</p>
@@ -72,51 +134,26 @@ export default function StoaIndex({ entries, reference = [], lead, foot }: { ent
         </section>
       )}
 
-      {featured && !n && (
+      {featured && !n && subject === "all" && (
         // the entry of the day: its title and opening on the left, its photograph as a plate with its credit on the right
-        <section className={styles.featured} aria-labelledby="featured-h" data-pic={featured.image && photo(featured.image) ? "" : undefined}>
+        <section className={styles.featured} aria-labelledby="featured-h" data-pic={pic ? "" : undefined}>
           <div className={styles.featuredText}>
             <p className="label">On the wall today · {CATEGORIES.find((c) => c.id === featured.category)!.title}</p>
             <h2 id="featured-h"><Link href={`/stoa/${featured.slug}`} transitionTypes={["page-turn"]}>{featured.title}</Link></h2>
             <p className={styles.featuredHook}>{text(featured.hook)}</p>
           </div>
-          {featured.image && <Plate id={featured.image} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
+          {pic && <Plate id={pic} frame={false} className={styles.featuredPic} sizes="(max-width: 760px) 92vw, 420px" />}
         </section>
       )}
 
-
-      <h2 id="entries" className={`label ${styles.entriesH}`}>The entries, by subject</h2>
       {!n && (
-        <ol className={styles.colonnade}>
-          {CATEGORIES.map((c, i) => {
-            const es = entriesIn(c.id);
-            return (
-              <li key={c.id} id={c.id} className={styles.panel} style={{ "--i": i } as React.CSSProperties}>
-                <div className={styles.panelIn}>
-                  {/* a part's title is not a link: the Archaeology room is the card at the head of the page (ExploreLead) */}
-                  <h2>{c.title}</h2>
-                  <p className={styles.blurb}>{c.blurb}</p>
-                  {es.length > 0
-                    ? <ul>{es.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title}</Link></li>)}</ul>
-                    : <p className={styles.soonLine}>Entries in preparation.</p>}
-                </div>
-              </li>
-            );
-          })}
-          {reference.length > 0 && (
-            // the library's own reference pages (Authors, Eras, Editions…) are the index's last part
-            <li id="reference" className={styles.panel} style={{ "--i": CATEGORIES.length } as React.CSSProperties}>
-              <nav className={styles.panelIn} aria-labelledby="ref-h">
-                <h2 id="ref-h">Reference</h2>
-                <p className={styles.blurb}>Who wrote the texts, when, and how they reached us.</p>
-                <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} title={r.blurb} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
-              </nav>
-            </li>
-          )}
-        </ol>
+        <section aria-labelledby="entries">
+          <h2 id="entries" className={`label ${styles.entriesH}`}>The entries, by subject</h2>
+          <ol className={styles.colonnade}>
+            {shown.map((s, i) => <Card key={s.id} {...s} whole={subject !== "all"} i={i} />)}
+          </ol>
+        </section>
       )}
-
-      {foot}
     </div>
   );
 }

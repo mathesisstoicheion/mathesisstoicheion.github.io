@@ -4,25 +4,37 @@
    quotations set in from a red rule, photographs in their real colours with their credits. Nothing lifts, develops or
    turns (decision 3); a photograph is never tinted (SPEC.md 3.7). */
 
-/* ------------------------------------------------ the front: an index of the categories */
-.index { display: grid; gap: 28px; padding-block: 0 12px; }   /* inside the room's part, which gives it its margin and its rule */
+/* ------------------------------------------------ the front: the head's finder, one index of subject cards, the story of the name */
+.index { display: grid; gap: var(--space-5); padding-block: 0 var(--space-3); }   /* inside the room's part, which gives it its margin and its rule */
+
+/* the finder, under the introduction: the one search box, then the subjects as chips (a row that swipes on a phone) */
+.finder { display: grid; gap: var(--space-3); }
 .searchRow { position: relative; scroll-margin-top: calc(var(--hdr-vis) + var(--space-4)); }
 .searchRow svg { position: absolute; left: 16px; top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 2; stroke-linecap: round; pointer-events: none; }
 .searchRow input {
   width: 100%; font: inherit; font-size: var(--step-sub); color: var(--ink);
   border-radius: var(--radius); padding: 14px 16px 14px 48px;
 }
+.chips ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.chips li { flex: none; }
+.chips :global(.chip) { min-height: var(--tap); }
+.chips b { margin-left: var(--space-1); font: 400 var(--step--1) / 1 var(--f-title); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
+@media (max-width: 760px) {
+  .chips { overflow-x: auto; overflow-y: hidden; padding-block: var(--space-1); margin-inline: calc(-1 * var(--space-4)); padding-inline: var(--space-4); scrollbar-width: none; overscroll-behavior-x: contain; }
+  .chips::-webkit-scrollbar { display: none; }
+  .chips ul { flex-wrap: nowrap; width: max-content; }
+  .chips[data-more] { -webkit-mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); }
+}
+
 .found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
-.found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 10px 2px; text-decoration: none; box-shadow: var(--cut-under); }
+.found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 10px 2px; min-height: var(--tap); text-decoration: none; box-shadow: var(--cut-under); }
 .found b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 @media (hover: hover) { .found a:hover b { color: var(--rubric); } }
 .found span { color: var(--ink-2); font-size: var(--step-0); }
 
-/* the entry of the day: the words on the left, its photograph as a plate on the right, between an ink rule and a hairline */
-.featured {
-  display: grid; gap: 18px clamp(20px, 3vw, 44px); padding-block: clamp(20px, 3vw, 32px);
-  border-top: 1px solid var(--ink); border-bottom: 1px solid var(--rule);
-}
+/* the entry of the day: the words on the left, its photograph as a plate on the right (or, with no photograph of the subject
+   to show, the words alone, set larger), above a hairline */
+.featured { display: grid; gap: var(--space-4) clamp(20px, 3vw, 44px); padding-block: var(--space-2) 0; }
 .featured[data-pic] { grid-template-columns: minmax(0, 1fr) minmax(200px, 36%); align-items: start; }
 .featuredText { display: grid; gap: 10px; align-content: start; }
 .featuredText :global(.label) { color: var(--accent); margin: 0; }
@@ -36,29 +48,40 @@
   .featuredPic { order: -1; }
 }
 
-/* the categories: an index in columns, each under a hairline, its entries listed with a red dash */
-.colonnade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(20px, 3vw, 40px); }
-.panel { display: grid; animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
+/* the one index: a card for each subject under a hairline, its entries listed with a red dash */
+.entriesH { margin: var(--space-5) 0 var(--space-3); padding-top: var(--part-pad); border-top: var(--part-rule); }
+.colonnade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(20px, 3vw, 40px); align-items: start; }
+.card { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-4) 2px var(--space-5); box-shadow: var(--cut-over); animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
 @keyframes ink-in { from { opacity: 0; } }
-.panelIn { display: grid; gap: 8px; align-content: start; padding: 16px 2px 26px; box-shadow: var(--cut-over); }
-.panelIn h2 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
+.cardHead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
+.cardHead h3 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
+.cardHead b { font: 400 var(--step-sub) / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
 .blurb { font-size: var(--step--1); color: var(--ink-2); }
-.panelIn ul { list-style: none; margin: 4px 0 0; padding: 0; display: grid; gap: 4px; }
-.panelIn li a { text-decoration: none; font-size: var(--step-0); }
-.panelIn li a::before { content: "— "; color: var(--accent); }
-@media (hover: hover) { .panelIn li a:hover { color: var(--rubric); } }
+.card ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; gap: var(--space-1); }
+.card li a { text-decoration: none; font-size: var(--step-0); }
+.card li a::before { content: "— "; color: var(--accent); }
+@media (hover: hover) { .card li a:hover { color: var(--rubric); } }
 .soonLine { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
+/* "+N more": a real disclosure; the rest opens beneath it, in place, and closing it moves nothing above it */
+.more > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); cursor: pointer; list-style: none; color: var(--accent); font: 400 var(--step-0) / 1.3 var(--f-label); }
+.more > summary::-webkit-details-marker { display: none; }
+.more > summary::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
+.more[open] > summary::before { clip-path: var(--tri-down); }
+.more > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.more[open] > ul { margin-top: 0; }
+.more[open] .moreOpen, .more:not([open]) .moreShut { display: none; }
+@media (hover: hover) { .more > summary:hover { text-decoration: underline; text-underline-offset: 3px; } }
 
-/* ------------------------------------------------ works in stone, and why Stoics are called Stoics (StoaPlates.tsx) */
-.essay { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 48px; }
-.essay p { margin: 0 0 1em; font-size: var(--step-sub); max-width: 36em; }
-.essay p:first-of-type::first-letter { font: 400 4.1em / 0.8 var(--f-title); float: left; margin: 0.06em 0.1em 0 0; color: var(--rubric); }
-.essayGo a { font-family: var(--f-label); font-size: var(--step-0); color: var(--accent); text-decoration: none; }
+/* "Why Stoics are called Stoics", moved up to the head: the fresco, then the story and its source */
+.why { display: grid; gap: var(--space-3); align-content: start; }
+.why > :global(.label) { margin: 0; color: var(--accent); }
+.why :global(.plate) { margin: 0; }
+.whyText { display: grid; gap: var(--space-2); }
+.whyText p { margin: 0; font-size: var(--step-0); max-width: var(--measure); }
+.essayGo a { font-family: var(--f-label); color: var(--accent); text-decoration: none; }
+.essayGo span { display: block; margin-top: var(--space-1); font-size: var(--step--1); color: var(--ink-2); }
 @media (hover: hover) { .essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; } }
-/* the source in the margin, set in from a red rule, and the plate under it */
-.side { align-self: start; padding-left: 14px; border-left: 1px solid var(--rubric); font-size: var(--step--1); color: var(--ink-2); }
-.side :global(.plate) { margin-top: 14px; }
-@media (max-width: 760px) { .essay { grid-template-columns: minmax(0, 1fr); gap: 20px; } }
+@media (min-width: 761px) { .why { max-width: calc(var(--measure) * 1.1); justify-self: end; } }
 
 /* ------------------------------------------------ an entry */
 .entry { padding-bottom: 20px; }
@@ -200,9 +223,9 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 
 /* review fixes, slice 10: under a finger every target answers over at least 44 × 44 px (scripts/check-a11y.mjs) */
 @media (pointer: coarse) {
-  .panelIn ul { gap: 0; } .panelIn li a { display: inline-block; padding-block: var(--tap-pad); }
+  .card ul { gap: 0; } .card li a { display: flex; align-items: center; min-height: var(--tap); }
   .sourceCols .inLibrary { gap: 0; } .inLibrary a { display: inline-block; padding-block: var(--tap-pad); }
-  .essayGo a { display: inline-block; padding-block: var(--tap-pad); margin-block: calc(-1 * var(--tap-pad)); }
+  .essayGo a { display: inline-flex; align-items: center; min-height: var(--tap); }
   /* at the end of its row: a little wider than its 44 px, as a finger lands (above and below, as every chip) */
   button.noteBtn::after { left: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
 }
@@ -210,13 +233,12 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 @media (min-width: 761px) {
   .sectionHead { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .sectionHead > .h2 { margin-top: 0; }
-  .featured { margin-top: var(--part-room); }
   .readIt, .related, .sources { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .readIt > .h2, .related > .h2, .sources > .h2 { margin-top: 0; }
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
-  .panelIn li a, .contents a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
+  .card li a, .contents a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
   .contents a[aria-current="location"] { text-decoration-color: var(--rubric); }
 }
 .readIt b::after, .related b::after { content: "\00a0→"; color: var(--rubric); }
@@ -224,8 +246,6 @@ button.noteBtn:focus-visible { color: var(--rubric); }
    read (the owner, 2026-10-23: "doesn't use a lot of the available space"; scripts/check-room.mjs) */
 @media (min-width: 1200px) {
   .entryGrid { grid-template-columns: minmax(0, 46rem) minmax(260px, 400px); }
-  .essay { grid-template-columns: minmax(0, 40em) minmax(260px, 560px); justify-content: space-between; }
-  .side { position: sticky; top: calc(var(--hdr-vis) + var(--space-5)); }
   .list li { max-width: var(--measure); }
   /* the timeline as a chronology table: the date in its own column, the event beside it, each row ruled across */
   .timeline li { grid-template-columns: var(--date-col) minmax(0, 1fr); column-gap: var(--space-4); align-items: baseline; padding-bottom: var(--space-2); box-shadow: var(--cut-under); }
@@ -233,20 +253,3 @@ button.noteBtn:focus-visible { color: var(--rubric); }
 
 /* the entry's Share, under its last paragraph (ShareEntry.tsx) */
 .shareLine { margin: var(--space-6) 0 0; display: flex; flex-wrap: wrap; gap: var(--space-3); }
-
-/* ---------------------------------------------------------------- the page's contents, at the right of its head (the owner,
-   2026-11-09: a short introduction under the head, the page's contents at its top right). The subjects with how many
-   entries each holds, under hairlines, as a book's contents; then the rest of the Stoa in one line. */
-.landContents { display: grid; gap: var(--space-2); align-content: start; }
-.landList { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 var(--space-5); box-shadow: var(--rule-over); padding-top: var(--space-1); }
-.landList a {
-  display: flex; align-items: baseline; gap: var(--space-1); min-height: var(--tap); padding-block: var(--space-2); text-decoration: none; color: var(--ink);
-  font-size: var(--step-0); box-shadow: var(--rule-under);
-}
-.landList a > b { margin-left: auto; font: 400 var(--step-0) / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
-@media (hover: hover) { .landList a:hover span { color: var(--rubric); } }
-.landMore { margin: 0; font-size: var(--step--1); color: var(--ink-2); line-height: 1.9; }
-.landMore a { color: var(--ink); }
-@media (max-width: 760px) { .landList { gap: 0 var(--space-3); } }
-/* the index's own title, now that the entry of the day stands above it */
-.entriesH { margin: var(--space-6) 0 0; padding-top: var(--part-pad); border-top: var(--part-rule); }
