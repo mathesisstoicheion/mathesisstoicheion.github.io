@@ -71,7 +71,7 @@ export function GuideContents({ chapters }: { chapters: Chapter[] }) {
 /** The head's card: "First: look up a word", with the drawing of the look-up whose word is a real button; pressing it fades in the look-up card. */
 export function GuideFirst({ chapter }: { chapter: Chapter }) {
   const done = useToursDone();
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(true);
   const id = useId();
   return (
     <section className={styles.first} aria-labelledby={`${id}-h`}>
