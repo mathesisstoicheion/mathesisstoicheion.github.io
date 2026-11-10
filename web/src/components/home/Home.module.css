@@ -127,8 +127,8 @@
    one another, the passage last. ---- */
 .gate { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); padding-bottom: var(--space-6); }
 .gateMain, .gateSide { min-width: 0; }
-.gate .titlePage { padding-bottom: var(--space-5); }
-.find { display: grid; gap: var(--space-1); max-width: 34em; }
+.gate .titlePage { padding-bottom: var(--space-5); grid-template-columns: minmax(0, 1fr); }
+.find { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-1); max-width: 34em; }
 .findRow { display: flex; align-items: stretch; gap: var(--space-2); }
 .findRow input {
   flex: 1; min-width: 0; min-height: var(--tap); padding: 0 var(--space-1); border: 0; border-bottom: 1px solid var(--ink); border-radius: 0; background: transparent;
