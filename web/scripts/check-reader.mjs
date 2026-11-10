@@ -1201,6 +1201,9 @@ for (const [w, h, touch, only] of runs("tools") ? [[1440, 900, false], [390, 844
   const bar = () => page.getByRole("toolbar", { name: "Passage actions" });
   const toolbarOn = async (row = "1.5") => { await tapOrClick(page, page.locator(`article button[data-row="${row}"]`).first(), touch); await bar().waitFor(); };
   const study = async (row) => { const s = await openMenu(page, BAR.study); await s.getByRole("button", { name: row, exact: true }).click(); };
+  // (Find and Listen are buttons of the bar itself now; Open a second book is in More, not Study)
+  const more = async (row) => { const s = await openMenu(page, BAR.more); await s.getByRole("button", { name: row, exact: true }).click(); };
+  const barBtn = async (name) => { await (await barButton(page, name)).click(); };
   const lookUp = async () => { await tapOrClick(page, page.locator('[data-u="1.1"] [data-w="μῆνιν"]').first(), touch); await page.locator('aside[aria-label^="Look-up"]').waitFor(); await page.waitForTimeout(2000); };
   const CLOSE = "^Close\\b", BACK_STUDY = "^Back to Study$";
   /** each surface on its own: opened from a clean page, read, and put away; one that cannot be opened is a problem, and the others are still read */
@@ -1244,7 +1247,7 @@ for (const [w, h, touch, only] of runs("tools") ? [[1440, 900, false], [390, 844
       await bar().getByRole("button", { name: "Look up" }).waitFor().catch(() => { throw new Error("no Look up button"); });
     }, TB, { last: "^Close passage actions$", strip: true, tap: true, dock: true });
   }
-  await surface("Listen's player", () => study("Listen to the English"), LISTEN, { last: "^Stop and close$", strip: true, ...(touch ? { tap: true } : {}) });
+  await surface("Listen's player", () => barBtn(/^Listen\b/), LISTEN, { last: "^Stop and close$", strip: true, ...(touch ? { tap: true } : {}) });
   await surface("the look-up", lookUp, 'aside[aria-label^="Look-up"]', { close: "^Close look-up$" });
   await surface("the look-up's whole entry", async () => { await lookUp(); await page.locator('aside[aria-label^="Look-up"]').getByRole("button", { name: "More about it" }).click(); await page.waitForTimeout(1500); },
     'aside[aria-label^="Look-up"]', { close: "^Close look-up$", back: "^Back$" });
@@ -1265,11 +1268,11 @@ for (const [w, h, touch, only] of runs("tools") ? [[1440, 900, false], [390, 844
     await page.getByRole("dialog").getByRole("button", { name: "Copy as image" }).click(); await page.waitForTimeout(800);
   }, "dialog[open]", { close: CLOSE, back: "^Back to Share$" });
   await surface("the notebook picker", async () => { await toolbarOn(); await bar().getByRole("button", { name: "Notebook", exact: true }).click(); }, '[role=dialog][aria-labelledby="nb-pick-title"]', { close: CLOSE });
-  await surface("Find", async () => { await study("Find in this text"); await page.keyboard.type("ανδρ"); await page.waitForTimeout(1200); }, 'aside[aria-label="Find in this text"]', { close: CLOSE, back: BACK_STUDY });
+  await surface("Find", async () => { await barBtn(BAR.find); await page.keyboard.type("ανδρ"); await page.waitForTimeout(1200); }, 'aside[aria-label="Find in this text"]', { close: CLOSE });
   await surface("Vocabulary", () => study("Vocabulary for this page"), 'aside[aria-label="Vocabulary for this page"]', { close: CLOSE, back: BACK_STUDY, counts: true });
   await surface("Places", () => study("Places on this page"), 'aside[aria-label="Places on this page"]', { close: CLOSE, back: BACK_STUDY });
   await surface("the manuscript", () => study("How it was written"), 'aside[aria-label="The manuscript"]', { close: CLOSE, back: BACK_STUDY, watch: true });
-  await surface("the list of books for a second one", () => study("Open a second book beside this one"), "dialog[open]", { close: CLOSE, back: BACK_STUDY });
+  await surface("the list of books for a second one", () => more("Open a second book beside this one"), "dialog[open]", { close: CLOSE, back: "^Back to More$" });
   await ctx.close();
 }
 // the list of differences between two editions (Agamemnon, Smyth against Sidgwick), opened from "List of differences" in the strip above the text
@@ -1619,8 +1622,10 @@ for (const scheme of runs("keys") ? ["light", "dark"] : []) {
     const stopsOfWords = await page.evaluate(() => document.querySelectorAll('[data-w][tabindex="0"]').length);
     if (stopsOfWords !== 1) found.push(`keys ${tag}: ${stopsOfWords} words are in the tab order (one, the first or the last used)`);
     const bar = seen.filter((f) => f.in === "bar").map((f) => f.name);
-    const want = [/library/i, /line \d+ of 611|go to/i, /^Text/, /^Study/];
-    if (bar.length < 4 || want.some((re, i) => !re.test(bar[i] ?? ""))) found.push(`keys ${tag}: Tab does not reach the foot bar (Library, the place, Text, Study, in that order) within 14 presses from the top (it reaches: ${bar.join(" | ") || "nothing of it"})`);
+    // the bar now holds Library, Float, the place, Find, Listen, Text, Study and More (Study = the study helps; More = the rest)
+    const want = [/library/i, /^Float/, /line \d+ of 611|go to/i, /^Find/, /^Listen/, /^Text/, /^Study/];
+    let at = 0; for (const n of bar) if (at < want.length && want[at].test(n)) at++;
+    if (at < want.length) found.push(`keys ${tag}: Tab does not reach the foot bar (Library, Float, the place, Find, Listen, Text, Study, in that order) within 14 presses from the top (it reaches: ${bar.join(" | ") || "nothing of it"})`);
     // the stop after the Greek is not another word
     await page.keyboard.press("Shift+Tab");
   });
