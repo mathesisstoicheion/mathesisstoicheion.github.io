@@ -591,6 +591,12 @@
   .linkBtn::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
   .dueler input { min-height: var(--tap); box-sizing: border-box; }
   .bodyRow, .movingList button { min-height: var(--tap); box-sizing: border-box; }
+  /* the age-by-kind grid: its squares and kind names are as tall as a finger (they are wide enough already on a phone) */
+  .cell, .cellEmpty, .shapeRow { min-height: var(--tap); box-sizing: border-box; }
+  /* the Finder's sentence: each underlined choice reaches --tap high, as the link buttons do */
+  .sentence { line-height: 2.4; }   /* the lines stand a finger apart, so a choice on one never lies under the next line's */
+  .slot { position: relative; }
+  .slot::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: var(--tap); transform: translateY(-50%); }
   .movingList button { align-content: center; }
   .bodyRow { align-content: center; }
   /* the scatter's dots: the drawn dot (the ::after) stays 7 px and in the middle of a 44 px button */
