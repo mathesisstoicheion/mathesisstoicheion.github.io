@@ -7,7 +7,7 @@
  */
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { loadCatalog, fold, type CatalogIndex } from "@/lib/catalog";
 import { loadWorksMeta, type WorkMeta } from "@/lib/works-meta";
 import { ERAS, KINDS, authorRows, eraById, loadAuthorsMeta, type AuthorMeta, type AuthorRow, type Era } from "@/lib/authors-meta";
@@ -43,6 +43,17 @@ export default function WikiAuthors() {
   };
   // a period shows its first few authors and a row to open the rest; a search, a chosen kind or a chosen period shows every match
   const [opened, setOpened] = useState<Set<string>>(new Set());
+  // the period strip takes the paper's own colour only while it is stuck under the header, so that lines passing under it do not show through
+  const sentinel = useRef<HTMLDivElement>(null);
+  const [stuck, setStuck] = useState(false);
+  useEffect(() => {
+    const el = sentinel.current;
+    if (!el) return;
+    const top = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--hdr-vis")) || 0;
+    const watch = new IntersectionObserver(([e]) => setStuck(!e.isIntersecting && e.boundingClientRect.top < top + 1), { rootMargin: `-${Math.round(top)}px 0px 0px 0px` });
+    watch.observe(el);
+    return () => watch.disconnect();
+  }, [idx]);
   const pickEra = (v: string) => { const n = era === v ? "" : v; setEra(n); keep(n, kind); };
   const pickKind = (v: string) => { setKind(v); keep(era, v); };
 
@@ -75,7 +86,8 @@ export default function WikiAuthors() {
           placeholder="Search authors by name, place or what they wrote" aria-label="Search authors" />
       </div>
 
-      <div className={styles.filters}>
+      <div ref={sentinel} className={styles.sentinel} aria-hidden="true" />
+      <div className={styles.filters} data-stuck={stuck ? "" : undefined}>
         <div className={styles.filterRow}>
           <span className="label">Period</span>
           <div className={styles.chips}>

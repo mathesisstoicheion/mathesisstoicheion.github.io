@@ -38,7 +38,7 @@
 /* on a computer the chart stands clear of the page's head (scripts/check-parts.mjs), and a period's name under its bracket
    is underlined at rest, so it reads as a link (scripts/check-clickable.mjs) */
 @media (min-width: 761px) {
-  .chartBox { margin-top: var(--part-room); }
+  .chartBox { margin-top: var(--space-7); }
   .bands a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 }
 
@@ -74,13 +74,27 @@
 .more[open] > summary { margin-bottom: calc(var(--space-2) * -1); }
 
 @media (max-width: 900px) { .eras { grid-template-columns: minmax(0, 1fr); } }
+.axis, .legend { display: none; }
 @media (max-width: 760px) {
-  /* the chart keeps a width of 640 px and scrolls sideways inside its frame (SideScroll), its right edge fading while there is more;
-     the periods' names under the brackets stay level */
-  .chart, .bands { min-width: 640px; }
-  .bands a { min-height: var(--tap); }
-  .scroll[data-more] { -webkit-mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); }
+  /* the whole chart fits the screen, all the centuries sharing its width (the shape of two thousand years is its point): no
+     sideways scroll. Each column's number is turned to stand above it; only every third century is named, in a row under the
+     chart; the periods are named in a legend of their own below (WikiEras.tsx), not under the chart's brackets. */
+  .chartBox { --axis: 0px; }
+  .scroll { overflow: visible; }
+  .chart { height: 240px; min-width: 0; gap: calc(var(--space-1) / 2); }
+  .bands { display: grid; min-width: 0; gap: calc(var(--space-1) / 2); }
+  .bands a { font-size: 0; min-height: 0; padding: var(--space-2) 0 0; pointer-events: none; }
+  .bands a::before { top: 0; }
+  .col { min-width: 0; grid-template-rows: 32px 1fr var(--axis); }
+  .value { writing-mode: vertical-rl; rotate: 180deg; padding-bottom: 0; padding-top: var(--space-1); }
+  .tick { display: none; }
+  .axis { display: grid; gap: calc(var(--space-1) / 2); margin-top: var(--space-1); font-size: var(--step--2); color: var(--ink-2); white-space: nowrap; font-variant-numeric: lining-nums; }
+  .axis > span { grid-row: 1; min-width: 0; }
+  .legend { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 0 var(--space-4); }
+  .legend a { display: inline-flex; align-items: center; min-height: var(--tap); text-decoration: underline; text-decoration-color: var(--link-line); text-underline-offset: 0.2em; border-top: 3px solid var(--rubric); padding-inline: var(--space-1); color: var(--ink); }
+  .legend a[data-era="1"] { border-top-color: var(--ink-3); }
 }
+@media (max-width: 340px) { .chart, .axis, .bands { gap: var(--hair); } .scroll { padding-inline: 0; } }
 @media (prefers-reduced-motion: reduce) { .bar { animation: none; } }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {

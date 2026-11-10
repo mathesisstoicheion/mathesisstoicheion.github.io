@@ -6,7 +6,9 @@
 .search svg { position: absolute; left: var(--space-1); top: 50%; translate: 0 -50%; width: 20px; height: 20px; fill: none; stroke: var(--ink-2); stroke-width: 1.6; stroke-linecap: round; pointer-events: none; }
 .search input { width: 100%; font: inherit; font-size: var(--step-sub); color: var(--ink); border-radius: var(--radius); padding: 14px var(--space-4) 14px var(--space-6); }
 /* the period and kind row stays under the header while the list scrolls, so any period is a tap away */
-.filters { display: grid; gap: 10px; position: sticky; top: var(--hdr-vis); z-index: var(--z-bar); background: var(--bg); padding-block: var(--space-2); box-shadow: var(--cut-under); }
+.filters { display: grid; gap: 10px; position: sticky; top: var(--hdr-vis); z-index: var(--z-bar); padding-block: var(--space-2); border-block: 1px solid var(--rule); }
+.filters[data-stuck] { background: var(--bg); }
+.sentinel { position: absolute; height: 0; width: 0; }
 .filterRow { display: flex; gap: var(--space-2) 14px; align-items: baseline; }
 .kindSelect { min-width: 0; max-width: 100%; }
 .chips { display: flex; flex-wrap: wrap; gap: var(--space-2); }

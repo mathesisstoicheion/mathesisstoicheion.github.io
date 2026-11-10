@@ -58,11 +58,25 @@ export default function WikiEras() {
               </li>
             ))}
           </ol>
+          {/* a phone: every third century named under the axis in a row of its own, each name in a box three columns wide centred on its
+              column (the first and the last kept inside the chart's edges), so that no name is cut off at an edge */}
+          <div className={styles.axis} aria-hidden="true" style={{ gridTemplateColumns: `repeat(${bars.length}, minmax(0, 1fr))` }}>
+            {bars.map((b, i) => {
+              if (i % 3) return null;
+              const from = Math.min(Math.max(i - 1, 0), Math.max(bars.length - 3, 0));
+              const side = from === i ? "start" : from + 2 === i ? "end" : "center";
+              return <span key={b.key} style={{ gridColumn: `${from + 1} / span ${Math.min(3, bars.length)}`, textAlign: side }}>{short(b.label)}</span>;
+            })}
+          </div>
           {/* each period's bracket under its columns is a link to its card below */}
           <div className={styles.bands} style={{ gridTemplateColumns: bands.map((b) => `minmax(44px, ${b.n}fr)`).join(" ") }}>
             {bands.map((b) => <a key={b.era.id} href={`#${b.era.id}`} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2} title={`${b.era.name}, ${b.era.span}`}>{b.era.name}</a>)}
           </div>
         </SideScroll>
+        {/* a phone: the periods named in a row of their own under the chart, each a link to its entry below */}
+        <ul className={styles.legend}>
+          {bands.map((b) => <li key={b.era.id}><a href={`#${b.era.id}`} data-era={ERAS.findIndex((e) => e.id === b.era.id) % 2}>{b.era.name}</a></li>)}
+        </ul>
       </section>
 
       <section className={idx.made} aria-labelledby="eras-made">
