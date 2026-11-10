@@ -101,27 +101,40 @@
 .entryGrid { display: grid; grid-template-columns: minmax(0, 46rem) minmax(220px, 280px); gap: clamp(28px, 5vw, 72px); justify-content: space-between; align-items: start; margin-top: clamp(20px, 3vw, 36px); }
 .entryMain { display: grid; gap: 20px; font-size: var(--step-sub); line-height: 1.75; min-width: 0; }
 .entryMain > p { margin: 0; }
-.entryAside { position: sticky; top: calc(var(--hdr-vis) + 22px); display: grid; gap: 22px; padding-left: 18px; box-shadow: var(--cut-left); }
+/* the side column: sticky, taller than the screen means it scrolls inside itself; the reading rule at the left of "On this page"
+   is the column's only vertical rule */
+.entryAside { position: sticky; top: calc(var(--hdr-vis) + 22px); display: grid; gap: var(--space-5); max-height: calc(100svh - var(--hdr-vis) - 44px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; padding-block: 2px; }
 :global(html[data-hdr="hidden"]) .entryAside { --hdr-vis: 0px; }
-/* the phone's versions of the rail: a closed "On this page" above the article, and the rail's other blocks at its end
-   (EntryView holds both; each is hidden where it does not belong) */
-.contentsFold, .entryExtras { display: none; }
+/* the phone's versions: "Read it yourself" and the rail's other blocks at the article's end (EntryView holds both; each is hidden where it does not belong) */
+.entryExtras { display: none; }
 @media (max-width: 980px) {
   .entryGrid { grid-template-columns: minmax(0, 1fr); }
   .entryAside { display: none; }
-  .contentsFold { display: block; }
-  .entryExtras { display: grid; gap: 22px; padding-top: var(--space-5); box-shadow: var(--cut-over); }
+  .entryExtras { display: grid; gap: var(--space-5); }
+  .entry .h2 { scroll-margin-top: calc(var(--hdr-vis) + var(--tap) + var(--space-4)); }   /* clear of the slim bar of sections */
 }
-.contentsFold { border-block: 1px solid var(--rule); }
-.contentsFold > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: var(--space-2) 2px; cursor: pointer; list-style: none; }
-.contentsFold > summary::-webkit-details-marker { display: none; }
-.contentsFold > summary::before { content: ""; flex: none; display: inline-block; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); color: var(--accent); }
-.contentsFold[open] > summary::before { clip-path: var(--tri-down); }
-.contentsFold > .contents { padding: 0 2px var(--space-3); }
-.contentsFold .contents ol { margin-top: 0; }
+
+/* the top of an entry: on a computer the photograph stands at the right at its own shape (at most 56% of the screen's height),
+   spanning the title's row and the opening's, which follows the purpose line in the left column; on a phone the photograph
+   comes after the purpose line (at most 40%) and the opening after it */
+@media (min-width: 761px) {
+  .entryHead:global(.ph) { grid-template-columns: minmax(0, 1fr) min(36%, 400px); grid-template-rows: auto 1fr; }
+  .entryHead:global(.ph) > :global(.ph-text) { grid-column: 1; grid-row: 1; }
+  .entryHead:global(.ph) > :global(.ph-more) { grid-column: 1; grid-row: 2; margin-top: var(--space-4); }
+  .entryHead:global(.ph) > :global(.piece-desk) { grid-column: 2; grid-row: 1 / span 2; justify-self: end; width: min(100%, calc(56svh / var(--plate-ratio))); }
+  .entryHead:global(.ph) > :global(.piece-desk) :global(.plate-ph) { aspect-ratio: 1 / var(--plate-ratio); }
+}
+@media (max-width: 760px) {
+  .entryHead :global(.piece-phone) { width: min(100%, calc(40svh / var(--plate-ratio))); }
+}
 
 /* the opening, under the title, with the note button under it; its first letter a red initial */
-.hookBlock { display: grid; gap: var(--space-2); max-width: 46rem; }
+.hookBlock { display: grid; gap: var(--space-3); max-width: 46rem; }
+/* the counts, in small capitals, with the opening's pencil at the right end of the line; a written note opens beneath */
+.countsRow { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; column-gap: var(--space-3); }
+.countsRow > .noteBtn { grid-column: 2; grid-row: 1; }
+.countsRow > .sectionNote { grid-column: 1 / -1; }
+.counts { margin: 0; font: 400 var(--step--1) / 1.5 var(--f-label); font-variant-caps: all-small-caps; letter-spacing: 0.08em; color: var(--ink-2); }
 .hook { font-size: var(--step-1); line-height: 1.6; }
 .hook::first-letter { float: left; font-family: var(--f-title); font-size: 4.2em; line-height: 0.8; margin: 0.08em 0.1em 0 0; color: var(--accent); }
 .h2 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-2); margin-top: 18px; scroll-margin-top: calc(var(--hdr-vis) + 16px); }
@@ -133,9 +146,11 @@
 .h2::first-letter { color: var(--accent); }
 .h3 { font-size: var(--step-1); }
 .inGr { font-family: var(--f-greek); }   /* Greek inside an English line is the size of the line */
-.cite { color: inherit; text-decoration: underline; text-decoration-color: var(--accent); text-decoration-thickness: 1.5px; text-underline-offset: 3px; }
-@media (hover: hover) { .cite:hover { color: var(--rubric); } }
-.wikiLink { color: inherit; text-decoration: underline dotted; text-decoration-color: var(--blue); text-underline-offset: 3px; }
+/* links in the text: a thin line in the ink's own tone, red under the hand and on focus (paragraphs read less striped) */
+.cite, .wikiLink { color: inherit; text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+.wikiLink { text-decoration-style: dotted; }
+.cite:focus-visible, .wikiLink:focus-visible { color: var(--rubric); text-decoration-color: var(--rubric); }
+@media (hover: hover) { .cite:hover, .wikiLink:hover { color: var(--rubric); text-decoration-color: var(--rubric); } }
 .list { margin: 0; padding-left: 1.3em; display: grid; gap: 6px; }
 .list li::marker { color: var(--accent); }
 .claim { padding-left: 17px; box-shadow: var(--cut-left); }
@@ -161,7 +176,7 @@
   -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat;
           mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 22 30'%3E%3Cpath d='M7 0h8v2h-1v4c3 1 6 4 6 8 1 5-1 9-4 12v2h2v2H4v-2h2v-2C3 23 1 19 2 14c0-4 3-7 6-8V2H7z'/%3E%3C/svg%3E") center/contain no-repeat; }
 
-.timelineBlock { display: grid; gap: var(--space-2); margin: var(--space-4) 0 var(--space-2); }
+.dates .timeline { margin-top: var(--space-3); }
 .timeline { list-style: none; margin: 0; padding: 0 0 0 24px; display: grid; gap: 14px; box-shadow: var(--cut-left); font-size: var(--step-0); line-height: 1.5; }
 .timeline li { position: relative; display: grid; gap: 2px; }
 .timeline li::before { content: ""; position: absolute; left: -28.5px; top: 7px; width: 9px; height: 9px; border-radius: var(--radius-round); background: var(--bg); border: 2px solid var(--accent); }
@@ -175,6 +190,15 @@
 .readIt a, .related a { display: grid; gap: 4px; height: 100%; padding: 14px 2px 16px; text-decoration: none; box-shadow: var(--cut-over); font-size: var(--step-0); line-height: 1.45; }
 .readIt b, .related b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
 @media (hover: hover) { .readIt a:hover b, .related a:hover b { color: var(--rubric); } }
+/* in the side column: compact rows, the passage's name in red, one line on why, and the way in */
+.readSide { display: grid; gap: var(--space-1); }
+.readSide h2 { margin: 0; }
+.readSide ul { list-style: none; margin: 0; padding: 0; display: grid; }
+.readSide a { display: grid; gap: 2px; padding: var(--space-3) 2px; min-height: var(--tap); text-decoration: none; box-shadow: var(--cut-over); font-size: var(--step--1); line-height: 1.4; }
+.readSide b { font: 400 var(--step-0) / 1.3 var(--f-title); color: var(--accent); }
+.readSide span { color: var(--ink-2); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.readSide small { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.04em; }
+@media (hover: hover) { .readSide a:hover b { text-decoration: underline; text-underline-offset: 3px; } }
 .readIt small { font-family: var(--f-label); color: var(--accent); letter-spacing: 0.04em; margin-top: auto; }
 .related span:last-child { color: var(--ink-2); }
 
@@ -186,20 +210,53 @@
 .checked { margin-top: 18px; font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--cut-over); padding-top: 14px; }
 @media (max-width: 700px) { .sourceCols { grid-template-columns: minmax(0, 1fr); } }
 
-.contents ol { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 2px; }
-.contents a { display: block; padding: 4px 0 4px 12px; margin-left: 0; border-left: 2px solid transparent; text-decoration: none; font-size: var(--step-0); color: var(--ink-2); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); }
+.contents { position: relative; }
+.contents ol { list-style: none; margin: var(--space-2) 0 0; padding: 0; display: grid; gap: 2px; position: relative; }
+/* the reading rule at the left of the list: pale all along, filled red from the top as the article is read (--p, 0 to 1, set by Contents.tsx) */
+.contents ol::before, .contents ol::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 2px; background: var(--rule); }
+.contents ol::after { background: var(--accent); transform-origin: top; transform: scaleY(var(--p, 0)); }
+.contents[data-still] ol::after { display: none; }
+.contents a { display: block; padding: 4px 0 4px 14px; border-left: 2px solid transparent; text-decoration: none; font-size: var(--step-0); color: var(--ink-2); transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease); position: relative; }
 @media (hover: hover) { .contents a:hover { color: var(--rubric); } }
-.contents a[aria-current="location"] { color: var(--ink); border-left-color: var(--accent); }
-.certKey { display: grid; gap: 8px; font-size: var(--step--1); color: var(--ink-2); }
-.certKey p { margin: 0; display: grid; gap: 4px; justify-items: start; }
+.contents a[aria-current="location"] { color: var(--ink); }
+.contents[data-still] a[aria-current="location"] { border-left-color: var(--accent); }
+@media (prefers-reduced-motion: reduce) { .contents a { transition: none; } }
+
+/* a certainty label you can press: its meaning opens on a card of paper under it (CertCard.tsx) */
+.certWrap { position: relative; display: inline-block; }
+button.certBtn { cursor: pointer; }
+.certCard {
+  --edge: var(--space-4);
+  position: absolute; z-index: var(--z-lift); top: calc(100% + var(--space-1)); left: 0; display: block; width: max-content; max-width: min(18rem, calc(100vw - 2 * var(--edge)));
+  padding: var(--space-3) var(--space-4); background: var(--bg); border: 1px solid var(--rule); border-radius: var(--radius); box-shadow: var(--shadow-leaf);
+  font: 400 var(--step--1) / 1.45 var(--f-body); letter-spacing: 0; text-transform: none; font-style: normal; color: var(--ink); text-align: left; animation: ink-in var(--dur) var(--ease) backwards;
+}
+@media (prefers-reduced-motion: reduce) { .certCard { animation: none; } }
+
+/* the phone's slim bar of sections: appears once the opening has scrolled away; the section being read, and a list of all */
+.sectionBar { display: none; }
+@media (max-width: 980px) {
+  .sectionBar { display: block; position: fixed; z-index: var(--z-bar); top: env(safe-area-inset-top, 0px); left: 0; right: 0; background: var(--bg); box-shadow: var(--cut-under);
+    visibility: hidden; opacity: 0; transition: opacity var(--dur-quick) var(--ease), visibility 0s var(--dur-quick); }
+  .sectionBar[data-shown] { visibility: visible; opacity: 1; transition-delay: 0s; }
+}
+@media (prefers-reduced-motion: reduce) { .sectionBar { transition: none; } }
+.sectionBarBtn { display: flex; align-items: center; gap: var(--space-3); width: 100%; min-height: var(--tap); padding: 0 max(var(--gutter), env(safe-area-inset-left, 0px)); background: none; border: 0; text-align: left; color: var(--ink); font: 400 var(--step-0) / 1.2 var(--f-body); cursor: pointer; }
+.sectionBarRule { flex: none; width: var(--space-5); height: 1px; background: var(--rubric); }
+.sectionBarName { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sectionBarTri { flex: none; width: var(--tri-size); height: var(--tri-size); background: var(--accent); clip-path: var(--tri-down); }
+.sectionBarBtn[aria-expanded="true"] .sectionBarTri { clip-path: var(--tri-up); }
+.sectionBarList { position: absolute; top: 100%; left: 0; right: 0; max-height: 60svh; overflow-y: auto; overscroll-behavior: contain; background: var(--bg); box-shadow: var(--cut-under), var(--shadow-leaf); }
+.sectionBarList ol { list-style: none; margin: 0; padding: 0; }
+.sectionBarList a { display: flex; align-items: center; min-height: var(--tap); padding: 0 max(var(--gutter), env(safe-area-inset-left, 0px)); text-decoration: none; color: var(--ink-2); box-shadow: var(--cut-under); }
+.sectionBarList a[aria-current="location"] { color: var(--ink); box-shadow: var(--cut-under), var(--inlay-left); }
 
 /* ---------------------------------------------------------------- the reader's own notes on an entry */
-/* the note button is faint until the hand is on it (or it has focus); on a phone it is just the pencil (its label is read out) */
-/* quiet, in the captions' ink (not the ink made faint, which fell under 4.5 : 1 on the paper); red under the hand */
-button.noteBtn { justify-self: end; font-size: var(--step--1); color: var(--ink-2); transition: color var(--dur-quick) var(--ease); }
+/* the note button is just a small pencil in pale ink (its name is read out), red under the hand or on focus; its tap area is --tap square
+   and it does not make the heading's line taller */
+button.noteBtn { position: relative; justify-self: end; display: inline-flex; align-items: center; justify-content: center; min-width: var(--tap); min-height: var(--tap); margin-block: calc(-1 * var(--space-2)); padding: 0; background: none; border: 0; cursor: pointer; color: var(--ink-3); transition: color var(--dur-quick) var(--ease); }
 button.noteBtn:focus-visible { color: var(--rubric); }
 @media (hover: hover) { button.noteBtn:hover { color: var(--rubric); } }
-@media (max-width: 760px) { .noteWord { display: none; } }
 .sectionNote { padding: 4px 0 4px 16px; box-shadow: var(--inlay-left); font-size: var(--step-0); animation: ink-in var(--dur) var(--ease) backwards; }
 @media (prefers-reduced-motion: reduce) { .sectionNote { animation: none; } }
 .markersKey { position: fixed; right: 26px; bottom: calc(18px + env(safe-area-inset-bottom, 0px)); z-index: 5; }
@@ -226,15 +283,16 @@ button.noteBtn:focus-visible { color: var(--rubric); }
   .card ul { gap: 0; } .card li a { display: flex; align-items: center; min-height: var(--tap); }
   .sourceCols .inLibrary { gap: 0; } .inLibrary a { display: inline-block; padding-block: var(--tap-pad); }
   .essayGo a { display: inline-flex; align-items: center; min-height: var(--tap); }
-  /* at the end of its row: a little wider than its 44 px, as a finger lands (above and below, as every chip) */
-  button.noteBtn::after { left: calc(-1 * var(--space-1)); right: calc(-1 * var(--space-1)); }
+  /* a certainty label is small: its press area is at least --tap across and down */
+  button.certBtn { position: relative; }
+  button.certBtn::after { content: ""; position: absolute; inset-block: calc((100% - var(--tap)) / 2); inset-inline: min(0px, calc((100% - var(--tap)) / 2)); }
 }
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {
   .sectionHead { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
   .sectionHead > .h2 { margin-top: 0; }
-  .readIt, .related, .sources { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
-  .readIt > .h2, .related > .h2, .sources > .h2 { margin-top: 0; }
+  .readIt, .related, .sources, .dates { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); }
+  .readIt > .h2, .related > .h2, .sources > .h2, .dates > .h2 { margin-top: 0; }
 }
 /* on a computer everything that can be clicked shows it at rest: an underline, a red arrow, a frame or a tab's rule (globals.css --link-line; scripts/check-clickable.mjs) */
 @media (min-width: 761px) {

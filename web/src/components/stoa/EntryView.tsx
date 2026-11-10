@@ -1,17 +1,18 @@
 /**
- * One entry of the Painted Stoa: title and its hook, with the entry's own photograph as the page's plate beside them
- * (redesign SPEC.md 4.4: people and places get their photographs; an entry without one has none), the body with
- * its quotations and boxes, "Read it yourself", related entries and sources. On a computer a side rail beside the article holds the
- * sections ("On this page"), the places on the map, the Pnyx and the key to the certainty labels; on a phone the rail
- * gives way to a closed "On this page" above the article, and the other three stand at its end, before "Read it yourself".
+ * One entry of the Painted Stoa. The head holds the title, its Greek and its one line, then (on a computer, in the same
+ * column) the opening paragraph and one quiet line of counts; the entry's own photograph stands at the right at its own
+ * shape (on a phone it follows the one line and comes before the opening). Then the body with its quotations and boxes,
+ * Share, the Dates, "Read it yourself", related entries and sources. On a computer a side column stays beside the article
+ * (sticky): "On this page" with its reading rule, "Read it yourself", the places on the map and the Pnyx. On a phone the side
+ * column gives way to a slim bar of the sections (SectionBar) and "Read it yourself" and the map stand at the article's end.
  */
 import Link from "next/link";
-import { blocks, inline } from "@/wiki/markup";
-import { CERTAINTY, type Entry } from "@/wiki/types";
+import { blocks, inline, plain } from "@/wiki/markup";
+import { type Entry } from "@/wiki/types";
 import { BIB } from "@/wiki/bibliography";
 import { entryBySlug, categoryOf } from "@/wiki/index";
-import { Blocks, Inline, CertTag, readHref, greekAware } from "./Markup";
-import Contents from "./Contents";
+import { Blocks, Inline, Timeline, readHref, greekAware } from "./Markup";
+import Contents, { SectionBar } from "./Contents";
 import { EntryMarkers, SectionNote } from "./EntryNotes";
 import ShareEntry from "./ShareEntry";
 import mapData from "../../../public/data/map/places.json";
@@ -27,9 +28,41 @@ export default function EntryView({ e }: { e: Entry }) {
   const body = blocks(e.body);
   const heads = body.flatMap((b) => ("h2" in b ? [{ id: b.id, text: b.h2 }] : []));
   const cat = categoryOf(e.category);
-  const certs = new Set([...e.body.matchAll(/\{(well|debated|legend)\}/g)].map((m) => m[1] as keyof typeof CERTAINTY));
   const related = e.related.map((s) => entryBySlug.get(s)!).filter(Boolean);
-  // the rail's three other blocks: in the rail on a computer, at the end of the article on a phone (one is hidden at each width)
+  // the counts under the opening, all computed from this entry's own data; reading time is the body's words at 200 a minute
+  const words = body.reduce((n, b) => {
+    const text = "p" in b ? plain(b.p) : "list" in b ? b.list.map(plain).join(" ") : "dyk" in b ? b.dyk.map(plain).join(" ") : "h3" in b ? b.h3 : "";
+    return n + (text.match(/\S+/g)?.length ?? 0);
+  }, 0);
+  const minutes = Math.max(1, Math.round(words / 200));
+  const nDates = e.timeline?.length ?? 0;
+  const count = (n: number, one: string, many = `${one}s`) => `${n} ${n === 1 ? one : many}`;
+  const counts = [
+    heads.length > 0 && count(heads.length, "section"),
+    `about ${count(minutes, "minute")}`,
+    nDates > 0 && count(nDates, "date"),
+    e.readIt.length > 0 && `${count(e.readIt.length, "passage")} to read in Greek`,
+  ].filter(Boolean).join(" · ");
+  // "On this page": the sections, then three fixed places; with one section or fewer there is no list
+  const stops = [...heads, ...(nDates > 0 ? [{ id: "dates", text: "Dates" }] : []), { id: "read-it", text: "Read it yourself" }, { id: "sources", text: "Sources" }];
+  const sideStops = stops.map((s) => (s.id === "read-it" ? { ...s, id: "read-it-side", track: false as const } : s));
+  const readIt = (side: boolean) => (
+    <section className={side ? styles.readSide : `${styles.readIt} rv`} aria-labelledby={side ? "read-it-side" : "read-it"}>
+      {side ? <h2 id="read-it-side" className="label">Read it yourself</h2> : <h2 id="read-it" className={styles.h2}>Read it yourself</h2>}
+      <ul>
+        {e.readIt.map((r) => (
+          <li key={`${r.work}${r.ref}`}>
+            <Link href={readHref(r)} transitionTypes={["page-turn"]}>
+              <b>{r.label}</b>
+              <span>{greekAware(r.why, "w")}</span>
+              <small>Open in the reader →</small>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+  // the places on the map and the Pnyx: in the side column on a computer, at the article's end on a phone
   const extras = (
     <>
       {(e.places?.length ?? 0) > 0 && (
@@ -44,48 +77,31 @@ export default function EntryView({ e }: { e: Entry }) {
           <Link href={`/town-hall/pnyx?from=${e.slug}#propose`} transitionTypes={["page-turn"]}>Debate this in the Pnyx →</Link>
         </div>
       )}
-      {certs.size > 0 && (
-        <div className={styles.certKey}>
-          <p className="label">How sure is this?</p>
-          {[...certs].map((c) => <p key={c}><CertTag c={c} /> <span>{CERTAINTY[c].about}</span></p>)}
-        </div>
-      )}
     </>
   );
   return (
     <article className={styles.entry} data-entry={e.slug}>
       <EntryMarkers slug={e.slug} heads={heads} />
       <PageHead path={trail("wiki", { label: cat.title, href: cat.href ?? `/stoa#${cat.id}` }, e.title)} title={e.title} greek={e.greek} purpose={e.kicker}
-        piece={e.image && photo(e.image) ? { piece: e.image } : undefined}>
-        {/* the opening follows the purpose line, beside the niche on a computer (after the statue on a phone) */}
+        piece={e.image && photo(e.image) ? { piece: e.image } : undefined} className={styles.entryHead}>
+        {/* the opening follows the purpose line, under it on a computer (after the photograph on a phone), then the counts */}
         <div className={styles.hookBlock}>
-          <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} /></p>
-          <SectionNote slug={e.slug} section="top" title={e.title} />
+          <p className={styles.hook} data-key="top"><Inline xs={inline(e.hook)} card /></p>
+          <div className={styles.countsRow}>
+            <p className={styles.counts}>{counts}</p>
+            <SectionNote slug={e.slug} section="top" title={e.title} />
+          </div>
         </div>
       </PageHead>
+      {heads.length > 1 && <SectionBar stops={stops} />}
 
       <div className={`wrap ${styles.entryGrid}`}>
-        <div className={styles.entryMain}>
-          {heads.length > 1 && <Contents heads={heads} fold />}
+        <div className={styles.entryMain} data-article>
           <Blocks bs={body} entry={e} />
           {/* the entry's one Share, where its reading ends */}
           <p className={styles.shareLine}><ShareEntry slug={e.slug} title={e.title} /></p>
-          <div className={styles.entryExtras}>{extras}</div>
-
-          <section className={`${styles.readIt} rv`} aria-labelledby="read-it">
-            <h2 id="read-it" className={styles.h2}>Read it yourself</h2>
-            <ul>
-              {e.readIt.map((r) => (
-                <li key={`${r.work}${r.ref}`}>
-                  <Link href={readHref(r)} transitionTypes={["page-turn"]}>
-                    <b>{r.label}</b>
-                    <span>{greekAware(r.why, "w")}</span>
-                    <small>Open in the reader →</small>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
+          {nDates > 0 && <Timeline items={e.timeline!} />}
+          <div className={styles.entryExtras}>{readIt(false)}{extras}</div>
 
           {related.length > 0 && (
             <section className={`${styles.related} rv`} aria-labelledby="related">
@@ -120,7 +136,8 @@ export default function EntryView({ e }: { e: Entry }) {
         </div>
 
         <aside className={styles.entryAside}>
-          {heads.length > 1 && <Contents heads={heads} />}
+          {heads.length > 1 && <Contents stops={sideStops} />}
+          {readIt(true)}
           {extras}
         </aside>
       </div>
