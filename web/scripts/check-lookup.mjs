@@ -42,6 +42,7 @@
 // packs repository, so the look-up is as full as a reader sees it.
 // usage: node web/scripts/check-lookup.mjs <base-url>   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 //        ONLY=margin reads the margin part only (the whole check takes minutes)
+import { lessonsShown } from "./lib/pages.mjs";
 import { chromium } from "playwright";
 
 const [base = "http://localhost:3100"] = process.argv.slice(2);
@@ -384,7 +385,7 @@ async function secondLayer(page, tag, opts, during) {
   const has = (name) => open.parts.find((x) => x.name === name);
   // (a word with no LSJ entry or no analysis has no “whole entry” or credit to show, so only μῆνιν is held to all of them)
   const want = ["the LSJ heading", "where else it occurs", "“How the sentence is built”", "the other dictionaries"];
-  if (opts.exact) want.push("“The whole entry”", "Word Study", "the lesson", "the credits");
+  if (opts.exact) want.push("“The whole entry”", "Word Study", ...(lessonsShown ? ["the lesson"] : []), "the credits");  // (no lesson row while the lessons are off)
   for (const name of want) if (!has(name).found) found.push(`${tag}: the second layer has no ${name}`);
   for (const x of open.parts) if (x.found && !x.shown) found.push(`${tag}: ${x.name} is in the second layer but not shown`);
   const placed = open.parts.filter((x) => x.found);
@@ -405,11 +406,11 @@ async function secondLayer(page, tag, opts, during) {
     const where = has("where else it occurs").text;
     if (where !== "Where else: 12 times in the Iliad") found.push(`${tag}: the where-else row reads "${where}" (Where else: 12 times in the Iliad)`);
     const lesson = has("the lesson");
-    if (!/^Lesson 3: Who does what: the idea of case/.test(lesson.text) || !/Why the accusative\?/.test(lesson.text) || lesson.href !== "/academy/lesson/case") found.push(`${tag}: the lesson row reads "${lesson.text}" at ${lesson.href} (Lesson 3: Who does what: the idea of case, and why: Why the accusative?)`);
+    if (lessonsShown && (!/^Lesson 3: Who does what: the idea of case/.test(lesson.text) || !/Why the accusative\?/.test(lesson.text) || lesson.href !== "/academy/lesson/case")) found.push(`${tag}: the lesson row reads "${lesson.text}" at ${lesson.href} (Lesson 3: Who does what: the idea of case, and why: Why the accusative?)`);
     const study = has("Word Study").text;
     if (study !== "Word Study: every form of μῆνις") found.push(`${tag}: the Word Study row reads "${study}" (Word Study: every form of μῆνις)`);
     // all four rows, in this order
-    for (const n of ["where else", "the sentence", "the lesson", "Word Study"]) if (!named.some((r) => r.name === n)) found.push(`${tag}: "Go further" has no row for ${n}`);
+    for (const n of ["where else", "the sentence", ...(lessonsShown ? ["the lesson"] : []), "Word Study"]) if (!named.some((r) => r.name === n)) found.push(`${tag}: "Go further" has no row for ${n}`);
   }
   // the meaning the first layer gave is not given again
   if (meaning && open.glosses.some((g) => norm(g) === norm(meaning))) found.push(`${tag}: the second layer says the first layer's meaning ("${meaning.slice(0, 40)}") again`);
