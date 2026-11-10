@@ -411,6 +411,7 @@
 .dots2 button::after { content: ""; clip-path: circle(50%); width: 7px; height: 7px; border-radius: var(--radius-round); background: var(--ink-3); opacity: 0.7; transition: transform var(--dur-quick) var(--ease); }
 .dots2 button[data-on]::after, .dots2 button[aria-pressed="true"]::after { background: var(--rubric); opacity: 1; transform: scale(1.6); }
 .scatterBox .axis { position: absolute; left: 0; right: 0; bottom: -1.4em; }
+.scatterBox .axis span:last-child { transform: translateX(-100%); }   /* the last label ends at the frame's edge, not past it */
 .yLab { position: absolute; top: -2px; left: 0; font-size: var(--step--2); color: var(--ink-2); font-family: var(--f-label); letter-spacing: 0.04em; }
 
 @media (min-width: 761px) { .analyses { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
