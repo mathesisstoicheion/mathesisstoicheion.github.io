@@ -148,7 +148,7 @@
   margin: var(--space-4) 0 var(--space-5);
 }
 .shelf {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "gr n" "en n"; align-items: end; gap: 2px var(--space-2);
+  display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "gr n" "en n"; align-items: end; gap: var(--space-1) var(--space-2);
   min-height: var(--tap); padding: var(--space-2) var(--space-3); box-shadow: var(--rule-box);
   text-decoration: none; color: var(--ink); transition: box-shadow var(--dur) var(--ease), background-color var(--dur) var(--ease);
 }
@@ -161,7 +161,7 @@
   /* on a phone the shelves stand in one row that the finger slides along, so the list starts close below */
   .shelves {
     display: flex; gap: var(--space-1); overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: none;
-    margin: var(--space-3) calc(-1 * var(--gutter, 16px)) var(--space-4); padding: 1px var(--gutter, 16px);
+    margin: var(--space-3) calc(-1 * var(--gutter)) var(--space-4); padding: var(--space-1) var(--gutter);
   }
   .shelves::-webkit-scrollbar { display: none; }
   .shelf { flex: 0 0 auto; width: 11rem; grid-template-areas: "gr gr" "en n"; padding: var(--space-2); }
@@ -337,5 +337,5 @@
   .grp { grid-template-columns: repeat(3, minmax(0, 1fr)); column-gap: clamp(var(--space-5), 3vw, var(--space-7)); }
   .grp > .grpH { grid-column: 1 / -1; }
   .grp > .book { grid-template-columns: minmax(0, 1fr); align-content: start; border-top: 1px solid var(--ink); border-bottom: 0; }
-  .grp > .book::before { left: 0; top: -1px; bottom: auto; width: 100%; height: 2px; }
+  .grp > .book::before { left: 0; top: calc(-1 * var(--hair)); bottom: auto; width: 100%; height: var(--hair-2); }
 }
