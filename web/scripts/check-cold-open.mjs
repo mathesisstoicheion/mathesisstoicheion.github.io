@@ -16,7 +16,8 @@
 import { chromium } from "playwright";
 
 const base = (process.argv[2] ?? "http://localhost:3100").replace(/\/$/, "");
-const URLS = ["/", "/read?w=tlg0012.tlg001", `/read?w=tlg0012.tlg001&at=1.1&hl=${encodeURIComponent("μῆνιν")}`, "/academy/lesson/letters"];
+const URLS = ["/", "/read?w=tlg0012.tlg001", `/read?w=tlg0012.tlg001&at=1.1&hl=${encodeURIComponent("μῆνιν")}`, "/stoa/census"]; // the lessons are off (LESSONS_SHOWN), so their addresses are left out; the Census stands in as a page opened first
+
 const UA = "Mozilla/5.0 (Linux; Android 14; Pixel 7; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/130.0.0.0 Mobile Safari/537.36";
 const SETTLE_MS = 6000;
 
