@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 import PageHead from "@/components/PageHead";
 import { AREAS, trail, type AreaId } from "@/config/areas";
 
-export default function Door({ id, action, side, carve, intro, children }: {
+export default function Door({ id, action, side, carve, intro, computerOnlyIntro, children }: {
   id: AreaId;
   /** what stands at the right of the title, where a plate would (the Treasury's contents) */
   side?: ReactNode;
@@ -18,13 +18,15 @@ export default function Door({ id, action, side, carve, intro, children }: {
   carve?: { text: string; caption: ReactNode };
   /** a short introduction to what the room holds, after what its name means */
   intro?: ReactNode;
+  /** hide the introduction on a phone (it repeats a list the page shows next) */
+  computerOnlyIntro?: boolean;
   children: ReactNode;
 }) {
   const a = AREAS[id];
   return (
     <div className="door">
       <PageHead path={trail(id)} size="large" inscription={carve?.text} title={a.name} greek={a.greek}
-        purpose={<>{a.origin} {a.fit}{intro && <span className="door-intro">{intro}</span>}</>} action={action} side={side} />
+        purpose={<>{a.origin} {a.fit}{intro && <span className="door-intro" data-computer-only={computerOnlyIntro ? "" : undefined}>{intro}</span>}</>} action={action} side={side} />
       <div className="door-body">
         {children}
         {/* the carving's source, as a footnote at the foot of the page: under the search box it stood between the box and

@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: areaTitle("treasury"), ...NOINDEX };
 export default function TreasuryPage() {
   return (
     <Page>
-      <Door id="treasury" intro="Everything you keep while you read stays here: the lines you marked, the words you studied, your notes and your notebooks." side={<Suspense fallback={<Kept />}><TreasuryKept /></Suspense>}>
+      <Door id="treasury" computerOnlyIntro intro="Everything you keep while you read stays here: the lines you marked, the words you studied, your notes and your notebooks." side={<Suspense fallback={<Kept />}><TreasuryKept /></Suspense>}>
         <DoorBlock>
           <Suspense fallback={null}>
             <Treasury />

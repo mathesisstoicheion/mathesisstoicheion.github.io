@@ -558,6 +558,13 @@ main { display: block; min-height: calc(100vh - var(--hdr-h)); min-height: calc(
 .ph-short .ph-purpose { font-size: var(--step-0); }
 /* a room's short introduction to what it holds, after what its name means (components/a/Door.tsx) */
 .door-intro { display: block; margin-top: var(--space-2); color: var(--ink); }
+/* a phone: the Treasury's intro repeats the contents list under it, so it waits for a computer */
+@media (max-width: 760px) {
+  .door-intro[data-computer-only] { display: none; }
+  /* and the head's foot and the rule under it make one normal gap, not two stacked */
+  .door:has(.door-intro[data-computer-only]) .ph { padding-bottom: 0; }
+  .door:has(.door-intro[data-computer-only]) .door-part { margin-top: var(--space-5); }
+}
 .ph .ph-action { margin-top: var(--space-5); }
 .ph-action:has(> .search-field, > form) { max-width: 40rem; }
 /* On a computer every head stands at one height (the owner, 2026-10-23: "the heros load at different heights";
