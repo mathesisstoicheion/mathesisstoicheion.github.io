@@ -372,9 +372,10 @@ function PlaceCard({ p, idx, entries, saved, onSave, onClose }: { p: Place; idx:
       {!p.checked && <p className={styles.caveat}>Matched automatically by its name, and not yet checked by hand: some names belong to people or gods as well as places.</p>}
       {p.alt > 0 && <p className={styles.caveat}>Pleiades lists {p.alt} other {p.alt === 1 ? "place" : "places"} with this name; the map shows the one Pleiades connects most other places to.</p>}
       {entries.length > 0 && (
-        <div className={styles.entries}>
+        <div className={styles.entries} data-place-entries>
           <p className="label">In the Painted Stoa</p>
-          {entries.map((e) => <Link key={e.slug} href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title} →</Link>)}
+          {entries.slice(0, 3).map((e) => <Link key={e.slug} className={`btn ${styles.read}`} href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>Read about {e.title} <span aria-hidden="true">→</span></Link>)}
+          {entries.slice(3).map((e) => <Link key={e.slug} href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}>{e.title} →</Link>)}
         </div>
       )}
       <p className="label">Where the texts name it most</p>
