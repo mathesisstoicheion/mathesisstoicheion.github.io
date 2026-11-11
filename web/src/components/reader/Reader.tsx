@@ -182,7 +182,7 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
         {/* Greek alone: the English of this passage alone, one tap away, under its Greek and in the Greek's column. It is in
             English (no word of it opens the Greek look-up) and so is set apart from the Greek by lang. */}
         {english && (
-          <div className={styles.oneBox} lang="en">
+          <div className={styles.oneBox} lang="en" data-lines={row.greek.some((u) => u.blocks.some((b) => b.t === "l")) || undefined}>
             <button type="button" className={`text-btn ${styles.oneBtn}`} aria-expanded={english.open} onClick={english.onToggle}>{english.open ? "Hide the English" : "Show the English"}</button>
             {english.open && (
               <div className={styles.one} data-one="">
@@ -596,12 +596,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     // (the line on screen is known only once the scanner has the lines)
     const scanner = seen ? metreScanner(units, mInfo.kind, (h) => pub.get(h), lineHash, sc.lineOf(seen)) : sc;
     let live = true, h = 0;
-    const more = scanner.step(40);
+    const more = scanner.step(10);
     setMetre(new Map(scanner.out));
     const next = () => {
       h = idle(() => {
         if (!live) return;
-        const left = scanner.step(40);
+        const left = scanner.step(10);
         setMetre(new Map(scanner.out));
         if (left) next(); else setMetreSettled(true);
       }, 300);
@@ -892,7 +892,8 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     const canvas = document.createElement("canvas").getContext("2d");
     if (!poetry || !sizeAuto || !verse.length || !canvas) { root.style.removeProperty("--fit"); return; }
     let off = false, face = "", widest: number[] = [], lw = verse[0][0].clientWidth;
-    const fit = () => {
+    const timers: number[] = [];
+    const fit = (defer = false) => {
       if (off || !verse[0][0].isConnected) return;
       // the passage at the top stays where it is while the Greek is set again: a panel opening narrows the text and the size follows it (the passage is kept through the
       // narrowing above; the new size would move it once more), and so does a window dragged narrower, and the page must not slide from under the reader
@@ -909,25 +910,78 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
         face = canvas.font = now;
         widest = verse.map((lines) => lines.reduce((w, lt) => Math.max(w, canvas.measureText((lt.textContent ?? "").replace(/\s+/g, " ").trim()).width), 0));
       }
-      const roomsNow = verse.map((lines) => lines[0].getBoundingClientRect().width);
-      const other = cur > 0.8 ? 0.7 : 1;
-      root.style.setProperty("--fit", String(other));
-      const roomsOther = verse.map((lines) => lines[0].getBoundingClientRect().width);
-      const slope = verse.map((_, i) => (roomsNow[i] - roomsOther[i]) / ((cur - other) * px));
-      const line = (i: number) => (size: number) => roomsNow[i] + slope[i] * (size - cur * px);
-      // a page that compares two editions is set in lines in both columns: the one size is the smaller of what each needs
-      const roomAt = (lines: HTMLElement[]) => (size: number) => { root.style.setProperty("--fit", String(size / px)); return lines[0].getBoundingClientRect().width; };
-      let size = verse.reduce((least, _, i) => Math.min(least, verseSizeWhere(px, widest[i], line(i))), px);
-      root.style.setProperty("--fit", String(size / px));
-      if (verse.some((lines, i) => Math.abs(lines[0].getBoundingClientRect().width - line(i)(size)) > 0.5)) {
-        root.style.setProperty("--fit", "1");
-        size = verse.reduce((least, lines, i) => Math.min(least, verseSizeWhere(px, widest[i], roomAt(lines))), px);
-        root.style.setProperty("--fit", String(size / px));
+      // The room is first looked for on a copy of the first row of each column, set one beside the other and taken away within this task, with its own --fit (and the
+      // column of line numbers that follows it): the whole book is not laid out again for every size tried. Only if the copy and the page disagree is the page itself measured.
+      function fitOnPage() {
+        const roomsNow = verse.map((lines) => lines[0].getBoundingClientRect().width);
+        const other = cur > 0.8 ? 0.7 : 1;
+        root!.style.setProperty("--fit", String(other));
+        const roomsOther = verse.map((lines) => lines[0].getBoundingClientRect().width);
+        const slope = verse.map((_, i) => (roomsNow[i] - roomsOther[i]) / ((cur - other) * px));
+        const line = (i: number) => (size: number) => roomsNow[i] + slope[i] * (size - cur * px);
+        const roomAt = (lines: HTMLElement[]) => (size: number) => { root!.style.setProperty("--fit", String(size / px)); return lines[0].getBoundingClientRect().width; };
+        let size = verse.reduce((least, _, i) => Math.min(least, verseSizeWhere(px, widest[i], line(i))), px);
+        root!.style.setProperty("--fit", String(size / px));
+        if (verse.some((lines, i) => Math.abs(lines[0].getBoundingClientRect().width - line(i)(size)) > 0.5)) {
+          root!.style.setProperty("--fit", "1");
+          size = verse.reduce((least, lines, i) => Math.min(least, verseSizeWhere(px, widest[i], roomAt(lines))), px);
+          root!.style.setProperty("--fit", String(size / px));
+        }
+        return size;
       }
-      const moved = held ? held.getBoundingClientRect().top - was : 0;
-      if (Math.abs(moved) > 1) (contained ? root : window).scrollBy({ top: moved, behavior: "instant" });
-      // the size just set changes the width of the line (the column of line numbers is in em): that is this fit's own doing, and must not start another
-      lw = verse[0][0].clientWidth;
+      const metreNow = art.classList.contains(styles.metreOn);
+      const probes = verse.map((lines) => {
+        const lt = lines[0], row = lt.closest<HTMLElement>(`.${styles.row}`);
+        if (!row?.parentElement) return null;
+        const path: number[] = [];
+        for (let n: Element = lt; n !== row; n = n.parentElement!) path.unshift([...n.parentElement!.children].indexOf(n));
+        const clone = row.cloneNode(true) as HTMLElement;
+        clone.setAttribute("aria-hidden", "true"); clone.removeAttribute("data-key"); clone.style.visibility = "hidden";
+        clone.style.setProperty("--num-col", metreNow ? "calc(var(--num-base) + 1.4 * var(--greek-size) * var(--fit, 1))" : "var(--num-base)");
+        row.after(clone);
+        let t: Element | undefined = clone;
+        for (const i of path) t = t?.children[i];
+        if (!t) return (clone.remove(), null);
+        // only the one line is needed (its box, not its words): the other lines, the words and the English beside them are taken out of the copy, so that each size tried costs a few boxes
+        t.replaceChildren();
+        const line = t.closest<HTMLElement>(`.${styles.line}`);
+        if (line?.parentElement) [...line.parentElement.children].forEach((c) => { if (c !== line && c.classList.contains(styles.line)) c.remove(); });
+        clone.querySelector(`.${styles.tr}`)?.replaceChildren();
+        return { clone, t };
+      });
+      const dropProbes = () => probes.forEach((p) => p?.clone.remove());
+      const probeRoom = (i: number) => (size: number) => { const p = probes[i]!; p.clone.style.setProperty("--fit", String(size / px)); return p.t.getBoundingClientRect().width; };
+      let size = px;
+      try {
+        if (probes.every(Boolean) && verse.every((lines, i) => Math.abs(lines[0].getBoundingClientRect().width - probeRoom(i)(cur * px)) <= 0.5)) {
+          size = verse.reduce((least, _, i) => Math.min(least, verseSizeWhere(px, widest[i], probeRoom(i))), px);
+          dropProbes();
+          if (Math.abs(size / px - cur) > 0.0005) {
+            if (defer) {
+              // (on the metre's turning on: the size is set in one task and the passage put back in the next, so that neither holds the page still for long)
+              const to = size / px;
+              timers.push(window.setTimeout(() => {
+                if (off) return;
+                root.style.setProperty("--fit", String(to));
+                timers.push(window.setTimeout(finish, 0));
+              }, 0));
+              return;
+            }
+            root.style.setProperty("--fit", String(size / px));
+          } else size = cur * px;
+        } else {
+          dropProbes();
+          size = fitOnPage();
+        }
+      } finally { dropProbes(); }
+      finish();
+      function finish() {
+        if (off) return;
+        const moved = held ? held.getBoundingClientRect().top - was : 0;
+        if (Math.abs(moved) > 1) (contained ? root! : window).scrollBy({ top: moved, behavior: "instant" });
+        // the size just set changes the width of the line (the column of line numbers is in em): that is this fit's own doing, and must not start another
+        lw = verse[0][0].clientWidth;
+      }
     };
     // the web face arriving changes every width: start again from the new face
     // (only the Greek face matters: the faces of the metre's marks arrive as they are first drawn, and must not set the whole book out again)
@@ -946,10 +1000,12 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     ro.observe(art);
     // the metre widens the column of line numbers (--num-col), so the room of a line changes without the page's width changing: watch the line itself,
     // which reports only a real change of width and costs nothing when the metre is switched on and nothing changed
-    const rl = new ResizeObserver(() => { const n = verse[0][0].clientWidth; if (n !== lw) { lw = n; fit(); } });
+    // (the fit is made in a task of its own, after the frame that laid the marks out: the two together held the page still for half a second)
+    let later = 0;
+    const rl = new ResizeObserver(() => { const n = verse[0][0].clientWidth; if (n !== lw) { lw = n; clearTimeout(later); later = window.setTimeout(() => fit(true), 0); } });
     rl.observe(verse[0][0]);
     fit();
-    return () => { off = true; ro.disconnect(); rl.disconnect(); document.fonts?.removeEventListener("loadingdone", arrived); };
+    return () => { off = true; clearTimeout(later); timers.forEach(clearTimeout); ro.disconnect(); rl.disconnect(); document.fonts?.removeEventListener("loadingdone", arrived); };
     // topKey and contained read the page as it is
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [poetry, sizeAuto, rows, columns, cmpText]);

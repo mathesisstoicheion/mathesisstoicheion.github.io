@@ -13,12 +13,18 @@ export const headerHeight = () => px("--hdr-vis");
 
 /** How tall the phone's status bar is where the page is drawn under it (the phone app draws edge to edge: env(safe-area-inset-top),
  *  painted over by a strip of paper, globals.css body::before), in pixels; 0 in a browser that draws below it. */
+let safeTopMemo: { key: string; h: number } | null = null;
 export const safeTop = () => {
+  // (the inset does not change while the window keeps its size, and measuring it puts a box on the page and reads it back, which lays the whole page out again:
+  // half a second with the metre's marks drawn, on a phone)
+  const key = `${window.innerWidth}x${window.innerHeight}`;
+  if (safeTopMemo?.key === key) return safeTopMemo.h;
   const probe = document.createElement("div");
   probe.style.cssText = "position:fixed;top:0;left:0;width:0;height:env(safe-area-inset-top,0px);visibility:hidden;pointer-events:none";
   document.body.append(probe);
   const h = probe.getBoundingClientRect().height;
   probe.remove();
+  safeTopMemo = { key, h };
   return h;
 };
 

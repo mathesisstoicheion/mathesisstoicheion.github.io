@@ -610,8 +610,8 @@ p.translit { margin: -0.3em 0 0.8em; }
 /* in a text set in lines, the button and the English start where the Greek's words do, past the line-number column (.line); on a phone the line
    numbers stand in the passage number's column and the words start at the Greek's own edge (the container block after the one-book phone rules) */
 .oneBox { margin-top: var(--space-2); }
-.grc:has(.line) > .oneBox { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
-.grc:has(.line) > .oneBox > * { grid-column: 2; }
+.oneBox[data-lines] { display: grid; grid-template-columns: 2.4em minmax(0, 1fr); }
+.oneBox[data-lines] > * { grid-column: 2; }
 .oneBox > * { font-family: var(--f-body); }
 .oneBtn:global(.text-btn) { justify-self: start; display: inline-flex; align-items: center; gap: var(--space-2); color: var(--ink-2); text-decoration: none; font-size: var(--step--1); }
 @media (hover: hover) { .oneBtn:global(.text-btn):hover { color: var(--rubric); } }
@@ -802,7 +802,7 @@ p.translit { margin: -0.3em 0 0.8em; }
   /* with the metre on, the rhythm button stands at the column's far side, the number at the near one */
   .reader:not(.verses) .beatBtn, .reader:not(.verses) .metreQ { left: calc(-1 * (var(--num-col) + var(--num-gap))); }
   /* "Show the English" and the English start where the Greek does, which is now the column's edge */
-  .reader:not(.verses) .grc:has(.line) > .oneBox { display: block; }
+  .reader:not(.verses) .oneBox[data-lines] { display: block; }
   .reader:not(.verses) .cols > :nth-child(2) { padding-left: calc(var(--num-col) + var(--num-gap)); }
 }
 /* Verse on a phone: more room for the words (the quiet desk, ticket 10, the owner, 2026-10-30: "more room on a phone, for verse only"). A page set in lines of verse has
