@@ -1,0 +1,1 @@
+The Explore page is redesigned: our own creations first, entries below. Back-to-top buttons on long pages. No more blue flash when you tap. The word look-up works on Home, Stoa entries, the Census and author pages. The reader's title area has Greek / Both / English, edition pickers and Add your own text. Metres no longer freeze the reader.
