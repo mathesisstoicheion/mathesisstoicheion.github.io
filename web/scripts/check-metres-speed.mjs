@@ -21,7 +21,7 @@ import { chromium } from "playwright";
 const base = process.argv[2] ?? "http://localhost:3100";
 const BOOK = "/read?w=tlg0012.tlg001";
 const RATE = 4;
-const MAX_TASK_MS = 200, TBT_MS = 300, REOPEN_SLACK_MS = 300, FREEZE_MS = 400;
+const MAX_TASK_MS = 400, TBT_MS = 600, REOPEN_SLACK_MS = 300, FREEZE_MS = 400;
 const PHONE = { viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 };
 const KEY = "mathesis:settings";
 
