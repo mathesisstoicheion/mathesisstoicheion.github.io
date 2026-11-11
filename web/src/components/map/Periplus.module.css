@@ -103,6 +103,7 @@
 .caveat { font-size: var(--step--1); color: var(--ink-2); box-shadow: var(--inlay-left-ochre); padding-left: var(--space-3); }
 .entries { display: grid; gap: var(--space-1); }
 .entries a { color: var(--rubric); }
+.entries a.read { min-height: 48px; display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); color: inherit; }
 .works { list-style: none; margin: 0; padding: 0; display: grid; gap: 7px; }
 .works li { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-2); font-size: var(--step-0); }
 .works a { color: inherit; }
