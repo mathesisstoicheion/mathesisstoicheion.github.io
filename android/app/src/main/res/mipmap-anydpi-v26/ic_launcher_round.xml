@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The printer's device, the site's logo (web/scripts/make-logo.mjs): the round seal on paper, its corners transparent
+     (the owner, 2026-11-11: the icon showed squared edges). The background is clear and the foreground is the paper disc with
+     the seal, so every launcher shape shows the round logo; phones that colour their icons to match the wallpaper use the seal alone -->
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+    <background android:drawable="@android:color/transparent" />
+    <foreground android:drawable="@mipmap/ic_launcher_disc" />
+    <monochrome android:drawable="@mipmap/ic_launcher_foreground" />
+</adaptive-icon>
