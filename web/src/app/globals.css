@@ -61,7 +61,10 @@
 
 /* ---------------------------------------------------------------- base */
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; }
+/* No blue flash on a tap (the owner, 2026-11-11: it made the lyre awkward and the app feel cheap): the page's own pressed states answer a touch */
+html { -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
+* { -webkit-tap-highlight-color: transparent; }
+a, button, [role="button"], summary, label { touch-action: manipulation; }
 /* a wide screen sets the type a little larger, as a larger sheet is printed in a larger size (the owner, 2026-10-23:
    "doesn't use a lot of the available space"; scripts/check-room.mjs) */
 @media (min-width: 1600px) { html { font-size: var(--root-grow); } }
