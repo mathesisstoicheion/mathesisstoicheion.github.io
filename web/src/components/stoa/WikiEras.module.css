@@ -83,7 +83,7 @@
   .scroll { overflow: visible; }
   .chart { height: 240px; min-width: 0; gap: calc(var(--space-1) / 2); }
   .bands { display: grid; min-width: 0; gap: calc(var(--space-1) / 2); }
-  .bands a { font-size: 0; min-height: 0; padding: var(--space-2) 0 0; pointer-events: none; }
+  .bands a { overflow: hidden; text-indent: -999px; white-space: nowrap; min-height: 0; padding: var(--space-2) 0 0; pointer-events: none; }   /* the names are in the legend below; text-indent, not a font of 0 px, keeps them out of sight */
   .bands a::before { top: 0; }
   .col { min-width: 0; grid-template-rows: 32px 1fr var(--axis); }
   .value { writing-mode: vertical-rl; rotate: 180deg; padding-bottom: 0; padding-top: var(--space-1); }

@@ -136,7 +136,7 @@ export default function WikiAuthors() {
           </ul>
           {!open(g.id, g.rows.length <= FIRST) && (
             <button type="button" className={styles.openRest} aria-expanded="false" onClick={() => setOpened(new Set([...opened, g.id]))}>
-              All {num(g.rows.length)} {g.era ? g.era.name : "undated"} authors <span aria-hidden="true">▾</span>
+              All {num(g.rows.length)} {g.era ? g.era.name : "undated"} authors <span className={styles.chev} aria-hidden="true" />
             </button>
           )}
         </section>
