@@ -20,10 +20,8 @@
 .chips :global(.chip) { min-height: var(--tap); }
 .chips b { margin-left: var(--space-1); font: 400 var(--step--1) / 1 var(--f-title); color: var(--accent); font-variant-numeric: lining-nums tabular-nums; }
 @media (max-width: 760px) {
-  .chips { overflow-x: auto; overflow-y: hidden; padding-block: var(--space-1); margin-inline: calc(-1 * var(--space-4)); padding-inline: var(--space-4); scrollbar-width: none; overscroll-behavior-x: contain; }
-  .chips::-webkit-scrollbar { display: none; }
-  .chips ul { flex-wrap: nowrap; width: max-content; }
-  .chips[data-more] { -webkit-mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); mask-image: linear-gradient(90deg, var(--ink) calc(100% - var(--space-6)), transparent); }
+  /* on a phone the chips wrap to a second line, so every subject is readable at first paint (nothing is cut off at the edge) */
+  .chips { padding-block: var(--space-1); }
 }
 
 .found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
@@ -52,7 +50,7 @@
 .entriesH { margin: var(--space-5) 0 var(--space-3); padding-top: var(--part-pad); border-top: var(--part-rule); }
 .colonnade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(20px, 3vw, 40px); align-items: start; }
 .card { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-4) 2px var(--space-5); box-shadow: var(--cut-over); animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
-@keyframes ink-in { from { opacity: 0; } }
+@keyframes ink-in { from { transform: translateY(6px); } }
 .cardHead { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); }
 .cardHead h3 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
 .cardHead b { font: 400 var(--step-sub) / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }

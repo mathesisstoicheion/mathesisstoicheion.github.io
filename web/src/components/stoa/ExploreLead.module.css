@@ -30,7 +30,7 @@
 }
 /* the towns ink in one after another, the most named first */
 .town { animation: ink-in var(--dur-slow) var(--ease) backwards; animation-delay: calc(0.25s + var(--i) * 90ms); }
-@keyframes ink-in { from { opacity: 0; } }
+@keyframes ink-in { from { transform: translateY(6px); } }
 
 /* the counts: red bars on hairline tracks */
 .bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; }
