@@ -24,6 +24,8 @@ import { readTag } from "@/lib/lookup/postag";
 import { allMarks, allPageNotes, type Mark, type PageNote } from "@/lib/annotations";
 import type { TeiDoc } from "@/lib/tei/types";
 import GreekKeyboard from "./GreekKeyboard";
+import { tapWords } from "@/components/lookup/tapWords";
+import { useWordTap } from "@/components/lookup/useWordTap";
 import { useSwipeNav } from "@/lib/use-swipe-nav";
 import styles from "./Search.module.css";
 import { stoaLabel, useStoaTitles } from "@/wiki/useTitles";
@@ -429,6 +431,7 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
 }) {
   const [res, setRes] = useState<{ outcome?: Outcome; error?: string; problem?: boolean } | null>(null);
   const [shownWorks, setShownWorks] = useState(40);
+  const wordTap = useWordTap();   // any Greek word in a result opens the reader's look-up
   useEffect(() => {
     let live = true;
     runSearch(idx, { mode: tab, q, script, lemma, tags, works, allEditions, near: near ? { q: near, within: readWithin(nearWithin) } : null }).then(
@@ -498,6 +501,7 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
       {near && o.read.length > 1 && (
         <p className={styles.small}>Only results with <b lang={tab === "english" ? undefined : "grc"}>{o.read[o.read.length - 1].greek}</b> {WITHIN.find((w) => w.id === String(readWithin(nearWithin)))?.label}; it is marked beside each.</p>
       )}
+      <div style={{ display: "contents" }} onClick={wordTap.onClick}>
       {view === "conc" && o.hits > 0 ? (
         <Concordance idx={idx} works={sorted} texts={o.texts} lang={tab === "english" ? "eng" : "grc"} lemmaMode={tab === "lemma"} title={q} />
       ) : view === "stats" && o.hits > 0 ? (
@@ -509,6 +513,8 @@ function Results({ idx, meta, tab, q, script, lemma, tags, works, allEditions, s
           ))}
         </ol>
       )}
+      </div>
+      {wordTap.panel}
       {view === "works" && sorted.length > shownWorks && (
         <button type="button" className="btn ghost" onClick={() => setShownWorks((n) => n + 60)}>Show more works ({(sorted.length - shownWorks).toLocaleString("en-GB")} left)</button>
       )}
@@ -572,7 +578,7 @@ function WorkGroup({ g, idx, meta, texts, startOpen, tab, allEditions }: {
                 <li key={key} className={styles.hit}>
                   <Link className={styles.ref} href={href} transitionTypes={["page-turn"]}>{ref}</Link>
                   <p lang={lang === "grc" ? "grc" : undefined} className={lang === "grc" ? styles.gr : undefined}>
-                    {parts.map((p: Part, i) => (p.hit ? <mark key={i}>{p.t}</mark> : p.t))}
+                    {parts.map((p: Part, i) => { const t = lang === "grc" ? tapWords(p.t, i) : p.t; return p.hit ? <mark key={i}>{t}</mark> : lang === "grc" ? t : p.t; })}
                   </p>
                   {(tagText || (allEditions && cat)) && (
                     <p className={styles.hitMeta}>{tagText}{allEditions && cat && <span className="muted">{describe(cat)}</span>}</p>

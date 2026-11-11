@@ -1,0 +1,4 @@
+/* A Greek word in running text that can be touched to look it up (components/lookup). It must not change how the text looks:
+   no underline, no layout shift; the tap area is a little taller than the letters (padding on an inline box never moves lines). */
+.tw { cursor: pointer; padding-block: 0.3em; -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; transition: color var(--dur-quick) var(--ease); }
+@media (hover: hover) { .tw:hover { color: var(--rubric); } }
