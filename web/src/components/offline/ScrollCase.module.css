@@ -41,11 +41,11 @@
 
 /* the five choices: numbered steps, each under a rule of ink with its numeral in red, as "How the Treasury fills" is set */
 .steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
-.step { display: grid; grid-template-columns: 3.2ch minmax(0, 1fr); column-gap: var(--space-3); row-gap: var(--space-2); align-items: baseline; padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
-.stepNo { font: 400 var(--step-3) / 1 var(--face-didot); color: var(--rubric); }
+.step { --no: var(--step-3); display: grid; grid-template-columns: calc(var(--no) * 1.4) minmax(0, 1fr); column-gap: var(--space-3); row-gap: var(--space-2); align-items: baseline; padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
+.stepNo { font: 400 var(--no) / 1 var(--face-didot); color: var(--rubric); }
 .step h3 { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
 .step > fieldset { grid-column: 2; min-width: 0; max-width: 70ch; }
-@media (max-width: 600px) { .step { grid-template-columns: minmax(0, 1fr); } .step > fieldset { grid-column: 1; } .stepNo { font-size: var(--step-2); } }
+@media (max-width: 600px) { .step { --no: var(--step-2); } .stepNo { font-size: var(--no); } }
 /* the choices are bigger to hit on a finger */
 @media (pointer: coarse) { .check { min-height: var(--tap); align-items: center; } .check input { align-self: center; margin-top: 0; } }
 

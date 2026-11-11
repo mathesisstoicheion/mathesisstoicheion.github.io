@@ -61,7 +61,7 @@ export default function WordStudy() {
           {lex.state === "done" && !found && (
             <section className={styles.sec}>
               <Quiet>GLAUx has no dictionary word spelled <span lang="grc">{asked}</span>, so there are no forms or counts for it.
-                {" "}Word Study needs the dictionary form (λόγος, not λόγου; λύω, not ἔλυσε). <Link href={`/search?m=forms&q=${encodeURIComponent(asked)}`}>Search the texts for this form →</Link></Quiet>
+                {" "}Word Study needs the dictionary form (λόγος, not λόγου; λύω, not ἔλυσε). <Link href={`/search?m=forms&q=${encodeURIComponent(asked)}`}>Search the texts for this form →</Link></Quiet>
             </section>
           )}
           {found && meta && <Forms entry={found.entry} meta={meta} />}
