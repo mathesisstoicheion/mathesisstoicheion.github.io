@@ -44,11 +44,11 @@ export default function WordStudy() {
       <div className={styles.layout}>
         <div className={styles.main}>
           <Meaning lemma={lemma} />
-          {lex.state === "error" && <p className={styles.warn}>The word index could not be loaded ({lex.message}).</p>}
+          {lex.state === "error" && <Quiet>The word index could not be loaded ({lex.message}).</Quiet>}
           {lex.state === "done" && !found && (
             <section className={styles.sec}>
-              <p className={styles.warn}>GLAUx has no dictionary word spelled <span lang="grc">{asked}</span>, so there are no forms or counts for it.
-                {" "}Word Study needs the dictionary form (λόγος, not λόγου; λύω, not ἔλυσε). <Link href={`/search?m=forms&q=${encodeURIComponent(asked)}`}>Search the texts for this form →</Link></p>
+              <Quiet>GLAUx has no dictionary word spelled <span lang="grc">{asked}</span>, so there are no forms or counts for it.
+                {" "}Word Study needs the dictionary form (λόγος, not λόγου; λύω, not ἔλυσε). <Link href={`/search?m=forms&q=${encodeURIComponent(asked)}`}>Search the texts for this form →</Link></Quiet>
             </section>
           )}
           {found && meta && <Forms entry={found.entry} meta={meta} />}
@@ -62,6 +62,11 @@ export default function WordStudy() {
       </div>
     </div>
   );
+}
+
+/** a part that could not be shown: body-size italic ink under a small "Not available" label (red is for heads, not for failures) */
+function Quiet({ children }: { children: React.ReactNode }) {
+  return <p className={styles.quiet}><span className="label">Not available</span> {children}</p>;
 }
 
 /** the page's path: the Treasury, its Words, then this page */
@@ -97,7 +102,6 @@ function Head({ lemma, entry, meta, lexState, alike }: { lemma: string; entry: L
         {lexState === "loading" && <span className="muted">counting…</span>}
       </span>}>
       {alike.length > 0 && <p className={styles.alike}>Spelled alike without accents: {alike.slice(0, 6).map((a, i) => <span key={a}>{i > 0 && ", "}<Link href={wordHref(a)} lang="grc">{a}</Link></span>)}</p>}
-      <div className="meander draw" aria-hidden="true" />
     </PageHead>
   );
 }
@@ -121,7 +125,7 @@ function Meaning({ lemma }: { lemma: string }) {
       <div className={styles.lsj}>
       <h3 className="label">Liddell–Scott–Jones {l && l.head !== lemma && <span lang="grc">· {l.head}</span>}</h3>
       {lsj.state === "loading" && <p className="muted">Opening the dictionary…</p>}
-      {lsj.state === "error" && <p className={styles.warn}>The dictionary could not be loaded ({lsj.message}).</p>}
+      {lsj.state === "error" && <Quiet>The dictionary could not be loaded ({lsj.message}).</Quiet>}
       {lsj.state === "done" && !l && <p className="muted">No LSJ entry under this headword.</p>}
       {l && l.entries.map((e: LsjEntry, i) => <LsjEntryView key={i} e={e} full={full} tall />)}
       {l && <button type="button" className="chip" onClick={() => setFull(!full)} aria-expanded={full}>{full ? <><Icon name="chevron-up" />Short definition</> : <><Icon name="chevron-down" />The full entry</>}</button>}
@@ -321,7 +325,7 @@ function Examples({ lemma }: { lemma: string }) {
       </div>
       <p className={styles.lead}>One passage from each period, where the word is used, opened straight from the original files.</p>
       {ex.state === "loading" && <p className="muted">Finding passages and opening the texts…</p>}
-      {ex.state === "error" && <p className={styles.warn}>{ex.message} Examples need the search index.</p>}
+      {ex.state === "error" && <Quiet>{ex.message} Examples need the search index.</Quiet>}
       {ex.state === "done" && !ex.value.length && <p className="muted">No passage could be opened for this word.</p>}
       {ex.state === "done" && (
         <ol className={styles.examples}>
@@ -345,7 +349,7 @@ function Examples({ lemma }: { lemma: string }) {
 function Mine({ lemma }: { lemma: string }) {
   useEffect(() => { usePageNotes.getState().load(); }, []);
   return (
-    <section className={`${styles.sec} ${styles.mine}`} aria-labelledby="ws-mine">
+    <section className={styles.sec} aria-labelledby="ws-mine">
       <h2 id="ws-mine">Yours</h2>
       <h3 className="label">Your note on this word</h3>
       <PageNoteEditor kind="word" target={lemma} label={`Your note on ${lemma}`} shareAs={{ title: `A note on ${lemma}`, path: `/treasury/word?l=${encodeURIComponent(lemma)}` }} />
@@ -365,7 +369,7 @@ function Family({ lemma }: { lemma: string }) {
       <h2 id="ws-family">Family</h2>
       {!online && <p className="muted">You are offline. The word family comes live from Wiktionary.</p>}
       {online && fam.state === "loading" && <p className="muted">Asking Wiktionary…</p>}
-      {fam.state === "error" && <p className={styles.warn}>Wiktionary could not be reached ({fam.message}).</p>}
+      {fam.state === "error" && <Quiet>Wiktionary could not be reached ({fam.message}).</Quiet>}
       {fam.state === "done" && !f && <p className="muted">Wiktionary has no Ancient Greek entry for this word.</p>}
       {f && (
         <>

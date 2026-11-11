@@ -4,16 +4,20 @@
    form in ruled tables as a grammar prints them, where it is used in thin red bars from one baseline, real passages
    strung along a fine rule; at the side the reader's own and the word's family. Each part inks in as it arrives, then
    nothing moves. */
-.ws { display: grid; gap: 28px; padding-bottom: 24px; }
+.ws { display: grid; gap: 0; padding-bottom: 24px; }
 @keyframes ink-in { from { opacity: 0; } }
-.warn { color: var(--rubric); }
+/* a part that could not be shown: quiet italic ink with a small label; its link stays red */
+.quiet { font-style: italic; color: var(--ink); }
+.quiet .label { font-style: normal; margin-right: var(--space-2); }
+.quiet a { color: var(--rubric); }
 .fine { font-size: var(--step--1); color: var(--ink-2); line-height: 1.5; }
 .lead { color: var(--ink-2); max-width: 70ch; }
 
 /* ------------------------------------------------ head: what the word is, under the headword */
 .headMeta { display: flex; flex-wrap: wrap; gap: 4px 0; font-size: var(--step-0); color: var(--ink-2); }
-/* the dot rides at the end of the part before it, so a line that wraps never starts with one */
-.headMeta > span:not(:last-child)::after { content: "·"; margin: 0 12px; color: var(--rubric); }
+.headMeta > span:not(.translit) { font-variant: small-caps; letter-spacing: 0.08em; font-feature-settings: "smcp", "c2sc"; }
+/* the parts are split by hairlines; the rule rides at the end of the part before it, so a line that wraps never starts with one */
+.headMeta > span:not(:last-child) { border-right: 1px solid var(--rule); padding-right: var(--space-3); margin-right: var(--space-3); }
 .translit { font-style: italic; color: var(--ink); }
 .alike { font-size: var(--step-0); }
 .alike a { font-size: var(--step-sub); }
@@ -112,8 +116,7 @@
 /* the word itself, picked out in red as a concordance prints it */
 .exGr mark { background: transparent; color: var(--rubric); }
 
-/* ------------------------------------------------ side: yours, in a hairline frame; the word's family */
-.mine { padding: 20px 22px; box-shadow: var(--slab-edge); }
+/* ------------------------------------------------ side: the reader's own and the word's family */
 .famBlock { display: grid; gap: 6px; }
 .ety { font-size: var(--step-0); line-height: 1.55; }
 .english { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -135,7 +138,6 @@
 /* on a computer each part opens under a rule of ink with room above it (globals.css --part-*; scripts/check-parts.mjs) */
 @media (min-width: 761px) {
   .sec { padding-top: var(--part-pad); border-top: var(--part-rule); }
-  .layout { margin-top: var(--after-head); }
 }
 /* on a wide screen the core meaning and the dictionary's entry stand side by side under the heading, not one short block
    under another with the right half of the column empty (the owner, 2026-10-23; scripts/check-room.mjs) */
@@ -148,3 +150,5 @@
 @media (min-width: 761px) {
   .kin a { text-decoration: underline; text-decoration-color: var(--link-line); text-decoration-thickness: 1px; text-underline-offset: 0.2em; }
 }
+/* on a phone the head's one rule is the first part's own (the computer's parts each carry theirs) */
+@media (max-width: 760px) { .layout { border-top: var(--part-rule); padding-top: var(--space-4); } }
