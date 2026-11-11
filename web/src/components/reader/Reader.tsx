@@ -41,7 +41,6 @@ import type { EchoMarks, EchoQuery, EchoTarget } from "./EchoesPanel";
 import MetreBar from "./MetreBar";
 import ReaderCover from "./ReaderCover";
 import ReaderTitle from "./ReaderTitle";
-import HeadTools from "./HeadTools";
 import PageHead from "@/components/PageHead";
 import ScrollMarkers, { type MarkerItem } from "./ScrollMarkers";
 import Icon from "@/components/Icon";
@@ -1828,9 +1827,6 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
       </>}
     </div>
   ) : null;
-  // the switch, the pickers and "Add your own text" under the title (HeadTools.tsx): one book only, and not in the small floating window
-  const headTools = single && !floating && menuProps
-    ? <HeadTools menu={menuProps} columns={columns} onColumns={(c) => setSettings({ columns: c })} onImport={moderator ? () => onOpenMine() : undefined} /> : null;
   // what stands where the foot bar was, for the bar to give way to (ReaderBar.module.css): the look-up's sheet, a panel's sheet, the passage toolbar
   const covers = [lookSheet && "lookup", !!word && !lookSheet && "note", sideOpen && "panel", sel && "toolbar"].filter(Boolean).join(" ");
   return (
@@ -1850,7 +1846,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
         <ReaderCover workId={work?.id ?? ""} title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id}
           seal={isPrivate ? <span className={styles.privateTag}><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" /><path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2" /></svg>Only you can see this</span> : null}
           orig={work?.orig && work.orig !== grcText?.label ? <OrigTitle work={work} full /> : null}
-          editions={<>{edLine}{headTools}</>} />
+          editions={edLine} />
       ) : null) : (
       <header className={`wrap ${styles.top}`}>
         {!floating && (
@@ -1912,7 +1908,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
 
           {/* a book opens on its text, under a one-line title, from the second time it is opened on this device; the page's name is the part of
               the work it is ("Book 1") */}
-          {single && !showCover && <ReaderTitle title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} page={chunkInfo.label} lines={firstInLines && (!!cmpText || columns !== "trans")} only={isPrivate}>{headTools}</ReaderTitle>}
+          {single && !showCover && <ReaderTitle title={work?.title ?? ""} greek={grcText?.label} author={author?.name} authorId={isPrivate ? undefined : author?.id} page={chunkInfo.label} lines={firstInLines && (!!cmpText || columns !== "trans")} only={isPrivate} />}
 
           {cases && (
             <p className={`wrap ${styles.legend} ${styles.caseKey}`} aria-label="Case colours" title="From GLAUx's analyses of this text">

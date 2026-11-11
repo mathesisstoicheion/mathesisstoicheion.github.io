@@ -34,6 +34,3 @@
 .inPane .btt { position: static; pointer-events: auto; translate: 0 calc(-100%); width: 44px; height: 44px; }
 
 @media (prefers-reduced-motion: reduce) { .btt { animation: none; } }
-
-/* never over the word look-up sheet (WordPanel: the side panel that carries data-snap), wherever it opens */
-:global(html:has([data-overlay][data-snap])) :not(.inPane) > .btt { opacity: 0; pointer-events: none; }

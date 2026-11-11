@@ -2,28 +2,22 @@
    figures: each under a hairline, its picture in a hairline frame (the map drawn on the paper, the counts as red bars, the
    photograph in its real colours), its Greek name in red and its title in Didot, red under the hand. The towns and bars
    ink in; nothing grows or zooms (decision 3). */
-/* Made here: the six places the site has built, first on the page (at the right of the head on a computer, under it on a
-   phone), each one row that is wholly a link and a generous place to tap: a small square picture in a hairline frame at the
-   left (the map drawn on the paper, the counts as red bars, the photograph, the black-figure drawings), its Greek name in red,
-   its title in Didot and one line on what it is at the right. Two columns of rows where there is room, one on a phone. */
-.beyond { display: grid; gap: var(--space-2); container-type: inline-size; align-content: start; }
-.beyondH { margin: 0; color: var(--accent); }
-.beyond > ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0 clamp(16px, 2vw, 28px); }
-@container (min-width: 500px) { .beyond > ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+/* Beyond the entries: the six places the entries do not hold, six matching cards in a grid (three across, two, then one),
+   each wholly a link, its picture in the same hairline frame and the same shape, its words under it. */
+.beyond { display: grid; gap: var(--space-3); }
+.beyondH { margin: 0; }
+.beyond ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5) clamp(18px, 2.6vw, 32px); }
+@media (max-width: 1000px) { .beyond ul { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 600px) { .beyond ul { grid-template-columns: minmax(0, 1fr); gap: var(--space-4); } }
 
-.card {
-  display: grid; grid-template-columns: 96px minmax(0, 1fr); align-items: center; gap: var(--space-3);
-  min-height: 112px; height: 100%; padding: 8px 6px 8px 2px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over);
-  -webkit-tap-highlight-color: transparent; transition: background-color var(--dur-quick) var(--ease);
-}
-.card:active { background: var(--bg-2); }
-.card:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-@media (hover: hover) { .card:hover { background: var(--bg-2); } }
+.card { display: flex; flex-direction: column; height: 100%; padding-top: 14px; text-decoration: none; color: var(--ink); box-shadow: var(--cut-over); }
+.card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-/* the picture: the same small square for all six, in a hairline frame */
-.map, .bars, .pic, .fig { display: block; width: 96px; aspect-ratio: 1 / 1; border: 1px solid var(--rule); }
+/* the picture area: the same shape for all six, in a hairline frame */
+.map, .bars, .pic, .fig { display: block; width: 100%; aspect-ratio: 16 / 10; border: 1px solid var(--rule); }
 .pic { height: auto; object-fit: cover; }
-.bars { overflow: hidden; }
+/* on a phone the pictures take a shorter crop, so six cards do not fill several screens */
+@media (max-width: 760px) { .map, .bars, .pic, .fig { aspect-ratio: 2 / 1; } }
 
 /* the map, drawn on the paper: the land washed, the sea a paler wash inside its coast */
 .map { background: var(--bg-2); }
@@ -39,7 +33,7 @@
 @keyframes ink-in { from { transform: translateY(6px); } }
 
 /* the counts: red bars on hairline tracks */
-.bars { display: grid; align-content: center; gap: 6px; padding: 12px 10px; }
+.bars { display: grid; align-content: center; gap: 7px; padding: 14px 18px; }
 .bar { display: grid; grid-template-columns: minmax(0, 11em) 1fr auto; align-items: center; gap: 10px; font-size: var(--step--1); }
 .who { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .who [lang="grc"] { font-family: var(--f-greek); font-size: var(--step-0); }
@@ -47,18 +41,18 @@
 .fill i { display: block; height: 100%; width: var(--w); background: var(--accent); border-radius: var(--radius); }
 .n { font-variant-numeric: lining-nums tabular-nums; color: var(--ink-2); min-width: 3.4em; text-align: right; }
 
-.txt { display: grid; gap: 1px; align-content: center; }
+.txt { display: grid; gap: 2px; padding: var(--space-3) 2px 18px; }
 .txt b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; transition: color var(--dur-quick) var(--ease); }
 .card:focus-visible .txt b { color: var(--rubric); }
 @media (hover: hover) { .card:hover .txt b { color: var(--rubric); } }
-.txt > span:last-child { color: var(--ink-2); font-size: var(--step--1); line-height: 1.35; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; line-clamp: 3; overflow: hidden; }
+.txt > span:last-child { color: var(--ink-2); font-size: var(--step-0); }
 .gr { font-family: var(--f-greek); color: var(--accent); font-size: var(--step-0); }
 /* the small print at the foot of the page (ExploreCredit) */
 .credit { margin: 32px 0 0; padding-top: var(--space-3); border-top: 1px solid var(--rule); font-size: var(--step--2); color: var(--ink-2); }
 
 /* the lyre, the pot and the board, drawn as a black-figure painter drew: the shapes in the gloss (the page's ink), the lines
    scratched through it to the clay (the paper), one line in added red; each centred in the same frame as the pictures above */
-.fig { height: auto; padding: 6px; background: var(--bg-2); }
+.fig { height: auto; padding: var(--space-2); background: var(--bg-2); }
 .gloss { fill: var(--ink); }
 .handle { fill: none; stroke: var(--ink); stroke-width: 0.068; stroke-linecap: round; }
 .clay { fill: var(--bg-2); }
@@ -70,20 +64,3 @@
 .strings line { stroke: var(--ink-2); stroke-width: 1px; vector-effect: non-scaling-stroke; }
 /* the shell's rim of dots, scratched through the gloss */
 .dots { fill: none; stroke: var(--bg-2); stroke-width: 0.012; stroke-linecap: round; stroke-dasharray: 0 0.03; }
-
-/* at this size the map keeps its towns as dots and the counts keep only their red bars */
-.town text, .bars > :global(.label), .who, .n { display: none; }
-.bar { grid-template-columns: 1fr; }
-
-/* the reference pages: one row of direct links under the six, each a button of its own */
-.refs { display: grid; gap: var(--space-2); padding-top: var(--space-3); box-shadow: var(--cut-over); }
-.refs :global(.label) { margin: 0; }
-.refs ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.refs a {
-  display: inline-flex; align-items: center; min-height: var(--tap); padding: 0 16px; border: 1px solid var(--rule); border-radius: var(--radius);
-  font-family: var(--f-label); color: var(--ink); text-decoration: none; -webkit-tap-highlight-color: transparent;
-  transition: color var(--dur-quick) var(--ease), border-color var(--dur-quick) var(--ease), background-color var(--dur-quick) var(--ease);
-}
-.refs a:active { background: var(--bg-2); }
-.refs a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-@media (hover: hover) { .refs a:hover { color: var(--rubric); border-color: var(--rubric); } }

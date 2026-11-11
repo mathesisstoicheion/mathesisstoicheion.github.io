@@ -35,11 +35,8 @@ export interface RefCard { href: string; title: string; greek: string; blurb: st
 export interface Subject { id: string; title: string; count: number }
 
 // ---------------------------------------------------------------- the search and the chosen subject, shared by head and body
-interface Front { q: string; subject: string; open: boolean }
-const START: Front = { q: "", subject: "all", open: false };
-/** whether the entries were left open, remembered on this device only (a convenience; the page works without it) */
-const OPEN_KEY = "stoa-entries-open";
-const remember = (open: boolean) => { try { localStorage.setItem(OPEN_KEY, open ? "1" : "0"); } catch { /* storage blocked */ } };
+interface Front { q: string; subject: string }
+const START: Front = { q: "", subject: "all" };
 let front = START;
 const listeners = new Set<() => void>();
 const setFront = (patch: Partial<Front>) => { front = { ...front, ...patch }; listeners.forEach((l) => l()); };
@@ -58,10 +55,7 @@ export function StoaFinder({ total, subjects }: { total: number; subjects: Subje
   const { q, subject } = useFront();
   const row = useRef<HTMLDivElement>(null);
   // a search handed over from Quick search: the page opens at the top, so bring the search and its results into view
-  const fromUrl = useCallback((v: string) => {
-    setFront({ q: v, open: true });
-    requestAnimationFrame(() => row.current?.scrollIntoView({ block: "start" }));
-  }, []);
+  const fromUrl = useCallback((v: string) => { setFront({ q: v }); row.current?.scrollIntoView({ block: "start" }); }, []);
   useEffect(() => () => { front = START; }, []);   // leaving the page, the next visit opens fresh
   return (
     <div className={styles.finder}>
@@ -90,7 +84,7 @@ const SHOWN = 2;
 
 function Card({ id, title, blurb, items, whole, i }: { id: string; title: string; blurb: string; items: { href: string; label: string; hint?: string }[]; whole: boolean; i: number }) {
   const first = whole ? items : items.slice(0, SHOWN), rest = whole ? [] : items.slice(SHOWN);
-  const link = (e: { href: string; label: string; hint?: string }) => <li key={e.href}><Link href={e.href} title={e.hint} transitionTypes={["page-turn"]} className={styles.row}><span>{e.label}</span></Link></li>;
+  const link = (e: { href: string; label: string; hint?: string }) => <li key={e.href}><Link href={e.href} title={e.hint} transitionTypes={["page-turn"]}>{e.label}</Link></li>;
   return (
     <li id={id} className={styles.card} style={{ "--i": i } as React.CSSProperties}>
       <div className={styles.cardHead}><h3>{title}</h3><b aria-label={`${items.length} entries`}>{items.length}</b></div>
@@ -111,59 +105,7 @@ function Card({ id, title, blurb, items, whole, i }: { id: string; title: string
  *  at its head, the Kerameikos wall on the Archaeology card), so no photograph stands twice. */
 const PICTURE_TAKEN = new Set(["crates-hipparchia", "kerameikos-street"]);
 
-/** In the head, under the introduction: one button that opens the entries and brings them into view. */
-export function EntriesJump({ total }: { total: number }) {
-  const go = () => {
-    setFront({ open: true });
-    remember(true);
-    const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    requestAnimationFrame(() => document.getElementById("entries-shelf")?.scrollIntoView({ block: "start", behavior: reduce ? "auto" : "smooth" }));
-  };
-  return (
-    <button type="button" className={`btn ${styles.jump}`} onClick={go}>
-      <span>Read the {total} entries</span>
-    </button>
-  );
-}
-
-/**
- * The entries, in one part that opens and closes (the owner, 2026-11-11: the things we made first, then an option to open
- * the entries and choose one). A real disclosure under one wide bar; closed when the page opens, unless the reader left it
- * open on this device or a search arrives from Quick search. Inside: the search, the subject chips, the entry of the day and
- * the subject cards.
- */
-export default function StoaEntries({ entries, reference = [], subjects }: { entries: EntryCard[]; reference?: RefCard[]; subjects: Subject[] }) {
-  const { open, q } = useFront();
-  const shown = open || !!q;
-  useEffect(() => {
-    let was = false;
-    try { was = localStorage.getItem(OPEN_KEY) === "1"; } catch { /* storage blocked */ }
-    if (was) setFront({ open: true });
-  }, []);
-  const toggle = (e: React.MouseEvent) => {
-    e.preventDefault();   // the state, not the browser, opens and shuts it, so a search can open it too
-    const next = !shown;
-    setFront(next ? { open: true } : { open: false, q: "" });
-    remember(next);
-  };
-  return (
-    <details id="entries-shelf" className={styles.shelf} open={shown}>
-      <summary onClick={toggle}>
-        <span className={styles.shelfText}>
-          <span id="entries-h" className={styles.shelfTitle}>The entries</span>
-          <span className={styles.shelfSub}>{entries.length} articles in {subjects.length} subjects, with a search</span>
-        </span>
-        <span className={styles.shelfAct} aria-hidden="true">{shown ? "Close" : "Open"}</span>
-      </summary>
-      <div className={styles.shelfBody}>
-        <StoaFinder total={entries.length} subjects={subjects} />
-        <StoaIndex entries={entries} reference={reference} />
-      </div>
-    </details>
-  );
-}
-
-function StoaIndex({ entries, reference = [] }: { entries: EntryCard[]; reference?: RefCard[] }) {
+export default function StoaIndex({ entries, reference = [] }: { entries: EntryCard[]; reference?: RefCard[] }) {
   const { q, subject } = useFront();
   const n = fold(q).trim();
   // until the whole texts arrive (a moment, on the first search), the cards alone are searched
@@ -188,7 +130,7 @@ function StoaIndex({ entries, reference = [] }: { entries: EntryCard[]; referenc
       {n && (
         <section className={styles.found} aria-live="polite">
           <p className="label">{found.length} {found.length === 1 ? "entry" : "entries"}</p>
-          <ul>{found.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]} className={styles.row}><span><b>{e.title}</b> <i>{e.kicker}</i></span></Link></li>)}</ul>
+          <ul>{found.map((e) => <li key={e.slug}><Link href={`/stoa/${e.slug}`} transitionTypes={["page-turn"]}><b>{e.title}</b> <span>{e.kicker}</span></Link></li>)}</ul>
         </section>
       )}
 
@@ -206,7 +148,7 @@ function StoaIndex({ entries, reference = [] }: { entries: EntryCard[]; referenc
 
       {!n && (
         <section aria-labelledby="entries">
-          <h3 id="entries" className={`label ${styles.entriesH}`}>By subject</h3>
+          <h2 id="entries" className={`label ${styles.entriesH}`}>The entries, by subject</h2>
           <ol className={styles.colonnade}>
             {shown.map((s, i) => <Card key={s.id} {...s} whole={subject !== "all"} i={i} />)}
           </ol>

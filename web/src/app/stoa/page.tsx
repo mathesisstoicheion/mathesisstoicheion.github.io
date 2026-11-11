@@ -3,11 +3,10 @@ import Page from "@/components/Page";
 import Door, { DoorBlock } from "@/components/a/Door";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
-import StoaEntries, { EntriesJump, type RefCard } from "@/components/stoa/StoaIndex";
+import StoaIndex, { StoaFinder, type RefCard } from "@/components/stoa/StoaIndex";
 import { cardOf } from "@/wiki/cards";
 import { ENTRIES } from "@/wiki/index";
 import Beyond, { ExploreCredit } from "@/components/stoa/ExploreLead";
-import { WhyStoics } from "@/components/stoa/StoaPlates";
 import type { Catalog } from "@/lib/catalog";
 import { areaTitle } from "@/config/areas";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
@@ -15,9 +14,8 @@ import { CATEGORIES } from "@/wiki/types";
 
 export const metadata: Metadata = { title: areaTitle("wiki"), description: PAGE_DESCRIPTIONS.stoa };
 
-// The six places made here and the reference pages first (ExploreLead), then the entries in a part that opens and closes
-// (StoaIndex: the search, the subject chips, the entry of the day, the subject cards, the reference pages as their last card),
-// then "Why Stoics are called Stoics" and the small print. Counts for the reference pages, taken from the catalogue when the
+// The head holds the search, the subject chips and "Why Stoics are called Stoics" (from the home page; redesign SPEC.md
+// 4.4); then the index of entries (the reference pages are its last card); then the six places beyond (ExploreLead), and the small print. Counts for the reference pages, taken from the catalogue when the
 // site is built.
 const CATALOG = JSON.parse(readFileSync(join(process.cwd(), "public/data/catalog.json"), "utf8")) as Catalog;
 const TEXTS = CATALOG.authors.flatMap((a) => a.works.flatMap((w) => w.texts)).length;
@@ -38,15 +36,15 @@ export default function StoaPage() {
     { id: "reference", title: "Reference", count: REFERENCE.length },
   ];
   return (
-    <Page top>
-      {/* 2026-11-11, the owner: the things we made come first, with direct links to them; then an option to open the
-          entries and choose one to read, each entry a clear place to tap. So: the head with its introduction and, at its
-          right (under it on a phone), the six places made here and the reference pages; then the entries, in one part that opens and closes; then the story of
-          the name and the small print. (2026-11-09: a short introduction under the head.) */}
-      <Door id="wiki" computerOnlyIntro intro={<>The map, the Census and the other things made here, and {ENTRIES.length} entries on how the Greeks lived, ruled, believed and fought, each built on the texts in the library.</>}
-        action={<EntriesJump total={ENTRIES.length} />} side={<Beyond reference={REFERENCE} />}>
-        <DoorBlock><StoaEntries entries={ENTRIES.map(cardOf)} reference={REFERENCE} subjects={subjects} /></DoorBlock>
-        <DoorBlock><WhyStoics /><ExploreCredit /></DoorBlock>
+    <Page>
+      {/* 2026-11-09, the owner: the wikis are the Stoa's main function, everything else secondary; a short introduction
+          under the head and the page's contents at its top right. So: the head holds the introduction, the one search and
+          the subjects as chips (the page's contents), with the fresco and the story of the name beside; then the entry of the
+          day and one index, a card for each subject; then the six places beyond the entries. */}
+      <Door id="wiki" intro={<>Here are {ENTRIES.length} entries on how the Greeks lived, ruled, believed and fought, each built on the texts in the library, with the map, the Census of names and the library&apos;s reference pages beside them.</>}
+        action={<StoaFinder total={ENTRIES.length} subjects={subjects} />}>
+        <DoorBlock><StoaIndex entries={ENTRIES.map(cardOf)} reference={REFERENCE} /></DoorBlock>
+        <DoorBlock><Beyond /><ExploreCredit /></DoorBlock>
       </Door>
     </Page>
   );

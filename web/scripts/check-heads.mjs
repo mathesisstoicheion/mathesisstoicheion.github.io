@@ -6,8 +6,7 @@
 //   title       - a page whose title stands at another distance under its path than on the other pages (a line in Greek
 //                 over the title, as the Oracle's maxim, is part of the head and is allowed for)
 //   plate       - a page whose plate starts at another height than its path, or whose photograph is another size than
-//                 the other pages' (every head's photograph has the one frame, as a book's plates of one format; a Stoa
-//                 entry's photograph keeps the shape of its own picture, so it is held only to the path's height)
+//                 the other pages' (every head's photograph has the one frame, as a book's plates of one format)
 //   jump        - a head that moves, or changes height, after it first appears (fonts, photographs or words that arrive
 //                 late must take the room kept for them)
 //   path        - a page whose path runs onto a second line while its head has room for it on one (the measure kept
@@ -50,7 +49,6 @@ const RECORD = () => {
         // under a line in Greek over the title, the title is measured from that line's foot instead of the path's
         k: y(kr), kh: Math.round(kr.height * 10) / 10, t: y(tr), i: inscr ? Math.round((inscr.getBoundingClientRect().bottom - kr.bottom) * 10) / 10 : 0,
         p: plate ? y(plate.getBoundingClientRect()) : null, pw: ph ? Math.round(ph.width * 10) / 10 : null, ph: ph ? Math.round(ph.height * 10) / 10 : null,
-        own: /entryHead/.test(head.className),   // a Stoa entry's photograph keeps its own shape (Stoa.module.css), so its size is not held to the one frame
         end: Math.round((hr.bottom + scrollY) * 10) / 10,
       };
       const last = log.at(-1);
@@ -119,8 +117,7 @@ for (const [w, h] of WIDTHS) {
   const k = mode(heads.map((x) => x.r.k));
   const gap = mode(heads.map((x) => Math.round((x.r.t - x.r.k - x.r.kh - x.r.i) * 10) / 10));
   const plates = heads.filter((x) => x.r.pw);
-  const framed = plates.filter((x) => !x.r.own);
-  const pw = mode(framed.map((x) => x.r.pw)), ph = mode(framed.map((x) => x.r.ph));
+  const pw = mode(plates.map((x) => x.r.pw)), ph = mode(plates.map((x) => x.r.ph));
   const lift = mode(plates.map((x) => Math.round((x.r.p - x.r.k) * 10) / 10));
   for (const { where, r } of heads) {
     if (Math.abs(r.k - k) > TOL) found.push(`kicker: ${where}: the head starts at ${r.k} px, ${Math.round((r.k - k) * 10) / 10} px from the other pages' ${k} px`);
@@ -128,7 +125,7 @@ for (const [w, h] of WIDTHS) {
     if (Math.abs(g - gap) > TOL) found.push(`title: ${where}: the title stands ${Math.round(g * 10) / 10} px under its path, the other pages' ${gap} px`);
     if (!r.pw) continue;
     if (Math.abs(r.p - r.k - lift) > TOL) found.push(`plate: ${where}: the plate starts ${Math.round((r.p - r.k) * 10) / 10} px from the path, the other pages' ${lift} px`);
-    if (!r.own && (Math.abs(r.pw - pw) > TOL || Math.abs(r.ph - ph) > TOL)) found.push(`plate: ${where}: the photograph is ${r.pw} × ${r.ph} px, the other pages' ${pw} × ${ph} px`);
+    if (Math.abs(r.pw - pw) > TOL || Math.abs(r.ph - ph) > TOL) found.push(`plate: ${where}: the photograph is ${r.pw} × ${r.ph} px, the other pages' ${pw} × ${ph} px`);
   }
   console.log(`${w}px: ${heads.length} heads; the path at ${k} px, the title ${gap} px under it, the plate ${lift} px from the path, its photograph ${pw} × ${ph} px`);
   await ctx.close();

@@ -165,12 +165,14 @@ export const TOURS: Record<string, Tour> = {
     title: "Explore the Greek world",
     start: "/stoa",
     steps: [
-      // the Stoa's front (components/stoa): the six places made here first, the reference pages under them, then the bar that opens the entries
+      // the Stoa's front (components/stoa): the head's subject chips, the entry of the day and the cards of the index, then "Beyond the entries" and the Reference card
+      { at: [t('ul[aria-label="Show one subject"]')], title: "Choose a subject", text: "The chips at the top narrow the Painted Stoa to one subject: its articles on people, ideas and everyday life, each with its sources and links into the texts.", phoneText: "The chips at the top narrow the Painted Stoa to one subject: its articles on people, ideas and everyday life, each with its sources and links into the texts. Slide them sideways to see them all." },
+      { at: [t('main a[class*="featured"]'), t('input[aria-label="Search the Painted Stoa"]')], title: "The Painted Stoa", text: "Articles on the Greek world, its people, ideas and everyday life, each with its sources and links into the texts. Here is one of them." },
+      { at: [t('section[aria-labelledby="entries"] li[class*="card"]')], title: "The entries, by subject", text: "Each subject has a card listing its entries. The number is how many it holds, and +more opens the rest." },
       { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/periplus"]')], title: "The Periplus: the map", text: "The places the texts name, on a map you can pan and zoom, with the passages that mention each one." },
       { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/census"]')], title: "The Census", text: "The people, gods, places and things in the texts, counted: who is mentioned most, and where." },
       { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/kerameikos"]')], title: "The Kerameikos", text: "Archaeology: what digging, broken pots and graves tell us about the Greeks." },
-      { at: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/authors"]')], with: [t('nav[aria-labelledby="beyond-h"] a[href="/stoa/eras"]')], title: "Authors and eras", text: "The reference pages: every author with their works and dates, and the centuries of Greek. The others cover manuscripts, textual variants and the printed editions behind the texts." },
-      { at: [t("#entries-h")], title: "The entries", text: "Articles on the Greek world, its people, ideas and everyday life, each with its sources and links into the texts. Open this to search them or choose one by subject." },
+      { at: [t('li#reference a[href="/stoa/authors"]')], with: [t('li#reference a[href="/stoa/eras"]')], title: "Authors and eras", text: "The Reference card: every author with their works and dates, and the centuries of Greek. Its other entries cover manuscripts, textual variants and the printed editions behind the texts." },
     ],
   },
 

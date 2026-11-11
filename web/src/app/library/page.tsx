@@ -48,7 +48,7 @@ const Paths = () => (
  */
 export default function LibraryPage() {
   return (
-    <Page screen="library" top>
+    <Page screen="library">
       <PageHead path={[{ label: AREAS.library.door ?? "Read" }, { label: "the library" }]} size="large" title={AREAS.library.name} greek={AREAS.library.greek}
         purpose={<>In Greek a mouseion is a shrine of the Muses. This one holds {n(WORKS.length)} Greek works, from Homer to the Byzantine scholars, {n(WORKS.filter(hasTranslation).length)} of them with an English translation beside the Greek.</>}
         action={<><BeginHere paths={<Paths />} /><LibSearch /><MineButtons /></>} />

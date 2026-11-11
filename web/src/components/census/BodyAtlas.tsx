@@ -114,7 +114,7 @@ export default function BodyAtlas({ meta, reg, onOpen }: {
               const rad = 2 + 12 * Math.sqrt(r.rate / maxPlaced);
               const left = x < 100 || r.part.grc === "κεφαλή";   // the head is named on the left, clear of the ear
               return (
-                <g key={r.part.grc} className={styles.bodyDot} role="button" tabIndex={0} data-touch-strip=""
+                <g key={r.part.grc} className={styles.bodyDot} role="button" tabIndex={0}
                   aria-label={`${r.part.en}: ${fmtRate(r.rate)} per 10,000 words in ${tabName}`}
                   onMouseEnter={() => setHover(r)} onMouseLeave={() => setHover(null)}
                   onFocus={() => setHover(r)} onBlur={() => setHover(null)}

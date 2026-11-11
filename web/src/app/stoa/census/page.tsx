@@ -21,7 +21,7 @@ for (const e of ENTRIES) for (const p of e.places ?? []) (links.byPlace[p] ??= [
 
 export default function StoaCensusPage() {
   return (
-    <Page top>
+    <Page>
       <AreaHeader id="census" action={<CensusTally />} />
       <Suspense>
         <Census links={links} />

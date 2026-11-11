@@ -16,7 +16,6 @@ import { englishWords } from "@/lib/search/codec";
 import { readTag } from "@/lib/lookup/postag";
 import type { Outcome, WorkHits } from "@/lib/search/run";
 import type { TeiDoc } from "@/lib/tei/types";
-import { tapWords } from "@/components/lookup/tapWords";
 import rs from "./Research.module.css";
 import NotebookPicker from "@/components/notebook/NotebookPicker";
 import type { NewItem } from "@/lib/notebooks";
@@ -111,7 +110,6 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
     left: r.line?.leftText ?? "", match: r.line?.key ?? "", right: r.line?.rightText ?? "", query: title,
     ...(lemmaMode && grammar(r.h) ? { grammar: grammar(r.h) } : {}),
   });
-  const tw = (t: string, k: string | number) => (lang === "grc" ? tapWords(t, k) : t);   // Greek words open the look-up (Search holds the panel)
   return (
     <section className={rs.conc} aria-label="Concordance">
       <div className={rs.bar}>
@@ -138,9 +136,9 @@ export default function Concordance({ idx, works, texts, lang, lemmaMode, title 
             </Link>
             {r.line ? (
               <>
-                <span className={rs.left}><span>{r.line.left.map((b, i) => (b.near ? <mark key={i} className={rs.near}>{tw(b.t, i)}</mark> : tw(b.t, i)))}</span></span>
-                <mark className={rs.key}>{tw(r.line.key, "k")}</mark>
-                <span className={rs.right}>{r.line.right.map((b, i) => (b.near ? <mark key={i} className={rs.near}>{tw(b.t, i)}</mark> : tw(b.t, i)))}</span>
+                <span className={rs.left}><span>{r.line.left.map((b, i) => (b.near ? <mark key={i} className={rs.near}>{b.t}</mark> : b.t))}</span></span>
+                <mark className={rs.key}>{r.line.key}</mark>
+                <span className={rs.right}>{r.line.right.map((b, i) => (b.near ? <mark key={i} className={rs.near}>{b.t}</mark> : b.t))}</span>
                 {lemmaMode && <span className={rs.gram} lang="en">{grammar(r.h)}</span>}
               </>
             ) : <span className={rs.missing} lang="en">{r.error ?? "This passage could not be read."}</span>}

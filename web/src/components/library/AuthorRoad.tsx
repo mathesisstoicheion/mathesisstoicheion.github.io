@@ -9,7 +9,6 @@
 import { useEffect, useRef } from "react";
 import { inline } from "@/wiki/markup";
 import { PIN_KINDS, type AuthorArticle, type PinKind } from "@/wiki/author-articles";
-import TapZone from "@/components/lookup/TapZone";
 import { CertTag, Inline } from "../stoa/Markup";
 import styles from "./AuthorArticle.module.css";
 
@@ -53,7 +52,7 @@ export default function AuthorRoad({ items }: { items: AuthorArticle["timeline"]
   const rows = [...items].sort((a, b) => a.year - b.year);
   const kinds = [...new Set(rows.map((r) => r.kind))];
   return (
-    <TapZone><div className={styles.roadWrap}>
+    <div className={styles.roadWrap}>
       {/* the key comes first, so the marks are known before they are met */}
       <ul className={styles.legend} aria-label="What the marks mean">
         {kinds.map((k) => (
@@ -77,6 +76,6 @@ export default function AuthorRoad({ items }: { items: AuthorArticle["timeline"]
           );
         })}
       </ol>
-    </div></TapZone>
+    </div>
   );
 }

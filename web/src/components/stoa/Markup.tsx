@@ -13,17 +13,15 @@ import { photo } from "@/lib/photos";
 import HINTS from "@/wiki/entry-hints.json";
 import { SectionNote } from "./EntryNotes";
 import CertCard from "./CertCard";
-import { tapWords } from "@/components/lookup/tapWords";
 import styles from "./Stoa.module.css";
 
 const GREEK_RUN = /((?:[Ͱ-Ͽἀ-῿][̀-ͯͰ-Ͽἀ-῿’ʼ]*[\s,·;.]*)+)/u;
 
 /** Set runs of Greek in the Greek face (and mark them lang="grc" for screen readers and hyphenation). */
-export function greekAware(s: string, key: string | number, tap = false): ReactNode {
+export function greekAware(s: string, key: string | number): ReactNode {
   const parts = s.split(GREEK_RUN);
   if (parts.length === 1) return s;
-  // tap: running prose, where each Greek word can be touched for the look-up (never inside a link or a heading)
-  return <Fragment key={key}>{parts.map((p, i) => (i % 2 ? <span key={i} lang="grc" className={styles.inGr}>{tap ? tapWords(p) : p}</span> : p))}</Fragment>;
+  return <Fragment key={key}>{parts.map((p, i) => (i % 2 ? <span key={i} lang="grc" className={styles.inGr}>{p}</span> : p))}</Fragment>;
 }
 
 /** A short text that may hold *italics* (a link's words, a heading), with Greek marked as Greek. */
@@ -54,7 +52,7 @@ export function Inline({ xs, card = false }: { xs: Inl[]; card?: boolean }) {
   return (
     <>
       {xs.map((x, i) => {
-        if (typeof x === "string") return greekAware(x, i, true);
+        if (typeof x === "string") return greekAware(x, i);
         if ("b" in x) return <b key={i}><Inline xs={x.b} card={card} /></b>;
         if ("i" in x) return <i key={i}><Inline xs={x.i} card={card} /></i>;
         if ("cert" in x) return <CertTag key={i} c={x.cert} card={card} />;
@@ -72,7 +70,7 @@ export function Inline({ xs, card = false }: { xs: Inl[]; card?: boolean }) {
 export function Quote({ q }: { q: NonNullable<Entry["quotes"]>[string] }) {
   return (
     <figure className={`${styles.quote} rv`}>
-      <blockquote lang="grc" className={styles.quoteGr}>{tapWords(q.grc)}</blockquote>
+      <blockquote lang="grc" className={styles.quoteGr}>{q.grc}</blockquote>
       <p className={styles.quoteTr}>“{q.tr}”</p>
       <figcaption>
         <Link href={readHref(q)} transitionTypes={["page-turn"]}>{q.label}</Link>
@@ -96,7 +94,7 @@ export function Timeline({ items }: { items: NonNullable<Entry["timeline"]> }) {
         {items.map((t, i) => (
           <li key={i}>
             <span className={styles.when}>{t.when}</span>
-            <span className={styles.what}>{greekAware(t.what, i, true)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} card />}</span>
+            <span className={styles.what}>{greekAware(t.what, i)} {t.certainty && t.certainty !== "well" && <CertTag c={t.certainty} card />}</span>
           </li>
         ))}
       </ol>

@@ -25,8 +25,10 @@
 }
 
 .found ul { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
-.found b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); margin-right: 10px; }
-.found i { font-style: normal; color: var(--ink-2); font-size: var(--step-0); }
+.found a { display: flex; flex-wrap: wrap; gap: 4px 12px; align-items: baseline; padding: 10px 2px; min-height: var(--tap); text-decoration: none; box-shadow: var(--cut-under); }
+.found b { font-family: var(--f-title); font-weight: 400; font-size: var(--step-sub); transition: color var(--dur-quick) var(--ease); }
+@media (hover: hover) { .found a:hover b { color: var(--rubric); } }
+.found span { color: var(--ink-2); font-size: var(--step-0); }
 
 /* the entry of the day: the words on the left, its photograph as a plate on the right (or, with no photograph of the subject
    to show, the words alone, set larger), above a hairline */
@@ -45,37 +47,7 @@
 }
 
 /* the one index: a card for each subject under a hairline, its entries listed with a red dash */
-.entriesH { margin: var(--space-4) 0 var(--space-2); }
-
-/* the head's button that opens the entries and goes to them */
-.jump { justify-self: start; }
-.jump::before { content: ""; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-down); }
-.shelf { scroll-margin-top: calc(var(--hdr-vis) + var(--space-3)); }
-
-/* the entries' part: one wide bar that opens and closes it (a real disclosure), the title in Didot, how many beneath, and
-   "Open" / "Close" at the right with a red triangle that turns; the whole bar is the place to tap */
-.shelf { margin-top: calc(-1 * var(--space-2)); }
-.shelf > summary {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--space-4);
-  min-height: 72px; padding: var(--space-3) 6px; cursor: pointer; list-style: none; -webkit-tap-highlight-color: transparent;
-  box-shadow: var(--cut-under); transition: background-color var(--dur-quick) var(--ease);
-}
-.shelf > summary::-webkit-details-marker { display: none; }
-.shelf > summary:active { background: var(--bg-2); }
-.shelf > summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-@media (hover: hover) { .shelf > summary:hover { background: var(--bg-2); } .shelf > summary:hover .shelfTitle { color: var(--rubric); } }
-.shelfText { display: grid; gap: 4px; }
-.shelfTitle { font-family: var(--f-title); font-size: var(--step-2); line-height: 1.1; transition: color var(--dur-quick) var(--ease); }
-.shelfSub { color: var(--ink-2); font-size: var(--step--1); }
-.shelfAct {
-  flex: none; display: inline-flex; align-items: center; gap: var(--space-2); min-height: var(--tap); padding: 0 16px;
-  border: 1px solid var(--rule); border-radius: var(--radius); font-family: var(--f-label); color: var(--accent);
-}
-.shelfAct::before { content: ""; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-down); transition: rotate var(--dur) var(--ease); }
-.shelf[open] .shelfAct::before { rotate: 180deg; }
-@media (prefers-reduced-motion: reduce) { .shelfAct::before { transition: none; } }
-.shelfBody { display: grid; gap: var(--space-4); padding-top: var(--space-4); animation: ink-in var(--ink-in) var(--ease) backwards; }
-@media (prefers-reduced-motion: reduce) { .shelfBody { animation: none; } }
+.entriesH { margin: var(--space-5) 0 var(--space-3); padding-top: var(--part-pad); border-top: var(--part-rule); }
 .colonnade { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 0 clamp(20px, 3vw, 40px); align-items: start; }
 .card { display: grid; gap: var(--space-2); align-content: start; padding: var(--space-4) 2px var(--space-5); box-shadow: var(--cut-over); animation: ink-in var(--ink-in) var(--ease) backwards; animation-delay: calc(var(--i) * 50ms); }
 @keyframes ink-in { from { transform: translateY(6px); } }
@@ -83,27 +55,13 @@
 .cardHead h3 { font-family: var(--f-title); font-weight: 400; font-size: var(--step-1); line-height: 1.15; }
 .cardHead b { font: 400 var(--step-sub) / 1 var(--f-title); color: var(--rubric); font-variant-numeric: lining-nums tabular-nums; }
 .blurb { font-size: var(--step--1); color: var(--ink-2); }
-.card ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; gap: 0; box-shadow: var(--cut-over); }
-
-/* an entry, as a button: the whole row is the place to tap (at least 48 px), a hairline under each, the title at the left and
-   a small red arrow at the right; pressed or under the mouse the row takes the paper's second shade and the title goes red */
-.row {
-  display: flex; align-items: center; justify-content: space-between; gap: var(--space-3);
-  min-height: max(48px, var(--tap)); padding: 10px 10px 10px 6px; color: var(--ink); text-decoration: none; font-size: var(--step-0); line-height: 1.3;
-  box-shadow: var(--cut-under); -webkit-tap-highlight-color: transparent;
-  transition: background-color var(--dur-quick) var(--ease), color var(--dur-quick) var(--ease);
-}
-.row::after { content: ""; flex: none; width: 8px; height: 8px; border-top: 1.5px solid var(--accent); border-right: 1.5px solid var(--accent); rotate: 45deg; transition: translate var(--dur-quick) var(--ease); }
-.row:active { background: var(--bg-2); }
-.row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
-@media (hover: hover) {
-  .row:hover { background: var(--bg-2); color: var(--rubric); }
-  .row:hover::after { translate: 2px 0; }
-}
-@media (prefers-reduced-motion: reduce) { .row::after { transition: none; } }
+.card ul { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; gap: var(--space-1); }
+.card li a { text-decoration: none; font-size: var(--step-0); }
+.card li a::before { content: "— "; color: var(--accent); }
+@media (hover: hover) { .card li a:hover { color: var(--rubric); } }
 .soonLine { font-size: var(--step--1); color: var(--ink-2); font-style: italic; }
 /* "+N more": a real disclosure; the rest opens beneath it, in place, and closing it moves nothing above it */
-.more > summary { display: flex; align-items: center; gap: var(--space-2); min-height: max(48px, var(--tap)); padding-inline: 6px; cursor: pointer; -webkit-tap-highlight-color: transparent; box-shadow: var(--cut-under); list-style: none; color: var(--accent); font: 400 var(--step-0) / 1.3 var(--f-label); }
+.more > summary { display: flex; align-items: center; gap: var(--space-2); min-height: var(--tap); cursor: pointer; list-style: none; color: var(--accent); font: 400 var(--step-0) / 1.3 var(--f-label); }
 .more > summary::-webkit-details-marker { display: none; }
 .more > summary::before { content: ""; flex: none; width: var(--tri-size); height: var(--tri-size); background: currentColor; clip-path: var(--tri-right); }
 .more[open] > summary::before { clip-path: var(--tri-down); }
@@ -121,11 +79,7 @@
 .essayGo a { font-family: var(--f-label); color: var(--accent); text-decoration: none; }
 .essayGo span { display: block; margin-top: var(--space-1); font-size: var(--step--1); color: var(--ink-2); }
 @media (hover: hover) { .essayGo a:hover { text-decoration: underline; text-underline-offset: 3px; } }
-/* at the foot of the page: on a computer the fresco at the left and the story at the right */
-@media (min-width: 761px) {
-  .why { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: var(--space-3) clamp(20px, 3vw, 44px); align-items: start; }
-  .why > :global(.label) { grid-column: 1 / -1; }
-}
+@media (min-width: 761px) { .why { max-width: calc(var(--measure) * 1.1); justify-self: end; } }
 
 /* ------------------------------------------------ an entry */
 .entry { padding-bottom: 20px; }

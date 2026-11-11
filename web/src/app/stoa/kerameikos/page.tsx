@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: areaTitle("archaeology"), description
 
 export default function StoaKerameikosPage() {
   return (
-    <Page top>
+    <Page>
       <AreaHeader id="archaeology" />
       <Kerameikos />
       {/* the potters' quarter: the vase to turn and paint has a page of its own (/stoa/pot); this is the way there */}

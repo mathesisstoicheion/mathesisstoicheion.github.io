@@ -132,7 +132,7 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
               const d = cur.dots.find((x) => x.place.id === id);
               const rank = d ? top3.has(id) : false;
               return (
-                <g key={id} role="button" tabIndex={d ? 0 : -1} data-touch-strip="" aria-hidden={d ? undefined : true}
+                <g key={id} role="button" tabIndex={d ? 0 : -1} aria-hidden={d ? undefined : true}
                   aria-label={d ? `${shortName(d.place)}: ${d.count} mentions in ${cur.label}` : undefined}
                   className={styles.movingDot} style={{ pointerEvents: d ? "auto" : "none" }}
                   onMouseEnter={() => d && setHover(d)} onMouseLeave={() => setHover(null)}
@@ -152,7 +152,7 @@ export default function MovingMap({ meta, onOpen }: { meta: CensusMeta; onOpen: 
           <figcaption className={styles.movingCaption}>{near ? <>Centre of mentions: near {shortName(near)}</> : "Centre of mentions: not enough places in this age"}</figcaption>
         </figure>
         <ol className={styles.movingList}>
-          {cur.dots.map((d, i) => (
+          {cur.dots.slice(0, 10).map((d, i) => (
             <li key={d.place.id}>
               <button type="button" onClick={() => open(d)}>
                 <span className={styles.movingRank}>{i + 1}</span>
