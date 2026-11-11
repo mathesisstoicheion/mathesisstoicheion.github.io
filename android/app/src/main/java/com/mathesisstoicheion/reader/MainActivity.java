@@ -146,8 +146,9 @@ public class MainActivity extends Activity {
         setContentView(frame);
         barsFor(phoneIsDark()); // until the page says which look it shows
 
-        if (saved != null) web.restoreState(saved);
-        else web.loadUrl(prefs.getString("last", HOME));
+        // the app always opens on the home page (the owner, 2026-11-11); the site's own "Continue where you left off" desk
+        // offers the last text from there. (It used to reopen the last page, and a text opened cold showed a blank screen.)
+        web.loadUrl(HOME);
 
         updates = new BetaUpdates(this, prefs);
         updates.check(true);
@@ -362,9 +363,7 @@ public class MainActivity extends Activity {
     @Override
     protected void onPause() {
         super.onPause();
-        // reopen where the reader left off
-        String url = web.getUrl();
-        if (url != null && url.startsWith(HOME)) prefs.edit().putString("last", url).apply();
+        // (the last page is no longer kept: the app opens on the home page every time)
     }
 
     @Override
