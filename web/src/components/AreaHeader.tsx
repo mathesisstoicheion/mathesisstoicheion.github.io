@@ -12,12 +12,12 @@ const LARGE: AreaId[] = ["study", "library", "search", "wiki", "treasury", "foru
  * (`carve`). `action` is the page's one main thing (on a phone it comes before the plate); `children` follow. A hairline
  * rule closes the head.
  */
-export default function AreaHeader({ id, carve, action, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; children?: ReactNode }) {
+export default function AreaHeader({ id, carve, action, side, children }: { id: AreaId; carve?: { text: string; caption: ReactNode }; action?: ReactNode; side?: ReactNode; children?: ReactNode }) {
   const a = AREAS[id];
   return (
     <>
       <PageHead path={trail(id)} size={LARGE.includes(id) ? "large" : "short"} inscription={a.greek ? null : carve?.text}
-        title={a.name} greek={a.greek} purpose={<>{a.origin} {a.fit}</>} action={action}
+        title={a.name} greek={a.greek} purpose={<>{a.origin} {a.fit}</>} action={action} side={side}
         className="area-head">
         {!a.greek && carve && <p className="area-carve-cap">{carve.caption}</p>}
         {children}

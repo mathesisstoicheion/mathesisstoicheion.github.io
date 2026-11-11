@@ -12,6 +12,28 @@ import styles from "./ScrollCase.module.css";
 
 const LANGS: [string, string][] = [["grc", "Greek"], ["eng", "English"], ["lat", "Latin"], ["deu", "German"], ["fre", "French"]];
 
+const ROMAN = ["I", "II", "III", "IV", "V"];
+
+/** "Your offline library" at the right of the page's head: three ruled rows, whether you are connected, what is saved, and the room left */
+export function OfflineLedger() {
+  const s = useOffline();
+  useEffect(() => { useOffline.getState().refresh().catch(() => undefined); }, []);
+  const texts = s.browser.reduce((n, b) => n + b.files, 0) + Object.values(s.zipImported).reduce((n, z) => n + z, 0);
+  const bytes = s.browser.reduce((n, b) => n + b.bytes, 0);
+  const kept = s.browser.length > 0 || Object.keys(s.zipImported).length > 0;
+  return (
+    <section className={styles.ledger} aria-labelledby="have">
+      <h2 id="have" className="label">Your offline library</h2>
+      <dl>
+        <div><dt>Connection</dt><dd><span className={styles.status}><i className={s.online ? styles.on : styles.off} />{s.online ? "Online" : "Offline"}</span></dd></div>
+        <div><dt>Saved</dt><dd>{s.ready && !s.supportsBrowser ? "This browser cannot store files" : kept ? `${texts.toLocaleString("en-GB")} texts${bytes ? `, ${mb(bytes)}` : ""}` : "Nothing saved yet"}{s.folders.length > 0 && <span className={styles.sub}>{s.folders.length} folder{s.folders.length === 1 ? "" : "s"} connected</span>}</dd></div>
+        <div><dt>Space</dt><dd>{s.usage && s.usage.quota > 0 ? <span title={`This site uses ${mb(s.usage.used)} of the ${mb(s.usage.quota)} your browser allows it.`}>{mb(s.usage.used)} of {mb(s.usage.quota)}</span> : "Not reported"}</dd></div>
+      </dl>
+      {s.ready && !s.supportsBrowser && <p className="muted">Use a recent Chrome, Edge, Firefox or Safari.</p>}
+    </section>
+  );
+}
+
 export default function ScrollCase() {
   const s = useOffline();
   const toast = useUI((u) => u.showToast);
@@ -68,25 +90,14 @@ export default function ScrollCase() {
   }
 
   const waiting = s.folders.filter((f) => f.access !== "granted").length;
-  // what is kept already, said in a line (the lists, with their Remove and Forget buttons, stand under it only when there is something)
-  const texts = s.browser.reduce((n, b) => n + b.files, 0) + Object.values(s.zipImported).reduce((n, z) => n + z, 0);
-  const bytes = s.browser.reduce((n, b) => n + b.bytes, 0);
   const kept = s.browser.length > 0 || Object.keys(s.zipImported).length > 0;
   const anything = kept || s.folders.length > 0 || s.lookups.words > 0 || s.lookups.lsj > 0;
 
   return (
     <div className={`wrap ${styles.page}`}>
-      {/* ---------------------------------------------------------- what you have, in one line: the job is the download below */}
-      <section className={styles.have1} aria-labelledby="have">
-        <h2 id="have" className="label">Your offline library</h2>
-        <p className={styles.statusLine}>
-          <span className={styles.status}><i className={s.online ? styles.on : styles.off} />{s.online ? "Online" : "Offline"}</span>
-          <span>{!s.supportsBrowser ? "This browser cannot store files" : kept ? `${texts.toLocaleString("en-GB")} texts saved${bytes ? `, ${mb(bytes)}` : ""}` : "Nothing saved yet"}</span>
-          {s.folders.length > 0 && <span>{s.folders.length} folder{s.folders.length === 1 ? "" : "s"} connected</span>}
-          {s.usage && s.usage.quota > 0 && <span title={`This site uses ${mb(s.usage.used)} of the ${mb(s.usage.quota)} your browser allows it.`}>{mb(s.usage.used)} of {mb(s.usage.quota)}</span>}
-        </p>
-        {!s.supportsBrowser && <p className="muted">This browser cannot store files. Use a recent Chrome, Edge, Firefox or Safari.</p>}
-        {anything && (
+      {/* ---------------------------------------------------------- what is kept already: its lists, with their Remove and Forget buttons, stand here only when there is something */}
+      {anything && (
+        <section aria-label="What is kept">
           <div className={styles.haveGrid}>
             {(kept || s.lookups.words > 0 || s.lookups.lsj > 0) && (
               <div>
@@ -125,76 +136,89 @@ export default function ScrollCase() {
               </div>
             )}
           </div>
-        )}
-      </section>
+        </section>
+      )}
 
       {/* ---------------------------------------------------------- download */}
       <section className={styles.card} aria-labelledby="get">
         <h2 id="get">Download texts</h2>
         <p className="muted">Each file comes straight from the collection on GitHub, at the exact version this site uses, and is checked against GitHub&apos;s own fingerprint for it. Nothing is changed.</p>
 
-        <fieldset className={styles.fs}>
-          <legend className="label">Collections</legend>
-          {COLLECTIONS.map((c) => (
-            <label key={c.id} className={styles.check}><input type="checkbox" checked={cols.includes(c.id)} onChange={() => setCols(toggle(cols, c.id))} /> <span>{c.name} <span className="muted">— {c.description}</span></span></label>
-          ))}
-        </fieldset>
-
-        <fieldset className={styles.fs}>
-          <legend className="label">Languages</legend>
-          <div className={styles.row}>
-            {LANGS.map(([code, name]) => (
-              <label key={code} className={styles.check}><input type="checkbox" checked={langs.includes(code)} onChange={() => setLangs(toggle(langs, code))} /> {name}</label>
+        <ol className={styles.steps}>
+          <li className={styles.step}>
+            <span className={styles.stepNo} aria-hidden="true">{ROMAN[0]}</span>
+            <h3 id="step-1">Collections</h3>
+          <fieldset className={styles.fs} aria-labelledby="step-1">
+            {COLLECTIONS.map((c) => (
+              <label key={c.id} className={styles.check}><input type="checkbox" checked={cols.includes(c.id)} onChange={() => setCols(toggle(cols, c.id))} /> <span>{c.name} <span className="muted">— {c.description}</span></span></label>
             ))}
-          </div>
-        </fieldset>
-
-        <fieldset className={styles.fs}>
-          <legend className="label">What to download</legend>
-          <div className={styles.row}>
-            <label className={styles.check}><input type="radio" name="scope" checked={scope === "all"} onChange={() => setScope("all")} /> Everything in the chosen collections</label>
-            <label className={styles.check}><input type="radio" name="scope" checked={scope === "authors"} onChange={() => setScope("authors")} /> Only the authors I choose</label>
-          </div>
-          {scope === "authors" && (
-            <div className={styles.picker}>
-              <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} type="search" id="scrollcase-author-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find an author" aria-label="Find an author" />
-              <ul>
-                {authors.map((a) => (
-                  <li key={a.id}><label className={styles.check}><input type="checkbox" checked={picked.has(a.id)}
-                    onChange={() => setPicked((p) => { const n = new Set(p); if (n.has(a.id)) n.delete(a.id); else n.add(a.id); return n; })} /> <span>{a.name} <span className="muted">({a.works.length})</span></span></label></li>
-                ))}
-              </ul>
-              <p className={styles.small}>{picked.size} chosen</p>
+          </fieldset>
+          </li>
+          <li className={styles.step}>
+            <span className={styles.stepNo} aria-hidden="true">{ROMAN[1]}</span>
+            <h3 id="step-2">Languages</h3>
+          <fieldset className={styles.fs} aria-labelledby="step-2">
+            <div className={styles.row}>
+              {LANGS.map(([code, name]) => (
+                <label key={code} className={styles.check}><input type="checkbox" checked={langs.includes(code)} onChange={() => setLangs(toggle(langs, code))} /> {name}</label>
+              ))}
             </div>
-          )}
-        </fieldset>
+          </fieldset>
+          </li>
+          <li className={styles.step}>
+            <span className={styles.stepNo} aria-hidden="true">{ROMAN[2]}</span>
+            <h3 id="step-3">What to download</h3>
+          <fieldset className={styles.fs} aria-labelledby="step-3">
+            <div className={styles.row}>
+              <label className={styles.check}><input type="radio" name="scope" checked={scope === "all"} onChange={() => setScope("all")} /> Everything in the chosen collections</label>
+              <label className={styles.check}><input type="radio" name="scope" checked={scope === "authors"} onChange={() => setScope("authors")} /> Only the authors I choose</label>
+            </div>
+            {scope === "authors" && (
+              <div className={styles.picker}>
+                <input enterKeyHint="search" autoCorrect="off" autoCapitalize="off" spellCheck={false} type="search" id="scrollcase-author-search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Find an author" aria-label="Find an author" />
+                <ul>
+                  {authors.map((a) => (
+                    <li key={a.id}><label className={styles.check}><input type="checkbox" checked={picked.has(a.id)}
+                      onChange={() => setPicked((p) => { const n = new Set(p); if (n.has(a.id)) n.delete(a.id); else n.add(a.id); return n; })} /> <span>{a.name} <span className="muted">({a.works.length})</span></span></label></li>
+                  ))}
+                </ul>
+                <p className={styles.small}>{picked.size} chosen</p>
+              </div>
+            )}
+          </fieldset>
+          </li>
+          <li className={styles.step}>
+            <span className={styles.stepNo} aria-hidden="true">{ROMAN[3]}</span>
+            <h3 id="step-4">Where to keep them</h3>
+          <fieldset className={styles.fs} aria-labelledby="step-4">
+            <div className={styles.row}>
+              <label className={styles.check}><input type="radio" name="where" checked={where === "browser"} onChange={() => setWhere("browser")} /> <span>In this browser <span className="muted">— simplest; nothing to manage</span></span></label>
+              <label className={styles.check}><input type="radio" name="where" checked={where === "folder"} disabled={!s.supportsFolders} onChange={() => setWhere("folder")} /> <span>In a folder on this computer <span className="muted">— survives clearing browser data (Chrome and Edge)</span></span></label>
+            </div>
+          </fieldset>
+          </li>
+          <li className={styles.step}>
+            <span className={styles.stepNo} aria-hidden="true">{ROMAN[4]}</span>
+            <h3 id="step-5">Word look-ups</h3>
+          <fieldset className={styles.fs} aria-labelledby="step-5">
+            <label className={styles.check}><input type="checkbox" checked={lookups} onChange={() => setLookups(!lookups)} />
+              <span>Also save the word analyses for these works, the LSJ dictionary and the Word Study index, so looking up and studying words work offline
+              <span className="muted">{lookupBytes ? ` — about ${mb(transferEstimate(lookupBytes))} to download` : ""}</span></span></label>
+            <p className={styles.small}>These are kept in this browser, whichever place you choose for the texts.</p>
+          </fieldset>
+          </li>
+        </ol>
 
-        <fieldset className={styles.fs}>
-          <legend className="label">Where to keep them</legend>
-          <div className={styles.row}>
-            <label className={styles.check}><input type="radio" name="where" checked={where === "browser"} onChange={() => setWhere("browser")} /> <span>In this browser <span className="muted">— simplest; nothing to manage</span></span></label>
-            <label className={styles.check}><input type="radio" name="where" checked={where === "folder"} disabled={!s.supportsFolders} onChange={() => setWhere("folder")} /> <span>In a folder on this computer <span className="muted">— survives clearing browser data (Chrome and Edge)</span></span></label>
-          </div>
-        </fieldset>
-
-        <fieldset className={styles.fs}>
-          <legend className="label">Word look-ups</legend>
-          <label className={styles.check}><input type="checkbox" checked={lookups} onChange={() => setLookups(!lookups)} />
-            <span>Also save the word analyses for these works, the LSJ dictionary and the Word Study index, so looking up and studying words work offline
-            <span className="muted">{lookupBytes !== null ? ` — about ${mb(transferEstimate(lookupBytes))} to download` : ""}</span></span></label>
-          <p className={styles.small}>These are kept in this browser, whichever place you choose for the texts.</p>
-        </fieldset>
-
+        <JobProgress />
+        <p className={styles.small}>Files you already have are skipped, so you can stop at any time and continue later.</p>
         <div className={styles.go}>
           <p>
-            {plan ? <><b>{plan.texts.length.toLocaleString("en-GB")} files</b>, {mb(plan.bytes)} on disk, about {mb(transferEstimate(plan.bytes))} to download.</> : "Working out the size…"}
+            {plan ? <><b>{plan.texts.length.toLocaleString("en-GB")} files</b>{plan.bytes > 0 && <>, {mb(plan.bytes)} on disk, about {mb(transferEstimate(plan.bytes))} to download</>}.</> : "Working out the size…"}
           </p>
           <button type="button" className="btn" disabled={!plan?.texts.length || s.job?.running || !s.online} onClick={start}>
             <Icon name="download" />{s.job?.running ? "Downloading…" : "Download"}
           </button>
         </div>
-        <JobProgress />
-        <p className={styles.small}>Files you already have are skipped, so you can stop at any time and continue later.</p>
       </section>
 
       {/* ---------------------------------------------------------- files already on this computer */}

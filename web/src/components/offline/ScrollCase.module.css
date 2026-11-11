@@ -1,4 +1,4 @@
-/* The scroll case page (downloads): the card is framed in a hairline, its rows divided by hairline rules (the printed page). */
+/* The scroll case page (downloads): the form is the page's one frame (a hairline); its five choices are numbered steps divided by rules, and the total line sticks to the foot of the screen (the printed page). */
 .page { display: grid; gap: 28px; padding-block: var(--after-head) 32px; }
 .card { display: grid; gap: 16px; padding: clamp(20px, 3vw, 36px); background: var(--field); box-shadow: var(--field-edge); border-radius: var(--radius); }
 .card h2 { font-size: var(--step-2); }
@@ -29,13 +29,32 @@
 
 @media (max-width: 800px) { .haveGrid { grid-template-columns: minmax(0, 1fr); } }
 
-/* the bigger panels are framed twice, a hairline and a fainter rule just inside it, as a printed plate is */
-.card { outline: var(--moulding); outline-offset: var(--moulding-in); }
+/* "Your offline library" at the right of the head: a ledger of three ruled rows */
+.ledger { display: grid; gap: var(--space-2); }
+.ledger h2 { margin: 0; padding-top: var(--space-2); border-top: 1px solid var(--ink); }
+.ledger dl { margin: 0; display: grid; grid-template-columns: max-content minmax(0, 1fr); column-gap: var(--space-4); }
+.ledger dl > div { display: grid; grid-column: 1 / -1; grid-template-columns: subgrid; align-items: baseline; padding: var(--space-2) 0; box-shadow: var(--cut-under); }
+.ledger dl > div:last-child { box-shadow: none; }
+.ledger dt { font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
+.ledger dd { margin: 0; font-size: var(--step-0); min-width: 0; overflow-wrap: anywhere; }
+.sub { display: block; font-size: var(--step--1); color: var(--ink-2); }
 
-/* "Your offline library" in one line, above the download (the download is the page's work), and "Already have the files?" folded after it */
-.have1 h2 { margin-bottom: var(--space-1); }
-.statusLine { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-1) var(--space-5); margin: 0; font-size: var(--step--1); color: var(--ink-2); }
-.statusLine .status { color: var(--ink); }
-.already { border-radius: var(--radius); background: var(--field); box-shadow: var(--field-edge); }
-.already summary { cursor: pointer; display: list-item; list-style-position: inside; min-height: var(--tap); padding: var(--space-3) var(--space-4); font-weight: 600; }
-.alreadyBody { display: grid; gap: var(--space-3); padding: 0 var(--space-4) var(--space-4); }
+/* the five choices: numbered steps, each under a rule of ink with its numeral in red, as "How the Treasury fills" is set */
+.steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-5); }
+.step { display: grid; grid-template-columns: 3.2ch minmax(0, 1fr); column-gap: var(--space-3); row-gap: var(--space-2); align-items: baseline; padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
+.stepNo { font: 400 var(--step-3) / 1 var(--face-didot); color: var(--rubric); }
+.step h3 { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
+.step > fieldset { grid-column: 2; min-width: 0; max-width: 70ch; }
+@media (max-width: 600px) { .step { grid-template-columns: minmax(0, 1fr); } .step > fieldset { grid-column: 1; } .stepNo { font-size: var(--step-2); } }
+/* the choices are bigger to hit on a finger */
+@media (pointer: coarse) { .check { min-height: var(--tap); align-items: center; } .check input { align-self: center; margin-top: 0; } }
+
+/* the total line (files, size, Download) sticks to the foot of the screen while the form is in view, above a phone's tab bar */
+.go { position: sticky; bottom: var(--tabbar-h); background: var(--bg); margin-top: var(--space-2); padding-block: var(--space-3); }
+
+/* "Already have the files?" folded after the form, ruled rather than boxed */
+.already { border-top: 1px solid var(--rule); }
+.already summary { cursor: pointer; display: list-item; list-style-position: inside; min-height: var(--tap); padding: var(--space-3) 0; font-weight: 600; }
+.alreadyBody { display: grid; gap: var(--space-3); padding: 0 0 var(--space-4); }
+/* a phone: the total line is one slim row, so it hides little of the form beneath it */
+@media (max-width: 600px) { .go { flex-wrap: nowrap; gap: var(--space-3); padding-block: var(--space-2); } .go p { margin: 0; min-width: 0; font-size: var(--step--1); line-height: 1.3; } .go .btn { flex: none; } }
