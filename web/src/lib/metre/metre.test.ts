@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { patternText, scanWords } from "./scan";
 import { shape } from "./prosody";
 import { lineHash, scanLine } from "./text";
-import { renderPassages, verseLines } from "./render";
+import { metreScanner, renderPassages, verseLines } from "./render";
 import type { Unit } from "@/lib/tei/types";
 
 const words = (s: string) => s.split(" ");
@@ -87,6 +87,21 @@ describe("lines split between speakers", () => {
       expect(a.marks.every((m) => m.w < 3)).toBe(true);
       expect(b.marks.every((m) => m.w < 5)).toBe(true);
       expect(a.marks.length + b.marks.length).toBeGreaterThan(8);
+    }
+  });
+});
+
+describe("scanning a few lines at a time", () => {
+  it("gives the same marks as scanning the passages whole, from any starting line", () => {
+    const unit = (ref: string, text: string): Unit => ({ ref: [ref], blocks: [{ t: "l", n: ref, c: [text] }] });
+    const units = [unit("1", "μῆνιν ἄειδε θεὰ Πηληϊάδεω Ἀχιλῆος"), unit("2", "οὐλομένην, ἣ μυρί᾽ Ἀχαιοῖς ἄλγε᾽ ἔθηκε,"), unit("3", "πολλὰς δ᾽ ἰφθίμους ψυχὰς Ἄϊδι προΐαψεν")];
+    for (const kind of ["hexameter", "comedy"] as const) {
+      const whole = renderPassages(units, kind, () => undefined, lineHash);
+      for (const start of [0, 1, 2]) {
+        const sc = metreScanner(units, kind, () => undefined, lineHash, start);
+        while (sc.step(1));
+        expect(sc.out).toEqual(whole);
+      }
     }
   });
 });

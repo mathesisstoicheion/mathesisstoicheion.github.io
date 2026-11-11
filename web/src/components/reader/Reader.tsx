@@ -52,7 +52,7 @@ import { useIsModerator, useMineBook, type MineState } from "@/lib/mine-load";
 import { workOf } from "@/lib/private-translations";
 import { PRIVATE_TRANSLATIONS } from "@/config/admin";
 import { metreIndex, publishedFor, loadLengths } from "@/lib/metre/load";
-import { renderPassages, type LineRender } from "@/lib/metre/render";
+import { metreScanner, type LineRender } from "@/lib/metre/render";
 import { lineHash, type MetreIndex } from "@/lib/metre/text";
 import { playLine as playLineRhythm } from "@/lib/metre/beat";
 import { loadWordPack } from "@/lib/lookup/words";
@@ -127,6 +127,10 @@ const MARK_ICON: Record<string, React.ReactNode> = {
   note: <path d="M4 4h16v12H8l-4 4z" />,
   xref: <path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1" />,
 };
+
+/** Run something when the page is idle (a moment later where the browser cannot say when that is). */
+const idle = (fn: () => void, timeout: number): number => typeof requestIdleCallback === "function" ? requestIdleCallback(fn, { timeout }) : window.setTimeout(fn, 50);
+const cancelIdle = (h: number) => { if (typeof cancelIdleCallback === "function") cancelIdleCallback(h); else clearTimeout(h); };
 
 /** What the margin shows for a passage: the whole reference, its number in its book ("580", not "1.580") when the page is one book, or the verse's number
  *  (the whole reference stays in aria-label, data-row and every jump, find, mark and link; the quiet desk, ticket 08, the owner, 2026-10-30). */
@@ -207,6 +211,10 @@ const RowView = memo(function RowView({ row, marks, openNote, onCloseNote, trans
       )}
     </section>
   );
+}, (a, b) => {
+  // the metre is handed over whole and grows a few lines at a time: a row is drawn again only when its own lines have changed
+  const keys = Object.keys(b) as (keyof typeof b)[];
+  return keys.every((k) => k === "metre" ? a.row.greek.every((u) => a.metre?.get(u.ref.join(".")) === b.metre?.get(u.ref.join("."))) : a[k] === b[k]);
 });
 
 /** (a window opened from a row of Study says so, with `true`, and has "Back to Study": the quiet desk, ticket 09, the owner, 2026-10-30) */
@@ -558,20 +566,49 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
   const grcUrn = grcText?.urn;
   const mInfo = grcUrn && mIndex ? mIndex.texts[grcUrn] : undefined;
   const [mData, setMData] = useState<{ urn: string; pub: Map<string, string> } | null>(null);
+  // The metre starts after the page has been drawn, from idle time, so that a book reopened with the metre left on shows its verse at once
+  const [metreGo, setMetreGo] = useState(false);
   useEffect(() => {
-    if (!metreOn || !mInfo || !grcUrn) return;
+    if (!metreOn) { setMetreGo(false); return; }
+    let live = true, h = 0;
+    const r1 = requestAnimationFrame(() => { h = idle(() => { if (live) setMetreGo(true); }, 600); });
+    return () => { live = false; cancelAnimationFrame(r1); cancelIdle(h); };
+  }, [metreOn]);
+  useEffect(() => {
+    if (!metreOn || !metreGo || !mInfo || !grcUrn) return;
     let live = true;
     Promise.all([publishedFor(grcUrn, mInfo.pack), loadLengths()])
       .then(([pub]) => { if (live) setMData({ urn: grcUrn, pub }); })
       .catch(() => { if (live) toast("The metre data could not be loaded."); });
     return () => { live = false; };
-  }, [metreOn, mInfo, grcUrn, toast]);
-  const metre = useMemo(() => {
-    if (!metreOn || !mInfo || !doc || !doc.chunks[chunk] || !grcUrn || mData?.urn !== grcUrn) return null;
+  }, [metreOn, metreGo, mInfo, grcUrn, toast]);
+  // The lines are scanned and drawn a few at a time (those on screen first, then the rest in idle time), so no one stretch of work holds the page still
+  const [metre, setMetre] = useState<Map<string, (LineRender | null)[]> | null>(null);
+  const [metreSettled, setMetreSettled] = useState(false);
+  useEffect(() => {
+    setMetreSettled(false);
+    if (!metreOn || !metreGo || !mInfo || !doc || !doc.chunks[chunk] || !grcUrn || mData?.urn !== grcUrn) { setMetre(null); return; }
     const c = doc.chunks[chunk];
     const pub = mData.pub;
-    return renderPassages(doc.units.slice(c.first, c.last + 1), mInfo.kind, (h) => pub.get(h), lineHash);
-  }, [metreOn, mInfo, doc, chunk, grcUrn, mData]);
+    const units = doc.units.slice(c.first, c.last + 1);
+    const seen = [...(textRef.current?.querySelectorAll<HTMLElement>("[data-u]") ?? [])].find((e) => e.getBoundingClientRect().bottom > 0)?.dataset.u;
+    const sc = metreScanner(units, mInfo.kind, (h) => pub.get(h), lineHash, seen ? undefined : 0);
+    // (the line on screen is known only once the scanner has the lines)
+    const scanner = seen ? metreScanner(units, mInfo.kind, (h) => pub.get(h), lineHash, sc.lineOf(seen)) : sc;
+    let live = true, h = 0;
+    const more = scanner.step(40);
+    setMetre(new Map(scanner.out));
+    const next = () => {
+      h = idle(() => {
+        if (!live) return;
+        const left = scanner.step(40);
+        setMetre(new Map(scanner.out));
+        if (left) next(); else setMetreSettled(true);
+      }, 300);
+    };
+    if (more) next(); else setMetreSettled(true);
+    return () => { live = false; cancelIdle(h); };
+  }, [metreOn, metreGo, mInfo, doc, chunk, grcUrn, mData]);
   const stopBeat = useRef<(() => void) | null>(null);
   useEffect(() => () => stopBeat.current?.(), []);
   /** Play a line's rhythm, lighting each syllable as it sounds. */
@@ -854,42 +891,68 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
       .map((q) => [...art.querySelectorAll<HTMLElement>(q)]).filter((lines) => lines.length);
     const canvas = document.createElement("canvas").getContext("2d");
     if (!poetry || !sizeAuto || !verse.length || !canvas) { root.style.removeProperty("--fit"); return; }
-    let off = false, face = "", widest: number[] = [];
+    let off = false, face = "", widest: number[] = [], lw = verse[0][0].clientWidth;
     const fit = () => {
       if (off || !verse[0][0].isConnected) return;
       // the passage at the top stays where it is while the Greek is set again: a panel opening narrows the text and the size follows it (the passage is kept through the
       // narrowing above; the new size would move it once more), and so does a window dragged narrower, and the page must not slide from under the reader
       const key = topKey(), held = key ? root.querySelector<HTMLElement>(`article [data-key="${CSS.escape(key)}"]`) : null;
       const was = held?.getBoundingClientRect().top ?? 0;
-      root.style.setProperty("--fit", "1");   // the reader's own size, which the room is read at (a smaller size only gives the words more)
-      const cs = getComputedStyle(verse[0][0]), px = parseFloat(cs.fontSize);
+      // Every change of --fit is a new style for the whole book, and every read of a width a new layout, so as few as can be are made: the room is read at the size
+      // the page is set in now and at one other, and the room at any size between follows from the two (it falls in a straight line as the size grows, the column
+      // of line numbers being in em). The size found is then set and checked against what the page really gives; only if they differ is it looked for as before.
+      const cur = parseFloat(root.style.getPropertyValue("--fit")) || 1;
+      const cs = getComputedStyle(verse[0][0]), px = parseFloat(cs.fontSize) / cur;
       if (!(px > 0)) return;
       const now = `${cs.fontStyle} ${cs.fontWeight} ${px}px ${cs.fontFamily}`;
       if (now !== face) {   // the widths are taken again only when the typeface or the size has changed, not as a window is resized
         face = canvas.font = now;
         widest = verse.map((lines) => lines.reduce((w, lt) => Math.max(w, canvas.measureText((lt.textContent ?? "").replace(/\s+/g, " ").trim()).width), 0));
       }
-      // a page that compares two editions is set in lines in both columns: the one size is the smaller of what each needs. The room is read from the page at each
-      // size tried, since a smaller size gives the words more room on a computer (the column of line numbers is 2.4 em wide; lib/verseFit.ts)
+      const roomsNow = verse.map((lines) => lines[0].getBoundingClientRect().width);
+      const other = cur > 0.8 ? 0.7 : 1;
+      root.style.setProperty("--fit", String(other));
+      const roomsOther = verse.map((lines) => lines[0].getBoundingClientRect().width);
+      const slope = verse.map((_, i) => (roomsNow[i] - roomsOther[i]) / ((cur - other) * px));
+      const line = (i: number) => (size: number) => roomsNow[i] + slope[i] * (size - cur * px);
+      // a page that compares two editions is set in lines in both columns: the one size is the smaller of what each needs
       const roomAt = (lines: HTMLElement[]) => (size: number) => { root.style.setProperty("--fit", String(size / px)); return lines[0].getBoundingClientRect().width; };
-      const size = verse.reduce((least, lines, i) => Math.min(least, verseSizeWhere(px, widest[i], roomAt(lines))), px);
+      let size = verse.reduce((least, _, i) => Math.min(least, verseSizeWhere(px, widest[i], line(i))), px);
       root.style.setProperty("--fit", String(size / px));
+      if (verse.some((lines, i) => Math.abs(lines[0].getBoundingClientRect().width - line(i)(size)) > 0.5)) {
+        root.style.setProperty("--fit", "1");
+        size = verse.reduce((least, lines, i) => Math.min(least, verseSizeWhere(px, widest[i], roomAt(lines))), px);
+        root.style.setProperty("--fit", String(size / px));
+      }
       const moved = held ? held.getBoundingClientRect().top - was : 0;
       if (Math.abs(moved) > 1) (contained ? root : window).scrollBy({ top: moved, behavior: "instant" });
+      // the size just set changes the width of the line (the column of line numbers is in em): that is this fit's own doing, and must not start another
+      lw = verse[0][0].clientWidth;
     };
     // the web face arriving changes every width: start again from the new face
-    const arrived = () => { face = ""; fit(); };
+    // (only the Greek face matters: the faces of the metre's marks arrive as they are first drawn, and must not set the whole book out again)
+    const arrived = (e?: Event) => {
+      const got = (e as (Event & { fontfaces?: FontFace[] }) | undefined)?.fontfaces;
+      // (the metre's marks are bold: the bold face arriving does not change the widths of the lines, which are measured in the weight they are set in)
+      const weight = face.split(" ")[1];
+      if (got?.length && !got.some((f) => face.includes(f.family.replace(/^["']|["']$/g, "")) && f.weight === weight)) return;
+      face = ""; fit();
+    };
     document.fonts?.addEventListener("loadingdone", arrived);
-    void document.fonts?.ready.then(arrived);
+    // (no second run when the fonts are ready: the first fit already ran, and loadingdone covers a face that arrives later)
     // only a change of width matters (the fitting itself changes the height)
     let w = art.clientWidth;
     const ro = new ResizeObserver(() => { if (art.clientWidth !== w) { w = art.clientWidth; fit(); } });
     ro.observe(art);
+    // the metre widens the column of line numbers (--num-col), so the room of a line changes without the page's width changing: watch the line itself,
+    // which reports only a real change of width and costs nothing when the metre is switched on and nothing changed
+    const rl = new ResizeObserver(() => { const n = verse[0][0].clientWidth; if (n !== lw) { lw = n; fit(); } });
+    rl.observe(verse[0][0]);
     fit();
-    return () => { off = true; ro.disconnect(); document.fonts?.removeEventListener("loadingdone", arrived); };
+    return () => { off = true; ro.disconnect(); rl.disconnect(); document.fonts?.removeEventListener("loadingdone", arrived); };
     // topKey and contained read the page as it is
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [poetry, sizeAuto, rows, columns, cmpText, metre]);
+  }, [poetry, sizeAuto, rows, columns, cmpText]);
 
   // ------------------------------------------------------------ navigation
   const query = (o: { ed?: string; tr?: string | null; at?: string }) => {
@@ -998,7 +1061,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     reg.set(names[1], new H(...b));
     return () => { for (const n of names) reg.delete(n); };
     // (the page is read as it is drawn)
-  }, [canDiff, rows, strict, pane, translit, metre]);
+  }, [canDiff, rows, strict, pane, translit, metreSettled]);
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
     const H = (globalThis as unknown as { Highlight?: new (...r: Range[]) => unknown }).Highlight;
@@ -1014,7 +1077,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     [synMarks.sentence, synMarks.phrase, synMarks.word].forEach((ws, k) => reg.set(names[k], new H(...(ws.map(range).filter(Boolean) as Range[]))));
     return () => { for (const nm of names) reg.delete(nm); };
     // (the page is read as it is drawn)
-  }, [synMarks, rows, pane, translit, metre]);
+  }, [synMarks, rows, pane, translit, metreSettled]);
   const findSeen = useRef(-1);
   useEffect(() => {
     const reg = typeof CSS !== "undefined" ? (CSS as unknown as { highlights?: Map<string, unknown> }).highlights : undefined;
@@ -1083,7 +1146,7 @@ function ReaderPane({ pane, split, onOpenSecond, onOpenMine, books }: PaneProps)
     return () => { for (const nm of names) reg.delete(nm); };
     // root and the edge of the text are read as they are now
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [findMarks, rows, chunk, doc, pane, translit, metre, columns, contained, single]);
+  }, [findMarks, rows, chunk, doc, pane, translit, metreSettled, columns, contained, single]);
 
 
   // ------------------------------------------------------------ markers beside the scroll bar

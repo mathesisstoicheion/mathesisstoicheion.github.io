@@ -105,3 +105,50 @@ export function renderPassages(units: Unit[], kind: TextKind, published: (hash: 
   }
   return out;
 }
+
+/**
+ * The same scanning as renderPassages, a few lines at a time, so that a long book does not hold the page still while it is scanned. `out` is the result so far
+ * (a passage's entry is replaced, never changed in place, when a line of it is scanned); `start` is the line to begin at (the one on screen), after which the
+ * lines that follow come, then those before it. Texts that change metre label the first line of each stretch from the line before it, so these are scanned in
+ * order from the first line.
+ */
+export function metreScanner(units: Unit[], kind: TextKind, published: (hash: string) => string | undefined, hashOf: (words: string[]) => string, start = 0) {
+  const out = new Map<string, (LineRender | null)[]>();
+  for (const u of units) out.set(u.ref.join("."), u.blocks.map(() => null));
+  const mixed = kind === "drama" || kind === "comedy" || kind === "lyric";
+  const lines = verseLines(units);
+  const first = mixed ? 0 : Math.max(0, Math.min(start, lines.length - 1));
+  const order = [...lines.keys()];
+  const rotated = [...order.slice(first), ...order.slice(0, first)];
+  let at = 0, prevLabel = "";
+  return {
+    out,
+    /** where the line of this passage stands among the verse lines (0 if none) */
+    lineOf: (unit: string) => Math.max(0, lines.findIndex((l) => l.parts.some((p) => p.unit === unit))),
+    done: () => at >= rotated.length,
+    /** scan the next `count` lines; returns whether there are more */
+    step(count: number) {
+      for (let n = 0; n < count && at < rotated.length; n++, at++) {
+        const vl = lines[rotated[at]];
+        const r = render(scanLine(vl.words, kind, vl.part, published(hashOf(vl.words))));
+        if (mixed && r.label && r.label !== prevLabel) r.first = true;
+        if (r.label) prevLabel = r.label;
+        let offset = 0;
+        vl.parts.forEach((p, k) => {
+          const mine: LineRender = {
+            ...r,
+            marks: r.marks.filter((m) => m.w >= offset && m.w < offset + p.words).map((m) => ({ ...m, w: m.w - offset })),
+            bars: r.bars.filter((b) => b.w >= offset && b.w < offset + p.words).map((b) => ({ ...b, w: b.w - offset })),
+            caesura: r.caesura !== null && r.caesura >= offset && r.caesura < offset + p.words ? r.caesura - offset : null,
+            label: k === 0 ? r.label : "",
+          };
+          const entry = out.get(p.unit)!.slice();
+          entry[p.block] = mine;
+          out.set(p.unit, entry);
+          offset += p.words;
+        });
+      }
+      return at < rotated.length;
+    },
+  };
+}

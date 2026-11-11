@@ -456,8 +456,8 @@ p.translit { margin: -0.3em 0 0.8em; }
    They ink in once, in reading order: one animation per line runs --mk from 0 to 1, and each mark fades in as it passes
    its syllable number --i (rather than one animation per mark). Nothing moves. */
 @property --mk { syntax: "<number>"; inherits: true; initial-value: 1; }
-.metreOn .line { position: relative; animation: mark-sweep 0.9s var(--ease) both; }
-@keyframes mark-sweep { from { --mk: 0; } to { --mk: 1; } }
+.metreOn .line { position: relative; }
+/* (the sweep animated --mk, inherited by every mark, on every line at once: ~11,000 marks restyled each frame. The marks now simply appear, all drawn.) */
 /* every row of a line, even a wrapped one, needs room above it for the marks */
 .metreOn .lt { display: block; position: relative; padding-top: 0.2em; line-height: max(2.6, var(--reading-leading)); }
 .metreOn .ln { padding-top: calc(0.35em + 0.9em / 0.62); }
