@@ -27,6 +27,8 @@
 .main, .side { display: grid; gap: clamp(36px, 4vw, 52px); min-width: 0; }
 .side { position: sticky; top: calc(var(--hdr-vis) + 16px); gap: 32px; }
 :global(html[data-hdr="hidden"]) .side { --hdr-vis: 0px; }
+/* the first part stands under a rule of ink with room above it, as every part of a page does (globals.css .door-part) */
+@media (min-width: 761px) { .layout { margin-top: var(--part-room); padding-top: var(--part-pad); border-top: var(--part-rule); } }
 @media (max-width: 960px) { .layout { grid-template-columns: minmax(0, 1fr); } .side { position: static; } }
 
 .sec { display: grid; gap: 12px; align-content: start; animation: ink-in var(--ink-in) var(--ease) backwards; }
