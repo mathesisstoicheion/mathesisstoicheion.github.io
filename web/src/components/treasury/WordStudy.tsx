@@ -27,6 +27,7 @@ import { useLoad } from "@/lib/use-load";
 import styles from "./WordStudy.module.css";
 import Icon from "@/components/Icon";
 import PageHead from "@/components/PageHead";
+import Contents, { type Stop } from "@/components/stoa/Contents";
 import { trail } from "@/config/areas";
 
 export default function WordStudy() {
@@ -37,12 +38,24 @@ export default function WordStudy() {
   const meta = lex.state === "done" ? lex.value[1] : null;
   const lemma = found?.lemma ?? asked;
 
+  // the section bar lists only the parts this page holds (the forms, uses and passages need the word's pack)
+  const has = !!found, hasForms = !!(found && meta);
+  const stops = useMemo<Stop[]>(() => [
+    { id: "ws-meaning", text: "Meaning" },
+    ...(hasForms ? [{ id: "ws-forms", text: "Every form" }, { id: "ws-usage", text: "Where it is used" }] : []),
+    ...(has ? [{ id: "ws-examples", text: "In real texts" }] : []),
+    { id: "ws-family", text: "Family" },
+    { id: "ws-mine", text: "Yours" },
+  ], [has, hasForms]);
+
   if (!asked) return <div className={`wrap ${styles.ws}`}><Finder /></div>;
   return (
     <div className={`wrap ${styles.ws}`}>
       <Head lemma={lemma} entry={found?.entry ?? null} meta={meta} lexState={lex.state} alike={found?.alike ?? []} />
-      <div className={styles.layout}>
-        <div className={styles.main}>
+      <div className={styles.layout} data-entry="">
+        {/* on a phone the same bar is a strip under the head; on a computer it stands in the side column (WordStudy.module.css) */}
+        <div className={styles.strip}><Contents stops={stops} /></div>
+        <div className={styles.main} data-article="">
           <Meaning lemma={lemma} />
           {lex.state === "error" && <Quiet>The word index could not be loaded ({lex.message}).</Quiet>}
           {lex.state === "done" && !found && (
@@ -56,8 +69,9 @@ export default function WordStudy() {
           {found && <Examples lemma={found.lemma} />}
         </div>
         <aside className={styles.side}>
-          <Mine lemma={lemma} />
+          <div className={styles.sideBar}><Contents stops={stops} /></div>
           <Family lemma={lemma} />
+          <Mine lemma={lemma} />
         </aside>
       </div>
     </div>
