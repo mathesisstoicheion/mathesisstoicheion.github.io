@@ -8,6 +8,7 @@ import { PIECE_CREDITS, USED_PIECES } from "@/data/pieces";
 import { ENTRIES } from "@/wiki/index";
 import styles from "../prose.module.css";
 import { PAGE_DESCRIPTIONS } from "@/lib/seo";
+import { bcAd } from "@/lib/bc-ad";
 import { FORUM_OPEN } from "@/config/areas";
 
 export const metadata: Metadata = { title: "Credits, licences & privacy", description: PAGE_DESCRIPTIONS.credits };
@@ -175,7 +176,7 @@ export default function CreditsPage() {
               const used = ENTRIES.find((e) => e.image === id);
               return (
                 <li key={id}>
-                  <b>{im.title}</b>{im.date && <>, {im.date}</>}. <Where im={im} />. {im.creator !== "Unknown" && <>{im.creator}. </>}
+                  <b>{im.title}</b>{im.date && <>, {bcAd(im.date)}</>}. <Where im={im} />. {im.creator !== "Unknown" && <>{im.creator}. </>}
                   <Source im={im} />
                   <a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
                   {used && <> Used in <a href={`/stoa/${used.slug}`}>{used.title}</a>.</>}
@@ -196,7 +197,7 @@ export default function CreditsPage() {
           <ul>
             {USED_PIECES.map((id) => [id, PIECE_CREDITS[id] ?? IMAGES[id]] as const).filter(([, im]) => im).map(([id, im]) => (
               <li key={id}>
-                <b>{im.title}</b>{im.date && <>, {im.date}</>}. <Where im={im} />. <Source im={im} /><a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
+                <b>{im.title}</b>{im.date && <>, {bcAd(im.date)}</>}. <Where im={im} />. <Source im={im} /><a href={im.licenceUrl} rel="noopener">{im.licence}</a>.
               </li>
             ))}
           </ul>

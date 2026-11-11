@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: areaTitle("search"), ...NOINDEX };
 // component (components/search/Search.tsx), because they share the address and the word typed in "Near another word".
 export default function SearchPage() {
   return (
-    <Page>
+    <Page top>
       <Search />
     </Page>
   );

@@ -16,7 +16,7 @@ for (const a of siteData().idx.catalog.authors) { const e = entriesForAuthor(a.i
 
 export default function AuthorPage() {
   return (
-    <Page>
+    <Page top>
       <Suspense fallback={null}><AuthorProfile related={related} /></Suspense>
     </Page>
   );

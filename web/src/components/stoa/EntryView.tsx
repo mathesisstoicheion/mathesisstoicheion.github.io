@@ -14,6 +14,7 @@ import { entryBySlug, categoryOf } from "@/wiki/index";
 import { Blocks, Inline, Timeline, readHref, greekAware } from "./Markup";
 import Contents, { SectionBar } from "./Contents";
 import { EntryMarkers, SectionNote } from "./EntryNotes";
+import TapZone from "@/components/lookup/TapZone";
 import ShareEntry from "./ShareEntry";
 import mapData from "../../../public/data/map/places.json";
 import { ENGLISH_NAMES } from "@/lib/place-names";
@@ -81,6 +82,7 @@ export default function EntryView({ e }: { e: Entry }) {
   );
   return (
     <article className={styles.entry} data-entry={e.slug}>
+      <TapZone>
       <EntryMarkers slug={e.slug} heads={heads} />
       <PageHead path={trail("wiki", { label: cat.title, href: cat.href ?? `/stoa#${cat.id}` }, e.title)} title={e.title} greek={e.greek} purpose={e.kicker}
         piece={e.image && photo(e.image) ? { piece: e.image } : undefined} className={styles.entryHead}>
@@ -141,6 +143,7 @@ export default function EntryView({ e }: { e: Entry }) {
           {extras}
         </aside>
       </div>
+      </TapZone>
     </article>
   );
 }

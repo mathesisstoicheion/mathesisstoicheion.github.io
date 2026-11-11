@@ -261,15 +261,26 @@ function MakeCards() {
   );
 }
 
-/** "Beyond the entries": the six places the entries do not hold, six matching cards, each wholly a link. */
-export default function Beyond() {
+/** A reference page, for the slim row of direct links under the six places. */
+export interface RefLink { href: string; title: string }
+
+/** "Made here": the six places the site has built (the map, the Census, Archaeology, the lyre, the potter, the board),
+ *  first on the page (the owner, 2026-11-11: our own things first, with direct links), six matching cards, each wholly a
+ *  link; then one row of direct links to the library's reference pages. */
+export default function Beyond({ reference = [] }: { reference?: RefLink[] }) {
   return (
     <nav className={styles.beyond} aria-labelledby="beyond-h">
-      <h2 id="beyond-h" className={`label ${styles.beyondH}`}>Beyond the entries</h2>
+      <h2 id="beyond-h" className={`label ${styles.beyondH}`}>Made here</h2>
       <ul>
         <ExploreCards />
         <MakeCards />
       </ul>
+      {reference.length > 0 && (
+        <div className={styles.refs}>
+          <h3 className="label">Reference pages</h3>
+          <ul>{reference.map((r) => <li key={r.href}><Link href={r.href} transitionTypes={["page-turn"]}>{r.title}</Link></li>)}</ul>
+        </div>
+      )}
     </nav>
   );
 }

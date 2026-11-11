@@ -10,6 +10,7 @@ import { blocks, inline } from "@/wiki/markup";
 import { CERTAINTY, type Certainty } from "@/wiki/types";
 import type { AuthorArticle } from "@/wiki/author-articles";
 import Link from "next/link";
+import TapZone from "@/components/lookup/TapZone";
 import { CertTag, Inline, emphAware, readHref } from "../stoa/Markup";
 import AuthorRoad from "./AuthorRoad";
 import SourcesFold from "./SourcesFold";
@@ -53,7 +54,7 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
     </p>
   );
   return (
-    <>
+    <TapZone>
       {draft && (
         <p className={styles.draft} role="note">
           <b>Design preview.</b> This text comes from the old site and has <b>not</b> been checked against any source. It appears only while the site is being built on this computer, and the published site does not contain it.
@@ -134,6 +135,6 @@ export default function AuthorArticleView({ name, article: a, draft = false }: {
             : <>We checked every statement above against these sources on {longDate(a.checked)}. Where they disagree, we say so. What we could not confirm, we left out.</>}
         </p>
       </section>
-    </>
+    </TapZone>
   );
 }

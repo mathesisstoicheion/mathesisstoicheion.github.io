@@ -101,7 +101,7 @@ const CHAPTERS = ALL_CHAPTERS.filter((c) => FORUM_OPEN || c.id !== "talk");
 
 export default function GuidePage() {
   return (
-    <Page>
+    <Page top>
       <div className={`wrap ${styles.page}`}>
         <PageHead bare className={styles.head} path={[{ label: "About" }, { label: "The guide" }]} title="How to use the site"
           purpose={<>{FORUM_OPEN ? "Ten" : "Nine"} short chapters, one for each thing you can do here. <b>Show me</b> opens the real page and points at its controls one at a time.</>}

@@ -8,6 +8,7 @@ import { loadPassage, type LoadedPassage } from "@/lib/passage";
 import { useAcademy } from "@/lib/academy";
 import { buzz } from "@/lib/haptics";
 import { Blocks } from "@/components/reader/Blocks";
+import { useWordTap } from "@/components/lookup/useWordTap";
 import styles from "./Academy.module.css";
 import readerStyles from "@/components/reader/Reader.module.css";
 
@@ -90,6 +91,7 @@ export function Parsing({ onScore, once = false }: { onScore: (ok: boolean) => v
   const [caseAns, setCaseAns] = useState<string | null>(null);
   const [numAns, setNumAns] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const wordTap = useWordTap();   // once the drill is answered, any word of the sentence can be looked up (before, it would give the answer away)
 
   useEffect(() => {
     loadWordPack(WORK).then((p) => (p ? setPack(p) : setError("Word analyses are not available.")), (e: Error) => setError(e.message));
@@ -125,7 +127,7 @@ export function Parsing({ onScore, once = false }: { onScore: (ok: boolean) => v
   const parse = readTag(q.tag);
   return (
     <div className={styles.drill}>
-      <div className={`${readerStyles.grc} ${styles.realGr}`} lang="grc" data-drill>
+      <div className={`${readerStyles.grc} ${styles.realGr}`} lang="grc" data-drill onClick={numAns ? wordTap.onClick : undefined}>
         {passage.rows.flatMap((r) => r.greek).map((u) => <div key={u.ref.join(".")}><Blocks blocks={u.blocks.filter((b) => b.t !== "head")} greek keyPrefix={`drill-${u.ref.join(".")}`} /></div>)}
       </div>
       <p className={styles.small}>Gospel of John {q.unitKey}</p>
@@ -154,6 +156,7 @@ export function Parsing({ onScore, once = false }: { onScore: (ok: boolean) => v
           {!once && <button type="button" className="btn" onClick={() => setRound((r) => r + 1)}>Next sentence <span className="arr" aria-hidden="true">→</span></button>}
         </div>
       )}
+      {numAns && wordTap.panel}
     </div>
   );
 }

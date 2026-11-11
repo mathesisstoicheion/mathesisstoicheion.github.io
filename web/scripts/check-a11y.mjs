@@ -10,6 +10,8 @@
 //              and a bubble beside the finger names the letter, so it works as one control the height of the list; so are the reader's
 //              signs beside the scroll bar (data-touch-strip too), a map of the page: its marks are listed full size under Your notes and marks in Study, and the reader opens at the place it left off
 //   online   - the header shows the word "Online" with nothing to say what it means
+//              The Census's two maps (moving map, body figure) are exempt too (data-touch-strip): their dots crowd each other, so every dot
+//              is also a full-size row in the list under the map
 // usage: node web/scripts/check-a11y.mjs <base-url> [path…]   (CHROMIUM=<path> picks the browser; exits with 1 on a problem)
 import { chromium } from "playwright";
 import AxeBuilder from "@axe-core/playwright";

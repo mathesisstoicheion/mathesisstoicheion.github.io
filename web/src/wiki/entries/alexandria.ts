@@ -6,7 +6,7 @@ const entry: Entry = {
   greek: "Ἀλεξάνδρεια",
   category: "education",
   kicker: "Alexander's city in Egypt, where scholars were paid to read Homer",
-  image: "arsinoe-base",
+  image: "red-base",
   hook: `Alexander chose the site, on a strip of land between a lagoon and the sea, and marked out the streets himself. He never saw the city built. Under the Ptolemies, the Macedonian kings who ruled Egypt after him, Alexandria grew into one of the greatest cities of the Mediterranean, with a lighthouse that was counted among the wonders, the tomb of Alexander, and a royal institution where scholars lived at the king's expense: the Museum, with its library. Much of the Greek we read today passed through their hands.`,
   body: `## A city drawn in barley meal
 

@@ -946,3 +946,14 @@ p.translit { margin: -0.3em 0 0.8em; }
 @media (min-width: 761px) {
   .wordSheet .panelHead, .wordSheet .secWord, .wordSheet .panelBody, .wordSheet .cardRow { padding-inline: max(var(--space-5), calc((100% - 46rem) / 2)); }
 }
+
+/* the switch, the pickers and "Add your own text" under the title (HeadTools.tsx): a calm block in the text column, never wider than it */
+.tpEd { flex-direction: column; align-items: center; gap: var(--space-4); }
+.headTools { display: grid; gap: var(--space-3); justify-items: stretch; width: min(100%, 34rem); margin: var(--space-4) auto 0; text-align: left; }
+.tpEd .headTools { margin-top: 0; }
+.headTools > :global(div[role="radiogroup"]) { justify-self: center; width: min(100%, 22rem); }
+.headTools :global(div[role="radiogroup"]) > button { min-height: var(--tap); }
+.headTools > div:not([role]) { box-shadow: none; padding-bottom: 0; }
+.headTools select { min-height: var(--tap); }
+.headImport { justify-self: center; min-height: var(--tap); }
+@media (min-width: 40rem) { .headTools > div:not([role]) { grid-template-columns: 1fr 1fr; gap: var(--space-4); } }

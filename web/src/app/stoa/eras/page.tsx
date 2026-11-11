@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: `Eras of Greek · ${AREAS.wiki.name}`
 
 export default function ErasPage() {
   return (
-    <Page>
+    <Page top>
       <RefHead here="eras">Two thousand years of Greek writing, from Homer to the Byzantine Empire: what the library holds from each period, counted, not described.</RefHead>
       <WikiEras />
     </Page>

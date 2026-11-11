@@ -5,6 +5,8 @@
  * with links to Word Study, the map, the Painted Stoa and every mention in the Oracle.
  */
 import Link from "next/link";
+import { tapWords } from "@/components/lookup/tapWords";
+import { useWordTap } from "@/components/lookup/useWordTap";
 import { useMemo, useState } from "react";
 import { fmtRate, groupInfo, groupOf, isName, oracleScope, phraseOccurrences, rate, type Category, type CensusMeta, type Scope } from "@/lib/census";
 import { canonLemma, groupFreq, lexEntry, loadLexMeta, type LexEntry, type LexMeta } from "@/lib/lexicon";
@@ -45,6 +47,7 @@ export default function ItemPanel({ meta, reg, cat, item, listed, scope, links, 
 }) {
   const id = item.id !== undefined && item.id >= 0 ? item.id : undefined;
   const phrase = cat.id === "phrase";
+  const wordTap = useWordTap();   // touching the word at the head of the panel opens the reader's look-up
   // a word's counts per work come from the Word Study index; a phrase's from the Census's own files
   const lex = useLoad(`lex|${item.text}`, () => Promise.all([lexEntry(item.text), loadLexMeta()]), !phrase);
   const occ = useLoad(`ph|${item.text}`, () => phraseOccurrences(item.text), phrase);
@@ -88,7 +91,7 @@ export default function ItemPanel({ meta, reg, cat, item, listed, scope, links, 
     <article className={styles.panel}>
       <button type="button" className={styles.close} onClick={onClose} aria-label="Close">×</button>
       <p className="label">{cat.label}{item.auto && " · sorted automatically"}</p>
-      <h2 lang="grc" className={styles.panelWord}>{item.text}</h2>
+      <h2 lang="grc" className={styles.panelWord} onClick={wordTap.onClick}>{tapWords(item.text)}</h2>
       {item.sub && <p className={styles.panelSub}>{item.sub}</p>}
       {cat.id === "place" && place.state === "done" && place.value && item.sub !== place.value.en && <p className={styles.panelSub}>{place.value.en}</p>}
 
@@ -128,6 +131,7 @@ export default function ItemPanel({ meta, reg, cat, item, listed, scope, links, 
         {phrase ? "Counted in exactly this form, inside one sentence." : isName(cat.id) ? "Counted by dictionary word: every form of the name, and everyone who bears it." : "Counted by dictionary word: every form together."}
         {" "}The Oracle searches the reader&apos;s own editions, so its totals can differ a little from GLAUx&apos;s.
       </p>
+      {wordTap.panel}
     </article>
   );
 }
