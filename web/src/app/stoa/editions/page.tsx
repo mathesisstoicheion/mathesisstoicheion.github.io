@@ -9,7 +9,7 @@ export const metadata: Metadata = { title: `Editions & translations · ${AREAS.w
 
 export default function EditionsPage() {
   return (
-    <Page>
+    <Page top>
       <RefHead here="editions">The printed edition behind every Greek text in the library, and the translation beside it: who edited or translated it, and who published it.</RefHead>
       <WikiEditions />
     </Page>

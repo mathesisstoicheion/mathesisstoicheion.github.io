@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: `Authors · ${AREAS.wiki.name}`, desc
 
 export default function AuthorsPage() {
   return (
-    <Page>
+    <Page top>
       <RefHead here="authors">Every author in the library, by period and by kind of writing. Each one opens their page: their works, and where to begin.</RefHead>
       <Suspense fallback={null}><WikiAuthors /></Suspense>
     </Page>
