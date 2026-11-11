@@ -272,8 +272,14 @@ export default function WordPanel({ word, ctx, doc = null, at = null, workTitle 
   const [fullFor, setFullFor] = useState("");
   const key = word && ctx ? `${ctx.work}|${ctx.unitKey}|${ctx.occurrence}|${word}` : word ?? "";
   if (!!word !== wasOpen) { setWasOpen(!!word); setFullFor(""); if (word) setSnap("peek"); }
-  const more = !!word && moreOn;
-  const setMore = (open: boolean) => onMore?.(open);
+  // Hosts that do not keep the second layer themselves (Home's passage of the day, the Guide, lessons) get it from the panel: "More about it"
+  // works on every page that shows Greek (the owner, 2026-11-11); the reader keeps its own (more, onMore) for the phone's Back
+  const [ownMore, setOwnMore] = useState(false);
+  const [ownKey, setOwnKey] = useState("");
+  if (ownKey !== key) { setOwnKey(key); if (ownMore) setOwnMore(false); }
+  const kept = !!onMore;
+  const more = !!word && (kept ? moreOn : ownMore);
+  const setMore = (open: boolean) => { if (kept) onMore?.(open); else setOwnMore(open); };
   const full = !!word && fullFor === key;
   const [dir, setDir] = useState<1 | -1>(1);
   const step = onStep && ((d: 1 | -1) => { setDir(d); onStep(d); });

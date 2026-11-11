@@ -152,6 +152,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-lookup.mjs http://localhost:3100
+      - name: The word look-up and its "More about it" work on every page with Greek, not only the reader
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: node scripts/check-lookup-everywhere.mjs http://localhost:3100
       - name: The bar along a phone's foot hides as you read on and is not in the reader (redesign)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

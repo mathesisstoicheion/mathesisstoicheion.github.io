@@ -15,7 +15,8 @@
     "check:first-paint": "node scripts/check-first-paint.mjs http://localhost:3100",
     "check:overlays": "node scripts/check-overlays.mjs http://localhost:3100",
     "check:cold-open": "node scripts/check-cold-open.mjs http://localhost:3100",
-    "check:metres-speed": "node scripts/check-metres-speed.mjs http://localhost:3100"
+    "check:metres-speed": "node scripts/check-metres-speed.mjs http://localhost:3100",
+    "check:lookup-everywhere": "node scripts/check-lookup-everywhere.mjs http://localhost:3100"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.117.2",
