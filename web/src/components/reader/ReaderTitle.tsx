@@ -12,7 +12,9 @@ import { AREAS } from "@/config/areas";
 import { greekTitle } from "./ReaderCover";
 import styles from "./Reader.module.css";
 
-export default function ReaderTitle({ title, greek, author, authorId, page, lines, only = false }: {
+export default function ReaderTitle({ title, greek, author, authorId, page, lines, only = false, children }: {
+  /** the reader's switch and pickers under the line (HeadTools.tsx) */
+  children?: React.ReactNode;
   title: string; greek?: string | null; author?: string; authorId?: string;
   /** a book of the private collection: a lock after the line says that only the reader can see it (it stood in the old top bar) */
   only?: boolean;
@@ -34,6 +36,7 @@ export default function ReaderTitle({ title, greek, author, authorId, page, line
         {big !== title && `${title}, `}{page}
         {only && <span className={styles.rlLock} role="img" aria-label="Only you can see this" title="Only you can see this"><Icon name="lock" /></span>}
       </h1>
+      {children}
     </div>
   );
 }
