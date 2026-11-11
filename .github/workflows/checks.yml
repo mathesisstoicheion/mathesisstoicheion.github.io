@@ -42,6 +42,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: npm run check:overlays
+      - name: The metre turns on, and a book reopens with it on, without freezing a slow phone
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: npm run check:metres-speed
       - name: One name per room (slice 2)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
