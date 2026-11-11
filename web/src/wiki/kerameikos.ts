@@ -25,13 +25,13 @@ export const LAYERS: Layer[] = [
   },
   {
     id: "sites", title: "Great sites", deposit: "wall foundations",
-    blurb: "The places where digging has changed what we know: palaces, cities and their market-places, cemeteries, sanctuaries of healing and of whipping, the houses of a sacked town, and mines.",
-    slugs: ["knossos", "mycenae", "troy", "athens", "kerameikos-cemetery", "delphi", "asclepius", "spartan-upbringing", "household", "laurion"],
+    blurb: "The places where digging has changed what we know: cemeteries, sanctuaries, mines and cities.",
+    slugs: ["knossos", "mycenae", "troy", "kerameikos-cemetery", "delphi", "laurion"],
   },
   {
     id: "finds", title: "Great finds", deposit: "a grave and its offerings",
-    blurb: "Single objects that rewrote a chapter: a bronze computer from a shipwreck, clay tablets baked in a palace fire, a machine for choosing jurors, votes scratched on broken pots, an empire's accounts in marble, and two statues from a story in Herodotus.",
-    slugs: ["antikythera-mechanism", "linear-b", "kleroterion", "ostracism", "tribute-lists", "kleobis-and-biton"],
+    blurb: "Single objects that rewrote a chapter: a bronze computer from a shipwreck, clay tablets baked in a palace fire, a machine for choosing jurors, votes scratched on broken pots.",
+    slugs: ["antikythera-mechanism", "linear-b", "kleroterion", "ostracism"],
   },
 ];
 
@@ -49,16 +49,4 @@ export const DIG_SITES: { id: string; grc: string; en: string }[] = [
   { id: "570228", grc: "Ἐπίδαυρος", en: "Epidauros" },
   { id: "599588", grc: "Δῆλος", en: "Delos" },
   { id: "570182", grc: "Κόρινθος", en: "Corinth" },
-  { id: "491678", grc: "Ὄλυνθος", en: "Olynthos" },
-  { id: "580021", grc: "Μαραθών", en: "Marathon" },
-  { id: "579920", grc: "Ἐλευσίς", en: "Eleusis" },
-  { id: "570685", grc: "Σπάρτη", en: "Sparta" },
-  { id: "530843", grc: "Δωδώνη", en: "Dodona" },
-  { id: "570504", grc: "Νεμέα", en: "Nemea" },
-  { id: "579879", grc: "Βραυρών", en: "Brauron" },
-  { id: "432648", grc: "Πιθηκοῦσσαι", en: "Pithekoussai" },
-  { id: "442733", grc: "Ποσειδώνια", en: "Paestum" },
-  { id: "599926", grc: "Σάμος", en: "Samos" },
-  { id: "599612", grc: "Ἔφεσος", en: "Ephesus" },
-  { id: "550812", grc: "Πέργαμον", en: "Pergamon" },
 ];

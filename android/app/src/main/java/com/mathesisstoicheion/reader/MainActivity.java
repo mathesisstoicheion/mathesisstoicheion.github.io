@@ -203,6 +203,22 @@ public class MainActivity extends Activity {
         if (frame.getPaddingTop() != top || frame.getPaddingBottom() != bottom) frame.setPadding(0, top, 0, bottom);
     }
 
+    /** Turning the phone: the activity is not rebuilt (configChanges), so the frame's padding and the bars measured for the old turn must not
+     *  be carried over (the owner, 2026-11-11: rotating landscape, portrait, landscape pushed the page's bottom bar further down each time).
+     *  Start clean: no padding, ask the system for the new bars, lay the page out again, then look at the safe areas once the turn has settled. */
+    @Override
+    public void onConfigurationChanged(Configuration c) {
+        super.onConfigurationChanged(c);
+        keepClear = false;
+        barTop = 0;
+        barBottom = 0;
+        keyboard = 0;
+        frame.setPadding(0, 0, 0, 0);
+        frame.requestApplyInsets();
+        web.requestLayout();
+        frame.postDelayed(() -> { frame.requestApplyInsets(); web.requestLayout(); checkSafeAreas(); }, 350);
+    }
+
     /** The site places its header below the clock using the phone's safe areas; checks the page is told them. */
     private void checkSafeAreas() {
         if (barTop == 0) return;
