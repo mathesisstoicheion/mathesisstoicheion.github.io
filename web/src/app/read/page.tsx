@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { Suspense } from "react";
 import { preload } from "react-dom";
 import Page from "@/components/Page";
@@ -14,7 +15,10 @@ export default function ReadPage() {
   preload("/data/catalog.json", { as: "fetch", crossOrigin: "anonymous" });
   return (
     <Page screen="reader">
-      <Suspense fallback={null}>
+      <Suspense fallback={<div className="wrap" data-nobook="">
+        <p>Opening the text…</p>
+        <p><Link href="/library">Open the Mouseion</Link></p>
+      </div>}>
         <Reader />
       </Suspense>
     </Page>

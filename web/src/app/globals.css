@@ -92,8 +92,8 @@ body::after {
 /* the reader's page has no darkening at its edges: the paper there is plain (the quiet desk, ticket 09, the owner, 2026-10-30) */
 html:has(main[data-screen="reader"]) body::after { display: none; }
 /* the reader with one book open: its own bar along the foot is the way back to the library, so the site's
-   header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them. */
-html:has(main[data-screen="reader"]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
+   header and its foot stand aside (Reader.tsx). Two books side by side, or no book chosen yet, keep them; so does the page before the reader has loaded (it has no [data-reader] yet). */
+html:has(main[data-screen="reader"] [data-reader]):not(:has([data-split], [data-nobook])) :is([data-site-header], .site-footer) { display: none; }
 /* with the page drawn under a notch (viewport-fit=cover), a strip in the page colour keeps text from showing
    through the status bar while the header is tucked away */
 body::before {
