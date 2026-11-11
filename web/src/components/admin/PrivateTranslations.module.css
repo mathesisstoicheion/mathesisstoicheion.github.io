@@ -67,22 +67,6 @@
 }
 .done svg { flex: none; width: 20px; height: 20px; fill: none; stroke: var(--ok); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-/* each translation: a hairline frame with a red rule along its top, its words in ink */
-.shelf { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
-.book { display: flex; flex-direction: column; color: var(--ink); border-radius: var(--radius); box-shadow: var(--inlay-top), var(--slab-edge); }
-.bookLink { flex: 1; display: grid; align-content: start; gap: 4px; padding: 22px 22px 18px; color: inherit; text-decoration: none; }
-.bookLink:focus-visible { outline-offset: -5px; }
-.bookGr { font-family: var(--f-greek); font-size: var(--step-1); line-height: 1.3; color: var(--rubric); }
-.bookTitle { font: 400 var(--step-1) / 1.15 var(--f-display); text-wrap: balance; transition: color var(--dur-quick) var(--ease); }
-.bookLink:focus-visible .bookTitle { color: var(--rubric); }
-@media (hover: hover) { .bookLink:hover .bookTitle { color: var(--rubric); } }
-.bookBy { color: var(--ink-2); }
-.bookGo { margin-top: 12px; font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubric); }
-.bookFoot { display: grid; gap: 10px; padding: 14px 22px 16px; box-shadow: var(--cut-over); }
-.bookMeta { display: flex; flex-direction: column; align-items: flex-start; gap: 6px; font-size: var(--step--1); color: var(--ink-2); }
-.bookActs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
-.bookActs .error { flex-basis: 100%; font-size: var(--step--1); }
-
 /* "are you sure?", asked in the page: a note with a red rule down its margin */
 .ask {
   flex-basis: 100%; display: grid; gap: 10px; padding: 12px 14px; font-size: var(--step--1); line-height: 1.45;
@@ -91,14 +75,15 @@
 .askRow { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ask :global(.chip) { color: var(--rubric); border-color: var(--rubric); }
 
-/* ------------------------------------------------------------ adding or updating a translation: a notice in a double rule */
+/* ------------------------------------------------------------ adding or updating a translation: a ruled section under the shelf */
 .add {
-  margin-top: clamp(40px, 6vw, 64px); padding: clamp(22px, 3vw, 32px); display: grid; gap: 14px; justify-items: start;
-  border-radius: var(--radius); box-shadow: var(--field-edge); outline: var(--moulding); outline-offset: var(--moulding-in);
-  transition: background-color var(--dur-quick) var(--ease);
+  margin-top: var(--after-head); padding-top: clamp(20px, 3vw, 28px); display: grid; gap: 14px; justify-items: start;
+  border-top: 1px solid var(--rule); transition: background-color var(--dur-quick) var(--ease);
 }
 /* a file held over it: the paper's second tone, and a red rule down its margin */
-.add[data-over] { background: var(--bg-2); box-shadow: var(--inlay-left), var(--field-edge); }
+.add[data-over] { background: var(--bg-2); box-shadow: var(--inlay-left); }
+/* the database sentence, at the page's foot */
+.dbLine { margin-top: var(--after-head); max-width: 64ch; font-size: var(--step--1); color: var(--ink-2); }
 .add h2 { margin: 0; font: 400 var(--step-2) / 1.15 var(--f-display); }
 .addLead { max-width: 64ch; color: var(--ink-2); }
 .problems {

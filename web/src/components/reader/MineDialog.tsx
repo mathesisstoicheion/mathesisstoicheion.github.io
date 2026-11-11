@@ -10,11 +10,13 @@ import Link from "next/link";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { PRIVATE_COLLECTION, PRIVATE_TRANSLATIONS } from "@/config/admin";
 import { fromPlainText, fromTei, kindOf, teiMeta } from "@/lib/import-text";
-import { isMine, mineId } from "@/lib/mine";
+import { isMine, mineHref, mineId } from "@/lib/mine";
 import { fileTooBig, plainText, readTranslationFile, sizeOf, type Checked } from "@/lib/private-translations";
 import { listTranslations, saveTranslation, trouble, type StoredSummary } from "@/lib/private-translations-db";
 import { scrollBehavior } from "@/lib/settings";
 import { StatusTag } from "@/components/admin/parts";
+import { BookCards } from "@/components/admin/Cards";
+import seg from "@/components/admin/Cards.module.css";
 import Icon from "@/components/Icon";
 import styles from "./Mine.module.css";
 import { ModalDialog, type Back } from "./Panel";
@@ -49,8 +51,10 @@ export const LOCK = <svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7
  * The shelf and "Import a text", as tabs: in the reader's window above, and on the private collection's own page
  * (components/library/PrivateCollection.tsx, /library/private).
  */
-export function Collection({ current, onOpen, tab, onTab }: {
+export function Collection({ current, onOpen, tab, onTab, page }: {
   current: string | null; onOpen: (id: string) => void; tab: Tab; onTab: (t: Tab) => void;
+  /** on the page of its own: the switch drawn as the Treasury's segmented control, and the shelf as the cards the private pages share */
+  page?: boolean;
 }) {
   const [rows, setRows] = useState<StoredSummary[] | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -64,11 +68,11 @@ export function Collection({ current, onOpen, tab, onTab }: {
 
   return (
     <>
-      <div className={styles.tabs} role="tablist" aria-label="Private collection">
+      <div className={page ? seg.seg : styles.tabs} role="tablist" aria-label="Private collection">
         <button type="button" role="tab" id="mine-tab-shelf" aria-controls="mine-shelf" aria-selected={tab === "shelf"} onClick={() => onTab("shelf")}>
-          <Icon name="library" />On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
+          {!page && <Icon name="library" />}On the shelf{rows ? <span className={styles.n}>{rows.length}</span> : null}
         </button>
-        <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => onTab("import")}><Icon name="upload" />Import a text</button>
+        <button type="button" role="tab" id="mine-tab-import" aria-controls="mine-import" aria-selected={tab === "import"} onClick={() => onTab("import")}>{!page && <Icon name="upload" />}Import a text</button>
       </div>
 
       {tab === "shelf" ? (
@@ -76,7 +80,8 @@ export function Collection({ current, onOpen, tab, onTab }: {
           {error && <p className={styles.error} role="alert">{error} <button type="button" className={`text-btn ${styles.link}`} onClick={() => setRound(round + 1)}><Icon name="again" />Try again</button></p>}
           {!rows && !error && <p className={styles.quiet}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
           {rows?.length === 0 && <p className={styles.quiet}>Nothing is on the shelf yet. <button type="button" className={`text-btn ${styles.link}`} onClick={() => onTab("import")}><Icon name="upload" />Import a text</button>, or add a translation on the <Link href={PRIVATE_TRANSLATIONS}>shelf in Mine</Link>.</p>}
-          {rows && rows.length > 0 && (
+          {rows && rows.length > 0 && page && <BookCards rows={rows} href={mineHref} />}
+          {rows && rows.length > 0 && !page && (
             <ul className={styles.books}>
               {rows.map((r, i) => (
                 <li key={r.id} style={{ "--i": i } as CSSProperties}>

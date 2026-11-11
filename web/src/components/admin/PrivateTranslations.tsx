@@ -12,7 +12,7 @@
  */
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useRef, useState } from "react";
 import { isModerator, useAccount } from "@/lib/community/client";
 import {
   fileTooBig, isIsoDate, plainText, readTranslationFile, sizeOf, type Checked,
@@ -20,11 +20,11 @@ import {
 import { mineHref } from "@/lib/mine";
 import { listTranslations, removeTranslation, saveTranslation, trouble, type StoredSummary } from "@/lib/private-translations-db";
 import { useReloadable } from "@/lib/use-load";
-import { DownloadButton, HERE, Seal, StatusTag, docDate, savedDate } from "./parts";
+import { DownloadButton, HERE, StatusTag, docDate, savedDate } from "./parts";
+import { BookCards, PrivateHead, ShelfWait } from "./Cards";
 import Rich from "./Rich";
 import TranslationReader from "./TranslationReader";
 import styles from "./PrivateTranslations.module.css";
-import PageHead from "@/components/PageHead";
 import { trail } from "@/config/areas";
 
 export default function PrivateTranslations() {
@@ -38,7 +38,7 @@ export default function PrivateTranslations() {
     const back = `${HERE}${id ? `?id=${encodeURIComponent(id)}` : ""}`;
     return (
       <div className={`wrap ${styles.page}`}>
-        <PageHead bare path={trail("treasury", "Private translations")} title="Private translations"
+        <PrivateHead sealed={false} path={PATH()} title="Private translations"
           purpose={<><Link href={`/account?next=${encodeURIComponent(back)}`}>Sign in</Link> to open this page.</>} />
       </div>
     );
@@ -47,15 +47,15 @@ export default function PrivateTranslations() {
   return id ? <TranslationReader key={id} id={id} /> : <Shelf />;
 }
 
-/** While the account is read; after a while, a word on why it may be taking long. */
+const PATH = () => trail("treasury", "Private translations");
+const PURPOSE = "Our own English, read side by side with the Greek.";
+
+/** While the account is read: the page's own head, and the shelf's place held under it. */
 function Waiting() {
-  const [slow, setSlow] = useState(false);
-  useEffect(() => { const t = setTimeout(() => setSlow(true), 8000); return () => clearTimeout(t); }, []);
   return (
-    <div className={`wrap ${styles.status}`} aria-busy="true">
-      <h1 className="visually-hidden">Private translations</h1>
-      <span className={styles.spinner} aria-hidden="true" /> One moment…
-      {slow && <p className={styles.small}>Still waiting for the site&apos;s database. Check the connection light at the top of the page.</p>}
+    <div className={`wrap ${styles.page}`}>
+      <PrivateHead path={PATH()} title="Private translations" purpose={PURPOSE} />
+      <ShelfWait />
     </div>
   );
 }
@@ -69,11 +69,7 @@ function Shelf() {
 
   return (
     <div className={`wrap ${styles.page}`}>
-      <PageHead bare path={trail("treasury", "Private translations")} title="Private translations"
-        purpose={<>Our own English, read side by side with the Greek. The translations are kept only in the site&apos;s database, where nobody but
-          the moderator can open them. They are never part of the website&apos;s code, which anyone can download, and this page keeps no copy on this computer.</>}>
-        <div className={styles.kicker}><Seal /></div>
-      </PageHead>
+      <PrivateHead path={PATH()} title="Private translations" purpose={PURPOSE} />
 
       <section className={styles.shelfSec} aria-labelledby="shelf-h" aria-busy={list.busy}>
         <div className={styles.secHead}>
@@ -90,46 +86,33 @@ function Shelf() {
         {!rows && !error && <p className={styles.status}><span className={styles.spinner} aria-hidden="true" /> Taking the books down…</p>}
         {rows?.length === 0 && <p className={styles.empty}>Nothing is stored yet. Add the first translation below.</p>}
         {rows && rows.length > 0 && (
-          <ul className={styles.shelf}>
-            {rows.map((r, i) => (
-              <Book key={r.id} r={r} i={i} onRemoved={(gone) => {
-                const t = r.title ? plainText(r.title) : r.id;
-                setNotice({ text: gone ? `Removed “${t}”.` : `“${t}” was already gone.` });
-                list.reload();
-              }} />
-            ))}
-          </ul>
+          <BookCards rows={rows} href={mineHref} foot={(r) => <Tools r={r} onRemoved={(gone) => {
+            const t = r.title ? plainText(r.title) : r.id;
+            setNotice({ text: gone ? `Removed “${t}”.` : `“${t}” was already gone.` });
+            list.reload();
+          }} />} />
         )}
       </section>
 
       <AddTranslation stored={rows} onSaved={(id, title, replaced) => { setNotice({ text: `${replaced ? "Replaced" : "Saved"} “${plainText(title)}”.`, id }); list.reload(); }} />
+
+      <p className={styles.dbLine}>
+        The translations are kept only in the site&apos;s database, where nobody but the moderator can open them. They are never part of the
+        website&apos;s code, which anyone can download, and this page keeps no copy on this computer.
+      </p>
     </div>
   );
 }
 
-/** One translation on the shelf: its Greek and English titles, the author, how far along it is, when it was saved. */
-function Book({ r, i, onRemoved }: { r: StoredSummary; i: number; onRemoved: (gone: boolean) => void }) {
+/** The buttons at a card's foot: the notes and the comparison, Download, Remove. */
+function Tools({ r, onRemoved }: { r: StoredSummary; onRemoved: (gone: boolean) => void }) {
   const title = r.title ?? r.id;
   return (
-    <li className={styles.book} style={{ "--i": i } as CSSProperties}>
-      <Link className={styles.bookLink} href={mineHref(r.id)} title="Open it in the reader, with all the reading aids">
-        {r.greekTitle && <span className={styles.bookGr} lang="grc"><Rich text={r.greekTitle} inline /></span>}
-        <b className={styles.bookTitle}><Rich text={title} inline /></b>
-        <span className={styles.bookBy}>{r.author ? <Rich text={r.author} inline /> : "No author given"}</span>
-        <span className={styles.bookGo} aria-hidden="true">Read it in the reader →</span>
-      </Link>
-      <div className={styles.bookFoot}>
-        <p className={styles.bookMeta}>
-          <StatusTag status={r.status} />
-          <span>Saved <time dateTime={r.updated_at}>{savedDate(r.updated_at)}</time></span>
-        </p>
-        <div className={styles.bookActs}>
-          <Link className={styles.act} href={`${HERE}?id=${encodeURIComponent(r.id)}`} title="Side by side with the published English, with the introduction and the translator's notes">Notes and comparison</Link>
-          <DownloadButton id={r.id} />
-          <RemoveButton id={r.id} title={title} onRemoved={onRemoved} />
-        </div>
-      </div>
-    </li>
+    <>
+      <Link className={styles.act} href={`${HERE}?id=${encodeURIComponent(r.id)}`} title="Side by side with the published English, with the introduction and the translator's notes">Notes and comparison</Link>
+      <DownloadButton id={r.id} />
+      <RemoveButton id={r.id} title={title} onRemoved={onRemoved} />
+    </>
   );
 }
 

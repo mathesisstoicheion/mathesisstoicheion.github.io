@@ -26,7 +26,7 @@
 .modBtn:active:not(:disabled) { background: var(--field); box-shadow: var(--field-edge); }
 .narrow { max-width: 820px; padding-top: 36px; padding-bottom: 72px; display: grid; gap: 22px; }
 /* the account's form, held in the page head's place for its main thing */
-:global(.ph-action) > .narrow { padding-top: 0; padding-bottom: var(--space-5); }
+:global(.ph-action) > .narrow, :global(.ph-side) > .narrow { padding-top: 0; padding-bottom: var(--space-5); }
 /* a signed-out visitor at a form: the head (as the pages inside an area have), then the way in */
 .signedOutHead { padding-top: var(--space-6); }
 /* on a computer the page's head stands where every page's head stands (globals.css .ph; scripts/check-heads.mjs) */
@@ -262,9 +262,11 @@ button.tag:active, button.catTag:active { background: var(--field); box-shadow: 
   .headRow { grid-template-columns: 40px 1fr; gap: 10px; }
 }
 
+/* at the card's foot, under a rule: the details to delete an account, small and in red */
 .danger { box-shadow: var(--cut-over); padding-top: 14px; }
 .danger summary { cursor: pointer; color: var(--accent); font-size: var(--step--1); }
 .danger p { margin: 8px 0; font-size: var(--step--1); color: var(--ink-2); }
+@media (pointer: coarse) { .danger summary { display: flex; align-items: center; min-height: var(--tap); } }
 
 @media (pointer: coarse) { .linkBtn { min-height: var(--tap); } }
 

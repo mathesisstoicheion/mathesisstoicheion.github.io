@@ -31,9 +31,9 @@ export default function Account() {
         <PageHead bare path={[{ label: AREAS.treasury.name, href: AREAS.treasury.href }, { label: "Account" }]} title={title}
           purpose={FORUM_OPEN ? "Your membership of the Agora: sign in or join to write there, and choose the name others see."
             : "Sign in or join to put what you make on the Painted Stoa's board, and to keep your Treasury in step between devices."}
-          // the form first (review fix list, slice 9): in the head's place for its main thing, beside the portrait on a
-          // computer and before it on a phone
-          action={<Suspense fallback={<div className={styles.boxWait} aria-hidden="true" />}><AccountBox /></Suspense>} />
+          // the form is the head's side: in a second column on a computer, and after the title and its line on a phone (the
+          // head has no portrait window)
+          side={<Suspense fallback={<div className={styles.boxWait} aria-hidden="true" />}><AccountBox /></Suspense>} />
       </div>
     </>
   );
@@ -197,14 +197,14 @@ function ProfileCard({ email, onSaved }: { email: string; onSaved: () => Promise
         catch (err) { const m = problem(err); setError(/duplicate|unique/i.test(m) ? "Someone already uses that display name." : m); }
       }}>
         <label><span>Display name</span><input aria-label="Display name" value={name} onChange={(e) => setName(e.target.value)} required minLength={2} maxLength={40} /></label>
-        <label><span>About you <small>optional, up to 500 characters; shown on your page</small></span>
+        <label><span>About you <small>{FORUM_OPEN ? "optional, up to 500 characters; shown on your page" : "optional, up to 500 characters"}</small></span>
           <textarea aria-label="About you" value={bio} onChange={(e) => setBio(e.target.value)} maxLength={500} rows={3} /></label>
         {error && <p className={styles.error} role="alert">{error}</p>}
         {msg && <p className={styles.ok} role="status">{msg}</p>}
         <div className={styles.row}>
           <button type="submit" className="btn" disabled={!changed}><Icon name="check" />Save</button>
-          {FORUM_OPEN && <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}><Icon name="account" />Your page</Link>}
           <button type="button" className="btn ghost" onClick={() => supabase().auth.signOut()}><Icon name="sign-out" />Sign out</button>
+          {FORUM_OPEN && <Link className="btn ghost" href={`/town-hall/member?id=${profile.id}`}><Icon name="account" />Your page</Link>}
         </div>
       </form>
       <details className={styles.danger}>
