@@ -45,32 +45,18 @@
   .offer { grid-template-columns: 2rem minmax(0, 1fr) auto; padding-block: 11px var(--space-3); min-height: var(--tap); }
   .lead { display: none; }
   .offerHint { display: inline; margin: 0 0 0 0.3em; }
+  /* a Treasury with nothing in it: names alone, in two columns of five, so the first step is on the first screen */
+  .offerings[data-bare] .ogrid { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-template-rows: repeat(5, auto); grid-auto-flow: column; column-gap: var(--space-4); }
+  .offerings[data-bare] .offer { grid-template-columns: 2rem minmax(0, 1fr); padding-block: var(--space-2); }
+  .offerings[data-bare] :is(.offerHint, .count) { display: none; }
 }
 
-/* ------------------------------------------------ the two notices: the private shelf and keeping it safe, in a double rule */
-.private, .keep { box-shadow: var(--slab-edge); outline: var(--moulding); outline-offset: var(--moulding-in); }
-
-/* the moderator's private translations (PrivateShelf.tsx), under the contents */
-.private {
-  display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--space-1) 28px;
-  padding: 20px var(--space-5) var(--space-4); text-decoration: none; color: var(--ink);
-}
-.privateSeal, .privateTitle, .privateText { grid-column: 1; }   /* the count keeps the right-hand column, even when it is not shown */
-.privateSeal { display: inline-flex; align-items: center; gap: var(--space-2); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
-.privateSeal svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
-.privateTitle { font: 400 clamp(1.35rem, 2.6vw, 1.7rem) / 1.15 var(--f-display); transition: color var(--dur-quick) var(--ease); }
-.private:focus-visible .privateTitle { color: var(--rubric); }
-@media (hover: hover) { .private:hover .privateTitle { color: var(--rubric); } }
-.privateText { color: var(--ink-2); max-width: 60ch; }
-.privateCount { grid-column: 2; grid-row: 1 / span 3; display: grid; justify-items: center; gap: var(--space-1); min-width: 5.5rem; }
-.privateCount .count { font-size: clamp(2rem, 3.4vw, 2.6rem); }
-.privateGo { grid-column: 1 / -1; justify-self: end; font: 400 var(--step--1) / 1.35 var(--f-body); color: var(--rubric); }
-/* the double rule uses the outline, so the link gives the focus ring back */
-.private:focus-visible { outline: 2px solid var(--rubric); outline-offset: 3px; }
-@media (max-width: 520px) {
-  .private { gap: var(--space-1) 14px; padding: var(--space-4) var(--space-4) 14px; }
-  .privateCount { min-width: 0; }
-}
+/* ------------------------------------------------ the moderator's two rows, under a double rule, in the ledger's style (PrivateShelf.tsx) */
+.privateRows { list-style: none; margin: var(--space-1) 0 0; padding: 0; display: grid; border-top: 1px solid var(--ink); }
+.privateRows li { display: grid; border-bottom: 1px solid var(--rule); }
+.privateRows .offer { text-decoration: none; }
+.privateRows .gn svg { display: block; width: 1rem; height: 1rem; fill: none; stroke: currentColor; stroke-width: 1.6; }
+.privateRows .offer .count { font-size: 1.1rem; }
 
 /* ------------------------------------------------ the part shown below the contents */
 .section { display: grid; gap: 22px; animation: ink-in var(--dur-slow) var(--ease) backwards; }
@@ -94,25 +80,28 @@
 .treasury[data-empty] > .section:empty { display: none; }
 /* an empty Treasury opens with "How the Treasury fills": three numbered steps, each with a small specimen of the action */
 .fills { display: grid; gap: var(--space-5); }
+/* a phone, nothing kept yet: the head and the steps sit close, so step I and its button are as near the first screen as they can be */
+@media (max-width: 600px) { .treasury[data-empty] { gap: var(--space-4); } .treasury[data-empty] .fills { gap: var(--space-3); } }
 .treasury .fillsH { margin: 0; display: flex; align-items: baseline; gap: var(--space-3); font: 400 var(--step-2) / 1.15 var(--f-display); }
 .fillsH::after { content: ""; flex: 1; min-width: 12px; border-bottom: 1px solid var(--rule); transform: translateY(-6px); }
-.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-6); }
-@media (min-width: 761px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, var(--space-6)); } }
-.step { display: grid; grid-template-columns: auto minmax(0, 1fr); grid-template-rows: auto 1fr auto; align-content: start; column-gap: var(--space-4); row-gap: var(--space-1); padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
-.stepNo { grid-row: 1 / span 2; min-width: 2.4ch; font: 400 var(--step-3) / 1 var(--face-didot); color: var(--rubric); }
-.step h3 { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); }
-.step p { margin: 0; color: var(--ink-2); max-width: 44ch; }
-.specimen { grid-column: 1 / -1; margin-top: var(--space-2); padding-top: var(--space-3); border-top: 1px solid var(--rule); display: flex; align-items: center; min-height: calc(var(--tap) + var(--space-3)); }
+.steps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-5); }
+/* a computer: the three steps side by side; their rows are shared, so each step's button, verse and kinds sit level */
+@media (min-width: 761px) { .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto 1fr; gap: 0 clamp(var(--space-5), 3vw, var(--space-6)); } }
+/* one column inside its top rule: numeral beside the title, the text, then its specimen */
+.step { display: grid; grid-template-columns: auto minmax(0, 1fr); align-content: start; column-gap: var(--space-3); row-gap: var(--space-1); padding-top: var(--space-3); border-top: 1px solid var(--ink); min-width: 0; }
+@media (min-width: 761px) { .step { grid-row: span 3; grid-template-rows: subgrid; } }
+.stepNo { min-width: 2.4ch; font: 400 var(--step-3) / 1 var(--face-didot); color: var(--rubric); }
+.step h3 { margin: 0; align-self: center; font: 400 var(--step-1) / 1.2 var(--f-display); }
+.step p { grid-column: 1 / -1; margin: 0; color: var(--ink-2); max-width: 44ch; }
+.specimen { grid-column: 1 / -1; margin-top: var(--space-2); display: flex; align-items: center; min-height: var(--tap); }
 .verse { font: 400 var(--step-sub) / 1.6 var(--f-greek); color: var(--ink); }
 .picked { background: var(--word-on); outline: var(--hair-2) solid var(--word-on); }
-.kinds { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); }
+.kinds { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-3); }
 .kinds li { display: inline-flex; align-items: center; gap: var(--space-1); font: 500 var(--step--2) / 1.35 var(--f-label); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-2); }
 .kinds svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 1.4; }
-/* what can be done meanwhile: keeping it safe and reading offline, two equal parts under one hairline on a computer */
-.foot { display: grid; gap: var(--space-5); }
-.treasury[data-empty] .foot { border-top: 1px solid var(--ink); padding-top: var(--space-4); }
-@media (min-width: 761px) { .treasury[data-empty] .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-5), 3vw, var(--space-6)); align-items: start; } }
-.treasury[data-empty] .offline { border-top: 0; padding-top: 0; }
+/* what can be done meanwhile: keeping it safe and reading offline, two matching cards (two columns on a computer, one on a phone) */
+.foot { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); align-items: stretch; }
+@media (min-width: 761px) { .foot { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(var(--space-4), 3vw, var(--space-6)); } }
 
 .filters { display: flex; flex-wrap: wrap; gap: 10px var(--space-4); align-items: center; }
 .filters input[type="search"], .inlineForm input, .pick input { font: inherit; font-size: var(--step-0); color: var(--ink); padding: 9px 2px; }
@@ -265,23 +254,20 @@
 .pageNote { display: grid; gap: 10px; }
 .pageNoteFoot { display: flex; flex-wrap: wrap; gap: var(--space-2) 14px; align-items: center; font-size: var(--step--1); }
 
-/* ------------------------------------------------ keep safe: a notice in a double rule, its words in ink */
-.keep { display: grid; grid-template-columns: 1fr auto; gap: var(--space-4) var(--space-6); align-items: center; padding: clamp(22px, 3vw, 32px); color: var(--ink); }
-.treasury .keep h2 { margin: 0 0 var(--space-2); font: 400 var(--step-2) / 1.15 var(--f-display); color: var(--rubric); }
-.keep p { max-width: 70ch; }
-.keep p + p { margin-top: 10px; }
-.keepActs { display: flex; flex-wrap: wrap; gap: 10px; }
+/* ------------------------------------------------ the two foot cards: a hairline frame, a small-caps kicker, a serif title, one sentence, one action */
+.keep, .offline { display: grid; align-content: start; gap: var(--space-2); padding: clamp(var(--space-4), 3vw, var(--space-5)); box-shadow: var(--slab-edge); color: var(--ink); min-width: 0; }
+.kicker { color: var(--ink-2); }
+.treasury .keep h2, .treasury .offline h2 { margin: 0; font: 400 var(--step-1) / 1.2 var(--f-display); color: var(--ink); }
+.keep p, .offline p { margin: 0; max-width: 60ch; color: var(--ink-2); }
+.keepActs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: var(--space-2); }
 /* phones: the two buttons as one even pair of bars */
 @media (max-width: 760px) { .keepActs { display: grid; grid-template-columns: minmax(0, 1fr); } .keepActs > :global(.btn) { justify-content: center; } }
 /* what a download, a restore or keeping in step did: a note with a green rule down its margin (red when it failed) */
-.keepResult { grid-column: 1 / -1; display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); color: var(--ink); box-shadow: var(--inlay-left-ok), var(--slab-edge); animation: ink-in var(--dur-slow) var(--ease) backwards; }
+.keepResult { display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); color: var(--ink); box-shadow: var(--inlay-left-ok), var(--slab-edge); animation: ink-in var(--dur-slow) var(--ease) backwards; }
 .keepResult[data-ok="false"] { box-shadow: var(--inlay-left), var(--slab-edge); }
-@media (max-width: 760px) { .keep { grid-template-columns: minmax(0, 1fr); } }
-/* a Treasury with nothing in it: only "Restore from a file", a small link (KeepSafe.tsx) */
-.keepSmall { display: grid; gap: var(--space-2); justify-items: start; font-size: var(--step--1); color: var(--ink-2); }
-.keepSmall .keepActs { gap: var(--space-2); }
 .linkBtn { display: inline-flex; align-items: center; gap: var(--space-1); font: inherit; color: var(--rubric); background: none; border: 0; padding: 0; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 @media (pointer: coarse) { .linkBtn { min-height: var(--tap); } }
+.offline .keepActs { margin-top: auto; padding-top: var(--space-2); }
 
 /* ---------------------------------------------------------------- Places: saved places on a map of your own */
 .places { display: grid; gap: var(--space-4); }
@@ -300,12 +286,3 @@
 .placeList span { color: var(--ink-2); }
 .placeList small { grid-row: 2; color: var(--ink-2); font-size: var(--step--1); }
 .placeList button { grid-row: 1 / span 2; grid-column: 2; }
-
-/* ------------------------------------------------ the way to Downloads, at the foot of the Treasury */
-.offline { display: grid; justify-items: start; gap: var(--space-1); padding: 18px 2px 0; text-decoration: none; color: var(--ink); border-top: 1px solid var(--ink); }
-.offline b { font: 400 var(--step-1) / 1.2 var(--f-display); transition: color var(--dur-quick) var(--ease); }
-.offline:focus-visible b { color: var(--rubric); }
-@media (hover: hover) { .offline:hover b { color: var(--rubric); } }
-.offline > span:last-child { max-width: 64ch; color: var(--ink-2); }
-/* a link shows it at rest at every width: a red arrow after its name (globals.css --link-line; scripts/check-clickable.mjs) */
-.offline b::after { content: "\00a0→"; color: var(--rubric); }

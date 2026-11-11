@@ -14,6 +14,7 @@ import { useMarks, usePageNotes } from "@/lib/annotations";
 import { useSavedPlaces } from "@/lib/map";
 import { useNotebooks } from "@/lib/notebooks";
 import type { SectionId } from "./Treasury";
+import PrivateShelf from "./PrivateShelf";
 import styles from "./Treasury.module.css";
 
 /** the Greek numerals a contents page counts its parts with: 1 to 9 */
@@ -82,6 +83,8 @@ export function Kept({ section = "recent", go }: { section?: SectionId; go?: (id
           </li>
         ))}
       </ol>
+      {/* the moderator's two private rows (nothing for anyone else) */}
+      <PrivateShelf />
     </nav>
   );
 }

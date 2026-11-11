@@ -77,16 +77,15 @@ export default function KeepSafe({ t, summary, compact = false }: { t: TreasuryS
   };
 
   return (
-    <aside className={compact ? styles.keepSmall : styles.keep} aria-labelledby="keep-h">
-      <div>
-        <h2 id="keep-h" className={compact ? "visually-hidden" : undefined}>Keep your Treasury safe</h2>
-        {!compact && <p>Everything here lives in this browser: {summary}. Download it as one file that reads like a book in any browser,
-          and restore from that file here, on this or another computer. Restoring adds what is missing and updates what is older.</p>}
-        <Sync t={t} onResult={setResult} lines={reportLines} />
-      </div>
+    <aside className={styles.keep} aria-labelledby="keep-h">
+      <span className={`label ${styles.kicker}`}>Backup · Restore</span>
+      <h2 id="keep-h">Keep your Treasury safe</h2>
+      {!compact && <p>Everything here lives in this browser: {summary}. Download it as one file that reads like a book in any browser,
+        and restore from that file here, on this or another computer. Restoring adds what is missing and updates what is older.</p>}
+      <Sync t={t} onResult={setResult} lines={reportLines} />
       <div className={styles.keepActs}>
         {!compact && <button type="button" className="btn" onClick={download} disabled={busy}><Icon name="download" />Download my Treasury</button>}
-        <button type="button" className={compact ? styles.linkBtn : "btn ghost"} onClick={() => file.current?.click()} disabled={busy}><Icon name="upload" />Restore from a file</button>
+        <button type="button" className="btn ghost" onClick={() => file.current?.click()} disabled={busy}><Icon name="upload" />Restore from a file</button>
         <input ref={file} type="file" accept=".html,.htm,.json,text/html,application/json" hidden aria-label="Choose a Treasury file to restore"
           onChange={(e) => { const f = e.target.files?.[0]; if (f) restore(f); }} />
       </div>

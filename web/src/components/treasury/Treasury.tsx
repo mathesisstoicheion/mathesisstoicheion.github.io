@@ -11,7 +11,7 @@ import Link from "next/link";
 import { AREAS } from "@/config/areas";
 import Icon from "@/components/Icon";
 import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useTreasury, plural } from "./data";
 import { NotesSection, BookmarksSection, HighlightsSection, XrefsSection, RecentSection } from "./MarkSections";
 import AnthologySection from "./AnthologySection";
@@ -22,7 +22,6 @@ import styles from "./Treasury.module.css";
 import PlacesSection from "./PlacesSection";
 import { loadSavedPlaces, useSavedPlaces } from "@/lib/map";
 import NotebooksSection from "./NotebooksSection";
-import PrivateShelf from "./PrivateShelf";
 import { useNotebooks } from "@/lib/notebooks";
 
 export type SectionId = "recent" | "notes" | "anthology" | "bookmarks" | "highlights" | "xrefs" | "words" | "authors" | "places" | "notebooks";
@@ -36,10 +35,42 @@ export default function Treasury() {
   useEffect(() => { loadSavedPlaces(); }, []);
   const section = (params.get("s") ?? "recent") as SectionId;
 
+  // choosing a part from the contents: it comes first, under the head, and is brought into view when it is below the fold
+  // (not on the first load; instantly with reduced motion)
+  const part = useRef<HTMLElement>(null), before = useRef(section);
+  useEffect(() => {
+    if (before.current === section) return;
+    before.current = section;
+    const el = part.current;
+    if (!el || section === "recent" || el.getBoundingClientRect().top < window.innerHeight / 2) return;
+    el.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start" });
+  }, [section]);
+
   const empty = t.ready && !marks.length && !Object.keys(pageNotes).length && !savedPlaces && !notebooks;
+
+  const chosen = section !== "recent";
+  const partEl = (
+    <>
+      {t.error && <p className={styles.error} role="alert">{t.error}</p>}
+      <section className={styles.section} id="treasury-part" ref={part} key={section} aria-live="polite">
+        {section === "recent" && <RecentSection t={t} />}
+        {section === "notes" && <NotesSection t={t} />}
+        {section === "anthology" && <AnthologySection t={t} />}
+        {section === "bookmarks" && <BookmarksSection t={t} />}
+        {section === "highlights" && <HighlightsSection t={t} />}
+        {section === "xrefs" && <XrefsSection t={t} />}
+        {section === "words" && <WordsSection t={t} />}
+        {section === "authors" && <AuthorsSection t={t} />}
+        {section === "places" && <PlacesSection />}
+        {section === "notebooks" && <NotebooksSection />}
+      </section>
+    </>
+  );
 
   return (
     <div className={styles.treasury} data-empty={empty ? "" : undefined}>
+      {/* a part chosen from the contents comes first, and "How the Treasury fills" follows it */}
+      {chosen && partEl}
       {/* a Treasury with nothing in it opens with what to do about that, and the nine sections wait, dimmed, without their zeros */}
       {empty && (
         <section className={styles.fills} aria-labelledby="fills-h">
@@ -78,32 +109,20 @@ export default function Treasury() {
         </section>
       )}
 
-      {/* the moderator's private translations: shown to the moderator alone */}
-      <PrivateShelf />
-
-      {t.error && <p className={styles.error} role="alert">{t.error}</p>}
-      <section className={styles.section} key={section} aria-live="polite">
-        {section === "recent" && <RecentSection t={t} />}
-        {section === "notes" && <NotesSection t={t} />}
-        {section === "anthology" && <AnthologySection t={t} />}
-        {section === "bookmarks" && <BookmarksSection t={t} />}
-        {section === "highlights" && <HighlightsSection t={t} />}
-        {section === "xrefs" && <XrefsSection t={t} />}
-        {section === "words" && <WordsSection t={t} />}
-        {section === "authors" && <AuthorsSection t={t} />}
-        {section === "places" && <PlacesSection />}
-        {section === "notebooks" && <NotebooksSection />}
-      </section>
+      {!chosen && partEl}
 
       <div className={styles.foot}>
       <KeepSafe t={t} compact={empty} summary={`${plural(marks.length, "mark")}, ${plural(Object.keys(pageNotes).length, "note")} on authors, words and the Painted Stoa, ${plural(savedPlaces, "saved place")}, ${plural(notebooks, "notebook")}`} />
 
       {/* the Mine door also keeps what you download for reading offline (Phase 11: Downloads moved here from the footer) */}
-      <Link className={styles.offline} href={AREAS.downloads.href} transitionTypes={["page-turn"]}>
-        <span className="label">{AREAS.downloads.name} · {AREAS.downloads.english}</span>
-        <b>Read without a connection</b>
-        <span>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</span>
-      </Link>
+      <section className={styles.offline} aria-labelledby="offline-h">
+        <span className={`label ${styles.kicker}`}>{AREAS.downloads.name} · {AREAS.downloads.english}</span>
+        <h2 id="offline-h">Read without a connection</h2>
+        <p>Download the Greek and English texts once, then read them on a train, a plane or anywhere without a signal.</p>
+        <div className={styles.keepActs}>
+          <Link className="btn ghost" href={AREAS.downloads.href} transitionTypes={["page-turn"]}><Icon name="download" />Open {AREAS.downloads.name}</Link>
+        </div>
+      </section>
       </div>
     </div>
   );
