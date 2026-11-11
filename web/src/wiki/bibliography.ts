@@ -426,4 +426,28 @@ export const BIB: Record<string, Secondary> = {
     author: "Sarah B. Pomeroy", title: "Goddesses, Whores, Wives, and Slaves: Women in Classical Antiquity", year: 1975,
     publisher: "New York: Schocken Books", checked: "https://openlibrary.org/works/OL3029407W",
   },
+  "lloyd-herodotus-2": {
+    author: "Alan B. Lloyd", title: "Herodotus, Book II (3 volumes: Introduction; Commentary 1–98; Commentary 99–182)", year: 1975,
+    publisher: "Leiden: E. J. Brill, 1975–1988", checked: "https://zenon.dainst.org/Record/000149567/Description",
+  },
+  "fraser-alexandria": {
+    author: "P. M. Fraser", title: "Ptolemaic Alexandria (3 volumes)", year: 1972,
+    publisher: "Oxford: Clarendon Press", checked: "https://wellcomecollection.org/works/r6pdgghs",
+  },
+  "gruen-hellenistic-rome": {
+    author: "Erich S. Gruen", title: "The Hellenistic World and the Coming of Rome (2 volumes)", year: 1984,
+    publisher: "Berkeley: University of California Press", checked: "https://www.schweitzer-online.de/en/buch/Gruen/Hellenistic-World-Coming-Rome/9780520045699/A2190098/",
+  },
+  "buckler-theban-hegemony": {
+    author: "John Buckler", title: "The Theban Hegemony, 371–362 BC", year: 1980,
+    publisher: "Cambridge, Mass.: Harvard University Press", checked: "https://zenon.dainst.org/Record/000164326/Details",
+  },
+  "meritt-atl": {
+    author: "B. D. Meritt, H. T. Wade-Gery and M. F. McGregor", title: "The Athenian Tribute Lists (4 volumes)", year: 1939,
+    publisher: "Cambridge, Mass.: Harvard University Press, and Princeton: American School of Classical Studies at Athens, 1939–1953", checked: "https://zenon.dainst.org/Record/000768581/Description",
+  },
+  "meiggs-athenian-empire": {
+    author: "Russell Meiggs", title: "The Athenian Empire", year: 1972,
+    publisher: "Oxford: Clarendon Press", checked: "https://zenon.dainst.org/Record/000157486/Description",
+  },
 };
