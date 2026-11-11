@@ -1,0 +1,1 @@
+The app icon is now the round seal with transparent corners. Everything from beta 22 is included.
