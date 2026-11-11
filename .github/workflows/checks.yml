@@ -99,6 +99,10 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: node scripts/check-resume.mjs http://localhost:3100
+      - name: A page opened first (a text, a shared link, a restored session) is never blank and always has a way on
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        working-directory: web
+        run: npm run check:cold-open
       - name: A chapter's heading reads as a heading on a phone, not a poster
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
