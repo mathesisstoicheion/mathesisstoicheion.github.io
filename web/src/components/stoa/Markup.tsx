@@ -61,8 +61,6 @@ export function Inline({ xs, card = false }: { xs: Inl[]; card?: boolean }) {
         if ("src" in x) return <SourceMark key={i} n={x.src} />;
         if ("cite" in x) return <Link key={i} className={styles.cite} href={readHref(x.cite)} transitionTypes={["page-turn"]} title="Read this passage in the reader">{emphAware(x.text, "t")}</Link>;
         if ("wiki" in x) {
-          // (a link to a Stoa entry that is no longer there is only its words)
-          if (!(x.wiki in (HINTS as Record<string, string>))) return <Fragment key={i}>{emphAware(x.text, "t")}</Fragment>;
           return <Link key={i} className={styles.wikiLink} href={`/stoa/${x.wiki}`} transitionTypes={["page-turn"]} title={(HINTS as Record<string, string>)[x.wiki]}>{emphAware(x.text, "t")}</Link>;
         }
         return <a key={i} href={x.ext} target="_blank" rel="noopener noreferrer">{emphAware(x.text, "t")}</a>;

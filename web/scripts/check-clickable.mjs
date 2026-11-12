@@ -16,8 +16,8 @@ const PAGES = only.length ? only : [
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/review", "/academy/checkpoint/first-steps",
   "/academy/guide/looking-up", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001",
   "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/search", "/search?q=μῆνιν", "/stoa", "/stoa/authors", "/stoa/eras",
-  "/stoa/manuscripts", "/stoa/lyre", "/stoa/kerameikos", "/stoa/census",
-  "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/no-such-page",
+  "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/stoa/kerameikos", "/stoa/ostracism", "/stoa/census",
+  "/stoa/troy", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/no-such-page",
 ];
 const WIDTHS = (process.env.WIDTHS ?? "1440,1024").split(",").map(Number);
 

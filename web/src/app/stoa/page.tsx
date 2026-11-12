@@ -42,9 +42,9 @@ export default function StoaPage() {
           entries and choose one to read, each entry a clear place to tap. So: the head with its introduction and, at its
           right (under it on a phone), the six places made here and the reference pages; then the entries, in one part that opens and closes; then the story of
           the name and the small print. (2026-11-09: a short introduction under the head.) */}
-      <Door id="wiki" computerOnlyIntro intro={ENTRIES.length ? <>The map, the Census and the other things made here, and {ENTRIES.length} entries on how the Greeks lived, ruled, believed and fought, each built on the texts in the library.</> : <>The map, the Census and the other things made here.</>}
-        action={ENTRIES.length ? <EntriesJump total={ENTRIES.length} /> : undefined} side={<Beyond reference={REFERENCE} />}>
-        {ENTRIES.length > 0 && <DoorBlock><StoaEntries entries={ENTRIES.map(cardOf)} reference={REFERENCE} subjects={subjects} /></DoorBlock>}
+      <Door id="wiki" computerOnlyIntro intro={<>The map, the Census and the other things made here, and {ENTRIES.length} entries on how the Greeks lived, ruled, believed and fought, each built on the texts in the library.</>}
+        action={<EntriesJump total={ENTRIES.length} />} side={<Beyond reference={REFERENCE} />}>
+        <DoorBlock><StoaEntries entries={ENTRIES.map(cardOf)} reference={REFERENCE} subjects={subjects} /></DoorBlock>
         <DoorBlock><ExploreCredit /></DoorBlock>
       </Door>
     </Page>

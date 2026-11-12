@@ -33,7 +33,7 @@ const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = await withoutAccountPages(base, only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/tables", "/academy/vocabulary",
   "/academy/practice", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/stoa/kerameikos", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.200", "/search?q=μῆνιν",
-  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/treasury",
+  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/treasury",
   "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall", "/no-such-page",
 ]);
 const THREE = ["EB Garamond", "GFS Didot", "Gentium Book Plus"];

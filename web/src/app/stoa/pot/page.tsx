@@ -22,6 +22,9 @@ export default function PotPage() {
       </RefHead>
       <div className="wrap" style={{ paddingBottom: "var(--page-foot)" }}>
         <Amphora />
+        <p className="muted" style={{ marginTop: "var(--space-5)" }}>
+          How the real ones were made: <Link href="/stoa/black-and-red-figure" transitionTypes={["page-turn"]}>Black-figure and red-figure</Link>.
+        </p>
       </div>
     </Page>
   );

@@ -29,7 +29,7 @@ const bar = () => p.getByRole("toolbar", { name: "Reading" });
 const aid = async (name) => { await bar().getByRole("button", { name: "Aids" }).click(); await p.waitForTimeout(500); await p.getByRole("dialog", { name: "Reading aids" }).getByRole("button", { name, exact: true }).click(); };
 const scrollAll = () => p.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 120)); } });
 
-for (const u of ["/", "/library", "/academy", "/academy/today", "/academy/alphabet", "/academy/lesson/letters", "/academy/practice", "/stoa", "/stoa/census", "/stoa/periplus", "/town-hall", "/treasury", "/search"]) {
+for (const u of ["/", "/library", "/academy", "/academy/today", "/academy/alphabet", "/academy/lesson/letters", "/academy/practice", "/stoa", "/stoa/womens-lives", "/stoa/census", "/stoa/periplus", "/town-hall", "/treasury", "/search"]) {
   await go(u);
   await check(`${u} scrolled`, scrollAll);
 }

@@ -18,7 +18,7 @@ const [base = "http://localhost:3202", out = "overlaps.json", only = "", sizeOnl
 const PAGES = process.env.PAGES ? process.env.PAGES.split(",") : ["/", "/library", "/library/author?a=tlg0059", "/read", "/read?w=tlg0059.tlg002", "/read?w=tlg0012.tlg001&at=1.1", "/work/tlg0012-tlg001",
   "/author/tlg0085", "/academy", "/academy/alphabet", "/academy/lesson/letters", "/academy/lesson/adjectives", "/academy/lesson/adjectives/practice",
   "/academy/reading", "/academy/reading/letters", "/academy/review", "/academy/studio", "/academy/tables", "/academy/today", "/academy/vocabulary",
-  "/academy/practice", "/academy/guide/dictionary-form", "/guide", "/stoa", "/stoa/authors", "/stoa/census",
+  "/academy/practice", "/academy/guide/dictionary-form", "/guide", "/stoa", "/stoa/antikythera-mechanism", "/stoa/authors", "/stoa/census",
   "/stoa/editions", "/stoa/eras", "/stoa/kerameikos", "/stoa/lyre", "/stoa/manuscripts", "/stoa/periplus", "/stoa/variants", "/town-hall",
   "/town-hall/pnyx", "/treasury", "/treasury/word?w=%CE%BB%CF%8C%CE%B3%CE%BF%CF%82", "/search", "/search?q=logos", "/about", "/credits",
   "/downloads", "/account", "/no-such-page", "/academy/reading/nothing-too-much"].filter((p) => p.includes(only));

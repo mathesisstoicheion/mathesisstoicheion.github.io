@@ -12,7 +12,7 @@ import { PAGE_DESCRIPTIONS } from "@/lib/seo";
 export const metadata: Metadata = { title: areaTitle("census"), description: PAGE_DESCRIPTIONS.census };
 
 // the Painted Stoa's entries about each name and each place (read at build time)
-const link = (slug: string): EntryLink => ({ slug, title: entryBySlug.get(slug)?.title ?? slug });
+const link = (slug: string): EntryLink => ({ slug, title: entryBySlug.get(slug)!.title });
 const links: Links = {
   byName: Object.fromEntries(Object.entries(NAME_ENTRIES).map(([k, slugs]) => [k, slugs.map(link)])),
   byPlace: {},

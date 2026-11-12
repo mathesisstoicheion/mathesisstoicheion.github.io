@@ -72,6 +72,10 @@ describe("the bibliography", () => {
       expect(b.year, id).toBeGreaterThan(1800);
     }
   });
+  it("has nothing unused", () => {
+    const used = new Set(ENTRIES.flatMap((e) => e.secondary.map((s) => s.id)));
+    for (const id of Object.keys(BIB)) expect(used.has(id), id).toBe(true);
+  });
 });
 
 describe("the entries' addresses", () => {

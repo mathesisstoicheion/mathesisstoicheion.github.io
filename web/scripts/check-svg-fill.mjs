@@ -17,7 +17,7 @@ import { chromium } from "playwright";
 const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/alphabet", "/library", "/stoa", "/stoa/kerameikos", "/stoa/eras", "/stoa/census", "/stoa/periplus",
-  "/treasury", "/treasury?s=places", "/downloads", "/about", "/guide",
+  "/stoa/antikythera-mechanism", "/treasury", "/treasury?s=places", "/downloads", "/about", "/guide",
 ];
 const browser = await chromium.launch(process.env.CHROMIUM ? { executablePath: process.env.CHROMIUM } : {});
 const found = [];

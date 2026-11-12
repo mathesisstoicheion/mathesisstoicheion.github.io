@@ -21,8 +21,8 @@ const PAGES = await withoutAccountPages(base, withoutLessons(only.length ? only 
   "/academy/lesson/article/practice", "/academy/lesson/article/test",
   "/academy/guide/looking-up", "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001",
   "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/read?w=tlg0003.tlg001", "/search", "/search?q=μῆνιν", "/stoa",
-  "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/kerameikos",
-  "/stoa/census", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account",
+  "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/stoa/kerameikos",
+  "/stoa/ostracism", "/stoa/census", "/stoa/troy", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account",
   "/about", "/credits", "/guide", "/no-such-page",
 ]));
 // (a word's Word Study page is filled by the word packs; where they are not served, as on GitHub, its main column is

@@ -29,7 +29,7 @@ export default function Kerameikos() {
       <div className={styles.trench} data-trench>
         <DepthPole />
         {LAYERS.map((l, i) => {
-          const es = l.slugs.map((s) => entryBySlug.get(s)).filter((e): e is NonNullable<typeof e> => !!e);
+          const es = l.slugs.map((s) => entryBySlug.get(s)!);
           return (
             <section key={l.id} id={l.id} className={styles.layer} style={{ "--d": i } as React.CSSProperties} aria-labelledby={`${l.id}-h`}>
               <div className={`wrap ${styles.layerIn}`}>

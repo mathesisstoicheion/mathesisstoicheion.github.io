@@ -117,6 +117,7 @@ export const PATH: PathStep[] = [
     },
     links: [
       { href: map("540726"), label: "Delphi on the map", note: "the places the texts name, and how often" },
+      { href: "/stoa/delphi", label: "Delphi and the oracle", note: "the Pythia, the tripod and the riddling answers" },
       { href: read("tlg0059.tlg022", "343"), label: "Read Protagoras 343 in the reader", note: "the whole passage, with every word explained" },
     ],
     passage: {
@@ -816,6 +817,7 @@ export const PATH: PathStep[] = [
     },
     links: [
       { href: map("599581"), label: "Cos on the map" },
+      { href: "/stoa/asclepius", label: "Asclepius", note: "the healing god of the doctors' guild" },
       { href: read("tlg0627.tlg012", "1.1"), label: "Read the Aphorisms in the reader" },
     ],
     passage: {
@@ -1222,6 +1224,7 @@ export const PATH: PathStep[] = [
     },
     links: [
       { href: map("579885"), label: "Athens on the map" },
+      { href: "/stoa/trial-of-socrates", label: "The trial of Socrates" },
       { href: "/author/tlg0059", label: "Plato" },
       { href: read("tlg0059.tlg002", "21"), label: "Read Apology 21 in the reader", note: "the oracle and the wise man" },
     ],
@@ -1484,6 +1487,7 @@ export const PATH: PathStep[] = [
       ],
     },
     links: [
+      { href: "/stoa/trial-of-socrates", label: "The trial of Socrates" },
       { href: read("tlg0059.tlg002", "38"), label: "Read Apology 38 in the reader", note: "the penalty he proposes" },
     ],
     passage: {
@@ -2268,6 +2272,7 @@ export const PATH: PathStep[] = [
       ],
     },
     links: [
+      { href: "/stoa/trial-of-socrates", label: "The trial of Socrates" },
       { href: read("tlg0059.tlg002", "22"), label: "Read Apology 22 in the reader", note: "the poets and the craftsmen" },
     ],
     passage: {
