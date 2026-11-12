@@ -9,6 +9,7 @@
  * the owner, 2026-10-30).
  */
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { Row } from "@/lib/tei/align";
 import { englishVoices, pieces, speakable, wordAt, type Speakable } from "@/lib/listen";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
@@ -16,7 +17,8 @@ import Icon from "@/components/Icon";
 import styles from "./Listen.module.css";
 
 const PREFS = "mathesis:listen";
-const RATES = [0.8, 1, 1.2, 1.5];
+/** the speeds on offer, up to three times (the owner, 2026-11-11: a list, not a button that cycles) */
+const RATES = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 const HL = "listen-word";
 
 type Status = "idle" | "playing" | "paused";
@@ -50,6 +52,10 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
   const [voiceName, setVoiceName] = useState<string | undefined>(() => readPrefs().voice);
   const [rate, setRate] = useState<number>(() => readPrefs().rate ?? 1);
   const motion = useSettings((s) => s.motion);
+  // the player can be put away while the reading goes on (the owner, 2026-11-11): its play and show buttons then stand in the reader's foot bar,
+  // just right of Float (ReaderBar.tsx, the slot marked data-listen-slot)
+  const [away, setAway] = useState(false);
+  const slot = away && typeof document !== "undefined" ? document.querySelector("[data-listen-slot]") : null;
 
   // where reading is: the row, the piece of its text, and a counter that silences callbacks of speech we stopped
   const pos = useRef({ row: rowIdx, piece: 0 });
@@ -200,7 +206,8 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
   const ref = rows[rowIdx]?.key ?? "";
 
   return (
-    <div className={styles.bar} role="region" aria-label="Listen to the translation" data-status={status}>
+    <>
+    <div className={styles.bar} role="region" aria-label="Listen to the translation" data-status={status} hidden={away}>
       <span className={styles.progress} style={{ transform: `scaleX(${progress})` }} aria-hidden="true" />
       {!supported ? (
         <p className={styles.note}>This browser cannot read aloud.</p>
@@ -220,16 +227,29 @@ export default function Listen({ rows, root, startKey, title, onNextPage, onClos
             <span className={styles.what}><span className={styles.whatTitle}>{title}</span> <b>{ref}</b></span>
           </p>
           {/* the speed is a figure alone (1×): Icon.tsx has no sign for it, so its name is said by its label */}
-          <button type="button" className={`icon-btn ${styles.rate}`} onClick={() => { const r = RATES[(RATES.indexOf(rate) + 1) % RATES.length]; setRate(r); writePrefs({ rate: r }); }}
-            aria-label={`Speed ${rate} times; change`} title="Speed">{rate}×</button>
+          <select className={`${styles.voice} ${styles.rate}`} value={rate} aria-label="Speed" title="Speed"
+            onChange={(e) => { const r = Number(e.target.value); setRate(r); writePrefs({ rate: r }); }}>
+            {RATES.map((r) => <option key={r} value={r}>{r}×</option>)}
+          </select>
           <select className={styles.voice} value={voice?.name} aria-label="English voice"
             onChange={(e) => { setVoiceName(e.target.value); writePrefs({ voice: e.target.value }); }}>
             {voices.map((v) => <option key={v.name} value={v.name}>{v.name.replace(/^Microsoft /, "").replace(/ Online \(Natural\).*$/, " (natural)")}</option>)}
           </select>
         </>
       )}
-      <button type="button" className={`icon-btn ${styles.x}`} onClick={close} title="Stop and close"><Icon name="close" label="Stop and close" /></button>
+      <span className={styles.ends}>
+        {supported && voices.length > 0 && <button type="button" className="icon-btn" onClick={() => setAway(true)} title="Hide the player; the reading goes on"><Icon name="chevron-down" label="Hide the player, the reading goes on" /></button>}
+        <button type="button" className={`icon-btn ${styles.x}`} onClick={close} title="Stop and close"><Icon name="close" label="Stop and close" /></button>
+      </span>
       <p className={styles.fine}>The English translation, read by your device&apos;s voice{voice && !voice.localService ? " (an online voice: the passage is sent to your browser's maker to be spoken)" : ""}. The Greek is not read aloud: no voice speaks it as it sounded.</p>
     </div>
+    {away && slot && createPortal(
+      <span className={styles.mini} role="group" aria-label="Listen">
+        <button type="button" className="icon-btn" onClick={status === "playing" ? pause : play} title={status === "playing" ? "Pause" : "Read aloud"}>
+          <Icon name={status === "playing" ? "pause" : "play"} label={status === "playing" ? "Pause" : "Read aloud"} />
+        </button>
+        <button type="button" className="icon-btn" onClick={() => setAway(false)} title="Show the player"><Icon name="chevron-up" label="Show the player" /></button>
+      </span>, slot)}
+    </>
   );
 }

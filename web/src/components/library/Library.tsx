@@ -22,10 +22,10 @@ import Icon from "@/components/Icon";
 import styles from "./Library.module.css";
 import { prefersReducedMotion, useSettings } from "@/lib/settings";
 
-type Sort = "kind" | "author" | "title" | "period";
+type Sort = "kind" | "author" | "omega" | "title" | "period";
 /** The catalogue's order (redesign decision 11): by kind of writing, the default; one plain A to Z list of authors; titles
  *  A to Z; or by period. */
-const SORTS: [Sort, string][] = [["kind", "By kind"], ["author", "Authors A–Z"], ["title", "Titles A–Z"], ["period", "By period"]];
+const SORTS: [Sort, string][] = [["author", "Authors A–Z"], ["omega", "Authors Α–Ω"], ["kind", "By kind"], ["title", "Titles A–Z"], ["period", "By period"]];
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 /** How many authors (or titles) a list needs before the rail of letters stands beside it. */
 const RAIL_FROM = 20;
@@ -37,6 +37,12 @@ const readHref = (w: CatWork) => `/read?w=${w.id}`;
 const kb = (n: number) => (n > 1e6 ? `${(n / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(n / 1e3))} KB`);
 const n = (x: number) => x.toLocaleString("en-GB");
 /** The letter a name is filed under: its first Latin letter, accents ignored. */
+/** The Greek letters in order, for the Α–Ω list of authors (an author is filed by the first letter of their Greek name, breathings and accents ignored). */
+const GREEK = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ".split("");
+const greekInitial = (s?: string) => {
+  const c = (s ?? "").normalize("NFD").replace(/[^\p{L}]/gu, "").charAt(0).toUpperCase().replace("ς", "Σ");
+  return GREEK.includes(c) ? c : "#";
+};
 const initial = (s: string) => fold(s).replace(/^[^a-z]+/, "").charAt(0).toUpperCase() || "#";
 const byName = (a: string, b: string) => fold(a).localeCompare(fold(b), "en");
 
@@ -132,7 +138,7 @@ export default function Library() {
     setReady(true);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  const [sort, setSort] = useState<Sort>(pick("sort", ["kind", "author", "title", "period"] as const, "kind"));
+  const [sort, setSort] = useState<Sort>(pick("sort", ["kind", "author", "omega", "title", "period"] as const, "author"));
   const [family, setFamily] = useState(params.get("genre") ?? "");
   const [period, setPeriod] = useState(params.get("period") ?? "");
   const [dialect, setDialect] = useState(params.get("dialect") ?? "");
@@ -155,7 +161,7 @@ export default function Library() {
     if (!ready) return;
     const u = new URL(location.href);
     const set = (k: string, v: string, d = "") => { if (v && v !== d) u.searchParams.set(k, v); else u.searchParams.delete(k); };
-    set("q", query.trim()); set("sort", sort, "kind"); set("tr", tr, "all"); set("genre", family); set("period", period); set("dialect", dialect); set("vocab", vocab);
+    set("q", query.trim()); set("sort", sort, "author"); set("tr", tr, "all"); set("genre", family); set("period", period); set("dialect", dialect); set("vocab", vocab);
     if (u.href !== location.href) history.replaceState(history.state, "", u);
   }, [ready, query, sort, tr, family, period, dialect, vocab]);
   useEffect(() => {
@@ -262,11 +268,18 @@ export default function Library() {
       for (const g of out) for (const r of g.rows!) if (!seen.has(r.a.id)) { seen.add(r.a.id); r.anchor = true; }
       return [...lead, ...out];
     }
+    if (sort === "omega") {
+      // Greek order: by the first letter of the Greek name; authors with no Greek name on file stand at the end, under "#"
+      const gr = (r: Row) => names[r.a.id]?.grc;
+      const by = new Map<string, Group>([...GREEK, "#"].map((k) => [k, { key: k, label: k === "#" ? "No Greek name yet" : k, short: k, rows: [] }]));
+      for (const r of [...rest].sort((x, y) => (gr(x) ? gr(y) ? gr(x)!.normalize("NFD").replace(/[^\p{L}]/gu, "").localeCompare(gr(y)!.normalize("NFD").replace(/[^\p{L}]/gu, ""), "el") : -1 : gr(y) ? 1 : 0) || byName(x.a.name, y.a.name))) by.get(greekInitial(gr(r)))!.rows!.push(r);
+      return [...lead, ...[...by.values()].filter((g) => g.rows!.length)];
+    }
     const by = new Map<string, Group>();
     for (const r of [...rest].sort((x, y) => byName(x.a.name, y.a.name))) { const k = initial(r.a.name); if (!by.has(k)) by.set(k, { key: k, label: k, short: k, rows: [] }); by.get(k)!.rows!.push(r); }
     return [...lead, ...by.values()];
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [rows, sort, bestId, kinds, meta]);
+  }, [rows, sort, bestId, kinds, meta, names]);
 
   // a search that names an author (by any of their names): those authors are offered first, as links to their place
   const authorHits = useMemo(() => {
@@ -295,8 +308,8 @@ export default function Library() {
   // titles), those with nothing under them dimmed. By kind or by period there are no letters, so there is no rail; nor is there
   // one for a short list (a search that finds only a few authors), which it would leave standing taller than the list itself.
   const present = useMemo(() => new Set(groups.map((g) => g.key)), [groups]);
-  const railOn = (sort === "author" || sort === "title") && groups.reduce((n, g) => n + (g.rows?.length ?? g.titles?.length ?? 0), 0) >= RAIL_FROM;
-  const railKeys = useMemo(() => (present.has("#") ? [...LETTERS, "#"] : LETTERS), [present]);
+  const railOn = (sort === "author" || sort === "omega" || sort === "title") && groups.reduce((n, g) => n + (g.rows?.length ?? g.titles?.length ?? 0), 0) >= RAIL_FROM;
+  const railKeys = useMemo(() => { const base = sort === "omega" ? GREEK : LETTERS; return present.has("#") ? [...base, "#"] : base; }, [present, sort]);
   const jump = (key: string, instant: boolean) => {
     const el = document.getElementById(`lib-${key}`);
     if (el) scrollBelowHeader(el, 12, !instant && !prefersReducedMotion(useSettings.getState().motion) ? "glide" : false);
@@ -351,7 +364,7 @@ export default function Library() {
       </div>
       {/* the filters, folded until wanted, so the list comes up under the search (the owner, 2026-10-30: the A to Z list
           is what the page is for); the fold says how many are on */}
-      <details id="library-filters" className="fold-box">
+      <details id="library-filters" className={`fold-box ${styles.filterFold}`}>
         <summary><Icon name="filter" /><span>Filter <small>by kind of writing, period, dialect or vocabulary</small></span>{filtersOn > 0 && <b>{filtersOn} on</b>}</summary>
         <div className={`fold-body ${styles.filters}`}>
         <div className={styles.selects} role="group" aria-label="More filters">

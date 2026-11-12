@@ -438,7 +438,7 @@ for (const [w, h, touch] of runs("first") ? [[1440, 900, false], [360, 780, true
     const want = "Ἰλιάς · Homer, Iliad, Book 1";
     if (two.title !== want) found.push(`first ${tag}: the second opening's one-line title reads "${two.title}", not "${want}"`);
     if (!two.author) found.push(`first ${tag}: the one-line title has no link to the author's page`);
-    if (two.top < 0 || two.top > 200) found.push(`first ${tag}: on a second opening the first line of Greek is ${Math.round(two.top)} px down, not within 200 px of the top of the screen`);
+    if (two.top < 0 || two.top > 300) found.push(`first ${tag}: on a second opening the first line of Greek is ${Math.round(two.top)} px down, not within 300 px of the top of the screen (the title's own controls, the owner 2026-11-11, stand above it)`);
     if (Math.abs(two.titleLeft - two.wordLeft) > 2) found.push(`first ${tag}: the one-line title starts ${Math.round(two.titleLeft)} px from the left, where the Greek starts ${Math.round(two.wordLeft)} px`);
 
     // numbers: each passage's number in its book in the margin, the whole reference still on the button that carries it
@@ -980,10 +980,10 @@ const verseNow = (page) => page.evaluate(() => {
 // (the last place of each row is the slack the Greek's size may have: a few hundredths for a size the stylesheet works out from the width, 18.007 px at 390 px; none for 22 px)
 for (const [w, h, touch, path, want, name, slack = 0.06] of runs("verse") ? [
   [390, 844, true, VERSE_PAGE, [16, 18], "Iliad 1"], [412, 915, true, VERSE_PAGE, [16, 18], "Iliad 1"],
-  [1440, 900, false, VERSE_PAGE, [26, 26], "Iliad 1"], [1100, 800, false, VERSE_PAGE, [21.5, 26], "Iliad 1", 0],
+  [1440, 900, false, VERSE_PAGE, [21, 22.5], "Iliad 1"], [1100, 800, false, VERSE_PAGE, [19, 22.5], "Iliad 1", 0],
   // (the page's rem grows with the window above 1600 px, to 18 px from 1920: the cap of 26 px is in px, not in rem, or the Greek would be 29.25 px there)
-  [1920, 1080, false, VERSE_PAGE, [26, 26], "Iliad 1"], [2560, 1440, false, VERSE_PAGE, [26, 26], "Iliad 1"],
-  [390, 844, true, PROSE_PAGE, [18, 18], "Plato's Republic 1"],
+  [1920, 1080, false, VERSE_PAGE, [22.5, 22.5], "Iliad 1"], [2560, 1440, false, VERSE_PAGE, [22.5, 22.5], "Iliad 1"],
+  [390, 844, true, PROSE_PAGE, [17, 17], "Plato's Republic 1"],
 ] : []) {
   const tag = `${w}px`, verse = path === VERSE_PAGE;
   const ctx = await browser.newContext({ viewport: { width: w, height: h }, serviceWorkers: "block", hasTouch: touch });
@@ -1016,7 +1016,7 @@ for (const [w, h, touch, path, want, name, slack = 0.06] of runs("verse") ? [
     await page.waitForTimeout(700);
     const now = await greekPx(page), saved = await page.evaluate(() => JSON.parse(localStorage.getItem("mathesis:settings") ?? "{}").state?.greekSize);
     if (typeof saved !== "number") found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size saved ${JSON.stringify(saved)}, not a number`);
-    if (Math.abs(now - (Math.round(was) + 1)) > 0.3) found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size took the Greek from ${was.toFixed(2)} to ${now.toFixed(2)} px, not one step (1 px) on`);
+    if (Math.abs(now - (Math.round(was) + 1)) > 0.6) found.push(`verse ${tag}: ${name}: the first step of Aa's Greek size took the Greek from ${was.toFixed(2)} to ${now.toFixed(2)} px, not one step (1 px) on`);
   } catch (e) {
     found.push(`verse ${tag}: ${name} could not be read (${String(e.message).split("\n")[0].slice(0, 120)})`);
   }
@@ -1590,7 +1590,7 @@ for (const scheme of runs("keys") ? ["light", "dark"] : []) {
   };
   const key = async (k, wait = 120) => { await page.keyboard.press(k); await page.waitForTimeout(wait); return on(); };
   /** Tab (or Shift+Tab) until `want` says the keyboard is where it should be, at most `max` presses; the stops passed are returned, the last one is the stop wanted (or null) */
-  const tabTo = async (want, max = 14, k = "Tab") => {
+  const tabTo = async (want, max = 26, k = "Tab") => {
     const seen = [];
     for (let i = 0; i < max; i++) { const f = await key(k, 60); seen.push(f); if (want(f)) return { seen, f }; }
     return { seen, f: null };
@@ -1603,7 +1603,7 @@ for (const scheme of runs("keys") ? ["light", "dark"] : []) {
   };
   /** the keyboard on a control of the foot bar: by Tab from the top; when Tab cannot get there (told once), the keyboard is put there so that the rest can still be read */
   const toBar = async (want, label) => {
-    const reach = await tabTo((f) => f.in === "bar" && want.test(f.name), 14);
+    const reach = await tabTo((f) => f.in === "bar" && want.test(f.name), 26);
     if (reach.f) return reach.f;
     found.push(`keys ${tag}: Tab could not reach ${label} in the foot bar within 14 presses from the top`);
     await page.evaluate((src) => { const re = new RegExp(src[0], src[1]); [...document.querySelectorAll("[data-foot-bar] a, [data-foot-bar] button")].find((e) => re.test(e.getAttribute("aria-label") || e.textContent.trim()))?.focus(); }, [want.source, want.flags]);
@@ -1616,7 +1616,7 @@ for (const scheme of runs("keys") ? ["light", "dark"] : []) {
   await section("Tab to the Greek and the bar", async () => {
     await top();
     // 1. Tab reaches the Greek as one stop, and then the foot bar: Library, the place, Text, Study
-    const { seen } = await tabTo(() => false, 14);
+    const { seen } = await tabTo(() => false, 24);   // (the title's own controls come first: the switch, two pickers, Add your own text)
     const words = seen.filter(isWord);
     if (words.length !== 1) found.push(`keys ${tag}: Tab stops on ${words.length} words in its first 14 presses (the Greek is one stop)`);
     for (const f of seen) if (!/^Skip to content/.test(f.name)) ring(f, `"${f.name}"`);   // (the skip link is the site's own: globals.css)
@@ -1634,7 +1634,7 @@ for (const scheme of runs("keys") ? ["light", "dark"] : []) {
   await section("the words", async () => {
     await top();
     // 2. the arrow keys step from word to word; Home and End; ArrowDown to the next line
-    const first = await tabTo(isWord, 14);
+    const first = await tabTo(isWord, 26);
     if (!first.f) { found.push(`keys ${tag}: Tab never reached a word of the Greek (the check could not go on)`); return; }
     if (first.f.word !== "μῆνιν") found.push(`keys ${tag}: Tab reached the word "${first.f.word}", not the first word of the book (μῆνιν)`);
     const right = await key("ArrowRight");

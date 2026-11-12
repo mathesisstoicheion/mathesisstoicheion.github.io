@@ -7,6 +7,7 @@
  */
 import { Segmented } from "@/components/ReadingControls";
 import Icon from "@/components/Icon";
+import { hasTranslation } from "@/lib/catalog";
 import type { Columns } from "@/lib/settings";
 import { EditionPicks, type StudyProps } from "./StudyMenu";
 import styles from "./Reader.module.css";
@@ -18,12 +19,20 @@ export default function HeadTools({ menu, columns, onColumns, onImport }: {
   /** present only for the moderator: opens the private collection's window */
   onImport?: () => void;
 }) {
+  // no English at all for this work: say so, grey English and Both, and tell where your own can come from (words on a hover, and in plain
+  // sight below for a touch screen, which has no hover)
+  const noEnglish = !menu.cmpText && !hasTranslation(menu.work);
+  const why = onImport
+    ? "There is no English translation of this work in the library. If you have one, add it with “Add your own text”."
+    : "There is no English translation of this work in the library.";
   return (
     <div className={styles.headTools} data-head-tools="">
       <Segmented label="Show" value={columns} options={COLUMNS} onChange={onColumns}
-        unavailable={(c) => !!menu.cmpText || (c !== "greek" && !menu.trText)} />
+        unavailable={(c) => !!menu.cmpText || (c !== "greek" && !menu.trText)}
+        hint={(c) => (noEnglish && c !== "greek" ? why : undefined)} />
+      {noEnglish && <p className={styles.headNote} role="note">No English translation of this work is in the library.{onImport && " You can add your own, or your own Greek, with the button below."}</p>}
       <EditionPicks {...menu} />
-      {onImport && <button type="button" className={`btn ghost ${styles.headImport}`} onClick={onImport}><Icon name="upload" />Add your own text</button>}
+      {onImport && <button type="button" className={`btn ghost ${styles.headImport}`} onClick={onImport}><Icon name="upload" />Add your own text<span className="visually-hidden"> (a translation or a Greek version)</span></button>}
     </div>
   );
 }

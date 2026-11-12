@@ -12,7 +12,7 @@
     "spacing": 4
   },
   "src/app/academy/page.tsx": {
-    "spacing": 11
+    "spacing": 3
   },
   "src/app/academy/practice/page.tsx": {
     "spacing": 2
@@ -134,7 +134,7 @@
   },
   "src/components/admin/PrivateTranslations.module.css": {
     "font-size": 1,
-    "spacing": 135,
+    "spacing": 121,
     "z-index": 1,
     "motion": 5
   },
@@ -156,7 +156,7 @@
   "src/components/guide/Guide.module.css": {
     "colour": 1,
     "font-size": 22,
-    "spacing": 71,
+    "spacing": 66,
     "z-index": 1
   },
   "src/components/guide/Pictures.tsx": {
@@ -275,7 +275,7 @@
     "spacing": 37,
     "shadow": 9,
     "z-index": 7,
-    "motion": 8
+    "motion": 7
   },
   "src/components/search/Constructions.module.css": {
     "spacing": 21
@@ -294,7 +294,7 @@
     "motion": 3
   },
   "src/components/stoa/ExploreLead.module.css": {
-    "spacing": 12,
+    "spacing": 8,
     "motion": 2
   },
   "src/components/stoa/Kerameikos.module.css": {
@@ -303,13 +303,13 @@
     "motion": 9
   },
   "src/components/stoa/Stoa.module.css": {
-    "font-size": 3,
-    "spacing": 106,
+    "font-size": 2,
+    "spacing": 91,
     "z-index": 1,
     "motion": 1
   },
   "src/components/stoa/Transmission.module.css": {
-    "spacing": 18,
+    "spacing": 14,
     "motion": 4
   },
   "src/components/stoa/WikiEditions.module.css": {
@@ -321,7 +321,6 @@
     "motion": 1
   },
   "src/components/stoa/WikiIndex.module.css": {
-    "font-size": 1,
     "spacing": 20
   },
   "src/components/tour/Tour.module.css": {
@@ -331,13 +330,13 @@
     "motion": 1
   },
   "src/components/treasury/Treasury.module.css": {
-    "font-size": 5,
-    "spacing": 74,
+    "font-size": 4,
+    "spacing": 64,
     "z-index": 2,
     "motion": 1
   },
   "src/components/treasury/WordStudy.module.css": {
-    "spacing": 74,
+    "spacing": 70,
     "z-index": 1,
     "motion": 1
   },

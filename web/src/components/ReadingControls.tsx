@@ -24,12 +24,16 @@ export function Choice({ icon, children }: { icon: IconName; children: ReactNode
 }
 
 /** A row of choices, one of them chosen; a choice that cannot be made now is greyed (`unavailable`). */
-export function Segmented<T extends string>({ label, value, options, onChange, unavailable }:
-  { label: string; value: T; options: [T, string][]; onChange: (v: T) => void; unavailable?: (v: T) => boolean }) {
+export function Segmented<T extends string>({ label, value, options, onChange, unavailable, hint }:
+  { label: string; value: T; options: [T, string][]; onChange: (v: T) => void; unavailable?: (v: T) => boolean;
+    /** words for a choice that cannot be used now: it is greyed (kept in reach, so its words show on a hover, a focus and a long press) */
+    hint?: (v: T) => string | undefined }) {
   return (
     <div className={styles.seg} role="radiogroup" aria-label={label}>
       {options.map(([v, text]) => (
-        <button key={v} type="button" role="radio" aria-checked={value === v} disabled={unavailable?.(v)} onClick={() => onChange(v)}>{text}</button>
+        hint?.(v)
+          ? <button key={v} type="button" role="radio" aria-checked={value === v} aria-disabled="true" title={hint(v)} onClick={() => {}}>{text}</button>
+          : <button key={v} type="button" role="radio" aria-checked={value === v} disabled={unavailable?.(v)} onClick={() => onChange(v)}>{text}</button>
       ))}
     </div>
   );

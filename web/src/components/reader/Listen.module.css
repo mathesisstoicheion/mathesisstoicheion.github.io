@@ -26,7 +26,10 @@
 .whatTitle { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 .what b { flex: none; font-family: var(--f-label); font-weight: 500; }
 /* the speed is a figure (1×), not a sign */
-.rate:global(.icon-btn) { padding: 0 var(--space-2); font: 500 var(--step-0) / 1 var(--f-body); font-variant-numeric: lining-nums tabular-nums; }
+.rate { max-width: none; width: auto; font-variant-numeric: lining-nums tabular-nums; }
+.ends { display: flex; align-items: center; }
+/* the player put away: its play button and the one that shows it again, in the foot bar */
+.mini { display: inline-flex; align-items: center; gap: var(--space-1); }
 .voice {
   max-width: 150px; height: 36px; padding: 0 var(--space-2); border-radius: var(--radius); border: 1px solid transparent;
   background: transparent; box-shadow: var(--rule-under); color: inherit; font: var(--step--1) var(--f-body);
@@ -37,19 +40,20 @@
 .note { margin: 0; grid-column: 1 / 5; font-size: var(--step--1); }
 .bar .fine { grid-column: 1 / -1; margin: var(--hair-2) 0 0; font-size: var(--step--2); color: var(--ink-2); }
 
-/* a phone: the buttons, the passage being read, the speed and Close in one row; the voice under them, then the small print */
+/* a phone: the buttons, the passage being read, Hide and Close in one row; the speed and the voice under them, then the small print */
 @media (max-width: 560px) {
-  .bar { grid-template-columns: auto minmax(0, 1fr) auto auto; padding-left: var(--space-2); gap: var(--space-1); }
+  .bar { grid-template-columns: auto minmax(0, 1fr) auto; padding-left: var(--space-2); gap: var(--space-1); }
   .transport { grid-column: 1; grid-row: 1; }
   .where { grid-column: 2; grid-row: 1; }
-  .rate { grid-column: 3; grid-row: 1; }
-  .x { grid-column: 4; grid-row: 1; }
-  .note { grid-column: 1 / 4; grid-row: 1; }
-  .voice { grid-column: 1 / -1; grid-row: 2; max-width: none; width: 100%; }
+  .ends { grid-column: 3; grid-row: 1; }
+  .note { grid-column: 1 / 3; grid-row: 1; }
+  .rate { grid-column: 1; grid-row: 2; }
+  select.voice:not(.rate) { grid-column: 2 / -1; grid-row: 2; max-width: none; width: 100%; }
   .fine { grid-row: 3; }
   .play:global(.icon-btn) { min-width: var(--tap); }
 }
 @media (pointer: coarse) { .voice { height: var(--tap); } }
+@media (max-width: 560px) { .ends > :global(.icon-btn) { min-width: 40px; padding-inline: 0; } }
 /* the narrowest phones (320 px): the passage before and after a little slimmer, so that "Listen" and the passage being read keep their room in the row */
 @media (max-width: 340px) { .transport > :global(.icon-btn):not(.play) { min-width: 36px; padding-inline: 0; } }
 

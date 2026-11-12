@@ -3,7 +3,7 @@ import { LIMITS, type GreekSize } from "./settings";
 
 /**
  * The Greek's size as the reader shows it (the quiet desk, ticket 10, the owner, 2026-10-30). The setting is a number the reader chose or "auto", the size
- * that suits the device (styles/tokens.css, --greek-auto: about 26 px on a computer, 18 px on a phone, from the width of the page). Every control that
+ * that suits the device (styles/tokens.css, --greek-auto: about 21 px on a computer, 17 px on a phone (brought down, the owner, 2026-11-11: "too big by default"), from the width of the page). Every control that
  * steps the size (Aa's and Settings' Greek size, the search's "bigger" and "smaller", the phone's two-finger pinch) starts from the size on the screen
  * now, which only the page can say; the first step from "auto" saves a number.
  */

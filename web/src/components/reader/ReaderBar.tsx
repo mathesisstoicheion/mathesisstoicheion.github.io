@@ -246,6 +246,8 @@ export default function ReaderBar({ rootRef, book }: {
           {/* Float, beside the way out (the owner, 2026-11-09); a phone has it in More, its bar being full */}
           {book?.onFloat && <Tool icon="float" word="Float" className={styles.wideOnly} onClick={book.onFloat}
             title="Shrink the reader into a small window that follows you around the site, at the passage you are reading" />}
+          {/* where Listen's play button stands while its player is put away (Listen.tsx) */}
+          <span data-listen-slot="" />
         </div>
         {book && place ? (
           <Drop {...book.goto} chevron={false} className={`icon-btn ${styles.quiet} ${styles.where}`} panelClass={`${styles.menu} ${styles.footMenu} ${styles.gotoMenu}`} panelLabel="Go to"

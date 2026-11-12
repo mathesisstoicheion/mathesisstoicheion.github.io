@@ -32,6 +32,11 @@
 }
 @media (hover: hover) { .seg button:hover:not([aria-checked="true"]) { color: var(--rubric); } }
 .seg button[aria-checked="true"] { background: var(--sel-bg); color: var(--sel-fg); }
+/* the chosen one is a dark block: its ring is drawn inside it, in the colour kept for ink (a red ring on ink is under 3 : 1) */
+.seg button[aria-checked="true"]:focus-visible { outline-color: var(--accent-on-ink); outline-offset: -4px; }
+/* a choice that cannot be used now (kept in reach so that its words show on a hover or a long press: ReadingControls.tsx, hint) */
+.seg button[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+@media (hover: hover) { .seg button[aria-disabled="true"]:hover { color: var(--ink-2); } }
 
 /* the page as it will read: a few lines of Greek between two rules, each set as the reader sets a line of verse that does not fit its room: the turnover hangs
    (the quiet desk, ticket 10, the owner, 2026-10-30) */

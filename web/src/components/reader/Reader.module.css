@@ -957,3 +957,7 @@ p.translit { margin: -0.3em 0 0.8em; }
 .headTools select { min-height: var(--tap); }
 .headImport { justify-self: center; min-height: var(--tap); }
 @media (min-width: 40rem) { .headTools > div:not([role]) { grid-template-columns: 1fr 1fr; gap: var(--space-4); } }
+
+/* said under the Greek / Both / English switch when the work has no English (HeadTools.tsx) */
+.headNote { margin: 0; justify-self: center; max-width: 30rem; text-align: center; font: italic 400 var(--step--1) / 1.4 var(--f-body); color: var(--ink-2); }
+.headTools select:focus-visible { outline: 2px solid var(--rubric); outline-offset: 2px; }

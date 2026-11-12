@@ -83,7 +83,7 @@
      window to 26 px from 1100 px on, where the look-up's note stands in the margin. The cap is 26 px, in px and not in rem: above 1600 px the rem itself grows,
      to 18 px (--root-grow, below), and 1.625rem would have set the Greek at 29.25 px on a 1920 px screen. A size the reader chooses is --greek-chosen
      (lib/settings.ts, applySettings), which wins everywhere; the reader's own rule is in Reader.module.css, and the rest of the site's in globals.css (--greek-size). */
-  --greek-auto: clamp(1.125rem, 0.85rem + 1.13vw, 26px);
+  --greek-auto: clamp(17px, 12.8px + 0.6vw, 22.5px);
 
   /* typefaces, three and no more (SPEC.md 3.2): EB Garamond for English, GFS Didot for titles, Greek room names and the
      logo, Gentium Book Plus for Greek being read. The next/font variables are set in app/layout.tsx. Each list starts with
@@ -100,6 +100,7 @@
   --ink-in: 1.4s;          /* how long a line takes to ink in */
   --ink-step: 0.12s;       /* each line a step after the one before */
   --dur-quick: 0.2s;
+  --tap-pad: 0.3em;   /* the tap area of a Greek word in running text: a little taller than the letters (components/lookup/Tap.module.css) */
   --dur: 0.4s;
   --dur-slow: 0.6s;
   --enter-step: var(--ink-step);

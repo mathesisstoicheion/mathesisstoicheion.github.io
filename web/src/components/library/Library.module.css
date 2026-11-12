@@ -341,3 +341,11 @@
   .grp > .book { grid-template-columns: minmax(0, 1fr); align-content: start; border-top: 1px solid var(--ink); border-bottom: 0; }
   .grp > .book::before { left: 0; top: calc(-1 * var(--hair)); bottom: auto; width: 100%; height: var(--hair-2); }
 }
+
+/* the Filter fold is a solid button, so it is plain to see and to press (the owner, 2026-11-11); it stays folded until pressed */
+.filterFold { border-color: var(--btn-bg); }
+.filterFold.filterFold > summary { background: var(--btn-bg); color: var(--btn-ink); font-weight: 500; }
+.filterFold.filterFold > summary > svg[data-icon], .filterFold.filterFold > summary small, .filterFold.filterFold > summary b { color: var(--btn-ink); }
+.filterFold.filterFold > summary::after { background: var(--btn-ink); }
+.filterFold.filterFold[open] > summary { border-bottom: 1px solid var(--btn-bg); }
+@media (hover: hover) { .filterFold.filterFold > summary:hover { color: var(--btn-ink); opacity: 0.9; } }
