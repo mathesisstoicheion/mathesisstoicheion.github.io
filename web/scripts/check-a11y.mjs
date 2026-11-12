@@ -20,8 +20,7 @@ const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/tables", "/academy/vocabulary", "/academy/practice",
   "/library", "/library/author?a=tlg0012", "/read?w=tlg0012.tlg001&tr=perseus-eng3", "/read?w=tlg0012.tlg001&tr=perseus-eng3&at=1.1", "/search?q=μῆνιν",
-  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/census", "/stoa/antikythera-mechanism",
-  "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall",
+  "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/census", "/treasury", "/treasury/word?l=λόγος", "/downloads", "/account", "/about", "/credits", "/guide", "/town-hall",
   // found by a sweep of 112 pages (2026-10-23): two books side by side, a reading lesson, a guide's sources, chips on two
   // lines, the map's sliding chips; and the home page again at the end, now as a returning visitor, so its desk is judged
   // (the pages before it are its trail)

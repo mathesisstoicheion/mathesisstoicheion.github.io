@@ -17,7 +17,7 @@ import fs from "node:fs";
 import { withoutLessons } from "./lib/pages.mjs";
 
 const [base = "http://localhost:3100", out = "", only = ""] = process.argv.slice(2);
-export const PAGES = ["/", "/academy", "/academy/lesson/letters", "/library", "/stoa", "/stoa/ostracism", "/town-hall", "/treasury",
+export const PAGES = ["/", "/academy", "/academy/lesson/letters", "/library", "/stoa", "/town-hall", "/treasury",
   "/account", "/guide", "/read?w=tlg0085.tlg005"].filter((p) => p.includes(only));
 const PAGES_NOW = withoutLessons(PAGES);
 const SIZES = [[1024, 768, "computer"], [375, 812, "phone"]];

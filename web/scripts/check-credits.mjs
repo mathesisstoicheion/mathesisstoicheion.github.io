@@ -16,8 +16,7 @@ const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/practice", "/library",
   "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/read?w=tlg0059.tlg002", "/search", "/stoa",
-  "/stoa/kerameikos", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism",
-  "/stoa/delphi", "/stoa/kleroterion", "/stoa/mycenae", "/treasury", "/downloads", "/account", "/about", "/credits", "/guide", "/no-such-page",
+  "/stoa/kerameikos", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/treasury", "/downloads", "/account", "/about", "/credits", "/guide", "/no-such-page",
 ];
 const WIDTHS = [[1280, 900], [390, 844]];
 

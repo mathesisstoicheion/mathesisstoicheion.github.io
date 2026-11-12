@@ -15,9 +15,6 @@ const PAGES = [
   { name: "the Guide (which-greek)", path: "/academy/guide/which-greek", words: "[data-real] [data-w]" },
   { name: "the Guide (dictionary-form)", path: "/academy/guide/dictionary-form", words: "[data-real] [data-w]" },
   // lessons are switched off for now (LESSONS_SHOWN); they use the same panel and are checked when shown
-  // the Stoa's entries: Greek in the prose (kleroterion) and in a quotation (slavery); the words are touchable, not the links
-  { name: "a Stoa entry (prose)", path: "/stoa/kleroterion", words: "[data-entry] p [data-w], [data-entry] li [data-w]", quick: true },
-  { name: "a Stoa entry (quotation)", path: "/stoa/slavery", words: "[data-entry] blockquote [data-w]", quick: true },
   { name: "the Oracle (by work)", path: "/search?m=forms&q=%CE%BB%CE%BF%CE%B3%CE%BF%CF%82", words: "li[class*=hit] p [data-w]", quick: true, index: true, prep: async (page) => { await page.locator('li[class*=group] button[aria-expanded]').first().click(); } },
   { name: "the Oracle (concordance)", path: "/search?m=forms&q=%CE%BB%CE%BF%CE%B3%CE%BF%CF%82&v=conc", words: "ol[data-lang=grc] [data-w]", quick: true, index: true },
   { name: "the Census", path: "/stoa/census", words: "article h2 [data-w]", quick: true, prep: async (page) => { await page.locator('button[aria-pressed][class*=row]').first().click(); } },

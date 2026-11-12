@@ -158,17 +158,5 @@ export const fmtRate = (r: number) => (r >= 10 ? r.toFixed(0) : r >= 1 ? r.toFix
  * Painted Stoa entries about a name, by dictionary word (canonLemma). Places are also linked through
  * the map: an entry whose `places` holds the place's Pleiades id is shown for it.
  */
-export const NAME_ENTRIES: Record<string, string[]> = {
-  "περικλῆς": ["pericles"],
-  "ἱππαρχία": ["hipparchia"],
-  "διογένης": ["diogenes"],
-  "πυθαγόρας": ["pythagoras"],
-  "σωκράτης": ["trial-of-socrates"],
-  "ἀσκληπιός": ["asclepius"],
-  "εἵλως": ["helots"],
-  "μήλιος": ["melos"],
-  "μυτιληναῖος": ["mytilene-debate"],
-  "ὅμηρος": ["homeric-similes"],
-  "κλέων": ["mytilene-debate"],
-};
+export const NAME_ENTRIES: Record<string, string[]> = {};   // (no Stoa entries now: the owner, 2026-11-12)
 export const lemmaKey = (spelling: string) => canonLemma(spelling);

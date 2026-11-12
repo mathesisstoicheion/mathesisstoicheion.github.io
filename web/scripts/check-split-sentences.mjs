@@ -20,7 +20,7 @@ const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/alphabet", "/academy/lesson/letters", "/academy/practice", "/academy/review", "/academy/tables",
   "/library", "/library/author?id=tlg0012", "/library/private", "/author/tlg0011", "/work/tlg0012-tlg001", "/read?w=tlg0012.tlg001",
-  "/search", "/search?q=μῆνιν", "/stoa", "/stoa/delphi", "/stoa/eras", "/stoa/authors", "/stoa/kerameikos", "/stoa/census", "/stoa/lyre",
+  "/search", "/search?q=μῆνιν", "/stoa", "/stoa/eras", "/stoa/authors", "/stoa/kerameikos", "/stoa/census", "/stoa/lyre",
   "/treasury", "/treasury/word?l=λόγος", "/treasury/translations", "/admin/translations", "/downloads", "/account", "/about", "/credits", "/guide",
   "/town-hall", "/nope-not-here",
 ];

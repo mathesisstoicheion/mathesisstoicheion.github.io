@@ -806,8 +806,7 @@ export default function Amphora() {
               <p className={styles.hint}>
                 {design.style === "black"
                   ? "Figures painted black on the clay, with details scratched through."
-                  : "From about 530 BC: the figures left in the clay and the background painted black."}{" "}
-                <Link href="/stoa/black-and-red-figure" transitionTypes={["page-turn"]}>Read about the two styles</Link>.
+                  : "From about 530 BC: the figures left in the clay and the background painted black."}
               </p>
             </section>
 

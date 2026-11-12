@@ -24,8 +24,7 @@ const PAGES = await withoutAccountPages(base, only.length ? only : [
   "/academy/lesson/prepositions", "/academy/checkpoint/first-steps", "/academy/guide/looking-up", "/academy/alphabet",
   "/academy/tables", "/academy/vocabulary", "/academy/practice", "/academy/review", "/academy/today", "/academy/studio",
   "/library", "/library/author?a=tlg0012", "/author/tlg0012", "/work/tlg0012-tlg001", "/work/tlg0656-tlg001", "/search",
-  "/search?q=μῆνιν", "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism",
-  "/stoa/kerameikos", "/stoa/ostracism", "/stoa/delphi", "/stoa/troy", "/stoa/periplus", "/stoa/census", "/treasury",
+  "/search?q=μῆνιν", "/stoa", "/stoa/authors", "/stoa/eras", "/stoa/manuscripts", "/stoa/lyre", "/stoa/kerameikos", "/stoa/periplus", "/stoa/census", "/treasury",
   "/treasury/word?l=λόγος", "/treasury/translations", "/library/private", "/downloads", "/account", "/about", "/credits",
   "/guide", "/no-such-page",
 ]);

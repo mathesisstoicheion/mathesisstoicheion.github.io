@@ -46,10 +46,6 @@ jobs:
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web
         run: npm run check:metres-speed
-      - name: A place on the map with a Stoa entry offers it, and the entry leads back
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        working-directory: web
-        run: npm run check:map-wiki
       - name: One name per room (slice 2)
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         working-directory: web

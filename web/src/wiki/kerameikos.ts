@@ -16,22 +16,22 @@ export const LAYERS: Layer[] = [
   {
     id: "trouble", title: "The trouble with digging", deposit: "topsoil, cut by a pit",
     blurb: "Excavation destroys what it records. Early diggers hunted treasure and heroes, looters still dig for the market, and who should keep what was found is argued to this day.",
-    slugs: ["parthenon-marbles"],
+    slugs: [],
   },
   {
     id: "how", title: "How we know", deposit: "sherds in a clay layer",
     blurb: "Layers, broken pots, traces of paint, and the methods that turn them into dates and stories.",
-    slugs: ["reading-the-layers", "black-and-red-figure", "painted-statues"],
+    slugs: [],
   },
   {
     id: "sites", title: "Great sites", deposit: "wall foundations",
     blurb: "The places where digging has changed what we know: palaces, cities and their market-places, cemeteries, sanctuaries of healing and of whipping, the houses of a sacked town, and mines.",
-    slugs: ["knossos", "mycenae", "troy", "athens", "kerameikos-cemetery", "delphi", "asclepius", "spartan-upbringing", "household", "laurion"],
+    slugs: [],
   },
   {
     id: "finds", title: "Great finds", deposit: "a grave and its offerings",
     blurb: "Single objects that rewrote a chapter: a bronze computer from a shipwreck, clay tablets baked in a palace fire, a machine for choosing jurors, votes scratched on broken pots, an empire's accounts in marble, and two statues from a story in Herodotus.",
-    slugs: ["antikythera-mechanism", "linear-b", "kleroterion", "ostracism", "tribute-lists", "kleobis-and-biton"],
+    slugs: [],
   },
 ];
 

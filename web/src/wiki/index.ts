@@ -4,51 +4,9 @@
  */
 import type { CategoryId, Entry } from "./types";
 import { CATEGORIES } from "./types";
-import melos from "./entries/melos";
-import ostracism from "./entries/ostracism";
-import laurion from "./entries/laurion";
-import linearB from "./entries/linear-b";
-import plague from "./entries/plague";
-import mytilene from "./entries/mytilene";
-import helots from "./entries/helots";
-import diogenes from "./entries/diogenes";
-import delphi from "./entries/delphi";
-import paintedStatues from "./entries/painted-statues";
-import antikythera from "./entries/antikythera";
-import kerameikos from "./entries/kerameikos";
-import blackAndRedFigure from "./entries/black-and-red-figure";
-import pericles from "./entries/pericles";
-import hipparchia from "./entries/hipparchia";
-import school from "./entries/school";
-import spartanUpbringing from "./entries/spartan-upbringing";
-import symposium from "./entries/symposium";
-import olympicGames from "./entries/olympic-games";
-import kleroterion from "./entries/kleroterion";
-import eleusinianMysteries from "./entries/eleusinian-mysteries";
-import trialOfSocrates from "./entries/trial-of-socrates";
-import pythagoras from "./entries/pythagoras";
-import asclepius from "./entries/asclepius";
-import homericSimiles from "./entries/homeric-similes";
-import mycenae from "./entries/mycenae";
-import readingTheLayers from "./entries/reading-the-layers";
-import knossos from "./entries/knossos";
-import parthenonMarbles from "./entries/parthenon-marbles";
-import troy from "./entries/troy";
-import drugsAndPoisons from "./entries/drugs-and-poisons";
-import loveSexAndMarriage from "./entries/love-sex-and-marriage";
-import household from "./entries/household";
-import slavery from "./entries/slavery";
-import womensLives from "./entries/womens-lives";
-import egypt from "./entries/egypt";
-import athens from "./entries/athens";
-import rome from "./entries/rome";
-import sicily from "./entries/sicily";
-import thebes from "./entries/thebes";
-import alexandria from "./entries/alexandria";
-import tributeLists from "./entries/tribute-lists";
-import kleobisAndBiton from "./entries/kleobis-and-biton";
 
-export const ENTRIES: Entry[] = [melos, ostracism, laurion, linearB, plague, mytilene, helots, diogenes, delphi, paintedStatues, antikythera, kerameikos, blackAndRedFigure, pericles, hipparchia, school, spartanUpbringing, symposium, olympicGames, kleroterion, eleusinianMysteries, trialOfSocrates, pythagoras, asclepius, homericSimiles, mycenae, readingTheLayers, knossos, parthenonMarbles, troy, drugsAndPoisons, loveSexAndMarriage, household, slavery, womensLives, egypt, athens, rome, sicily, thebes, alexandria, tributeLists, kleobisAndBiton];
+/** The Painted Stoa has no entries now (the owner, 2026-11-12: "Delete all wiki entries"); they are in git history, before this commit. */
+export const ENTRIES: Entry[] = [];
 
 export const entryBySlug = new Map(ENTRIES.map((e) => [e.slug, e]));
 export const entriesIn = (c: CategoryId) => ENTRIES.filter((e) => e.category === c).sort((a, b) => a.title.localeCompare(b.title));

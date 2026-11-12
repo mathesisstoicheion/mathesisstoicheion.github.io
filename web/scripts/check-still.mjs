@@ -23,7 +23,7 @@ const [base = "http://localhost:3100", ...only] = process.argv.slice(2);
 const PAGES = only.length ? only : [
   "/", "/academy", "/academy/reading", "/academy/lesson/letters", "/academy/alphabet", "/academy/practice", "/library",
   "/library/author?a=tlg0012", "/read?w=tlg0059.tlg002", "/search?q=μῆνιν", "/stoa", "/stoa/kerameikos", "/stoa/eras",
-  "/stoa/manuscripts", "/stoa/lyre", "/stoa/antikythera-mechanism", "/treasury", "/downloads", "/account", "/about",
+  "/stoa/manuscripts", "/stoa/lyre", "/treasury", "/downloads", "/account", "/about",
   "/credits", "/guide", "/no-such-page",
 ];
 const WIDTHS = [[1280, 900], [390, 844]];
